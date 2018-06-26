@@ -1,0 +1,48 @@
+/* CSS Document */
+
+.program-list-item {
+	border:1px solid #dcdcdc;
+	margin:20px;
+	padding-bottom: 45px;
+}
+
+.check-box-in-line {
+		width: 25px;
+		display: inline-block;
+		margin-right: 10px;
+	}
+	.top-border {
+		border-top: 1px solid #dedede;
+	}
+	.ohfa-45 {
+		width: 45%;
+		display: inline-block;
+	}
+	.ohfa-30 {
+		width: 30%;
+		display: inline-block;
+	}
+	.ohfa--5 {
+		position: relative;
+		left:-5px;
+		
+	}
+	.ohfa--10 {
+		position: relative;
+		left:-10px;
+		
+	}
+	.ohfa--20 {
+		position: relative;
+		left:-20px;
+		
+	}
+	.ohfa-margin-left-5 {
+		margin-left: 5%;
+	}
+	.ohfa-margin-left-10 {
+		margin-left: 10%;
+	}
+	.ohfa-margin-left-2-5 {
+		margin-left: 2.5%;
+	}

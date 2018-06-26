@@ -1,0 +1,75 @@
+/* CSS Document */
+#history-list {
+	border-bottom: 1px solid #eaeaea;
+}
+
+#open-history-row-1 {
+	color:#b1b1b1;
+	font-size: 12px;
+	position:relative;
+	left:-22px;
+}
+.open-history-bottom-rules {
+	border-bottom:1px solid #eaeaea;padding-bottom:4px;
+}
+.history-direction-text{
+	text-transform: capitalize;
+}
+.history-open{
+	z-index: 2;
+	    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.70);
+    -moz-box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.70);
+    -webkit-box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.70);
+
+}
+	
+.history-list-item{
+	padding-top: 15px;
+    padding-bottom: 15px;
+    border: 1px solid #eaeaea;
+    
+    padding-right: 10px;
+    border-bottom: none;
+    
+    -webkit-transition: all 350ms ease-in-out;
+-moz-transition: all 350ms ease-in-out;
+-ms-transition: all 350ms ease-in-out;
+-o-transition: all 350ms ease-in-out;
+transition: all 350ms ease-in-out;
+}
+
+.history-list-item:last-of-type {
+	
+}
+
+.history-type-and-who, .history-item-date-time {
+	font-size:14px;
+}
+.no-float {
+	float: none;
+}
+
+.user-badge-history-item{
+	width:20px;
+	height:20px;
+	font-size: 11px;
+	line-height: 21px;
+	display: inline-block;
+}
+.print-only {
+	display: none;
+}
+@media print {
+.print-only {
+	display:block;
+}	
+	
+}
+
+.history-type {
+	font-weight: 200;
+    font-size: 18px;
+    display: block;
+    padding-bottom: 7px;
+    border-bottom: 1px dotted lightgray;	
+}

@@ -1,0 +1,46 @@
+/* CSS Document */
+.blue-box{background-color:#d4effc; padding:1em;}
+.less-margin-top{margin-top:.75em !important;}
+ul.uk-list.no-shade {background-color: rgba(255,255,255,0) !important;}
+ul.uk-list.no-shade > li{margin-bottom:1px;color:black;}
+.bracketed-blue-code{background:rgba(0,174,239,1); border-radius:3px;letter-spacing:2px;color:white;}
+.blue-button{background:rgba(0,174,239,1);padding:.5em;}
+.shaded-blue-box{background:rgba(0,174,239,.1);padding:1em 3em 0 3em;}
+.blue-accent-text{color:rgba(0,174,239,1);}
+.uk-grid.field-box-space {padding-right: 1em;}
+a.no-hover-underline:hover{text-decoration:none;}
+.gray-link-table a{color:rgba(127,127,127,1);}
+.gray-link-table a:hover, a.pink-hover-link:hover{color:rgba(236,0,140,1);}
+.table-pipe{border-right:1px solid #555;}
+.grayed-out{color:#ccc;}
+.field-box-space .field-box{margin-bottom:.75em;}
+.black-text{color:black;}
+.green-button{background-color:rgba(53,182,69,1);}
+.gray-button-no-shadow{background-color:rgba(127,127,127,1);text-shadow: none;color:white;}
+/*Chart legend colors*/
+i.chart-pale-green,i.chart-kelly-green,i.chart-gold,i.chart-pink,i.chart-dark-blue,i.chart-sky-blue,i.chart-white{margin-right:1em;}
+.chart-pale-green{color:rgba(122,200,162,1);}
+.chart-kelly-green{color:rgba(53,182,69,1);}
+.chart-gold{color:rgba(254,194,140,1);}
+.chart-pink{color:rgba(236,0,140,1);}
+.chart-dark-blue{color:rgba(37,64,143,1);}
+.chart-sky-blue{color:rgba(109,207,246,1);}
+.chart-white{color:rgba(255,255,255,1);}
+.chart-list-summary, .chart-list-summary li{color:rgba(127,127,127,1);margin-top:.75em;font-size:1.25em;}
+i.chart-list-summary{font-size:1em;margin-right:1em;}
+
+/*text area formatting */
+.field-box textarea {
+	border:0px;
+	width: 99%;
+	font-size:14px;
+	margin-top:4px;
+}
+
+.field-box a.payment-notification-selected {
+	color:blue;
+}
+a.white-link, a.white-link:hover, a.white-link:visited {
+	color:white;
+	text-decoration: none;
+}

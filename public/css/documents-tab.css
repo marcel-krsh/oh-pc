@@ -1,0 +1,94 @@
+/* CSS Document */
+#detail-tab-content ul.document-category-menu, #detail-tab-content ul.document-category-menu li ul {
+	background-color: transparent;
+	margin-bottom:0px;
+	display: inline-block;
+}
+#detail-tab-content ul.document-category-menu li ul li a:hover{
+	background-color: transparent;
+	
+	color:#171717;
+}
+#detail-tab-content ul.document-category-menu li a{
+	color:darkgray;
+	display: inline-block;
+	text-align: left;
+	margin-bottom: 0px;
+	line-height: 12px;
+}
+
+#detail-tab-content .uk-subnav > * {
+    -ms-flex: none;
+    -webkit-flex: none;
+    flex: none;
+    padding-left: 0px;
+    margin-bottom: 10px;
+    margin-top: 0px;
+    position: relative;
+    float: none;
+}
+.category-highlight, .category-highlight:active, .category-highlight:hover, category-highlight:focus {
+	color: black;
+    background-color: #d4effc !important;
+
+}
+
+.applicant-highlight, .applicant-highlight:hover, .applicant-highlight:active,.applicant-highlight:focus {
+	border:1px solid #c3c7d2 !important;
+	
+}
+.check-received-no.received-no{
+	display:none;
+}
+.minus-received-yes.received-yes{
+	display:none;
+}
+
+.category-highlight, .category-highlight:active, .category-highlight:hover, category-highlight:focus,.applicant-highlight, .applicant-highlight:hover, .applicant-highlight:active,.applicant-highlight:focus {
+	padding: 3px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 4px;
+}
+
+.category-highlight.applicant-highlight {
+	background-color: #104706 !important;
+	border: none !important;
+	color:white !important;
+	font-weight: normal;
+	animation: pulse 3s infinite;
+}
+@keyframes pulse {
+  0% {
+    background-color: #545383;
+  }
+  50% {
+    background-color: #5063b0;
+  }
+  100% {
+    background-color: #545383;
+  }
+}
+
+.blue-text {
+	
+	color: #00aeef;
+}
+#category-list, #category-list-email{
+	height:245px;
+	border:2px solid #bbbbbb;
+	border-radius:4px;
+	overflow-x: hidden;
+	padding-top: 10px;
+	
+}
+.uk-subnav.document-category-menu {
+    display: inline-block;
+}
+.uk-subnav.document-category-menu > * {
+    float: none;
+}
+
+div#list-item-upload-step-2 {
+    
+}

@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\ProgramRule;
+use Gate;
+use \DB;
+use Auth;
+use App\User;
+
+class rules extends Controller
+{
+    public function __construct(Request $request)
+    {
+        $this->middleware('auth');
+    }
+
+    public function edit(ProgramRule $rule, Request $request)
+    {
+        if (Gate::allows('view-all-parcels')) {
+            return view('modals.rules-edit-form', compact('rule'));
+        } else {
+            return 'Sorry you do not have access to the edit rules.';
+        }
+    }
+}
