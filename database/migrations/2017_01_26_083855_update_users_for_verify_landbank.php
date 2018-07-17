@@ -14,7 +14,7 @@ class UpdateUsersForVerifyLandbank extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-             $table->string('badge_color',25)->default('blue')->change();
+             $table->string('badge_color', 25)->default('blue')->change();
              $table->integer('active')->default('0')->change();
         });
     }

@@ -9,7 +9,7 @@ use Spatie\Activitylog\Models\Activity;
 
 class LogContainer
 {
-    public $logs = array();
+    public $logs = [];
 
     public function __construct()
     {
@@ -18,7 +18,7 @@ class LogContainer
 
     public function searchByType($eventtype)
     {
-        $tlogs = array();
+        $tlogs = [];
         foreach ($this->logs as $log) {
             if ($log->eventType == $eventtype) {
                 array_push($tlogs, $log);
@@ -30,7 +30,7 @@ class LogContainer
 
     public function searchByEventName($eventname)
     {
-        $tlogs = array();
+        $tlogs = [];
         foreach ($this->logs as $log) {
             if ($log->eventName == $eventname) {
                 array_push($tlogs, $log);

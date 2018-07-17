@@ -29,7 +29,7 @@ class ParcelsToPurchaseOrder extends Model
      */
     public function po() : HasMany
     {
-        return $this->hasMany('App\ReimbursementPurchaseOrders', 'id', 'purchase_order_id');
+        return $this->hasMany(\App\ReimbursementPurchaseOrders::class, 'id', 'purchase_order_id');
     }
 
     /**
@@ -39,6 +39,6 @@ class ParcelsToPurchaseOrder extends Model
      */
     public function parcel() : HasMany
     {
-        return $this->hasMany('App\Parcel', 'id', 'parcel_id');
+        return $this->hasMany(\App\Parcel::class, 'id', 'parcel_id');
     }
 }

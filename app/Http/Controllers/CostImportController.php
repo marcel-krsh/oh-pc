@@ -45,7 +45,7 @@ class CostImportController extends Controller
      */
     public function checkBool($string)
     {
-        return (in_array(strtolower($string), array("true", "false", "1", "0", "yes", "no"), true));
+        return (in_array(strtolower($string), ["true", "false", "1", "0", "yes", "no"], true));
     }
 
     /**
@@ -113,16 +113,16 @@ class CostImportController extends Controller
             // put in code here to set where to only get ids for their program
             // make it get all ids for OHFA
             switch (Auth::user()->entity_id) {
-                    case '1':
-                        $where = '%%';
-                        $whereOperator = "LIKE";
-                        break;
+                case '1':
+                    $where = '%%';
+                    $whereOperator = "LIKE";
+                    break;
                     
-                    default:
-                        $where = Auth::user()->entity_id;
-                        $whereOperator = "=";
-                        break;
-                }
+                default:
+                    $where = Auth::user()->entity_id;
+                    $whereOperator = "=";
+                    break;
+            }
             $programs = DB::table('programs')
                             ->select('id as program_id', 'program_name', 'entity_id')
                             ->where('entity_id', $whereOperator, $where)
@@ -146,7 +146,8 @@ class CostImportController extends Controller
                 'parcelTypeCheatSheet',
                 'programs',
                 'accounts',
-                'showHowTo'));
+                'showHowTo'
+            ));
         } else {
             return "Sorry you do not have access to this page.";
         }
@@ -198,7 +199,6 @@ class CostImportController extends Controller
     public function corrections(Request $request)
     {
         if (Gate::allows('view-all-parcels')) {
-
             // Check that table exists and load columns
             $table   = $request->input('table');
             $columns = $this->getTableColumns($table);
@@ -231,7 +231,6 @@ class CostImportController extends Controller
             foreach ($excel as $r => $row) {
                 foreach ($row as $col => $value) {
                     if ($map[$col] != '') {
-
                         // If we already have a correction value, use that instead of the excel file:
                         if (isset($corrections[$r][$map[$col]])) {
                             $value = $corrections[$r][$map[$col]];
@@ -266,28 +265,21 @@ class CostImportController extends Controller
                                     $ic[$r][$col]['insert_val'] = $foreign_row->id;
                                 }
                             }
-                        }
-
-                        // If expecting Integer, and recieve String.
+                        } // If expecting Integer, and recieve String.
                         elseif ($ic[$r][$col]['db_type'] == 'Integer' && $value != '' && !(is_null($value) || $ic[$r][$col]['excel_int'])) {
                             $ie[$r][$col] = $ic[$r][$col];
                             $ie[$r][$col]['message'] = 'Data Type Error: Expecting an Integer and recieved a ' . (is_numeric($value) ? 'Non-integer Number' : 'String');
-                        }
-
-                        // If expecting Boolean, and recieve String.
+                        } // If expecting Boolean, and recieve String.
                         elseif ($ic[$r][$col]['db_type'] == 'Boolean' && $value != '' && !(is_null($value) || is_bool($value) || $this->checkBool($value))) {
                             $ie[$r][$col] = $ic[$r][$col];
                             $ie[$r][$col]['message'] = 'Data Type Error: Expecting a Boolean and recieved a ' . (is_numeric($value) ? 'Non-boolean Number' : 'String');
-                        }
-
-                        // If the table column is "id"
+                        } // If the table column is "id"
                         elseif ($ic[$r][$col]['db_col'] == 'id' && $value != '' && $value != null) {
                             $update_row = DB::table($table)->find($value);
                             if (empty($update_row)) {
                                 $ie[$r][$col] = $ic[$r][$col];
                                 $ie[$r][$col]['message'] = 'Update by ID Error: No row found with ID ' . $value;
-                            } elseif (
-                                    property_exists($update_row, "owner_type") && (
+                            } elseif (property_exists($update_row, "owner_type") && (
                                         ($update_row->owner_type == 'user' && $update_row->owner_id != auth()->user()->id) ||
                                         ($update_row->owner_type == 'entity' && $update_row->owner_id != auth()->user()->entity_id) ||
                                         ($update_row->owner_type == 'program' && empty(

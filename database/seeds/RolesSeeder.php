@@ -11,80 +11,80 @@ class RolesSeeder extends Seeder
      */
     public function run()
     {
-        $rolesData = array(
-            array(
+        $rolesData = [
+            [
                 'role_parent_id'=>0,
                 'role_name'=>'HFA Roles',
                 'protected'=>1,
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'role_parent_id'=>0,
                 'role_name'=>'Land Bank Roles',
                 'protected'=>1,
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'role_parent_id'=>1,
                 'role_name'=>'OHFA Admin',
                 'protected'=>1,
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'role_parent_id'=>2,
                 'role_name'=>'Landbank Admin',
                 'protected'=>1,
                 'active'=>1
-            ),
-            array( //5
+            ],
+            [ //5
                 'role_parent_id'=>1,
                 'role_name'=>'New Landbank Approver',
                 'protected'=>1,
                 'active'=>1
-            ),
-            array( //6
+            ],
+            [ //6
                 'role_parent_id'=>2,
                 'role_name'=>'New Member Approver',
                 'protected'=>1,
                 'active'=>1
-            ),
-            array( //7
+            ],
+            [ //7
                 'role_parent_id'=>1,
                 'role_name'=>'Disposition Approver',
                 'protected'=>1,
                 'active'=>1
-            ),
-            array( //8
+            ],
+            [ //8
                 'role_parent_id'=>1,
                 'role_name'=>'Lien Manager',
                 'protected'=>1,
                 'active'=>1
-            ),
-            array( //9
+            ],
+            [ //9
                 'role_parent_id'=>1,
                 'role_name'=>'Disposition Reviewer',
                 'protected'=>1,
                 'active'=>1
-            ),
-            array( //10
+            ],
+            [ //10
                 'role_parent_id'=>2,
                 'role_name'=>'Disposition Reviewer',
                 'protected'=>1,
                 'active'=>1
-            ),
-            array( //11
+            ],
+            [ //11
                 'role_parent_id'=>2,
                 'role_name'=>'Disposition Approver',
                 'protected'=>1,
                 'active'=>1
-            ),
-            array( //12
+            ],
+            [ //12
                 'role_parent_id'=>2,
                 'role_name'=>'Disposition Manager',
                 'protected'=>1,
                 'active'=>1
-            )
-        );
+            ]
+        ];
         DB::table('roles')->insert($rolesData);
 
 
@@ -100,25 +100,25 @@ class RolesSeeder extends Seeder
                 'role_name'=>'Lien Manager',
                 'protected'=>1,
                 'active'=>1
-            ], 
+            ],
             [ //9
                 'role_parent_id'=>1,
                 'role_name'=>'Disposition Reviewer',
                 'protected'=>1,
                 'active'=>1
-            ], 
+            ],
             [ //10
                 'role_parent_id'=>2,
                 'role_name'=>'Disposition Reviewer',
                 'protected'=>1,
                 'active'=>1
-            ], 
+            ],
             [ //11
                 'role_parent_id'=>2,
                 'role_name'=>'Disposition Approver',
                 'protected'=>1,
                 'active'=>1
-            ], 
+            ],
             [ //12
                 'role_parent_id'=>2,
                 'role_name'=>'Disposition Manager',

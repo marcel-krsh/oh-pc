@@ -13,19 +13,19 @@ class AddDispositionRole extends Migration
      */
     public function up()
     {
-       $rolesData = array(
+        $rolesData = [
             
-            array( //22
+            [ //22
             'role_parent_id'=>1,
             'role_name'=>'Disposition Invoice Approver',
             'protected'=>1,
             'active'=>1
-            )
-        );
+            ]
+        ];
         DB::table('roles')->insert($rolesData);
 
 
-        $userRolesData = array(
+        $userRolesData = [
             
             // array(
             // 'role_id'=>22,
@@ -35,7 +35,7 @@ class AddDispositionRole extends Migration
             // 'role_id'=>22,
             // 'user_id'=>1
             // )
-        );
+        ];
         DB::table('users_roles')->insert($userRolesData);
     }
 

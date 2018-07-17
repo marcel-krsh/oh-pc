@@ -30,6 +30,6 @@ class State extends Model
      */
     public function entity() : HasMany
     {
-        return $this->hasMany('App\Entity');
+        return $this->hasMany(\App\Entity::class);
     }
 }

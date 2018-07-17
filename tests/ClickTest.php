@@ -2,7 +2,7 @@
 
 use App\User;
 
-class ClickTest extends TestCase
+class ClickTest extends BrowserKitTestCase
 {
     public function testDashboardRoutes()
     {
@@ -151,7 +151,7 @@ class ClickTest extends TestCase
         $this->visit("/communications/{$parcel->id}.json")->assertResponseOk();
         $this->visit("/modals/new-outbound-email-entry/{$parcel->id}")->assertResponseOk();
 
-        $communication = \App\Communication::whereHas('parcel')->orderBy('id','DESC')->first();
+        $communication = \App\Communication::whereHas('parcel')->orderBy('id', 'DESC')->first();
         if ($communication) {
             $this->visit("/modals/communication/{$communication->parcel_id}/replies/{$communication->id}")->assertResponseOk();
         }

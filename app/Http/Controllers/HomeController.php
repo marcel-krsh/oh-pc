@@ -27,29 +27,31 @@ class HomeController extends Controller
         return view('home');
     }
 
-    public function imageGen($image){
-      $img = Image::canvas(800, 400, '#ccc');
-      $img->text("APPROVED!", 400, 160, function($font) {
-          $font->file(base_path('storage/fonts/SourceSansPro-Light.ttf'));
-          $font->size(80);
-          $font->color('#000');
-          $font->align('center');
-          $font->valign('center');
-          $font->angle(0);
+    public function imageGen($image)
+    {
+        $img = Image::canvas(800, 400, '#ccc');
+        $img->text("APPROVED!", 400, 160, function ($font) {
+            $font->file(base_path('storage/fonts/SourceSansPro-Light.ttf'));
+            $font->size(80);
+            $font->color('#000');
+            $font->align('center');
+            $font->valign('center');
+            $font->angle(0);
         });
-      $img->text("Hi ".$image."! It's ".date("M d, Y h:i:s",time()), 400, 215, function($font) {
-          $font->file(base_path('storage/fonts/SourceSansPro-Light.ttf'));
-          $font->size(32);
-          $font->color('#000');
-          $font->align('center');
-          $font->valign('center');
-          $font->angle(0);
+        $img->text("Hi ".$image."! It's ".date("M d, Y h:i:s", time()), 400, 215, function ($font) {
+            $font->file(base_path('storage/fonts/SourceSansPro-Light.ttf'));
+            $font->size(32);
+            $font->color('#000');
+            $font->align('center');
+            $font->valign('center');
+            $font->angle(0);
         });
 
-      return $img->response('jpg');
+        return $img->response('jpg');
     }
-    public function noticeImageTrack(Notice $notice){
-      $img = Image::canvas(1, 1, '#fff');
+    public function noticeImageTrack(Notice $notice)
+    {
+        $img = Image::canvas(1, 1, '#fff');
       // $img->text("APPROVED!", 400, 160, function($font) {
       //     $font->file(base_path('storage/fonts/SourceSansPro-Light.ttf'));
       //     $font->size(80);
@@ -66,7 +68,7 @@ class HomeController extends Controller
       //     $font->valign('center');
       //     $font->angle(0);
       //   });
-      $notice->update(['read'=>1]);
-      return $img->response('jpg');
+        $notice->update(['read'=>1]);
+        return $img->response('jpg');
     }
 }

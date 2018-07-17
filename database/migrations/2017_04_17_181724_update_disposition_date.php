@@ -15,7 +15,6 @@ class UpdateDispositionDate extends Migration
     {
         Schema::table('dispositions', function (Blueprint $table) {
             $table->dateTime('date_release_requested')->nullable();
-            
         });
     }
 
@@ -28,7 +27,6 @@ class UpdateDispositionDate extends Migration
     {
         Schema::table('dispositions', function (Blueprint $table) {
             $table->dropColumn('date_release_requested');
-            
         });
     }
 }

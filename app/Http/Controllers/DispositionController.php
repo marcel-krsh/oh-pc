@@ -109,17 +109,17 @@ class DispositionController extends Controller
                 switch ($request->query('dispositions_asc_desc')) {
                     case '1':
                         # code...
-                    session(['dispositions_asc_desc'=> 'desc']);
-                    $dispositionsAscDesc =  $request->session()->get('dispositions_asc_desc');
-                    session(['dispositions_asc_desc_opposite' => ""]);
-                    $dispositionsAscDescOpposite =  $request->session()->get('dispositions_asc_desc_opposite');
+                        session(['dispositions_asc_desc'=> 'desc']);
+                        $dispositionsAscDesc =  $request->session()->get('dispositions_asc_desc');
+                        session(['dispositions_asc_desc_opposite' => ""]);
+                        $dispositionsAscDescOpposite =  $request->session()->get('dispositions_asc_desc_opposite');
                         break;
                     
                     default:
-                    session(['dispositions_asc_desc'=> 'asc']);
-                    $dispositionsAscDesc =  $request->session()->get('dispositions_asc_desc');
-                    session(['dispositions_asc_desc_opposite' => 1]);
-                    $dispositionsAscDescOpposite = $request->session()->get('dispositions_asc_desc_opposite');
+                        session(['dispositions_asc_desc'=> 'asc']);
+                        $dispositionsAscDesc =  $request->session()->get('dispositions_asc_desc');
+                        session(['dispositions_asc_desc_opposite' => 1]);
+                        $dispositionsAscDescOpposite = $request->session()->get('dispositions_asc_desc_opposite');
                         break;
                 }
                 switch ($sortedBy) {
@@ -342,17 +342,17 @@ class DispositionController extends Controller
             if (!is_null($sortedBy)) {
                 switch ($request->query('invoices_asc_desc')) {
                     case '1':
-                    session(['disposition_invoices_asc_desc'=> 'desc']);
-                    $invoicesAscDesc =  $request->session()->get('disposition_invoices_asc_desc');
-                    session(['disposition_invoices_asc_desc_opposite' => "0"]);
-                    $invoicesAscDescOpposite =  $request->session()->get('disposition_invoices_asc_desc_opposite');
+                        session(['disposition_invoices_asc_desc'=> 'desc']);
+                        $invoicesAscDesc =  $request->session()->get('disposition_invoices_asc_desc');
+                        session(['disposition_invoices_asc_desc_opposite' => "0"]);
+                        $invoicesAscDescOpposite =  $request->session()->get('disposition_invoices_asc_desc_opposite');
                         break;
                     
                     default:
-                    session(['disposition_invoices_asc_desc'=> 'asc']);
-                    $invoicesAscDesc =  $request->session()->get('disposition_invoices_asc_desc');
-                    session(['disposition_invoices_asc_desc_opposite' => '1']);
-                    $invoicesAscDescOpposite = $request->session()->get('disposition_invoices_asc_desc_opposite');
+                        session(['disposition_invoices_asc_desc'=> 'asc']);
+                        $invoicesAscDesc =  $request->session()->get('disposition_invoices_asc_desc');
+                        session(['disposition_invoices_asc_desc_opposite' => '1']);
+                        $invoicesAscDescOpposite = $request->session()->get('disposition_invoices_asc_desc_opposite');
                         break;
                 }
 
@@ -612,8 +612,8 @@ class DispositionController extends Controller
 
 
         if (!$checked_invoice || (!Gate::allows('create-disposition') && !Gate::allows('hfa-review-disposition') && !Auth::user()->isHFAAdmin())) {
-            $types = array();
-            $document_categories = array();
+            $types = [];
+            $document_categories = [];
             $disposition = null;
             $nip = null;
             $entity = null;
@@ -622,16 +622,16 @@ class DispositionController extends Controller
             $isApprover_hfa = 0;
             $isApproved = 0;
             $isApproved_hfa = 0;
-            $approvals = array();
-            $approvals_hfa = array();
-            $calculation = array();
-            $actual = array();
-            $step = array();
+            $approvals = [];
+            $approvals_hfa = [];
+            $calculation = [];
+            $actual = [];
+            $step = [];
             $current_user = Auth::user();
-            $landbankRequestApprovers = array();
-            $pending_approvers_hfa = array();
-            $pending_approvers = array();
-            $supporting_documents = array();
+            $landbankRequestApprovers = [];
+            $pending_approvers_hfa = [];
+            $pending_approvers = [];
+            $supporting_documents = [];
             //return view('parcels.disposition-tab', compact('isApprover', 'parcel','types','proceed','disposition','document_categories','nip','entity','approvals','calculation','potential_approvers_lb','potential_approvers_hfa'));
             return view('parcels.disposition-tab', compact('isApprover', 'isApprover_hfa', 'parcel', 'types', 'proceed', 'disposition', 'document_categories', 'nip', 'entity', 'approvals', 'approvals_hfa', 'calculation', 'actual', 'supporting_documents', 'current_user', 'isApproved', 'isApproved_hfa', 'pending_approvers', 'pending_approvers_hfa', 'landbankRequestApprovers', 'step'));
         } else {
@@ -750,8 +750,8 @@ class DispositionController extends Controller
                                     ->pluck('user_id as id');
             }
 
-            $pending_approvers = array();
-            $pending_approvers_hfa = array();
+            $pending_approvers = [];
+            $pending_approvers_hfa = [];
 
             if (count($added_approvers) == 0 && count($landbankDispositionApprovers) > 0) {
                 foreach ($landbankDispositionApprovers as $landbankDispositionApprover) {
@@ -836,10 +836,10 @@ class DispositionController extends Controller
                 }
             }
         } else {
-            $approvals = array();
+            $approvals = [];
             
-            $potential_approvers_lb = array();
-            $potential_approvers_hfa = array();
+            $potential_approvers_lb = [];
+            $potential_approvers_hfa = [];
         }
         
         // calculation
@@ -871,7 +871,7 @@ class DispositionController extends Controller
                 $gain = 0;
             }
         } else {
-            $maintenance_array = array();
+            $maintenance_array = [];
             $maintenance_array['monthly_rate'] = 0;
             $maintenance_array['months'] = 0;
             $maintenance_array['unused'] = 0;
@@ -912,7 +912,6 @@ class DispositionController extends Controller
         
         // compute actual results based on calculation and HFA adjustments
         if ($disposition) {
-
             // check against the rules
             $rules = ProgramRule::first(['imputed_cost_per_parcel','maintenance_max','maintenance_recap_pro_rate','demolition_max']);
             $imputed_cost_per_parcel = $rules->imputed_cost_per_parcel; //200
@@ -1007,28 +1006,28 @@ class DispositionController extends Controller
                 'gain_formatted' => money_format('%n', $gain)
             ];
         } else {
-            $actual = array();
+            $actual = [];
         }
 
         // get documents from the category "Disposition Supporting Documents" id 38
-        $supporting_documents = array();
+        $supporting_documents = [];
         $documents = Document::where('parcel_id', '=', $parcel->id)->get();
         if (count($documents)) {
             foreach ($documents as $document) {
                 if ($document->categories) {
                     $categories_decoded = json_decode($document->categories, true); // cats used by the doc
                 } else {
-                    $categories_decoded = array();
+                    $categories_decoded = [];
                 }
                 if ($document->approved) {
                     $categories_approved = json_decode($document->approved, true);
                 } else {
-                    $categories_approved = array();
+                    $categories_approved = [];
                 }
                 if ($document->notapproved) {
                     $categories_notapproved = json_decode($document->notapproved, true);
                 } else {
-                    $categories_notapproved = array();
+                    $categories_notapproved = [];
                 }
 
                 if (in_array('38', $categories_decoded)) {
@@ -1332,7 +1331,7 @@ class DispositionController extends Controller
                     $step = "Submitted to Fiscal Agent";
                     break;
                 default:
-                   $step = "Draft";
+                    $step = "Draft";
             }
         }
 
@@ -1376,8 +1375,8 @@ class DispositionController extends Controller
         }
         
         $guide_steps = GuideStep::where('guide_step_type_id', '=', 1)->get();
-        $guide_help = array();
-        $guide_name = array();
+        $guide_help = [];
+        $guide_name = [];
         foreach ($guide_steps as $guide_step) {
             $guide_help[$guide_step->id] = $guide_step->step_help;
             $guide_name[$guide_step->id]['name'] = $guide_step->name;
@@ -1431,12 +1430,12 @@ class DispositionController extends Controller
             $documents = Document::where('parcel_id', '=', $parcel->id)->get();
             if ($documents) {
                 $i = 0;
-                $output = array();
+                $output = [];
                 foreach ($documents as $document) {
                     if ($document->categories) {
                         $categories_decoded = json_decode($document->categories, true); // cats used by the doc
                     } else {
-                        $categories_decoded = array();
+                        $categories_decoded = [];
                     }
                     if (in_array('38', $categories_decoded)) {
                         $output[$i]['filename'] = $document->filename;
@@ -1466,7 +1465,9 @@ class DispositionController extends Controller
             return 'Sorry you cannot upload documents to dispositions.';
         }
 
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
 
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -1482,7 +1483,7 @@ class DispositionController extends Controller
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
                 
                 // sanitize filename
-                $characters = array(' ','�','`',"'",'~','"','\'','\\','/');
+                $characters = [' ','�','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                 // Create a record in documents table
@@ -1569,7 +1570,9 @@ class DispositionController extends Controller
             return 'Sorry you cannot upload documents to dispositions.';
         }
 
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
 
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -1587,7 +1590,7 @@ class DispositionController extends Controller
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
                 
                 // sanitize filename
-                $characters = array(' ','�','`',"'",'~','"','\'','\\','/');
+                $characters = [' ','�','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                 // Create a record in documents table
@@ -1636,7 +1639,7 @@ class DispositionController extends Controller
         }
     }
 
-    public function approveDisposition(Parcel $parcel, $approvers=null, $document_ids=null, $hfa_approval = null)
+    public function approveDisposition(Parcel $parcel, $approvers = null, $document_ids = null, $hfa_approval = null)
     {
         if ((!Auth::user()->isLandbankDispositionApprover() || Auth::user()->entity_id != $parcel->entity_id) && !Auth::user()->isHFAAdmin() && !Auth::user()->isHFADispositionReviewer() && !Gate::allows('hfa-release-disposition') && !Auth::user()->isHFADispositionApprover()) {
             $output['message'] = 'No Disposition Approval For You! (Seinfeld fan?). Sorry, but it does not look like you have the right permissions to approve this disposition. Sorry!';
@@ -1651,7 +1654,7 @@ class DispositionController extends Controller
                 if ($document_ids !== null) {
                     $documents = explode(",", $document_ids);
                 } else {
-                    $documents = array();
+                    $documents = [];
                 }
                 $documents_json = json_encode($documents, true);
 
@@ -1777,7 +1780,9 @@ class DispositionController extends Controller
             return 'Sorry something went wrong.';
         }
 
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
 
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -1795,7 +1800,7 @@ class DispositionController extends Controller
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
                 
                 // sanitize filename
-                $characters = array(' ','�','`',"'",'~','"','\'','\\','/');
+                $characters = [' ','�','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                 // Create a record in documents table
@@ -1849,9 +1854,9 @@ class DispositionController extends Controller
      * @param  int parcel, float income, float cost
      * @return payback amount
      */
-    public function computeRecaptureOwed( $disposition, Request $request)
+    public function computeRecaptureOwed($disposition, Request $request)
     {
-        $debug = array();
+        $debug = [];
 
         $income = $request->get('income');
         $cost = $request->get('cost');
@@ -2052,7 +2057,7 @@ class DispositionController extends Controller
         parse_str($input, $input);
         $input['step'] = $request->get('step');
 
-        $output = array();
+        $output = [];
 
         $user = Auth::user();
 
@@ -2307,7 +2312,7 @@ class DispositionController extends Controller
                     $dev_nofc = (isset($input['dev_nofc']) ? $input['dev_nofc'] : null);
                     $dev_fmv = (isset($input['dev_fmv']) ? $input['dev_fmv'] : null);
 
-                    $calculation = array();
+                    $calculation = [];
                     $calculation['hfa_calc_income'] = (isset($input['hfa_calc_income']) && $input['hfa_calc_income']!='' ? $input['hfa_calc_income'] : null);
                     $calculation['hfa_calc_trans_cost'] = (isset($input['hfa_calc_trans_cost']) && $input['hfa_calc_trans_cost']!='' ? $input['hfa_calc_trans_cost'] : null);
                     $calculation['hfa_calc_maintenance_total'] = (isset($input['hfa_calc_maintenance_total']) && $input['hfa_calc_maintenance_total']!='' ? $input['hfa_calc_maintenance_total'] : null);
@@ -2403,7 +2408,7 @@ class DispositionController extends Controller
                     $dev_nofc = (isset($input['dev_nofc']) ? $input['dev_nofc'] : null);
                     $dev_fmv = (isset($input['dev_fmv']) ? $input['dev_fmv'] : null);
 
-                    $calculation = array();
+                    $calculation = [];
                     $calculation['hfa_calc_income'] = (isset($input['hfa_calc_income']) && $input['hfa_calc_income']!='' ? $input['hfa_calc_income'] : null);
                     $calculation['hfa_calc_trans_cost'] = (isset($input['hfa_calc_trans_cost']) && $input['hfa_calc_trans_cost']!='' ? $input['hfa_calc_trans_cost'] : null);
                     $calculation['hfa_calc_maintenance_total'] = (isset($input['hfa_calc_maintenance_total']) && $input['hfa_calc_maintenance_total']!='' ? $input['hfa_calc_maintenance_total'] : null);
@@ -2930,7 +2935,7 @@ class DispositionController extends Controller
 
     public function addHFAApprover(Parcel $parcel, Request $request)
     {
-        if ((!Auth::user()->isHFADispositionApprover() && !Auth::user()->isHFAAdmin()) || !Auth::user()->isActive()){
+        if ((!Auth::user()->isHFADispositionApprover() && !Auth::user()->isHFAAdmin()) || !Auth::user()->isActive()) {
             $output['message'] = 'Sorry either that user is not a HFA Disposition Approver or no longer an HFA Admin. Both are required roles to be added as approver to this disposition.';
             return $output;
         }
@@ -3035,7 +3040,7 @@ class DispositionController extends Controller
 
         if ($disposition) {
             $approver_id = Auth::user()->id;
-            if(Auth::user()->isActive()){
+            if (Auth::user()->isActive()) {
                 $approver = ApprovalRequest::where('approval_type_id', '=', 1)
                                 ->where('link_type_id', '=', $disposition->id)
                                 ->where('user_id', '=', $approver_id)
@@ -3049,7 +3054,7 @@ class DispositionController extends Controller
                 $data['message'] = 'Your approval was recorded, stamped, and put in the history books. I know, it sounds pretty epic when I put it that way.';
                 $data['id'] = $approver_id;
                 return $data;
-            }else{
+            } else {
                 $data['message'] = 'Sorry, but does not look like your user is active any longer.';
                 $data['id'] = null;
                 return $data;
@@ -3068,7 +3073,7 @@ class DispositionController extends Controller
 
         if ($disposition) {
             $approver_id = Auth::user()->id;
-            if(Auth::user()->isActive()){
+            if (Auth::user()->isActive()) {
                 $approver = ApprovalRequest::where('approval_type_id', '=', 11)
                                 ->where('link_type_id', '=', $disposition->id)
                                 ->where('user_id', '=', $approver_id)
@@ -3082,7 +3087,7 @@ class DispositionController extends Controller
                 $data['message'] = 'Your approval was recorded.';
                 $data['id'] = $approver_id;
                 return $data;
-            }else{
+            } else {
                 $data['message'] = 'Sorry, but does not look like your user is active any longer. Check with your manager, I am not even supposed to talk to you now. Harsh, I know.';
                 $data['id'] = null;
                 return $data;
@@ -3221,7 +3226,7 @@ class DispositionController extends Controller
                 ->load('program')
                 ->load('transactions');
 
-        $stat = array();
+        $stat = [];
         $stat = $stat + $invoice->account->statsParcels->toArray()[0]
                         + $invoice->account->statsTransactions->toArray()[0]
                         + $invoice->account->statsCostItems->toArray()[0]
@@ -3298,7 +3303,7 @@ class DispositionController extends Controller
         $balance = round($total_unformatted + $sum_transactions, 2);
 
         // get notes
-        $owners_array = array();
+        $owners_array = [];
         foreach ($invoice->notes as $note) {
             // create initials
             $words = explode(" ", $note->owner->name);
@@ -3341,7 +3346,7 @@ class DispositionController extends Controller
                                 ->where('link_type_id', '=', $invoice->id)
                                 ->pluck('user_id as id');
 
-        $pending_approvers = array();
+        $pending_approvers = [];
 
         if (count($added_approvers) == 0 && count($dispositionInvoiceApprovers) > 0) {
             foreach ($dispositionInvoiceApprovers as $dispositionInvoiceApprover) {
@@ -3708,7 +3713,7 @@ class DispositionController extends Controller
 
     public function addHFAApproverToInvoice(DispositionInvoice $invoice, Request $request)
     {
-        if ((!Auth::user()->isHFADispositionApprover() && !Auth::user()->isHFAAdmin()) ||  !Auth::user()->isActive()){
+        if ((!Auth::user()->isHFADispositionApprover() && !Auth::user()->isHFAAdmin()) ||  !Auth::user()->isActive()) {
             $output['message'] = 'Sorry the approver you are trying to add is either not active, no longer an eligible approver, or no longer an HFA Admin. All those things are required for that user to be an approver. Sorry! I know that this is probably annoyting, but we got to keep things legit!';
             return $output;
         }
@@ -3740,7 +3745,7 @@ class DispositionController extends Controller
         }
     }
 
-    public function approveInvoice(DispositionInvoice $invoice, $approvers=null, $document_ids=null, $approval_type = 12)
+    public function approveInvoice(DispositionInvoice $invoice, $approvers = null, $document_ids = null, $approval_type = 12)
     {
         if (((!Auth::user()->isHFADispositionApprover() || Auth::user()->entity_id != $invoice->entity_id) && !Auth::user()->isHFAAdmin()) || !Auth::user()->isActive) {
             $output['message'] = 'Sorry, that user does not have permission to do this action any longer. Please have your admin check your role as a disposition invoice approver, whether or not your user is active, or that your are a still a memeber of your organization.';
@@ -3748,7 +3753,6 @@ class DispositionController extends Controller
         }
 
         if ($invoice) {
-            
             // it is possible that a HFA admin uploads a signature file for multiple LB users
             // if current user is HFA admin, make sure that person is added as the approver
             // in the records
@@ -3772,7 +3776,7 @@ class DispositionController extends Controller
                 if ($document_ids !== null) {
                     $documents = explode(",", $document_ids);
                 } else {
-                    $documents = array();
+                    $documents = [];
                 }
                 $documents_json = json_encode($documents, true);
 
@@ -3829,7 +3833,9 @@ class DispositionController extends Controller
 
     public function approveInvoiceUploadSignature(DispositionInvoice $invoice, Request $request)
     {
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
         
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -3852,7 +3858,7 @@ class DispositionController extends Controller
                     $folderpath = 'documents/entity_'. $disposition->parcel->entity_id . '/program_' . $disposition->parcel->program_id . '/parcel_' . $disposition->parcel->id . '/';
                     
                     // sanitize filename
-                    $characters = array(' ','�','`',"'",'~','"','\'','\\','/');
+                    $characters = [' ','�','`',"'",'~','"','\'','\\','/'];
                     $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                     // Create a record in documents table

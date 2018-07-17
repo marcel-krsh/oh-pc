@@ -22,7 +22,7 @@ class CreatePoNotesTable extends Migration
             $table->string('owner_type')->default('user');
             $table->text('note')->nullable();
             $table->foreign('purchase_order_id')->references('id')->on('reimbursement_purchase_orders');
-            $table->foreign('owner_id')->references('id')->on('users');    
+            $table->foreign('owner_id')->references('id')->on('users');
         });
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }

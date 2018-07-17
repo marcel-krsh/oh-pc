@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('badge_color',25)->default('blue');
+            $table->string('badge_color', 25)->default('blue');
             $table->integer('entity_id')->unsigned()->nullable();
             $table->integer('show_how_to')->default(1);
             $table->string('entity_type')->default('landbank');

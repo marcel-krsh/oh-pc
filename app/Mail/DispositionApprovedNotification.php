@@ -23,7 +23,7 @@ class DispositionApprovedNotification extends Mailable
     public $owner;
     public $disposition;
 
-    public function __construct($recipient_id=1, $disposition_id=null)
+    public function __construct($recipient_id = 1, $disposition_id = null)
     {
         $this->disposition = Disposition::where('id', '=', $disposition_id)->get()->first();
         $this->owner = User::where('id', '=', $recipient_id)->get()->first();

@@ -12,8 +12,8 @@ class ProgramsSeeder extends Seeder
     public function run()
     {
         // Programs table data
-        $programsData= array(
-            array(
+        $programsData= [
+            [
                 'program_name'=>'OHFA NIP',
                 'sf_id'=>'',
                 'entity_id'=>'1',
@@ -21,8 +21,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'1',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Ashtabula',
                 'sf_id'=>'a06i000000JWvGH',
                 'entity_id'=>'2',
@@ -30,8 +30,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'2',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Belmont',
                 'sf_id'=>'a06i000000JWx3y',
                 'entity_id'=>'3',
@@ -39,8 +39,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'3',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Butler',
                 'sf_id'=>'a06i000000JWx48',
                 'entity_id'=>'4',
@@ -48,8 +48,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'4',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Franklin',
                 'sf_id'=>'a06i000000FSz9M',
                 'entity_id'=>'5',
@@ -57,8 +57,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'5',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Clark',
                 'sf_id'=>'a06i000000JWx4m',
                 'entity_id'=>'6',
@@ -66,8 +66,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'6',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Columbiana',
                 'sf_id'=>'a06i000000JWx56',
                 'entity_id'=>'7',
@@ -75,8 +75,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'7',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Cuyahoga',
                 'sf_id'=>'a06i000000FSmQr',
                 'entity_id'=>'8',
@@ -84,8 +84,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'8',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Erie',
                 'sf_id'=>'a06i000000JWx5L',
                 'entity_id'=>'9',
@@ -93,8 +93,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'9',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Fairfield',
                 'sf_id'=>'a06i000000JWx5z',
                 'entity_id'=>'10',
@@ -102,8 +102,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'10',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Hamilton',
                 'sf_id'=>'a06i000000FSz9W',
                 'entity_id'=>'11',
@@ -111,8 +111,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'11',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Jefferson',
                 'sf_id'=>'a06i000000JWx69',
                 'entity_id'=>'12',
@@ -120,8 +120,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'12',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Lake',
                 'sf_id'=>'a06i000000JWx6T',
                 'entity_id'=>'13',
@@ -129,8 +129,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'13',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Lorain',
                 'sf_id'=>'a06i000000FSmrV',
                 'entity_id'=>'14',
@@ -138,8 +138,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'14',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Lucas',
                 'sf_id'=>'a06i000000FSzC3',
                 'entity_id'=>'15',
@@ -147,8 +147,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'15',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Mahoning',
                 'sf_id'=>'a06i000000FSz9g',
                 'entity_id'=>'16',
@@ -156,8 +156,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'16',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Montgomery',
                 'sf_id'=>'a06i000000FSz9l',
                 'entity_id'=>'17',
@@ -165,8 +165,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'17',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Portage',
                 'sf_id'=>'a06i000000JWx6n',
                 'entity_id'=>'18',
@@ -174,8 +174,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'18',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Richland',
                 'sf_id'=>'a06i000000FSzA0',
                 'entity_id'=>'19',
@@ -183,8 +183,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'19',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Stark',
                 'sf_id'=>'a06i000000FSzAW',
                 'entity_id'=>'20',
@@ -192,8 +192,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'20',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Summit',
                 'sf_id'=>'a06i000000FSzB0',
                 'entity_id'=>'21',
@@ -201,8 +201,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'21',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Trumbull',
                 'sf_id'=>'a06i000000FSzBZ',
                 'entity_id'=>'22',
@@ -210,8 +210,8 @@ class ProgramsSeeder extends Seeder
                 'owner_type'=>'entity',
                 'owner_id'=>'22',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Allen',
                 'sf_id'=>'',
                 'entity_id'=>'23',
@@ -219,8 +219,8 @@ class ProgramsSeeder extends Seeder
                 'county_id'=>'2',
                 'owner_type'=>'entity',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Clinton',
                 'sf_id'=>'',
                 'entity_id'=>'24',
@@ -228,8 +228,8 @@ class ProgramsSeeder extends Seeder
                 'county_id'=>'14',
                 'owner_type'=>'entity',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Crawford',
                 'sf_id'=>'',
                 'entity_id'=>'25',
@@ -237,8 +237,8 @@ class ProgramsSeeder extends Seeder
                 'county_id'=>'17',
                 'owner_type'=>'entity',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Lawrence',
                 'sf_id'=>'',
                 'entity_id'=>'26',
@@ -246,8 +246,8 @@ class ProgramsSeeder extends Seeder
                 'county_id'=>'44',
                 'owner_type'=>'entity',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Licking',
                 'sf_id'=>'',
                 'entity_id'=>'27',
@@ -255,8 +255,8 @@ class ProgramsSeeder extends Seeder
                 'county_id'=>'45',
                 'owner_type'=>'entity',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Marion',
                 'sf_id'=>'',
                 'entity_id'=>'28',
@@ -264,8 +264,8 @@ class ProgramsSeeder extends Seeder
                 'county_id'=>'51',
                 'owner_type'=>'entity',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Morrow',
                 'sf_id'=>'',
                 'entity_id'=>'29',
@@ -273,8 +273,8 @@ class ProgramsSeeder extends Seeder
                 'county_id'=>'59',
                 'owner_type'=>'entity',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Ottawa',
                 'sf_id'=>'',
                 'entity_id'=>'30',
@@ -282,8 +282,8 @@ class ProgramsSeeder extends Seeder
                 'county_id'=>'62',
                 'owner_type'=>'entity',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Perry',
                 'sf_id'=>'',
                 'entity_id'=>'31',
@@ -291,8 +291,8 @@ class ProgramsSeeder extends Seeder
                 'county_id'=>'64',
                 'owner_type'=>'entity',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Ross',
                 'sf_id'=>'',
                 'entity_id'=>'32',
@@ -300,8 +300,8 @@ class ProgramsSeeder extends Seeder
                 'county_id'=>'71',
                 'owner_type'=>'entity',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Sandusky',
                 'sf_id'=>'',
                 'entity_id'=>'33',
@@ -309,8 +309,8 @@ class ProgramsSeeder extends Seeder
                 'county_id'=>'72',
                 'owner_type'=>'entity',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Scioto',
                 'sf_id'=>'',
                 'entity_id'=>'34',
@@ -318,8 +318,8 @@ class ProgramsSeeder extends Seeder
                 'county_id'=>'73',
                 'owner_type'=>'entity',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Seneca',
                 'sf_id'=>'',
                 'entity_id'=>'35',
@@ -327,8 +327,8 @@ class ProgramsSeeder extends Seeder
                 'county_id'=>'74',
                 'owner_type'=>'entity',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Shelby',
                 'sf_id'=>'',
                 'entity_id'=>'36',
@@ -336,8 +336,8 @@ class ProgramsSeeder extends Seeder
                 'county_id'=>'75',
                 'owner_type'=>'entity',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Van Wert',
                 'sf_id'=>'',
                 'entity_id'=>'37',
@@ -345,8 +345,8 @@ class ProgramsSeeder extends Seeder
                 'county_id'=>'81',
                 'owner_type'=>'entity',
                 'active'=>1
-            ),
-            array(
+            ],
+            [
                 'program_name'=>'NIP Williams',
                 'sf_id'=>'',
                 'entity_id'=>'38',
@@ -354,8 +354,8 @@ class ProgramsSeeder extends Seeder
                 'county_id'=>'86',
                 'owner_type'=>'entity',
                 'active'=>1
-            )
-        );
+            ]
+        ];
 
         \Illuminate\Support\Facades\DB::table('programs')->insert($programsData);
     }

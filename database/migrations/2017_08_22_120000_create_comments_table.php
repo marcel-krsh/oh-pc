@@ -20,7 +20,7 @@ class CreateCommentsTable extends Migration
             $table->integer('user_id');
             $table->date('recorded_date');
             $table->integer('site_visit_id')->nullable();
-            $table->string('comment',1000);
+            $table->string('comment', 1000);
             $table->boolean('deleted')->default(0);
             $table->timestamps();
         });

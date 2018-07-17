@@ -13,7 +13,7 @@ class CreateRoleCategories extends Migration
      */
     public function up()
     {
-       Schema::create('roles', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('hfa')->default(1);
             $table->integer('role_parent_id')->unsigned()->index();
@@ -24,7 +24,7 @@ class CreateRoleCategories extends Migration
             $table->timestamps();
         });
 
-       Schema::create('permissions', function (Blueprint $table) {
+        Schema::create('permissions', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('hfa')->default(1);
             $table->string('permission_name')->index();
@@ -33,7 +33,7 @@ class CreateRoleCategories extends Migration
             $table->tinyInteger('active')->default(1);
             $table->timestamps();
         });
-       Schema::create('roles_and_permissions', function (Blueprint $table) {
+        Schema::create('roles_and_permissions', function (Blueprint $table) {
            
             $table->integer('role_id')->unsigned()->index();
             $table->integer('permission_id')->unsigned()->index();
@@ -49,7 +49,7 @@ class CreateRoleCategories extends Migration
             $table->timestamps();
             $table->primary(['role_id','permission_id']);
         });
-       Schema::create('users_roles', function (Blueprint $table) {
+        Schema::create('users_roles', function (Blueprint $table) {
             
             $table->integer('role_id')->unsigned()->index();
             $table->integer('user_id')->unsigned()->index();
@@ -64,7 +64,6 @@ class CreateRoleCategories extends Migration
             $table->timestamps();
             $table->primary(['role_id','user_id']);
         });
-
     }
 
     /**
@@ -78,6 +77,5 @@ class CreateRoleCategories extends Migration
         Schema::dropIfExists('users_roles');
         Schema::dropIfExists('roles');
         Schema::dropIfExists('permissions');
-        
     }
 }

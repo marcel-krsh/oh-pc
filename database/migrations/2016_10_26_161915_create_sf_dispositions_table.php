@@ -18,7 +18,7 @@ class CreateSfDispositionsTable extends Migration
             $table->text('PropertyID')->collate('utf8_bin')->nullable();
             $table->text('DispositionType')->nullable();
             $table->text('DispositionExplanation')->nullable();
-            $table->float('MaintenanceRecaptureDue',10,2)->nullable();
+            $table->float('MaintenanceRecaptureDue', 10, 2)->nullable();
             $table->text('MaintenanceRecaptureDueDate')->nullable();
             $table->integer('MaintenanceRepaid')->nullable();
             $table->integer('RetainageAmount')->nullable();
@@ -26,7 +26,6 @@ class CreateSfDispositionsTable extends Migration
             $table->text('ReleaseDate')->nullable();
             $table->text('LastModifiedDate')->nullable();
             $table->text('Status')->nullable();
-            
         });
     }
 

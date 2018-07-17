@@ -22,7 +22,7 @@ use DB;
 
 class MAParcelsController extends Controller
 {
-    public function parcelCreate(Form $form, $id=null)
+    public function parcelCreate(Form $form, $id = null)
     {
         $stateIds = State::pluck('id')->toArray();
         $stateNames = State::pluck('state_name')->toArray();
@@ -94,8 +94,8 @@ class MAParcelsController extends Controller
         } else {
             if (Auth::user()->canEditParcels()) {
                 // Michael built this using the assumption that a selected value's id would line up with the array's key --- bad bad bad...
-                $radioLbValidatedIds = array(0=>0, 1=>1);
-                $radioLbValidatedNames = array(0=>"NO", 1=>"YES");
+                $radioLbValidatedIds = [0=>0, 1=>1];
+                $radioLbValidatedNames = [0=>"NO", 1=>"YES"];
                 $key = array_search($parcel->entity_id, $entityIds); // returns the key of the array.
                 $selectedEntity[intval($key)]= 'true';
 
@@ -186,7 +186,7 @@ class MAParcelsController extends Controller
         }
     }
 
-    public function parcelStore(Request $request, $id=null)
+    public function parcelStore(Request $request, $id = null)
     {
         $this->validate($request, [
             'parcel_id'=>'required|string',

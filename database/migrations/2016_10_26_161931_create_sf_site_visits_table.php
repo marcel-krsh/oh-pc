@@ -22,7 +22,6 @@ class CreateSfSiteVisitsTable extends Migration
             $table->text('Partner')->nullable();
             $table->text('AllStructuresRemoved')->nullable();
             $table->text('ConstructionDebrisRemoved')->nullable();
-            
         });
     }
 

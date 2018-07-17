@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Helpers;
 
@@ -13,17 +13,16 @@ class GeoData
 {
     public function getGoogleMapsData($address)
     {
-        $qs = http_build_query(array(
+        $qs = http_build_query([
             'address' => $address,
             'key'     => config('geodata.services.google.api_key'),
-        ));
+        ]);
         ini_set('default_socket_timeout', 900);
         $response = file_get_contents(config('geodata.services.google.api_url') . $qs);
 
         if ($response) {
             $data = json_decode($response, true);
             if (isset($data['results'][0])) {
-
                 // Parse out the lat lng, and create google maps url.
                 $address_info =  [
                     'lat' => $data['results'][0]['geometry']['location']['lat'],

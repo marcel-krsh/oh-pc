@@ -15,7 +15,7 @@ class CreateSfParcelsTable extends Migration
     {
         
         Schema::create('sf_parcels', function (Blueprint $table) {
-           $table->increments('id');
+            $table->increments('id');
             $table->text('PropertyIDRecordID')->collate('utf8_bin')->nullable();
             $table->text('PropertyIDCreatedDate')->nullable();
             $table->text('PropertyIDPropertyName')->nullable();
@@ -25,12 +25,12 @@ class CreateSfParcelsTable extends Migration
             $table->text('ProgramID')->nullable();
             $table->text('ProgramProgramName')->nullable();
             $table->text('PropertyIDTargetArea')->nullable();
-            $table->float('PropertyIDSalesPrice',15,2)->nullable();
+            $table->float('PropertyIDSalesPrice', 15, 2)->nullable();
             $table->text('PropertyIDPropertyDocuments')->nullable();
             $table->text('PropertyIDHowAcquired')->nullable();
             $table->text('PropertyIDHowAcquiredExplanation')->nullable();
-            $table->float('PropertyIDLatLonLatitude',30,20)->nullable();
-            $table->float('PropertyIDLatLonLongitude',30,20)->nullable();
+            $table->float('PropertyIDLatLonLatitude', 30, 20)->nullable();
+            $table->float('PropertyIDLatLonLongitude', 30, 20)->nullable();
             $table->text('PropertyIDLocationMap')->nullable();
             $table->integer('PropertyIDConfidenceCode')->nullable();
             $table->integer('PropertyIDOHHouseDistrict')->nullable();
@@ -49,8 +49,6 @@ class CreateSfParcelsTable extends Migration
             $table->text('PropertyIDDispositionType')->nullable();
             $table->text('PropertyIDDisposition')->nullable();
             $table->text('PropertyIDWithdrawnDate')->nullable();
-           
-            
         });
     }
 

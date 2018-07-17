@@ -31,7 +31,7 @@ class ApprovalRequest extends Model
      */
     public function approver() : HasOne
     {
-        return $this->hasOne('App\User', 'id', 'user_id');
+        return $this->hasOne(\App\User::class, 'id', 'user_id');
     }
 
     /**
@@ -41,7 +41,7 @@ class ApprovalRequest extends Model
      */
     public function approval_type() : HasOne
     {
-        return $this->hasOne('App\ApprovalType', 'id', 'approval_type_id');
+        return $this->hasOne(\App\ApprovalType::class, 'id', 'approval_type_id');
     }
 
     /**
@@ -51,7 +51,7 @@ class ApprovalRequest extends Model
      */
     public function actions() : HasMany
     {
-        return $this->hasMany('App\ApprovalAction', 'approval_request_id')->orderBy('id', 'DESC');
+        return $this->hasMany(\App\ApprovalAction::class, 'approval_request_id')->orderBy('id', 'DESC');
     }
 
     /**

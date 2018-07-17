@@ -13,15 +13,15 @@ class AddRolesVendors extends Migration
      */
     public function up()
     {
-        $rolesData = array(
+        $rolesData = [
             
-            array( //70
+            [ //70
             'role_parent_id'=>1,
             'role_name'=>'ACCESS:: Vendors <i class="uk-icon-info" uk-tooltip="Access vendor statistics and information"></i>',
             'protected'=>1,
             'active'=>1
-            )
-        );
+            ]
+        ];
         DB::table('roles')->insert($rolesData);
     }
 

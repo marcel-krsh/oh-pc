@@ -31,7 +31,7 @@ class ReimbursementRequest extends Model
      */
     public function status() : HasOne
     {
-        return $this->hasOne('App\InvoiceStatus', 'id', 'status_id');
+        return $this->hasOne(\App\InvoiceStatus::class, 'id', 'status_id');
     }
 
     /**
@@ -41,7 +41,7 @@ class ReimbursementRequest extends Model
      */
     public function parcels() : BelongsToMany
     {
-        return $this->belongsToMany('App\Parcel', 'parcels_to_reimbursement_requests', 'reimbursement_request_id', 'parcel_id');
+        return $this->belongsToMany(\App\Parcel::class, 'parcels_to_reimbursement_requests', 'reimbursement_request_id', 'parcel_id');
     }
 
     /**
@@ -51,7 +51,7 @@ class ReimbursementRequest extends Model
      */
     public function entity() : HasOne
     {
-        return $this->hasOne('App\Entity', 'id', 'entity_id');
+        return $this->hasOne(\App\Entity::class, 'id', 'entity_id');
     }
 
     /**
@@ -61,7 +61,7 @@ class ReimbursementRequest extends Model
      */
     public function program() : HasOne
     {
-        return $this->hasOne('App\Program', 'id', 'program_id');
+        return $this->hasOne(\App\Program::class, 'id', 'program_id');
     }
 
     /**
@@ -71,7 +71,7 @@ class ReimbursementRequest extends Model
      */
     public function account() : HasOne
     {
-        return $this->hasOne('App\Account', 'id', 'account_id');
+        return $this->hasOne(\App\Account::class, 'id', 'account_id');
     }
 
     /**
@@ -81,7 +81,7 @@ class ReimbursementRequest extends Model
      */
     public function notes()
     {
-        return $this->hasMany('App\RequestNote', 'reimbursement_request_id', 'id')
+        return $this->hasMany(\App\RequestNote::class, 'reimbursement_request_id', 'id')
             ->with('owner')
             ->orderBy('created_at', 'asc');
     }
@@ -93,7 +93,7 @@ class ReimbursementRequest extends Model
      */
     public function requestItems() : HasMany
     {
-        return $this->hasMany('App\RequestItem', 'req_id', 'id');
+        return $this->hasMany(\App\RequestItem::class, 'req_id', 'id');
     }
 
     /**
@@ -103,7 +103,7 @@ class ReimbursementRequest extends Model
     {
         /* @todo: move to a service class method */
 
-        $approvals = ApprovalRequest::whereIn('approval_type_id', array(2))
+        $approvals = ApprovalRequest::whereIn('approval_type_id', [2])
                     ->where('link_type_id', '=', $this->id)
                     ->get();
 

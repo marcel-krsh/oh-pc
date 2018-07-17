@@ -31,14 +31,12 @@ class CreateDispositionInvoicesTable extends Migration
         });
 
             Schema::create('dispositions_to_invoices', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('disposition_id')->nullable();
-            $table->integer('disposition_invoice_id');
-            $table->index('disposition_id');
-            $table->index('disposition_invoice_id');
-        });
-
-
+                $table->increments('id');
+                $table->integer('disposition_id')->nullable();
+                $table->integer('disposition_invoice_id');
+                $table->index('disposition_id');
+                $table->index('disposition_invoice_id');
+            });
     }
 
     /**

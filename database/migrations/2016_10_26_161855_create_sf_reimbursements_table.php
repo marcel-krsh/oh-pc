@@ -57,7 +57,7 @@ class CreateSfReimbursementsTable extends Migration
             $table->float('TotalCost', 10, 2)->nullable();
             $table->float('TotalRequested', 10, 2)->nullable();
             $table->float('TotalApproved', 10, 2)->nullable();
-            $table->float('TotalPaid' , 10, 2)->nullable();
+            $table->float('TotalPaid', 10, 2)->nullable();
             $table->text('ProcessDate')->nullable();
             $table->float('Retainage', 10, 2)->nullable();
             $table->integer('RetainagePaid')->nullable();
@@ -66,7 +66,6 @@ class CreateSfReimbursementsTable extends Migration
             $table->float('NetProceeds', 10, 2)->nullable();
             $table->float('RecapturedOwed', 10, 2)->nullable();
             $table->tinyInteger('RecapturePaid')->nullable();
-
         });
     }
 

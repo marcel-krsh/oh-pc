@@ -34,7 +34,7 @@ class Document extends Model
      */
     public function retainages() : BelongsToMany
     {
-        return $this->belongsToMany('App\Retainage', 'document_to_retainage', 'document_id', 'retainage_id');
+        return $this->belongsToMany(\App\Retainage::class, 'document_to_retainage', 'document_id', 'retainage_id');
     }
 
     /**
@@ -44,7 +44,7 @@ class Document extends Model
      */
     public function advances() : BelongsToMany
     {
-        return $this->belongsToMany('App\CostItem', 'document_to_advance', 'document_id', 'cost_item_id');
+        return $this->belongsToMany(\App\CostItem::class, 'document_to_advance', 'document_id', 'cost_item_id');
     }
 
     /**
@@ -60,25 +60,24 @@ class Document extends Model
     public function approve_categories($cat_array = null)
     {
         if (is_array($cat_array)) {
-
             // get current approval array (category ids that had their document approved)
             if ($this->approved) {
                 $current_approval_array = json_decode($this->approved, true);
             } else {
-                $current_approval_array = array();
+                $current_approval_array = [];
             }
 
             // get current 'notapproval' array (category ids that had their document approved)
             if ($this->notapproved) {
                 $current_notapproval_array = json_decode($this->notapproved, true);
             } else {
-                $current_notapproval_array = array();
+                $current_notapproval_array = [];
             }
 
             if ($this->categories) {
                 $current_category_array = json_decode($this->categories, true);
             } else {
-                $current_category_array = array();
+                $current_category_array = [];
             }
 
             foreach ($cat_array as $catid) {

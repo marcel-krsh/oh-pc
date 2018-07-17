@@ -23,7 +23,7 @@ class ReportsTables extends Migration
             $table->softDeletes();
 
             $table->integer('user_id')->unsigned()->nullable(); // requestor
-            $table->foreign('user_id')->references('id')->on('users');  
+            $table->foreign('user_id')->references('id')->on('users');
         });
 
         Schema::create('report_downloads', function (Blueprint $table) {

@@ -50,9 +50,9 @@ class DocumentController extends Controller
 
 
         // build a list of all categories used for uploaded documents in this parcel
-        $categories_used = array();
+        $categories_used = [];
         // category keys for name reference ['id' => 'name']
-        $document_categories_key = array();
+        $document_categories_key = [];
         foreach ($document_categories as $document_category) {
             $document_categories_key[$document_category->id] = $document_category->document_category_name;
         }
@@ -60,18 +60,17 @@ class DocumentController extends Controller
         if (count($documents)) {
             // create an associative array to simplify category references for each document
             foreach ($documents as $document) {
-                $categories = array(); // store the new associative array cat id, cat name
+                $categories = []; // store the new associative array cat id, cat name
                  
                 if ($document->categories) {
                     $categories_decoded = json_decode($document->categories, true); // cats used by the doc
 
                     $categories_used = array_merge($categories_used, $categories_decoded); // merge document categories
                 } else {
-                    $categories_decoded = array();
+                    $categories_decoded = [];
                 }
 
                 foreach ($document_categories as $document_category) {
-                    
                     // sub key for each document's categories for quick reference
                     if (in_array($document_category->id, $categories_decoded)) {
                         $categories[$document_category->id] = $document_category->document_category_name;
@@ -83,18 +82,18 @@ class DocumentController extends Controller
                 if ($document->approved) {
                     $document->approved_array = json_decode($document->approved, true);
                 } else {
-                    $document->approved_array = array();
+                    $document->approved_array = [];
                 }
 
                 // get notapproved category id in an array
                 if ($document->notapproved) {
                     $document->notapproved_array = json_decode($document->notapproved, true);
                 } else {
-                    $document->notapproved_array = array();
+                    $document->notapproved_array = [];
                 }
             }
         } else {
-            $documents = array();
+            $documents = [];
         }
 
         // 1) Rules give us what documents are required
@@ -134,7 +133,7 @@ class DocumentController extends Controller
     public function editDocument(Document $document)
     {
         $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
-        $categories_used = array();
+        $categories_used = [];
 
         if ($document->categories) {
             $categories_used = json_decode($document->categories, true); // cats used by the doc
@@ -233,7 +232,9 @@ class DocumentController extends Controller
      */
     public function upload(Parcel $parcel, Request $request)
     {
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
 
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -262,7 +263,7 @@ class DocumentController extends Controller
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
                 
                 // sanitize filename
-                $characters = array(' ','´','`',"'",'~','"','\'','\\','/');
+                $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                 // Create a record in documents table
@@ -346,7 +347,7 @@ class DocumentController extends Controller
             guide_next_pending_step(2, $parcel->id);
 
 
-            $data = array();
+            $data = [];
             $data['document_ids'] = $document_ids;
             $data['is_retainage'] = $is_retainage;
             $data['is_advance'] = $is_advance;
@@ -413,7 +414,7 @@ class DocumentController extends Controller
         $category_array = $request->get('categories');
         $document_categories = DocumentCategory::whereIn('id', $category_array)->where('active', '1')->orderby('document_category_name', 'asc')->get();
 
-        $document_info_array = array();
+        $document_info_array = [];
 
         foreach ($documents as $document) {
             $document_info_array[$document->id]['filename'] = $document->filename;
@@ -500,14 +501,14 @@ class DocumentController extends Controller
         if ($document->approved) {
             $current_approval_array = json_decode($document->approved, true);
         } else {
-            $current_approval_array = array();
+            $current_approval_array = [];
         }
 
         // get current 'notapproval' array (category ids that had their document approved)
         if ($document->notapproved) {
             $current_notapproval_array = json_decode($document->notapproved, true);
         } else {
-            $current_notapproval_array = array();
+            $current_notapproval_array = [];
         }
         
         // if already "notapproved", remove from notapproved array
@@ -557,14 +558,14 @@ class DocumentController extends Controller
         if ($document->approved) {
             $current_approval_array = json_decode($document->approved, true);
         } else {
-            $current_approval_array = array();
+            $current_approval_array = [];
         }
 
         // get current 'notapproval' array (category ids that had their document approved)
         if ($document->notapproved) {
             $current_notapproval_array = json_decode($document->notapproved, true);
         } else {
-            $current_notapproval_array = array();
+            $current_notapproval_array = [];
         }
 
         // if already approved, remove from approved array
@@ -611,7 +612,7 @@ class DocumentController extends Controller
         if (is_array($docCatIds)) {
             return $docCatIds;
         } else {
-            return array();
+            return [];
         }
     }
 

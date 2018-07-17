@@ -27,7 +27,7 @@ class CommunicationRecipient extends Model
      */
     public function communication() : BelongsTo
     {
-        return $this->belongsTo('App\Communication');
+        return $this->belongsTo(\App\Communication::class);
     }
 
     /**
@@ -37,6 +37,6 @@ class CommunicationRecipient extends Model
      */
     public function user() : HasOne
     {
-        return $this->hasOne('App\User');
+        return $this->hasOne(\App\User::class);
     }
 }

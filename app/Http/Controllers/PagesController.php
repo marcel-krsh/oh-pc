@@ -82,7 +82,7 @@ class PagesController extends Controller
                             select('county_id')->
                             where('id', \Request::query('program_id'))
                             ->first();
-        if(!isset($userCountyId)) {
+        if (!isset($userCountyId)) {
             abort(500, 'Program ID Not Provided.');
         }
         $where_county_id = $userCountyId->county_id;
@@ -183,31 +183,31 @@ class PagesController extends Controller
                 $sheet->getColumnDimension('W')->setVisible(false);
 
                 $sheet->_parent->addNamedRange(
-                        new \PHPExcel_NamedRange(
+                    new \PHPExcel_NamedRange(
                         'how_acquired',
-                            $sheet,
-                            'X2:X'.$howAcquiredCellCount
-                        )
+                        $sheet,
+                        'X2:X'.$howAcquiredCellCount
+                    )
                 );
                 $sheet->getColumnDimension('X')->setVisible(false);
                 $sheet->getColumnDimension('Y')->setVisible(false);
 
                 $sheet->_parent->addNamedRange(
-                        new \PHPExcel_NamedRange(
+                    new \PHPExcel_NamedRange(
                         'target_areas',
-                            $sheet,
-                            'Z2:Z'.$targetAreaCellCount
-                        )
+                        $sheet,
+                        'Z2:Z'.$targetAreaCellCount
+                    )
                 );
                 $sheet->getColumnDimension('Z')->setVisible(false);
                 $sheet->getColumnDimension('AA')->setVisible(false);
 
                 $sheet->_parent->addNamedRange(
-                        new \PHPExcel_NamedRange(
+                    new \PHPExcel_NamedRange(
                         'historic_options',
-                            $sheet,
-                            'U2:U4'
-                        )
+                        $sheet,
+                        'U2:U4'
+                    )
                 );
                 $sheet->getColumnDimension('U')->setVisible(false);
 
@@ -298,7 +298,7 @@ class PagesController extends Controller
                     $row->setFontColor('#ffffff');
                 });
                 $sheet->freezeFirstRow(1);
-                $sheet->setWidth(array(
+                $sheet->setWidth([
                       'A'     =>  20,
                       'B'     =>  25,
                       'C'     =>  25,
@@ -310,7 +310,7 @@ class PagesController extends Controller
                       'I'     =>  80,
                       'J'     =>  20
                       
-                  ));
+                  ]);
                 
                 // $sheet->protectCells('A1', $password);
                 // $sheet->protectCells('B1', $password);
@@ -342,7 +342,7 @@ class PagesController extends Controller
                   'filename' => null,
                   'pending_request' => 1,
                   'user_id' => $requestor->id
-        ]);
+            ]);
             $new_report->save();
 
             $job = new ParcelsExportJob($requestor, $new_report->id);
@@ -578,10 +578,10 @@ class PagesController extends Controller
             ORDER BY p.program_name
                         "));
 
-            $sumStatData = array();
+            $sumStatData = [];
 
-            foreach ($stats as $k=>$subArray) {
-                foreach ($subArray as $id=>$value) {
+            foreach ($stats as $k => $subArray) {
+                foreach ($subArray as $id => $value) {
                     if (is_numeric($value)) {
                         array_key_exists($id, $sumStatData) ? $sumStatData[$id] += $value : $sumStatData[$id] = $value;
                     }
@@ -689,7 +689,7 @@ class PagesController extends Controller
                     $unseen_communication->summary = strlen($unseen_communication->communication->message) > 400 ? substr($unseen_communication->communication->message, 0, 20)."..." : $unseen_communication->communication->message;
                 }
             } else {
-                $unseen_communications = array();
+                $unseen_communications = [];
             }
 
             $filter['lbFilters'] = DB::table('property_status_options')->where('for', 'landbank')->where('active', '1')->orderBy('order', 'asc')->get();
@@ -736,9 +736,10 @@ class PagesController extends Controller
 
     public function parcelList(Request $request)
     {
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
         if (Gate::allows('view-all-parcels')) {
-
             // determine if they are OHFA or not
             if (Auth::user()->entity_id != 1) {
                 // create values for a where clause
@@ -778,17 +779,17 @@ class PagesController extends Controller
                 switch ($request->query('parcels_asc_desc')) {
                     case '1':
                         # code...
-                    session(['parcels_asc_desc'=> 'desc']);
-                    $parcelsAscDesc =  $request->session()->get('parcels_asc_desc');
-                    session(['parcels_asc_desc_opposite' => ""]);
-                    $parcelsAscDescOpposite =  $request->session()->get('parcels_asc_desc_opposite');
+                        session(['parcels_asc_desc'=> 'desc']);
+                        $parcelsAscDesc =  $request->session()->get('parcels_asc_desc');
+                        session(['parcels_asc_desc_opposite' => ""]);
+                        $parcelsAscDescOpposite =  $request->session()->get('parcels_asc_desc_opposite');
                         break;
                     
                     default:
-                    session(['parcels_asc_desc'=> 'asc']);
-                   $parcelsAscDesc  =  $request->session()->get('parcels_asc_desc');
-                    session(['parcels_asc_desc_opposite' => 1]);
-                    $parcelsAscDescOpposite = $request->session()->get('parcels_asc_desc_opposite');
+                        session(['parcels_asc_desc'=> 'asc']);
+                        $parcelsAscDesc  =  $request->session()->get('parcels_asc_desc');
+                        session(['parcels_asc_desc_opposite' => 1]);
+                        $parcelsAscDescOpposite = $request->session()->get('parcels_asc_desc_opposite');
                         break;
                 }
                 switch ($sortedBy) {
@@ -853,12 +854,12 @@ class PagesController extends Controller
                         $parcelsSortBy = $request->session()->get('parcels_sort_by');
                         break;
 
-                   case '13':
+                    case '13':
                         #  HFA Status
                         session(['parcels_sort_by' => 'hfa_property_status_options.option_name']);
                         $parcelsSortBy = $request->session()->get('parcels_sort_by');
                         break;
-                   case '14':
+                    case '14':
                         #  Target Area
                         session(['parcels_sort_by' => 'target_areas.target_area_name']);
                         $parcelsSortBy = $request->session()->get('parcels_sort_by');
@@ -1337,7 +1338,6 @@ class PagesController extends Controller
                     if ($request->query('export') == 1) {
                         $parcelsSortBy = 'hfa_status.option_name';
                     }
-                    
                 } elseif ($parcelsSortBy == 'target_areas.target_area_name') {
                     $joinTable = 'target_areas';
                     $joinOnColumn = 'parcels.target_area_id';
@@ -1358,7 +1358,6 @@ class PagesController extends Controller
                 }
 
                 if ($request->query('export') != 1) {
-
                     $parcel_query = Parcel::with('targetArea', 'county', 'state', 'entity', 'importId', 'program', 'landbankPropertyStatus', 'hfaPropertyStatus', 'importId.import.imported_by', 'documents', 'retainages', 'unpaidRetainages', 'dispositions', 'dispositions.status', 'paidRetainages', 'dispositionsSubmittedToFiscalAgent', 'approvedDispositions', 'paidDispositions', 'declinedDispositions', 'pendingPaymentDispositions', 'pendingHfaApprovalDispositions', 'pendingLbApprovalDispositions', 'draftDispositions', 'releasedDispositions', 'releaseRequestedDispositions', 'advanceItems', 'paidAdvanceItems', 'unpaidAdvanceItems')
                                   ->where('parcels.program_id', $parcelsProgramFilterOperator, $parcelsProgramFilter)
                                   ->where('parcels.landbank_property_status_id', $parcelsStatusFilterOperator, $parcelsStatusFilter)
@@ -1411,23 +1410,22 @@ class PagesController extends Controller
                     //$totalParcels =  $parcel_query->count(); // this causes problems with infinite scroll data
                     $totalParcels = Parcel::
                   
-                  with('retainages', 'unpaidRetainages', 'paidRetainages', 'dispositionsSubmittedToFiscalAgent', 'approvedDispositions', 'paidDispositions', 'declinedDispositions', 'pendingPaymentDispositions', 'pendingHfaApprovalDispositions', 'pendingLbApprovalDispositions', 'draftDispositions', 'releasedDispositions', 'releaseRequestedDispositions', 'advanceItems', 'paidAdvanceItems', 'unpaidAdvanceItems')
-                  ->select('parcels.id as parcel_system_id')
-                  ->has($advanceQuery1, $advanceFilterOperator, $advanceFilterValue)
-                  ->where('parcels.target_area_id', $targetAreaFilterOperator, $targetAreaFilter)
-                  ->where('parcels.program_id', $parcelsProgramFilterOperator, $parcelsProgramFilter)
-                  ->where('parcels.landbank_property_status_id', $parcelsStatusFilterOperator, $parcelsStatusFilter)
-                  ->where('parcels.hfa_property_status_id', $hfaParcelsStatusFilterOperator, $hfaParcelsStatusFilter)
-                  ->where('parcels.entity_id', $where_entity_id_operator, $where_entity_id)
-                  ->where('next_step', $parcelsNextFilterOperator, $parcelsNextFilter)
-                  ->has($retainageQuery1, $retainageFilterOperator, $retainageFilterValue)
-                  ->has($dispositionQuery1, $dispositionFilterOperator, $dispositionFilterValue)
-                  ->count();
+                    with('retainages', 'unpaidRetainages', 'paidRetainages', 'dispositionsSubmittedToFiscalAgent', 'approvedDispositions', 'paidDispositions', 'declinedDispositions', 'pendingPaymentDispositions', 'pendingHfaApprovalDispositions', 'pendingLbApprovalDispositions', 'draftDispositions', 'releasedDispositions', 'releaseRequestedDispositions', 'advanceItems', 'paidAdvanceItems', 'unpaidAdvanceItems')
+                    ->select('parcels.id as parcel_system_id')
+                    ->has($advanceQuery1, $advanceFilterOperator, $advanceFilterValue)
+                    ->where('parcels.target_area_id', $targetAreaFilterOperator, $targetAreaFilter)
+                    ->where('parcels.program_id', $parcelsProgramFilterOperator, $parcelsProgramFilter)
+                    ->where('parcels.landbank_property_status_id', $parcelsStatusFilterOperator, $parcelsStatusFilter)
+                    ->where('parcels.hfa_property_status_id', $hfaParcelsStatusFilterOperator, $hfaParcelsStatusFilter)
+                    ->where('parcels.entity_id', $where_entity_id_operator, $where_entity_id)
+                    ->where('next_step', $parcelsNextFilterOperator, $parcelsNextFilter)
+                    ->has($retainageQuery1, $retainageFilterOperator, $retainageFilterValue)
+                    ->has($dispositionQuery1, $dispositionFilterOperator, $dispositionFilterValue)
+                    ->count();
 
                     $steps = GuideStep::where('guide_step_type_id', '=', 2)->get();
                 
-                    return view('parcels.index', compact('i', 'parcels', 'totalParcels', 'currentUser', 'parcels_sorted_by_query', 'parcelsAscDesc', 'parcelsAscDescOpposite', 'programs', 'statuses', 'parcelsProgramFilter', 'parcelsStatusFilter', 'programFiltered', 'statusFiltered', 'hfaStatuses', 'hfaParcelsStatusFilter', 'hfaStatusFiltered', 'parcelsProgramFilterOperator', 'parcelsNextFilter', 'parcelsNextFilterOperator', 'nextSteps', 'retainageFiltered', 'dispositionFiltered', 'dispositionFilter', 'dispositionStatuses', 'retainageFilter', 'advanceFilter', 'advanceFiltered', 'targetAreaFilter', 'targetAreaFiltered', 'targetAreas','steps'));//, 'stepCompletedFilter', 'stepNotCompletedFilter'
-
+                    return view('parcels.index', compact('i', 'parcels', 'totalParcels', 'currentUser', 'parcels_sorted_by_query', 'parcelsAscDesc', 'parcelsAscDescOpposite', 'programs', 'statuses', 'parcelsProgramFilter', 'parcelsStatusFilter', 'programFiltered', 'statusFiltered', 'hfaStatuses', 'hfaParcelsStatusFilter', 'hfaStatusFiltered', 'parcelsProgramFilterOperator', 'parcelsNextFilter', 'parcelsNextFilterOperator', 'nextSteps', 'retainageFiltered', 'dispositionFiltered', 'dispositionFilter', 'dispositionStatuses', 'retainageFilter', 'advanceFilter', 'advanceFiltered', 'targetAreaFilter', 'targetAreaFiltered', 'targetAreas', 'steps'));//, 'stepCompletedFilter', 'stepNotCompletedFilter'
                 } elseif ($request->query('export') == 1) {
                     if ($request->query('export_paid_only') == 1) {
                         $paid1a = 'reimbursement_invoices.reimbursement_balance';
@@ -1548,150 +1546,140 @@ class PagesController extends Controller
                                   ->leftJoin('invoice_statuses as disposition_statuses', 'dispositions.status_id', 'disposition_statuses.id')
                                   ->select(
                                             
-                                            'parcels.id as System_ID',
-                                            'parcels.parcel_id as Parcel_ID',
-                                            'parcels.created_at as Imported_Date',
-                                            'reimbursement_invoices.reimbursement_last_payment_cleared_date as Last_Payment_To_LB_Cleared',
-                                            'disposition_invoices.disposition_last_payment_cleared_date as Last_Disposition_Payment_Cleared',
-                                            'recapture_invoices.recapture_last_payment_cleared_date as Last_Recapture_Payment_Cleared',
-                                            
-                                            
-                                            'parcel_type_options.parcel_type_option_name as Parcel_Type',
-                                            'units as Units',
-                                            'programs.program_name as Program_Name',
-                                            'entities.entity_name as Entity',
-                                            'parcels.street_address as Street_Address',
-                                            'parcels.city as City',
-                                            'states.state_name as State',
-                                            'parcels.zip as Zip',
-                                            'counties.county_name as County',
-                                            'target_area_name as Target_Area',
-                                            'oh_house_district as OH_House_District',
-                                            'oh_senate_district as OH_Senate_District',
-                                            'us_house_district as US_House_District',
-                                            'latitude as Latitude',
-                                            'longitude as Longitude',
-                                            'google_map_link as Google_Maps',
-                                            'sale_price as Sale_Price',
-                                            'how_acquired_options.how_acquired_option_name as How_Acquired',
-                                            'how_acquired_explanation as Explanation',
-                                            'historic_significance_or_district as Historic',
-                                            'historic_waiver_approved as Historic_Approved',
-                                            'ugly_house as Use_As_Before',
-                                            'pretty_lot as Use_As_After',
-                                            'lb_status.option_name as LB_Status',
-                                            'hfa_status.option_name as HFA_Status',
-                                            'compliance as Requires_Random_Compliance',
-                                            'compliance_manual as Has_Manual_Compliance',
-                                            'compliance_score as Compliance_Score',
-                                            'approved_in_po as Approved_For_PO',
-                                            'declined_in_po as Declined_For_PO',
-                                            'Total_Costs',
-                                            'Acquisition_Cost',
-                                            'NIP_Loan_Payoff_Cost',
-                                            'PreDemo_Cost',
-                                            'Demo_Cost',
-                                            'Greening_Advance_Cost',
-                                            'Greening_Cost',
-                                            'Maintenance_Cost',
-                                            'Admin_Cost',
-                                            'Other_Cost',
-
-                                            'Total_Requested',
-                                            'req_id as Req_Number',
-                                            'Acquisition_Requested',
-                                            'NIP_Loan_Payoff_Requested',
-                                            'PreDemo_Requested',
-                                            'Demo_Requested',
-                                            'Greening_Advance_Requested',
-                                            'Greening_Requested',
-                                            'Maintenance_Requested',
-                                            'Admin_Requested',
-                                            'Other_Requested',
-
-                                            'Total_Approved',
-                                            'reimbursement_invoices.po_id as PO_Number',
-                                            'Acquisition_Approved',
-                                            'NIP_Loan_Payoff_Approved',
-                                            'PreDemo_Approved',
-                                            'Demo_Approved',
-                                            'Greening_Advance_Approved',
-                                            'Greening_Approved',
-                                            'Maintenance_Approved',
-                                            'Admin_Approved',
-                                            'Other_Approved',
-
-                                            'Total_Invoiced',
-                                            'reimbursement_invoices.id as Invoice_Number',
-                                            'Acquisition_Invoiced',
-                                            'NIP_Loan_Payoff_Invoiced',
-                                            'PreDemo_Invoiced',
-                                            'Demo_Invoiced',
-                                            'Greening_Advance_Invoiced',
-                                            'Greening_Invoiced',
-                                            'Maintenance_Invoiced',
-                                            'Admin_Invoiced',
-                                            'Other_Invoiced',
-
-                                            'invoice_statuses.invoice_status_name as Invoice_Status',
-                                            'reimbursement_invoices.reimbursement_total_amount as Total_Amount_On_Full_Reimbursement_Invoice',
-                                            'reimbursement_invoices.reimbursement_total_paid as Total_Paid_On_Full_Reimbursement_Invoice',
-                                            'reimbursement_invoices.reimbursement_balance as Balance_On_Full_Reimbursement_Invoice',
-                                            'disposition_invoices.id as Disposition_ID',
-                                            'disposition_types.disposition_type_name as Disposition_Type',
-                                            'disposition_statuses.invoice_status_name as Disposition_Status',
-                                            'date_submitted as Date_Disposition_Submitted',
-                                            'date_approved as Date_Disposition_Approved',
-                                            'date_release_requested as Date_Lien_Release_Requested_to_Fiscal_Agent',
-                                            'dispositions.release_date as Lien_Released_Date',
-                                            'dispositions.created_at as Date_Disposition_Started_by_LB',
-                                            'dispositions.updated_at as Date_Disposition_Last_Updated',
-                                            'special_circumstance as Disposition_Special_Circumstance',
-                                            'full_description as Disposition_Full_Description',
-                                            'legal_description_in_documents as Disposition_Description_Uploaded',
-                                            'permanent_parcel_id as Disposition_Permanent_Parcel_Id',
-                                            'public_use_political as Disposition_Public_Use_Political_Subdivision',
-                                            'public_use_community as Disposition_Public_Use_Community_Benefit',
-                                            'public_use_oneyear as Disposition_Public_Use_Construction_Operation_One_Year',
-                                            'public_use_facility as Disposition_Public_Use_Facility',
-                                            'nonprofit_taxexempt as Disposition_Nonprofit_Tax_Exempt',
-                                            'nonprofit_community as Disposition_Nonprofit_Community_Use',
-                                            'nonprofit_oneyear as Disposition_Nonprofit_Construction_Operation_One_Year',
-                                            'nonprofit_newuse as Disposition_Nonprofit_Zoned_for_New_Use',
-                                            'dev_fmv as Disposition_Bus-Res_FMV',
-                                            'dev_oneyear as Disposition_Bus-Res_Construction_Operation_One_Year',
-                                            'dev_newuse as Disposition_Bus-Res_Zoned_for_New_Use',
-                                            'dev_purchaseag as Disposition_Bus-Res_Purchase_Agreement',
-                                            'dev_taxescurrent as Disposition_Bus-Res_Taxes_Current',
-                                            'dev_nofc as Disposition_Bus-Res_No_FC',
-                                            'program_income as Disposition_Program_Income_Submitted',
-                                            'transaction_cost as Disposition_Transaction_Cost_Submitted',
-                                            'hfa_calc_income as Disposition_Calculated_Income',
-                                            'hfa_calc_trans_cost as Disposition_Calculated_Transaction_Cost',
-                                            'hfa_calc_maintenance_total as Disposition_Actual_Maintenance_Paid_to_LB',
-                                            'hfa_calc_months_prepaid as Disposition_Months_Prepaid',
-                                            'hfa_calc_monthly_rate as Disposition_Maintenance_Monthly_Rate',
-                                            'hfa_calc_months as Disposition_Calculated_Months_Maintained',
-                                            'hfa_calc_maintenance_due as Disposition_Maintenance_Owed_Back',
-                                            'hfa_calc_demo_cost as Disposition_Actual_Demo_Cost_Paid_to_LB',
-                                            'hfa_calc_epi as Disposition_Eligible_Property_Income',
-                                            'hfa_calc_gain as Disposition_Total_Capital_Gain_for_LB',
-                                            'hfa_calc_payback as Disposition_Total_Recapture_Owed',
-                                            'disposition_invoices.id as Disposition_Invoice_ID',
-                                            'disposition_invoice_statuses.invoice_status_name as Disposition_Invoice_Status',
-                                            'disposition_invoices.disposition_total_amount as Total_Amount_On_Full_Disposition_Invoice',
-                                            'disposition_invoices.disposition_total_paid as Total_Paid_On_Full_Disposition_Invoice',
-                                            'disposition_invoices.disposition_balance as Balance_On_Full_Disposition_Invoice',
-                                            'recapture_invoices.id as Recapture_Invoice_ID',
-                                            'recapture_invoices.recapture_total_amount as Total_Amount_On_Full_Recapture_Invoice',
-                                            'recapture_invoices.recapture_total_paid as Total_Paid_On_Full_Recapture_Invoice',
-                                            'recapture_invoices.recapture_balance as Balance_On_Full_Recapture_Invoice',
-                                            'Total_Recapture_Owed as Total_Parcel_Recapture_Amount'
-
-
-
-
-                                          )
+                                      'parcels.id as System_ID',
+                                      'parcels.parcel_id as Parcel_ID',
+                                      'parcels.created_at as Imported_Date',
+                                      'reimbursement_invoices.reimbursement_last_payment_cleared_date as Last_Payment_To_LB_Cleared',
+                                      'disposition_invoices.disposition_last_payment_cleared_date as Last_Disposition_Payment_Cleared',
+                                      'recapture_invoices.recapture_last_payment_cleared_date as Last_Recapture_Payment_Cleared',
+                                      'parcel_type_options.parcel_type_option_name as Parcel_Type',
+                                      'units as Units',
+                                      'programs.program_name as Program_Name',
+                                      'entities.entity_name as Entity',
+                                      'parcels.street_address as Street_Address',
+                                      'parcels.city as City',
+                                      'states.state_name as State',
+                                      'parcels.zip as Zip',
+                                      'counties.county_name as County',
+                                      'target_area_name as Target_Area',
+                                      'oh_house_district as OH_House_District',
+                                      'oh_senate_district as OH_Senate_District',
+                                      'us_house_district as US_House_District',
+                                      'latitude as Latitude',
+                                      'longitude as Longitude',
+                                      'google_map_link as Google_Maps',
+                                      'sale_price as Sale_Price',
+                                      'how_acquired_options.how_acquired_option_name as How_Acquired',
+                                      'how_acquired_explanation as Explanation',
+                                      'historic_significance_or_district as Historic',
+                                      'historic_waiver_approved as Historic_Approved',
+                                      'ugly_house as Use_As_Before',
+                                      'pretty_lot as Use_As_After',
+                                      'lb_status.option_name as LB_Status',
+                                      'hfa_status.option_name as HFA_Status',
+                                      'compliance as Requires_Random_Compliance',
+                                      'compliance_manual as Has_Manual_Compliance',
+                                      'compliance_score as Compliance_Score',
+                                      'approved_in_po as Approved_For_PO',
+                                      'declined_in_po as Declined_For_PO',
+                                      'Total_Costs',
+                                      'Acquisition_Cost',
+                                      'NIP_Loan_Payoff_Cost',
+                                      'PreDemo_Cost',
+                                      'Demo_Cost',
+                                      'Greening_Advance_Cost',
+                                      'Greening_Cost',
+                                      'Maintenance_Cost',
+                                      'Admin_Cost',
+                                      'Other_Cost',
+                                      'Total_Requested',
+                                      'req_id as Req_Number',
+                                      'Acquisition_Requested',
+                                      'NIP_Loan_Payoff_Requested',
+                                      'PreDemo_Requested',
+                                      'Demo_Requested',
+                                      'Greening_Advance_Requested',
+                                      'Greening_Requested',
+                                      'Maintenance_Requested',
+                                      'Admin_Requested',
+                                      'Other_Requested',
+                                      'Total_Approved',
+                                      'reimbursement_invoices.po_id as PO_Number',
+                                      'Acquisition_Approved',
+                                      'NIP_Loan_Payoff_Approved',
+                                      'PreDemo_Approved',
+                                      'Demo_Approved',
+                                      'Greening_Advance_Approved',
+                                      'Greening_Approved',
+                                      'Maintenance_Approved',
+                                      'Admin_Approved',
+                                      'Other_Approved',
+                                      'Total_Invoiced',
+                                      'reimbursement_invoices.id as Invoice_Number',
+                                      'Acquisition_Invoiced',
+                                      'NIP_Loan_Payoff_Invoiced',
+                                      'PreDemo_Invoiced',
+                                      'Demo_Invoiced',
+                                      'Greening_Advance_Invoiced',
+                                      'Greening_Invoiced',
+                                      'Maintenance_Invoiced',
+                                      'Admin_Invoiced',
+                                      'Other_Invoiced',
+                                      'invoice_statuses.invoice_status_name as Invoice_Status',
+                                      'reimbursement_invoices.reimbursement_total_amount as Total_Amount_On_Full_Reimbursement_Invoice',
+                                      'reimbursement_invoices.reimbursement_total_paid as Total_Paid_On_Full_Reimbursement_Invoice',
+                                      'reimbursement_invoices.reimbursement_balance as Balance_On_Full_Reimbursement_Invoice',
+                                      'disposition_invoices.id as Disposition_ID',
+                                      'disposition_types.disposition_type_name as Disposition_Type',
+                                      'disposition_statuses.invoice_status_name as Disposition_Status',
+                                      'date_submitted as Date_Disposition_Submitted',
+                                      'date_approved as Date_Disposition_Approved',
+                                      'date_release_requested as Date_Lien_Release_Requested_to_Fiscal_Agent',
+                                      'dispositions.release_date as Lien_Released_Date',
+                                      'dispositions.created_at as Date_Disposition_Started_by_LB',
+                                      'dispositions.updated_at as Date_Disposition_Last_Updated',
+                                      'special_circumstance as Disposition_Special_Circumstance',
+                                      'full_description as Disposition_Full_Description',
+                                      'legal_description_in_documents as Disposition_Description_Uploaded',
+                                      'permanent_parcel_id as Disposition_Permanent_Parcel_Id',
+                                      'public_use_political as Disposition_Public_Use_Political_Subdivision',
+                                      'public_use_community as Disposition_Public_Use_Community_Benefit',
+                                      'public_use_oneyear as Disposition_Public_Use_Construction_Operation_One_Year',
+                                      'public_use_facility as Disposition_Public_Use_Facility',
+                                      'nonprofit_taxexempt as Disposition_Nonprofit_Tax_Exempt',
+                                      'nonprofit_community as Disposition_Nonprofit_Community_Use',
+                                      'nonprofit_oneyear as Disposition_Nonprofit_Construction_Operation_One_Year',
+                                      'nonprofit_newuse as Disposition_Nonprofit_Zoned_for_New_Use',
+                                      'dev_fmv as Disposition_Bus-Res_FMV',
+                                      'dev_oneyear as Disposition_Bus-Res_Construction_Operation_One_Year',
+                                      'dev_newuse as Disposition_Bus-Res_Zoned_for_New_Use',
+                                      'dev_purchaseag as Disposition_Bus-Res_Purchase_Agreement',
+                                      'dev_taxescurrent as Disposition_Bus-Res_Taxes_Current',
+                                      'dev_nofc as Disposition_Bus-Res_No_FC',
+                                      'program_income as Disposition_Program_Income_Submitted',
+                                      'transaction_cost as Disposition_Transaction_Cost_Submitted',
+                                      'hfa_calc_income as Disposition_Calculated_Income',
+                                      'hfa_calc_trans_cost as Disposition_Calculated_Transaction_Cost',
+                                      'hfa_calc_maintenance_total as Disposition_Actual_Maintenance_Paid_to_LB',
+                                      'hfa_calc_months_prepaid as Disposition_Months_Prepaid',
+                                      'hfa_calc_monthly_rate as Disposition_Maintenance_Monthly_Rate',
+                                      'hfa_calc_months as Disposition_Calculated_Months_Maintained',
+                                      'hfa_calc_maintenance_due as Disposition_Maintenance_Owed_Back',
+                                      'hfa_calc_demo_cost as Disposition_Actual_Demo_Cost_Paid_to_LB',
+                                      'hfa_calc_epi as Disposition_Eligible_Property_Income',
+                                      'hfa_calc_gain as Disposition_Total_Capital_Gain_for_LB',
+                                      'hfa_calc_payback as Disposition_Total_Recapture_Owed',
+                                      'disposition_invoices.id as Disposition_Invoice_ID',
+                                      'disposition_invoice_statuses.invoice_status_name as Disposition_Invoice_Status',
+                                      'disposition_invoices.disposition_total_amount as Total_Amount_On_Full_Disposition_Invoice',
+                                      'disposition_invoices.disposition_total_paid as Total_Paid_On_Full_Disposition_Invoice',
+                                      'disposition_invoices.disposition_balance as Balance_On_Full_Disposition_Invoice',
+                                      'recapture_invoices.id as Recapture_Invoice_ID',
+                                      'recapture_invoices.recapture_total_amount as Total_Amount_On_Full_Recapture_Invoice',
+                                      'recapture_invoices.recapture_total_paid as Total_Paid_On_Full_Recapture_Invoice',
+                                      'recapture_invoices.recapture_balance as Balance_On_Full_Recapture_Invoice',
+                                      'Total_Recapture_Owed as Total_Parcel_Recapture_Amount'
+                                  )
                                   ->where($paid1a, $paid1Eval, $paid1b)
                                   ->where($paid2a, $paid2Eval, $paid2b)
                                   ->where('parcels.program_id', $parcelsProgramFilterOperator, $parcelsProgramFilter)
@@ -1737,7 +1725,7 @@ class PagesController extends Controller
     public function exportPaidParcels(Request $request)
     {
         // check roles
-        if(Auth::user()->id >= 3){
+        if (Auth::user()->id >= 3) {
             return "Are you sure you are allowed do this?";
         }
 
@@ -1771,8 +1759,6 @@ class PagesController extends Controller
     public function userList()
     {
         if (Auth::user()->canManageUsers()) {
-           
-
             //$parcels = Parcel::limit(100)->orderBy('county_id', 'asc')->get();
             //$totalParcels = Parcel::count();
             // $totalUsers = \App\User::count();
@@ -1836,19 +1822,19 @@ class PagesController extends Controller
     public function userEdit(Request $request, $userId)
     {
         if (Auth::user()->canManageUsers()) {
-            $userParams = array();
+            $userParams = [];
             $editUser = \App\User::find($userId);
             if ($request->email == $editUser->email) {
                 $validator = Validator::make($request->all(), [
-              'name' => 'required|max:255',
-              'password' => 'sometimes|min:6|confirmed'
-          ]);
+                'name' => 'required|max:255',
+                'password' => 'sometimes|min:6|confirmed'
+                ]);
             } else {
                 $validator = Validator::make($request->all(), [
                 'name' => 'required|max:255',
                 'email' => 'required|email|max:255|unique:users',
                 'password' => 'min:6|confirmed'
-            ]);
+                ]);
             }
 
             if ($validator->fails()) {
@@ -1856,16 +1842,16 @@ class PagesController extends Controller
                 foreach ($validator->errors()->all() as $error_message) {
                     $message = $error_message."<br />".$message;
                 }
-                $msg = array('message'=> $message,'status'=>0);
+                $msg = ['message'=> $message,'status'=>0];
                 return json_encode($msg);
             }
         
             $roles = $request->get('role');
             $editUser->roles()->detach();
             $lc = new LogConverter('user', 'edituser');
-            $addedRoles=array();
+            $addedRoles=[];
             if (isset($roles)) {
-                foreach ($roles as $rolekey=>$rolevalue) {
+                foreach ($roles as $rolekey => $rolevalue) {
                     $role = Role::find($rolekey);
                     array_push($addedRoles, $role->role_name);
                     $lc->addRole($role->role_name);
@@ -1889,39 +1875,39 @@ class PagesController extends Controller
             if (strlen($request->password)>0) {
                 // store a password update too
                 $editUser->update([
-              'name'=> $request->name,
-              'email'=>$request->email,
-              'badge_color'=>$request->badge_color,
-              'entity_id'=>$request->entity_id,
-              'password'=>bcrypt($request->password),
-              'api_token'=>$newToken
-            ]);
+                'name'=> $request->name,
+                'email'=>$request->email,
+                'badge_color'=>$request->badge_color,
+                'entity_id'=>$request->entity_id,
+                'password'=>bcrypt($request->password),
+                'api_token'=>$newToken
+                ]);
             } else {
                 $editUser->update([
-              'name'=> $request->name,
-              'email'=>$request->email,
-              'entity_id'=>$request->entity_id,
-              'badge_color'=>$request->badge_color,
-              'api_token'=>$newToken
-            ]);
+                'name'=> $request->name,
+                'email'=>$request->email,
+                'entity_id'=>$request->entity_id,
+                'badge_color'=>$request->badge_color,
+                'api_token'=>$newToken
+                ]);
             }
             if (isset($request->entity_type)) {
                 $editUser->update([
-              'entity_type'=> $request->entity_type
-              ]);
+                'entity_type'=> $request->entity_type
+                ]);
             }
             // NEW TOKEN LOGIC
           
             $tuser = Auth::user();
             $lc = new LogConverter('user', 'edituser');
             $lc->setDesc($tuser->email . ' edited user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
-            $msg = array('message'=> 'I updated '.$request->name.' successfully. Their API Token is : '.$newToken,'status'=>1);
+            $msg = ['message'=> 'I updated '.$request->name.' successfully. Their API Token is : '.$newToken,'status'=>1];
             return json_encode($msg);
         } else {
             $tuser = Auth::user();
             $lc = new LogConverter('user', 'unauthorized edituser');
             $lc->setDesc($tuser->email . ' attempted to edit user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
-            $msg = array('message'=> 'Sorry, but you do not have access to edit users.','status'=>0);
+            $msg = ['message'=> 'Sorry, but you do not have access to edit users.','status'=>0];
             return json_encode($msg);
         }
     }
@@ -1932,7 +1918,7 @@ class PagesController extends Controller
         $tuser = Auth::user();
         $lc = new LogConverter('user', 'activateuser');
         $lc->setDesc($tuser->email . ' Activated user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
-        $msg = array('message'=> 'Successfully activated user','status'=>1);
+        $msg = ['message'=> 'Successfully activated user','status'=>1];
         return json_encode($msg);
     }
     public function userQuickActivate($userId, Request $request)
@@ -1947,8 +1933,7 @@ class PagesController extends Controller
         } else {
             $entity = \App\Entity::find($editUser->entity_id);
             $canAuthorize = DB::table('users_roles')->where('user_id', Auth::user()->id)->where('role_id', 5)->count();
-            if (
-            (
+            if ((
               Auth::user()->id == $entity->owner_id
               || ($editUser->validate_all == 1 && $canAuthorize > 0)
             )
@@ -1956,7 +1941,7 @@ class PagesController extends Controller
             && $editUser->tries < 3
             && $editUser->active == 0
             && strlen($editUser->email_token) > 0
-          ) {
+            ) {
                 $editUser->activate();
                 $tuser = Auth::user();
                 $lc = new LogConverter('user', 'activate');
@@ -1973,12 +1958,12 @@ class PagesController extends Controller
                     // Create and account for the program
                     $programToGetAccount = DB::table('programs')->join('counties', 'county_id', '=', 'counties.id')->select('*')->where('programs.owner_id', $entityToActivate->id)->first();
                     DB::table('accounts')->insert([
-                'account_name'=>"Blight ".$programToGetAccount->county_name,
-                'entity_id'=>$entityToActivate->id,
-                'owner_id'=>$programToGetAccount->id,
-                'account_type_id'=>1,
-                'active'=>1
-                ]);
+                    'account_name'=>"Blight ".$programToGetAccount->county_name,
+                    'entity_id'=>$entityToActivate->id,
+                    'owner_id'=>$programToGetAccount->id,
+                    'account_type_id'=>1,
+                    'active'=>1
+                    ]);
                     $a = Account::where('account_name', "Blight ".$programToGetAccount->county_name)->first();
                     $lc = new LogConverter('account', 'create');
                     $lc->setFrom(Auth::user())->setTo($a)->setDesc(Auth::user()->email . ' Created account ' . $a->account_name);
@@ -2025,11 +2010,11 @@ class PagesController extends Controller
             $tuser = Auth::user();
             $lc = new LogConverter('user', 'deactivate');
             $lc->setDesc($tuser->email . ' Deactivated user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
-            $msg = array('message'=> 'Successfully deactivated user','status'=>1);
+            $msg = ['message'=> 'Successfully deactivated user','status'=>1];
             $lc->setDesc($editUser->email . ' Deactivated')->setFrom(Auth::user())->setTo($editUser)->save();
             return json_encode($msg);
         } else {
-            $msg = array('message'=> 'Sorry, you don\'t have permission to do that.','status'=>1);
+            $msg = ['message'=> 'Sorry, you don\'t have permission to do that.','status'=>1];
         }
     }
     public function userQuickDelete($userId, Request $request)
@@ -2045,8 +2030,7 @@ class PagesController extends Controller
         } else {
             $entity = \App\Entity::find($editUser->entity_id);
             $canAuthorize = DB::table('users_roles')->where('user_id', Auth::user()->id)->where('role_id', 5)->count();
-            if (
-            (
+            if ((
               Auth::user()->id == $entity->owner_id
               || ($editUser->validate_all == 1 && $canAuthorize > 0)
             )
@@ -2216,7 +2200,7 @@ class PagesController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'min:6|confirmed'
-        ]);
+            ]);
 
             $current_user = Auth::user();
             if ($current_user->entity_type == 'hfa') {
@@ -2231,20 +2215,20 @@ class PagesController extends Controller
                 $entity_id = $current_user->entity_id;
                 $entity_type = 'landbank';
             }
-            $userParams = array();
+            $userParams = [];
 
             $newUser = new \App\User([
             'entity_id' => $entity_id,
             'entity_type' => $entity_type
-        ]);
+            ]);
             $newUser->save();
 
             $roles = $request->get('role');
             $newUser->roles()->detach();
             $lc = new LogConverter('user', 'newUser');
-            $addedRoles=array();
+            $addedRoles=[];
             if (isset($roles)) {
-                foreach ($roles as $rolekey=>$rolevalue) {
+                foreach ($roles as $rolekey => $rolevalue) {
                     $role = Role::find($rolekey);
                     array_push($addedRoles, $role->role_name);
                     $lc->addRole($role->role_name);
@@ -2258,29 +2242,29 @@ class PagesController extends Controller
             if (strlen($request->password)>0) {
                 // store a password update too
                 $newUser->update([
-              'name'=> $request->name,
-              'email'=>$request->email,
-              'badge_color'=>$request->badge_color,
-              'password'=>bcrypt($request->password),
-              'active'=>1,
-              'verified'=>1
-            ]);
+                'name'=> $request->name,
+                'email'=>$request->email,
+                'badge_color'=>$request->badge_color,
+                'password'=>bcrypt($request->password),
+                'active'=>1,
+                'verified'=>1
+                ]);
             } else {
                 $newUser->update([
-              'name'=> $request->name,
-              'email'=>$request->email,
-              'badge_color'=>$request->badge_color,
-              'active'=>1,
-              'verified'=>1
-            ]);
+                'name'=> $request->name,
+                'email'=>$request->email,
+                'badge_color'=>$request->badge_color,
+                'active'=>1,
+                'verified'=>1
+                ]);
             }
-            $msg = array('message'=> 'I created a new user for '.$request->name.'. Exciting! I hope they are just as awesome as you!','status'=>1);
+            $msg = ['message'=> 'I created a new user for '.$request->name.'. Exciting! I hope they are just as awesome as you!','status'=>1];
             return json_encode($msg);
         } else {
             $tuser = Auth::user();
             $lc = new LogConverter('user', 'unauthorized edituser');
             $lc->setDesc($tuser->email . ' attempted to create user.')->setFrom($tuser)->setTo($tuser)->save();
-            $msg = array('message'=> 'Sorry you do not have access to create a user','status'=>0);
+            $msg = ['message'=> 'Sorry you do not have access to create a user','status'=>0];
             return json_encode($msg);
         }
     }
@@ -2288,7 +2272,7 @@ class PagesController extends Controller
     public function searchEmails(Request $request)
     {
         if ($request->has('communications-search')) {
-            Session::set('communications-search', $request->get('communications-search'));
+            Session::put('communications-search', $request->get('communications-search'));
         } else {
             Session::forget('communications-search');
         }
@@ -2337,7 +2321,7 @@ class PagesController extends Controller
             }
         }
 
-        $owners_array = array();
+        $owners_array = [];
 
         if ($messages) {
             foreach ($messages as $message) {

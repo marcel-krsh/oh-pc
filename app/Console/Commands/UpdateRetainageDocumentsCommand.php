@@ -49,7 +49,6 @@ class UpdateRetainageDocumentsCommand extends Command
         $this->line('Ensuring all retainage docs are associated to their retainage.'.PHP_EOL);
 
         foreach ($retainageDocs as $doc) {
-
             //get matching retainage:
             $retainage = Retainage::where('parcel_id', $doc->parcel_id)->first();
                 

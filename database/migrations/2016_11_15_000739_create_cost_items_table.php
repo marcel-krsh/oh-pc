@@ -21,7 +21,7 @@ class CreateCostItemsTable extends Migration
             $table->integer('entity_id');
             $table->integer('account_id');
             $table->integer('expense_category_id')->default(1);
-            $table->float('amount',10,2)->nullable();
+            $table->float('amount', 10, 2)->nullable();
             $table->integer('vendor_id')->default(1);
             $table->string('description')->nullable();
             $table->text('notes')->nullable();

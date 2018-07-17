@@ -11,12 +11,12 @@ class ComplianceSoftDelete extends Migration
      *
      * @return void
      */
-     public function up()
+    public function up()
     {
         Schema::table('compliances', function (Blueprint $table) {
             //
             $table->softDeletes();
-            $table->string('property_pass_notes')->nullable();      
+            $table->string('property_pass_notes')->nullable();
         });
     }
 

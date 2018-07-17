@@ -28,7 +28,7 @@ class DownloadReady extends Mailable
      * @param null $filename
      * @param null $recipient_id
      */
-    public function __construct($folder=null, $filename=null, $recipient_id=null)
+    public function __construct($folder = null, $filename = null, $recipient_id = null)
     {
         $this->folder = $folder;
         $this->filename = $filename;

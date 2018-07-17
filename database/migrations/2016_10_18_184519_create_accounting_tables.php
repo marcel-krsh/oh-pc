@@ -52,33 +52,33 @@ class CreateAccountingTables extends Migration
          Schema::create('account_types', function (Blueprint $table) {
             $table->increments('id');
             $table->string('type', 250);
-            $table->integer('active'); 
+            $table->integer('active');
             $table->timestamps();
-        });
+         });
         Schema::create('transaction_categories', function (Blueprint $table) {
             $table->increments('id');
             $table->string('category_name', 250);
-            $table->integer('active'); 
+            $table->integer('active');
             $table->timestamps();
         });
           Schema::create('transaction_types', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('type_name',250);
+            $table->string('type_name', 250);
             $table->integer('active');
             $table->timestamps();
-        });
+          });
            Schema::create('transaction_statuses', function (Blueprint $table) {
             $table->increments('id');
             $table->string('status_name');
             $table->integer('active');
             $table->timestamps();
-        });
+           });
         
         Schema::create('transactions', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('account_id')->unsigned()->index();
-            $table->char('credit_debit',1);
-            $table->float('amount',12,2);
+            $table->char('credit_debit', 1);
+            $table->float('amount', 12, 2);
             $table->integer('transaction_category_id')->unsigned()->nullable();
             $table->integer('type_id')->nullable();
             $table->integer('link_to_type_id')->nullable(); // this is the id of the type this is linked to - ie the invoice
@@ -109,9 +109,5 @@ class CreateAccountingTables extends Migration
         Schema::dropIfExists('accounts');
         Schema::dropIfExists('account_types');
         Schema::dropIfExists('entities');
-        
-        
-        
-        
     }
 }

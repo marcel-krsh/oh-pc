@@ -13,15 +13,15 @@ class UpdateRoleRequestRelease extends Migration
      */
     public function up()
     {
-        $rolesData = array(
+        $rolesData = [
             
-            array( //28
+            [ //28
             'role_parent_id'=>1,
             'role_name'=>'Notified of Lien Release Request',
             'protected'=>1,
             'active'=>1
-            )
-        );
+            ]
+        ];
         DB::table('roles')->insert($rolesData);
 
 

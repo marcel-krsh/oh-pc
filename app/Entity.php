@@ -43,7 +43,7 @@ class Entity extends Model
      */
     public function programs() : HasMany
     {
-        return $this->hasMany('App\Program');
+        return $this->hasMany(\App\Program::class);
     }
 
     /**
@@ -53,7 +53,7 @@ class Entity extends Model
      */
     public function state() : BelongsTo
     {
-        return $this->belongsTo('App\State');
+        return $this->belongsTo(\App\State::class);
     }
 
     /**
@@ -63,7 +63,7 @@ class Entity extends Model
      */
     public function accounts() : HasMany
     {
-        return $this->hasMany('App\Account');
+        return $this->hasMany(\App\Account::class);
     }
 
     /**
@@ -73,7 +73,7 @@ class Entity extends Model
      */
     public function vendors() : HasMany
     {
-        return $this->hasMany('App\Vendor');
+        return $this->hasMany(\App\Vendor::class);
     }
 
     /**
@@ -83,7 +83,7 @@ class Entity extends Model
      */
     public function user() : BelongsTo
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(\App\User::class);
     }
 
     /**

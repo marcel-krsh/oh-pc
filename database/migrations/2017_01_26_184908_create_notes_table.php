@@ -22,7 +22,7 @@ class CreateNotesTable extends Migration
             $table->string('owner_type')->default('user');
             $table->text('note')->nullable();
             $table->foreign('parcel_id')->references('id')->on('parcels');
-            $table->foreign('owner_id')->references('id')->on('users');    
+            $table->foreign('owner_id')->references('id')->on('users');
         });
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
@@ -38,6 +38,4 @@ class CreateNotesTable extends Migration
         Schema::dropIfExists('notes');
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
-
-    
 }

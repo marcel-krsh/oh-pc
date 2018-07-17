@@ -19,7 +19,7 @@ class CreateCorrectionsTable extends Migration
             $table->integer('parcel_id');
             $table->integer('user_id');
             $table->integer('site_visit_id');
-            $table->string('notes',2000);
+            $table->string('notes', 2000);
             $table->date('recorded_date');
             $table->boolean('corrected')->default(0)->nullable();
             $table->integer('corrected_site_visit_id')->nullable();

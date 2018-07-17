@@ -15,7 +15,7 @@ class FormsController extends Controller
      * @param string $icon
      * if resource is edit, will need to populate method values.
      */
-    public function formBuilder($action="/example", $method="null", $encType="application/x-www-form-urlencoded", $title="Example Form", $icon="pencil")
+    public function formBuilder($action = "/example", $method = "null", $encType = "application/x-www-form-urlencoded", $title = "Example Form", $icon = "pencil")
     {
         return ([$action, $method, $encType, $title, $icon]);
     }
@@ -35,8 +35,8 @@ class FormsController extends Controller
      * @param array $array
      * @return array
      */
-    public function multipleText_wCheckbox($label="Sample Label", $arr=[['acquisition_advance','','Acquisition advance','required','checked'],['acquisition_max_advance','','Acquisition max advance','required'],
-        ['acquisition_max','','Acquisition maximum (0 = No Max)','required'], ['acquisition_min','','Acquisition minimum','required']], $numberOfFields=4)
+    public function multipleText_wCheckbox($label = "Sample Label", $arr = [['acquisition_advance','','Acquisition advance','required','checked'],['acquisition_max_advance','','Acquisition max advance','required'],
+        ['acquisition_max','','Acquisition maximum (0 = No Max)','required'], ['acquisition_min','','Acquisition minimum','required']], $numberOfFields = 4)
     {
         $row =['type'=>'multipleText','cells'=>$numberOfFields,'for'=>$label,'id'=>$label];
         for ($i=0; $i<$numberOfFields; $i++) {
@@ -50,8 +50,8 @@ class FormsController extends Controller
      * @param array $array
      * @return array
      */
-    public function multipleText($arr=[['acquisition_advance','','Acquisition advance',''],['acquisition_max_advance','','Acquisition max advance',''],
-        ['acquisition_max','','Acquisition maximum (0 = No Max)','required'], ['acquisition_min','','Acquisition minimum','required']], $numberOfFields=4)
+    public function multipleText($arr = [['acquisition_advance','','Acquisition advance',''],['acquisition_max_advance','','Acquisition max advance',''],
+        ['acquisition_max','','Acquisition maximum (0 = No Max)','required'], ['acquisition_min','','Acquisition minimum','required']], $numberOfFields = 4)
     {
         $row =['type'=>'multipleText1','cells'=>$numberOfFields];
         for ($i=0; $i<$numberOfFields; $i++) {
@@ -63,17 +63,17 @@ class FormsController extends Controller
 
 
     public function newDocRule(
-        $for ,
-        $hidden="10",
-        $label="Acquisition",
-        $textInputarr=['acquisition_amount', '', 'Enter acquisition trigger amount'],
-                               $selectArr=['acquisition_documents', 'options'=>['option_values'=>1,'option_names'=>"Hello",'selected'=>'selected']]
+        $for,
+        $hidden = "10",
+        $label = "Acquisition",
+        $textInputarr = ['acquisition_amount', '', 'Enter acquisition trigger amount'],
+        $selectArr = ['acquisition_documents', 'options'=>['option_values'=>1,'option_names'=>"Hello",'selected'=>'selected']]
     ) {
         $row = ['type'=>'documentRule','for'=>$for, 'hidden'=>$hidden, 'label'=>$label, 'textInput'=>$textInputarr, 'selectInput'=>$selectArr];
         return $row;
     }
 
-    public function newDocRule13($for, $hidden="10", $label="Acquisition", $selectArr=['acquisition_documents', 'options'=>['option_values'=>1,'option_names'=>"Hello",'selected'=>'selected']])
+    public function newDocRule13($for, $hidden = "10", $label = "Acquisition", $selectArr = ['acquisition_documents', 'options'=>['option_values'=>1,'option_names'=>"Hello",'selected'=>'selected']])
     {
         $row = ['type'=>'documentRule13','for'=>$for, 'hidden'=>$hidden,'label'=>$label, 'selectInput'=>$selectArr];
         return $row;
@@ -112,7 +112,7 @@ class FormsController extends Controller
      */
     public function checkbox($array)
     {
-        $row = array(['type'=>'checkbox','for'=>$array[0],'id'=>$array[0],'required'=>$array[5]]);
+        $row = [['type'=>'checkbox','for'=>$array[0],'id'=>$array[0],'required'=>$array[5]]];
         $row['name']=$array[1];
         $row['value']=$array[2];
         $row['optionLabel']=$array[3];

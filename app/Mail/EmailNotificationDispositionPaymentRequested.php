@@ -35,7 +35,7 @@ class EmailNotificationDispositionPaymentRequested extends Mailable
      * @param int  $recipient_id
      * @param null $invoice_id
      */
-    public function __construct($recipient_id=1, $invoice_id=null)
+    public function __construct($recipient_id = 1, $invoice_id = null)
     {
         $this->invoice_id = $invoice_id;
         $this->invoice = DispositionInvoice::where('id', '=', $invoice_id)->get()->first();
@@ -56,7 +56,7 @@ class EmailNotificationDispositionPaymentRequested extends Mailable
         $greeting = "DISPOSITION INVOICE ".$this->invoice_id." was approved and submitted for payment by HFA.";
        
         $introLines[] = "You can now process transaction.";
-        $outroLines[] = array();
+        $outroLines[] = [];
 
         $actionText = "View DISPOSITION INVOICE";
 

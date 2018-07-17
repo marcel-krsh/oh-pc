@@ -51,7 +51,7 @@ class ParcelsPTController extends Controller
         //Auth::onceUsingId(59); //ataylor@cocic.org
     }
 
-    public function breakouts(Parcel $parcel, Request $request, $format=null)
+    public function breakouts(Parcel $parcel, Request $request, $format = null)
     {
         $status = DB::table('property_status_options')->where('property_status_options.id', $parcel->hfa_property_status_id)->get()->all();
         //DB::enableQueryLog();
@@ -99,7 +99,7 @@ class ParcelsPTController extends Controller
                             'expense_categories.expense_category_name',
                             'cost_items.advance as advance',
                             'retainages.id as retainage_id'
-                            )
+                        )
                         ->where('cost_items.parcel_id', $parcel->id)
                         ->get()
                         ->all();
@@ -114,7 +114,7 @@ class ParcelsPTController extends Controller
         if (is_array($docCatIds)) {
             $categories_needed =  $docCatIds;
         } else {
-            $categories_needed =  array();
+            $categories_needed =  [];
         }
 
         // get categoties that were submitted
@@ -123,9 +123,9 @@ class ParcelsPTController extends Controller
             ->get();
         $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
         // build a list of all categories used for uploaded documents in this parcel
-        $categories_used = array();
+        $categories_used = [];
         // category keys for name reference ['id' => 'name']
-        $document_categories_key = array();
+        $document_categories_key = [];
         $all_documents_approved = 0;
         $all_documents_uploaded = 0;
         $previous_document_approved = 1;
@@ -133,14 +133,14 @@ class ParcelsPTController extends Controller
         if (count($documents)) {
             // create an associative array to simplify category references for each document
             foreach ($documents as $document) {
-                $categories = array(); // store the new associative array cat id, cat name
+                $categories = []; // store the new associative array cat id, cat name
                  
                 if ($document->categories) {
                     $categories_decoded = json_decode($document->categories, true); // cats used by the doc
 
                     $categories_used = array_merge($categories_used, $categories_decoded); // merge document categories
                 } else {
-                    $categories_decoded = array();
+                    $categories_decoded = [];
                 }
 
                 foreach ($document_categories as $document_category) {
@@ -157,14 +157,14 @@ class ParcelsPTController extends Controller
                 if ($document->approved) {
                     $document->approved_array = json_decode($document->approved, true);
                 } else {
-                    $document->approved_array = array();
+                    $document->approved_array = [];
                 }
 
                 // get notapproved category id in an array
                 if ($document->notapproved) {
                     $document->notapproved_array = json_decode($document->notapproved, true);
                 } else {
-                    $document->notapproved_array = array();
+                    $document->notapproved_array = [];
                 }
                 
                 $count_approved_cat_matched = 0;
@@ -182,7 +182,7 @@ class ParcelsPTController extends Controller
                 }
             }
         } else {
-            $documents = array();
+            $documents = [];
         }
         // if there are pending categories left, set the status id
         $pending_categories = array_diff($categories_needed, $categories_used);
@@ -413,7 +413,7 @@ class ParcelsPTController extends Controller
 
         if (count($cost_item)) {
             // if cost item has a retainage, it cannot be deleted
-            if($cost_item->retainage){
+            if ($cost_item->retainage) {
                 $output['message'] = "This item cannot be deleted because it has a retainage!";
                 return $output;
             }
@@ -543,7 +543,6 @@ class ParcelsPTController extends Controller
                 $request_item = RequestItem::where('id', '=', $request_item_id)->first();
 
                 if ($request_item) {
-
                     // check if there is already a PO first
                     $po_id = null;
                     $existing_po = ParcelsToPurchaseOrder::where('parcel_id', '=', $parcel->id)->first();
@@ -811,7 +810,7 @@ class ParcelsPTController extends Controller
                 ->load('account.transactions')
                 ->load('program');
 
-        $stat = array();
+        $stat = [];
         $stat = $stat + $request->account->statsParcels->toArray()[0]
                         + $request->account->statsTransactions->toArray()[0]
                         + $request->account->statsCostItems->toArray()[0]
@@ -835,7 +834,7 @@ class ParcelsPTController extends Controller
         $total = money_format('%n', $total);
 
         
-        $owners_array = array();
+        $owners_array = [];
         foreach ($request->notes as $note) {
             // create initials
             $words = explode(" ", $note->owner->name);
@@ -873,7 +872,7 @@ class ParcelsPTController extends Controller
         $added_approvers = ApprovalRequest::where('approval_type_id', '=', 2)
                                         ->where('link_type_id', '=', $request->id)
                                         ->pluck('user_id as id');
-        $pending_approvers = array();
+        $pending_approvers = [];
 
         if (count($added_approvers) == 0 && count($landbankRequestApprovers) > 0) {
             foreach ($landbankRequestApprovers as $landbankRequestApprover) {
@@ -1193,7 +1192,9 @@ class ParcelsPTController extends Controller
 
     public function approveRequestUploadSignature(ReimbursementRequest $req, Request $request)
     {
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
         
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -1215,7 +1216,7 @@ class ParcelsPTController extends Controller
                     $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
                     
                     // sanitize filename
-                    $characters = array(' ','´','`',"'",'~','"','\'','\\','/');
+                    $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
                     $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                     // Create a record in documents table
@@ -1291,7 +1292,7 @@ class ParcelsPTController extends Controller
         }
     }
 
-    public function approveRequest(ReimbursementRequest $request, $approvers=null, $document_ids=null)
+    public function approveRequest(ReimbursementRequest $request, $approvers = null, $document_ids = null)
     {
         if ((!Auth::user()->isLandbankRequestApprover() || Auth::user()->entity_id != $request->entity_id) && !Auth::user()->isHFAAdmin()) {
             $output['message'] = 'Something went wrong.';
@@ -1322,7 +1323,7 @@ class ParcelsPTController extends Controller
                 if ($document_ids !== null) {
                     $documents = explode(",", $document_ids);
                 } else {
-                    $documents = array();
+                    $documents = [];
                 }
                 $documents_json = json_encode($documents, true);
 
@@ -1465,7 +1466,7 @@ class ParcelsPTController extends Controller
                 ->load('account.transactions')
                 ->load('program');
 
-        $stat = array();
+        $stat = [];
         $stat = $stat + $po->account->statsParcels->toArray()[0]
                         + $po->account->statsTransactions->toArray()[0]
                         + $po->account->statsCostItems->toArray()[0]
@@ -1497,7 +1498,7 @@ class ParcelsPTController extends Controller
         }
         $total = money_format('%n', $total);
         
-        $owners_array = array();
+        $owners_array = [];
         foreach ($po->notes as $note) {
             // create initials
             $words = explode(" ", $note->owner->name);
@@ -1534,7 +1535,7 @@ class ParcelsPTController extends Controller
         $added_approvers = ApprovalRequest::where('approval_type_id', '=', 3)
                                         ->where('link_type_id', '=', $po->id)
                                         ->pluck('user_id as id');
-        $pending_approvers = array();
+        $pending_approvers = [];
 
         if (count($added_approvers) == 0 && count($HFAPOApprovers) > 0) {
             foreach ($HFAPOApprovers as $HFAPOApprover) {
@@ -1685,7 +1686,7 @@ class ParcelsPTController extends Controller
         // create array of random picks
 
         //if($number_of_parcels_to_review > 0){
-        $randomizer = array();
+        $randomizer = [];
         for ($i=0; $i<$count_parcels; $i++) {
             $randomizer[] = $i;
         }
@@ -1723,7 +1724,9 @@ class ParcelsPTController extends Controller
 
     public function approvePOUploadSignature(ReimbursementPurchaseOrders $po, Request $request)
     {
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
         
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -1745,7 +1748,7 @@ class ParcelsPTController extends Controller
                     $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
                     
                     // sanitize filename
-                    $characters = array(' ','¥','`',"'",'~','"','\'','\\','/');
+                    $characters = [' ','¥','`',"'",'~','"','\'','\\','/'];
                     $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                     // Create a record in documents table
@@ -1821,7 +1824,7 @@ class ParcelsPTController extends Controller
         }
     }
 
-    public function approvePO(ReimbursementPurchaseOrders $po, $approvers=null, $document_ids=null)
+    public function approvePO(ReimbursementPurchaseOrders $po, $approvers = null, $document_ids = null)
     {
         if ((!Auth::user()->isLandbankInvoiceApprover() || Auth::user()->entity_id != $po->entity_id) && !Auth::user()->isHFAAdmin() && !Auth::user()->isHFAPOApprover()) {
             $output['message'] = 'Something went wrong.';
@@ -1834,7 +1837,7 @@ class ParcelsPTController extends Controller
                 if ($document_ids !== null) {
                     $documents = explode(",", $document_ids);
                 } else {
-                    $documents = array();
+                    $documents = [];
                 }
                 $documents_json = json_encode($documents, true);
 
@@ -2377,7 +2380,7 @@ class ParcelsPTController extends Controller
         }
 
         if ($forminputs['audit_date']) {
-            $audit_date = $forminputs['audit_date']; 
+            $audit_date = $forminputs['audit_date'];
             $audit_date = Carbon\Carbon::createFromFormat('Y-m-d', $audit_date)->format('Y-m-d H:i:s');
         } else {
             $audit_date = null;
@@ -2429,7 +2432,7 @@ class ParcelsPTController extends Controller
             ]);
         } catch (Exception $e) {
             // do task when error
-           dd($e->getMessage()) ;   // insert query
+            dd($e->getMessage()) ;   // insert query
         }
 
         //if pass then update the parcel
@@ -2495,7 +2498,7 @@ class ParcelsPTController extends Controller
         return 1;
     }
 
-    public function viewParcel($parcel=0, $subtab = '')
+    public function viewParcel($parcel = 0, $subtab = '')
     {
         if ($parcel) {
             session(['subtab' => $subtab]);

@@ -29,7 +29,7 @@ class ParcelsToReimbursementInvoice extends Model
      */
     public function invoice() : HasMany
     {
-        return $this->hasMany('App\ReimbursementInvoice', 'id', 'reimbursement_invoice_id');
+        return $this->hasMany(\App\ReimbursementInvoice::class, 'id', 'reimbursement_invoice_id');
     }
 
     /**
@@ -39,6 +39,6 @@ class ParcelsToReimbursementInvoice extends Model
      */
     public function parcel() : HasMany
     {
-        return $this->hasMany('App\Parcel', 'id', 'parcel_id');
+        return $this->hasMany(\App\Parcel::class, 'id', 'parcel_id');
     }
 }

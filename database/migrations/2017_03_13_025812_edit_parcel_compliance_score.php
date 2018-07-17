@@ -14,7 +14,7 @@ class EditParcelComplianceScore extends Migration
     public function up()
     {
         Schema::table('parcels', function (Blueprint $table) {
-            $table->string('compliance_score')->nullable();      
+            $table->string('compliance_score')->nullable();
         });
     }
 

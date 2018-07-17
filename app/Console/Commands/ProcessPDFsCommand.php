@@ -60,8 +60,8 @@ class ProcessPDFsCommand extends Command
         $folders = glob("storage/app/docuware/*/*/");
         $view_log->info('Starting new PDF process');
 
-        $used_categories = array();
-        $key_categories = array();
+        $used_categories = [];
+        $key_categories = [];
 
         $categories = DocumentCategory::where('active', '=', 1)->get();
         if (count($categories) < 1) {
@@ -166,7 +166,7 @@ class ProcessPDFsCommand extends Command
                         //$this->error("ERROR: No Parcel found for  " . $pdf_file);
                         $proceed = 0;
                         if ($pdf_file) {
-                            $characters = array(' ','´','`',"'",'~','"','\'','\\','/');
+                            $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
                             $original_filename = str_replace($characters, '_', $item['ohfa_file']);
                             
                             $filename = $original_filename;
@@ -192,7 +192,7 @@ class ProcessPDFsCommand extends Command
                             $view_log->warning('/ No Parcel found for ' . $pdf_file.PHP_EOL);
                         }
                         if ($xlsx_file) {
-                            $characters = array(' ','´','`',"'",'~','"','\'','\\','/');
+                            $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
                             $original_filename = str_replace($characters, '_', $item['ohfa_file']);
                             
                             $filename = $original_filename;
@@ -234,7 +234,7 @@ class ProcessPDFsCommand extends Command
                 $categories_json = json_encode([$document_type->id], true);
                 
                 // sanitize filename
-                $characters = array(' ','´','`',"'",'~','"','\'','\\','/');
+                $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $item['ohfa_file']);
             
                 // check if document has been processed already

@@ -28,7 +28,6 @@ class CreateSharedParcelToParcelsTable extends Migration
             $table->integer('parcel_id')->references('id')->on('parcels');
         });
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
     }
 
     /**
@@ -43,6 +42,4 @@ class CreateSharedParcelToParcelsTable extends Migration
         Schema::dropIfExists('shared_parcel_to_parcels');
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
-
-    
 }

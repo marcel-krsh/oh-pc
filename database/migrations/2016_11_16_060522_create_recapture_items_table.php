@@ -22,7 +22,7 @@ class CreateRecaptureItemsTable extends Migration
             $table->integer('entity_id');
             $table->integer('account_id');
             $table->integer('expense_category_id')->default(1);
-            $table->float('amount',10,2)->nullable();
+            $table->float('amount', 10, 2)->nullable();
             $table->string('description')->nullable();
             $table->text('notes')->nullable();
             $table->date('requested')->nullable();

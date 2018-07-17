@@ -14,16 +14,16 @@ class AdvanceDesignationBreakouts extends Migration
     public function up()
     {
         Schema::table('cost_items', function (Blueprint $table) {
-            $table->tinyInteger('advance')->nullable();  
+            $table->tinyInteger('advance')->nullable();
         });
         Schema::table('request_items', function (Blueprint $table) {
-            $table->tinyInteger('advance')->nullable();       
+            $table->tinyInteger('advance')->nullable();
         });
         Schema::table('po_items', function (Blueprint $table) {
-            $table->tinyInteger('advance')->nullable();        
+            $table->tinyInteger('advance')->nullable();
         });
         Schema::table('invoice_items', function (Blueprint $table) {
-            $table->tinyInteger('advance')->nullable();              
+            $table->tinyInteger('advance')->nullable();
         });
     }
 

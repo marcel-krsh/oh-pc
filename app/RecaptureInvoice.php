@@ -37,7 +37,7 @@ class RecaptureInvoice extends Model
      */
     public function status() : HasOne
     {
-        return $this->hasOne('App\InvoiceStatus', 'id', 'status_id');
+        return $this->hasOne(\App\InvoiceStatus::class, 'id', 'status_id');
     }
 
     /**
@@ -47,7 +47,7 @@ class RecaptureInvoice extends Model
      */
     public function transactions()
     {
-        return $this->hasMany('App\Transaction', 'link_to_type_id', 'id')
+        return $this->hasMany(\App\Transaction::class, 'link_to_type_id', 'id')
                 ->where('transactions.type_id', '=', 6);
     }
 
@@ -58,7 +58,7 @@ class RecaptureInvoice extends Model
      */
     public function clearedTransactions() : HasMany
     {
-        return $this->hasMany('App\Transaction', 'link_to_type_id', 'id')
+        return $this->hasMany(\App\Transaction::class, 'link_to_type_id', 'id')
                 ->where('transactions.type_id', '=', 6)
                 ->where('transactions.status_id', '=', 2);
     }
@@ -80,7 +80,7 @@ class RecaptureInvoice extends Model
      */
     public function RecaptureItem() : HasMany
     {
-        return $this->hasMany('App\RecaptureItem', 'recapture_invoice_id', 'id');
+        return $this->hasMany(\App\RecaptureItem::class, 'recapture_invoice_id', 'id');
     }
 
     /**
@@ -131,7 +131,7 @@ class RecaptureInvoice extends Model
             'recapture_total_paid' => $this->totalPaid(),
             'recapture_balance' => $this->balance(),
             'recapture_last_payment_cleared_date' => $lastDate
-      ]);
+        ]);
     }
 
     /**
@@ -141,7 +141,7 @@ class RecaptureInvoice extends Model
      */
     public function entity() : HasOne
     {
-        return $this->hasOne('App\Entity', 'id', 'entity_id');
+        return $this->hasOne(\App\Entity::class, 'id', 'entity_id');
     }
 
     /**
@@ -151,7 +151,7 @@ class RecaptureInvoice extends Model
      */
     public function program() : HasOne
     {
-        return $this->hasOne('App\Program', 'id', 'program_id');
+        return $this->hasOne(\App\Program::class, 'id', 'program_id');
     }
 
     /**
@@ -161,7 +161,7 @@ class RecaptureInvoice extends Model
      */
     public function notes()
     {
-        return $this->hasMany('App\RecaptureInvoiceNote', 'recapture_invoice_id', 'id')
+        return $this->hasMany(\App\RecaptureInvoiceNote::class, 'recapture_invoice_id', 'id')
                 ->with('owner')
                 ->orderBy('created_at', 'asc');
     }
@@ -173,6 +173,6 @@ class RecaptureInvoice extends Model
      */
     public function account() : HasOne
     {
-        return $this->hasOne('App\Account', 'id', 'account_id');
+        return $this->hasOne(\App\Account::class, 'id', 'account_id');
     }
 }

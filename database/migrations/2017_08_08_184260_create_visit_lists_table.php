@@ -16,7 +16,7 @@ class CreateVisitListsTable extends Migration
         Schema::create('visit_lists', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
-            $table->string('device_id',30);
+            $table->string('device_id', 30);
             $table->integer('parcel_id');
             $table->date('added_date');
             $table->date('updated_date');

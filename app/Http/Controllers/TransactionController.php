@@ -37,7 +37,7 @@ class TransactionController extends Controller
         }
 
         $statuses = TransactionStatus::get()->toArray();
-        $status_array = array();
+        $status_array = [];
         foreach ($statuses as $status) {
             $status_array[$status['id']]['name'] = $status['status_name'];
             $status_array[$status['id']]['id'] = $status['id'];
@@ -54,7 +54,7 @@ class TransactionController extends Controller
         }
 
         $statuses = TransactionStatus::get()->toArray();
-        $status_array = array();
+        $status_array = [];
         foreach ($statuses as $status) {
             $status_array[$status['id']]['name'] = $status['status_name'];
             $status_array[$status['id']]['id'] = $status['id'];
@@ -71,7 +71,7 @@ class TransactionController extends Controller
         }
 
         $statuses = TransactionStatus::get()->toArray();
-        $status_array = array();
+        $status_array = [];
         foreach ($statuses as $status) {
             $status_array[$status['id']]['name'] = $status['status_name'];
             $status_array[$status['id']]['id'] = $status['id'];
@@ -88,7 +88,7 @@ class TransactionController extends Controller
         }
 
         $statuses = TransactionStatus::get()->toArray();
-        $status_array = array();
+        $status_array = [];
         foreach ($statuses as $status) {
             $status_array[$status['id']]['name'] = $status['status_name'];
             $status_array[$status['id']]['id'] = $status['id'];
@@ -105,7 +105,7 @@ class TransactionController extends Controller
         }
 
         $statuses = TransactionStatus::get()->toArray();
-        $status_array = array();
+        $status_array = [];
         foreach ($statuses as $status) {
             $status_array[$status['id']]['name'] = $status['status_name'];
             $status_array[$status['id']]['id'] = $status['id'];
@@ -122,7 +122,7 @@ class TransactionController extends Controller
         }
 
         $statuses = TransactionStatus::get()->toArray();
-        $status_array = array();
+        $status_array = [];
         foreach ($statuses as $status) {
             $status_array[$status['id']]['name'] = $status['status_name'];
             $status_array[$status['id']]['id'] = $status['id'];
@@ -140,7 +140,7 @@ class TransactionController extends Controller
         }
 
         $statuses = TransactionStatus::get()->toArray();
-        $status_array = array();
+        $status_array = [];
         foreach ($statuses as $status) {
             $status_array[$status['id']]['name'] = $status['status_name'];
             $status_array[$status['id']]['id'] = $status['id'];
@@ -158,7 +158,7 @@ class TransactionController extends Controller
         }
 
         $statuses = TransactionStatus::get()->toArray();
-        $status_array = array();
+        $status_array = [];
         foreach ($statuses as $status) {
             $status_array[$status['id']]['name'] = $status['status_name'];
             $status_array[$status['id']]['id'] = $status['id'];
@@ -425,7 +425,6 @@ class TransactionController extends Controller
                 // get all the dispositions
                 $dispositions = \App\DispositionsToInvoice::where('disposition_invoice_id', $invoice->id)->get()->all();
                 foreach ($dispositions as $disposition) {
-                   
                         //update disposition step
                         guide_set_progress($disposition->id, 22, $status = 'completed', 1); // mark dispositions paid.
                         guide_next_pending_step(1, $disposition->id);
@@ -451,7 +450,7 @@ class TransactionController extends Controller
                 foreach ($parcelstoinvoice as $parceltoinvoice) {
                     $parcel = Parcel::where('id', '=', $parceltoinvoice->parcel_id)->first();
 
-                    if($parcel){
+                    if ($parcel) {
                         //update parcel step
                         guide_set_progress($parcel->id, 54, $status = 'completed', 1); // mark dispositions paid.
                         guide_next_pending_step(2, $parcel->id);

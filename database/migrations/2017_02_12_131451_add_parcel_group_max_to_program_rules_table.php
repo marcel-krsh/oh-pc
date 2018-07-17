@@ -15,7 +15,7 @@ class AddParcelGroupMaxToProgramRulesTable extends Migration
     {
         Schema::table('program_rules', function (Blueprint $table) {
             //
-            $table->float('parcel_group_max',10,2)->default(75000);
+            $table->float('parcel_group_max', 10, 2)->default(75000);
         });
     }
 

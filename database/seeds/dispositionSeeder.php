@@ -11,24 +11,23 @@ class DispositionSeeder extends Seeder
      */
     public function run()
     {
-        $approvalActionTypesData = array(
-              array('approval_action_name'=>'Approve'),
-              array('approval_action_name'=>'Corrections Needed'),
-              array('approval_action_name'=>'Release'),
-              array('approval_action_name'=>'Decline')
-        );
-        DB::table('approval_action_types')->insert($approvalActionTypesData); 
+        $approvalActionTypesData = [
+              ['approval_action_name'=>'Approve'],
+              ['approval_action_name'=>'Corrections Needed'],
+              ['approval_action_name'=>'Release'],
+              ['approval_action_name'=>'Decline']
+        ];
+        DB::table('approval_action_types')->insert($approvalActionTypesData);
 
-        $approvalTypesData = array(
-              array('approval_type_name'=>'Disposition', 'table_name'=>'dispositions'),
-              array('approval_type_name'=>'Reimbursement Request', 'table_name'=>'reimbursement_requests'),
-              array('approval_type_name'=>'Reimbursement PO', 'table_name'=>'reimbursement_purchase_orders'),
-              array('approval_type_name'=>'Reimbursement Invoice', 'table_name'=>'reimbursement_invoices'),
-              array('approval_type_name'=>'Recapture Invoice', 'table_name'=>'recapture_invoices'),
-              array('approval_type_name'=>'Historic Waiver', 'table_name'=>''),
-              array('approval_type_name'=>'Target Area Amendment', 'table_name'=>'')
-        );
-        DB::table('approval_types')->insert($approvalTypesData); 
-        
+        $approvalTypesData = [
+              ['approval_type_name'=>'Disposition', 'table_name'=>'dispositions'],
+              ['approval_type_name'=>'Reimbursement Request', 'table_name'=>'reimbursement_requests'],
+              ['approval_type_name'=>'Reimbursement PO', 'table_name'=>'reimbursement_purchase_orders'],
+              ['approval_type_name'=>'Reimbursement Invoice', 'table_name'=>'reimbursement_invoices'],
+              ['approval_type_name'=>'Recapture Invoice', 'table_name'=>'recapture_invoices'],
+              ['approval_type_name'=>'Historic Waiver', 'table_name'=>''],
+              ['approval_type_name'=>'Target Area Amendment', 'table_name'=>'']
+        ];
+        DB::table('approval_types')->insert($approvalTypesData);
     }
 }

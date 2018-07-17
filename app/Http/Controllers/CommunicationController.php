@@ -71,7 +71,7 @@ class CommunicationController extends Controller
 
         $current_user = Auth::user();
 
-        $owners_array = array();
+        $owners_array = [];
         foreach ($messages as $message) {
             // create initials
             $words = explode(" ", $message->owner->name);
@@ -91,7 +91,7 @@ class CommunicationController extends Controller
 
             // get recipients details
             // could be a better query... TBD
-            $recipients_array = array();
+            $recipients_array = [];
             foreach ($message->recipients as $recipient) {
                 $recipients_array[$recipient->id] = User::find($recipient->user_id);
             }
@@ -135,9 +135,8 @@ class CommunicationController extends Controller
 
     public function newCommunicationEntry($parcel_id = null)
     {
-        if($parcel_id !== null){
-
-            $parcel = Parcel::where('id','=',$parcel_id)->first();
+        if ($parcel_id !== null) {
+            $parcel = Parcel::where('id', '=', $parcel_id)->first();
 
             $documents = Document::where('parcel_id', $parcel->id)
                 ->orderBy('created_at', 'desc')
@@ -146,20 +145,20 @@ class CommunicationController extends Controller
             $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
 
             // build a list of all categories used for uploaded documents in this parcel
-            $categories_used = array();
+            $categories_used = [];
             // category keys for name reference ['id' => 'name']
-            $document_categories_key = array();
+            $document_categories_key = [];
 
             if (count($documents)) {
                 // create an associative array to simplify category references for each document
                 foreach ($documents as $document) {
-                    $categories = array(); // store the new associative array cat id, cat name
+                    $categories = []; // store the new associative array cat id, cat name
                      
                     if ($document->categories) {
                         $categories_decoded = json_decode($document->categories, true); // cats used by the doc
                             $categories_used = array_merge($categories_used, $categories_decoded); // merge document categories
                     } else {
-                        $categories_decoded = array();
+                        $categories_decoded = [];
                     }
 
                     foreach ($document_categories as $document_category) {
@@ -173,7 +172,7 @@ class CommunicationController extends Controller
                     $document->categoriesarray = $categories;
                 }
             } else {
-                $documents = array();
+                $documents = [];
             }
 
             $recipients_from_hfa = User::where('entity_id', '1')
@@ -193,16 +192,14 @@ class CommunicationController extends Controller
             }
 
             return view('modals.new-outbound-email-entry', compact('parcel', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa'));
-
-        }else{
-
+        } else {
             $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
 
             // build a list of all categories used for uploaded documents in this parcel
-            $categories_used = array();
+            $categories_used = [];
             // category keys for name reference ['id' => 'name']
-            $document_categories_key = array();
-            $documents = array();
+            $document_categories_key = [];
+            $documents = [];
 
             $recipients_from_hfa = User::where('entity_id', '1')
                     ->where('active', 1)
@@ -223,9 +220,7 @@ class CommunicationController extends Controller
             $parcel = null;
 
             return view('modals.new-outbound-email-entry', compact('parcel', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa'));
-        
         }
-        
     }
 
 
@@ -233,7 +228,7 @@ class CommunicationController extends Controller
     public function searchCommunications(Parcel $parcel, Request $request)
     {
         if ($request->has('communications-search')) {
-            Session::set('communications-search', $request->get('communications-search'));
+            Session::put('communications-search', $request->get('communications-search'));
         } else {
             Session::forget('communications-search');
         }
@@ -258,7 +253,7 @@ class CommunicationController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      * @throws \Exception
      */
-    public function viewReplies($parcel_id=null, $message_id)
+    public function viewReplies($parcel_id = null, $message_id)
     {
         $message = Communication::where('id', $message_id)
                     ->with('owner')
@@ -286,20 +281,20 @@ class CommunicationController extends Controller
         // set "seen" as 1 when user reads messages
         $current_user = Auth::user();
 
-        $message_id_array = array();
+        $message_id_array = [];
         $message_id_array[] = $message->id;
         foreach ($replies as $reply) {
             $message_id_array[] = $reply->id;
         }
         $user_needs_to_read_more = CommunicationRecipient::whereIn('communication_id', $message_id_array)->where('user_id', $current_user->id)->where('seen', 0)->update(['seen' => 1]);
 
-        if($parcel){
+        if ($parcel) {
             // fetch documents and categories
             $documents = Document::where('parcel_id', $parcel->id)
                 ->orderBy('created_at', 'desc')
                 ->get();
             $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
-        }else{
+        } else {
             $documents = null;
             $document_categories = null;
         }
@@ -312,22 +307,22 @@ class CommunicationController extends Controller
         }
         $message->initials = $initials;
 
-        $recipients_array = array();
+        $recipients_array = [];
         foreach ($message->recipients as $recipient) {
             $recipients_array[$recipient->id] = User::find($recipient->user_id);
         }
         $message->recipient_details = $recipients_array;
 
-        $categories_used = array();
-        $document_categories_key = array();
+        $categories_used = [];
+        $document_categories_key = [];
         if (count($message->documents)) {
             foreach ($message->documents as $document) {
-                $categories = array();
+                $categories = [];
                 if ($document->document->categories) {
                     $categories_decoded = json_decode($document->document->categories, true); // cats used by the doc
                     $categories_used = array_merge($categories_used, $categories_decoded); // merge document categories
                 } else {
-                    $categories_decoded = array();
+                    $categories_decoded = [];
                 }
                 foreach ($document_categories as $document_category) {
                     $document_categories_key[$document_category->id] = $document_category->document_category_name;
@@ -339,7 +334,7 @@ class CommunicationController extends Controller
                 $document->categoriesarray = $categories;
             }
         } else {
-            $message->documents = array();
+            $message->documents = [];
         }
 
         foreach ($replies as $reply) {
@@ -355,7 +350,7 @@ class CommunicationController extends Controller
             $reply->initials = $initials;
 
             // get the recipients' details
-            $recipients_array = array();
+            $recipients_array = [];
             foreach ($reply->recipients as $recipient) {
                 $recipients_array[$recipient->id] = User::find($recipient->user_id);
             }
@@ -363,18 +358,18 @@ class CommunicationController extends Controller
 
             // get the category names for each document in each reply
             // build a list of all categories used for uploaded documents
-            $categories_used = array();
+            $categories_used = [];
             // category keys for name reference ['id' => 'name']
-            $document_categories_key = array();
+            $document_categories_key = [];
 
             if (count($reply->documents)) {
                 foreach ($reply->documents as $document) {
-                    $categories = array();
+                    $categories = [];
                     if ($document->document->categories) {
                         $categories_decoded = json_decode($document->document->categories, true); // cats used by the doc
                         $categories_used = array_merge($categories_used, $categories_decoded); // merge document categories
                     } else {
-                        $categories_decoded = array();
+                        $categories_decoded = [];
                     }
                     foreach ($document_categories as $document_category) {
                         $document_categories_key[$document_category->id] = $document_category->document_category_name;
@@ -386,7 +381,7 @@ class CommunicationController extends Controller
                     $document->categoriesarray = $categories;
                 }
             } else {
-                $reply->documents = array();
+                $reply->documents = [];
             }
         }
 
@@ -395,13 +390,13 @@ class CommunicationController extends Controller
         if (count($documents)) {
             // create an associative array to simplify category references for each document
             foreach ($documents as $document) {
-                $categories = array(); // store the new associative array cat id, cat name
+                $categories = []; // store the new associative array cat id, cat name
                  
                 if ($document->categories) {
                     $categories_decoded = json_decode($document->categories, true); // cats used by the doc
                     $categories_used = array_merge($categories_used, $categories_decoded); // merge document categories
                 } else {
-                    $categories_decoded = array();
+                    $categories_decoded = [];
                 }
 
                 foreach ($document_categories as $document_category) {
@@ -415,7 +410,7 @@ class CommunicationController extends Controller
                 $document->categoriesarray = $categories;
             }
         } else {
-            $documents = array();
+            $documents = [];
         }
 
         //prevents the UIkit notify to show up after reading the message
@@ -441,7 +436,7 @@ class CommunicationController extends Controller
         }
 
         if ($forminputs['messageBody']) {
-            if(isset($forminputs['parcel'])){
+            if (isset($forminputs['parcel'])) {
                 try {
                     $parcel_id = (int) $forminputs['parcel'];
                     $parcel = Parcel::where('id', $parcel_id)->first();
@@ -449,7 +444,7 @@ class CommunicationController extends Controller
                     dd($ex->getMessage());
                 }
                 $parcel_id = $parcel->id;
-            }else{
+            } else {
                 $parcel_id = null;
             }
 
@@ -476,7 +471,6 @@ class CommunicationController extends Controller
                 $lc = new LogConverter('communication', 'create');
                 $lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
             } else {
-
                 $subject = (string) $forminputs['subject'];
                 $message = new Communication([
                     'owner_id' => $user->id,
@@ -574,21 +568,20 @@ class CommunicationController extends Controller
                     ->orderBy('id', 'desc')
                     ->get();
 
-        $output_array = array();
+        $output_array = [];
         $output_array['count'] = count($messages_unseen);
         foreach ($messages_unseen as $message_unseen) {
-
-            if($message_unseen->communication->parent_id){
+            if ($message_unseen->communication->parent_id) {
                 $message['parent_id'] = $message_unseen->communication->parent_id;
-            }else{
+            } else {
                 $message['parent_id'] = null;
             }
             $message['communication_id'] = $message_unseen->communication_id;
             $message['summary'] = strlen($message_unseen->communication->message) > 400 ? substr($message_unseen->communication->message, 0, 200)."..." : $message_unseen->communication->message;
             $message['owner_name'] = $message_unseen->communication->owner->name;
-            if($message_unseen->communication->parcel !== null){
+            if ($message_unseen->communication->parcel !== null) {
                 $message['parcel_id'] = $message_unseen->communication->parcel->parcel_id;
-            }else{
+            } else {
                 $message['parcel_id'] = null;
             }
             $output_array['messages'][] = $message;
@@ -701,7 +694,7 @@ class CommunicationController extends Controller
 
             if (count($all_messages)) {
                 // now that we have all the messages ordered we need to only keep parents
-                $parents_array = array();
+                $parents_array = [];
                 foreach ($all_messages as $all_message) {
                     if ($all_message->parent_id === null) {
                         if (!in_array($all_message->id, $parents_array)) {
@@ -734,7 +727,7 @@ class CommunicationController extends Controller
 
             if (count($all_messages)) {
                 // now that we have all the messages ordered we need to only keep parents
-                $parents_array = array();
+                $parents_array = [];
                 foreach ($all_messages as $all_message) {
                     if ($all_message->parent_id === null) {
                         if (!in_array($all_message->id, $parents_array)) {
@@ -756,7 +749,7 @@ class CommunicationController extends Controller
             }
         }
 
-        $owners_array = array();
+        $owners_array = [];
 
         if ($messages) {
             foreach ($messages as $message) {
@@ -780,7 +773,7 @@ class CommunicationController extends Controller
 
                 // get recipients details
                 // could be a better query... TBD
-                $recipients_array = array();
+                $recipients_array = [];
                 foreach ($message->recipients as $recipient) {
                     $recipients_array[$recipient->id] = User::find($recipient->user_id);
                 }
@@ -815,7 +808,7 @@ class CommunicationController extends Controller
                     ->count();
 
                 // combine all documents from main message and its replies
-                $all_docs = array();
+                $all_docs = [];
                 if ($message->documents) {
                     foreach ($message->documents as $message_document) {
                         $all_docs[] = $message_document;

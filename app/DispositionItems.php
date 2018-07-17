@@ -59,7 +59,7 @@ class DispositionItems extends Model
      */
     public function expenseCategory() : HasOne
     {
-        return $this->hasOne('App\ExpenseCategory', 'id', 'expense_category_id');
+        return $this->hasOne(\App\ExpenseCategory::class, 'id', 'expense_category_id');
     }
 
     /**
@@ -69,7 +69,7 @@ class DispositionItems extends Model
      */
     public function vendor() : HasOne
     {
-        return $this->hasOne('App\Vendor', 'id', 'vendor_id');
+        return $this->hasOne(\App\Vendor::class, 'id', 'vendor_id');
     }
 
     /**
@@ -79,7 +79,7 @@ class DispositionItems extends Model
      */
     public function parcel() : HasOne
     {
-        return $this->hasOne('App\Parcel', 'id', 'parcel_id');
+        return $this->hasOne(\App\Parcel::class, 'id', 'parcel_id');
     }
 
     /**
@@ -89,6 +89,6 @@ class DispositionItems extends Model
      */
     public function breakoutStatus() : HasOne
     {
-        return $this->hasOne('App\BreakoutItemsStatus', 'id', 'breakout_item_status_id');
+        return $this->hasOne(\App\BreakoutItemsStatus::class, 'id', 'breakout_item_status_id');
     }
 }

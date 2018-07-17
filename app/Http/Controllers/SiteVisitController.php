@@ -70,7 +70,6 @@ class SiteVisitController extends Controller
     public function visitList(Request $request)
     {
         if (Gate::allows('view-all-parcels')) {
-
             // determine if they are OHFA or not
             if (Auth::user()->entity_id != 1) {
                 // create values for a where clause
@@ -198,17 +197,17 @@ class SiteVisitController extends Controller
                 switch ($request->query('svm_parcels_asc_desc')) {
                     case '1':
                         # code...
-                    session(['svm_parcels_asc_desc'=> 'desc']);
-                    $svmParcelsAscDesc =  $request->session()->get('svm_parcels_asc_desc');
-                    session(['svm_parcels_asc_desc_opposite' => ""]);
-                    $svmParcelsAscDescOpposite =  $request->session()->get('svm_parcels_asc_desc_opposite');
+                        session(['svm_parcels_asc_desc'=> 'desc']);
+                        $svmParcelsAscDesc =  $request->session()->get('svm_parcels_asc_desc');
+                        session(['svm_parcels_asc_desc_opposite' => ""]);
+                        $svmParcelsAscDescOpposite =  $request->session()->get('svm_parcels_asc_desc_opposite');
                         break;
                     
                     default:
-                    session(['svm_parcels_asc_desc'=> 'asc']);
-                    $svmParcelsAscDesc =  $request->session()->get('svm_parcels_asc_desc');
-                    session(['svm_parcels_asc_desc_opposite' => 1]);
-                    $svmParcelsAscDescOpposite = $request->session()->get('svm_parcels_asc_desc_opposite');
+                        session(['svm_parcels_asc_desc'=> 'asc']);
+                        $svmParcelsAscDesc =  $request->session()->get('svm_parcels_asc_desc');
+                        session(['svm_parcels_asc_desc_opposite' => 1]);
+                        $svmParcelsAscDescOpposite = $request->session()->get('svm_parcels_asc_desc_opposite');
                         break;
                 }
                 switch ($svmSortedBy) {
@@ -287,12 +286,12 @@ class SiteVisitController extends Controller
                         
                         break;
 
-                   case '13':
+                    case '13':
                         #  HFA Status
                         session(['svm_parcels_sort_by' => 'hfa_property_status_name']);
                         $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
                         break;
-                   case '14':
+                    case '14':
                         #  HFA Status
                         session(['svm_parcels_sort_by' => 'target_area_name']);
                         $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
@@ -395,15 +394,15 @@ class SiteVisitController extends Controller
     public function sitevisitstab(Parcel $parcel, Request $request)
     {
         // determine if they are OHFA or not
-            if (Auth::user()->entity_id != 1) {
-                // create values for a where clause
-                $where_entity_id = Auth::user()->entity_id;
-                $where_entity_id_operator = '=';
-            } else {
-                // they are OHFA - see them all
-                $where_entity_id = 0;
-                $where_entity_id_operator = '>';
-            }
+        if (Auth::user()->entity_id != 1) {
+            // create values for a where clause
+            $where_entity_id = Auth::user()->entity_id;
+            $where_entity_id_operator = '=';
+        } else {
+            // they are OHFA - see them all
+            $where_entity_id = 0;
+            $where_entity_id_operator = '>';
+        }
 
             // Build out the query and store it
             // start with sorting
@@ -412,19 +411,19 @@ class SiteVisitController extends Controller
             /// The sorting column
             $svmSortedBy = $request->query('svm_parcels_sort_by');
             /// Retain the original value submitted through the query
-            if (strlen($svmSortedBy)>0) {
-                // update the sort by
-                session(['svm_parcels_sorted_by_query'=>$svmSortedBy]);
-                $svm_parcels_sorted_by_query = $request->session()->get('svm_parcels_sorted_by_query');
-            } elseif (!is_null($request->session()->get('svm_parcels_sorted_by_query'))) {
-                // use the session value
+        if (strlen($svmSortedBy)>0) {
+            // update the sort by
+            session(['svm_parcels_sorted_by_query'=>$svmSortedBy]);
+            $svm_parcels_sorted_by_query = $request->session()->get('svm_parcels_sorted_by_query');
+        } elseif (!is_null($request->session()->get('svm_parcels_sorted_by_query'))) {
+            // use the session value
                 
-                $svm_parcels_sorted_by_query = $request->session()->get('svm_parcels_sorted_by_query');
-            } else {
-                // set the default
-                session(['svm_parcels_sorted_by_query'=>'12']);
-                $svm_parcels_sorted_by_query = $request->session()->get('svm_parcels_sorted_by_query');
-            }
+            $svm_parcels_sorted_by_query = $request->session()->get('svm_parcels_sorted_by_query');
+        } else {
+            // set the default
+            session(['svm_parcels_sorted_by_query'=>'12']);
+            $svm_parcels_sorted_by_query = $request->session()->get('svm_parcels_sorted_by_query');
+        }
 
 
             /// If a new sort has been provided
@@ -433,83 +432,83 @@ class SiteVisitController extends Controller
 
 
             // Check if there is a Program Filter Provided
-            if (is_numeric($request->query('svm_parcels_program_filter'))) {
-                //Update the session
-                session(['svm_parcels_program_filter' => $request->query('svm_parcels_program_filter')]);
-                $svmParcelsProgramFilter = $request->session()->get('svm_parcels_program_filter');
-                session(['svm_parcels_program_filter_operator' => '=']);
-                $svmParcelsProgramFilterOperator = $request->session()->get('svm_parcels_program_filter_operator');
-            } elseif (is_null($request->session()->get('svm_parcels_program_filter')) || $request->query('svm_parcels_program_filter') == 'ALL') {
-                // There is no Program Filter in the Session
-                session(['svm_parcels_program_filter' => '%%']);
-                $svmParcelsProgramFilter = $request->session()->get('svm_parcels_program_filter');
-                session(['svm_parcels_program_filter_operator' => 'LIKE']);
-                $svmParcelsProgramFilterOperator = $request->session()->get('svm_parcels_program_filter_operator');
-            } else {
-                // use values in the session
-                $svmParcelsProgramFilter = $request->session()->get('svm_parcels_program_filter');
-                $svmParcelsProgramFilterOperator = $request->session()->get('svm_parcels_program_filter_operator');
-            }
+        if (is_numeric($request->query('svm_parcels_program_filter'))) {
+            //Update the session
+            session(['svm_parcels_program_filter' => $request->query('svm_parcels_program_filter')]);
+            $svmParcelsProgramFilter = $request->session()->get('svm_parcels_program_filter');
+            session(['svm_parcels_program_filter_operator' => '=']);
+            $svmParcelsProgramFilterOperator = $request->session()->get('svm_parcels_program_filter_operator');
+        } elseif (is_null($request->session()->get('svm_parcels_program_filter')) || $request->query('svm_parcels_program_filter') == 'ALL') {
+            // There is no Program Filter in the Session
+            session(['svm_parcels_program_filter' => '%%']);
+            $svmParcelsProgramFilter = $request->session()->get('svm_parcels_program_filter');
+            session(['svm_parcels_program_filter_operator' => 'LIKE']);
+            $svmParcelsProgramFilterOperator = $request->session()->get('svm_parcels_program_filter_operator');
+        } else {
+            // use values in the session
+            $svmParcelsProgramFilter = $request->session()->get('svm_parcels_program_filter');
+            $svmParcelsProgramFilterOperator = $request->session()->get('svm_parcels_program_filter_operator');
+        }
 
 
-            if (is_numeric($request->query('svm_parcels_status_filter'))) {
-                //Update the session
-                session(['svm_parcels_status_filter' => $request->query('svm_parcels_status_filter')]);
-                $svmParcelsStatusFilter = $request->session()->get('svm_parcels_status_filter');
+        if (is_numeric($request->query('svm_parcels_status_filter'))) {
+            //Update the session
+            session(['svm_parcels_status_filter' => $request->query('svm_parcels_status_filter')]);
+            $svmParcelsStatusFilter = $request->session()->get('svm_parcels_status_filter');
+            session(['svm_parcels_status_filter_operator' => '=']);
+            $svmParcelsStatusFilterOperator = $request->session()->get('svm_parcels_status_filter_operator');
+        } elseif (is_null($request->session()->get('svm_parcels_status_filter')) || $request->query('svm_parcels_status_filter') == 'ALL') {
+            // There is no Program Filter in the Session
+            session(['svm_parcels_status_filter' => '%%']);
+            $svmParcelsStatusFilter = $request->session()->get('svm_parcels_status_filter');
+            session(['svm_parcels_status_filter_operator' => 'LIKE']);
+            $svmParcelsStatusFilterOperator = $request->session()->get('svm_parcels_status_filter_operator');
+        } else {
+            // use values in the session
+            $svmParcelsStatusFilter = $request->session()->get('svm_parcels_status_filter');
+            if ($request->session()->get('svm_parcels_status_filter_operator') == null) {
                 session(['svm_parcels_status_filter_operator' => '=']);
-                $svmParcelsStatusFilterOperator = $request->session()->get('svm_parcels_status_filter_operator');
-            } elseif (is_null($request->session()->get('svm_parcels_status_filter')) || $request->query('svm_parcels_status_filter') == 'ALL') {
-                // There is no Program Filter in the Session
-                session(['svm_parcels_status_filter' => '%%']);
-                $svmParcelsStatusFilter = $request->session()->get('svm_parcels_status_filter');
-                session(['svm_parcels_status_filter_operator' => 'LIKE']);
-                $svmParcelsStatusFilterOperator = $request->session()->get('svm_parcels_status_filter_operator');
-            } else {
-                // use values in the session
-                $svmParcelsStatusFilter = $request->session()->get('svm_parcels_status_filter');
-                if ($request->session()->get('svm_parcels_status_filter_operator') == null) {
-                    session(['svm_parcels_status_filter_operator' => '=']);
-                }
-                $svmParcelsStatusFilterOperator = $request->session()->get('svm_parcels_status_filter_operator');
             }
+            $svmParcelsStatusFilterOperator = $request->session()->get('svm_parcels_status_filter_operator');
+        }
 
-            if (is_numeric($request->query('svm_hfa_parcels_status_filter'))) {
-                //Update the session
-                session(['svm_hfa_parcels_status_filter' => $request->query('svm_hfa_parcels_status_filter')]);
-                $svmHfaParcelsStatusFilter = $request->session()->get('svm_hfa_parcels_status_filter');
-                if ($request->session()->get('svm_hfa_parcels_status_filter_operator') == null) {
-                    session(['svm_hfa_parcels_status_filter_operator' => '=']);
-                }
-                $svmHfaParcelsStatusFilterOperator = $request->session()->get('svm_hfa_parcels_status_filter_operator');
-            } elseif (is_null($request->session()->get('svm_hfa_parcels_status_filter')) || $request->query('svm_hfa_parcels_status_filter') == 'ALL') {
-                // There is no Program Filter in the Session
-                session(['svm_hfa_parcels_status_filter' => '%%']);
-                $svmHfaParcelsStatusFilter = $request->session()->get('svm_hfa_parcels_status_filter');
-                session(['svm_hfa_parcels_status_filter_operator' => 'LIKE']);
-                $svmHfaParcelsStatusFilterOperator = $request->session()->get('svm_hfa_parcels_status_filter_operator');
-            } else {
-                // use values in the session
-                $svmHfaParcelsStatusFilter = $request->session()->get('svm_hfa_parcels_status_filter');
-                if ($request->session()->get('svm_hfa_parcels_status_filter_operator') == null) {
-                    session(['svm_hfa_parcels_status_filter_operator' => '=']);
-                }
-                $svmHfaParcelsStatusFilterOperator = $request->session()->get('svm_hfa_parcels_status_filter_operator');
+        if (is_numeric($request->query('svm_hfa_parcels_status_filter'))) {
+            //Update the session
+            session(['svm_hfa_parcels_status_filter' => $request->query('svm_hfa_parcels_status_filter')]);
+            $svmHfaParcelsStatusFilter = $request->session()->get('svm_hfa_parcels_status_filter');
+            if ($request->session()->get('svm_hfa_parcels_status_filter_operator') == null) {
+                session(['svm_hfa_parcels_status_filter_operator' => '=']);
             }
+            $svmHfaParcelsStatusFilterOperator = $request->session()->get('svm_hfa_parcels_status_filter_operator');
+        } elseif (is_null($request->session()->get('svm_hfa_parcels_status_filter')) || $request->query('svm_hfa_parcels_status_filter') == 'ALL') {
+            // There is no Program Filter in the Session
+            session(['svm_hfa_parcels_status_filter' => '%%']);
+            $svmHfaParcelsStatusFilter = $request->session()->get('svm_hfa_parcels_status_filter');
+            session(['svm_hfa_parcels_status_filter_operator' => 'LIKE']);
+            $svmHfaParcelsStatusFilterOperator = $request->session()->get('svm_hfa_parcels_status_filter_operator');
+        } else {
+            // use values in the session
+            $svmHfaParcelsStatusFilter = $request->session()->get('svm_hfa_parcels_status_filter');
+            if ($request->session()->get('svm_hfa_parcels_status_filter_operator') == null) {
+                session(['svm_hfa_parcels_status_filter_operator' => '=']);
+            }
+            $svmHfaParcelsStatusFilterOperator = $request->session()->get('svm_hfa_parcels_status_filter_operator');
+        }
 
             // SET THE FILTER BADGE FOR STATUS
-            if (session('svm_parcels_status_filter') != '%%') {
-                $svmStatusFiltered = DB::table('property_status_options')->select('option_name')->where('id', '=', session('svm_parcels_status_filter'))->first();
-                $svmStatusFiltered = $svmStatusFiltered->option_name;
-            } else {
-                $svmStatusFiltered = null;
-            }
+        if (session('svm_parcels_status_filter') != '%%') {
+            $svmStatusFiltered = DB::table('property_status_options')->select('option_name')->where('id', '=', session('svm_parcels_status_filter'))->first();
+            $svmStatusFiltered = $svmStatusFiltered->option_name;
+        } else {
+            $svmStatusFiltered = null;
+        }
 
-            if (session('svm_hfa_parcels_status_filter') != '%%') {
-                $svmHfaStatusFiltered = DB::table('property_status_options')->select('option_name')->where('id', '=', session('svm_hfa_parcels_status_filter'))->first();
-                $svmHfaStatusFiltered = $svmHfaStatusFiltered->option_name;
-            } else {
-                $svmHfaStatusFiltered = null;
-            }
+        if (session('svm_hfa_parcels_status_filter') != '%%') {
+            $svmHfaStatusFiltered = DB::table('property_status_options')->select('option_name')->where('id', '=', session('svm_hfa_parcels_status_filter'))->first();
+            $svmHfaStatusFiltered = $svmHfaStatusFiltered->option_name;
+        } else {
+            $svmHfaStatusFiltered = null;
+        }
             
             // Insert other Filters here
             
@@ -517,189 +516,189 @@ class SiteVisitController extends Controller
 
             /// determin sort
 
-            if (!is_null($svmSortedBy)) {
-                switch ($request->query('svm_parcels_asc_desc')) {
-                    case '1':
-                        # code...
+        if (!is_null($svmSortedBy)) {
+            switch ($request->query('svm_parcels_asc_desc')) {
+                case '1':
+                    # code...
                     session(['svm_parcels_asc_desc'=> 'desc']);
                     $svmParcelsAscDesc =  $request->session()->get('svm_parcels_asc_desc');
                     session(['svm_parcels_asc_desc_opposite' => ""]);
                     $svmParcelsAscDescOpposite =  $request->session()->get('svm_parcels_asc_desc_opposite');
-                        break;
+                    break;
                     
-                    default:
+                default:
                     session(['svm_parecels_asc_desc'=> 'asc']);
                     $svmParcelsAscDesc =  $request->session()->get('svm_parcels_asc_desc');
                     session(['svm_parcels_asc_desc_opposite' => 1]);
                     $svmParcelsAscDescOpposite = $request->session()->get('svm_parcels_asc_desc_opposite');
-                        break;
-                }
-                switch ($svmSortedBy) {
-                    case '1':
-                        # parcel id
-                        session(['svm_parcels_sort_by' => 'parcels.parcel_id']);
-                        $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                        break;
-                    case '2':
-                        # Address street
-                        session(['svm_parcels_sort_by' => 'street_address']);
-                        $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                        break;
-                    case '3':
-                        # Address city
-                        session(['svm_parcels_sort_by' => 'city']);
-                        $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                        break;
-                    case '4':
-                        # Address state
-                        session(['svm_parcels_sort_by' =>'state_acronym']);
-                        $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                        break;
-                    case '5':
-                        # Address zip
-                        session(['svm_parcels_sort_by' =>'zip']);
-                        $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                        break;
-                    case '6':
-                        # program
-                        session(['svm_parcels_sort_by' => 'program_name']);
-                        $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                        break;
-                    case '7':
-                        # Cost
-                        session(['svm_parcels_sort_by' => 'cost_total']);
-                        $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                        break;
-                    case '8':
-                        #  Requested
-                        session(['svm_parcels_sort_by' => 'requested_total']);
-                        $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                        break;
-                    case '9':
-                        #  Approved
-                        session(['svm_parcels_sort_by' => 'approved_total']);
-                        $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                        break;
-                    case '10':
-                        #  Paid
-                        session(['svm_parcels_sort_by' => 'invoiced_total']);
-                        $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                        break;
-                    case '11':
-                        #  Paid
-                        session(['svm_parcels_sort_by' => 'lb_property_status_name']);
-                        $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                        break;
-                    case '12':
-                        #  Date
-                        //if it has site visits... order by SiteVisits date
-                        // $prelim = SiteVisits::
-                        //         join('parcels','parcels.id','site_visits.parcel_id')
-                        //         ->where('site_visits.program_id',$svmParcelsProgramFilterOperator,$svmParcelsProgramFilter)
-                        //         ->where('landbank_property_status_id',$svmParcelsStatusFilterOperator,$svmParcelsStatusFilter)
-                        //         ->where('hfa_property_status_id',$svmHfaParcelsStatusFilterOperator,$svmHfaParcelsStatusFilter)
-                        //         ->where('entity_id',$where_entity_id_operator, $where_entity_id)
-                        //         ->count();
-                        //     if($prelim > 0) {
-                                session(['svm_parcels_sort_by' => 'visit_date']);
-                                $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                            // }else{
-                            //     session(['svm_parcels_sort_by' => 'created_at']);
-                            //     $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                            // }
-                        
-                        break;
-
-                   case '13':
-                        #  HFA Status
-                        session(['svm_parcels_sort_by' => 'hfa_property_status_name']);
-                        $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                        break;
-                   case '14':
-                        #  HFA Status
-                        session(['svm_parcels_sort_by' => 'target_area_name']);
-                        $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                        break;
-                    default:
-                        # code...
-                        // $prelim = SiteVisits::
-                        //         join('parcels','parcels.id','site_visits.parcel_id')
-                        //         ->where('site_visits.program_id',$svmParcelsProgramFilterOperator,$svmParcelsProgramFilter)
-                        //         ->where('landbank_property_status_id',$svmParcelsStatusFilterOperator,$svmParcelsStatusFilter)
-                        //         ->where('hfa_property_status_id',$svmHfaParcelsStatusFilterOperator,$svmHfaParcelsStatusFilter)
-                        //         ->where('entity_id',$where_entity_id_operator, $where_entity_id)
-                        //         ->count();
-                        //     if($prelim > 0) {
-                                session(['svm_parcels_sort_by' => 'visit_date']);
-                                $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                            // }else{
-                            //     session(['svm_parcels_sort_by' => 'site_visits.created_at']);
-                            //     $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                            // }
-                        break;
-                }
-            } elseif (is_null($request->session()->get('svm_parcels_sort_by'))) {
-                // no values in the session - then store in simpler variables.
-                session(['svm_parcels_sort_by' => 'site_visits.created_at']);
-                $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                session(['svm_parcels_asc_desc' => 'asc']);
-                $svmParcelsAscDesc = $request->session()->get('svm_parcels_asc_desc');
-                session(['svm_parcels_asc_desc_opposite' => '1']);
-                $svmParcelsAscDescOpposite = $request->session()->get('svm_parcels_asc_desc_opposite');
-            } else {
-                // use values in the session
-                $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
-                $svmParcelsAscDesc = $request->session()->get('svm_parcels_asc_desc');
-                $svmParcelsAscDescOpposite = $request->session()->get('svm_parcels_asc_desc_opposite');
+                    break;
             }
+            switch ($svmSortedBy) {
+                case '1':
+                    # parcel id
+                    session(['svm_parcels_sort_by' => 'parcels.parcel_id']);
+                    $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                    break;
+                case '2':
+                    # Address street
+                    session(['svm_parcels_sort_by' => 'street_address']);
+                    $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                    break;
+                case '3':
+                    # Address city
+                    session(['svm_parcels_sort_by' => 'city']);
+                    $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                    break;
+                case '4':
+                    # Address state
+                    session(['svm_parcels_sort_by' =>'state_acronym']);
+                    $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                    break;
+                case '5':
+                    # Address zip
+                    session(['svm_parcels_sort_by' =>'zip']);
+                    $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                    break;
+                case '6':
+                    # program
+                    session(['svm_parcels_sort_by' => 'program_name']);
+                    $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                    break;
+                case '7':
+                    # Cost
+                    session(['svm_parcels_sort_by' => 'cost_total']);
+                    $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                    break;
+                case '8':
+                    #  Requested
+                    session(['svm_parcels_sort_by' => 'requested_total']);
+                    $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                    break;
+                case '9':
+                    #  Approved
+                    session(['svm_parcels_sort_by' => 'approved_total']);
+                    $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                    break;
+                case '10':
+                    #  Paid
+                    session(['svm_parcels_sort_by' => 'invoiced_total']);
+                    $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                    break;
+                case '11':
+                    #  Paid
+                    session(['svm_parcels_sort_by' => 'lb_property_status_name']);
+                    $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                    break;
+                case '12':
+                    #  Date
+                    //if it has site visits... order by SiteVisits date
+                    // $prelim = SiteVisits::
+                    //         join('parcels','parcels.id','site_visits.parcel_id')
+                    //         ->where('site_visits.program_id',$svmParcelsProgramFilterOperator,$svmParcelsProgramFilter)
+                    //         ->where('landbank_property_status_id',$svmParcelsStatusFilterOperator,$svmParcelsStatusFilter)
+                    //         ->where('hfa_property_status_id',$svmHfaParcelsStatusFilterOperator,$svmHfaParcelsStatusFilter)
+                    //         ->where('entity_id',$where_entity_id_operator, $where_entity_id)
+                    //         ->count();
+                    //     if($prelim > 0) {
+                            session(['svm_parcels_sort_by' => 'visit_date']);
+                            $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                        // }else{
+                        //     session(['svm_parcels_sort_by' => 'created_at']);
+                        //     $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                        // }
+                        
+                    break;
+
+                case '13':
+                     #  HFA Status
+                     session(['svm_parcels_sort_by' => 'hfa_property_status_name']);
+                     $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                    break;
+                case '14':
+                     #  HFA Status
+                     session(['svm_parcels_sort_by' => 'target_area_name']);
+                     $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                    break;
+                default:
+                    # code...
+                    // $prelim = SiteVisits::
+                    //         join('parcels','parcels.id','site_visits.parcel_id')
+                    //         ->where('site_visits.program_id',$svmParcelsProgramFilterOperator,$svmParcelsProgramFilter)
+                    //         ->where('landbank_property_status_id',$svmParcelsStatusFilterOperator,$svmParcelsStatusFilter)
+                    //         ->where('hfa_property_status_id',$svmHfaParcelsStatusFilterOperator,$svmHfaParcelsStatusFilter)
+                    //         ->where('entity_id',$where_entity_id_operator, $where_entity_id)
+                    //         ->count();
+                    //     if($prelim > 0) {
+                            session(['svm_parcels_sort_by' => 'visit_date']);
+                            $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                        // }else{
+                        //     session(['svm_parcels_sort_by' => 'site_visits.created_at']);
+                        //     $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+                        // }
+                    break;
+            }
+        } elseif (is_null($request->session()->get('svm_parcels_sort_by'))) {
+            // no values in the session - then store in simpler variables.
+            session(['svm_parcels_sort_by' => 'site_visits.created_at']);
+            $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+            session(['svm_parcels_asc_desc' => 'asc']);
+            $svmParcelsAscDesc = $request->session()->get('svm_parcels_asc_desc');
+            session(['svm_parcels_asc_desc_opposite' => '1']);
+            $svmParcelsAscDescOpposite = $request->session()->get('svm_parcels_asc_desc_opposite');
+        } else {
+            // use values in the session
+            $svmParcelsSortBy = $request->session()->get('svm_parcels_sort_by');
+            $svmParcelsAscDesc = $request->session()->get('svm_parcels_asc_desc');
+            $svmParcelsAscDescOpposite = $request->session()->get('svm_parcels_asc_desc_opposite');
+        }
 
             // Check if they are not a HFA or if there is a filter applied
-            if ($svmStatusFiltered != null || $svmHfaStatusFiltered != null || Auth::user()->entity_type != "hfa" || $svmParcelsProgramFilterOperator != "LIKE") {
-                // $svmParcels = Parcel::with('targetArea','county','state','entity','import_id','program','landbank_property_status','hfa_property_status','import_id.import.imported_by','documents','retainages','unpaidRetainages','dispositions','dispositions.status','site_visits','siteVisitLists')
-                //                     ->where('program_id',$svmParcelsProgramFilterOperator,$svmParcelsProgramFilter)
-                //                     ->where('landbank_property_status_id',$svmParcelsStatusFilterOperator,$svmParcelsStatusFilter)
-                //                     ->where('hfa_property_status_id',$svmHfaParcelsStatusFilterOperator,$svmHfaParcelsStatusFilter)
-                //                     ->where('entity_id',$where_entity_id_operator, $where_entity_id)
-                //                     ->has('site_visits')
-                //                     //->orderBy($svmParcelsSortBy,$svmParcelsAscDesc)
-                //                     ->get();
-                //                     //->all();
-                //                     if($svmParcelsAscDesc == "asc"){
-                //                         $svmParcels = $svmParcels->sortBy($svmParcelsSortBy);
-                //                     }else{
-                //                         $svmParcels = $svmParcels->sortByDesc($svmParcelsSortBy);
-                //                     }
+        if ($svmStatusFiltered != null || $svmHfaStatusFiltered != null || Auth::user()->entity_type != "hfa" || $svmParcelsProgramFilterOperator != "LIKE") {
+            // $svmParcels = Parcel::with('targetArea','county','state','entity','import_id','program','landbank_property_status','hfa_property_status','import_id.import.imported_by','documents','retainages','unpaidRetainages','dispositions','dispositions.status','site_visits','siteVisitLists')
+            //                     ->where('program_id',$svmParcelsProgramFilterOperator,$svmParcelsProgramFilter)
+            //                     ->where('landbank_property_status_id',$svmParcelsStatusFilterOperator,$svmParcelsStatusFilter)
+            //                     ->where('hfa_property_status_id',$svmHfaParcelsStatusFilterOperator,$svmHfaParcelsStatusFilter)
+            //                     ->where('entity_id',$where_entity_id_operator, $where_entity_id)
+            //                     ->has('site_visits')
+            //                     //->orderBy($svmParcelsSortBy,$svmParcelsAscDesc)
+            //                     ->get();
+            //                     //->all();
+            //                     if($svmParcelsAscDesc == "asc"){
+            //                         $svmParcels = $svmParcels->sortBy($svmParcelsSortBy);
+            //                     }else{
+            //                         $svmParcels = $svmParcels->sortByDesc($svmParcelsSortBy);
+            //                     }
 
-                //                     $svmTotalParcels = count($svmParcels);
-                $svmParcels = SiteVisits::
-                                 join('parcels', 'parcels.id', 'site_visits.parcel_id')
-                                 ->join('programs', 'programs.id', 'parcels.program_id')
-                                 ->join('states', 'states.id', 'parcels.state_id')
-                                 ->join('target_areas', 'target_areas.id', 'parcels.target_area_id')
-                                 ->join('property_status_options as hfa_property_status', 'hfa_property_status.id', 'parcels.hfa_property_status_id')
-                                 ->join('property_status_options as lb_property_status', 'lb_property_status.id', 'parcels.landbank_property_status_id')
-                                 ->join('users', 'site_visits.inspector_id', 'users.id')
-                                 ->select('site_visits.*', 'site_visits.id as site_visit_id', 'parcels.*', 'target_areas.target_area_name', 'hfa_property_status.option_name as hfa_property_status_name', 'lb_property_status.option_name as lb_property_status_name', 'states.state_acronym', 'programs.program_name', 'users.name')
-                                 //->with('targetArea','county','state','entity','import_id','program','landbank_property_status','hfa_property_status','import_id.import.imported_by','documents','retainages','unpaidRetainages','dispositions','dispositions.status','site_visits','siteVisitLists')
-                                ->where('parcels.id', '=', $parcel->id)
-                                ->where('site_visits.program_id', $svmParcelsProgramFilterOperator, $svmParcelsProgramFilter)
-                                ->where('parcels.landbank_property_status_id', $svmParcelsStatusFilterOperator, $svmParcelsStatusFilter)
-                                ->where('parcels.hfa_property_status_id', $svmHfaParcelsStatusFilterOperator, $svmHfaParcelsStatusFilter)
-                                ->where('parcels.entity_id', $where_entity_id_operator, $where_entity_id)
-                                ->orderBy($svmParcelsSortBy, $svmParcelsAscDesc)
-                                ->get()
-                                ->all();
+            //                     $svmTotalParcels = count($svmParcels);
+            $svmParcels = SiteVisits::
+                         join('parcels', 'parcels.id', 'site_visits.parcel_id')
+                         ->join('programs', 'programs.id', 'parcels.program_id')
+                         ->join('states', 'states.id', 'parcels.state_id')
+                         ->join('target_areas', 'target_areas.id', 'parcels.target_area_id')
+                         ->join('property_status_options as hfa_property_status', 'hfa_property_status.id', 'parcels.hfa_property_status_id')
+                         ->join('property_status_options as lb_property_status', 'lb_property_status.id', 'parcels.landbank_property_status_id')
+                         ->join('users', 'site_visits.inspector_id', 'users.id')
+                         ->select('site_visits.*', 'site_visits.id as site_visit_id', 'parcels.*', 'target_areas.target_area_name', 'hfa_property_status.option_name as hfa_property_status_name', 'lb_property_status.option_name as lb_property_status_name', 'states.state_acronym', 'programs.program_name', 'users.name')
+                         //->with('targetArea','county','state','entity','import_id','program','landbank_property_status','hfa_property_status','import_id.import.imported_by','documents','retainages','unpaidRetainages','dispositions','dispositions.status','site_visits','siteVisitLists')
+                        ->where('parcels.id', '=', $parcel->id)
+                        ->where('site_visits.program_id', $svmParcelsProgramFilterOperator, $svmParcelsProgramFilter)
+                        ->where('parcels.landbank_property_status_id', $svmParcelsStatusFilterOperator, $svmParcelsStatusFilter)
+                        ->where('parcels.hfa_property_status_id', $svmHfaParcelsStatusFilterOperator, $svmHfaParcelsStatusFilter)
+                        ->where('parcels.entity_id', $where_entity_id_operator, $where_entity_id)
+                        ->orderBy($svmParcelsSortBy, $svmParcelsAscDesc)
+                        ->get()
+                        ->all();
 
-                $svmTotalParcels = count($svmParcels);
+            $svmTotalParcels = count($svmParcels);
             //dd($svmParcels);
-            } else {
-                $svmParcels = null;
-                $svmTotalParcels = 0;
-            }
+        } else {
+            $svmParcels = null;
+            $svmTotalParcels = 0;
+        }
                                 
-            if (Auth::user()->entity_type == "hfa") {
-                $svmPrograms = Parcel::join('programs', 'parcels.program_id', '=', 'programs.id')->select('programs.program_name', 'programs.id')->groupBy('programs.id', 'programs.program_name')->orderBy('programs.program_name')->get();
-            }
+        if (Auth::user()->entity_type == "hfa") {
+            $svmPrograms = Parcel::join('programs', 'parcels.program_id', '=', 'programs.id')->select('programs.program_name', 'programs.id')->groupBy('programs.id', 'programs.program_name')->orderBy('programs.program_name')->get();
+        }
 
 
             
@@ -715,15 +714,14 @@ class SiteVisitController extends Controller
 
     public function viewVisit($site_visit = 0)
     {
-        $site_visit = SiteVisits::where('id',$site_visit)->first();
+        $site_visit = SiteVisits::where('id', $site_visit)->first();
             
-        if($site_visit){
+        if ($site_visit) {
             //$site_visit = $status = \App\VisitListStatusName::find($site_visit->status);
             return view('pages.site_visit_detail', compact('site_visit'));
-        }else{
+        } else {
             return "There are no site visits matching this reference.";
         }
-        
     }
     public function serveImages($file)
     {
@@ -757,11 +755,11 @@ class SiteVisitController extends Controller
             }
 
             $sitevisit->update([
-                'visit_date' => $visit_date 
+                'visit_date' => $visit_date
             ]);
 
             return 1;
-        }else{
+        } else {
             return 0;
         }
     }

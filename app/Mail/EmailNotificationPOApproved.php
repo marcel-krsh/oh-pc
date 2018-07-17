@@ -35,7 +35,7 @@ class EmailNotificationPOApproved extends Mailable
      * @param int  $recipient_id
      * @param null $po_id
      */
-    public function __construct($recipient_id=1, $po_id=null)
+    public function __construct($recipient_id = 1, $po_id = null)
     {
         $this->po_id = $po_id;
         $this->po = ReimbursementPurchaseOrders::where('id', '=', $po_id)->get()->first();
@@ -56,7 +56,7 @@ class EmailNotificationPOApproved extends Mailable
         $greeting = "PO ".$this->po_id." was approved by HFA.";
        
         $introLines[] = "You can now create an invoice.";
-        $outroLines[] = array();
+        $outroLines[] = [];
 
         $actionText = "View PO";
 

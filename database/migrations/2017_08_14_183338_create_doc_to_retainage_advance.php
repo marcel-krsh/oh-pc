@@ -42,7 +42,7 @@ class CreateDocToRetainageAdvance extends Migration
         });
 
         Schema::table('cost_items', function (Blueprint $table) {
-            $table->tinyInteger('advance_paid')->nullable(); 
+            $table->tinyInteger('advance_paid')->nullable();
             $table->date('advance_paid_date')->nullable();
         });
     }

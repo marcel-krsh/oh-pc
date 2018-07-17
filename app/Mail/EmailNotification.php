@@ -35,7 +35,7 @@ class EmailNotification extends Mailable
      * @param int  $recipient_id
      * @param null $message_id
      */
-    public function __construct($recipient_id=1, $message_id=null)
+    public function __construct($recipient_id = 1, $message_id = null)
     {
         $this->message = Communication::where('id', '=', $message_id)->get()->first();
         $this->owner = User::where('id', '=', $recipient_id)->get()->first();

@@ -14,7 +14,7 @@ class AddFilepathToPhotos extends Migration
     public function up()
     {
         Schema::table('photos', function (Blueprint $table) {
-            $table->string('file_path',255);
+            $table->string('file_path', 255);
         });
     }
 

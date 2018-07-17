@@ -27,8 +27,6 @@ class ExtendSfSiteVisitsTable extends Migration
             $table->string('X7_Was_the_property_landscaped__c')->nullable();
             $table->string('X8_Nuisance_Elements_or_Code_Violations__c')->nullable();
             $table->string('X9_Are_there_Environmental_Conditions__c')->nullable();
-
-           
         });
     }
 

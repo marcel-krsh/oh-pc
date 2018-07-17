@@ -29,7 +29,7 @@ class Account extends Model
      */
     public function program() : BelongsTo
     {
-        return $this->belongsTo('App\Program', 'owner_id');
+        return $this->belongsTo(\App\Program::class, 'owner_id');
     }
 
     /**
@@ -39,7 +39,7 @@ class Account extends Model
      */
     public function transactions() : HasMany
     {
-        return $this->hasMany('App\Transaction', 'account_id', 'id');
+        return $this->hasMany(\App\Transaction::class, 'account_id', 'id');
     }
 
     /**
@@ -49,7 +49,7 @@ class Account extends Model
      */
     public function costItems() : HasMany
     {
-        return $this->hasMany('App\CostItem', 'account_id', 'id');
+        return $this->hasMany(\App\CostItem::class, 'account_id', 'id');
     }
 
     /**
@@ -59,7 +59,7 @@ class Account extends Model
      */
     public function requestItems() : HasMany
     {
-        return $this->hasMany('App\RequestItem', 'account_id', 'id');
+        return $this->hasMany(\App\RequestItem::class, 'account_id', 'id');
     }
 
     /**
@@ -69,7 +69,7 @@ class Account extends Model
      */
     public function poItems() : HasMany
     {
-        return $this->hasMany('App\PoItems', 'account_id', 'id');
+        return $this->hasMany(\App\PoItems::class, 'account_id', 'id');
     }
 
     /**
@@ -79,7 +79,7 @@ class Account extends Model
      */
     public function parcels() : HasMany
     {
-        return $this->hasMany('App\Parcel', 'account_id', 'id');
+        return $this->hasMany(\App\Parcel::class, 'account_id', 'id');
     }
 
     /**
@@ -89,7 +89,7 @@ class Account extends Model
      */
     public function invoiceItems() : HasMany
     {
-        return $this->hasMany('App\InvoiceItem', 'account_id', 'id');
+        return $this->hasMany(\App\InvoiceItem::class, 'account_id', 'id');
     }
 
     /**
@@ -99,7 +99,7 @@ class Account extends Model
      */
     public function statsParcels()
     {
-        return $this->hasMany('App\Parcel')
+        return $this->hasMany(\App\Parcel::class)
                     ->selectRaw('COUNT( parcels.account_id ) AS Total_Parcels,
 		                   COUNT(CASE WHEN parcels.landbank_property_status_id = 1 THEN 1 END) AS LB__Pending,
 		                   COUNT(CASE WHEN parcels.landbank_property_status_id = 2 THEN 1 END) AS LB__Approved_HFA,
@@ -152,7 +152,7 @@ class Account extends Model
      */
     public function statsTransactions()
     {
-        return $this->hasMany('App\Transaction')
+        return $this->hasMany(\App\Transaction::class)
                     ->selectRaw('SUM(CASE WHEN transactions.transaction_category_id = 1 THEN transactions.amount ELSE 0 END) AS Deposits_Made,
 		                   SUM(CASE WHEN transactions.transaction_category_id = 3 THEN transactions.amount ELSE 0 END) AS Reimbursements_Paid,
 		                   SUM(CASE WHEN transactions.transaction_category_id = 2 THEN transactions.amount ELSE 0 END) AS Recaptures_Received,
@@ -168,7 +168,7 @@ class Account extends Model
      */
     public function statsCostItems()
     {
-        return $this->hasMany('App\CostItem')
+        return $this->hasMany(\App\CostItem::class)
                     ->selectRaw('SUM(CASE WHEN cost_items.expense_category_id = 9 THEN cost_items.amount ELSE 0 END) AS NIP_Loan_Cost,
 		                   SUM(CASE WHEN cost_items.expense_category_id = 2 THEN cost_items.amount ELSE 0 END) AS Acquisition_Cost,
 		                   SUM(CASE WHEN cost_items.expense_category_id = 3 THEN cost_items.amount ELSE 0 END) AS PreDemo_Cost,
@@ -195,7 +195,7 @@ class Account extends Model
      */
     public function statsRequestItems()
     {
-        return $this->hasMany('App\RequestItem')
+        return $this->hasMany(\App\RequestItem::class)
                     ->selectRaw('SUM(CASE WHEN request_items.expense_category_id = 9 THEN request_items.amount ELSE 0 END) AS NIP_Loan_Requested,
 		                   SUM(CASE WHEN request_items.expense_category_id = 2 THEN request_items.amount ELSE 0 END) AS Acquisition_Requested,
 		                   SUM(CASE WHEN request_items.expense_category_id = 3 THEN request_items.amount ELSE 0 END) AS PreDemo_Requested,
@@ -214,7 +214,7 @@ class Account extends Model
      */
     public function statsPoItems()
     {
-        return $this->hasMany('App\PoItems')
+        return $this->hasMany(\App\PoItems::class)
                     ->selectRaw('SUM(CASE WHEN po_items.expense_category_id = 9 THEN po_items.amount ELSE 0 END) AS NIP_Loan_Approved,
 		                   SUM(CASE WHEN po_items.expense_category_id = 2 THEN po_items.amount ELSE 0 END) AS Acquisition_Approved,
 		                   SUM(CASE WHEN po_items.expense_category_id = 3 THEN po_items.amount ELSE 0 END) AS PreDemo_Approved,
@@ -233,7 +233,7 @@ class Account extends Model
      */
     public function statsInvoiceItems()
     {
-        return $this->hasMany('App\InvoiceItem')
+        return $this->hasMany(\App\InvoiceItem::class)
                     ->selectRaw('SUM(CASE WHEN invoice_items.expense_category_id = 9 THEN invoice_items.amount ELSE 0 END) AS NIP_Loan_Invoiced,
 		                   SUM(CASE WHEN invoice_items.expense_category_id = 2 THEN invoice_items.amount ELSE 0 END) AS Acquisition_Invoiced,
 		                   SUM(CASE WHEN invoice_items.expense_category_id = 3 THEN invoice_items.amount ELSE 0 END) AS PreDemo_Invoiced,

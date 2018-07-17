@@ -29,7 +29,7 @@ class bgHistoryController extends Controller
         // Search (in session)
         if (Session::has('activities-search') && Session::get('activities-search') != '') {
             $search = Session::get('activities-search');
-            $activities = ActivityLog::where('subject_type', '=', 'App\Parcel')
+            $activities = ActivityLog::where('subject_type', '=', \App\Parcel::class)
                                 ->where('subject_id', '=', $parcel->id)
                                 ->where('description', 'LIKE', '%'.$search.'%')
                                 ->leftJoin('users', 'users.id', '=', 'activity_log.causer_id')
@@ -46,7 +46,7 @@ class bgHistoryController extends Controller
                                 )
                                 ->get();
         } else {
-            $activities = ActivityLog::where('subject_type', '=', 'App\Parcel')
+            $activities = ActivityLog::where('subject_type', '=', \App\Parcel::class)
                                 ->where('subject_id', '=', $parcel->id)
                                 ->leftJoin('users', 'users.id', '=', 'activity_log.causer_id')
                                 ->orderBy('activity_log.created_at', 'desc')
@@ -63,7 +63,7 @@ class bgHistoryController extends Controller
                                 ->get();
         }
 
-        $owners_array = array();
+        $owners_array = [];
         foreach ($activities as $activity) {
             // create initials
             $words = explode(" ", $activity->name);
@@ -74,7 +74,7 @@ class bgHistoryController extends Controller
             $activity->initials = $initials;
 
             // someone misspelled "visible" in thousands of entries in the db... I don't want to mess with the db
-            $activity->description = str_replace("visable","visible",$activity->description); // arrrg
+            $activity->description = str_replace("visable", "visible", $activity->description); // arrrg
 
             // create associative arrays for initials and names
             if (!array_key_exists($activity->user_id, $owners_array)) {
@@ -94,7 +94,7 @@ class bgHistoryController extends Controller
     public function searchActivities(Parcel $parcel, Request $request)
     {
         if ($request->has('activities-search')) {
-            Session::set('activities-search', $request->get('activities-search'));
+            Session::put('activities-search', $request->get('activities-search'));
         } else {
             Session::forget('activities-search');
         }

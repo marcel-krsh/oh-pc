@@ -36,7 +36,7 @@ class ReportsController extends Controller
         $this->middleware('auth');
     }
 
-    public function viewVendor($vendor=0)
+    public function viewVendor($vendor = 0)
     {
         if ($vendor) {
             return redirect('/home')->with('open_vendor_id', $vendor);
@@ -52,11 +52,11 @@ class ReportsController extends Controller
 
 
             $directory = 'export/parcels';
-            $files = array();
+            $files = [];
 
             $files_from_storage = Storage::files($directory);
 
-            $downloaders_array = array();
+            $downloaders_array = [];
 
             foreach ($files_from_storage as $file) {
                 $filename = str_replace($directory."/", "", $file);
@@ -79,7 +79,7 @@ class ReportsController extends Controller
                     }
                     $downloaders_array[$report->id] = $downloaders;
 
-                    $files[] = array(
+                    $files[] = [
                         'id' => $report->id,
                         'filename' => $filename,
                         'path'  => $path,
@@ -88,9 +88,9 @@ class ReportsController extends Controller
                         'downloads' => $report->download_total(),
                         'humantime' => $humantime,
                         'requestor' => $report->user->name
-                    );
+                    ];
                 } else {
-                    $files[] = array(
+                    $files[] = [
                         'id' => '',
                         'filename' => $filename,
                         'path'  => $path,
@@ -99,7 +99,7 @@ class ReportsController extends Controller
                         'downloads' => '',
                         'humantime' => $humantime,
                         'requestor' => ''
-                    );
+                    ];
                 }
             }
 
@@ -164,10 +164,9 @@ class ReportsController extends Controller
             $reports = Report::where('type', '=', 'export_vendor_stats')->orderBy('id', 'desc')->limit(10)->get();
             // check if there is a report and set pending if the last one is pending
             if (count($reports)>0) {
-
                 // store files in array
-                $files = array();
-                $downloaders_array = array();
+                $files = [];
+                $downloaders_array = [];
                 
                 foreach ($reports as $report) {
                     // if($previous_report->pending_request == 1){
@@ -176,7 +175,7 @@ class ReportsController extends Controller
                     //     $pending_reports = 0;
                     // }
 
-                    $pending_reports = array();
+                    $pending_reports = [];
 
                     //$directory = 'export/vendorstats';
                     $directory = $report->folder;
@@ -212,7 +211,7 @@ class ReportsController extends Controller
                             }
                             $downloaders_array[$report->id] = $downloaders;
 
-                            $files[] = array(
+                            $files[] = [
                                 'id' => $report->id,
                                 'filename' => $filename,
                                 'path'  => $path,
@@ -221,9 +220,9 @@ class ReportsController extends Controller
                                 'downloads' => $report->download_total(),
                                 'humantime' => $humantime,
                                 'requestor' => $report->user->name
-                            );
+                            ];
                         } else {
-                            $files[] = array(
+                            $files[] = [
                                 'id' => '',
                                 'filename' => $filename,
                                 'path'  => $path,
@@ -232,7 +231,7 @@ class ReportsController extends Controller
                                 'downloads' => '',
                                 'humantime' => $humantime,
                                 'requestor' => ''
-                            );
+                            ];
                         }
                     }
 
@@ -246,9 +245,9 @@ class ReportsController extends Controller
                   // dd($vendors);
                 }
             } else {
-                $files = array();
-                $pending_reports = array();
-                $downloaders_array = array();
+                $files = [];
+                $pending_reports = [];
+                $downloaders_array = [];
             }
             
             return view('pages.export.vendorstats', compact('files', 'pending_reports', 'downloaders_array'));
@@ -276,7 +275,7 @@ class ReportsController extends Controller
                   'user_id' => $requestor->id,
                   'program_numbers' => $count_programs,
                   'program_processed' => 0
-        ]);
+            ]);
             $new_report->save();
 
             foreach ($programs as $program) {
@@ -305,7 +304,6 @@ class ReportsController extends Controller
             $report = Report::where('id', '=', $fileid)->where('type', '=', 'export_vendor_stats')->with('user')->first();
 
             if ($report) {
-
                 // check if there is a filename in storage
                 if (!Storage::exists($report->folder."/".$report->filename)) {
                     return redirect('/reports/export_vendor_stats');

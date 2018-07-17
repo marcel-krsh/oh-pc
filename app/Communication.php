@@ -31,7 +31,7 @@ class Communication extends Model
      */
     public function owner() : HasOne
     {
-        return $this->hasOne('App\User', 'id', 'owner_id');
+        return $this->hasOne(\App\User::class, 'id', 'owner_id');
     }
 
     /**
@@ -41,7 +41,7 @@ class Communication extends Model
      */
     public function parent() : BelongsTo
     {
-        return $this->belongsTo('App\Communication', 'parent_id');
+        return $this->belongsTo(\App\Communication::class, 'parent_id');
     }
 
     /**
@@ -51,7 +51,7 @@ class Communication extends Model
      */
     public function replies() : HasMany
     {
-        return $this->hasMany('App\Communication', 'parent_id');
+        return $this->hasMany(\App\Communication::class, 'parent_id');
     }
 
     /**
@@ -61,7 +61,7 @@ class Communication extends Model
      */
     public function parcel() : HasOne
     {
-        return $this->hasOne('App\Parcel', 'id', 'parcel_id');
+        return $this->hasOne(\App\Parcel::class, 'id', 'parcel_id');
     }
 
     /**
@@ -71,7 +71,7 @@ class Communication extends Model
      */
     public function documents() : HasMany
     {
-        return $this->hasMany('App\CommunicationDocument');
+        return $this->hasMany(\App\CommunicationDocument::class);
     }
 
     /**
@@ -81,6 +81,6 @@ class Communication extends Model
      */
     public function recipients() : HasMany
     {
-        return $this->hasMany('App\CommunicationRecipient');
+        return $this->hasMany(\App\CommunicationRecipient::class);
     }
 }

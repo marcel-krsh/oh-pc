@@ -68,7 +68,7 @@ class Disposition extends Model
      */
     public function parcel() : HasOne
     {
-        return $this->hasOne('App\Parcel', 'id', 'parcel_id');
+        return $this->hasOne(\App\Parcel::class, 'id', 'parcel_id');
     }
 
     /**
@@ -78,7 +78,7 @@ class Disposition extends Model
      */
     public function status() : HasOne
     {
-        return $this->hasOne('App\InvoiceStatus', 'id', 'status_id');
+        return $this->hasOne(\App\InvoiceStatus::class, 'id', 'status_id');
     }
 
     /**
@@ -88,7 +88,7 @@ class Disposition extends Model
      */
     public function type() : HasOne
     {
-        return $this->hasOne('App\DispositionType', 'id', 'disposition_type_id');
+        return $this->hasOne(\App\DispositionType::class, 'id', 'disposition_type_id');
     }
 
     /**
@@ -98,7 +98,7 @@ class Disposition extends Model
      */
     public function invoice() : HasOne
     {
-        return $this->hasOne('App\DispositionsToInvoice', 'disposition_id', 'id');
+        return $this->hasOne(\App\DispositionsToInvoice::class, 'disposition_id', 'id');
     }
 
     /**
@@ -108,7 +108,7 @@ class Disposition extends Model
      */
     public function items() : HasMany
     {
-        return $this->hasMany('App\DispositionItems', 'disposition_id', 'id');
+        return $this->hasMany(\App\DispositionItems::class, 'disposition_id', 'id');
     }
 
     /**
@@ -128,7 +128,7 @@ class Disposition extends Model
      */
     public function entity() : HasOne
     {
-        return $this->hasOne('App\Entity', 'id', 'entity_id');
+        return $this->hasOne(\App\Entity::class, 'id', 'entity_id');
     }
 
     /**
@@ -138,6 +138,6 @@ class Disposition extends Model
      */
     public function program() : HasOne
     {
-        return $this->hasOne('App\Program', 'id', 'program_id');
+        return $this->hasOne(\App\Program::class, 'id', 'program_id');
     }
 }

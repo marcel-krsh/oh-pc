@@ -44,7 +44,7 @@ class NoteController extends Controller
         
         $attachment = 'attachment';
 
-        $owners_array = array();
+        $owners_array = [];
         foreach ($notes as $note) {
             // create initials
             $words = explode(" ", $note->owner->name);
@@ -74,7 +74,7 @@ class NoteController extends Controller
     public function searchNotes(Parcel $parcel, Request $request)
     {
         if ($request->has('notes-search')) {
-            Session::set('notes-search', $request->get('notes-search'));
+            Session::put('notes-search', $request->get('notes-search'));
         } else {
             Session::forget('notes-search');
         }
@@ -119,7 +119,7 @@ class NoteController extends Controller
     {
         $notes = Note::where('parcel_id', $parcel->id)->with('owner')->orderBy('created_at', 'desc')->get();
 
-        $owners_array = array();
+        $owners_array = [];
         foreach ($notes as $note) {
             // create initials
             $words = explode(" ", $note->owner->name);

@@ -47,7 +47,7 @@ class VendorStatsExportJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(User $user=null, $report_id = null, $program_id = null, $csv = null, $date_ref = null)
+    public function __construct(User $user = null, $report_id = null, $program_id = null, $csv = null, $date_ref = null)
     {
         if ($user) {
             $this->requestorEmail = $user->email;
@@ -87,10 +87,10 @@ class VendorStatsExportJob implements ShouldQueue
             $filename = 'vendor_stats_'.$date;
         }
         
-        $filenames_array = array();
+        $filenames_array = [];
 
         // Create an array of totals with/without categories and programs
-        $summary_totals = array(); // [cat][program][cost type]
+        $summary_totals = []; // [cat][program][cost type]
 
         $summary_totals[0][0]['cost'] = CostItem::where('vendor_id', '!=', 1)->sum('amount') ?: 0;
         $summary_totals[0][0]['request'] = RequestItem::where('vendor_id', '!=', 1)->sum('amount') ?: 0;
@@ -398,7 +398,7 @@ class VendorStatsExportJob implements ShouldQueue
                     $new_program_processed = $report->program_processed + 1;
                     $report->update([
                     'program_processed' => $new_program_processed
-              ]);
+                    ]);
                     $report = $report->fresh();
                 }
                 //$filenames_array[] = storage_path('app/'.$directory.'/'.$filename.'.xlsx');
@@ -1015,7 +1015,7 @@ class VendorStatsExportJob implements ShouldQueue
 
                 $report->update([
                   'pending_request' => 0
-            ]);
+                ]);
 
                 // Send email notification to requestor
                 if ($this->requestorEmail) {

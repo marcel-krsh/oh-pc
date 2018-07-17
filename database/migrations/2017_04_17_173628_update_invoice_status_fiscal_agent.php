@@ -15,34 +15,34 @@ class UpdateInvoiceStatusFiscalAgent extends Migration
     {
         DB::table('invoice_statuses')->truncate();
         
-        $invoiceStatusData = array(
-            array(
+        $invoiceStatusData = [
+            [
             'invoice_status_name'=>'Draft'
-            ),
-            array(
+            ],
+            [
             'invoice_status_name'=>'Pending Land Bank Approval'
-            ),
-            array(
+            ],
+            [
             'invoice_status_name'=>'Pending HFA Approval'
-            ),
-            array(
+            ],
+            [
             'invoice_status_name'=>'Pending Payment'
-            ),
-            array(
+            ],
+            [
             'invoice_status_name'=>'Declined'
-            ),
-            array(
+            ],
+            [
             'invoice_status_name'=>'Paid'
-            ),
-            array(
+            ],
+            [
             'invoice_status_name'=>'Approved'
-            ),
-            array(
+            ],
+            [
             'invoice_status_name'=>'Submitted to Fiscal Agent'
-            )
-        );
-        DB::table('invoice_statuses')->insert($invoiceStatusData); 
-   }
+            ]
+        ];
+        DB::table('invoice_statuses')->insert($invoiceStatusData);
+    }
 
     /**
      * Reverse the migrations.
@@ -54,5 +54,3 @@ class UpdateInvoiceStatusFiscalAgent extends Migration
         //
     }
 }
-
-

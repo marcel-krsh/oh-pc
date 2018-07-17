@@ -387,7 +387,6 @@ class ParcelsController extends Controller
             $parcelStatusReason = "This parcel's decline status was retained during validation. A declined status can only be changed by the HFA.";
         }
         if ($updateAddress == 1 && $withdraw != 1) {
-
             ////////////////////////////////////////////////////////////////////////////////
             /////////////// We're updating the address so we need to clear it's validation
             /////// resolutions as these are likely to change with a new address.
@@ -513,130 +512,130 @@ class ParcelsController extends Controller
                     ]);
 
             switch ($resolutionAction) {
-                    case '1':
-                        # Not the matched parcel - no action needed...
-                        break;
-                    case '2':
-                        # Create a Group of the matched parcel...
-                        $sharedParcelId = DB::table('shared_parcel')->insertGetId([
-                                'program_id'=>$parcel->program_id,
-                                'created_at'=>date('Y-m-d H:i:s', time())
-                            ]);
-                        $matchedParcel = DB::table('validation_resolutions')->select('resolution_id')->where('id', $resolutionId)->first();
-                        // add parcels to table so they can be grouped.
-                            $groupData = array(
-                                array(
-                                'created_at'=>date('Y-m-d H:i:s', time()),
-                                'shared_parcel_id'=>$sharedParcelId,
-                                'reference_letter'=>'a',
-                                'parcel_id'=>$parcel->id
-                                ),
-                                array( //8
-                                'created_at'=>date('Y-m-d H:i:s', time()),
-                                'shared_parcel_id'=>$sharedParcelId,
-                                'reference_letter'=>'b',
-                                'parcel_id'=>$matchedParcel->resolution_id
-                                )
-                            );
-                        DB::table('shared_parcel_to_parcels')->insert($groupData);
+                case '1':
+                    # Not the matched parcel - no action needed...
+                    break;
+                case '2':
+                    # Create a Group of the matched parcel...
+                    $sharedParcelId = DB::table('shared_parcel')->insertGetId([
+                        'program_id'=>$parcel->program_id,
+                        'created_at'=>date('Y-m-d H:i:s', time())
+                    ]);
+                    $matchedParcel = DB::table('validation_resolutions')->select('resolution_id')->where('id', $resolutionId)->first();
+                // add parcels to table so they can be grouped.
+                    $groupData = [
+                        [
+                        'created_at'=>date('Y-m-d H:i:s', time()),
+                        'shared_parcel_id'=>$sharedParcelId,
+                        'reference_letter'=>'a',
+                        'parcel_id'=>$parcel->id
+                        ],
+                        [ //8
+                        'created_at'=>date('Y-m-d H:i:s', time()),
+                        'shared_parcel_id'=>$sharedParcelId,
+                        'reference_letter'=>'b',
+                        'parcel_id'=>$matchedParcel->resolution_id
+                        ]
+                    ];
+                    DB::table('shared_parcel_to_parcels')->insert($groupData);
 
-                        break;
-                    case '3':
-                        # Withdraw parcel...
-                        $Delete = \App\Parcel::finde($parcel->id);
+                    break;
+                case '3':
+                    # Withdraw parcel...
+                    $Delete = \App\Parcel::finde($parcel->id);
 
-                        $Delete->deleteParcel();
+                    $Delete->deleteParcel();
                         
-                        // # Delete the other validations
-                        // DB::table('validation_resolutions')->where('parcel_id',$parcel->id)->delete();
-                        // DB::table('validation_resolutions')->where('resolution_id',$parcel->id)->where('resolution_type','parcels')->delete();
-                        // # If this was added to a parcel group - remove it
-                        // $groupMember = DB::table('shared_parcel_to_parcels')->where('parcel_id',$parcel->id)->delete();
-                        // $withdraw = 1;
-                        exit("<script>alert('Parcel Removed, from this and your import. Rerun Validation.');</script>");
+                    // # Delete the other validations
+                    // DB::table('validation_resolutions')->where('parcel_id',$parcel->id)->delete();
+                    // DB::table('validation_resolutions')->where('resolution_id',$parcel->id)->where('resolution_type','parcels')->delete();
+                    // # If this was added to a parcel group - remove it
+                    // $groupMember = DB::table('shared_parcel_to_parcels')->where('parcel_id',$parcel->id)->delete();
+                    // $withdraw = 1;
+                    exit("<script>alert('Parcel Removed, from this and your import. Rerun Validation.');</script>");
 
                         break;
-                    case '4':
-                        # Add to a group of matched parcels...
-                        // GET Shared Parcel Id
-                        $resolutionParcel = DB::table('validation_resolutions')->select('resolution_id')->where('id', $resolutionId)->first();
-                        $sharedParcelId = DB::table('shared_parcel_to_parcels')->select('shared_parcel_id')->where('parcel_id', $resolutionParcel->resolution_id)->first();
-                        //Get last letter reference used in group
-                        $lastLetter = DB::table('shared_parcel_to_parcels')->select('reference_letter')->where('shared_parcel_id', $sharedParcelId->shared_parcel_id)->orderBy('reference_letter', 'desc')->first();
-                        $referencLetter = $lastLetter->reference_letter;
-                        //get next letter
-                        $referencLetter = ++$referencLetter;
-                        //WHEW - Now we have what we need to store the parcel into the group.
-                        //BUT - We need to make sure it doesn't exist in there first - better safe than sorry right?
-                        $dupeCheck = DB::table('shared_parcel_to_parcels')->where('parcel_id', $parcel->id)->count();
-                        if ($dupeCheck < 1) {
-                            DB::table('shared_parcel_to_parcels')->insert([
-                                'created_at'=>date('Y-m-d H:i:s', time()),
-                                'shared_parcel_id'=>$sharedParcelId->shared_parcel_id,
-                                'reference_letter'=>$referencLetter,
-                                'parcel_id'=>$parcel->id
-                            ]);
-                            // Add a note stating this was done.
-                            DB::table('notes')->insert([
-                                'created_at'=>date('Y-m-d H:i:s', time()),
-                                'parcel_id'=>$parcel->id,
-                                'owner_id'=>Auth::user()->id,
-                                'note'=>'Added parcel to a shared parcel group as a part of validation. It is now a part of Parcel Group Number '.$sharedParcelId->shared_parcel_id.' with reference letter '.$referencLetter.'.'
-                            ]);
-                        } else {
-                            DB::table('notes')->insert([
-                                'created_at'=>date('Y-m-d H:i:s', time()),
-                                'parcel_id'=>$parcel->id,
-                                'owner_id'=>Auth::user()->id,
-                                'note'=>'Attempted to add the parcel to a shared parcel group as a part of validation, however - it was already in a group. So, Allita ignored the request. The group I attempted to add it to was Shared Parcel Group '.$sharedParcelId->shared_parcel_id.', and would have had the reference letter '.$referencLetter.'.'
-                            ]);
-                        }
-                        //
-                        
-
-                        break;
-                    case '5':
-                        # Not a match to HHF - do nothing...
-                        break;
-                    case '6':
-                        # Matched to the HHF...Withdraw parcel
-                        DB::table('parcels')->where('id', $parcel->id)->update([
-                                'hfa_property_status_id'=>37,
-                                'landbank_property_status_id'=>48,
-                                'retention_validated'=>0,
-                                'address_validated'=>0,
-                                'date_lb_validated'=>date('Y-m-d H:i:s', time())
-                            ]);
-                        # Add a note to the notes table
+                case '4':
+                    # Add to a group of matched parcels...
+                    // GET Shared Parcel Id
+                    $resolutionParcel = DB::table('validation_resolutions')->select('resolution_id')->where('id', $resolutionId)->first();
+                    $sharedParcelId = DB::table('shared_parcel_to_parcels')->select('shared_parcel_id')->where('parcel_id', $resolutionParcel->resolution_id)->first();
+                    //Get last letter reference used in group
+                    $lastLetter = DB::table('shared_parcel_to_parcels')->select('reference_letter')->where('shared_parcel_id', $sharedParcelId->shared_parcel_id)->orderBy('reference_letter', 'desc')->first();
+                    $referencLetter = $lastLetter->reference_letter;
+                    //get next letter
+                    $referencLetter = ++$referencLetter;
+                    //WHEW - Now we have what we need to store the parcel into the group.
+                    //BUT - We need to make sure it doesn't exist in there first - better safe than sorry right?
+                    $dupeCheck = DB::table('shared_parcel_to_parcels')->where('parcel_id', $parcel->id)->count();
+                    if ($dupeCheck < 1) {
+                        DB::table('shared_parcel_to_parcels')->insert([
+                            'created_at'=>date('Y-m-d H:i:s', time()),
+                            'shared_parcel_id'=>$sharedParcelId->shared_parcel_id,
+                            'reference_letter'=>$referencLetter,
+                            'parcel_id'=>$parcel->id
+                        ]);
+                        // Add a note stating this was done.
                         DB::table('notes')->insert([
-                                'created_at'=>date('Y-m-d H:i:s', time()),
-                                'parcel_id'=>$parcel->id,
-                                'owner_id'=>Auth::user()->id,
-                                'note'=>'Withdrew parcel due to matching an previously HHF funded parcel. See parcel validation resolutions on parcel detail tab.'
-                            ]);
-                        # Cancel the other validations
-                        DB::table('validation_resolutions')->where('parcel_id', $parcel->id)->where('lb_resolved', 0)->delete();
-                        DB::table('validation_resolutions')->where('resolution_id', $parcel->id)->where('resolution_type', 'parcels')->delete();
-                        # If this was added to a parcel group - remove it
-                        $groupMember = DB::table('shared_parcel_to_parcels')->where('parcel_id', $parcel->id)->delete();
-                        if ($groupMember) {
-                            // it was a member of a group - add a note to the parcel that it was removed.
-                            DB::table('notes')->insert([
-                                'created_at'=>date('Y-m-d H:i:s', time()),
-                                'parcel_id'=>$parcel->id,
-                                'owner_id'=>Auth::user()->id,
-                                'note'=>'This parcel was removed from a parcel group automatically as a part of its withdraw process as a result of a validation resolution for parcel '.$parcel->parcel_id.'.'
-                            ]);
-                        }
-                        $parcelLandBankStatus = 48;
-                        $parcelStatusReason = "This parcel was elected to be withdrawn manually as a part of the validation process for parcel $parcel->parcel_id";
-                        $withdraw = 1;
-                        break;
+                            'created_at'=>date('Y-m-d H:i:s', time()),
+                            'parcel_id'=>$parcel->id,
+                            'owner_id'=>Auth::user()->id,
+                            'note'=>'Added parcel to a shared parcel group as a part of validation. It is now a part of Parcel Group Number '.$sharedParcelId->shared_parcel_id.' with reference letter '.$referencLetter.'.'
+                        ]);
+                    } else {
+                        DB::table('notes')->insert([
+                            'created_at'=>date('Y-m-d H:i:s', time()),
+                            'parcel_id'=>$parcel->id,
+                            'owner_id'=>Auth::user()->id,
+                            'note'=>'Attempted to add the parcel to a shared parcel group as a part of validation, however - it was already in a group. So, Allita ignored the request. The group I attempted to add it to was Shared Parcel Group '.$sharedParcelId->shared_parcel_id.', and would have had the reference letter '.$referencLetter.'.'
+                        ]);
+                    }
+                    //
+                        
+
+                    break;
+                case '5':
+                    # Not a match to HHF - do nothing...
+                    break;
+                case '6':
+                    # Matched to the HHF...Withdraw parcel
+                    DB::table('parcels')->where('id', $parcel->id)->update([
+                        'hfa_property_status_id'=>37,
+                        'landbank_property_status_id'=>48,
+                        'retention_validated'=>0,
+                        'address_validated'=>0,
+                        'date_lb_validated'=>date('Y-m-d H:i:s', time())
+                    ]);
+                # Add a note to the notes table
+                    DB::table('notes')->insert([
+                        'created_at'=>date('Y-m-d H:i:s', time()),
+                        'parcel_id'=>$parcel->id,
+                        'owner_id'=>Auth::user()->id,
+                        'note'=>'Withdrew parcel due to matching an previously HHF funded parcel. See parcel validation resolutions on parcel detail tab.'
+                    ]);
+                # Cancel the other validations
+                    DB::table('validation_resolutions')->where('parcel_id', $parcel->id)->where('lb_resolved', 0)->delete();
+                    DB::table('validation_resolutions')->where('resolution_id', $parcel->id)->where('resolution_type', 'parcels')->delete();
+                # If this was added to a parcel group - remove it
+                    $groupMember = DB::table('shared_parcel_to_parcels')->where('parcel_id', $parcel->id)->delete();
+                    if ($groupMember) {
+                        // it was a member of a group - add a note to the parcel that it was removed.
+                        DB::table('notes')->insert([
+                        'created_at'=>date('Y-m-d H:i:s', time()),
+                        'parcel_id'=>$parcel->id,
+                        'owner_id'=>Auth::user()->id,
+                        'note'=>'This parcel was removed from a parcel group automatically as a part of its withdraw process as a result of a validation resolution for parcel '.$parcel->parcel_id.'.'
+                        ]);
+                    }
+                    $parcelLandBankStatus = 48;
+                    $parcelStatusReason = "This parcel was elected to be withdrawn manually as a part of the validation process for parcel $parcel->parcel_id";
+                    $withdraw = 1;
+                    break;
                     
-                    default:
-                        # Do nothing
-                        break;
-                }
+                default:
+                    # Do nothing
+                    break;
+            }
         }
 
 
@@ -1749,7 +1748,7 @@ class ParcelsController extends Controller
         //get minimum amounts
         $minimums = DocumentRule::where('program_rules_id', $associated_id)->get();
 
-        $minimumRules = array();
+        $minimumRules = [];
         $minimumRules['acquisition']=null;
         $minimumRules['pre_demo']=null;
         $minimumRules['demolition']=null;
@@ -1789,12 +1788,12 @@ class ParcelsController extends Controller
         //get min/max units rules
         $reimbursement_rules = ReimbursementRule::where('program_rules_id', $associated_id)->first();
         $within_unit_limits = 1;
-        if($reimbursement_rules){
+        if ($reimbursement_rules) {
             $min_units = $reimbursement_rules->minimum_units;
             $max_units = $reimbursement_rules->maximum_units;
             $max_reimbursement = $reimbursement_rules->maximum_reimbursement;
 
-            if($parcelData->units < $min_units || $parcelData->units > $max_units){
+            if ($parcelData->units < $min_units || $parcelData->units > $max_units) {
                 $within_unit_limits = 0;
             }
         }
@@ -1808,8 +1807,8 @@ class ParcelsController extends Controller
         $hasResolutions = DB::table('validation_resolutions')->where('parcel_id', $parcel->id)->count();
 
         $guide_steps = GuideStep::where('guide_step_type_id', '=', 2)->get();
-        $guide_help = array();
-        $guide_name = array();
+        $guide_help = [];
+        $guide_name = [];
         foreach ($guide_steps as $guide_step) {
             $guide_help[$guide_step->id] = $guide_step->step_help;
             $guide_name[$guide_step->id]['name'] = $guide_step->name;
@@ -1898,10 +1897,10 @@ class ParcelsController extends Controller
                         })->take(20)->get()->all();
         }
         $i = 0;
-        $results=array();
+        $results=[];
         foreach ($parcels as $data) {
             $parcels[$i]->created_at_formatted = date('n/j/y \a\t g:h a', strtotime($data->created_at));
-            $results[] = array(
+            $results[] = [
                         $data->street_address,
                         $data->city,
                         $data->state_acronym,
@@ -1913,7 +1912,7 @@ class ParcelsController extends Controller
                         $data->name,
                         $data->created_at,
                         $data->validated,
-                        $parcels[$i]->created_at_formatted);
+                        $parcels[$i]->created_at_formatted];
             $i++;
         }
         

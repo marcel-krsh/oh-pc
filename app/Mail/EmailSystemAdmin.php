@@ -39,7 +39,7 @@ class EmailSystemAdmin extends Mailable
      * @param null $path
      * @param null $recipient_id
      */
-    public function __construct($message=null, $path=null, $recipient_id=null)
+    public function __construct($message = null, $path = null, $recipient_id = null)
     {
         $this->message = $message;
         $this->path = $path;

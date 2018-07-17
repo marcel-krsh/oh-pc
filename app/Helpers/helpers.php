@@ -46,7 +46,7 @@ function check_file_name($fn)
     }
     
     // ALLOWABLE EXTENSIONS
-    $exts = array('PNG', 'GIF', 'JPG', 'JPEG', 'XLS', 'XLSX');
+    $exts = ['PNG', 'GIF', 'JPG', 'JPEG', 'XLS', 'XLSX'];
     $tmp = explode('.', $fn);
     $ext  = end($tmp);
     $ext  = strtoupper($ext);

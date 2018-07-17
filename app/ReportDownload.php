@@ -27,7 +27,7 @@ class ReportDownload extends Model
      */
     public function user() : HasOne
     {
-        return $this->hasOne('App\User', 'id', 'user_id');
+        return $this->hasOne(\App\User::class, 'id', 'user_id');
     }
 
     /**
@@ -37,6 +37,6 @@ class ReportDownload extends Model
      */
     public function report() : HasOne
     {
-        return $this->hasOne('App\Report', 'id', 'report_id');
+        return $this->hasOne(\App\Report::class, 'id', 'report_id');
     }
 }

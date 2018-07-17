@@ -22,8 +22,7 @@ class CreateRecaptureInvoiceNotesTable extends Migration
             $table->string('owner_type')->default('user');
             $table->text('note')->nullable();
             $table->foreign('recapture_invoice_id')->references('id')->on('recapture_invoices');
-            $table->foreign('owner_id')->references('id')->on('users');    
-        
+            $table->foreign('owner_id')->references('id')->on('users');
         });
     }
 

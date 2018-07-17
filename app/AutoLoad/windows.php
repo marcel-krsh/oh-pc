@@ -12,7 +12,7 @@ if (!function_exists('money_format')) {
         preg_match_all($regex, $format, $matches, PREG_SET_ORDER);
         foreach ($matches as $fmatch) {
             $value = floatval($number);
-            $flags = array(
+            $flags = [
                 'fillchar'  => preg_match('/\=(.)/', $fmatch[1], $match) ?
                                $match[1] : ' ',
                 'nogroup'   => preg_match('/\^/', $fmatch[1]) > 0,
@@ -20,7 +20,7 @@ if (!function_exists('money_format')) {
                                $match[0] : '+',
                 'nosimbol'  => preg_match('/\!/', $fmatch[1]) > 0,
                 'isleft'    => preg_match('/\-/', $fmatch[1]) > 0
-            );
+            ];
             $width      = trim($fmatch[2]) ? (int)$fmatch[2] : 0;
             $left       = trim($fmatch[3]) ? (int)$fmatch[3] : 0;
             $right      = trim($fmatch[4]) ? (int)$fmatch[4] : $locale['int_frac_digits'];
@@ -68,7 +68,7 @@ if (!function_exists('money_format')) {
                 $value,
                 $right,
                 $locale['mon_decimal_point'],
-                     $flags['nogroup'] ? '' : $locale['mon_thousands_sep']
+                $flags['nogroup'] ? '' : $locale['mon_thousands_sep']
             );
             $value = @explode($locale['mon_decimal_point'], $value);
 

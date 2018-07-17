@@ -13,7 +13,7 @@ class RenameEntityIdToProgramIdInSiteVisits extends Migration
      */
     public function up()
     {
-        Schema::table('site_visits', function (Blueprint $table) {        
+        Schema::table('site_visits', function (Blueprint $table) {
             $table->renameColumn('entity_id', 'program_id');
         });
     }

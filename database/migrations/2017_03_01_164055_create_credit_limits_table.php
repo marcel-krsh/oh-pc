@@ -17,7 +17,7 @@ class CreateCreditLimitsTable extends Migration
             $table->increments('id');
             $table->integer('funding_account_id');
             $table->integer('loc_account_id');
-            $table->float('credit_limit',10,2);
+            $table->float('credit_limit', 10, 2);
             $table->boolean('active')->default(1);
             $table->timestamps();
         });

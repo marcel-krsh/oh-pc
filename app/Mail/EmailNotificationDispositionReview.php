@@ -37,7 +37,7 @@ class EmailNotificationDispositionReview extends Mailable
      * @param null $invoice_id
      * @param int  $disposition_id
      */
-    public function __construct($recipient_id=1, $invoice_id=null, $disposition_id=0)
+    public function __construct($recipient_id = 1, $invoice_id = null, $disposition_id = 0)
     {
         $this->invoice_id = $invoice_id;
         $this->disposition_id = $disposition_id;
@@ -63,7 +63,7 @@ class EmailNotificationDispositionReview extends Mailable
         $invoice = $this->invoice;
         
         $introLines[] = "";
-        $outroLines[] = array();
+        $outroLines[] = [];
 
         if ($this->disposition) {
             $greeting = "DISPOSITION ".$this->disposition->id." has been submitted for review.";

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  * Check Status
@@ -82,7 +82,6 @@ function updateStatus($type = 'parcel', $item, $field, $status, $withCheck = 0, 
             }
             break;
         default:
-            
     }
 
     return 1;

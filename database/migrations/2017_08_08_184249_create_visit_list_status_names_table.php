@@ -19,21 +19,21 @@ class CreateVisitListStatusNamesTable extends Migration
         });
         // Insert Values
         DB::table('visit_list_status_names')->insert(
-            array(
+            [
                 'name' => 'In Progress'
-            )
+            ]
         );
         // Insert Values
         DB::table('visit_list_status_names')->insert(
-            array(
+            [
                 'name' => 'Completed'
-            )
+            ]
         );
         // Insert Values
         DB::table('visit_list_status_names')->insert(
-            array(
+            [
                 'name' => 'Canceled'
-            )
+            ]
         );
     }
 

@@ -260,7 +260,7 @@ class RecaptureController extends Controller
     //                             parcels.parcel_id  as pid,
     //                             invstat.invoice_status_name as status_name,
     //                             pr.program_name ,
-    //                             ent.entity_name 
+    //                             ent.entity_name
                                 
     //                         FROM
     //                             dispositions
@@ -341,17 +341,17 @@ class RecaptureController extends Controller
             if (!is_null($sortedBy)) {
                 switch ($request->query('invoices_asc_desc')) {
                     case '1':
-                    session(['recapture_invoices_asc_desc'=> 'desc']);
-                    $invoicesAscDesc =  $request->session()->get('recapture_invoices_asc_desc');
-                    session(['recapture_invoices_asc_desc_opposite' => "0"]);
-                    $invoicesAscDescOpposite =  $request->session()->get('recapture_invoices_asc_desc_opposite');
+                        session(['recapture_invoices_asc_desc'=> 'desc']);
+                        $invoicesAscDesc =  $request->session()->get('recapture_invoices_asc_desc');
+                        session(['recapture_invoices_asc_desc_opposite' => "0"]);
+                        $invoicesAscDescOpposite =  $request->session()->get('recapture_invoices_asc_desc_opposite');
                         break;
                     
                     default:
-                    session(['recapture_invoices_asc_desc'=> 'asc']);
-                    $invoicesAscDesc =  $request->session()->get('recapture_invoices_asc_desc');
-                    session(['recapture_invoices_asc_desc_opposite' => '1']);
-                    $invoicesAscDescOpposite = $request->session()->get('recapture_invoices_asc_desc_opposite');
+                        session(['recapture_invoices_asc_desc'=> 'asc']);
+                        $invoicesAscDesc =  $request->session()->get('recapture_invoices_asc_desc');
+                        session(['recapture_invoices_asc_desc_opposite' => '1']);
+                        $invoicesAscDescOpposite = $request->session()->get('recapture_invoices_asc_desc_opposite');
                         break;
                 }
 
@@ -497,7 +497,7 @@ class RecaptureController extends Controller
 
             foreach ($recapture_invoices as $invoice) {
                 //fix status id if set to "Pending LB Approval"
-                if($invoice->status_id == 2){
+                if ($invoice->status_id == 2) {
                     $invoice->update([
                         'status_id' => 3
                     ]);
@@ -542,7 +542,7 @@ class RecaptureController extends Controller
             $recapture->expense_category_name = $recapture->expenseCategory->expense_category_name;
 
             $recapture->total = $recapture->amount;
-        }    
+        }
 
         return ['recaptures'=>$recaptures,'invoice_id'=>$invoice->id];
     }
@@ -561,15 +561,15 @@ class RecaptureController extends Controller
         }
 
         // is invoice paid?
-        if($parcel->associatedInvoice){
+        if ($parcel->associatedInvoice) {
             $invoice = ReimbursementInvoice::where('id', '=', $parcel->associatedInvoice->reimbursement_invoice_id)->first();
-            if($invoice->status_id != 6){
+            if ($invoice->status_id != 6) {
                 return 'Sorry the invoice associated with this parcel has not been paid.';
             }
         }
 
         // get cost item
-        $cost_item = CostItem::where('id','=',$cost_item_id)->first();
+        $cost_item = CostItem::where('id', '=', $cost_item_id)->first();
 
         return view('modals.new-recapture-from-breakouts', compact('parcel', 'cost_item'));
     }
@@ -633,12 +633,12 @@ class RecaptureController extends Controller
             $documents = Document::where('parcel_id', '=', $parcel->id)->get();
             if ($documents) {
                 $i = 0;
-                $output = array();
+                $output = [];
                 foreach ($documents as $document) {
                     if ($document->categories) {
                         $categories_decoded = json_decode($document->categories, true); // cats used by the doc
                     } else {
-                        $categories_decoded = array();
+                        $categories_decoded = [];
                     }
                     if (in_array('38', $categories_decoded)) {
                         $output[$i]['filename'] = $document->filename;
@@ -668,7 +668,9 @@ class RecaptureController extends Controller
             return 'Sorry you cannot upload documents to recapture_items.';
         }
 
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
 
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -684,7 +686,7 @@ class RecaptureController extends Controller
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
                 
                 // sanitize filename
-                $characters = array(' ','´','`',"'",'~','"','\'','\\','/');
+                $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                 // Create a record in documents table
@@ -771,7 +773,9 @@ class RecaptureController extends Controller
             return 'Sorry you cannot upload documents to recapture_items.';
         }
 
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
 
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -789,7 +793,7 @@ class RecaptureController extends Controller
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
                 
                 // sanitize filename
-                $characters = array(' ','´','`',"'",'~','"','\'','\\','/');
+                $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                 // Create a record in documents table
@@ -871,7 +875,9 @@ class RecaptureController extends Controller
             return 'Sorry something went wrong.';
         }
 
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
 
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -889,7 +895,7 @@ class RecaptureController extends Controller
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
                 
                 // sanitize filename
-                $characters = array(' ','´','`',"'",'~','"','\'','\\','/');
+                $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                 // Create a record in documents table
@@ -945,7 +951,7 @@ class RecaptureController extends Controller
      */
     public function computeRecaptureOwed(Dispositions $recapture, Request $request)
     {
-        $debug = array();
+        $debug = [];
 
         $income = $request->get('income');
         $cost = $request->get('cost');
@@ -1398,7 +1404,7 @@ class RecaptureController extends Controller
                 ->load('program')
                 ->load('transactions');
 
-        $stat = array();
+        $stat = [];
         $stat = $stat + $invoice->account->statsParcels->toArray()[0]
                         + $invoice->account->statsTransactions->toArray()[0]
                         + $invoice->account->statsCostItems->toArray()[0]
@@ -1442,7 +1448,7 @@ class RecaptureController extends Controller
         $balance = round($total_unformatted + $sum_transactions, 2);
 
         // get notes
-        $owners_array = array();
+        $owners_array = [];
         foreach ($invoice->notes as $note) {
             // create initials
             $words = explode(" ", $note->owner->name);
@@ -1482,7 +1488,7 @@ class RecaptureController extends Controller
                                 ->where('link_type_id', '=', $invoice->id)
                                 ->pluck('user_id as id');
 
-        $pending_approvers = array();
+        $pending_approvers = [];
 
         if (count($added_approvers) == 0 && count($recaptureInvoiceApprovers) > 0) {
             foreach ($recaptureInvoiceApprovers as $recaptureInvoiceApprover) {
@@ -1583,7 +1589,6 @@ class RecaptureController extends Controller
         //$invoice = RecaptureInvoice::find($invoice->id); //if we reload, we will loose some of the work done above (formatted total, etc)
 
         return view('pages.recapture_invoice', compact('invoice', 'notes', 'balance', 'nip', 'hasApprovals', 'isApprover', 'isDeclined', 'approvals', 'pending_approvers', 'isApproved', 'isReadyForPayment', 'total', 'balance', 'stat', 'legacy', 'display_request_button'));
-        
     }
 
     public function submitForApproval(RecaptureInvoice $invoice, Request $request)
@@ -1604,7 +1609,6 @@ class RecaptureController extends Controller
                 $lc->setFrom(Auth::user())->setTo($invoice)->setDesc(Auth::user()->email . ' submitted the disposition invoice '.$invoice->id.' for approval')->save();
 
                 $output['message'] = "The disposition invoice has been submitted for approval.";
-
             } else {
                 $output['message'] = "Nothing to do here.";
             }
@@ -1684,7 +1688,6 @@ class RecaptureController extends Controller
             $data['message'] = 'Something went wrong.';
             return $data;
         }
-
     }
 
     // public function addHFAApproverToInvoice(RecaptureInvoice $invoice, Request $request)
@@ -1721,7 +1724,7 @@ class RecaptureController extends Controller
     //     }
     // }
 
-    public function approveInvoice(RecaptureInvoice $invoice, $approvers=null, $document_ids=null, $approval_type = 5)
+    public function approveInvoice(RecaptureInvoice $invoice, $approvers = null, $document_ids = null, $approval_type = 5)
     {
         if ((!Auth::user()->isHFADispositionApprover() || Auth::user()->entity_id != $invoice->entity_id) && !Auth::user()->isHFAAdmin()) {
             $output['message'] = 'Something went wrong.';
@@ -1729,7 +1732,6 @@ class RecaptureController extends Controller
         }
 
         if ($invoice) {
-            
             // it is possible that a HFA admin uploads a signature file for multiple LB users
             // if current user is HFA admin, make sure that person is added as the approver
             // in the records
@@ -1753,7 +1755,7 @@ class RecaptureController extends Controller
                 if ($document_ids !== null) {
                     $documents = explode(",", $document_ids);
                 } else {
-                    $documents = array();
+                    $documents = [];
                 }
                 $documents_json = json_encode($documents, true);
 
@@ -1852,7 +1854,9 @@ class RecaptureController extends Controller
 
     public function approveInvoiceUploadSignature(RecaptureInvoice $invoice, Request $request)
     {
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
         
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -1873,7 +1877,7 @@ class RecaptureController extends Controller
                     $folderpath = 'documents/entity_'. $recapture->entity_id . '/program_' . $recapture->program_id . '/recapture_' . $recapture->id . '/';
                     
                     // sanitize filename
-                    $characters = array(' ','´','`',"'",'~','"','\'','\\','/');
+                    $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
                     $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                     // Create a record in documents table
@@ -1992,7 +1996,7 @@ class RecaptureController extends Controller
 
             $lc = new LogConverter('recapture_invoice', 'create');
             $lc->setFrom(Auth::user())->setTo($current_recapture_invoice)->setDesc(Auth::user()->email . 'Created a new recapture invoice draft')->save();
-        }                        
+        }
 
         // create the new recapture item, add to invoice
         $recapture_item = new RecaptureItem([
@@ -2028,16 +2032,15 @@ class RecaptureController extends Controller
             $forminputs['description'] = null;
         }
 
-        if($recapture){
+        if ($recapture) {
             $recapture->update([
                 'amount' => $forminputs['amount'],
                 'description' => $forminputs['description']
             ]);
             return 1;
-        }else{
+        } else {
             return "I couldn't find this recapture.";
         }
-        
     }
 
     public function deleteRecapture(RecaptureItem $recapture)

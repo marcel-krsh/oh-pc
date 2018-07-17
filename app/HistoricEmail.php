@@ -30,7 +30,7 @@ class HistoricEmail extends Model
      */
     public function recipient() : HasOne
     {
-        return $this->hasOne('App\User', 'id', 'user_id');
+        return $this->hasOne(\App\User::class, 'id', 'user_id');
     }
 
     /**
@@ -105,7 +105,6 @@ class HistoricEmail extends Model
                 $item_link_parcel = null;
                 break;
             default:
-               
         }
 
         // we need the item, the item type, the item link

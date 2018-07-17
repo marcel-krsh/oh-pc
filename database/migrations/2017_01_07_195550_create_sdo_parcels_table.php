@@ -25,8 +25,8 @@ class CreateSdoParcelsTable extends Migration
             $table->string('Property Zip')->nullable();
             $table->string('Property County')->nullable();
             $table->string('First Payment Date')->nullable();
-            $table->float('latitude',10,5)->nullable();
-            $table->float('longitude',10,5)->nullable();
+            $table->float('latitude', 10, 5)->nullable();
+            $table->float('longitude', 10, 5)->nullable();
             $table->integer('us_house_district')->nullable();
             $table->integer('oh_house_district')->nullable();
             $table->integer('oh_senate_district')->nullable();
