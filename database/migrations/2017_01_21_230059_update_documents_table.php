@@ -26,7 +26,6 @@ class UpdateDocumentsTable extends Migration
 
             $table->dropForeign(['document_type_id']);
             $table->dropColumn('document_type_id');
-
         });
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');

@@ -15,7 +15,7 @@ class CreateDocumentRulesTable extends Migration
     {
         Schema::create('document_rules', function (Blueprint $table) {
             $table->increments('id');
-            $table->float('amount',10,2)->default(25000.01);
+            $table->float('amount', 10, 2)->default(25000.01);
             $table->unsignedInteger('program_rules_id')->default(1);
             $table->unsignedInteger('expense_category_id');
             $table->timestamps();

@@ -60,7 +60,6 @@ class Document extends Model
     public function approve_categories($cat_array = null)
     {
         if (is_array($cat_array)) {
-
             // get current approval array (category ids that had their document approved)
             if ($this->approved) {
                 $current_approval_array = json_decode($this->approved, true);

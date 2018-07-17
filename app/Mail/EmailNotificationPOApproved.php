@@ -35,7 +35,7 @@ class EmailNotificationPOApproved extends Mailable
      * @param int  $recipient_id
      * @param null $po_id
      */
-    public function __construct($recipient_id=1, $po_id=null)
+    public function __construct($recipient_id = 1, $po_id = null)
     {
         $this->po_id = $po_id;
         $this->po = ReimbursementPurchaseOrders::where('id', '=', $po_id)->get()->first();

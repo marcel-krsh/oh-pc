@@ -22,36 +22,36 @@ class AddDescriptionGuide extends Migration
         DB::table('guide_steps')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $guide_steps = array(       
+        $guide_steps = array(
             array( // 1
                 'parent_id' => null,
                 'guide_step_type_id' => 1,
                 'name' => 'Step 1',
                 'hfa' => 0,
                 'step_help' => ''
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Complete form',
                 'hfa' => 0,
                 'step_help' => 'Save the disposition to mark the form as completed.'
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Upload supporting documents',
                 'hfa' => 0,
                 'step_help' => 'Upload documents for all required categories.'
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Submit for internal approval',
                 'hfa' => 0,
                 'step_help' => 'Click the "Submit Disposition Request for Internal Approval" button when ready.'
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Submit to HFA',
@@ -65,43 +65,43 @@ class AddDescriptionGuide extends Migration
                 'name' => 'Step 2',
                 'hfa' => 1,
                 'step_help' => ''
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Confirm calculations',
                 'hfa' => 1,
                 'step_help' => 'Save the disposition to mark the calculations as confirmed.'
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Review supporting documents',
                 'hfa' => 1,
                 'step_help' => 'All supporting documents have been approved.'
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Approve request',
                 'hfa' => 1,
                 'step_help' => 'Click the Approve request button.'
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Notify Landbank',
                 'hfa' => 1,
                 'step_help' => 'Landbank will be notified automatically when the request is approved.'
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Request lien release',
                 'hfa' => 1,
                 'step_help' => 'Click the Request Release button.'
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Add to disposition invoice',
@@ -116,28 +116,28 @@ class AddDescriptionGuide extends Migration
                 'hfa' => 1,
                 'step_help' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Fiscal agent release lien',
                 'hfa' => 1,
                 'step_help' => 'Release the disposition.'
             ),
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Begin sale of parcel',
                 'hfa' => 0,
                 'step_help' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Finalize sale',
                 'hfa' => 0,
                 'step_help' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Upload final executed release',
@@ -152,28 +152,28 @@ class AddDescriptionGuide extends Migration
                 'hfa' => 1,
                 'step_help' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 18,
                 'guide_step_type_id' => 1,
                 'name' => 'Review disposition',
                 'hfa' => 1,
                 'step_help' => 'Save the disposition to mark as completed.'
             ),
-            array( 
+            array(
                 'parent_id' => 18,
                 'guide_step_type_id' => 1,
                 'name' => 'Holly approval',
                 'hfa' => 1,
                 'step_help' => 'Holly must approve the disposition invoice.'
             ),
-            array( 
+            array(
                 'parent_id' => 18,
                 'guide_step_type_id' => 1,
                 'name' => 'Jim approval',
                 'hfa' => 1,
                 'step_help' => 'Jim must approve the disposition invoice.'
             ),
-            array( 
+            array(
                 'parent_id' => 18,
                 'guide_step_type_id' => 1,
                 'name' => 'Send invoice',
@@ -188,7 +188,7 @@ class AddDescriptionGuide extends Migration
                 'hfa' => 0,
                 'step_help' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 23,
                 'guide_step_type_id' => 1,
                 'name' => 'Send invoice payment',
@@ -203,7 +203,7 @@ class AddDescriptionGuide extends Migration
                 'hfa' => 1,
                 'step_help' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 25,
                 'guide_step_type_id' => 1,
                 'name' => 'Mark as paid',

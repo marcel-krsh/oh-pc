@@ -35,7 +35,7 @@ class ParcelsExportJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(User $user=null, $report_id = null, $filter = null)
+    public function __construct(User $user = null, $report_id = null, $filter = null)
     {
         if ($user) {
             $this->requestorEmail = $user->email;
@@ -71,7 +71,7 @@ class ParcelsExportJob implements ShouldQueue
                 $sheet->setColumnFormat([
                 'A2:A'.$totalRows => '@','B2:B'.$totalRows => '@','C2:C'.$totalRows => '@','D2:D'.$totalRows => '@','E2:E'.$totalRows => '@','F2:F'.$totalRows => '0.00000000','G2:G'.$totalRows => '0.00000000','H2:H5'.$totalRows => '@','I2:I'.$totalRows => '$#,##0.00_-','J2:J'.$totalRows => '$#,##0.00_-',
                 'K2:K'.$totalRows => '$#,##0.00_-','L2:L'.$totalRows => '$#,##0.00_-','M2:M'.$totalRows => '$#,##0.00_-','N2:N'.$totalRows => '$#,##0.00_-','O2:O'.$totalRows => '$#,##0.00_-','P2:P'.$totalRows => '$#,##0.00_-','Q2:Q'.$totalRows => '$#,##0.00_-','R2:R'.$totalRows => 'm/d/y',
-            ]);
+                ]);
             
                 $sheet->SetCellValue("A1", "Parcel");
                 $sheet->SetCellValue("B1", "Partner");
@@ -169,7 +169,7 @@ class ParcelsExportJob implements ShouldQueue
                   'P'     =>  15,
                   'Q'     =>  15,
                   'R'     =>  25,
-              ));
+                ));
             });
             //})->download("xlsx");
         })->store('xls', storage_path('app/export/parcels'));

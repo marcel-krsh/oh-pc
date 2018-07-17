@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Helpers;
 
@@ -23,7 +23,6 @@ class GeoData
         if ($response) {
             $data = json_decode($response, true);
             if (isset($data['results'][0])) {
-
                 // Parse out the lat lng, and create google maps url.
                 $address_info =  [
                     'lat' => $data['results'][0]['geometry']['location']['lat'],

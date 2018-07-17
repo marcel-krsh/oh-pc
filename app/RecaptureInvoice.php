@@ -131,7 +131,7 @@ class RecaptureInvoice extends Model
             'recapture_total_paid' => $this->totalPaid(),
             'recapture_balance' => $this->balance(),
             'recapture_last_payment_cleared_date' => $lastDate
-      ]);
+        ]);
     }
 
     /**

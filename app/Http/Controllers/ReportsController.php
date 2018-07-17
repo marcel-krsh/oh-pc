@@ -36,7 +36,7 @@ class ReportsController extends Controller
         $this->middleware('auth');
     }
 
-    public function viewVendor($vendor=0)
+    public function viewVendor($vendor = 0)
     {
         if ($vendor) {
             return redirect('/home')->with('open_vendor_id', $vendor);
@@ -164,7 +164,6 @@ class ReportsController extends Controller
             $reports = Report::where('type', '=', 'export_vendor_stats')->orderBy('id', 'desc')->limit(10)->get();
             // check if there is a report and set pending if the last one is pending
             if (count($reports)>0) {
-
                 // store files in array
                 $files = array();
                 $downloaders_array = array();
@@ -276,7 +275,7 @@ class ReportsController extends Controller
                   'user_id' => $requestor->id,
                   'program_numbers' => $count_programs,
                   'program_processed' => 0
-        ]);
+            ]);
             $new_report->save();
 
             foreach ($programs as $program) {
@@ -305,7 +304,6 @@ class ReportsController extends Controller
             $report = Report::where('id', '=', $fileid)->where('type', '=', 'export_vendor_stats')->with('user')->first();
 
             if ($report) {
-
                 // check if there is a filename in storage
                 if (!Storage::exists($report->folder."/".$report->filename)) {
                     return redirect('/reports/export_vendor_stats');

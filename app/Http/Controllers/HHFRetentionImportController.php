@@ -127,16 +127,16 @@ class HHFRetentionImportController extends Controller
                 //put in code here to set where to only get ids for their program
                 //make it get all ids for OHFA
                 switch (Auth::user()->entity_id) {
-                        case '1':
-                            $where = '%%';
-                            $whereOperator = "LIKE";
-                            break;
+                    case '1':
+                        $where = '%%';
+                        $whereOperator = "LIKE";
+                        break;
                         
-                        default:
-                            $where = Auth::user()->entity_id;
-                            $whereOperator = "=";
-                            break;
-                    }
+                    default:
+                        $where = Auth::user()->entity_id;
+                        $whereOperator = "=";
+                        break;
+                }
                     
                 return view('pages.import.hhf_retention_form');
             } else {
@@ -194,111 +194,111 @@ class HHFRetentionImportController extends Controller
             DB::table('sdo_parcels')->truncate();
                 
             foreach ($reader->getSheetIterator() as $sheet) { //sheet for
-                    foreach ($sheet->getRowIterator() as $row) { //row for
-                        //dd($row);
-                        if ($rowCount == 0) { //row count if
-                            /// determine the indexes for the insert
-                            $numKeys = count(array_keys($row));
-                            do { // do
+                foreach ($sheet->getRowIterator() as $row) { //row for
+                    //dd($row);
+                    if ($rowCount == 0) { //row count if
+                        /// determine the indexes for the insert
+                        $numKeys = count(array_keys($row));
+                        do { // do
                                 
-                                switch ($row[$indexes]) { // switch
-                                    case 'File Number':
-                                        $fileNumber = $indexes;
-                                        break;
-                                    case 'street_address':
-                                        $streetAddress = $indexes;
-                                        break;
-                                    case 'Property Address Number':
-                                        $propertyAddressNumber = $indexes;
-                                        break;
-                                    case 'Property Address Street Name':
-                                        $propertyAddressName = $indexes;
-                                        break;
-                                    case 'Property Address Street Suffix':
-                                        $propertyAddressSuffix = $indexes;
-                                        break;
-                                    case 'Property City':
-                                        $propertyCity = $indexes;
-                                        break;
-                                    case 'Property State':
-                                        $propertyState = $indexes;
-                                        break;
-                                    case 'Property Zip':
-                                        $propertyZip = $indexes;
-                                        break;
-                                    case 'Property County':
-                                        $propertyCounty = $indexes;
-                                        break;
-                                    case 'Status':
-                                        $status = $indexes;
-                                        break;
-                                    /*///////////////////////////////////////////////////////////////////////////////////////*
-                                    /*///////////////////////////////////////////////////////////////////////////////////////*
-                                    /*///////////////////////////////////////////////////////////////////////////////////////*
+                            switch ($row[$indexes]) { // switch
+                                case 'File Number':
+                                    $fileNumber = $indexes;
+                                    break;
+                                case 'street_address':
+                                    $streetAddress = $indexes;
+                                    break;
+                                case 'Property Address Number':
+                                    $propertyAddressNumber = $indexes;
+                                    break;
+                                case 'Property Address Street Name':
+                                    $propertyAddressName = $indexes;
+                                    break;
+                                case 'Property Address Street Suffix':
+                                    $propertyAddressSuffix = $indexes;
+                                    break;
+                                case 'Property City':
+                                    $propertyCity = $indexes;
+                                    break;
+                                case 'Property State':
+                                    $propertyState = $indexes;
+                                    break;
+                                case 'Property Zip':
+                                    $propertyZip = $indexes;
+                                    break;
+                                case 'Property County':
+                                    $propertyCounty = $indexes;
+                                    break;
+                                case 'Status':
+                                    $status = $indexes;
+                                    break;
+                                /*///////////////////////////////////////////////////////////////////////////////////////*
+                                /*///////////////////////////////////////////////////////////////////////////////////////*
+                                /*///////////////////////////////////////////////////////////////////////////////////////*
 
-                                    NEED DATE OF FIRST PAYMENT
+                                NEED DATE OF FIRST PAYMENT
 
-                                    case 'First Payment Date':
-                                        $propertyFirstPayment = $indexes;
-                                        break;
+                                case 'First Payment Date':
+                                    $propertyFirstPayment = $indexes;
+                                    break;
 
-                                    /*///////////////////////////////////////////////////////////////////////////////////////*
-                                    /*///////////////////////////////////////////////////////////////////////////////////////*
-                                    /*///////////////////////////////////////////////////////////////////////////////////////*
+                                /*///////////////////////////////////////////////////////////////////////////////////////*
+                                /*///////////////////////////////////////////////////////////////////////////////////////*
+                                /*///////////////////////////////////////////////////////////////////////////////////////*
 
-                                    default:
-                                        # code...
-                                        break;
-                                } // end switch
-                                $indexes++;
-                            } while ($indexes < $numKeys); //end do
-                        } // rowcount if
+                                default:
+                                    # code...
+                                    break;
+                            } // end switch
+                            $indexes++;
+                        } while ($indexes < $numKeys); //end do
+                    } // rowcount if
 
-                        /*///////////////////////////////////////////////////////////////////////////////////////*
-                                        if($rowCount != 0 && !isset($row['$propertyFirstPayment']) {
-                        /*///////////////////////////////////////////////////////////////////////////////////////*
-                        if ($rowCount != 0) { //row count iff
-                            /// skip the headers
-                          $new_sdo_data = array([
-                                  'Property Address Number'=>$row[$propertyAddressNumber],
-                                'Property Address Street Name'=>$row[$propertyAddressName],
-                                'Property Address Street Suffix'=>$row[$propertyAddressSuffix],
-                                'Property City'=>$row[$propertyCity],
-                                'Property State'=>$row[$propertyState],
-                                'Property Zip'=>$row[$propertyZip],
-                                'Property County'=>$row[$propertyCounty],
-                                'Status'=>$row[$status],
-                                'File Number'=>$row[$fileNumber],
-                                'street_address'=>$row[$propertyAddressNumber]." ".$row[$propertyAddressName]." ".$row[$propertyAddressSuffix]
-                                ]);
+                    /*///////////////////////////////////////////////////////////////////////////////////////*
+                                if($rowCount != 0 && !isset($row['$propertyFirstPayment']) {
+                    /*///////////////////////////////////////////////////////////////////////////////////////*
+                    if ($rowCount != 0) { //row count iff
+                        /// skip the headers
+                        $new_sdo_data = array([
+                              'Property Address Number'=>$row[$propertyAddressNumber],
+                            'Property Address Street Name'=>$row[$propertyAddressName],
+                            'Property Address Street Suffix'=>$row[$propertyAddressSuffix],
+                            'Property City'=>$row[$propertyCity],
+                            'Property State'=>$row[$propertyState],
+                            'Property Zip'=>$row[$propertyZip],
+                            'Property County'=>$row[$propertyCounty],
+                            'Status'=>$row[$status],
+                            'File Number'=>$row[$fileNumber],
+                            'street_address'=>$row[$propertyAddressNumber]." ".$row[$propertyAddressName]." ".$row[$propertyAddressSuffix]
+                            ]);
                               
 
-                            if ($exists > 0) {
-                                /// update the parcel info
-                                $new_sdo_data[0]['updated_at'] = date('Y-m-d H:i:s', time());
-                                //dd($new_sdo_data);
-                                $check = DB::table('sdo_parcels')->where('File Number', $row[$fileNumber])->update($new_sdo_data[0]);
-                                if (!$check) {
-                                    return $check." Bad things at row ".$rowCount;
-                                }
-                                $updated++;
-                                $new_sdo_data=[];
-                            } else {
-                                /// doesn't exist - insert it.
-                                $new_sdo_data[0]['created_at'] = date('Y-m-d H:i:s', time());
-                                $check = DB::table('sdo_parcels')->insert($new_sdo_data);
-                                if (!$check) {
-                                    return $check." Bad things at row ".$rowCount;
-                                }
-                                $inserted++;
-                                $new_sdo_data=[];
-                            } // end exists if
+                        if ($exists > 0) {
+                        /// update the parcel info
+                            $new_sdo_data[0]['updated_at'] = date('Y-m-d H:i:s', time());
+                        //dd($new_sdo_data);
+                            $check = DB::table('sdo_parcels')->where('File Number', $row[$fileNumber])->update($new_sdo_data[0]);
+                            if (!$check) {
+                                return $check." Bad things at row ".$rowCount;
+                            }
+                            $updated++;
+                            $new_sdo_data=[];
                         } else {
-                            $ignored++;
-                        }//end row count if
+                        /// doesn't exist - insert it.
+                            $new_sdo_data[0]['created_at'] = date('Y-m-d H:i:s', time());
+                            $check = DB::table('sdo_parcels')->insert($new_sdo_data);
+                            if (!$check) {
+                                return $check." Bad things at row ".$rowCount;
+                            }
+                            $inserted++;
+                            $new_sdo_data=[];
+                        } // end exists if
+                    } else {
+                        $ignored++;
+                    }//end row count if
                         
-                        $rowCount++;
-                    } // end row for
+                    $rowCount++;
+                } // end row for
             } // end sheet for
                 
                 /// delete the file

@@ -17,7 +17,6 @@ class AddValidatedUniqeToParcels extends Migration
             //
             $table->tinyInteger('validated_unique')->default(0);
             $table->text('shared_parcels')->nullable();
-            
         });
     }
 

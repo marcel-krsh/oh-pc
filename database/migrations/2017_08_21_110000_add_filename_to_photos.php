@@ -14,7 +14,7 @@ class AddFilenameToPhotos extends Migration
     public function up()
     {
         Schema::table('photos', function (Blueprint $table) {
-            $table->string('filename',255);
+            $table->string('filename', 255);
         });
     }
 

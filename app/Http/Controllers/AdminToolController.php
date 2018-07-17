@@ -35,7 +35,7 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function entityCreate(Form $form, $id=null)
+    public function entityCreate(Form $form, $id = null)
     {
         $stateIds = State::pluck('id')->toArray();
         $stateNames = State::pluck('state_name')->toArray();
@@ -103,7 +103,7 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function programCreate(Form $form, $id=null)
+    public function programCreate(Form $form, $id = null)
     {
         $entityIds = Entity::where('active', 1)->orderBy('entity_name', 'asc')->pluck('id')->toArray();
         $entityNames = Entity::where('active', 1)->orderBy('entity_name', 'asc')->pluck('entity_name')->toArray();
@@ -167,13 +167,12 @@ class AdminToolController extends Controller
         $requiredDocId = DB::select('select id from expense_categories WHERE LOWER(expense_category_name) LIKE ?', array('%'.$docType.'%'));
 
         $docRuleId = DocumentRule::where('program_rules_id', $program_rule_id)->where('expense_category_id', $requiredDocId[0]->id)->pluck('id');
-        if(count($docRuleId)){
+        if (count($docRuleId)) {
             $getDocEntries = DocumentRuleEntry::where('document_rule_id', $docRuleId)->select('document_category_id')->distinct()->get();
             return $getDocEntries;
-        }else{
+        } else {
             return null;
         }
-        
     }
 
     /**
@@ -189,7 +188,7 @@ class AdminToolController extends Controller
             ->where('expense_category_id', 999)
             ->get();
 
-        if(!isset($document_rule->id)) {
+        if (!isset($document_rule->id)) {
             return false;
         }
 
@@ -446,7 +445,7 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function ruleCreate(Form $form, $id=null)
+    public function ruleCreate(Form $form, $id = null)
     {
         $docIds = DocumentCategory::where('active', 1)->pluck('id')->toArray();
         $docNames = DocumentCategory::where('active', 1)->pluck('document_category_name')->toArray();
@@ -697,11 +696,11 @@ class AdminToolController extends Controller
             //         );
             // }
 
-            if(count($program_rule->reimbursementRules)){
+            if (count($program_rule->reimbursementRules)) {
                 $min_units_value = $program_rule->reimbursementRules[0]->minimum_units;
                 $max_units_value = $program_rule->reimbursementRules[0]->maximum_units;
                 $max_reimbursement_value = $program_rule->reimbursementRules[0]->maximum_reimbursement;
-            }else{
+            } else {
                 $min_units_value = '';
                 $max_units_value = '';
                 $max_reimbursement_value = '';
@@ -788,17 +787,17 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function accountCreate(Form $form, $id=null)
+    public function accountCreate(Form $form, $id = null)
     {
         $ownerIds = Program::pluck('id')->toArray();
         $ownerNames = Program::pluck('program_name')->toArray();
 
         $account = Account::where('id', $id)->first();
 
-        for($i=0; $i < count($ownerIds); $i++){
-            if($ownerIds[$i] == $account->owner_id){
+        for ($i=0; $i < count($ownerIds); $i++) {
+            if ($ownerIds[$i] == $account->owner_id) {
                 $selectedOwner[$i] = 'true';
-            }else{
+            } else {
                 $selectedOwner[$i] = 'false';
             }
         }
@@ -826,7 +825,7 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function vendorCreate(Form $form, $id=null)
+    public function vendorCreate(Form $form, $id = null)
     {
         $stateIds = State::pluck('id')->toArray();
         $stateNames = State::pluck('state_name')->toArray();
@@ -878,7 +877,7 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function targetAreaCreate(Form $form, $id=null)
+    public function targetAreaCreate(Form $form, $id = null)
     {
         $countyIds = County::orderBy('county_name', 'asc')->pluck('id')->toArray();
         $countyNames = County::orderBy('county_name', 'asc')->pluck('county_name')->toArray();
@@ -909,7 +908,7 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function documentCategoryCreate(Form $form, $id=null)
+    public function documentCategoryCreate(Form $form, $id = null)
     {
         $documentCategory = DocumentCategory::where('id', $id)->first();
         if (!$id) {
@@ -933,7 +932,7 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function expenseCategoryCreate(Form $form, $id=null)
+    public function expenseCategoryCreate(Form $form, $id = null)
     {
         $expenseCategory = ExpenseCategory::where('id', $id)->first();
         if (!$id) {
@@ -957,7 +956,7 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|string
      */
-    public function countyCreate(Form $form, $id=null)
+    public function countyCreate(Form $form, $id = null)
     {
         $county = County::where('id', $id)->first();
 
@@ -1083,7 +1082,7 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function entityStore(Request $request, $id=null)
+    public function entityStore(Request $request, $id = null)
     {
         $this->validate($request, ['entity_name'=>'string|required',
                 'email_address'=>'email|required',
@@ -1158,7 +1157,7 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function programStore(Request $request, $id=null)
+    public function programStore(Request $request, $id = null)
     {
         $entityIds = Entity::pluck('id')->toArray();
         $countyIds = County::pluck('id')->toArray();
@@ -1280,9 +1279,11 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function ruleStore(Request $request, $id=null)
+    public function ruleStore(Request $request, $id = null)
     {
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
         // validate
         $this->rulesValidation($request);
         $amountList = [
@@ -1373,17 +1374,17 @@ class AdminToolController extends Controller
                     }
                 }
             }
-           for($i=0; $i<count(Input::get('max_reimbursement')); $i++){
-               if(!empty(Input::get('min_units')[$i])) {
-                   ReimbursementRule::create([
+            for ($i=0; $i<count(Input::get('max_reimbursement')); $i++) {
+                if (!empty(Input::get('min_units')[$i])) {
+                    ReimbursementRule::create([
                        'minimum_units' => Input::get('min_units')[$i],
                        'maximum_units' => Input::get('max_units')[$i],
                        'maximum_reimbursement' => Input::get('max_reimbursement')[$i],
                        'program_rules_id' => $rule->id,
 
-                   ]);
-               }
-           }
+                    ]);
+                }
+            }
             DB::commit();
             return response('The program rule has been made. Now you just need to assign it to a program (so any new parcels added to that program will use this rule), or you can open a single parcel and have it use this rule specifically. Nifty right?');
         } else {
@@ -1458,14 +1459,14 @@ class AdminToolController extends Controller
             for ($i=0; $i<count(Input::get('max_reimbursement')); $i++) {
                 if (Input::get('min_units')[$i]) {
                     // if no entry, create one, otherwise update
-                    if(!count(ReimbursementRule::where('program_rules_id', $id)->get())){
+                    if (!count(ReimbursementRule::where('program_rules_id', $id)->get())) {
                         ReimbursementRule::create([
                            'minimum_units' => Input::get('min_units')[$i],
                            'maximum_units' => Input::get('max_units')[$i],
                            'maximum_reimbursement' => Input::get('max_reimbursement')[$i],
                            'program_rules_id' => $id,
-                       ]);
-                    }else{
+                        ]);
+                    } else {
                         ReimbursementRule::where('program_rules_id', $id)->update([
                             'minimum_units'=>Input::get('min_units')[$i],
                             'maximum_units'=>Input::get('max_units')[$i],
@@ -1473,7 +1474,6 @@ class AdminToolController extends Controller
                             'program_rules_id'=>$id,
                         ]);
                     }
-                    
                 }
             }
             DB::commit();
@@ -1489,7 +1489,7 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function accountStore(Request $request, $id=null)
+    public function accountStore(Request $request, $id = null)
     {
         $ownerIds = Program::pluck('id')->toArray();
         $this->validate($request, [
@@ -1534,7 +1534,7 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function documentCategoryStore(Request $request, $id=null)
+    public function documentCategoryStore(Request $request, $id = null)
     {
         $this->validate($request, [
            'document_category_name'=> 'string|required'
@@ -1569,7 +1569,7 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function expenseCategoryStore(Request $request, $id=null)
+    public function expenseCategoryStore(Request $request, $id = null)
     {
         $this->validate($request, [
             'expense_category_name'=>'string|required'
@@ -1604,7 +1604,7 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function vendorStore(Request $request, $id=null)
+    public function vendorStore(Request $request, $id = null)
     {
         $this->validate($request, [
             'vendor_name'=>'string|required',
@@ -1672,7 +1672,7 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function targetAreaStore(Request $request, $id=null)
+    public function targetAreaStore(Request $request, $id = null)
     {
         $countyIds = County::pluck('id')->toArray();
         $this->validate($request, [
@@ -1711,7 +1711,7 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function countyStore(Request $request, $id=null)
+    public function countyStore(Request $request, $id = null)
     {
         if (!$id) {
             return response('Oops - no county was selected? That\'s weird.');
@@ -1752,58 +1752,58 @@ class AdminToolController extends Controller
                 User::where('entity_id', $id)->update(['active'=>0]);
                 return response($e->entity_name.' has been deactivated. The users belonging to this entity can no longer access the site. I have also deactivated their users, programs, and accounts. Their programs are no longer available for landbank users to register as members through the registration screen. It will continue to show up in reports if it has parcels assigned to it.');
             break;
-             case "program":
-                 $p = Program::find($id);
-                  Program::where('id', $id)->update(['active'=>0]);
-                  Account::where('owner_id', $id)->update(['active'=>0]);
-                 $lc = new LogConverter('program', 'deactivate');
-                 $lc->setFrom(Auth::user())->setTo($p)->setDesc(Auth::user()->email . ' deactivated program ' . $p->program_name)->save();
-                 return response('I have deactivated the program and its associated account. Users can no longer see the account in the registration list. If it has parcels or transactions associated with it, it will still appear in reports.');
+            case "program":
+                $p = Program::find($id);
+                Program::where('id', $id)->update(['active'=>0]);
+                Account::where('owner_id', $id)->update(['active'=>0]);
+                $lc = new LogConverter('program', 'deactivate');
+                $lc->setFrom(Auth::user())->setTo($p)->setDesc(Auth::user()->email . ' deactivated program ' . $p->program_name)->save();
+                return response('I have deactivated the program and its associated account. Users can no longer see the account in the registration list. If it has parcels or transactions associated with it, it will still appear in reports.');
             break;
-             case "rule":
-                 $pr = ProgramRule::find($id);
-                 $p = Program::where('default_program_rules_id', $id)->where('active', 1)->count();
-                 if ($p > 0) {
-                     if ($p > 1) {
-                         $plural = "s";
-                     } else {
-                         $plural = "";
-                     }
-                     return "I'm sorry, I cannot deactivate $pr->rules_name because it is still being used by $p program$plural. Please reassign those program$plural to use a differnt rule before deactivating.";
-                 } else {
-                     ProgramRule::where('id', $id)->update(['active'=>0]);
-                     $lc = new LogConverter('programrule', 'deactivate');
-                     $lc->setFrom(Auth::user())->setTo($pr)->setDesc(Auth::user()->email . ' deactivated program rule')->save();
-                     return response($pr->rules_name.' has been deactivated and will not be used going forward. Parcels that used this rule previously will still show this rule unless they are reassigned to another. Inactive programs are allowed to have this rule associated with them because they cannot be used.');
-                 }
+            case "rule":
+                $pr = ProgramRule::find($id);
+                $p = Program::where('default_program_rules_id', $id)->where('active', 1)->count();
+                if ($p > 0) {
+                    if ($p > 1) {
+                        $plural = "s";
+                    } else {
+                        $plural = "";
+                    }
+                    return "I'm sorry, I cannot deactivate $pr->rules_name because it is still being used by $p program$plural. Please reassign those program$plural to use a differnt rule before deactivating.";
+                } else {
+                    ProgramRule::where('id', $id)->update(['active'=>0]);
+                    $lc = new LogConverter('programrule', 'deactivate');
+                    $lc->setFrom(Auth::user())->setTo($pr)->setDesc(Auth::user()->email . ' deactivated program rule')->save();
+                    return response($pr->rules_name.' has been deactivated and will not be used going forward. Parcels that used this rule previously will still show this rule unless they are reassigned to another. Inactive programs are allowed to have this rule associated with them because they cannot be used.');
+                }
+                break;
+            case "account":
+                $a = Account::find($id);
+                $p = Program::find($a->owner_id);
+                Account::where('id', $id)->update(['active'=>0]);
+                $lc = new LogConverter('account', 'deactivate');
+                $lc->setFrom(Auth::user())->setTo($a)->setDesc(Auth::user()->email . ' deactivated account ' . $a->account_name)->save();
+                return response($a->account_name.' has been deactivated and cannot accept any new Transactions. However, if it has transactions, it will still show up in accounting until all its transactions have been moved to a different account. Please be sure to create a new account for '.$p->program_name.', otherwise it will not be able to accept reimbursements.');
             break;
-             case "account":
-                 $a = Account::find($id);
-                 $p = Program::find($a->owner_id);
-                 Account::where('id', $id)->update(['active'=>0]);
-                 $lc = new LogConverter('account', 'deactivate');
-                 $lc->setFrom(Auth::user())->setTo($a)->setDesc(Auth::user()->email . ' deactivated account ' . $a->account_name)->save();
-                 return response($a->account_name.' has been deactivated and cannot accept any new Transactions. However, if it has transactions, it will still show up in accounting until all its transactions have been moved to a different account. Please be sure to create a new account for '.$p->program_name.', otherwise it will not be able to accept reimbursements.');
+            case "vendor":
+                Vendor::where('id', $id)->update(['active'=>0]);
+                $v = Vendor::find($id);
+                $lc = new LogConverter('vendor', 'deactivate');
+                $lc->setFrom(Auth::user())->setTo($v)->setDesc(Auth::user()->email . ' deactivated vendor ' . $v->vendor_name)->save();
+                return response($v->vendor_name.' is no longer available for new expense reimbursements.');
             break;
-             case "vendor":
-                 Vendor::where('id', $id)->update(['active'=>0]);
-                 $v = Vendor::find($id);
-                 $lc = new LogConverter('vendor', 'deactivate');
-                 $lc->setFrom(Auth::user())->setTo($v)->setDesc(Auth::user()->email . ' deactivated vendor ' . $v->vendor_name)->save();
-                 return response($v->vendor_name.' is no longer available for new expense reimbursements.');
+            case "target":
+                TargetArea::where('id', $id)->update(['active'=>0]);
+                //TODO: add event logging
+                $ta = TargetArea::find($id);
+                return response('The '.$ta->target_area_name.' target area is no longer available for new parcels. Old parcels assigned to it will still show it; thus it will still show up in the parcels list until all parcels assigned to it have been reassigned.');
             break;
-             case "target":
-                 TargetArea::where('id', $id)->update(['active'=>0]);
-                 //TODO: add event logging
-                 $ta = TargetArea::find($id);
-                 return response('The '.$ta->target_area_name.' target area is no longer available for new parcels. Old parcels assigned to it will still show it; thus it will still show up in the parcels list until all parcels assigned to it have been reassigned.');
-            break;
-             case "document":
-                 $dc = DocumentCategory::find($id);
-                  DocumentCategory::where('id', $id)->update(['active'=>0]);
-                 $lc = new LogConverter('documentcategory', 'deactivate');
-                 $lc->setFrom(Auth::user())->setTo($dc)->setDesc(Auth::user()->email . ' deactivated decument category ' . $dc->document_category_name)->save();
-                 return response('I deactivated '.$dc->document_category_name.' and it will no longer be available. Please note that old documents uploaded under it will still show on their respective tabs.');
+            case "document":
+                $dc = DocumentCategory::find($id);
+                DocumentCategory::where('id', $id)->update(['active'=>0]);
+                $lc = new LogConverter('documentcategory', 'deactivate');
+                $lc->setFrom(Auth::user())->setTo($dc)->setDesc(Auth::user()->email . ' deactivated decument category ' . $dc->document_category_name)->save();
+                return response('I deactivated '.$dc->document_category_name.' and it will no longer be available. Please note that old documents uploaded under it will still show on their respective tabs.');
             break;
             case "expense":
                 $ec = ExpenseCategory::find($id);
@@ -1812,7 +1812,6 @@ class AdminToolController extends Controller
                 $lc->setFrom(Auth::user())->setTo($ec)->setDesc(Auth::user()->email . ' deactivated expense category ' . $ec->expense_category_name)->save();
                 return response('I deactivated the expense category. Note that it will still show on parcels that used it. Account totals will also show it parenthetically if they had any expenses within it.');
             break;
-
         }
     }
 
@@ -1834,45 +1833,45 @@ class AdminToolController extends Controller
                 $lc->setFrom(Auth::user())->setTo($e)->setDesc(Auth::user()->email . ' activated entity ' . $e->entity_name)->save();
                 return response('I activated '.$e->entity_name.' for you. You may want to check and make sure it has an active program, account, and user.');
             break;
-             case "program":
-                 Program::where('id', $id)->update(['active'=>1]);
-                 $p = Program::find($id);
-                 $lc = new LogConverter('program', 'activate');
-                 $lc->setFrom(Auth::user())->setTo($p)->setDesc(Auth::user()->email . ' activated program ' . $p->program_name)->save();
-                 return response('I activated '.$p->program_name.' for you. What\'s next?');
+            case "program":
+                Program::where('id', $id)->update(['active'=>1]);
+                $p = Program::find($id);
+                $lc = new LogConverter('program', 'activate');
+                $lc->setFrom(Auth::user())->setTo($p)->setDesc(Auth::user()->email . ' activated program ' . $p->program_name)->save();
+                return response('I activated '.$p->program_name.' for you. What\'s next?');
             break;
-             case "rule":
+            case "rule":
                 ProgramRule::where('id', $id)->update(['active'=>1]);
                 $pr = ProgramRule::find($id);
                 $lc = new LogConverter('programrule', 'activate');
                 $lc->setFrom(Auth::user())->setTo($pr)->setDesc(Auth::user()->email . ' activated program rule')->save();
-                 return response('Rule is activated');
+                return response('Rule is activated');
             break;
-             case "account":
+            case "account":
                 Account::where('id', $id)->update(['active'=>1]);
                 $a = Account::find($id);
                 $lc = new LogConverter('account', 'activate');
                 $lc->setFrom(Auth::user())->setTo($a)->setDesc(Auth::user()->email . ' activated account ' . $a->account_name)->save();
-                 return response('Account is activated');
+                return response('Account is activated');
             break;
-             case "vendor":
-                 Vendor::where('id', $id)->update(['active'=>1]);
-                 $v = Vendor::find($id);
-                 $lc = new LogConverter('vendor', 'activate');
-                 $lc->setFrom(Auth::user())->setTo($v)->setDesc(Auth::user()->email . ' activated vendor ' . $v->vendor_name)->save();
-                 return response('Vendor is activated');
+            case "vendor":
+                Vendor::where('id', $id)->update(['active'=>1]);
+                $v = Vendor::find($id);
+                $lc = new LogConverter('vendor', 'activate');
+                $lc->setFrom(Auth::user())->setTo($v)->setDesc(Auth::user()->email . ' activated vendor ' . $v->vendor_name)->save();
+                return response('Vendor is activated');
             break;
-             case "target":
-                 TargetArea::where('id', $id)->update(['active'=>1]);
-                 //TODO: Add event logging
-                 return response('Target area is activated');
+            case "target":
+                TargetArea::where('id', $id)->update(['active'=>1]);
+                //TODO: Add event logging
+                return response('Target area is activated');
             break;
-             case "document":
-                 DocumentCategory::where('id', $id)->update(['active'=>1]);
-                 $dc = DocumentCategory::find($id);
-                 $lc = new LogConverter('documentcategory', 'activate');
-                 $lc->setFrom(Auth::user())->setTo($dc)->setDesc(Auth::user()->email . 'activated document category ' . $dc->document_category_name)->save();
-                 return response('Document category is activated');
+            case "document":
+                DocumentCategory::where('id', $id)->update(['active'=>1]);
+                $dc = DocumentCategory::find($id);
+                $lc = new LogConverter('documentcategory', 'activate');
+                $lc->setFrom(Auth::user())->setTo($dc)->setDesc(Auth::user()->email . 'activated document category ' . $dc->document_category_name)->save();
+                return response('Document category is activated');
             break;
             case "expense":
                 ExpenseCategory::where('id', $id)->update(['active'=>1]);

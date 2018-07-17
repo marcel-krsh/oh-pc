@@ -100,6 +100,4 @@ class RecaptureItem extends Model
     {
         return $this->hasOne('App\Parcel', 'id', 'parcel_id');
     }
-
-
 }

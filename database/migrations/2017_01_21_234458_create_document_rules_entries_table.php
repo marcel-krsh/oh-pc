@@ -31,4 +31,3 @@ class CreateDocumentRulesEntriesTable extends Migration
         Schema::dropIfExists('document_rule_entries');
     }
 }
-

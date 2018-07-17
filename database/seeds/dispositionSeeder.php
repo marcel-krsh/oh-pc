@@ -17,7 +17,7 @@ class DispositionSeeder extends Seeder
               array('approval_action_name'=>'Release'),
               array('approval_action_name'=>'Decline')
         );
-        DB::table('approval_action_types')->insert($approvalActionTypesData); 
+        DB::table('approval_action_types')->insert($approvalActionTypesData);
 
         $approvalTypesData = array(
               array('approval_type_name'=>'Disposition', 'table_name'=>'dispositions'),
@@ -28,7 +28,6 @@ class DispositionSeeder extends Seeder
               array('approval_type_name'=>'Historic Waiver', 'table_name'=>''),
               array('approval_type_name'=>'Target Area Amendment', 'table_name'=>'')
         );
-        DB::table('approval_types')->insert($approvalTypesData); 
-        
+        DB::table('approval_types')->insert($approvalTypesData);
     }
 }

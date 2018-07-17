@@ -56,7 +56,7 @@ class LogConverter
     //pass in a model converted to array before and after changes to automaticly add change history
     public function smartAddHistory($oldvars, $newvars)
     {
-        foreach ($newvars as $name=>$value) {
+        foreach ($newvars as $name => $value) {
             if (($name == 'updated_at') || ($name == 'created_at')) {
                 //no need to compare these
             } else {
@@ -183,13 +183,13 @@ class LogConverter
         $templog = "<p>" . $this->desc . "</p>";
         if (count($this->history) > 0) {
             $templog .= "<br><h2>Changed values:</h2><br>";
-            foreach ($this->history as $historyitem=>$historyvalue) {
+            foreach ($this->history as $historyitem => $historyvalue) {
                 $templog.=$historyitem . ": " . $historyvalue[0] . " -> " . $historyvalue[1] . '<br>';
             }
         }
         if (count($this->properties) > 0) {
             $templog .= "<br><h2>Properties:</h2><br>";
-            foreach ($this->properties as $propertyname=>$propertyvalue) {
+            foreach ($this->properties as $propertyname => $propertyvalue) {
                 $templog .= $propertyname . ' -> ' . $propertyvalue . '<br>';
             }
         }

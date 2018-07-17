@@ -22,7 +22,7 @@ use DB;
 
 class MAParcelsController extends Controller
 {
-    public function parcelCreate(Form $form, $id=null)
+    public function parcelCreate(Form $form, $id = null)
     {
         $stateIds = State::pluck('id')->toArray();
         $stateNames = State::pluck('state_name')->toArray();
@@ -186,7 +186,7 @@ class MAParcelsController extends Controller
         }
     }
 
-    public function parcelStore(Request $request, $id=null)
+    public function parcelStore(Request $request, $id = null)
     {
         $this->validate($request, [
             'parcel_id'=>'required|string',

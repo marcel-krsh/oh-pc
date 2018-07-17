@@ -15,7 +15,7 @@ class DispositionsTables extends Migration
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Schema::table('dispositions', function (Blueprint $table) {
-            $table->float('transaction_cost',10,2)->nullable();
+            $table->float('transaction_cost', 10, 2)->nullable();
             $table->text('special_circumstance')->nullable();
             $table->integer('special_circumstance_id')->nullable();
             $table->text('full_description')->nullable();
@@ -37,17 +37,16 @@ class DispositionsTables extends Migration
             $table->tinyInteger('dev_taxescurrent')->default(0);
             $table->tinyInteger('dev_nofc')->default(0);
 
-            $table->float('hfa_calc_income',10,2)->nullable();
-            $table->float('hfa_calc_trans_cost',10,2)->nullable();
-            $table->float('hfa_calc_maintenance_total',10,2)->nullable();
-            $table->float('hfa_calc_monthly_rate',10,2)->nullable();
+            $table->float('hfa_calc_income', 10, 2)->nullable();
+            $table->float('hfa_calc_trans_cost', 10, 2)->nullable();
+            $table->float('hfa_calc_maintenance_total', 10, 2)->nullable();
+            $table->float('hfa_calc_monthly_rate', 10, 2)->nullable();
             $table->integer('hfa_calc_months')->nullable();
-            $table->float('hfa_calc_maintenance_due',10,2)->nullable();
-            $table->float('hfa_calc_demo_cost',10,2)->nullable();
-            $table->float('hfa_calc_epi',10,2)->nullable();
-            $table->float('hfa_calc_payback',10,2)->nullable();
-            $table->float('hfa_calc_gain',10,2)->nullable();
-
+            $table->float('hfa_calc_maintenance_due', 10, 2)->nullable();
+            $table->float('hfa_calc_demo_cost', 10, 2)->nullable();
+            $table->float('hfa_calc_epi', 10, 2)->nullable();
+            $table->float('hfa_calc_payback', 10, 2)->nullable();
+            $table->float('hfa_calc_gain', 10, 2)->nullable();
         });
         
         Schema::create('approval_requests', function (Blueprint $table) {
@@ -59,11 +58,11 @@ class DispositionsTables extends Migration
             $table->integer('link_type_id')->unsigned()->nullable();
             // who needs to approve
             $table->integer('user_id')->unsigned()->nullable();
-            $table->foreign('user_id')->references('id')->on('users'); 
+            $table->foreign('user_id')->references('id')->on('users');
 
             $table->dateTime('due_by')->nullable();
             $table->dateTime('seen_on')->nullable();
-            $table->timestamps();           
+            $table->timestamps();
         });
 
         Schema::create('approval_types', function (Blueprint $table) {

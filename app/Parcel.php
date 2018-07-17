@@ -987,7 +987,6 @@ class Parcel extends Model
                 }
 
                 foreach ($document_categories as $document_category) {
-                    
                     // sub key for each document's categories for quick reference
                     if (in_array($document_category->id, $categories_decoded)) {
                         $categories[$document_category->id] = $document_category->document_category_name;

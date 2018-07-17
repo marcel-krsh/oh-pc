@@ -40,7 +40,7 @@ class ApproverNotification extends Mailable
      * @param int  $recipient_id
      * @param null $disposition_id
      */
-    public function __construct($recipient_id=1, $disposition_id=null)
+    public function __construct($recipient_id = 1, $disposition_id = null)
     {
         $this->disposition = Disposition::where('id', '=', $disposition_id)->get()->first();
         $this->owner = User::where('id', '=', $recipient_id)->get()->first();

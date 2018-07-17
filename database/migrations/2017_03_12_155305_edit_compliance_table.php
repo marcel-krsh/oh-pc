@@ -11,11 +11,11 @@ class EditComplianceTable extends Migration
      *
      * @return void
      */
-     public function up()
+    public function up()
     {
         Schema::table('compliances', function (Blueprint $table) {
             //
-            $table->integer('parcel_hfa_status_id')->nullable();        
+            $table->integer('parcel_hfa_status_id')->nullable();
         });
     }
 

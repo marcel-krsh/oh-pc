@@ -110,7 +110,7 @@ class ReimbursementInvoice extends Model
         'reimbursement_total_paid' => $this->totalPaid(),
         'reimbursement_balance' => $this->balance(),
         'reimbursement_last_payment_cleared_date' => $lastDate
-      ]);
+        ]);
     }
 
     /**

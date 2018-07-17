@@ -192,6 +192,6 @@ class document_categories extends Seeder
              )
       
         );
-        DB::table('document_categories')->insert($documentCategoriesData); 
-    } 
+        DB::table('document_categories')->insert($documentCategoriesData);
+    }
 }

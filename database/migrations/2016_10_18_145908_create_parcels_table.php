@@ -24,21 +24,18 @@ class CreateParcelsTable extends Migration
             $table->integer('state_id')->unsigned()->nullable();
             $table->foreign('state_id')->references('id')->on('states')->onDelete('SET NULL');
             $table->string('county_name');
-
         });
         Schema::create('target_areas', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('county_id')->unsigned()->nullable();
             $table->string('target_area_name');
             $table->tinyInteger('active')->default(1);
-
         });
          Schema::create('how_acquired_options', function (Blueprint $table) {
             $table->increments('id');
             $table->string('how_acquired_option_name');
             $table->tinyInteger('active')->default(1);
-
-        });
+         });
          
         Schema::create('property_status_options', function (Blueprint $table) {
             $table->increments('id');
@@ -47,7 +44,6 @@ class CreateParcelsTable extends Migration
             $table->integer('order')->default(1);
             $table->tinyInteger('protected')->default(1);
             $table->tinyInteger('active')->default(1);
-
         });
         Schema::create('parcel_type_options', function (Blueprint $table) {
             $table->increments('id');
@@ -87,15 +83,13 @@ class CreateParcelsTable extends Migration
             $table->boolean('ugly_house')->default(0);
             $table->boolean('pretty_lot')->default(0);
             $table->integer('parcel_type_id')->unsigned()->default(1);
-            $table->float('retainage',10,2)->nullable();
+            $table->float('retainage', 10, 2)->nullable();
             $table->boolean('retainage_paid')->default(0);
             $table->timestamps();
             $table->foreign('target_area_id')->references('id')->on('target_areas');
             $table->foreign('parcel_type_id')->references('id')->on('parcel_type_options');
             $table->foreign('how_acquired_id')->references('id')->on('how_acquired_options');
         });
-        
-   
     }
 
     /**

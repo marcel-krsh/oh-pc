@@ -22,7 +22,7 @@ class CreateRequestNotes extends Migration
             $table->string('owner_type')->default('user');
             $table->text('note')->nullable();
             $table->foreign('reimbursement_request_id')->references('id')->on('reimbursement_requests');
-            $table->foreign('owner_id')->references('id')->on('users');    
+            $table->foreign('owner_id')->references('id')->on('users');
         });
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }

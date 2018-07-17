@@ -47,7 +47,7 @@ class VendorStatsExportJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(User $user=null, $report_id = null, $program_id = null, $csv = null, $date_ref = null)
+    public function __construct(User $user = null, $report_id = null, $program_id = null, $csv = null, $date_ref = null)
     {
         if ($user) {
             $this->requestorEmail = $user->email;
@@ -398,7 +398,7 @@ class VendorStatsExportJob implements ShouldQueue
                     $new_program_processed = $report->program_processed + 1;
                     $report->update([
                     'program_processed' => $new_program_processed
-              ]);
+                    ]);
                     $report = $report->fresh();
                 }
                 //$filenames_array[] = storage_path('app/'.$directory.'/'.$filename.'.xlsx');
@@ -1015,7 +1015,7 @@ class VendorStatsExportJob implements ShouldQueue
 
                 $report->update([
                   'pending_request' => 0
-            ]);
+                ]);
 
                 // Send email notification to requestor
                 if ($this->requestorEmail) {

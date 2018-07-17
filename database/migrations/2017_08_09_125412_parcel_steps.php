@@ -52,11 +52,11 @@ class ParcelSteps extends Migration
             $table->dropColumn('has-retainages');
             $table->dropColumn('retainages-paid');
             $table->dropColumn('has-advances');
-            $table->dropColumn('advances-paid'); 
+            $table->dropColumn('advances-paid');
         });
 
         // setup steps for parcels
-        $step_types = array(       
+        $step_types = array(
             array( // 2
                 'name' => 'parcel'
             )
@@ -66,7 +66,7 @@ class ParcelSteps extends Migration
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('guide_steps')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        $guide_steps = array(  
+        $guide_steps = array(
     // previous data
             array( // 1
                 'parent_id' => null,
@@ -75,32 +75,32 @@ class ParcelSteps extends Migration
                 'name_completed' => null,
                 'hfa' => 0,
                 'step_help' => ''
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Complete form',
                 'name_completed' => 'Form completed',
                 'hfa' => 0,
                 'step_help' => 'Save the disposition to mark the form as completed.'
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Upload supporting documents',
                 'name_completed' => 'Supporting documents uploaded',
                 'hfa' => 0,
                 'step_help' => 'Upload documents for all required categories.'
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Submit for internal approval',
                 'name_completed' => 'Submitted for internal approval',
                 'hfa' => 0,
                 'step_help' => 'Click the "Submit Disposition Request for Internal Approval" button when ready.'
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Submit to HFA',
@@ -116,48 +116,48 @@ class ParcelSteps extends Migration
                 'name_completed' => null,
                 'hfa' => 1,
                 'step_help' => ''
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Confirm calculations',
                 'name_completed' => 'Calculations confirmed',
                 'hfa' => 1,
                 'step_help' => 'Save the disposition to mark the calculations as confirmed.'
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Review supporting documents',
                 'name_completed' => 'Supporting documents reviewed',
                 'hfa' => 1,
                 'step_help' => 'All supporting documents have been approved.'
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Approve request',
                 'name_completed' => 'Request approved',
                 'hfa' => 1,
                 'step_help' => 'Click the Approve request button.'
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Notify Landbank',
                 'name_completed' => 'Landbank notified',
                 'hfa' => 1,
                 'step_help' => 'Landbank will be notified automatically when the request is approved.'
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Request lien release',
                 'name_completed' => 'Lien release requested',
                 'hfa' => 1,
                 'step_help' => 'Click the Request Release button.'
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Add to disposition invoice',
@@ -174,7 +174,7 @@ class ParcelSteps extends Migration
                 'hfa' => 1,
                 'step_help' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Fiscal agent release lien',
@@ -182,7 +182,7 @@ class ParcelSteps extends Migration
                 'hfa' => 1,
                 'step_help' => 'Release the disposition.'
             ),
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Begin sale of parcel',
@@ -190,7 +190,7 @@ class ParcelSteps extends Migration
                 'hfa' => 0,
                 'step_help' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Finalize sale',
@@ -198,7 +198,7 @@ class ParcelSteps extends Migration
                 'hfa' => 0,
                 'step_help' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Upload final executed release',
@@ -215,7 +215,7 @@ class ParcelSteps extends Migration
                 'hfa' => 1,
                 'step_help' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 18,
                 'guide_step_type_id' => 1,
                 'name' => 'Approve invoice',
@@ -223,7 +223,7 @@ class ParcelSteps extends Migration
                 'hfa' => 1,
                 'step_help' => 'HFA approvers must approve the disposition invoice.'
             ),
-            array( 
+            array(
                 'parent_id' => 18,
                 'guide_step_type_id' => 1,
                 'name' => 'Send invoice',
@@ -240,7 +240,7 @@ class ParcelSteps extends Migration
                 'hfa' => 1,
                 'step_help' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 21,
                 'guide_step_type_id' => 1,
                 'name' => 'Mark as paid',
@@ -249,7 +249,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'The invoice must be fully paid.'
             ),
 
-    // new data     
+    // new data
             array( // 23
                 'parent_id' => null,
                 'guide_step_type_id' => 2,
@@ -257,24 +257,24 @@ class ParcelSteps extends Migration
                 'hfa' => 0,
                 'step_help' => '',
                 'name_completed' => ''
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 23,
                 'guide_step_type_id' => 2,
                 'name' => 'Validate Parcel',
                 'hfa' => 0,
                 'step_help' => 'Landbank must validate the parcel',
                 'name_completed' => 'Parcel Validated'
-            ),   
-            array( 
+            ),
+            array(
                 'parent_id' => 23,
                 'guide_step_type_id' => 2,
                 'name' => 'Enter Cost Amounts',
                 'hfa' => 0,
                 'step_help' => 'Cost amounts must be entered',
                 'name_completed' => 'Cost Amounts Entered'
-            ), 
-            array( 
+            ),
+            array(
                 'parent_id' => 23,
                 'guide_step_type_id' => 2,
                 'name' => 'Enter Request Amounts',
@@ -282,7 +282,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'Landbank must enter request amounts',
                 'name_completed' => 'Request Amounts Entered'
             ),
-            array( 
+            array(
                 'parent_id' => 23,
                 'guide_step_type_id' => 2,
                 'name' => 'Add Documents',
@@ -300,7 +300,7 @@ class ParcelSteps extends Migration
                 'step_help' => '',
                 'name_completed' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 28,
                 'guide_step_type_id' => 2,
                 'name' => 'Add to a Request',
@@ -308,7 +308,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'Landbank must add this parcel to a request',
                 'name_completed' => 'Added to a Request'
             ),
-            array( 
+            array(
                 'parent_id' => 28,
                 'guide_step_type_id' => 2,
                 'name' => 'Approve Request Internally',
@@ -316,7 +316,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'Landbank approvers must approve the request',
                 'name_completed' => 'Request Approved Internally'
             ),
-            array( 
+            array(
                 'parent_id' => 28,
                 'guide_step_type_id' => 2,
                 'name' => 'Send Request to HFA',
@@ -334,7 +334,7 @@ class ParcelSteps extends Migration
                 'step_help' => '',
                 'name_completed' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 32,
                 'guide_step_type_id' => 2,
                 'name' => 'Validate Parcel Information',
@@ -342,7 +342,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'HFA must validate the parcel information',
                 'name_completed' => 'Parcel Information Validated'
             ),
-            array( 
+            array(
                 'parent_id' => 32,
                 'guide_step_type_id' => 2,
                 'name' => 'Review Documents',
@@ -350,7 +350,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'HFA must approve all documents',
                 'name_completed' => 'Documents Reviewed'
             ),
-            array( 
+            array(
                 'parent_id' => 32,
                 'guide_step_type_id' => 2,
                 'name' => 'Enter Approved Amounts',
@@ -358,7 +358,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'HFA must enter approved amounts',
                 'name_completed' => 'Approved Amounts Entered'
             ),
-            array( 
+            array(
                 'parent_id' => 32,
                 'guide_step_type_id' => 2,
                 'name' => 'Initial PO Approval',
@@ -366,7 +366,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'PO must be approved before going through compliance review',
                 'name_completed' => 'Initial PO Approval Completed'
             ),
-            array( 
+            array(
                 'parent_id' => 32,
                 'guide_step_type_id' => 2,
                 'name' => 'Complete Compliance Review',
@@ -374,7 +374,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'Complete compliance review',
                 'name_completed' => 'Compliance Review Completed'
             ),
-            array( 
+            array(
                 'parent_id' => 32,
                 'guide_step_type_id' => 2,
                 'name' => 'Final PO Approval',
@@ -382,7 +382,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'Complete final PO approval',
                 'name_completed' => 'PO Approved'
             ),
-            array( 
+            array(
                 'parent_id' => 32,
                 'guide_step_type_id' => 2,
                 'name' => 'Send PO to Land Bank',
@@ -399,7 +399,7 @@ class ParcelSteps extends Migration
                 'step_help' => '',
                 'name_completed' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 40,
                 'guide_step_type_id' => 2,
                 'name' => 'LB: Upload Documented Payment',
@@ -407,7 +407,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'Land Bank must upload the documented payment',
                 'name_completed' => 'LB: Documented Payment Uploaded'
             ),
-            array( 
+            array(
                 'parent_id' => 40,
                 'guide_step_type_id' => 2,
                 'name' => 'HFA: Review Documentation',
@@ -415,7 +415,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'HFA must review payment documentation',
                 'name_completed' => 'HFA: Documentation Reviewed'
             ),
-            array( 
+            array(
                 'parent_id' => 40,
                 'guide_step_type_id' => 2,
                 'name' => 'HFA: Mark Paid',
@@ -433,7 +433,7 @@ class ParcelSteps extends Migration
                 'step_help' => '',
                 'name_completed' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 44,
                 'guide_step_type_id' => 2,
                 'name' => 'Create Invoice from PO',
@@ -441,7 +441,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'Landbank must create an invoice from PO',
                 'name_completed' => 'Invoice Created from PO'
             ),
-            array( 
+            array(
                 'parent_id' => 44,
                 'guide_step_type_id' => 2,
                 'name' => 'Approve the Invoice',
@@ -449,7 +449,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'Landbank must approve the invoice',
                 'name_completed' => 'Invoice Approved'
             ),
-            array( 
+            array(
                 'parent_id' => 44,
                 'guide_step_type_id' => 2,
                 'name' => 'Send Invoice to HFA',
@@ -467,7 +467,7 @@ class ParcelSteps extends Migration
                 'step_help' => '',
                 'name_completed' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 48,
                 'guide_step_type_id' => 2,
                 'name' => 'Tier 1 Approve Invoice',
@@ -475,7 +475,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'HFA tier 1 approvers must approve the invoice.',
                 'name_completed' => 'Tier 1 Approved Invoice'
             ),
-            array( 
+            array(
                 'parent_id' => 48,
                 'guide_step_type_id' => 2,
                 'name' => 'Tier 2 Approve Invoice',
@@ -483,7 +483,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'HFA tier 2 approvers must approve the invoice.',
                 'name_completed' => 'Tier 2 Approved Invoice'
             ),
-            array( 
+            array(
                 'parent_id' => 48,
                 'guide_step_type_id' => 2,
                 'name' => 'Tier 3 Approve Invoice',
@@ -491,7 +491,7 @@ class ParcelSteps extends Migration
                 'step_help' => 'HFA tier 3 approvers must approve the invoice.',
                 'name_completed' => 'Tier 3 Approved Invoice'
             ),
-            array( 
+            array(
                 'parent_id' => 48,
                 'guide_step_type_id' => 2,
                 'name' => 'Notify Fiscal Agent',
@@ -509,7 +509,7 @@ class ParcelSteps extends Migration
                 'step_help' => '',
                 'name_completed' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 53,
                 'guide_step_type_id' => 2,
                 'name' => 'Mark as Paid',

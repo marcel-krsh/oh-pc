@@ -18,8 +18,6 @@ class MakeBreakoutsRespectiveLinkedIdNullable extends Migration
             DB::statement('ALTER TABLE `request_items` MODIFY `req_id` INTEGER UNSIGNED NULL;');
             DB::statement('ALTER TABLE `po_items` MODIFY `po_id` INTEGER UNSIGNED NULL;');
             DB::statement('ALTER TABLE `invoice_items` MODIFY `invoice_id` INTEGER UNSIGNED NULL;');
-                
-       
     }
 
     /**
@@ -29,6 +27,5 @@ class MakeBreakoutsRespectiveLinkedIdNullable extends Migration
      */
     public function down()
     {
-        
     }
 }

@@ -48,7 +48,7 @@ class UsersTableSeeder extends Seeder
             //7
             )
         );
-        DB::table('breakout_items_statuses')->insert($breakoutItemsStatusData); 
+        DB::table('breakout_items_statuses')->insert($breakoutItemsStatusData);
 
         // $expenseCategoriesData = array(
         //     array(
@@ -115,17 +115,17 @@ class UsersTableSeeder extends Seeder
 
         DB::table('vendors')->insert([
             'vendor_name'=>'Legacy Vendor',
-            'vendor_email'=>NULL,
-            'vendor_phone'=>NULL,
-            'vendor_mobile_phone'=>NULL,
-            'vendor_fax'=>NULL,
-            'vendor_street_address'=>NULL,
-            'vendor_street_address2'=>NULL,
-            'vendor_city'=>NULL,
+            'vendor_email'=>null,
+            'vendor_phone'=>null,
+            'vendor_mobile_phone'=>null,
+            'vendor_fax'=>null,
+            'vendor_street_address'=>null,
+            'vendor_street_address2'=>null,
+            'vendor_city'=>null,
             'vendor_state_id'=>36,
-            'vendor_zip'=>NULL,
-            'vendor_duns'=>NULL,
-            'passed_sam_gov'=>NULL,
+            'vendor_zip'=>null,
+            'vendor_duns'=>null,
+            'passed_sam_gov'=>null,
             'active'=>1,
             'vendor_notes'=>'This is a place holder vendor for legacy parcels prior to the ability to specify vendors for break out costs.'
 
@@ -624,6 +624,5 @@ class UsersTableSeeder extends Seeder
             'active' => '1',
             'verified' => '1',
         ]);
-
     }
 }

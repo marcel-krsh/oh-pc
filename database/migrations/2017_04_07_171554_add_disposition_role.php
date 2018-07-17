@@ -13,7 +13,7 @@ class AddDispositionRole extends Migration
      */
     public function up()
     {
-       $rolesData = array(
+        $rolesData = array(
             
             array( //22
             'role_parent_id'=>1,

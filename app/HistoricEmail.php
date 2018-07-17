@@ -105,7 +105,6 @@ class HistoricEmail extends Model
                 $item_link_parcel = null;
                 break;
             default:
-               
         }
 
         // we need the item, the item type, the item link

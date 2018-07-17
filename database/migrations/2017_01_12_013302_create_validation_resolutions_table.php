@@ -27,7 +27,6 @@ class CreateValidationResolutionsTable extends Migration
             $table->tinyInteger('hfa_resolved')->default(0);
             $table->dateTime('hfa_resolved_at')->nullable();
             $table->tinyInteger('requires_hfa_resolution')->default(0);
-            
         });
     }
 

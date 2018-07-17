@@ -22,7 +22,7 @@ class CreateHistoricEmails extends Migration
             $table->string('subject');
             $table->text('body')->nullable();
 
-            $table->foreign('user_id')->references('id')->on('users');    
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

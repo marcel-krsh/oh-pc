@@ -40,7 +40,7 @@ class EmailNoticeNotification extends Mailable
      * @param      $recipient_id
      * @param null $message_id
      */
-    public function __construct($recipient_id=$user->id, $message_id=null)
+    public function __construct($recipient_id = $user->id, $message_id = null)
     {
         $this->message = Notice::where('id', '=', $notice->id)->get()->first();
         $this->owner = User::where('id', '=', $recipient_id)->get()->first();

@@ -55,7 +55,6 @@ class AddPrequalsToParcels extends Migration
             $table->integer('retainages-paid')->default("0");
             $table->integer('has-advances')->default("0");
             $table->integer('advances-paid')->default("0");
-      
         });
     }
 

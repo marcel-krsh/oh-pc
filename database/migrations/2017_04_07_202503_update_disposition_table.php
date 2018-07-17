@@ -15,7 +15,7 @@ class UpdateDispositionTable extends Migration
     {
          Schema::table('dispositions', function (Blueprint $table) {
             $table->dropColumn('disposition_explanation');
-        });
+         });
     }
 
     /**

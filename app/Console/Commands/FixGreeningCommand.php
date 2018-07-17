@@ -63,7 +63,7 @@ class FixGreeningCommand extends Command
                             'GreeningRequested',
                             'GreeningApproved',
                             'GreeningAdvanceOption'
-                            )->distinct()->get()->all();
+                        )->distinct()->get()->all();
                              
 
 

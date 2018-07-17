@@ -17,7 +17,7 @@ class AddStatusExplinationsToParcelsTable extends Migration
             //
             $table->string('landbank_property_status_id_explanation')->nullable();
             $table->string('hfa_property_status_id_explanation')->nullable();
-            if (Schema::hasColumn('parcel_hfa_status_id', 'parcel_landbank_status_id')){
+            if (Schema::hasColumn('parcel_hfa_status_id', 'parcel_landbank_status_id')) {
                 $table->dropColumn('parcel_hfa_status_id');
                 $table->dropColumn('parcel_landbank_status_id');
             }

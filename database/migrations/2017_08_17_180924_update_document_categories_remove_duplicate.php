@@ -13,7 +13,7 @@ class UpdateDocumentCategoriesRemoveDuplicate extends Migration
      */
     public function up()
     {
-       DB::table('document_categories')->truncate();
+        DB::table('document_categories')->truncate();
         
         $doc_cats = array(
             

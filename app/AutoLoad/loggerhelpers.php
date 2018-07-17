@@ -258,7 +258,7 @@ function searchbyhistory(Request $request, $thishistory)
     }
     //todo loop through history
     $ret=false;
-    foreach ($thishistory as $history=>$historyitems) {
+    foreach ($thishistory as $history => $historyitems) {
     }
     return $ret;
 }

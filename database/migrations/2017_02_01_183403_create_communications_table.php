@@ -25,7 +25,7 @@ class CreateCommunicationsTable extends Migration
 
             $table->foreign('parent_id')->references('id')->on('communications');
             $table->foreign('parcel_id')->references('id')->on('parcels');
-            $table->foreign('owner_id')->references('id')->on('users'); 
+            $table->foreign('owner_id')->references('id')->on('users');
         });
 
         Schema::create('communication_recipients', function (Blueprint $table) {
@@ -36,7 +36,7 @@ class CreateCommunicationsTable extends Migration
             $table->tinyInteger('seen')->default(0);
               
             $table->foreign('communication_id')->references('id')->on('communications');
-            $table->foreign('user_id')->references('id')->on('users'); 
+            $table->foreign('user_id')->references('id')->on('users');
         });
 
         Schema::create('communication_documents', function (Blueprint $table) {

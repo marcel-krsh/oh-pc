@@ -66,17 +66,17 @@ class AccountingController extends Controller
                 switch ($request->query('invoices_asc_desc')) {
                     case '1':
                         # code...
-                    session(['invoices_asc_desc'=> 'desc']);
-                    $invoicesAscDesc =  $request->session()->get('invoices_asc_desc');
-                    session(['invoices_asc_desc_opposite' => ""]);
-                    $invoicesAscDescOpposite =  $request->session()->get('invoices_asc_desc_opposite');
+                        session(['invoices_asc_desc'=> 'desc']);
+                        $invoicesAscDesc =  $request->session()->get('invoices_asc_desc');
+                        session(['invoices_asc_desc_opposite' => ""]);
+                        $invoicesAscDescOpposite =  $request->session()->get('invoices_asc_desc_opposite');
                         break;
                     
                     default:
-                    session(['invoices_asc_desc'=> 'asc']);
-                    $invoicesAscDesc =  $request->session()->get('invoices_asc_desc');
-                    session(['invoices_asc_desc_opposite' => 1]);
-                    $invoicesAscDescOpposite = $request->session()->get('invoices_asc_desc_opposite');
+                        session(['invoices_asc_desc'=> 'asc']);
+                        $invoicesAscDesc =  $request->session()->get('invoices_asc_desc');
+                        session(['invoices_asc_desc_opposite' => 1]);
+                        $invoicesAscDescOpposite = $request->session()->get('invoices_asc_desc_opposite');
                         break;
                 }
                 switch ($sortedBy) {
@@ -222,7 +222,7 @@ class AccountingController extends Controller
             }
 
             $invoices = DB::select(
-                            DB::raw("
+                DB::raw("
         								SELECT
 											inv.id AS invoice_id ,
 										        inv.po_id,
@@ -358,7 +358,7 @@ class AccountingController extends Controller
 
 										
 									")
-                        );
+            );
 
             //////////////////////////////////////// THIS FUNCTION IS JUST HERE TO FIX STATUS
             ///////// RUN THIS ONCE ON PRODUCTION AFTER IMPORT AND THEN COMMENT OUT.
@@ -439,17 +439,17 @@ class AccountingController extends Controller
                 switch ($request->query('requests_asc_desc')) {
                     case '1':
                         # code...
-                    session(['requests_asc_desc'=> 'desc']);
-                    $requestsAscDesc =  $request->session()->get('requests_asc_desc');
-                    session(['requests_asc_desc_opposite' => ""]);
-                    $requestsAscDescOpposite =  $request->session()->get('requests_asc_desc_opposite');
+                        session(['requests_asc_desc'=> 'desc']);
+                        $requestsAscDesc =  $request->session()->get('requests_asc_desc');
+                        session(['requests_asc_desc_opposite' => ""]);
+                        $requestsAscDescOpposite =  $request->session()->get('requests_asc_desc_opposite');
                         break;
                     
                     default:
-                    session(['requests_asc_desc'=> 'asc']);
-                    $requestsAscDesc =  $request->session()->get('requests_asc_desc');
-                    session(['requests_asc_desc_opposite' => 1]);
-                    $requestsAscDescOpposite = $request->session()->get('requests_asc_desc_opposite');
+                        session(['requests_asc_desc'=> 'asc']);
+                        $requestsAscDesc =  $request->session()->get('requests_asc_desc');
+                        session(['requests_asc_desc_opposite' => 1]);
+                        $requestsAscDescOpposite = $request->session()->get('requests_asc_desc_opposite');
                         break;
                 }
                 switch ($sortedBy) {
@@ -596,7 +596,7 @@ class AccountingController extends Controller
 
            
             $requests = DB::select(
-                            DB::raw("
+                DB::raw("
         								SELECT
         									inv.invoice_id,
         									ia.total_invoiced,
@@ -754,7 +754,7 @@ class AccountingController extends Controller
 										".$requestsWhereOrder."
 										
 									")
-                        );
+            );
             //$count = count($requests);
             //dd($count,$requests);
 
@@ -832,17 +832,17 @@ class AccountingController extends Controller
                 switch ($request->query('pos_asc_desc')) {
                     case '1':
                         # code...
-                    session(['pos_asc_desc'=> 'desc']);
-                    $posAscDesc =  $request->session()->get('pos_asc_desc');
-                    session(['pos_asc_desc_opposite' => ""]);
-                    $posAscDescOpposite =  $request->session()->get('pos_asc_desc_opposite');
+                        session(['pos_asc_desc'=> 'desc']);
+                        $posAscDesc =  $request->session()->get('pos_asc_desc');
+                        session(['pos_asc_desc_opposite' => ""]);
+                        $posAscDescOpposite =  $request->session()->get('pos_asc_desc_opposite');
                         break;
                     
                     default:
-                    session(['pos_asc_desc'=> 'asc']);
-                    $posAscDesc =  $request->session()->get('pos_asc_desc');
-                    session(['pos_asc_desc_opposite' => 1]);
-                    $posAscDescOpposite = $request->session()->get('pos_asc_desc_opposite');
+                        session(['pos_asc_desc'=> 'asc']);
+                        $posAscDesc =  $request->session()->get('pos_asc_desc');
+                        session(['pos_asc_desc_opposite' => 1]);
+                        $posAscDescOpposite = $request->session()->get('pos_asc_desc_opposite');
                         break;
                 }
                 switch ($sortedBy) {
@@ -989,7 +989,7 @@ class AccountingController extends Controller
 
            
             $pos = DB::select(
-                            DB::raw("
+                DB::raw("
         								SELECT
         									inv.invoice_id,
         									ia.total_invoiced,
@@ -1120,7 +1120,7 @@ class AccountingController extends Controller
 										".$posWhereOrder."
 										
 									")
-                        );
+            );
             //$count = count($requests);
             //dd($count,$requests);
 
@@ -1211,17 +1211,17 @@ class AccountingController extends Controller
                 switch ($request->query('accounting_asc_desc')) {
                     case '1':
                         # code...
-                    session(['accounting_asc_desc'=> 'desc']);
-                    $accountingAscDesc =  $request->session()->get('accounting_asc_desc');
-                    session(['accounting_asc_desc_opposite' => ""]);
-                    $accountingAscDescOpposite =  $request->session()->get('accounting_asc_desc_opposite');
+                        session(['accounting_asc_desc'=> 'desc']);
+                        $accountingAscDesc =  $request->session()->get('accounting_asc_desc');
+                        session(['accounting_asc_desc_opposite' => ""]);
+                        $accountingAscDescOpposite =  $request->session()->get('accounting_asc_desc_opposite');
                         break;
                     
                     default:
-                    session(['accounting_asc_desc'=> 'asc']);
-                    $accountingAscDesc =  $request->session()->get('accounting_asc_desc');
-                    session(['accounting_asc_desc_opposite' => 1]);
-                    $accountingAscDescOpposite = $request->session()->get('accounting_asc_desc_opposite');
+                        session(['accounting_asc_desc'=> 'asc']);
+                        $accountingAscDesc =  $request->session()->get('accounting_asc_desc');
+                        session(['accounting_asc_desc_opposite' => 1]);
+                        $accountingAscDescOpposite = $request->session()->get('accounting_asc_desc_opposite');
                         break;
                 }
                 switch ($sortedBy) {
@@ -1535,8 +1535,8 @@ class AccountingController extends Controller
 
             $sumAcctData = array();
 
-            foreach ($accountingTotals as $k=>$subArray) {
-                foreach ($subArray as $id=>$value) {
+            foreach ($accountingTotals as $k => $subArray) {
+                foreach ($subArray as $id => $value) {
                     if (is_numeric($value)) {
                         array_key_exists($id, $sumAcctData) ? $sumAcctData[$id] += $value : $sumAcctData[$id] = $value;
                     }
@@ -1613,7 +1613,8 @@ class AccountingController extends Controller
                 'accountingProgramFilter',
                 'accountingStatusFilter',
                 'unpaidReimbursementInvoices',
-                'unpaid_disposition_invoices'));
+                'unpaid_disposition_invoices'
+            ));
         } else {
             return 'Sorry you do not have access to the Accounting page. Please try logging in again or contact your admin to request access.';
         }
@@ -2922,7 +2923,7 @@ class AccountingController extends Controller
                 ##
                 if ($createTempTables) {
                     $medianData = DB::select(
-                    DB::raw("
+                        DB::raw("
 
 
 
@@ -4295,7 +4296,7 @@ class AccountingController extends Controller
 						#GROUP BY p.id;
 						
 					")
-                );
+                    );
                 } else {
                     return "There was a problem trying to create a temporary table to hold the aggregate totals for this program with an id number of ".$program->program_id.". Please let the nearest IT person know. Tell them Allita sent you, and to check out accounting line 1744. More than likely this failed because there isn't any data for the stats on the program yet.";
                 }

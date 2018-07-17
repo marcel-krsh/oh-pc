@@ -250,7 +250,6 @@ class ParcelCostController extends Controller
 
 
             if ($parcel->associatedInvoice || $parcel->associatedPo || $parcel->associatedRequest) {
-
                 // now we have a new cost item, the request, po and invoices are no longer valid
                 // uncheck Mark as paid
                 guide_set_progress($parcel->id, 54, $status = 'started', 0); // mark as paid

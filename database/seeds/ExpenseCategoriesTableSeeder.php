@@ -112,6 +112,6 @@ class ExpenseCategoriesTableSeeder extends Seeder
              'advance_trans_color_hex'=>'',
              )
         );
-        DB::table('expense_categories')->insert($expenseCategoriesData); 
+        DB::table('expense_categories')->insert($expenseCategoriesData);
     }
 }

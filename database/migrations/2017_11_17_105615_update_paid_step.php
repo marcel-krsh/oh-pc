@@ -18,7 +18,7 @@ class UpdatePaidStep extends Migration
         DB::table('guide_steps')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $guide_steps = array(  
+        $guide_steps = array(
     // previous data
             array( // 1
                 'parent_id' => null,
@@ -30,8 +30,8 @@ class UpdatePaidStep extends Migration
                 'landbank_property_status_id' => null,
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Complete form',
@@ -41,8 +41,8 @@ class UpdatePaidStep extends Migration
                 'landbank_property_status_id' => 51,
                 'hfa_property_status_id' => 28,
                 'hidden_from_lb' => null
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Upload supporting documents',
@@ -52,8 +52,8 @@ class UpdatePaidStep extends Migration
                 'landbank_property_status_id' => 51,
                 'hfa_property_status_id' => 28,
                 'hidden_from_lb' => null
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Submit for internal approval',
@@ -63,8 +63,8 @@ class UpdatePaidStep extends Migration
                 'landbank_property_status_id' => 49,
                 'hfa_property_status_id' => 28,
                 'hidden_from_lb' => null
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Submit to HFA',
@@ -86,8 +86,8 @@ class UpdatePaidStep extends Migration
                 'landbank_property_status_id' => null,
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Confirm calculations',
@@ -97,8 +97,8 @@ class UpdatePaidStep extends Migration
                 'landbank_property_status_id' => 15,
                 'hfa_property_status_id' => 29,
                 'hidden_from_lb' => null
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Review supporting documents',
@@ -108,8 +108,8 @@ class UpdatePaidStep extends Migration
                 'landbank_property_status_id' => 15,
                 'hfa_property_status_id' => 29,
                 'hidden_from_lb' => null
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Approve request',
@@ -119,8 +119,8 @@ class UpdatePaidStep extends Migration
                 'landbank_property_status_id' => 15,
                 'hfa_property_status_id' => 30,
                 'hidden_from_lb' => null
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Notify Landbank',
@@ -130,8 +130,8 @@ class UpdatePaidStep extends Migration
                 'landbank_property_status_id' => 16,
                 'hfa_property_status_id' => 30,
                 'hidden_from_lb' => null
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Request lien release',
@@ -141,8 +141,8 @@ class UpdatePaidStep extends Migration
                 'landbank_property_status_id' => 52,
                 'hfa_property_status_id' => 53,
                 'hidden_from_lb' => null
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Add to disposition invoice',
@@ -165,7 +165,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Fiscal agent release lien',
@@ -176,7 +176,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 33,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Begin sale of parcel',
@@ -187,7 +187,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Finalize sale',
@@ -198,7 +198,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Upload final executed release',
@@ -221,7 +221,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 18,
                 'guide_step_type_id' => 1,
                 'name' => 'Approve invoice',
@@ -232,7 +232,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 30,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 18,
                 'guide_step_type_id' => 1,
                 'name' => 'Send invoice',
@@ -255,7 +255,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 21,
                 'guide_step_type_id' => 1,
                 'name' => 'Mark as paid',
@@ -265,7 +265,7 @@ class UpdatePaidStep extends Migration
                 'landbank_property_status_id' => 42,
                 'hfa_property_status_id' => 32,
                 'hidden_from_lb' => null
-            ),    
+            ),
             array( // 23
                 'parent_id' => null,
                 'guide_step_type_id' => 2,
@@ -276,8 +276,8 @@ class UpdatePaidStep extends Migration
                 'landbank_property_status_id' => null,
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 23,
                 'guide_step_type_id' => 2,
                 'name' => 'Validate Parcel',
@@ -287,8 +287,8 @@ class UpdatePaidStep extends Migration
                 'landbank_property_status_id' => 46,
                 'hfa_property_status_id' => 39,
                 'hidden_from_lb' => null
-            ),   
-            array( 
+            ),
+            array(
                 'parent_id' => 23,
                 'guide_step_type_id' => 2,
                 'name' => 'Enter Cost Amounts',
@@ -298,8 +298,8 @@ class UpdatePaidStep extends Migration
                 'landbank_property_status_id' => 45,
                 'hfa_property_status_id' => 39,
                 'hidden_from_lb' => null
-            ), 
-            array( 
+            ),
+            array(
                 'parent_id' => 23,
                 'guide_step_type_id' => 2,
                 'name' => 'Enter Request Amounts',
@@ -310,7 +310,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 39,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 23,
                 'guide_step_type_id' => 2,
                 'name' => 'Add Documents',
@@ -334,7 +334,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 28,
                 'guide_step_type_id' => 2,
                 'name' => 'Add to a Request',
@@ -345,7 +345,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 39,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 28,
                 'guide_step_type_id' => 2,
                 'name' => 'Approve Request',
@@ -356,7 +356,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 39,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 28,
                 'guide_step_type_id' => 2,
                 'name' => 'Send Request to HFA',
@@ -380,7 +380,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 32,
                 'guide_step_type_id' => 2,
                 'name' => 'Validate Parcel Information',
@@ -391,7 +391,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 22,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 32,
                 'guide_step_type_id' => 2,
                 'name' => 'Review Documents',
@@ -402,7 +402,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 22,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 32,
                 'guide_step_type_id' => 2,
                 'name' => 'Enter Approved Amounts',
@@ -413,7 +413,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 22,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 32,
                 'guide_step_type_id' => 2,
                 'name' => 'PO Ready for Compliance',
@@ -424,7 +424,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 21,
                 'hidden_from_lb' => 1
             ),
-            array( 
+            array(
                 'parent_id' => 32,
                 'guide_step_type_id' => 2,
                 'name' => 'Complete Compliance Review',
@@ -435,7 +435,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 24,
                 'hidden_from_lb' => 1
             ),
-            array( 
+            array(
                 'parent_id' => 32,
                 'guide_step_type_id' => 2,
                 'name' => 'Final PO Approval',
@@ -446,7 +446,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 26,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 32,
                 'guide_step_type_id' => 2,
                 'name' => 'Send PO to Land Bank',
@@ -469,7 +469,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 40,
                 'guide_step_type_id' => 2,
                 'name' => 'LB: Upload Documented Payment',
@@ -480,7 +480,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 40,
                 'guide_step_type_id' => 2,
                 'name' => 'HFA: Review Documentation',
@@ -491,7 +491,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 40,
                 'guide_step_type_id' => 2,
                 'name' => 'HFA: Mark Paid',
@@ -515,7 +515,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 44,
                 'guide_step_type_id' => 2,
                 'name' => 'Create Invoice from PO',
@@ -526,7 +526,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 40,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 44,
                 'guide_step_type_id' => 2,
                 'name' => 'Approve the Invoice',
@@ -537,7 +537,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 40,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 44,
                 'guide_step_type_id' => 2,
                 'name' => 'Send Invoice to HFA',
@@ -561,7 +561,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 48,
                 'guide_step_type_id' => 2,
                 'name' => 'Tier 1 Approve Invoice',
@@ -572,7 +572,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 24,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 48,
                 'guide_step_type_id' => 2,
                 'name' => 'Tier 2 Approve Invoice',
@@ -583,7 +583,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 24,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 48,
                 'guide_step_type_id' => 2,
                 'name' => 'Tier 3 Approve Invoice',
@@ -594,7 +594,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 24,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 48,
                 'guide_step_type_id' => 2,
                 'name' => 'Notify Fiscal Agent',
@@ -616,7 +616,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 53,
                 'guide_step_type_id' => 2,
                 'name' => 'Mark as Paid',
@@ -627,7 +627,7 @@ class UpdatePaidStep extends Migration
                 'hfa_property_status_id' => 27, //28
                 'hidden_from_lb' => null
             ),
-            array( 
+            array(
                 'parent_id' => 32,
                 'guide_step_type_id' => 2,
                 'name' => 'Approve Parcel in PO',
@@ -639,7 +639,7 @@ class UpdatePaidStep extends Migration
                 'hidden_from_lb' => null
             ),
             //new data // id 56 for disposition
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Submit invoice for approval',
@@ -661,6 +661,5 @@ class UpdatePaidStep extends Migration
      */
     public function down()
     {
-        
     }
 }

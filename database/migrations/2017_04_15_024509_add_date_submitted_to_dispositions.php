@@ -17,7 +17,6 @@ class AddDateSubmittedToDispositions extends Migration
             //
             $table->timestamp('date_submitted')->nullable();
             $table->timestamp('date_approved')->nullable();
-            
         });
     }
 

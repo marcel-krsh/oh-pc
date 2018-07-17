@@ -16,7 +16,7 @@ class AddUserIdToImportsTable extends Migration
         //
          Schema::table('imports', function (Blueprint $table) {
             $table->integer('import_user_id')->unsigned()->nullable();
-        });
+         });
     }
 
     /**

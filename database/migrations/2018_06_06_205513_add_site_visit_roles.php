@@ -15,7 +15,6 @@ class AddSiteVisitRoles extends Migration
     {
         //
         Artisan::call('db:seed', ['--class' => 'AddSiteVisitRolesSeeder']);
-
     }
 
     /**
@@ -26,6 +25,5 @@ class AddSiteVisitRoles extends Migration
     public function down()
     {
         //
-        
     }
 }

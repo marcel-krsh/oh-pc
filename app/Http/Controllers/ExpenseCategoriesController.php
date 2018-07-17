@@ -34,7 +34,7 @@ class ExpenseCategoriesController extends Controller
      *
      * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function showDetails($output = 0, ExpenseCategory $category, Program $program, Parcel $parcel=null, $zero_values = 0)
+    public function showDetails($output = 0, ExpenseCategory $category, Program $program, Parcel $parcel = null, $zero_values = 0)
     {
         //get all categories
         $expense_categories = ExpenseCategory::where('id', '!=', 1)->get();
@@ -359,7 +359,7 @@ class ExpenseCategoriesController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function showVendorExpenses($vendor_id, $parcel_id=null, $program_id=null, $zero_values = 0)
+    public function showVendorExpenses($vendor_id, $parcel_id = null, $program_id = null, $zero_values = 0)
     {
         $include_legacy_vendor = session('include_legacy_vendors');
 

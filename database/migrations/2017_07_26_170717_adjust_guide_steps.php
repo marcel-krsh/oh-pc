@@ -16,11 +16,11 @@ class AdjustGuideSteps extends Migration
          DB::statement('SET FOREIGN_KEY_CHECKS=0;');
          Schema::table('guide_steps', function (Blueprint $table) {
             $table->string('name_completed')->nullable();
-        });
+         });
          DB::table('guide_steps')->truncate();
          DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-         $guide_steps = array(       
+         $guide_steps = array(
             array( // 1
                 'parent_id' => null,
                 'guide_step_type_id' => 1,
@@ -28,32 +28,32 @@ class AdjustGuideSteps extends Migration
                 'name_completed' => null,
                 'hfa' => 0,
                 'step_help' => ''
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Complete form',
                 'name_completed' => 'Form completed',
                 'hfa' => 0,
                 'step_help' => 'Save the disposition to mark the form as completed.'
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Upload supporting documents',
                 'name_completed' => 'Supporting documents uploaded',
                 'hfa' => 0,
                 'step_help' => 'Upload documents for all required categories.'
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Submit for internal approval',
                 'name_completed' => 'Submitted for internal approval',
                 'hfa' => 0,
                 'step_help' => 'Click the "Submit Disposition Request for Internal Approval" button when ready.'
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Submit to HFA',
@@ -69,48 +69,48 @@ class AdjustGuideSteps extends Migration
                 'name_completed' => null,
                 'hfa' => 1,
                 'step_help' => ''
-            ),    
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Confirm calculations',
                 'name_completed' => 'Calculations confirmed',
                 'hfa' => 1,
                 'step_help' => 'Save the disposition to mark the calculations as confirmed.'
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Review supporting documents',
                 'name_completed' => 'Supporting documents reviewed',
                 'hfa' => 1,
                 'step_help' => 'All supporting documents have been approved.'
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Approve request',
                 'name_completed' => 'Request approved',
                 'hfa' => 1,
                 'step_help' => 'Click the Approve request button.'
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Notify Landbank',
                 'name_completed' => 'Landbank notified',
                 'hfa' => 1,
                 'step_help' => 'Landbank will be notified automatically when the request is approved.'
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Request lien release',
                 'name_completed' => 'Lien release requested',
                 'hfa' => 1,
                 'step_help' => 'Click the Request Release button.'
-            ),  
-            array( 
+            ),
+            array(
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Add to disposition invoice',
@@ -127,7 +127,7 @@ class AdjustGuideSteps extends Migration
                 'hfa' => 1,
                 'step_help' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Fiscal agent release lien',
@@ -135,7 +135,7 @@ class AdjustGuideSteps extends Migration
                 'hfa' => 1,
                 'step_help' => 'Release the disposition.'
             ),
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Begin sale of parcel',
@@ -143,7 +143,7 @@ class AdjustGuideSteps extends Migration
                 'hfa' => 0,
                 'step_help' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Finalize sale',
@@ -151,7 +151,7 @@ class AdjustGuideSteps extends Migration
                 'hfa' => 0,
                 'step_help' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Upload final executed release',
@@ -168,7 +168,7 @@ class AdjustGuideSteps extends Migration
                 'hfa' => 1,
                 'step_help' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 18,
                 'guide_step_type_id' => 1,
                 'name' => 'Approve invoice',
@@ -176,7 +176,7 @@ class AdjustGuideSteps extends Migration
                 'hfa' => 1,
                 'step_help' => 'HFA approvers must approve the disposition invoice.'
             ),
-            array( 
+            array(
                 'parent_id' => 18,
                 'guide_step_type_id' => 1,
                 'name' => 'Send invoice',
@@ -193,7 +193,7 @@ class AdjustGuideSteps extends Migration
                 'hfa' => 1,
                 'step_help' => ''
             ),
-            array( 
+            array(
                 'parent_id' => 21,
                 'guide_step_type_id' => 1,
                 'name' => 'Mark as paid',
@@ -203,7 +203,6 @@ class AdjustGuideSteps extends Migration
             )
         );
         DB::table('guide_steps')->insert($guide_steps);
-        
     }
 
     /**

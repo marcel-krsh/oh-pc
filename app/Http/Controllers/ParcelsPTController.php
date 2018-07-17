@@ -51,7 +51,7 @@ class ParcelsPTController extends Controller
         //Auth::onceUsingId(59); //ataylor@cocic.org
     }
 
-    public function breakouts(Parcel $parcel, Request $request, $format=null)
+    public function breakouts(Parcel $parcel, Request $request, $format = null)
     {
         $status = DB::table('property_status_options')->where('property_status_options.id', $parcel->hfa_property_status_id)->get()->all();
         //DB::enableQueryLog();
@@ -99,7 +99,7 @@ class ParcelsPTController extends Controller
                             'expense_categories.expense_category_name',
                             'cost_items.advance as advance',
                             'retainages.id as retainage_id'
-                            )
+                        )
                         ->where('cost_items.parcel_id', $parcel->id)
                         ->get()
                         ->all();
@@ -413,7 +413,7 @@ class ParcelsPTController extends Controller
 
         if (count($cost_item)) {
             // if cost item has a retainage, it cannot be deleted
-            if($cost_item->retainage){
+            if ($cost_item->retainage) {
                 $output['message'] = "This item cannot be deleted because it has a retainage!";
                 return $output;
             }
@@ -543,7 +543,6 @@ class ParcelsPTController extends Controller
                 $request_item = RequestItem::where('id', '=', $request_item_id)->first();
 
                 if ($request_item) {
-
                     // check if there is already a PO first
                     $po_id = null;
                     $existing_po = ParcelsToPurchaseOrder::where('parcel_id', '=', $parcel->id)->first();
@@ -1193,7 +1192,9 @@ class ParcelsPTController extends Controller
 
     public function approveRequestUploadSignature(ReimbursementRequest $req, Request $request)
     {
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
         
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -1291,7 +1292,7 @@ class ParcelsPTController extends Controller
         }
     }
 
-    public function approveRequest(ReimbursementRequest $request, $approvers=null, $document_ids=null)
+    public function approveRequest(ReimbursementRequest $request, $approvers = null, $document_ids = null)
     {
         if ((!Auth::user()->isLandbankRequestApprover() || Auth::user()->entity_id != $request->entity_id) && !Auth::user()->isHFAAdmin()) {
             $output['message'] = 'Something went wrong.';
@@ -1723,7 +1724,9 @@ class ParcelsPTController extends Controller
 
     public function approvePOUploadSignature(ReimbursementPurchaseOrders $po, Request $request)
     {
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
         
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -1821,7 +1824,7 @@ class ParcelsPTController extends Controller
         }
     }
 
-    public function approvePO(ReimbursementPurchaseOrders $po, $approvers=null, $document_ids=null)
+    public function approvePO(ReimbursementPurchaseOrders $po, $approvers = null, $document_ids = null)
     {
         if ((!Auth::user()->isLandbankInvoiceApprover() || Auth::user()->entity_id != $po->entity_id) && !Auth::user()->isHFAAdmin() && !Auth::user()->isHFAPOApprover()) {
             $output['message'] = 'Something went wrong.';
@@ -2377,7 +2380,7 @@ class ParcelsPTController extends Controller
         }
 
         if ($forminputs['audit_date']) {
-            $audit_date = $forminputs['audit_date']; 
+            $audit_date = $forminputs['audit_date'];
             $audit_date = Carbon\Carbon::createFromFormat('Y-m-d', $audit_date)->format('Y-m-d H:i:s');
         } else {
             $audit_date = null;
@@ -2429,7 +2432,7 @@ class ParcelsPTController extends Controller
             ]);
         } catch (Exception $e) {
             // do task when error
-           dd($e->getMessage()) ;   // insert query
+            dd($e->getMessage()) ;   // insert query
         }
 
         //if pass then update the parcel
@@ -2495,7 +2498,7 @@ class ParcelsPTController extends Controller
         return 1;
     }
 
-    public function viewParcel($parcel=0, $subtab = '')
+    public function viewParcel($parcel = 0, $subtab = '')
     {
         if ($parcel) {
             session(['subtab' => $subtab]);

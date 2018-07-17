@@ -68,7 +68,7 @@ if (!function_exists('money_format')) {
                 $value,
                 $right,
                 $locale['mon_decimal_point'],
-                     $flags['nogroup'] ? '' : $locale['mon_thousands_sep']
+                $flags['nogroup'] ? '' : $locale['mon_thousands_sep']
             );
             $value = @explode($locale['mon_decimal_point'], $value);
 

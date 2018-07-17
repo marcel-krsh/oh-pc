@@ -74,7 +74,7 @@ class bgHistoryController extends Controller
             $activity->initials = $initials;
 
             // someone misspelled "visible" in thousands of entries in the db... I don't want to mess with the db
-            $activity->description = str_replace("visable","visible",$activity->description); // arrrg
+            $activity->description = str_replace("visable", "visible", $activity->description); // arrrg
 
             // create associative arrays for initials and names
             if (!array_key_exists($activity->user_id, $owners_array)) {

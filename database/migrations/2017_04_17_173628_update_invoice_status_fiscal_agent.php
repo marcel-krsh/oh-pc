@@ -41,8 +41,8 @@ class UpdateInvoiceStatusFiscalAgent extends Migration
             'invoice_status_name'=>'Submitted to Fiscal Agent'
             )
         );
-        DB::table('invoice_statuses')->insert($invoiceStatusData); 
-   }
+        DB::table('invoice_statuses')->insert($invoiceStatusData);
+    }
 
     /**
      * Reverse the migrations.
@@ -54,5 +54,3 @@ class UpdateInvoiceStatusFiscalAgent extends Migration
         //
     }
 }
-
-

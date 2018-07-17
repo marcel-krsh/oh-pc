@@ -80,7 +80,6 @@ class FixOrphansCommand extends Command
                 }
 
                 foreach ($parcel->allRequestItems as $req) {
-
                     // working our way back - see if the reference item exists... if not, delete this item.
                     $check = CostItem::find($req->ref_id);
                     if (!isset($check->id)) {
@@ -200,7 +199,6 @@ class FixOrphansCommand extends Command
                 }
 
                 foreach ($parcel->allRequestItems as $req) {
-
                     // working our way back - see if the reference item exists... if not, delete this item.
                     $check = CostItem::find($req->ref_id);
                     if (!isset($check->id)) {
@@ -278,7 +276,6 @@ class FixOrphansCommand extends Command
                 // check for orphans first
 
                 foreach ($parcel->allRequestItems as $req) {
-
                     // working our way back - see if the reference item exists... if not, delete this item.
                     $check = CostItem::find($req->ref_id);
                     if (!isset($check->id)) {

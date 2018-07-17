@@ -499,13 +499,13 @@ class InvoiceController extends Controller
             'nip',
             'total',
             'stat',
-                        'approvals',
+            'approvals',
             'approvers',
-                        'hasApprovals',
+            'hasApprovals',
             'isApproved',
             'isApprover',
             'isReadyForPayment',
-                        'pending_approvers',
+            'pending_approvers',
             'sum_transactions',
             'balance'
         ));
@@ -648,7 +648,7 @@ class InvoiceController extends Controller
         }
     }
 
-    public function approveInvoiceWithRequest(Request $request, ReimbursementInvoice $invoice, $approvers=null, $document_ids=null)
+    public function approveInvoiceWithRequest(Request $request, ReimbursementInvoice $invoice, $approvers = null, $document_ids = null)
     {
         if ($request->get('approval_type') !== null) {
             $approval_type = $request->get('approval_type');
@@ -662,7 +662,7 @@ class InvoiceController extends Controller
         return $data;
     }
 
-    public function approveInvoice(ReimbursementInvoice $invoice, $approvers=null, $document_ids=null, $approval_type = 4)
+    public function approveInvoice(ReimbursementInvoice $invoice, $approvers = null, $document_ids = null, $approval_type = 4)
     {
         if ((!Auth::user()->isLandbankInvoiceApprover() || Auth::user()->entity_id != $invoice->entity_id) && !Auth::user()->isHFAAdmin()) {
             $output['message'] = 'Something went wrong.';
@@ -670,7 +670,6 @@ class InvoiceController extends Controller
         }
 
         if ($invoice) {
-            
             // it is possible that a HFA admin uploads a signature file for multiple LB users
             // if current user is HFA admin, make sure that person is added as the approver
             // in the records
@@ -1112,7 +1111,9 @@ class InvoiceController extends Controller
 
     public function approveInvoiceUploadSignature(ReimbursementInvoice $invoice, Request $request)
     {
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
         
         if ($request->hasFile('files')) {
             $files = $request->file('files');

@@ -109,17 +109,17 @@ class DispositionController extends Controller
                 switch ($request->query('dispositions_asc_desc')) {
                     case '1':
                         # code...
-                    session(['dispositions_asc_desc'=> 'desc']);
-                    $dispositionsAscDesc =  $request->session()->get('dispositions_asc_desc');
-                    session(['dispositions_asc_desc_opposite' => ""]);
-                    $dispositionsAscDescOpposite =  $request->session()->get('dispositions_asc_desc_opposite');
+                        session(['dispositions_asc_desc'=> 'desc']);
+                        $dispositionsAscDesc =  $request->session()->get('dispositions_asc_desc');
+                        session(['dispositions_asc_desc_opposite' => ""]);
+                        $dispositionsAscDescOpposite =  $request->session()->get('dispositions_asc_desc_opposite');
                         break;
                     
                     default:
-                    session(['dispositions_asc_desc'=> 'asc']);
-                    $dispositionsAscDesc =  $request->session()->get('dispositions_asc_desc');
-                    session(['dispositions_asc_desc_opposite' => 1]);
-                    $dispositionsAscDescOpposite = $request->session()->get('dispositions_asc_desc_opposite');
+                        session(['dispositions_asc_desc'=> 'asc']);
+                        $dispositionsAscDesc =  $request->session()->get('dispositions_asc_desc');
+                        session(['dispositions_asc_desc_opposite' => 1]);
+                        $dispositionsAscDescOpposite = $request->session()->get('dispositions_asc_desc_opposite');
                         break;
                 }
                 switch ($sortedBy) {
@@ -342,17 +342,17 @@ class DispositionController extends Controller
             if (!is_null($sortedBy)) {
                 switch ($request->query('invoices_asc_desc')) {
                     case '1':
-                    session(['disposition_invoices_asc_desc'=> 'desc']);
-                    $invoicesAscDesc =  $request->session()->get('disposition_invoices_asc_desc');
-                    session(['disposition_invoices_asc_desc_opposite' => "0"]);
-                    $invoicesAscDescOpposite =  $request->session()->get('disposition_invoices_asc_desc_opposite');
+                        session(['disposition_invoices_asc_desc'=> 'desc']);
+                        $invoicesAscDesc =  $request->session()->get('disposition_invoices_asc_desc');
+                        session(['disposition_invoices_asc_desc_opposite' => "0"]);
+                        $invoicesAscDescOpposite =  $request->session()->get('disposition_invoices_asc_desc_opposite');
                         break;
                     
                     default:
-                    session(['disposition_invoices_asc_desc'=> 'asc']);
-                    $invoicesAscDesc =  $request->session()->get('disposition_invoices_asc_desc');
-                    session(['disposition_invoices_asc_desc_opposite' => '1']);
-                    $invoicesAscDescOpposite = $request->session()->get('disposition_invoices_asc_desc_opposite');
+                        session(['disposition_invoices_asc_desc'=> 'asc']);
+                        $invoicesAscDesc =  $request->session()->get('disposition_invoices_asc_desc');
+                        session(['disposition_invoices_asc_desc_opposite' => '1']);
+                        $invoicesAscDescOpposite = $request->session()->get('disposition_invoices_asc_desc_opposite');
                         break;
                 }
 
@@ -912,7 +912,6 @@ class DispositionController extends Controller
         
         // compute actual results based on calculation and HFA adjustments
         if ($disposition) {
-
             // check against the rules
             $rules = ProgramRule::first(['imputed_cost_per_parcel','maintenance_max','maintenance_recap_pro_rate','demolition_max']);
             $imputed_cost_per_parcel = $rules->imputed_cost_per_parcel; //200
@@ -1332,7 +1331,7 @@ class DispositionController extends Controller
                     $step = "Submitted to Fiscal Agent";
                     break;
                 default:
-                   $step = "Draft";
+                    $step = "Draft";
             }
         }
 
@@ -1466,7 +1465,9 @@ class DispositionController extends Controller
             return 'Sorry you cannot upload documents to dispositions.';
         }
 
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
 
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -1569,7 +1570,9 @@ class DispositionController extends Controller
             return 'Sorry you cannot upload documents to dispositions.';
         }
 
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
 
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -1636,7 +1639,7 @@ class DispositionController extends Controller
         }
     }
 
-    public function approveDisposition(Parcel $parcel, $approvers=null, $document_ids=null, $hfa_approval = null)
+    public function approveDisposition(Parcel $parcel, $approvers = null, $document_ids = null, $hfa_approval = null)
     {
         if ((!Auth::user()->isLandbankDispositionApprover() || Auth::user()->entity_id != $parcel->entity_id) && !Auth::user()->isHFAAdmin() && !Auth::user()->isHFADispositionReviewer() && !Gate::allows('hfa-release-disposition') && !Auth::user()->isHFADispositionApprover()) {
             $output['message'] = 'No Disposition Approval For You! (Seinfeld fan?). Sorry, but it does not look like you have the right permissions to approve this disposition. Sorry!';
@@ -1777,7 +1780,9 @@ class DispositionController extends Controller
             return 'Sorry something went wrong.';
         }
 
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
 
         if ($request->hasFile('files')) {
             $files = $request->file('files');
@@ -1849,7 +1854,7 @@ class DispositionController extends Controller
      * @param  int parcel, float income, float cost
      * @return payback amount
      */
-    public function computeRecaptureOwed( $disposition, Request $request)
+    public function computeRecaptureOwed($disposition, Request $request)
     {
         $debug = array();
 
@@ -2930,7 +2935,7 @@ class DispositionController extends Controller
 
     public function addHFAApprover(Parcel $parcel, Request $request)
     {
-        if ((!Auth::user()->isHFADispositionApprover() && !Auth::user()->isHFAAdmin()) || !Auth::user()->isActive()){
+        if ((!Auth::user()->isHFADispositionApprover() && !Auth::user()->isHFAAdmin()) || !Auth::user()->isActive()) {
             $output['message'] = 'Sorry either that user is not a HFA Disposition Approver or no longer an HFA Admin. Both are required roles to be added as approver to this disposition.';
             return $output;
         }
@@ -3035,7 +3040,7 @@ class DispositionController extends Controller
 
         if ($disposition) {
             $approver_id = Auth::user()->id;
-            if(Auth::user()->isActive()){
+            if (Auth::user()->isActive()) {
                 $approver = ApprovalRequest::where('approval_type_id', '=', 1)
                                 ->where('link_type_id', '=', $disposition->id)
                                 ->where('user_id', '=', $approver_id)
@@ -3049,7 +3054,7 @@ class DispositionController extends Controller
                 $data['message'] = 'Your approval was recorded, stamped, and put in the history books. I know, it sounds pretty epic when I put it that way.';
                 $data['id'] = $approver_id;
                 return $data;
-            }else{
+            } else {
                 $data['message'] = 'Sorry, but does not look like your user is active any longer.';
                 $data['id'] = null;
                 return $data;
@@ -3068,7 +3073,7 @@ class DispositionController extends Controller
 
         if ($disposition) {
             $approver_id = Auth::user()->id;
-            if(Auth::user()->isActive()){
+            if (Auth::user()->isActive()) {
                 $approver = ApprovalRequest::where('approval_type_id', '=', 11)
                                 ->where('link_type_id', '=', $disposition->id)
                                 ->where('user_id', '=', $approver_id)
@@ -3082,7 +3087,7 @@ class DispositionController extends Controller
                 $data['message'] = 'Your approval was recorded.';
                 $data['id'] = $approver_id;
                 return $data;
-            }else{
+            } else {
                 $data['message'] = 'Sorry, but does not look like your user is active any longer. Check with your manager, I am not even supposed to talk to you now. Harsh, I know.';
                 $data['id'] = null;
                 return $data;
@@ -3708,7 +3713,7 @@ class DispositionController extends Controller
 
     public function addHFAApproverToInvoice(DispositionInvoice $invoice, Request $request)
     {
-        if ((!Auth::user()->isHFADispositionApprover() && !Auth::user()->isHFAAdmin()) ||  !Auth::user()->isActive()){
+        if ((!Auth::user()->isHFADispositionApprover() && !Auth::user()->isHFAAdmin()) ||  !Auth::user()->isActive()) {
             $output['message'] = 'Sorry the approver you are trying to add is either not active, no longer an eligible approver, or no longer an HFA Admin. All those things are required for that user to be an approver. Sorry! I know that this is probably annoyting, but we got to keep things legit!';
             return $output;
         }
@@ -3740,7 +3745,7 @@ class DispositionController extends Controller
         }
     }
 
-    public function approveInvoice(DispositionInvoice $invoice, $approvers=null, $document_ids=null, $approval_type = 12)
+    public function approveInvoice(DispositionInvoice $invoice, $approvers = null, $document_ids = null, $approval_type = 12)
     {
         if (((!Auth::user()->isHFADispositionApprover() || Auth::user()->entity_id != $invoice->entity_id) && !Auth::user()->isHFAAdmin()) || !Auth::user()->isActive) {
             $output['message'] = 'Sorry, that user does not have permission to do this action any longer. Please have your admin check your role as a disposition invoice approver, whether or not your user is active, or that your are a still a memeber of your organization.';
@@ -3748,7 +3753,6 @@ class DispositionController extends Controller
         }
 
         if ($invoice) {
-            
             // it is possible that a HFA admin uploads a signature file for multiple LB users
             // if current user is HFA admin, make sure that person is added as the approver
             // in the records
@@ -3829,7 +3833,9 @@ class DispositionController extends Controller
 
     public function approveInvoiceUploadSignature(DispositionInvoice $invoice, Request $request)
     {
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
         
         if ($request->hasFile('files')) {
             $files = $request->file('files');

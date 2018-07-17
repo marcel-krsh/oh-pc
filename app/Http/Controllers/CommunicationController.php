@@ -135,9 +135,8 @@ class CommunicationController extends Controller
 
     public function newCommunicationEntry($parcel_id = null)
     {
-        if($parcel_id !== null){
-
-            $parcel = Parcel::where('id','=',$parcel_id)->first();
+        if ($parcel_id !== null) {
+            $parcel = Parcel::where('id', '=', $parcel_id)->first();
 
             $documents = Document::where('parcel_id', $parcel->id)
                 ->orderBy('created_at', 'desc')
@@ -193,9 +192,7 @@ class CommunicationController extends Controller
             }
 
             return view('modals.new-outbound-email-entry', compact('parcel', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa'));
-
-        }else{
-
+        } else {
             $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
 
             // build a list of all categories used for uploaded documents in this parcel
@@ -223,9 +220,7 @@ class CommunicationController extends Controller
             $parcel = null;
 
             return view('modals.new-outbound-email-entry', compact('parcel', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa'));
-        
         }
-        
     }
 
 
@@ -258,7 +253,7 @@ class CommunicationController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      * @throws \Exception
      */
-    public function viewReplies($parcel_id=null, $message_id)
+    public function viewReplies($parcel_id = null, $message_id)
     {
         $message = Communication::where('id', $message_id)
                     ->with('owner')
@@ -293,13 +288,13 @@ class CommunicationController extends Controller
         }
         $user_needs_to_read_more = CommunicationRecipient::whereIn('communication_id', $message_id_array)->where('user_id', $current_user->id)->where('seen', 0)->update(['seen' => 1]);
 
-        if($parcel){
+        if ($parcel) {
             // fetch documents and categories
             $documents = Document::where('parcel_id', $parcel->id)
                 ->orderBy('created_at', 'desc')
                 ->get();
             $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
-        }else{
+        } else {
             $documents = null;
             $document_categories = null;
         }
@@ -441,7 +436,7 @@ class CommunicationController extends Controller
         }
 
         if ($forminputs['messageBody']) {
-            if(isset($forminputs['parcel'])){
+            if (isset($forminputs['parcel'])) {
                 try {
                     $parcel_id = (int) $forminputs['parcel'];
                     $parcel = Parcel::where('id', $parcel_id)->first();
@@ -449,7 +444,7 @@ class CommunicationController extends Controller
                     dd($ex->getMessage());
                 }
                 $parcel_id = $parcel->id;
-            }else{
+            } else {
                 $parcel_id = null;
             }
 
@@ -476,7 +471,6 @@ class CommunicationController extends Controller
                 $lc = new LogConverter('communication', 'create');
                 $lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
             } else {
-
                 $subject = (string) $forminputs['subject'];
                 $message = new Communication([
                     'owner_id' => $user->id,
@@ -577,18 +571,17 @@ class CommunicationController extends Controller
         $output_array = array();
         $output_array['count'] = count($messages_unseen);
         foreach ($messages_unseen as $message_unseen) {
-
-            if($message_unseen->communication->parent_id){
+            if ($message_unseen->communication->parent_id) {
                 $message['parent_id'] = $message_unseen->communication->parent_id;
-            }else{
+            } else {
                 $message['parent_id'] = null;
             }
             $message['communication_id'] = $message_unseen->communication_id;
             $message['summary'] = strlen($message_unseen->communication->message) > 400 ? substr($message_unseen->communication->message, 0, 200)."..." : $message_unseen->communication->message;
             $message['owner_name'] = $message_unseen->communication->owner->name;
-            if($message_unseen->communication->parcel !== null){
+            if ($message_unseen->communication->parcel !== null) {
                 $message['parcel_id'] = $message_unseen->communication->parcel->parcel_id;
-            }else{
+            } else {
                 $message['parcel_id'] = null;
             }
             $output_array['messages'][] = $message;

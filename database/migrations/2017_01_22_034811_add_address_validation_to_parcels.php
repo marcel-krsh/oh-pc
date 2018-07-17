@@ -27,8 +27,6 @@ class AddAddressValidationToParcels extends Migration
     {
         Schema::table('parcels', function (Blueprint $table) {
             //
-           
         });
     }
 }
-

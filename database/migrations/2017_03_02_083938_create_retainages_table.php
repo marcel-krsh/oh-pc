@@ -19,7 +19,7 @@ class CreateRetainagesTable extends Migration
             $table->integer('expense_category_id');
             $table->integer('parcel_id');
             $table->integer('cost_item_id');
-            $table->float('retainage_amount',10,2);
+            $table->float('retainage_amount', 10, 2);
             $table->boolean('paid');
             $table->dateTime('date_paid');
             $table->timestamps();

@@ -71,7 +71,6 @@ class DocumentController extends Controller
                 }
 
                 foreach ($document_categories as $document_category) {
-                    
                     // sub key for each document's categories for quick reference
                     if (in_array($document_category->id, $categories_decoded)) {
                         $categories[$document_category->id] = $document_category->document_category_name;
@@ -233,7 +232,9 @@ class DocumentController extends Controller
      */
     public function upload(Parcel $parcel, Request $request)
     {
-        if(app('env') == 'local') app('debugbar')->disable();
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
 
         if ($request->hasFile('files')) {
             $files = $request->file('files');

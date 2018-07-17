@@ -24,14 +24,13 @@ class CreateDispositionsTable extends Migration
             $table->string('disposition_explanation')->nullable();
             $table->timestamp('release_date')->nullable();
             $table->tinyInteger('active')->default(1);
-            $table->float('program_income',10,2)->nullable();
+            $table->float('program_income', 10, 2)->nullable();
             $table->timestamps();
             $table->index('entity_id');
             $table->index('program_id');
             $table->index('account_id');
             $table->index('parcel_id');
             $table->index('disposition_type_id');
-
         });
     }
 

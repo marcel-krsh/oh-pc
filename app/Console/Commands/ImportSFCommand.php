@@ -349,9 +349,6 @@ class ImportSFCommand extends Command
                         $this->line(PHP_EOL."Skipping Record ".$sfParcel->PropertyIDPropertyName." with program ".$sfParcel->ProgramProgramName." because it is a duplicate and has one already inserted.");
                     //dd($shouldWeAddRecords);
                     } else {
-
-
-
                                 ///////////////////////////////////////////////////////////////////////////////
                         ////////////////// PARCEL IS NOT IN THE TABLE - CREATE INSERTION.
                         //////////// FIRST DETERMINE STATUS ID
@@ -772,137 +769,137 @@ class ImportSFCommand extends Command
                     }
                     //convert yes and no to boolean or null
                     switch ($data->AllStructuresRemoved) {
-                                case 'Yes':
-                                    $alsr = 1;
-                                    break;
-                                case 'No':
-                                    $alsr = 0;
-                                    break;
-                                default:
-                                   $alsr = null;
-                                    break;
-                            }
+                        case 'Yes':
+                            $alsr = 1;
+                            break;
+                        case 'No':
+                            $alsr = 0;
+                            break;
+                        default:
+                            $alsr = null;
+                            break;
+                    }
                     switch ($data->ConstructionDebrisRemoved) {
-                                case 'Yes':
-                                    $cdr = 1;
-                                    break;
-                                case 'No':
-                                    $cdr = 0;
-                                    break;
-                                default:
-                                   $cdr = null;
-                                    break;
-                            }
+                        case 'Yes':
+                            $cdr = 1;
+                            break;
+                        case 'No':
+                            $cdr = 0;
+                            break;
+                        default:
+                            $cdr = null;
+                            break;
+                    }
                     switch ($data->X10_Retainage_released_to_contractor__c) {
-                                case 'Yes':
-                                    $rrtc = 1;
-                                    break;
-                                case 'No':
-                                    $rrtc = 0;
-                                    break;
-                                default:
-                                   $rrtc = null;
-                                    break;
-                            }
+                        case 'Yes':
+                            $rrtc = 1;
+                            break;
+                        case 'No':
+                            $rrtc = 0;
+                            break;
+                        default:
+                            $rrtc = null;
+                            break;
+                    }
                     switch ($data->X11_Is_a_recap_of_maint_funds_required__c) {
-                                case 'Yes':
-                                    $romfr = 1;
-                                    break;
-                                case 'No':
-                                    $romfr = 0;
-                                    break;
-                                default:
-                                   $romfr = null;
-                                    break;
-                            }
+                        case 'Yes':
+                            $romfr = 1;
+                            break;
+                        case 'No':
+                            $romfr = 0;
+                            break;
+                        default:
+                            $romfr = null;
+                            break;
+                    }
                     switch ($data->X12_Amount_of_maint_recapture_due__c) {
-                                case 'Yes':
-                                    $aomrd = 1;
-                                    break;
-                                case 'No':
-                                    $aomrd = 0;
-                                    break;
-                                default:
-                                   $aomrd = null;
-                                    break;
-                            }
+                        case 'Yes':
+                            $aomrd = 1;
+                            break;
+                        case 'No':
+                            $aomrd = 0;
+                            break;
+                        default:
+                            $aomrd = null;
+                            break;
+                    }
                     switch ($data->X3_Was_the_property_graded_and_seeded__c) {
-                                case 'Yes':
-                                    $wtpgas = 1;
-                                    break;
-                                case 'No':
-                                    $wtpgas = 0;
-                                    break;
-                                default:
-                                   $wtpgas = null;
-                                    break;
-                            }
+                        case 'Yes':
+                            $wtpgas = 1;
+                            break;
+                        case 'No':
+                            $wtpgas = 0;
+                            break;
+                        default:
+                            $wtpgas = null;
+                            break;
+                    }
                     switch ($data->X4_Is_there_any_signage__c) {
-                                case 'Yes':
-                                    $itas = 1;
-                                    break;
-                                case 'No':
-                                    $itas = 0;
-                                    break;
-                                default:
-                                   $itas = null;
-                                    break;
-                            }
+                        case 'Yes':
+                            $itas = 1;
+                            break;
+                        case 'No':
+                            $itas = 0;
+                            break;
+                        default:
+                            $itas = null;
+                            break;
+                    }
                     switch ($data->X5_Is_grass_growing_consistently_across__c) {
-                                case 'Yes':
-                                    $iggca = 1;
-                                    break;
-                                case 'No':
-                                    $iggca = 0;
-                                    break;
-                                default:
-                                   $iggca = null;
-                                    break;
-                            }
+                        case 'Yes':
+                            $iggca = 1;
+                            break;
+                        case 'No':
+                            $iggca = 0;
+                            break;
+                        default:
+                            $iggca = null;
+                            break;
+                    }
                     switch ($data->X6_Is_grass_mowed_weeded__c) {
-                                case 'Yes':
-                                    $igmw = 1;
-                                    break;
-                                case 'No':
-                                    $igmw = 0;
-                                    break;
-                                default:
-                                   $igmw = null;
-                                    break;
-                            }
+                        case 'Yes':
+                            $igmw = 1;
+                            break;
+                        case 'No':
+                            $igmw = 0;
+                            break;
+                        default:
+                            $igmw = null;
+                            break;
+                    }
                     switch ($data->X7_Was_the_property_landscaped__c) {
-                                case 'Yes':
-                                    $wtpl = 1;
-                                    break;
-                                case 'No':
-                                    $wtpl = 0;
-                                    break;
-                                default:
-                                   $wtpl = null;
-                                    break;
-                            }
+                        case 'Yes':
+                            $wtpl = 1;
+                            break;
+                        case 'No':
+                            $wtpl = 0;
+                            break;
+                        default:
+                            $wtpl = null;
+                            break;
+                    }
                     switch ($data->X8_Nuisance_Elements_or_Code_Violations__c) {
-                                case 'Yes':
-                                    $neocv = 1;
-                                    break;
-                                case 'No':
-                                    $neocv = 0;
-                                    break;
-                                default:
-                                   $neocv = null;
-                                    break;
-                            }
+                        case 'Yes':
+                            $neocv = 1;
+                            break;
+                        case 'No':
+                            $neocv = 0;
+                            break;
+                        default:
+                            $neocv = null;
+                            break;
+                    }
                     switch ($data->X9_Are_there_Environmental_Conditions__c) {
-                                case 'Yes':
-                                    $atec = 1;
-                                    break;
-                                case 'No':
-                                    $atec = 0;
-                                    break;
-                                default:
-                                   $atec = null;
-                                    break;
-                            }
+                        case 'Yes':
+                            $atec = 1;
+                            break;
+                        case 'No':
+                            $atec = 0;
+                            break;
+                        default:
+                            $atec = null;
+                            break;
+                    }
                             
                     if (!is_null($allita_parcel_id)) {
                         DB::table('site_visits')->insert([
@@ -1101,8 +1098,7 @@ class ImportSFCommand extends Command
                             'NIPLoanPayoffCost',
                             'NIPLoanPayoffRequested',
                             'NIPLoanPayoffApproved'
-
-                            )->distinct()->get()->all();
+                        )->distinct()->get()->all();
                              
 
 
@@ -1716,7 +1712,7 @@ class ImportSFCommand extends Command
                                 'CreatedDate',
                                 'LastModifiedDate',
                                 'disposition_due'
-                                )
+                            )
                             ->distinct()->get()->all();
 
             $dtm = 0;
@@ -1729,26 +1725,26 @@ class ImportSFCommand extends Command
                 $dtm = $dtm + 1;
                 /////// SET THE DISPOSITION TYPE ID
                 switch ($data->DispositionType) {
-                                case 'Bus/Res Dev':
-                                    $dispositionTypeId = 1;
-                                    break;
-                                case 'Non-Profit':
-                                    $dispositionTypeId = 2;
-                                    break;
-                                case 'Other':
-                                    $dispositionTypeId = 3;
-                                    break;
-                                case 'Public Use':
-                                    $dispositionTypeId = 4;
-                                    break;
-                                case 'Side Lot':
-                                    $dispositionTypeId = 5;
-                                    break;
+                    case 'Bus/Res Dev':
+                        $dispositionTypeId = 1;
+                        break;
+                    case 'Non-Profit':
+                        $dispositionTypeId = 2;
+                        break;
+                    case 'Other':
+                        $dispositionTypeId = 3;
+                        break;
+                    case 'Public Use':
+                        $dispositionTypeId = 4;
+                        break;
+                    case 'Side Lot':
+                        $dispositionTypeId = 5;
+                        break;
                                 
-                                default:
-                                    $dispositionTypeId = 3;
-                                    break;
-                            }
+                    default:
+                        $dispositionTypeId = 3;
+                        break;
+                }
 
                 // Check if disposition exists
                 $dipositionCheck = DB::table('dispositions')->where('parcel_id', $data->allita_parcel_id)->get()->all();
@@ -1800,7 +1796,7 @@ class ImportSFCommand extends Command
                             'NetProceeds',
                             'ProgramIncome',
                             'dispositions.created_at'
-                            )
+                        )
                         ->where('RecapturedOwed', '>', 0)
                         ->distinct()->get()->all();
             $bar->advance();

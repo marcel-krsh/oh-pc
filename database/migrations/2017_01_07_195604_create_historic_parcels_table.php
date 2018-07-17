@@ -23,8 +23,8 @@ class CreateHistoricParcelsTable extends Migration
             $table->string('Property State')->nullable();
             $table->string('Property Zip')->nullable();
             $table->string('Property County')->nullable();
-            $table->float('latitude',10,5)->nullable();
-            $table->float('longitude',10,5)->nullable();
+            $table->float('latitude', 10, 5)->nullable();
+            $table->float('longitude', 10, 5)->nullable();
             $table->integer('entity_id')->default(46);
         });
     }

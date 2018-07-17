@@ -64,11 +64,11 @@ class ImportController extends Controller
     // public function depluralize($word) {
     //     $rules = ['ies' => 'y', 'ses' => 's', 's' => ''];
     //     foreach(array_keys($rules) as $key){
-    //         if(substr($word, (strlen($key) * -1)) != $key) 
+    //         if(substr($word, (strlen($key) * -1)) != $key)
     //             continue;
-    //         if($key === false) 
+    //         if($key === false)
     //             return $word;
-    //         return substr($word, 0, strlen($word) - strlen($key)) . $rules[$key]; 
+    //         return substr($word, 0, strlen($word) - strlen($key)) . $rules[$key];
     //     }
     //     return $word;
     // }
@@ -130,16 +130,16 @@ class ImportController extends Controller
             //put in code here to set where to only get ids for their program
             //make it get all ids for OHFA
             switch (Auth::user()->entity_id) {
-                    case '1':
-                        $where = '%%';
-                        $whereOperator = "LIKE";
-                        break;
+                case '1':
+                    $where = '%%';
+                    $whereOperator = "LIKE";
+                    break;
                     
-                    default:
-                        $where = Auth::user()->entity_id;
-                        $whereOperator = "=";
-                        break;
-                }
+                default:
+                    $where = Auth::user()->entity_id;
+                    $whereOperator = "=";
+                    break;
+            }
             $programs = DB::table('programs')->select('id as program_id', 'program_name', 'entity_id')->where('active', 1)->where('entity_id', $whereOperator, $where)->orderBy('program_name', 'asc')->get()->all();
             $accounts = DB::table('accounts')->select('id as account_id', 'account_name', 'owner_id as program_id')->where('active', 1)->where('owner_id', $whereOperator, $where)->orderBy('account_name', 'asc')->get()->all();
             if ($request->query('showHowTo') == 1) {
@@ -301,9 +301,6 @@ class ImportController extends Controller
             foreach ($excel as $r => $row) {
                 foreach ($row as $col => $value) {
                     if ($map[$col] != '') {
-
-
-
                             // If we already have a correction value, use that instead of the excel file:
                         if (isset($corrections[$r][$map[$col]])) {
                             $value = $corrections[$r][$map[$col]];
@@ -322,7 +319,7 @@ class ImportController extends Controller
                                 'db_type'          => $columns[$map[$col]]['type'],
                                 'db_references'    => $columns[$map[$col]]['references'],
                                 'db_on'            => $columns[$map[$col]]['on'],
-                                'not_null'		   => $columns[$map[$col]]['notnull'],
+                                'not_null'         => $columns[$map[$col]]['notnull'],
                             ];
 
 
@@ -348,10 +345,6 @@ class ImportController extends Controller
                                 // $foreign_row = DB::table($ic[$r][$col]['db_on'])->where($this->depluralize($ic[$r][$col]['db_on']) . "_name", $ic[$r][$col]['excel_val'])->first();
                                 $foreign_row = DB::table($ic[$r][$col]['db_on'])->where(str_singular($ic[$r][$col]['db_on']) . "_name", $ic[$r][$col]['excel_val'])->first();
                                 if (empty($foreign_row)) {
-                                        
-
-
-
                                         // Add Select dropdowns for mismatched foreign keys.
 
                                     // Which column do we want to use for the option VALUE in the select dropdown?
@@ -403,46 +396,34 @@ class ImportController extends Controller
                                     $ic[$r][$col]['insert_val'] = $foreign_row->id;
                                 }
                             }
-                        }
-
-                        // If expecting Integer, and recieve String.
+                        } // If expecting Integer, and recieve String.
                         elseif ($ic[$r][$col]['db_type'] == 'Integer' && $value != '' && !(is_null($value) || $ic[$r][$col]['excel_int'])) {
                             $ie[$r][$col] = $ic[$r][$col];
                             $ie[$r][$col]['message'] = 'I was expecting an integer. ' . (is_numeric($value) ? '' : 'Looks like you included some text, like a comma, period, dollar sign, or perhaps a trailing space?') .  (is_float($value) ? ' Looks like you submitted a "float", meaning it has a decimal point. Please just round to the next whole number.' : '');
-                        }
-
-                        // If expecting Integer, and receive a Null AND its required
+                        } // If expecting Integer, and receive a Null AND its required
                         elseif ($ic[$r][$col]['db_type'] == 'Integer' && (is_null($value) || $value == '') && $ic[$r][$col]['not_null']) {
                             $ie[$r][$col] = $ic[$r][$col];
                             $ie[$r][$col]['message'] = 'I was expecting an integer in this required field... and well there was nothing! Please enter a whole number.';
-                        }
-
-                        // If expecting Boolean, and recieve String.
+                        } // If expecting Boolean, and recieve String.
                         elseif ($ic[$r][$col]['db_type'] == 'Boolean' && $value !== '' && !(is_null($value) || is_bool($value) || $this->checkBool($value)) && $value !== 0 && $value !== 1 || ($ic[$r][$col]['db_type'] == 'Boolean' &&strlen($value) > 1)) {
                             $ie[$r][$col] = $ic[$r][$col];
                             $ie[$r][$col]['message'] = 'I was expecting a boolean (0 or 1) ' . (is_numeric($value) ? '' : ' and it looks like you put in text instead.');
-                        }
-
-                        // If expecting Boolean, and received a NULL and is REQUIRED
+                        } // If expecting Boolean, and received a NULL and is REQUIRED
                         elseif ($ic[$r][$col]['db_type'] == 'Boolean' && (is_null($value) || $value === '') && $ic[$r][$col]['not_null'] && $value !== 0) {
                             $ie[$r][$col] = $ic[$r][$col];
                             $ie[$r][$col]['message'] = 'I was expecting a boolean (0 or 1) for this required field, and there wasn\'t anything supplied! Please enter a 1 for true, or 0 for false.';
-                        }
-                        // If expecting String, and received a NULL and is REQUIRED
+                        } // If expecting String, and received a NULL and is REQUIRED
                         elseif ($ic[$r][$col]['db_type'] == 'String' && (is_null($value) || $value == '') && $ic[$r][$col]['not_null']) {
                             $ie[$r][$col] = $ic[$r][$col];
                             $ie[$r][$col]['message'] = 'I was expecting some text here, and there wasn\'t anything supplied! Please enter some text, even if it is simply "NA".';
-                        }
-
-                        // If the table column is "id"
+                        } // If the table column is "id"
                         //
                         elseif ($ic[$r][$col]['db_col'] == 'id' && $value != '' && $value != null) {
                             $update_row = DB::table($table)->find($value);
                             if (empty($update_row)) {
                                 $ie[$r][$col] = $ic[$r][$col];
                                 $ie[$r][$col]['message'] = 'I can\t find a row with the ID ' . $value;
-                            } elseif (
-                                    property_exists($update_row, "owner_type") && (
+                            } elseif (property_exists($update_row, "owner_type") && (
                                         ($update_row->owner_type == 'user' && $update_row->owner_id != auth()->user()->id) ||
                                         ($update_row->owner_type == 'entity' && $update_row->owner_id != auth()->user()->entity_id) ||
                                         ($update_row->owner_type == 'program' && empty(
@@ -477,7 +458,7 @@ class ImportController extends Controller
                             'user_id' => auth()->user()->id,
                             'program_id' => $request->input('program_id'),
                             'account_id' => $request->input('account_id'),
-                            'entity_id'	=> $entityForImport->entity_id,
+                            'entity_id' => $entityForImport->entity_id,
 
                             ]);
                         
@@ -490,10 +471,8 @@ class ImportController extends Controller
                         // IGNORE EMPTY ROWS
 
                         if (isset($ie[$r]) && $request->input('skip_errors') == 1) {
-
                                 // skip error row.
                         } else {
-
                                 // AUTOFILL COLUMNS
                                 
                             foreach ($columns as $column) {

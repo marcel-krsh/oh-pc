@@ -100,25 +100,25 @@ class RolesSeeder extends Seeder
                 'role_name'=>'Lien Manager',
                 'protected'=>1,
                 'active'=>1
-            ], 
+            ],
             [ //9
                 'role_parent_id'=>1,
                 'role_name'=>'Disposition Reviewer',
                 'protected'=>1,
                 'active'=>1
-            ], 
+            ],
             [ //10
                 'role_parent_id'=>2,
                 'role_name'=>'Disposition Reviewer',
                 'protected'=>1,
                 'active'=>1
-            ], 
+            ],
             [ //11
                 'role_parent_id'=>2,
                 'role_name'=>'Disposition Approver',
                 'protected'=>1,
                 'active'=>1
-            ], 
+            ],
             [ //12
                 'role_parent_id'=>2,
                 'role_name'=>'Disposition Manager',
