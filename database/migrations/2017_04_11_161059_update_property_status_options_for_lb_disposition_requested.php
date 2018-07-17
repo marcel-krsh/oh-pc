@@ -23,12 +23,12 @@ class UpdatePropertyStatusOptionsForLbDispositionRequested extends Migration
                           'option_name' => 'Disposition Declined',
                           'for'=>'hfa',
                           'order'=>20
-                ],
+                 ],
                  [
                           'option_name' => 'Disposition Draft',
                           'for'=>'landbank',
                           'order'=>29
-                ]
+                 ]
         ];
               
         DB::table('property_status_options')->insert($propertyStatusOptionData);

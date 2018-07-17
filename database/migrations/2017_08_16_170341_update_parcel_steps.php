@@ -346,7 +346,7 @@ class UpdateParcelSteps extends Migration
                 'hfa' => 0,
                 'step_help' => '',
                 'name_completed' => ''
-            ],
+             ],
             [
                 'parent_id' => 40,
                 'guide_step_type_id' => 2,

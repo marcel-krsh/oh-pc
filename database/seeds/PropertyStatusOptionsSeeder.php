@@ -243,7 +243,7 @@ class PropertyStatusOptionsSeeder extends Seeder
                 'for'=>'landbank',
                 'order'=>4
             ]
-        ,
+            ,
             [
                 'option_name' => 'Internal - Corrections Needed',
                 'for'=>'landbank',

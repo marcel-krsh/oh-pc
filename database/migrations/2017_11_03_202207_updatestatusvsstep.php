@@ -474,7 +474,7 @@ class Updatestatusvsstep extends Migration
                 'landbank_property_status_id' => null,
                 'hfa_property_status_id' => null,
                 'hidden_from_lb' => null
-            ],
+             ],
             [
                 'parent_id' => 40,
                 'guide_step_type_id' => 2,

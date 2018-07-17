@@ -201,8 +201,8 @@ class AdjustGuideSteps extends Migration
                 'hfa' => 1,
                 'step_help' => 'The invoice must be fully paid.'
             ]
-        ];
-        DB::table('guide_steps')->insert($guide_steps);
+         ];
+         DB::table('guide_steps')->insert($guide_steps);
     }
 
     /**

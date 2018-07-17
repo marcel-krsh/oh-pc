@@ -23,7 +23,7 @@ class UpdatePropertyStatusOptionsForReleaseRequest extends Migration
                           'option_name' => 'Disposition Release Requested',
                           'for'=>'hfa',
                           'order'=>20
-                ]
+                 ]
         ];
               
         DB::table('property_status_options')->insert($propertyStatusOptionData);
