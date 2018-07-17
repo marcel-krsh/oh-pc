@@ -2,7 +2,10 @@
 
 use App\User;
 
-class ClickTest extends BrowserKitTestCase
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class ClickTest extends TestCase
 {
     public function testDashboardRoutes()
     {
