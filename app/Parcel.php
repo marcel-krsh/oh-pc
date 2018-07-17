@@ -61,7 +61,7 @@ class Parcel extends Model
      */
     public function state() : BelongsTo
     {
-        return $this->belongsTo('App\State', 'state_id');
+        return $this->belongsTo(\App\State::class, 'state_id');
     }
 
     /**
@@ -71,7 +71,7 @@ class Parcel extends Model
      */
     public function county() : BelongsTo
     {
-        return $this->belongsTo('App\County', 'county_id');
+        return $this->belongsTo(\App\County::class, 'county_id');
     }
 
     /**
@@ -81,7 +81,7 @@ class Parcel extends Model
      */
     public function targetArea() : BelongsTo
     {
-        return $this->belongsTo('App\TargetArea', 'target_area_id');
+        return $this->belongsTo(\App\TargetArea::class, 'target_area_id');
     }
 
     /**
@@ -91,7 +91,7 @@ class Parcel extends Model
      */
     public function compliances() : HasMany
     {
-        return $this->hasMany('App\Compliance', 'parcel_id', 'id')->orderBy('id', 'DESC');
+        return $this->hasMany(\App\Compliance::class, 'parcel_id', 'id')->orderBy('id', 'DESC');
     }
 
     /**
@@ -101,7 +101,7 @@ class Parcel extends Model
      */
     public function recaptures() : HasMany
     {
-        return $this->hasMany('App\RecaptureItem', 'parcel_id', 'id')->orderBy('id', 'DESC');
+        return $this->hasMany(\App\RecaptureItem::class, 'parcel_id', 'id')->orderBy('id', 'DESC');
     }
 
     /**
@@ -111,7 +111,7 @@ class Parcel extends Model
      */
     public function resolutions() : HasMany
     {
-        return $this->hasMany('App\ValidationResolutions', 'parcel_id', 'id');
+        return $this->hasMany(\App\ValidationResolutions::class, 'parcel_id', 'id');
     }
 
     /**
@@ -121,7 +121,7 @@ class Parcel extends Model
      */
     public function communications() : HasMany
     {
-        return $this->hasMany('App\Communication', 'parcel_id', 'id')
+        return $this->hasMany(\App\Communication::class, 'parcel_id', 'id')
                 ->orderBy('id', 'DESC');
     }
 
@@ -132,7 +132,7 @@ class Parcel extends Model
      */
     public function documents() : HasMany
     {
-        return $this->hasMany('App\Document', 'parcel_id', 'id')
+        return $this->hasMany(\App\Document::class, 'parcel_id', 'id')
                 ->orderBy('id', 'DESC');
     }
 
@@ -143,7 +143,7 @@ class Parcel extends Model
      */
     public function activities()
     {
-        $activities = ActivityLog::where('subject_type', '=', 'App\Parcel')
+        $activities = ActivityLog::where('subject_type', '=', \App\Parcel::class)
                                 ->where('subject_id', '=', $this->id)
                                 ->leftJoin('users', 'users.id', '=', 'activity_log.causer_id')
                                 ->get();
@@ -157,7 +157,7 @@ class Parcel extends Model
      */
     public function entity() : BelongsTo
     {
-        return $this->belongsTo('App\Entity');
+        return $this->belongsTo(\App\Entity::class);
     }
 
     /**
@@ -167,7 +167,7 @@ class Parcel extends Model
      */
     public function guide_next_step() : HasOne
     {
-        return $this->hasOne('App\GuideStep', 'id', 'next_step');
+        return $this->hasOne(\App\GuideStep::class, 'id', 'next_step');
     }
 
     /**
@@ -177,7 +177,7 @@ class Parcel extends Model
      */
     public function associatedRequest() : HasOne
     {
-        return $this->hasOne('App\ParcelsToReimbursementRequest', 'parcel_id', 'id');
+        return $this->hasOne(\App\ParcelsToReimbursementRequest::class, 'parcel_id', 'id');
     }
 
     /**
@@ -187,7 +187,7 @@ class Parcel extends Model
      */
     public function associatedPo() : HasOne
     {
-        return $this->hasOne('App\ParcelsToPurchaseOrder', 'parcel_id', 'id');
+        return $this->hasOne(\App\ParcelsToPurchaseOrder::class, 'parcel_id', 'id');
     }
 
     /**
@@ -197,7 +197,7 @@ class Parcel extends Model
      */
     public function associatedInvoice() : HasOne
     {
-        return $this->hasOne('App\ParcelsToReimbursementInvoice', 'parcel_id', 'id');
+        return $this->hasOne(\App\ParcelsToReimbursementInvoice::class, 'parcel_id', 'id');
     }
 
     /**
@@ -207,7 +207,7 @@ class Parcel extends Model
      */
     public function associatedDispositions() : HasMany
     {
-        return $this->hasMany('App\Disposition', 'parcel_id', 'id')
+        return $this->hasMany(\App\Disposition::class, 'parcel_id', 'id')
                 ->orderBy('id', 'DESC');
     }
 
@@ -241,7 +241,7 @@ class Parcel extends Model
      */
     public function program() : HasOne
     {
-        return $this->hasOne('App\Program', 'id', 'program_id');
+        return $this->hasOne(\App\Program::class, 'id', 'program_id');
     }
 
     /**
@@ -251,7 +251,7 @@ class Parcel extends Model
      */
     public function status() : HasOne
     {
-        return $this->hasOne('App\PropertyStatusOption', 'id', 'status_id');
+        return $this->hasOne(\App\PropertyStatusOption::class, 'id', 'status_id');
     }
 
     /**
@@ -261,7 +261,7 @@ class Parcel extends Model
      */
     public function landbankPropertyStatus() : HasOne
     {
-        return $this->hasOne('App\PropertyStatusOption', 'id', 'landbank_property_status_id');
+        return $this->hasOne(\App\PropertyStatusOption::class, 'id', 'landbank_property_status_id');
     }
 
     /**
@@ -271,7 +271,7 @@ class Parcel extends Model
      */
     public function hfaPropertyStatus() : HasOne
     {
-        return $this->hasOne('App\PropertyStatusOption', 'id', 'hfa_property_status_id');
+        return $this->hasOne(\App\PropertyStatusOption::class, 'id', 'hfa_property_status_id');
     }
 
     /**
@@ -281,7 +281,7 @@ class Parcel extends Model
      */
     public function dispositions() : HasMany
     {
-        return $this->hasMany('App\Disposition', 'parcel_id', 'id');
+        return $this->hasMany(\App\Disposition::class, 'parcel_id', 'id');
     }
 
     /**
@@ -426,7 +426,7 @@ class Parcel extends Model
      */
     public function retainages()
     {
-        return $this->hasMany('App\Retainage', 'parcel_id', 'id');
+        return $this->hasMany(\App\Retainage::class, 'parcel_id', 'id');
     }
 
     /**
@@ -462,7 +462,7 @@ class Parcel extends Model
      */
     public function costItems()
     {
-        return $this->hasMany('App\CostItem', 'parcel_id', 'id');
+        return $this->hasMany(\App\CostItem::class, 'parcel_id', 'id');
     }
 
     /**
@@ -499,7 +499,7 @@ class Parcel extends Model
      */
     public function allRequestItems() : HasMany
     {
-        return $this->hasMany('App\RequestItem', 'parcel_id', 'id');
+        return $this->hasMany(\App\RequestItem::class, 'parcel_id', 'id');
     }
 
     /**
@@ -520,7 +520,7 @@ class Parcel extends Model
      */
     public function allPoItems() : HasMany
     {
-        return $this->hasMany('App\PoItems', 'parcel_id', 'id');
+        return $this->hasMany(\App\PoItems::class, 'parcel_id', 'id');
     }
 
     /**
@@ -530,7 +530,7 @@ class Parcel extends Model
      */
     public function allCostItems() : HasMany
     {
-        return $this->hasMany('App\CostItem', 'parcel_id', 'id');
+        return $this->hasMany(\App\CostItem::class, 'parcel_id', 'id');
     }
 
     /**
@@ -551,7 +551,7 @@ class Parcel extends Model
      */
     public function invoiceItems()
     {
-        return $this->hasMany('App\InvoiceItem', 'parcel_id', 'id')
+        return $this->hasMany(\App\InvoiceItem::class, 'parcel_id', 'id')
                 ->whereHas('poItem', function ($query) {
                     $query->has('requestItem');
                 });
@@ -564,7 +564,7 @@ class Parcel extends Model
      */
     public function allInvoiceItems() : HasMany
     {
-        return $this->hasMany('App\InvoiceItem', 'parcel_id', 'id');
+        return $this->hasMany(\App\InvoiceItem::class, 'parcel_id', 'id');
     }
 
     /**
@@ -798,7 +798,7 @@ class Parcel extends Model
      */
     public function advanceItems()
     {
-        return $this->hasMany('App\CostItem', 'parcel_id', 'id')
+        return $this->hasMany(\App\CostItem::class, 'parcel_id', 'id')
                 ->where('advance', 1);
     }
 
@@ -809,7 +809,7 @@ class Parcel extends Model
      */
     public function paidAdvanceItems()
     {
-        return $this->hasMany('App\CostItem', 'parcel_id', 'id')
+        return $this->hasMany(\App\CostItem::class, 'parcel_id', 'id')
                 ->where('advance', 1)
                 ->where('advance_paid', 1);
     }
@@ -821,7 +821,7 @@ class Parcel extends Model
      */
     public function unpaidAdvanceItems()
     {
-        return $this->hasMany('App\CostItem', 'parcel_id', 'id')
+        return $this->hasMany(\App\CostItem::class, 'parcel_id', 'id')
                 ->where('advance', 1)
                 ->whereNull('advance_paid');
     }
@@ -953,7 +953,7 @@ class Parcel extends Model
             $importRow->table_name = "parcels";
             $importRow->save();
         }
-        return $this->hasOne('App\ImportRow', 'row_id', 'id');
+        return $this->hasOne(\App\ImportRow::class, 'row_id', 'id');
     }
 
     /**
@@ -1406,7 +1406,7 @@ class Parcel extends Model
      */
     public function siteVisits() : HasMany
     {
-        return $this->hasMany('App\SiteVisits', 'parcel_id', 'id')
+        return $this->hasMany(\App\SiteVisits::class, 'parcel_id', 'id')
                 ->orderBy('visit_date', 'DESC');
     }
 
@@ -1417,7 +1417,7 @@ class Parcel extends Model
      */
     public function siteVisitLists() : HasMany
     {
-        return $this->hasMany('App\VisitLists', 'parcel_id', 'id')
+        return $this->hasMany(\App\VisitLists::class, 'parcel_id', 'id')
                 ->orderBy('created_at', 'DESC');
     }
 

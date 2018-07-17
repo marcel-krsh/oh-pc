@@ -75,7 +75,7 @@ class Compliance extends Model
      */
     public function parcel() : HasOne
     {
-        return $this->hasOne('App\Parcel', 'id', 'parcel_id');
+        return $this->hasOne(\App\Parcel::class, 'id', 'parcel_id');
     }
 
     /**
@@ -85,7 +85,7 @@ class Compliance extends Model
      */
     public function propertyType() : HasOne
     {
-        return $this->hasOne('App\ParcelType', 'id', 'property_type_id');
+        return $this->hasOne(\App\ParcelType::class, 'id', 'property_type_id');
     }
 
     /**
@@ -95,7 +95,7 @@ class Compliance extends Model
      */
     public function program() : HasOne
     {
-        return $this->hasOne('App\Program', 'id', 'program_id');
+        return $this->hasOne(\App\Program::class, 'id', 'program_id');
     }
 
     /**
@@ -105,7 +105,7 @@ class Compliance extends Model
      */
     public function creator() : HasOne
     {
-        return $this->hasOne('App\User', 'id', 'created_by_user_id');
+        return $this->hasOne(\App\User::class, 'id', 'created_by_user_id');
     }
 
     /**
@@ -115,7 +115,7 @@ class Compliance extends Model
      */
     public function analyst() : HasOne
     {
-        return $this->hasOne('App\User', 'id', 'analyst_id');
+        return $this->hasOne(\App\User::class, 'id', 'analyst_id');
     }
 
     /**
@@ -125,6 +125,6 @@ class Compliance extends Model
      */
     public function auditor() : HasOne
     {
-        return $this->hasOne('App\User', 'id', 'auditor_id');
+        return $this->hasOne(\App\User::class, 'id', 'auditor_id');
     }
 }

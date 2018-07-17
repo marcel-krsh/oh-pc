@@ -140,7 +140,7 @@ class SiteVisits extends Model
      */
     public function parcel() : HasOne
     {
-        return $this->hasOne('App\Parcel', 'id', 'parcel_id');
+        return $this->hasOne(\App\Parcel::class, 'id', 'parcel_id');
     }
 
     /**
@@ -150,7 +150,7 @@ class SiteVisits extends Model
      */
     public function statusinfo() : HasOne
     {
-        return $this->hasOne('App\VisitListStatusName', 'id', 'status');
+        return $this->hasOne(\App\VisitListStatusName::class, 'id', 'status');
     }
 
     /**
@@ -160,7 +160,7 @@ class SiteVisits extends Model
      */
     public function comments() : HasMany
     {
-        return $this->hasMany('App\Comment', 'parcel_id', 'parcel_id');
+        return $this->hasMany(\App\Comment::class, 'parcel_id', 'parcel_id');
     }
 
     /**
@@ -170,7 +170,7 @@ class SiteVisits extends Model
      */
     public function corrections() : HasMany
     {
-        return $this->hasMany('App\Correction', 'parcel_id', 'parcel_id');
+        return $this->hasMany(\App\Correction::class, 'parcel_id', 'parcel_id');
     }
 
     /**
@@ -180,6 +180,6 @@ class SiteVisits extends Model
      */
     public function photos() : HasMany
     {
-        return $this->hasMany('App\Photo', 'parcel_id', 'parcel_id');
+        return $this->hasMany(\App\Photo::class, 'parcel_id', 'parcel_id');
     }
 }

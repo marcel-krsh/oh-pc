@@ -40,7 +40,7 @@ class Report extends Model
      */
     public function user() : BelongsTo
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(\App\User::class);
     }
 
     /**
@@ -50,7 +50,7 @@ class Report extends Model
      */
     public function downloads() : HasMany
     {
-        return $this->hasMany('App\ReportDownload', 'report_id', 'id');
+        return $this->hasMany(\App\ReportDownload::class, 'report_id', 'id');
     }
 
     /**

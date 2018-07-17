@@ -29,7 +29,7 @@ class ApprovalAction extends Model
      */
     public function request() : HasOne
     {
-        return $this->hasOne('App\ApprovalRequest', 'id', 'approval_request_id');
+        return $this->hasOne(\App\ApprovalRequest::class, 'id', 'approval_request_id');
     }
 
     /**
@@ -39,6 +39,6 @@ class ApprovalAction extends Model
      */
     public function action_type() : HasOne
     {
-        return $this->hasOne('App\ApprovalActionType', 'id', 'approval_action_type_id');
+        return $this->hasOne(\App\ApprovalActionType::class, 'id', 'approval_action_type_id');
     }
 }

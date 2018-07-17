@@ -38,7 +38,7 @@ class ReimbursementInvoice extends Model
      */
     public function status() : HasOne
     {
-        return $this->hasOne('App\InvoiceStatus', 'id', 'status_id');
+        return $this->hasOne(\App\InvoiceStatus::class, 'id', 'status_id');
     }
 
     /**
@@ -48,7 +48,7 @@ class ReimbursementInvoice extends Model
      */
     public function parcels() : BelongsToMany
     {
-        return $this->belongsToMany('App\Parcel', 'parcels_to_reimbursement_invoices', 'reimbursement_invoice_id', 'parcel_id');
+        return $this->belongsToMany(\App\Parcel::class, 'parcels_to_reimbursement_invoices', 'reimbursement_invoice_id', 'parcel_id');
     }
 
     /**
@@ -58,7 +58,7 @@ class ReimbursementInvoice extends Model
      */
     public function transactions() : HasMany
     {
-        return $this->hasMany('App\Transaction', 'link_to_type_id', 'id')
+        return $this->hasMany(\App\Transaction::class, 'link_to_type_id', 'id')
                 ->where('transactions.type_id', '=', 1);
     }
 
@@ -69,7 +69,7 @@ class ReimbursementInvoice extends Model
      */
     public function clearedTransactions() : HasMany
     {
-        return $this->hasMany('App\Transaction', 'link_to_type_id', 'id')
+        return $this->hasMany(\App\Transaction::class, 'link_to_type_id', 'id')
                 ->where('transactions.type_id', '=', 1)
                 ->where('transactions.status_id', '=', 2);
     }
@@ -120,7 +120,7 @@ class ReimbursementInvoice extends Model
      */
     public function entity() : HasOne
     {
-        return $this->hasOne('App\Entity', 'id', 'entity_id');
+        return $this->hasOne(\App\Entity::class, 'id', 'entity_id');
     }
 
     /**
@@ -130,7 +130,7 @@ class ReimbursementInvoice extends Model
      */
     public function program() : HasOne
     {
-        return $this->hasOne('App\Program', 'id', 'program_id');
+        return $this->hasOne(\App\Program::class, 'id', 'program_id');
     }
 
     /**
@@ -140,7 +140,7 @@ class ReimbursementInvoice extends Model
      */
     public function account() : HasOne
     {
-        return $this->hasOne('App\Account', 'id', 'account_id');
+        return $this->hasOne(\App\Account::class, 'id', 'account_id');
     }
 
     /**
@@ -150,7 +150,7 @@ class ReimbursementInvoice extends Model
      */
     public function notes()
     {
-        return $this->hasMany('App\InvoiceNote', 'reimbursement_invoice_id', 'id')
+        return $this->hasMany(\App\InvoiceNote::class, 'reimbursement_invoice_id', 'id')
                 ->with('owner')
                 ->orderBy('created_at', 'asc');
     }
@@ -162,7 +162,7 @@ class ReimbursementInvoice extends Model
      */
     public function invoiceItems() : HasMany
     {
-        return $this->hasMany('App\InvoiceItem', 'invoice_id', 'id')
+        return $this->hasMany(\App\InvoiceItem::class, 'invoice_id', 'id')
                 ->whereHas('poItem', function ($query) {
                     $query->has('requestItem');
                 });

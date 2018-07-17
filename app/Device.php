@@ -21,7 +21,7 @@ class Device extends Model
      */
     public function users() : HasMany
     {
-        return $this->hasMany('App\VisitLists', 'device_id', 'device_id');
+        return $this->hasMany(\App\VisitLists::class, 'device_id', 'device_id');
     }
 
     /**
@@ -31,6 +31,6 @@ class Device extends Model
      */
     public function wipeUser() : HasOne
     {
-        return $this->hasOne('App\User', 'id', 'wiped_by');
+        return $this->hasOne(\App\User::class, 'id', 'wiped_by');
     }
 }

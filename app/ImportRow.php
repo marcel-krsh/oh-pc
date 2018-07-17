@@ -27,6 +27,6 @@ class ImportRow extends Model
      */
     public function import() : BelongsTo
     {
-        return $this->belongsTo('App\Import');
+        return $this->belongsTo(\App\Import::class);
     }
 }

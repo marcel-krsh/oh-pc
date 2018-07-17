@@ -26,6 +26,6 @@ class DocumentRuleEntry extends Model
      */
     public function documentRule()
     {
-        return $this->belongsTo('App\DocumentRule');
+        return $this->belongsTo(\App\DocumentRule::class);
     }
 }

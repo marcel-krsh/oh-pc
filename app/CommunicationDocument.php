@@ -27,7 +27,7 @@ class CommunicationDocument extends Model
      */
     public function communication() : HasOne
     {
-        return $this->hasOne('App\Communication');
+        return $this->hasOne(\App\Communication::class);
     }
 
     /**
@@ -37,6 +37,6 @@ class CommunicationDocument extends Model
      */
     public function document() : HasOne
     {
-        return $this->hasOne('App\Document', 'id', 'document_id');
+        return $this->hasOne(\App\Document::class, 'id', 'document_id');
     }
 }

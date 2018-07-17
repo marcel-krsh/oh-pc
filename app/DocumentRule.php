@@ -29,7 +29,7 @@ class DocumentRule extends Model
      */
     public function programRules() : BelongsTo
     {
-        return $this->belongsTo('App\ProgramRule');
+        return $this->belongsTo(\App\ProgramRule::class);
     }
 
     /**
@@ -39,6 +39,6 @@ class DocumentRule extends Model
      */
     public function documentRuleEntries() : HasMany
     {
-        return $this->hasMany('App\DocumentRuleEntry');
+        return $this->hasMany(\App\DocumentRuleEntry::class);
     }
 }

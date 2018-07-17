@@ -34,7 +34,7 @@ class Document extends Model
      */
     public function retainages() : BelongsToMany
     {
-        return $this->belongsToMany('App\Retainage', 'document_to_retainage', 'document_id', 'retainage_id');
+        return $this->belongsToMany(\App\Retainage::class, 'document_to_retainage', 'document_id', 'retainage_id');
     }
 
     /**
@@ -44,7 +44,7 @@ class Document extends Model
      */
     public function advances() : BelongsToMany
     {
-        return $this->belongsToMany('App\CostItem', 'document_to_advance', 'document_id', 'cost_item_id');
+        return $this->belongsToMany(\App\CostItem::class, 'document_to_advance', 'document_id', 'cost_item_id');
     }
 
     /**

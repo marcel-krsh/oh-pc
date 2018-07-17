@@ -30,7 +30,7 @@ class Program extends Model
      */
     public function entity() : BelongsTo
     {
-        return $this->belongsTo('App\Entity');
+        return $this->belongsTo(\App\Entity::class);
     }
 
     /**
@@ -40,7 +40,7 @@ class Program extends Model
      */
     public function account() : BelongsTo
     {
-        return $this->belongsTo('App\Account');
+        return $this->belongsTo(\App\Account::class);
     }
 
     /**
@@ -50,7 +50,7 @@ class Program extends Model
      */
     public function county() : BelongsTo
     {
-        return $this->belongsTo('App\County');
+        return $this->belongsTo(\App\County::class);
     }
 
     /**
@@ -60,7 +60,7 @@ class Program extends Model
      */
     public function programRule() : BelongsTo
     {
-        return $this->belongsTo('App\ProgramRule', 'default_program_rules_id');
+        return $this->belongsTo(\App\ProgramRule::class, 'default_program_rules_id');
     }
 
     /**

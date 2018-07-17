@@ -40,7 +40,7 @@ class GuideStep extends Model
      */
     public function parent() : BelongsTo
     {
-        return $this->belongsTo('App\GuideStep', 'parent_id');
+        return $this->belongsTo(\App\GuideStep::class, 'parent_id');
     }
 
     /**
@@ -50,7 +50,7 @@ class GuideStep extends Model
      */
     public function children() : HasMany
     {
-        return $this->hasMany('App\GuideStep', 'parent_id')->orderBy('id', 'ASC');
+        return $this->hasMany(\App\GuideStep::class, 'parent_id')->orderBy('id', 'ASC');
     }
 
     /**
@@ -60,7 +60,7 @@ class GuideStep extends Model
      */
     public function progess() : HasMany
     {
-        return $this->hasMany('App\GuideProgress');
+        return $this->hasMany(\App\GuideProgress::class);
     }
 
     /**
@@ -70,6 +70,6 @@ class GuideStep extends Model
      */
     public function isNextStep() : HasMany
     {
-        return $this->hasMany('App\Parcel', 'next_step');
+        return $this->hasMany(\App\Parcel::class, 'next_step');
     }
 }

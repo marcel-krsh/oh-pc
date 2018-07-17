@@ -30,7 +30,7 @@ class HistoricEmail extends Model
      */
     public function recipient() : HasOne
     {
-        return $this->hasOne('App\User', 'id', 'user_id');
+        return $this->hasOne(\App\User::class, 'id', 'user_id');
     }
 
     /**

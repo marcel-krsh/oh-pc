@@ -55,6 +55,6 @@ class Transaction extends Model
      */
     public function status() : HasOne
     {
-        return $this->hasOne('App\TransactionStatus', 'id', 'status_id');
+        return $this->hasOne(\App\TransactionStatus::class, 'id', 'status_id');
     }
 }

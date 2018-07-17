@@ -29,7 +29,7 @@ class Import extends Model
      */
     public function importRows() : HasMany
     {
-        return $this->hasMany('App\ImportRow');
+        return $this->hasMany(\App\ImportRow::class);
     }
 
     /**
@@ -39,6 +39,6 @@ class Import extends Model
      */
     public function imported_by() : BelongsTo
     {
-        return $this->belongsTo('App\User', 'user_id');
+        return $this->belongsTo(\App\User::class, 'user_id');
     }
 }

@@ -28,6 +28,6 @@ class GuideProgress extends Model
      */
     public function guideStep()
     {
-        return $this->hasOne('App\GuideStep', 'id', 'guide_step_id');
+        return $this->hasOne(\App\GuideStep::class, 'id', 'guide_step_id');
     }
 }

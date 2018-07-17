@@ -59,7 +59,7 @@ class InvoiceItem extends Model
      */
     public function expenseCategory() : HasOne
     {
-        return $this->hasOne('App\ExpenseCategory', 'id', 'expense_category_id');
+        return $this->hasOne(\App\ExpenseCategory::class, 'id', 'expense_category_id');
     }
 
     /**
@@ -69,7 +69,7 @@ class InvoiceItem extends Model
      */
     public function vendor() : HasOne
     {
-        return $this->hasOne('App\Vendor', 'id', 'vendor_id');
+        return $this->hasOne(\App\Vendor::class, 'id', 'vendor_id');
     }
 
     /**
@@ -79,7 +79,7 @@ class InvoiceItem extends Model
      */
     public function poItem() : HasOne
     {
-        return $this->hasOne('App\PoItems', 'id', 'ref_id');
+        return $this->hasOne(\App\PoItems::class, 'id', 'ref_id');
     }
 
     /**
@@ -89,6 +89,6 @@ class InvoiceItem extends Model
      */
     public function breakoutStatus() : HasOne
     {
-        return $this->hasOne('App\BreakoutItemsStatus', 'id', 'breakout_item_status_id');
+        return $this->hasOne(\App\BreakoutItemsStatus::class, 'id', 'breakout_item_status_id');
     }
 }

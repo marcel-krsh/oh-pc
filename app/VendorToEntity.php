@@ -27,7 +27,7 @@ class VendorToEntity extends Model
      */
     public function entity() : BelongsTo
     {
-        return $this->belongsTo('App\Entity');
+        return $this->belongsTo(\App\Entity::class);
     }
 
     /**
@@ -37,6 +37,6 @@ class VendorToEntity extends Model
      */
     public function vendor() : BelongsTo
     {
-        return $this->belongsTo('App\Vendor');
+        return $this->belongsTo(\App\Vendor::class);
     }
 }

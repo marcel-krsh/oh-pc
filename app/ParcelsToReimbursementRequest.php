@@ -29,7 +29,7 @@ class ParcelsToReimbursementRequest extends Model
      */
     public function request() : HasMany
     {
-        return $this->hasMany('App\ReimbursementRequest', 'id', 'reimbursement_request_id');
+        return $this->hasMany(\App\ReimbursementRequest::class, 'id', 'reimbursement_request_id');
     }
 
     /**
@@ -39,6 +39,6 @@ class ParcelsToReimbursementRequest extends Model
      */
     public function parcel() : HasMany
     {
-        return $this->hasMany('App\Parcel', 'id', 'parcel_id');
+        return $this->hasMany(\App\Parcel::class, 'id', 'parcel_id');
     }
 }

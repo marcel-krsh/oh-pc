@@ -34,7 +34,7 @@ class Retainage extends Model
      */
     public function parcel() : HasOne
     {
-        return $this->hasOne('App\Parcel', 'id', 'parcel_id');
+        return $this->hasOne(\App\Parcel::class, 'id', 'parcel_id');
     }
 
     /**
@@ -44,7 +44,7 @@ class Retainage extends Model
      */
     public function expenseCategory() : HasOne
     {
-        return $this->hasOne('App\ExpenseCategory', 'id', 'expense_category_id');
+        return $this->hasOne(\App\ExpenseCategory::class, 'id', 'expense_category_id');
     }
 
     /**
@@ -54,7 +54,7 @@ class Retainage extends Model
      */
     public function vendor() : HasOne
     {
-        return $this->hasOne('App\Vendor', 'id', 'vendor_id');
+        return $this->hasOne(\App\Vendor::class, 'id', 'vendor_id');
     }
 
     /**
@@ -64,7 +64,7 @@ class Retainage extends Model
      */
     public function costItem() : BelongsTo
     {
-        return $this->belongsTo('App\CostItem', 'cost_item_id', 'id');
+        return $this->belongsTo(\App\CostItem::class, 'cost_item_id', 'id');
     }
 
     /**
@@ -74,6 +74,6 @@ class Retainage extends Model
      */
     public function documents() : BelongsToMany
     {
-        return $this->belongsToMany('App\Document', 'document_to_retainage', 'retainage_id', 'document_id');
+        return $this->belongsToMany(\App\Document::class, 'document_to_retainage', 'retainage_id', 'document_id');
     }
 }

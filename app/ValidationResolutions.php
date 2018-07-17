@@ -36,7 +36,7 @@ class ValidationResolutions extends Model
      */
     public function parcel() : HasOne
     {
-        return $this->hasOne('App\Parcel', 'id', 'parcel_id');
+        return $this->hasOne(\App\Parcel::class, 'id', 'parcel_id');
     }
 
     /**

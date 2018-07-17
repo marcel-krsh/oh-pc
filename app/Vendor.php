@@ -40,7 +40,7 @@ class Vendor extends Model
      */
     public function state() : BelongsTo
     {
-        return $this->belongsTo('App\State', 'vendor_state_id');
+        return $this->belongsTo(\App\State::class, 'vendor_state_id');
     }
 
     /**
@@ -50,7 +50,7 @@ class Vendor extends Model
      */
     public function entity() : BelongsTo
     {
-        return $this->belongsTo('App\Entity');
+        return $this->belongsTo(\App\Entity::class);
     }
 
     /**
@@ -60,7 +60,7 @@ class Vendor extends Model
      */
     public function entities() : BelongsToMany
     {
-        return $this->belongsToMany('App\Entity');
+        return $this->belongsToMany(\App\Entity::class);
     }
 
     /**
@@ -70,7 +70,7 @@ class Vendor extends Model
      */
     public function costItems()
     {
-        return $this->hasMany('App\CostItem');
+        return $this->hasMany(\App\CostItem::class);
     }
 
     /**
@@ -80,7 +80,7 @@ class Vendor extends Model
      */
     public function requestItems() : HasMany
     {
-        return $this->hasMany('App\RequestItem');
+        return $this->hasMany(\App\RequestItem::class);
     }
 
     /**
@@ -90,7 +90,7 @@ class Vendor extends Model
      */
     public function poItems() : HasMany
     {
-        return $this->hasMany('App\PoItems');
+        return $this->hasMany(\App\PoItems::class);
     }
 
     /**
@@ -100,7 +100,7 @@ class Vendor extends Model
      */
     public function invoiceItems() : HasMany
     {
-        return $this->hasMany('App\InvoiceItem');
+        return $this->hasMany(\App\InvoiceItem::class);
     }
 
     /**

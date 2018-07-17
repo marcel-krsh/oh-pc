@@ -61,7 +61,7 @@ class ProgramRule extends Model
      */
     public function documentRules() : HasMany
     {
-        return $this->hasMany('App\DocumentRule', 'program_rules_id');
+        return $this->hasMany(\App\DocumentRule::class, 'program_rules_id');
     }
 
     /**
@@ -71,6 +71,6 @@ class ProgramRule extends Model
      */
     public function reimbursementRules() : HasMany
     {
-        return $this->hasMany('App\ReimbursementRule', 'program_rules_id');
+        return $this->hasMany(\App\ReimbursementRule::class, 'program_rules_id');
     }
 }

@@ -26,6 +26,6 @@ class DocumentComment extends Model
      */
     public function documents() : HasMany
     {
-        return $this->hasMany('App\Document');
+        return $this->hasMany(\App\Document::class);
     }
 }

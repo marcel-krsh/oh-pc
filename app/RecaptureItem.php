@@ -58,7 +58,7 @@ class RecaptureItem extends Model
      */
     public function item() : HasOne
     {
-        return $this->hasOne('App\InvoiceItem', 'id', 'ref_id');
+        return $this->hasOne(\App\InvoiceItem::class, 'id', 'ref_id');
     }
 
     /**
@@ -68,7 +68,7 @@ class RecaptureItem extends Model
      */
     public function expenseCategory() : HasOne
     {
-        return $this->hasOne('App\ExpenseCategory', 'id', 'expense_category_id');
+        return $this->hasOne(\App\ExpenseCategory::class, 'id', 'expense_category_id');
     }
 
     /**
@@ -78,7 +78,7 @@ class RecaptureItem extends Model
      */
     public function invoice() : HasOne
     {
-        return $this->hasOne('App\RecaptureInvoice', 'id', 'recapture_invoice_id');
+        return $this->hasOne(\App\RecaptureInvoice::class, 'id', 'recapture_invoice_id');
     }
 
     /**
@@ -88,7 +88,7 @@ class RecaptureItem extends Model
      */
     public function program() : HasOne
     {
-        return $this->hasOne('App\Program', 'id', 'program_id');
+        return $this->hasOne(\App\Program::class, 'id', 'program_id');
     }
 
     /**
@@ -98,6 +98,6 @@ class RecaptureItem extends Model
      */
     public function parcel() : HasOne
     {
-        return $this->hasOne('App\Parcel', 'id', 'parcel_id');
+        return $this->hasOne(\App\Parcel::class, 'id', 'parcel_id');
     }
 }
