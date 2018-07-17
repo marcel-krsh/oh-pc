@@ -2,7 +2,7 @@
 
 use App\User;
 
-class ClickTest extends TestCase
+class ClickTest extends BrowserKitTestCase
 {
     public function testDashboardRoutes()
     {
