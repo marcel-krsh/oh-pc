@@ -94,7 +94,7 @@ class bgHistoryController extends Controller
     public function searchActivities(Parcel $parcel, Request $request)
     {
         if ($request->has('activities-search')) {
-            Session::set('activities-search', $request->get('activities-search'));
+            Session::put('activities-search', $request->get('activities-search'));
         } else {
             Session::forget('activities-search');
         }

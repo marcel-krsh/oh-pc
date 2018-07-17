@@ -2272,7 +2272,7 @@ class PagesController extends Controller
     public function searchEmails(Request $request)
     {
         if ($request->has('communications-search')) {
-            Session::set('communications-search', $request->get('communications-search'));
+            Session::put('communications-search', $request->get('communications-search'));
         } else {
             Session::forget('communications-search');
         }

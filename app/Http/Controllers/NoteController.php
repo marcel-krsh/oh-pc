@@ -74,7 +74,7 @@ class NoteController extends Controller
     public function searchNotes(Parcel $parcel, Request $request)
     {
         if ($request->has('notes-search')) {
-            Session::set('notes-search', $request->get('notes-search'));
+            Session::put('notes-search', $request->get('notes-search'));
         } else {
             Session::forget('notes-search');
         }

@@ -75,7 +75,7 @@ class NoticeController extends Controller
     public function searchNotices(Request $request)
     {
         if ($request->has('notices-search')) {
-            Session::set('notices-search', $request->get('notices-search'));
+            Session::put('notices-search', $request->get('notices-search'));
         } else {
             Session::forget('notices-search');
         }
