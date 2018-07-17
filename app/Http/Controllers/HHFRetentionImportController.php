@@ -60,7 +60,7 @@ class HHFRetentionImportController extends Controller
     public function checkBool($string)
     {
         $string = strtolower($string);
-        return (in_array($string, array("true", "false", "1", "0", "yes", "no"), true));
+        return (in_array($string, ["true", "false", "1", "0", "yes", "no"], true));
     }
 
     // Get the table column names and Types for any table.
@@ -259,7 +259,7 @@ class HHFRetentionImportController extends Controller
                     /*///////////////////////////////////////////////////////////////////////////////////////*
                     if ($rowCount != 0) { //row count iff
                         /// skip the headers
-                        $new_sdo_data = array([
+                        $new_sdo_data = [[
                               'Property Address Number'=>$row[$propertyAddressNumber],
                             'Property Address Street Name'=>$row[$propertyAddressName],
                             'Property Address Street Suffix'=>$row[$propertyAddressSuffix],
@@ -270,7 +270,7 @@ class HHFRetentionImportController extends Controller
                             'Status'=>$row[$status],
                             'File Number'=>$row[$fileNumber],
                             'street_address'=>$row[$propertyAddressNumber]." ".$row[$propertyAddressName]." ".$row[$propertyAddressSuffix]
-                            ]);
+                            ]];
                               
 
                         if ($exists > 0) {

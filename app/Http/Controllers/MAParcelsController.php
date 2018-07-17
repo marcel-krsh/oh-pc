@@ -94,8 +94,8 @@ class MAParcelsController extends Controller
         } else {
             if (Auth::user()->canEditParcels()) {
                 // Michael built this using the assumption that a selected value's id would line up with the array's key --- bad bad bad...
-                $radioLbValidatedIds = array(0=>0, 1=>1);
-                $radioLbValidatedNames = array(0=>"NO", 1=>"YES");
+                $radioLbValidatedIds = [0=>0, 1=>1];
+                $radioLbValidatedNames = [0=>"NO", 1=>"YES"];
                 $key = array_search($parcel->entity_id, $entityIds); // returns the key of the array.
                 $selectedEntity[intval($key)]= 'true';
 

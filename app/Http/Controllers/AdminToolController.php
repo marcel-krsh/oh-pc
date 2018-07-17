@@ -164,7 +164,7 @@ class AdminToolController extends Controller
      */
     private function getDocumentIds($program_rule_id, $docType)
     {
-        $requiredDocId = DB::select('select id from expense_categories WHERE LOWER(expense_category_name) LIKE ?', array('%'.$docType.'%'));
+        $requiredDocId = DB::select('select id from expense_categories WHERE LOWER(expense_category_name) LIKE ?', ['%'.$docType.'%']);
 
         $docRuleId = DocumentRule::where('program_rules_id', $program_rule_id)->where('expense_category_id', $requiredDocId[0]->id)->pluck('id');
         if (count($docRuleId)) {

@@ -56,7 +56,7 @@ class EmailNotificationPOApproved extends Mailable
         $greeting = "PO ".$this->po_id." was approved by HFA.";
        
         $introLines[] = "You can now create an invoice.";
-        $outroLines[] = array();
+        $outroLines[] = [];
 
         $actionText = "View PO";
 

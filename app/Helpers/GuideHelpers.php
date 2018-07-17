@@ -300,8 +300,8 @@ function guide_parcel_docs_added(Parcel $parcel, $cat_id_to_check = null)
 {
     $documents = $parcel->documents;
     if (count($documents)) {
-        $all_doc_categories_found = array();
-        $current_doc_categories_found = array();
+        $all_doc_categories_found = [];
+        $current_doc_categories_found = [];
         
         // save all categories found in all documents
         foreach ($documents as $document) {
@@ -309,7 +309,7 @@ function guide_parcel_docs_added(Parcel $parcel, $cat_id_to_check = null)
                 $current_doc_categories_found = json_decode($document->categories, true); // cats used by the doc
                 $all_doc_categories_found = array_merge($all_doc_categories_found, $current_doc_categories_found);
             } else {
-                $current_doc_categories_found = array();
+                $current_doc_categories_found = [];
             }
         }
 
@@ -345,14 +345,14 @@ function guide_parcel_retainage_paid_docs_uploaded(Parcel $parcel, $retainage_id
     if ($retainage_id == 0) {
         $documents = $parcel->documents;
         if (count($documents)) {
-            $all_doc_categories_found = array();
-            $current_doc_categories_found = array();
+            $all_doc_categories_found = [];
+            $current_doc_categories_found = [];
             foreach ($documents as $document) {
                 if ($document->categories) {
                     $current_doc_categories_found = json_decode($document->categories, true); // cats used by the doc
                     $all_doc_categories_found = array_merge($all_doc_categories_found, $current_doc_categories_found);
                 } else {
-                    $current_doc_categories_found = array();
+                    $current_doc_categories_found = [];
                 }
             }
 
@@ -373,14 +373,14 @@ function guide_parcel_retainage_paid_docs_uploaded(Parcel $parcel, $retainage_id
         if ($retainage) {
             $documents = $retainage->documents;
             if (count($documents)) {
-                $all_doc_categories_found = array();
-                $current_doc_categories_found = array();
+                $all_doc_categories_found = [];
+                $current_doc_categories_found = [];
                 foreach ($documents as $document) {
                     if ($document->categories) {
                         $current_doc_categories_found = json_decode($document->categories, true); // cats used by the doc
                         $all_doc_categories_found = array_merge($all_doc_categories_found, $current_doc_categories_found);
                     } else {
-                        $current_doc_categories_found = array();
+                        $current_doc_categories_found = [];
                     }
                 }
 
@@ -412,14 +412,14 @@ function guide_parcel_advance_paid_docs_uploaded(Parcel $parcel, $advance_id = 0
     if ($advance_id == 0) {
         $documents = $parcel->documents;
         if (count($documents)) {
-            $all_doc_categories_found = array();
-            $current_doc_categories_found = array();
+            $all_doc_categories_found = [];
+            $current_doc_categories_found = [];
             foreach ($documents as $document) {
                 if ($document->categories) {
                     $current_doc_categories_found = json_decode($document->categories, true); // cats used by the doc
                     $all_doc_categories_found = array_merge($all_doc_categories_found, $current_doc_categories_found);
                 } else {
-                    $current_doc_categories_found = array();
+                    $current_doc_categories_found = [];
                 }
             }
 
@@ -438,14 +438,14 @@ function guide_parcel_advance_paid_docs_uploaded(Parcel $parcel, $advance_id = 0
         if ($cost_item) {
             $documents = $cost_item->documents;
             if (count($documents)) {
-                $all_doc_categories_found = array();
-                $current_doc_categories_found = array();
+                $all_doc_categories_found = [];
+                $current_doc_categories_found = [];
                 foreach ($documents as $document) {
                     if ($document->categories) {
                         $current_doc_categories_found = json_decode($document->categories, true); // cats used by the doc
                         $all_doc_categories_found = array_merge($all_doc_categories_found, $current_doc_categories_found);
                     } else {
-                        $current_doc_categories_found = array();
+                        $current_doc_categories_found = [];
                     }
                 }
 
@@ -509,7 +509,7 @@ function guide_parcel_retainage_paid_docs_reviewed(Parcel $parcel, $retainage_id
         $retainage_doc_found = 0;
 
         if (count($documents)) {
-            $current_doc_categories_found = array();
+            $current_doc_categories_found = [];
             foreach ($documents as $document) {
                 if ($document->categories) {
                     $current_doc_categories_found = json_decode($document->categories, true); // cats used by the doc
@@ -534,7 +534,7 @@ function guide_parcel_retainage_paid_docs_reviewed(Parcel $parcel, $retainage_id
                         }
                     }
                 } else {
-                    $current_doc_categories_found = array();
+                    $current_doc_categories_found = [];
                 }
             }
 
@@ -555,7 +555,7 @@ function guide_parcel_retainage_paid_docs_reviewed(Parcel $parcel, $retainage_id
             $retainage_doc_found = 0;
 
             if (count($documents)) {
-                $current_doc_categories_found = array();
+                $current_doc_categories_found = [];
                 foreach ($documents as $document) {
                     if ($document->categories) {
                         $current_doc_categories_found = json_decode($document->categories, true); // cats used by the doc
@@ -574,7 +574,7 @@ function guide_parcel_retainage_paid_docs_reviewed(Parcel $parcel, $retainage_id
                             }
                         }
                     } else {
-                        $current_doc_categories_found = array();
+                        $current_doc_categories_found = [];
                     }
                 }
 
@@ -606,7 +606,7 @@ function guide_parcel_advance_paid_docs_reviewed(Parcel $parcel, $advance_id = 0
         $advance_doc_found = 0;
 
         if (count($documents)) {
-            $current_doc_categories_found = array();
+            $current_doc_categories_found = [];
             foreach ($documents as $document) {
                 if ($document->categories) {
                     $current_doc_categories_found = json_decode($document->categories, true); // cats used by the doc
@@ -631,7 +631,7 @@ function guide_parcel_advance_paid_docs_reviewed(Parcel $parcel, $advance_id = 0
                         }
                     }
                 } else {
-                    $current_doc_categories_found = array();
+                    $current_doc_categories_found = [];
                 }
             }
 
@@ -653,7 +653,7 @@ function guide_parcel_advance_paid_docs_reviewed(Parcel $parcel, $advance_id = 0
             $advances_paid = 1;
 
             if (count($documents)) {
-                $current_doc_categories_found = array();
+                $current_doc_categories_found = [];
                 foreach ($documents as $document) {
                     if ($document->categories) {
                         $current_doc_categories_found = json_decode($document->categories, true); // cats used by the doc
@@ -671,7 +671,7 @@ function guide_parcel_advance_paid_docs_reviewed(Parcel $parcel, $advance_id = 0
                             }
                         }
                     } else {
-                        $current_doc_categories_found = array();
+                        $current_doc_categories_found = [];
                     }
                 }
 
@@ -1249,8 +1249,8 @@ function guide_disposition_docs_added($disposition, $cat_id_to_check = null)
 
     $documents = $parcel->documents;
     if (count($documents)) {
-        $all_doc_categories_found = array();
-        $current_doc_categories_found = array();
+        $all_doc_categories_found = [];
+        $current_doc_categories_found = [];
         
         // save all categories found in all documents
         foreach ($documents as $document) {
@@ -1258,7 +1258,7 @@ function guide_disposition_docs_added($disposition, $cat_id_to_check = null)
                 $current_doc_categories_found = json_decode($document->categories, true); // cats used by the doc
                 $all_doc_categories_found = array_merge($all_doc_categories_found, $current_doc_categories_found);
             } else {
-                $current_doc_categories_found = array();
+                $current_doc_categories_found = [];
             }
         }
 

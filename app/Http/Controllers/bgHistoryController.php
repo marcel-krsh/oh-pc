@@ -63,7 +63,7 @@ class bgHistoryController extends Controller
                                 ->get();
         }
 
-        $owners_array = array();
+        $owners_array = [];
         foreach ($activities as $activity) {
             // create initials
             $words = explode(" ", $activity->name);

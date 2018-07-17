@@ -64,20 +64,20 @@ class Document extends Model
             if ($this->approved) {
                 $current_approval_array = json_decode($this->approved, true);
             } else {
-                $current_approval_array = array();
+                $current_approval_array = [];
             }
 
             // get current 'notapproval' array (category ids that had their document approved)
             if ($this->notapproved) {
                 $current_notapproval_array = json_decode($this->notapproved, true);
             } else {
-                $current_notapproval_array = array();
+                $current_notapproval_array = [];
             }
 
             if ($this->categories) {
                 $current_category_array = json_decode($this->categories, true);
             } else {
-                $current_category_array = array();
+                $current_category_array = [];
             }
 
             foreach ($cat_array as $catid) {

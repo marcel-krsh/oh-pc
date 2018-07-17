@@ -48,7 +48,7 @@ class ParcelCostController extends Controller
 
         // check if a category can have the advance checkbox
         $program_rules = ProgramRule::where('id', '=', $parcel->program_rules_id)->first();
-        $advance_rules = array();
+        $advance_rules = [];
         $i = 0;
         foreach ($expense_categories as $expense_category) {
             switch ($expense_category->id) {
@@ -319,7 +319,7 @@ class ParcelCostController extends Controller
         // get info needed to record entry
         $parcel = DB::table('parcels')->select('*')->where('id', $request->parcel_id)->first();
         if (count($parcel)< 1) {
-            $msg = array('message'=> "I was not able to find the associated parcel. That is weird right? Please reload the parcel to make sure it 1. exists, and 2. I have it's information to work with. If the problem persists, contact Greenwood 360 and let them know of the issue, and parcel number you're having trouble with.",'status'=>1);
+            $msg = ['message'=> "I was not able to find the associated parcel. That is weird right? Please reload the parcel to make sure it 1. exists, and 2. I have it's information to work with. If the problem persists, contact Greenwood 360 and let them know of the issue, and parcel number you're having trouble with.",'status'=>1];
             return json_encode($msg);
         }
             
@@ -329,7 +329,7 @@ class ParcelCostController extends Controller
             if ($parcel->entity_id == Auth::user()->entity_id) {
                 $pass = 1;
             } else {
-                $msg = array('message'=> 'Sorry you don\'t have access to this parcel.','status'=>1);
+                $msg = ['message'=> 'Sorry you don\'t have access to this parcel.','status'=>1];
                 return json_encode($msg);
             }
         } else {
@@ -337,7 +337,7 @@ class ParcelCostController extends Controller
         }
         $cost = \App\CostItem::find($request->reference_id);
         if (count($cost)< 1) {
-            $msg = array('message'=> "I wasn't able to lookup the cost associated with this. Did someone delete it while you were working on it?",'status'=>1);
+            $msg = ['message'=> "I wasn't able to lookup the cost associated with this. Did someone delete it while you were working on it?",'status'=>1];
             return json_encode($msg);
         }
         if ($pass == 1) {
@@ -356,7 +356,7 @@ class ParcelCostController extends Controller
                     'ref_id'=> $cost->id,
                     'breakout_item_status_id'=> 1
                     ]);
-                $msg = array('message'=> 'I Added the requested amount successfully.','status'=>1);
+                $msg = ['message'=> 'I Added the requested amount successfully.','status'=>1];
                 return json_encode($msg);
             }
         }

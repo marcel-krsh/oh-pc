@@ -1113,8 +1113,8 @@ class ImportSFCommand extends Command
                 foreach ($reimbursements as $sfParcel) {
                     $breakoutBar->advance();
                     $timesRun = $timesRun + 1;
-                    $costItemsData = array(
-                                        array(
+                    $costItemsData = [
+                                        [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1126,8 +1126,8 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'NIP Loan Payoff Cost Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            ),
-                                        array(
+                                            ],
+                                        [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1139,8 +1139,8 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Acquisition Cost Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            ),
-                                        array(
+                                            ],
+                                        [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1152,8 +1152,8 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Pre-Demo Cost Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            ),
-                                        array(
+                                            ],
+                                        [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1165,9 +1165,9 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Demolition Cost Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            ),
+                                            ],
                                         
-                                        array(
+                                        [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1179,8 +1179,8 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Maintenance Cost Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            ),
-                                        array(
+                                            ],
+                                        [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1192,11 +1192,11 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Administration Cost Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            )
-                                    );
+                                            ]
+                                    ];
 
                     if ($sfParcel->GreeningAdvanceOption>0) {
-                        $greeningAdvanceArray = array(
+                        $greeningAdvanceArray = [
                                         'breakout_type'=>3,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1208,10 +1208,10 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Greening Advance Cost Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                        );
+                                        ];
                         array_push($costItemsData, $greeningAdvanceArray);
                     } else {
-                        $greeningArray = array(
+                        $greeningArray = [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1223,7 +1223,7 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Greening Cost Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            );
+                                            ];
                         array_push($costItemsData, $greeningArray);
                     }
                     DB::table('cost_items')->insert($costItemsData);
@@ -1232,8 +1232,8 @@ class ImportSFCommand extends Command
 
                                 
                     $parcelReqId = DB::table('parcels_to_reimbursement_requests')->select('reimbursement_request_id')->where('parcel_id', $sfParcel->id)->first();
-                    $requestItemsData = array(
-                                        array(
+                    $requestItemsData = [
+                                        [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1246,8 +1246,8 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'NIP Loan Payoff Request Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            ),
-                                        array(
+                                            ],
+                                        [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1260,8 +1260,8 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Acquisition Requested Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            ),
-                                        array(
+                                            ],
+                                        [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1274,8 +1274,8 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Pre-Demo Requested Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            ),
-                                        array(
+                                            ],
+                                        [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1288,8 +1288,8 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Demolition Requested Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            ),
-                                        array(
+                                            ],
+                                        [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1302,8 +1302,8 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Maintenance Requested Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            ),
-                                        array(
+                                            ],
+                                        [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1316,11 +1316,11 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Administration Requested Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            )
-                                    );
+                                            ]
+                                    ];
                     // add greening in if it is there.
                     if ($sfParcel->GreeningAdvanceOption>0) {
-                        $greeningAdvanceArray = array(
+                        $greeningAdvanceArray = [
                                         'breakout_type'=>3,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1333,10 +1333,10 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Greening Advance Cost Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                        );
+                                        ];
                         array_push($requestItemsData, $greeningAdvanceArray);
                     } else {
-                        $greeningArray = array(
+                        $greeningArray = [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1349,7 +1349,7 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Greening Cost Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            );
+                                            ];
                         array_push($requestItemsData, $greeningArray);
                     }
                     DB::table('request_items')->insert($requestItemsData);
@@ -1359,8 +1359,8 @@ class ImportSFCommand extends Command
                     $parcelPoId = DB::table('parcels_to_purchase_orders')->select('purchase_order_id')->where('parcel_id', $sfParcel->id)->first();
 
                     if (isset($parcelPoId)) {
-                        $poItemsData = array(
-                                            array(
+                        $poItemsData = [
+                                            [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1373,8 +1373,8 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'NIP Loan Payoff Approved Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            ),
-                                            array(
+                                            ],
+                                            [
                                                 'breakout_type'=>1,
                                                 'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1387,8 +1387,8 @@ class ImportSFCommand extends Command
                                                 'vendor_id'=>1,
                                                 'description'=>'Aquisition Approved Aggregate',
                                                 'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                                ),
-                                            array(
+                                                ],
+                                            [
                                                 'breakout_type'=>1,
                                                 'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1401,8 +1401,8 @@ class ImportSFCommand extends Command
                                                 'vendor_id'=>1,
                                                 'description'=>'Pre-Demo Approved Aggregate',
                                                 'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                                ),
-                                            array(
+                                                ],
+                                            [
                                                 'breakout_type'=>1,
                                                 'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1415,9 +1415,9 @@ class ImportSFCommand extends Command
                                                 'vendor_id'=>1,
                                                 'description'=>'Demolition Approved Aggregate',
                                                 'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                                ),
+                                                ],
                                             
-                                            array(
+                                            [
                                                 'breakout_type'=>1,
                                                 'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1430,8 +1430,8 @@ class ImportSFCommand extends Command
                                                 'vendor_id'=>1,
                                                 'description'=>'Maintenance Approved Aggregate',
                                                 'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                                ),
-                                            array(
+                                                ],
+                                            [
                                                 'breakout_type'=>1,
                                                 'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1444,11 +1444,11 @@ class ImportSFCommand extends Command
                                                 'vendor_id'=>1,
                                                 'description'=>'Administration Approved Aggregate',
                                                 'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                                ),
-                                        );
+                                                ],
+                                        ];
                         // add greening in if it is there.
                         if ($sfParcel->GreeningAdvanceOption>0) {
-                            $greeningAdvanceArray = array(
+                            $greeningAdvanceArray = [
                                         'breakout_type'=>3,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1461,10 +1461,10 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Greening Advance Cost Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                        );
+                                        ];
                             array_push($poItemsData, $greeningAdvanceArray);
                         } else {
-                            $greeningArray = array(
+                            $greeningArray = [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1477,7 +1477,7 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Greening Cost Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            );
+                                            ];
                             array_push($poItemsData, $greeningArray);
                         }
                         DB::table('po_items')->insert($poItemsData);
@@ -1488,8 +1488,8 @@ class ImportSFCommand extends Command
                     $parcelInvId = DB::table('parcels_to_reimbursement_invoices')->select('reimbursement_invoice_id')->where('parcel_id', $sfParcel->id)->first();
 
                     if (isset($parcelPoId)) {
-                        $invItemsData = array(
-                                            array(
+                        $invItemsData = [
+                                            [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1502,8 +1502,8 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'NIP Loan Payoff Invoiced Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            ),
-                                            array(
+                                            ],
+                                            [
                                                 'breakout_type'=>1,
                                                 'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1516,8 +1516,8 @@ class ImportSFCommand extends Command
                                                 'vendor_id'=>1,
                                                 'description'=>'Aquisition Invoiced Aggregate',
                                                 'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                                ),
-                                            array(
+                                                ],
+                                            [
                                                 'breakout_type'=>1,
                                                 'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1530,8 +1530,8 @@ class ImportSFCommand extends Command
                                                 'vendor_id'=>1,
                                                 'description'=>'Pre-Demo Invoiced Aggregate',
                                                 'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                                ),
-                                            array(
+                                                ],
+                                            [
                                                 'breakout_type'=>1,
                                                 'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1544,9 +1544,9 @@ class ImportSFCommand extends Command
                                                 'vendor_id'=>1,
                                                 'description'=>'Demolition Invoiced Aggregate',
                                                 'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                                ),
+                                                ],
                                             
-                                            array(
+                                            [
                                                 'breakout_type'=>1,
                                                 'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1559,8 +1559,8 @@ class ImportSFCommand extends Command
                                                 'vendor_id'=>1,
                                                 'description'=>'Maintenance Invoiced Aggregate',
                                                 'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                                ),
-                                            array(
+                                                ],
+                                            [
                                                 'breakout_type'=>1,
                                                 'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1573,10 +1573,10 @@ class ImportSFCommand extends Command
                                                 'vendor_id'=>1,
                                                 'description'=>'Administration Invoiced Aggregate',
                                                 'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                                ),
-                                        );
+                                                ],
+                                        ];
                         if ($sfParcel->GreeningAdvanceOption>0) {
-                            $greeningAdvanceArray = array(
+                            $greeningAdvanceArray = [
                                         'breakout_type'=>3,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1589,10 +1589,10 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Greening Advance Cost Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                        );
+                                        ];
                             array_push($invItemsData, $greeningAdvanceArray);
                         } else {
-                            $greeningArray = array(
+                            $greeningArray = [
                                             'breakout_type'=>1,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -1605,7 +1605,7 @@ class ImportSFCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Greening Cost Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            );
+                                            ];
                             array_push($invItemsData, $greeningArray);
                         }
                         DB::table('invoice_items')->insert($invItemsData);

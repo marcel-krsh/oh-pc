@@ -11,20 +11,20 @@ class TransactionStatusesSeeder extends Seeder
      */
     public function run()
     {
-        $transactionStatusData = array(
-            array(
+        $transactionStatusData = [
+            [
                 'status_name'=>'Pending',
                 'active'=> 1
-            ),
-            array(
+            ],
+            [
                 'status_name'=>'Cleared',
                 'active'=> 1
-            ),
-            array(
+            ],
+            [
                 'status_name'=>'Insufficient',
                 'active'=> 1
-            )
-        );
+            ]
+        ];
 
         \Illuminate\Support\Facades\DB::table('transaction_statuses')->insert($transactionStatusData);
     }

@@ -80,12 +80,12 @@ class FixGreeningCommand extends Command
             $breakoutBar->advance();
                                 
 
-            $costItemsData = array();
+            $costItemsData = [];
             if ($sfParcel->GreeningAdvanceOption == 1) {
                 // drop existing greening totals
                 DB::table('cost_items')->where('parcel_id', $sfParcel->id)->where('expense_category_id', 5)->delete();
                 if ($sfParcel->GreeningCost > 0) {
-                    $greeningAdvanceArray = array(
+                    $greeningAdvanceArray = [
                                         'breakout_type'=>3,
                                             'parcel_id'=> $sfParcel->id,
                                             'program_id'=>$sfParcel->owner_id,
@@ -97,13 +97,13 @@ class FixGreeningCommand extends Command
                                             'vendor_id'=>1,
                                             'description'=>'Greening Advance Requested Aggregate',
                                             'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                        );
+                                        ];
                     array_push($costItemsData, $greeningAdvanceArray);
                 }
             } else {
                 DB::table('cost_items')->where('parcel_id', $sfParcel->id)->where('expense_category_id', 5)->delete();
                 if (!is_null($sfParcel->GreeningCost)) {
-                    $greeningArray = array(
+                    $greeningArray = [
                                                 'breakout_type'=>1,
                                                 'parcel_id'=> $sfParcel->id,
                                                 'program_id'=>$sfParcel->owner_id,
@@ -115,14 +115,14 @@ class FixGreeningCommand extends Command
                                                 'vendor_id'=>1,
                                                 'description'=>'Greening Request Aggregate',
                                                 'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                                );
+                                                ];
                     array_push($costItemsData, $greeningArray);
                 }
             }
             DB::table('cost_items')->insert($costItemsData);
 
             $parcelReqId = DB::table('parcels_to_reimbursement_requests')->select('reimbursement_request_id')->where('parcel_id', $sfParcel->id)->first();
-            $requestItemsData = array();
+            $requestItemsData = [];
             if (isset($parcelReqId->reimbursement_request_id)) {
                 $doRequest = 1;
                 $thisRequestId = $parcelReqId->reimbursement_request_id;
@@ -141,7 +141,7 @@ class FixGreeningCommand extends Command
                     // drop existing greening totals
                     DB::table('request_items')->where('parcel_id', $sfParcel->id)->where('expense_category_id', 5)->delete();
                     if ($sfParcel->GreeningRequested > 0) {
-                        $greeningAdvanceArray = array(
+                        $greeningAdvanceArray = [
                                                 'breakout_type'=>3,
                                                     'parcel_id'=> $sfParcel->id,
                                                     'program_id'=>$sfParcel->owner_id,
@@ -154,13 +154,13 @@ class FixGreeningCommand extends Command
                                                     'vendor_id'=>1,
                                                     'description'=>'Greening Advance Requested Aggregate',
                                                     'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                                );
+                                                ];
                         array_push($requestItemsData, $greeningAdvanceArray);
                     }
                 } else {
                     DB::table('request_items')->where('parcel_id', $sfParcel->id)->where('expense_category_id', 5)->delete();
                     if (!is_null($sfParcel->GreeningRequested)) {
-                        $greeningArray = array(
+                        $greeningArray = [
                                                     'breakout_type'=>1,
                                                     'parcel_id'=> $sfParcel->id,
                                                     'program_id'=>$sfParcel->owner_id,
@@ -173,7 +173,7 @@ class FixGreeningCommand extends Command
                                                     'vendor_id'=>1,
                                                     'description'=>'Greening Request Aggregate',
                                                     'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                                    );
+                                                    ];
                         array_push($requestItemsData, $greeningArray);
                     }
                 }
@@ -188,13 +188,13 @@ class FixGreeningCommand extends Command
             $parcelPoId = DB::table('parcels_to_purchase_orders')->select('purchase_order_id')->where('parcel_id', $sfParcel->id)->first();
 
             if (isset($parcelPoId)) {
-                $poItemsData = array();
+                $poItemsData = [];
                                     
                 // add greening in if it is there.
                 if ($sfParcel->GreeningAdvanceOption == 1) {
                     DB::table('po_items')->where('parcel_id', $sfParcel->id)->where('expense_category_id', 5)->delete();
                     if ($sfParcel->GreeningApproved > 0) {
-                        $greeningAdvanceArray = array(
+                        $greeningAdvanceArray = [
                                             'breakout_type'=>3,
                                                 'parcel_id'=> $sfParcel->id,
                                                 'program_id'=>$sfParcel->owner_id,
@@ -207,13 +207,13 @@ class FixGreeningCommand extends Command
                                                 'vendor_id'=>1,
                                                 'description'=>'Greening Advance Approved Aggregate',
                                                 'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            );
+                                            ];
                         array_push($poItemsData, $greeningAdvanceArray);
                     }
                 } else {
                     DB::table('po_items')->where('parcel_id', $sfParcel->id)->where('expense_category_id', 5)->delete();
                     if (!is_null($sfParcel->GreeningApproved)) {
-                        $greeningArray = array(
+                        $greeningArray = [
                                                 'breakout_type'=>1,
                                                 'parcel_id'=> $sfParcel->id,
                                                 'program_id'=>$sfParcel->owner_id,
@@ -226,7 +226,7 @@ class FixGreeningCommand extends Command
                                                 'vendor_id'=>1,
                                                 'description'=>'Greening Approved Aggregate',
                                                 'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                                );
+                                                ];
                         array_push($poItemsData, $greeningArray);
                     }
                 }
@@ -238,11 +238,11 @@ class FixGreeningCommand extends Command
             $parcelInvId = DB::table('parcels_to_reimbursement_invoices')->select('reimbursement_invoice_id')->where('parcel_id', $sfParcel->id)->first();
 
             if (isset($parcelInvId)) {
-                $invItemsData = array();
+                $invItemsData = [];
                 if ($sfParcel->GreeningAdvanceOption == 1) {
                     DB::table('invoice_items')->where('parcel_id', $sfParcel->id)->where('expense_category_id', 5)->delete();
                     if ($sfParcel->GreeningApproved > 0) {
-                        $greeningAdvanceArray = array(
+                        $greeningAdvanceArray = [
                                             'breakout_type'=>3,
                                                 'parcel_id'=> $sfParcel->id,
                                                 'program_id'=>$sfParcel->owner_id,
@@ -255,13 +255,13 @@ class FixGreeningCommand extends Command
                                                 'vendor_id'=>1,
                                                 'description'=>'Greening Advance Invoiced Aggregate',
                                                 'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                            );
+                                            ];
                         array_push($invItemsData, $greeningAdvanceArray);
                     }
                 } else {
                     DB::table('invoice_items')->where('parcel_id', $sfParcel->id)->where('expense_category_id', 5)->delete();
                     if (!is_null($sfParcel->GreeningApproved)) {
-                        $greeningArray = array(
+                        $greeningArray = [
                                                 'breakout_type'=>1,
                                                 'parcel_id'=> $sfParcel->id,
                                                 'program_id'=>$sfParcel->owner_id,
@@ -274,7 +274,7 @@ class FixGreeningCommand extends Command
                                                 'vendor_id'=>1,
                                                 'description'=>'Greening Invoiced Aggregate',
                                                 'notes'=>'Legacy Parcel - No Break Out Available, No Dates Available.'
-                                                );
+                                                ];
                         array_push($invItemsData, $greeningArray);
                     }
                 }

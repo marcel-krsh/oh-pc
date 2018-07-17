@@ -13,18 +13,18 @@ class UpdatePropertyStatusOptionsForReleaseRequest extends Migration
      */
     public function up()
     {
-        $propertyStatusOptionData = array(
-                array(
+        $propertyStatusOptionData = [
+                [
                           'option_name' => 'Disposition Release Requested',
                           'for'=>'landbank',
                           'order'=>30
-                ),
-                 array(
+                ],
+                 [
                           'option_name' => 'Disposition Release Requested',
                           'for'=>'hfa',
                           'order'=>20
-                )
-        );
+                ]
+        ];
               
         DB::table('property_status_options')->insert($propertyStatusOptionData);
     }

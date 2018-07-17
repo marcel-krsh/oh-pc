@@ -15,7 +15,7 @@ class UpdateApprovalTypeDispInvoice extends Migration
     {
         //DB::table('approval_types')->truncate();
         
-        $types = array(
+        $types = [
             // array('approval_type_name'=>'Disposition', 'table_name'=>'dispositions'),
             // array('approval_type_name'=>'Reimbursement Request', 'table_name'=>'reimbursement_requests'),
             // array('approval_type_name'=>'Reimbursement PO', 'table_name'=>'reimbursement_purchase_orders'),
@@ -27,10 +27,10 @@ class UpdateApprovalTypeDispInvoice extends Migration
             // array('approval_type_name'=>'Reimbursement Invoice HFA Secondary', 'table_name'=>'reimbursement_invoices'),
             // ('approval_type_name'=>'Reimbursement Invoice HFA Tertiary', 'table_name'=>'reimbursement_invoices'),
             //array('approval_type_name'=>'Disposition HFA', 'table_name'=>'dispositions'),
-            array('approval_type_name'=>'Disposition Invoice HFA', 'table_name'=>'disposition_invoices')
+            ['approval_type_name'=>'Disposition Invoice HFA', 'table_name'=>'disposition_invoices']
             
 
-        );
+        ];
         DB::table('approval_types')->insert($types);
     }
 

@@ -44,7 +44,7 @@ class NoteController extends Controller
         
         $attachment = 'attachment';
 
-        $owners_array = array();
+        $owners_array = [];
         foreach ($notes as $note) {
             // create initials
             $words = explode(" ", $note->owner->name);
@@ -119,7 +119,7 @@ class NoteController extends Controller
     {
         $notes = Note::where('parcel_id', $parcel->id)->with('owner')->orderBy('created_at', 'desc')->get();
 
-        $owners_array = array();
+        $owners_array = [];
         foreach ($notes as $note) {
             // create initials
             $words = explode(" ", $note->owner->name);

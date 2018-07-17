@@ -37,7 +37,7 @@ class TransactionController extends Controller
         }
 
         $statuses = TransactionStatus::get()->toArray();
-        $status_array = array();
+        $status_array = [];
         foreach ($statuses as $status) {
             $status_array[$status['id']]['name'] = $status['status_name'];
             $status_array[$status['id']]['id'] = $status['id'];
@@ -54,7 +54,7 @@ class TransactionController extends Controller
         }
 
         $statuses = TransactionStatus::get()->toArray();
-        $status_array = array();
+        $status_array = [];
         foreach ($statuses as $status) {
             $status_array[$status['id']]['name'] = $status['status_name'];
             $status_array[$status['id']]['id'] = $status['id'];
@@ -71,7 +71,7 @@ class TransactionController extends Controller
         }
 
         $statuses = TransactionStatus::get()->toArray();
-        $status_array = array();
+        $status_array = [];
         foreach ($statuses as $status) {
             $status_array[$status['id']]['name'] = $status['status_name'];
             $status_array[$status['id']]['id'] = $status['id'];
@@ -88,7 +88,7 @@ class TransactionController extends Controller
         }
 
         $statuses = TransactionStatus::get()->toArray();
-        $status_array = array();
+        $status_array = [];
         foreach ($statuses as $status) {
             $status_array[$status['id']]['name'] = $status['status_name'];
             $status_array[$status['id']]['id'] = $status['id'];
@@ -105,7 +105,7 @@ class TransactionController extends Controller
         }
 
         $statuses = TransactionStatus::get()->toArray();
-        $status_array = array();
+        $status_array = [];
         foreach ($statuses as $status) {
             $status_array[$status['id']]['name'] = $status['status_name'];
             $status_array[$status['id']]['id'] = $status['id'];
@@ -122,7 +122,7 @@ class TransactionController extends Controller
         }
 
         $statuses = TransactionStatus::get()->toArray();
-        $status_array = array();
+        $status_array = [];
         foreach ($statuses as $status) {
             $status_array[$status['id']]['name'] = $status['status_name'];
             $status_array[$status['id']]['id'] = $status['id'];
@@ -140,7 +140,7 @@ class TransactionController extends Controller
         }
 
         $statuses = TransactionStatus::get()->toArray();
-        $status_array = array();
+        $status_array = [];
         foreach ($statuses as $status) {
             $status_array[$status['id']]['name'] = $status['status_name'];
             $status_array[$status['id']]['id'] = $status['id'];
@@ -158,7 +158,7 @@ class TransactionController extends Controller
         }
 
         $statuses = TransactionStatus::get()->toArray();
-        $status_array = array();
+        $status_array = [];
         foreach ($statuses as $status) {
             $status_array[$status['id']]['name'] = $status['status_name'];
             $status_array[$status['id']]['id'] = $status['id'];

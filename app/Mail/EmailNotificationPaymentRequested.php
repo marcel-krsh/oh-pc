@@ -56,7 +56,7 @@ class EmailNotificationPaymentRequested extends Mailable
         $greeting = "INVOICE ".$this->invoice_id." was approved and submitted for payment by HFA.";
        
         $introLines[] = "You can now process transaction.";
-        $outroLines[] = array();
+        $outroLines[] = [];
 
         $actionText = "View INVOICE";
 

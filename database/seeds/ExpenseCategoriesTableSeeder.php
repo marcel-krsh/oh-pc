@@ -11,8 +11,8 @@ class ExpenseCategoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        $expenseCategoriesData = array(
-              array(
+        $expenseCategoriesData = [
+              [
              'id'=>'1',
              'hfa'=>'1',
              'expense_category_name'=>'Expense Categories',
@@ -22,8 +22,8 @@ class ExpenseCategoriesTableSeeder extends Seeder
              'trans_color_hex'=>'',
              'advance_color_hex'=>'',
              'advance_trans_color_hex'=>'',
-             ),
-              array(
+             ],
+              [
              'id'=>'2',
              'hfa'=>'1',
              'expense_category_name'=>'Acquisition',
@@ -33,8 +33,8 @@ class ExpenseCategoriesTableSeeder extends Seeder
              'trans_color_hex'=>'',
              'advance_color_hex'=>'#5a7c92',
              'advance_trans_color_hex'=>'',
-             ),
-              array(
+             ],
+              [
              'id'=>'3',
              'hfa'=>'1',
              'expense_category_name'=>'Pre-Demo',
@@ -44,8 +44,8 @@ class ExpenseCategoriesTableSeeder extends Seeder
              'trans_color_hex'=>'',
              'advance_color_hex'=>'#696868',
              'advance_trans_color_hex'=>'',
-             ),
-              array(
+             ],
+              [
              'id'=>'4',
              'hfa'=>'1',
              'expense_category_name'=>'Demolition',
@@ -55,8 +55,8 @@ class ExpenseCategoriesTableSeeder extends Seeder
              'trans_color_hex'=>'',
              'advance_color_hex'=>'#adc7da',
              'advance_trans_color_hex'=>'',
-             ),
-              array(
+             ],
+              [
              'id'=>'5',
              'hfa'=>'1',
              'expense_category_name'=>'Greening',
@@ -66,8 +66,8 @@ class ExpenseCategoriesTableSeeder extends Seeder
              'trans_color_hex'=>'',
              'advance_color_hex'=>'#8bad8e',
              'advance_trans_color_hex'=>'',
-             ),
-              array(
+             ],
+              [
              'id'=>'6',
              'hfa'=>'1',
              'expense_category_name'=>'Maintenance',
@@ -77,8 +77,8 @@ class ExpenseCategoriesTableSeeder extends Seeder
              'trans_color_hex'=>'',
              'advance_color_hex'=>'#d0b18a',
              'advance_trans_color_hex'=>'',
-             ),
-              array(
+             ],
+              [
              'id'=>'7',
              'hfa'=>'1',
              'expense_category_name'=>'Administration',
@@ -88,8 +88,8 @@ class ExpenseCategoriesTableSeeder extends Seeder
              'trans_color_hex'=>'',
              'advance_color_hex'=>'#ea9aa7',
              'advance_trans_color_hex'=>'',
-             ),
-              array(
+             ],
+              [
              'id'=>'8',
              'hfa'=>'1',
              'expense_category_name'=>'Other',
@@ -99,8 +99,8 @@ class ExpenseCategoriesTableSeeder extends Seeder
              'trans_color_hex'=>'',
              'advance_color_hex'=>'#c3b0c3',
              'advance_trans_color_hex'=>'',
-             ),
-              array(
+             ],
+              [
              'id'=>'9',
              'hfa'=>'1',
              'expense_category_name'=>'NIP Loan Payoff',
@@ -110,8 +110,8 @@ class ExpenseCategoriesTableSeeder extends Seeder
              'trans_color_hex'=>'',
              'advance_color_hex'=>'#bfb28c',
              'advance_trans_color_hex'=>'',
-             )
-        );
+             ]
+        ];
         DB::table('expense_categories')->insert($expenseCategoriesData);
     }
 }

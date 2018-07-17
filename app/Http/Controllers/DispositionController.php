@@ -612,8 +612,8 @@ class DispositionController extends Controller
 
 
         if (!$checked_invoice || (!Gate::allows('create-disposition') && !Gate::allows('hfa-review-disposition') && !Auth::user()->isHFAAdmin())) {
-            $types = array();
-            $document_categories = array();
+            $types = [];
+            $document_categories = [];
             $disposition = null;
             $nip = null;
             $entity = null;
@@ -622,16 +622,16 @@ class DispositionController extends Controller
             $isApprover_hfa = 0;
             $isApproved = 0;
             $isApproved_hfa = 0;
-            $approvals = array();
-            $approvals_hfa = array();
-            $calculation = array();
-            $actual = array();
-            $step = array();
+            $approvals = [];
+            $approvals_hfa = [];
+            $calculation = [];
+            $actual = [];
+            $step = [];
             $current_user = Auth::user();
-            $landbankRequestApprovers = array();
-            $pending_approvers_hfa = array();
-            $pending_approvers = array();
-            $supporting_documents = array();
+            $landbankRequestApprovers = [];
+            $pending_approvers_hfa = [];
+            $pending_approvers = [];
+            $supporting_documents = [];
             //return view('parcels.disposition-tab', compact('isApprover', 'parcel','types','proceed','disposition','document_categories','nip','entity','approvals','calculation','potential_approvers_lb','potential_approvers_hfa'));
             return view('parcels.disposition-tab', compact('isApprover', 'isApprover_hfa', 'parcel', 'types', 'proceed', 'disposition', 'document_categories', 'nip', 'entity', 'approvals', 'approvals_hfa', 'calculation', 'actual', 'supporting_documents', 'current_user', 'isApproved', 'isApproved_hfa', 'pending_approvers', 'pending_approvers_hfa', 'landbankRequestApprovers', 'step'));
         } else {
@@ -750,8 +750,8 @@ class DispositionController extends Controller
                                     ->pluck('user_id as id');
             }
 
-            $pending_approvers = array();
-            $pending_approvers_hfa = array();
+            $pending_approvers = [];
+            $pending_approvers_hfa = [];
 
             if (count($added_approvers) == 0 && count($landbankDispositionApprovers) > 0) {
                 foreach ($landbankDispositionApprovers as $landbankDispositionApprover) {
@@ -836,10 +836,10 @@ class DispositionController extends Controller
                 }
             }
         } else {
-            $approvals = array();
+            $approvals = [];
             
-            $potential_approvers_lb = array();
-            $potential_approvers_hfa = array();
+            $potential_approvers_lb = [];
+            $potential_approvers_hfa = [];
         }
         
         // calculation
@@ -871,7 +871,7 @@ class DispositionController extends Controller
                 $gain = 0;
             }
         } else {
-            $maintenance_array = array();
+            $maintenance_array = [];
             $maintenance_array['monthly_rate'] = 0;
             $maintenance_array['months'] = 0;
             $maintenance_array['unused'] = 0;
@@ -1006,28 +1006,28 @@ class DispositionController extends Controller
                 'gain_formatted' => money_format('%n', $gain)
             ];
         } else {
-            $actual = array();
+            $actual = [];
         }
 
         // get documents from the category "Disposition Supporting Documents" id 38
-        $supporting_documents = array();
+        $supporting_documents = [];
         $documents = Document::where('parcel_id', '=', $parcel->id)->get();
         if (count($documents)) {
             foreach ($documents as $document) {
                 if ($document->categories) {
                     $categories_decoded = json_decode($document->categories, true); // cats used by the doc
                 } else {
-                    $categories_decoded = array();
+                    $categories_decoded = [];
                 }
                 if ($document->approved) {
                     $categories_approved = json_decode($document->approved, true);
                 } else {
-                    $categories_approved = array();
+                    $categories_approved = [];
                 }
                 if ($document->notapproved) {
                     $categories_notapproved = json_decode($document->notapproved, true);
                 } else {
-                    $categories_notapproved = array();
+                    $categories_notapproved = [];
                 }
 
                 if (in_array('38', $categories_decoded)) {
@@ -1375,8 +1375,8 @@ class DispositionController extends Controller
         }
         
         $guide_steps = GuideStep::where('guide_step_type_id', '=', 1)->get();
-        $guide_help = array();
-        $guide_name = array();
+        $guide_help = [];
+        $guide_name = [];
         foreach ($guide_steps as $guide_step) {
             $guide_help[$guide_step->id] = $guide_step->step_help;
             $guide_name[$guide_step->id]['name'] = $guide_step->name;
@@ -1430,12 +1430,12 @@ class DispositionController extends Controller
             $documents = Document::where('parcel_id', '=', $parcel->id)->get();
             if ($documents) {
                 $i = 0;
-                $output = array();
+                $output = [];
                 foreach ($documents as $document) {
                     if ($document->categories) {
                         $categories_decoded = json_decode($document->categories, true); // cats used by the doc
                     } else {
-                        $categories_decoded = array();
+                        $categories_decoded = [];
                     }
                     if (in_array('38', $categories_decoded)) {
                         $output[$i]['filename'] = $document->filename;
@@ -1483,7 +1483,7 @@ class DispositionController extends Controller
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
                 
                 // sanitize filename
-                $characters = array(' ','�','`',"'",'~','"','\'','\\','/');
+                $characters = [' ','�','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                 // Create a record in documents table
@@ -1590,7 +1590,7 @@ class DispositionController extends Controller
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
                 
                 // sanitize filename
-                $characters = array(' ','�','`',"'",'~','"','\'','\\','/');
+                $characters = [' ','�','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                 // Create a record in documents table
@@ -1654,7 +1654,7 @@ class DispositionController extends Controller
                 if ($document_ids !== null) {
                     $documents = explode(",", $document_ids);
                 } else {
-                    $documents = array();
+                    $documents = [];
                 }
                 $documents_json = json_encode($documents, true);
 
@@ -1800,7 +1800,7 @@ class DispositionController extends Controller
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
                 
                 // sanitize filename
-                $characters = array(' ','�','`',"'",'~','"','\'','\\','/');
+                $characters = [' ','�','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                 // Create a record in documents table
@@ -1856,7 +1856,7 @@ class DispositionController extends Controller
      */
     public function computeRecaptureOwed($disposition, Request $request)
     {
-        $debug = array();
+        $debug = [];
 
         $income = $request->get('income');
         $cost = $request->get('cost');
@@ -2057,7 +2057,7 @@ class DispositionController extends Controller
         parse_str($input, $input);
         $input['step'] = $request->get('step');
 
-        $output = array();
+        $output = [];
 
         $user = Auth::user();
 
@@ -2312,7 +2312,7 @@ class DispositionController extends Controller
                     $dev_nofc = (isset($input['dev_nofc']) ? $input['dev_nofc'] : null);
                     $dev_fmv = (isset($input['dev_fmv']) ? $input['dev_fmv'] : null);
 
-                    $calculation = array();
+                    $calculation = [];
                     $calculation['hfa_calc_income'] = (isset($input['hfa_calc_income']) && $input['hfa_calc_income']!='' ? $input['hfa_calc_income'] : null);
                     $calculation['hfa_calc_trans_cost'] = (isset($input['hfa_calc_trans_cost']) && $input['hfa_calc_trans_cost']!='' ? $input['hfa_calc_trans_cost'] : null);
                     $calculation['hfa_calc_maintenance_total'] = (isset($input['hfa_calc_maintenance_total']) && $input['hfa_calc_maintenance_total']!='' ? $input['hfa_calc_maintenance_total'] : null);
@@ -2408,7 +2408,7 @@ class DispositionController extends Controller
                     $dev_nofc = (isset($input['dev_nofc']) ? $input['dev_nofc'] : null);
                     $dev_fmv = (isset($input['dev_fmv']) ? $input['dev_fmv'] : null);
 
-                    $calculation = array();
+                    $calculation = [];
                     $calculation['hfa_calc_income'] = (isset($input['hfa_calc_income']) && $input['hfa_calc_income']!='' ? $input['hfa_calc_income'] : null);
                     $calculation['hfa_calc_trans_cost'] = (isset($input['hfa_calc_trans_cost']) && $input['hfa_calc_trans_cost']!='' ? $input['hfa_calc_trans_cost'] : null);
                     $calculation['hfa_calc_maintenance_total'] = (isset($input['hfa_calc_maintenance_total']) && $input['hfa_calc_maintenance_total']!='' ? $input['hfa_calc_maintenance_total'] : null);
@@ -3226,7 +3226,7 @@ class DispositionController extends Controller
                 ->load('program')
                 ->load('transactions');
 
-        $stat = array();
+        $stat = [];
         $stat = $stat + $invoice->account->statsParcels->toArray()[0]
                         + $invoice->account->statsTransactions->toArray()[0]
                         + $invoice->account->statsCostItems->toArray()[0]
@@ -3303,7 +3303,7 @@ class DispositionController extends Controller
         $balance = round($total_unformatted + $sum_transactions, 2);
 
         // get notes
-        $owners_array = array();
+        $owners_array = [];
         foreach ($invoice->notes as $note) {
             // create initials
             $words = explode(" ", $note->owner->name);
@@ -3346,7 +3346,7 @@ class DispositionController extends Controller
                                 ->where('link_type_id', '=', $invoice->id)
                                 ->pluck('user_id as id');
 
-        $pending_approvers = array();
+        $pending_approvers = [];
 
         if (count($added_approvers) == 0 && count($dispositionInvoiceApprovers) > 0) {
             foreach ($dispositionInvoiceApprovers as $dispositionInvoiceApprover) {
@@ -3776,7 +3776,7 @@ class DispositionController extends Controller
                 if ($document_ids !== null) {
                     $documents = explode(",", $document_ids);
                 } else {
-                    $documents = array();
+                    $documents = [];
                 }
                 $documents_json = json_encode($documents, true);
 
@@ -3858,7 +3858,7 @@ class DispositionController extends Controller
                     $folderpath = 'documents/entity_'. $disposition->parcel->entity_id . '/program_' . $disposition->parcel->program_id . '/parcel_' . $disposition->parcel->id . '/';
                     
                     // sanitize filename
-                    $characters = array(' ','�','`',"'",'~','"','\'','\\','/');
+                    $characters = [' ','�','`',"'",'~','"','\'','\\','/'];
                     $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                     // Create a record in documents table

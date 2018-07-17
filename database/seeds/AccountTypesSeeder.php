@@ -11,20 +11,20 @@ class AccountTypesSeeder extends Seeder
      */
     public function run()
     {
-        $accountTypeData = array(
-            array(
+        $accountTypeData = [
+            [
                 'type'=>'Grant',
                 'active'=> 1
-            ),
-            array(
+            ],
+            [
                 'type'=>'Award',
                 'active'=> 1
-            ),
-            array(
+            ],
+            [
                 'type'=>'Line of Credit',
                 'active'=> 1
-            )
-        );
+            ]
+        ];
 
         \Illuminate\Support\Facades\DB::table('account_types')->insert($accountTypeData);
     }

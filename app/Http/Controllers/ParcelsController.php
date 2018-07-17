@@ -523,20 +523,20 @@ class ParcelsController extends Controller
                     ]);
                     $matchedParcel = DB::table('validation_resolutions')->select('resolution_id')->where('id', $resolutionId)->first();
                 // add parcels to table so they can be grouped.
-                    $groupData = array(
-                        array(
+                    $groupData = [
+                        [
                         'created_at'=>date('Y-m-d H:i:s', time()),
                         'shared_parcel_id'=>$sharedParcelId,
                         'reference_letter'=>'a',
                         'parcel_id'=>$parcel->id
-                        ),
-                        array( //8
+                        ],
+                        [ //8
                         'created_at'=>date('Y-m-d H:i:s', time()),
                         'shared_parcel_id'=>$sharedParcelId,
                         'reference_letter'=>'b',
                         'parcel_id'=>$matchedParcel->resolution_id
-                        )
-                    );
+                        ]
+                    ];
                     DB::table('shared_parcel_to_parcels')->insert($groupData);
 
                     break;
@@ -1748,7 +1748,7 @@ class ParcelsController extends Controller
         //get minimum amounts
         $minimums = DocumentRule::where('program_rules_id', $associated_id)->get();
 
-        $minimumRules = array();
+        $minimumRules = [];
         $minimumRules['acquisition']=null;
         $minimumRules['pre_demo']=null;
         $minimumRules['demolition']=null;
@@ -1807,8 +1807,8 @@ class ParcelsController extends Controller
         $hasResolutions = DB::table('validation_resolutions')->where('parcel_id', $parcel->id)->count();
 
         $guide_steps = GuideStep::where('guide_step_type_id', '=', 2)->get();
-        $guide_help = array();
-        $guide_name = array();
+        $guide_help = [];
+        $guide_name = [];
         foreach ($guide_steps as $guide_step) {
             $guide_help[$guide_step->id] = $guide_step->step_help;
             $guide_name[$guide_step->id]['name'] = $guide_step->name;
@@ -1897,10 +1897,10 @@ class ParcelsController extends Controller
                         })->take(20)->get()->all();
         }
         $i = 0;
-        $results=array();
+        $results=[];
         foreach ($parcels as $data) {
             $parcels[$i]->created_at_formatted = date('n/j/y \a\t g:h a', strtotime($data->created_at));
-            $results[] = array(
+            $results[] = [
                         $data->street_address,
                         $data->city,
                         $data->state_acronym,
@@ -1912,7 +1912,7 @@ class ParcelsController extends Controller
                         $data->name,
                         $data->created_at,
                         $data->validated,
-                        $parcels[$i]->created_at_formatted);
+                        $parcels[$i]->created_at_formatted];
             $i++;
         }
         

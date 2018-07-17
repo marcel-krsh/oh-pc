@@ -240,7 +240,7 @@ Route::get('/users/verify_user', function (Request $request) {
                     $parcels = Parcel::
                     where('program_id', $program_id)
                     ->whereIn('id', $parcels_in_invoices)
-                    ->get(array("id", "parcel_id","program_id","street_address","latitude","longitude","city","state_id","county_id","target_area_id","zip","sale_price","how_acquired_id","how_acquired_explanation","units","oh_house_district","oh_senate_district","us_house_district","historic_significance_or_district"));
+                    ->get(["id", "parcel_id","program_id","street_address","latitude","longitude","city","state_id","county_id","target_area_id","zip","sale_price","how_acquired_id","how_acquired_explanation","units","oh_house_district","oh_senate_district","us_house_district","historic_significance_or_district"]);
 
 
                     $lat = $randomParcel["latitude"];
@@ -334,7 +334,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
         Route::get('/programs', function (Request $request) {
             try {
-                $programs = Program::get(array("id","program_name"));
+                $programs = Program::get(["id","program_name"]);
                 return response()->json($programs);
             } catch (\Exception $e) {
                 throw $e;
@@ -343,7 +343,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
         Route::get('/disposition_types', function (Request $request) {
             try {
-                $dispositions = DispositionType::where("active", "1")->get(array("id","disposition_type_name"));
+                $dispositions = DispositionType::where("active", "1")->get(["id","disposition_type_name"]);
                 return response()->json($dispositions);
             } catch (\Exception $e) {
                 throw $e;
@@ -592,7 +592,7 @@ Route::get('/users/verify_user', function (Request $request) {
             try {
                 $id = $request->query("id");
 
-                $user = DB::table('users')->where('id', $id)->first(array('id','name'));
+                $user = DB::table('users')->where('id', $id)->first(['id','name']);
 
                 if ($user) {
                     $reply = $user;
@@ -610,7 +610,7 @@ Route::get('/users/verify_user', function (Request $request) {
         Route::get('/program_stats', function (Request $request) {
 
             try {
-                $programs = Program::get(array("id","program_name"));
+                $programs = Program::get(["id","program_name"]);
 
                 $results = new Collection();
 
@@ -720,7 +720,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
         Route::get('/document_categories', function (Request $request) {
             try {
-                $categories = DocumentCategory::where("active", "1")->get(array("id","document_category_name"));
+                $categories = DocumentCategory::where("active", "1")->get(["id","document_category_name"]);
                 return response()->json($categories);
             } catch (\Exception $e) {
                 throw $e;
@@ -768,7 +768,7 @@ Route::get('/users/verify_user', function (Request $request) {
                         $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
 
                         // sanitize filename
-                        $characters = array(' ','�','`',"'",'~','"','\'','\\','/');
+                        $characters = [' ','�','`',"'",'~','"','\'','\\','/'];
                         $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                         // Create a record in documents table
@@ -849,7 +849,7 @@ Route::get('/users/verify_user', function (Request $request) {
                         }
 
 
-                        $data = array();
+                        $data = [];
                         $data['document_ids'] = $document_ids;
                         $data['is_retainage'] = $is_retainage;
                         $data['is_advance'] = $is_advance;
@@ -959,7 +959,7 @@ Route::get('/users/verify_user', function (Request $request) {
                         $folderpath = 'photos/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
 
                         // sanitize filename
-                        $characters = array(' ','�','`',"'",'~','"','\'','\\','/');
+                        $characters = [' ','�','`',"'",'~','"','\'','\\','/'];
                         $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
                         $original_ext =  $file->getClientOriginalExtension();
 
@@ -1005,7 +1005,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                         Storage::put($filepath, File::get($file));
 
-                        $data = array();
+                        $data = [];
                         $data['photo_id'] = $photo_id;
                         $data['filename'] = $filename;
                         $data['filepath'] = $filepath;

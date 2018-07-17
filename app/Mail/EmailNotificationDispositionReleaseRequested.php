@@ -63,7 +63,7 @@ class EmailNotificationDispositionReleaseRequested extends Mailable
         $invoice = $this->invoice;
         
         $introLines[] = "";
-        $outroLines[] = array();
+        $outroLines[] = [];
 
         if ($this->disposition) {
             $greeting = "DISPOSITION ".$this->disposition->id." has a release request.";

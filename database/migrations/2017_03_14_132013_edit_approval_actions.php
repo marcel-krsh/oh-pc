@@ -19,23 +19,23 @@ class EditApprovalActions extends Migration
         });
 
         DB::table('approval_action_types')->truncate();
-        $new_action_types = array(
-            array(
+        $new_action_types = [
+            [
              'approval_action_name'=>'Approved',
-             ),
-            array(
+             ],
+            [
              'approval_action_name'=>'Corrections needed',
-             ),
-            array(
+             ],
+            [
              'approval_action_name'=>'Released',
-             ),
-            array(
+             ],
+            [
              'approval_action_name'=>'Delined',
-             ),
-            array(
+             ],
+            [
              'approval_action_name'=>'Approved by proxy',
-             )
-        );
+             ]
+        ];
         DB::table('approval_action_types')->insert($new_action_types);
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');

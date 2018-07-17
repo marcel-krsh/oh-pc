@@ -975,15 +975,15 @@ class Parcel extends Model
                 $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
 
                 // build a list of all categories used for uploaded documents in this parcel
-                $categories_used = array();
-                $categories = array(); // store the new associative array cat id, cat name
+                $categories_used = [];
+                $categories = []; // store the new associative array cat id, cat name
                  
                 if ($document->categories) {
                     $categories_decoded = json_decode($document->categories, true); // cats used by the doc
 
                     $categories_used = array_merge($categories_used, $categories_decoded); // merge document categories
                 } else {
-                    $categories_decoded = array();
+                    $categories_decoded = [];
                 }
 
                 foreach ($document_categories as $document_category) {

@@ -11,9 +11,9 @@ class TransactionsSeeder extends Seeder
      */
     public function run()
     {
-        $transactionDepositData = array(
+        $transactionDepositData = [
             /// Program Deposits Cuyahoga
-            array(
+            [
                 'account_id'=>8,
                 'credit_debit'=>'c',
                 'amount'=>10118750.00,
@@ -26,9 +26,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// OHFA TRANSFER
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>8,
@@ -41,8 +41,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Cuyahoga Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>8,
                 'credit_debit'=>'c',
                 'amount'=>1221525.00,
@@ -55,9 +55,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// OHFA TRANSFER
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>8,
@@ -70,8 +70,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Cuyahoga Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>8,
                 'credit_debit'=>'c',
                 'amount'=>2699071.83,
@@ -84,9 +84,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// OHFA TRANSFER
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>8,
@@ -99,9 +99,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Cuyahoga Funding Award',
-            ),
+            ],
             //////
-            array(
+            [
                 'account_id'=>8,
                 'credit_debit'=>'c',
                 'amount'=>6075000.00,
@@ -114,9 +114,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// OHFA TRANSFER
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>8,
@@ -129,10 +129,10 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Cuyahoga Funding Award',
-            ),
+            ],
             //////
             /////
-            array(
+            [
                 'account_id'=>8,
                 'credit_debit'=>'c',
                 'amount'=>31263999.55,
@@ -145,9 +145,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// OHFA TRANSFER
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>8,
@@ -160,10 +160,10 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Cuyahoga Funding Award',
-            ),
+            ],
             //////
             /////
-            array(
+            [
                 'account_id'=>8,
                 'credit_debit'=>'c',
                 'amount'=>6012505.47,
@@ -176,9 +176,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// OHFA TRANSFER
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>8,
@@ -191,11 +191,11 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Cuyahoga Funding Award',
-            ),
+            ],
             //////
             /////
             /// Program Deposits Lucas County
-            array(
+            [
                 'account_id'=>15,
                 'credit_debit'=>'c',
                 'amount'=>6000000.00,
@@ -208,8 +208,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>15,
                 'credit_debit'=>'c',
                 'amount'=>1221525.00,
@@ -222,8 +222,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>15,
                 'credit_debit'=>'c',
                 'amount'=>2000000.00,
@@ -236,8 +236,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>15,
                 'credit_debit'=>'c',
                 'amount'=>2300000.00,
@@ -250,8 +250,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>15,
                 'credit_debit'=>'c',
                 'amount'=>13809078.23,
@@ -264,8 +264,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>15,
                 'credit_debit'=>'c',
                 'amount'=>1924341.83,
@@ -278,9 +278,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Franklin
-            array(
+            [
                 'account_id'=>5,
                 'credit_debit'=>'c',
                 'amount'=>5825000.00,
@@ -293,8 +293,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>5,
                 'credit_debit'=>'c',
                 'amount'=>54900.00,
@@ -307,8 +307,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>5,
                 'credit_debit'=>'c',
                 'amount'=>500000.00,
@@ -321,8 +321,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>5,
                 'credit_debit'=>'c',
                 'amount'=>12189568.42,
@@ -335,8 +335,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>5,
                 'credit_debit'=>'c',
                 'amount'=>2298897.91,
@@ -349,9 +349,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Montgomery
-            array(
+            [
                 'account_id'=>17,
                 'credit_debit'=>'c',
                 'amount'=>5055000.00,
@@ -364,8 +364,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>17,
                 'credit_debit'=>'c',
                 'amount'=>54900.00,
@@ -378,8 +378,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>17,
                 'credit_debit'=>'c',
                 'amount'=>296033.78,
@@ -392,8 +392,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>17,
                 'credit_debit'=>'c',
                 'amount'=>500000.00,
@@ -406,8 +406,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>17,
                 'credit_debit'=>'c',
                 'amount'=>8182015.55,
@@ -420,8 +420,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>17,
                 'credit_debit'=>'c',
                 'amount'=>3809189.83,
@@ -434,9 +434,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Mahoning
-            array(
+            [
                 'account_id'=>16,
                 'credit_debit'=>'c',
                 'amount'=>4266250,
@@ -449,8 +449,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>16,
                 'credit_debit'=>'c',
                 'amount'=>500000,
@@ -463,8 +463,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>16,
                 'credit_debit'=>'c',
                 'amount'=>6894969.06,
@@ -477,8 +477,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>16,
                 'credit_debit'=>'c',
                 'amount'=>3153034.98,
@@ -491,9 +491,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Trumbull
-            array(
+            [
                 'account_id'=>22,
                 'credit_debit'=>'c',
                 'amount'=>3221250,
@@ -506,8 +506,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>22,
                 'credit_debit'=>'c',
                 'amount'=>192150,
@@ -520,8 +520,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>22,
                 'credit_debit'=>'c',
                 'amount'=>982616.08,
@@ -534,8 +534,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>22,
                 'credit_debit'=>'c',
                 'amount'=>500000,
@@ -548,8 +548,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>22,
                 'credit_debit'=>'c',
                 'amount'=>6566270.99,
@@ -562,8 +562,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>22,
                 'credit_debit'=>'c',
                 'amount'=>1323816.14,
@@ -576,9 +576,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Lorain 14
-            array(
+            [
                 'account_id'=>14,
                 'credit_debit'=>'c',
                 'amount'=>3005000,
@@ -591,8 +591,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>14,
                 'credit_debit'=>'c',
                 'amount'=>296033.78,
@@ -605,8 +605,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>14,
                 'credit_debit'=>'c',
                 'amount'=>1330000,
@@ -619,9 +619,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             ///Program Deposits Summit 21
-            array(
+            [
                 'account_id'=>21,
                 'credit_debit'=>'c',
                 'amount'=>2000000,
@@ -634,8 +634,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>21,
                 'credit_debit'=>'c',
                 'amount'=>6436638.18,
@@ -648,8 +648,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>21,
                 'credit_debit'=>'c',
                 'amount'=>1114632.54,
@@ -662,9 +662,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Richland
-            array(
+            [
                 'account_id'=>19,
                 'credit_debit'=>'c',
                 'amount'=>773750,
@@ -677,8 +677,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>19,
                 'credit_debit'=>'c',
                 'amount'=>296033.78,
@@ -691,8 +691,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>19,
                 'credit_debit'=>'c',
                 'amount'=>500000,
@@ -705,8 +705,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>19,
                 'credit_debit'=>'c',
                 'amount'=>1393672.70,
@@ -719,8 +719,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>19,
                 'credit_debit'=>'c',
                 'amount'=>801278.31,
@@ -733,9 +733,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Ashtabula 2
-            array(
+            [
                 'account_id'=>2,
                 'credit_debit'=>'c',
                 'amount'=>500000,
@@ -748,8 +748,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>2,
                 'credit_debit'=>'c',
                 'amount'=>296033.78,
@@ -762,8 +762,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>2,
                 'credit_debit'=>'c',
                 'amount'=>500000,
@@ -776,8 +776,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>2,
                 'credit_debit'=>'c',
                 'amount'=>2704305,
@@ -790,8 +790,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>2,
                 'credit_debit'=>'c',
                 'amount'=>350429.90,
@@ -804,9 +804,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Belmont 3
-            array(
+            [
                 'account_id'=>3,
                 'credit_debit'=>'c',
                 'amount'=>500000,
@@ -819,8 +819,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>3,
                 'credit_debit'=>'c',
                 'amount'=>135193.20,
@@ -833,9 +833,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Butler 4
-            array(
+            [
                 'account_id'=>4,
                 'credit_debit'=>'c',
                 'amount'=>2000000,
@@ -848,8 +848,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>4,
                 'credit_debit'=>'c',
                 'amount'=>1775623.77,
@@ -862,8 +862,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>4,
                 'credit_debit'=>'c',
                 'amount'=>540772.79,
@@ -876,9 +876,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Clark 6
-            array(
+            [
                 'account_id'=>6,
                 'credit_debit'=>'c',
                 'amount'=>680000,
@@ -891,8 +891,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>6,
                 'credit_debit'=>'c',
                 'amount'=>500000,
@@ -905,8 +905,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>6,
                 'credit_debit'=>'c',
                 'amount'=>634785.50,
@@ -919,8 +919,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>6,
                 'credit_debit'=>'c',
                 'amount'=>238841.45,
@@ -933,9 +933,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Columbiana 7
-            array(
+            [
                 'account_id'=>7,
                 'credit_debit'=>'c',
                 'amount'=>1118750,
@@ -948,8 +948,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>7,
                 'credit_debit'=>'c',
                 'amount'=>500000,
@@ -962,8 +962,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>7,
                 'credit_debit'=>'c',
                 'amount'=>1600000,
@@ -976,9 +976,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Erie County 9
-            array(
+            [
                 'account_id'=>9,
                 'credit_debit'=>'c',
                 'amount'=>500000,
@@ -991,8 +991,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>9,
                 'credit_debit'=>'c',
                 'amount'=>375000,
@@ -1005,8 +1005,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>9,
                 'credit_debit'=>'c',
                 'amount'=>543178.97,
@@ -1019,8 +1019,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>9,
                 'credit_debit'=>'c',
                 'amount'=>101394.90,
@@ -1033,9 +1033,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Fairfield 10
-            array(
+            [
                 'account_id'=>10,
                 'credit_debit'=>'c',
                 'amount'=>642500,
@@ -1048,8 +1048,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>10,
                 'credit_debit'=>'d',
                 'amount'=>242500,
@@ -1062,8 +1062,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Transfer back to OHFA',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>10,
                 'credit_debit'=>'c',
                 'amount'=>443905.94,
@@ -1076,8 +1076,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>10,
                 'credit_debit'=>'c',
                 'amount'=>52060.50,
@@ -1090,9 +1090,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Jefferson 12
-            array(
+            [
                 'account_id'=>12,
                 'credit_debit'=>'c',
                 'amount'=>715000,
@@ -1105,8 +1105,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>12,
                 'credit_debit'=>'c',
                 'amount'=>634785.50,
@@ -1119,8 +1119,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>12,
                 'credit_debit'=>'c',
                 'amount'=>113111.77,
@@ -1133,9 +1133,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Lake 13
-            array(
+            [
                 'account_id'=>13,
                 'credit_debit'=>'c',
                 'amount'=>500000,
@@ -1148,8 +1148,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>13,
                 'credit_debit'=>'c',
                 'amount'=>750000,
@@ -1162,9 +1162,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Portage 18
-            array(
+            [
                 'account_id'=>18,
                 'credit_debit'=>'c',
                 'amount'=>533750,
@@ -1177,8 +1177,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>18,
                 'credit_debit'=>'d',
                 'amount'=>133750,
@@ -1191,8 +1191,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Transfer back to OHFA',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>18,
                 'credit_debit'=>'d',
                 'amount'=>250000,
@@ -1205,8 +1205,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Transfer back to OHFA',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>18,
                 'credit_debit'=>'c',
                 'amount'=>450000,
@@ -1219,9 +1219,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Hamilton 11
-            array(
+            [
                 'account_id'=>11,
                 'credit_debit'=>'c',
                 'amount'=>5065000.00,
@@ -1234,8 +1234,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>11,
                 'credit_debit'=>'c',
                 'amount'=>500000.00,
@@ -1248,8 +1248,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>11,
                 'credit_debit'=>'c',
                 'amount'=>3107341.60,
@@ -1262,8 +1262,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>11,
                 'credit_debit'=>'c',
                 'amount'=>1112041.89,
@@ -1276,9 +1276,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposits Stark 20
-            array(
+            [
                 'account_id'=>20,
                 'credit_debit'=>'c',
                 'amount'=>4325000.00,
@@ -1291,8 +1291,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>20,
                 'credit_debit'=>'c',
                 'amount'=>500000,
@@ -1305,8 +1305,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>20,
                 'credit_debit'=>'c',
                 'amount'=>6017166.37,
@@ -1319,8 +1319,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>20,
                 'credit_debit'=>'c',
                 'amount'=>1280279.58,
@@ -1333,9 +1333,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Allen 23
-            array(
+            [
                 'account_id'=>23,
                 'owner_id'=>23,
                 'link_to_type_id'=>23,
@@ -1348,9 +1348,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Clinton 24
-            array(
+            [
                 'account_id'=>24,
                 'owner_id'=>24,
                 'link_to_type_id'=>24,
@@ -1363,9 +1363,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Crawford 25
-            array(
+            [
                 'account_id'=>25,
                 'owner_id'=>25,
                 'link_to_type_id'=>25,
@@ -1378,10 +1378,10 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
 
             /// Program Deposit Lawrence 26
-            array(
+            [
                 'account_id'=>26,
                 'owner_id'=>26,
                 'link_to_type_id'=>26,
@@ -1394,9 +1394,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Licking 27
-            array(
+            [
                 'account_id'=>27,
                 'owner_id'=>27,
                 'link_to_type_id'=>27,
@@ -1409,9 +1409,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Marion 28
-            array(
+            [
                 'account_id'=>28,
                 'owner_id'=>28,
                 'link_to_type_id'=>28,
@@ -1424,9 +1424,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Morrow 29
-            array(
+            [
                 'account_id'=>29,
                 'owner_id'=>29,
                 'link_to_type_id'=>29,
@@ -1439,10 +1439,10 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
 
             /// Program Deposit Ottawa 30
-            array(
+            [
                 'account_id'=>30,
                 'owner_id'=>30,
                 'link_to_type_id'=>30,
@@ -1455,9 +1455,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Perry 31
-            array(
+            [
                 'account_id'=>31,
                 'owner_id'=>31,
                 'link_to_type_id'=>31,
@@ -1470,9 +1470,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Rosss 32
-            array(
+            [
                 'account_id'=>32,
                 'owner_id'=>32,
                 'link_to_type_id'=>32,
@@ -1485,9 +1485,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Sandusky 33
-            array(
+            [
                 'account_id'=>33,
                 'owner_id'=>33,
                 'link_to_type_id'=>33,
@@ -1500,9 +1500,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Scioto 34
-            array(
+            [
                 'account_id'=>34,
                 'owner_id'=>34,
                 'link_to_type_id'=>34,
@@ -1515,9 +1515,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Seneca 35
-            array(
+            [
                 'account_id'=>35,
                 'owner_id'=>35,
                 'link_to_type_id'=>35,
@@ -1530,9 +1530,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Shelby 36
-            array(
+            [
                 'account_id'=>36,
                 'owner_id'=>36,
                 'link_to_type_id'=>36,
@@ -1545,9 +1545,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Van Wert 37
-            array(
+            [
                 'account_id'=>37,
                 'owner_id'=>37,
                 'link_to_type_id'=>37,
@@ -1560,9 +1560,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Williams 38
-            array(
+            [
                 'account_id'=>38,
                 'owner_id'=>38,
                 'link_to_type_id'=>38,
@@ -1575,9 +1575,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit OHFA 1
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>1,
@@ -1590,8 +1590,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>1,
@@ -1604,8 +1604,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>1,
@@ -1618,8 +1618,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>1,
@@ -1632,8 +1632,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>1,
@@ -1646,8 +1646,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>1,
@@ -1660,9 +1660,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Lucas County
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>6000000.00,
@@ -1675,8 +1675,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>1221525.00,
@@ -1689,8 +1689,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>2000000.00,
@@ -1703,8 +1703,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>2300000.00,
@@ -1717,8 +1717,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>13809078.23,
@@ -1731,8 +1731,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>1924341.83,
@@ -1745,9 +1745,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Franklin
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>5825000.00,
@@ -1760,8 +1760,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>54900.00,
@@ -1774,8 +1774,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>500000.00,
@@ -1788,8 +1788,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>12189568.42,
@@ -1802,8 +1802,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>2298897.91,
@@ -1816,9 +1816,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Montgomery
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>5055000.00,
@@ -1831,8 +1831,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>54900.00,
@@ -1845,8 +1845,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>296033.78,
@@ -1859,8 +1859,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>500000.00,
@@ -1873,8 +1873,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>8182015.55,
@@ -1887,8 +1887,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>3809189.83,
@@ -1901,9 +1901,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Mahoning
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>4266250,
@@ -1916,8 +1916,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>500000,
@@ -1930,8 +1930,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>6894969.06,
@@ -1944,8 +1944,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>3153034.98,
@@ -1958,9 +1958,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Trumbull
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>3221250,
@@ -1973,8 +1973,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>192150,
@@ -1987,8 +1987,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>982616.08,
@@ -2001,8 +2001,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>500000,
@@ -2015,8 +2015,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>6566270.99,
@@ -2029,8 +2029,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>1323816.14,
@@ -2043,9 +2043,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Lorain 14
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>3005000,
@@ -2058,8 +2058,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>296033.78,
@@ -2072,8 +2072,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>1330000,
@@ -2086,9 +2086,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             ///Program Transfers to  Summit 21
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>2000000,
@@ -2101,8 +2101,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>6436638.18,
@@ -2115,8 +2115,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>1114632.54,
@@ -2129,9 +2129,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Richland
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>773750,
@@ -2144,8 +2144,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>296033.78,
@@ -2158,8 +2158,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>500000,
@@ -2172,8 +2172,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>1393672.70,
@@ -2186,8 +2186,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>801278.31,
@@ -2200,9 +2200,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Ashtabula 2
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>500000,
@@ -2215,8 +2215,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>296033.78,
@@ -2229,8 +2229,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>500000,
@@ -2243,8 +2243,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>2704305,
@@ -2257,8 +2257,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>350429.90,
@@ -2271,9 +2271,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Belmont 3
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>500000,
@@ -2286,8 +2286,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>135193.20,
@@ -2300,9 +2300,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Butler 4
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>2000000,
@@ -2315,8 +2315,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>1775623.77,
@@ -2329,8 +2329,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>540772.79,
@@ -2343,9 +2343,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Clark 6
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>680000,
@@ -2358,8 +2358,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>500000,
@@ -2372,8 +2372,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>634785.50,
@@ -2386,8 +2386,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>238841.45,
@@ -2400,9 +2400,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Columbiana 7
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>1118750,
@@ -2415,8 +2415,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>500000,
@@ -2429,8 +2429,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>1600000,
@@ -2443,9 +2443,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Erie County 9
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>500000,
@@ -2458,8 +2458,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>375000,
@@ -2472,8 +2472,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>543178.97,
@@ -2486,8 +2486,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>101394.90,
@@ -2500,9 +2500,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Fairfield 10
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>642500,
@@ -2515,8 +2515,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'c',
                 'amount'=>242500,
@@ -2529,8 +2529,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Transfer back to OHFA',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>443905.94,
@@ -2543,8 +2543,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>52060.50,
@@ -2557,9 +2557,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Jefferson 12
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>715000,
@@ -2572,8 +2572,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>634785.50,
@@ -2586,8 +2586,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>113111.77,
@@ -2600,9 +2600,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Lake 13
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>500000,
@@ -2615,8 +2615,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>750000,
@@ -2629,9 +2629,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Portage 18
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>533750,
@@ -2644,8 +2644,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-08-21 00:00:00',
                 'date_cleared'=>'2014-08-21 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>133750,
@@ -2658,8 +2658,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-05-05 00:00:00',
                 'date_cleared'=>'2015-05-05 00:00:00',
                 'transaction_note'=>'Transfer back to OHFA',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>250000,
@@ -2672,8 +2672,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Transfer back to OHFA',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>450000,
@@ -2686,9 +2686,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Hamilton 11
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>5065000.00,
@@ -2701,8 +2701,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>500000.00,
@@ -2715,8 +2715,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>3107341.60,
@@ -2729,8 +2729,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>1112041.89,
@@ -2743,9 +2743,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Transfers to  Stark 20
-            array(
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>4325000.00,
@@ -2758,8 +2758,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2014-06-30 00:00:00',
                 'date_cleared'=>'2014-06-30 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>500000,
@@ -2772,8 +2772,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2015-11-02 00:00:00',
                 'date_cleared'=>'2015-11-02 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>6017166.37,
@@ -2786,8 +2786,8 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-07-13 00:00:00',
                 'date_cleared'=>'2016-07-13 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
-            array(
+            ],
+            [
                 'account_id'=>1,
                 'credit_debit'=>'d',
                 'amount'=>1280279.58,
@@ -2800,9 +2800,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Allen 23
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>23,
@@ -2815,9 +2815,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Clinton 24
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>24,
@@ -2830,9 +2830,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Crawford 25
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>25,
@@ -2845,10 +2845,10 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
 
             /// Program Deposit Lawrence 26
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>26,
@@ -2861,9 +2861,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Licking 27
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>27,
@@ -2876,9 +2876,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Marion 28
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>28,
@@ -2891,9 +2891,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Morrow 29
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>29,
@@ -2906,10 +2906,10 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
 
             /// Program Deposit Ottawa 30
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>30,
@@ -2922,9 +2922,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Perry 31
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>31,
@@ -2937,9 +2937,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Rosss 32
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>32,
@@ -2952,9 +2952,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Sandusky 33
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>33,
@@ -2967,9 +2967,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Scioto 34
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>34,
@@ -2982,9 +2982,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Seneca 35
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>35,
@@ -2997,9 +2997,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Shelby 36
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>36,
@@ -3012,9 +3012,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Van Wert 37
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>37,
@@ -3027,9 +3027,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            ),
+            ],
             /// Program Deposit Williams 38
-            array(
+            [
                 'account_id'=>1,
                 'owner_id'=>1,
                 'link_to_type_id'=>38,
@@ -3042,9 +3042,9 @@ class TransactionsSeeder extends Seeder
                 'date_entered'=>'2016-10-16 00:00:00',
                 'date_cleared'=>'2016-10-16 00:00:00',
                 'transaction_note'=>'Funding Award',
-            )
+            ]
 
-        );
+        ];
 
         \Illuminate\Support\Facades\DB::table('transactions')->insert($transactionDepositData);
     }

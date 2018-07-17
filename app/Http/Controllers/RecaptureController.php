@@ -633,12 +633,12 @@ class RecaptureController extends Controller
             $documents = Document::where('parcel_id', '=', $parcel->id)->get();
             if ($documents) {
                 $i = 0;
-                $output = array();
+                $output = [];
                 foreach ($documents as $document) {
                     if ($document->categories) {
                         $categories_decoded = json_decode($document->categories, true); // cats used by the doc
                     } else {
-                        $categories_decoded = array();
+                        $categories_decoded = [];
                     }
                     if (in_array('38', $categories_decoded)) {
                         $output[$i]['filename'] = $document->filename;
@@ -686,7 +686,7 @@ class RecaptureController extends Controller
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
                 
                 // sanitize filename
-                $characters = array(' ','´','`',"'",'~','"','\'','\\','/');
+                $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                 // Create a record in documents table
@@ -793,7 +793,7 @@ class RecaptureController extends Controller
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
                 
                 // sanitize filename
-                $characters = array(' ','´','`',"'",'~','"','\'','\\','/');
+                $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                 // Create a record in documents table
@@ -895,7 +895,7 @@ class RecaptureController extends Controller
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
                 
                 // sanitize filename
-                $characters = array(' ','´','`',"'",'~','"','\'','\\','/');
+                $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                 // Create a record in documents table
@@ -951,7 +951,7 @@ class RecaptureController extends Controller
      */
     public function computeRecaptureOwed(Dispositions $recapture, Request $request)
     {
-        $debug = array();
+        $debug = [];
 
         $income = $request->get('income');
         $cost = $request->get('cost');
@@ -1404,7 +1404,7 @@ class RecaptureController extends Controller
                 ->load('program')
                 ->load('transactions');
 
-        $stat = array();
+        $stat = [];
         $stat = $stat + $invoice->account->statsParcels->toArray()[0]
                         + $invoice->account->statsTransactions->toArray()[0]
                         + $invoice->account->statsCostItems->toArray()[0]
@@ -1448,7 +1448,7 @@ class RecaptureController extends Controller
         $balance = round($total_unformatted + $sum_transactions, 2);
 
         // get notes
-        $owners_array = array();
+        $owners_array = [];
         foreach ($invoice->notes as $note) {
             // create initials
             $words = explode(" ", $note->owner->name);
@@ -1488,7 +1488,7 @@ class RecaptureController extends Controller
                                 ->where('link_type_id', '=', $invoice->id)
                                 ->pluck('user_id as id');
 
-        $pending_approvers = array();
+        $pending_approvers = [];
 
         if (count($added_approvers) == 0 && count($recaptureInvoiceApprovers) > 0) {
             foreach ($recaptureInvoiceApprovers as $recaptureInvoiceApprover) {
@@ -1755,7 +1755,7 @@ class RecaptureController extends Controller
                 if ($document_ids !== null) {
                     $documents = explode(",", $document_ids);
                 } else {
-                    $documents = array();
+                    $documents = [];
                 }
                 $documents_json = json_encode($documents, true);
 
@@ -1877,7 +1877,7 @@ class RecaptureController extends Controller
                     $folderpath = 'documents/entity_'. $recapture->entity_id . '/program_' . $recapture->program_id . '/recapture_' . $recapture->id . '/';
                     
                     // sanitize filename
-                    $characters = array(' ','´','`',"'",'~','"','\'','\\','/');
+                    $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
                     $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                     // Create a record in documents table

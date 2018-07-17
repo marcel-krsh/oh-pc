@@ -1533,7 +1533,7 @@ class AccountingController extends Controller
 			            ORDER BY p.program_name
             "));
 
-            $sumAcctData = array();
+            $sumAcctData = [];
 
             foreach ($accountingTotals as $k => $subArray) {
                 foreach ($subArray as $id => $value) {
@@ -1632,7 +1632,7 @@ class AccountingController extends Controller
     {
         if (Auth::user() != null && (Auth::user()->isHFAFiscalAgent() || Auth::user()->isHFAAdmin())) {
             $statuses = \App\TransactionStatus::get()->toArray();
-            $status_array = array();
+            $status_array = [];
             foreach ($statuses as $status) {
                 $status_array[$status['id']]['name'] = $status['status_name'];
                 $status_array[$status['id']]['id'] = $status['id'];

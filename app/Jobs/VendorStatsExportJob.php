@@ -87,10 +87,10 @@ class VendorStatsExportJob implements ShouldQueue
             $filename = 'vendor_stats_'.$date;
         }
         
-        $filenames_array = array();
+        $filenames_array = [];
 
         // Create an array of totals with/without categories and programs
-        $summary_totals = array(); // [cat][program][cost type]
+        $summary_totals = []; // [cat][program][cost type]
 
         $summary_totals[0][0]['cost'] = CostItem::where('vendor_id', '!=', 1)->sum('amount') ?: 0;
         $summary_totals[0][0]['request'] = RequestItem::where('vendor_id', '!=', 1)->sum('amount') ?: 0;

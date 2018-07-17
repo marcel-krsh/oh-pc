@@ -384,7 +384,7 @@ class ExpenseCategoriesController extends Controller
             $invoice_items = InvoiceItem::where('vendor_id', '!=', 1)->where('vendor_id', '=', $vendor_id);
         }
 
-        $data = array();
+        $data = [];
 
         if ($parcel_id) {
             $parcel = Parcel::where('id', '=', $parcel_id)->first(['id']);

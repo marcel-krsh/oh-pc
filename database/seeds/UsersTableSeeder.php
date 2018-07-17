@@ -14,40 +14,40 @@ class UsersTableSeeder extends Seeder
 
 
 
-        $breakoutItemsStatusData = array(
-            array(
+        $breakoutItemsStatusData = [
+            [
             'breakout_item_status_name'=>'Pending'
             //1
-            ),
-            array(
+            ],
+            [
             'breakout_item_status_name'=>'Approved'
             //2
-            ),
-            array(
+            ],
+            [
             'breakout_item_status_name'=>'Declined'
             //3
-            ),
-            array(
+            ],
+            [
             'breakout_item_status_name'=>'Corrections Requested'
             //4
-            ),
-            array(
+            ],
+            [
             'breakout_item_status_name'=>'Corrections Made'
             //5
-            ),
-            array(
+            ],
+            [
             'breakout_item_status_name'=>'Cancelled'
             //6
-            ),
-            array(
+            ],
+            [
             'breakout_item_status_name'=>'Paid'
             //7
-            ),
-            array(
+            ],
+            [
             'breakout_item_status_name'=>'Invoiced'
             //7
-            )
-        );
+            ]
+        ];
         DB::table('breakout_items_statuses')->insert($breakoutItemsStatusData);
 
         // $expenseCategoriesData = array(
@@ -94,21 +94,21 @@ class UsersTableSeeder extends Seeder
         // );
         // DB::table('expense_categories')->insert($expenseCategoriesData);
 
-        $breakOutTypesData = array(
-            array(
+        $breakOutTypesData = [
+            [
             'breakout_type_name'=>'Landbank Reimbursement'
-            ),
-            array(
+            ],
+            [
             'breakout_type_name'=>'HFA Reimbursement'
-            ),
-            array(
+            ],
+            [
             'breakout_type_name'=>'Landbank Advance'
-            ),
-            array(
+            ],
+            [
             'breakout_type_name'=>'Landbank LOC'
-            )
+            ]
             
-        );
+        ];
         DB::table('break_out_types')->insert($breakOutTypesData);
 
 
@@ -156,8 +156,8 @@ class UsersTableSeeder extends Seeder
 
         ]);
 
-        $countyUsers = array(
-                array(
+        $countyUsers = [
+                [
                 'name'=>'Ashtabula County Land Reutilization Corporation',
                 'email'=>'Landbank@ashtabulacounty.us',
                 'password'=>bcrypt('7aster!'),
@@ -165,8 +165,8 @@ class UsersTableSeeder extends Seeder
                 'entity_id' => '2','entity_type'=>'landbank',
                 'active' => '1',
                 'verified' => '1',
-                ),
-                array(
+                ],
+                [
                     'name'=>'Belmont County Land Reutilization Corporation',
                     'email'=>'ginny.favede@co.belmont.oh.us',
                     'password'=>bcrypt('cav$dsh3') ,
@@ -174,8 +174,8 @@ class UsersTableSeeder extends Seeder
                     'entity_id' => '3','entity_type'=>'landbank',
                     'active' => '1',
                     'verified' => '1',
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Butler County Land Reutilization Corporation',
                     'email'=>'nixn@butlercountyohio.org',
                     'password'=>bcrypt('@mu#1py') ,
@@ -183,8 +183,8 @@ class UsersTableSeeder extends Seeder
                     'entity_id' => '4','entity_type'=>'landbank',
                     'active' => '1',
                     'verified' => '1',
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Central Ohio Community Improvement Corporation',
                     'email'=>'jcrosenberger@cocic.org',
                     'password'=>bcrypt('#osu1&&') ,
@@ -193,8 +193,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Clark County Land Reutilization Corporation',
                     'email'=>'dfleck@clarkcountyohio.gov',
                     'password'=>bcrypt('lu&clk7') ,
@@ -203,8 +203,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Columbiana County Land Reutilization Corp',
                     'email'=>'therold@columbianacodev.org',
                     'password'=>bcrypt('ana@poly9') ,
@@ -213,8 +213,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Cuyahoga County Land Reutilization Corporation',
                     'email'=>'bwhitney@cuyahogalandbank.org',
                     'password'=>bcrypt('cavs1$') ,
@@ -223,8 +223,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Erie County Land Reutilization Corp',
                     'email'=>'sschell@eriecounty.oh.gov',
                     'password'=>bcrypt('$rommel7') ,
@@ -233,8 +233,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Fairfield County Land Reutilization Corp',
                     'email'=>'jnbahnsen@co.fairfield.oh.us',
                     'password'=>bcrypt('gen*sher!') ,
@@ -243,8 +243,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Hamilton County Land Reutilization Corporation',
                     'email'=>'crecht@cincinnatiport.org',
                     'password'=>bcrypt('@@loop88') ,
@@ -253,8 +253,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Jefferson County Land Reutilization Corporation',
                     'email'=>'rfenderrpc@jeffersoncountyoh.com',
                     'password'=>bcrypt('ck#gable') ,
@@ -263,8 +263,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Lake County Land Reutilization Corp',
                     'email'=>'jmrogers@lakecountylandbank.org',
                     'password'=>bcrypt('&simco35') ,
@@ -273,8 +273,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Lorain County Port Authority',
                     'email'=>'pmetzger@loraincounty.us',
                     'password'=>bcrypt('77erie@') ,
@@ -283,8 +283,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Lucas County Land Reutilization Corporation',
                     'email'=>'dmann@co.lucas.oh.us',
                     'password'=>bcrypt('$sac4ft') ,
@@ -293,8 +293,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Mahoning County Land Reutilization Corp',
                     'email'=>'dflora@mahoninglandbank.com',
                     'password'=>bcrypt('upown@2') ,
@@ -303,8 +303,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Montgomery County Land Reutilization Corp',
                     'email'=>'mikeg@mclandbank.com',
                     'password'=>bcrypt('go#west6!') ,
@@ -313,8 +313,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Portage County Land Reutilization Corporation',
                     'email'=>'morgantid@kent-ohio.org',
                     'password'=>bcrypt('nxt@qu!') ,
@@ -323,8 +323,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Richland County Land Reutilization Corp',
                     'email'=>'ahamrick@richlandcountyoh.us',
                     'password'=>bcrypt('5ny@yank') ,
@@ -333,8 +333,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Stark County Land Reutilization Corp',
                     'email'=>'aazumbar@starkcountyohio.gov',
                     'password'=>bcrypt('stk!7ohmy') ,
@@ -343,8 +343,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Summit County Land Reutilization Corp',
                     'email'=>'pbravo@summitlandbank.org',
                     'password'=>bcrypt('red!grn@4') ,
@@ -353,8 +353,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Trumbull County Land Reutilization Corp',
                     'email'=>'lisa@tnpwarren.org',
                     'password'=>bcrypt('yt*oh@@') ,
@@ -363,8 +363,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Carlie Boos',
                     'email'=>'cboos@ohiohome.org',
                     'password'=>bcrypt('Allita12') ,
@@ -373,8 +373,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Eric Tooney',
                     'email'=>'etooney@ohiohome.org',
                     'password'=>bcrypt('Allita12') ,
@@ -383,8 +383,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Jilvonda Burston',
                     'email'=>'jburston@ohiohome.org',
                     'password'=>bcrypt('Allita12') ,
@@ -393,8 +393,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'William Steele',
                     'email'=>'wsteele@ohiohome.org',
                     'password'=>bcrypt('Allita12') ,
@@ -403,8 +403,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Marc Gardner',
                     'email'=>'mgardnere@ohiohome.org',
                     'password'=>bcrypt('Allita12') ,
@@ -413,8 +413,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
-                array(
+                    ],
+                [
                     'name'=>'Eric Corthell',
                     'email'=>'ecorthell@ohiohome.org',
                     'password'=>bcrypt('Allita12') ,
@@ -423,9 +423,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 30
-                array(
+                [
                     'name'=>'Allen County',
                     'email'=>'allencounty@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -434,9 +434,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 31
-                array(
+                [
                     'name'=>'Clinton County',
                     'email'=>'clintoncounty@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -445,9 +445,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 32
-                array(
+                [
                     'name'=>'Crawford County',
                     'email'=>'crawfordcounty@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -456,9 +456,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 33
-                array(
+                [
                     'name'=>'Lawrence County',
                     'email'=>'lawrencecounty@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -467,9 +467,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 34
-                array(
+                [
                     'name'=>'Licking County',
                     'email'=>'lickingcounty@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -478,9 +478,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 35
-                array(
+                [
                     'name'=>'Marion County',
                     'email'=>'marioncounty@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -489,9 +489,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 36
-                array(
+                [
                     'name'=>'Morrow County',
                     'email'=>'morrowcounty@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -500,9 +500,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 37
-                array(
+                [
                     'name'=>'Ottawa County',
                     'email'=>'ottawacounty@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -511,9 +511,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 38
-                array(
+                [
                     'name'=>'Perry County',
                     'email'=>'perrycounty@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -522,9 +522,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 39
-                array(
+                [
                     'name'=>'Ross County',
                     'email'=>'rosscounty@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -533,9 +533,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 40
-                array(
+                [
                     'name'=>'Sandusky County',
                     'email'=>'sanduskycounty@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -544,9 +544,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 41
-                array(
+                [
                     'name'=>'Scioto County',
                     'email'=>'sciotocounty@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -555,9 +555,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 42
-                array(
+                [
                     'name'=>'Seneca County',
                     'email'=>'senecacounty@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -566,9 +566,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 43
-                array(
+                [
                     'name'=>'Shelby County',
                     'email'=>'county@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -577,9 +577,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 44
-                array(
+                [
                     'name'=>'Van Wert County',
                     'email'=>'vanwertcounty@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -588,9 +588,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 45
-                array(
+                [
                     'name'=>'Williams County',
                     'email'=>'williamscounty@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -599,9 +599,9 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    ),
+                    ],
                 /// 46
-                array(
+                [
                     'name'=>'Historic Agency',
                     'email'=>'historic@allita.org',
                     'password'=>bcrypt('Allita12') ,
@@ -610,8 +610,8 @@ class UsersTableSeeder extends Seeder
                     'active' => '1',
                     'verified' => '1',
 
-                    )
-               );
+                    ]
+               ];
         DB::table('users')->insert($countyUsers);
 
         DB::table('users')->insert([

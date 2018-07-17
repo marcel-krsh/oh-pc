@@ -104,7 +104,7 @@ class ReimbursementPurchaseOrders extends Model
     public function resetApprovals()
     {
         /* @todo: move to a service class method */
-        $approvals = ApprovalRequest::whereIn('approval_type_id', array(3))
+        $approvals = ApprovalRequest::whereIn('approval_type_id', [3])
                     ->where('link_type_id', '=', $this->id)
                     ->get();
 

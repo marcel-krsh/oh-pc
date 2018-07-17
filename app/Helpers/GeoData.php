@@ -13,10 +13,10 @@ class GeoData
 {
     public function getGoogleMapsData($address)
     {
-        $qs = http_build_query(array(
+        $qs = http_build_query([
             'address' => $address,
             'key'     => config('geodata.services.google.api_key'),
-        ));
+        ]);
         ini_set('default_socket_timeout', 900);
         $response = file_get_contents(config('geodata.services.google.api_url') . $qs);
 

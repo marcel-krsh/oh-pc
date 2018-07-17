@@ -13,23 +13,23 @@ class UpdatePropertyStatusOptionsForLbDispositionRequested extends Migration
      */
     public function up()
     {
-        $propertyStatusOptionData = array(
-                array(
+        $propertyStatusOptionData = [
+                [
                           'option_name' => 'Disposition Submitted for Internal Approval',
                           'for'=>'landbank',
                           'order'=>30
-                ),
-                 array(
+                ],
+                 [
                           'option_name' => 'Disposition Declined',
                           'for'=>'hfa',
                           'order'=>20
-                ),
-                 array(
+                ],
+                 [
                           'option_name' => 'Disposition Draft',
                           'for'=>'landbank',
                           'order'=>29
-                )
-        );
+                ]
+        ];
               
         DB::table('property_status_options')->insert($propertyStatusOptionData);
     }

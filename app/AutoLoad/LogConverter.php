@@ -28,18 +28,18 @@ class LogConverter
     {
         $this->eventType=$eventtype;
         $this->eventName=$eventname;
-        $this->history = array();
-        $this->properties = array();
-        $this->userRoles = array();
-        $this->notes = array();
-        $this->internal = array();
+        $this->history = [];
+        $this->properties = [];
+        $this->userRoles = [];
+        $this->notes = [];
+        $this->internal = [];
         $this->desc = "";
         $this->timeStamp = time();
     }
 
     public function addNote($userid, $notedata)
     {
-        $newnote = array();
+        $newnote = [];
         $newnote['timestamp'] = time();
         $newnote['fromid'] = $userid;
         $newnote['data'] = $notedata;
@@ -48,7 +48,7 @@ class LogConverter
     }
     public function addInternal($name, $internaldata)
     {
-        $newinternal = array();
+        $newinternal = [];
         $newinternal[$name] = $internaldata;
         array_push($this->internal, $newinternal);
         return $this;
@@ -80,7 +80,7 @@ class LogConverter
             //nothing changed,  no need to log
             return $this;
         }
-        $tempitem = array();
+        $tempitem = [];
         $oldnewpair = [$oldvalue, $newvalue];
         $this->history[$varname] = $oldnewpair;
         return $this;
@@ -167,7 +167,7 @@ class LogConverter
 
     public function getLogArray()
     {
-        $ret = array();
+        $ret = [];
         $ret['historyId'] = $this->id;
         $ret['eventType'] = $this->eventType;
         $ret['eventName'] = $this->eventName;

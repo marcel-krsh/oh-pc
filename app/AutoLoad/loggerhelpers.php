@@ -26,7 +26,7 @@ function addParcelLogWithArray($userfrom,$parcel,$eventtype,$eventname,$properti
 */
 function getUserLogs()
 {
-    $return = array();
+    $return = [];
     $allLogs = Activity::all();
     foreach ($allLogs as $log) {
         $logtype = $log->getExtraProperty('EventType');
@@ -39,7 +39,7 @@ function getUserLogs()
 
 function getEntityLogs()
 {
-    $return = array();
+    $return = [];
     $allLogs = Activity::all();
     foreach ($allLogs as $log) {
         $logtype = $log->getExtraProperty('EventType');
@@ -52,7 +52,7 @@ function getEntityLogs()
 
 function getParcelLogs()
 {
-    $return = array();
+    $return = [];
     $allLogs = Activity::all();
     foreach ($allLogs as $log) {
         $logtype = $log->getExtraProperty('EventType');
@@ -65,7 +65,7 @@ function getParcelLogs()
 
 function searchJsonLogs(Request $request, $logtype, $start, $stop)
 {
-    $ret=array();
+    $ret=[];
     $alllogs = Activity::all();
     $count = 0;
     foreach ($alllogs as $log) {
@@ -125,7 +125,7 @@ function searchJsonLogs(Request $request, $logtype, $start, $stop)
 }
 function getJsonLogs($logtype, $start, $stop)
 {
-    $ret=array();
+    $ret=[];
     $alllogs = Activity::all();
     $count = 0;
     foreach ($alllogs as $log) {

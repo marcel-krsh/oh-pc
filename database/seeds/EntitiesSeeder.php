@@ -13,8 +13,8 @@ class EntitiesSeeder extends Seeder
     {
         // ACCOUNTING SUPPORT DATA
 
-        $entitiesData = array(
-            array(
+        $entitiesData = [
+            [
                 'entity_name'=>'Ohio Housing Finance Agency.',
                 'user_id'=>'2',
                 'active'=>'1',
@@ -32,8 +32,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('tm6pz&'),
                 'owner_type'=>'user',
                 'owner_id'=>'2'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Ashtabula County Land Reutilization Corporation.',
                 'user_id'=>'3',
                 'active'=>'1',
@@ -51,8 +51,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('7aster!'),
                 'owner_type'=>'user',
                 'owner_id'=>'3'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Belmont County Land Reutilization Corporation.',
                 'user_id'=>'4',
                 'active'=>'1',
@@ -70,8 +70,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('cav$dsh3'),
                 'owner_type'=>'user',
                 'owner_id'=>'4'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Butler County Land Reutilization Corporation.',
                 'user_id'=>'5',
                 'active'=>'1',
@@ -89,8 +89,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('@mu#1py'),
                 'owner_type'=>'user',
                 'owner_id'=>'5'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Central Ohio Community Improvement Corporation.',
                 'user_id'=>'6',
                 'active'=>'1',
@@ -108,8 +108,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('#osu1&&'),
                 'owner_type'=>'user',
                 'owner_id'=>'6'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Clark County Land Reutilization Corporation.',
                 'user_id'=>'7',
                 'active'=>'1',
@@ -127,8 +127,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('lu&clk7'),
                 'owner_type'=>'user',
                 'owner_id'=>'7'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Columbiana County Land Reutilization Corporation.',
                 'user_id'=>'8',
                 'active'=>'1',
@@ -146,8 +146,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('ana@poly9'),
                 'owner_type'=>'user',
                 'owner_id'=>'8'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Cuyahoga County Land Reutilization Corporation.',
                 'user_id'=>'9',
                 'active'=>'1',
@@ -165,8 +165,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('cavs1$'),
                 'owner_type'=>'user',
                 'owner_id'=>'9'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Erie County Land Reutilization Corporation.',
                 'user_id'=>'10',
                 'active'=>'1',
@@ -184,8 +184,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('$rommel7'),
                 'owner_type'=>'user',
                 'owner_id'=>'10'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Fairfield County Land Reutilization Corporation.',
                 'user_id'=>'11',
                 'active'=>'1',
@@ -203,8 +203,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('gen*sher!'),
                 'owner_type'=>'user',
                 'owner_id'=>'11'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Hamilton County Land Reutilization Corporation.',
                 'user_id'=>'12',
                 'active'=>'1',
@@ -222,8 +222,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('@@loop88'),
                 'owner_type'=>'user',
                 'owner_id'=>'12'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Jefferson County Land Reutilization Corporation.',
                 'user_id'=>'13',
                 'active'=>'1',
@@ -241,8 +241,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('ck#gable'),
                 'owner_type'=>'user',
                 'owner_id'=>'13'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Lake County Land Reutilization Corporation.',
                 'user_id'=>'14',
                 'active'=>'1',
@@ -260,8 +260,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('&simco35'),
                 'owner_type'=>'user',
                 'owner_id'=>'14'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Lorain County Port Authority.',
                 'user_id'=>'15',
                 'active'=>'1',
@@ -279,8 +279,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('77erie@'),
                 'owner_type'=>'user',
                 'owner_id'=>'15'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Lucas County Land Reutilization Corporation.',
                 'user_id'=>'16',
                 'active'=>'1',
@@ -298,8 +298,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('$sac4ft'),
                 'owner_type'=>'user',
                 'owner_id'=>'16'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Mahoning County Land Reutilization Corporation.',
                 'user_id'=>'17',
                 'active'=>'1',
@@ -317,8 +317,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('upown@2'),
                 'owner_type'=>'user',
                 'owner_id'=>'17'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Montgomery County Land Reutilization Corporation.',
                 'user_id'=>'18',
                 'active'=>'1',
@@ -336,8 +336,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('go#west6!'),
                 'owner_type'=>'user',
                 'owner_id'=>'18'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Portage County Land Reutilization Corporation.',
                 'user_id'=>'19',
                 'active'=>'1',
@@ -355,8 +355,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('nxt@qu!'),
                 'owner_type'=>'user',
                 'owner_id'=>'19'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Richland County Land Reutilization Corporation.',
                 'user_id'=>'20',
                 'active'=>'1',
@@ -374,8 +374,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('5ny@yank'),
                 'owner_type'=>'user',
                 'owner_id'=>'20'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Stark County Land Reutilization Corporation.',
                 'user_id'=>'21',
                 'active'=>'1',
@@ -393,8 +393,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('stk!7ohmy'),
                 'owner_type'=>'user',
                 'owner_id'=>'21'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Summit County Land Reutilization Corporation.',
                 'user_id'=>'22',
                 'active'=>'1',
@@ -412,8 +412,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('red!grn@4'),
                 'owner_type'=>'user',
                 'owner_id'=>'22'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Trumbull County Land Reutilization Corporation.',
                 'user_id'=>'23',
                 'active'=>'1',
@@ -431,8 +431,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('yt*oh@@'),
                 'owner_type'=>'user',
                 'owner_id'=>'23'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Allen County Land Reutilization Corporation.',
                 'user_id'=>'30',
                 'active'=>'1',
@@ -450,8 +450,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user',
                 'owner_id'=>'30'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Clinton County Land Reutilization Corporation.',
                 'user_id'=>'31',
                 'active'=>'1',
@@ -469,8 +469,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user',
                 'owner_id'=>'31'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Crawford County Land Reutilization Corporation.',
                 'user_id'=>'32',
                 'active'=>'1',
@@ -488,8 +488,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user',
                 'owner_id'=>'32'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Lawrence County Land Reutilization Corporation.',
                 'user_id'=>'33',
                 'owner_id'=>'33',
@@ -507,8 +507,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_user'=>crypt::encrypt('NA'),
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Licking County Land Reutilization Corporation.',
                 'user_id'=>'34',
                 'owner_id'=>'34',
@@ -526,8 +526,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_user'=>crypt::encrypt('NA'),
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Marion County Land Reutilization Corporation.',
                 'user_id'=>'35',
                 'owner_id'=>'35',
@@ -545,8 +545,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_user'=>crypt::encrypt('NA'),
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Morrow County Land Reutilization Corporation.',
                 'user_id'=>'36',
                 'owner_id'=>'36',
@@ -564,8 +564,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_user'=>crypt::encrypt('NA'),
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Ottawa County Land Reutilization Corporation.',
                 'user_id'=>'37',
                 'owner_id'=>'37',
@@ -583,8 +583,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_user'=>crypt::encrypt('NA'),
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Perry County Land Reutilization Corporation.',
                 'user_id'=>'38',
                 'owner_id'=>'38',
@@ -602,8 +602,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_user'=>crypt::encrypt('NA'),
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Ross County Land Reutilization Corporation.',
                 'user_id'=>'39',
                 'owner_id'=>'39',
@@ -621,8 +621,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_user'=>crypt::encrypt('NA'),
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Sandusky County Land Reutilization Corporation.',
                 'user_id'=>'40',
                 'owner_id'=>'40',
@@ -640,8 +640,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_user'=>crypt::encrypt('NA'),
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Scioto County Land Reutilization Corporation.',
                 'user_id'=>'41',
                 'owner_id'=>'41',
@@ -659,8 +659,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_user'=>crypt::encrypt('NA'),
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Seneca County Land Reutilization Corporation.',
                 'user_id'=>'42',
                 'owner_id'=>'42',
@@ -678,8 +678,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_user'=>crypt::encrypt('NA'),
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Shelby County Land Reutilization Corporation.',
                 'user_id'=>'43',
                 'owner_id'=>'43',
@@ -697,8 +697,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_user'=>crypt::encrypt('NA'),
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Van Wert County Land Reutilization Corporation.',
                 'user_id'=>'44',
                 'owner_id'=>'44',
@@ -716,8 +716,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_user'=>crypt::encrypt('NA'),
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'Williams County Land Reutilization Corporation.',
                 'user_id'=>'45',
                 'owner_id'=>'45',
@@ -735,8 +735,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_user'=>crypt::encrypt('NA'),
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user'
-            ),
-            array(
+            ],
+            [
                 'entity_name'=>'The Historic Agency',
                 'user_id'=>'46',
                 'owner_id'=>'46',
@@ -754,8 +754,8 @@ class EntitiesSeeder extends Seeder
                 'datatran_user'=>crypt::encrypt('NA'),
                 'datatran_password'=>crypt::encrypt('NA'),
                 'owner_type'=>'user'
-            )
-        );
+            ]
+        ];
 
         \Illuminate\Support\Facades\DB::table('entities')->insert($entitiesData);
     }

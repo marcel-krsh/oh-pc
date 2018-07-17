@@ -19,15 +19,15 @@ class CreateSiteVisitStatusNamesTable extends Migration
         });
         // Insert Values
         DB::table('site_visit_status_names')->insert(
-            array(
+            [
                 'name' => 'In Progress'
-            )
+            ]
         );
         // Insert Values
         DB::table('site_visit_status_names')->insert(
-            array(
+            [
                 'name' => 'Completed'
-            )
+            ]
         );
     }
 

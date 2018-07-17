@@ -103,7 +103,7 @@ class ReimbursementRequest extends Model
     {
         /* @todo: move to a service class method */
 
-        $approvals = ApprovalRequest::whereIn('approval_type_id', array(2))
+        $approvals = ApprovalRequest::whereIn('approval_type_id', [2])
                     ->where('link_type_id', '=', $this->id)
                     ->get();
 

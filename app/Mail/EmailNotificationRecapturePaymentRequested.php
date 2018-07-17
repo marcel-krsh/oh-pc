@@ -56,7 +56,7 @@ class EmailNotificationRecapturePaymentRequested extends Mailable
         $greeting = "RECAPTURE INVOICE ".$this->invoice_id." was approved and submitted for payment by HFA.";
        
         $introLines[] = "You can now process transaction.";
-        $outroLines[] = array();
+        $outroLines[] = [];
 
         $actionText = "View RECAPTURE INVOICE";
 

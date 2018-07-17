@@ -56,7 +56,7 @@ class ImportController extends Controller
     public function checkBool($string)
     {
         $string = strtolower($string);
-        return (in_array($string, array("true", "false", "1", "0", "yes", "no"), true));
+        return (in_array($string, ["true", "false", "1", "0", "yes", "no"], true));
     }
 
     // take a word like states and return state. or counties and return county.
@@ -518,7 +518,7 @@ class ImportController extends Controller
                             if ($id) {
                                 DB::table($table)->where('id', $id)->update($fields);
                                 $p = Parcel::find($id);
-                                $properties=array();
+                                $properties=[];
                                 $properties['fields'] = $fields;
                                 addParcelWithArray(Auth::user(), $p, 'parcel', 'corrections', $fields, 'Corrections import');
 
@@ -624,7 +624,7 @@ class ImportController extends Controller
 
 
                         //Create the output array
-                        $resolutionOutput[] = array([
+                        $resolutionOutput[] = [[
                                 'resolution_id'=> $d->id,
                                 'resolution_lb_notes'=> $d->resolution_lb_notes,
                                 'resolution_type'=> $d->resolution_type,
@@ -651,7 +651,7 @@ class ImportController extends Controller
                                 // 'hfa_resolved'=>11,
                                 // 'requires_hfa_resolution'=>13
 
-                                ]);
+                                ]];
                     }
                 }
                 $lat = floatval($request->get('lat'));

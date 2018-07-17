@@ -42,176 +42,176 @@ class GuideTables extends Migration
         });
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $step_types = array(
-            array(
+        $step_types = [
+            [
                 'name' => 'disposition'
-            )
-        );
+            ]
+        ];
         DB::table('guide_step_types')->insert($step_types);
 
-        $guide_steps = array(
-            array( // 1
+        $guide_steps = [
+            [ // 1
                 'parent_id' => null,
                 'guide_step_type_id' => 1,
                 'name' => 'Step 1',
                 'hfa' => 0
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Complete form',
                 'hfa' => 0
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Upload supporting documents',
                 'hfa' => 0
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Submit for internal approval',
                 'hfa' => 0
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 1,
                 'guide_step_type_id' => 1,
                 'name' => 'Submit to HFA',
                 'hfa' => 0
-            ),
+            ],
 
-            array( //6
+            [ //6
                 'parent_id' => null,
                 'guide_step_type_id' => 1,
                 'name' => 'Step 2',
                 'hfa' => 1
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Confirm calculations',
                 'hfa' => 1
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Review supporting documents',
                 'hfa' => 1
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Approve request',
                 'hfa' => 1
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Notify Landbank',
                 'hfa' => 1
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Request lien release',
                 'hfa' => 1
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 6,
                 'guide_step_type_id' => 1,
                 'name' => 'Add to disposition invoice',
                 'hfa' => 1
-            ),
+            ],
 
-            array( //13
+            [ //13
                 'parent_id' => null,
                 'guide_step_type_id' => 1,
                 'name' => 'Step 3',
                 'hfa' => 1
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Fiscal agent release lien',
                 'hfa' => 1
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Begin sale of parcel',
                 'hfa' => 0
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Finalize sale',
                 'hfa' => 0
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 13,
                 'guide_step_type_id' => 1,
                 'name' => 'Upload final executed release',
                 'hfa' => 0
-            ),
+            ],
 
-            array( //18
+            [ //18
                 'parent_id' => null,
                 'guide_step_type_id' => 1,
                 'name' => 'Step 4 HFA',
                 'hfa' => 1
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 18,
                 'guide_step_type_id' => 1,
                 'name' => 'Review disposition',
                 'hfa' => 1
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 18,
                 'guide_step_type_id' => 1,
                 'name' => 'Holly approval',
                 'hfa' => 1
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 18,
                 'guide_step_type_id' => 1,
                 'name' => 'Jim approval',
                 'hfa' => 1
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 18,
                 'guide_step_type_id' => 1,
                 'name' => 'Send invoice',
                 'hfa' => 1
-            ),
+            ],
 
-            array( //23
+            [ //23
                 'parent_id' => null,
                 'guide_step_type_id' => 1,
                 'name' => 'Step 5 LB',
                 'hfa' => 0
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 23,
                 'guide_step_type_id' => 1,
                 'name' => 'Send invoice payment',
                 'hfa' => 0
-            ),
+            ],
 
-            array( //25
+            [ //25
                 'parent_id' => null,
                 'guide_step_type_id' => 1,
                 'name' => 'Step 6 HFA',
                 'hfa' => 1
-            ),
-            array(
+            ],
+            [
                 'parent_id' => 25,
                 'guide_step_type_id' => 1,
                 'name' => 'Mark as paid',
                 'hfa' => 1
-            )
-        );
+            ]
+        ];
         DB::table('guide_steps')->insert($guide_steps);
     }
 

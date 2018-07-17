@@ -150,7 +150,7 @@ class ParcelsExportJob implements ShouldQueue
                     $row->setFontColor('#ffffff');
                 });
                 $sheet->freezeFirstRow(1);
-                $sheet->setWidth(array(
+                $sheet->setWidth([
                   'A'     =>  20,
                   'B'     =>  25,
                   'C'     =>  25,
@@ -169,7 +169,7 @@ class ParcelsExportJob implements ShouldQueue
                   'P'     =>  15,
                   'Q'     =>  15,
                   'R'     =>  25,
-                ));
+                ]);
             });
             //})->download("xlsx");
         })->store('xls', storage_path('app/export/parcels'));

@@ -63,7 +63,7 @@ class EmailNotificationDispositionReview extends Mailable
         $invoice = $this->invoice;
         
         $introLines[] = "";
-        $outroLines[] = array();
+        $outroLines[] = [];
 
         if ($this->disposition) {
             $greeting = "DISPOSITION ".$this->disposition->id." has been submitted for review.";

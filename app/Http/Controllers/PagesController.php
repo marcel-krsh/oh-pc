@@ -298,7 +298,7 @@ class PagesController extends Controller
                     $row->setFontColor('#ffffff');
                 });
                 $sheet->freezeFirstRow(1);
-                $sheet->setWidth(array(
+                $sheet->setWidth([
                       'A'     =>  20,
                       'B'     =>  25,
                       'C'     =>  25,
@@ -310,7 +310,7 @@ class PagesController extends Controller
                       'I'     =>  80,
                       'J'     =>  20
                       
-                  ));
+                  ]);
                 
                 // $sheet->protectCells('A1', $password);
                 // $sheet->protectCells('B1', $password);
@@ -578,7 +578,7 @@ class PagesController extends Controller
             ORDER BY p.program_name
                         "));
 
-            $sumStatData = array();
+            $sumStatData = [];
 
             foreach ($stats as $k => $subArray) {
                 foreach ($subArray as $id => $value) {
@@ -689,7 +689,7 @@ class PagesController extends Controller
                     $unseen_communication->summary = strlen($unseen_communication->communication->message) > 400 ? substr($unseen_communication->communication->message, 0, 20)."..." : $unseen_communication->communication->message;
                 }
             } else {
-                $unseen_communications = array();
+                $unseen_communications = [];
             }
 
             $filter['lbFilters'] = DB::table('property_status_options')->where('for', 'landbank')->where('active', '1')->orderBy('order', 'asc')->get();
@@ -1822,7 +1822,7 @@ class PagesController extends Controller
     public function userEdit(Request $request, $userId)
     {
         if (Auth::user()->canManageUsers()) {
-            $userParams = array();
+            $userParams = [];
             $editUser = \App\User::find($userId);
             if ($request->email == $editUser->email) {
                 $validator = Validator::make($request->all(), [
@@ -1842,14 +1842,14 @@ class PagesController extends Controller
                 foreach ($validator->errors()->all() as $error_message) {
                     $message = $error_message."<br />".$message;
                 }
-                $msg = array('message'=> $message,'status'=>0);
+                $msg = ['message'=> $message,'status'=>0];
                 return json_encode($msg);
             }
         
             $roles = $request->get('role');
             $editUser->roles()->detach();
             $lc = new LogConverter('user', 'edituser');
-            $addedRoles=array();
+            $addedRoles=[];
             if (isset($roles)) {
                 foreach ($roles as $rolekey => $rolevalue) {
                     $role = Role::find($rolekey);
@@ -1901,13 +1901,13 @@ class PagesController extends Controller
             $tuser = Auth::user();
             $lc = new LogConverter('user', 'edituser');
             $lc->setDesc($tuser->email . ' edited user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
-            $msg = array('message'=> 'I updated '.$request->name.' successfully. Their API Token is : '.$newToken,'status'=>1);
+            $msg = ['message'=> 'I updated '.$request->name.' successfully. Their API Token is : '.$newToken,'status'=>1];
             return json_encode($msg);
         } else {
             $tuser = Auth::user();
             $lc = new LogConverter('user', 'unauthorized edituser');
             $lc->setDesc($tuser->email . ' attempted to edit user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
-            $msg = array('message'=> 'Sorry, but you do not have access to edit users.','status'=>0);
+            $msg = ['message'=> 'Sorry, but you do not have access to edit users.','status'=>0];
             return json_encode($msg);
         }
     }
@@ -1918,7 +1918,7 @@ class PagesController extends Controller
         $tuser = Auth::user();
         $lc = new LogConverter('user', 'activateuser');
         $lc->setDesc($tuser->email . ' Activated user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
-        $msg = array('message'=> 'Successfully activated user','status'=>1);
+        $msg = ['message'=> 'Successfully activated user','status'=>1];
         return json_encode($msg);
     }
     public function userQuickActivate($userId, Request $request)
@@ -2010,11 +2010,11 @@ class PagesController extends Controller
             $tuser = Auth::user();
             $lc = new LogConverter('user', 'deactivate');
             $lc->setDesc($tuser->email . ' Deactivated user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
-            $msg = array('message'=> 'Successfully deactivated user','status'=>1);
+            $msg = ['message'=> 'Successfully deactivated user','status'=>1];
             $lc->setDesc($editUser->email . ' Deactivated')->setFrom(Auth::user())->setTo($editUser)->save();
             return json_encode($msg);
         } else {
-            $msg = array('message'=> 'Sorry, you don\'t have permission to do that.','status'=>1);
+            $msg = ['message'=> 'Sorry, you don\'t have permission to do that.','status'=>1];
         }
     }
     public function userQuickDelete($userId, Request $request)
@@ -2215,7 +2215,7 @@ class PagesController extends Controller
                 $entity_id = $current_user->entity_id;
                 $entity_type = 'landbank';
             }
-            $userParams = array();
+            $userParams = [];
 
             $newUser = new \App\User([
             'entity_id' => $entity_id,
@@ -2226,7 +2226,7 @@ class PagesController extends Controller
             $roles = $request->get('role');
             $newUser->roles()->detach();
             $lc = new LogConverter('user', 'newUser');
-            $addedRoles=array();
+            $addedRoles=[];
             if (isset($roles)) {
                 foreach ($roles as $rolekey => $rolevalue) {
                     $role = Role::find($rolekey);
@@ -2258,13 +2258,13 @@ class PagesController extends Controller
                 'verified'=>1
                 ]);
             }
-            $msg = array('message'=> 'I created a new user for '.$request->name.'. Exciting! I hope they are just as awesome as you!','status'=>1);
+            $msg = ['message'=> 'I created a new user for '.$request->name.'. Exciting! I hope they are just as awesome as you!','status'=>1];
             return json_encode($msg);
         } else {
             $tuser = Auth::user();
             $lc = new LogConverter('user', 'unauthorized edituser');
             $lc->setDesc($tuser->email . ' attempted to create user.')->setFrom($tuser)->setTo($tuser)->save();
-            $msg = array('message'=> 'Sorry you do not have access to create a user','status'=>0);
+            $msg = ['message'=> 'Sorry you do not have access to create a user','status'=>0];
             return json_encode($msg);
         }
     }
@@ -2321,7 +2321,7 @@ class PagesController extends Controller
             }
         }
 
-        $owners_array = array();
+        $owners_array = [];
 
         if ($messages) {
             foreach ($messages as $message) {

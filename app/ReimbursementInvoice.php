@@ -195,7 +195,7 @@ class ReimbursementInvoice extends Model
     {
         /* @todo: move to observer */
 
-        $approvals = ApprovalRequest::whereIn('approval_type_id', array(4, 8, 9, 10))
+        $approvals = ApprovalRequest::whereIn('approval_type_id', [4, 8, 9, 10])
                     ->where('link_type_id', '=', $this->id)
                     ->get();
 

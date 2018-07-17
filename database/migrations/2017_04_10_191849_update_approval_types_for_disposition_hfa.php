@@ -15,7 +15,7 @@ class UpdateApprovalTypesForDispositionHfa extends Migration
     {
         //DB::table('approval_types')->truncate();
         
-        $types = array(
+        $types = [
             // array('approval_type_name'=>'Disposition', 'table_name'=>'dispositions'),
             // array('approval_type_name'=>'Reimbursement Request', 'table_name'=>'reimbursement_requests'),
             // array('approval_type_name'=>'Reimbursement PO', 'table_name'=>'reimbursement_purchase_orders'),
@@ -26,10 +26,10 @@ class UpdateApprovalTypesForDispositionHfa extends Migration
             // array('approval_type_name'=>'Reimbursement Invoice HFA Primary', 'table_name'=>'reimbursement_invoices'),
             // array('approval_type_name'=>'Reimbursement Invoice HFA Secondary', 'table_name'=>'reimbursement_invoices'),
             // ('approval_type_name'=>'Reimbursement Invoice HFA Tertiary', 'table_name'=>'reimbursement_invoices'),
-            array('approval_type_name'=>'Disposition HFA', 'table_name'=>'dispositions')
+            ['approval_type_name'=>'Disposition HFA', 'table_name'=>'dispositions']
             
 
-        );
+        ];
         DB::table('approval_types')->insert($types);
     }
 

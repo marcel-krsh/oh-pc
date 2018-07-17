@@ -45,7 +45,7 @@ class CostImportController extends Controller
      */
     public function checkBool($string)
     {
-        return (in_array(strtolower($string), array("true", "false", "1", "0", "yes", "no"), true));
+        return (in_array(strtolower($string), ["true", "false", "1", "0", "yes", "no"], true));
     }
 
     /**

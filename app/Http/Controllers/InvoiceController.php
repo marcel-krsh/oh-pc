@@ -49,7 +49,7 @@ class InvoiceController extends Controller
                 ->load('transactions')
                 ->load('clearedTransactions');
 
-        $stat = array();
+        $stat = [];
         $stat = $stat + $invoice->account->statsParcels->toArray()[0]
                         + $invoice->account->statsTransactions->toArray()[0]
                         + $invoice->account->statsCostItems->toArray()[0]
@@ -76,7 +76,7 @@ class InvoiceController extends Controller
         $total = money_format('%n', $total);
 
         // get notes
-        $owners_array = array();
+        $owners_array = [];
         foreach ($invoice->notes as $note) {
             // create initials
             $words = explode(" ", $note->owner->name);
@@ -100,7 +100,7 @@ class InvoiceController extends Controller
         // get entities
         $nip = Entity::where('id', 1)->with('state')->with('user')->first();
 
-        $approvers = array();
+        $approvers = [];
         $approvers['landbank'] = null;
         $approvers['hfa_primary'] = null;
         $approvers['hfa_secondary'] = null;
@@ -156,7 +156,7 @@ class InvoiceController extends Controller
                                     ->where('link_type_id', '=', $invoice->id)
                                     ->pluck('user_id as id');
 
-        $pending_approvers = array();
+        $pending_approvers = [];
         $pending_approvers['landbank'] = null;
         $pending_approvers['hfa_primary'] = null;
         $pending_approvers['hfa_secondary'] = null;
@@ -261,7 +261,7 @@ class InvoiceController extends Controller
         // Get approvals for each approver group (including actions)
         //
         //
-        $approvals = array();
+        $approvals = [];
         $approvals['landbank'] = ApprovalRequest::where('approval_type_id', '=', 4)
                                     ->where('link_type_id', '=', $invoice->id)
                                     ->with('actions')
@@ -300,19 +300,19 @@ class InvoiceController extends Controller
 
         $isFullyApprovedByAll = 0;
 
-        $hasApprovals = array();
+        $hasApprovals = [];
         $hasApprovals['landbank'] = 0;
         $hasApprovals['hfa_primary'] = 0;
         $hasApprovals['hfa_secondary'] = 0;
         $hasApprovals['hfa_tertiary'] = 0;
 
-        $isApproved = array();
+        $isApproved = [];
         $isApproved['landbank'] = 0;
         $isApproved['hfa_primary'] = 0;
         $isApproved['hfa_secondary'] = 0;
         $isApproved['hfa_tertiary'] = 0;
 
-        $isApprover = array();
+        $isApprover = [];
         $isApprover['landbank'] = 0;
         $isApprover['hfa_primary'] = 0;
         $isApprover['hfa_secondary'] = 0;
@@ -693,7 +693,7 @@ class InvoiceController extends Controller
                 if ($document_ids !== null) {
                     $documents = explode(",", $document_ids);
                 } else {
-                    $documents = array();
+                    $documents = [];
                 }
                 $documents_json = json_encode($documents, true);
 
@@ -1150,7 +1150,7 @@ class InvoiceController extends Controller
                     $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
                     
                     // sanitize filename
-                    $characters = array(' ','´','`',"'",'~','"','\'','\\','/');
+                    $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
                     $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                     // Create a record in documents table
