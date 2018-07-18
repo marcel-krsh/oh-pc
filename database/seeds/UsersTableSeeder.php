@@ -12,8 +12,6 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
 
-
-
         $breakoutItemsStatusData = [
             [
             'breakout_item_status_name'=>'Pending'
