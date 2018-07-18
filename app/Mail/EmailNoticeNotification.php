@@ -65,7 +65,7 @@ class EmailNoticeNotification extends Mailable
         
         // save in database
         if ($owner) {
-            $body = \View::make('emails.send_notice', compact('greeting', 'introLines', 'tracker'));
+            $body = \view('emails.send_notice', compact('greeting', 'introLines', 'tracker'));
             $email_saved_in_db = new  HistoricEmail([
                 "user_id" => $owner->id,
                 "type" => 'Notice',

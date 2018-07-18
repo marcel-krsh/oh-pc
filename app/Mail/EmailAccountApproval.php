@@ -71,7 +71,7 @@ class EmailAccountApproval extends Mailable
 
         // save in database
         if ($user) {
-            $body = \View::make('vendor.notifications.email', compact('greeting', 'introLines', 'actionUrl', 'actionText', 'level', 'outroLines'));
+            $body = \view('vendor.notifications.email', compact('greeting', 'introLines', 'actionUrl', 'actionText', 'level', 'outroLines'));
             $email_saved_in_db = new  HistoricEmail([
                 "user_id" => $user->id,
                 "type" => 'users',

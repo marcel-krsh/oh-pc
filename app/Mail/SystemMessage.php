@@ -73,7 +73,7 @@ class SystemMessage extends Mailable
 
         // save in database
         if ($owner) {
-            $body = \View::make('emails.send_communication', compact('greeting', 'introLines', 'actionUrl', 'actionText', 'level', 'outroLines', 'actionText2', 'actionUrl2', 'level2'));
+            $body = \view('emails.send_communication', compact('greeting', 'introLines', 'actionUrl', 'actionText', 'level', 'outroLines', 'actionText2', 'actionUrl2', 'level2'));
             $email_saved_in_db = new  HistoricEmail([
                 "user_id" => $owner->id,
                 "type" => 'communications',
