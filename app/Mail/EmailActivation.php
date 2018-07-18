@@ -64,7 +64,7 @@ class EmailActivation extends Mailable
 
         // save in database
         if ($owner) {
-            $body = \View::make('vendor.notifications.email', compact('greeting', 'introLines', 'actionUrl', 'actionText', 'level', 'outroLines', 'actionText2', 'actionUrl2', 'level2'));
+            $body = \view('vendor.notifications.email', compact('greeting', 'introLines', 'actionUrl', 'actionText', 'level', 'outroLines', 'actionText2', 'actionUrl2', 'level2'));
             $email_saved_in_db = new  HistoricEmail([
                 "user_id" => $owner->id,
                 "type" => 'users',
