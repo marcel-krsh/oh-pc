@@ -149,9 +149,9 @@ return [
         /*
          * Package Service Providers...
          */
-        Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
+        //Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
-        Spatie\Activitylog\ActivitylogServiceProvider::class,
+        //Spatie\Activitylog\ActivitylogServiceProvider::class,
         App\Providers\AutoLoadProvider::class,
         'Maatwebsite\Excel\ExcelServiceProvider',
         'Aloha\Twilio\Support\Laravel\ServiceProvider',

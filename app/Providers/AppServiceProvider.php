@@ -23,8 +23,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        if (in_array(env('APP_ENV'), ['local', 'development'])) {
-            $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
-        }
     }
 }
