@@ -460,5 +460,17 @@ Route::get('/notices/all', 'NoticeController@allNotice');
 Route::get('/notices/images/{notice}', 'HomeController@NoticeImageTrack');
 
 
-// put all your admin routes here
-//});
+Route::group(['prefix'=>'poc','namespace'=>'POC'], function() {
+    Route::get('auth', 'AuthIndexController@index');
+    Route::post('auth', 'AuthIndexController@store');
+    Route::get('auth/second-factor', 'AuthSecondFactorController@index');
+    Route::get('auth/second-factor/create', 'AuthSecondFactorController@create');
+    Route::post('auth/second-factor', 'AuthSecondFactorController@store');
+    Route::get('auth/logout', 'AuthLogoutController@destroy'); // @todo: CRUDify this
+
+    Route::get('universal-header', 'UniversalHeaderController@index');
+    Route::get('universal-header/hosted.js', function() {
+       return \view('poc.universal-header.hosted');
+    });
+});
+
