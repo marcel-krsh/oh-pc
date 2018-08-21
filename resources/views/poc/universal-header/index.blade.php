@@ -12,7 +12,7 @@
   (function() {
     var uh = document.createElement('script'); uh.type = 'text/javascript'; uh.async = true;
     //uh.src = 'https://devco.ohiohome.org/AuthorityOnlineALT/Unified/UnifiedHeader.aspx';
-    uh.src = {{config('app.url')}}'/poc/universal-header/hosted.js';
+    uh.src = "{{config('app.url')}}/poc/universal-header/hosted.js";
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uh, s);
   })();
 </script>
