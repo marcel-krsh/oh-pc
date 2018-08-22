@@ -474,7 +474,7 @@ Route::group(['prefix'=>'poc','namespace'=>'POC'], function() {
     });
 
     Route::get('devco-root-authenticate', function() {
-       $service = \App\Services\AuthService::class;
+       $service = new \App\Services\AuthService;
        return $service->rootAuthenticate();
     });
 
