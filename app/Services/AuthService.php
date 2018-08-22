@@ -4,6 +4,9 @@
 
 namespace App\Services;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+
 class AuthService
 {
 
@@ -12,6 +15,18 @@ class AuthService
      * @var string
      */
     private $_url;
+
+    /**
+     * Username For API calls
+     * @var string
+     */
+    private $_username;
+
+    /**
+     * Password For API calls
+     * @var string
+     */
+    private $_password;
 
     /**
      * System Level Dev|Co API Token
@@ -26,47 +41,105 @@ class AuthService
     private $_client;
 
 
-
     public function __construct()
     {
-        $this->_url = config('allita.api.pcapi_url');
-        $this->_devco_token = config('allita.api.devco_token');
-        $this->_client = null;
+        $this->_url = config('allita.api.url');
+        $this->_username = config('allita.api.username');
+        $this->_password = config('allita.api.password');
+
+        $this->_devco_token = 'bxKmxPmSIGIM5CvfsOQnt9n'; //SystemConfig::get('devco_token');
+
+        $this->_client = new Client([
+            'base_uri' => $this->_url,
+            'timeout'  => 10.0,
+        ]);
     }
 
-    // this is at the api level
-    public function getApiToken(string $devco_user, string $devco_pass)
+    public function rootKeyRoot()
     {
-        // http://172.16.50.120/api/authenticate?username=user&password=123
-        http://devco.ohiohome.org/AuthorityOnlineALT/Unified/UnifiedHeader.aspx
+        $endpoint = "/root/key-reset?username={$this->_username}&password={$this->_password}&key{$this->_devco_token}";
+
+        try {
+            $response = $this->_client->request('GET', $endpoint);
+
+            if ($response->getStatusCode() === 200) {
+
+                dd($response->getBody());
+
+            }
+
+            throw new \Exception("Unexpected Status Code ({$response->getStatusCode()})");
+
+        } catch (GuzzleException | \Exception $e) {
+
+            dd($e->getMessage());
+
+        }
+
+    }
+
+
+    public function rootAuthenticate()
+    {
+        $endpoint = '/api/v1/root/authenticate';
+        /*
+        - System API Username
+        - System API Password
+        - System API Key
+        */
+
 
 
     }
 
-    public function authenticate()
+    public function rootRefreshToken()
+    {
+        $endpoint = '/api/v1/root/refresh-token';
+        /*
+        - System API Key
+        - System Access Token
+        - System Refresh Token
+        */
+
+
+
+
+    }
+
+
+    public function userAuthenticateToken()
+    {
+        $endpoint = '/api/v1/devco/user/authenticate-token';
+        /*
+        - System Access Token
+        - IP Address
+        - User Agent
+        - User Token
+        */
+
+    }
+
+
+
+    private function _parseJsonApiResponse($response)
     {
 
+        
+
+
     }
 
 
 
 
+    //
+    //
+    //
+    //
+    //
 
 
-    /**
-     * Auth Header HTML
-     *
-     * @param $options
-     *
-     * @return \Psr\Http\Message\StreamInterface|string
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    static public function authHeaderHtml($options = null)
-    {
-        $html = '';
 
-        return $html;
-    }
 
     /**
      * Device Is Authorized

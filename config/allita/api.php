@@ -11,19 +11,31 @@ return [
     |
     */
 
-    'pcapi_url' => env('ALLITA_PCAPI_URL'),
+    'url' => env('ALLITA_PCAPI_URL'),
+
 
     /*
     |--------------------------------------------------------------------------
-    | DEVCO TOKEN
+    | API URL
     |--------------------------------------------------------------------------
     |
-    | This string value is used for all authenticated calls to the PC-API. The value
-    | is rotated on a normal schedule on both this codebase and the PC-API side and
-    | must stay in sync.
+    | This string value acts as the base url that will be used for all PC-API calls.
     |
     */
 
-    'devco_token' => env('ALLITA_DEVCO_TOKEN'),
+    'username' => env('ALLITA_PCAPI_USERNAME'),
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | API URL
+    |--------------------------------------------------------------------------
+    |
+    | This string value acts as the base url that will be used for all PC-API calls.
+    |
+    */
+
+    'password' => env('ALLITA_PCAPI_PASSWORD'),
+
 
 ];
