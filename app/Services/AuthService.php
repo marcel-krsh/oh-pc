@@ -78,7 +78,7 @@ class AuthService
 
             if ($response->getStatusCode() === 200) {
 
-                dd($response->getBody());
+                dd($response->getBody()->getContents());
 
             }
 
