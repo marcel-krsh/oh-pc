@@ -35,6 +35,12 @@ class AuthService
     private $_devco_token;
 
     /**
+     * System Level Dev|Co API Refresh Token
+     * @var string
+     */
+    private $_devco_refresh_token;
+
+    /**
      * Guzzle Client for calls
      * @var
      */
@@ -48,6 +54,7 @@ class AuthService
         $this->_password = config('allita.api.password');
 
         $this->_devco_token = 'bxKmxPmSIGIM5CvfsOQnt9n'; //SystemConfig::get('devco_token');
+        $this->_devco_refresh_token = ''; //SystemConfig::get('devco_refresh_token');
 
         $this->_client = new Client([
             'base_uri' => $this->_url,
@@ -58,23 +65,6 @@ class AuthService
     public function rootKeyReset()
     {
         $endpoint = "/root/key-reset?username={$this->_username}&password={$this->_password}&key{$this->_devco_token}";
-
-        try {
-            $response = $this->_client->request('GET', $endpoint);
-
-            if ($response->getStatusCode() === 200) {
-
-                dd($response->getBody());
-
-            }
-
-            throw new \Exception("Unexpected Status Code ({$response->getStatusCode()})");
-
-        } catch (GuzzleException | \Exception $e) {
-
-            dd($e->getMessage());
-
-        }
 
     }
 
@@ -103,51 +93,33 @@ class AuthService
 
     public function rootRefreshToken()
     {
-        $endpoint = '/api/v1/root/refresh-token';
-        /*
-        - System API Key
-        - System Access Token
-        - System Refresh Token
-        */
-
-
-
+        $endpoint = "/root/refresh-token?token={$this->_devco_refresh_token}";
 
     }
 
-
-    public function userAuthenticateToken()
+    /**
+     * @param string $user_token
+     * @param null   $ip_address
+     * @param null   $useragent
+     */
+    public function userAuthenticateToken(string $user_token, $ip_address = null, $useragent = null)
     {
-        $endpoint = '/api/v1/devco/user/authenticate-token';
-        /*
-        - System Access Token
-        - IP Address
-        - User Agent
-        - User Token
-        */
+        $endpoint = "/api/v1/devco/user/authenticate-token?devcotoken={$this->_devco_token}&token{$user_token}&ipaddress={$ip_address}&useragent={$useragent}";
 
     }
-
-
 
     private function _parseJsonApiResponse($response)
     {
-
-
-
+        // http://jsonapi.org
 
     }
 
 
-
-
     //
     //
     //
     //
     //
-
-
 
 
     /**
