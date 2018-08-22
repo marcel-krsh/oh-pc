@@ -65,13 +65,13 @@ class AuthService
 
     public function rootKeyReset()
     {
-        $endpoint = "/root/key-reset?username={$this->_username}&password={$this->_password}&key={$this->_devco_token}";
+        $endpoint = "root/key-reset?username={$this->_username}&password={$this->_password}&key={$this->_devco_token}";
 
     }
 
     public function rootAuthenticate()
     {
-        $endpoint = "/root/authenticate?username={$this->_username}&password={$this->_password}&key={$this->_devco_token}";
+        $endpoint = "root/authenticate?username={$this->_username}&password={$this->_password}&key={$this->_devco_token}";
 
         try {
             $response = $this->_client->request('GET', $endpoint);
@@ -95,7 +95,7 @@ class AuthService
     public function rootRefreshToken()
     {
         // https://www.oauth.com/oauth2-servers/access-tokens/access-token-response/
-        $endpoint = "/root/refresh-token?token={$this->_devco_refresh_token}";
+        $endpoint = "root/refresh-token?token={$this->_devco_refresh_token}";
 
     }
 
@@ -106,7 +106,7 @@ class AuthService
      */
     public function userAuthenticateToken(string $user_token, $ip_address = null, $useragent = null)
     {
-        $endpoint = "/api/v1/devco/user/authenticate-token?devcotoken={$this->_devco_token}&token={$user_token}&ipaddress={$ip_address}&useragent={$useragent}";
+        $endpoint = "devco/user/authenticate-token?devcotoken={$this->_devco_token}&token={$user_token}&ipaddress={$ip_address}&useragent={$useragent}";
 
     }
 
