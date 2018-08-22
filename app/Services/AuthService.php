@@ -17,6 +17,12 @@ class AuthService
     private $_url;
 
     /**
+     * Base Directory For API calls
+     * @var string
+     */
+    private $_base_directory;
+
+    /**
      * Username For API calls
      * @var string
      */
@@ -50,6 +56,7 @@ class AuthService
     public function __construct()
     {
         $this->_url = config('allita.api.url');
+        $this->_base_directory = config('allita.api.base_base_directory');
         $this->_username = config('allita.api.username');
         $this->_password = config('allita.api.password');
 
@@ -65,37 +72,38 @@ class AuthService
 
     public function rootKeyReset()
     {
-        $endpoint = "root/key-reset?username={$this->_username}&password={$this->_password}&key={$this->_devco_token}";
+        $endpoint = "{$this->_base_directory}/root/key-reset?username={$this->_username}&password={$this->_password}&key={$this->_devco_token}";
 
     }
 
     public function rootAuthenticate()
     {
-        $endpoint = "root/authenticate?username={$this->_username}&password={$this->_password}&key={$this->_devco_token}";
+        $endpoint = "{$this->_base_directory}/root/authenticate?username={$this->_username}&password={$this->_password}&key={$this->_devco_token}";
+        $is_successful = false;
 
         try {
             $response = $this->_client->request('GET', $endpoint);
-
             if ($response->getStatusCode() === 200) {
-
-                dd($response->getBody()->getContents());
-
+                $result = json_encode($response->getBody()->getContents());
+                $this->_updateAccessToken($result->access_token);
+                $this->_updateRefreshtoken($result->refresh_token);
+                $is_successful = true;
+            } else {
+                // @todo: Throw PC-API Exception
+                throw new \Exception("Unexpected Status Code ({$response->getStatusCode()})");
             }
-
-            throw new \Exception("Unexpected Status Code ({$response->getStatusCode()})");
-
         } catch (GuzzleException | \Exception $e) {
-
+            // @todo: Throw PC-API Exception
             dd($e->getMessage());
-
         }
 
+        return $is_successful;
     }
 
     public function rootRefreshToken()
     {
         // https://www.oauth.com/oauth2-servers/access-tokens/access-token-response/
-        $endpoint = "root/refresh-token?token={$this->_devco_refresh_token}";
+        $endpoint = "{$this->_base_directory}/root/refresh-token?token={$this->_devco_refresh_token}";
 
     }
 
@@ -106,7 +114,7 @@ class AuthService
      */
     public function userAuthenticateToken(string $user_token, $ip_address = null, $useragent = null)
     {
-        $endpoint = "devco/user/authenticate-token?devcotoken={$this->_devco_token}&token={$user_token}&ipaddress={$ip_address}&useragent={$useragent}";
+        $endpoint = "{$this->_base_directory}/devco/user/authenticate-token?devcotoken={$this->_devco_token}&token={$user_token}&ipaddress={$ip_address}&useragent={$useragent}";
 
     }
 
