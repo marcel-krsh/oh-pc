@@ -472,5 +472,11 @@ Route::group(['prefix'=>'poc','namespace'=>'POC'], function() {
     Route::get('universal-header/hosted.js', function() {
        return \view('poc.universal-header.hosted');
     });
+
+    Route::get('devco-root-authenticate', function() {
+       $service = \App\Services\AuthService::class;
+       return $service->rootAuthenticate();
+    });
+
 });
 

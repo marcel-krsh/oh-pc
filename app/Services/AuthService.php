@@ -55,7 +55,7 @@ class AuthService
         ]);
     }
 
-    public function rootKeyRoot()
+    public function rootKeyReset()
     {
         $endpoint = "/root/key-reset?username={$this->_username}&password={$this->_password}&key{$this->_devco_token}";
 
@@ -78,17 +78,26 @@ class AuthService
 
     }
 
-
     public function rootAuthenticate()
     {
-        $endpoint = '/api/v1/root/authenticate';
-        /*
-        - System API Username
-        - System API Password
-        - System API Key
-        */
+        $endpoint = "/root/authenticate?username={$this->_username}&password={$this->_password}&key{$this->_devco_token}";
 
+        try {
+            $response = $this->_client->request('GET', $endpoint);
 
+            if ($response->getStatusCode() === 200) {
+
+                dd($response->getBody());
+
+            }
+
+            throw new \Exception("Unexpected Status Code ({$response->getStatusCode()})");
+
+        } catch (GuzzleException | \Exception $e) {
+
+            dd($e->getMessage());
+
+        }
 
     }
 
@@ -124,7 +133,7 @@ class AuthService
     private function _parseJsonApiResponse($response)
     {
 
-        
+
 
 
     }
