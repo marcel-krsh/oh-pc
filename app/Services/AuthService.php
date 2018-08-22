@@ -56,7 +56,7 @@ class AuthService
     public function __construct()
     {
         $this->_url = config('allita.api.url');
-        $this->_base_directory = config('allita.api.base_base_directory');
+        $this->_base_directory = config('allita.api.base_directory');
         $this->_username = config('allita.api.username');
         $this->_password = config('allita.api.password');
 
