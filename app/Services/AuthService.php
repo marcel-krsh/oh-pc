@@ -4,6 +4,7 @@
 
 namespace App\Services;
 
+use App\Models\SystemSetting;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -52,7 +53,6 @@ class AuthService
      */
     private $_client;
 
-
     public function __construct()
     {
         $this->_url = config('allita.api.url');
@@ -69,12 +69,20 @@ class AuthService
         ]);
     }
 
+    /**
+     * Root (System Level) Key Reset
+     */
     public function rootKeyReset()
     {
         $endpoint = "{$this->_base_directory}/root/key-reset?username={$this->_username}&password={$this->_password}&key={$this->_devco_token}";
 
     }
 
+    /**
+     * Root (System Level) Authenticate
+     *
+     * @return bool
+     */
     public function rootAuthenticate()
     {
         $endpoint = "{$this->_base_directory}/root/authenticate?username={$this->_username}&password={$this->_password}&key={$this->_devco_token}";
@@ -107,6 +115,8 @@ class AuthService
     }
 
     /**
+     * User Authenticate Token
+     *
      * @param string $user_token
      * @param null   $ip_address
      * @param null   $useragent
@@ -117,10 +127,35 @@ class AuthService
 
     }
 
-    private function _parseJsonApiResponse($response)
+    /**
+     * Update Access Token
+     *
+     * @param $token
+     *
+     * @return mixed
+     */
+    private function _updateAccessToken($token)
     {
-        // http://jsonapi.org
+        return SystemSetting::updateOrCreate([
+            'key' => 'devco_token'
+        ],[
+            'value' => $token
+        ]);
+    }
 
+    /**
+     * Update Refresh Token
+     * @param $token
+     *
+     * @return mixed
+     */
+    private function _updateRefreshToken($token)
+    {
+        return SystemSetting::updateOrCreate([
+            'key' => 'devco_refresh_token'
+        ],[
+            'value' => $token
+        ]);
     }
 
 
