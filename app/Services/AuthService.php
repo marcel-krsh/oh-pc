@@ -66,7 +66,6 @@ class AuthService
         $this->_client = new Client([
             'base_uri' => $this->_url,
             'timeout'  => 10.0,
-            'verify'   => false,
         ]);
     }
 
