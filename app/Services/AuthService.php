@@ -60,7 +60,7 @@ class AuthService
         $this->_username = config('allita.api.username');
         $this->_password = config('allita.api.password');
 
-        $this->_devco_token = 'bxKmxPmSIGIM5CvfsOQnt9n'; //SystemConfig::get('devco_token');
+        $this->_devco_token = '81eqLzF4jU5NJvz3A751ZBkb'; //SystemConfig::get('devco_token');
         $this->_devco_refresh_token = ''; //SystemConfig::get('devco_refresh_token');
 
         $this->_client = new Client([
