@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
-use App\Entity;
-use App\Program;
+use App\Models\User;
+use App\Models\Entity;
+use App\Models\Program;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use App\Mail\EmailActivation;
-use App\Mail\EmailEntityActivation;
+use App\Models\Mail\EmailActivation;
+use App\Models\Mail\EmailEntityActivation;
 use Illuminate\Support\Facades\DB;
 
 class OldRegisterController extends Controller

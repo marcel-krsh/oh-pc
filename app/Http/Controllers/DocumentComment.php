@@ -8,15 +8,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Http\Request;
 use Gate;
 use Auth;
-use App\User;
+use App\Models\User;
 use File;
 use Storage;
 use DB;
-use App\Programs;
-use App\Document;
-use App\DocumentComment;
-use App\Entity;
-use App\Parcel;
+use App\Models\Programs;
+use App\Models\Document;
+use App\Models\DocumentComment;
+use App\Models\Entity;
+use App\Models\Parcel;
 
 class DocumentCommentController extends Controller
 {

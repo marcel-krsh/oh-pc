@@ -8,22 +8,22 @@ use File;
 use Carbon;
 use Storage;
 use Session;
-use App\Programs;
+use App\Models\Programs;
 use Illuminate\Http\Request;
 use DB;
-use App\Entity;
-use App\User;
-use App\ParcelsToReimbursementInvoice;
-use App\ReimbursementInvoice;
-use App\ReimbursementPurchaseOrders;
-use App\InvoiceNote;
-use App\InvoiceStatus;
+use App\Models\Entity;
+use App\Models\User;
+use App\Models\ParcelsToReimbursementInvoice;
+use App\Models\ReimbursementInvoice;
+use App\Models\ReimbursementPurchaseOrders;
+use App\Models\InvoiceNote;
+use App\Models\InvoiceStatus;
 use App\LogConverter;
-use App\ApprovalRequest;
-use App\ApprovalAction;
-use App\InvoiceItem;
-use App\Document;
-use App\Mail\EmailNotificationPaymentRequested;
+use App\Models\ApprovalRequest;
+use App\Models\ApprovalAction;
+use App\Models\InvoiceItem;
+use App\Models\Document;
+use App\Models\Mail\EmailNotificationPaymentRequested;
 
 class InvoiceController extends Controller
 {

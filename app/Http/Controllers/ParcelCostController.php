@@ -2,27 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\DocumentRule;
+use App\Models\DocumentRule;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Auth;
-use App\DispositionType;
+use App\Models\DispositionType;
 use Gate;
 use File;
 use Storage;
-use App\SfParcel;
-use App\Programs;
+use App\Models\SfParcel;
+use App\Models\Programs;
 use Illuminate\Http\Request;
 use DB;
-use App\Parcel;
-use App\SfReimbursements;
-use App\Helpers\GeoData;
+use App\Models\Parcel;
+use App\Models\SfReimbursements;
+use App\Models\Helpers\GeoData;
 use App\LogConverter;
-use App\ExpenseCategory;
-use App\Vendor;
-use App\CostItem;
-use App\ProgramRule;
+use App\Models\ExpenseCategory;
+use App\Models\Vendor;
+use App\Models\CostItem;
+use App\Models\ProgramRule;
 
 class ParcelCostController extends Controller
 {
@@ -335,14 +335,14 @@ class ParcelCostController extends Controller
         } else {
             $pass = 1;
         }
-        $cost = \App\CostItem::find($request->reference_id);
+        $cost = \App\Models\CostItem::find($request->reference_id);
         if (count($cost)< 1) {
             $msg = ['message'=> "I wasn't able to lookup the cost associated with this. Did someone delete it while you were working on it?",'status'=>1];
             return json_encode($msg);
         }
         if ($pass == 1) {
             if ($request->type == "request") {
-                \App\RequestItem::create([
+                \App\Models\RequestItem::create([
                     'breakout_type' => $cost->breakout_type,
                     'parcel_id'=> $parcel->id,
                     'account_id'=> $parcel->account_id,

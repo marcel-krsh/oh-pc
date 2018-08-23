@@ -8,20 +8,20 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Http\Request;
 use Gate;
 use Auth;
-use App\User;
+use App\Models\User;
 use File;
 use Storage;
 use DB;
-use App\Programs;
-use App\Document;
-use App\DocumentCategory;
-use App\DocumentRule;
-use App\DocumentRuleEntry;
-use App\Entity;
-use App\Parcel;
-use App\CostItem;
+use App\Models\Programs;
+use App\Models\Document;
+use App\Models\DocumentCategory;
+use App\Models\DocumentRule;
+use App\Models\DocumentRuleEntry;
+use App\Models\Entity;
+use App\Models\Parcel;
+use App\Models\CostItem;
 use App\LogConverter;
-use App\Retainage;
+use App\Models\Retainage;
 
 class DocumentController extends Controller
 {

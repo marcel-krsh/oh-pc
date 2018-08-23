@@ -3,20 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Parcel;
+use App\Models\Parcel;
 use App\Http\Requests;
 use Gate;
-use App\ReimbursementInvoice;
+use App\Models\ReimbursementInvoice;
 use \DB;
 use Illuminate\Support\Facades\Auth;
-use App\Entity;
-use App\User;
+use App\Models\Entity;
+use App\Models\User;
 use Spatie\Activitylog\Models\Activity;
 use App\LogConverter;
 use Validator;
-use App\Device;
-use App\VisitLists;
-use App\SiteVisits;
+use App\Models\Device;
+use App\Models\VisitLists;
+use App\Models\SiteVisits;
 use Carbon;
 
 class SiteVisitController extends Controller
@@ -717,7 +717,7 @@ class SiteVisitController extends Controller
         $site_visit = SiteVisits::where('id', $site_visit)->first();
             
         if ($site_visit) {
-            //$site_visit = $status = \App\VisitListStatusName::find($site_visit->status);
+            //$site_visit = $status = \App\Models\VisitListStatusName::find($site_visit->status);
             return view('pages.site_visit_detail', compact('site_visit'));
         } else {
             return "There are no site visits matching this reference.";
@@ -726,7 +726,7 @@ class SiteVisitController extends Controller
     public function serveImages($file)
     {
         if (Gate::allows('view-all-parcels')) {
-            $imagePath = \App\Photo::where('filename', $file)->first();
+            $imagePath = \App\Models\Photo::where('filename', $file)->first();
             $storagePath = storage_path('app/'.$imagePath->file_path);
             if (! \File::exists($storagePath)) {
                 return view('errorpages.404');

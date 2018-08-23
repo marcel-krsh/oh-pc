@@ -6,14 +6,14 @@ use Illuminate\Http\Request;
 use Gate;
 use Auth;
 use DB;
-use App\Parcel;
-use App\ExpenseCategory;
-use App\Program;
-use App\Vendor;
-use App\CostItem;
-use App\RequestItem;
-use App\PoItems;
-use App\InvoiceItem;
+use App\Models\Parcel;
+use App\Models\ExpenseCategory;
+use App\Models\Program;
+use App\Models\Vendor;
+use App\Models\CostItem;
+use App\Models\RequestItem;
+use App\Models\PoItems;
+use App\Models\InvoiceItem;
 
 ini_set('max_execution_time', 600);
 class ExpenseCategoriesController extends Controller
@@ -27,9 +27,9 @@ class ExpenseCategoriesController extends Controller
      * Show the documents' list for a specific parcel.
      *
      * @param int                  $output
-     * @param \App\ExpenseCategory $category
-     * @param \App\Program         $program
-     * @param \App\Parcel|null     $parcel
+     * @param \App\Models\ExpenseCategory $category
+     * @param \App\Models\Program         $program
+     * @param \App\Models\Parcel|null     $parcel
      * @param int                  $zero_values
      *
      * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Excel;
-use App\Import;
-use App\ImportRow;
+use App\Models\Import;
+use App\Models\ImportRow;
 use App\LogConverter;
-use App\Program;
+use App\Models\Program;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;

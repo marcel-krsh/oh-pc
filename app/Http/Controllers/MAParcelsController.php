@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Parcel;
+use App\Models\Parcel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\FormsController as Form;
-use App\State;
-use App\Entity;
-use App\County;
-use App\ProgramRule;
-use App\Program;
-use App\Account;
-use App\TargetArea;
-use App\HowAcquired;
-use App\ParcelType;
-use App\PropertyStatusOption;
+use App\Models\State;
+use App\Models\Entity;
+use App\Models\County;
+use App\Models\ProgramRule;
+use App\Models\Program;
+use App\Models\Account;
+use App\Models\TargetArea;
+use App\Models\HowAcquired;
+use App\Models\ParcelType;
+use App\Models\PropertyStatusOption;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
 use App\LogConverter;

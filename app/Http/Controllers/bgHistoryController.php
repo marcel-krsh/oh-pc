@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Parcel;
+use App\Models\Parcel;
 use App\Http\Requests;
 use Gate;
 use \DB;
 use Auth;
 use Session;
 use Excel;
-use App\User;
-use App\Role;
-use App\ActivityLog;
+use App\Models\User;
+use App\Models\Role;
+use App\Models\ActivityLog;
 
 class bgHistoryController extends Controller
 {
@@ -29,7 +29,7 @@ class bgHistoryController extends Controller
         // Search (in session)
         if (Session::has('activities-search') && Session::get('activities-search') != '') {
             $search = Session::get('activities-search');
-            $activities = ActivityLog::where('subject_type', '=', \App\Parcel::class)
+            $activities = ActivityLog::where('subject_type', '=', \App\Models\Parcel::class)
                                 ->where('subject_id', '=', $parcel->id)
                                 ->where('description', 'LIKE', '%'.$search.'%')
                                 ->leftJoin('users', 'users.id', '=', 'activity_log.causer_id')
@@ -46,7 +46,7 @@ class bgHistoryController extends Controller
                                 )
                                 ->get();
         } else {
-            $activities = ActivityLog::where('subject_type', '=', \App\Parcel::class)
+            $activities = ActivityLog::where('subject_type', '=', \App\Models\Parcel::class)
                                 ->where('subject_id', '=', $parcel->id)
                                 ->leftJoin('users', 'users.id', '=', 'activity_log.causer_id')
                                 ->orderBy('activity_log.created_at', 'desc')

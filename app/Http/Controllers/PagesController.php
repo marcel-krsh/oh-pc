@@ -3,34 +3,34 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Parcel;
+use App\Models\Parcel;
 use App\Http\Requests;
 use Gate;
-use App\ReimbursementInvoice;
+use App\Models\ReimbursementInvoice;
 use \DB;
 use Auth;
 use Excel;
-use App\Entity;
-use App\Account;
-use App\User;
+use App\Models\Entity;
+use App\Models\Account;
+use App\Models\User;
 use Spatie\Activitylog\Models\Activity;
 use App\LogConverter;
 use Validator;
 use Session;
-use App\Jobs\ParcelsExportJob;
-use App\Mail\EmailSystemAdmin;
-use App\Report;
-use App\ReportDownload;
+use App\Models\Jobs\ParcelsExportJob;
+use App\Models\Mail\EmailSystemAdmin;
+use App\Models\Report;
+use App\Models\ReportDownload;
 use Redirect;
 use Image;
-use App\Role;
-use App\CommunicationRecipient;
-use App\HistoricEmail;
-use App\GuideStep;
-use App\GuideProgress;
-use App\Communication;
-use App\CommunicationDocument;
-use App\Program;
+use App\Models\Role;
+use App\Models\CommunicationRecipient;
+use App\Models\HistoricEmail;
+use App\Models\GuideStep;
+use App\Models\GuideProgress;
+use App\Models\Communication;
+use App\Models\CommunicationDocument;
+use App\Models\Program;
 
 ini_set('max_execution_time', 600);
 class PagesController extends Controller
@@ -1276,20 +1276,20 @@ class PagesController extends Controller
 
                 // Guide Steps
                 if (Auth::user()->entity_type == "landbank") {
-                    $nextSteps = \App\GuideStep::with('isNextStep')->join('guide_step_types', 'guide_steps.guide_step_type_id', 'guide_step_types.id')->select('guide_steps.*', 'guide_step_types.name as type_name')->whereNull('hidden_from_lb')->orderBy('guide_step_type_id', 'desc')->orderBy('order', 'asc')->get();
+                    $nextSteps = \App\Models\GuideStep::with('isNextStep')->join('guide_step_types', 'guide_steps.guide_step_type_id', 'guide_step_types.id')->select('guide_steps.*', 'guide_step_types.name as type_name')->whereNull('hidden_from_lb')->orderBy('guide_step_type_id', 'desc')->orderBy('order', 'asc')->get();
                 } else {
-                    $nextSteps = \App\GuideStep::with('isNextStep')->join('guide_step_types', 'guide_steps.guide_step_type_id', 'guide_step_types.id')->select('guide_steps.*', 'guide_step_types.name as type_name')->orderBy('guide_step_type_id', 'desc')->orderBy('order', 'asc')->get();
+                    $nextSteps = \App\Models\GuideStep::with('isNextStep')->join('guide_step_types', 'guide_steps.guide_step_type_id', 'guide_step_types.id')->select('guide_steps.*', 'guide_step_types.name as type_name')->orderBy('guide_step_type_id', 'desc')->orderBy('order', 'asc')->get();
                 }
 
                 // Target Areas
                 if (Auth::user()->entity_type == "landbank") {
-                    $county = \App\Program::select('county_id')->where('entity_id', Auth::User()->entity_id)->first();
+                    $county = \App\Models\Program::select('county_id')->where('entity_id', Auth::User()->entity_id)->first();
                    
-                    $targetAreas = \App\TargetArea::join('programs', 'programs.county_id', 'target_areas.county_id')->select('target_area_name', 'program_name', 'target_areas.id')->where('target_areas.county_id', $county->county_id)->where('target_areas.active', 1)->orderBy('program_name', 'asc')->orderBy('target_area_name', 'asc')->get();
+                    $targetAreas = \App\Models\TargetArea::join('programs', 'programs.county_id', 'target_areas.county_id')->select('target_area_name', 'program_name', 'target_areas.id')->where('target_areas.county_id', $county->county_id)->where('target_areas.active', 1)->orderBy('program_name', 'asc')->orderBy('target_area_name', 'asc')->get();
                 } elseif ($parcelsProgramFilter != "%%") {
-                    $targetAreas = \App\TargetArea::join('programs', 'programs.county_id', 'target_areas.county_id')->where('target_areas.active', 1)->where('programs.id', $parcelsProgramFilter)->select('target_area_name', 'program_name', 'target_areas.id')->orderBy('program_name', 'asc')->orderBy('target_area_name', 'asc')->get();
+                    $targetAreas = \App\Models\TargetArea::join('programs', 'programs.county_id', 'target_areas.county_id')->where('target_areas.active', 1)->where('programs.id', $parcelsProgramFilter)->select('target_area_name', 'program_name', 'target_areas.id')->orderBy('program_name', 'asc')->orderBy('target_area_name', 'asc')->get();
                 } else {
-                    $targetAreas = \App\TargetArea::join('programs', 'programs.county_id', 'target_areas.county_id')->where('target_areas.active', 1)->select('target_area_name', 'program_name', 'target_areas.id')->orderBy('program_name', 'asc')->orderBy('target_area_name', 'asc')->get();
+                    $targetAreas = \App\Models\TargetArea::join('programs', 'programs.county_id', 'target_areas.county_id')->where('target_areas.active', 1)->select('target_area_name', 'program_name', 'target_areas.id')->orderBy('program_name', 'asc')->orderBy('target_area_name', 'asc')->get();
                 }
 
 
@@ -1299,7 +1299,7 @@ class PagesController extends Controller
 
                 $hfaStatuses = Parcel::join('property_status_options', 'parcels.hfa_property_status_id', '=', 'property_status_options.id')->select('property_status_options.option_name', 'property_status_options.id')->groupBy('property_status_options.id', 'property_status_options.option_name')->orderBy('order')->get('order');
 
-                $dispositionStatuses = \App\InvoiceStatus::select('id', 'invoice_status_name')->orderBy('invoice_status_name')->get();
+                $dispositionStatuses = \App\Models\InvoiceStatus::select('id', 'invoice_status_name')->orderBy('invoice_status_name')->get();
 
                 $i=0;
             }
@@ -1762,7 +1762,7 @@ class PagesController extends Controller
         if (Auth::user()->canManageUsers()) {
             //$parcels = Parcel::limit(100)->orderBy('county_id', 'asc')->get();
             //$totalParcels = Parcel::count();
-            // $totalUsers = \App\User::count();
+            // $totalUsers = \App\Models\User::count();
             if (Auth::user()->entity_id == 1) {
                 // They are OHFA - get all users.
                 $myUsers = DB::table('users')->join('entities', 'users.entity_id', '=', 'entities.id')->select('users.id', 'users.name', 'users.email', 'users.badge_color', 'entities.entity_name', 'entities.id as entity_id', 'users.active', 'users.api_token')->orderBy('entities.entity_name', 'asc')->orderBy('users.name', 'asc')->get()->all();
@@ -1788,13 +1788,13 @@ class PagesController extends Controller
         if (Auth::user()->canManageUsers()) {
             // $parcels = Parcel::limit(100)->orderBy('county_id', 'asc')->get();
             // $totalParcels = Parcel::count();
-            // $totalUsers = \App\User::count();
-            $editUser = \App\User::with('roles')->find($userId);
+            // $totalUsers = \App\Models\User::count();
+            $editUser = \App\Models\User::with('roles')->find($userId);
 
             if (Auth::user('entity_type', 'hfa')) {
-                $entities = \App\Entity::where('active', 1)->orderBy('entity_name', 'ASC')->get();
+                $entities = \App\Models\Entity::where('active', 1)->orderBy('entity_name', 'ASC')->get();
             } else {
-                $entities = \App\Entity::where('entity_id', Auth::user()->entity_id)->orderBy('entity_name', 'ASC')->get();
+                $entities = \App\Models\Entity::where('entity_id', Auth::user()->entity_id)->orderBy('entity_name', 'ASC')->get();
             }
 
             $hfa_roles = Role::where('role_parent_id', '=', 1)->orderBy('role_name', 'ASC')->where('active', '=', 1)->get();
@@ -1824,7 +1824,7 @@ class PagesController extends Controller
     {
         if (Auth::user()->canManageUsers()) {
             $userParams = [];
-            $editUser = \App\User::find($userId);
+            $editUser = \App\Models\User::find($userId);
             if ($request->email == $editUser->email) {
                 $validator = Validator::make($request->all(), [
                 'name' => 'required|max:255',
@@ -1914,7 +1914,7 @@ class PagesController extends Controller
     }
     public function userActivate($userId)
     {
-        $editUser = \App\User::find($userId);
+        $editUser = \App\Models\User::find($userId);
         $editUser->activate();
         $tuser = Auth::user();
         $lc = new LogConverter('user', 'activateuser');
@@ -1932,7 +1932,7 @@ class PagesController extends Controller
             $type = "danger";
             return view('pages.error', compact('error', 'message', 'type'));
         } else {
-            $entity = \App\Entity::find($editUser->entity_id);
+            $entity = \App\Models\Entity::find($editUser->entity_id);
             $canAuthorize = DB::table('users_roles')->where('user_id', Auth::user()->id)->where('role_id', 5)->count();
             if ((
               Auth::user()->id == $entity->owner_id
@@ -1976,7 +1976,7 @@ class PagesController extends Controller
                 $editUser->update(['email_token'=>""]);
                 // email user to let them know they have been approved.
                 session(['userId'=>$editUser->id]);
-                $emailAccountApproval = new \App\Mail\EmailAccountApproval($editUser);
+                $emailAccountApproval = new \App\Models\Mail\EmailAccountApproval($editUser);
                 \Mail::to($editUser->email)->send($emailAccountApproval);
                 session(['systemMessage'=>'Successfully Activated User','hideHowTo'=>1,'editUserRoles'=>$editUser->id]);
                 return redirect('/dashboard?tab=7');
@@ -2006,7 +2006,7 @@ class PagesController extends Controller
     {
         if (Auth::user()->canManageUsers()) {
             $lc = new LogConverter('user', 'deactivate');
-            $editUser = \App\User::find($userId);
+            $editUser = \App\Models\User::find($userId);
             $editUser->deactivate();
             $tuser = Auth::user();
             $lc = new LogConverter('user', 'deactivate');
@@ -2029,7 +2029,7 @@ class PagesController extends Controller
             $type = "success";
             return view('pages.error', compact('error', 'message', 'type'));
         } else {
-            $entity = \App\Entity::find($editUser->entity_id);
+            $entity = \App\Models\Entity::find($editUser->entity_id);
             $canAuthorize = DB::table('users_roles')->where('user_id', Auth::user()->id)->where('role_id', 5)->count();
             if ((
               Auth::user()->id == $entity->owner_id
@@ -2218,7 +2218,7 @@ class PagesController extends Controller
             }
             $userParams = [];
 
-            $newUser = new \App\User([
+            $newUser = new \App\Models\User([
             'entity_id' => $entity_id,
             'entity_type' => $entity_type
             ]);

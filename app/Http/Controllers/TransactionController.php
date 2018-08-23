@@ -12,15 +12,15 @@ use Carbon;
 use Storage;
 use Illuminate\Http\Request;
 use DB;
-use App\Parcel;
-use App\Program;
-use App\User;
-use App\ReimbursementInvoice;
+use App\Models\Parcel;
+use App\Models\Program;
+use App\Models\User;
+use App\Models\ReimbursementInvoice;
 use App\LogConverter;
-use App\Transaction;
-use App\TransactionStatus;
-use App\DispositionInvoice;
-use App\RecaptureInvoice;
+use App\Models\Transaction;
+use App\Models\TransactionStatus;
+use App\Models\DispositionInvoice;
+use App\Models\RecaptureInvoice;
 
 class TransactionController extends Controller
 {
@@ -177,7 +177,7 @@ class TransactionController extends Controller
         // get options
         $option_title = "Recapture Invoice"; // the plural is added on the template
 
-        $options = \App\RecaptureInvoice::where('program_id', $request->get('program'))->get()->all();
+        $options = \App\Models\RecaptureInvoice::where('program_id', $request->get('program'))->get()->all();
 
         // return the snippet
         return view('partials.new-transaction-landbank-credit-options', compact('option_title', 'options'));
@@ -261,7 +261,7 @@ class TransactionController extends Controller
             $credit_debit2 = "c";
             ////////////////////
             // Get Account Id
-            $account = \App\Account::where('entity_id', $program->entity_id)->first();
+            $account = \App\Models\Account::where('entity_id', $program->entity_id)->first();
 
             $account_id2 = $account->id;
             $link_to_type_id2 = $program->id;
@@ -292,7 +292,7 @@ class TransactionController extends Controller
             ////////////////////
             // Get Account Id
             
-            $account = \App\Account::where('entity_id', $program->entity_id)->first();
+            $account = \App\Models\Account::where('entity_id', $program->entity_id)->first();
 
             $account_id2 = $account->id;
             $link_to_type_id2 = $program->id;
@@ -423,7 +423,7 @@ class TransactionController extends Controller
                 $invoice->update(['paid'=>1,'status_id'=>6]);
                 
                 // get all the dispositions
-                $dispositions = \App\DispositionsToInvoice::where('disposition_invoice_id', $invoice->id)->get()->all();
+                $dispositions = \App\Models\DispositionsToInvoice::where('disposition_invoice_id', $invoice->id)->get()->all();
                 foreach ($dispositions as $disposition) {
                         //update disposition step
                         guide_set_progress($disposition->id, 22, $status = 'completed', 1); // mark dispositions paid.
@@ -446,7 +446,7 @@ class TransactionController extends Controller
                 $invoice->update(['status_id'=>6]);
                 
                 // get all the parcels
-                $parcelstoinvoice = \App\ParcelsToReimbursementInvoice::where('reimbursement_invoice_id', $invoice->id)->get()->all();
+                $parcelstoinvoice = \App\Models\ParcelsToReimbursementInvoice::where('reimbursement_invoice_id', $invoice->id)->get()->all();
                 foreach ($parcelstoinvoice as $parceltoinvoice) {
                     $parcel = Parcel::where('id', '=', $parceltoinvoice->parcel_id)->first();
 

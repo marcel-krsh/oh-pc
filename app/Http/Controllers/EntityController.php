@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Entity;
-use App\State;
+use App\Models\Entity;
+use App\Models\State;
 use Illuminate\Http\Request;
 use App\LogConverter;
 

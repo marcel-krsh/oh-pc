@@ -8,41 +8,41 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Http\Request;
 use Gate;
 use Auth;
-use App\User;
+use App\Models\User;
 use File;
 use Storage;
 use Session;
 use Carbon;
 use DB;
-use App\Programs;
-use App\Document;
-use App\DocumentCategory;
-use App\DocumentRule;
-use App\DocumentRuleEntry;
-use App\Entity;
-use App\Parcel;
+use App\Models\Programs;
+use App\Models\Document;
+use App\Models\DocumentCategory;
+use App\Models\DocumentRule;
+use App\Models\DocumentRuleEntry;
+use App\Models\Entity;
+use App\Models\Parcel;
 use App\LogConverter;
-use App\Disposition;
-use App\DispositionType;
-use App\ProgramRule;
-use App\InvoiceItem;
-use App\ReimbursementInvoice;
-use App\ParcelsToReimbursementInvoice;
-use App\Transaction;
-use App\ApprovalRequest;
-use App\ApprovalAction;
-use App\DispositionsToInvoice;
-use App\DispositionInvoice;
-use App\Mail\ApproverNotification;
-use App\Mail\EmailNotificationDispositionReleaseRequested;
-use App\Mail\EmailNotificationDispositionPaymentRequested;
-use App\Mail\EmailNotificationDispositionReview;
-use App\Mail\DispositionApprovedNotification;
+use App\Models\Disposition;
+use App\Models\DispositionType;
+use App\Models\ProgramRule;
+use App\Models\InvoiceItem;
+use App\Models\ReimbursementInvoice;
+use App\Models\ParcelsToReimbursementInvoice;
+use App\Models\Transaction;
+use App\Models\ApprovalRequest;
+use App\Models\ApprovalAction;
+use App\Models\DispositionsToInvoice;
+use App\Models\DispositionInvoice;
+use App\Models\Mail\ApproverNotification;
+use App\Models\Mail\EmailNotificationDispositionReleaseRequested;
+use App\Models\Mail\EmailNotificationDispositionPaymentRequested;
+use App\Models\Mail\EmailNotificationDispositionReview;
+use App\Models\Mail\DispositionApprovedNotification;
 use DateTime;
-use App\DispositionInvoiceNote;
-use App\DispositionItems;
-use App\GuideStep;
-use App\GuideProgress;
+use App\Models\DispositionInvoiceNote;
+use App\Models\DispositionItems;
+use App\Models\GuideStep;
+use App\Models\GuideProgress;
 
 class DispositionController extends Controller
 {
@@ -3403,7 +3403,7 @@ class DispositionController extends Controller
                 $disposition->status_id = 6;
             }
             // make sure the invoice itself is marked as paid
-            \App\DispositionInvoice::where('id', $invoice->id)->update(['paid' => 1]);
+            \App\Models\DispositionInvoice::where('id', $invoice->id)->update(['paid' => 1]);
         }
 
         if (($isReadyForPayment === 1 || $legacy) && $balance > 0) {

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Notice;
+use App\Models\Notice;
 use Gate;
 use Auth;
 use Session;
-use App\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class NoticeController extends Controller

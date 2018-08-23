@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\ProgramRule;
+use App\Models\ProgramRule;
 use Gate;
 use \DB;
 use Auth;
-use App\User;
+use App\Models\User;
 
 class rules extends Controller
 {

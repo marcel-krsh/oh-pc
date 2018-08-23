@@ -3,31 +3,31 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Parcel;
+use App\Models\Parcel;
 use App\Http\Requests;
 use Gate;
 use \DB;
 use Auth;
 use Excel;
-use App\User;
-use App\Report;
-use App\Vendor;
-use App\ExpenseCategory;
-use App\ReportDownload;
-use App\Role;
+use App\Models\User;
+use App\Models\Report;
+use App\Models\Vendor;
+use App\Models\ExpenseCategory;
+use App\Models\ReportDownload;
+use App\Models\Role;
 use Carbon;
-use App\Mail\DownloadReady;
-use App\Mail\EmailSystemAdmin;
+use App\Models\Mail\DownloadReady;
+use App\Models\Mail\EmailSystemAdmin;
 use Illuminate\Support\Facades\Storage;
 use App\LogConverter;
-use App\Jobs\VendorStatsExportJob;
-use App\Program;
+use App\Models\Jobs\VendorStatsExportJob;
+use App\Models\Program;
 
 
-use App\CostItem;
-use App\RequestItem;
-use App\PoItems;
-use App\InvoiceItem;
+use App\Models\CostItem;
+use App\Models\RequestItem;
+use App\Models\PoItems;
+use App\Models\InvoiceItem;
 
 class ReportsController extends Controller
 {

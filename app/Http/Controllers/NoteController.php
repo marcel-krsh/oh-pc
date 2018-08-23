@@ -9,14 +9,14 @@ use Illuminate\Http\Request;
 use Gate;
 use Auth;
 use Session;
-use App\User;
+use App\Models\User;
 use File;
 use Storage;
 use DB;
-use App\Programs;
-use App\Entity;
-use App\Parcel;
-use App\Note;
+use App\Models\Programs;
+use App\Models\Entity;
+use App\Models\Parcel;
+use App\Models\Note;
 
 class NoteController extends Controller
 {

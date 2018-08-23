@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\GeoData;
+use App\Models\Helpers\GeoData;
 
 class GeoDataController extends Controller
 {

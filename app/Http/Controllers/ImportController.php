@@ -8,23 +8,23 @@ use File;
 use Storage;
 use Illuminate\Support\Facades\Schema;
 use Excel;
-use App\Parcel;
+use App\Models\Parcel;
 use Auth;
 
 use Carbon\Carbon;
 
-use App\Import;
-use App\ImportRow;
-use App\Program;
-use App\Entity;
-use App\TargetArea;
+use App\Models\Import;
+use App\Models\ImportRow;
+use App\Models\Program;
+use App\Models\Entity;
+use App\Models\TargetArea;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\LogConverter;
-use App\ValidationResolutions;
-use App\SfParcel;
+use App\Models\ValidationResolutions;
+use App\Models\SfParcel;
 
 class ImportController extends Controller
 {

@@ -19,11 +19,11 @@ use Box\Spout\Common\Type;
 
 use Carbon\Carbon;
 
-use App\Import;
-use App\ImportRow;
-use App\Programs;
-use App\Entity;
-use App\TargetArea;
+use App\Models\Import;
+use App\Models\ImportRow;
+use App\Models\Programs;
+use App\Models\Entity;
+use App\Models\TargetArea;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;

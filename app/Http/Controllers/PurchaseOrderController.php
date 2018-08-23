@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\DocumentRule;
+use App\Models\DocumentRule;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -10,13 +10,13 @@ use Auth;
 use Gate;
 use File;
 use Storage;
-use App\Programs;
+use App\Models\Programs;
 use Illuminate\Http\Request;
 use DB;
-use App\Parcel;
-use App\User;
-use App\ReimbursementPurchaseOrders;
-use App\ParcelsToPurchaseOrder;
+use App\Models\Parcel;
+use App\Models\User;
+use App\Models\ReimbursementPurchaseOrders;
+use App\Models\ParcelsToPurchaseOrder;
 
 class PurchaseOrderController extends Controller
 {

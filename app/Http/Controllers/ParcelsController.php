@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\DocumentRule;
+use App\Models\DocumentRule;
 use Auth;
-use App\Retainage;
+use App\Models\Retainage;
 use Gate;
 use File;
 use Storage;
-use App\Programs;
+use App\Models\Programs;
 use Illuminate\Http\Request;
 use DB;
-use App\Parcel;
-use App\Helpers\GeoData;
+use App\Models\Parcel;
+use App\Models\Helpers\GeoData;
 use App\LogConverter;
-use App\ExpenseCategory;
-use App\GuideStep;
-use App\User;
-use App\CostItem;
-use App\ReimbursementRule;
-use App\ProgramRule;
+use App\Models\ExpenseCategory;
+use App\Models\GuideStep;
+use App\Models\User;
+use App\Models\CostItem;
+use App\Models\ReimbursementRule;
+use App\Models\ProgramRule;
 
 ini_set('max_execution_time', 600);
 
@@ -212,7 +212,7 @@ class ParcelsController extends Controller
     public function validateParcels(Request $request)
     {
         $lc = new LogConverter('parcel', 'validate');
-        $import = \App\Import::find(intval($request->query('import_id')));
+        $import = \App\Models\Import::find(intval($request->query('import_id')));
         
         if ($request->query('resetValidation')==1 && isset($import->id)) {
             $lc->setFrom(Auth::user())->setTo($import)->setDesc(Auth::user()->email . ' Started to run a re-validation for import '.intval($request->query('import_id')).'.')->save();
@@ -542,7 +542,7 @@ class ParcelsController extends Controller
                     break;
                 case '3':
                     # Withdraw parcel...
-                    $Delete = \App\Parcel::finde($parcel->id);
+                    $Delete = \App\Models\Parcel::finde($parcel->id);
 
                     $Delete->deleteParcel();
                         
@@ -920,7 +920,7 @@ class ParcelsController extends Controller
         /// STORE GEO DATA
 
         // Ensure we are dealing with a parcel object.
-        $parcel = \App\Parcel::find($parcel->id);
+        $parcel = \App\Models\Parcel::find($parcel->id);
         if ($runGeoUpdate == 1 && $parcel->address_validated == 0 && $withdraw != 1) {
             // No errors - go ahead and put in the geo data.j
             // Mark it as address validated
@@ -1988,8 +1988,8 @@ class ParcelsController extends Controller
         $parcel->lb_validated = 1;
         $parcel->save();
         // determine if it has costs and request amounts
-        $parcelCosts = \App\CostItem::where('parcel_id', $parcel->id)->count();
-        $parcelRequests = \App\RequestItem::where('parcel_id', $parcel->id)->count();
+        $parcelCosts = \App\Models\CostItem::where('parcel_id', $parcel->id)->count();
+        $parcelRequests = \App\Models\RequestItem::where('parcel_id', $parcel->id)->count();
         if ($parcelCosts > 0 && ($parcelCosts == $parcelRequests)) {
             // Set status to ready for submission
             updateStatus("parcel", $parcel, 'landbank_property_status_id', 7, 0, "Forced Valid by ".Auth::user()->name.". All costs have requested amounts - so I set this to a status of Internal Ready for Submission.");

@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Carbon;
-use App\Account;
+use App\Models\Account;
 use App\LogConverter;
-use App\ReimbursementInvoice;
-use App\ReimbursementPurchaseOrders;
-use App\ReimbursementRequest;
-use App\Transaction;
+use App\Models\ReimbursementInvoice;
+use App\Models\ReimbursementPurchaseOrders;
+use App\Models\ReimbursementRequest;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -1582,7 +1582,7 @@ class AccountingController extends Controller
             //     return $model->balance() > 0;
             //     });
 
-            $unpaid_disposition_invoices = \App\DispositionInvoice::with('program')
+            $unpaid_disposition_invoices = \App\Models\DispositionInvoice::with('program')
             ->where('entity_id', $where_entity_id_operator, $where_entity_id)
              ->where('status_id', '<>', 6)
             ->orderBy('created_at', 'ASC')
@@ -1623,7 +1623,7 @@ class AccountingController extends Controller
     /**
      * Edit Transaction
      *
-     * @param \App\Transaction $transaction
+     * @param \App\Models\Transaction $transaction
      * @param null              $reload
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|string
@@ -1631,7 +1631,7 @@ class AccountingController extends Controller
     public function editTransaction(Transaction $transaction, $reload = null)
     {
         if (Auth::user() != null && (Auth::user()->isHFAFiscalAgent() || Auth::user()->isHFAAdmin())) {
-            $statuses = \App\TransactionStatus::get()->toArray();
+            $statuses = \App\Models\TransactionStatus::get()->toArray();
             $status_array = [];
             foreach ($statuses as $status) {
                 $status_array[$status['id']]['name'] = $status['status_name'];
@@ -1648,7 +1648,7 @@ class AccountingController extends Controller
     /**
      * Save Transaction
      *
-     * @param \App\Transaction        $transaction
+     * @param \App\Models\Transaction        $transaction
      * @param \Illuminate\Http\Request $request
      *
      * @return int|string
@@ -1704,7 +1704,7 @@ class AccountingController extends Controller
             $lc = new LogConverter('stats', 'view');
             $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . ' Viewed statBreakDown')->save();
 
-            $program = \App\Program::select('id as program_id')->where('id', $program)->first();
+            $program = \App\Models\Program::select('id as program_id')->where('id', $program)->first();
             
             if (is_numeric($program->program_id)) {
                 $averageData = DB::select(

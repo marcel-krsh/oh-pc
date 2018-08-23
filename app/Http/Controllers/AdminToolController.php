@@ -2,26 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Account;
-use App\DocumentCategory;
-use App\DocumentRule;
-use App\DocumentRuleEntry;
-use App\Entity;
-use App\ExpenseCategory;
-use App\Program;
-use App\ReimbursementRule;
-use App\State;
-use App\County;
-use App\ProgramRule;
+use App\Models\Account;
+use App\Models\DocumentCategory;
+use App\Models\DocumentRule;
+use App\Models\DocumentRuleEntry;
+use App\Models\Entity;
+use App\Models\ExpenseCategory;
+use App\Models\Program;
+use App\Models\ReimbursementRule;
+use App\Models\State;
+use App\Models\County;
+use App\Models\ProgramRule;
 use Illuminate\Foundation\Auth\User;
-use App\Vendor;
-use App\TargetArea;
+use App\Models\Vendor;
+use App\Models\TargetArea;
 use Illuminate\Http\Request;
 use App\Http\Controllers\FormsController as Form;
 use Illuminate\Support\Facades\Input;
 use App\LogConverter;
 use \Auth;
-use App\User as UserModel;
+use App\Models\User as UserModel;
 use Illuminate\Support\Facades\DB;
 
 class AdminToolController extends Controller
@@ -1497,7 +1497,7 @@ class AdminToolController extends Controller
             'owner_id'=>'in:'.implode(',', $ownerIds),
         ]);
         if (!$id) {
-            $program = \App\Program::find(Input::get('owner_id'));
+            $program = \App\Models\Program::find(Input::get('owner_id'));
             $a = Account::create([
                 'owner_type'=>'program',
                 'account_name' => Input::get('account_name'),
@@ -1509,7 +1509,7 @@ class AdminToolController extends Controller
             return response('I created the account. The more the merrier!');
         } else {
             $aold = Account::find($id)->toArray();
-            $program = \App\Program::find(Input::get('owner_id'));
+            $program = \App\Models\Program::find(Input::get('owner_id'));
             Account::where('id', $id)->update([
                 'owner_type'=>'program',
                 'account_name' => Input::get('account_name'),

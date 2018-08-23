@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Notice;
+use App\Models\Notice;
 use Image;
 
 class HomeController extends Controller

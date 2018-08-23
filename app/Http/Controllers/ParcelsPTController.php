@@ -8,35 +8,35 @@ use Gate;
 use Carbon;
 use File;
 use Storage;
-use App\Programs;
+use App\Models\Programs;
 use Illuminate\Http\Request;
 use DB;
-use App\User;
-use App\Parcel;
+use App\Models\User;
+use App\Models\Parcel;
 use App\LogConverter;
-use App\ExpenseCategory;
-use App\CostItem;
-use App\ReimbursementRequest;
-use App\RequestItem;
-use App\Entity;
-use App\ParcelsToReimbursementRequest;
-use App\RequestNote;
-use App\PurchaseOrderNote;
-use App\Document;
-use App\DocumentCategory;
-use App\DocumentRule;
-use App\DocumentRuleEntry;
-use App\ApprovalRequest;
-use App\ApprovalAction;
-use App\ReimbursementPurchaseOrders;
-use App\ParcelsToPurchaseOrder;
-use App\ParcelsToReimbursementInvoice;
-use App\PoItems;
-use App\InvoiceItem;
-use App\ReimbursementInvoice;
-use App\Mail\EmailNotificationPOApproved;
-use App\Compliance;
-use App\ProgramRule;
+use App\Models\ExpenseCategory;
+use App\Models\CostItem;
+use App\Models\ReimbursementRequest;
+use App\Models\RequestItem;
+use App\Models\Entity;
+use App\Models\ParcelsToReimbursementRequest;
+use App\Models\RequestNote;
+use App\Models\PurchaseOrderNote;
+use App\Models\Document;
+use App\Models\DocumentCategory;
+use App\Models\DocumentRule;
+use App\Models\DocumentRuleEntry;
+use App\Models\ApprovalRequest;
+use App\Models\ApprovalAction;
+use App\Models\ReimbursementPurchaseOrders;
+use App\Models\ParcelsToPurchaseOrder;
+use App\Models\ParcelsToReimbursementInvoice;
+use App\Models\PoItems;
+use App\Models\InvoiceItem;
+use App\Models\ReimbursementInvoice;
+use App\Models\Mail\EmailNotificationPOApproved;
+use App\Models\Compliance;
+use App\Models\ProgramRule;
 
 class ParcelsPTController extends Controller
 {
@@ -110,7 +110,7 @@ class ParcelsPTController extends Controller
         // get categories that are needed
         $docRules = DocumentRule::where('program_rules_id', $parcel->program_rules_id)->pluck('id');
         $docCatIds = DocumentRuleEntry::whereIn('document_rule_id', $docRules)->pluck('document_category_id');
-        $parcelRules = \App\ProgramRule::find($parcel->program_rules_id);
+        $parcelRules = \App\Models\ProgramRule::find($parcel->program_rules_id);
         if (is_array($docCatIds)) {
             $categories_needed =  $docCatIds;
         } else {
