@@ -525,7 +525,7 @@ stickynav {
     margin-left: 0px;
     margin-right: 0px;
     padding: 2%;
-    margin-top: 50px;
+    /*margin-top: 50px;*/
   }
 	#logged-in-user-badge{
 		float: left;
@@ -1650,3 +1650,37 @@ ul ul, ol ul {
 .uk-icon>* {
     transform: translate(0,-1px);
 }
+
+.uk-light {
+      color: #ffffff;
+  }
+
+.guidesteps .uk-panel {
+  font-size: small;
+  opacity: 0.6;
+} 
+.guidesteps .uk-panel.active {
+  opacity: 1;
+
+}
+.guidesteps .uk-panel .doubleheight {
+  min-height: 40px;
+} 
+.guidesteps .uk-panel .uk-panel-title {
+  font-size: small;
+  background-color: #a4bed3;
+  color: #fff;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 4px;
+    padding-right: 4px;
+}
+.guidesteps .uk-panel.active .uk-panel-title {
+  background-color: #074f8c;
+  color: #fff;
+}
+.hideImportnull {
+  display: none;
+}
+.autocomplete-suggestions {max-height: none;}
+.autocomplete-suggestion {border-bottom:1px solid #ddd; padding:15px 10px; cursor: pointer;}

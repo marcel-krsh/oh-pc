@@ -21,7 +21,7 @@ if(Auth::check()){
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Allita Blight Manager 1.9.1</title>
+<title>Allita Program Compliance</title>
 
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
@@ -49,47 +49,6 @@ if(Auth::check()){
 <link rel="stylesheet" href="/css/auto-complete.css">
 @endif
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script>
-        window.Laravel = <?php echo json_encode([
-            'csrfToken' => csrf_token(),
-        ]); ?>
-    </script>
-@if(session('disablePacer') != 1)
-<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js">{{session('disablePacer')}}</script>
-
-@endif
-<script src="/js/jquery.js"></script>
-<script src="/js/uikit.js"></script>
-<script src="/js/uikit-icons.min.js"></script>
-<!-- <script src="/js/components/autocomplete.js"></script>
-<script src="/js/core/modal.js"></script>
-<script src="/js/components/lightbox.js"></script>
-<script src="/js/components/sticky.js"></script>
-<script src="/js/components/notify.js"></script>
-<script src="/js/components/tooltip.js"></script>
-<script src="/js/components/datepicker.js"></script>
-<script src="/js/components/slideshow.js"></script>
-<script src="/js/components/slideshow-fx.js"></script>
-<script src="/js/components/upload.js"></script>
-<script src="/js/components/lightbox.js"></script>
-<script src="/js/components/form-select.js"></script>
-<script src="/js/components/slider.js"></script>
-<script src="/js/components/slideset.js"></script>
-<script src="/js/components/accordion.js"></script>
-<script src="/js/components/notify.js"></script> 
-<script src="/js/components/search.js"></script>
-<script src="/js/components/nestable.js"></script>
-<script src="/js/components/sortable.js"></script>
-<script src="/js/components/grid.min.js"></script> -->
-<script src="/js/handsontable.full.min.js"></script>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
-
-	<script>
-		$('select').multipleSelect();
-	</script>
 @if(session('disablePacer')==1)
 <style type="text/css">
 	body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-done):after {
@@ -97,7 +56,25 @@ if(Auth::check()){
 	}
 </style>
 <?php session(['disablePacer'=>0]); ?>
-		@endif
+@endif
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    window.Laravel = <?php echo json_encode([
+        'csrfToken' => csrf_token(),
+    ]); ?>
+</script>
+<script src="/js/jquery.js"></script>
+<script src="/js/uikit.js"></script>
+<script src="/js/uikit-icons.min.js"></script>
+<script src="/js/handsontable.full.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
+
+<script>
+	$('select').multipleSelect();
+</script>
+
 @if (Auth::guest())
 @else
 <script src="/js/taffy.js"></script>
@@ -106,122 +83,8 @@ if(Auth::check()){
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.5/Chart.bundle.js"></script>
 @endif
 @yield('head')
-<style>
-	.uk-light {
-	    color: #ffffff;
-	}
-
-.guidesteps .uk-panel {
-	font-size: small;
-	opacity: 0.6;
-}	
-.guidesteps .uk-panel.active {
-	opacity: 1;
-
-}
-.guidesteps .uk-panel .doubleheight {
-	min-height: 40px;
-}	
-.guidesteps .uk-panel .uk-panel-title {
-	font-size: small;
-	background-color: #a4bed3;
-	color: #fff;
-	padding-top: 4px;
-	padding-bottom: 4px;
-	padding-left: 4px;
-    padding-right: 4px;
-}
-.guidesteps .uk-panel.active .uk-panel-title {
-	background-color: #074f8c;
-	color: #fff;
-}
-.hideImportnull {
-	display: none;
-}
-.autocomplete-suggestions {max-height: none;}
-.autocomplete-suggestion {border-bottom:1px solid #ddd; padding:15px 10px; cursor: pointer;}
-</style>
 </head>
 <body >
-<!-- BEGIN STICKY HEADER -->
-<stickynav uk-scrollspy="cls:uk-animation-slide-top; delay: 950">
-		<div style="width:100%; max-width:1450px; margin:auto; padding:0,35px" class="no-print uk-offcanvas-content" uk-scrollspy="cls:uk-animation-slide-top; delay: 1000">
-				
-			<div>
-
-					<div uk-grid>
-
-						
-						@if (Auth::guest())
-						<div class="uk-width-1-1">
-                            <?php /*<span class="uk-text-right"><a href="{{ url('/login') }}" class="uk-dark uk-light uk-link-muted">Login</a> | <a href="{{ url('/register') }}" class="uk-dark uk-light uk-link-muted">Register</a></span>
-                            */?>
-                            <p align="center"><img class="" width="180" height="48" src="https://ohiohome.org/images/logo@2x.png" alt="Ohio Housing Finance Agency" style="margin-left:auto;margin-right:auto; width: 118px;    margin-top: 8px;"></p>
-                        </div>
-
-                        @else
-						<div class="uk-width-1-1 uk-width-2-3@m">
-							<div class="uk-grid uk-grid-collapse">
-								<div class="uk-width-1-1 menu-search">
-									<a href="#filters" uk-toggle><span class="a-menu menu-toggle uk-margin-left allita-nav-bar-margin uk-margin-right" ></span></a>
-									
-									<div class="uk-autocomplete quick-lookup-box">
-										
-										<div >
-											<span class="a-magnify-2"></span>
-											<input class="uk-input" id="quick-lookup-box" type="text" placeholder="QUICK LOOK UP...">
-										
-										</div>
-									</div>
-								</div>
-							</div>	
-						</div>
-						
-						
-						
-						<div class="uk-visible@m uk-width-1-3@m">
-							<div id="user-logged-in allita-nav-bar-margin">
-								<div id="logged-in-user-badge" class="user-badge-{{ Auth::user()->badge_color }}"> {{ userInitials(Auth::user()->name) }}</div>
-								<div id="logged-in-user-info" class=""> {{ Auth::user()->name }}</div>
-								<div id="logged-in-user-links">
-									<ul class="uk-subnav">
-										<li><a href="javascript:logout()" class="uk-light">LOGOUT</a></li>
-									    {{-- <li><a class=" uk-light" onclick="loadListTab('/lists/activity_log')" >| ACTIVITY LOG</a></li> --}}
-									    <li id="unseen_communications">
-									    @if(isset($unseen_communications))
-										    @if(count($unseen_communications))
-										        <a class=" uk-light" href="" onclick="return false;"  >| ALERTS <span class="uk-badge uk-badge-notification uk-badge-warning" style="vertical-align:top;line-height: initial;padding: 0;height: 18px;">{{count($unseen_communications)}}</span></a>
-										        <div uk-dropdown>
-										            <ul class="uk-nav uk-nav-dropdown">
-										            	<li class="uk-nav-header">Messages</li>
-										            	@foreach($unseen_communications as $unseen_communication)
-														<li>
-															@if($unseen_communication->communication->parent_id)
-															<a href="#" onclick="dynamicModalLoad('communication/0/replies/{{$unseen_communication->communication->parent_id}} ')">
-															@else
-															<a href="#" onclick="dynamicModalLoad('communication/0/replies/{{$unseen_communication->communication_id}} ')">
-															@endif<i class="a-envelope-4"></i> "{{$unseen_communication->summary}}" from {{$unseen_communication->communication->owner->name}} @if($unseen_communication->communication->parcel)for parcel {{$unseen_communication->communication->parcel->parcel_id}}@endif</a></li>
-														@endforeach
-										            </ul>
-										        </div>
-										    @endif
-									    @endif
-										</li>
-									</ul>
-								</div>
-								<form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
-                                            {{ csrf_field() }}
-                                        </form>
-							</div>
-						</div>
-						@endif
-						
-					</div>
-				
-		</div>
-		</div>
-</stickynav>
-<!-- END STICKY HEADER --> 
 <a name="top"></a>
 <!-- MAIN VIEW -->
 <div class="uk-container uk-align-center">
@@ -589,27 +452,52 @@ $(document).ready(function(){
 	        }
         });
 });
-
 </script>
 @endif
-
 
 <script>
 	$(".uk-modal").on("hide", function() {
 	    $("html").removeClass("uk-modal-page");
 	});
-	
 </script>
 @if(Auth::check())
 @if(Auth::user()->entity_type == 'hfa')
-			<script type="text/javascript">
-				var $zoho=$zoho || {};$zoho.salesiq = $zoho.salesiq || 
-				{widgetcode:"676622b8482bc91a831d0cd4ca9043e6c19fad1e199256fac50d2b5354d1e743a84f59a27361c238a1b1d868cfdeb375", values:{},ready:function(){}};
-				var d=document;s=d.createElement("script");s.type="text/javascript";s.id="zsiqscript";s.defer=true;
-				s.src="https://salesiq.zoho.com/widget";t=d.getElementsByTagName("script")[0];t.parentNode.insertBefore(s,t);d.write("<div id='zsiqwidget'></div>");
-			</script>
-		@endIf
+	<script type="text/javascript">
+		var $zoho=$zoho || {};$zoho.salesiq = $zoho.salesiq || 
+		{widgetcode:"676622b8482bc91a831d0cd4ca9043e6c19fad1e199256fac50d2b5354d1e743a84f59a27361c238a1b1d868cfdeb375", values:{},ready:function(){}};
+		var d=document;s=d.createElement("script");s.type="text/javascript";s.id="zsiqscript";s.defer=true;
+		s.src="https://salesiq.zoho.com/widget";t=d.getElementsByTagName("script")[0];t.parentNode.insertBefore(s,t);d.write("<div id='zsiqwidget'></div>");
+	</script>
 @endIf
+@endIf
+<script>
+	var _uh = _uh || [];
+	_uh.push(['AllitaHost', 'https://pcinspectdev.ohiohome.org']);
+	_uh.push(['Logo', 'https://static.wixstatic.com/media/64bb8d_0ca6465192ae42b89d419bbadaa42a05~mv2.png/v1/fill/w_171,h_169,al_c,usm_0.66_1.00_0.01/64bb8d_0ca6465192ae42b89d419bbadaa42a05~mv2.png']);
+	_uh.push(['Css', '/poc_files/universal-header/universal-header.css']);
+	_uh.push(['LeftItems', '<button>HELP!</button>']);
+	_uh.push(['RightItems', '<button>🔔</button>']);	
+	(function() {
+	    var uh = document.createElement('script'); uh.type = 'text/javascript'; uh.async = true;
+	    //uh.src = 'https://devco.ohiohome.org/AuthorityOnlineALT/Unified/UnifiedHeader.aspx';
+	    uh.src = "{{config('app.url')}}/poc/universal-header/hosted.js";
+	    var s = document.getElementsByTagName('script')[0]; 
+	    $( document ).ready(function() {
+	    	s.parentNode.insertBefore(uh, s);
+	    });
+	})();
+</script>
+@if(session('disablePacer') != 1)
+<script>
+	window.paceOptions = { ajax: { trackMethods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'], ignoreURLs: ['{{config('app.url')}}/poc/universal-header/'] } }
+</script>
+<script src="/js/pace.min.js">{{session('disablePacer')}}</script>
+@endif
+<script>
+$( document ).ready(function() {
+    console.log( "ready!" );
+});
+</script>
 </body>
 </html>
 <?php } else { /// show for inactive users ?>

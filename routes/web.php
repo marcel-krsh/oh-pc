@@ -470,6 +470,7 @@ Route::group(['prefix'=>'poc','namespace'=>'POC'], function() {
 
     Route::get('universal-header', 'UniversalHeaderController@index');
     Route::get('universal-header/hosted.js', function() {
+       app('debugbar')->disable();
        return \view('poc.universal-header.hosted');
     });
 
