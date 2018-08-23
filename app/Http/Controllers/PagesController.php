@@ -700,11 +700,13 @@ class PagesController extends Controller
             $error = "Sorry you do not have access to the dashboard.";
             $message = "";
             $type = "danger";
-            if (Auth::user()->active == 0) {
-                if (Auth::user()->validate_all !=1) {
-                    $message = "It doesn\'t appear your user has been activated yet. If you just registered they may not have reviewed your request just yet. If it has been awhile, please contact your admin directly to activate your user account.";
-                } else {
-                    $message = "Your account is under review by one of my admins. You will be notified when it is activated.";
+            if (Auth::user()){
+                if (Auth::user()->active == 0) {
+                    if (Auth::user()->validate_all !=1) {
+                        $message = "It doesn\'t appear your user has been activated yet. If you just registered they may not have reviewed your request just yet. If it has been awhile, please contact your admin directly to activate your user account.";
+                    } else {
+                        $message = "Your account is under review by one of my admins. You will be notified when it is activated.";
+                    }
                 }
             }
             return view('pages.error', compact('error', 'message', 'type'));
