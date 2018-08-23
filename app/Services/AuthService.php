@@ -4,6 +4,7 @@
 
 namespace App\Services;
 
+use App\Models\SystemSetting;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -15,6 +16,12 @@ class AuthService
      * @var string
      */
     private $_url;
+
+    /**
+     * Base Directory For API calls
+     * @var string
+     */
+    private $_base_directory;
 
     /**
      * Username For API calls
@@ -46,14 +53,14 @@ class AuthService
      */
     private $_client;
 
-
     public function __construct()
     {
         $this->_url = config('allita.api.url');
+        $this->_base_directory = config('allita.api.base_directory');
         $this->_username = config('allita.api.username');
         $this->_password = config('allita.api.password');
 
-        $this->_devco_token = 'bxKmxPmSIGIM5CvfsOQnt9n'; //SystemConfig::get('devco_token');
+        $this->_devco_token = '81eqLzF4jU5NJvz3A751ZBkb'; //SystemConfig::get('devco_token');
         $this->_devco_refresh_token = ''; //SystemConfig::get('devco_refresh_token');
 
         $this->_client = new Client([
@@ -62,56 +69,93 @@ class AuthService
         ]);
     }
 
+    /**
+     * Root (System Level) Key Reset
+     */
     public function rootKeyReset()
     {
-        $endpoint = "/root/key-reset?username={$this->_username}&password={$this->_password}&key{$this->_devco_token}";
-
-    }
-
-    public function rootAuthenticate()
-    {
-        $endpoint = "/root/authenticate?username={$this->_username}&password={$this->_password}&key{$this->_devco_token}";
-
-        try {
-            $response = $this->_client->request('GET', $endpoint);
-
-            if ($response->getStatusCode() === 200) {
-
-                dd($response->getBody());
-
-            }
-
-            throw new \Exception("Unexpected Status Code ({$response->getStatusCode()})");
-
-        } catch (GuzzleException | \Exception $e) {
-
-            dd($e->getMessage());
-
-        }
-
-    }
-
-    public function rootRefreshToken()
-    {
-        $endpoint = "/root/refresh-token?token={$this->_devco_refresh_token}";
+        $endpoint = "{$this->_base_directory}/root/key-reset?username={$this->_username}&password={$this->_password}&key={$this->_devco_token}";
 
     }
 
     /**
+     * Root (System Level) Authenticate
+     *
+     * @return bool
+     */
+    public function rootAuthenticate()
+    {
+        $endpoint = "{$this->_base_directory}/root/authenticate?username={$this->_username}&password={$this->_password}&key={$this->_devco_token}";
+        $is_successful = false;
+
+        try {
+            $response = $this->_client->request('GET', $endpoint);
+            if ($response->getStatusCode() === 200) {
+                $result = json_encode($response->getBody()->getContents());
+                $this->_updateAccessToken($result->access_token);
+                $this->_updateRefreshtoken($result->refresh_token);
+                $is_successful = true;
+            } else {
+                // @todo: Throw PC-API Exception
+                throw new \Exception("Unexpected Status Code ({$response->getStatusCode()})");
+            }
+        } catch (GuzzleException | \Exception $e) {
+            // @todo: Throw PC-API Exception
+            dd($e->getMessage());
+        }
+
+        return $is_successful;
+    }
+
+    public function rootRefreshToken()
+    {
+        // https://www.oauth.com/oauth2-servers/access-tokens/access-token-response/
+        $endpoint = "{$this->_base_directory}/root/refresh-token?token={$this->_devco_refresh_token}";
+
+    }
+
+    /**
+     * User Authenticate Token
+     *
      * @param string $user_token
      * @param null   $ip_address
      * @param null   $useragent
      */
     public function userAuthenticateToken(string $user_token, $ip_address = null, $useragent = null)
     {
-        $endpoint = "/api/v1/devco/user/authenticate-token?devcotoken={$this->_devco_token}&token{$user_token}&ipaddress={$ip_address}&useragent={$useragent}";
+        $endpoint = "{$this->_base_directory}/devco/user/authenticate-token?devcotoken={$this->_devco_token}&token={$user_token}&ipaddress={$ip_address}&useragent={$useragent}";
 
     }
 
-    private function _parseJsonApiResponse($response)
+    /**
+     * Update Access Token
+     *
+     * @param $token
+     *
+     * @return mixed
+     */
+    private function _updateAccessToken($token)
     {
-        // http://jsonapi.org
+        return SystemSetting::updateOrCreate([
+            'key' => 'devco_token'
+        ],[
+            'value' => $token
+        ]);
+    }
 
+    /**
+     * Update Refresh Token
+     * @param $token
+     *
+     * @return mixed
+     */
+    private function _updateRefreshToken($token)
+    {
+        return SystemSetting::updateOrCreate([
+            'key' => 'devco_refresh_token'
+        ],[
+            'value' => $token
+        ]);
     }
 
 
