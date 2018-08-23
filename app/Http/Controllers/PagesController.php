@@ -680,10 +680,11 @@ class PagesController extends Controller
             $current_user = Auth::user();
             $unseen_communications = CommunicationRecipient::where('user_id', $current_user->id)
                     ->where('seen', '0')
-                    ->groupBy('communication_id')
+                    ->groupBy('communication_id', 'id', 'seen', 'user_id', 'created_at', 'updated_at')
                     ->with('communication')
                     ->with('communication.owner')
                     ->get();
+
             if (count($unseen_communications)) {
                 foreach ($unseen_communications as $unseen_communication) {
                     $unseen_communication->summary = strlen($unseen_communication->communication->message) > 400 ? substr($unseen_communication->communication->message, 0, 20)."..." : $unseen_communication->communication->message;

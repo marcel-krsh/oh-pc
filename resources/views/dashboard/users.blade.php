@@ -105,7 +105,7 @@ $(document).ready(function() {
          <script>
          dynamicModalLoad('user/{{session('editUserRoles')}}');
          </script>
-         @php session(['editUserRoles'=>0]); @endPhp
+         @php session(['editUserRoles'=>0]); @endphp
       @endIf
 		</div>
 	</div>

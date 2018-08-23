@@ -7,7 +7,7 @@
 </div>
 @if(strlen($message)>0)
 		<script>
-			UIkit.modal.alert('@php echo $message; @endPhp');
+			UIkit.modal.alert('@php echo $message; @endphp');
 		</script>
 @endif
 @stop

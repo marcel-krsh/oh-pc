@@ -467,7 +467,7 @@ if(Auth::check()){
 </div>
 
 </div>
-<div class="uk-width-1-1 uk-margin-large-bottom"><p class="uk-text-center uk-dark uk-text-small uk-light">Powered by <a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light">Allita</a> for <a href="http://ohiohome.org" class="uk-link-muted uk-dark uk-light" target="_blank">Ohio Housing Finance Agency</a> &copy; 2016 — @php echo date('Y',time()); @endPhp All Rights Reserved.</p></div>
+<div class="uk-width-1-1 uk-margin-large-bottom"><p class="uk-text-center uk-dark uk-text-small uk-light">Powered by <a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light">Allita</a> for <a href="http://ohiohome.org" class="uk-link-muted uk-dark uk-light" target="_blank">Ohio Housing Finance Agency</a> &copy; 2016 — @php echo date('Y',time()); @endphp All Rights Reserved.</p></div>
 </div>
 <script>
 	flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;

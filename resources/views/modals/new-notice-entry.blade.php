@@ -22,13 +22,13 @@
 										<div class="uk-grid uk-grid-collapse">
 											<div class="uk-width-1-10"><label>TO:</label></div>
 											<div class="uk-width-9-10"><select multiple id="users" name="users" style="height: 100px;">
-												@php $previousEntity = ""; $previousOpened = 0; @endPhp
+												@php $previousEntity = ""; $previousOpened = 0; @endphp
 												@forEach($users as $user)
 													@if($previousEntity != $user->entity_name)
 														@if($previousOpened == 1)
 														</optgroup>
 														@endIf
-														@php $previousEntity = $user->entity_name; $previousOpened = 1; @endPhp
+														@php $previousEntity = $user->entity_name; $previousOpened = 1; @endphp
 														<optgroup label="{{$user->entity_name}}">
 													@endIf
 												<option value="{{$user->id">

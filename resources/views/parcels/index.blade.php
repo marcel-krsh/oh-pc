@@ -195,12 +195,13 @@
 						>
 						FILTER BY NEXT STEP
 						</option>
-						@php $previousStep = ""; $previousStepOpen = 0; $previousType = ""; $stepsOutput = 0; @endPhp
-					@foreach ($nextSteps as $nextStep)
+						@php
+						$previousStep = ""; $previousStepOpen = 0; $previousType = ""; $stepsOutput = 0; 
+						@endphp
 
+					@foreach ($nextSteps as $nextStep)
 						@if($previousType != $nextStep->guide_step_type_id)
 							@if($previousStepOpen == 1)
-
 								</optgroup>
 								@if($stepsOutput == 0)
 									<optgroup label="(NO PARCELS AT THIS STEP)"></optgroup>
@@ -210,13 +211,13 @@
 							<optgroup label="==================================="></optgroup>
 							<optgroup label="{{strtoupper($nextStep->type_name)}}"></optgroup>
 							<optgroup label="==================================="></optgroup>
-							@php $previousType = $nextStep->guide_step_type_id; $stepsOutput = 0; $previousStepOpen = 0; @endPhp
+							<?php $previousType = $nextStep->guide_step_type_id; $stepsOutput = 0; $previousStepOpen = 0; 
+							?>
 						@endif
 
 						@if($previousStep != $nextStep->id && is_null($nextStep->parent_id))
 
 							@if($previousStepOpen == 1)
-
 								</optgroup>
 								@if($stepsOutput == 0)
 									<optgroup label="(NO PARCELS AT THIS STEP)"></optgroup>
@@ -224,41 +225,40 @@
 							@endIf
 							<optgroup label=""></optgroup>
 							<optgroup label="{{$nextStep->name}}">
-							@php $previousStep = $nextStep->id; $previousStepOpen = 1; $stepsOutput = 0; @endPhp
+							<?php 
+							$previousStep = $nextStep->id; $previousStepOpen = 1; $stepsOutput = 0; 
+							?>
 						@endif
 
 						@if(!is_null($nextStep->parent_id))
+							@if(Auth::user()->entity_type == "hfa")
+								@if($nextStep->isNextStep()->count() > 0)
+									<option value="{{$nextStep->id}}"
+									@if ($parcelsNextFilter == $nextStep->id)
+									 selected
+									 <?php $nextStepFiltered = $nextStep->name; ?>
+									@endif
+									>
+									{{$nextStep->name}}
 
-
-
-						@if(Auth::user()->entity_type == "hfa")
-							@if($nextStep->isNextStep()->count() > 0)
-								<option value="{{$nextStep->id}}"
-								@if ($parcelsNextFilter == $nextStep->id)
-								 selected
-								 <?php $nextStepFiltered = $nextStep->name; ?>
+									</option>
+									<?php $stepsOutput++; ?>
 								@endif
-								>
-								{{$nextStep->name}}
+							@else
+								@if($nextStep->isNextStep()->where('entity_id',Auth::user()->entity_id)->count() > 0)
+									<option value="{{$nextStep->id}}"
+									@if ($parcelsNextFilter == $nextStep->id)
+									 selected
+									 <?php $nextStepFiltered = $nextStep->name; ?>
+									@endif
+									>
+									@if($nextStep->hfa == 1) HFA:@endIf {{$nextStep->name}}
 
-								</option>
-								<?php $stepsOutput++; ?>
-							@endif
-						@else
-							@if($nextStep->isNextStep()->where('entity_id',Auth::user()->entity_id)->count() > 0)
-								<option value="{{$nextStep->id}}"
-								@if ($parcelsNextFilter == $nextStep->id)
-								 selected
-								 <?php $nextStepFiltered = $nextStep->name; ?>
+									</option>
+
+									<?php $stepsOutput++; ?>
 								@endif
-								>
-								@if($nextStep->hfa == 1) HFA:@endIf{{$nextStep->name}}
-
-								</option>
-
-								<?php $stepsOutput++; ?>
-							@endif
-						@endIf
+							@endIf
 						@endIf
 					@endforeach
 					</optgroup>
