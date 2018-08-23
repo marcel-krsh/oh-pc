@@ -18,7 +18,7 @@ class CostImportController extends Controller
 {
     public function __construct(Request $request)
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
     
     // Required fields for form

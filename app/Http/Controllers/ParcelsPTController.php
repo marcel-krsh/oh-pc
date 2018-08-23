@@ -42,7 +42,7 @@ class ParcelsPTController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
         //Auth::onceUsingId(6); //hkingsborough@cocic.org
         //Auth::onceUsingId(9); //bwhitney@cuyahogalandbank.org
         //Auth::onceUsingId(62); //bwhitney@cuyahogalandbank.org

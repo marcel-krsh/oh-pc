@@ -37,7 +37,7 @@ class PagesController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
         //Auth::onceUsingId(6); //hkingsborough@cocic.org
     }
     public function parcel_next_step(Parcel $parcel)

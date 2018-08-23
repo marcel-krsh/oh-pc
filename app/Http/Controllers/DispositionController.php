@@ -55,7 +55,7 @@ class DispositionController extends Controller
 
     public function __construct(Request $request)
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
         // for testing only! //////////////////////////////////////////////////////////
         //Auth::onceUsingId(3);
     }

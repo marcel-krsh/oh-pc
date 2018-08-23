@@ -493,11 +493,6 @@ $(document).ready(function(){
 </script>
 <script src="/js/pace.min.js">{{session('disablePacer')}}</script>
 @endif
-<script>
-$( document ).ready(function() {
-    console.log( "ready!" );
-});
-</script>
 </body>
 </html>
 <?php } else { /// show for inactive users ?>
