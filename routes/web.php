@@ -479,5 +479,8 @@ Route::group(['prefix'=>'poc','namespace'=>'POC'], function() {
        return $service->rootAuthenticate();
     });
 
+    Route::get('twilio/{resend?}', 'TwilioController@index')->name('device.code.check.form');
+    Route::post('twilio_post', 'TwilioController@validateSMSCode')->name('device.code.check');
+
 });
 
