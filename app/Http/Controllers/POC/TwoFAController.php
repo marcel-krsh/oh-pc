@@ -10,7 +10,7 @@ use Auth;
 use Session;
 use App\LogConverter;
 
-class TwilioController extends Controller
+class TwoFAController extends Controller
 {
 	public function __construct()
     {
@@ -52,7 +52,7 @@ class TwilioController extends Controller
 	            // $device->save();
 
     			// because it is the first time we are on this page for this device, we send the code
-    			$newly_added_device = 1; //TEST UNCOMMENT TO TEST FIRST LOAD
+    			// $newly_added_device = 1; //TEST UNCOMMENT TO TEST FIRST LOAD
     		// }
     		
             // $device_id = $device->id;
@@ -199,6 +199,33 @@ class TwilioController extends Controller
     public function checkDeviceTries($id=null)
     {
     	return session("new_device_check['".$id."']");
+    }
+
+    public function getsms(Request $request)
+    {
+        $accountId = env('TWILIO_SID', 'AC6f27ac04da4d08cae26b464c669d0c5e');
+        $token = env('TWILIO_TOKEN', '09b2f0946def7460369f645c9eb55a43');
+        $fromNumber = env('TWILIO_FROM', '+14014000016');
+        $twilio = new \Aloha\Twilio\Twilio($accountId, $token, $fromNumber);
+
+        // get the phone information if it exists
+        $from = $request['From'];
+        if(empty($from)){
+            exit;
+        }
+
+        $body = $request['Body'];
+        if(empty($body)){
+            exit;
+        }
+
+        $response = "This number is not monitored.";
+
+        header("content-type: text/xml");
+        echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+        echo "<Response>";
+        echo "<Message>".$response."</Message>";
+        echo "</Response>";
     }
 
 }
