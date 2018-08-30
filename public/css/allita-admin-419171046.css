@@ -1888,7 +1888,6 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
 .uk-tab > li > a:hover,
 .uk-tab > li > a:focus,
 .uk-tab > li.uk-open > a {
-  border-color: rgba(0, 0, 0, 0.06);
   background: #f5f5f5;
   color: #005186;
   outline: none;
@@ -1900,10 +1899,12 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
   padding-bottom: 7px;
 }
 .uk-tab > li.uk-active > a {
-  border-color: #dddddd;
-  border-bottom-color: transparent;
-  background: #ffffff;
-  color: #3a3a3a;
+    border-color: transparent;
+    border-bottom-color: transparent;
+    background: #ffffff;
+    color: #3a3a3a;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
 }
 .uk-tab > li.uk-disabled > a {
   color: #999999;
@@ -2530,9 +2531,9 @@ select.uk-form-width-mini {
   }
 }
 .uk-form-icon {
-  display: inline-block;
+  /*display: inline-block;
   position: relative;
-  max-width: 100%;
+  max-width: 100%;*/
 }
 .uk-form-icon > [class*='uk-icon-'] {
   position: absolute;
@@ -4857,8 +4858,7 @@ select.uk-form-width-mini {
 }
 .uk-badge {
   display: inline-block;
-  /* padding: 0 5px; */
-  padding: 1px 5px 23px;
+  padding: 0px 5px 0px;
   background: #005186;
   font-size: 10px;
   font-weight: bold;
@@ -6584,7 +6584,7 @@ a.uk-thumbnail:focus {
   display: inline-block !important;
   max-width: 100%;
 }
-.menu-search {margin-top:11px;}
+/*.menu-search {margin-top:11px;}*/
 @media (min-width: 960px) {
   .uk-visible-small {
     display: none !important;
@@ -7446,13 +7446,13 @@ a.uk-thumbnail:focus {
   margin-bottom: 0;
 }
 .uk-autocomplete {
-  display: inline-block;
+  /*display: inline-block;
   position: relative;
   max-width: 100%;
-  vertical-align: middle;
+  vertical-align: middle;*/
 }
 .uk-autocomplete .a-magnify-2 {
-  color:#fafafa; 
+  color:#000000; 
   font-size: 17px;
 }
 .uk-dropdown-flip {
@@ -8252,7 +8252,7 @@ ul#admin-tabs{
       padding-left: 0;
 }
 #tabs > li {
-    border-top: 1px solid #ddd;
+    /*border-top: 1px solid #ddd;*/
 }
 #tabs .uk-navbar-nav {
     margin-left: 20px;
@@ -8264,6 +8264,7 @@ ul#admin-tabs{
     margin-top: 5px;
 }
 #top-tabs {
+  background-color:#d2ebf9;
   border:none;
 }
 .uk-form-large:not(textarea):not([multiple]):not([size]) {

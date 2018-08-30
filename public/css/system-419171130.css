@@ -475,8 +475,8 @@ stickynav {
     max-width: 100%
   }
 #main-window {
-	max-width:1450px;
-  min-width: 1450px;
+	max-width:98%;
+  min-width: 98%;
 	min-height:100vh;	
 	background-color:white;
 	-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
@@ -484,24 +484,37 @@ stickynav {
 	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
 	margin-left:auto;
 	margin-right:auto;
-	padding-top:78px;
-	padding-left:15px;
-	padding-right:15px;
+	/*padding-top:16px;*/
+	padding-left:0;
+	padding-right:0;
 	padding-bottom:40px;
 	margin-bottom:15px;
 }
+#main-tabs {
+  background-color: #d2ebf9;
+  padding-top: 20px;
+}
+#main-tabs .uk-badge {
+    background-color: #939598;
+    padding-bottom: 2px;
+    line-height: 21px;
+    font-size: 10px;
+}
+#main-tabs i {
+  vertical-align: middle;
+}
 #quick-lookup-box {
 	border-radius: 0px;
-	background-color: #005186;
+	background-color: transparent;
 	border:none;	
-	color:#D8DADD;	
+	color:#000000;	
 	width:375px;
-	    margin-top: -4px;
-	margin-right:10px;
-
+}
+#quick-lookup-box::placeholder {
+  color: #000;
 }
 .quick-lookup-box {
-	margin-top:-5px;
+	/*margin-top:-5px;*/
 }
 
 .small-table-text th, .small-table-text td,  {
@@ -520,11 +533,11 @@ stickynav {
     max-width: 100%
   }
   #main-window{
-    max-width: 96%;
-    min-width: 96%;
+    max-width: 98%;
+    min-width: 98%;
     margin-left: auto;
     margin-right: auto;
-    padding: 2%;
+    padding: 0;
     /*margin-top: 50px;*/
   }
 	#logged-in-user-badge{
@@ -581,11 +594,10 @@ stickynav {
     max-width: 100%
   }
   #main-window{
-    max-width: 96%;
-    min-width: 96%;
+    max-width: 98%;
+    min-width: 98%;
     margin-left: auto;
     margin-right: auto;
-    padding: 2%;
   }
 	.uk-container{
 		padding: 0px;
@@ -599,11 +611,10 @@ stickynav {
     max-width: 100%
   }
   #main-window{
-    max-width: 96%;
-    min-width: 96%;
+    max-width: 98%;
+    min-width: 98%;
     margin-left: auto;
     margin-right: auto;
-    padding: 2%;
   }
 	.uk-navbar {
      background: none; 
@@ -654,11 +665,10 @@ stickynav {
     max-width: 100%
   }
   #main-window{
-    max-width: 96%;
-    min-width: 96%;
+    max-width: 98%;
+    min-width: 98%;
     margin-left: auto;
     margin-right: auto;
-    padding: 2%;
   }
 	#quick-lookup-box {
 		width:460px;
@@ -681,11 +691,10 @@ stickynav {
     max-width: 100%
   }
   #main-window{
-    max-width: 96%;
-    min-width: 96%;
+    max-width: 98%;
+    min-width: 98%;
     margin-left: auto;
     margin-right: auto;
-    padding: 2%;
   }
 	#quick-lookup-box {
 		width:521px;
@@ -716,10 +725,9 @@ stickynav {
     max-width: 100%
   }
   #main-window{
-    max-width: 96%;
+    max-width: 98%;
     margin-left: auto;
     margin-right: auto;
-    padding: 2%;
   }
 	#quick-lookup-box {
 		width:200px;
@@ -736,10 +744,9 @@ stickynav {
     max-width: 100%
   }
 	#main-window{
-    max-width: 96%;
+    max-width: 98%;
     margin-left: auto;
     margin-right: auto;
-    padding: 2%;
   }
 	#login-panel {
 		width:70%;
@@ -750,10 +757,9 @@ stickynav {
     max-width: 100%
   }
 	#main-window{
-    max-width: 96%;
+    max-width: 98%;
     margin-left: 0px;
     margin-right: 0px;
-    padding: 2%;
   }
 	#login-panel {
 		width:70%;
@@ -764,10 +770,9 @@ stickynav {
     max-width: 100%
   }
 	#main-window{
-    max-width: 96%;
+    max-width: 98%;
     margin-left: 0px;
     margin-right: 0px;
-    padding: 2%;
   }
 	#login-panel {
 		width:70%;
@@ -778,10 +783,9 @@ stickynav {
     max-width: 100%
   }
 	#main-window{
-    max-width: 96%;
+    max-width: 98%;
     margin-left: 0px;
     margin-right: 0px;
-    padding: 2%;
   }
 	#login-panel {
 		width:70%;
@@ -792,10 +796,9 @@ stickynav {
     max-width: 100%
   }
 	#main-window{
-   max-width: 96%;
+   max-width: 98%;
     margin-left: 0px;
     margin-right: 0px;
-    padding: 2%;
   }
 	#login-panel {
 		width:70%;
@@ -806,11 +809,10 @@ stickynav {
     max-width: 100%
   }
 	#main-window{
-    max-width: 96%;
-    min-width: 96%;
+    max-width: 98%;
+    min-width: 98%;
     margin-left: 0px;
     margin-right: 0px;
-    padding: 2%;
   }
 	#login-panel {
 		width:70%;
@@ -821,11 +823,10 @@ stickynav {
     max-width: 100%
   }
 	#main-window{
-    max-width: 96%;
-    min-width: 96%;
+    max-width: 98%;
+    min-width: 98%;
     margin-left: 0px;
     margin-right: 0px;
-    padding: 2%;
   }
 	#login-panel {
 		width:70%;
@@ -844,11 +845,10 @@ stickynav {
     max-width: 100%
   }
 	#main-window{
-    max-width: 96%;
-    min-width: 96%;
+    max-width: 98%;
+    min-width: 98%;
     margin-left: 0px;
     margin-right: 0px;
-    padding: 2%;
   }
 	#login-panel {
 		width:70%;
@@ -859,11 +859,10 @@ stickynav {
     max-width: 100%
   }
 	#main-window{
-    max-width: 96%;
-    min-width: 96%;
+    max-width: 98%;
+    min-width: 98%;
     margin-left: 0px;
     margin-right: 0px;
-    padding: 2%;
   }
 	#login-panel {
 		width:80%;
@@ -874,11 +873,10 @@ stickynav {
     max-width: 100%
   }
 	#main-window{
-    max-width: 96%;
-    min-width: 96%;
+    max-width: 98%;
+    min-width: 98%;
     margin-left: auto;
     margin-right: auto;
-    padding: 2%;
   }
 	#login-panel {
 		width:85%;
@@ -889,11 +887,10 @@ stickynav {
     max-width: 100%
   }
 	#main-window{
-    max-width: 96%;
-    min-width: 96%;
+    max-width: 98%;
+    min-width: 98%;
     margin-left: 0px;
     margin-right: 0px;
-    padding: 2%;
   }
 	#login-panel {
 		width:85%;
@@ -920,11 +917,10 @@ stickynav {
     max-width: 100%
   }
 	#main-window{
-    max-width: 96%;
-    min-width: 96%;
+    max-width: 98%;
+    min-width: 98%;
     margin-left: auto;
     margin-right: auto;
-    padding: 2%;
   }
 	#login-panel {
 		width:85%;
@@ -955,11 +951,10 @@ stickynav {
     max-width: 100%
   }
 	#main-window{
-    max-width: 96%;
-    min-width: 96%;
+    max-width: 98%;
+    min-width: 98%;
     margin-left: 0px;
     margin-right: 0px;
-    padding: 2%;
   }
 	#login-panel {
 		width:85%;
@@ -990,11 +985,10 @@ stickynav {
     max-width: 100%
   }
 	#main-window{
-    max-width: 96%;
-    min-width: 96%;
+    max-width: 98%;
+    min-width: 98%;
     margin-left: 0px;
     margin-right: 0px;
-    padding: 2%;
   }
 	#login-panel {
 		width:85%;
@@ -1025,11 +1019,10 @@ stickynav {
     max-width: 100%
   }
   #main-window{
-    max-width: 96%;
-    min-width: 96%;
+    max-width: 98%;
+    min-width: 98%;
     margin-left: 0px;
     margin-right: 0px;
-    padding: 2%;
   }
 	#login-panel {
 		width:85%;
@@ -1177,15 +1170,33 @@ margin-top:10px;
 .parcel-bottom-bar {
 	height: 50px;
 }
+#top-tabs-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#top-tabs {
+  flex-wrap: nowrap;
+}
 #top-tabs a {
 	color:#97afa3;
 }
 #top-tabs > li > a{
   text-transform: initial;
+  color: #76787b;
+  
+    font-size: 0.9em;
 }
 #top-tabs > li.uk-active > a{
 	background-color:white;
-	color:black;
+}
+#top-tabs i {
+    font-size: 17px;
+    padding-right: 2px;
+    bottom: 1px;
+    position: relative;
+}
+#top-tabs li.uk-active i {
+    color: #000;
 }
 #parcel-tabs > li.uk-active > a,#dashboard-tabs > li.uk-active > a{
 	background-color:#white;

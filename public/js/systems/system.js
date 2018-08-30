@@ -61,7 +61,7 @@ function delayedClick(tabNumber) {
 function clickTab(){
 	var tabNumber = window.tabNumber;
 	$('#detail-tab-'+tabNumber+'-content').fadeIn();
-	$('.detail-tab-'+tabNumber).fadeIn();
+	// $('.detail-tab-'+tabNumber).fadeIn();
 	
 	//make the detail tab focused
 	
@@ -69,59 +69,78 @@ function clickTab(){
 
 }
 
-function loadDetailTab(typeId,detailId,tabNumber,overrideSaveCheck,subTabType) {
-	// check if changes need to be saved.
-
-	var continueToLoad = 1;
-	if (window.saved !== 1 && overrideSaveCheck !== 1) {
-		continueToLoad = 0;
-		UIkit.modal.confirm("You have unsaved changes, are you sure you want to continue loading this item without saving?").then(function() {
-    		continueToLoad = 1;
-			window.saved = 1;
-			loadDetailTab(typeId,detailId,tabNumber,overrideSaveCheck,refreshOnly);
-			return;
-		}); 
-	} else {
-		if(continueToLoad === 1) {
-			//take back to top
-			$('#smoothscrollLink').trigger("click");		
-			//hide the detail tab
-			$('#detail-tab-'+tabNumber+'-content').html('').fadeOut();
-			$('.detail-tab-'+tabNumber).fadeOut();
-			//unload the content of the detail tab
-			$('#detail-tab-'+tabNumber+'-content').html('');
-			$('#detail-tab-'+tabNumber).trigger("click");
-			//load the selected detail tab content
-			$('#detail-tab-'+tabNumber+'-content').load(''+typeId+detailId, function(response, status, xhr) {
-				  if (status == "error") {
-				  	if(xhr.status == "401") {
-				  		var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
-				  	} else if( xhr.status == "500"){
-				  		var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
-				  	} else {
-				  		var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
-				  	}
-				    
-				    UIkit.modal.alert(msg);
-				  }
-				});
-			console.log('Requested '+typeId+detailId+' and loaded into #detail-tab-'+tabNumber+'-content');
-			//show the detail tab
-			delayedClick(tabNumber);
-			$('#list-tab').css("position", "");
-			$('#list-tab').css("top", "");
-			$('#list-tab').css("width", "");
-			$('#list-tab').removeClass('uk-active');
-			
-			// store the subtab number to have it open when the page loads
-			window.subTabType = subTabType;
-
-			// STORE THE CURRENT DETAIL ID IN THE WINDOW PORTION OF THE DOM TO ACCESS IN OTHER SCRIPTS
-			window.currentDetailId = detailId;
-			return;	
-		}
-	}
+function loadTab(route, tabNumber) {
+	//take back to top
+ 	$('#smoothscrollLink').trigger("click");		
+	//load the selected detail tab content
+	$('#detail-tab-'+tabNumber+'-content').load(route, function(response, status, xhr) {
+		  if (status == "error") {
+		  	if(xhr.status == "401") {
+		  		var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
+		  	} else if( xhr.status == "500"){
+		  		var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
+		  	} else {
+		  		var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
+		  	}
+		    
+		    UIkit.modal.alert(msg);
+		  }
+		});
 }
+
+// function loadDetailTab(typeId,detailId,tabNumber,overrideSaveCheck,subTabType) {
+// 	// check if changes need to be saved.
+
+// 	var continueToLoad = 1;
+// 	if (window.saved !== 1 && overrideSaveCheck !== 1) {
+// 		continueToLoad = 0;
+// 		UIkit.modal.confirm("You have unsaved changes, are you sure you want to continue loading this item without saving?").then(function() {
+//     		continueToLoad = 1;
+// 			window.saved = 1;
+// 			loadDetailTab(typeId,detailId,tabNumber,overrideSaveCheck,refreshOnly);
+// 			return;
+// 		}); 
+// 	} else {
+// 		if(continueToLoad === 1) {
+// 			//take back to top
+// 			$('#smoothscrollLink').trigger("click");		
+// 			//hide the detail tab
+// 			$('#detail-tab-'+tabNumber+'-content').html('').fadeOut();
+// 			$('.detail-tab-'+tabNumber).fadeOut();
+// 			//unload the content of the detail tab
+// 			$('#detail-tab-'+tabNumber+'-content').html('');
+// 			$('#detail-tab-'+tabNumber).trigger("click");
+// 			//load the selected detail tab content
+// 			$('#detail-tab-'+tabNumber+'-content').load(''+typeId+detailId, function(response, status, xhr) {
+// 				  if (status == "error") {
+// 				  	if(xhr.status == "401") {
+// 				  		var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
+// 				  	} else if( xhr.status == "500"){
+// 				  		var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
+// 				  	} else {
+// 				  		var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
+// 				  	}
+				    
+// 				    UIkit.modal.alert(msg);
+// 				  }
+// 				});
+// 			console.log('Requested '+typeId+detailId+' and loaded into #detail-tab-'+tabNumber+'-content');
+// 			//show the detail tab
+// 			delayedClick(tabNumber);
+// 			$('#list-tab').css("position", "");
+// 			$('#list-tab').css("top", "");
+// 			$('#list-tab').css("width", "");
+// 			$('#list-tab').removeClass('uk-active');
+			
+// 			// store the subtab number to have it open when the page loads
+// 			window.subTabType = subTabType;
+
+// 			// STORE THE CURRENT DETAIL ID IN THE WINDOW PORTION OF THE DOM TO ACCESS IN OTHER SCRIPTS
+// 			window.currentDetailId = detailId;
+// 			return;	
+// 		}
+// 	}
+// }
 
 function enableField(fieldId){
 	$(fieldId).prop('disabled', false);
