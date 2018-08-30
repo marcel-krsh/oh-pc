@@ -156,6 +156,7 @@ return [
         'Maatwebsite\Excel\ExcelServiceProvider',
         'Aloha\Twilio\Support\Laravel\ServiceProvider',
         'Chumper\Zipper\ZipperServiceProvider',
+        Barryvdh\DomPDF\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -219,6 +220,7 @@ return [
         'Image' => Intervention\Image\Facades\Image::class,
         'GeoData' => App\Helpers\GeoData::class,
         'Zipper' => 'Chumper\Zipper\Zipper',
+        'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 

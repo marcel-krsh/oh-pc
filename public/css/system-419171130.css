@@ -522,8 +522,8 @@ stickynav {
   #main-window{
     max-width: 96%;
     min-width: 96%;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin-left: auto;
+    margin-right: auto;
     padding: 2%;
     /*margin-top: 50px;*/
   }
@@ -583,8 +583,8 @@ stickynav {
   #main-window{
     max-width: 96%;
     min-width: 96%;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin-left: auto;
+    margin-right: auto;
     padding: 2%;
   }
 	.uk-container{
@@ -601,8 +601,8 @@ stickynav {
   #main-window{
     max-width: 96%;
     min-width: 96%;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin-left: auto;
+    margin-right: auto;
     padding: 2%;
   }
 	.uk-navbar {
@@ -656,8 +656,8 @@ stickynav {
   #main-window{
     max-width: 96%;
     min-width: 96%;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin-left: auto;
+    margin-right: auto;
     padding: 2%;
   }
 	#quick-lookup-box {
@@ -683,8 +683,8 @@ stickynav {
   #main-window{
     max-width: 96%;
     min-width: 96%;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin-left: auto;
+    margin-right: auto;
     padding: 2%;
   }
 	#quick-lookup-box {
@@ -717,8 +717,8 @@ stickynav {
   }
   #main-window{
     max-width: 96%;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin-left: auto;
+    margin-right: auto;
     padding: 2%;
   }
 	#quick-lookup-box {
@@ -737,8 +737,8 @@ stickynav {
   }
 	#main-window{
     max-width: 96%;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin-left: auto;
+    margin-right: auto;
     padding: 2%;
   }
 	#login-panel {
@@ -876,8 +876,8 @@ stickynav {
 	#main-window{
     max-width: 96%;
     min-width: 96%;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin-left: auto;
+    margin-right: auto;
     padding: 2%;
   }
 	#login-panel {
@@ -922,8 +922,8 @@ stickynav {
 	#main-window{
     max-width: 96%;
     min-width: 96%;
-    margin-left: 0px;
-    margin-right: 0px;
+    margin-left: auto;
+    margin-right: auto;
     padding: 2%;
   }
 	#login-panel {

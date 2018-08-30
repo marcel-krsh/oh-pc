@@ -61,6 +61,10 @@ class TwoFAController extends Controller
          	// $lc = new LogConverter('Device', 'new device');
         	// $lc->setFrom(Auth::user())->setTo($device)->setDesc(Auth::user()->email . ' is adding a device.')->save();
 
+            // what is user's preferred 2FA method
+            // $method = $user->tfa_method();  // sms, email, voice, fax
+            $method = 'sms';
+
     		// manage tries?
     		$tries = $this->checkDeviceTries($device_id);
     		if($tries >= 5){
@@ -73,7 +77,7 @@ class TwoFAController extends Controller
     			if($newly_added_device || $resend){
     				// send code on that first load
     				// generate a code
-		    		$code = rand(10000, 99999);
+		    		$code = rand(100, 999)." ".rand(100, 999)." ".rand(100, 999);
 
 		    		// save the code in database
 		    		// devices table should be updated to account for generated codes and tries
@@ -87,13 +91,28 @@ class TwoFAController extends Controller
 
 		    		$phone = null; // TEST
 
-		    		// send code via Twilio
-		    		$sms_sent = $this->sendSMSCode($code, $phone);
-		    		if($sms_sent == 'Queued'){
-		    			$status = 'Message queued';
-		    		}else{
-		    			$status = $sms_sent;
-		    		}
+                    $message = 'Hello. This is your security code.';
+                    $message_code = $code;
+
+                    if($method == 'sms'){
+                        // send code via Twilio SMS
+                        $sms_sent = $this->sendSMSCode($message, $message_code, $phone);
+                        if($sms_sent == 'Queued'){
+                            $status = 'Message queued';
+                        }else{
+                            $status = $sms_sent;
+                        }
+                    }elseif($method == 'voice'){
+                        $voice = $this->makeVoiceCall($message, $message_code, $phone);
+                        $status = 'Call initiated';
+                    }elseif($method == 'fax'){
+                        $code_no_space = str_replace(' ', '', $message_code);
+                        $fax_sent = $this->sendFax($code_no_space, $message_code, $phone);
+                        $status = 'Fax sent';
+                    }elseif($method == 'email'){
+                        
+                    }
+		    		
     			}else{
     				$status = 'Code already sent';
     			}	
@@ -112,8 +131,57 @@ class TwoFAController extends Controller
     	return 0;
     }
 
+    public function makeVoiceCall($message=null, $message_code=null, $phone=null)
+    {
+        if($message === null || $message == ''){
+
+            $message = "Pink Elephants and Happy Rainbows"; // TEST
+
+            // $status = 'I cannot send an empty SMS';
+            // return $status;
+        }
+        if($phone === null){
+            $phone = env('TWILIO_TEST_NUMBER', '');
+        }
+
+        $accountId = env('TWILIO_SID', 'AC6f27ac04da4d08cae26b464c669d0c5e');
+        $token = env('TWILIO_TOKEN', '09b2f0946def7460369f645c9eb55a43');
+        $fromNumber = env('TWILIO_FROM', '+14014000016');
+        $twilio = new \Aloha\Twilio\Twilio($accountId, $token, $fromNumber);
+
+        $message_code = implode(', ',str_split($message_code));
+
+        $call_made = $twilio->call($phone, function ($call) use ($message, $message_code) {
+                        $call->pause(['length' => 1]);
+                        $call->say($message.$message_code,['voice' => 'woman','loop' => 3]);
+                    });
+        return $call_made;
+    }
+
+    // show menu response
+    public function getvoiceresponse(Request $request)
+    {
+        $selectedOption = $request->input('Digits');
+
+        switch ($selectedOption) {
+            case 1:
+                return $this->_getReturnInstructions();
+            case 2:
+                return $this->_getPlanetsMenu();
+        }
+
+        $response = new Twiml();
+        $response->say(
+            'Returning to the main menu',
+            ['voice' => 'Alice', 'language' => 'en-GB']
+        );
+        $response->redirect(route('welcome', [], false));
+
+        return $response;
+    }
+
     // that next function should be placed in a helper
-    public function sendSMSCode($message=null, $phone=null)
+    public function sendSMSCode($message=null, $message_code=null, $phone=null)
     {
     	if($message === null || $message == ''){
 
@@ -133,7 +201,7 @@ class TwoFAController extends Controller
 		$twilio = new \Aloha\Twilio\Twilio($accountId, $token, $fromNumber);
 
 		// Send message to phone number
-		$message_sent = $twilio->message($phone, $message);
+		$message_sent = $twilio->message($phone, $message." ".$message_code);
 
 		if($message_sent->status != 'queued'){
 			$status = "Something is wrong: ".$message_sent->status;
@@ -203,6 +271,8 @@ class TwoFAController extends Controller
 
     public function getsms(Request $request)
     {
+        app('debugbar')->disable();
+
         $accountId = env('TWILIO_SID', 'AC6f27ac04da4d08cae26b464c669d0c5e');
         $token = env('TWILIO_TOKEN', '09b2f0946def7460369f645c9eb55a43');
         $fromNumber = env('TWILIO_FROM', '+14014000016');
@@ -226,6 +296,61 @@ class TwoFAController extends Controller
         echo "<Response>";
         echo "<Message>".$response."</Message>";
         echo "</Response>";
+    }
+
+    public function getsmsfailed(Request $request)
+    {
+        // do something
+    }
+
+    public function getvoice(Request $request)
+    {
+        
+    }
+
+    public function getvoicefailed(Request $request)
+    {
+        // do something
+    }
+
+    public function sendFax($code_no_space=null, $message_code=null, $phone=null)
+    {
+        if($phone === null){
+            $phone = '+18442660833'; // using http://www.faxburner.com/ to test, phone changes every couple of days
+        }
+
+        // Twilio initialization
+        $accountId = env('TWILIO_SID', '');
+        $token = env('TWILIO_TOKEN', '');
+        $fromNumber = env('TWILIO_FROM', '');
+        $twilio = new \Aloha\Twilio\Twilio($accountId, $token, $fromNumber);
+
+        // get the pdf url
+        // $pdfurl = route('device.create.fax.pdf', ['code' => $message_code]); 
+        $pdfurl = "http://65a6d568.ngrok.io/poc/tfa/faxpdf/".$code_no_space; // for testing only, won't work on localhost
+
+        $sdk = $twilio->getTwilio();
+        $fax = $sdk->fax->v1->faxes
+                   ->create($phone, // to
+                        $pdfurl,
+                        //"https://www.twilio.com/docs/documents/25/justthefaxmaam.pdf", // mediaUrl
+                        array("from" => $fromNumber)
+                   );
+
+        return $fax->sid;
+    }
+
+    public function generateFaxPdf($code = null)
+    {
+        // generate a PDF to be sent by fax
+
+        // make sure that the user is currently logged in and that the code matches that user 
+        // to prevent possible direct access
+
+        $code = chunk_split($code, 3, ' '); // add spaces
+
+        $pdf = \PDF::loadView('poc.twilio.faxpdf', compact('code'));
+        return $pdf->download('allita_compliance.pdf');
     }
 
 }

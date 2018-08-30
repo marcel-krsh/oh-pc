@@ -479,8 +479,22 @@ Route::group(['prefix'=>'poc','namespace'=>'POC'], function() {
        return $service->rootAuthenticate();
     });
 
-    Route::get('twilio/{resend?}', 'TwilioController@index')->name('device.code.check.form');
-    Route::post('twilio_post', 'TwilioController@validateSMSCode')->name('device.code.check');
+    Route::get('tfa/makecall', 'TwoFAController@makeVoiceCall');
+    
+    Route::post('tfa/getsms', 'TwoFAController@getsms')->name('device.receive.sms');
+    Route::post('tfa/getsms/failed', 'TwoFAController@getsmsfailed');
+
+    Route::post('tfa/getvoice', 'TwoFAController@getvoice')->name('device.receive.voice');
+    Route::post('tfa/getvoice/response', 'TwoFAController@getvoiceresponse')->name('device.voice.response');
+    Route::post('tfa/getvoice/failed', 'TwoFAController@getvoicefailed');
+
+    // Route::post('tfa/getfax', 'TwoFAController@getfax')->name('device.receiving.fax');
+    // Route::post('tfa/getfax/received', 'TwoFAController@getfaxreceived')->name('device.received.fax');
+
+    Route::get('tfa/faxpdf/{code}', 'TwoFAController@generateFaxPdf')->name('device.create.fax.pdf');
+
+    Route::get('tfa/{resend?}', 'TwoFAController@index')->name('device.code.check.form');
+    Route::post('tfa_post', 'TwoFAController@validateSMSCode')->name('device.code.check');
 
 });
 

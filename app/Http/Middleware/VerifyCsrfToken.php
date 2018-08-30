@@ -12,6 +12,11 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        '/parcels/parcel-lookup'
+        '/parcels/parcel-lookup',
+        '/poc/tfa/getsms',
+        '/poc/tfa/getsms/failed',
+        '/poc/tfa/getvoice',
+        '/poc/tfa/getvoice/failed',
+        '/poc/tfa/generateFaxPdf'
     ];
 }
