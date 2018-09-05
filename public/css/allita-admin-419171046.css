@@ -166,7 +166,7 @@ h2,
 }
 h3,
 .uk-h3 {
-  font-size: 18px;
+  font-size: 17px;
   line-height: 24px;
 }
 h4,
@@ -318,7 +318,9 @@ iframe {
     /*margin-left: -35px;*/
   }
   .uk-grid > * {
-    padding-left: 25px;
+    /*padding-left: 25px;*/
+    padding-left: 12px;
+    padding-right: 12px;
   }
   .uk-grid + .uk-grid,
   .uk-grid-margin,
@@ -2212,7 +2214,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
 }
 .uk-table th,
 .uk-table td {
-  padding: 8px 8px;
+  padding: 8px 4px;
   border-bottom: 1px solid #dddddd;
 }
 .uk-table th {
@@ -2241,6 +2243,9 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
   vertical-align: middle !important;
 }
 .uk-table-striped tbody tr:nth-of-type(odd) {
+  background: #ffffff;
+}
+.uk-table-striped tbody tr:nth-of-type(even) {
   background: #fafafa;
 }
 .uk-table-condensed td {
@@ -2577,7 +2582,8 @@ select.uk-form-width-mini {
   text-decoration: none;
   text-align: center;
   border: 1px solid rgba(0, 0, 0, 0.06);
-  border-radius: 4px;
+  border-radius: 8px;
+  border: 0px;
   text-shadow: 0 1px 0 #ffffff;
   padding-top: 4px;
   padding-bottom: 5px;
@@ -2599,17 +2605,19 @@ select.uk-form-width-mini {
   color: #3a3a3a;
 }
 .uk-button-primary {
-  background-color: #005186;
+  background-color: #da328a;
   color: #ffffff;
+  border-radius: 8px;
+  border: 0px;
 }
 .uk-button-primary:hover,
 .uk-button-primary:focus {
-  background-color: #35b3ee;
+  background-color: #ff80c2;
   color: #ffffff;
 }
 .uk-button-primary:active,
 .uk-button-primary.uk-active {
-  background-color: #0091ca;
+  background-color: #ff80c2;
   color: #ffffff;
 }
 .uk-button-success {
@@ -6196,7 +6204,7 @@ a.uk-thumbnail:focus {
   line-height: 16px;
 }
 .uk-text-large {
-  font-size: 18px;
+  font-size: 17px;
   line-height: 24px;
   font-weight: normal;
 }

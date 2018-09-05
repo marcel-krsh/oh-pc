@@ -11,6 +11,9 @@ body > :not(.pace),body:before,body:after {
 body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-done):after {
   opacity:0;
 }
+.uk-vertical-align-top {
+  vertical-align: top;
+}
 .g-recaptcha {
     display: inline-block;
     margin: 34px;
@@ -1198,6 +1201,353 @@ margin-top:10px;
 #top-tabs li.uk-active i {
     color: #000;
 }
+#mainfooter {
+    position: fixed;
+    bottom: 0;
+    height: 80px;
+    width: 100%;
+    background-color: rgba(45, 42, 43, 0.85);
+}
+#mainfooter #footer-content {
+    padding-top: 20px;
+}
+.rowinset {
+  -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.75);
+}
+.rowinset table.uk-table tr {
+    border-bottom: 5px solid #f7f7f8;
+    border-top:0px;
+}
+.rowinset table thead tr {
+    border: 0px !important;
+}
+.rowinset table th {
+    border: 0px;
+    padding: 0;
+    margin: 0;
+}
+.rowinset > td {
+    padding: 0;
+}
+.rowinset-top {
+    background-color: #4b494a;
+    text-align: right;
+    color: #ffffff;
+    font-size: 0.8em;
+    padding-right: 5px;
+    padding-bottom: 2px;
+    line-height: 28px;
+}
+.rowinset-top i {
+    vertical-align: initial;
+    font-size: medium;
+    padding-left: 3px;
+}
+.rowinset .buildingstable {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+}
+#auditsfilters > .uk-width-1-5 {
+}
+#auditstable {
+  margin-top:10px;
+  font-size: 17px;
+    line-height: 24px;
+}
+#auditstable tbody tr {
+    transition: unset;
+}
+#auditstable table th {
+  border:0px;
+}
+#auditstable table td:not(:first-child) {
+  white-space:nowrap;
+  overflow-x: hidden;
+}
+#auditstable table th > div > span.uk-width-1-1,
+#auditstable table th > div > span.uk-width-1-2, 
+#auditstable table th > div > span.uk-width-1-3, 
+#auditstable table th > div > span.uk-width-1-4, 
+#auditstable table th > div > span.uk-width-1-5, 
+#auditstable table th > div > span.uk-width-1-6 {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+#auditstable table th > div > span.uk-width-1-1:last-child,
+#auditstable table th > div > span.uk-width-1-2:last-child, 
+#auditstable table th > div > span.uk-width-1-3:last-child, 
+#auditstable table th > div > span.uk-width-1-4:last-child, 
+#auditstable table th > div > span.uk-width-1-5:last-child, 
+#auditstable table th > div > span.uk-width-1-6:last-child {
+    
+}
+#auditstable table td .uk-width-1-1,
+#auditstable table td .uk-width-1-2,
+#auditstable table td .uk-width-1-3,
+#auditstable table td .uk-width-1-4,
+#auditstable table td .uk-width-1-5,
+#auditstable table td .uk-width-1-6,
+#auditstable table td .uk-width-2-3,
+#auditstable table th .uk-width-1-1,
+#auditstable table th .uk-width-1-2,
+#auditstable table th .uk-width-1-3,
+#auditstable table th .uk-width-1-4,
+#auditstable table th .uk-width-1-5,
+#auditstable table th .uk-width-1-6,
+#auditstable table th .uk-width-2-3
+ {
+  padding:2px;
+}
+#auditstable table th > div {
+}
+#auditstable table th > span i {
+  line-height: initial;
+}
+#auditstable table th > span > span {
+  background-color: transparent;
+}
+#auditstable i {
+    line-height: 20px;
+}
+#auditstable th i {
+    line-height: 27px;
+    font-size: 1.5em;
+}
+#auditstable th i.uk-text-small {
+  font-size:12px;
+}
+#auditstable table td h3 {
+  padding: 0;
+  margin: 0;
+}
+#auditstable table td .dateyear {
+    background-color: #e48db4;
+    font-size: 0.6em;
+    line-height: normal;
+    margin: 0 3px;
+    color: #fff;
+    padding: 2px 0;
+}
+#auditstable table td .fadetext{
+  position: relative;
+  white-space: nowrap;
+  overflow-x: hidden;
+  width: 100%;
+}
+#auditstable table td .fadetext:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20%;
+    height: 100%;
+    background-size: 100%;
+  pointer-events: none;
+}
+#auditstable table tbody tr:nth-of-type(odd) td .fadetext:after{
+  background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(80%, #ffffff), color-stop(100%, #ffffff));
+  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
+  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
+}
+#auditstable table tbody tr:hover:nth-of-type(odd) td .fadetext:after{
+  background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(240, 240, 240, 0)), color-stop(80%, #f0f0f0), color-stop(100%, #f0f0f0));
+  background-image: -moz-linear-gradient(left, rgba(240, 240, 240, 0) 0%, #f0f0f0 80%, #f0f0f0 100%);
+  background-image: -webkit-linear-gradient(left, rgba(240, 240, 240, 0) 0%, #f0f0f0 80%, #f0f0f0 100%);
+  background-image: linear-gradient(to right, rgba(240, 240, 240, 0) 0%, #f0f0f0 80%, #f0f0f0 100%);
+}
+#auditstable table tbody tr:nth-of-type(even) td .fadetext:after{
+  background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(250, 250, 250, 0)), color-stop(80%, #fafafa), color-stop(100%, #fafafa));
+  background-image: -moz-linear-gradient(left, rgba(250, 250, 250, 0) 0%, #fafafa 80%, #fafafa 100%);
+  background-image: -webkit-linear-gradient(left, rgba(250, 250, 250, 0) 0%, #fafafa 80%, #fafafa 100%);
+  background-image: linear-gradient(to right, rgba(250, 250, 250, 0) 0%, #fafafa 80%, #fafafa 100%);
+}
+#auditstable table tbody tr:hover:nth-of-type(even) td .fadetext:after{
+  background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(240, 240, 240, 0)), color-stop(80%, #f0f0f0), color-stop(100%, #f0f0f0));
+  background-image: -moz-linear-gradient(left, rgba(240, 240, 240, 0) 0%, #f0f0f0 80%, #f0f0f0 100%);
+  background-image: -webkit-linear-gradient(left, rgba(240, 240, 240, 0) 0%, #f0f0f0 80%, #f0f0f0 100%);
+  background-image: linear-gradient(to right, rgba(240, 240, 240, 0) 0%, #f0f0f0 80%, #f0f0f0 100%);
+}
+#auditstable table tbody tr.highlighted:nth-of-type(even) td .fadetext:after{
+  background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(250, 250, 250, 0)), color-stop(80%, #fafafa), color-stop(100%, #fafafa));
+  background-image: -moz-linear-gradient(left, rgba(250, 250, 250, 0) 0%, #fafafa 80%, #fafafa 100%);
+  background-image: -webkit-linear-gradient(left, rgba(250, 250, 250, 0) 0%, #fafafa 80%, #fafafa 100%);
+  background-image: linear-gradient(to right, rgba(250, 250, 250, 0) 0%, #fafafa 80%, #fafafa 100%);
+}
+#auditstable table tbody tr.highlighted:nth-of-type(odd) td .fadetext:after{
+  background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(80%, #ffffff), color-stop(100%, #ffffff));
+  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
+  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
+}
+#auditstable table tbody tr.highlighted:hover td .fadetext:after{
+  background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(251, 244, 248, 0)), color-stop(80%, #fbf4f8), color-stop(100%, #fbf4f8));
+  background-image: -moz-linear-gradient(left, rgba(251, 244, 248, 0) 0%, #fbf4f8 80%, #fbf4f8 100%);
+  background-image: -webkit-linear-gradient(left, rgba(251, 244, 248, 0) 0%, #fbf4f8 80%, #fbf4f8 100%);
+  background-image: linear-gradient(to right, rgba(251, 244, 248, 0) 0%, #fbf4f8 80%, #fbf4f8 100%);
+}
+#auditstable td h3 i {
+    font-size:1.1em;
+}
+#auditstable table .filter-box {
+  width:100%;
+}
+#auditstable table .uk-autocomplete {
+  padding-left:0;
+}
+#auditstable table td small {
+  color: #999999;
+}
+#auditstable table td.hasdivider {
+    padding-right: 0;
+}
+#auditstable table td.hasdivider > div.fullwidth {
+  margin-right: -6px;
+  width: 96%;
+  padding-top: 4px;
+}
+#auditstable table td.hasdivider > div.fullwidthleftpad {
+  margin-right: -6px;
+  width: 90%;
+}
+#auditstable table tr .divider {
+    border-style: solid;
+    border-width: 0;
+    border-right-width: 2px;
+    border-color: #000;
+    display: inline-block;
+    height: 43px;
+    float: right;
+    margin-right: 2px;
+}
+#auditstable table tr .divider.dotted {
+    border-style: dotted;
+}
+#auditstable table tr.highlighted {
+
+}
+#auditstable table tr.highlighted:hover {
+    background: #fbf4f8;
+}
+#auditstable table tr.highlighted .divider {
+    border-color: #da328a;
+    border-style: double;
+    border-right-width: 6px;
+    margin-right: 0px;
+    height: 52px;
+}
+#auditstable table tr.highlighted td {
+
+}
+#auditstable table tr.highlighted td, 
+#auditstable table tr.highlighted td h3, 
+#auditstable table tr.highlighted td:not(:first-child) small {
+  color: #da328a !important;
+  font-weight: bold;
+}
+#auditstable table tr.highlighted td i{
+  color: #da328a !important;
+  font-weight: normal;
+}
+.building .program-status {
+    width: 100%;
+    background-color: #57585a;
+    padding: 0;
+    line-height: 20px;
+    min-height: 22px;
+    text-shadow: none;
+    color: #ffffff;
+}
+.building .building-type {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.building-critical .building-type {
+  background-color: #f9eaf1;
+}
+.building-critical .colored, .building-critical .colored small {
+  color: #e89ec0 !important;
+}
+.building-critical .auditor-status i {
+    color: #50b8ec;
+}
+.building-auditors, .building-type-icon {
+  position: relative;
+  padding-left:4px;
+}
+.building-type .building-type-icon i {
+  font-size: 61px;
+  line-height: initial !important;
+}
+.building-auditors .building-auditor{
+  position: relative;
+}
+.building-auditors .auditor-badge {
+    height: 20px;
+    width: 20px;
+    font-size: 10px;
+    text-align: center;
+    border-radius: 50%;
+    border: 1px solid #50b8ec;
+    background-color: #ffffff;
+    color: #50b8ec;
+    font-weight: 100;
+    line-height: 21px;
+    margin: 3px 3px 0 3px;
+}
+.building-auditors .auditor-status {
+    position: absolute;
+    bottom: -6px;
+    right: -1px;
+    font-size: 8px;
+    line-height: 8px;
+}
+.building-auditors .building-type-icon {
+  padding: 0;
+}
+.building-auditors .building-type-icon i {
+    font-size: 60px;
+    line-height: 80px;
+}
+.colored span.uk-badge {
+    background-color: transparent;
+    border-color: #da328a;
+    border-style: double;
+    border-width: 6px;
+    height: 28px;
+    line-height: 16px;
+    color: #da328a;
+}
+.uk-button-primary .uk-badge{
+  background-color: transparent;
+  border: 1px solid #ffffff;
+      line-height: 19px;
+}
+.badge-filter {
+  background: #7f7f7f; 
+  margin-top: 15px;
+  margin-right: 15px;
+}
+.badge-filter a {
+  font-size: 13px;
+  font-weight: normal;
+}
+.badge-filter a:hover {
+    color: #d2ebf9;
+    text-decoration: none;
+}
+.badge-filter a i {
+  line-height: inherit;
+    margin-right: 5px;
+}
+.badge-filter a span {
+    padding-top: 1px;
+    display: inline-block;
+    margin-right: 5px;
+}
 #parcel-tabs > li.uk-active > a,#dashboard-tabs > li.uk-active > a{
 	background-color:#white;
 	color:black;
@@ -1272,11 +1622,12 @@ min-height: 80px;
 	line-height:1rem;	
 }
 .filter-box {
+  box-sizing: border-box;
 	border: none;
     background-color: aliceblue;
     font-size: 12px;
     color: black;
-    padding-left: 14px;
+    padding-left: 10px;
     border-radius: 0;
 	height:30px;
 }
@@ -1290,7 +1641,7 @@ min-height: 80px;
 	width:582px;	
 }
 .filter-date-aging, .filter-date-expire, .filter-icons {
-	height:32px;	
+	/*height:32px;*/	
 }
 .filter-date-aging {
 	width:93px;	
@@ -1315,7 +1666,7 @@ min-height: 80px;
 }
 .sort-asc{
 	display:inline-block;
-	width:99%;
+	width:100%;
 	height:18px;
 	background-image:url(../images/filter-sort-asc.png);
 	background-position:center;
@@ -1349,7 +1700,7 @@ min-height: 80px;
 	margin-right:1%;	
 }
 #sort-by-street {
-	width:60%;
+	width:58%;
 	margin-right:1%;	
 }
 #sort-by-zip {
@@ -1583,6 +1934,9 @@ input {
 .print-only, .only-print, .print-only *, .only-print * {
   display: none !important;
 }
+table.uk-table tr:first-child {
+    border-top: 0px;
+}
 
 /*Make sure this is last in the file*/
 @media print
@@ -1638,6 +1992,7 @@ input {
 #tabs {
   margin: 0;
     padding-left: 0;
+    padding-right: 25px;
 }
 .uk-grid-divider>:not(.uk-first-column)::before {
     left: 0px;

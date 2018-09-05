@@ -47,8 +47,13 @@ $tab = "detail-tab-1";
     public function audits(Request $request)
     {
         
-        //return \view('poc.dashboard.index'); //, compact('user')
-        return view('poc.dashboard.audits');
+        // $request will contain filters
+        // $auditFilterMineOnly
+        // $auditFilterMineOnly
+
+        $filter = $request->get('filter');
+
+        return view('poc.dashboard.audits', compact('filter'));
     }
 
     public function reports(Request $request)

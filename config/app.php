@@ -157,6 +157,7 @@ return [
         'Aloha\Twilio\Support\Laravel\ServiceProvider',
         'Chumper\Zipper\ZipperServiceProvider',
         Barryvdh\DomPDF\ServiceProvider::class,
+        Tremby\LaravelGitVersion\GitVersionServiceProvider::class,
 
         /*
          * Application Service Providers...

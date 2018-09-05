@@ -19,7 +19,8 @@
         "laravel/tinker": "~1.0",
         "maatwebsite/excel": "^3.0",
         "phpoffice/phpexcel": "^1.8",
-        "spatie/laravel-activitylog": "^2.7"
+        "spatie/laravel-activitylog": "^2.7",
+        "tremby/laravel-git-version": "^1.1"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.1",

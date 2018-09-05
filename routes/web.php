@@ -494,6 +494,7 @@ Route::group(['prefix'=>'poc','namespace'=>'POC'], function() {
     // POC routes for new UI
     Route::get('dashboard', 'DashboardController@index');
     Route::get('dashboard/audits', 'DashboardController@audits')->name('dashboard.audits');
+    Route::get('dashboard/audits/{audit}/buildings', 'AuditController@buildingsFromAudit')->name('audit.buildings');
     Route::get('dashboard/communications', 'DashboardController@communications')->name('dashboard.communications');
     Route::get('dashboard/reports', 'DashboardController@reports')->name('dashboard.reports');
 
