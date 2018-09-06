@@ -586,7 +586,7 @@ stickynav {
 }
 .uk-container{
 		padding: 0px;
-		max-width: 1500px !important;
+		max-width: 1550px !important;
 	}
 
 	#login-panel {
@@ -1245,6 +1245,9 @@ margin-top:10px;
     font-size: medium;
     padding-left: 3px;
 }
+.rowinset-bottom {
+  background-color: #d1d2d4;
+}
 .rowinset .buildingstable {
     padding-left: 5px;
     padding-right: 5px;
@@ -1371,19 +1374,19 @@ margin-top:10px;
   background-image: -webkit-linear-gradient(left, rgba(240, 240, 240, 0) 0%, #f0f0f0 80%, #f0f0f0 100%);
   background-image: linear-gradient(to right, rgba(240, 240, 240, 0) 0%, #f0f0f0 80%, #f0f0f0 100%);
 }
-#auditstable table tbody tr.highlighted:nth-of-type(even) td .fadetext:after{
+#auditstable table tbody tr.critical:nth-of-type(even) td .fadetext:after{
   background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(250, 250, 250, 0)), color-stop(80%, #fafafa), color-stop(100%, #fafafa));
   background-image: -moz-linear-gradient(left, rgba(250, 250, 250, 0) 0%, #fafafa 80%, #fafafa 100%);
   background-image: -webkit-linear-gradient(left, rgba(250, 250, 250, 0) 0%, #fafafa 80%, #fafafa 100%);
   background-image: linear-gradient(to right, rgba(250, 250, 250, 0) 0%, #fafafa 80%, #fafafa 100%);
 }
-#auditstable table tbody tr.highlighted:nth-of-type(odd) td .fadetext:after{
+#auditstable table tbody tr.critical:nth-of-type(odd) td .fadetext:after{
   background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(80%, #ffffff), color-stop(100%, #ffffff));
   background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
   background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
   background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
 }
-#auditstable table tbody tr.highlighted:hover td .fadetext:after{
+#auditstable table tbody tr.critical:hover td .fadetext:after{
   background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(251, 244, 248, 0)), color-stop(80%, #fbf4f8), color-stop(100%, #fbf4f8));
   background-image: -moz-linear-gradient(left, rgba(251, 244, 248, 0) 0%, #fbf4f8 80%, #fbf4f8 100%);
   background-image: -webkit-linear-gradient(left, rgba(251, 244, 248, 0) 0%, #fbf4f8 80%, #fbf4f8 100%);
@@ -1426,29 +1429,29 @@ margin-top:10px;
 #auditstable table tr .divider.dotted {
     border-style: dotted;
 }
-#auditstable table tr.highlighted {
+#auditstable table tr.critical {
 
 }
-#auditstable table tr.highlighted:hover {
+#auditstable table tr.critical:hover {
     background: #fbf4f8;
 }
-#auditstable table tr.highlighted .divider {
+#auditstable table tr.critical .divider {
     border-color: #da328a;
     border-style: double;
     border-right-width: 6px;
     margin-right: 0px;
     height: 52px;
 }
-#auditstable table tr.highlighted td {
+#auditstable table tr.critical td {
 
 }
-#auditstable table tr.highlighted td, 
-#auditstable table tr.highlighted td h3, 
-#auditstable table tr.highlighted td:not(:first-child) small {
+#auditstable table tr.critical td, 
+#auditstable table tr.critical td h3, 
+#auditstable table tr.critical td:not(:first-child) small {
   color: #da328a !important;
   font-weight: bold;
 }
-#auditstable table tr.highlighted td i{
+#auditstable table tr.critical td i{
   color: #da328a !important;
   font-weight: normal;
 }
@@ -1511,6 +1514,43 @@ margin-top:10px;
 .building-auditors .building-type-icon i {
     font-size: 60px;
     line-height: 80px;
+}
+.building .area-status {
+    text-transform: uppercase;
+    color: #57585a;
+    font-size: 0.9em;
+}
+.building .area-status.area-status-pending {
+    color: #50b8ec;
+}
+.building .area-status .uk-badge{
+  background-color: #57585a;
+  border-color: #57585a;
+  color: #ffffff;
+  line-height: 21px;
+}
+.building .area-status > i {
+    font-size: 23px;
+    vertical-align: sub;
+}
+.building .area-status.area-status-pending .uk-badge{
+  border-color: #50b8ec;
+  background-color:transparent;
+  color: #50b8ec;
+    border-style: dotted;
+}
+.building .area-status.area-status-action .uk-badge{
+  border-color: #da328a;
+  background-color:transparent;
+  border-style: double;
+  border-width: 6px;
+  color: #da328a;
+  height: 28px;
+  line-height: 16px;
+  margin-left: -2px;
+}
+.building .area-status.area-status-action{
+  color: #da328a;
 }
 .colored span.uk-badge {
     background-color: transparent;

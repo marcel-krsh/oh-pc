@@ -130,94 +130,6 @@ if(Auth::check()){
 					</li>
 				</ul>
 
-				<script src="/js/app.js"></script>
-				@if (Auth::guest())
-				@else
-				<script type="text/javascript">
-					// $('.list-tab').slideToggle();
-					//$('#detail-tab-1').slideToggle();
-					//$('#detail-tab-2').slideToggle();
-					//$('#detail-tab-3').slideToggle();
-					//$('#detail-tab-4').slideToggle();
-					//$('#detail-tab-5').slideToggle();
-
-				</script>
-				<script type="text/javascript" src="/js/systems/system.js"></script>
-				<!-- <script type="text/javascript" src="/js/systems/cdfs-tab.js"></script>
-				<script type="text/javascript" src="/js/systems/communications-tab.js"></script>
-				<script type="text/javascript" src="/js/systems/documents-tab.js"></script>
-				<script type="text/javascript" src="/js/systems/funding-tab.js"></script>
-				<script type="text/javascript" src="/js/systems/history-tab.js"></script>
-				<script type="text/javascript" src="/js/systems/notes-tab.js"></script>
-				<script type="text/javascript" src="/js/systems/outcomes-tab.js"></script>
-				<script type="text/javascript" src="/js/systems/processing-tab.js"></script> -->
-
-				<script src="/js/auto-complete.js"></script>
-				<script>
-				    var quicklookupbox = new autoComplete({
-				        selector: '#quick-lookup-box',
-				        minChars: 3,
-				        cache: 0,
-				        delay: 480,
-				        source: function(term, suggest){
-				        	$.get( "/parcels/parcel-autocomplete", {
-								'search' : term,
-								'_token' : '{{ csrf_token() }}'
-							},
-							function(data) {
-								var output = eval(data);
-								 //console.log(output.length);
-								 //console.log(output[0][0]+' '+output[0][1]+' '+output[0][3]+' '+output[0][4]);
-								console.log('Line 404: Searched for "'+term+'"');
-								term = term.toLowerCase();
-					            var suggestions = [];
-					            for (i=0;i<output.length;i++)
-						            if (~(output[i][0]+' '+output[i][1]+' '+output[i][3]+' '+output[i][4]).toLowerCase().indexOf(term)) {
-						            	suggestions.push(output[i]);
-						            	console.log('Line 410: Suggestion '+(i+1)+' of '+output.length+' pushed: '+output[i][0]+' | '+output[i][1]+' | '+output[i][3]+' | '+output[i][4]);
-						            } else {
-						            	console.log('Line 412: Skipped '+(i+1));
-						            }
-						        //console.log(suggestions);
-						        suggest(suggestions);
-								
-							},
-							'json' );
-				        },
-				        renderItem: function (item, search){
-						    search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-						    var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-
-						    var output = '<div class="autocomplete-suggestion" data-item-id="'+item[4]+'" data-val="'+search+'">';
-						    output = output + 'Parcel ID: '+item[3]+'<br />';
-						    output = output + item[0]+'<br />';
-						    output = output + item[1]+', '+item[2]+' '+item[3]+'<br />';
-						<?php if(Auth::user()->entity_type == "hfa"){ ?>
-							output = output + 'LB: '+ item[5] +'<br />HFA: '+ item[6]+'<br />';
-						<?php } else { ?>
-							output = output + item[5]+'<br />';
-						<?php } ?>
-							output = output + '<span class="hideImport'+item[7]+'">';
-							output = output + 'Import #'+item[7]+' on '+item[11]+'<br />By '+item[8]+'</span>';
-						    output = output + '</div>';
-						    
-						    return output;
-						},
-					    onSelect: function(e, term, item){
-					    	loadDetailTab('/parcel/',item.getAttribute('data-item-id'),'1',0,0);
-					    	$('#quick-lookup-box').val('');
-					    }
-				    });
-
-				</script>
-
-				@endif
-
-				@if($tab !== null)
-				<script>
-				$('#{{$tab}}').trigger("click");
-				</script>
-				@endif
 				<a id="smoothscrollLink" href="#top" uk-scroll="{offset: 90}"></a>
 				<div id="dynamic-modal" uk-modal>
 					<div id="modal-size" class="uk-modal-dialog uk-modal-body uk-modal-content"> 
@@ -234,8 +146,7 @@ if(Auth::check()){
 			<p class="uk-dark uk-light" style="position: absolute; bottom: 20px;"><a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light"><i class="a-mobile-home"></i> Allita PC &copy; 2018<?php if(date('Y',time()) != '2018') echo " — ".date('Y',time()); ?>: @include('git-version::version-comment')</a></p>
 		</div>
 		<div id="footer-content" class="uk-width-1-3">
-			<button class="uk-button uk-button-primary" onclick="createAudits();"><i class="a-eye-not"></i> HIDE NON CRITICAL</button>
-			<a href="#top" uk-scroll="{offset: 90}" class="uk-button uk-button-default"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
+			<div id="footer-actions-tpl"></div>
 		</div>
 	</div>
 	<script>
@@ -247,9 +158,8 @@ if(Auth::check()){
 	        dateFormat: "m/d/Y",
 	    }
 	}
-	</script>
+
 	@if (Auth::check())
-	<script>
 		
 	    setInterval(function() {
 	    	// console.log("checking for new messages...");
@@ -282,24 +192,113 @@ if(Auth::check()){
 	        });
 		}, 1000 * 10);
 
-	</script>
 	@endif
 
-	<script>
 		$(".uk-modal").on("hide", function() {
 		    $("html").removeClass("uk-modal-page");
 		});
-	</script>
+
 	@if(Auth::check())
 	@if(Auth::user()->entity_type == 'hfa')
-		<script type="text/javascript">
 			var $zoho=$zoho || {};$zoho.salesiq = $zoho.salesiq || 
 			{widgetcode:"676622b8482bc91a831d0cd4ca9043e6c19fad1e199256fac50d2b5354d1e743a84f59a27361c238a1b1d868cfdeb375", values:{},ready:function(){}};
 			var d=document;s=d.createElement("script");s.type="text/javascript";s.id="zsiqscript";s.defer=true;
 			s.src="https://salesiq.zoho.com/widget";t=d.getElementsByTagName("script")[0];t.parentNode.insertBefore(s,t);d.write("<div id='zsiqwidget'></div>");
-		</script>
+
 	@endIf
 	@endIf
+
+	</script>
+	
+	<script src="/js/app.js"></script>
+	@if (Auth::guest())
+	@else
+	<script type="text/javascript">
+		// $('.list-tab').slideToggle();
+		//$('#detail-tab-1').slideToggle();
+		//$('#detail-tab-2').slideToggle();
+		//$('#detail-tab-3').slideToggle();
+		//$('#detail-tab-4').slideToggle();
+		//$('#detail-tab-5').slideToggle();
+
+	</script>
+	<script type="text/javascript" src="/js/systems/system.js"></script>
+	<!-- <script type="text/javascript" src="/js/systems/cdfs-tab.js"></script>
+	<script type="text/javascript" src="/js/systems/communications-tab.js"></script>
+	<script type="text/javascript" src="/js/systems/documents-tab.js"></script>
+	<script type="text/javascript" src="/js/systems/funding-tab.js"></script>
+	<script type="text/javascript" src="/js/systems/history-tab.js"></script>
+	<script type="text/javascript" src="/js/systems/notes-tab.js"></script>
+	<script type="text/javascript" src="/js/systems/outcomes-tab.js"></script>
+	<script type="text/javascript" src="/js/systems/processing-tab.js"></script> -->
+
+	<script src="/js/auto-complete.js"></script>
+	<script>
+	    var quicklookupbox = new autoComplete({
+	        selector: '#quick-lookup-box',
+	        minChars: 3,
+	        cache: 0,
+	        delay: 480,
+	        source: function(term, suggest){
+	        	console.log('Looking up... '+term);
+	        	$.get( "/autocomplete/all", {
+					'search' : term,
+					'_token' : '{{ csrf_token() }}'
+				},
+				function(data) {
+					var output = eval(data);
+					 //console.log(output.length);
+					 //console.log(output[0][0]+' '+output[0][1]+' '+output[0][3]+' '+output[0][4]);
+					console.log('Line 404: Searched for "'+term+'"');
+					term = term.toLowerCase();
+		            var suggestions = [];
+		            for (i=0;i<output.length;i++)
+			            if (~(output[i][0]+' '+output[i][1]+' '+output[i][3]+' '+output[i][4]).toLowerCase().indexOf(term)) {
+			            	suggestions.push(output[i]);
+			            	console.log('Line 410: Suggestion '+(i+1)+' of '+output.length+' pushed: '+output[i][0]+' | '+output[i][1]+' | '+output[i][3]+' | '+output[i][4]);
+			            } else {
+			            	console.log('Line 412: Skipped '+(i+1));
+			            }
+			        //console.log(suggestions);
+			        suggest(suggestions);
+					
+				},
+				'json' );
+	        },
+	        renderItem: function (item, search){
+			    search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+			    var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+
+			    var output = '<div class="autocomplete-suggestion" data-item-id="'+item[4]+'" data-val="'+search+'">';
+			    output = output + 'Parcel ID: '+item[3]+'<br />';
+			    output = output + item[0]+'<br />';
+			    output = output + item[1]+', '+item[2]+' '+item[3]+'<br />';
+			<?php if(Auth::user()->entity_type == "hfa"){ ?>
+				output = output + 'LB: '+ item[5] +'<br />HFA: '+ item[6]+'<br />';
+			<?php } else { ?>
+				output = output + item[5]+'<br />';
+			<?php } ?>
+				output = output + '<span class="hideImport'+item[6]+'">';
+				//output = output + 'Import #'+item[7]+' on '+item[11]+'<br />By '+item[8]+'</span>';
+			    output = output + '</div>';
+			    
+			    return output;
+			},
+		    onSelect: function(e, term, item){
+		    	loadDetailTab('/parcel/',item.getAttribute('data-item-id'),'1',0,0);
+		    	$('#quick-lookup-box').val('');
+		    }
+	    });
+	</script>
+
+	@endif
+
+	@if($tab !== null)
+	<script>
+	$('#{{$tab}}').trigger("click");
+	</script>
+	@endif
+	
 
 	@if(session('disablePacer') != 1)
 	<script>

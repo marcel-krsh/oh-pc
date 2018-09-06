@@ -166,7 +166,7 @@
 		        </tr>
 		    </thead>
 		    <tbody>
-		        <tr id="audit-r-1">
+		        <tr id="audit-r-1" class="notcritical">
 		            <td id="audit-c-1-1" class="uk-text-center">
 		            	<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
 							BG
@@ -256,7 +256,7 @@
 		            	</div>
 		            </td>
 		        </tr>
-		        <tr id="audit-r-2" class="highlighted">
+		        <tr id="audit-r-2" class="critical">
 		            <td id="audit-c-1-2" class="uk-text-center">
 		            	<span id="audit-avatar-badge-2" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
 							BG
@@ -347,7 +347,7 @@
 		            	</div>
 		            </td>
 		        </tr>
-		        <tr id="audit-r-3">
+		        <tr id="audit-r-3" class="notcritical">
 		            <td id="audit-c-1-3" class="uk-text-center">
 		            	<span id="audit-avatar-badge-3" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
 							BG
@@ -437,7 +437,7 @@
 		            	</div>
 		            </td>
 		        </tr>
-		        <tr id="audit-r-4">
+		        <tr id="audit-r-4" class="notcritical">
 		            <td id="audit-c-1-4" class="uk-text-center">
 		            	<span id="audit-avatar-badge-4" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
 							BG
@@ -532,7 +532,24 @@
 	</div>
 </div>
 
+
+
+<div id="footer-actions" hidden>
+	<button class="uk-button uk-button-primary" onclick="toggleCritical();"><i class="a-eye-not"></i> HIDE NON CRITICAL</button>
+	<a href="#top" uk-scroll="{offset: 90}" class="uk-button uk-button-default"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
+</div>
+
+
 <script>
+	$( document ).ready(function() {
+		// place tab's buttons on main footer
+		$('#footer-actions-tpl').html($('#footer-actions').html());
+    });
+
+	function toggleCritical() {
+		$(".notcritical").fadeToggle();
+	}
+
 	function createAudits(){
 		console.log("create audits clicked");
 	}
@@ -562,5 +579,9 @@
 	            	}
 		    });
 		}
+	}
+
+	function addArea() {
+		console.log('adding inspectable area');
 	}
 </script>

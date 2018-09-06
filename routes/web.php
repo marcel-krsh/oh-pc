@@ -498,5 +498,7 @@ Route::group(['prefix'=>'poc','namespace'=>'POC'], function() {
     Route::get('dashboard/communications', 'DashboardController@communications')->name('dashboard.communications');
     Route::get('dashboard/reports', 'DashboardController@reports')->name('dashboard.reports');
 
+    Route::get('/autocomplete/all', 'DashboardController@autocomplete');
+
 });
 

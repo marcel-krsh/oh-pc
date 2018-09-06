@@ -41,11 +41,11 @@ class AuditController extends Controller
     						],
     						'type' => '',
     						'areas' => [
-    							['type' => 'Elevators', 'qty' => 2, 'status' => 1],
-    							['type' => 'ADA', 'qty' => null, 'status' => 1],
-    							['type' => 'Floors', 'qty' => 2, 'status' => 1],
-    							['type' => 'Common Areas', 'qty' => 2, 'status' => 2],
-    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 3]
+    							['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
+    							['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
+    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
     						]
     					],
     					[
@@ -75,11 +75,11 @@ class AuditController extends Controller
     						],
     						'type' => '',
     						'areas' => [
-    							['type' => 'Elevators', 'qty' => 2, 'status' => 1],
-    							['type' => 'ADA', 'qty' => null, 'status' => 1],
-    							['type' => 'Floors', 'qty' => 2, 'status' => 1],
-    							['type' => 'Common Areas', 'qty' => 2, 'status' => 2],
-    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 3]
+    							['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
+    							['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
+    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
     						]
     					],
     					[
@@ -109,11 +109,11 @@ class AuditController extends Controller
     						],
     						'type' => '',
     						'areas' => [
-    							['type' => 'Elevators', 'qty' => 2, 'status' => 1],
-    							['type' => 'ADA', 'qty' => null, 'status' => 1],
-    							['type' => 'Floors', 'qty' => 2, 'status' => 1],
-    							['type' => 'Common Areas', 'qty' => 2, 'status' => 2],
-    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 3]
+    							['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
+    							['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
+    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
     						]
     					],
     					[
@@ -143,11 +143,11 @@ class AuditController extends Controller
     						],
     						'type' => '',
     						'areas' => [
-    							['type' => 'Elevators', 'qty' => 2, 'status' => 1],
-    							['type' => 'ADA', 'qty' => null, 'status' => 1],
-    							['type' => 'Floors', 'qty' => 2, 'status' => 1],
-    							['type' => 'Common Areas', 'qty' => 2, 'status' => 2],
-    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 3]
+    							['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
+    							['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
+    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
     						]
     					],
     					[
@@ -177,11 +177,11 @@ class AuditController extends Controller
     						],
     						'type' => '',
     						'areas' => [
-    							['type' => 'Elevators', 'qty' => 2, 'status' => 1],
-    							['type' => 'ADA', 'qty' => null, 'status' => 1],
-    							['type' => 'Floors', 'qty' => 2, 'status' => 1],
-    							['type' => 'Common Areas', 'qty' => 2, 'status' => 2],
-    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 3]
+    							['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
+    							['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
+    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
     						]
     					],
     					[
@@ -211,11 +211,11 @@ class AuditController extends Controller
     						],
     						'type' => '',
     						'areas' => [
-    							['type' => 'Elevators', 'qty' => 2, 'status' => 1],
-    							['type' => 'ADA', 'qty' => null, 'status' => 1],
-    							['type' => 'Floors', 'qty' => 2, 'status' => 1],
-    							['type' => 'Common Areas', 'qty' => 2, 'status' => 2],
-    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 3]
+    							['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
+    							['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
+    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
     						]
     					],
     					[
@@ -245,11 +245,11 @@ class AuditController extends Controller
     						],
     						'type' => '',
     						'areas' => [
-    							['type' => 'Elevators', 'qty' => 2, 'status' => 1],
-    							['type' => 'ADA', 'qty' => null, 'status' => 1],
-    							['type' => 'Floors', 'qty' => 2, 'status' => 1],
-    							['type' => 'Common Areas', 'qty' => 2, 'status' => 2],
-    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 3]
+    							['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
+    							['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
+    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
     						]
     					]
     				]);

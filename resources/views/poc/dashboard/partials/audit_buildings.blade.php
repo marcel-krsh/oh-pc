@@ -10,7 +10,7 @@
 							<th class="uk-table-expand"></th>
 							<th style="min-width:190px;"></th>
 							<th style="min-width:190px;"></th>
-							<th style="min-width:190px;"></th>
+							<th class="uk-table-shrink"></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -77,17 +77,22 @@
 						<td id="building-{{$target}}-c-5-1">
 							<div uk-grid>
 								@foreach($building['areas'] as $area)
-							    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top">{{$area['qty']}} {{$area['type']}} {{$area['status']}}</div>
+							    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status area-status-{{$area['status']}}">
+							    	@if($area['qty'])<span class="uk-badge">{{$area['qty']}}</span> @else <i class="a-circle-checked"></i>@endif {{$area['type']}}
+							    </div>
 							    @endforeach
 							</div>
 						</td>
 						<td id="building-{{$target}}-c-6-1">
-							
+							<i class="a-avatar-clock"></i>
 						</td>
 					</tr>
 					@endforeach
 					</tbody>
 				</table>
+			</div>
+			<div class="rowinset-bottom">
+				<span class="uk-link" style="color:#ffffff;" onclick="addArea({{$audit}});">+ ADD INSPECTABLE AREA TO PROJECT</span>
 			</div>
 		</td>
 	</tr>
