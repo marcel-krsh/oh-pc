@@ -74,7 +74,7 @@ function loadTab(route, tabNumber) {
  	$('#smoothscrollLink').trigger("click");		
 	//load the selected detail tab content
 	$('#detail-tab-'+tabNumber+'-content').load(route, function(response, status, xhr) {
-		  if (status == "error") {
+		if (status == "error") {
 		  	if(xhr.status == "401") {
 		  		var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
 		  	} else if( xhr.status == "500"){
@@ -84,8 +84,8 @@ function loadTab(route, tabNumber) {
 		  	}
 		    
 		    UIkit.modal.alert(msg);
-		  }
-		});
+		}
+	});
 }
 
 // function loadDetailTab(typeId,detailId,tabNumber,overrideSaveCheck,subTabType) {
@@ -154,26 +154,26 @@ function disableField(fieldId) {
 	console.log('Disabled field '+fieldId);
 }
 
-function loadSearchResult(detailTypeId,detailItemId) {
-	if (window.saved !== 1) {
-		continueToLoad = 0;
-		UIkit.modal.confirm("You have unsaved changes, are you sure you want to open this item without saving?").then(function() {
-    		continueToLoad = 1;
-			window.saved = 1;
+// function loadSearchResult(detailTypeId,detailItemId) {
+// 	if (window.saved !== 1) {
+// 		continueToLoad = 0;
+// 		UIkit.modal.confirm("You have unsaved changes, are you sure you want to open this item without saving?").then(function() {
+//     		continueToLoad = 1;
+// 			window.saved = 1;
 			
-			loadListTab(16,encodeURI($('#quick-lookup-box').val()),1);
-			loadDetailTab(detailTypeId,detailItemId,1);
-			return;
+// 			loadListTab(16,encodeURI($('#quick-lookup-box').val()),1);
+// 			loadDetailTab(detailTypeId,detailItemId,1);
+// 			return;
 			
-		});
-	}else {
+// 		});
+// 	}else {
 		
-		loadListTab(16,encodeURI($('#quick-lookup-box').val()));
-		loadDetailTab(detailTypeId,detailItemId);
-	}
-	$('#quick-lookup-box').val('');
-	return;
-}
+// 		loadListTab(16,encodeURI($('#quick-lookup-box').val()));
+// 		loadDetailTab(detailTypeId,detailItemId);
+// 	}
+// 	$('#quick-lookup-box').val('');
+// 	return;
+// }
 
 function logout() {
 	//UIkit.offcanvas.hide();

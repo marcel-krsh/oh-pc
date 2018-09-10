@@ -498,7 +498,20 @@ Route::group(['prefix'=>'poc','namespace'=>'POC'], function() {
     Route::get('dashboard/communications', 'DashboardController@communications')->name('dashboard.communications');
     Route::get('dashboard/reports', 'DashboardController@reports')->name('dashboard.reports');
 
-    Route::get('/autocomplete/all', 'DashboardController@autocomplete');
+    Route::get('autocomplete/all', 'DashboardController@autocomplete');
+    Route::get('autocomplete/auditproject', 'DashboardController@autocomplete');
+    Route::get('autocomplete/auditname', 'DashboardController@autocomplete');
+    Route::get('autocomplete/auditaddress', 'DashboardController@autocomplete');
 
+    Route::get('/session/filters/{type}/{value}', function ($type, $value) {
+        if($value != 'null'){
+            session([$type => $value]);
+            $new_filter = session($type);
+            return $new_filter;
+        }else{
+            session([$type => '']);
+            return 1;
+        }
+    })->name('session.setfilter');
 });
 

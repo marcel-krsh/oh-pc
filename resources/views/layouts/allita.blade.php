@@ -18,7 +18,13 @@ if(Auth::check()){
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Allita Program Compliance</title>
+	<title>
+	@if(Auth::user()->entity_type == 'hfa') 
+	Allita Program Compliance
+	@else
+	Dev|Co Inspect
+	@endif
+	</title>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
@@ -43,11 +49,11 @@ if(Auth::check()){
 	<link rel="stylesheet" href="/css/outcomes-tab.css">
 	<link rel="stylesheet" href="/css/processing-tab.css">
 	<link rel="stylesheet" href="/css/handsontable.full.min.css">
-	<link rel="stylesheet" href="/css/components/slideshow.css">
-	<link rel="stylesheet" href="/css/auto-complete.css"> -->
+	<link rel="stylesheet" href="/css/components/slideshow.css"> -->
+	<link rel="stylesheet" href="/css/auto-complete.css">
 
 	@endif
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
 	@if(session('disablePacer')==1)
 	<style type="text/css">
 		body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-done):after {
@@ -99,7 +105,7 @@ if(Auth::check()){
 				    </div>
 				    <div class="uk-width-5-6">
 				    	<div id="top-tabs-container">
-					        <ul id="top-tabs" uk-tab="connect: .maintabs; swiping:false;" class="uk-tab uk-visible@m">
+					        <ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m">
 				    			<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.audits') }}', '1');"><a href=""><i class="a-mobile-home"></i> <span class="list-tab-text"> <span class="uk-badge">24</span> AUDITS</span></a></li>
 								<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.communications') }}', '2');"><a href=""><i class="a-envelope-attention"></i> <span class="list-tab-text"> <span class="uk-badge">99,999</span> COMMUNICATIONS</span></a></li>
 								<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.reports') }}', '3');">
@@ -111,7 +117,7 @@ if(Auth::check()){
 				    </div>
 				</div>
 				
-				<ul id="tabs" class="uk-switcher maintabs"> 
+				<ul id="tabs" class="maintabs uk-switcher"> 
 					<li>
 						<div id="detail-tab-1-content">
 						</div>
@@ -143,14 +149,20 @@ if(Auth::check()){
 	</div>
 	<div id="mainfooter" uk-grid>
 		<div class="uk-width-1-3">
-			<p class="uk-dark uk-light" style="position: absolute; bottom: 20px;"><a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light"><i class="a-mobile-home"></i> Allita PC &copy; 2018<?php if(date('Y',time()) != '2018') echo " — ".date('Y',time()); ?>: @include('git-version::version-comment')</a></p>
+			<p class="uk-dark uk-light" style="position: absolute; bottom: 20px;"><a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light"><i class="a-mobile-home"></i>
+			@if(Auth::user()->entity_type == 'hfa') 
+			Allita Program Compliance 
+			@else
+			Dev|Co Inspect
+			@endif
+			&copy; 2018<?php if(date('Y',time()) != '2018') echo " — ".date('Y',time()); ?>: @include('git-version::version-comment')</a></p>
 		</div>
 		<div id="footer-content" class="uk-width-1-3">
 			<div id="footer-actions-tpl"></div>
 		</div>
 	</div>
 	<script>
-		flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
+	flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
 	flatpickr(".flatpickr");
 
 	var configs = {
@@ -161,36 +173,36 @@ if(Auth::check()){
 
 	@if (Auth::check())
 		
-	    setInterval(function() {
-	    	// console.log("checking for new messages...");
-		  // ajax newest message and display notification
-		  $.get( "/communications/new-messages", function( data ) {
-		  		if(data){
-		  			console.log("message found");
-		  			var messages = '';
-		  			var summary = '';
-		  			for (var i = 0; i < data.length; i++) {
-		  				summary = data[i]['communication']['message'];
-		  				summary = (summary.length > 200) ? summary.substr(0, 199) + '&hellip;' : summary;
-		  				if(data[i]['communication']['parcel']){
-							messages = messages+'<a href="/view_message/'+data[i]['communication_id']+'" onclick="UIkit.notification.close()">"'+summary+'" from '+data[i]['communication']['owner']['name']+' for parcel '+data[i]['communication']['parcel']['parcel_id']+'</a>';
-		  				}else{
-		  					messages = messages+'<a href="/view_message/'+data[i]['communication_id']+'" onclick="UIkit.notification.close()">"'+summary+'" from '+data[i]['communication']['owner']['name']+'</a>';
-		  				}
+	 //    setInterval(function() {
+	 //    	// console.log("checking for new messages...");
+		//   // ajax newest message and display notification
+		//   $.get( "/communications/new-messages", function( data ) {
+		//   		if(data){
+		//   			console.log("message found");
+		//   			var messages = '';
+		//   			var summary = '';
+		//   			for (var i = 0; i < data.length; i++) {
+		//   				summary = data[i]['communication']['message'];
+		//   				summary = (summary.length > 200) ? summary.substr(0, 199) + '&hellip;' : summary;
+		//   				if(data[i]['communication']['parcel']){
+		// 					messages = messages+'<a href="/view_message/'+data[i]['communication_id']+'" onclick="UIkit.notification.close()">"'+summary+'" from '+data[i]['communication']['owner']['name']+' for parcel '+data[i]['communication']['parcel']['parcel_id']+'</a>';
+		//   				}else{
+		//   					messages = messages+'<a href="/view_message/'+data[i]['communication_id']+'" onclick="UIkit.notification.close()">"'+summary+'" from '+data[i]['communication']['owner']['name']+'</a>';
+		//   				}
 		  				
-		  				if (!i < data.length -1) {
-		  					messages = messages+'<hr />';	
-		  				}
-		  			}
+		//   				if (!i < data.length -1) {
+		//   					messages = messages+'<hr />';	
+		//   				}
+		//   			}
 
-		 			// reload the unseen communications
-		 			reloadUnseenMessages();
+		//  			// reload the unseen communications
+		//  			reloadUnseenMessages();
 
-		  			UIkit.notification('<i uk-icon="envelope" class=""></i> You have '+data.length+' messages:<br /><br />'+messages, {pos:'top-right', timeout:0, status:'success'});
+		//   			UIkit.notification('<i uk-icon="envelope" class=""></i> You have '+data.length+' messages:<br /><br />'+messages, {pos:'top-right', timeout:0, status:'success'});
 
-		  		}
-	        });
-		}, 1000 * 10);
+		//   		}
+	 //        });
+		// }, 1000 * 10);
 
 	@endif
 
@@ -209,7 +221,7 @@ if(Auth::check()){
 	@endIf
 
 	</script>
-	
+
 	<script src="/js/app.js"></script>
 	@if (Auth::guest())
 	@else
@@ -231,37 +243,30 @@ if(Auth::check()){
 	<script type="text/javascript" src="/js/systems/notes-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/outcomes-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/processing-tab.js"></script> -->
-
 	<script src="/js/auto-complete.js"></script>
 	<script>
 	    var quicklookupbox = new autoComplete({
-	        selector: '#quick-lookup-box',
+	    	selector: '#quick-lookup-box',
 	        minChars: 3,
-	        cache: 0,
-	        delay: 480,
+	        cache: 1,
+	        delay: 150,
+			offsetLeft: 0,
+			offsetTop: 1,
+			menuClass: '',
+
 	        source: function(term, suggest){
 	        	console.log('Looking up... '+term);
-	        	$.get( "/autocomplete/all", {
+	        	$.get( "/poc/autocomplete/all", {
 					'search' : term,
 					'_token' : '{{ csrf_token() }}'
 				},
 				function(data) {
 					var output = eval(data);
-					 //console.log(output.length);
-					 //console.log(output[0][0]+' '+output[0][1]+' '+output[0][3]+' '+output[0][4]);
-					console.log('Line 404: Searched for "'+term+'"');
 					term = term.toLowerCase();
 		            var suggestions = [];
 		            for (i=0;i<output.length;i++)
-			            if (~(output[i][0]+' '+output[i][1]+' '+output[i][3]+' '+output[i][4]).toLowerCase().indexOf(term)) {
-			            	suggestions.push(output[i]);
-			            	console.log('Line 410: Suggestion '+(i+1)+' of '+output.length+' pushed: '+output[i][0]+' | '+output[i][1]+' | '+output[i][3]+' | '+output[i][4]);
-			            } else {
-			            	console.log('Line 412: Skipped '+(i+1));
-			            }
-			        //console.log(suggestions);
+		            	suggestions.push(output[i]);
 			        suggest(suggestions);
-					
 				},
 				'json' );
 	        },
@@ -273,24 +278,19 @@ if(Auth::check()){
 			    output = output + 'Parcel ID: '+item[3]+'<br />';
 			    output = output + item[0]+'<br />';
 			    output = output + item[1]+', '+item[2]+' '+item[3]+'<br />';
-			<?php if(Auth::user()->entity_type == "hfa"){ ?>
-				output = output + 'LB: '+ item[5] +'<br />HFA: '+ item[6]+'<br />';
-			<?php } else { ?>
-				output = output + item[5]+'<br />';
-			<?php } ?>
 				output = output + '<span class="hideImport'+item[6]+'">';
-				//output = output + 'Import #'+item[7]+' on '+item[11]+'<br />By '+item[8]+'</span>';
 			    output = output + '</div>';
 			    
 			    return output;
 			},
 		    onSelect: function(e, term, item){
+		    	e.preventDefault();
 		    	loadDetailTab('/parcel/',item.getAttribute('data-item-id'),'1',0,0);
 		    	$('#quick-lookup-box').val('');
 		    }
 	    });
-	</script>
 
+	</script>
 	@endif
 
 	@if($tab !== null)
@@ -306,7 +306,7 @@ if(Auth::check()){
 	</script>
 	<script src="/js/pace.min.js">{{session('disablePacer')}}</script>
 	@endif
-	<script>
+	<!-- <script>
 		var _uh = _uh || [];
 		_uh.push(['AllitaHost', 'https://pcinspectdev.ohiohome.org']);
 		_uh.push(['Logo', 'https://static.wixstatic.com/media/64bb8d_0ca6465192ae42b89d419bbadaa42a05~mv2.png/v1/fill/w_171,h_169,al_c,usm_0.66_1.00_0.01/64bb8d_0ca6465192ae42b89d419bbadaa42a05~mv2.png']);
@@ -315,14 +315,14 @@ if(Auth::check()){
 		_uh.push(['RightItems', '<button>🔔</button>']);	
 		(function() {
 		    var uh = document.createElement('script'); uh.type = 'text/javascript'; uh.async = true;
-		    //uh.src = 'https://devco.ohiohome.org/AuthorityOnlineALT/Unified/UnifiedHeader.aspx';
+		    // uh.src = 'https://devco.ohiohome.org/AuthorityOnlineALT/Unified/UnifiedHeader.aspx';
 		    uh.src = "{{config('app.url')}}/poc/universal-header/hosted.js";
 		    var s = document.getElementsByTagName('script')[0]; 
 		    $( document ).ready(function() {
 		    	s.parentNode.insertBefore(uh, s);
 		    });
 		})();
-	</script>
+	</script> -->
 </body>
 </html>
 

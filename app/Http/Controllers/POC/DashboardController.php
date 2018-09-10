@@ -53,7 +53,9 @@ $tab = "detail-tab-1";
 
         $filter = $request->get('filter');
 
-        return view('poc.dashboard.audits', compact('filter'));
+        $auditFilterMineOnly = 1;
+
+        return view('poc.dashboard.audits', compact('filter', 'auditFilterMineOnly'));
     }
 
     public function reports(Request $request)
@@ -141,6 +143,26 @@ $tab = "detail-tab-1";
                         '654322',
                         'Bob Manager',
                         'Project Name'
+                    ];
+
+        $results[] = [
+                        '456 Street Name',
+                        'City 2 Name',
+                        'OH',
+                        '789',
+                        '987',
+                        'John Manager',
+                        'Project Name 2'
+                    ];
+
+        $results[] = [
+                        '456 Street Name',
+                        'City 2 Name',
+                        'OH',
+                        '789',
+                        '987',
+                        'John Manager',
+                        'Project Name 2'
                     ];
 
         $results[] = [

@@ -17,8 +17,8 @@ a:hover {
 }
 a,
 .uk-link {
-  color: #56aa80;
-  /*color: #3a3a3a;*/
+  /*color: #56aa80;*/
+  color: #3a3a3a;
   text-decoration: none;
   cursor: pointer;
 }
@@ -1869,7 +1869,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
   clear: both;
 }
 .uk-tab > li {
-  margin-bottom: -2px;
+  margin-bottom: 0px;
   float: left;
   position: relative;
   padding-left: 0;

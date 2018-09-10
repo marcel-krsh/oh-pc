@@ -1191,6 +1191,8 @@ margin-top:10px;
 }
 #top-tabs > li.uk-active > a{
 	background-color:white;
+      border-bottom-color: #fff;
+    border-bottom-width: 1px;
 }
 #top-tabs i {
     font-size: 17px;
@@ -1211,48 +1213,23 @@ margin-top:10px;
 #mainfooter #footer-content {
     padding-top: 20px;
 }
-.rowinset {
-  -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.75);
-  -moz-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.75);
-  box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.75);
+/* icon statuses */
+.no-action {
+  color:#939598;
 }
-.rowinset table.uk-table tr {
-    border-bottom: 5px solid #f7f7f8;
-    border-top:0px;
+.action-needed {
+  color:#76338b;
 }
-.rowinset table thead tr {
-    border: 0px !important;
+.action-required {
+  color:#da328a;
 }
-.rowinset table th {
-    border: 0px;
-    padding: 0;
-    margin: 0;
+.ok-actionable {
+  color:#56b285;
 }
-.rowinset > td {
-    padding: 0;
+.in-progress {
+  color:#49ade9;
 }
-.rowinset-top {
-    background-color: #4b494a;
-    text-align: right;
-    color: #ffffff;
-    font-size: 0.8em;
-    padding-right: 5px;
-    padding-bottom: 2px;
-    line-height: 28px;
-}
-.rowinset-top i {
-    vertical-align: initial;
-    font-size: medium;
-    padding-left: 3px;
-}
-.rowinset-bottom {
-  background-color: #d1d2d4;
-}
-.rowinset .buildingstable {
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-bottom: 5px;
-}
+/* audits tab */
 #auditsfilters > .uk-width-1-5 {
 }
 #auditstable {
@@ -1302,7 +1279,7 @@ margin-top:10px;
 #auditstable table th .uk-width-1-6,
 #auditstable table th .uk-width-2-3
  {
-  padding:2px;
+  padding:2px 6px;
 }
 #auditstable table th > div {
 }
@@ -1314,6 +1291,7 @@ margin-top:10px;
 }
 #auditstable i {
     line-height: 20px;
+    font-size: 20px;
 }
 #auditstable th i {
     line-height: 27px;
@@ -1322,17 +1300,27 @@ margin-top:10px;
 #auditstable th i.uk-text-small {
   font-size:12px;
 }
+#auditstable table td {
+    padding: 8px 0 0px;
+}
 #auditstable table td h3 {
   padding: 0;
   margin: 0;
 }
-#auditstable table td .dateyear {
+#auditstable table tr td .dateyear {
+   display:none;
     background-color: #e48db4;
     font-size: 0.6em;
     line-height: normal;
     margin: 0 3px;
     color: #fff;
     padding: 2px 0;
+}
+#auditstable table tr:hover td .dateyear {
+   display: block;
+}
+#auditstable table tr:hover .uk-text-muted {
+  color: #3a3a3a !important;
 }
 #auditstable table td .fadetext{
   position: relative;
@@ -1350,43 +1338,43 @@ margin-top:10px;
     background-size: 100%;
   pointer-events: none;
 }
-#auditstable table tbody tr:nth-of-type(odd) td .fadetext:after{
+#auditstable > table tbody tr:nth-of-type(odd) td > .fadetext:after{
   background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(80%, #ffffff), color-stop(100%, #ffffff));
   background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
   background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
   background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
 }
-#auditstable table tbody tr:hover:nth-of-type(odd) td .fadetext:after{
+#auditstable > table tbody tr:hover:nth-of-type(odd) td > .fadetext:after{
   background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(240, 240, 240, 0)), color-stop(80%, #f0f0f0), color-stop(100%, #f0f0f0));
   background-image: -moz-linear-gradient(left, rgba(240, 240, 240, 0) 0%, #f0f0f0 80%, #f0f0f0 100%);
   background-image: -webkit-linear-gradient(left, rgba(240, 240, 240, 0) 0%, #f0f0f0 80%, #f0f0f0 100%);
   background-image: linear-gradient(to right, rgba(240, 240, 240, 0) 0%, #f0f0f0 80%, #f0f0f0 100%);
 }
-#auditstable table tbody tr:nth-of-type(even) td .fadetext:after{
+#auditstable > table tbody tr:nth-of-type(even) td > .fadetext:after{
   background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(250, 250, 250, 0)), color-stop(80%, #fafafa), color-stop(100%, #fafafa));
   background-image: -moz-linear-gradient(left, rgba(250, 250, 250, 0) 0%, #fafafa 80%, #fafafa 100%);
   background-image: -webkit-linear-gradient(left, rgba(250, 250, 250, 0) 0%, #fafafa 80%, #fafafa 100%);
   background-image: linear-gradient(to right, rgba(250, 250, 250, 0) 0%, #fafafa 80%, #fafafa 100%);
 }
-#auditstable table tbody tr:hover:nth-of-type(even) td .fadetext:after{
+#auditstable > table tbody tr:hover:nth-of-type(even) td > .fadetext:after{
   background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(240, 240, 240, 0)), color-stop(80%, #f0f0f0), color-stop(100%, #f0f0f0));
   background-image: -moz-linear-gradient(left, rgba(240, 240, 240, 0) 0%, #f0f0f0 80%, #f0f0f0 100%);
   background-image: -webkit-linear-gradient(left, rgba(240, 240, 240, 0) 0%, #f0f0f0 80%, #f0f0f0 100%);
   background-image: linear-gradient(to right, rgba(240, 240, 240, 0) 0%, #f0f0f0 80%, #f0f0f0 100%);
 }
-#auditstable table tbody tr.critical:nth-of-type(even) td .fadetext:after{
+#auditstable > table tbody tr.critical:nth-of-type(even) td > .fadetext:after{
   background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(250, 250, 250, 0)), color-stop(80%, #fafafa), color-stop(100%, #fafafa));
   background-image: -moz-linear-gradient(left, rgba(250, 250, 250, 0) 0%, #fafafa 80%, #fafafa 100%);
   background-image: -webkit-linear-gradient(left, rgba(250, 250, 250, 0) 0%, #fafafa 80%, #fafafa 100%);
   background-image: linear-gradient(to right, rgba(250, 250, 250, 0) 0%, #fafafa 80%, #fafafa 100%);
 }
-#auditstable table tbody tr.critical:nth-of-type(odd) td .fadetext:after{
+#auditstable > table tbody tr.critical:nth-of-type(odd) td > .fadetext:after{
   background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(80%, #ffffff), color-stop(100%, #ffffff));
   background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
   background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
   background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
 }
-#auditstable table tbody tr.critical:hover td .fadetext:after{
+#auditstable > table tbody tr.critical:hover td > .fadetext:after{
   background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(251, 244, 248, 0)), color-stop(80%, #fbf4f8), color-stop(100%, #fbf4f8));
   background-image: -moz-linear-gradient(left, rgba(251, 244, 248, 0) 0%, #fbf4f8 80%, #fbf4f8 100%);
   background-image: -webkit-linear-gradient(left, rgba(251, 244, 248, 0) 0%, #fbf4f8 80%, #fbf4f8 100%);
@@ -1435,6 +1423,12 @@ margin-top:10px;
 #auditstable table tr.critical:hover {
     background: #fbf4f8;
 }
+#auditstable table tr.critical td {
+    padding-bottom: 7px;
+}
+#auditstable table tr.critical:hover td {
+    padding-bottom: 0px;
+}
 #auditstable table tr.critical .divider {
     border-color: #da328a;
     border-style: double;
@@ -1455,6 +1449,23 @@ margin-top:10px;
   color: #da328a !important;
   font-weight: normal;
 }
+#auditstable table tr.critical:hover .uk-text-muted {
+    color: #da328a !important;
+}
+#auditstable table tr td.audit-td-lead {}
+#auditstable table tr td.audit-td-lead small {}
+#auditstable table tr td.audit-td-project {}
+#auditstable table tr td.audit-td-name {}
+#auditstable table tr td.audit-td-address {}
+#auditstable table tr td.audit-td-scheduled {}
+#auditstable table tr td.audit-td-due {}
+#auditstable table tr.critical td.audit-td-lead {}
+#auditstable table tr.critical td.audit-td-lead small { color: #da328a !important; }
+#auditstable table tr.critical td.audit-td-project {}
+#auditstable table tr.critical td.audit-td-name {}
+#auditstable table tr.critical td.audit-td-address {}
+#auditstable table tr.critical td.audit-td-scheduled {}
+#auditstable table tr.critical td.audit-td-due {}
 .building .program-status {
     width: 100%;
     background-color: #57585a;
@@ -1468,9 +1479,10 @@ margin-top:10px;
   padding-top: 10px;
   padding-bottom: 10px;
 }
-.building-critical .building-type {
+.building-critical:hover > div {
   background-color: #f9eaf1;
 }
+
 .building-critical .colored, .building-critical .colored small {
   color: #e89ec0 !important;
 }
@@ -1481,14 +1493,17 @@ margin-top:10px;
   position: relative;
   padding-left:4px;
 }
-.building-type .building-type-icon i {
+#auditstable .building-type .building-type-icon i {
   font-size: 61px;
   line-height: initial !important;
+     border: 3px double;
+    border-radius: 12px;
 }
-.building-auditors .building-auditor{
+#auditstable .building-auditors .building-auditor{
   position: relative;
+  padding: 0 2px 0 0;
 }
-.building-auditors .auditor-badge {
+#auditstable .building-auditors .auditor-badge {
     height: 20px;
     width: 20px;
     font-size: 10px;
@@ -1499,47 +1514,52 @@ margin-top:10px;
     color: #50b8ec;
     font-weight: 100;
     line-height: 21px;
-    margin: 3px 3px 0 3px;
+    margin: 3px 3px 3px 3px;
 }
-.building-auditors .auditor-status {
-    position: absolute;
-    bottom: -6px;
-    right: -1px;
+#auditstable .building-auditors .auditor-status {
     font-size: 8px;
     line-height: 8px;
 }
-.building-auditors .building-type-icon {
+#auditstable .building-auditors .auditor-status i {
+        position: absolute;
+    bottom: 0px;
+    right: 9px;
+    font-size: 10px;
+    line-height: 8px;
+}
+#auditstable .building-auditors .building-type-icon {
   padding: 0;
 }
-.building-auditors .building-type-icon i {
+#auditstable .building-auditors .building-type-icon i {
     font-size: 60px;
     line-height: 80px;
 }
-.building .area-status {
+#auditstable .building .area-status {
     text-transform: uppercase;
     color: #57585a;
     font-size: 0.9em;
 }
-.building .area-status.area-status-pending {
+#auditstable .building .area-status.area-status-pending {
     color: #50b8ec;
 }
-.building .area-status .uk-badge{
+#auditstable .building .area-status .uk-badge{
   background-color: #57585a;
   border-color: #57585a;
   color: #ffffff;
-  line-height: 21px;
+  line-height: 18px;
 }
-.building .area-status > i {
+#auditstable .building .area-status > i {
     font-size: 23px;
     vertical-align: sub;
 }
-.building .area-status.area-status-pending .uk-badge{
+#auditstable .building .area-status.area-status-pending .uk-badge{
   border-color: #50b8ec;
   background-color:transparent;
   color: #50b8ec;
     border-style: dotted;
+    border-width:2px;
 }
-.building .area-status.area-status-action .uk-badge{
+#auditstable .building .area-status.area-status-action .uk-badge{
   border-color: #da328a;
   background-color:transparent;
   border-style: double;
@@ -1549,8 +1569,47 @@ margin-top:10px;
   line-height: 16px;
   margin-left: -2px;
 }
-.building .area-status.area-status-action{
+#auditstable .building .area-status.area-status-action{
   color: #da328a;
+}
+
+.uk-table-hover tbody tr.rowinset:hover {
+    background: inherit;
+}
+.rowinset {
+  -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.75);
+}
+
+.rowinset-top {
+    background-color: #4b494a;
+    text-align: right;
+    color: #ffffff;
+    font-size: 0.8em;
+    padding-right: 5px;
+    padding-bottom: 2px;
+    line-height: 28px;
+    margin-bottom: 1px;
+}
+.rowinset-top i {
+    vertical-align: initial;
+    font-size: medium;
+    padding-left: 3px;
+}
+.rowinset-bottom {
+  background-color: #d1d2d4;
+}
+.rowinset .buildings {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+}
+.uk-sortable-item {
+  /*border: 3px solid #000;
+  -webkit-box-shadow: 3px 3px 5px 3px rgba(0,0,0,0.75);
+-moz-box-shadow: 3px 3px 5px 3px rgba(0,0,0,0.75);
+box-shadow: 3px 3px 5px 3px rgba(0,0,0,0.75);*/
 }
 .colored span.uk-badge {
     background-color: transparent;
@@ -1587,6 +1646,11 @@ margin-top:10px;
     padding-top: 1px;
     display: inline-block;
     margin-right: 5px;
+}
+.badge-filter> span {
+  font-size: 13px;
+    font-weight: normal;
+    line-height: 22px;
 }
 #parcel-tabs > li.uk-active > a,#dashboard-tabs > li.uk-active > a{
 	background-color:#white;

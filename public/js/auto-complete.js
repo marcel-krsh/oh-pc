@@ -86,7 +86,7 @@ var autoComplete = (function(){
 
             live('autocomplete-suggestion', 'mouseleave', function(e){
                 var sel = that.sc.querySelector('.autocomplete-suggestion.selected');
-                if (sel) setTimeout(function(){ sel.className = sel.className.replace('selected', ''); }, 2000);
+                if (sel) setTimeout(function(){ sel.className = sel.className.replace('selected', ''); }, 20);
             }, that.sc);
 
             live('autocomplete-suggestion', 'mouseover', function(e){
