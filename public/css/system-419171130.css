@@ -1213,22 +1213,7 @@ margin-top:10px;
 #mainfooter #footer-content {
     padding-top: 20px;
 }
-/* icon statuses */
-.no-action {
-  color:#939598;
-}
-.action-needed {
-  color:#76338b;
-}
-.action-required {
-  color:#da328a;
-}
-.ok-actionable {
-  color:#56b285;
-}
-.in-progress {
-  color:#49ade9;
-}
+
 /* audits tab */
 #auditsfilters > .uk-width-1-5 {
 }
@@ -1466,39 +1451,164 @@ margin-top:10px;
 #auditstable table tr.critical td.audit-td-address {}
 #auditstable table tr.critical td.audit-td-scheduled {}
 #auditstable table tr.critical td.audit-td-due {}
-.building .program-status {
-    width: 100%;
-    background-color: #57585a;
-    padding: 0;
-    line-height: 20px;
-    min-height: 22px;
-    text-shadow: none;
-    color: #ffffff;
+
+.buildings > div > div.building:nth-of-type(odd),
+.buildings > div > div.building:nth-of-type(odd) .findings-icon-status span.uk-badge {
+  background-color:#ffffff;
 }
+.buildings > div > div.building:nth-of-type(even),
+.buildings > div > div.building:nth-of-type(even) .findings-icon-status span.uk-badge{
+  background-color:#fafafa;
+}
+.buildings > div > div.building:hover,
+.buildings > div > div.building:hover .findings-icon-status span.uk-badge{
+  background-color:#f0f0f0;
+}
+
+.building-critical:hover > div,
+.buildings > div > div.building.building-critical:hover .findings-icon-status span.uk-badge {
+  background-color: #f9eaf1;
+}
+.building-action-needed:hover > div,
+.buildings > div > div.building.building-action-needed:hover .findings-icon-status span.uk-badge {
+  background-color: #f2eef6;
+}
+.building-in-progress:hover > div,
+.buildings > div > div.building.building-in-progress:hover .findings-icon-status span.uk-badge {
+  background-color: #eef8fd;
+}
+.building-ok-actionable:hover > div,
+.buildings > div > div.building.building-ok-actionable:hover .findings-icon-status span.uk-badge {
+  background-color: #f4faf5;
+}
+
+.building {
+    overflow-y: hidden;
+}
+
 .building .building-type {
   padding-top: 10px;
   padding-bottom: 10px;
-}
-.building-critical:hover > div {
-  background-color: #f9eaf1;
+  padding-right: 20px;
+  width: 195px;
 }
 
 .building-critical .colored, .building-critical .colored small {
   color: #e89ec0 !important;
 }
+.building-critical:hover .colored, .building-critical:hover .colored small {
+  color: #da328a !important;
+}
+
+.building .colored span.uk-badge {
+    background-color: transparent;
+    border-color: #999999;
+    border-style: double;
+    border-width: 3px;
+    height: 22px;
+    line-height: 16px;
+    color: #999999;
+}
+.building:hover .colored span.uk-badge {
+    border-color: #3a3a3a;
+    color: #3a3a3a;
+}
+.building.building-critical .colored span.uk-badge {
+    background-color: transparent;
+    border-color: #e89ec0;
+    border-style: double;
+    border-width: 3px;
+    height: 22px;
+    line-height: 16px;
+    color: #da328a;
+}
+.building.building-critical:hover .colored span.uk-badge {
+    border-color: #da328a;
+}
 .building-critical .auditor-status i {
     color: #50b8ec;
 }
+.building-auditors > div {
+    width: 70px;
+    margin: 0 10px;
+}
+.building-auditors .uk-dotnav > * > * {
+    width: 7px;
+    height: 7px;
+}
+.building-auditors .uk-dotnav > * {
+    padding-left: 5px;
+}
+.building-auditors .uk-dotnav > .uk-active > * {
+    transform: inherit;
+}
+#auditstable .building-critical .building-auditors .uk-dotnav > * > *  {
+     border-color: #da328a;
+     background-color: transparent;
+}
+#auditstable .building-critical .building-auditors .uk-dotnav > .uk-active > * {
+    background-color: #da328a;
+}
+#auditstable .building-in-progress .building-auditors .uk-dotnav > * > *  {
+     border-color: #49ade9;
+     background-color: transparent;
+}
+#auditstable .building-in-progress .building-auditors .uk-dotnav > .uk-active > * {
+    background-color: #49ade9;
+}
+#auditstable .building-action-needed .building-auditors .uk-dotnav > * > *  {
+     border-color: #76338b;
+     background-color: transparent;
+}
+#auditstable .building-action-needed .building-auditors .uk-dotnav > .uk-active > * {
+    background-color: #76338b;
+}
+#auditstable .building-action-required .building-auditors .uk-dotnav > * > *  {
+     border-color: #da328a;
+     background-color: transparent;
+}
+#auditstable .building-action-required .building-auditors .uk-dotnav > .uk-active > * {
+    background-color: #da328a;
+}
+#auditstable .building-no-action .building-auditors .uk-dotnav > * > *  {
+     border-color: #939598;
+     background-color: transparent;
+}
+#auditstable .building-no-action .building-auditors .uk-dotnav > .uk-active > * {
+    background-color: #939598;
+}
+#auditstable .building-ok-actionable .building-auditors .uk-dotnav > * > *  {
+     border-color: #56b285;
+     background-color: transparent;
+}
+#auditstable .building-ok-actionable .building-auditors .uk-dotnav > .uk-active > * {
+    background-color: #56b285;
+}
+
 .building-auditors, .building-type-icon {
   position: relative;
   padding-left:4px;
+  padding-top: 10px;
 }
+
 #auditstable .building-type .building-type-icon i {
   font-size: 61px;
   line-height: initial !important;
-     border: 3px double;
+     border: 4px solid;
     border-radius: 12px;
+    padding: 3px;
 }
+#auditstable .building-critical .building-type .building-type-icon i {
+     border: 5px double;
+}
+#auditstable .building-in-progress .building-type .building-type-icon i {
+     border: 4px dotted;
+}
+#auditstable .building-action-needed .building-type .building-type-icon i {
+     border: 4px dashed;
+}
+
+
 #auditstable .building-auditors .building-auditor{
   position: relative;
   padding: 0 2px 0 0;
@@ -1526,6 +1636,8 @@ margin-top:10px;
     right: 9px;
     font-size: 10px;
     line-height: 8px;
+        background-color: #ffffff;
+    border-radius: 50%;
 }
 #auditstable .building-auditors .building-type-icon {
   padding: 0;
@@ -1533,6 +1645,21 @@ margin-top:10px;
 #auditstable .building-auditors .building-type-icon i {
     font-size: 60px;
     line-height: 80px;
+}
+#auditstable .building-status {
+  position: relative;
+}
+#auditstable .building-status i {
+    position: absolute;
+    right: -13px;
+    bottom: -18px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    border-width: 0;
+    font-size: 12px;
+    line-height: 12px;
+    border: 3px double;
+    padding: 4px;
 }
 #auditstable .building .area-status {
     text-transform: uppercase;
@@ -1546,7 +1673,7 @@ margin-top:10px;
   background-color: #57585a;
   border-color: #57585a;
   color: #ffffff;
-  line-height: 18px;
+  line-height: 17px;
 }
 #auditstable .building .area-status > i {
     font-size: 23px;
@@ -1561,16 +1688,198 @@ margin-top:10px;
 }
 #auditstable .building .area-status.area-status-action .uk-badge{
   border-color: #da328a;
-  background-color:transparent;
-  border-style: double;
-  border-width: 6px;
-  color: #da328a;
-  height: 28px;
-  line-height: 16px;
-  margin-left: -2px;
+    background-color: transparent;
+    border-style: double;
+    border-width: 4px;
+    color: #da328a;
+    height: 25px;
+    line-height: 16px;
+    margin-left: -2px;
 }
 #auditstable .building .area-status.area-status-action{
   color: #da328a;
+}
+
+/*#auditstable .building .area-status, 
+#auditstable .building .building-address,
+#auditstable .building .building-address h3,
+#auditstable .building .program-status{
+  letter-spacing: 0.35px;
+}
+#auditstable .building:hover .area-status, 
+#auditstable .building:hover .building-address,
+#auditstable .building:hover .building-address h3,
+#auditstable .building:hover .program-status{
+  font-weight: bold;
+  letter-spacing: 0px;
+}*/
+
+
+#auditstable .building .building-address {
+  height: 100%;
+  min-width: 300px;
+}
+#auditstable .building-address > div, #auditstable .building .area-status-list, #auditstable .building .building-history {
+    padding-top: 20px !important;
+}
+#auditstable .building-address small {
+    text-transform: uppercase;
+}
+#auditstable .building-address .alert-icon {
+  position: absolute;
+  left: 50%;
+  transform: translate(-10px);
+  top: 40px;
+}
+#auditstable .building:hover small{
+  color:#3a3a3a;
+}
+.journey-start, .journey-end, .journey {
+  position: relative;
+}
+.journey-start:after {
+    content: '';
+    width: 15px;
+    left: 0;
+    border-bottom: 1px solid #e6e7e9;
+    position: absolute;
+    top: 30px;
+}
+.journey-start:before {
+    border-left: 1px solid #e6e7e9;
+    width: 1px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    top: 30px;
+}
+.journey:after {
+    content: '';
+    width: 15px;
+    left: 0;
+    border-bottom: 1px solid #e6e7e9;
+    position: absolute;
+    top: 27px;
+}
+.journey:before {
+    border-left: 1px solid #e6e7e9;
+    width: 1px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+    top: 0;
+}
+.journey-end:after {
+    content: '';
+    width: 15px;
+    left: 0;
+    border-bottom: 1px solid #e6e7e9;
+    position: absolute;
+    top: 30px;
+}
+.journey-end:before {
+    border-left: 1px solid #e6e7e9;
+    width: 1px;
+    height: 30px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+}
+.critical .journey-start:before, .critical .journey-start:after,
+.critical .journey:before, .critical .journey:after,
+.critical .journey-end:before, .critical .journey-end:after,
+{ 
+  border-color: #efc3d8; 
+}
+
+/* icon statuses */
+.no-action, .no-action .uk-badge { color:#939598; border-color:#939598; }
+.action-needed, .action-needed .uk-badge { color:#76338b; border-color:#76338b; }
+.action-required, .action-required .uk-badge { color:#da328a; border-color:#da328a; }
+.ok-actionable, .ok-actionable .uk-badge { color:#56b285; border-color:#56b285; }
+.in-progress, .in-progress .uk-badge { color:#49ade9; border-color:#49ade9; }
+
+.no-action .findings-icon-status i { background-color: #939598; color: #ffffff; }
+.action-needed .findings-icon-status i { background-color: #76338b; color: #ffffff; }
+.action-required .findings-icon-status i { background-color: #da328a; color: #ffffff; }
+.ok-actionable .findings-icon-status i { background-color: #56b285; color: #ffffff; }
+.in-progress .findings-icon-status i { background-color: #49ade9; color: #ffffff; }
+
+.building .program-status {
+    width: 100%;
+    background-color: #57585a;
+    padding: 0;
+    line-height: 20px;
+    min-height: 22px;
+    text-shadow: none;
+    color: #ffffff;
+    margin-bottom: 10px;
+    border: 3px solid;
+}
+.building .program-status i {vertical-align: sub;}
+/*.building:hover .program-status {font-weight: bold;}*/
+.building .no-action .program-status { background-color:transparent; border-color: #939598; color: #939598; }
+.building .action-needed .program-status { background-color:transparent; border-color: #76338b; color: #76338b; }
+.building .action-required .program-status { background-color:transparent; border-color: #da328a; color: #da328a; }
+.building .ok-actionable .program-status { background-color:transparent; border-color: #56b285; color: #56b285; }
+.building .in-progress .program-status { background-color:transparent; border-color: #49ade9; color: #49ade9; }
+.building .no-action .program-status:hover { background-color:#939598; border-color: #939598; color: #ffffff; }
+.building .action-needed .program-status:hover { background-color:#76338b; border-color: #76338b; color: #ffffff; }
+.building .action-required .program-status:hover { background-color:#da328a; border-color: #da328a; color: #ffffff; }
+.building .ok-actionable .program-status:hover { background-color:#56b285; border-color: #56b285; color: #ffffff; }
+.building .in-progress .program-status:hover { background-color:#49ade9; border-color: #49ade9; color: #ffffff; }
+
+#auditstable .building .findings-icons .action-needed .a-folder,
+#auditstable .building .findings-icons .action-needed .a-booboo,
+#auditstable .building .findings-icons .action-needed .a-flames,
+#auditstable .building .findings-icons .action-needed .a-skull  { border: 5px dashed; }
+#auditstable .building .findings-icons .action-needed .findings-icon-status span.uk-badge { border: 2px dashed; }
+
+#auditstable .building .findings-icons .action-required .a-folder,
+#auditstable .building .findings-icons .action-required .a-booboo,
+#auditstable .building .findings-icons .action-required .a-flames,
+#auditstable .building .findings-icons .action-required .a-skull  { border: 5px double; }
+#auditstable .building .findings-icons .action-required .findings-icon-status span.uk-badge  { border: 3px double; }
+
+#auditstable .building .findings-icons .in-progress .a-folder,
+#auditstable .building .findings-icons .in-progress .a-booboo,
+#auditstable .building .findings-icons .in-progress .a-flames,
+#auditstable .building .findings-icons .in-progress .a-skull { border: 5px dotted; }
+#auditstable .building .findings-icons .in-progress .findings-icon-status span.uk-badge { border: 2px dotted; }
+
+#auditstable .building .findings-icons .ok-actionable .a-folder,
+#auditstable .building .findings-icons .ok-actionable .a-booboo,
+#auditstable .building .findings-icons .ok-actionable .a-flames,
+#auditstable .building .findings-icons .ok-actionable .a-skull { border: 5px dashed; }
+#auditstable .building .findings-icons .ok-actionable .findings-icon-status span.uk-badge { border: 2px dashed; }
+
+#auditstable .building .findings-icons .no-action .a-folder,
+#auditstable .building .findings-icons .no-action .a-booboo,
+#auditstable .building .findings-icons .no-action .a-flames,
+#auditstable .building .findings-icons .no-action .a-skull { border: 5px solid; }
+#auditstable .building .findings-icons .no-action .findings-icon-status span.uk-badge { border: 2px solid; }
+
+#auditstable .building .findings-icon {
+  position:relative;
+}
+#auditstable .building .findings-icon i {
+  padding: 6px; font-size: 40px; border-radius: 11px; line-height: 60px;
+}
+#auditstable .building .findings-icon-status span.uk-badge,
+#auditstable .building .findings-icon-status i {
+    position: absolute;
+    right: -1px;
+    top: -7px;
+    border-radius: 50%;
+    border-width: 2px;
+    font-size: 12px;
+    line-height: 10px;
+    padding: 4px;
 }
 
 .uk-table-hover tbody tr.rowinset:hover {
@@ -1593,12 +1902,19 @@ margin-top:10px;
     margin-bottom: 1px;
 }
 .rowinset-top i {
-    vertical-align: initial;
+    vertical-align: sub;
     font-size: medium;
     padding-left: 3px;
 }
 .rowinset-bottom {
   background-color: #d1d2d4;
+  text-align:center;
+}
+.rowinset-bottom span {
+  color:#b4b5b8; font-size: 14px; letter-spacing: 2px;
+}
+.rowinset-bottom span.uk-link:hover {
+  color:#fff;
 }
 .rowinset .buildings {
     padding-left: 5px;
@@ -1610,15 +1926,6 @@ margin-top:10px;
   -webkit-box-shadow: 3px 3px 5px 3px rgba(0,0,0,0.75);
 -moz-box-shadow: 3px 3px 5px 3px rgba(0,0,0,0.75);
 box-shadow: 3px 3px 5px 3px rgba(0,0,0,0.75);*/
-}
-.colored span.uk-badge {
-    background-color: transparent;
-    border-color: #da328a;
-    border-style: double;
-    border-width: 6px;
-    height: 28px;
-    line-height: 16px;
-    color: #da328a;
 }
 .uk-button-primary .uk-badge{
   background-color: transparent;
