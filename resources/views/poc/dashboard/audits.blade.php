@@ -679,7 +679,7 @@ The following div is defined in this particular tab and pushed to the main layou
 			// close own details
 			$('#audit-r-'+target+'-buildings').remove();
 		}else{
-			// clase all details
+			// close all details
 			$('tr[id$="-buildings"]').remove();
 			// fetch and display new details
 			var url = '{{route("audit.buildings", ["audit" => "xi", "target" => "xt"])}}';
@@ -693,9 +693,45 @@ The following div is defined in this particular tab and pushed to the main layou
 	                } else {
 	                	// scroll to row
 	                	$('html, body').animate({
-							scrollTop: $('#audit-r-'+target).offset().top
+							scrollTop: $('#audit-r-'+target).offset().top - 60
 							}, 500, 'linear');
 						$('#audit-r-'+target).after(data);
+	            	}
+		    });
+		}
+	}
+
+	function buildingDetails(id, auditid, target) {
+		if ($('#building-r-'+target+'-details').length){
+			// close own details
+			$('#building-r-'+target+'-details').remove();
+			// unblur other building rows
+			$('div[id^="building-r-"]').removeClass('blur');
+		}else{
+			// close all details
+			$('div[id$="-details"]').remove();
+			// unblur other building rows
+			$('div[id^="building-r-"]').removeClass('blur');
+
+			// fetch and display new details
+			var url = '{{route("audit.building.details", ["audit" => "xa", "building" => "xi", "target" => "xt"])}}';
+			url = url.replace('xi', id);
+			url = url.replace('xa', auditid);
+			url = url.replace('xt', target);
+		    $.get(url, {
+	            '_token' : '{{ csrf_token() }}'
+	            }, function(data) {
+	                if(data=='0'){ 
+	                    UIkit.modal.alert("There was a problem getting the building details' information.");
+	                } else {
+	                	// blur all other building rows
+						$('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).addClass('blur');
+
+	                	// scroll to row
+	                	$('html, body').animate({
+							scrollTop: $('#building-r-'+target).offset().top - 60
+							}, 500, 'linear');
+						$('#building-r-'+target).after(data);
 	            	}
 		    });
 		}

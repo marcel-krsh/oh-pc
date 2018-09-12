@@ -495,6 +495,7 @@ Route::group(['prefix'=>'poc','namespace'=>'POC'], function() {
     Route::get('dashboard', 'DashboardController@index');
     Route::get('dashboard/audits', 'DashboardController@audits')->name('dashboard.audits');
     Route::get('dashboard/audits/{audit}/buildings', 'AuditController@buildingsFromAudit')->name('audit.buildings');
+    Route::get('dashboard/audits/{audit}/building/{building}/details', 'AuditController@detailsFromBuilding')->name('audit.building.details');
     Route::get('dashboard/communications', 'DashboardController@communications')->name('dashboard.communications');
     Route::get('dashboard/reports', 'DashboardController@reports')->name('dashboard.reports');
 

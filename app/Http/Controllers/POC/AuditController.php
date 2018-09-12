@@ -20,7 +20,6 @@ class AuditController extends Controller
     public function buildingsFromAudit($audit, Request $request)
     {
     	$target = $request->get('target');
-    	$output = "testing";
     	$buildings = collect([
     					[
     						'id' => 1, 
@@ -351,5 +350,138 @@ class AuditController extends Controller
     				]);
 
     	return view('poc.dashboard.partials.audit_buildings', compact('audit', 'target', 'buildings'));
+    }
+
+    public function detailsFromBuilding($audit, $building, Request $request) {
+    	$target = $request->get('target');
+    	$details = collect([
+    						[
+    						'id' => 1, 
+    						'status' => 'critical',
+    						'street' => '123457 Silvegwood Street', 
+    						'city' => 'Columbus', 
+    						'state' => 'OH', 
+    						'zip' => '43219', 
+    						'auditors' => [
+    							['name' => 'Brian Greenwood',
+    							'initials' => 'BG',
+    							'color' => 'green',
+    							'status' => 'warning'],
+    							['name' => 'Another Name',
+    							'initials' => 'AN',
+    							'color' => 'blue',
+    							'status' => '']
+    						],
+    						'type' => 'building',
+    						'areas' => [
+    							['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
+    							['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
+    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
+    						]
+    					],
+    					[
+    						'id' => 2, 
+    						'status' => 'action-needed',
+    						'street' => '123466 Silvegwood Street', 
+    						'city' => 'Columbus', 
+    						'state' => 'OH', 
+    						'zip' => '43219', 
+    						'auditors' => [
+    							['name' => 'Brian Greenwood',
+    							'initials' => 'BG',
+    							'color' => 'green',
+    							'status' => 'warning'],
+    							['name' => 'Another Name',
+    							'initials' => 'AN',
+    							'color' => 'blue',
+    							'status' => ''],
+    							['name' => 'Another Name',
+    							'initials' => 'AN',
+    							'color' => 'blue',
+    							'status' => ''],
+    							['name' => 'Another Name',
+    							'initials' => 'AN',
+    							'color' => 'blue',
+    							'status' => ''],
+    							['name' => 'Brian Greenwood',
+    							'initials' => 'BG',
+    							'color' => 'green',
+    							'status' => 'warning'],
+    							['name' => 'Another Name',
+    							'initials' => 'AN',
+    							'color' => 'blue',
+    							'status' => ''],
+    							['name' => 'Another Name',
+    							'initials' => 'AN',
+    							'color' => 'blue',
+    							'status' => ''],
+    							['name' => 'Another Name',
+    							'initials' => 'AN',
+    							'color' => 'blue',
+    							'status' => ''],
+    							['name' => 'Brian Greenwood',
+    							'initials' => 'BG',
+    							'color' => 'green',
+    							'status' => 'warning'],
+    							['name' => 'Another Name',
+    							'initials' => 'AN',
+    							'color' => 'blue',
+    							'status' => ''],
+    							['name' => 'Another Name',
+    							'initials' => 'AN',
+    							'color' => 'blue',
+    							'status' => ''],
+    							['name' => 'Another Name',
+    							'initials' => 'AN',
+    							'color' => 'blue',
+    							'status' => '']
+    						],
+    						'type' => 'pool',
+    						'areas' => [
+    							['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
+    							['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
+    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
+    						]
+    					],
+    					[
+    						'id' => 3, 
+    						'status' => 'in-progress',
+    						'street' => '123466 Silvegwood Street', 
+    						'city' => 'Columbus', 
+    						'state' => 'OH', 
+    						'zip' => '43219', 
+    						'auditors' => [
+    							['name' => 'Brian Greenwood',
+    							'initials' => 'BG',
+    							'color' => 'green',
+    							'status' => 'warning'],
+    							['name' => 'Another Name',
+    							'initials' => 'AN',
+    							'color' => 'blue',
+    							'status' => ''],
+    							['name' => 'Another Name',
+    							'initials' => 'AN',
+    							'color' => 'blue',
+    							'status' => ''],
+    							['name' => 'Another Name',
+    							'initials' => 'AN',
+    							'color' => 'blue',
+    							'status' => '']
+    						],
+    						'type' => 'building',
+    						'areas' => [
+    							['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
+    							['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
+    							['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
+    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
+    						]
+    					]
+    				]);
+    	return view('poc.dashboard.partials.audit_building_details', compact('audit', 'target', 'building', 'details'));
     }
 }

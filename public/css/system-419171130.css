@@ -1453,14 +1453,17 @@ margin-top:10px;
 #auditstable table tr.critical td.audit-td-due {}
 
 .buildings > div > div.building:nth-of-type(odd),
+.buildings > div > div > div.building-details > div > div.building:nth-of-type(odd),
 .buildings > div > div.building:nth-of-type(odd) .findings-icon-status span.uk-badge {
   background-color:#ffffff;
 }
 .buildings > div > div.building:nth-of-type(even),
+.buildings > div > div > div.building-details > div > div.building:nth-of-type(even),
 .buildings > div > div.building:nth-of-type(even) .findings-icon-status span.uk-badge{
   background-color:#fafafa;
 }
 .buildings > div > div.building:hover,
+.buildings > div > div > div.building-details > div > div.building:hover,
 .buildings > div > div.building:hover .findings-icon-status span.uk-badge{
   background-color:#f0f0f0;
 }
@@ -1932,6 +1935,13 @@ margin-top:10px;
   -webkit-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.75);
   -moz-box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.75);
   box-shadow: inset 0px 0px 5px 0px rgba(0,0,0,0.75);
+}
+.rowinset.indent {
+    padding-left: 20px;
+    -webkit-box-shadow: inset 0px 5px 5px 0px rgba(0,0,0,0.3);
+    -moz-box-shadow: inset 0px 5px 5px 0px rgba(0,0,0,0.3);
+    box-shadow: inset 0px 5px 5px 0px rgba(0,0,0,0.3);
+    padding-top: 6px;
 }
 
 .rowinset-top {
@@ -2504,3 +2514,10 @@ ul ul, ol ul {
 }
 .autocomplete-suggestions {max-height: none;}
 .autocomplete-suggestion {border-bottom:1px solid #ddd; padding:15px 10px; cursor: pointer;}
+.blur {
+  -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  -o-filter: blur(5px);
+  -ms-filter: blur(5px);
+  filter: blur(5px);
+}
