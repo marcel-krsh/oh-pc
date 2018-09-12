@@ -1886,6 +1886,17 @@ margin-top:10px;
 #auditstable .building:hover .findings-icons, #auditstable .building:hover .program-status {
     opacity: 1;
 }
+#auditstable .building:hover .linespattern {
+  background: repeating-linear-gradient(#f0f0f0, #f0f0f0 5px, #cccccc 5px, #cccccc 7px);
+  height: 80%;
+  margin: 2px 3px;
+}
+#auditstable .building-critical:hover .linespattern {  background: repeating-linear-gradient(#fce6ef, #fce6ef 5px, #f9cce3 5px, #f9cce3 7px); }
+#auditstable .building-in-progress:hover .linespattern { background: repeating-linear-gradient(#ddf2fc, #ddf2fc 5px, #cccccc 5px, #cccccc 7px); }
+#auditstable .building-action-required:hover .linespattern {  background: repeating-linear-gradient(#fce6ef, #fce6ef 5px, #f9cce3 5px, #f9cce3 7px); }
+#auditstable .building-action-needed:hover .linespattern { background: repeating-linear-gradient(#e9dfee, #e9dfee 5px, #cccccc 5px, #cccccc 7px);}
+#auditstable .building-no-action:hover .linespattern { background: repeating-linear-gradient(#fce6ef, #fce6ef 5px, #cccccc 5px, #cccccc 7px);}
+#auditstable .building-ok-actionable:hover .linespattern { background: repeating-linear-gradient(#daf5df, #daf5df 5px, #cccccc 5px, #cccccc 7px);}
 
 #auditstable .building .findings-icon {
   position:relative;

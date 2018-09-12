@@ -6,6 +6,7 @@
 					@foreach($buildings as $key=>$building)
 					<div id="building-r-{{$key}}" class="uk-flex uk-flex-row building @if($building['status']) building-{{$building['status']}} {{$building['status']}} @endif " >
 						<div id="building-{{$target}}-c-1-{{$key}}" class="uk-inline uk-sortable-handle" style="    min-width: 16px; padding: 0 3px;">
+							<div class="linespattern"></div>
 							<span id="building-rid-1" class="uk-position-bottom-center colored"><small>#<span class="rowindex">{{$loop->iteration}}</span></small></span>
 						</div>
 						<div id="building-{{$target}}-c-2-{{$key}}" class="building-type">
@@ -79,7 +80,7 @@
 				            	<div class="uk-width-4-5 uk-padding-remove">
 				            		<h3 class="uk-margin-bottom-remove colored">{{$building['street']}}</h3>
 					            	<small class="colored">{{$building['city']}}, {{$building['state']}} {{$building['zip']}}</small><br />
-					            	<small class="colored"><span class="uk-badge colored">3</span> <i class="a-list colored uk-text-middle"></i> <span class="uk-text-middle">OWN HOMES</span></small>
+					            	<small class="colored"><span class="uk-badge colored">3</span> <i class="a-list colored uk-text-middle"></i> <span class="uk-text-middle">TOWN HOMES</span></small>
 				            	</div>
 				            </div>
 						</div>
