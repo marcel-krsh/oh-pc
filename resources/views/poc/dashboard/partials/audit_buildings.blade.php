@@ -6,7 +6,7 @@
 					@foreach($buildings as $key=>$building)
 					<div id="building-r-{{$key}}" class="uk-flex uk-flex-row building @if($building['status']) building-{{$building['status']}} {{$building['status']}} @endif " >
 						<div id="building-{{$target}}-c-1-{{$key}}" class="uk-inline uk-sortable-handle" style="    min-width: 16px; padding: 0 3px;">
-							<span id="building-rid-1" class="uk-position-bottom-right colored"><small>#{{$building['id']}}</small></span>
+							<span id="building-rid-1" class="uk-position-bottom-center colored"><small>#<span class="rowindex">{{$loop->iteration}}</span></small></span>
 						</div>
 						<div id="building-{{$target}}-c-2-{{$key}}" class="building-type">
 							<div  uk-grid>
@@ -90,7 +90,7 @@
 				            			<div class="findings-icon">
 											<i class="a-folder"></i>
 											<div class="findings-icon-status">
-												<span class="uk-badge">3</span>
+												<span class="uk-badge action-needed">3</span>
 											</div>
 										</div>
 										
@@ -99,7 +99,7 @@
 										<div class="findings-icon">
 											<i class="a-booboo"></i>
 											<div class="findings-icon-status">
-												<i class="a-rotate-left"></i>
+												<i class="a-rotate-left in-progress"></i>
 											</div>
 										</div>
 									</div>
@@ -107,7 +107,7 @@
 										<div class="findings-icon">
 											<i class="a-skull"></i>
 											<div class="findings-icon-status">
-												<span class="uk-badge">3</span>
+												<span class="uk-badge in-progress">3</span>
 											</div>
 										</div>
 									</div>
@@ -115,7 +115,7 @@
 										<div class="findings-icon">
 											<i class="a-flames"></i>
 											<div class="findings-icon-status">
-												<span class="uk-badge">3</span>
+												<span class="uk-badge action-required">3</span>
 											</div>
 										</div>
 									</div> 
@@ -149,19 +149,31 @@
 				<span class="uk-link" onclick="addArea({{$audit}});">+ ADD INSPECTABLE AREA TO PROJECT</span>
 			</div>
 			<script>
+				var startIndex;
+				var endIndex;
 
+				function reorder(classname) {
+					var currentIndex;
+					$(classname+" > div").each(function () { 
+						console.log(this.id);
+						currentIndex = $(".building").index(this) + 1;
+						$("#"+this.id).find(".rowindex").each(function () { 
+							$(this).html(currentIndex);
+						});
+					});
+				}
 
-				UIkit.util.on('.sortable', 'start', function (item) {console.log(item.detail);
-				  // $(this).attr('data-previndex', item.index());
-				  // console.log(item.detail[1].id)
-				  // UIkit.notification(`Moving ${item.detail[1].id}`, 'success');
+				UIkit.util.on('.sortable', 'start', function (item) {
+					var listItem = document.getElementById( item.detail[1].id );
+					startIndex = $( ".building" ).index( listItem );
+					console.log( item.detail[1].id + " started at index: " + startIndex );
 				});
 				UIkit.util.on('.sortable', 'moved', function (item) {
-					// var newIndex = item.index();
-			  //       var oldIndex = $(this).attr('data-previndex');
-			        // $(this).removeAttr('data-previndex');
-				  console.log(item.detail[1].id)
-				  //UIkit.notification(`Moving ${item.detail[1].id} from `+oldIndex+' to '+newIndex, 'success');
+					var listItem = document.getElementById( item.detail[1].id );
+					endIndex = $( ".building" ).index( listItem );
+					console.log( item.detail[1].id + " ended at index: " + endIndex );
+					UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
+					reorder(".buildings > .sortable");
 				});
 			</script>
 		</td>

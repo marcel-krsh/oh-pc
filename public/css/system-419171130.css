@@ -1585,6 +1585,15 @@ margin-top:10px;
     background-color: #56b285;
 }
 
+#auditstable .building .uk-sortable-handle > span > small { font-size: 11px; }
+
+#auditstable .building-critical .uk-sortable-handle { background-color: #fce6ef; }
+#auditstable .building-in-progress .uk-sortable-handle { background-color: #ddf2fc; }
+#auditstable .building-action-required .uk-sortable-handle { background-color: #fce6ef; }
+#auditstable .building-action-needed .uk-sortable-handle { background-color: #e9dfee; }
+#auditstable .building-no-action .uk-sortable-handle { background-color: #fce6ef; }
+#auditstable .building-ok-actionable .uk-sortable-handle { background-color: #daf5df; }
+
 .building-auditors, .building-type-icon {
   position: relative;
   padding-left:4px;
@@ -1658,9 +1667,16 @@ margin-top:10px;
     border-width: 0;
     font-size: 12px;
     line-height: 12px;
-    border: 3px double;
+    border: 2px solid;
     padding: 4px;
 }
+
+#auditstable .building.no-action .building-status i { border: 2px solid; }
+#auditstable .building.action-needed .building-status i { border: 2px dashed; }
+#auditstable .building.action-required .building-status i { border: 3px double; }
+#auditstable .building.ok-actionable .building-status i { border: 2px solid; }
+#auditstable .building.in-progress .building-status i { border: 2px dotted; }
+
 #auditstable .building .area-status {
     text-transform: uppercase;
     color: #57585a;
@@ -1798,11 +1814,11 @@ margin-top:10px;
 }
 
 /* icon statuses */
-.no-action, .no-action .uk-badge { color:#939598; border-color:#939598; }
-.action-needed, .action-needed .uk-badge { color:#76338b; border-color:#76338b; }
-.action-required, .action-required .uk-badge { color:#da328a; border-color:#da328a; }
-.ok-actionable, .ok-actionable .uk-badge { color:#56b285; border-color:#56b285; }
-.in-progress, .in-progress .uk-badge { color:#49ade9; border-color:#49ade9; }
+.no-action, .no-action.uk-badge { color:#939598; border-color:#939598; }
+.action-needed, .action-needed.uk-badge { color:#76338b; border-color:#76338b; }
+.action-required, .action-required.uk-badge { color:#da328a; border-color:#da328a; }
+.ok-actionable, .ok-actionable.uk-badge { color:#56b285; border-color:#56b285; }
+.in-progress, .in-progress.uk-badge { color:#49ade9; border-color:#49ade9; }
 
 .no-action .findings-icon-status i { background-color: #939598; color: #ffffff; }
 .action-needed .findings-icon-status i { background-color: #76338b; color: #ffffff; }
@@ -1855,8 +1871,8 @@ margin-top:10px;
 #auditstable .building .findings-icons .ok-actionable .a-folder,
 #auditstable .building .findings-icons .ok-actionable .a-booboo,
 #auditstable .building .findings-icons .ok-actionable .a-flames,
-#auditstable .building .findings-icons .ok-actionable .a-skull { border: 5px dashed; }
-#auditstable .building .findings-icons .ok-actionable .findings-icon-status span.uk-badge { border: 2px dashed; }
+#auditstable .building .findings-icons .ok-actionable .a-skull { border: 5px solid; }
+#auditstable .building .findings-icons .ok-actionable .findings-icon-status span.uk-badge { border: 2px solid; }
 
 #auditstable .building .findings-icons .no-action .a-folder,
 #auditstable .building .findings-icons .no-action .a-booboo,
@@ -1864,14 +1880,20 @@ margin-top:10px;
 #auditstable .building .findings-icons .no-action .a-skull { border: 5px solid; }
 #auditstable .building .findings-icons .no-action .findings-icon-status span.uk-badge { border: 2px solid; }
 
+#auditstable .building .findings-icons, #auditstable .building .program-status {
+    opacity: 0.4;
+}
+#auditstable .building:hover .findings-icons, #auditstable .building:hover .program-status {
+    opacity: 1;
+}
+
 #auditstable .building .findings-icon {
   position:relative;
 }
 #auditstable .building .findings-icon i {
   padding: 6px; font-size: 40px; border-radius: 11px; line-height: 60px;
 }
-#auditstable .building .findings-icon-status span.uk-badge,
-#auditstable .building .findings-icon-status i {
+#auditstable .building .findings-icon-status span.uk-badge{
     position: absolute;
     right: -1px;
     top: -7px;
@@ -1880,6 +1902,16 @@ margin-top:10px;
     font-size: 12px;
     line-height: 10px;
     padding: 4px;
+}
+#auditstable .building .findings-icon-status i {
+    position: absolute;
+    right: -1px;
+    top: -7px;
+    border-radius: 50%;
+    border-width: 2px;
+    font-size: 16px;
+    line-height: 15px;
+    padding: 3px;
 }
 
 .uk-table-hover tbody tr.rowinset:hover {
