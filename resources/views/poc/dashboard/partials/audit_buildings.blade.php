@@ -1,4 +1,3 @@
-	<tr id="audit-r-{{$target}}-buildings" class="rowinset">
 		<td colspan="10">
 			<div class="rowinset-top">INSPECTION AREAS <span class="uk-link" style="color:#ffffff;" onclick="$('#audit-r-{{$target}}-buildings').remove();"><i class="a-circle-cross"></i></span></div>
 			<div class="buildings uk-overflow-auto" style="">
@@ -166,4 +165,3 @@
 				});
 			</script>
 		</td>
-	</tr>

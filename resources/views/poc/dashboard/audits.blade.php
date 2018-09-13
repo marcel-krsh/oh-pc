@@ -266,7 +266,7 @@
 		            </td>
 		            <td id="audit-c-2-1" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-1" onclick="projectDetails(123,1);" uk-tooltip="pos:top-left;title:Project details;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-1" onclick="projectDetails(123,1,3);" uk-tooltip="pos:top-left;title:Project details;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div>
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
 		            		<h3 id="audit-project-name-1" class="uk-margin-bottom-remove">19200114</h3>
@@ -358,7 +358,7 @@
 		            </td>
 		            <td id="audit-c-2-2" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-2" onclick="projectDetails(123,2);" uk-tooltip="pos:top-left;title:Project details;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-2" onclick="projectDetails(123,2,6);" uk-tooltip="pos:top-left;title:Project details;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div> 
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
 		            		<h3 id="audit-project-name-2" class="uk-margin-bottom-remove">19200114</h3>
@@ -451,7 +451,7 @@
 		            </td>
 		            <td id="audit-c-2-3" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-3" onclick="projectDetails(123,3);" uk-tooltip="pos:top-left;title:Project details;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-3" onclick="projectDetails(123,3,4);" uk-tooltip="pos:top-left;title:Project details;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div> 
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
 		            		<h3 id="audit-project-name-3" class="uk-margin-bottom-remove">19200114</h3>
@@ -543,7 +543,7 @@
 		            </td>
 		            <td id="audit-c-2-4" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<span id="audit-i-project-detail-4" onclick="projectDetails(123,4);" uk-tooltip="pos:top-left;title:Project details;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-4" onclick="projectDetails(123,4,6);" uk-tooltip="pos:top-left;title:Project details;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div> 
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
 		            		<h3 id="audit-project-name-4" class="uk-margin-bottom-remove">19200114</h3>
@@ -674,28 +674,40 @@ The following div is defined in this particular tab and pushed to the main layou
 		console.log("create audits clicked");
 	}
 
-	function projectDetails(id, target) {
+	function projectDetails(id, target, buildingcount = 10) {
 		if ($('#audit-r-'+target+'-buildings').length){
 			// close own details
 			$('#audit-r-'+target+'-buildings').remove();
 		}else{
 			// close all details
 			$('tr[id$="-buildings"]').remove();
+
+			// scroll to row early
+			console.log("scrolling to "+'#audit-r-'+target);
+        	$('html, body').animate({
+				scrollTop: $('#audit-r-'+target).offset().top - 60
+				}, 500, 'linear');
+        	// open the expanded div early based on expected number of buildings
+        	var tempdiv = '<tr id="audit-r-'+target+'-buildings" class="rowinset"><td colspan="10">';
+        	if(buildingcount){
+        		var tempdivheight = 150 * buildingcount;
+        		tempdiv = tempdiv + '<div style="height:'+tempdivheight+'px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+        	}
+        	tempdiv = tempdiv + '</td></tr>';
+        	$('#audit-r-'+target).after(tempdiv);
+
 			// fetch and display new details
-			var url = '{{route("audit.buildings", ["audit" => "xi", "target" => "xt"])}}';
+			var url = '{{route("audit.buildings", ["audit" => "xi", "target" => "ti"])}}';
 			url = url.replace('xi', id);
-			url = url.replace('xt', target);
+			url = url.replace('ti', target);
 		    $.get(url, {
 	            '_token' : '{{ csrf_token() }}'
 	            }, function(data) {
 	                if(data=='0'){ 
 	                    UIkit.modal.alert("There was a problem getting the buildings' information.");
 	                } else {
-	                	// scroll to row
-	                	$('html, body').animate({
-							scrollTop: $('#audit-r-'+target).offset().top - 60
-							}, 500, 'linear');
-						$('#audit-r-'+target).after(data);
+	                	
+						$('#audit-r-'+target+'-buildings').html(data);
 	            	}
 		    });
 		}
