@@ -676,9 +676,11 @@ The following div is defined in this particular tab and pushed to the main layou
 
 	function projectDetails(id, target, buildingcount = 10) {
 		if ($('#audit-r-'+target+'-buildings').length){
+
 			// close own details
 			$('#audit-r-'+target+'-buildings').remove();
 		}else{
+
 			// close all details
 			$('tr[id$="-buildings"]').remove();
 
@@ -712,13 +714,18 @@ The following div is defined in this particular tab and pushed to the main layou
 		}
 	}
 
-	function buildingDetails(id, auditid, target, detailcount=10) {
+	function buildingDetails(id, auditid, target, targetaudit, detailcount=10) {
 		if ($('#building-r-'+target+'-details').length){
+
 			// close own details
 			$('#building-r-'+target+'-details').remove();
 			// unblur other building rows
+			$('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).show();
+			$('.rowinset-top').show();
+			$('.rowinset-bottom').show();
 			$('div[id^="building-r-"]').removeClass('blur');
 		}else{
+
 			// close all details
 			$('div[id$="-details"]').remove();
 			// unblur other building rows
@@ -726,11 +733,62 @@ The following div is defined in this particular tab and pushed to the main layou
 
 			// blur all other building rows
 			$('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).addClass('blur');
+			$('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).hide();
+			$('.rowinset-top').hide();
+			$('.rowinset-bottom').hide();
+
+        	// scroll to row early
+        	$('html, body').animate({
+				scrollTop: $('#audit-r-'+targetaudit).offset().top - 60
+				}, 500, 'linear');
+
+        	// open the expanded div early based on expected number of buildings
+        	var tempdiv = '<div id="building-r-'+target+'-details" class="rowinset indent">';
+        	if(detailcount){
+        		var tempdivheight = 150 * detailcount;
+        		tempdiv = tempdiv + '<div style="height:'+tempdivheight+'px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+        	}
+        	tempdiv = tempdiv + '</div>';
+        	$('#building-r-'+target).after(tempdiv);
+
+			// fetch and display new details
+			var url = '{{route("audit.building.details", ["audit" => "xa", "building" => "xi", "target" => "xt", "targetaudit" => "xat"])}}';
+			url = url.replace('xi', id);
+			url = url.replace('xa', auditid);
+			url = url.replace('xat', targetaudit);
+			url = url.replace('xt', target);
+		    $.get(url, {
+	            '_token' : '{{ csrf_token() }}'
+	            }, function(data) {
+	                if(data=='0'){ 
+	                    UIkit.modal.alert("There was a problem getting the building details' information.");
+	                } else {
+						$('#building-r-'+target+'-details').html(data);
+	            	}
+		    });
+		}
+	}
+
+	function inspectionDetails(id, target) {
+		console.log("opening inspection detail tab");
+		if ($('#building-detail-r-'+target+'-inspect').length){
+			// close own details
+			$('#building-detail-r-'+target+'-inspect').remove();
+			// unblur other building detail rows
+			$('div[id^="building-detail-r-"]').removeClass('blur');
+		}else{
+			// close all details
+			$('div[id$="-inspect"]').remove();
+			// unblur other building detail rows
+			$('div[id^="building-detail-r-"]').removeClass('blur');
+
+			// blur all other building detail rows
+			$('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).addClass('blur');
 
         	// scroll to row
-        	$('html, body').animate({
-				scrollTop: $('#building-r-'+target).offset().top - 60
-				}, 500, 'linear');
+    //     	$('html, body').animate({
+				// scrollTop: $('#building-detail-r-'+target).offset().top - 60
+				// }, 500, 'linear');
 
         	// open the expanded div early based on expected number of buildings
         	var tempdiv = '<div id="building-r-'+target+'-details" class="rowinset indent">';
@@ -756,6 +814,7 @@ The following div is defined in this particular tab and pushed to the main layou
 	            	}
 		    });
 		}
+
 	}
 
 	function addArea() {

@@ -58,16 +58,16 @@
 						</div>
 						<div id="building-{{$target}}-c-3-{{$key}}">
 							<div class="building-address" uk-grid>
-								<div class="uk-width-1-5 uk-text-center @if($loop->last) journey-end @elseif($loop->first) journey-start @else journey @endif">
+								<div class="uk-width-1-6 uk-text-center @if($loop->last) journey-end @elseif($loop->first) journey-start @else journey @endif">
 				            		<i class="@if($loop->last) a-home-marker @elseif($loop->first) a-home-marker @else a-marker-basic @endif colored"></i>
 				            		<div class="alert-icon action-required">
 					            		<i class="a-bell-ring"></i>
 									</div>
 				            	</div> 
-				            	<div class="uk-width-4-5 uk-padding-remove">
+				            	<div class="uk-width-5-6 uk-padding-remove">
 				            		<h3 class="uk-margin-bottom-remove colored">{{$building['street']}}</h3>
 					            	<small class="colored">{{$building['city']}}, {{$building['state']}} {{$building['zip']}}</small><br />
-					            	<small class="colored" onclick="buildingDetails(123,{{$audit}},{{$key}});" uk-tooltip="pos:top-left;title:Building details;" ><span class="uk-badge colored">3</span> <i class="a-list colored uk-text-middle"></i> <span class="uk-text-middle">TOWN HOMES</span></small>
+					            	<small class="colored" onclick="buildingDetails(123,{{$audit}},{{$key}},{{$target}});" uk-tooltip="pos:top-left;title:Building details;" ><span class="uk-badge colored">3</span> <i class="a-list colored uk-text-middle"></i> <span class="uk-text-middle">TOWN HOMES</span></small>
 				            	</div>
 				            </div>
 						</div>
@@ -140,11 +140,11 @@
 				var startIndex;
 				var endIndex;
 
-				function reorder(classname) {
+				function reorder(classname, childclassname) {
 					var currentIndex;
 					$(classname+" > div").each(function () { 
-						console.log(this.id);
-						currentIndex = $(".building").index(this) + 1;
+						// console.log(this.id);
+						currentIndex = $(childclassname).index(this) + 1;
 						$("#"+this.id).find(".rowindex").each(function () { 
 							$(this).html(currentIndex);
 						});
@@ -153,15 +153,26 @@
 
 				UIkit.util.on('.sortable', 'start', function (item) {
 					var listItem = document.getElementById( item.detail[1].id );
-					startIndex = $( ".building" ).index( listItem );
+					if($('#'+item.detail[1].id).hasClass('building-detail')){
+						startIndex = $( ".building-detail" ).index( listItem );
+					}else if($('#'+item.detail[1].id).hasClass('building')){
+						startIndex = $( ".building" ).index( listItem );
+					} 				
 					console.log( item.detail[1].id + " started at index: " + startIndex );
 				});
 				UIkit.util.on('.sortable', 'moved', function (item) {
 					var listItem = document.getElementById( item.detail[1].id );
-					endIndex = $( ".building" ).index( listItem );
-					console.log( item.detail[1].id + " ended at index: " + endIndex );
-					UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
-					reorder(".buildings > .sortable");
+					if($('#'+item.detail[1].id).hasClass('building-detail')){
+						endIndex = $( ".building-detail" ).index( listItem );
+						console.log( item.detail[1].id + " ended at index: " + endIndex );
+						UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
+						reorder(".building-details > .sortable", '.building-detail');
+					}else if($('#'+item.detail[1].id).hasClass('building')){
+						endIndex = $( ".building" ).index( listItem );
+						console.log( item.detail[1].id + " ended at index: " + endIndex );
+						UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
+						reorder(".buildings > .sortable", '.building');
+					} 
 				});
 			</script>
 		</td>

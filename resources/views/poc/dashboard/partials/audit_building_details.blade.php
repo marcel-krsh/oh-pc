@@ -58,13 +58,13 @@
 					</div>
 					<div id="building-detail-{{$target}}-c-3-{{$key}}">
 						<div class="building-address" uk-grid>
-							<div class="uk-width-1-5 uk-text-center journey">
+							<div class="uk-width-1-6 uk-text-center journey">
 			            		<i class=" a-marker-basic colored"></i>
 			            		<div class="alert-icon action-required">
 				            		<i class="a-bell-ring"></i>
 								</div>
 			            	</div> 
-			            	<div class="uk-width-4-5 uk-padding-remove">
+			            	<div class="uk-width-5-6 uk-padding-remove">
 			            		<h3 class="uk-margin-bottom-remove colored">{{$detail['street']}}</h3>
 				            	<small class="colored">{{$detail['city']}}, {{$detail['state']}} {{$detail['zip']}}</small><br />
 				            	<small class="colored"><span class="uk-badge colored">3</span> <span class="uk-text-middle">INSPECTABLE ITEMS + FILE AUDIT</span></small>
@@ -109,7 +109,7 @@
 								</div> 
 							</div>
 							<div class="uk-width-1-1 uk-margin-remove findings-action ok-actionable">
-								<button class="uk-button program-status uk-link"><i class="a-home-search"></i> 2 PROGRAMS</button>
+								<button class="uk-button program-status uk-link" onclick="inspectionDetails({{$detail['id']}},{{$key}});"><i class="a-home-search"></i> 2 PROGRAMS</button>
 							</div>
 						</div>
 					</div>
