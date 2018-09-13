@@ -1944,6 +1944,12 @@ margin-top:10px;
     padding-top: 6px;
     border-bottom: 1px solid rgba(0,0,0,0.3);
 }
+.rowinset.noshadow {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  border:0px;
+}
 
 .rowinset-top {
     background-color: #4b494a;

@@ -109,7 +109,7 @@
 								</div> 
 							</div>
 							<div class="uk-width-1-1 uk-margin-remove findings-action ok-actionable">
-								<button class="uk-button program-status uk-link" onclick="inspectionDetails({{$detail['id']}},{{$key}});"><i class="a-home-search"></i> 2 PROGRAMS</button>
+								<button class="uk-button program-status uk-link" onclick="inspectionDetails({{$detail['id']}},{{$building}},{{$audit}},{{$key}},{{$targetaudit}});"><i class="a-home-search"></i> 2 PROGRAMS</button>
 							</div>
 						</div>
 					</div>

@@ -680,14 +680,15 @@ The following div is defined in this particular tab and pushed to the main layou
 			// close own details
 			$('#audit-r-'+target+'-buildings').remove();
 		}else{
+			// scroll to row early
+        	$('html, body').animate({
+				scrollTop: $('#audit-r-'+target).offset().top - 59
+				}, 500, 'linear');
 
 			// close all details
 			$('tr[id$="-buildings"]').remove();
 
-			// scroll to row early
-        	$('html, body').animate({
-				scrollTop: $('#audit-r-'+target).offset().top - 60
-				}, 500, 'linear');
+			
         	// open the expanded div early based on expected number of buildings
         	var tempdiv = '<tr id="audit-r-'+target+'-buildings" class="rowinset"><td colspan="10">';
         	if(buildingcount){
@@ -715,16 +716,24 @@ The following div is defined in this particular tab and pushed to the main layou
 	}
 
 	function buildingDetails(id, auditid, target, targetaudit, detailcount=10) {
+		// scroll to row early
+        $('html, body').animate({
+			scrollTop: $('#audit-r-'+targetaudit).offset().top - 59
+		}, 500, 'linear');
 		if ($('#building-r-'+target+'-details').length){
 
 			// close own details
-			$('#building-r-'+target+'-details').remove();
+			$('#building-r-'+target+'-details').slideUp( "slow", function() {
+    			$(this).remove();
+  			});
 			// unblur other building rows
-			$('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).show();
-			$('.rowinset-top').show();
-			$('.rowinset-bottom').show();
+			$('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).slideDown();
+			$('.rowinset-top').slideDown();
+			$('.rowinset-bottom').slideDown();
 			$('div[id^="building-r-"]').removeClass('blur');
 		}else{
+
+        	
 
 			// close all details
 			$('div[id$="-details"]').remove();
@@ -733,14 +742,9 @@ The following div is defined in this particular tab and pushed to the main layou
 
 			// blur all other building rows
 			$('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).addClass('blur');
-			$('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).hide();
-			$('.rowinset-top').hide();
-			$('.rowinset-bottom').hide();
-
-        	// scroll to row early
-        	$('html, body').animate({
-				scrollTop: $('#audit-r-'+targetaudit).offset().top - 60
-				}, 500, 'linear');
+			$('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).slideUp();
+			$('.rowinset-top').slideUp();
+			$('.rowinset-bottom').slideUp();
 
         	// open the expanded div early based on expected number of buildings
         	var tempdiv = '<div id="building-r-'+target+'-details" class="rowinset indent">';
@@ -752,13 +756,13 @@ The following div is defined in this particular tab and pushed to the main layou
         	$('#building-r-'+target).after(tempdiv);
 
 			// fetch and display new details
-			var url = '{{route("audit.building.details", ["audit" => "xa", "building" => "xi", "target" => "xt", "targetaudit" => "xat"])}}';
+			var url = '{{route("audit.building.details", ["audit" => "xa", "building" => "xi"])}}';console.log(url);
 			url = url.replace('xi', id);
 			url = url.replace('xa', auditid);
-			url = url.replace('xat', targetaudit);
-			url = url.replace('xt', target);
 		    $.get(url, {
-	            '_token' : '{{ csrf_token() }}'
+	            '_token' : '{{ csrf_token() }}',
+	            'target' : target,
+	            'targetaudit' : targetaudit
 	            }, function(data) {
 	                if(data=='0'){ 
 	                    UIkit.modal.alert("There was a problem getting the building details' information.");
@@ -769,12 +773,19 @@ The following div is defined in this particular tab and pushed to the main layou
 		}
 	}
 
-	function inspectionDetails(id, target) {
-		console.log("opening inspection detail tab");
+	function inspectionDetails(id, buildingid, auditid, target, targetaudit) {
+		// scroll to row early
+        $('html, body').animate({
+			scrollTop: $('#audit-r-'+targetaudit).offset().top - 59
+		}, 500, 'linear');
 		if ($('#building-detail-r-'+target+'-inspect').length){
 			// close own details
-			$('#building-detail-r-'+target+'-inspect').remove();
-			// unblur other building detail rows
+			$('#building-detail-r-'+target+'-inspect').slideUp( "slow", function() {
+    			$(this).remove();
+  			});
+
+			$('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).slideDown();
+			// unblur other building inspection rows
 			$('div[id^="building-detail-r-"]').removeClass('blur');
 		}else{
 			// close all details
@@ -784,33 +795,28 @@ The following div is defined in this particular tab and pushed to the main layou
 
 			// blur all other building detail rows
 			$('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).addClass('blur');
-
-        	// scroll to row
-    //     	$('html, body').animate({
-				// scrollTop: $('#building-detail-r-'+target).offset().top - 60
-				// }, 500, 'linear');
+			$('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).slideUp();
 
         	// open the expanded div early based on expected number of buildings
-        	var tempdiv = '<div id="building-r-'+target+'-details" class="rowinset indent">';
-        	if(detailcount){
-        		var tempdivheight = 150 * detailcount;
-        		tempdiv = tempdiv + '<div style="height:'+tempdivheight+'px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
-        	}
+        	var tempdiv = '<div id="building-detail-r-'+target+'-inspect" class="rowinset indent noshadow">';
+        	tempdiv = tempdiv + '<div style="height:1000px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
         	tempdiv = tempdiv + '</div>';
-        	$('#building-r-'+target).after(tempdiv);
+        	$('#building-detail-r-'+target).after(tempdiv);
 
 			// fetch and display new details
-			var url = '{{route("audit.building.details", ["audit" => "xa", "building" => "xi", "target" => "xt"])}}';
-			url = url.replace('xi', id);
+			var url = '{{route("audit.building.inspection", ["audit" => "xa", "building" => "xi", "detail" => "xd"])}}';
 			url = url.replace('xa', auditid);
-			url = url.replace('xt', target);
+			url = url.replace('xi', buildingid);
+			url = url.replace('xd', id);
 		    $.get(url, {
-	            '_token' : '{{ csrf_token() }}'
+	            '_token' : '{{ csrf_token() }}',
+	            'target' : target,
+	            'targetaudit' : targetaudit
 	            }, function(data) {
 	                if(data=='0'){ 
 	                    UIkit.modal.alert("There was a problem getting the building details' information.");
 	                } else {
-						$('#building-r-'+target+'-details').html(data);
+						$('#building-detail-r-'+target+'-inspect').html(data);
 	            	}
 		    });
 		}

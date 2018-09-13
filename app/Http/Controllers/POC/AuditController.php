@@ -354,6 +354,7 @@ class AuditController extends Controller
 
     public function detailsFromBuilding($audit, $building, Request $request) {
     	$target = $request->get('target');
+    	$targetaudit = $request->get('targetaudit');
     	$details = collect([
     						[
     						'id' => 1, 
@@ -482,6 +483,65 @@ class AuditController extends Controller
     						]
     					]
     				]);
-    	return view('poc.dashboard.partials.audit_building_details', compact('audit', 'target', 'building', 'details'));
+
+    	return view('poc.dashboard.partials.audit_building_details', compact('audit', 'target', 'building', 'details', 'targetaudit'));
+    }
+
+    public function inspectionFromBuildingDetail($audit, $building, $detail, Request $request) {
+    	$target = $request->get('target');
+    	$inspection = "test";
+    	$areas = collect([
+    						[
+	    						'id' => 1, 
+	    						'status' => 'critical',
+	    						'name' => 'Stair #1', 
+	    						'auditors' => [
+	    							['name' => 'Brian Greenwood',
+	    							'initials' => 'BG',
+	    							'color' => 'green',
+	    							'status' => 'warning']
+	    						],
+	    						'findings' => [
+	    							[
+	    								'type' => 'nlt', // non life threatening
+	    								'status' => 'action-needed'
+	    							],
+	    							[
+	    								'type' => 'lt', // life threatening
+	    								'status' => 'action-required'
+	    							],
+	    							[
+	    								'type' => 'sd', //smoke detector 
+	    								'status' => 'no-action'
+	    							]
+	    						]
+	    					],
+    						[
+	    						'id' => 2, 
+	    						'status' => 'critical',
+	    						'name' => 'Bedroom #1', 
+	    						'auditors' => [
+	    							['name' => 'Brian Greenwood',
+	    							'initials' => 'BG',
+	    							'color' => 'green',
+	    							'status' => 'warning']
+	    						],
+	    						'findings' => [
+	    							[
+	    								'type' => 'nlt', // non life threatening
+	    								'status' => 'action-needed'
+	    							],
+	    							[
+	    								'type' => 'lt', // life threatening
+	    								'status' => 'action-required'
+	    							],
+	    							[
+	    								'type' => 'sd', //smoke detector 
+	    								'status' => 'no-action'
+	    							]
+	    						]
+	    					],
+    				]);
+    	return view('poc.dashboard.partials.audit_building_inspection', compact('audit', 'target', 'building', 'detail', 'inspection', 'areas'));
     }
 }
