@@ -1,4 +1,4 @@
-	<div id="building-r-{{$target}}-details" class="rowinset indent">
+	
 		<div class="building-details uk-overflow-auto" style="">
 			<div class="sortable" uk-sortable="handle: .uk-sortable-details">
 				@foreach($details as $key=>$detail)
@@ -133,4 +133,3 @@
 				@endforeach
 			</div>
 		</div>
-	</div>

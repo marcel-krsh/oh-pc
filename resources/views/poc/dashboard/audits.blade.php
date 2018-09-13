@@ -683,7 +683,6 @@ The following div is defined in this particular tab and pushed to the main layou
 			$('tr[id$="-buildings"]').remove();
 
 			// scroll to row early
-			console.log("scrolling to "+'#audit-r-'+target);
         	$('html, body').animate({
 				scrollTop: $('#audit-r-'+target).offset().top - 60
 				}, 500, 'linear');
@@ -713,7 +712,7 @@ The following div is defined in this particular tab and pushed to the main layou
 		}
 	}
 
-	function buildingDetails(id, auditid, target) {
+	function buildingDetails(id, auditid, target, detailcount=10) {
 		if ($('#building-r-'+target+'-details').length){
 			// close own details
 			$('#building-r-'+target+'-details').remove();
@@ -724,6 +723,23 @@ The following div is defined in this particular tab and pushed to the main layou
 			$('div[id$="-details"]').remove();
 			// unblur other building rows
 			$('div[id^="building-r-"]').removeClass('blur');
+
+			// blur all other building rows
+			$('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).addClass('blur');
+
+        	// scroll to row
+        	$('html, body').animate({
+				scrollTop: $('#building-r-'+target).offset().top - 60
+				}, 500, 'linear');
+
+        	// open the expanded div early based on expected number of buildings
+        	var tempdiv = '<div id="building-r-'+target+'-details" class="rowinset indent">';
+        	if(detailcount){
+        		var tempdivheight = 150 * detailcount;
+        		tempdiv = tempdiv + '<div style="height:'+tempdivheight+'px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+        	}
+        	tempdiv = tempdiv + '</div>';
+        	$('#building-r-'+target).after(tempdiv);
 
 			// fetch and display new details
 			var url = '{{route("audit.building.details", ["audit" => "xa", "building" => "xi", "target" => "xt"])}}';
@@ -736,14 +752,7 @@ The following div is defined in this particular tab and pushed to the main layou
 	                if(data=='0'){ 
 	                    UIkit.modal.alert("There was a problem getting the building details' information.");
 	                } else {
-	                	// blur all other building rows
-						$('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).addClass('blur');
-
-	                	// scroll to row
-	                	$('html, body').animate({
-							scrollTop: $('#building-r-'+target).offset().top - 60
-							}, 500, 'linear');
-						$('#building-r-'+target).after(data);
+						$('#building-r-'+target+'-details').html(data);
 	            	}
 		    });
 		}
