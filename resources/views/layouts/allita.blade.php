@@ -91,7 +91,7 @@ if(Auth::check()){
 <body >
 	<a name="top"></a>
 	<!-- MAIN VIEW -->
-	<div class="uk-container uk-align-center">
+	<div id="pcapp" class="uk-container uk-align-center">
 		<div uk-grid class="uk-grid-collapse">
 			<div id="main-window" class=" uk-margin-large-bottom" uk-scrollspy="cls:uk-animation-fade; delay: 900">
 			
@@ -222,9 +222,8 @@ if(Auth::check()){
 	@endIf
 
 	</script>
-
-	<div id="app"></div>
-	<script src="/js/app.js"></script>
+	<script src="{{ mix('js/app.js') }}"></script>
+	<!-- <script src="/js/app.js"></script> -->
 	@if (Auth::guest())
 	@else
 	<script type="text/javascript">
