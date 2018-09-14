@@ -16,16 +16,55 @@ class Document extends Model
     protected $table = 'documents';
 
     protected $fillable = [
-        'categories',
-        'comment',
-        'parcel_id',
+        'id',
         'user_id',
-        'file_path',
-        'ohfa_file_path',
-        'filename',
-        'approved',
-        'notapproved'
+
+        // should be a pivot table
+        //'categories', // json array
+
+        // should be fields on the pivot table
+        //'approved',
+        //'notapproved',
+
+        'comment', // textarea
+
+        // polymorphic instead
+        //'parcel_id',
+        'documentable_id',
+        'documentable_type',
+
+        'provider_project_number',
+        'provider_document_class',
+        'provider_document_description',
+        'provider_document_date',
+        'provider_retention_schedule_code',
+        'provider_notes',
+        'provider_full_text',
+        'provider_file_name',
+        'provider_file_extension',
+        'provider_file_size'
+        'provider_page_count',
+        'provider_created_at',
+        'provider_updated_at',
+
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
+
+
+
+
+
+
+
+
+
+
+
+    // OLD METHODS.
+    // VERIFY THAT WE NEED THEM.
+
 
     /**
      * Retainages
