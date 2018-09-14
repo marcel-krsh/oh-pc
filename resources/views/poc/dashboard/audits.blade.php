@@ -56,6 +56,7 @@
 			@endif
 		</div>
 		<div class="uk-width-1-3 uk-text-right uk-margin-top">
+			<example></example>
 			 <button class="uk-button uk-button-primary" onclick="createAudits();"><i class="a-mobile-plus"></i> <span class="uk-badge">22</span> CREATE AUDITS</button>
 		</div>
 	</div>
