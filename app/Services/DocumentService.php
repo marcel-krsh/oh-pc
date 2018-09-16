@@ -9,7 +9,26 @@ use Illuminate\Support\Carbon;
 
 class DocumentService extends PCAPIService
 {
+    /**
+     * Docuware Cabinet ID
+     *
+     * @var string
+     */
+    private $_cabinet_id;
 
+    /**
+     * Docuware Cabinet Name
+     *
+     * @var string
+     */
+    private $_cabinet_name;
+
+    public function __construct()
+    {
+        $this->_cabinet_id = config('docuware.cabinet_id');
+        $this->_cabinet_name = config('docuware.cabinet_name');
+    }
+    
     /**
      * @param int $amount
      */
