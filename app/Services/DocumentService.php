@@ -79,13 +79,13 @@ class DocumentService extends PCAPIService
                         $search_fields = $search_fields.";";
                     }
                 }
-                $search_params = "{$search_fields}&cabinet={$this->_cabinet_id}&isandoperation={$isandoperation}";
+                $search_params = "{$search_fields}&cabinet={$this->_cabinet_name}&cabinet_id={$this->_cabinet_id}&isandoperation={$isandoperation}";
             }else{
-                $search_params = "cabinet={$this->_cabinet_id}&isandoperation={$isandoperation}";
+                $search_params = "cabinet={$this->_cabinet_name}&cabinet_id={$this->_cabinet_id}&isandoperation={$isandoperation}";
             }
 
         }else{
-            $search_params =  "cabinet={$this->_cabinet_id}";
+            $search_params =  "cabinet={$this->_cabinet_name}&cabinet_id={$this->_cabinet_id}";
         }
 
         $log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
