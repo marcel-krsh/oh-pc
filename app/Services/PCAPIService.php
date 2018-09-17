@@ -23,6 +23,7 @@ class PCAPIService {
         $client = new Client([
             'base_uri' => $this->_auth->getUrl(),
             'timeout'  => 5.0,
+            'verify' => false,
         ]);
 
         $response = $client->request('GET', $url);
