@@ -47,7 +47,6 @@ class DocumentService extends PCAPIService
 
         // search array reference
         // $search = [
-        //     'cabinet' => null,
         //     'fields' => [
         //         [
         //             'field' => 'field1',
@@ -64,7 +63,6 @@ class DocumentService extends PCAPIService
         // ];
 
         if($search !== null){
-            (isset($search['cabinet']) || array_key_exists('cabinet', $search)) ? $cabinet = $search['cabinet'] : $cabinet = '';
             (isset($search['isandoperation']) || array_key_exists('isandoperation', $search)) ? $isandoperation = $search['isandoperation'] : $isandoperation = ''; // true, false or nothing
 
             if(isset($search['fields']) || array_key_exists('fields', $search)){
@@ -81,18 +79,18 @@ class DocumentService extends PCAPIService
                         $search_fields = $search_fields.";";
                     }
                 }
-                $search_params = "{$search_fields}&cabinet={$cabinet}&isandoperation={$isandoperation}&";
+                $search_params = "{$search_fields}&cabinet={$this->_cabinet_id}&isandoperation={$isandoperation}";
             }else{
-                $search_params = "cabinet={$cabinet}&isandoperation={$isandoperation}&";
+                $search_params = "cabinet={$this->_cabinet_id}&isandoperation={$isandoperation}";
             }
 
         }else{
-            $search_params =  "";
+            $search_params =  "cabinet={$this->_cabinet_id}";
         }
 
         $log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
 
-        return $this->get("{$provider}/documents/search?{$search_params}{$log_params}");
+        return $this->get("{$provider}/documents/search?{$search_params}&{$log_params}");
     }
 
     /**
