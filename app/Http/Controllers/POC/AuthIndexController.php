@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\POC;
 
 use App\Http\Controllers\Controller;
-use App\Models\Services\AuthService;
+use App\Services\AuthService;
 
 class AuthIndexController extends Controller
 {

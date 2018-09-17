@@ -468,6 +468,8 @@ Route::group(['prefix'=>'poc','namespace'=>'POC'], function() {
     Route::post('auth/second-factor', 'AuthSecondFactorController@store');
     Route::get('auth/logout', 'AuthLogoutController@destroy'); // @todo: CRUDify this
 
+    Route::get('api-test', 'ApiTestController@index');
+
     Route::get('universal-header', 'UniversalHeaderController@index');
     Route::get('universal-header/hosted.js', function() {
        app('debugbar')->disable();

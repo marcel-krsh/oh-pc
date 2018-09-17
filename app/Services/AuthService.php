@@ -191,4 +191,14 @@ class AuthService
     {
         return true;
     }
+
+    public function getUrl()
+    {
+        return $this->_url;
+    }
+
+    public function getBaseDirectory()
+    {
+        return $this->_base_directory;
+    }
 }
