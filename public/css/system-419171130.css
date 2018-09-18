@@ -1438,6 +1438,10 @@ margin-top:10px;
     color: #da328a !important;
 }
 #auditstable table tr td.audit-td-lead {}
+#auditstable table tr td.audit-td-lead .user-badge {
+  left: 4px;
+  position: relative;
+}
 #auditstable table tr td.audit-td-lead small {}
 #auditstable table tr td.audit-td-project {}
 #auditstable table tr td.audit-td-name {}

@@ -355,7 +355,7 @@
 		            	<span id="audit-avatar-badge-2" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
 							BG
 						</span>
-						<small id="audit-rid-2" class="uk-text-muted">#1</small>
+						<small id="audit-rid-2" class="uk-text-muted">#2</small>
 		            </td>
 		            <td id="audit-c-2-2" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
@@ -448,7 +448,7 @@
 		            	<span id="audit-avatar-badge-3" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
 							BG
 						</span>
-						<small id="audit-rid-3" >#1</small>
+						<small id="audit-rid-3" >#3</small>
 		            </td>
 		            <td id="audit-c-2-3" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
@@ -540,7 +540,7 @@
 		            	<span id="audit-avatar-badge-4" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
 							BG
 						</span>
-						<small id="audit-rid-4">#1</small>
+						<small id="audit-rid-4">#4</small>
 		            </td>
 		            <td id="audit-c-2-4" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
