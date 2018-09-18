@@ -32,7 +32,7 @@ class DevcoService extends PCAPIService
 
 		$params = "page={$page}&newer_than={$newer_than}";
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/addresses?{$params}&{$log_params}");
 	}
@@ -53,7 +53,7 @@ class DevcoService extends PCAPIService
 		// example call
 		// /api/v1/devco/addresses/{{address_key}}
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/addresses/{$address_key}?{$log_params}");
 	}
@@ -81,7 +81,7 @@ class DevcoService extends PCAPIService
         //     'field_name' => 'value'
         //  ];
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->put("devco/addresses/{$address_key}?{$log_params}", $metadata);
 	}
@@ -109,7 +109,7 @@ class DevcoService extends PCAPIService
 
 		$params = "page={$page}&newer_than={$newer_than}";
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/amenities?{$params}&{$log_params}");
 	}
@@ -160,7 +160,7 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function updateAddress(int $amenities_id, array $metadata, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
+	public function updateAmenity(int $amenities_id, array $metadata, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
 	{
 		// example call
 		// /api/v1/devco/addresses/{{address_key}}
@@ -171,7 +171,7 @@ class DevcoService extends PCAPIService
         //     'field_name' => 'value'
         //  ];
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->put("devco/amenities/{$amenities_id}?{$log_params}", $metadata);
 	}
@@ -199,7 +199,7 @@ class DevcoService extends PCAPIService
 
 		$params = "page={$page}&newer_than={$newer_than}";
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/buildings?{$params}&{$log_params}");
 	}
@@ -220,7 +220,7 @@ class DevcoService extends PCAPIService
 		// example call
 		// /api/v1/devco/buildings/{{building_key}}
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/buildings/{$building_key}?{$log_params}");
 	}
@@ -253,7 +253,7 @@ class DevcoService extends PCAPIService
         //     'field_name' => 'value'
         //  ];
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->put("devco/buildings/{$building_key}?{$log_params}", $metadata);
 	}
@@ -274,7 +274,7 @@ class DevcoService extends PCAPIService
 		// example call
 		// /api/v1/devco/buildings/{{building_key}}/amenities
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/buildings/{$building_key}/amenities?{$log_params}");
 	}
@@ -302,7 +302,7 @@ class DevcoService extends PCAPIService
 
 		$params = "page={$page}&newer_than={$newer_than}";
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/building-statuses?{$params}&{$log_params}");
 	}
@@ -329,7 +329,7 @@ class DevcoService extends PCAPIService
         //     'building_status_short_name' => 'value'
         //  ];
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->put("devco/building-statuses/{$building_status_key}?{$log_params}", $metadata);
 	}
@@ -354,7 +354,7 @@ class DevcoService extends PCAPIService
 		// example call
 		// /api/v1/devco/building-types?page={{default=1/value}}
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/building-types?page={$page}&{$log_params}");
 	}
@@ -375,7 +375,7 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function updateBuildingStatus(int $compliane_contact_key, array $metadata, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
+	public function updateComplianceContact(int $compliane_contact_key, array $metadata, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
 	{
 		// example call
 		// /api/v1/devco/compliance-contacts/{{compliane_contact_key}}
@@ -387,7 +387,7 @@ class DevcoService extends PCAPIService
         //     'next_inspection' => 'value'
         //  ];
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->put("devco/compliance-contacts/{$compliane_contact_key}?{$log_params}", $metadata);
 	}
@@ -412,7 +412,7 @@ class DevcoService extends PCAPIService
 		// example call
 		// /api/v1/devco/counties?page={{default=1/value}}
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/counties?page={$page}&{$log_params}");
 	}
@@ -437,7 +437,7 @@ class DevcoService extends PCAPIService
 		// example call
 		// /api/v1/devco/developments?page={{default=1/value}}
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/developments?page={$page}&{$log_params}");
 	}
@@ -456,7 +456,7 @@ class DevcoService extends PCAPIService
 	public function getDevelopment(int $development_key, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
 	{
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/developments/{$development_key}?{$log_params}");
 	}
@@ -473,7 +473,7 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function updateAddress(int $development_key, array $metadata, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
+	public function updateDevelopment(int $development_key, array $metadata, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
 	{
 		//  $metadata = [
         //     'development_key' => 'value',
@@ -481,7 +481,7 @@ class DevcoService extends PCAPIService
         //     'field_name' => 'value'
         //  ];
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->put("devco/developments/{$development_key}?{$log_params}", $metadata);
 	}
@@ -500,7 +500,7 @@ class DevcoService extends PCAPIService
 	 */
 	public function listDevelopmentAmenities(int $development_key, int $page=1, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
 	{
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/developments/{$development_key}/amenities?page={$page}&{$log_params}");
 	}
@@ -519,7 +519,7 @@ class DevcoService extends PCAPIService
 	 */
 	public function listDevelopmentBuildings(int $development_key, int $page=1, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
 	{
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/developments/{$development_key}/buildings?page={$page}&{$log_params}");
 	}
@@ -544,7 +544,7 @@ class DevcoService extends PCAPIService
 	{
 		$params = "page={$page}&newer_than={$newer_than}";
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/development-activities?{$params}&{$log_params}");
 	}
@@ -561,13 +561,13 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function updateAddress(int $development_activity_key, array $metadata, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
+	public function updateDevelopmentActivity(int $development_activity_key, array $metadata, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
 	{
 		//  $metadata = [
         //     'field_name' => 'value'
         //  ];
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->put("devco/development-activities/{$development_activity_key}?{$log_params}", $metadata);
 	}
@@ -596,11 +596,11 @@ class DevcoService extends PCAPIService
 		int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
 	{
 		// example call
-		// "/api/v1/devco/development-contact-roles?page={{default=1/value}}&development_key={{null/value}}&development_program_key={{null/value}}&development_role_key={{null/value}}&organization_key={{null/value}}&person_key={{null/value}}&group_by={{null/value}}&user={{user_id}}&user_email={{user_email}}&user_name={{user_full_name}}&device_id={{device_id}}&device_name={{device_name}}&newer_than={{null/value}}"
+		// "/api/v1/devco/development-contact-roles?page={{default=1/value}}&development_key={{null/value}}&development_program_key={{null/value}}&development_role_key={{null/value}}&organization_key={{null/value}}&person_key={{null/value}}&group_by={{null/value}}&user={{user_id}}&user_email={{user_email}}&user_name={{user_name}}&device_id={{device_id}}&device_name={{device_name}}&newer_than={{null/value}}"
 
 		$params = "page={$page}&newer_than={$newer_than}&development_key={$development_key}&development_program_key={$development_program_key}&development_role_key={$development_role_key}&organization_key={$organization_key}&person_key={$person_key}&group_by={$group_by}";
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/development-contact-roles?{$params}&{$log_params}");
 	}
@@ -659,7 +659,7 @@ class DevcoService extends PCAPIService
         //     'comment' => 'value'
         //  ];
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->put("devco/development-dates/{$development_date_key}?{$log_params}", $metadata);
 	}
@@ -681,7 +681,7 @@ class DevcoService extends PCAPIService
 	 */
 	public function listDevelopmentRoles(int $page=1, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
 	{
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/development_roles?page={$page}&{$log_params}");
 	}
@@ -708,7 +708,7 @@ class DevcoService extends PCAPIService
         //     'employee_unit_count' => 'value'
         //  ];
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->put("devco/development-programs/{$development_program_key}?{$log_params}", $metadata);
 	}
@@ -735,7 +735,7 @@ class DevcoService extends PCAPIService
         //     'field_name' => 'value'
         //  ];
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->put("devco/monitors/{$monitoring_key}?{$log_params}", $metadata);
 	}
@@ -757,7 +757,7 @@ class DevcoService extends PCAPIService
 	 */
 	public function listAuditStatuses(int $page=1, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
 	{
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/monitor-statuses?page={$page}&{$log_params}");
 	}
@@ -782,7 +782,7 @@ class DevcoService extends PCAPIService
 	{
 		$params = "page={$page}&newer_than={$newer_than}";
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/organizations?{$params}&{$log_params}");
 	}
@@ -800,7 +800,7 @@ class DevcoService extends PCAPIService
 	 */
 	public function getOrganization(int $organization_id, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
 	{
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/organizations/{$organization_id}?{$log_params}");
 	}
@@ -825,7 +825,7 @@ class DevcoService extends PCAPIService
         //     'field_name' => 'value'
         //  ];
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->put("devco/organizations/{$organization_id}?{$log_params}", $metadata);
 	}
@@ -850,9 +850,10 @@ class DevcoService extends PCAPIService
 	{
 		$params = "page={$page}&newer_than={$newer_than}";
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
-		return $this->get("devco/people?{$params}&{$log_params}");
+		//return $this->get("devco/people?{$params}&{$log_params}");
+		return $this->get("devco/people?{$params}");
 	}
 
 	/**
@@ -868,7 +869,7 @@ class DevcoService extends PCAPIService
 	 */
 	public function getPerson(int $person_key, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
 	{
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/people/{$person_key}?{$log_params}");
 	}
@@ -897,7 +898,7 @@ class DevcoService extends PCAPIService
         //     'last_edited' => 'value'
         //  ];
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->put("devco/people/{$person_key}?{$log_params}", $metadata);
 	}
@@ -922,7 +923,7 @@ class DevcoService extends PCAPIService
 	{
 		$params = "page={$page}&newer_than={$newer_than}";
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/programs?{$params}&{$log_params}");
 	}
@@ -947,7 +948,7 @@ class DevcoService extends PCAPIService
 	{
 		$params = "page={$page}&newer_than={$newer_than}";
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/development-program-status-types?{$params}&{$log_params}");
 	}
@@ -971,7 +972,7 @@ class DevcoService extends PCAPIService
 	{
 		$params = "page={$page}";
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/states?{$params}&{$log_params}");
 	}
@@ -996,7 +997,7 @@ class DevcoService extends PCAPIService
 	{
 		$params = "page={$page}&newer_than={$newer_than}";
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/units?{$params}&{$log_params}");
 	}
@@ -1014,7 +1015,7 @@ class DevcoService extends PCAPIService
 	 */
 	public function getUnit(int $unit_key, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
 	{
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/units/{$unit_key}?{$log_params}");
 	}
@@ -1039,7 +1040,7 @@ class DevcoService extends PCAPIService
         //     'is_unit_handicap_accessible' => 'value'
         //  ];
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->put("devco/units/{$unit_key}?{$log_params}", $metadata);
 	}
@@ -1061,7 +1062,7 @@ class DevcoService extends PCAPIService
 	{
 		$params = "page={$page}&newer_than={$newer_than}";
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/units/{$unit_key}/amenities?{$params}&{$log_params}");
 	}
@@ -1088,7 +1089,7 @@ class DevcoService extends PCAPIService
         //     'unit_status' => 'value'
         //  ];
 
-		$log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->put("devco/unit-statuses/{$unit_status_key}?{$log_params}", $metadata);
 	}

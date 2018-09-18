@@ -663,7 +663,7 @@ The following div is defined in this particular tab and pushed to the main layou
 			shownoncritical = 0;
 			@endif
 		@endif
-		$.get( '/poc/session/filters/audit-shownoncritical/', function( data ) {  
+		$.get( '/session/filters/audit-shownoncritical/', function( data ) {  
            // reload
 			$('#detail-tab-1').trigger("click");
 			// UIkit.switcher('#top-tabs').show(0);
@@ -833,7 +833,7 @@ The following div is defined in this particular tab and pushed to the main layou
 		// hide tab
 		$("#detail-tab-1-content").children().fadeOut();
 		// set session value
-		$.get( '/poc/session/filters/'+filter+'/'+value, function( data ) {  
+		$.get( '/session/filters/'+filter+'/'+value, function( data ) {  
            // reload
 			$('#detail-tab-1').trigger("click");
 			// UIkit.switcher('#top-tabs').show(0);
@@ -851,7 +851,7 @@ The following div is defined in this particular tab and pushed to the main layou
 
         source: function(term, suggest){
         	console.log('filtering by name... '+term);
-        	$.get( "/poc/autocomplete/auditproject", {
+        	$.get( "/autocomplete/auditproject", {
 				'search' : term,
 				'_token' : '{{ csrf_token() }}'
 			},
@@ -895,7 +895,7 @@ The following div is defined in this particular tab and pushed to the main layou
 
         source: function(term, suggest){
         	console.log('filtering by name... '+term);
-        	$.get( "/poc/autocomplete/auditname", {
+        	$.get( "/autocomplete/auditname", {
 				'search' : term,
 				'_token' : '{{ csrf_token() }}'
 			},
@@ -939,7 +939,7 @@ The following div is defined in this particular tab and pushed to the main layou
 
         source: function(term, suggest){
         	console.log('filtering by name... '+term);
-        	$.get( "/poc/autocomplete/auditaddress", {
+        	$.get( "/autocomplete/auditaddress", {
 				'search' : term,
 				'_token' : '{{ csrf_token() }}'
 			},

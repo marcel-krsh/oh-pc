@@ -1,5 +1,4 @@
 <?php
-use App\Jobs\VendorStatsExportJob;
 
 /*
 |--------------------------------------------------------------------------
@@ -11,9 +10,37 @@ use App\Jobs\VendorStatsExportJob;
 | to using a Closure or controller method. Build something great!
 |
 */
-//Route::group(['middleware' => ['auth']], function() {
+Route::group(['middleware' => ['allita.auth']], function() {
 
-Route::get('/', 'PagesController@dashboard');
+    Route::get('unified_login', function (){
+            return redirect('/');
+    });
+
+    Route::get('/', 'DashboardController@index');
+    Route::get('dashboard/audits', 'DashboardController@audits')->name('dashboard.audits');
+    Route::get('dashboard/audits/{audit}/buildings', 'AuditController@buildingsFromAudit')->name('audit.buildings');
+    Route::get('dashboard/audits/{audit}/building/{building}/details', 'AuditController@detailsFromBuilding')->name('audit.building.details');
+    Route::get('dashboard/audits/{audit}/building/{building}/details/{detail}/inspection', 'AuditController@inspectionFromBuildingDetail')->name('audit.building.inspection');
+    Route::get('dashboard/communications', 'DashboardController@communications')->name('dashboard.communications');
+    Route::get('dashboard/reports', 'DashboardController@reports')->name('dashboard.reports');
+
+    Route::get('autocomplete/all', 'DashboardController@autocomplete');
+    Route::get('autocomplete/auditproject', 'DashboardController@autocomplete');
+    Route::get('autocomplete/auditname', 'DashboardController@autocomplete');
+    Route::get('autocomplete/auditaddress', 'DashboardController@autocomplete');
+
+    Route::get('/session/filters/{type}/{value}', function ($type, $value) {
+        if($value != 'null'){
+            session([$type => $value]);
+            $new_filter = session($type);
+            return $new_filter;
+        }else{
+            session([$type => '']);
+            return 1;
+        }
+    })->name('session.setfilter');
+});
+/* Route::get('/', 'PagesController@dashboard');
 
 // Dashboard Routes
 Route::get('/dashboard', 'PagesController@dashboard')->name('dashboard');
@@ -458,7 +485,7 @@ Route::get('/images/files/{file}', 'SiteVisitController@serveImages')
             ->where(['file'=>'.*']);
 Route::get('/notices/all', 'NoticeController@allNotice');
 Route::get('/notices/images/{notice}', 'HomeController@NoticeImageTrack');
-
+*/
 
 Route::group(['prefix'=>'poc','namespace'=>'POC'], function() {
     Route::get('auth', 'AuthIndexController@index');
@@ -494,28 +521,5 @@ Route::group(['prefix'=>'poc','namespace'=>'POC'], function() {
     Route::post('tfa_post', 'TwoFAController@validateSMSCode')->name('device.code.check');
 
     // POC routes for new UI
-    Route::get('dashboard', 'DashboardController@index');
-    Route::get('dashboard/audits', 'DashboardController@audits')->name('dashboard.audits');
-    Route::get('dashboard/audits/{audit}/buildings', 'AuditController@buildingsFromAudit')->name('audit.buildings');
-    Route::get('dashboard/audits/{audit}/building/{building}/details', 'AuditController@detailsFromBuilding')->name('audit.building.details');
-    Route::get('dashboard/audits/{audit}/building/{building}/details/{detail}/inspection', 'AuditController@inspectionFromBuildingDetail')->name('audit.building.inspection');
-    Route::get('dashboard/communications', 'DashboardController@communications')->name('dashboard.communications');
-    Route::get('dashboard/reports', 'DashboardController@reports')->name('dashboard.reports');
-
-    Route::get('autocomplete/all', 'DashboardController@autocomplete');
-    Route::get('autocomplete/auditproject', 'DashboardController@autocomplete');
-    Route::get('autocomplete/auditname', 'DashboardController@autocomplete');
-    Route::get('autocomplete/auditaddress', 'DashboardController@autocomplete');
-
-    Route::get('/session/filters/{type}/{value}', function ($type, $value) {
-        if($value != 'null'){
-            session([$type => $value]);
-            $new_filter = session($type);
-            return $new_filter;
-        }else{
-            session([$type => '']);
-            return 1;
-        }
-    })->name('session.setfilter');
+    
 });
-

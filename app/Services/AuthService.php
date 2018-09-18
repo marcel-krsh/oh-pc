@@ -36,6 +36,12 @@ class AuthService
     private $_password;
 
     /**
+     * Login URL For User Redirection
+     * @var string
+     */
+    private $_login_url;
+
+    /**
      * System Level Dev|Co API Token
      * @var string
      */
@@ -59,6 +65,7 @@ class AuthService
         $this->_base_directory = config('allita.api.base_directory');
         $this->_username = config('allita.api.username');
         $this->_password = config('allita.api.password');
+        $this->_login_url = config('allita.api.login_url');
 
         $this->_devco_token = '81eqLzF4jU5NJvz3A751ZBkb'; //SystemConfig::get('devco_token');
         $this->_devco_refresh_token = ''; //SystemConfig::get('devco_refresh_token');
@@ -195,6 +202,11 @@ class AuthService
     public function getUrl()
     {
         return $this->_url;
+    }
+
+    public function getLoginUrl()
+    {
+        return $this->_login_url;
     }
 
     public function getBaseDirectory()

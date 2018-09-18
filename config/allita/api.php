@@ -49,4 +49,16 @@ return [
     'password' => env('ALLITA_PCAPI_PASSWORD'),
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | LOGIN URL
+    |--------------------------------------------------------------------------
+    |
+    | This is the main login url for the DEVCO system.
+    |
+    */
+
+    'login_url' => env('DEVCO_LOGIN_URL'),
+
+
 ];

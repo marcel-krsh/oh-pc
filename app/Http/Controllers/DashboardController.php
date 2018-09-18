@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\POC;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -14,7 +14,12 @@ class DashboardController extends Controller
 	public function __construct()
     {
         // $this->middleware('auth');
-    	Auth::onceUsingId(1); // TEST BRIAN
+    	// Auth::onceUsingId(1); // TEST BRIAN
+    }
+
+    public function login()
+    {
+        return "test";
     }
 
     public function index(Request $request)
@@ -40,8 +45,8 @@ class DashboardController extends Controller
 
 
 $tab = "detail-tab-1";
-        //return \view('poc.dashboard.index'); //, compact('user')
-        return view('poc.dashboard.index', compact('tab', 'loadDetailTab'));
+        //return \view('dashboard.index'); //, compact('user')
+        return view('dashboard.index', compact('tab', 'loadDetailTab'));
     }
 
     public function audits(Request $request)
@@ -55,21 +60,21 @@ $tab = "detail-tab-1";
 
         $auditFilterMineOnly = 1;
 
-        return view('poc.dashboard.audits', compact('filter', 'auditFilterMineOnly'));
+        return view('dashboard.audits', compact('filter', 'auditFilterMineOnly'));
     }
 
     public function reports(Request $request)
     {
         
-        //return \view('poc.dashboard.index'); //, compact('user')
-        return view('poc.dashboard.reports');
+        //return \view('dashboard.index'); //, compact('user')
+        return view('dashboard.reports');
     }
 
     public function communications(Request $request)
     {
         
-        //return \view('poc.dashboard.index'); //, compact('user')
-        return view('poc.dashboard.communications');
+        //return \view('dashboard.index'); //, compact('user')
+        return view('dashboard.communications');
     }
 
     public function autocomplete(Request $request)

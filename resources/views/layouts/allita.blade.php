@@ -20,7 +20,7 @@ if(Auth::check()){
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<title>
-	@if(Auth::user()->entity_type == 'hfa') 
+	@if(Auth::check() && Auth::user()->entity_type == 'hfa') 
 	Allita Program Compliance
 	@else
 	Dev|Co Inspect
@@ -69,6 +69,7 @@ if(Auth::check()){
 	        'csrfToken' => csrf_token(),
 	    ]); ?>
 	</script>
+	<script src="{{ mix('js/app.js') }}"></script>
 	<script src="/js/jquery.js"></script>
 	<script src="/js/uikit.js"></script>
 	<script src="/js/uikit-icons.min.js"></script>
@@ -151,7 +152,7 @@ if(Auth::check()){
 	<div id="mainfooter" uk-grid>
 		<div class="uk-width-1-3">
 			<p class="uk-dark uk-light" style="position: absolute; bottom: 20px;"><a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light"><i class="a-mobile-home"></i>
-			@if(Auth::user()->entity_type == 'hfa') 
+			@if(Auth::check() && Auth::user()->entity_type == 'hfa') 
 			Allita Program Compliance 
 			@else
 			Dev|Co Inspect
@@ -222,7 +223,7 @@ if(Auth::check()){
 	@endIf
 
 	</script>
-	<script src="{{ mix('js/app.js') }}"></script>
+	
 	<!-- <script src="/js/app.js"></script> -->
 	@if (Auth::guest())
 	@else
@@ -257,7 +258,7 @@ if(Auth::check()){
 
 	        source: function(term, suggest){
 	        	console.log('Looking up... '+term);
-	        	$.get( "/poc/autocomplete/all", {
+	        	$.get( "/autocomplete/all", {
 					'search' : term,
 					'_token' : '{{ csrf_token() }}'
 				},

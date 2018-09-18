@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Services\AuthService;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -63,6 +64,9 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        return redirect()->guest('login');
+        $auth_service = new AuthService();
+        $url = $auth_service->getLoginUrl();
+        // return redirect()->guest('login');
+        return redirect()->guest($url);
     }
 }
