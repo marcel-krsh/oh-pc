@@ -61,12 +61,14 @@ class AllitaAuth
             } 
 
             // check credentials with Devco
-            // $devco_auth = new AuthService;
+            $devco_auth = new AuthService;
+            //dd($devco_auth->rootAuthenticate());
             // dd($devco_auth->getLoginUrl());
 
             // test API
             $devco = new DevcoService;
-            dd($devco->listPeople());
+            //dd($devco->listPeople());
+            dd($devco->listCounties());
 
             // throw new AuthenticationException('Unauthenticated.');
         }

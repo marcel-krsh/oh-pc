@@ -8,17 +8,18 @@ use GuzzleHttp\Client;
 class PCAPIService {
 
     private $_auth;
+    private $_api_v;
 
     public function __construct()
     {
         $this->_auth = new AuthService;
-
+        $this->_api_v = "/api/v1/";
     }
 
 
     public function get($url, $parameters=[])
     {
-        $this->_auth = new AuthService;
+        // $this->_auth = new AuthService;
 
         $client = new Client([
             'base_uri' => $this->_auth->getUrl(),
@@ -26,7 +27,7 @@ class PCAPIService {
             'verify' => false,
         ]);
 
-        $response = $client->request('GET', $url);
+        $response = $client->request('GET', $this->_api_v.$url);
 
         return $response->getBody();
     }
