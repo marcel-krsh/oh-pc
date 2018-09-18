@@ -27,7 +27,7 @@ class PCAPIService {
             'verify' => false,
         ]);
 
-        $response = $client->request('GET', $this->_api_v.$url);
+        $response = $client->request('GET', $this->_api_v.$url."&token=UzZiQ1V6cGh0LzY2RUdtaHZIREJrMjhMalVUOWVmRkVlOHJZWnUyZ0l0TT06NjI0ZmY2MGItMDBkZi00MjczLWJjNTQtMDIwMWZjYzI4MWRiOjYzNjcyODg3MTMwOTgyNDI0MA");
 
         return $response->getBody();
     }
