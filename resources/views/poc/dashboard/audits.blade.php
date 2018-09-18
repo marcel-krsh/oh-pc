@@ -267,11 +267,11 @@
 		            </td>
 		            <td id="audit-c-2-1" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-1" onclick="projectDetails(123,1,3);" uk-tooltip="pos:top-left;title:Project details;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-1" onclick="projectDetails(123,1,3);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div>
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-1" class="uk-margin-bottom-remove">19200114</h3>
-			            	<small id="audit-project-aid-1" class="uk-text-muted">AUDIT 2015697</small>
+		            		<h3 id="audit-project-name-1" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
+			            	<small id="audit-project-aid-1" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
 			            </div>
 		            </td>
 		            <td class="audit-td-name">
@@ -300,7 +300,8 @@
 			            			<i class="a-mobile-repeat action-needed"></i>
 			            		</div>
 			            		<div class="uk-width-2-3">
-			            			12/22
+				            		<h3>12/21</h3>
+				            		<div class="dateyear">2018</div>
 			            		</div>
 			            	</div> 
 			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
@@ -317,7 +318,7 @@
 			            		<i class="a-bell-2"></i>
 			            	</div> 
 			            	<div class="uk-width-2-3">
-			            		<i class="a-calendar-plus"></i>
+			            		<i class="a-calendar-pencil"></i>
 			            	</div> 
 			            </div>
 		            	<div class="divider"></div>
@@ -359,11 +360,11 @@
 		            </td>
 		            <td id="audit-c-2-2" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-2" onclick="projectDetails(123,2,6);" uk-tooltip="pos:top-left;title:Project details;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-2" onclick="projectDetails(123,2,6);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div> 
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-2" class="uk-margin-bottom-remove">19200114</h3>
-			            	<small id="audit-project-aid-2" class="uk-text-muted">AUDIT 2015697</small>
+		            		<h3 id="audit-project-name-2" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
+			            	<small id="audit-project-aid-2" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
 			            </div>
 		            </td>
 		            <td class="audit-td-name">
@@ -392,7 +393,7 @@
 			            			<i class="a-mobile-repeat"></i>
 			            		</div>
 			            		<div class="uk-width-2-3 uk-margin-small-top">
-			            			<i class="a-calendar-plus"></i>
+			            			<i class="a-calendar-pencil"></i>
 			            		</div>
 			            	</div> 
 			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
@@ -452,11 +453,11 @@
 		            </td>
 		            <td id="audit-c-2-3" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-3" onclick="projectDetails(123,3,4);" uk-tooltip="pos:top-left;title:Project details;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-3" onclick="projectDetails(123,3,4);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div> 
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-3" class="uk-margin-bottom-remove">19200114</h3>
-			            	<small id="audit-project-aid-3" class="uk-text-muted">AUDIT 2015697</small>
+		            		<h3 id="audit-project-name-3" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
+			            	<small id="audit-project-aid-3" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
 			            </div>
 		            </td>
 		            <td class="audit-td-name">
@@ -485,7 +486,7 @@
 			            			<i class="a-mobile-repeat"></i>
 			            		</div>
 			            		<div class="uk-width-2-3">
-			            			<i class="a-calendar-plus"></i>
+			            			<i class="a-calendar-pencil"></i>
 			            		</div>
 			            	</div> 
 			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
@@ -502,7 +503,7 @@
 			            		<i class="a-bell-2"></i>
 			            	</div> 
 			            	<div class="uk-width-2-3">
-			            		<i class="a-calendar-plus"></i>
+			            		<i class="a-calendar-pencil"></i>
 			            	</div> 
 			            </div>
 		            	<div class="divider dotted"></div>
@@ -544,11 +545,11 @@
 		            </td>
 		            <td id="audit-c-2-4" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<span id="audit-i-project-detail-4" onclick="projectDetails(123,4,6);" uk-tooltip="pos:top-left;title:Project details;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-4" onclick="projectDetails(123,4,6);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div> 
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-4" class="uk-margin-bottom-remove">19200114</h3>
-			            	<small id="audit-project-aid-4" class="uk-text-muted">AUDIT 2015697</small>
+		            		<h3 id="audit-project-name-4" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
+			            	<small id="audit-project-aid-4" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
 			            </div>
 		            </td>
 		            <td class="audit-td-name">
@@ -577,7 +578,7 @@
 			            			<i class="a-mobile-repeat"></i>
 			            		</div>
 			            		<div class="uk-width-2-3">
-			            			<i class="a-calendar-plus"></i>
+			            			<i class="a-calendar-pencil"></i>
 			            		</div>
 			            	</div> 
 			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
@@ -594,7 +595,7 @@
 			            		<i class="a-bell-2"></i>
 			            	</div> 
 			            	<div class="uk-width-2-3">
-			            		<i class="a-calendar-plus"></i>
+			            		<i class="a-calendar-pencil"></i>
 			            	</div> 
 			            </div>
 		            	<div class="divider dotted"></div>

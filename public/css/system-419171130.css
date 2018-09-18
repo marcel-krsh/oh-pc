@@ -1294,12 +1294,15 @@ margin-top:10px;
 }
 #auditstable table tr td .dateyear {
    display:none;
-    background-color: #e48db4;
+    background-color: #bbbbbb;
     font-size: 0.6em;
     line-height: normal;
-    margin: 0 3px;
+    margin: 0 3px -7px 0;
     color: #fff;
     padding: 2px 0;
+}
+#auditstable table tr.critical td .dateyear {
+  background-color: #e48db4;
 }
 #auditstable table tr:hover td .dateyear {
    display: block;
@@ -1395,7 +1398,7 @@ margin-top:10px;
     border-right-width: 2px;
     border-color: #000;
     display: inline-block;
-    height: 43px;
+    height: 54px;
     float: right;
     margin-right: 2px;
 }
@@ -1408,11 +1411,11 @@ margin-top:10px;
 #auditstable table tr.critical:hover {
     background: #fbf4f8;
 }
-#auditstable table tr.critical td {
+#auditstable table tr.critical td, #auditstable table tr td {
     padding-bottom: 7px;
 }
 #auditstable table tr.critical:hover td {
-    padding-bottom: 0px;
+    /*padding-bottom: 0px;*/
 }
 #auditstable table tr.critical .divider {
     border-color: #da328a;
@@ -1420,6 +1423,9 @@ margin-top:10px;
     border-right-width: 6px;
     margin-right: 0px;
     height: 52px;
+    -webkit-animation: pulsate 2s ease-out;
+    -webkit-animation-iteration-count: infinite;
+    opacity: 0.0;
 }
 #auditstable table tr.critical td {
 
@@ -1439,7 +1445,7 @@ margin-top:10px;
 }
 #auditstable table tr td.audit-td-lead {}
 #auditstable table tr td.audit-td-lead .user-badge {
-  left: 4px;
+  left: 5px;
   position: relative;
 }
 #auditstable table tr td.audit-td-lead small {}
@@ -1469,6 +1475,21 @@ margin-top:10px;
 .buildings > div > div.building:hover,
 .buildings > div > div > div.building-details > div > div.building:hover,
 .buildings > div > div.building:hover .findings-icon-status span.uk-badge{
+  background-color:#f0f0f0;
+}
+.building-details > div > div.building:nth-of-type(odd),
+.building-details > div > div > div.building-details > div > div.building:nth-of-type(odd),
+.building-details > div > div.building:nth-of-type(odd) .findings-icon-status span.uk-badge {
+  background-color:#ffffff;
+}
+.building-details > div > div.building:nth-of-type(even),
+.building-details > div > div > div.building-details > div > div.building:nth-of-type(even),
+.building-details > div > div.building:nth-of-type(even) .findings-icon-status span.uk-badge{
+  background-color:#fafafa;
+}
+.building-details > div > div.building:hover,
+.building-details > div > div > div.building-details > div > div.building:hover,
+.building-details > div > div.building:hover .findings-icon-status span.uk-badge{
   background-color:#f0f0f0;
 }
 
@@ -1515,6 +1536,7 @@ margin-top:10px;
     height: 22px;
     line-height: 16px;
     color: #999999;
+    animation: none;
 }
 .building:hover .colored span.uk-badge {
     border-color: #3a3a3a;
@@ -1528,6 +1550,7 @@ margin-top:10px;
     height: 22px;
     line-height: 16px;
     color: #da328a;
+    animation: border-pulsate 2s infinite;
 }
 .building.building-critical:hover .colored span.uk-badge {
     border-color: #da328a;
@@ -1616,6 +1639,12 @@ margin-top:10px;
 }
 #auditstable .building-critical .building-type .building-type-icon i {
      border: 5px double;
+     animation: border-pulsate 2s infinite;
+}
+@keyframes border-pulsate {
+    0%   { border-color: rgba(218, 50, 138, 1); }
+    50% { border-color: rgba(218, 50, 138, 0); }
+    100%   { border-color: rgba(218, 50, 138, 1); }
 }
 #auditstable .building-in-progress .building-type .building-type-icon i {
      border: 4px dotted;
@@ -1697,6 +1726,7 @@ margin-top:10px;
   border-color: #57585a;
   color: #ffffff;
   line-height: 17px;
+  animation: none;
 }
 #auditstable .building .area-status > i {
     font-size: 23px;
@@ -1708,6 +1738,7 @@ margin-top:10px;
   color: #50b8ec;
     border-style: dotted;
     border-width:2px;
+    animation: none;
 }
 #auditstable .building .area-status.area-status-action .uk-badge{
   border-color: #da328a;
@@ -1718,6 +1749,7 @@ margin-top:10px;
     height: 25px;
     line-height: 16px;
     margin-left: -2px;
+    animation: border-pulsate 2s infinite;
 }
 #auditstable .building .area-status.area-status-action{
   color: #da328a;
@@ -1866,8 +1898,8 @@ margin-top:10px;
 #auditstable .building .findings-icons .action-required .a-folder,
 #auditstable .building .findings-icons .action-required .a-booboo,
 #auditstable .building .findings-icons .action-required .a-flames,
-#auditstable .building .findings-icons .action-required .a-skull  { border: 5px double; }
-#auditstable .building .findings-icons .action-required .findings-icon-status span.uk-badge  { border: 3px double; }
+#auditstable .building .findings-icons .action-required .a-skull  { border: 5px double; animation: border-pulsate 2s infinite; }
+#auditstable .building .findings-icons .action-required .findings-icon-status span.uk-badge  { border: 3px double;animation: border-pulsate 2s infinite; }
 
 #auditstable .building .findings-icons .in-progress .a-folder,
 #auditstable .building .findings-icons .in-progress .a-booboo,
