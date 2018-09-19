@@ -65,13 +65,13 @@ class AllitaAuth
             $user_agent = $request->header('User-Agent');
 
             if(!$request->has('user_id') || !$request->has('token')){
-                dd("user not known, missing credentials");
+                dd("user not logged in, not known, missing credentials");
                 // throw new AuthenticationException('Unauthenticated.');
             } 
 
             // check credentials with Devco
             $devco_auth = new AuthService;
-            $devco_auth->userAuthenticateToken($request->get('token'), $ip, $user_agent);
+            dd($devco_auth->userAuthenticateToken($request->get('token'), $ip, $user_agent));
             // dd($devco_auth->rootAuthenticate());
             // dd($devco_auth->getLoginUrl());
 
