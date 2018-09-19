@@ -84,8 +84,8 @@ class AuthService
         $this->_pcapi_access_token = SystemSetting::get('devco_access_token'); //SystemSetting::get('devco_access_token');
 
         // if($this->_pcapi_refresh_token === null || $this->_pcapi_access_token === null){
-        //     $gettingTokens = new self();
-        //     $gettingTokens->rootAuthenticate();
+            $gettingTokens = new self();
+            $gettingTokens->rootAuthenticate();
         // }
 
         $this->_client = new Client([
