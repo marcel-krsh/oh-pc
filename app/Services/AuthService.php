@@ -94,6 +94,12 @@ class AuthService
         ]);
     }
 
+    public function reloadTokens()
+    {
+        $this->_pcapi_refresh_token = SystemSetting::get('devco_refresh_token');
+        $this->_pcapi_access_token = SystemSetting::get('devco_access_token');
+    }
+
     /**
      * Root (System Level) Key Reset
      */
