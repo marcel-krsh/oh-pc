@@ -69,8 +69,12 @@ if(Auth::check()){
 	        'csrfToken' => csrf_token(),
 	    ]); ?>
 	</script>
-	
+
+	<script src="{{ mix('js/app.js') }}"></script>
 	<script src="/js/jquery.js"></script>
+	<script src="/js/uikit.js"></script>
+	<script src="/js/uikit-icons.min.js"></script>
+	<script src="/js/handsontable.full.min.js"></script>
 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
@@ -297,12 +301,6 @@ if(Auth::check()){
 	$('#{{$tab}}').trigger("click");
 	</script>
 	@endif
-	
-
-	<script src="{{ mix('js/app.js') }}"></script>
-	<script src="/js/uikit.js"></script>
-	<script src="/js/uikit-icons.min.js"></script>
-	<script src="/js/handsontable.full.min.js"></script>
 
 	@if(session('disablePacer') != 1)
 	<script>
