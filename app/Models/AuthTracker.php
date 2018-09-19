@@ -61,7 +61,7 @@ class AuthTracker extends Model
      * @param  string $ip
      * @return 
      */
-    public function is_blocked_by_ip(string $ip)
+    public static function is_blocked_by_ip(string $ip)
     {
     	$ip_is_blocked = self::where('ip', '=', $ip)->where('blocked_until', '>', Carbon::now())->first();
     	if($ip_is_blocked) return $ip_is_blocked;
