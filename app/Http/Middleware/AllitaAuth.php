@@ -120,8 +120,8 @@ class AllitaAuth
             } 
 
             // we have user_id and token, check credentials with Devco
-            // $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('token'), $ip, $user_agent);
-            $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('token'));
+             $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('token'), $ip, $user_agent);
+            // $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('token'));
             
             if(!$check_credentials->data->attributes->{'authenticated'} || !$check_credentials->data->attributes->{'user-activated'} || !$check_credentials->data->attributes->{'user-exists'}){
 
