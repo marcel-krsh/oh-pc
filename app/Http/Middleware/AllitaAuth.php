@@ -49,7 +49,7 @@ class AllitaAuth
         }
 
         // how do we know if the access_token needs to be replaced?
-dd(Auth::user()->id);
+
         $this->authenticate($request);
         // $this->checkDevcoSession($request);
 
