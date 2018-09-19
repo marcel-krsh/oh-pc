@@ -63,6 +63,25 @@ if(Auth::check()){
 	</style>
 	<?php /* session(['disablePacer'=>0]); */ ?>
 	@endif
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<script>
+	    window.Laravel = <?php echo json_encode([
+	        'csrfToken' => csrf_token(),
+	    ]); ?>
+	</script>
+
+	<script defer src="{{ mix('js/app.js') }}"></script>
+	<script src="/js/uikit.js"></script>
+	<script src="/js/jquery.js"></script>
+	<script src="/js/uikit-icons.min.js"></script>
+	<script src="/js/handsontable.full.min.js"></script>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
+
+	<script>
+		$('select').multipleSelect();
+	</script>
 
 	@if (Auth::guest())
 	@else
@@ -73,12 +92,13 @@ if(Auth::check()){
 </head>
 <body >
 	<a name="top"></a>
+	<div id="app" style="display:none;"><example></example></div>
 	<!-- MAIN VIEW -->
 	<div id="pcapp" class="uk-container uk-align-center">
 		<div uk-grid class="uk-grid-collapse">
 			<div id="main-window" class=" uk-margin-large-bottom" uk-scrollspy="cls:uk-animation-fade; delay: 900">
 			
-				<div id="main-tabs" uk-sticky uk-grid>
+				<div id="main-tabs" :uk-sticky uk-grid>
 				    <div class="uk-width-1-6">
 				        <div class="menu-search">
 							<div class="uk-autocomplete quick-lookup-box uk-inline">
@@ -205,29 +225,10 @@ if(Auth::check()){
 	@endIf
 
 	</script>
-	
-	
-	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-	<script>
-	    window.Laravel = <?php echo json_encode([
-	        'csrfToken' => csrf_token(),
-	    ]); ?>
-	</script>
 
-	<script src="{{ mix('js/app.js') }}"></script>
-	<script src="/js/jquery.js"></script>
-	<script src="/js/uikit.js"></script>
-	<script src="/js/uikit-icons.min.js"></script>
-	<script src="/js/handsontable.full.min.js"></script>
-
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
-
-	<script>
-		$('select').multipleSelect();
-	</script>
 	
 	<!-- <script src="/js/app.js"></script> -->
+
 	@if (Auth::guest())
 	@else
 	<script type="text/javascript">
@@ -314,6 +315,7 @@ if(Auth::check()){
 	</script>
 	<script src="/js/pace.min.js">{{session('disablePacer')}}</script>
 	@endif
+
 	<script type="text/javascript" src="https://devco.ohiohome.org/AuthorityOnlineALT/Unified/UnifiedHeader.aspx"></script>
 </body>
 </html>
