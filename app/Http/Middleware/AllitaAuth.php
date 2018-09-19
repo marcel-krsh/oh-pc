@@ -51,13 +51,13 @@ class AllitaAuth
 
         // how do we know if the access_token needs to be replaced?
 
-        // $this->authenticate($request);
+         $this->authenticate($request);
         // $this->checkDevcoSession($request);
 
         // temporary solution
-        if($request->has('user_id')){
-            Auth::loginUsingId($request->get('user_id'));
-        } 
+        // if($request->has('user_id')){
+        //     Auth::loginUsingId($request->get('user_id'));
+        // } 
 
         return $next($request);
     }
