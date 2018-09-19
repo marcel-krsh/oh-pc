@@ -36,8 +36,8 @@ class AllitaAuth
      */
     public function handle($request, Closure $next)
     {
-        $_auth_service = new AuthService;
-        $_devco_service = new DevcoService;
+        $this->_auth_service = new AuthService;
+        $this->_devco_service = new DevcoService;
 
         // make sure we have access and refresh tokens
         $pcapi_refresh_token = SystemSetting::get('devco_refresh_token'); 
@@ -94,7 +94,7 @@ class AllitaAuth
             } 
 
             // check credentials with Devco
-            dd($_auth_service->userAuthenticateToken($request->get('token'), $ip, $user_agent));
+            dd($this->_auth_service->userAuthenticateToken($request->get('token'), $ip, $user_agent));
             // dd($devco_auth->rootAuthenticate());
             // dd($devco_auth->getLoginUrl());
 
