@@ -73,10 +73,14 @@ class AuthService
         $this->_password = config('allita.api.password');
         $this->_login_url = config('allita.api.login_url');
 
-        $this->_devco_token = config('allita.api.key');; //SystemConfig::get('devco_token');
+<<<<<<< HEAD
         $this->_devco_token = '81eqLzF4jU5NJvz3A751ZBkb'; //SystemConfig::get('devco_token');
         $this->_pcapi_key = config('allita.api.allita_pcapi_key');
         $this->_pcapi_refresh_token = ''; //SystemConfig::get('devco_refresh_token');
+=======
+        $this->_devco_token = config('allita.api.key');; //SystemConfig::get('devco_token');
+        $this->_devco_refresh_token = ''; //SystemConfig::get('devco_refresh_token');
+>>>>>>> d7643b80bfe88ebe2a9f5574bbead575c6f2b61b
 
         $this->_client = new Client([
             'base_uri' => $this->_url,
