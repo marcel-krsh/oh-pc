@@ -89,7 +89,7 @@ class AllitaAuth
         if(!Auth::check()){
   
             $credentials = $request->only('user_id', 'token');
-            $ip = $request->ip();dd($ip);
+            $ip = $request->ip();
             $user_agent = $request->header('User-Agent');
 
             // keep track of tries
@@ -156,7 +156,7 @@ class AllitaAuth
             Auth::loginUsingId($user->id);  
 
         }else{
-
+dd("test");
             // user is already logged in
             $user = Auth::user();
 
