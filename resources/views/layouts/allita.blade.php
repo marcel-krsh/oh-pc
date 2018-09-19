@@ -159,7 +159,7 @@ if(Auth::check()){
 			@else
 			Dev|Co Inspect
 			@endif
-			&copy; 2018<?php if(date('Y',time()) != '2018') echo " — ".date('Y',time()); ?>: @include('git-version::version-comment')</a></p>
+			&copy; 2018<?php if(date('Y',time()) != '2018') echo " — ".date('Y',time()); ?>: @include('git-version::version-comment')</a> @if(Auth::check()) ({{Auth::user()->name}}) @endif</p>
 		</div>
 		<div id="footer-content" class="uk-width-1-3">
 			<div id="footer-actions-tpl"></div>

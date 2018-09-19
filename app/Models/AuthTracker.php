@@ -28,7 +28,7 @@ class AuthTracker extends Model
      */
     public function user() : BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class, 'id', 'user_id');
+        return $this->belongsTo(\App\Models\User::class, 'id', 'devco_id');
     }
 
     /**
@@ -59,11 +59,12 @@ class AuthTracker extends Model
      * Check if an IP is already blocked
      * 
      * @param  string $ip
-     * @return boolean
+     * @return 
      */
-    public function is_blocked_by_ip(string $ip) : bool
+    public function is_blocked_by_ip(string $ip)
     {
-    	if(self::where('ip', '=', $ip)->where('blocked_until', '>', Carbon::now())->count()) return true;
+    	$ip_is_blocked = self::where('ip', '=', $ip)->where('blocked_until', '>', Carbon::now())->first();
+    	if($ip_is_blocked) return $ip_is_blocked;
 
     	return false;
     }

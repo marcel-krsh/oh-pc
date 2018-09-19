@@ -12,6 +12,7 @@ use App\Services\DevcoService;
 use App\Models\AuthTracker;
 use App\Mail\EmailFailedLogin;
 use App\Models\SystemSetting;
+use App\Models\User;
 
 class AllitaAuth
 {
@@ -83,6 +84,7 @@ class AllitaAuth
      */
     public function authenticate($request)
     {
+
         if(!Auth::check()){
   
             $credentials = $request->only('user_id', 'token');
@@ -90,24 +92,68 @@ class AllitaAuth
             $user_agent = $request->header('User-Agent');
 
             if(!$request->has('user_id') || !$request->has('token')){
-                dd("user not logged in, not known, missing credentials");
-                // throw new AuthenticationException('Unauthenticated.');
+                // keep track of tries
+                $auth_tracker = AuthTracker::where('ip','=',$ip)->where('user_id','=',$request->get('user_id'))->first();
+                if($auth_tracker){
+                    $auth_tracker->incrementTries(); // also blocks automatically if too many tries
+                }else{
+                    // maybe same IP, different user_id
+                    $ip_is_blocked = AuthTracker::is_blocked_by_ip($ip);
+
+                    if($ip_is_blocked) {
+                        $ip_is_blocked->incrementTries();
+                    }else{
+                        $auth_tracker = new AuthTracker([
+                                        'token' => $request->get('token'),
+                                        'ip' => $ip,
+                                        'user_agent' => $user_agent,
+                                        'user_id' => $request->get('user_id'),
+                                        'tries' => 1,
+                                        'blocked_until' => null
+                                    ]);
+                    }
+                }
+
+                throw new AuthenticationException('Unauthenticated.');
             } 
 
-            // check credentials with Devco
+            // we have user_id and token, check credentials with Devco
             $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('token'), $ip, $user_agent);
-
-            dd($check_credentials->data->attributes->{'authentication-message'});
-
-            // dd($devco_auth->rootAuthenticate());
-            // dd($devco_auth->getLoginUrl());
-
-            // test API
             
-            //dd($_auth_service->listPeople());
-            //dd($_auth_service->listCounties());
+            if(!$check_credentials->data->attributes->{'authenticated'} || !$check_credentials->data->attributes->{'user-activated'} || !$check_credentials->data->attributes->{'user-exists'}){
 
-            // throw new AuthenticationException('Unauthenticated.');
+                throw new AuthenticationException('Unauthenticated.');
+
+            }
+
+            // we got a real user, check if that user is in our system
+            $user_key = $check_credentials->included->attributes->{'user_key'};
+            $email = $check_credentials->included->attributes->{'email'};
+            $first_name = $check_credentials->included->attributes->{'first-name'};
+            $last_name = $check_credentials->included->attributes->{'last-name'};
+
+            $user = User::where('devco_key', '=', $user_key)->first();
+
+            if(!$user){
+                $user = new User([
+                    'devco_key' => $user_key,
+                    'name' => $first_name." ".$last_name,
+                    'email' => $email,
+                    'active' => 1
+                ]);
+            }          
+
+            Auth::loginUsingId($user->id);  
+
+        }else{
+
+            // user is already logged in
+            $user = Auth::user();
+
+            // make sure the user corresponds to the Devco user
+
+
+            // 
         }
         
         // login user by user id
