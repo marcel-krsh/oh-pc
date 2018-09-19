@@ -48,6 +48,8 @@ class AllitaAuth
             $gettingTokens->rootAuthenticate();
         }
 
+        // how do we know if the access_token needs to be replaced?
+
         $this->authenticate($request);
         // $this->checkDevcoSession($request);
 
@@ -94,7 +96,10 @@ class AllitaAuth
             } 
 
             // check credentials with Devco
-            dd($this->_auth_service->userAuthenticateToken($request->get('token'), $ip, $user_agent));
+            $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('token'), $ip, $user_agent);
+
+            dd($check_credentials->data->attributes->authentication_message);
+
             // dd($devco_auth->rootAuthenticate());
             // dd($devco_auth->getLoginUrl());
 
