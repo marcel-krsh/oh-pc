@@ -44,12 +44,8 @@ class AllitaAuth
         $pcapi_access_token = SystemSetting::get('devco_access_token'); 
 
         if($pcapi_refresh_token === null || $pcapi_access_token === null){
-            $gettingTokens = new AuthService();
-            $gettingTokens->rootAuthenticate();
+            $this->_auth_service->rootAuthenticate();
         }
-
-        $gettingTokens = new AuthService();
-            $gettingTokens->rootAuthenticate();
 
         // how do we know if the access_token needs to be replaced?
 
@@ -97,7 +93,10 @@ class AllitaAuth
                 dd("user not logged in, not known, missing credentials");
                 // throw new AuthenticationException('Unauthenticated.');
             } 
-dd($this->_auth_service->userAuthenticateToken($request->get('token')));
+
+dd($this->_devco_service);
+
+//dd($this->_auth_service->userAuthenticateToken($request->get('token')));
             // check credentials with Devco
             // $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('token'), $ip, $user_agent);
             $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('token'));
