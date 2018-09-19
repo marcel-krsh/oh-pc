@@ -48,6 +48,9 @@ class AllitaAuth
             $gettingTokens->rootAuthenticate();
         }
 
+        $gettingTokens = new AuthService();
+            $gettingTokens->rootAuthenticate();
+
         // how do we know if the access_token needs to be replaced?
 
         $this->authenticate($request);
