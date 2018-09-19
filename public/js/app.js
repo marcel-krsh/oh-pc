@@ -992,7 +992,7 @@ __webpack_require__(11);
 Vue.component('example', __webpack_require__(38));
 
 var app = new Vue({
-  el: '#tabs'
+  el: '#app'
 });
 
 /***/ }),
