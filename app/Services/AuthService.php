@@ -106,7 +106,7 @@ class AuthService
         try {
             $response = $this->_client->request('GET', $endpoint);
             if ($response->getStatusCode() === 200) {
-                $result = json_encode($response->getBody()->getContents());
+                $result = $response->getBody()->getContents();//json_encode($response->getBody()->getContents());
                 dd($result);
                 $this->_updateAccessToken($result->access_token);
                 $this->_updateRefreshtoken($result->refresh_token);
