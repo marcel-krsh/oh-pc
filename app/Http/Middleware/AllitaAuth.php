@@ -97,7 +97,7 @@ class AllitaAuth
             // check credentials with Devco
             $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('token'), $ip, $user_agent);
 
-            dd($check_credentials->data->attributes->authentication-message);
+            dd($check_credentials->data->attributes->{'authentication-message'});
 
             // dd($devco_auth->rootAuthenticate());
             // dd($devco_auth->getLoginUrl());
