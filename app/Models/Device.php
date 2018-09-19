@@ -19,10 +19,10 @@ class Device extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function users() : HasMany
-    {
-        return $this->hasMany(\App\Models\VisitLists::class, 'device_id', 'device_id');
-    }
+    // public function users() : HasMany
+    // {
+    //     return $this->hasMany(\App\Models\VisitLists::class, 'device_id', 'device_id');
+    // }
 
     /**
      * Wipe User
