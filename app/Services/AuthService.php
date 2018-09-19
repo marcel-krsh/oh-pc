@@ -60,6 +60,12 @@ class AuthService
     private $_pcapi_refresh_token;
 
     /**
+     * System Level PC API Access Token
+     * @var string
+     */
+    private $_pcapi_access_token;
+
+    /**
      * Guzzle Client for calls
      * @var
      */
@@ -74,7 +80,8 @@ class AuthService
         $this->_login_url = config('allita.api.login_url');
 
         $this->_pcapi_key = config('allita.api.key');
-        $this->_pcapi_refresh_token = ''; //SystemConfig::get('devco_refresh_token');
+        $this->_pcapi_refresh_token = SystemSetting::get('devco_refresh_token'); //SystemSetting::get('devco_refresh_token');
+        $this->_pcapi_access_token = SystemSetting::get('devco_access_token'); //SystemSetting::get('devco_access_token');
 
         $this->_client = new Client([
             'base_uri' => $this->_url,
@@ -137,8 +144,23 @@ class AuthService
      */
     public function userAuthenticateToken(string $user_token, $ip_address = null, $useragent = null)
     {
-        $endpoint = "{$this->_base_directory}/devco/user/authenticate-token?devcotoken={$user_token}&token={$this->_pc_api_token}&ipaddress={$ip_address}&useragent={$useragent}";
+        $endpoint = "{$this->_base_directory}/devco/user/authenticate-token?devcotoken={$user_token}&token={$this->_pcapi_access_token}&ipaddress={$ip_address}&useragent={$useragent}";
 
+        try {
+            $response = $this->_client->request('GET', $endpoint);
+            if ($response->getStatusCode() === 200) {
+                $result = json_decode($response->getBody()->getContents());
+                dd($result);
+                
+                $is_successful = true;
+            } else {
+                // @todo: Throw PC-API Exception
+                throw new \Exception("Unexpected Status Code ({$response->getStatusCode()})");
+            }
+        } catch (GuzzleException | \Exception $e) {
+            // @todo: Throw PC-API Exception
+            dd($e->getMessage());
+        }
     }
 
     /**
@@ -151,7 +173,7 @@ class AuthService
     private function _updateAccessToken($token)
     {
         return SystemSetting::updateOrCreate([
-            'key' => 'devco_token'
+            'key' => 'devco_access_token'
         ],[
             'value' => $token
         ]);

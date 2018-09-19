@@ -103,7 +103,7 @@ $style = [
                                         @endforeach
 
                                         <!-- Action Button 1-->
-                                        @if (isset($actionText))
+                                        @if (isset($actionText) && $actionText != '')
                                             <table style="{{ $style['body_action'] }}" align="center" width="100%" cellpadding="0" cellspacing="0">
                                                 <tr>
                                                     <td align="center">
@@ -131,7 +131,7 @@ $style = [
                                             </table>
                                         @endif
                                         
-                                        @if (isset($actionText2))
+                                        @if (isset($actionText2) && $actionText2 != '')
                                             <table style="{{ $style['body_action'] }}" align="center" width="100%" cellpadding="0" cellspacing="0">
                                                 <tr>
                                                     <td align="center">
@@ -172,7 +172,7 @@ $style = [
                                         </p>
 
                                         <!-- Sub Copy -->
-                                        @if (isset($actionText))
+                                        @if (isset($actionText) && $actionText != '')
                                             <table style="{{ $style['body_sub'] }}">
                                                 <tr>
                                                     <td style="{{ $fontFamily }}">
@@ -190,7 +190,7 @@ $style = [
                                                 </tr>
                                             </table>
                                         @endif
-                                        @if (isset($actionText2))
+                                        @if (isset($actionText2) && $actionText2 != '')
                                             <table style="{{ $style['body_sub'] }}">
                                                 <tr>
                                                     <td style="{{ $fontFamily }}">

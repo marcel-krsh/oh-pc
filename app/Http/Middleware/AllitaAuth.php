@@ -9,6 +9,9 @@ use Auth;
 use Session;
 use App\Services\AuthService;
 use App\Services\DevcoService;
+use App\Models\AuthTracker;
+use App\Mail\EmailFailedLogin;
+use App\Models\SystemSetting;
 
 class AllitaAuth
 {
@@ -21,13 +24,13 @@ class AllitaAuth
      */
     public function handle($request, Closure $next)
     {
-        // $this->authenticate($request);
+        $this->authenticate($request);
         // $this->checkDevcoSession($request);
 
         // temporary solution
-        if($request->has('user_id')){
-            Auth::loginUsingId($request->get('user_id'));
-        } 
+        // if($request->has('user_id')){
+        //     Auth::loginUsingId($request->get('user_id'));
+        // } 
 
         return $next($request);
     }
@@ -56,18 +59,20 @@ class AllitaAuth
     public function authenticate($request)
     {
         if(!Auth::check()){
-           
+  
             $credentials = $request->only('user_id', 'token');
             $ip = $request->ip();
             $user_agent = $request->header('User-Agent');
 
             if(!$request->has('user_id') || !$request->has('token')){
+                dd("user not known, missing credentials");
                 // throw new AuthenticationException('Unauthenticated.');
             } 
 
             // check credentials with Devco
             $devco_auth = new AuthService;
-            dd($devco_auth->rootAuthenticate());
+            $devco_auth->userAuthenticateToken($request->get('token'), $ip, $user_agent);
+            // dd($devco_auth->rootAuthenticate());
             // dd($devco_auth->getLoginUrl());
 
             // test API
