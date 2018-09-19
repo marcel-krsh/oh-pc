@@ -122,7 +122,7 @@ class AllitaAuth
             // we have user_id and token, check credentials with Devco
             $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('token'), $ip, $user_agent);
             
-            if(!$check_credentials['data']['attributes']['authenticated'] || !$check_credentials['data']['attributes']['user-activated'] || !$check_credentials['data']['attributes']['user-exists']){
+            if(!$check_credentials->data->attributes->{'authenticated'} || !$check_credentials->data->attributes->{'user-activated'} || !$check_credentials->data->attributes->{'user-exists'}){
 
                 if($auth_tracker){
                     $auth_tracker->incrementTries();
@@ -135,12 +135,12 @@ class AllitaAuth
             if($auth_tracker){
                 $auth_tracker->resetTries();
             }
-//dd($check_credentials->included);
+
             // we got a real user, check if that user is in our system
-            $user_key = $check_credentials['included']['0']['attributes']['user_key']; dd($user_key);
-            $email = $check_credentials->included->{'0'}->attributes->{'email'};
-            $first_name = $check_credentials->included->{'0'}->attributes->{'first-name'};
-            $last_name = $check_credentials->included->{'0'}->attributes->{'last-name'};
+            $user_key = $check_credentials->included[0]->attributes->{'user_key'};
+            $email = $check_credentials->included[0]->attributes->{'email'};
+            $first_name = $check_credentials->included[0]->attributes->{'first-name'};
+            $last_name = $check_credentials->included[0]->attributes->{'last-name'};
 
             $user = User::where('devco_key', '=', $user_key)->first();
 

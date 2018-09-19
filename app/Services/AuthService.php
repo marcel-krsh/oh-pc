@@ -161,7 +161,7 @@ class AuthService
             $response = $this->_client->request('GET', $endpoint);
             if ($response->getStatusCode() === 200) {
                 $result = json_decode($response->getBody()->getContents(), true);
-                dd($result);
+                
                 return $result;
             } else {
                 // @todo: Throw PC-API Exception
