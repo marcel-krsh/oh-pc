@@ -41,13 +41,13 @@ class AllitaAuth
         $this->_devco_service = new DevcoService;
 
         // make sure we have access and refresh tokens
-        $pcapi_refresh_token = SystemSetting::get('devco_refresh_token'); 
-        $pcapi_access_token = SystemSetting::get('devco_access_token'); 
+        // $pcapi_refresh_token = SystemSetting::get('devco_refresh_token'); 
+        // $pcapi_access_token = SystemSetting::get('devco_access_token'); 
 
-        if($pcapi_refresh_token === null || $pcapi_access_token === null){
-            $this->_auth_service->rootAuthenticate();
-            $this->_auth_service->reloadTokens();
-        }
+        // if($pcapi_refresh_token === null || $pcapi_access_token === null){
+        //     $this->_auth_service->rootAuthenticate();
+        //     $this->_auth_service->reloadTokens();
+        // }
 
         // how do we know if the access_token needs to be replaced?
 
