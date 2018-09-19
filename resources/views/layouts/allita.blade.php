@@ -300,6 +300,10 @@ if(Auth::check()){
 	<script>
 	$('#{{$tab}}').trigger("click");
 	</script>
+	@else
+	<script>
+	$('#detail-tab-1').trigger("click");
+	</script>
 	@endif
 
 	@if(session('disablePacer') != 1)
