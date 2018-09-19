@@ -135,9 +135,9 @@ class AllitaAuth
             if($auth_tracker){
                 $auth_tracker->resetTries();
             }
-dd($user_key = $check_credentials->included[0]);
+
             // we got a real user, check if that user is in our system
-            $user_key = $check_credentials->included[0]->attributes->{'user_key'};
+            $user_key = $check_credentials->included[0]->attributes->{'user-key'};
             $email = $check_credentials->included[0]->attributes->{'email'};
             $first_name = $check_credentials->included[0]->attributes->{'first-name'};
             $last_name = $check_credentials->included[0]->attributes->{'last-name'};
