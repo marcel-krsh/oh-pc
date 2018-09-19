@@ -20,7 +20,7 @@ class SystemSetting extends Model
      * @param  string $key
      * @return 
      */
-    public function get(string $key)
+    public static function get(string $key)
     {
         $found = self::where('key', '=', $key)->first();
 
