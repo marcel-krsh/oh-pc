@@ -156,7 +156,7 @@ class AuthService
             if ($response->getStatusCode() === 200) {
                 $result = json_decode($response->getBody()->getContents());
                 
-                dd($result);
+                return $result;
             } else {
                 // @todo: Throw PC-API Exception
                 throw new \Exception("Unexpected Status Code ({$response->getStatusCode()})");
