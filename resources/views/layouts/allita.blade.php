@@ -98,7 +98,7 @@ if(Auth::check()){
 		<div uk-grid class="uk-grid-collapse">
 			<div id="main-window" class=" uk-margin-large-bottom" uk-scrollspy="cls:uk-animation-fade; delay: 900">
 			
-				<div id="main-tabs" :uk-sticky uk-grid>
+				<div id="main-tabs" uk-sticky uk-grid>
 				    <div class="uk-width-1-6">
 				        <div class="menu-search">
 							<div class="uk-autocomplete quick-lookup-box uk-inline">
@@ -296,6 +296,9 @@ if(Auth::check()){
 		    }
 	    });
 
+	    $( document ).ready(function() {
+	    	$('.uk-sticky-placeholder:last').remove();
+	    });
 	</script>
 	@endif
 
