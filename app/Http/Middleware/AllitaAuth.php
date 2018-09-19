@@ -89,7 +89,7 @@ class AllitaAuth
         if(!Auth::check()){
   
             $credentials = $request->only('user_id', 'token');
-            $ip = $request->ip();
+            $ip = $request->ip();dd($ip);
             $user_agent = $request->header('User-Agent');
 
             // keep track of tries
@@ -121,7 +121,6 @@ class AllitaAuth
 
             // we have user_id and token, check credentials with Devco
              $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('token'), $ip, $user_agent);
-            // $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('token'));
             
             if(!$check_credentials->data->attributes->{'authenticated'} || !$check_credentials->data->attributes->{'user-activated'} || !$check_credentials->data->attributes->{'user-exists'}){
 
