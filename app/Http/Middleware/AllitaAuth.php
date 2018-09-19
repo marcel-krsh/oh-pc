@@ -49,7 +49,7 @@ class AllitaAuth
         }
 
         // how do we know if the access_token needs to be replaced?
-
+dd(Auth::user()->id);
         $this->authenticate($request);
         // $this->checkDevcoSession($request);
 
@@ -91,29 +91,30 @@ class AllitaAuth
             $ip = $request->ip();
             $user_agent = $request->header('User-Agent');
 
-            if(!$request->has('user_id') || !$request->has('token')){
-                // keep track of tries
-                $auth_tracker = AuthTracker::where('ip','=',$ip)->where('user_id','=',$request->get('user_id'))->first();
-                if($auth_tracker){
-                    $auth_tracker->incrementTries(); // also blocks automatically if too many tries
+            // keep track of tries
+            $auth_tracker = AuthTracker::where('ip','=',$ip)->where('user_id','=',$request->get('user_id'))->first();
+            if(!$auth_tracker){
+                // maybe same IP, different user_id
+                $auth_tracker = AuthTracker::is_blocked_by_ip($ip);
+
+                if($auth_tracker) {
+                    $auth_tracker->incrementTries();
                 }else{
-                    // maybe same IP, different user_id
-                    $ip_is_blocked = AuthTracker::is_blocked_by_ip($ip);
-
-                    if($ip_is_blocked) {
-                        $ip_is_blocked->incrementTries();
-                    }else{
-                        $auth_tracker = new AuthTracker([
-                                        'token' => $request->get('token'),
-                                        'ip' => $ip,
-                                        'user_agent' => $user_agent,
-                                        'user_id' => $request->get('user_id'),
-                                        'tries' => 1,
-                                        'blocked_until' => null
-                                    ]);
-                    }
+                    $auth_tracker = new AuthTracker([
+                                    'token' => $request->get('token'),
+                                    'ip' => $ip,
+                                    'user_agent' => $user_agent,
+                                    'user_id' => $request->get('user_id'),
+                                    'tries' => 1,
+                                    'blocked_until' => null
+                                ]);
                 }
+            }
 
+            if(!$request->has('user_id') || !$request->has('token')){
+                if($auth_tracker){
+                    $auth_tracker->incrementTries();
+                }
                 throw new AuthenticationException('Unauthenticated.');
             } 
 
@@ -122,8 +123,16 @@ class AllitaAuth
             
             if(!$check_credentials->data->attributes->{'authenticated'} || !$check_credentials->data->attributes->{'user-activated'} || !$check_credentials->data->attributes->{'user-exists'}){
 
+                if($auth_tracker){
+                    $auth_tracker->incrementTries();
+                }
                 throw new AuthenticationException('Unauthenticated.');
 
+            }
+
+
+            if($auth_tracker){
+                $auth_tracker->resetTries();
             }
 
             // we got a real user, check if that user is in our system
