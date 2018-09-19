@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\POC;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -14,7 +14,7 @@ class AuditController extends Controller
 	public function __construct()
     {
         // $this->middleware('auth');
-    	Auth::onceUsingId(1); // TEST BRIAN
+    	// Auth::onceUsingId(1); // TEST BRIAN
     }
 
     public function buildingsFromAudit($audit, Request $request)
@@ -349,7 +349,7 @@ class AuditController extends Controller
     					]
     				]);
 
-    	return view('poc.dashboard.partials.audit_buildings', compact('audit', 'target', 'buildings'));
+    	return view('dashboard.partials.audit_buildings', compact('audit', 'target', 'buildings'));
     }
 
     public function detailsFromBuilding($audit, $building, Request $request) {
@@ -484,7 +484,7 @@ class AuditController extends Controller
     					]
     				]);
 
-    	return view('poc.dashboard.partials.audit_building_details', compact('audit', 'target', 'building', 'details', 'targetaudit'));
+    	return view('dashboard.partials.audit_building_details', compact('audit', 'target', 'building', 'details', 'targetaudit'));
     }
 
     public function inspectionFromBuildingDetail($audit, $building, $detail, Request $request) {
@@ -542,6 +542,6 @@ class AuditController extends Controller
 	    						]
 	    					],
     				]);
-    	return view('poc.dashboard.partials.audit_building_inspection', compact('audit', 'target', 'building', 'detail', 'inspection', 'areas'));
+    	return view('dashboard.partials.audit_building_inspection', compact('audit', 'target', 'building', 'detail', 'inspection', 'areas'));
     }
 }
