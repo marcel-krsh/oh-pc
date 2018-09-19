@@ -73,8 +73,6 @@ class AuthService
         $this->_password = config('allita.api.password');
         $this->_login_url = config('allita.api.login_url');
 
-        $this->_devco_token = config('allita.api.key'); //SystemConfig::get('devco_token');
-        $this->_devco_token = '81eqLzF4jU5NJvz3A751ZBkb'; //SystemConfig::get('devco_token');
         $this->_pcapi_key = config('allita.api.key');
         $this->_pcapi_refresh_token = ''; //SystemConfig::get('devco_refresh_token');
 
@@ -106,7 +104,8 @@ class AuthService
         try {
             $response = $this->_client->request('GET', $endpoint);
             if ($response->getStatusCode() === 200) {
-                $result = json_encode($response->getBody()->getContents());
+                $result = json_decode($response->getBody()->getContents());
+                //dd($result);
                 $this->_updateAccessToken($result->access_token);
                 $this->_updateRefreshtoken($result->refresh_token);
                 $is_successful = true;
@@ -138,7 +137,7 @@ class AuthService
      */
     public function userAuthenticateToken(string $user_token, $ip_address = null, $useragent = null)
     {
-        $endpoint = "{$this->_base_directory}/devco/user/authenticate-token?devcotoken={$this->_devco_token}&token={$user_token}&ipaddress={$ip_address}&useragent={$useragent}";
+        $endpoint = "{$this->_base_directory}/devco/user/authenticate-token?devcotoken={$user_token}&token={$this->_pc_api_token}&ipaddress={$ip_address}&useragent={$useragent}";
 
     }
 
