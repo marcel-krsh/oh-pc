@@ -16,6 +16,18 @@ use App\Models\SystemSetting;
 class AllitaAuth
 {
     /**
+     * AuthService
+     * @var
+     */
+    private $_auth_service;
+
+    /**
+     * DevcoService
+     * @var
+     */
+    private $_devco_service;
+
+    /**
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -24,6 +36,18 @@ class AllitaAuth
      */
     public function handle($request, Closure $next)
     {
+        $_auth_service = new AuthService;
+        $_devco_service = new DevcoService;
+
+        // make sure we have access and refresh tokens
+        $pcapi_refresh_token = SystemSetting::get('devco_refresh_token'); 
+        $pcapi_access_token = SystemSetting::get('devco_access_token'); 
+
+        if($this->_pcapi_refresh_token === null || $this->_pcapi_access_token === null){
+            $gettingTokens = new AuthService();
+            $gettingTokens->rootAuthenticate();
+        }
+
         $this->authenticate($request);
         // $this->checkDevcoSession($request);
 
@@ -70,15 +94,14 @@ class AllitaAuth
             } 
 
             // check credentials with Devco
-            $devco_auth = new AuthService;
-            dd($devco_auth->userAuthenticateToken($request->get('token'), $ip, $user_agent));
+            dd($_auth_service->userAuthenticateToken($request->get('token'), $ip, $user_agent));
             // dd($devco_auth->rootAuthenticate());
             // dd($devco_auth->getLoginUrl());
 
             // test API
-            $devco = new DevcoService;
-            //dd($devco->listPeople());
-            //dd($devco->listCounties());
+            
+            //dd($_auth_service->listPeople());
+            //dd($_auth_service->listCounties());
 
             // throw new AuthenticationException('Unauthenticated.');
         }
