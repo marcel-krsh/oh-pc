@@ -43,7 +43,7 @@ class AllitaAuth
         $pcapi_refresh_token = SystemSetting::get('devco_refresh_token'); 
         $pcapi_access_token = SystemSetting::get('devco_access_token'); 
 
-        if($this->_pcapi_refresh_token === null || $this->_pcapi_access_token === null){
+        if($pcapi_refresh_token === null || $pcapi_access_token === null){
             $gettingTokens = new AuthService();
             $gettingTokens->rootAuthenticate();
         }
