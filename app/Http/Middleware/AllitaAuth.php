@@ -94,14 +94,10 @@ class AllitaAuth
                 // throw new AuthenticationException('Unauthenticated.');
             } 
 
-dd($this->_devco_service);
-
-//dd($this->_auth_service->userAuthenticateToken($request->get('token')));
             // check credentials with Devco
-            // $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('token'), $ip, $user_agent);
-            $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('token'));
+            $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('token'), $ip, $user_agent);
 
-            //dd($check_credentials->data->attributes->authentication_message);
+            dd($check_credentials->data->attributes->authentication_message);
 
             // dd($devco_auth->rootAuthenticate());
             // dd($devco_auth->getLoginUrl());
