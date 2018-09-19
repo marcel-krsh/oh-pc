@@ -84,9 +84,9 @@ class AuthTracker extends Model
     /**
      * Block user after too many attempts
      * 
-     * @return bool
+     * @return 
      */
-    public function block() : bool
+    public function block()
     {
     	// check how many attempts
     	$attempts = $this->tries;
