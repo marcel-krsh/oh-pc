@@ -308,7 +308,7 @@ if(Auth::check()){
 	</script>
 	<script src="/js/pace.min.js">{{session('disablePacer')}}</script>
 	@endif
-	<!-- <script>
+	<script>
 		var _uh = _uh || [];
 		_uh.push(['AllitaHost', 'https://pcinspectdev.ohiohome.org']);
 		_uh.push(['Logo', 'https://static.wixstatic.com/media/64bb8d_0ca6465192ae42b89d419bbadaa42a05~mv2.png/v1/fill/w_171,h_169,al_c,usm_0.66_1.00_0.01/64bb8d_0ca6465192ae42b89d419bbadaa42a05~mv2.png']);
@@ -324,7 +324,7 @@ if(Auth::check()){
 		    	s.parentNode.insertBefore(uh, s);
 		    });
 		})();
-	</script> -->
+	</script>
 </body>
 </html>
 
