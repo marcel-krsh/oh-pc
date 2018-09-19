@@ -135,12 +135,12 @@ class AllitaAuth
             if($auth_tracker){
                 $auth_tracker->resetTries();
             }
-dd($check_credentials->included);
+
             // we got a real user, check if that user is in our system
-            $user_key = $check_credentials->included->attributes->{'0'}->{'user_key'};
-            $email = $check_credentials->included->attributes->{'0'}->{'email'};
-            $first_name = $check_credentials->included->attributes->{'0'}->{'first-name'};
-            $last_name = $check_credentials->included->attributes->{'0'}->{'last-name'};
+            $user_key = $check_credentials->included->{'0'}->attributes->{'user_key'};
+            $email = $check_credentials->included->{'0'}->attributes->{'email'};
+            $first_name = $check_credentials->included->{'0'}->attributes->{'first-name'};
+            $last_name = $check_credentials->included->{'0'}->attributes->{'last-name'};
 
             $user = User::where('devco_key', '=', $user_key)->first();
 
