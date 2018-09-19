@@ -10,11 +10,11 @@
 | to using a Closure or controller method. Build something great!
 |
 */
-// Route::group(['middleware' => ['allita.auth']], function() {
-//     Route::get('unified_login', function (){
-//             return redirect('/');
-//     });
-// });
+Route::group(['middleware' => ['allita.auth']], function() {
+    Route::get('unified_login', function (){
+            return redirect('/');
+    });
+});
 
     Route::get('/', 'DashboardController@index');
     Route::get('dashboard/audits', 'DashboardController@audits')->name('dashboard.audits');
