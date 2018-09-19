@@ -110,7 +110,7 @@ class AuthService
      */
     public function rootAuthenticate()
     {
-        $endpoint = "{$this->_base_directory}/root/authenticate?username={$this->_username}&password={$this->_password}&key={$this->_pcapi_key}";dd($endpoint);
+        $endpoint = "{$this->_base_directory}/root/authenticate?username={$this->_username}&password={$this->_password}&key={$this->_pcapi_key}";
         $is_successful = false;
 
         try {
