@@ -48,10 +48,16 @@ class AuthService
     private $_devco_token;
 
     /**
-     * System Level Dev|Co API Refresh Token
+     * System Level PC API Key
      * @var string
      */
-    private $_devco_refresh_token;
+    private $_pcapi_key;
+
+    /**
+     * System Level PC API Refresh Token
+     * @var string
+     */
+    private $_pcapi_refresh_token;
 
     /**
      * Guzzle Client for calls
@@ -68,7 +74,8 @@ class AuthService
         $this->_login_url = config('allita.api.login_url');
 
         $this->_devco_token = '81eqLzF4jU5NJvz3A751ZBkb'; //SystemConfig::get('devco_token');
-        $this->_devco_refresh_token = ''; //SystemConfig::get('devco_refresh_token');
+        $this->_pcapi_key = config('allita.api.allita_pcapi_key');
+        $this->_pcapi_refresh_token = ''; //SystemConfig::get('devco_refresh_token');
 
         $this->_client = new Client([
             'base_uri' => $this->_url,
@@ -81,7 +88,7 @@ class AuthService
      */
     public function rootKeyReset()
     {
-        $endpoint = "{$this->_base_directory}/root/key-reset?username={$this->_username}&password={$this->_password}&key={$this->_devco_token}";
+        $endpoint = "{$this->_base_directory}/root/key-reset?username={$this->_username}&password={$this->_password}&key={$this->_pcapi_key}";
 
     }
 
@@ -92,7 +99,7 @@ class AuthService
      */
     public function rootAuthenticate()
     {
-        $endpoint = "{$this->_base_directory}/root/authenticate?username={$this->_username}&password={$this->_password}&key={$this->_devco_token}";
+        $endpoint = "{$this->_base_directory}/root/authenticate?username={$this->_username}&password={$this->_password}&key={$this->_pcapi_key}";
         $is_successful = false;
 
         try {
@@ -117,7 +124,7 @@ class AuthService
     public function rootRefreshToken()
     {
         // https://www.oauth.com/oauth2-servers/access-tokens/access-token-response/
-        $endpoint = "{$this->_base_directory}/root/refresh-token?token={$this->_devco_refresh_token}";
+        $endpoint = "{$this->_base_directory}/root/refresh-token?token={$this->_pcapi_refresh_token}";
 
     }
 
