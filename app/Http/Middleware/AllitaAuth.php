@@ -116,7 +116,7 @@ class AllitaAuth
                 // if($auth_tracker){
                 //     $auth_tracker->incrementTries();
                 // }
-                throw new AuthenticationException('Unauthenticated.');
+                throw new AuthenticationException('Unauthenticated 119.');
             } 
 
             // we have user_id and token, check credentials with Devco
@@ -127,7 +127,7 @@ class AllitaAuth
                 // if($auth_tracker){
                 //     $auth_tracker->incrementTries();
                 // }
-                throw new AuthenticationException('Unauthenticated.');
+                throw new AuthenticationException('Unauthenticated 130.');
 
             }
 
