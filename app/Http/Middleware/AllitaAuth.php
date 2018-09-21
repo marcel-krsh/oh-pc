@@ -51,7 +51,7 @@ class AllitaAuth
 
         // how do we know if the access_token needs to be replaced?
 
-        // $this->authenticate($request);
+        $this->authenticate($request);
         // $this->checkDevcoSession($request);
 
         // temporary solution
