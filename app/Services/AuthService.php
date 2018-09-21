@@ -66,6 +66,12 @@ class AuthService
     private $_pcapi_access_token;
 
     /**
+     * PC API acces token expiration time
+     * @var integer
+     */
+    private $_pcapi_access_token_expires;
+
+    /**
      * Guzzle Client for calls
      * @var
      */
@@ -124,9 +130,10 @@ class AuthService
             $response = $this->_client->request('GET', $endpoint);
             if ($response->getStatusCode() === 200) {
                 $result = json_decode($response->getBody()->getContents());
-                //dd($result);
+                
                 $this->_updateAccessToken($result->access_token);
                 $this->_updateRefreshtoken($result->refresh_token);
+                $this->_pcapi_access_token_expires(time()+840);
                 $is_successful = true;
             } else {
                 // @todo: Throw PC-API Exception
