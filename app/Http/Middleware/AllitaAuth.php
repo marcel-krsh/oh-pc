@@ -51,7 +51,7 @@ class AllitaAuth
 
         // how do we know if the access_token needs to be replaced?
 
-        $this->authenticate($request);
+         $this->authenticate($request);
         // $this->checkDevcoSession($request);
 
         // temporary solution
@@ -120,7 +120,7 @@ class AllitaAuth
             } 
 
             // we have user_id and token, check credentials with Devco
-             $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('token'), $ip, $user_agent);
+             $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('user_id'), $request->get('token'), $ip, $user_agent);
             
             if(!$check_credentials->data->attributes->{'authenticated'} || !$check_credentials->data->attributes->{'user-activated'} || !$check_credentials->data->attributes->{'user-exists'}){
 
