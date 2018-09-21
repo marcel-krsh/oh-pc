@@ -43,8 +43,8 @@ class DashboardController extends Controller
 
         $current_user = Auth::user();
 
+        $tab = "detail-tab-1";
 
-$tab = "detail-tab-1";
         //return \view('dashboard.index'); //, compact('user')
         return view('dashboard.index', compact('tab', 'loadDetailTab'));
     }

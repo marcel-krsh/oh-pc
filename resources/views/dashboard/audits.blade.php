@@ -628,6 +628,376 @@
 		            	</div>
 		            </td>
 		        </tr>
+		        <tr id="audit-r-5" class="notcritical">
+		            <td id="audit-c-1-5" class="uk-text-center audit-td-lead">
+		            	<span id="audit-avatar-badge-5" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
+							BG
+						</span>
+						<span id="audit-rid-5"><small>#5</small></span>
+		            </td>
+		            <td id="audit-c-2-5" class="audit-td-project">
+		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
+		            		<span id="audit-i-project-detail-1" onclick="projectDetails(123,5,3);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            	</div>
+		            	<div class="uk-vertical-align-middle uk-display-inline-block">
+		            		<h3 id="audit-project-name-5" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
+			            	<small id="audit-project-aid-5" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
+			            </div>
+		            </td>
+		            <td class="audit-td-name">
+		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
+		            		<i class="a-info-circle uk-text-muted"></i>
+		            	</div> 
+		            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
+		            		<h3 class="uk-margin-bottom-remove">Great American Apartments</h3>
+			            	<small class="uk-text-muted">THE NOT SO LONG PROPERTY MANAGER NAME</small>
+		            	</div>
+		            </td>
+		            <td class="hasdivider audit-td-address">
+		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
+		            		<i class="a-marker-basic uk-text-muted"></i>
+		            	</div> 
+		            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
+		            		<h3 class="uk-margin-bottom-remove">3045 Cumberland Woods Street, Suite 202</h3>
+			            	<small class="uk-text-muted">COLUMBUS, OH 43219</small>
+		            	</div>
+		            	<div class="divider"></div>
+		            </td>
+		            <td class="hasdivider audit-td-scheduled">
+		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
+			            	<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
+			            		<div class="uk-width-1-3">
+			            			<i class="a-mobile-repeat action-needed"></i>
+			            		</div>
+			            		<div class="uk-width-2-3">
+				            		<h3>12/21</h3>
+				            		<div class="dateyear">2018</div>
+			            		</div>
+			            	</div> 
+			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
+			            	<div class="uk-width-1-6 uk-text-left">72</div> 
+			            	<div class="uk-width-1-6 uk-text-left">
+			            		<i class="a-circle-checked ok-actionable"></i>
+			            	</div>
+			            </div>
+		            	<div class="divider"></div>
+		            </td>
+		            <td class="hasdivider audit-td-due">
+		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
+			            	<div class="uk-width-1-3">
+			            		<i class="a-bell-2"></i>
+			            	</div> 
+			            	<div class="uk-width-2-3">
+			            		<i class="a-calendar-pencil"></i>
+			            	</div> 
+			            </div>
+		            	<div class="divider"></div>
+		            </td>
+		            <td class="hasdivider">
+		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
+			            	<div class="uk-width-1-4">
+			            		<i class="a-star-3"></i>
+			            	</div> 
+			            	<div class="uk-width-1-4">
+			            		<i class="a-star-3"></i>
+			            	</div> 
+			            	<div class="uk-width-1-4">
+			            		<i class="a-star-3"></i>
+			            	</div> 
+			            	<div class="uk-width-1-4">
+			            		<i class="a-star-3"></i>
+			            	</div> 
+			            </div>
+		            	<div class="divider"></div>
+		            </td>
+		            <td class="hasdivider">
+		            	<div class="divider"></div>
+		            </td>
+		            <td>
+		            	<div class="uk-margin-small-top" uk-grid>
+		            		<div class="uk-width-1-1 no-action">
+			            		<i class="a-calendar-7"></i>
+							</div>
+		            	</div>
+		            </td>
+		        </tr>
+		        <tr id="audit-r-6" class="critical">
+		            <td id="audit-c-1-6" class="uk-text-center audit-td-lead">
+		            	<span id="audit-avatar-badge-2" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
+							BG
+						</span>
+						<small id="audit-rid-6" class="uk-text-muted">#6</small>
+		            </td>
+		            <td id="audit-c-2-6" class="audit-td-project">
+		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
+		            		<span id="audit-i-project-detail-6" onclick="projectDetails(123,6,6);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            	</div> 
+		            	<div class="uk-vertical-align-middle uk-display-inline-block">
+		            		<h3 id="audit-project-name-6" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
+			            	<small id="audit-project-aid-6" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
+			            </div>
+		            </td>
+		            <td class="audit-td-name">
+		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
+		            		<i class="a-info-circle uk-text-muted"></i>
+		            	</div> 
+		            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
+		            		<h3 class="uk-margin-bottom-remove">Great American Apartments</h3>
+			            	<small class="uk-text-muted">THE NOT SO LONG PROPERTY MANAGER NAME</small>
+		            	</div>
+		            </td>
+		            <td class="hasdivider audit-td-address">
+		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
+		            		<i class="a-marker-basic uk-text-muted"></i>
+		            	</div> 
+		            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
+		            		<h3 class="uk-margin-bottom-remove">3045 Cumberland Woods Street, Suite 202</h3>
+			            	<small class="uk-text-muted">COLUMBUS, OH 43219</small>
+		            	</div>
+		            	<div class="divider"></div>
+		            </td>
+		            <td class="hasdivider audit-td-scheduled">
+		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
+		            		<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
+			            		<div class="uk-width-1-3 uk-margin-small-top">
+			            			<i class="a-mobile-repeat"></i>
+			            		</div>
+			            		<div class="uk-width-2-3 uk-margin-small-top">
+			            			<i class="a-calendar-pencil"></i>
+			            		</div>
+			            	</div> 
+			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
+			            	<div class="uk-width-1-6 uk-text-left">21</div> 
+			            	<div class="uk-width-1-6 uk-text-left">
+			            		<i class="a-circle-checked"></i>
+			            	</div>
+			            </div>
+		            	<div class="divider"></div>
+		            </td>
+		            <td class="hasdivider audit-td-due">
+		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
+			            	<div class="uk-width-1-3 uk-text-large">
+			            		<i class="a-bell-2"></i>
+			            	</div> 
+			            	<div class="uk-width-2-3 uk-text-large">
+			            		<h3>12/21</h3>
+			            		<div class="dateyear">2018</div>
+			            	</div> 
+			            </div>
+		            	<div class="divider"></div>
+		            </td>
+		            <td class="hasdivider ">
+		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
+			            	<div class="uk-width-1-4">
+			            		<i class="a-star-3"></i>
+			            	</div> 
+			            	<div class="uk-width-1-4">
+			            		<i class="a-star-3"></i>
+			            	</div> 
+			            	<div class="uk-width-1-4">
+			            		<i class="a-star-3"></i>
+			            	</div> 
+			            	<div class="uk-width-1-4">
+			            		<i class="a-star-3"></i>
+			            	</div> 
+			            </div>
+		            	<div class="divider"></div>
+		            </td>
+		            <td class="hasdivider">
+		            	<div class="divider"></div>
+		            </td>
+		            <td>
+		            	<div class="uk-margin-small-top" uk-grid>
+		            		<div class="uk-width-1-1 no-action">
+			            		<i class="a-calendar-7"></i>
+							</div>
+		            	</div>
+		            </td>
+		        </tr>
+		        <tr id="audit-r-7" class="notcritical">
+		            <td id="audit-c-1-7" class="uk-text-center audit-td-lead">
+		            	<span id="audit-avatar-badge-7" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
+							BG
+						</span>
+						<small id="audit-rid-7" >#7</small>
+		            </td>
+		            <td id="audit-c-2-7" class="audit-td-project">
+		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
+		            		<span id="audit-i-project-detail-7" onclick="projectDetails(123,7,4);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            	</div> 
+		            	<div class="uk-vertical-align-middle uk-display-inline-block">
+		            		<h3 id="audit-project-name-7" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
+			            	<small id="audit-project-aid-7" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
+			            </div>
+		            </td>
+		            <td class="audit-td-name">
+		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
+		            		<i class="a-info-circle uk-text-muted"></i>
+		            	</div> 
+		            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
+		            		<h3 class="uk-margin-bottom-remove">Great American Apartments</h3>
+			            	<small class="uk-text-muted">THE NOT SO LONG PROPERTY MANAGER NAME</small>
+		            	</div>
+		            </td>
+		            <td class="hasdivider audit-td-address">
+		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
+		            		<h3><i class="a-marker-basic uk-text-muted"></i></h3>
+		            	</div> 
+		            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
+		            		<h3 class="uk-margin-bottom-remove">3045 Cumberland Woods Street, Suite 202</h3>
+			            	<small class="uk-text-muted">COLUMBUS, OH 43219</small>
+		            	</div>
+		            	<div class="divider dotted"></div>
+		            </td>
+		            <td class="hasdivider audit-td-scheduled">
+		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
+		            		<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
+			            		<div class="uk-width-1-3">
+			            			<i class="a-mobile-repeat"></i>
+			            		</div>
+			            		<div class="uk-width-2-3">
+			            			<i class="a-calendar-pencil"></i>
+			            		</div>
+			            	</div> 
+			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
+			            	<div class="uk-width-1-6 uk-text-left">21</div> 
+			            	<div class="uk-width-1-6 uk-text-left">
+			            		<i class="a-circle-checked"></i>
+			            	</div>
+			            </div>
+		            	<div class="divider dotted"></div>
+		            </td>
+		            <td class="hasdivider audit-td-due">
+		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
+			            	<div class="uk-width-1-3">
+			            		<i class="a-bell-2"></i>
+			            	</div> 
+			            	<div class="uk-width-2-3">
+			            		<i class="a-calendar-pencil"></i>
+			            	</div> 
+			            </div>
+		            	<div class="divider dotted"></div>
+		            </td>
+		            <td class="hasdivider">
+		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
+			            	<div class="uk-width-1-4 no-action">
+			            		<i class="a-folder"></i>
+			            	</div> 
+			            	<div class="uk-width-1-4 action-needed">
+			            		<i class="a-booboo"></i>
+			            	</div> 
+			            	<div class="uk-width-1-4 action-required">
+			            		<i class="a-skull"></i>
+			            	</div> 
+			            	<div class="uk-width-1-4 in-progress">
+			            		<i class="a-flames"></i>
+			            	</div> 
+			            </div>
+		            	<div class="divider dotted"></div>
+		            </td>
+		            <td class="hasdivider">
+		            	<div class="divider dotted"></div>
+		            </td>
+		            <td>
+		            	<div class="uk-margin-small-top" uk-grid>
+		            		<div class="uk-width-1-1 no-action">
+			            		<i class="a-calendar-7"></i>
+							</div>
+		            	</div>
+		            </td>
+		        </tr>
+		        <tr id="audit-r-8" class="notcritical">
+		            <td id="audit-c-1-8" class="uk-text-center audit-td-lead">
+		            	<span id="audit-avatar-badge-8" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
+							BG
+						</span>
+						<small id="audit-rid-8">#8</small>
+		            </td>
+		            <td id="audit-c-2-4" class="audit-td-project">
+		            	<div class="uk-vertical-align-middle uk-display-inline-block">
+		            		<span id="audit-i-project-detail-8" onclick="projectDetails(123,8,6);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            	</div> 
+		            	<div class="uk-vertical-align-middle uk-display-inline-block">
+		            		<h3 id="audit-project-name-8" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
+			            	<small id="audit-project-aid-8" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
+			            </div>
+		            </td>
+		            <td class="audit-td-name">
+		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
+		            		<h3><i class="a-info-circle uk-text-muted"></i></h3>
+		            	</div> 
+		            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
+		            		<h3 class="uk-margin-bottom-remove">Great American Apartments</h3>
+			            	<small class="uk-text-muted">THE NOT SO LONG PROPERTY MANAGER NAME</small>
+		            	</div>
+		            </td>
+		            <td class="hasdivider audit-td-address">
+		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
+		            		<i class="a-marker-basic uk-text-muted"></i>
+		            	</div> 
+		            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
+		            		<h3 class="uk-margin-bottom-remove">3045 Cumberland Woods Street, Suite 202</h3>
+			            	<small class="uk-text-muted">COLUMBUS, OH 43219</small>
+		            	</div>
+		            	<div class="divider dotted"></div>
+		            </td>
+		            <td class="hasdivider audit-td-scheduled">
+		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
+		            		<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
+			            		<div class="uk-width-1-3">
+			            			<i class="a-mobile-repeat"></i>
+			            		</div>
+			            		<div class="uk-width-2-3">
+			            			<i class="a-calendar-pencil"></i>
+			            		</div>
+			            	</div> 
+			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
+			            	<div class="uk-width-1-6 uk-text-left">21</div> 
+			            	<div class="uk-width-1-6 uk-text-left">
+			            		<i class="a-circle-checked"></i>
+			            	</div>
+			            </div>
+		            	<div class="divider dotted"></div>
+		            </td>
+		            <td class="hasdivider audit-td-due">
+		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
+			            	<div class="uk-width-1-3">
+			            		<i class="a-bell-2"></i>
+			            	</div> 
+			            	<div class="uk-width-2-3">
+			            		<i class="a-calendar-pencil"></i>
+			            	</div> 
+			            </div>
+		            	<div class="divider dotted"></div>
+		            </td>
+		            <td class="hasdivider">
+		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
+			            	<div class="uk-width-1-4">
+			            		<i class="a-star-3"></i>
+			            	</div> 
+			            	<div class="uk-width-1-4">
+			            		<i class="a-star-3"></i>
+			            	</div> 
+			            	<div class="uk-width-1-4">
+			            		<i class="a-star-3"></i>
+			            	</div> 
+			            	<div class="uk-width-1-4">
+			            		<i class="a-star-3"></i>
+			            	</div> 
+			            </div>
+		            	<div class="divider dotted"></div>
+		            </td>
+		            <td class="hasdivider">
+		            	<div class="divider dotted"></div>
+		            </td>
+		            <td>
+		            	<div class="uk-margin-small-top" uk-grid>
+		            		<div class="uk-width-1-1 no-action">
+			            		<i class="a-calendar-7"></i>
+							</div>
+		            	</div>
+		            </td>
+		        </tr>
 		    </tbody>
 		</table>
 	</div>
@@ -723,6 +1093,9 @@ The following div is defined in this particular tab and pushed to the main layou
 			scrollTop: $('#audit-r-'+targetaudit).offset().top - 59
 		}, 500, 'linear');
 		if ($('#building-r-'+target+'-details').length){
+			if ($('#building-r-'+target).attr('expanded')){
+				$('#building-r-'+target).removeAttr('expanded');
+			}
 
 			// close own details
 			$('#building-r-'+target+'-details').slideUp( "slow", function() {
@@ -749,7 +1122,7 @@ The following div is defined in this particular tab and pushed to the main layou
 			$('.rowinset-bottom').slideUp();
 
         	// open the expanded div early based on expected number of buildings
-        	var tempdiv = '<div id="building-r-'+target+'-details" class="rowinset indent">';
+        	var tempdiv = '<div id="building-r-'+target+'-details" class="rowinset indent nobox">';
         	if(detailcount){
         		var tempdivheight = 150 * detailcount;
         		tempdiv = tempdiv + '<div style="height:'+tempdivheight+'px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
@@ -769,61 +1142,194 @@ The following div is defined in this particular tab and pushed to the main layou
 	                if(data=='0'){ 
 	                    UIkit.modal.alert("There was a problem getting the building details' information.");
 	                } else {
+	                	$('#building-r-'+target).attr( "expanded", true );
 						$('#building-r-'+target+'-details').html(data);
 	            	}
 		    });
 		}
 	}
 
-	function inspectionDetails(id, buildingid, auditid, target, targetaudit) {
+	function loadInspectionMenu(data, id) {
+		var inspectionLeftTemplate = $('#inspection-left-template').html();
+		var inspectionMenuItemTemplate = $('#inspection-menu-item-template').html();
+
+		var menus = '';
+		var newmenu = '';
+		data.forEach(function(menuitem) {
+			newmenu = inspectionMenuItemTemplate;
+			newmenu =  newmenu.replace(/menuName/g, menuitem.name);
+			newmenu = newmenu.replace(/menuIcon/g, menuitem.icon);
+			newmenu = newmenu.replace(/menuStatus/g, menuitem.status);
+			menus = menus + newmenu.replace(/menuStyle/g, menuitem.style);
+		});
+		$('#inspection-menus-'+id).html(inspectionLeftTemplate);
+		$('#inspection-menus-'+id+' .inspection-menu').html(menus);
+		$('#inspection-menus-'+id).fadeIn( "slow", function() {
+		    // Animation complete
+		  });
+
+
+
+
+		// $('#inspection-menus-'+id).html(inspectionLeftTemplate);
+		// $('#inspection-menus-'+id).fadeIn( "slow", function() {
+		//     // Animation complete
+		//   });
+	}
+
+	function loadInspectionTools(data, id) {
+		var inspectionToolsTemplate = $('#inspection-tools-template').html();
+
+		$('#inspection-tools-'+id).html(inspectionToolsTemplate);
+		$('#inspection-tools-'+id).fadeIn( "slow", function() {
+			    // Animation complete
+			  });
+		
+	}
+
+	function loadInspectionMain(data, id, type='site') {
+		if(type == 'site'){
+			var inspectionMainTemplate = $('#inspection-areas-template').html();
+			var inspectionAreaTemplate = $('#inspection-area-template').html();
+
+			var areas = '';
+			var newarea = '';
+			data.forEach(function(area) {
+				newarea = inspectionAreaTemplate;
+				newarea = newarea.replace(/areaName/g, area.name);
+				newarea = newarea.replace(/areaStatus/g, area.status);
+				newarea = newarea.replace(/areaAuditorInitials/g, area.auditor.initials);
+				newarea = newarea.replace(/areaAuditorName/g, area.auditor.name);
+
+				newarea = newarea.replace(/areaNLTStatus/g, area.findings.nltstatus);
+				newarea = newarea.replace(/areaLTStatus/g, area.findings.ltstatus);
+				newarea = newarea.replace(/areaSDStatus/g, area.findings.sdstatus);
+				newarea = newarea.replace(/areaPicStatus/g, area.findings.photostatus);
+				newarea = newarea.replace(/areaCommentStatus/g, area.findings.commentstatus);
+				newarea = newarea.replace(/areaCopyStatus/g, area.findings.copystatus);
+				newarea = newarea.replace(/areaTrashStatus/g, area.findings.trashstatus);
+
+				areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor.color);
+			});
+			$('#inspection-main-'+id).html(inspectionMainTemplate);
+			$('#inspection-main-'+id+' .inspection-areas').html(areas);
+			$('#inspection-main-'+id).fadeIn( "slow", function() {
+			    // Animation complete
+			  });
+		}
+
+	}
+
+	function inspectionDetails(id, buildingid, auditid, target, targetaudit, rowid) {
 		// scroll to row early
         $('html, body').animate({
 			scrollTop: $('#audit-r-'+targetaudit).offset().top - 59
 		}, 500, 'linear');
-		if ($('#building-detail-r-'+target+'-inspect').length){
+		if ($('#building-detail-r-'+target).attr('expanded')){
+			$('#building-detail-r-'+target).removeAttr('expanded');
 			// close own details
-			$('#building-detail-r-'+target+'-inspect').slideUp( "slow", function() {
-    			$(this).remove();
-  			});
 
-			$('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).slideDown();
-			// unblur other building inspection rows
-			$('div[id^="building-detail-r-"]').removeClass('blur');
+			$('#inspection-tools-'+target).fadeOut("slow", function() {
+				$('#inspection-main-'+target).slideUp("slow");
+				$('#inspection-menus-'+target).slideUp("slow");
+			    $('#inspection-tools-switch-'+target).fadeIn( "slow", function() {
+				    // Animation complete
+				  });
+			    $('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).slideDown();
+				// unblur other building inspection rows
+				$('div[id^="building-detail-r-"]').removeClass('blur');
+			 });
+
+			
 		}else{
-			// close all details
-			$('div[id$="-inspect"]').remove();
-			// unblur other building detail rows
-			$('div[id^="building-detail-r-"]').removeClass('blur');
 
 			// blur all other building detail rows
 			$('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).addClass('blur');
 			$('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).slideUp();
-
+    	
         	// open the expanded div early based on expected number of buildings
-        	var tempdiv = '<div id="building-detail-r-'+target+'-inspect" class="rowinset indent noshadow">';
+        	var tempdiv = '<div>';
         	tempdiv = tempdiv + '<div style="height:1000px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
         	tempdiv = tempdiv + '</div>';
-        	$('#building-detail-r-'+target).after(tempdiv);
+        	$('#inspection-main-'+target).html(tempdiv).slideDown();
+
+        	$('#inspection-tools-switch-'+target).fadeOut("slow");
 
 			// fetch and display new details
-			var url = '{{route("audit.building.inspection", ["audit" => "xa", "building" => "xi", "detail" => "xd"])}}';
+			var url = '{{route("audit.building.inspection", ["audit" => "xa", "building" => "xi", "detail_id" => "xd"])}}';
 			url = url.replace('xa', auditid);
 			url = url.replace('xi', buildingid);
 			url = url.replace('xd', id);
 		    $.get(url, {
 	            '_token' : '{{ csrf_token() }}',
 	            'target' : target,
+	            'rowid' : rowid,
 	            'targetaudit' : targetaudit
 	            }, function(data) {
 	                if(data=='0'){ 
 	                    UIkit.modal.alert("There was a problem getting the building details' information.");
 	                } else {
-						$('#building-detail-r-'+target+'-inspect').html(data);
-	            	}
+						// $('#building-detail-r-'+target+'-inspect').html(data);
+						$('#building-detail-r-'+target).attr( "expanded", true );
+						loadInspectionMenu(data.menu, target);
+						loadInspectionMain(data.areas, target);
+						loadInspectionTools(data, target);
+					}
 		    });
 		}
 
 	}
+
+	// function inspectionDetails(id, buildingid, auditid, target, targetaudit, rowid) {
+	// 	// scroll to row early
+ //        $('html, body').animate({
+	// 		scrollTop: $('#audit-r-'+targetaudit).offset().top - 59
+	// 	}, 500, 'linear');
+	// 	if ($('#building-detail-r-'+target+'-inspect').length){
+	// 		// close own details
+	// 		$('#building-detail-r-'+target+'-inspect').slideUp( "slow", function() {
+ //    			$(this).remove();
+ //  			});
+
+	// 		$('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).slideDown();
+	// 		// unblur other building inspection rows
+	// 		$('div[id^="building-detail-r-"]').removeClass('blur');
+	// 	}else{
+	// 		// close all details
+	// 		$('div[id$="-inspect"]').remove();
+	// 		// unblur other building detail rows
+	// 		$('div[id^="building-detail-r-"]').removeClass('blur');
+
+	// 		// blur all other building detail rows
+	// 		$('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).addClass('blur');
+	// 		$('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).slideUp();
+
+ //        	// open the expanded div early based on expected number of buildings
+ //        	var tempdiv = '<div id="building-detail-r-'+target+'-inspect" class="noshadow">';
+ //        	tempdiv = tempdiv + '<div style="height:1000px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+ //        	tempdiv = tempdiv + '</div>';
+ //        	$('#building-detail-r-'+target).after(tempdiv);
+
+	// 		// fetch and display new details
+	// 		var url = '{{route("audit.building.inspection", ["audit" => "xa", "building" => "xi", "detail_id" => "xd"])}}';
+	// 		url = url.replace('xa', auditid);
+	// 		url = url.replace('xi', buildingid);
+	// 		url = url.replace('xd', id);
+	// 	    $.get(url, {
+	//             '_token' : '{{ csrf_token() }}',
+	//             'target' : target,
+	//             'rowid' : rowid,
+	//             'targetaudit' : targetaudit
+	//             }, function(data) {
+	//                 if(data=='0'){ 
+	//                     UIkit.modal.alert("There was a problem getting the building details' information.");
+	//                 } else {
+	// 					$('#building-detail-r-'+target+'-inspect').html(data);
+	//             	}
+	// 	    });
+	// 	}
+
+	// }
 
 	function addArea() {
 		console.log('adding inspectable area');

@@ -1473,7 +1473,7 @@ margin-top:10px;
   background-color:#fafafa;
 }
 .buildings > div > div.building:hover,
-.buildings > div > div > div.building-details > div > div.building:hover,
+.buildings > div > div > div.building-details > div > div.building:not([expanded="true"]):hover,
 .buildings > div > div.building:hover .findings-icon-status span.uk-badge{
   background-color:#f0f0f0;
 }
@@ -1488,24 +1488,24 @@ margin-top:10px;
   background-color:#fafafa;
 }
 .building-details > div > div.building:hover,
-.building-details > div > div > div.building-details > div > div.building:hover,
-.building-details > div > div.building:hover .findings-icon-status span.uk-badge{
+.building-details > div > div > div.building-details > div > div.building:not([expanded="true"]):hover,
+.building-details > div > div.building:not([expanded="true"]):hover .findings-icon-status span.uk-badge{
   background-color:#f0f0f0;
 }
 
-.building-critical:hover > div,
+.building-critical:not([expanded="true"]):hover > div,
 .buildings > div > div.building.building-critical:hover .findings-icon-status span.uk-badge {
   background-color: #f9eaf1;
 }
-.building-action-needed:hover > div,
+.building-action-needed:not([expanded="true"]):hover > div,
 .buildings > div > div.building.building-action-needed:hover .findings-icon-status span.uk-badge {
   background-color: #f2eef6;
 }
-.building-in-progress:hover > div,
+.building-in-progress:not([expanded="true"]):hover > div,
 .buildings > div > div.building.building-in-progress:hover .findings-icon-status span.uk-badge {
   background-color: #eef8fd;
 }
-.building-ok-actionable:hover > div,
+.building-ok-actionable:not([expanded="true"]):hover > div,
 .buildings > div > div.building.building-ok-actionable:hover .findings-icon-status span.uk-badge {
   background-color: #f4faf5;
 }
@@ -1521,8 +1521,102 @@ margin-top:10px;
   width: 195px;
 }
 
+.building-detail .building-type {
+  width: 300px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.building-detail .building-type > div{
+  height: 100%;
+}
+.building-detail .building-type .journey {
+    margin-left: 20px;
+    height: 100%;
+    padding-top: 20px;
+}
+
+#auditstable table td .building-type-bottom {
+    padding-top: 45px;
+    text-align: right;
+}
+#auditstable table td .building-type-bottom .inspection-menu button {
+  width:90%;
+  margin-bottom:6px;
+  background-color: transparent;
+  border: 1px solid #3a3a3a;
+  border-radius: 10px;
+  padding: 1px 1px 0px;
+  text-shadow: none;
+  line-height: unset;
+}
+#auditstable table td .building-type-bottom .inspection-menu button i {
+  vertical-align: baseline;
+  font-size: 15px;
+}
+
+.inspection-areas {
+    margin-left: -60px;
+}
+.inspection-area {
+    border-bottom: 1px solid #cccccc !important;
+    padding-top: 6px;
+}
+.inspection-area:last-child {
+    border-bottom: 0px solid #cccccc !important;
+}
+.inspection-area > div {
+  padding:3px 16px;
+}
+.inspection-area .area-name {
+  padding-left:10px;
+}
+#auditstable .inspection-area .area-name i {
+    vertical-align: middle;
+    font-size: 29px;
+}
+
+#auditstable .building .inspection-area .findings-icon i { color:#ccc; border-color:#ccc;  background-color: #ccc; }
+#auditstable .building .inspection-area .findings-icon.no-action i { color:#939598; border-color:#939598;  background-color: #939598; }
+#auditstable .building .inspection-area .findings-icon.action-needed i { color:#76338b; border-color:#76338b;  background-color: #76338b;}
+#auditstable .building .inspection-area .findings-icon.action-required i, #auditstable .building .inspection-area.critical i { color:#da328a; border-color:#da328a;  background-color: #da328a;}
+#auditstable .building .inspection-area .findings-icon.ok-actionable i { color:#56b285; border-color:#56b285;  background-color: #56b285;}
+#auditstable .building .inspection-area .findings-icon.in-progress i { color:#49ade9; border-color:#49ade9;  background-color: #49ade9;}
+
+#auditstable .building .inspection-area .findings-icon .findings-icon-status span { color:#ccc; border-color:#ccc;  background-color: #ccc; }
+#auditstable .building .inspection-area .findings-icon.no-action .findings-icon-status span { color:#939598; border-color:#939598;  background-color: #939598; }
+#auditstable .building .inspection-area .findings-icon.action-needed .findings-icon-status span { color:#76338b; border-color:#76338b;  background-color: #76338b;}
+#auditstable .building .inspection-area .findings-icon.action-required .findings-icon-status span, #auditstable .building .inspection-area.critical .findings-icon-status span { color:#da328a; border-color:#da328a;  background-color: #da328a;}
+#auditstable .building .inspection-area .findings-icon.ok-actionable .findings-icon-status span { color:#56b285; border-color:#56b285;  background-color: #56b285;}
+#auditstable .building .inspection-area .findings-icon.in-progress .findings-icon-status span { color:#49ade9; border-color:#49ade9;  background-color: #49ade9;}
+
+#auditstable .building  .inspection-area .findings-icon span {
+      right: -3px;
+    bottom: 1px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff !important;
+    line-height: 6px;
+    padding: 1px;
+    width: 16px;
+    min-width: initial;
+    height: 16px;
+}
+
+#auditstable .building  .inspection-area .findings-icon i {
+    padding: 2px;
+    font-size: 31px;
+    border-radius: 11px;
+    line-height: 51px;
+    border: 4px dashed;
+}
+#auditstable .building .inspection-area .findings-icon {
+    margin: -5px 4px 2px 4px;
+}
+
 .building-critical .colored, .building-critical .colored small {
-  color: #e89ec0 !important;
+  /*color: #e89ec0 !important;*/
+  color: #da328a !important;
 }
 .building-critical:hover .colored, .building-critical:hover .colored small {
   color: #da328a !important;
@@ -1617,12 +1711,18 @@ margin-top:10px;
 
 #auditstable .building .uk-sortable-handle > span > small { font-size: 11px; }
 
-#auditstable .building-critical .uk-sortable-handle { background-color: #fce6ef; }
-#auditstable .building-in-progress .uk-sortable-handle { background-color: #ddf2fc; }
-#auditstable .building-action-required .uk-sortable-handle { background-color: #fce6ef; }
-#auditstable .building-action-needed .uk-sortable-handle { background-color: #e9dfee; }
-#auditstable .building-no-action .uk-sortable-handle { background-color: #fce6ef; }
-#auditstable .building-ok-actionable .uk-sortable-handle { background-color: #daf5df; }
+#auditstable .building-critical .uk-sortable-handle,
+#auditstable .building-critical .uk-sortable-details { background-color: #fce6ef; }
+#auditstable .building-in-progress .uk-sortable-handle,
+#auditstable .building-in-progress .uk-sortable-details { background-color: #ddf2fc; }
+#auditstable .building-action-required .uk-sortable-handle,
+#auditstable .building-action-required .uk-sortable-details { background-color: #fce6ef; }
+#auditstable .building-action-needed .uk-sortable-handle,
+#auditstable .building-action-needed .uk-sortable-details { background-color: #e9dfee; }
+#auditstable .building-no-action .uk-sortable-handle,
+#auditstable .building-no-action .uk-sortable-details { background-color: #fce6ef; }
+#auditstable .building-ok-actionable .uk-sortable-handle,
+#auditstable .building-ok-actionable .uk-sortable-details { background-color: #daf5df; }
 
 .building-auditors, .building-type-icon {
   position: relative;
@@ -1671,6 +1771,53 @@ margin-top:10px;
     line-height: 21px;
     margin: 3px 3px 3px 3px;
 }
+.inspection-areas .user-badge {
+  background-color:transparent; 
+  color: #50b8ec;
+}
+.inspection-areas .auditor-badge-green {
+  border: 1px solid #56aa80 !important; 
+  color: #56aa80;
+}
+.inspection-areas .auditor-badge-pink {
+  border: 1px solid  #FC00A4 !important; 
+  color: #FC00A4;
+}
+.inspection-areas .auditor-badge-pink-special{
+  background: repeating-linear-gradient(
+      45deg,
+      #606dbc,
+      #606dbc 10px,
+      #465298 10px,
+      #465298 20px
+    );
+  color: #FC00A4;
+}
+.inspection-areas .auditor-badge-red {
+  border: 1px solid  #C10003 !important; 
+  color: #C10003;
+}
+.inspection-areas .auditor-badge-blue {
+  border: 1px solid  #4064BF !important; 
+  color: #4064BF;
+}
+.inspection-areas .auditor-badge-sky {
+  border: 1px solid  #009AC0 !important; 
+  color: #009AC0;
+}
+.inspection-areas .auditor-badge-purple {
+  border: 1px solid #6A3D98 !important; 
+  color: #6A3D98;
+}
+.inspection-areas .auditor-badge-orange {
+  border: 1px solid #F36900 !important; 
+  color: #F36900;
+}
+.inspection-areas .auditor-badge-yellow {
+  border: 1px solid #FFD221 !important; 
+  color: #FFD221;
+}
+
 #auditstable .building-auditors .auditor-status {
     font-size: 8px;
     line-height: 8px;
@@ -1696,8 +1843,8 @@ margin-top:10px;
 }
 #auditstable .building-status i {
     position: absolute;
-    right: -13px;
-    bottom: -18px;
+    right: -11px;
+    bottom: -15px;
     background-color: #ffffff;
     border-radius: 50%;
     border-width: 0;
@@ -1706,7 +1853,11 @@ margin-top:10px;
     border: 2px solid;
     padding: 4px;
 }
-
+#auditstable .building-details .building-status i {
+    position: absolute;
+    right: -18px;
+    bottom: -15px;
+}
 #auditstable .building.no-action .building-status i { border: 2px solid; }
 #auditstable .building.action-needed .building-status i { border: 2px dashed; }
 #auditstable .building.action-required .building-status i { border: 3px double; }
@@ -1746,8 +1897,8 @@ margin-top:10px;
     border-style: double;
     border-width: 4px;
     color: #da328a;
-    height: 25px;
-    line-height: 16px;
+    height: 23px;
+    line-height: 15px;
     margin-left: -2px;
     animation: border-pulsate 2s infinite;
 }
@@ -1774,7 +1925,10 @@ margin-top:10px;
   height: 100%;
   min-width: 300px;
 }
-#auditstable .building-address > div, #auditstable .building .area-status-list, #auditstable .building .building-history {
+#auditstable .building-address > div, 
+#auditstable .building .area-status-list, 
+#auditstable .building .building-history,
+#auditstable .building div[id^="inspection-tools-"] {
     padding-top: 20px !important;
 }
 #auditstable .building-address small {
@@ -1855,13 +2009,13 @@ margin-top:10px;
 /* icon statuses */
 .no-action, .no-action.uk-badge { color:#939598; border-color:#939598; }
 .action-needed, .action-needed.uk-badge { color:#76338b; border-color:#76338b; }
-.action-required, .action-required.uk-badge { color:#da328a; border-color:#da328a; }
+.action-required, .critical, .critical.uk-badge, .action-required.uk-badge { color:#da328a; border-color:#da328a; }
 .ok-actionable, .ok-actionable.uk-badge { color:#56b285; border-color:#56b285; }
 .in-progress, .in-progress.uk-badge { color:#49ade9; border-color:#49ade9; }
 
 .no-action .findings-icon-status i { background-color: #939598; color: #ffffff; }
 .action-needed .findings-icon-status i { background-color: #76338b; color: #ffffff; }
-.action-required .findings-icon-status i { background-color: #da328a; color: #ffffff; }
+.action-required .findings-icon-status i, .critical .findings-icon-status i { background-color: #da328a; color: #ffffff; }
 .ok-actionable .findings-icon-status i { background-color: #56b285; color: #ffffff; }
 .in-progress .findings-icon-status i { background-color: #49ade9; color: #ffffff; }
 
@@ -1919,7 +2073,28 @@ margin-top:10px;
 #auditstable .building .findings-icons .no-action .a-skull { border: 5px solid; }
 #auditstable .building .findings-icons .no-action .findings-icon-status span.uk-badge { border: 2px solid; }
 
-#auditstable .building .findings-icons, #auditstable .building .program-status {
+#auditstable table td .building-type-bottom .inspection-menu button.critical { color:#efc3d8; border-color:#efc3d8;border: 5px double; animation: border-pulsate 2s infinite; }
+#auditstable table td .building-type-bottom .inspection-menu button.no-action { color:#939598; border-color:#939598;border: 2px solid; }
+#auditstable table td .building-type-bottom .inspection-menu button.action-needed { color:#76338b; border-color:#76338b;border: 2px dashed; }
+#auditstable table td .building-type-bottom .inspection-menu button.action-required { color:#da328a; border-color:#da328a;border: 5px double; animation: border-pulsate 2s infinite; }
+#auditstable table td .building-type-bottom .inspection-menu button.ok-actionable { color:#56b285; border-color:#56b285;border: 2px solid; }
+#auditstable table td .building-type-bottom .inspection-menu button.in-progress { color:#49ade9; border-color:#49ade9;border: 2px dotted; }
+
+#auditstable table td .building-type-bottom .inspection-menu button.critical.active,
+#auditstable table td .building-type-bottom .inspection-menu button.critical:hover { background-color:rgba(218,50,138,0.4); color:#ffffff; border: 5px double #efc3d8;}
+#auditstable table td .building-type-bottom .inspection-menu button.no-action.active,
+#auditstable table td .building-type-bottom .inspection-menu button.no-action:hover { background-color:rgba(147,149,152,0.4); color:#ffffff; border: 2px solid #939598;}
+#auditstable table td .building-type-bottom .inspection-menu button.action-needed.active,
+#auditstable table td .building-type-bottom .inspection-menu button.action-needed:hover { background-color:rgba(118,51,139,0.4); color:#ffffff; border: 2px dashed #76338b; }
+#auditstable table td .building-type-bottom .inspection-menu button.action-required.active,
+#auditstable table td .building-type-bottom .inspection-menu button.action-required:hover { background-color:rgba(218,50,138,0.4); color:#ffffff; border: 5px double #da328a;}
+#auditstable table td .building-type-bottom .inspection-menu button.ok-actionable.active,
+#auditstable table td .building-type-bottom .inspection-menu button.ok-actionable:hover { background-color:rgba(86,178,133,0.4); color:#ffffff;border: 2px solid #56b285; }
+#auditstable table td .building-type-bottom .inspection-menu button.in-progress.active,
+#auditstable table td .building-type-bottom .inspection-menu button.in-progress:hover { background-color:rgba(73,173,233,0.4); color:#ffffff; border: 2px dotted #49ade9;  }
+
+
+#auditstable .building:not([expanded="true"]) .findings-icons, #auditstable .building:not([expanded="true"]) .program-status {
     opacity: 0.4;
 }
 #auditstable .building:hover .findings-icons, #auditstable .building:hover .program-status {
@@ -1941,17 +2116,26 @@ margin-top:10px;
   position:relative;
 }
 #auditstable .building .findings-icon i {
-  padding: 6px; font-size: 40px; border-radius: 11px; line-height: 60px;
+      padding: 1px;
+    font-size: 40px;
+    border-radius: 11px;
+    line-height: 60px;
+    border: 5px dashed;
 }
-#auditstable .building .findings-icon-status span.uk-badge{
+#auditstable .building .findings-icon-status span{
     position: absolute;
-    right: -1px;
-    top: -7px;
+    right: 2px;
+    top: -3px;
     border-radius: 50%;
     border-width: 2px;
     font-size: 12px;
     line-height: 10px;
     padding: 4px;
+}
+#auditstable .building .findings-icon-status.plus span{
+    right: -2px;
+    bottom:1px;
+    top: unset;
 }
 #auditstable .building .findings-icon-status i {
     position: absolute;
@@ -1986,7 +2170,9 @@ margin-top:10px;
   box-shadow: none;
   border:0px;
 }
-
+.rowinset.indent.nobox {
+    border: none;
+}
 .rowinset-top {
     background-color: #4b494a;
     text-align: right;
