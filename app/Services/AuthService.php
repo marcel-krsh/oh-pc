@@ -138,7 +138,6 @@ class AuthService
                 $result = json_decode($response->getBody()->getContents());
 
                 $timestamp = intval((new Ticks($this->_getTokenExpiresValueInTicks($result->access_token)))->timestamp());
-dd($timestamp);
                 $expires_at = Carbon::createFromTimeString($timestamp);
 
                 $this->_updateAccessToken($result->access_token);
