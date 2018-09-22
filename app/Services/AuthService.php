@@ -131,7 +131,7 @@ class AuthService
             'base_uri' => $this->_url,
             'timeout'  => 10.0,
         ]);
-        
+
         try {
             $response = $this->_client->request('GET', $endpoint);
             if ($response->getStatusCode() === 200) {
@@ -151,6 +151,8 @@ class AuthService
             }
         } catch (GuzzleException | \Exception $e) {
             // @todo: Throw PC-API Exception
+            echo $this->_url."<br>";
+            echo $endpoint."<br>";
             dd($e->getMessage());
         }
 
