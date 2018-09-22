@@ -12,6 +12,7 @@
         "barryvdh/laravel-dompdf": "^0.8.3",
         "box/spout": "^2.7",
         "chumper/zipper": "^1.0",
+        "divineomega/php-dot-net-ticks": "^1.0",
         "fideloper/proxy": "~4.0",
         "guzzlehttp/guzzle": "^6.3",
         "intervention/image": "^2.3",

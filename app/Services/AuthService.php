@@ -5,6 +5,8 @@
 namespace App\Services;
 
 use App\Models\SystemSetting;
+use Carbon\Carbon;
+use DivineOmega\DotNetTicks\Ticks;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -42,12 +44,6 @@ class AuthService
     private $_login_url;
 
     /**
-     * System Level Dev|Co API Token
-     * @var string
-     */
-    private $_devco_token;
-
-    /**
      * System Level PC API Key
      * @var string
      */
@@ -66,7 +62,7 @@ class AuthService
     private $_pcapi_access_token;
 
     /**
-     * PC API acces token expiration time
+     * PC API access token expiration time
      * @var integer
      */
     private $_pcapi_access_token_expires;
@@ -84,16 +80,14 @@ class AuthService
         $this->_username = config('allita.api.username');
         $this->_password = config('allita.api.password');
         $this->_login_url = config('allita.api.login_url');
-
         $this->_pcapi_key = config('allita.api.key');
-        $this->_pcapi_refresh_token = SystemSetting::get('devco_refresh_token'); //SystemSetting::get('devco_refresh_token');
-        $this->_pcapi_access_token = SystemSetting::get('devco_access_token'); //SystemSetting::get('devco_access_token');
 
-        // if($this->_pcapi_refresh_token === null || $this->_pcapi_access_token === null){
-        //     $gettingTokens = new self();
-        //     $gettingTokens->rootAuthenticate();
-        //     $this->reloadTokens();
-        // }
+        $this->loadTokensFromDatabase();
+
+        if ($this->accessTokenNeedsRefresh()) {
+            //$this->rootRefreshToken();
+            $this->rootAuthenticate();
+        }
 
         $this->_client = new Client([
             'base_uri' => $this->_url,
@@ -101,10 +95,17 @@ class AuthService
         ]);
     }
 
-    public function reloadTokens()
+    /**
+     * Load Tokens From Database
+     *
+     * We store the token data in the database to persist between users and
+     * their requests.
+     */
+    public function loadTokensFromDatabase()
     {
-        $this->_pcapi_refresh_token = SystemSetting::get('devco_refresh_token');
-        $this->_pcapi_access_token = SystemSetting::get('devco_access_token');
+        $this->_pcapi_refresh_token = SystemSetting::get('pcapi_refresh_token');
+        $this->_pcapi_access_token = SystemSetting::get('pcapi_access_token');
+        $this->_pcapi_access_token_expires = SystemSetting::get('pcapi_access_token_expires');
     }
 
     /**
@@ -113,7 +114,6 @@ class AuthService
     public function rootKeyReset()
     {
         $endpoint = "{$this->_base_directory}/root/key-reset?username={$this->_username}&password={$this->_password}&key={$this->_pcapi_key}";
-
     }
 
     /**
@@ -130,10 +130,14 @@ class AuthService
             $response = $this->_client->request('GET', $endpoint);
             if ($response->getStatusCode() === 200) {
                 $result = json_decode($response->getBody()->getContents());
-                
+
+                $timestamp = (new Ticks($this->_getTokenExpiresValueInTicks($result->access_token)))->timestamp();
+                $expires_at = Carbon::createFromTimeString($timestamp);
+
                 $this->_updateAccessToken($result->access_token);
-                $this->_updateRefreshtoken($result->refresh_token);
-                $this->_pcapi_access_token_expires(time()+840);
+                $this->_updateAccessTokenExpires((string) $expires_at->toDateTimeString());
+                $this->_updateRefreshToken($result->refresh_token);
+
                 $is_successful = true;
             } else {
                 // @todo: Throw PC-API Exception
@@ -147,10 +151,41 @@ class AuthService
         return $is_successful;
     }
 
+    private function _getTokenExpiresValueInTicks($token)
+    {
+        $raw_token = base64_decode($token);
+        $raw_token_parts = explode('::::', $raw_token);
+
+        return $raw_token_parts[2];
+    }
+
+    public function accessTokenNeedsRefresh()
+    {
+        $result = false;
+
+        // is there a token value?
+        if (!$this->_pcapi_access_token) {
+            $result = true;
+        }
+
+        // is the expires time in the past?
+        if ($this->_pcapi_access_token_expires < date('Y-m-d H:i:s')) {
+            $result = true;
+        }
+        return $result;
+    }
+
+
     public function rootRefreshToken()
     {
         // https://www.oauth.com/oauth2-servers/access-tokens/access-token-response/
         $endpoint = "{$this->_base_directory}/root/refresh-token?token={$this->_pcapi_refresh_token}";
+
+
+
+
+
+
 
     }
 
@@ -192,14 +227,31 @@ class AuthService
     private function _updateAccessToken($token)
     {
         return SystemSetting::updateOrCreate([
-            'key' => 'devco_access_token'
+            'key' => 'pcapi_access_token'
         ],[
             'value' => $token
         ]);
     }
 
     /**
+     * Update Access Token Expires
+     *
+     * @param $expires
+     *
+     * @return mixed
+     */
+    private function _updateAccessTokenExpires($expires)
+    {
+        return SystemSetting::updateOrCreate([
+            'key' => 'pcapi_access_token_expires'
+        ],[
+            'value' => $expires
+        ]);
+    }
+
+    /**
      * Update Refresh Token
+     *
      * @param $token
      *
      * @return mixed
@@ -207,7 +259,7 @@ class AuthService
     private function _updateRefreshToken($token)
     {
         return SystemSetting::updateOrCreate([
-            'key' => 'devco_refresh_token'
+            'key' => 'pcapi_refresh_token'
         ],[
             'value' => $token
         ]);

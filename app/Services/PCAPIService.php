@@ -21,6 +21,12 @@ class PCAPIService {
     {
         // $this->_auth = new AuthService;
 
+        if ($this->_auth->accessTokenNeedsRefresh()) {
+            //$this->_auth->rootRefreshToken();
+            $this->_auth->rootAuthenticate();
+        }
+
+
         $client = new Client([
             'base_uri' => $this->_auth->getUrl(),
             'timeout'  => 5.0,

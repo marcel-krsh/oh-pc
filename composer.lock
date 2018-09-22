@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e0a094d4c9aea66876062893b9ba4982",
+    "content-hash": "bc3047a65044057e8b9a95dab7232c33",
     "packages": [
         {
             "name": "aloha/twilio",
@@ -362,6 +362,46 @@
                 "zip"
             ],
             "time": "2017-07-17T08:05:10+00:00"
+        },
+        {
+            "name": "divineomega/php-dot-net-ticks",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/DivineOmega/php-dot-net-ticks.git",
+                "reference": "9d63f56188c40ca05c7cfe15ebc05ab9fe4093ed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/DivineOmega/php-dot-net-ticks/zipball/9d63f56188c40ca05c7cfe15ebc05ab9fe4093ed",
+                "reference": "9d63f56188c40ca05c7cfe15ebc05ab9fe4093ed",
+                "shasum": ""
+            },
+            "require": {
+                "nesbot/carbon": "^1.22"
+            },
+            "require-dev": {
+                "fzaninotto/faker": "^1.6",
+                "phpunit/phpunit": "^5.7",
+                "satooshi/php-coveralls": "^2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DivineOmega\\DotNetTicks\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Jordan Hall",
+                    "email": "jordan@hall05.co.uk"
+                }
+            ],
+            "time": "2018-02-07T15:11:40+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -6448,7 +6488,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.1.3"
+        "php": ">=7.2"
     },
     "platform-dev": []
 }
