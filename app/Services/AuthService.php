@@ -163,10 +163,7 @@ class AuthService
     {
         $raw_token = base64_decode($token);
         $raw_token_parts = explode(':', $raw_token);
-
-        dd($raw_token_parts);
-
-
+        
         return $raw_token_parts[2];
     }
 
