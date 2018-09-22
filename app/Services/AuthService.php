@@ -137,7 +137,8 @@ class AuthService
             if ($response->getStatusCode() === 200) {
                 $result = json_decode($response->getBody()->getContents());
 
-                $timestamp = (int) (new Ticks($this->_getTokenExpiresValueInTicks($result->access_token)))->timestamp();
+                $timestamp = intval(new Ticks($this->_getTokenExpiresValueInTicks($result->access_token)))->timestamp());
+dd($timestamp);
                 $expires_at = Carbon::createFromTimeString($timestamp);
 
                 $this->_updateAccessToken($result->access_token);
@@ -163,7 +164,7 @@ class AuthService
     {
         $raw_token = base64_decode($token);
         $raw_token_parts = explode(':', $raw_token);
-        
+
         return $raw_token_parts[2];
     }
 
