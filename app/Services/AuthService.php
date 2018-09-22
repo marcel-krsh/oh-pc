@@ -126,6 +126,12 @@ class AuthService
         $endpoint = "{$this->_base_directory}/root/authenticate?username={$this->_username}&password={$this->_password}&key={$this->_pcapi_key}";
         $is_successful = false;
 
+        // fix this
+        $this->_client = new Client([
+            'base_uri' => $this->_url,
+            'timeout'  => 10.0,
+        ]);
+        
         try {
             $response = $this->_client->request('GET', $endpoint);
             if ($response->getStatusCode() === 200) {
