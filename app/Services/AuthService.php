@@ -138,10 +138,10 @@ class AuthService
                 $result = json_decode($response->getBody()->getContents());
 
                 $timestamp = intval((new Ticks($this->_getTokenExpiresValueInTicks($result->access_token)))->timestamp());
-                $expires_at = Carbon::createFromTimeString($timestamp);
+                $expires_at = date('Y-m-d h:i:s', $timestamp);
 
                 $this->_updateAccessToken($result->access_token);
-                $this->_updateAccessTokenExpires((string) $expires_at->toDateTimeString());
+                $this->_updateAccessTokenExpires($expires_at);
                 $this->_updateRefreshToken($result->refresh_token);
 
                 $is_successful = true;
