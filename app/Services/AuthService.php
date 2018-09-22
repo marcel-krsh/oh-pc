@@ -162,12 +162,12 @@ class AuthService
     private function _getTokenExpiresValueInTicks($token)
     {
         $raw_token = base64_decode($token);
-        $raw_token_parts = explode('::::', $raw_token);
+        $raw_token_parts = explode(':', $raw_token);
 
         echo "<pre>";
         print_r($raw_token);
         echo "</pre>";
-        
+
         return $raw_token_parts[2];
     }
 
