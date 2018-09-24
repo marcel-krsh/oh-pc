@@ -112,14 +112,14 @@ class AllitaAuth
             //     }
             // }
 
-            if(!isset($credentials['user_id']){
+            if(!isset($credentials['user_id'])){
                 // if($auth_tracker){
                 //     $auth_tracker->incrementTries();
                 // }
                 throw new AuthenticationException('Unauthenticated 119. Missing user id.');
             } 
 
-            if(!isset($credentials['token']){
+            if(!isset($credentials['token'])){
                 // if($auth_tracker){
                 //     $auth_tracker->incrementTries();
                 // }
