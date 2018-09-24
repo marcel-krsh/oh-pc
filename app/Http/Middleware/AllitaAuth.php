@@ -13,6 +13,7 @@ use App\Models\AuthTracker;
 use App\Mail\EmailFailedLogin;
 use App\Models\SystemSetting;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AllitaAuth
 {
@@ -157,6 +158,7 @@ class AllitaAuth
                 $user->devco_key = $user_key;
                 $user->name = $first_name." ".$last_name;
                 $user->email = $email;
+                $user->password = Hash::make(str_random(8));
                 $user->active = 1;
                 $user->save();
             }          
