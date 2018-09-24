@@ -112,11 +112,18 @@ class AllitaAuth
             //     }
             // }
 
-            if(!$request->has('user_id') || !$request->has('token')){
+            if(!$request->has('user_id')){
                 // if($auth_tracker){
                 //     $auth_tracker->incrementTries();
                 // }
-                throw new AuthenticationException('Unauthenticated 119.');
+                throw new AuthenticationException('Unauthenticated 119. Missing user id.');
+            } 
+
+            if(!$request->has('token')){
+                // if($auth_tracker){
+                //     $auth_tracker->incrementTries();
+                // }
+                throw new AuthenticationException('Unauthenticated 119. Missing token.');
             } 
 
             // we have user_id and token, check credentials with Devco
