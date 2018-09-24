@@ -86,8 +86,9 @@ class AllitaAuth
      */
     public function authenticate($request)
     {
-dd(Auth::check());
-        if(!Auth::check()){
+        $requested_user = $request->user();
+
+        if(!$requested_user){
   
             $credentials = $request->only('user_id', 'token');
             $ip = $request->ip();
