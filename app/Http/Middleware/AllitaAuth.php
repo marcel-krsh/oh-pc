@@ -153,14 +153,14 @@ class AllitaAuth
             $user = User::where('devco_key', '=', $user_key)->first();
 
             if(!$user){
-                $user = new User([
-                    'devco_key' => $user_key,
-                    'name' => $first_name." ".$last_name,
-                    'email' => $email,
-                    'active' => 1
-                ]);
+                $user = new User;
+                $user->devco_key = $user_key;
+                $user->name = $first_name." ".$last_name;
+                $user->email = $email;
+                $user->active = 1;
+                $user->save();
             }          
-dd($user);
+
             Auth::loginUsingId($user->id);  
 
         }else{
