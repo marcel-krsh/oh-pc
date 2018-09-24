@@ -40,7 +40,7 @@ class AllitaAuth
     {
         $this->_auth_service = new AuthService;
         $this->_devco_service = new DevcoService;
-
+        dd('line 43 '.$request, $next);
         // make sure we have access and refresh tokens
         // $pcapi_refresh_token = SystemSetting::get('devco_refresh_token'); 
         // $pcapi_access_token = SystemSetting::get('devco_access_token'); 
@@ -89,7 +89,7 @@ class AllitaAuth
 
         if(!Auth::check()){
             $result = json_decode($request);
-            dd($result, $request);
+            //dd($result, $request);
             $credentials = $request->only('user_id', 'token');
             $ip = $request->ip();
             $user_agent = $request->header('User-Agent');
