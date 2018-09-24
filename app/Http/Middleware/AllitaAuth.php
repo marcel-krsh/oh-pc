@@ -38,27 +38,20 @@ class AllitaAuth
      */
     public function handle($request, Closure $next)
     {
-        $this->_auth_service = new AuthService;
-        $this->_devco_service = new DevcoService;
-        dd('line 43 '.$request, $next);
-        // make sure we have access and refresh tokens
-        // $pcapi_refresh_token = SystemSetting::get('devco_refresh_token'); 
-        // $pcapi_access_token = SystemSetting::get('devco_access_token'); 
+        // Do they have an active session?
+        if(!Auth::check()){
+            $this->_auth_service = new AuthService;
+            $this->_devco_service = new DevcoService;
 
-        // if($pcapi_refresh_token === null || $pcapi_access_token === null){
-        //     $this->_auth_service->rootAuthenticate();
-        //     $this->_auth_service->reloadTokens();
-        // }
+            
 
-        // how do we know if the access_token needs to be replaced?
+             $this->authenticate($request);
 
-         $this->authenticate($request);
-        // $this->checkDevcoSession($request);
-
-        // temporary solution
-        if($request->has('user_id')){
-            Auth::loginUsingId($request->get('user_id'));
-        } 
+            // temporary solution
+            // if($request->has('user_id')){
+            //     Auth::loginUsingId($request->get('user_id'));
+            // } 
+        }
 
         return $next($request);
     }
@@ -71,11 +64,7 @@ class AllitaAuth
      */
     public function checkDevcoSession($request)
     {
-        // how long has it been? 
-        // over 15 min -> refresh session in Devco, save new timestamp in our db
-
-        // $service = new AuthService;
-        // $service->rootRefreshToken();
+        
     }
 
     /**
@@ -88,11 +77,12 @@ class AllitaAuth
     {
 
         if(!Auth::check()){
-            $result = json_decode($request);
-            //dd($result, $request);
+            
             $credentials = $request->only('user_id', 'token');
             $ip = $request->ip();
             $user_agent = $request->header('User-Agent');
+
+            dd($credentials,$ip,$user_agent);
 
             // keep track of tries
             // $auth_tracker = AuthTracker::where('ip','=',$ip)->where('user_id','=',$request->get('user_id'))->first();
