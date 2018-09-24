@@ -82,7 +82,7 @@ class AllitaAuth
             $ip = $request->ip();
             $user_agent = $request->header('User-Agent');
 
-            dd($credentials,$ip,$user_agent);
+            //dd($credentials,$ip,$user_agent);
 
             // keep track of tries
             // $auth_tracker = AuthTracker::where('ip','=',$ip)->where('user_id','=',$request->get('user_id'))->first();
@@ -108,20 +108,20 @@ class AllitaAuth
                 // if($auth_tracker){
                 //     $auth_tracker->incrementTries();
                 // }
-                throw new AuthenticationException('Unauthenticated 119. Missing user id.');
+                throw new AuthenticationException('Unauthenticated 111. Missing user id.');
             } 
 
             if(!isset($credentials['token'])){
                 // if($auth_tracker){
                 //     $auth_tracker->incrementTries();
                 // }
-                throw new AuthenticationException('Unauthenticated 119. Missing token.');
+                throw new AuthenticationException('Unauthenticated 118. Missing token.');
             } 
 
             // we have user_id and token, check credentials with Devco
-             $check_credentials = $this->_auth_service->userAuthenticateToken($request->get('user_id'), $request->get('token'), $ip, $user_agent);
+             $check_credentials = $this->_auth_service->userAuthenticateToken($credentials['user_id'], $credentials['token'], $ip, $user_agent);
             
-            //dd($check_credentials);
+            dd($check_credentials);
             if(!$check_credentials->data->attributes->{'authenticated'} || !$check_credentials->data->attributes->{'user-activated'} || !$check_credentials->data->attributes->{'user-exists'}){
 
                 // if($auth_tracker){
