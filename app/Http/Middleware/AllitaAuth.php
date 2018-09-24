@@ -86,7 +86,7 @@ class AllitaAuth
      */
     public function authenticate($request)
     {
-
+dd(Auth::check());
         if(!Auth::check()){
   
             $credentials = $request->only('user_id', 'token');
