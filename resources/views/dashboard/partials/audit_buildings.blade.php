@@ -117,7 +117,9 @@
 							<div uk-grid class="area-status-list">
 								@foreach($building['areas'] as $area)
 							    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status area-status-{{$area['status']}} colored">
-							    	@if($area['qty'])<span class="uk-badge">{{$area['qty']}}</span> @else <i class="a-circle-checked"></i>@endif {{$area['type']}}
+							    	<span class="uk-badge">
+							    	@if($area['qty']){{$area['qty']}} @else <i class="a-check"></i>@endif </span>
+							    	{{$area['type']}}
 							    </div>
 							    @endforeach
 							</div>

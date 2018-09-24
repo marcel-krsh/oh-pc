@@ -260,23 +260,23 @@
 		    <tbody>
 		        <tr id="audit-r-1" class="notcritical">
 		            <td id="audit-c-1-1" class="uk-text-center audit-td-lead">
-		            	<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
+		            	<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:Brian Greenwood;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float uk-link">
 							BG
 						</span>
 						<span id="audit-rid-1"><small>#1</small></span>
 		            </td>
 		            <td id="audit-c-2-1" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-1" onclick="projectDetails(123,1,3);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-1" onclick="projectDetails(123,1,3);" uk-tooltip="pos:top-left;title:View Buildings and Common Areas;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div>
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-1" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
+		            		<h3 id="audit-project-name-1" class="uk-margin-bottom-remove" uk-tooltip="title:Open Audit Details in Tab;">19200114</h3>
 			            	<small id="audit-project-aid-1" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
 			            </div>
 		            </td>
 		            <td class="audit-td-name">
 		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<i class="a-info-circle uk-text-muted"></i>
+		            		<i class="a-info-circle uk-text-muted uk-link" uk-tooltip="title:View Contact Details;"></i>
 		            	</div> 
 		            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
 		            		<h3 class="uk-margin-bottom-remove">Great American Apartments</h3>
@@ -285,7 +285,7 @@
 		            </td>
 		            <td class="hasdivider audit-td-address">
 		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<i class="a-marker-basic uk-text-muted"></i>
+		            		<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;"></i>
 		            	</div> 
 		            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
 		            		<h3 class="uk-margin-bottom-remove">3045 Cumberland Woods Street, Suite 202</h3>
@@ -297,17 +297,17 @@
 		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
 			            	<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
 			            		<div class="uk-width-1-3">
-			            			<i class="a-mobile-repeat action-needed"></i>
+			            			<i class="a-mobile-repeat action-needed" uk-tooltip="title:Inspection in progress;"></i>
 			            		</div>
 			            		<div class="uk-width-2-3">
-				            		<h3>12/21</h3>
+				            		<h3 class="uk=link" uk-tooltip="title:Click to reschedule audits;">12/21</h3>
 				            		<div class="dateyear">2018</div>
 			            		</div>
 			            	</div> 
 			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
 			            	<div class="uk-width-1-6 uk-text-left">72</div> 
 			            	<div class="uk-width-1-6 uk-text-left">
-			            		<i class="a-circle-checked ok-actionable"></i>
+			            		<i class="a-circle-checked ok-actionable"  uk-tooltip="title:Audit Compliant;"></i>
 			            	</div>
 			            </div>
 		            	<div class="divider"></div>
@@ -315,10 +315,10 @@
 		            <td class="hasdivider audit-td-due">
 		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
 			            	<div class="uk-width-1-3">
-			            		<i class="a-bell-2"></i>
+			            		<i class="a-bell-2" uk-tooltip="title:No followups;"></i>
 			            	</div> 
 			            	<div class="uk-width-2-3">
-			            		<i class="a-calendar-pencil"></i>
+			            		<i class="a-calendar-pencil" uk-tooltip="title:New followup;"></i>
 			            	</div> 
 			            </div>
 		            	<div class="divider"></div>
@@ -341,6 +341,20 @@
 		            	<div class="divider"></div>
 		            </td>
 		            <td class="hasdivider">
+		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
+			            	<div class="uk-width-1-4">
+			            		<i class="a-avatar" uk-tooltip="title:Auditors / schedule conflicts / unasigned items;"></i>
+			            	</div> 
+			            	<div class="uk-width-1-4">
+			            		<i class="a-envelope-4" uk-tooltip="title:;"></i>
+			            	</div> 
+			            	<div class="uk-width-1-4">
+			            		<i class="a-files" uk-tooltip="title:Document status;"></i>
+			            	</div> 
+			            	<div class="uk-width-1-4">
+			            		<i class="a-person-clock" uk-tooltip="title:NO/VIEW HISTORY;"></i>
+			            	</div> 
+			            </div>
 		            	<div class="divider"></div>
 		            </td>
 		            <td>

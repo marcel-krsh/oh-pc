@@ -585,6 +585,86 @@ class AuditController extends Controller
                                     'copystatus' => 'no-action',
                                     'trashstatus' => ''
                                 ]
+                            ],
+                            [
+                                'id' => 3, 
+                                'status' => 'in-progress',
+                                'name' => 'Bedroom #2', 
+                                'auditor' => [
+                                    'name' => 'Brian Greenwood',
+                                    'initials' => 'BG',
+                                    'color' => 'pink',
+                                    'status' => 'warning'
+                                ],
+                                'findings' => [
+                                    'nltstatus' => 'action-needed',
+                                    'ltstatus' => 'action-required',
+                                    'sdstatus' => 'no-action',
+                                    'photostatus' => '',
+                                    'commentstatus' => '',
+                                    'copystatus' => 'no-action',
+                                    'trashstatus' => ''
+                                ]
+                            ],
+                            [
+                                'id' => 3, 
+                                'status' => 'in-progress',
+                                'name' => 'Bedroom #2', 
+                                'auditor' => [
+                                    'name' => 'Brian Greenwood',
+                                    'initials' => 'BG',
+                                    'color' => 'pink',
+                                    'status' => 'warning'
+                                ],
+                                'findings' => [
+                                    'nltstatus' => 'action-needed',
+                                    'ltstatus' => 'action-required',
+                                    'sdstatus' => 'no-action',
+                                    'photostatus' => '',
+                                    'commentstatus' => '',
+                                    'copystatus' => 'no-action',
+                                    'trashstatus' => ''
+                                ]
+                            ],
+                            [
+                                'id' => 3, 
+                                'status' => 'in-progress',
+                                'name' => 'Bedroom #2', 
+                                'auditor' => [
+                                    'name' => 'Brian Greenwood',
+                                    'initials' => 'BG',
+                                    'color' => 'pink',
+                                    'status' => 'warning'
+                                ],
+                                'findings' => [
+                                    'nltstatus' => 'action-needed',
+                                    'ltstatus' => 'action-required',
+                                    'sdstatus' => 'no-action',
+                                    'photostatus' => '',
+                                    'commentstatus' => '',
+                                    'copystatus' => 'no-action',
+                                    'trashstatus' => ''
+                                ]
+                            ],
+                            [
+                                'id' => 3, 
+                                'status' => 'in-progress',
+                                'name' => 'Bedroom #2', 
+                                'auditor' => [
+                                    'name' => 'Brian Greenwood',
+                                    'initials' => 'BG',
+                                    'color' => 'pink',
+                                    'status' => 'warning'
+                                ],
+                                'findings' => [
+                                    'nltstatus' => 'action-needed',
+                                    'ltstatus' => 'action-required',
+                                    'sdstatus' => 'no-action',
+                                    'photostatus' => '',
+                                    'commentstatus' => '',
+                                    'copystatus' => 'no-action',
+                                    'trashstatus' => ''
+                                ]
                             ]
     				]);
         return response()->json($data);

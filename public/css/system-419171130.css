@@ -1448,6 +1448,9 @@ margin-top:10px;
   left: 5px;
   position: relative;
 }
+#auditstable table tr td.audit-td-lead .user-badge.uk-link:hover {
+  color: #fff;
+}
 #auditstable table tr td.audit-td-lead small {}
 #auditstable table tr td.audit-td-project {}
 #auditstable table tr td.audit-td-name {}
@@ -1557,6 +1560,7 @@ margin-top:10px;
 
 .inspection-areas {
     margin-left: -60px;
+    border: 0;
 }
 .inspection-area {
     border-bottom: 1px solid #cccccc !important;
@@ -1576,19 +1580,42 @@ margin-top:10px;
     font-size: 29px;
 }
 
-#auditstable .building .inspection-area .findings-icon i { color:#ccc; border-color:#ccc;  background-color: #ccc; }
-#auditstable .building .inspection-area .findings-icon.no-action i { color:#939598; border-color:#939598;  background-color: #939598; }
-#auditstable .building .inspection-area .findings-icon.action-needed i { color:#76338b; border-color:#76338b;  background-color: #76338b;}
-#auditstable .building .inspection-area .findings-icon.action-required i, #auditstable .building .inspection-area.critical i { color:#da328a; border-color:#da328a;  background-color: #da328a;}
-#auditstable .building .inspection-area .findings-icon.ok-actionable i { color:#56b285; border-color:#56b285;  background-color: #56b285;}
-#auditstable .building .inspection-area .findings-icon.in-progress i { color:#49ade9; border-color:#49ade9;  background-color: #49ade9;}
+#auditstable .building .inspection-area .findings-icon i { color:#ddd; border-color:#ddd;  }
+#auditstable .building .inspection-area .findings-icon.no-action i { color:#939598; border-color:#939598;  }
+#auditstable .building .inspection-area .findings-icon.action-needed i { color:#76338b; border-color:#76338b; }
+#auditstable .building .inspection-area .findings-icon.action-required i, #auditstable .building .inspection-area .findings-icon.critical i { color:#da328a; border-color:#da328a; }
+#auditstable .building .inspection-area .findings-icon.ok-actionable i { color:#56b285; border-color:#56b285;}
+#auditstable .building .inspection-area .findings-icon.in-progress i { color:#49ade9; border-color:#49ade9;}
 
-#auditstable .building .inspection-area .findings-icon .findings-icon-status span { color:#ccc; border-color:#ccc;  background-color: #ccc; }
+#auditstable .building .inspection-area .findings-icon i:hover { cursor: pointer; color:#fff; background-color:#ddd;  }
+#auditstable .building .inspection-area .findings-icon.no-action i:hover { cursor: pointer;color:#fff; background-color:#939598;  }
+#auditstable .building .inspection-area .findings-icon.action-needed i:hover { cursor: pointer;color:#fff; background-color:#76338b; }
+#auditstable .building .inspection-area .findings-icon.action-required i:hover, #auditstable .building .inspection-area .findings-icon.critical i:hover { cursor: pointer;color:#fff; background-color:#da328a; }
+#auditstable .building .inspection-area .findings-icon.ok-actionable i:hover { cursor: pointer;color:#fff; background-color:#56b285;}
+#auditstable .building .inspection-area .findings-icon.in-progress i:hover { cursor: pointer;color:#fff; background-color:#49ade9;}
+
+#auditstable .building .inspection-area .findings-icon:not(.no-action):not(.action-needed):not(.action-required):not(.ok-actionable):not(.in-progress):not(.critical):hover i, 
+#auditstable .building .inspection-area.no-action .findings-icon:not(.no-action):not(.action-needed):not(.action-required):not(.ok-actionable):not(.in-progress):not(.critical):hover i { color:#fff; border-color:#939598;background-color:#939598;  }
+#auditstable .building .inspection-area.action-needed .findings-icon:not(.no-action):not(.action-needed):not(.action-required):not(.ok-actionable):not(.in-progress):not(.critical):hover i { color:#fff; border-color:#76338b; background-color:#76338b;  }
+#auditstable .building .inspection-area.action-required .findings-icon:not(.no-action):not(.action-needed):not(.action-required):not(.ok-actionable):not(.in-progress):not(.critical):hover i,
+#auditstable .building .inspection-area.critical .findings-icon:not(.no-action):not(.action-needed):not(.action-required):not(.ok-actionable):not(.in-progress):not(.critical):hover i { color:#fff; border-color:#da328a; background-color:#da328a; }
+#auditstable .building .inspection-area.ok-actionable .findings-icon:not(.no-action):not(.action-needed):not(.action-required):not(.ok-actionable):not(.in-progress):not(.critical):hover i { color:#fff; border-color:#56b285; background-color:#56b285; }
+#auditstable .building .inspection-area.in-progress .findings-icon:not(.no-action):not(.action-needed):not(.action-required):not(.ok-actionable):not(.in-progress):not(.critical):hover i { color:#fff; border-color:#49ade9; background-color:#49ade9; }
+
+#auditstable .building .inspection-area .findings-icon .findings-icon-status span { color:#ddd; border-color:#ddd;  background-color: #ccc; }
 #auditstable .building .inspection-area .findings-icon.no-action .findings-icon-status span { color:#939598; border-color:#939598;  background-color: #939598; }
 #auditstable .building .inspection-area .findings-icon.action-needed .findings-icon-status span { color:#76338b; border-color:#76338b;  background-color: #76338b;}
-#auditstable .building .inspection-area .findings-icon.action-required .findings-icon-status span, #auditstable .building .inspection-area.critical .findings-icon-status span { color:#da328a; border-color:#da328a;  background-color: #da328a;}
+#auditstable .building .inspection-area .findings-icon.action-required .findings-icon-status span, #auditstable .building .inspection-area .findings-icon.critical .findings-icon-status span { color:#da328a; border-color:#da328a;  background-color: #da328a;}
 #auditstable .building .inspection-area .findings-icon.ok-actionable .findings-icon-status span { color:#56b285; border-color:#56b285;  background-color: #56b285;}
 #auditstable .building .inspection-area .findings-icon.in-progress .findings-icon-status span { color:#49ade9; border-color:#49ade9;  background-color: #49ade9;}
+
+#auditstable .building .inspection-area .findings-icon:not(.no-action):not(.action-needed):not(.action-required):not(.ok-actionable):not(.in-progress):not(.critical):hover .findings-icon-status span, 
+#auditstable .building .inspection-area.no-action .findings-icon:not(.no-action):not(.action-needed):not(.action-required):not(.ok-actionable):not(.in-progress):not(.critical):hover .findings-icon-status span { color:#939598; border-color:#939598; background-color: #939598; }
+#auditstable .building .inspection-area.action-needed .findings-icon:not(.no-action):not(.action-needed):not(.action-required):not(.ok-actionable):not(.in-progress):not(.critical):hover .findings-icon-status span { color:#76338b; border-color:#76338b; background-color: #76338b; }
+#auditstable .building .inspection-area.action-required .findings-icon:not(.no-action):not(.action-needed):not(.action-required):not(.ok-actionable):not(.in-progress):not(.critical):hover .findings-icon-status span,
+#auditstable .building .inspection-area.critical .findings-icon:not(.no-action):not(.action-needed):not(.action-required):not(.ok-actionable):not(.in-progress):not(.critical):hover .findings-icon-status span { color:#da328a; border-color:#da328a; background-color: #da328a; }
+#auditstable .building .inspection-area.ok-actionable .findings-icon:not(.no-action):not(.action-needed):not(.action-required):not(.ok-actionable):not(.in-progress):not(.critical):hover .findings-icon-status span { color:#56b285; border-color:#56b285; background-color: #56b285; }
+#auditstable .building .inspection-area.in-progress .findings-icon:not(.no-action):not(.action-needed):not(.action-required):not(.ok-actionable):not(.in-progress):not(.critical):hover .findings-icon-status span { color:#49ade9; border-color:#49ade9; background-color: #49ade9; }
 
 #auditstable .building  .inspection-area .findings-icon span {
       right: -3px;
@@ -1608,7 +1635,7 @@ margin-top:10px;
     font-size: 31px;
     border-radius: 11px;
     line-height: 51px;
-    border: 4px dashed;
+    border: 3px solid;
 }
 #auditstable .building .inspection-area .findings-icon {
     margin: -5px 4px 2px 4px;
@@ -1879,6 +1906,13 @@ margin-top:10px;
   line-height: 17px;
   animation: none;
 }
+#auditstable .building .area-status .uk-badge i{
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 19px;
+    margin-left: -2px;
+    margin-right: -2px;
+}
 #auditstable .building .area-status > i {
     font-size: 23px;
     vertical-align: sub;
@@ -2046,32 +2080,52 @@ margin-top:10px;
 #auditstable .building .findings-icons .action-needed .a-folder,
 #auditstable .building .findings-icons .action-needed .a-booboo,
 #auditstable .building .findings-icons .action-needed .a-flames,
-#auditstable .building .findings-icons .action-needed .a-skull  { border: 5px dashed; }
+#auditstable .building .findings-icons .action-needed .a-skull { border: 5px dashed; }
 #auditstable .building .findings-icons .action-needed .findings-icon-status span.uk-badge { border: 2px dashed; }
+#auditstable .building .findings-icon.action-needed .a-folder,
+#auditstable .building .findings-icon.action-needed .a-booboo,
+#auditstable .building .findings-icon.action-needed .a-flames,
+#auditstable .building .findings-icon.action-needed .a-skull  { border: 3px dashed; }
 
 #auditstable .building .findings-icons .action-required .a-folder,
 #auditstable .building .findings-icons .action-required .a-booboo,
 #auditstable .building .findings-icons .action-required .a-flames,
-#auditstable .building .findings-icons .action-required .a-skull  { border: 5px double; animation: border-pulsate 2s infinite; }
+#auditstable .building .findings-icons .action-required .a-skull { border: 5px double; animation: border-pulsate 2s infinite; }
 #auditstable .building .findings-icons .action-required .findings-icon-status span.uk-badge  { border: 3px double;animation: border-pulsate 2s infinite; }
+#auditstable .building .findings-icon.action-required .a-folder,
+#auditstable .building .findings-icon.action-required .a-booboo,
+#auditstable .building .findings-icon.action-required .a-flames,
+#auditstable .building .findings-icon.action-required .a-skull  { border: 3px double; animation: border-pulsate 2s infinite; }
 
 #auditstable .building .findings-icons .in-progress .a-folder,
 #auditstable .building .findings-icons .in-progress .a-booboo,
 #auditstable .building .findings-icons .in-progress .a-flames,
 #auditstable .building .findings-icons .in-progress .a-skull { border: 5px dotted; }
 #auditstable .building .findings-icons .in-progress .findings-icon-status span.uk-badge { border: 2px dotted; }
+#auditstable .building .findings-icon.in-progress .a-folder,
+#auditstable .building .findings-icon.in-progress .a-booboo,
+#auditstable .building .findings-icon.in-progress .a-flames,
+#auditstable .building .findings-icon.in-progress .a-skull { border: 3px dotted; }
 
 #auditstable .building .findings-icons .ok-actionable .a-folder,
 #auditstable .building .findings-icons .ok-actionable .a-booboo,
 #auditstable .building .findings-icons .ok-actionable .a-flames,
 #auditstable .building .findings-icons .ok-actionable .a-skull { border: 5px solid; }
 #auditstable .building .findings-icons .ok-actionable .findings-icon-status span.uk-badge { border: 2px solid; }
+#auditstable .building .findings-icon.ok-actionable .a-folder,
+#auditstable .building .findings-icon.ok-actionable .a-booboo,
+#auditstable .building .findings-icon.ok-actionable .a-flames,
+#auditstable .building .findings-icon.ok-actionable .a-skull { border: 3px solid; }
 
 #auditstable .building .findings-icons .no-action .a-folder,
 #auditstable .building .findings-icons .no-action .a-booboo,
 #auditstable .building .findings-icons .no-action .a-flames,
 #auditstable .building .findings-icons .no-action .a-skull { border: 5px solid; }
 #auditstable .building .findings-icons .no-action .findings-icon-status span.uk-badge { border: 2px solid; }
+#auditstable .building .findings-icon.no-action .a-folder,
+#auditstable .building .findings-icon.no-action .a-booboo,
+#auditstable .building .findings-icon.no-action .a-flames,
+#auditstable .building .findings-icon.no-action .a-skull { border: 3px solid; }
 
 #auditstable table td .building-type-bottom .inspection-menu button.critical { color:#efc3d8; border-color:#efc3d8;border: 5px double; animation: border-pulsate 2s infinite; }
 #auditstable table td .building-type-bottom .inspection-menu button.no-action { color:#939598; border-color:#939598;border: 2px solid; }
@@ -2148,6 +2202,169 @@ margin-top:10px;
     padding: 3px;
 }
 
+.inspection-tools .uk-subnav-pill>*>:first-child {
+    padding: 3px 10px;
+    background: 0 0;
+    color: #57585a;
+    border-radius: 9px;
+}
+.inspection-tools .uk-subnav-pill>.uk-active>a {
+    padding: 3px 10px;
+    background: #3a3a3a;
+    color: #ffffff;
+}
+.inpsection-tools-top {
+  padding-top:0 !important;
+}
+.inspection-tools-tabs {
+    margin-top: 15px !important;
+}
+.inspection-tools-top .tool-add-area, .inspection-tools-top .tool-edit {
+    background-color: transparent;
+    border: 2px solid #bbb;
+    width: 100%;
+    padding: 2px 10px 2px;
+    line-height: inherit;
+    text-align: left;
+    font-size: 16px;
+    color: #bbb;
+}
+.inspection-tools-top .tool-add-area:hover, .inspection-tools-top .tool-edit:hover {
+  background-color: #bbb;
+  color: #fff;
+  text-shadow: none;
+}
+#auditstable .inspection-tools-top .tool-add-area i, #auditstable .inspection-tools-top .tool-edit i {
+    font-size: 17px;
+    font-weight: bold;
+    vertical-align: text-top;
+}
+.inspec-tools-tab-findings-container {
+  border:0;
+}
+#inspec-tools-tab-findings{
+  padding-bottom: 12px;
+  color: #999999;
+      font-size: 0.9em;
+}
+#inspec-tools-tab-findings .finding-comment {
+  font-style: italic;
+}
+#inspec-tools-tab-findings .auditinfo {
+  font-size:80%;
+}
+.inspec-tools-tab-finding .inspec-tools-findings-resolve, #auditstable .inspec-tools-tab-finding .inspec-tools-findings-resolve {
+  background-color: transparent;
+  border-radius: 10px;
+  text-align: left;
+  padding: 0 7px;
+  width: 100%;
+  font-size: 12px;
+  height: 20px;
+  opacity: 0.6;
+}
+.inspec-tools-tab-finding .inspec-tools-findings-resolve:hover, #auditstable .inspec-tools-tab-finding .inspec-tools-findings-resolve:hover {
+  opacity: 1;
+}
+.inspec-tools-tab-finding .inspec-tools-findings-resolve i, #auditstable .inspec-tools-tab-finding .inspec-tools-findings-resolve i {
+  font-size: 9px;
+  font-weight: bold;
+  line-height: 15px;
+  margin-left: -2px;
+  margin-right: -2px;
+}
+.inspec-tools-tab-finding .inspec-tools-findings-resolve .uk-badge, #auditstable .inspec-tools-tab-finding .inspec-tools-findings-resolve .uk-badge {
+    line-height: 20px;
+     margin-right: 5px;
+    vertical-align: baseline;
+    background-color:transparent;
+}
+.inspec-tools-tab-finding-comment {
+    color: #57585a;
+}
+.inspec-tools-tab-finding.no-action, .inspec-tools-tab-finding { border-top: 3px solid; border-color: #939598; color: #939598; }
+.inspec-tools-tab-finding.action-needed { border-top: 3px dashed; border-color: #76338b; color: #76338b; }
+.inspec-tools-tab-finding.action-required, .inspec-tools-tab-finding.critical { border-top: 3px double; animation: border-pulsate 2s infinite; border-color: #da328a; color: #da328a; }
+.inspec-tools-tab-finding.ok-actionable { border-top: 3px solid; border-color: #56b285; color: #56b285; }
+.inspec-tools-tab-finding.in-progress { border-top: 3px dotted; border-color: #49ade9; color: #49ade9; }
+
+.inspec-tools-tab-finding.no-action .bordered, .inspec-tools-tab-finding .bordered { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px solid; border-color: #939598; color: #939598; }
+.inspec-tools-tab-finding.action-needed .bordered { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px dashed; border-color: #76338b; color: #76338b; }
+.inspec-tools-tab-finding.action-required .bordered, .inspec-tools-tab-finding.critical .bordered { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px double; animation: border-pulsate 2s infinite; border-color: #da328a; color: #da328a; }
+.inspec-tools-tab-finding.ok-actionable .bordered { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px solid; border-color: #56b285; color: #56b285; }
+.inspec-tools-tab-finding.in-progress .bordered { padding-bottom: 20px; margin-bottom: 5px; border-bottom: 3px dotted; border-color: #49ade9; color: #49ade9; }
+
+.inspec-tools-tab-finding.no-action .borderedcomment, .inspec-tools-tab-finding .borderedcomment { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px solid; border-color: #939598;  }
+.inspec-tools-tab-finding.action-needed .borderedcomment { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px dashed; border-color: #76338b; }
+.inspec-tools-tab-finding.action-required .borderedcomment, .inspec-tools-tab-finding.critical .borderedcomment { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px double; animation: border-pulsate 2s infinite; border-color: #da328a;  }
+.inspec-tools-tab-finding.ok-actionable .borderedcomment { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px solid; border-color: #56b285;  }
+.inspec-tools-tab-finding.in-progress .borderedcomment { padding-bottom: 20px; margin-bottom: 5px; border-bottom: 3px dotted; border-color: #49ade9;  }
+
+.inspec-tools-tab-finding .inspec-tools-tab-finding-reply { 
+  background-color: transparent;
+  border: 1px solid #bbb;
+  padding: 0 20px 0 7px;
+  float: right;
+  font-size: 12px;
+  color: #bbb;
+  text-shadow: none;
+}
+.inspec-tools-tab-finding .inspec-tools-tab-finding-reply:hover { 
+  background-color: #bbb;
+  border: 1px solid #bbb;
+  color: #fff;
+}
+.inspec-tools-tab-finding .inspec-tools-tab-finding-reply i {
+  vertical-align: inherit;
+  font-size: 19px !important;
+  font-weight: bold;
+  padding-right: 2px;
+  text-shadow: none;
+}
+
+.inspec-tools-tab-finding .inspec-tools-tab-finding-button {
+  background-color: #bbb;
+  border: 1px solid #bbb;
+  padding: 0 5px 0 5px;
+  float: right;
+  font-size: 12px;
+  color: #fff;
+  width: 100%;
+  text-align: left;
+  text-shadow: none;
+  opacity: 0.8;
+}
+.inspec-tools-tab-finding .inspec-tools-tab-finding-button:hover {
+  opacity: 1;
+}
+.inspec-tools-tab-finding .inspec-tools-tab-finding-button i {
+  vertical-align: sub;
+  font-size: 19px !important;
+  font-weight: bold;
+  padding-right: 2px;
+  text-shadow: none;
+}
+
+.inspec-tools-tab-finding .inspec-tools-tab-finding-button.colored { color:#fff !important; background-color:#ddd; border:none;}
+.inspec-tools-tab-finding.no-action .inspec-tools-tab-finding-button.colored {color:#fff !important; background-color:#939598; border:none;}
+.inspec-tools-tab-finding.action-needed .inspec-tools-tab-finding-button.colored {color:#fff !important; background-color:#76338b; border:none;}
+.inspec-tools-tab-finding.action-required .inspec-tools-tab-finding-button.colored, .inspec-tools-tab-finding.critical .inspec-tools-tab-finding-button.colored {color:#fff !important; background-color:#da328a; border:none;}
+.inspec-tools-tab-finding.ok-actionable .inspec-tools-tab-finding-button.colored {color:#fff !important; background-color:#56b285; border:none;}
+.inspec-tools-tab-finding.in-progress .inspec-tools-tab-finding-button.colored {color:#fff !important; background-color:#49ade9; border:none;}
+
+.inspec-tools-tab-finding .inspec-tools-findings-resolve { border: 2px solid #ddd; color: #ddd;}
+.inspec-tools-tab-finding .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #ddd; color: #ddd;}
+.inspec-tools-tab-finding.no-action .inspec-tools-findings-resolve { border: 2px solid #939598; color: #939598;}
+.inspec-tools-tab-finding.no-action .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #939598; color: #939598;}
+.inspec-tools-tab-finding.action-needed .inspec-tools-findings-resolve { border: 2px dashed #76338b; color: #76338b;}
+.inspec-tools-tab-finding.action-needed .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #76338b; color: #76338b;}
+.inspec-tools-tab-finding.action-required .inspec-tools-findings-resolve { border-top: 3px double; animation: border-pulsate 2s infinite; border-color: #da328a; color: #da328a; }
+.inspec-tools-tab-finding.action-required .inspec-tools-findings-resolve .uk-badge  { border-top: 2px solid; animation: border-pulsate 2s infinite; border-color: #da328a; color: #da328a; }
+.inspec-tools-tab-finding.ok-actionable .inspec-tools-findings-resolve { border: 2px solid #56b285; color: #56b285;}
+.inspec-tools-tab-finding.ok-actionable .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #56b285; color: #56b285;}
+.inspec-tools-tab-finding.in-progress .inspec-tools-findings-resolve { border: 2px dotted #49ade9; color: #49ade9;}
+.inspec-tools-tab-finding.in-progress .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #49ade9; color: #49ade9;}
+      
 .uk-table-hover tbody tr.rowinset:hover {
     background: inherit;
 }
@@ -2749,4 +2966,11 @@ ul ul, ol ul {
   -o-filter: blur(5px);
   -ms-filter: blur(5px);
   filter: blur(5px);
+}
+.flipfont {
+  display:inline-block;
+  -webkit-transform: rotate(-180deg);
+  -moz-transform: rotate(-180deg);
+  -ms-transform: rotate(-180deg);
+  -o-transform: rotate(-180deg);
 }
