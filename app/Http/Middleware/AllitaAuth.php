@@ -91,7 +91,7 @@ class AllitaAuth
             $credentials = $request->only('user_id', 'token');
             $ip = $request->ip();
             $user_agent = $request->header('User-Agent');
-
+dd($credentials);
             // keep track of tries
             // $auth_tracker = AuthTracker::where('ip','=',$ip)->where('user_id','=',$request->get('user_id'))->first();
             // if(!$auth_tracker){
@@ -160,7 +160,7 @@ class AllitaAuth
                     'active' => 1
                 ]);
             }          
-
+dd($user);
             Auth::loginUsingId($user->id);  
 
         }else{
