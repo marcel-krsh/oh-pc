@@ -123,6 +123,8 @@ class AuthService
      */
     public function rootAuthenticate()
     {
+        
+        if($this->)
         $endpoint = "{$this->_base_directory}/root/authenticate?username={$this->_username}&password={$this->_password}&key={$this->_pcapi_key}";
         $is_successful = false;
 
@@ -169,6 +171,9 @@ class AuthService
 
     public function accessTokenNeedsRefresh()
     {
+        // returning false will allow the current token to be used
+        // returning true will require the system to re-authenticate
+        
         $result = false;
 
         // is there a token value?

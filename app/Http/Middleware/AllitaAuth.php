@@ -88,7 +88,7 @@ class AllitaAuth
     {
 
         if(!Auth::check()){
-  
+            dd($request .' and json decoded :' .json_decode($request));
             $credentials = $request->only('user_id', 'token');
             $ip = $request->ip();
             $user_agent = $request->header('User-Agent');
