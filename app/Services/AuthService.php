@@ -147,13 +147,13 @@ class AuthService
                 $is_successful = true;
             } else {
                 // @todo: Throw PC-API Exception
-                throw new \Exception("Unexpected Status Code ({$response->getStatusCode()})");
+                throw new \Exception("Unexpected Status Code Auth Service Line 150 ({$response->getStatusCode()})");
             }
         } catch (GuzzleException | \Exception $e) {
             // @todo: Throw PC-API Exception
             echo $this->_url."<br>";
             echo $endpoint."<br>";
-            dd($e->getMessage());
+            dd('Guzzle exception - line 156 Auth Service :'.$e->getMessage());
         }
 
         return $is_successful;
@@ -162,7 +162,7 @@ class AuthService
     private function _getTokenExpiresValueInTicks($token)
     {
         $raw_token = base64_decode($token);
-        $raw_token_parts = explode(':', $raw_token);
+        $raw_token_parts = explode('::::', $raw_token);
 
         return $raw_token_parts[2];
     }
