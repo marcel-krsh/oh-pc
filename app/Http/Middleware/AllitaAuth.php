@@ -160,7 +160,7 @@ class AllitaAuth
                     'active' => 1
                 ]);
             }          
-dd($user);
+
             Auth::loginUsingId($user->id);  
 
         }else{
