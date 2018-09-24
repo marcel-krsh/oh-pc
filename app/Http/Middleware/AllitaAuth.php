@@ -91,7 +91,7 @@ class AllitaAuth
             $credentials = $request->only('user_id', 'token');
             $ip = $request->ip();
             $user_agent = $request->header('User-Agent');
-dd($credentials);
+
             // keep track of tries
             // $auth_tracker = AuthTracker::where('ip','=',$ip)->where('user_id','=',$request->get('user_id'))->first();
             // if(!$auth_tracker){
@@ -112,14 +112,14 @@ dd($credentials);
             //     }
             // }
 
-            if(!$request->has('user_id')){
+            if(!isset($credentials['user_id']){
                 // if($auth_tracker){
                 //     $auth_tracker->incrementTries();
                 // }
                 throw new AuthenticationException('Unauthenticated 119. Missing user id.');
             } 
 
-            if(!$request->has('token')){
+            if(!isset($credentials['token']){
                 // if($auth_tracker){
                 //     $auth_tracker->incrementTries();
                 // }
