@@ -136,7 +136,7 @@ class AuthService
             $response = $this->_client->request('GET', $endpoint);
             if ($response->getStatusCode() === 200) {
                 $result = json_decode($response->getBody()->getContents());
-
+                dd($result);
                 $timestamp = intval((new Ticks($this->_getTokenExpiresValueInTicks($result->access_token)))->timestamp());
                 $expires_at = date('Y-m-d h:i:s', $timestamp);
 
