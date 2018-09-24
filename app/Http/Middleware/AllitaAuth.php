@@ -151,7 +151,7 @@ class AllitaAuth
             $last_name = $check_credentials->included[0]->attributes->{'last-name'};
 
             $user = User::where('devco_key', '=', $user_key)->first();
-dd($user);
+
             if(!$user){
                 $user = new User([
                     'devco_key' => $user_key,
@@ -160,7 +160,7 @@ dd($user);
                     'active' => 1
                 ]);
             }          
-
+dd($user);
             Auth::loginUsingId($user->id);  
 
         }else{
