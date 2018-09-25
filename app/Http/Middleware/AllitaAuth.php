@@ -121,14 +121,16 @@ class AllitaAuth
             // we have user_id and token, check credentials with Devco
              $check_credentials = $this->_auth_service->userAuthenticateToken($credentials['user_id'], $credentials['token'], $ip, $user_agent);
             
-            dd($check_credentials);
+            //dd($check_credentials);
             if(!$check_credentials->data->attributes->{'authenticated'} || !$check_credentials->data->attributes->{'user-activated'} || !$check_credentials->data->attributes->{'user-exists'}){
 
                 // if($auth_tracker){
                 //     $auth_tracker->incrementTries();
                 // }
-                throw new AuthenticationException('Unauthentic  ated 130.');
+                throw new AuthenticationException('Unauthenticated 130.');
 
+            } else {
+                throw new AuthenticationException('AUTHENTIC! LETS PROCESS!'.$check_credentials);
             }
 
 
