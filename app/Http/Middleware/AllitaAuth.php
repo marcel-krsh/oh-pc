@@ -132,7 +132,7 @@ class AllitaAuth
             } else {
                 // shortcut the variables
                 $devcoCredentials = $check_credentials->included[0]->attributes;
-                dd($devcoCredentials['user-key'],$devcoCredentials['email'],$devcoCredentials['first-name'],$devcoCredentials['last-name']);
+                dd($devcoCredentials->{'user-key'},$devcoCredentials->{'email'},$devcoCredentials->{'first-name'},$devcoCredentials->{'last-name'});
             }
 
 
