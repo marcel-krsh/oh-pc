@@ -132,7 +132,7 @@ class AllitaAuth
             } else {
                 // shortcut the variables
                 $devcoCredentials = $check_credentials->included[0]->attributes;
-                dd($devcoCredentials->{'user-key'},$devcoCredentials->{'email'},$devcoCredentials->{'first-name'},$devcoCredentials->{'last-name'});
+                //dd($devcoCredentials->{'user-key'},$devcoCredentials->{'email'},$devcoCredentials->{'first-name'},$devcoCredentials->{'last-name'});
             }
 
 
@@ -141,19 +141,20 @@ class AllitaAuth
             // }
 
             // we got a real user, check if that user is in our system
-            $user_key = $check_credentials->included[0]->attributes->{'user-key'};
-            $email = $check_credentials->included[0]->attributes->{'email'};
-            $first_name = $check_credentials->included[0]->attributes->{'first-name'};
-            $last_name = $check_credentials->included[0]->attributes->{'last-name'};
+            $user_key = $devcoCredentials->{'user-key'};
+            $email = $devcoCredentials->{'email'};
+            $first_name = $devcoCredentials->{'first-name'};
+            $last_name = $devcoCredentials->{'last-name'};
 
             $user = User::where('devco_key', '=', $user_key)->first();
 
             if(!$user){
+                // no user found - add them to the database
                 $user = new User;
                 $user->devco_key = $user_key;
                 $user->name = $first_name." ".$last_name;
                 $user->email = $email;
-                $user->password = Hash::make(str_random(8));
+                $user->password = Hash::make(str_random(50));
                 $user->active = 1;
                 $user->save();
             }          
