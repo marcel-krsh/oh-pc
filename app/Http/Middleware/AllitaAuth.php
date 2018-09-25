@@ -130,7 +130,9 @@ class AllitaAuth
                 throw new AuthenticationException('Unauthenticated 130.');
 
             } else {
-                dd($check_credentials);
+                // shortcut the variables
+                $devcoCredentials = $check_credentials->included[0]->attributes;
+                dd($devcoCredentials['user-key'],$devcoCredentials['email'],$devcoCredentials['first-name'],$devcoCredentials['last-name']);
             }
 
 
