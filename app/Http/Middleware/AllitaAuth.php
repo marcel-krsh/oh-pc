@@ -130,7 +130,7 @@ class AllitaAuth
                 throw new AuthenticationException('Unauthenticated 130.');
 
             } else {
-                throw new AuthenticationException('AUTHENTIC! LETS PROCESS!');
+                dd($check_credentials);
             }
 
 
