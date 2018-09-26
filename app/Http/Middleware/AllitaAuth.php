@@ -201,7 +201,8 @@ class AllitaAuth
         }
 
         if($checkUser){
-                dd($checkCredentials); /// check the data structure
+                //dd($checkCredentials); /// check the data structure
+                $devcoCredentials = $checkCredentials->included->attributes;
                 $devcoUserKey = $devcoCredentials->{'user-key'};
                 $devcoEmail = $devcoCredentials->{'email'};
                 $devcoFirstName = $devcoCredentials->{'first-name'};
