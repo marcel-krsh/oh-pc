@@ -259,7 +259,7 @@ class AllitaAuth
         if($failedLoginAttempt){
 
             if(is_null($currentlyBlocked)) {
-                dd('got inside... null currently blocked');
+                
                 // there is not a tracker for this yet - insert one:
                 $newTracker = new AuthTracker([
                                  'token' => $request->get('token'),
