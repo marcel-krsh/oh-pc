@@ -76,8 +76,8 @@ class AllitaAuth
     public function authenticate($request)
     {
 
-        if(Auth::check()){
-            dd(Auth::check(),Auth::user());
+        if(!Auth::check()){
+            //dd(Auth::check(),Auth::user());
             $credentials = $request->only('user_id', 'token');
             $ip = $request->ip();
             $user_agent = $request->header('User-Agent');
@@ -163,20 +163,21 @@ class AllitaAuth
             }          
 
             //Auth::loginUsingId($user->id);  
+            Auth::loginUsingId($user->id);
+
 
         }else{
 
             // user is already logged in
             $user = Auth::user();
-
+            dd('User is logged in already'.$user);
             // make sure the user corresponds to the Devco user
-
-
+            ///login user by user id
+        
             // 
         }
         
-        ///login user by user id
-        Auth::loginUsingId($user->id);
+        
     }
 
 //throw new HttpException(503);
