@@ -109,7 +109,7 @@ class AllitaAuth
         ////////////////////////////////////////////////////////
         ///// Check if this ip is currently blocked
         ////
-        $currentlyBlocked = AuthTracker::where('ip','=',$thisIp))->first(); // we track each ip individually
+        $currentlyBlocked = AuthTracker::where('ip','=',$thisIp)->first(); // we track each ip individually
 
         if(!is_null($currentlyBlocked) && $currentlyBlocked->blocked_until > time()) {
             // this ip is currently being blocked
@@ -240,7 +240,7 @@ class AllitaAuth
                 
                 
 
-        }
+        }   
 
         /// check if device cookie exists: yes: deviceCheck true / no: device false
 
