@@ -202,11 +202,10 @@ class AllitaAuth
 
         if($checkUser){
                 //dd($checkCredentials); /// check the data structure
-                $devcoCredentials = $checkCredentials->included->attributes;
-                $devcoUserKey = $devcoCredentials->{'user-key'};
-                $devcoEmail = $devcoCredentials->{'email'};
-                $devcoFirstName = $devcoCredentials->{'first-name'};
-                $devcoLastName = $devcoCredentials->{'last-name'};
+                $devcoUserKey = $checkCredentials->included->attributes->{'user-key'};
+                $devcoEmail = $checkCredentials->included->attributes->{'email'};
+                $devcoFirstName = $checkCredentials->included->attributes->{'first-name'};
+                $devcoLastName = $checkCredentials->included->attributes->{'last-name'};
 
                 $allitaUser = User::where('devco_key', '=', $devcoUserKey)->first();
 
