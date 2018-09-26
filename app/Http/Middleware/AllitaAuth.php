@@ -41,7 +41,7 @@ class AllitaAuth
 
     protected $auth;
 
-    public __construct(Guard $auth){
+    public function __construct(Guard $auth){
 
         $this->auth = $auth;
 
@@ -93,7 +93,7 @@ class AllitaAuth
             $name = $this->auth->getRecallerName();
             $rememberMeCookieValue = $request->cookie($name);
 
-            dd($name,$rememberMeCookieValue);
+            dd($name,$rememberxMeCookieValue);
 
             $credentials = $request->only('user_id', 'token');
             $ip = $request->ip();
