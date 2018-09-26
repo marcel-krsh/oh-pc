@@ -232,7 +232,7 @@ class AllitaAuth
                 if($allitaUser->active == 1){
                     Auth::loginUsingId($allitaUser->id,true);
                     $key = auth()->getRecallerName();
-                    cookie()->queue($key, cookie()->get($key), 20);
+                    cookie()->queue($key, $request->cookie($key), 20);
                     // set userActive and user to be true for final test.
                     $userActive = true;
                     $user = true;   
