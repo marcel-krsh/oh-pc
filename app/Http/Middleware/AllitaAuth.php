@@ -257,7 +257,7 @@ class AllitaAuth
         ///
 
         if($failedLoginAttempt){
-            dd('got inside... failed login')
+            dd('got inside... failed login');
             if(is_null($currentlyBlocked)) {
                 // there is not a tracker for this yet - insert one:
                 $newTracker = new AuthTracker([
