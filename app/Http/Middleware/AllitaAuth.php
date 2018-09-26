@@ -279,7 +279,7 @@ class AllitaAuth
                 $blockedUntil = null;
                 $failedAttemptUser = null;
 
-                if(!is_null(($request->get('user_id'))){
+                if(!is_null($request->get('user_id'))){
                     $failedAttemptUser = $request->get('user_id');
                 }
 
