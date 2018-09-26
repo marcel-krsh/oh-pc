@@ -127,6 +127,7 @@ class AllitaAuth
                 // if($auth_tracker){
                 //     $auth_tracker->incrementTries();
                 // }
+                Auth::logout();
                 throw new AuthenticationException('Unauthenticated 130.');
 
             } else {
