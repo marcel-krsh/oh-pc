@@ -88,139 +88,407 @@ class AllitaAuth
     public function authenticate($request)
     {
 
-        if(!$request->user()){
-            
-            $name = $this->auth->getRecallerName();
-            if($name){
-                // make sure life span of cookie to 20 minutes...
+        /// Set Auth Check Variables:
+        $maxLoginTries = 5; // update to be a system setting.
+        $blockOutTimeFactor = 300; // five minutes for every 5 times they try to log in -- update to be a system setting
+        $failedLoginAttempt = false;
+        $blockAccess = false;
+        $maxUnlockTries = 5; // update to be a system setting.
+        $blockUnlock = false;
+        $thisIp = $request->ip();
+        $thisAgent = $request->header('User-Agent');
+        $explodedCredentials = false;
+        $user = false;
+        $userActive = false;
+        $addUser = false;
+        $checkUser = false;
+        $device = false;
+        $deviceCheck = true;
+        $twoFactorConfirmed = false;
 
-                $rememberMeCookieValue = $request->cookie($name);
+        ////////////////////////////////////////////////////////
+        ///// Check if this ip is currently blocked
+        ////
+        $currentlyBlocked = AuthTracker::where('ip','=',$thisIp))->first(); // we track each ip individually
+
+        if(!is_null($currentlyBlocked) && $currentlyBlocked->blocked_until > time()) {
+            // this ip is currently being blocked
+            $blockAccess = true;            
+        } 
+
+
+        ////////////////////////////////////////////////////////
+        /// check if there is a remember me token
+        ///
+
+        $name = $this->auth->getRecallerName();
+        if($name){
+            $rememberMeCookieValue = $request->cookie($name);
+            /// check if token is for remembering user:
+            if(!is_null($rememberMeCookieValue)){
+                // the remember me cookie is set - let's expolode it so we can get the user values from it.
+                $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
+                $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
+                $credentials = explode('|', $rememberMeCookieValue);
                 
-                if(!is_null($rememberMeCookieValue)){
-                    $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
-
+                // make sure this is not double encrypted:
+                if(count($credentials)>2){
+                    $explodedCredentials = true;
+                } else {
+                    /// cookie may be double encrypted - decrypt again.
                     $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
                     $credentials = explode('|', $rememberMeCookieValue);
-                    if(is_array($credentials) && count($credentials)>2){
-                        $rememberedUser = User::where('id',$credentials[0])->where('remember_token',$credentials[1])->where('password', $credentials[2])->first();
-                        if(!is_null($rememberedUser)){
-                            $this->auth->loginUsingId($rememberedUser->id,true);
-                            $key = auth()->getRecallerName();
-                            cookie()->queue($key, $request->cookie($key), 20);
-                        } else {
-                            // redirect to devco
-                            dd('redirect to devco - could not find the user.');
-                        }
-                    } else {
-                        $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
-                        dd('cannot find the user info in the explode: '.$rememberMeCookieValue);
-                    }
-                } else {
-                    dd('there is no remember me token silly... what do you do now??? REFACTOR so that we can do this cleanly and put them to the credentials.');
+                    if(count($credentials)>2){
+                        $explodedCredentials = true;
+                    } 
                 }
 
-            } else {
+                if($explodedCredentials){
+                    /// we have credentials - log them in
+                    $rememberedUser = User::where('id',$credentials[0])->where('remember_token',$credentials[1])->where('password', $credentials[2])->first();
+                    // make sure we found a user:
+                    if(!is_null($rememberedUser)){
+                        // make sure user is active
+                        if($rememberedUser->active == 1){
+                            // user is active - log them in
+                            $this->auth->loginUsingId($rememberedUser->id,true);
+                            // set the remember me token to expire in 20 minutes from this call.
+                            $key = auth()->getRecallerName();
+                            cookie()->queue($key, $request->cookie($key), 20);
 
-                $credentials = $request->only('user_id', 'token');
-                $ip = $request->ip();
-                $user_agent = $request->header('User-Agent');
+                            // set userActive and user to be true for final test.
+                            $userActive = true;
+                            $user = true;   
+                    } else {
+                        // incorrect attempt with a remember me token
+                        // record as an attempt to login (albeit via a hijacked cookie)
+                        $failedLoginAttempt = true;
 
-                //dd($credentials,$ip,$user_agent);
+                    }
+                    
+                }
 
-                // keep track of tries
-                // $auth_tracker = AuthTracker::where('ip','=',$ip)->where('user_id','=',$request->get('user_id'))->first();
-                // if(!$auth_tracker){
-                //     // maybe same IP, different user_id
-                //     $auth_tracker = AuthTracker::is_blocked_by_ip($ip);
+            }
+        }
+        
 
-                //     if($auth_tracker) {
-                //         $auth_tracker->incrementTries();
-                //     }else{
-                //         $auth_tracker = new AuthTracker([
-                //                         'token' => $request->get('token'),
-                //                         'ip' => $ip,
-                //                         'user_agent' => $user_agent,
-                //                         'user_id' => $request->get('user_id'),
-                //                         'tries' => 1,
-                //                         'blocked_until' => null
-                //                     ]);
-                //     }
-                // }
+        ////////////////////////////////////////////////////////
+        /// check if credentials were passed via the get string 
+        ///
 
-                if(!isset($credentials['user_id'])){
-                    // if($auth_tracker){
-                    //     $auth_tracker->incrementTries();
-                    // }
-                    //Auth::logout();
-                    throw new AuthenticationException('Unauthenticated 111. Missing user id.'.Auth::user());
-                } 
+        $passedCredentials = $request->only('user_id', 'token');
+        $passedIp = $request->ip();
+        $passedUserAgent = $request->header('User-Agent');
 
-                if(!isset($credentials['token'])){
-                    // if($auth_tracker){
-                    //     $auth_tracker->incrementTries();
-                    // }
-                    //Auth::logout();
-                    throw new AuthenticationException('Unauthenticated 118. Missing token.');
-                } 
+        if( 
+            isset($passedCredentials['user_id']) && 
+            isset($passedCredentials['token']) && 
+            isset($passedIp) && isset($passedUserAgent)
+        ){
+            // credentials passed through the get string - let us validate with DevCo
+            $checkCredentials = $this->_auth_service->userAuthenticateToken($passedCredentials['user_id'], $passedCredentials['token'], $passedIp, $upassedUserAgent);
 
-                // we have user_id and token, check credentials with Devco
-                 $check_credentials = $this->_auth_service->userAuthenticateToken($credentials['user_id'], $credentials['token'], $ip, $user_agent);
-                
-                //dd($check_credentials);
-                if(!$check_credentials->data->attributes->{'authenticated'} || !$check_credentials->data->attributes->{'user-activated'} || !$check_credentials->data->attributes->{'user-exists'}){
-
-                    // if($auth_tracker){
-                    //     $auth_tracker->incrementTries();
-                    // }
-                    //Auth::logout();
+                if(!$checkCredentials->data->attributes->{'authenticated'} || !$checkCredentials->data->attributes->{'user-activated'} || !$checkCredentials->data->attributes->{'user-exists'}){
+                    // this is a failed login attempt
+                    $failedLoginAttempt = true;
                     throw new AuthenticationException('Unauthenticated 130.');
+                } else {
+                    // this user is authenticated! 
+                    $user = true;
+                    $checkUser = true; // they are authenticated but we need to check them out.
+                }
 
-                } 
+        }
+
+        if($checkUser){
+                dd($checkCredentials); /// check the data structure
+                $devcoUserKey = $devcoCredentials->{'user-key'};
+                $devcoEmail = $devcoCredentials->{'email'};
+                $devcoFirstName = $devcoCredentials->{'first-name'};
+                $devcoLastName = $devcoCredentials->{'last-name'};
+
+                $allitaUser = User::where('devco_key', '=', $devcoUserKey)->first();
+
+                if(!$allitaUser){
+                    // no user found - add them to the database
+                    $allitaUser = new User;
+                    $allitaUser->devco_key = $user_key;
+                    $allitaUser->name = $devcoFirstName." ".$devcoLastName;
+                    $allitaUser->email = $devcoEmail;
+                    $allitaUser->password = Hash::make(str_random(50));
+                    $allitaUser->active = 1;
+                    $allitaUser->save();
+
+                    // get user organizations
+
+                    // add organizations that don't exist
+
+                    // associate user to organizations
+
+                    // associate user to default role
+
+
+                }          
+                if($user->active == 1){
+                    Auth::loginUsingId($allitaUser->id,true);
+                    $key = auth()->getRecallerName();
+                    cookie()->queue($key, cookie()->get($key), 20);
+                    // set userActive and user to be true for final test.
+                    $userActive = true;
+                    $user = true;   
+                }
+                
+                
+
+        }
+
+        /// check if device cookie exists: yes: deviceCheck true / no: device false
+
+        /// if deviceCheck: validate to user, twoFactorConfirmed, non expired - yes: device true / no: device false
+
+        /// if user true / device false and !isset($request->twoFactorConfirmationCode)- redirect to register device page with 2fa (show options to enter code, send new code - via methods available on user contact info)
+
+        /// if user false - redirect to devco login
+
+
+
+        ////////////////////////////////////////////////////////
+        /// check if this is a failed login attempt
+        ///
+
+        if($failedLoginAttempt){
+            if(is_null($currentlyBlocked)) {
+                // there is not a tracker for this yet - insert one:
+                $newTracker = new AuthTracker([
+                                 'token' => $request->get('token'),
+                                 'ip' => $thisIp,
+                                 'user_agent' => $thisAgent,
+                                 'user_id' => $request->get('user_id'),
+                                 'tries' => 1,
+                                 'total_failed_tries' => 1,
+                                'blocked_until' => null
+                            ]);
+            } else {
+                //update the current tracking ip:
+                $loginTries = $currentlyBlocked->tries + 1;
+                $totalTries = $currentlyBlocked->total_failed_tries + 1;
+                $blockedUntil = null;
+
+                if($loginTries > $maxLoginTries){
+                    // this ip has exceeded the max number of tries - block it
+                    // the total amount of time to block is the total number of failed tries x the factor.
+                    $blockUntil = time() + ($totalTries * $blockOutTimeFactor);
+                    $loginTries = 0; // we reset the number of tries - this is a current tracking number.
+                }
+                $currentlyBlocked->update[
+                                 'token' => $request->get('token'),
+                                 'ip' => $thisIp,
+                                 'user_agent' => $thisAgent,
+                                 'user_id' => $request->get('user_id'),
+                                 'tries' => 1,
+                                 'total_failed_tries' => 1,
+                                'blocked_until' => null
+                            ]
+            }
+        }
+
+        
+
+        ////////////////////////////////////////////////////////
+        //// check if the logged in person is trying to unlock the ip
+        //// 
+
+        $unblockIp = $request->only('unlock_ip', 'unlock_token');
+        if(
+            $user && 
+            $device && 
+            $twoFactorConfirmed && 
+            isset($unblockIp['unlock_ip']) && 
+            isset($unblockIp['unlock_token'])
+        ){
+            // find the currently blocked ip to unlock
+            $currentlyBlocked = AuthTracker::
+                                    where('ip',$unblockIp['unlock_ip'])
+                                    ->where('blocked_until','>',time())
+                                    ->first();
+
+            // make sure this block can be unlocked
+            if(!is_null($currentlyBlocked)){
+                if($currentlyBlocked->unlock_attempts < $maxUnlockTries){
+                
+                    // check submitted ip and token against the blocked set
+                    if(
+                        $currentlyBlocked->ip == $unblockIp['unlock_ip'] && 
+                        $currentlyBlocked->unlock_token == $unblockIp['unlock_token']
+                    ){
+                        // they have passed in an unlock token - make a time stamp for the past:
+                        $unblockedTime = time() - 1;
+                        $currentlyBlocked->update(['blocked_until' => $unblockedTime ]);
+                        // reset blocked access to false.
+                        if($currentlyBlocked->ip == $thisIp){
+                            $blockAccess = false;
+                        }
+                    } else {
+                        // this was a failed attempt to unlock a ip - update the attempts
+                        $unlockAttempts = $currentlyBlocked->unlock_attempts + 1;
+                        $currentlyBlocked->update(['unlock_attempts' => $unlockAttempts]);
+                        if($unlockAttempts > $maxUnlockTries){
+                            $blockUnlock = true;
+                        }
+                    } /// nothing to do... 
+                } else {
+                    if($currentlyBlocked->ip == $thisIp){
+                        $blockUnlock = true; // too many unlock attempts -- this must be manually unlocked in the admin panel from a computer on a different ip address.
+                    }
+                }
+            }
+        }
+
+        // blocked unlock redirect
+
+        // blocked redirect
+
+        // 2fa redirect
+
+        // user false // not logged in and/or no credentials
+
+
+        //////////////// OLD STUFF ///////////////////
+
+
+        // if(!$request->user()){
+        //     $name = $this->auth->getRecallerName();
+        //     if($name){
+        //         // make sure life span of cookie to 20 minutes...
+
+        //         $rememberMeCookieValue = $request->cookie($name);
+                
+        //         if(!is_null($rememberMeCookieValue)){
+        //             $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
+
+        //             $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
+        //             $credentials = explode('|', $rememberMeCookieValue);
+        //             if(is_array($credentials) && count($credentials)>2){
+        //                 $rememberedUser = User::where('id',$credentials[0])->where('remember_token',$credentials[1])->where('password', $credentials[2])->first();
+        //                 if(!is_null($rememberedUser)){
+        //                     $this->auth->loginUsingId($rememberedUser->id,true);
+        //                     $key = auth()->getRecallerName();
+        //                     cookie()->queue($key, $request->cookie($key), 20);
+        //                 } else {
+        //                     // redirect to devco
+        //                     dd('redirect to devco - could not find the user.');
+        //                 }
+        //             } else {
+        //                 $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
+        //                 dd('cannot find the user info in the explode: '.$rememberMeCookieValue);
+        //             }
+        //         } else {
+        //             dd('there is no remember me token silly... what do you do now??? REFACTOR so that we can do this cleanly and put them to the credentials.');
+        //         }
+
+        //     } else {
+
+        //         $credentials = $request->only('user_id', 'token');
+        //         $ip = $request->ip();
+        //         $user_agent = $request->header('User-Agent');
+
+        //         //dd($credentials,$ip,$user_agent);
+
+        //         // keep track of tries
+        //         // $auth_tracker = AuthTracker::where('ip','=',$ip)->where('user_id','=',$request->get('user_id'))->first();
+        //         // if(!$auth_tracker){
+        //         //     // maybe same IP, different user_id
+        //         //     $auth_tracker = AuthTracker::is_blocked_by_ip($ip);
+
+        //         //     if($auth_tracker) {
+        //         //         $auth_tracker->incrementTries();
+        //         //     }else{
+        //         //         $auth_tracker = new AuthTracker([
+        //         //                         'token' => $request->get('token'),
+        //         //                         'ip' => $ip,
+        //         //                         'user_agent' => $user_agent,
+        //         //                         'user_id' => $request->get('user_id'),
+        //         //                         'tries' => 1,
+        //         //                         'blocked_until' => null
+        //         //                     ]);
+        //         //     }
+        //         // }
+
+        //         // if(!isset($credentials['user_id'])){
+        //         //     // if($auth_tracker){
+        //         //     //     $auth_tracker->incrementTries();
+        //         //     // }
+        //         //     //Auth::logout();
+        //         //     throw new AuthenticationException('Unauthenticated 111. Missing user id.'.Auth::user());
+        //         // } 
+
+        //         // if(!isset($credentials['token'])){
+        //         //     // if($auth_tracker){
+        //         //     //     $auth_tracker->incrementTries();
+        //         //     // }
+        //         //     //Auth::logout();
+        //         //     throw new AuthenticationException('Unauthenticated 118. Missing token.');
+        //         // } 
+
+        //         // we have user_id and token, check credentials with Devco
+        //          $check_credentials = $this->_auth_service->userAuthenticateToken($credentials['user_id'], $credentials['token'], $ip, $user_agent);
+                
+        //         //dd($check_credentials);
+        //         if(!$check_credentials->data->attributes->{'authenticated'} || !$check_credentials->data->attributes->{'user-activated'} || !$check_credentials->data->attributes->{'user-exists'}){
+
+        //             // if($auth_tracker){
+        //             //     $auth_tracker->incrementTries();
+        //             // }
+        //             //Auth::logout();
+        //             throw new AuthenticationException('Unauthenticated 130.');
+
+        //         } 
 
             
 
 
-                // if($auth_tracker){
-                //     $auth_tracker->resetTries();
-                // }
+        //         // if($auth_tracker){
+        //         //     $auth_tracker->resetTries();
+        //         // }
 
-                // we got a real user, check if that user is in our system
-                $user_key = $devcoCredentials->{'user-key'};
-                $email = $devcoCredentials->{'email'};
-                $first_name = $devcoCredentials->{'first-name'};
-                $last_name = $devcoCredentials->{'last-name'};
+        //         // we got a real user, check if that user is in our system
+        //         $user_key = $devcoCredentials->{'user-key'};
+        //         $email = $devcoCredentials->{'email'};
+        //         $first_name = $devcoCredentials->{'first-name'};
+        //         $last_name = $devcoCredentials->{'last-name'};
 
-                $user = User::where('devco_key', '=', $user_key)->first();
+        //         $user = User::where('devco_key', '=', $user_key)->first();
 
-                if(!$user){
-                    // no user found - add them to the database
-                    $user = new User;
-                    $user->devco_key = $user_key;
-                    $user->name = $first_name." ".$last_name;
-                    $user->email = $email;
-                    $user->password = Hash::make(str_random(50));
-                    $user->active = 1;
-                    $user->save();
-                }          
+        //         if(!$user){
+        //             // no user found - add them to the database
+        //             $user = new User;
+        //             $user->devco_key = $user_key;
+        //             $user->name = $first_name." ".$last_name;
+        //             $user->email = $email;
+        //             $user->password = Hash::make(str_random(50));
+        //             $user->active = 1;
+        //             $user->save();
+        //         }          
 
-                //Auth::loginUsingId($user->id);  
-                Auth::loginUsingId($user->id,true);
-                $key = auth()->getRecallerName();
-                cookie()->queue($key, cookie()->get($key), 20);
-                //dd($user->id,Auth::user(),Auth::check());
-            }
+        //         //Auth::loginUsingId($user->id);  
+        //         Auth::loginUsingId($user->id,true);
+        //         $key = auth()->getRecallerName();
+        //         cookie()->queue($key, cookie()->get($key), 20);
+        //         //dd($user->id,Auth::user(),Auth::check());
+        //     }
 
-        }else{
+        // }else{
 
-            // user is already logged in
-            // $user = Auth::user();
-            //dd('User is logged in already'.$user);
-            // make sure the user corresponds to the Devco user
-            ///login user by user id
+        //     // user is already logged in
+        //     // $user = Auth::user();
+        //     //dd('User is logged in already'.$user);
+        //     // make sure the user corresponds to the Devco user
+        //     ///login user by user id
         
-            // 
-        }
+        //     // 
+        // }
         
+
         
     }
 
