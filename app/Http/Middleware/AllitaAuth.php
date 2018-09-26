@@ -108,15 +108,15 @@ class AllitaAuth
                 // if($auth_tracker){
                 //     $auth_tracker->incrementTries();
                 // }
-                Auth::logout();
-                throw new AuthenticationException('Unauthenticated 111. Missing user id.'.$credentials);
+                //Auth::logout();
+                throw new AuthenticationException('Unauthenticated 111. Missing user id.');
             } 
 
             if(!isset($credentials['token'])){
                 // if($auth_tracker){
                 //     $auth_tracker->incrementTries();
                 // }
-                Auth::logout();
+                //Auth::logout();
                 throw new AuthenticationException('Unauthenticated 118. Missing token.');
             } 
 
@@ -129,7 +129,7 @@ class AllitaAuth
                 // if($auth_tracker){
                 //     $auth_tracker->incrementTries();
                 // }
-                Auth::logout();
+                //Auth::logout();
                 throw new AuthenticationException('Unauthenticated 130.');
 
             } else {
