@@ -103,7 +103,7 @@ class AllitaAuth
                 if(!is_null($rememberedUser)){
                     $this->auth->loginUsingId($rememberedUser->id,true);
                     $key = auth()->getRecallerName();
-                    cookie()->queue($key, cookie()->get($key), 20);
+                    cookie()->queue($key, $request->cookie()->get($key), 20);
                 } else {
                     // redirect to devco
                     dd('redirect to devco - could not find the user.');
