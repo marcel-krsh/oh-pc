@@ -278,8 +278,8 @@ class AllitaAuth
                 $totalTries = $currentlyBlocked->total_failed_tries + 1;
                 $blockedUntil = null;
                 $failedAttemptUser = null;
-                
-                if(isset($request->get('user_id'))){
+
+                if(!is_null(($request->get('user_id'))){
                     $failedAttemptUser = $request->get('user_id');
                 }
 
