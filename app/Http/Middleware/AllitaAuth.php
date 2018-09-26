@@ -288,7 +288,7 @@ class AllitaAuth
                 if($loginTries > $maxLoginTries){
                     // this ip has exceeded the max number of tries - block it
                     // the total amount of time to block is the total number of failed tries x the factor.
-                    $blockUntil = time() + ($totalTries * $blockOutTimeFactor);
+                    $blockedUntil = time() + ($totalTries * $blockOutTimeFactor);
                     $loginTries = 0; // we reset the number of tries - this is a current tracking number.
                 }
                 $currentlyBlocked->update([
@@ -298,7 +298,7 @@ class AllitaAuth
                                  'user_id' => $failedAttemptUser,
                                  'tries' => $loginTries,
                                  'total_failed_tries' => $totalTries,
-                                'blocked_until' => $blockUntil
+                                'blocked_until' => $blockedUntil
                             ]);
             }
         }
