@@ -99,7 +99,7 @@ class AllitaAuth
 
                 $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
                 $credentials = explode('|', $rememberMeCookieValue);
-                if(count($credentials)>2){
+                if(is_array($credentials) && count($credentials)>2){
                     $rememberedUser = User::where('id',$credentials[0])->where('remember_token',$credentials[1])->where('password', $credentials[2])->first();
                     if(!is_null($rememberedUser)){
                         $this->auth->loginUsingId($rememberedUser->id,true);
