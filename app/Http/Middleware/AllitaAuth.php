@@ -92,8 +92,12 @@ class AllitaAuth
             //dd(Auth::check(),Auth::user());
             $name = $this->auth->getRecallerName();
             $rememberMeCookieValue = $request->cookie($name);
+            $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
 
+            $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue);
+            
             dd($name,$rememberMeCookieValue);
+
 
             $credentials = $request->only('user_id', 'token');
             $ip = $request->ip();
