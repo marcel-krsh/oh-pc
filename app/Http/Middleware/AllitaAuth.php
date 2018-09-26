@@ -370,15 +370,18 @@ class AllitaAuth
         if($blockAccess){
             dd('blocking access to this ip');
         }
-        // 2fa redirect
-        if($twoFactorConfirmed == false){
-            dd('need to two factor auth');
-        }
 
         // user false // not logged in and/or no credentials
         if($user == false){
             dd('user auth failed... needs logged in. attempt recorded.');
         }
+        
+        // 2fa redirect
+        if($twoFactorConfirmed == false){
+            dd('need to two factor auth');
+        }
+
+        
 
         //////////////// OLD STUFF ///////////////////
 
