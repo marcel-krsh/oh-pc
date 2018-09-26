@@ -93,7 +93,7 @@ class AllitaAuth
             $name = $this->auth->getRecallerName();
             $rememberMeCookieValue = $request->cookie($name);
 
-            dd($name,$rememberxMeCookieValue);
+            dd($name,$rememberMeCookieValue);
 
             $credentials = $request->only('user_id', 'token');
             $ip = $request->ip();
