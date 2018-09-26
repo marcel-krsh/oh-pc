@@ -229,7 +229,7 @@ class AllitaAuth
 
 
                 }          
-                if($user->active == 1){
+                if($allitaUser->active == 1){
                     Auth::loginUsingId($allitaUser->id,true);
                     $key = auth()->getRecallerName();
                     cookie()->queue($key, cookie()->get($key), 20);
@@ -345,13 +345,22 @@ class AllitaAuth
         }
 
         // blocked unlock redirect
-
+        if($blockUnlock){
+            dd('blocking unlock');
+        }
         // blocked redirect
-
+        if($blockAccess){
+            dd('blocking access to this ip');
+        }
         // 2fa redirect
+        if($twoFactorConfirmed == false){
+            dd('need to two factor auth');
+        }
 
         // user false // not logged in and/or no credentials
-
+        if($user == false){
+            dd('user auth failed... needs logged in. attempt recorded.');
+        }
 
         //////////////// OLD STUFF ///////////////////
 
