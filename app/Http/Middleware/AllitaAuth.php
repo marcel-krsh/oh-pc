@@ -319,8 +319,8 @@ class AllitaAuth
         $unblockIp = $request->only('unlock_ip', 'unlock_token');
         if(
             $user && 
-            $device && 
-            $twoFactorConfirmed && 
+            //$device && 
+            //$twoFactorConfirmed && 
             isset($unblockIp['unlock_ip']) && 
             isset($unblockIp['unlock_token'])
         ){
@@ -375,7 +375,7 @@ class AllitaAuth
         if($user == false){
             dd('user auth failed... needs logged in. attempt recorded.');
         }
-        
+
         // 2fa redirect
         if($twoFactorConfirmed == false){
             dd('need to two factor auth');
