@@ -105,6 +105,7 @@ class AllitaAuth
         $device = false;
         $deviceCheck = true;
         $twoFactorConfirmed = false;
+        $failedLoginReason = 'No Credentials Provided';
 
         ////////////////////////////////////////////////////////
         ///// Check if this ip is currently blocked
@@ -163,6 +164,7 @@ class AllitaAuth
                             // incorrect attempt with a remember me token
                             // record as an attempt to login (albeit via a hijacked cookie)
                             $failedLoginAttempt = true;
+                            $failedLoginReason = 'Remember me token could not be validated.';
 
                         }
                     
@@ -191,6 +193,7 @@ class AllitaAuth
                 if($checkCredentials == false || !$checkCredentials->data->attributes->{'authenticated'} || !$checkCredentials->data->attributes->{'user-activated'} || !$checkCredentials->data->attributes->{'user-exists'}){
                     // this is a failed login attempt
                     $failedLoginAttempt = true;
+                    $failedLoginReason = 'Could not validate user to devco.';
                     //throw new AuthenticationException('Unauthenticated 130.');
                 } else {
                     // this user is authenticated! 
@@ -268,18 +271,29 @@ class AllitaAuth
                                  'user_id' => $request->get('user_id'),
                                  'tries' => 1,
                                  'total_failed_tries' => 1,
+                                 'last_failed_time' => time(),
                                 'blocked_until' => null
                             ]);
                 $newTracker->save();
             } else {
                 //update the current tracking ip:
                 
-                $loginTries = $currentlyBlocked->tries + 1;
+                //check that the last login fail for this ip was within the last 5 minutes
+                if($currentlyBlocked->last_failed_time is > (time() - 300)){
+                    $loginTries = $currentlyBlocked->tries + 1;
+                } else {
+                    // it has been more than 5 minutes since the last login fail - we will reset the try count.
+                    $loginTries = 1; 
+
+                }
+                // total tries helps us understand how many failed login attempts have happened.
                 $totalTries = $currentlyBlocked->total_failed_tries + 1;
                 $blockedUntil = null;
                 $failedAttemptUser = null;
                 $unlockToken = null;
                 $timesLocked = $currentlyBlocked->times_locked;
+                $lastFailedTime = time();
+                $lastLockedTime = $currentlyBlocked->last_locked_time;
 
                 if(!is_null($request->get('user_id'))){
                     $failedAttemptUser = $request->get('user_id');
@@ -294,17 +308,20 @@ class AllitaAuth
                     $loginTries = 0; // we reset the number of tries - this is a current tracking number.
                     $unlockToken = Hash::make(str_random(5000)); // add in an unlock token.
                     $timesLocked = $timesLocked + 1;
+                    $lastLockedTime = time();
                 }
                 $currentlyBlocked->update([
-                                 'token' => $request->get('token'),
-                                 'ip' => $thisIp,
-                                 'user_agent' => $thisAgent,
-                                 'user_id' => $failedAttemptUser,
-                                 'tries' => $loginTries,
-                                 'total_failed_tries' => $totalTries,
-                                 'times_locked' => $timesLocked,
+                                'token' => $request->get('token'),
+                                'ip' => $thisIp,
+                                'user_agent' => $thisAgent,
+                                'user_id' => $failedAttemptUser,
+                                'tries' => $loginTries,
+                                'total_failed_tries' => $totalTries,
+                                'times_locked' => $timesLocked,
                                 'blocked_until' => $blockedUntil,
                                 'unlock_token' => $unlockToken,
+                                'last_failed_time' => $lastFailedTime,
+                                'last_locked_time' => $lastLockedTime,
 
                             ]);
             }
@@ -332,34 +349,39 @@ class AllitaAuth
 
             // make sure this block can be unlocked
             if(!is_null($currentlyBlocked)){
+                // there is an auth_tracking record...
                 if($currentlyBlocked->unlock_attempts < $maxUnlockTries){
-                
+                    
+                    $unlockAttempts = $currentlyBlocked->unlock_attempts + 1;
+                    $totalUnlockAttempts = $currentlyBlocked->unlock_attempts + 1;
                     // check submitted ip and token against the blocked set
-                    if(
-                        $currentlyBlocked->ip == $unblockIp['unlock_ip'] && 
-                        $currentlyBlocked->unlock_token == $unblockIp['unlock_token']
-                    ){
-                        // they have passed in an unlock token - make a time stamp for the past:
+                    if( $currentlyBlocked->ip == $unblockIp['unlock_ip'] && 
+                        $currentlyBlocked->unlock_token == $unblockIp['unlock_token'] ){
+                        // they have passed in a matching unlock token - make a time stamp for the past:
                         $unblockedTime = time() - 1;
-                        $currentlyBlocked->update(['blocked_until' => $unblockedTime ]);
+                        $currentlyBlocked->update([
+                                            'blocked_until' => $unblockedTime, 
+                                            'unlock_attempts' => 0,
+                                            'total_unlock_attempts' => $totalUnlockAttempts 
+                                            ]);
                         // reset blocked access to false.
                         if($currentlyBlocked->ip == $thisIp){
                             $blockAccess = false;
                         }
                     } else {
                         // this was a failed attempt to unlock a ip - update the attempts
-                        $unlockAttempts = $currentlyBlocked->unlock_attempts + 1;
-                        $currentlyBlocked->update(['unlock_attempts' => $unlockAttempts]);
+                        $currentlyBlocked->update(['unlock_attempts' => $unlockAttempts, 'total_unlock_attempts' => $total_unlock_attempts]);
                         if($unlockAttempts > $maxUnlockTries){
                             $blockUnlock = true;
                         }
                     } /// nothing to do... 
                 } else {
+                    // too many unlock attempts -- this must be manually unlocked in the admin panel from a computer on a different ip address.
                     if($currentlyBlocked->ip == $thisIp){
-                        $blockUnlock = true; // too many unlock attempts -- this must be manually unlocked in the admin panel from a computer on a different ip address.
+                        $blockUnlock = true; 
                     }
                 }
-            }
+            }// there is not a matching record to unlock-- either the block expired or the record does not exist.
         }
 
         // blocked unlock redirect
@@ -373,7 +395,7 @@ class AllitaAuth
 
         // user false // not logged in and/or no credentials
         if($user == false){
-            dd('user auth failed... needs logged in. attempt recorded.');
+            dd('User login failed (fail recorded in database for this ip): '.$failedLoginReason);
         }
 
         // 2fa redirect

@@ -23,7 +23,9 @@ class AuthTracker extends Model
         'times_locked',
         'unlock_token',
         'unlock_attempts',
-        'total_unlock_attempts'
+        'total_unlock_attempts',
+        'last_failed_time',
+        'last_locked_time'
     ];
 
     /**
