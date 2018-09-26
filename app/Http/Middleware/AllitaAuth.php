@@ -304,7 +304,7 @@ class AllitaAuth
                                  'total_failed_tries' => $totalTries,
                                  'times_locked' => $timesLocked,
                                 'blocked_until' => $blockedUntil,
-                                'unlock_token' => $unlockToken;
+                                'unlock_token' => $unlockToken,
 
                             ]);
             }
