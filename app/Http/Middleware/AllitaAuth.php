@@ -76,8 +76,8 @@ class AllitaAuth
     public function authenticate($request)
     {
 
-        if(!Auth::check()){
-            
+        if(Auth::check()){
+            dd(Auth::check(),Auth::user());
             $credentials = $request->only('user_id', 'token');
             $ip = $request->ip();
             $user_agent = $request->header('User-Agent');
