@@ -278,7 +278,7 @@ class AllitaAuth
                 $totalTries = $currentlyBlocked->total_failed_tries + 1;
                 $blockedUntil = null;
                 $failedAttemptUser = null;
-                $unlock_token = null;
+                $unlockToken = null;
                 $timesLocked = $currentlyBlocked->times_locked;
 
                 if(!is_null($request->get('user_id'))){
@@ -292,7 +292,7 @@ class AllitaAuth
                     // the total amount of time to block is the total number of failed tries x the factor.
                     $blockedUntil = time() + ($totalTries * $blockOutTimeFactor);
                     $loginTries = 0; // we reset the number of tries - this is a current tracking number.
-                    $unlock_token = Hash::make(str_random(5000)); // add in an unlock token.
+                    $unlockToken = Hash::make(str_random(5000)); // add in an unlock token.
                     $timesLocked = $timesLocked + 1;
                 }
                 $currentlyBlocked->update([
@@ -303,7 +303,8 @@ class AllitaAuth
                                  'tries' => $loginTries,
                                  'total_failed_tries' => $totalTries,
                                  'times_locked' => $timesLocked,
-                                'blocked_until' => $blockedUntil
+                                'blocked_until' => $blockedUntil,
+                                'unlock_token' => $unlockToken;
 
                             ]);
             }
