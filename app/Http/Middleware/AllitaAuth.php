@@ -279,7 +279,7 @@ class AllitaAuth
                 //update the current tracking ip:
                 
                 //check that the last login fail for this ip was within the last 5 minutes
-                if($currentlyBlocked->last_failed_time is > (time() - 300)){
+                if($currentlyBlocked->last_failed_time > (time() - 300)){
                     $loginTries = $currentlyBlocked->tries + 1;
                 } else {
                     // it has been more than 5 minutes since the last login fail - we will reset the try count.
