@@ -102,13 +102,15 @@ class AllitaAuth
                 $rememberedUser = User::where('id',$credentials[0])->where('remember_token',$credentials[1])->where('password', $credentials[2])->first();
                 if(!is_null($rememberedUser)){
                     $this->auth->loginUsingId($rememberedUser->id,true);
+                    $key = auth()->getRecallerName();
+                    cookie()->queue($key, cookie()->get($key), 20);
                 } else {
                     // redirect to devco
                     dd('redirect to devco - could not find the user.');
                 }
 
             } else {
-                
+
                 $credentials = $request->only('user_id', 'token');
                 $ip = $request->ip();
                 $user_agent = $request->header('User-Agent');
@@ -193,6 +195,8 @@ class AllitaAuth
 
                 //Auth::loginUsingId($user->id);  
                 Auth::loginUsingId($user->id,true);
+                $key = auth()->getRecallerName();
+                cookie()->queue($key, cookie()->get($key), 20);
                 //dd($user->id,Auth::user(),Auth::check());
             }
 
