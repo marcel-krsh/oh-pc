@@ -257,8 +257,9 @@ class AllitaAuth
         ///
 
         if($failedLoginAttempt){
-            dd('got inside... failed login');
+
             if(is_null($currentlyBlocked)) {
+                dd('got inside... null currently blocked');
                 // there is not a tracker for this yet - insert one:
                 $newTracker = new AuthTracker([
                                  'token' => $request->get('token'),
@@ -268,9 +269,10 @@ class AllitaAuth
                                  'tries' => 1,
                                  'total_failed_tries' => 1,
                                 'blocked_until' => null
-                            ]);
+                            ])->save();
             } else {
                 //update the current tracking ip:
+                dd('got inside... a currently blocked one');
                 $loginTries = $currentlyBlocked->tries + 1;
                 $totalTries = $currentlyBlocked->total_failed_tries + 1;
                 $blockedUntil = null;
