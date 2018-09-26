@@ -256,7 +256,7 @@ class AllitaAuth
         /// check if this is a failed login attempt
         ///
 
-        if($failedLoginAttempt){
+        if($failedLoginAttempt && $blockAccess == false){ // we don't record additional attempts on blocked access.
 
             if(is_null($currentlyBlocked)) {
                 
@@ -278,6 +278,7 @@ class AllitaAuth
                 $totalTries = $currentlyBlocked->total_failed_tries + 1;
                 $blockedUntil = null;
                 $failedAttemptUser = null;
+                $unlock_token = null;
 
                 if(!is_null($request->get('user_id'))){
                     $failedAttemptUser = $request->get('user_id');
@@ -290,6 +291,7 @@ class AllitaAuth
                     // the total amount of time to block is the total number of failed tries x the factor.
                     $blockedUntil = time() + ($totalTries * $blockOutTimeFactor);
                     $loginTries = 0; // we reset the number of tries - this is a current tracking number.
+                    $unlock_token = Hash::make(str_random(5000)); // add in an unlock token.
                 }
                 $currentlyBlocked->update([
                                  'token' => $request->get('token'),
@@ -299,6 +301,7 @@ class AllitaAuth
                                  'tries' => $loginTries,
                                  'total_failed_tries' => $totalTries,
                                 'blocked_until' => $blockedUntil
+
                             ]);
             }
         }
@@ -306,7 +309,7 @@ class AllitaAuth
         
 
         ////////////////////////////////////////////////////////
-        //// check if the logged in person is trying to unlock the ip
+        //// check if the authorized person is trying to unlock the ip
         //// 
 
         $unblockIp = $request->only('unlock_ip', 'unlock_token');
