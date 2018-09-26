@@ -191,7 +191,7 @@ class AllitaAuth
                 if(!$checkCredentials->data->attributes->{'authenticated'} || !$checkCredentials->data->attributes->{'user-activated'} || !$checkCredentials->data->attributes->{'user-exists'}){
                     // this is a failed login attempt
                     $failedLoginAttempt = true;
-                    throw new AuthenticationException('Unauthenticated 130.');
+                    //throw new AuthenticationException('Unauthenticated 130.');
                 } else {
                     // this user is authenticated! 
                     $user = true;
