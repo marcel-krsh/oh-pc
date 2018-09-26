@@ -110,6 +110,7 @@ class AllitaAuth
                         dd('redirect to devco - could not find the user.');
                     }
                 } else {
+                    $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
                     dd('cannot find the user info in the explode: '.$rememberMeCookieValue);
                 }
 
