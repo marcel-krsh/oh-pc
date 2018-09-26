@@ -159,7 +159,7 @@ class AllitaAuth
                 $user->save();
             }          
 
-            Auth::loginUsingId($user->id);  
+            //Auth::loginUsingId($user->id);  
 
         }else{
 
@@ -172,8 +172,8 @@ class AllitaAuth
             // 
         }
         
-        // login user by user id
-        //Auth::loginUsingId(1);
+        ///login user by user id
+        Auth::loginUsingId(1);
     }
 
 //throw new HttpException(503);
