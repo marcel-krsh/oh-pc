@@ -13,13 +13,13 @@ class DashboardController extends Controller
 {
 	public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('allita.auth');
     	 //Auth::onceUsingId(1); // TEST BRIAN
     }
 
     public function login()
     {
-        return "test";
+        return "This feature has been replaced with a DevCo login. Please visit Devco Online to login.";
     }
 
     public function index(Request $request)
