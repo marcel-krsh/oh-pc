@@ -95,23 +95,28 @@ class AllitaAuth
                 // make sure life span of cookie to 20 minutes...
 
                 $rememberMeCookieValue = $request->cookie($name);
-                $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
+                dd($rememberMeCookieValue);
+                if(!is_null($rememberMeCookieValue)){
+                    $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
 
-                $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
-                $credentials = explode('|', $rememberMeCookieValue);
-                if(is_array($credentials) && count($credentials)>2){
-                    $rememberedUser = User::where('id',$credentials[0])->where('remember_token',$credentials[1])->where('password', $credentials[2])->first();
-                    if(!is_null($rememberedUser)){
-                        $this->auth->loginUsingId($rememberedUser->id,true);
-                        $key = auth()->getRecallerName();
-                        cookie()->queue($key, $request->cookie($key), 20);
+                    $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
+                    $credentials = explode('|', $rememberMeCookieValue);
+                    if(is_array($credentials) && count($credentials)>2){
+                        $rememberedUser = User::where('id',$credentials[0])->where('remember_token',$credentials[1])->where('password', $credentials[2])->first();
+                        if(!is_null($rememberedUser)){
+                            $this->auth->loginUsingId($rememberedUser->id,true);
+                            $key = auth()->getRecallerName();
+                            cookie()->queue($key, $request->cookie($key), 20);
+                        } else {
+                            // redirect to devco
+                            dd('redirect to devco - could not find the user.');
+                        }
                     } else {
-                        // redirect to devco
-                        dd('redirect to devco - could not find the user.');
+                        $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
+                        dd('cannot find the user info in the explode: '.$rememberMeCookieValue);
                     }
                 } else {
-                    $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
-                    dd('cannot find the user info in the explode: '.$rememberMeCookieValue);
+                    dd('there is no remember me token silly... what do you do now??? REFACTOR so that we can do this cleanly and put them to the credentials.');
                 }
 
             } else {
