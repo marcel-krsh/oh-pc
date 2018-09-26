@@ -13,7 +13,7 @@ class DashboardController extends Controller
 {
 	public function __construct()
     {
-        //$this->middleware('allita.auth');
+         //$this->middleware('allita.auth');
     	 //Auth::onceUsingId(1); // TEST BRIAN
     }
 
