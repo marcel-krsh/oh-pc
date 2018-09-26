@@ -188,7 +188,7 @@ class AllitaAuth
             // credentials passed through the get string - let us validate with DevCo
             $checkCredentials = $this->_auth_service->userAuthenticateToken($passedCredentials['user_id'], $passedCredentials['token'], $passedIp, $passedUserAgent);
 
-                if(!$checkCredentials->data->attributes->{'authenticated'} || !$checkCredentials->data->attributes->{'user-activated'} || !$checkCredentials->data->attributes->{'user-exists'}){
+                if($checkCredentials == false || !$checkCredentials->data->attributes->{'authenticated'} || !$checkCredentials->data->attributes->{'user-activated'} || !$checkCredentials->data->attributes->{'user-exists'}){
                     // this is a failed login attempt
                     $failedLoginAttempt = true;
                     //throw new AuthenticationException('Unauthenticated 130.');
