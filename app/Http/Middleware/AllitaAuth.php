@@ -280,7 +280,7 @@ class AllitaAuth
                     $blockUntil = time() + ($totalTries * $blockOutTimeFactor);
                     $loginTries = 0; // we reset the number of tries - this is a current tracking number.
                 }
-                $currentlyBlocked->update[
+                $currentlyBlocked->update([
                                  'token' => $request->get('token'),
                                  'ip' => $thisIp,
                                  'user_agent' => $thisAgent,
@@ -288,7 +288,7 @@ class AllitaAuth
                                  'tries' => 1,
                                  'total_failed_tries' => 1,
                                 'blocked_until' => null
-                            ]
+                            ]);
             }
         }
 
