@@ -159,19 +159,19 @@ class AllitaAuth
                             // set userActive and user to be true for final test.
                             $userActive = true;
                             $user = true;   
-                    } else {
-                        // incorrect attempt with a remember me token
-                        // record as an attempt to login (albeit via a hijacked cookie)
-                        $failedLoginAttempt = true;
+                        } else {
+                            // incorrect attempt with a remember me token
+                            // record as an attempt to login (albeit via a hijacked cookie)
+                            $failedLoginAttempt = true;
 
-                    }
+                        }
                     
+                    }
+
                 }
-
             }
-        }
         
-
+        }
         ////////////////////////////////////////////////////////
         /// check if credentials were passed via the get string 
         ///
