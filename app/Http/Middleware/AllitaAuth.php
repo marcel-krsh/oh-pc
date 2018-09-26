@@ -173,7 +173,7 @@ class AllitaAuth
         }
         
         ///login user by user id
-        Auth::loginUsingId(1);
+        Auth::loginUsingId($user->id);
     }
 
 //throw new HttpException(503);
