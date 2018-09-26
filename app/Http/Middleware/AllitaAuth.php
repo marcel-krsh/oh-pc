@@ -273,10 +273,17 @@ class AllitaAuth
                 $newTracker->save();
             } else {
                 //update the current tracking ip:
-                dd('got inside... a currently blocked one');
+                
                 $loginTries = $currentlyBlocked->tries + 1;
                 $totalTries = $currentlyBlocked->total_failed_tries + 1;
                 $blockedUntil = null;
+                $failedAttemptUser = null;
+                
+                if(isset($request->get('user_id'))){
+                    $failedAttemptUser = $request->get('user_id');
+                }
+
+
 
                 if($loginTries > $maxLoginTries){
                     // this ip has exceeded the max number of tries - block it
@@ -288,10 +295,10 @@ class AllitaAuth
                                  'token' => $request->get('token'),
                                  'ip' => $thisIp,
                                  'user_agent' => $thisAgent,
-                                 'user_id' => $request->get('user_id'),
-                                 'tries' => 1,
-                                 'total_failed_tries' => 1,
-                                'blocked_until' => null
+                                 'user_id' => $failedAttemptUser,
+                                 'tries' => $loginTries,
+                                 'total_failed_tries' => $totalTries,
+                                'blocked_until' => $blockUntil
                             ]);
             }
         }
