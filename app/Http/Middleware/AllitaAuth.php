@@ -163,7 +163,7 @@ class AllitaAuth
             }          
 
             //Auth::loginUsingId($user->id);  
-            Auth::loginUsingId($user->id);
+            Auth::loginUsingId($user->id,true);
             //dd($user->id,Auth::user(),Auth::check());
 
         }else{
