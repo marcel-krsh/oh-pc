@@ -94,8 +94,8 @@ class AllitaAuth
             $rememberMeCookieValue = $request->cookie($name);
             $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
 
-            $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue);
-            
+            $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
+
             dd($name,$rememberMeCookieValue);
 
 
