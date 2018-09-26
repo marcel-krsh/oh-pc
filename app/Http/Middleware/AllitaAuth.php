@@ -95,7 +95,7 @@ class AllitaAuth
                 // make sure life span of cookie to 20 minutes...
 
                 $rememberMeCookieValue = $request->cookie($name);
-                dd($rememberMeCookieValue);
+                
                 if(!is_null($rememberMeCookieValue)){
                     $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
 
