@@ -171,8 +171,8 @@ class AllitaAuth
         }else{
 
             // user is already logged in
-            $user = Auth::user();
-            dd('User is logged in already'.$user);
+            // $user = Auth::user();
+            //dd('User is logged in already'.$user);
             // make sure the user corresponds to the Devco user
             ///login user by user id
         
