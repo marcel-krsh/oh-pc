@@ -269,7 +269,8 @@ class AllitaAuth
                                  'tries' => 1,
                                  'total_failed_tries' => 1,
                                 'blocked_until' => null
-                            ])->save();
+                            ]);
+                $newTracker->save();
             } else {
                 //update the current tracking ip:
                 dd('got inside... a currently blocked one');
