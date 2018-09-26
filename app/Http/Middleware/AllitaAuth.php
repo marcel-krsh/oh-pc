@@ -39,7 +39,9 @@ class AllitaAuth
     public function handle($request, Closure $next)
     {
         // Do they have an active session?
-        if(!Auth::check()){
+
+
+        //if(!$request->user()){
             $this->_auth_service = new AuthService;
             $this->_devco_service = new DevcoService;
 
@@ -51,7 +53,7 @@ class AllitaAuth
             // if($request->has('user_id')){
             //     Auth::loginUsingId($request->get('user_id'));
             // } 
-        }
+       // }
 
         return $next($request);
     }
@@ -76,7 +78,7 @@ class AllitaAuth
     public function authenticate($request)
     {
 
-        if(!Auth::check()){
+        if(!$request->user()){
             //dd(Auth::check(),Auth::user());
             $credentials = $request->only('user_id', 'token');
             $ip = $request->ip();
