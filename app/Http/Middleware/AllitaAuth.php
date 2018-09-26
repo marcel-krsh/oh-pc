@@ -99,14 +99,18 @@ class AllitaAuth
 
                 $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
                 $credentials = explode('|', $rememberMeCookieValue);
-                $rememberedUser = User::where('id',$credentials[0])->where('remember_token',$credentials[1])->where('password', $credentials[2])->first();
-                if(!is_null($rememberedUser)){
-                    $this->auth->loginUsingId($rememberedUser->id,true);
-                    $key = auth()->getRecallerName();
-                    cookie()->queue($key, $request->cookie($key), 20);
+                if(count($credentials)>2){
+                    $rememberedUser = User::where('id',$credentials[0])->where('remember_token',$credentials[1])->where('password', $credentials[2])->first();
+                    if(!is_null($rememberedUser)){
+                        $this->auth->loginUsingId($rememberedUser->id,true);
+                        $key = auth()->getRecallerName();
+                        cookie()->queue($key, $request->cookie($key), 20);
+                    } else {
+                        // redirect to devco
+                        dd('redirect to devco - could not find the user.');
+                    }
                 } else {
-                    // redirect to devco
-                    dd('redirect to devco - could not find the user.');
+                    dd('cannot find the user info in the explode: '.$rememberMeCookieValue);
                 }
 
             } else {
