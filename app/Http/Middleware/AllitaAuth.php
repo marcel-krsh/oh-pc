@@ -164,7 +164,7 @@ class AllitaAuth
 
             //Auth::loginUsingId($user->id);  
             Auth::loginUsingId($user->id);
-            dd($user->id,Auth::user());
+            dd($user->id,Auth::user(),Auth::check());
 
         }else{
 
