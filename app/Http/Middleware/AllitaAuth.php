@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Contracts\Auth\Guard;
 use Auth;
 use Session;
 use App\Services\AuthService;
@@ -36,6 +37,15 @@ class AllitaAuth
      * @param  \Closure  $next
      * @return mixed
      */
+
+
+    protected $auth;
+
+    public __construct(Guard $auth){
+
+        $this->auth = $auth;
+
+    }
     public function handle($request, Closure $next)
     {
         // Do they have an active session?
@@ -80,6 +90,11 @@ class AllitaAuth
 
         if(!$request->user()){
             //dd(Auth::check(),Auth::user());
+            $name = $this->auth->getRecallerName();
+            $rememberMeCookieValue = $request->cookie($name);
+
+            dd($name,$rememberMeCookieValue);
+
             $credentials = $request->only('user_id', 'token');
             $ip = $request->ip();
             $user_agent = $request->header('User-Agent');
