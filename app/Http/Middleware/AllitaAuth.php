@@ -133,7 +133,7 @@ class AllitaAuth
         if($name){
             $rememberMeCookieValue = Cookie::get($name);
             /// check if token is for remembering user:
-            if(!is_null($rememberMeCookieValue)){
+            if(!is_null($rememberMeCookieValue) && strlen($rememberMeCookieValue) > 10){
 
                 $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
                 $rememberMeCookieValueDecrypted = $encryptor->decrypt($rememberMeCookieValue,false);
