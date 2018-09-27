@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Cookie;
-use Illuminate\Support\Facades\Crypt;
+//use Illuminate\Support\Facades\Crypt;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Guard;
@@ -133,9 +133,13 @@ class AllitaAuth
         if($name){
             $rememberMeCookieValue = Cookie::get($name);
             /// check if token is for remembering user:
-            if(!is_null($rememberMeCookieValue)){
+            if(!is_null($rememberMeCookieValue) && strlen($rememberMeCookieValue) > 10){
+                //dd($rememberMeCookieValue);
+                $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
+                $rememberMeCookieValueDecrypted = $encryptor->decrypt($rememberMeCookieValue,false);
 
-                $rememberMeCookieValueDecrypted = Crypt::decryptString($rememberMeCookieValue);
+
+                //$rememberMeCookieValueDecrypted = Crypt::decryptString($rememberMeCookieValue);
                 // the remember me cookie is set - let's expolode it so we can get the user values from it.
                 // try {
                 //     $rememberMeCookieValueDecrypted = decrypt($rememberMeCookieValue);
@@ -145,7 +149,7 @@ class AllitaAuth
                 // }
                 
                 $credentials = explode('|', $rememberMeCookieValueDecrypted);
-                dd('V4 - name:',$name, 'remember_me_token:',$rememberMeCookieValue, 'decrypted:',$rememberMeCookieValueDecrypted, 'credentials:',$credentials);
+                dd('V5 - name:',$name, 'remember_me_token:',$rememberMeCookieValue, 'decrypted:',$rememberMeCookieValueDecrypted, 'credentials:',$credentials,'encryptor:',$encryptor);
                 // make sure this is not double encrypted:
                 if(count($credentials)>2){
                     $explodedCredentials = true;
@@ -163,18 +167,21 @@ class AllitaAuth
                     $rememberedUser = User::where('id',$credentials[0])->where('remember_token',$credentials[1])->where('password', $credentials[2])->first();
                     // make sure we found a user:
                     if(!is_null($rememberedUser)){
-                        // make sure user is active
-                        if($rememberedUser->active == 1){
+                        // make sure user is active and it hasn't been longer than their maximum time since last load.
+                        if($rememberedUser->active == 1 && ($rememberedUser->last_accessed > (time() - 1200))){
                             // user is active - log them in
                             $this->auth->loginUsingId($rememberedUser->id,true);
-                            // set the remember me token to expire in 20 minutes from this call.
-                            $key = auth()->getRecallerName();
-                            cookie()->queue($key, $request->cookie($key), 20);
+                            Auth::user()->update(['last_accessed'=>time()]);
 
                             // set userActive and user to be true for final test.
                             $userActive = true;
                             $user = true;   
                         } else {
+                            // forget the cookie!
+                            Cookie::queue(\Cookie::forget($name));
+                            // forget the seesion!
+                            Session::flush();
+                            Auth::logout();
                             // incorrect attempt with a remember me token
                             // record as an attempt to login (albeit via a hijacked cookie)
                             $failedLoginAttempt = true;
@@ -234,6 +241,7 @@ class AllitaAuth
                     $allitaUser->email = $devcoEmail;
                     $allitaUser->password = Hash::make(str_random(50));
                     $allitaUser->active = 1;
+                    $allitaUser->last_accessed = time();
                     $allitaUser->save();
 
                     // get user organizations
@@ -248,8 +256,8 @@ class AllitaAuth
                 }          
                 if($allitaUser->active == 1){
                     Auth::loginUsingId($allitaUser->id,true);
-                    $key = auth()->getRecallerName();
-                    cookie()->queue($key, $request->cookie($key), 20);
+                    $allitaUser->update(['last_accessed'=> time()]);
+                    //$name = $this->auth->getRecallerName();
                     // set userActive and user to be true for final test.
                     $userActive = true;
                     $user = true;   
