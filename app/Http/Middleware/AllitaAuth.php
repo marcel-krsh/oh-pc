@@ -167,18 +167,18 @@ class AllitaAuth
                     $rememberedUser = User::where('id',$credentials[0])->where('remember_token',$credentials[1])->where('password', $credentials[2])->first();
                     // make sure we found a user:
                     if(!is_null($rememberedUser)){
-                        // make sure user is active
-                        if($rememberedUser->active == 1){
+                        // make sure user is active and it hasn't been longer than their maximum time since last load.
+                        if($rememberedUser->active == 1 && ($rememberedUser->last_accessed > (time() - 1200))){
                             // user is active - log them in
                             $this->auth->loginUsingId($rememberedUser->id,true);
-                            // set the remember me token to expire in 20 minutes from this call.
-                            $key = auth()->getRecallerName();
-                            cookie()->queue($key, $request->cookie($key), 20);
+                            Auth::user()->update(['last_accessed'=>time()]);
 
                             // set userActive and user to be true for final test.
                             $userActive = true;
                             $user = true;   
                         } else {
+                            // forget the cookie!
+                            Cookie::queue(\Cookie::forget($name));
                             // incorrect attempt with a remember me token
                             // record as an attempt to login (albeit via a hijacked cookie)
                             $failedLoginAttempt = true;
@@ -238,6 +238,7 @@ class AllitaAuth
                     $allitaUser->email = $devcoEmail;
                     $allitaUser->password = Hash::make(str_random(50));
                     $allitaUser->active = 1;
+                    $allitaUser->last_accessed = time();
                     $allitaUser->save();
 
                     // get user organizations
@@ -252,7 +253,8 @@ class AllitaAuth
                 }          
                 if($allitaUser->active == 1){
                     Auth::loginUsingId($allitaUser->id,true);
-                    $name = $this->auth->getRecallerName();
+                    Auth::user()->update(['last_accessed'=> time()]);
+                    //$name = $this->auth->getRecallerName();
                     // set userActive and user to be true for final test.
                     $userActive = true;
                     $user = true;   
