@@ -400,7 +400,7 @@ class AllitaAuth
 
         // user false // not logged in and/or no credentials
         if($user == false){
-            dd('User login failed (fail recorded in database for this ip): '.$failedLoginReason);
+            dd('User login failed: '.$failedLoginReason);
         }
 
         // 2fa redirect
