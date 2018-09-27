@@ -3,8 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Cookie;
-use Illuminate\Support\Facades\Crypt;
+//use Cookie;
+//use Illuminate\Support\Facades\Crypt;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Guard;
@@ -135,7 +135,11 @@ class AllitaAuth
             /// check if token is for remembering user:
             if(!is_null($rememberMeCookieValue)){
 
-                $rememberMeCookieValueDecrypted = Crypt::decryptString($rememberMeCookieValue);
+                $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
+                $rememberMeCookieValueDecrypted = $encryptor->decrypt($rememberMeCookieValue,false);
+
+
+                //$rememberMeCookieValueDecrypted = Crypt::decryptString($rememberMeCookieValue);
                 // the remember me cookie is set - let's expolode it so we can get the user values from it.
                 // try {
                 //     $rememberMeCookieValueDecrypted = decrypt($rememberMeCookieValue);
@@ -145,7 +149,7 @@ class AllitaAuth
                 // }
                 
                 $credentials = explode('|', $rememberMeCookieValueDecrypted);
-                dd('V4 - name:',$name, 'remember_me_token:',$rememberMeCookieValue, 'decrypted:',$rememberMeCookieValueDecrypted, 'credentials:',$credentials);
+                dd('V5 - name:',$name, 'remember_me_token:',$rememberMeCookieValue, 'decrypted:',$rememberMeCookieValueDecrypted, 'credentials:',$credentials,'encryptor:',$encryptor);
                 // make sure this is not double encrypted:
                 if(count($credentials)>2){
                     $explodedCredentials = true;
