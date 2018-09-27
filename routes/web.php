@@ -1,5 +1,5 @@
     <?php
-
+use Illuminate\Contracts\Auth\Access\Gate;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
