@@ -149,12 +149,13 @@ class AllitaAuth
                 // }
                 
                 $credentials = explode('|', $rememberMeCookieValueDecrypted);
-                dd('V5 - name:',$name, 'remember_me_token:',$rememberMeCookieValue, 'decrypted:',$rememberMeCookieValueDecrypted, 'credentials:',$credentials,'encryptor:',$encryptor);
+                
                 // make sure this is not double encrypted:
                 if(count($credentials)>2){
                     $explodedCredentials = true;
                 } elseif(strlen($credentials)>10) {
                     /// cookie may be double encrypted - decrypt again.
+                    dd('oops');
                     $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
                     $credentials = explode('|', $rememberMeCookieValue);
                     if(count($credentials)>2){
@@ -171,7 +172,7 @@ class AllitaAuth
                         if($rememberedUser->active == 1 && ($rememberedUser->last_accessed > (time() - 1200))){
                             // user is active - log them in
                             $this->auth->loginUsingId($rememberedUser->id,true);
-                            Auth::user()->update(['last_accessed'=>time()]);
+                            $rememberedUser->update(['last_accessed'=>time()]);
 
                             // set userActive and user to be true for final test.
                             $userActive = true;

@@ -32,7 +32,8 @@ class User extends Authenticatable
         'validate_all',
         'entity_type',
         'api_token',
-        'devco_key'
+        'devco_key',
+        'last_accessed'
     ];
 
     protected static $logAttributes = [
