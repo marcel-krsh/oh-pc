@@ -253,9 +253,6 @@ class AllitaAuth
                 if($allitaUser->active == 1){
                     Auth::loginUsingId($allitaUser->id,true);
                     $name = $this->auth->getRecallerName();
-                    $rememberMeCookieValue = Cookie::get($name);
-                    cookie()->queue($name, $rememberMeCookieValue, 20);
-                    dd($name,$rememberMeCookieValue);
                     // set userActive and user to be true for final test.
                     $userActive = true;
                     $user = true;   
