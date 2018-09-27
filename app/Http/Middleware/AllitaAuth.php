@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Cookie;
-use Illuminate\Contracts\Encryption\DecryptException;
+use Crypt;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Guard;
@@ -135,14 +135,14 @@ class AllitaAuth
             /// check if token is for remembering user:
             if(!is_null($rememberMeCookieValue)){
 
-            
+                $rememberMeCookieValueDecrypted = Crypt::decryptString($rememberMeCookieValue);
                 // the remember me cookie is set - let's expolode it so we can get the user values from it.
-                try {
-                    $rememberMeCookieValueDecrypted = decrypt($rememberMeCookieValue);
-                } catch (DecryptException $e) {
-                    //
-                    dd($e);
-                }
+                // try {
+                //     $rememberMeCookieValueDecrypted = decrypt($rememberMeCookieValue);
+                // } catch (DecryptException $e) {
+                //     //
+                //     dd($e);
+                // }
                 
                 $credentials = explode('|', $rememberMeCookieValueDecrypted);
                 dd('V4 - name:',$name, 'remember_me_token:',$rememberMeCookieValue, 'decrypted:',$rememberMeCookieValueDecrypted, 'credentials:',$credentials);
