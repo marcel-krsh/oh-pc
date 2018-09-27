@@ -1253,9 +1253,13 @@ The following div is defined in this particular tab and pushed to the main layou
 			// close all details
 			$('tr[id$="-buildings"]').remove();
 
-			
-        	// open the expanded div early based on expected number of buildings
-        	var tempdiv = '<tr id="audit-r-'+target+'-buildings" class="rowinset"><td colspan="10">';
+			// open the expanded div early based on expected number of buildings
+			if($('#audit-r-'+target).hasClass('notcritical')){
+				var tempdiv = '<tr id="audit-r-'+target+'-buildings" class="notcritical rowinset"><td colspan="10">';
+			}else{
+				var tempdiv = '<tr id="audit-r-'+target+'-buildings" class="rowinset"><td colspan="10">';
+			}
+        	
         	if(buildingcount){
         		var tempdivheight = 150 * buildingcount;
         		tempdiv = tempdiv + '<div style="height:'+tempdivheight+'px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
