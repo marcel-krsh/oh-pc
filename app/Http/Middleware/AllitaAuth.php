@@ -52,12 +52,15 @@ class AllitaAuth
 
 
         //if(!$request->user()){
+        if(env('APP_DEBUG_NO_DEVCO') != 'true'){ // allows for local testing
             $this->_auth_service = new AuthService;
             $this->_devco_service = new DevcoService;
 
+            $this->authenticate($request);
+        }
             
 
-             $this->authenticate($request);
+             
 
             // temporary solution
             // if($request->has('user_id')){

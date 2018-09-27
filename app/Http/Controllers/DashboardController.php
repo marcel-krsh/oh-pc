@@ -11,10 +11,12 @@ use App\LogConverter;
 
 class DashboardController extends Controller
 {
-	public function __construct()
+    public function __construct()
     {
          //$this->middleware('allita.auth');
-    	 //Auth::onceUsingId(1); // TEST BRIAN
+        if(env('APP_DEBUG_NO_DEVCO') == 'true'){
+            Auth::onceUsingId(1); // TEST BRIAN
+        }
     }
 
     public function login()
