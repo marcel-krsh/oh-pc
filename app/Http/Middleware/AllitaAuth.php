@@ -131,6 +131,7 @@ class AllitaAuth
 
         $name = $this->auth->getRecallerName();
         if($name){
+            dd($request->user());
             $rememberMeCookieValue = Cookie::get($name);
             /// check if token is for remembering user:
             if(!is_null($rememberMeCookieValue) && strlen($rememberMeCookieValue) > 10){
