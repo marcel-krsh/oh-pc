@@ -87,7 +87,7 @@ class AuthService
         $this->_password = config('allita.api.password');
         $this->_login_url = config('allita.api.login_url');
         $this->_pcapi_key = config('allita.api.key');
-        $this->_pcapi_access_token_expires_in = config('allita.api.allita_pcapi_token_expires_in')
+        $this->_pcapi_access_token_expires_in = config('allita.api.allita_pcapi_token_expires_in');
 
         $this->loadTokensFromDatabase();
 
