@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Cookie;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Guard;
@@ -136,8 +137,13 @@ class AllitaAuth
 
             
                 // the remember me cookie is set - let's expolode it so we can get the user values from it.
-                $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
-                $rememberMeCookieValueDecrypted = $encryptor->decrypt($rememberMeCookieValue,false);
+                try {
+                    $rememberMeCookieValueDecrypted = decrypt($rememberMeCookieValue,false);
+                } catch (DecryptException $e) {
+                    //
+                    dd($e);
+                }
+                
                 $credentials = explode('|', $rememberMeCookieValueDecrypted);
                 dd('name:',$name, 'remember_me_token:',$rememberMeCookieValue, 'decrypted:',$rememberMeCookieValueDecrypted, 'credentials:',$credentials);
                 // make sure this is not double encrypted:
