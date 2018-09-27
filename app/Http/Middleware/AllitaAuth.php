@@ -134,7 +134,7 @@ class AllitaAuth
             $rememberMeCookieValue = Cookie::get($name);
             /// check if token is for remembering user:
             if(!is_null($rememberMeCookieValue) && strlen($rememberMeCookieValue) > 10){
-                dd($rememberMeCookieValue);
+                //dd($rememberMeCookieValue);
                 $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
                 $rememberMeCookieValueDecrypted = $encryptor->decrypt($rememberMeCookieValue,false);
 
@@ -149,7 +149,7 @@ class AllitaAuth
                 // }
                 
                 $credentials = explode('|', $rememberMeCookieValueDecrypted);
-                //dd('V5 - name:',$name, 'remember_me_token:',$rememberMeCookieValue, 'decrypted:',$rememberMeCookieValueDecrypted, 'credentials:',$credentials,'encryptor:',$encryptor);
+                dd('V5 - name:',$name, 'remember_me_token:',$rememberMeCookieValue, 'decrypted:',$rememberMeCookieValueDecrypted, 'credentials:',$credentials,'encryptor:',$encryptor);
                 // make sure this is not double encrypted:
                 if(count($credentials)>2){
                     $explodedCredentials = true;
