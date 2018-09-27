@@ -233,8 +233,8 @@ class AuthService
             }
         } catch (GuzzleException | \Exception $e) {
             // @todo: Throw PC-API Exception
-             dd('Line 229 Auth Service gave an exception from the API server: '.$e->getMessage());
-            return false;
+             return 'Line 229 Auth Service gave an exception from the API server: '.$e->getMessage());
+            //return false;
         }
     }
 
