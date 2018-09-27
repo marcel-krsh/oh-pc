@@ -394,7 +394,8 @@ class AllitaAuth
         }
         // blocked redirect
         if($blockAccess){
-            dd('<script>alert(\''.date('m/j/y g:h a',time()).': Sorry, I am blocking access to your ip address '.$thisIp.' due to multiple failed logins. I will allow access again at '.date('m/j/y g:h a',$currentlyBlocked->blocked_until).'. Your admins have been notified and may allow access sooner if they determine there is no threat to the security of the site.\');</script>');
+            print('<script>alert(\''.date('m/j/y g:h a',time()).': Sorry, I am blocking access to your ip address '.$thisIp.' due to multiple failed logins. I will allow access again at '.date('m/j/y g:h a',$currentlyBlocked->blocked_until).'. Your admins have been notified and may allow access sooner if they determine there is no threat to the security of the site.\');</script>');
+            dd('ACCESS DENIED.');
         }
 
         // user false // not logged in and/or no credentials
