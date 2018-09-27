@@ -199,7 +199,7 @@ class AllitaAuth
                     // this is a failed login attempt
                     $failedLoginAttempt = true;
                     $failedLoginReason = 'Could not validate user to devco.';
-                    //throw new AuthenticationException('Unauthenticated 130.');
+                    throw new AuthenticationException('Unauthenticated 130.');
                 } else {
                     // this user is authenticated! 
                     $user = true;
