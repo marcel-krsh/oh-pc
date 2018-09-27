@@ -1282,6 +1282,7 @@ The following div is defined in this particular tab and pushed to the main layou
         $('html, body').animate({
 			scrollTop: $('#audit-r-'+targetaudit).offset().top - 59
 		}, 500, 'linear');
+
 		if ($('#building-r-'+target+'-details').length){
 
 			if ($('#building-r-'+target).attr('expanded')){
@@ -1299,7 +1300,21 @@ The following div is defined in this particular tab and pushed to the main layou
 			$('div[id^="building-r-"]').removeClass('blur');
 		}else{
 
-        	
+        	if ($('#building-r-'+target).attr('expanded')){
+				 $('#building-r-'+target).removeAttr('expanded');
+				// close own details
+
+				$('#inspection-main-'+target+'-container').fadeOut("slow");
+				$('#inspection-menus-'+target+'-container').fadeOut("slow");
+				$('#inspection-tools-'+target+'-container').fadeOut("slow", function() {
+				    $('#inspection-tools-switch-'+target).fadeIn( "slow", function() {
+					    // Animation complete
+					  });
+				    // $('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).slideDown();
+					// unblur other building inspection rows
+					// $('div[id^="building-r-"]').removeClass('blur');
+				 });
+			}
 
 			// close all details
 			$('div[id$="-details"]').remove();
@@ -1322,7 +1337,7 @@ The following div is defined in this particular tab and pushed to the main layou
         	$('#building-r-'+target).after(tempdiv);
 
 			// fetch and display new details
-			var url = '{{route("audit.building.details", ["audit" => "xa", "building" => "xi"])}}';console.log(url);
+			var url = '{{route("audit.building.details", ["audit" => "xa", "building" => "xi"])}}';
 			url = url.replace('xi', id);
 			url = url.replace('xa', auditid);
 		    $.get(url, {
@@ -1340,7 +1355,7 @@ The following div is defined in this particular tab and pushed to the main layou
 		}
 	}
 
-	function loadInspectionMenu(data, id) {
+	function loadInspectionMenu(data, id, level='') {
 		var inspectionLeftTemplate = $('#inspection-left-template').html();
 		var inspectionMenuItemTemplate = $('#inspection-menu-item-template').html();
 
@@ -1353,9 +1368,9 @@ The following div is defined in this particular tab and pushed to the main layou
 			newmenu = newmenu.replace(/menuStatus/g, menuitem.status);
 			menus = menus + newmenu.replace(/menuStyle/g, menuitem.style);
 		});
-		$('#inspection-menus-'+id).html(inspectionLeftTemplate);
-		$('#inspection-menus-'+id+' .inspection-menu').html(menus);
-		$('#inspection-menus-'+id+'-container').fadeIn( "slow", function() {
+		$('#inspection-'+level+'menus-'+id).html(inspectionLeftTemplate);
+		$('#inspection-'+level+'menus-'+id+' .inspection-menu').html(menus);
+		$('#inspection-'+level+'menus-'+id+'-container').fadeIn( "slow", function() {
 		    // Animation complete
 		  });
 
@@ -1368,77 +1383,45 @@ The following div is defined in this particular tab and pushed to the main layou
 		//   });
 	}
 
-	function loadInspectionTools(data, id) {
+	function loadInspectionTools(data, id, level = '') {
 		var inspectionToolsTemplate = $('#inspection-tools-template').html();
 
-		$('#inspection-tools-'+id).html(inspectionToolsTemplate);
-		$('#inspection-tools-'+id+'-container').fadeIn( "slow", function() {
+		$('#inspection-'+level+'tools-'+id).html(inspectionToolsTemplate);
+		$('#inspection-'+level+'tools-'+id+'-container').fadeIn( "slow", function() {
 			    // Animation complete
 			  });
 		
 	}
 
-	function loadInspectionMain(data, id, type='site') {
-		if(type == 'site'){
-			var inspectionMainTemplate = $('#inspection-areas-template').html();
-			var inspectionAreaTemplate = $('#inspection-area-template').html();
+	function loadInspectionMain(data, id, level = '') {
+		var inspectionMainTemplate = $('#inspection-areas-template').html();
+		var inspectionAreaTemplate = $('#inspection-area-template').html();
 
-			var areas = '';
-			var newarea = '';
-			data.forEach(function(area) {
-				newarea = inspectionAreaTemplate;
-				newarea = newarea.replace(/areaName/g, area.name);
-				newarea = newarea.replace(/areaStatus/g, area.status);
-				newarea = newarea.replace(/areaAuditorInitials/g, area.auditor.initials);
-				newarea = newarea.replace(/areaAuditorName/g, area.auditor.name);
+		var areas = '';
+		var newarea = '';
+		data.forEach(function(area) {
+			newarea = inspectionAreaTemplate;
+			newarea = newarea.replace(/areaName/g, area.name);
+			newarea = newarea.replace(/areaStatus/g, area.status);
+			newarea = newarea.replace(/areaAuditorInitials/g, area.auditor.initials);
+			newarea = newarea.replace(/areaAuditorName/g, area.auditor.name);
 
-				newarea = newarea.replace(/areaNLTStatus/g, area.findings.nltstatus);
-				newarea = newarea.replace(/areaLTStatus/g, area.findings.ltstatus);
-				newarea = newarea.replace(/areaSDStatus/g, area.findings.sdstatus);
-				newarea = newarea.replace(/areaPicStatus/g, area.findings.photostatus);
-				newarea = newarea.replace(/areaCommentStatus/g, area.findings.commentstatus);
-				newarea = newarea.replace(/areaCopyStatus/g, area.findings.copystatus);
-				newarea = newarea.replace(/areaTrashStatus/g, area.findings.trashstatus);
+			newarea = newarea.replace(/areaNLTStatus/g, area.findings.nltstatus);
+			newarea = newarea.replace(/areaLTStatus/g, area.findings.ltstatus);
+			newarea = newarea.replace(/areaSDStatus/g, area.findings.sdstatus);
+			newarea = newarea.replace(/areaPicStatus/g, area.findings.photostatus);
+			newarea = newarea.replace(/areaCommentStatus/g, area.findings.commentstatus);
+			newarea = newarea.replace(/areaCopyStatus/g, area.findings.copystatus);
+			newarea = newarea.replace(/areaTrashStatus/g, area.findings.trashstatus);
 
-				areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor.color);
-			});
-			$('#inspection-main-'+id).html(inspectionMainTemplate);
-			$('#inspection-main-'+id+' .inspection-areas').html(areas);
-			$('#inspection-main-'+id+'-container').fadeIn( "slow", function() {
-			    // Animation complete
-			  });
-		}
+			areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor.color);
+		});
+		$('#inspection-'+level+'main-'+id).html(inspectionMainTemplate);
+		$('#inspection-'+level+'main-'+id+' .inspection-areas').html(areas);
+		$('#inspection-'+level+'main-'+id+'-container').fadeIn( "slow", function() {
+		    // Animation complete
+		  });
 
-	}
-
-	function closeInspections(target) {
-		$('#building-r-'+target).removeAttr('expanded');
-		// close own details
-
-		$('#inspection-tools-'+target+'-container').fadeOut("slow", function() {
-			$('#inspection-main-'+target+'-container').slideUp("slow");
-			$('#inspection-menus-'+target+'-container').slideUp("slow");
-		    $('#inspection-tools-switch-'+target).fadeIn( "slow", function() {
-			    // Animation complete
-			  });
-		    $('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).slideDown();
-			// unblur other building inspection rows
-			$('div[id^="building-r-"]').removeClass('blur');
-		 });
-
-		$('#building-detail-r-'+target).removeAttr('expanded');
-			// close own details
-
-			$('#inspection-tools-'+target+'-container').fadeOut("slow", function() {
-				$('#inspection-main-'+target+'-container').slideUp("slow");
-				$('#inspection-menus-'+target+'-container').slideUp("slow");
-			    $('#inspection-tools-switch-'+target).fadeIn( "slow", function() {
-				    // Animation complete
-				  });
-			    $('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).slideDown();
-				// unblur other building inspection rows
-				$('div[id^="building-detail-r-"]').removeClass('blur');
-			 });
 	}
 
 	function inspectionDetailsFromBuilding(buildingid, auditid, target, targetaudit, rowid){
@@ -1447,23 +1430,38 @@ The following div is defined in this particular tab and pushed to the main layou
 			scrollTop: $('#audit-r-'+targetaudit).offset().top - 59
 		}, 500, 'linear');
 
-		$('#inspection-tools-'+target+'-container').fadeOut("slow", function() {
-			$('#inspection-main-'+target+'-container').slideUp("slow");
-			$('#inspection-menus-'+target+'-container').slideUp("slow");
-		    $('#inspection-tools-switch-'+target).fadeIn( "slow", function() {
-			    // Animation complete
-			  });
-		    $('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).slideDown();
-			// unblur other building inspection rows
+		// close building details
+		if ($('#building-r-'+target+'-details').length){
+
+			if ($('#building-r-'+target).attr('expanded')){
+				$('#building-r-'+target).removeAttr('expanded');
+			}
+
+			// close own details
+			$('#building-r-'+target+'-details').slideUp( "slow", function() {
+    			$(this).remove();
+  			});
+			// unblur other building rows
+			$('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).slideDown();
+			$('.rowinset-top').slideDown();
+			$('.rowinset-bottom').slideDown();
 			$('div[id^="building-r-"]').removeClass('blur');
-		 });
+		}
 
 		if ($('#building-r-'+target).attr('expanded')){
-			// $('#building-r-'+target).removeAttr('expanded');
+			 $('#building-r-'+target).removeAttr('expanded');
 			// close own details
-
+			$('#inspection-tools-'+target+'-container').fadeOut("slow", function() {
+				$('#inspection-main-'+target+'-container').slideUp("slow");
+				$('#inspection-menus-'+target+'-container').slideUp("slow");
+			    $('#inspection-tools-switch-'+target).fadeIn( "slow", function() {
+				    // Animation complete
+				  });
+			    $('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).slideDown();
+				// unblur other building inspection rows
+				$('div[id^="building-r-"]').removeClass('blur');
+			 });
 			
-			// closeInspections(target);
 			
 		}else{
 
@@ -1513,24 +1511,22 @@ The following div is defined in this particular tab and pushed to the main layou
         
 
 		if ($('#building-detail-r-'+target).attr('expanded')){
+
 			$('#building-detail-r-'+target).removeAttr('expanded');
 			// close own details
-			$('#inspection-tools-'+target+'-container').fadeOut("slow", function() {
-				$('#inspection-main-'+target+'-container').slideUp("slow");
-				$('#inspection-menus-'+target+'-container').slideUp("slow");
-			    $('#inspection-tools-switch-'+target).fadeIn( "slow", function() {
+			$('#inspection-detail-tools-'+target+'-container').fadeOut("slow", function() {
+				$('#inspection-detail-main-'+target+'-container').slideUp("slow");
+				$('#inspection-detail-menus-'+target+'-container').slideUp("slow");
+			    $('#inspection-detail-tools-switch-'+target).fadeIn( "slow", function() {
 				    // Animation complete
 				  });
 			    $('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).slideDown();
 				// unblur other building inspection rows
 				$('div[id^="building-detail-r-"]').removeClass('blur');
 			 });
-			
-			// closeInspections(target);
 
 			
 		}else{
-
 			// blur all other building detail rows
 			$('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).addClass('blur');
 			$('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).slideUp();
@@ -1539,10 +1535,10 @@ The following div is defined in this particular tab and pushed to the main layou
         	var tempdiv = '<div>';
         	tempdiv = tempdiv + '<div style="height:1000px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
         	tempdiv = tempdiv + '</div>';
-        	$('#inspection-main-'+target).html(tempdiv);
-        	$('#inspection-main-'+target+'-container').slideDown();
+        	$('#inspection-detail-main-'+target).html(tempdiv);
+        	$('#inspection-detail-main-'+target+'-container').slideDown();
 
-        	$('#inspection-tools-switch-'+target).fadeOut("slow");
+        	$('#inspection-detail-tools-switch-'+target).fadeOut("slow");
 
 			// fetch and display new details
 			var url = '{{route("audit.building.inspection", ["audit" => "xa", "building" => "xi", "detail_id" => "xd"])}}';
@@ -1560,65 +1556,14 @@ The following div is defined in this particular tab and pushed to the main layou
 	                } else {
 						// $('#building-detail-r-'+target+'-inspect').html(data);
 						$('#building-detail-r-'+target).attr( "expanded", true );
-						loadInspectionMenu(data.menu, target);
-						loadInspectionMain(data.areas, target);
-						loadInspectionTools(data, target);
+						loadInspectionMenu(data.menu, target, 'detail-');
+						loadInspectionMain(data.areas, target, 'detail-');
+						loadInspectionTools(data, target, 'detail-');
 					}
 		    });
 		}
 
 	}
-
-	// function inspectionDetails(id, buildingid, auditid, target, targetaudit, rowid) {
-	// 	// scroll to row early
- //        $('html, body').animate({
-	// 		scrollTop: $('#audit-r-'+targetaudit).offset().top - 59
-	// 	}, 500, 'linear');
-	// 	if ($('#building-detail-r-'+target+'-inspect').length){
-	// 		// close own details
-	// 		$('#building-detail-r-'+target+'-inspect').slideUp( "slow", function() {
- //    			$(this).remove();
- //  			});
-
-	// 		$('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).slideDown();
-	// 		// unblur other building inspection rows
-	// 		$('div[id^="building-detail-r-"]').removeClass('blur');
-	// 	}else{
-	// 		// close all details
-	// 		$('div[id$="-inspect"]').remove();
-	// 		// unblur other building detail rows
-	// 		$('div[id^="building-detail-r-"]').removeClass('blur');
-
-	// 		// blur all other building detail rows
-	// 		$('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).addClass('blur');
-	// 		$('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).slideUp();
-
- //        	// open the expanded div early based on expected number of buildings
- //        	var tempdiv = '<div id="building-detail-r-'+target+'-inspect" class="noshadow">';
- //        	tempdiv = tempdiv + '<div style="height:1000px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
- //        	tempdiv = tempdiv + '</div>';
- //        	$('#building-detail-r-'+target).after(tempdiv);
-
-	// 		// fetch and display new details
-	// 		var url = '{{route("audit.building.inspection", ["audit" => "xa", "building" => "xi", "detail_id" => "xd"])}}';
-	// 		url = url.replace('xa', auditid);
-	// 		url = url.replace('xi', buildingid);
-	// 		url = url.replace('xd', id);
-	// 	    $.get(url, {
-	//             '_token' : '{{ csrf_token() }}',
-	//             'target' : target,
-	//             'rowid' : rowid,
-	//             'targetaudit' : targetaudit
-	//             }, function(data) {
-	//                 if(data=='0'){ 
-	//                     UIkit.modal.alert("There was a problem getting the building details' information.");
-	//                 } else {
-	// 					$('#building-detail-r-'+target+'-inspect').html(data);
-	//             	}
-	// 	    });
-	// 	}
-
-	// }
 
 	function addArea() {
 		console.log('adding inspectable area');

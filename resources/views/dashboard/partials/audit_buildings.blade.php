@@ -145,7 +145,7 @@
 								</div>
 								<div class="uk-width-1-2 uk-flex">
 									<div id="building-{{$target}}-c-5-{{$key}}" style="flex: 640px;" class="uk-margin-remove" uk-grid>
-										<div class="uk-width-1-1" id="inspection-tools-switch-{{$target}}">
+										<div class="uk-width-1-1" id="inspection-tools-switch-{{$key}}">
 											<div uk-grid class="area-status-list">
 												@foreach($building['areas'] as $area)
 												@if($loop->iteration < 9)

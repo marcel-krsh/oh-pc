@@ -61,8 +61,8 @@
 													</div>
 												</div>
 											</div>
-											<div id="inspection-menus-{{$key}}-container" class="uk-width-1-1 uk-margin-remove building-type-bottom" style="display:none;">
-							            		<div id="inspection-menus-{{$key}}"></div>
+											<div id="inspection-detail-menus-{{$key}}-container" class="uk-width-1-1 uk-margin-remove building-type-bottom" style="display:none;">
+							            		<div id="inspection-detail-menus-{{$key}}"></div>
 							            	</div>
 										</div>
 									</div>
@@ -140,14 +140,14 @@
 											</div>
 										</div>
 									</div>
-									<div id="inspection-main-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
-										<div id="inspection-main-{{$key}}"></div>
+									<div id="inspection-detail-main-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
+										<div id="inspection-detail-main-{{$key}}"></div>
 									</div>
 								</div>
 							</div>
 							<div class="uk-width-1-2 uk-flex">
 								<div id="building-detail-{{$target}}-c-5-{{$key}}" style="flex: 640px;" class="uk-margin-remove" uk-grid>
-									<div class="uk-width-1-1" id="inspection-tools-switch-{{$key}}">
+									<div class="uk-width-1-1" id="inspection-detail-tools-switch-{{$key}}">
 										<div uk-grid class="area-status-list">
 											@foreach($detail['areas'] as $area)
 										    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status area-status-{{$area['status']}} colored">
@@ -157,8 +157,8 @@
 										    @endforeach
 										</div>
 									</div>
-									<div id="inspection-tools-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
-										<div id="inspection-tools-{{$key}}"></div>
+									<div id="inspection-detail-tools-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
+										<div id="inspection-detail-tools-{{$key}}"></div>
 									</div>
 								</div>
 								<div id="building-detail-{{$target}}-c-6-{{$key}}">

@@ -2207,7 +2207,9 @@ margin-top:10px;
     line-height: 15px;
     padding: 3px;
 }
-
+.building-detail .inspection-tools {
+    margin-top: 8px;
+}
 .inspection-tools .uk-subnav-pill>*>:first-child {
     padding: 3px 10px;
     background: 0 0;
