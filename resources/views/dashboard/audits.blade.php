@@ -8,20 +8,24 @@
 </template>
 
 <template class="uk-hidden" id="inspection-areas-template">
-    <div class="inspection-areas uk-height-large uk-height-max-large uk-panel uk-panel-scrollable"">
+    <div class="inspection-areas uk-height-large uk-height-max-large uk-panel uk-panel-scrollable sortable" uk-sortable="handle: .uk-sortable-inspec-area;">
     </div>
 </template>
 
 <template class="uk-hidden" id="inspection-area-template">
-	    <div class="inspection-area uk-flex uk-flex-row areaStatus"  style="padding:6px 0 0 0;">
-	    	<div class="uk-inline uk-padding-remove uk-margin-top">
+	    <div id="inspection-area-r-areaRowId" class="inspection-area uk-flex uk-flex-row areaStatus" style="padding:6px 0 0 0;">
+	    	<div class="uk-inline uk-sortable-inspec-area" style="min-width: 16px; padding: 0 3px;">
+				<div class="linespattern"></div>
+				<span id="" class="uk-position-bottom-center colored"><small><span class="rowindex" style="display:none;">areaRowId</span></small></span>
+			</div>
+	    	<div class="uk-inline uk-padding-remove" style="margin-top:7px; ">
     			<div class="area-avatar">
 					<div uk-tooltip="pos:top-left;title:areaAuditorName;" title="" aria-expanded="false" class="user-badge auditor-badge-areaAuditorColor no-float">
 						areaAuditorInitials
 					</div>
 				</div>
 			</div>
-    		<div class="uk-inline uk-padding-remove uk-margin-top" style="flex:140px;">
+    		<div class="uk-inline uk-padding-remove" style="margin-top:7px; flex:140px;">
     			<div class="area-name">
     				<i class="a-circle-checked"></i>
 					areaName
@@ -75,7 +79,6 @@
 					</div>
 				</div>
 			</div> 
-		
 	    </div>
 </template>
 
@@ -1401,6 +1404,7 @@ The following div is defined in this particular tab and pushed to the main layou
 		var newarea = '';
 		data.forEach(function(area) {
 			newarea = inspectionAreaTemplate;
+			newarea = newarea.replace(/areaRowId/g, area.id);
 			newarea = newarea.replace(/areaName/g, area.name);
 			newarea = newarea.replace(/areaStatus/g, area.status);
 			newarea = newarea.replace(/areaAuditorInitials/g, area.auditor.initials);

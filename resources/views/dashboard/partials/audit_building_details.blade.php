@@ -141,7 +141,7 @@
 										</div>
 									</div>
 									<div id="inspection-detail-main-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
-										<div id="inspection-detail-main-{{$key}}"></div>
+										<div id="inspection-detail-main-{{$key}}" class="inspection-detail-main-list"></div>
 									</div>
 								</div>
 							</div>

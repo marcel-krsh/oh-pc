@@ -139,8 +139,8 @@
 											</div>
 										</div>
 										<div id="inspection-main-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
-										<div id="inspection-main-{{$key}}"></div>
-									</div>
+											<div id="inspection-main-{{$key}}" class="inspection-main-list"></div>
+										</div>
 									</div>
 								</div>
 								<div class="uk-width-1-2 uk-flex">
@@ -202,10 +202,13 @@
 
 				UIkit.util.on('.sortable', 'start', function (item) {
 					var listItem = document.getElementById( item.detail[1].id );
+					console.log(item.detail[1].id);
 					if($('#'+item.detail[1].id).hasClass('building-detail')){
 						startIndex = $( ".building-detail" ).index( listItem );
 					}else if($('#'+item.detail[1].id).hasClass('building')){
 						startIndex = $( ".building" ).index( listItem );
+					}else if($('#'+item.detail[1].id).hasClass('inspection-area')){
+						startIndex = $( ".inspection-area" ).index( listItem );
 					} 				
 					console.log( item.detail[1].id + " started at index: " + startIndex );
 				});
@@ -221,7 +224,12 @@
 						console.log( item.detail[1].id + " ended at index: " + endIndex );
 						UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
 						reorder(".buildings > .sortable", '.building');
-					} 
+					}else if($('#'+item.detail[1].id).hasClass('inspection-area')){
+						endIndex = $( ".inspection-area" ).index( listItem );
+						console.log( item.detail[1].id + " ended at index: " + endIndex );
+						UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
+						// reorder(".inspection-main-list > .sortable", '.inspection-area');
+					}
 				});
 			</script>
 		</td>
