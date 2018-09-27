@@ -68,6 +68,12 @@ class AuthService
     private $_pcapi_access_token_expires;
 
     /**
+     * PC API access token expiration in (set future for token auth)
+     * @var integer
+     */
+    private $_pcapi_access_token_expires_in;
+
+    /**
      * Guzzle Client for calls
      * @var
      */
@@ -81,6 +87,7 @@ class AuthService
         $this->_password = config('allita.api.password');
         $this->_login_url = config('allita.api.login_url');
         $this->_pcapi_key = config('allita.api.key');
+        $this->_pcapi_access_token_expires_in = config('allita.api.allita_pcapi_token_expires_in')
 
         $this->loadTokensFromDatabase();
 
@@ -140,7 +147,7 @@ class AuthService
                 $result = json_decode($response->getBody()->getContents());
 
                 //$timestamp = intval((new Ticks($this->_getTokenExpiresValueInTicks($result->expires_in)))->timestamp());
-                $expires_at = date('Y-m-d h:i:s', time()+100000);
+                $Expires_at = date('Y-m-d h:i:s', time()+$this->_pcapi_access_token_expires_in  );
 
                 $this->_updateAccessToken($result->access_token);
                 $this->_updateAccessTokenExpires($expires_at);
@@ -152,7 +159,7 @@ class AuthService
                 throw new \Exception("Unexpected Status Code Auth Service Line 150 ({$response->getStatusCode()})");
             }
         } catch (GuzzleException | \Exception $e) {
-            // @todo: Throw PC-API Exception
+            //@todo: Throw PC-API Exception
             echo $this->_url."<br>";
             echo $endpoint."<br>";
             dd('Guzzle exception - line 156 Auth Service :'.$e->getMessage());
@@ -259,7 +266,7 @@ class AuthService
         return SystemSetting::updateOrCreate([
             'key' => 'pcapi_access_token_expires'
         ],[
-            'value' => $expires
+            'value' => $Expires
         ]);
     }
 

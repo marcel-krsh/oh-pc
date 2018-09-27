@@ -194,7 +194,7 @@ class AllitaAuth
         ){
             // credentials passed through the get string - let us validate with DevCo
             $checkCredentials = $this->_auth_service->userAuthenticateToken($passedCredentials['user_id'], $passedCredentials['token'], $passedIp, $passedUserAgent);
-                dd($checkCredentials);
+                //dd($checkCredentials);
                 if($checkCredentials == false || !$checkCredentials->data->attributes->{'authenticated'} || !$checkCredentials->data->attributes->{'user-activated'} || !$checkCredentials->data->attributes->{'user-exists'}){
                     // this is a failed login attempt
                     $failedLoginAttempt = true;
@@ -404,7 +404,7 @@ class AllitaAuth
 
         // user false // not logged in and/or no credentials
         if($user == false){
-            dd('User login failed: '.$failedLoginReason);
+            //dd('User login failed: '.$failedLoginReason);
             exit('<script>alert(\'Uh oh, looks like your login expired. Let me take you to DevCo to get you logged in.\'); window.location=\''.$devcoLoginUrl.'?redirect='.urlencode($request->fullUrl())   .'\';</script>');
             
         }
