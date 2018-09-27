@@ -394,7 +394,7 @@ class AllitaAuth
         }
         // blocked redirect
         if($blockAccess){
-            dd('blocking access to this ip until '.date('m/j/y g:h a'),$currentlyBlocked->blocked_until);
+            dd('blocking access to this ip until '.date('m/j/y g:h a',$currentlyBlocked->blocked_until));
         }
 
         // user false // not logged in and/or no credentials
