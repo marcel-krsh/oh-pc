@@ -4,7 +4,7 @@
 </template>
 
 <template class="uk-hidden" id="inspection-menu-item-template">
-    <button class="uk-button uk-link menuStatus" onclick="" style="menuStyle"><i class="menuIcon"></i> menuName</button>
+    <button class="uk-button uk-link menuStatus" onclick="switchInspectionMenu('menuAction', 'menuLevel', 'menuTarget');" style="menuStyle"><i class="menuIcon"></i> menuName</button>
 </template>
 
 <template class="uk-hidden" id="inspection-areas-template">
@@ -1367,6 +1367,9 @@ The following div is defined in this particular tab and pushed to the main layou
 		data.forEach(function(menuitem) {
 			newmenu = inspectionMenuItemTemplate;
 			newmenu =  newmenu.replace(/menuName/g, menuitem.name);
+			newmenu = newmenu.replace(/menuAction/g, menuitem.action);
+			newmenu = newmenu.replace(/menuTarget/g, id);
+			newmenu = newmenu.replace(/menuLevel/g, level);
 			newmenu = newmenu.replace(/menuIcon/g, menuitem.icon);
 			newmenu = newmenu.replace(/menuStatus/g, menuitem.status);
 			menus = menus + newmenu.replace(/menuStyle/g, menuitem.style);
@@ -1582,6 +1585,15 @@ The following div is defined in this particular tab and pushed to the main layou
 			$('#detail-tab-1').trigger("click");
 			// UIkit.switcher('#top-tabs').show(0);
         });
+	}
+
+	function switchInspectionMenu(action, level='', id){
+		console.log("Switching menu "+action+level);
+		$('#inspection-'+level+'main-'+id).html("Switching menu "+action+level);
+		$('#inspection-'+level+'main-'+id+' .inspection-areas').html('areas');
+		$('#inspection-'+level+'main-'+id+'-container').fadeIn( "slow", function() {
+		    // Animation complete
+		  });
 	}
 
 	var quicklookupbox = new autoComplete({

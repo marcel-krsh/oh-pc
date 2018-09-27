@@ -9,7 +9,7 @@
 								<span id="building-detail-rid-{{$key}}" class="uk-position-bottom-center colored"><small>#<span class="rowindex">{{$loop->iteration}}</span></small></span>
 							</div>
 							<div id="building-detail-{{$target}}-c-2-{{$key}}" class="building-type">
-								<div class="uk-padding-remove building-type-top" uk-grid>
+								<div class="uk-padding-remove building-type-top uk-height-1-1" uk-grid>
 									<div class="uk-width-3-4 uk-padding-remove">
 										<div uk-grid>
 											<div class="uk-width-1-1 uk-padding-remove">
