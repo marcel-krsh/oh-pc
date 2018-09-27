@@ -71,4 +71,18 @@ return [
 
     'key' => env('ALLITA_PCAPI_KEY'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | AUTH PARAMETERS FOR USER
+    |--------------------------------------------------------------------------
+    |
+    | These variables are used primarily by the AllitaAuth middleware
+    |
+    */
+
+    'max_login_tries' => env('MAX_LOGIN_TRIES'),
+    'block_out_time_factor' => env('BLOCK_OUT_TIME_FACTOR'),
+    'max_unlock_tries' => env('MAX_UNLOCK_TRIES'),
+    'remember_me_session_length' => env('REMEMBER_ME_SESSION_LENGTH'),
+
 ];

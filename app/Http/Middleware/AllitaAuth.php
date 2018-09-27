@@ -89,11 +89,12 @@ class AllitaAuth
     {
 
         /// Set Auth Check Variables:
-        $maxLoginTries = 5; // update to be a system setting.
-        $blockOutTimeFactor = 300; // five minutes for every 5 times they try to log in -- update to be a system setting
+        $maxLoginTries = config('allita.api.max_login_tries');
+        $blockOutTimeFactor = config('allita.api.block_out_time_factor'); 
         $failedLoginAttempt = false;
         $blockAccess = false;
-        $maxUnlockTries = 5; // update to be a system setting.
+        $maxUnlockTries = config('allita.api.max_unlock_tries'); // update to be a system setting.
+        $rememberMeSessionLength = config('allita.api.remember_me_session_length');
         $blockUnlock = false;
         $thisIp = $request->ip();
         $thisAgent = $request->header('User-Agent');
@@ -272,6 +273,7 @@ class AllitaAuth
                                  'tries' => 1,
                                  'total_failed_tries' => 1,
                                  'last_failed_time' => time(),
+                                 'last_failed_reason' => $failedLoginReason,
                                 'blocked_until' => null
                             ]);
                 $newTracker->save();
@@ -322,6 +324,7 @@ class AllitaAuth
                                 'unlock_token' => $unlockToken,
                                 'last_failed_time' => $lastFailedTime,
                                 'last_locked_time' => $lastLockedTime,
+                                 'last_failed_reason' => $failedLoginReason,
 
                             ]);
             }
@@ -362,7 +365,8 @@ class AllitaAuth
                         $currentlyBlocked->update([
                                             'blocked_until' => $unblockedTime, 
                                             'unlock_attempts' => 0,
-                                            'total_unlock_attempts' => $totalUnlockAttempts 
+                                            'total_unlock_attempts' => $totalUnlockAttempts,
+                                            'unlock_token' => null, 
                                             ]);
                         // reset blocked access to false.
                         if($currentlyBlocked->ip == $thisIp){
