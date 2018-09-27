@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
-//use Cookie;
+use Cookie;
 //use Illuminate\Support\Facades\Crypt;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Auth\AuthenticationException;
