@@ -138,14 +138,14 @@ class AllitaAuth
             
                 // the remember me cookie is set - let's expolode it so we can get the user values from it.
                 try {
-                    $rememberMeCookieValueDecrypted = decrypt($rememberMeCookieValue,false);
+                    $rememberMeCookieValueDecrypted = decrypt($rememberMeCookieValue);
                 } catch (DecryptException $e) {
                     //
                     dd($e);
                 }
                 
                 $credentials = explode('|', $rememberMeCookieValueDecrypted);
-                dd('name:',$name, 'remember_me_token:',$rememberMeCookieValue, 'decrypted:',$rememberMeCookieValueDecrypted, 'credentials:',$credentials);
+                dd('V4 - name:',$name, 'remember_me_token:',$rememberMeCookieValue, 'decrypted:',$rememberMeCookieValueDecrypted, 'credentials:',$credentials);
                 // make sure this is not double encrypted:
                 if(count($credentials)>2){
                     $explodedCredentials = true;
