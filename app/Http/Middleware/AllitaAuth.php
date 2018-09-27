@@ -108,7 +108,7 @@ class AllitaAuth
         $checkUser = false;
         $device = false;
         $deviceCheck = true;
-        $twoFactorConfirmed = false;
+        $twoFactorConfirmed = true; // set to true if you want to bypass twofactor
         $failedLoginReason = 'No Credentials Provided';
         $devcoLoginUrl = config('allita.api.devco_login_url');
 
