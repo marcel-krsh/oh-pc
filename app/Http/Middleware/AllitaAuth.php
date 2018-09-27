@@ -136,7 +136,7 @@ class AllitaAuth
                 $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
                 $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
                 $credentials = explode('|', $rememberMeCookieValue);
-                dd($credentials);
+                dd($name, $rememberMeCookieValue, $credentials);
                 // make sure this is not double encrypted:
                 if(count($credentials)>2){
                     $explodedCredentials = true;
