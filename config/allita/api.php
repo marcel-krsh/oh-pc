@@ -73,16 +73,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | TOKEN EXPIRATION
+    |--------------------------------------------------------------------------
+    |
+    | This length of time a token can live before we reauthenticate with the api
+    | This should be considerably less than the actual expiration
+    */
+    'allita_pcapi_token_expires_in' => env('ALLITA_PCAPI_TOKEN_EXPIRES_IN'),
+
+
+    /*
+    |--------------------------------------------------------------------------
     | AUTH PARAMETERS FOR USER
     |--------------------------------------------------------------------------
     |
     | These variables are used primarily by the AllitaAuth middleware
     |
     */
-
+    
     'max_login_tries' => env('MAX_LOGIN_TRIES'),
     'block_out_time_factor' => env('BLOCK_OUT_TIME_FACTOR'),
     'max_unlock_tries' => env('MAX_UNLOCK_TRIES'),
     'remember_me_session_length' => env('REMEMBER_ME_SESSION_LENGTH'),
+    'devco_login_url' => env('DEVCO_LOGIN_URL'),
 
 ];

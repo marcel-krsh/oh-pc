@@ -108,8 +108,9 @@ class AllitaAuth
         $checkUser = false;
         $device = false;
         $deviceCheck = true;
-        $twoFactorConfirmed = false;
+        $twoFactorConfirmed = true; // set to true if you want to bypass twofactor
         $failedLoginReason = 'No Credentials Provided';
+        $devcoLoginUrl = config('allita.api.devco_login_url');
 
         ////////////////////////////////////////////////////////
         ///// Check if this ip is currently blocked
@@ -128,14 +129,14 @@ class AllitaAuth
 
         $name = $this->auth->getRecallerName();
         if($name){
-            $rememberMeCookieValue = $request->cookie($name);
+            $rememberMeCookieValue = $request->cookie($name)->value;
             /// check if token is for remembering user:
             if(!is_null($rememberMeCookieValue)){
                 // the remember me cookie is set - let's expolode it so we can get the user values from it.
                 $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
                 $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
                 $credentials = explode('|', $rememberMeCookieValue);
-                
+                dd($name, $rememberMeCookieValue, $credentials);
                 // make sure this is not double encrypted:
                 if(count($credentials)>2){
                     $explodedCredentials = true;
@@ -194,10 +195,10 @@ class AllitaAuth
             // credentials passed through the get string - let us validate with DevCo
             $checkCredentials = $this->_auth_service->userAuthenticateToken($passedCredentials['user_id'], $passedCredentials['token'], $passedIp, $passedUserAgent);
                 //dd($checkCredentials);
-                if($checkCredentials == false || !$checkCredentials->data->attributes->{'authenticated'} || !$checkCredentials->data->attributes->{'user-activated'} || !$checkCredentials->data->attributes->{'user-exists'}){
+                if(is_string($checkCredentials) || !$checkCredentials->data->attributes->{'authenticated'} || !$checkCredentials->data->attributes->{'user-activated'} || !$checkCredentials->data->attributes->{'user-exists'}){
                     // this is a failed login attempt
                     $failedLoginAttempt = true;
-                    $failedLoginReason = 'Could not validate user to devco.';
+                    $failedLoginReason = $checkCredentials;
                     //throw new AuthenticationException('Unauthenticated 130.');
                 } else {
                     // this user is authenticated! 
@@ -403,7 +404,9 @@ class AllitaAuth
 
         // user false // not logged in and/or no credentials
         if($user == false){
-            dd('User login failed (fail recorded in database for this ip): '.$failedLoginReason);
+            //dd('User login failed: '.$failedLoginReason);
+            exit('<script>alert(\'Uh oh, looks like your login expired. Let me take you to DevCo to get you logged in.\'); window.location=\''.$devcoLoginUrl.'?redirect='.urlencode($request->fullUrl())   .'\';</script>');
+            
         }
 
         // 2fa redirect
