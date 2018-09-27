@@ -149,7 +149,7 @@ class AllitaAuth
                 // }
                 
                 $credentials = explode('|', $rememberMeCookieValueDecrypted);
-                dd('V5 - name:',$name, 'remember_me_token:',$rememberMeCookieValue, 'decrypted:',$rememberMeCookieValueDecrypted, 'credentials:',$credentials,'encryptor:',$encryptor);
+                //dd('V5 - name:',$name, 'remember_me_token:',$rememberMeCookieValue, 'decrypted:',$rememberMeCookieValueDecrypted, 'credentials:',$credentials,'encryptor:',$encryptor);
                 // make sure this is not double encrypted:
                 if(count($credentials)>2){
                     $explodedCredentials = true;
