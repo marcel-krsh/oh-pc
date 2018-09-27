@@ -123,6 +123,8 @@ class AuthService
      */
     public function rootAuthenticate()
     {
+        
+       
         $endpoint = "{$this->_base_directory}/root/authenticate?username={$this->_username}&password={$this->_password}&key={$this->_pcapi_key}";
         $is_successful = false;
 
@@ -169,6 +171,9 @@ class AuthService
 
     public function accessTokenNeedsRefresh()
     {
+        // returning false will allow the current token to be used
+        // returning true will require the system to re-authenticate
+
         $result = false;
 
         // is there a token value?
@@ -221,7 +226,8 @@ class AuthService
             }
         } catch (GuzzleException | \Exception $e) {
             // @todo: Throw PC-API Exception
-            dd('Line 174 Auth Service gave an exception from the API server: '.$e->getMessage());
+            // dd('Line 229 Auth Service gave an exception from the API server: '.$e->getMessage());
+            return false;
         }
     }
 

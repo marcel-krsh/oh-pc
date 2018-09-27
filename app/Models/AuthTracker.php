@@ -18,7 +18,15 @@ class AuthTracker extends Model
         'user_agent',
         'user_id',
         'tries',
-        'blocked_until'
+        'blocked_until',
+        'total_failed_tries',
+        'times_locked',
+        'unlock_token',
+        'unlock_attempts',
+        'total_unlock_attempts',
+        'last_failed_time',
+        'last_locked_time',
+        'last_failed_reason',
     ];
 
     /**
