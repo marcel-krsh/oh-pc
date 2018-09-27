@@ -171,7 +171,7 @@ class AllitaAuth
                         // make sure user is active and it hasn't been longer than their maximum time since last load.
                         if($rememberedUser->active == 1 && ($rememberedUser->last_accessed > (time() - 1200))){
                             // user is active - log them in
-                            $this->auth->loginUsingId($rememberedUser->id,true);
+                            $this->auth->loginUsingId($rememberedUser->id);
                             $rememberedUser->update(['last_accessed'=>time()]);
 
                             // set userActive and user to be true for final test.
