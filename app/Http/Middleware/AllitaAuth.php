@@ -394,7 +394,7 @@ class AllitaAuth
         }
         // blocked redirect
         if($blockAccess){
-            dd('blocking access to this ip until '.date('m/j/y g:h a',$currentlyBlocked->blocked_until));
+            dd(date('m/j/y g:h a',time()).': Sorry, I am blocking access to your ip address '.$thisIp.' due to multiple failed logins. I will allow access again at '.date('m/j/y g:h a',$currentlyBlocked->blocked_until).'. Your admins have been notified and may unlock access sooner if they determine there is no threat to the security of the site.');
         }
 
         // user false // not logged in and/or no credentials
