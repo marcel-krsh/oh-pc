@@ -38,8 +38,8 @@ class AllitaAuth
      */
     public function handle($request, Closure $next)
     {
-        $this->_auth_service = new AuthService;
-        $this->_devco_service = new DevcoService;
+        // $this->_auth_service = new AuthService;
+        // $this->_devco_service = new DevcoService;
 
         // make sure we have access and refresh tokens
         // $pcapi_refresh_token = SystemSetting::get('devco_refresh_token'); 
@@ -52,7 +52,7 @@ class AllitaAuth
 
         // how do we know if the access_token needs to be replaced?
 
-         $this->authenticate($request);
+        // $this->authenticate($request);
         // $this->checkDevcoSession($request);
 
         // temporary solution

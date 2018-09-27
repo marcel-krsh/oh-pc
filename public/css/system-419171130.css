@@ -1517,23 +1517,24 @@ margin-top:10px;
     overflow-y: hidden;
 }
 
-.building .building-type {
+/*.building .building-type {
   padding-top: 10px;
   padding-bottom: 10px;
   padding-right: 20px;
   width: 195px;
-}
+}*/
 
-.building-detail .building-type {
+.building-detail .building-type, .building .building-type {
   width: 300px;
   padding-top: 0;
   padding-bottom: 0;
+  padding-right: 0px;
 }
 
 .building-detail .building-type > div{
   height: 100%;
 }
-.building-detail .building-type .journey {
+.building-detail .building-type .journey, .building .building-type .journey {
     margin-left: 20px;
     height: 100%;
     padding-top: 20px;
@@ -1559,7 +1560,7 @@ margin-top:10px;
 }
 
 .inspection-areas {
-    margin-left: -60px;
+    margin-left: -30px;
     border: 0;
 }
 .inspection-area {
@@ -1681,7 +1682,6 @@ margin-top:10px;
 }
 .building-auditors > div {
     width: 70px;
-    margin: 0 10px;
 }
 .building-auditors .uk-dotnav > * > * {
     width: 7px;
@@ -1870,7 +1870,7 @@ margin-top:10px;
 }
 #auditstable .building-status i {
     position: absolute;
-    right: -11px;
+    right: -5px;
     bottom: -15px;
     background-color: #ffffff;
     border-radius: 50%;
@@ -1882,7 +1882,7 @@ margin-top:10px;
 }
 #auditstable .building-details .building-status i {
     position: absolute;
-    right: -18px;
+    right: -9px;
     bottom: -15px;
 }
 #auditstable .building.no-action .building-status i { border: 2px solid; }
@@ -1957,13 +1957,15 @@ margin-top:10px;
 
 #auditstable .building .building-address {
   height: 100%;
-  min-width: 300px;
+  /*min-width: 300px;*/
 }
 #auditstable .building-address > div, 
 #auditstable .building .area-status-list, 
-#auditstable .building .building-history,
+#auditstable .building .building-history {
+    padding-top: 10px !important;
+}
 #auditstable .building div[id^="inspection-tools-"] {
-    padding-top: 20px !important;
+    padding-top: 5px !important;
 }
 #auditstable .building-address small {
     text-transform: uppercase;
@@ -1979,10 +1981,13 @@ margin-top:10px;
 }
 .journey-start, .journey-end, .journey {
   position: relative;
+
+    margin-left: 20px;
+    padding-top: 20px;
 }
 .journey-start:after {
     content: '';
-    width: 15px;
+    width: 13px;
     left: 0;
     border-bottom: 1px solid #e6e7e9;
     position: absolute;
@@ -1997,10 +2002,11 @@ margin-top:10px;
     left: 0;
     content: '';
     top: 30px;
+    padding-top: 40px;
 }
 .journey:after {
     content: '';
-    width: 15px;
+    width: 13px;
     left: 0;
     border-bottom: 1px solid #e6e7e9;
     position: absolute;
@@ -2018,7 +2024,7 @@ margin-top:10px;
 }
 .journey-end:after {
     content: '';
-    width: 15px;
+    width: 13px;
     left: 0;
     border-bottom: 1px solid #e6e7e9;
     position: absolute;

@@ -13,8 +13,8 @@ class DashboardController extends Controller
 {
 	public function __construct()
     {
-        $this->middleware('auth');
-    	 //Auth::onceUsingId(1); // TEST BRIAN
+        // $this->middleware('auth');
+    	 Auth::onceUsingId(1); // TEST BRIAN
     }
 
     public function login()

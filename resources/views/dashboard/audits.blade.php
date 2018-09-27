@@ -1,3 +1,179 @@
+<template class="uk-hidden" id="inspection-left-template">
+    <div class="inspection-menu">
+    </div>
+</template>
+
+<template class="uk-hidden" id="inspection-menu-item-template">
+    <button class="uk-button uk-link menuStatus" onclick="" style="menuStyle"><i class="menuIcon"></i> menuName</button>
+</template>
+
+<template class="uk-hidden" id="inspection-areas-template">
+    <div class="inspection-areas uk-height-large uk-height-max-large uk-panel uk-panel-scrollable"">
+    </div>
+</template>
+
+<template class="uk-hidden" id="inspection-area-template">
+	    <div class="inspection-area uk-flex uk-flex-row areaStatus"  style="padding:6px 0 0 0;">
+	    	<div class="uk-inline uk-padding-remove uk-margin-top">
+    			<div class="area-avatar">
+					<div uk-tooltip="pos:top-left;title:areaAuditorName;" title="" aria-expanded="false" class="user-badge auditor-badge-areaAuditorColor no-float">
+						areaAuditorInitials
+					</div>
+				</div>
+			</div>
+    		<div class="uk-inline uk-padding-remove uk-margin-top" style="flex:140px;">
+    			<div class="area-name">
+    				<i class="a-circle-checked"></i>
+					areaName
+				</div>
+			</div>
+    		<div class="uk-inline uk-padding-remove">
+    			<div class="findings-icon uk-inline areaNLTStatus">
+					<i class="a-booboo"></i>
+					<div class="findings-icon-status plus">
+						<span class="uk-badge">+</span>
+					</div>
+				</div>
+				<div class="findings-icon uk-inline areaLTStatus">
+					<i class="a-skull"></i>
+					<div class="findings-icon-status plus">
+						<span class="uk-badge">+</span>
+					</div>
+				</div>
+				<div class="findings-icon uk-inline areaSDStatus">
+					<i class="a-flames"></i>
+					<div class="findings-icon-status plus">
+						<span class="uk-badge">+</span>
+					</div>
+				</div>
+			</div>
+			<div class="uk-inline" style="padding: 0 15px;">
+				<div class="findings-icon uk-inline areaPicStatus">
+					<i class="a-picture"></i>
+					<div class="findings-icon-status plus">
+						<span class="uk-badge">+</span>
+					</div>
+				</div>
+				<div class="findings-icon uk-inline areaCommentStatus">
+					<i class="a-comment-text"></i>
+					<div class="findings-icon-status plus">
+						<span class="uk-badge">+</span>
+					</div>
+				</div>
+			</div>
+			<div class="uk-inline uk-padding-remove">	
+				<div class="findings-icon uk-inline areaCopyStatus">
+					<i class="a-file-copy-2"></i>
+					<div class="findings-icon-status plus">
+						<span class="uk-badge">+</span>
+					</div>
+				</div>
+				<div class="findings-icon uk-inline areaTrashStatus">
+					<i class="a-trash-4"></i>
+					<div class="findings-icon-status plus">
+						<span class="uk-badge">+</span>
+					</div>
+				</div>
+			</div> 
+		
+	    </div>
+</template>
+
+<template class="uk-hidden" id="inspection-tools-template">
+    <div class="inspection-tools"  uk-grid>
+    	<div class="inspection-tools-top uk-width-1-1">
+    		<div uk-grid>
+    			<div class="uk-width-1-3">
+    				<button class="uk-button tool-add-area uk-link"><i class="a-plus"></i> AREA</button>
+    			</div>
+    			<div class="uk-width-1-3">
+    				<button class="uk-button tool-edit uk-link"><i class="a-pencil-2"></i> EDIT</button>
+    			</div>
+    			<div class="uk-width-1-3 uk-text-right">
+    				<i class="a-horizontal-expand"></i>
+    			</div>
+    		</div>
+    	</div>
+    	<div class="inspection-tools-tabs uk-width-1-1">
+    		<ul class="uk-subnav uk-subnav-pill" uk-switcher="animation: uk-animation-fade">
+			    <li><a href="#">FINDINGS</a></li>
+			    <li><a href="#">COMMENTS</a></li>
+			    <li><a href="#">PHOTOS</a></li>
+			    <li><a href="#">DOCUMENTS</a></li>
+			    <li><a href="#">FOLLOW UPS</a></li>
+			</ul>
+
+			<ul class="uk-switcher uk-margin">
+			    <li id="inspec-tools-tab-findings">
+			    	<div>
+			    		<i class="a-arrow-top-3 flipfont"></i> FILTER FINDINGS
+			    	</div>
+			    	<div class="inspec-tools-tab-findings-container uk-panel uk-panel-scrollable uk-height-large uk-height-max-large">
+			    		<div class="inspec-tools-tab-finding action-needed" uk-grid>
+			    			<div class="uk-width-1-1" style="padding-top: 15px;">
+			    				<div uk-grid>
+					    			<div class="uk-width-1-4">
+					    				<i class="a-booboo"></i> NLT<br />
+					    				<span class="auditinfo">AUDIT 20120394</span><br />
+					    				<button class="uk-button inspec-tools-findings-resolve uk-link"><span class="uk-badge">
+									    	 &nbsp; </span>RESOLVE</button>
+					    			</div>
+					    			<div class="uk-width-3-4 bordered">
+					    				<p>12/22/2018 12:51:38 PM: By Holly Swisher<br />
+					    				STAIR #1 : Finding Description Goes here and continues here for when it is long</p>
+					    			</div>
+					    		</div>
+					    	</div>
+					    	<div class="uk-width-1-1 uk-margin-remove inspec-tools-tab-finding-comment">
+					    		<div uk-grid>
+					    			<div class="uk-width-1-4">
+					    				<i class="a-comment-text"></i> COMMENT
+					    			</div>
+					    			<div class="uk-width-3-4 borderedcomment">
+					    				<p>12/31/2018 12:59:38 PM: By Holly Swisher<br />
+					    					<span class="finding-comment">Comment goes here and is italicised to show that it is a comment and not a finding.</span></p>
+										<button class="uk-button inspec-tools-tab-finding-reply uk-link">
+					    					<i class="a-comment-pencil"></i> REPLY
+									    </button>
+					    			</div>
+					    		</div>
+					    	</div>
+					    	<div class="uk-width-1-1 uk-margin-remove">
+					    		<div uk-grid>
+					    			<div class="uk-width-1-4">
+					    				<button class="uk-button uk-link inspec-tools-tab-finding-button">
+					    					<i class="a-calendar-pencil"></i> FOLLOW UP
+									    </button>
+					    			</div>
+					    			<div class="uk-width-1-4">
+					    				<button class="uk-button uk-link inspec-tools-tab-finding-button">
+					    					<i class="a-comment-text"></i> COMMENT
+									    </button>
+					    			</div>
+					    			<div class="uk-width-1-4">
+					    				<button class="uk-button uk-link inspec-tools-tab-finding-button colored">
+					    					<i class="a-file-clock"></i> DOCUMENT
+									    </button>
+					    			</div>
+					    			<div class="uk-width-1-4">
+					    				<button class="uk-button uk-link inspec-tools-tab-finding-button">
+					    					<i class="a-picture"></i> PHOTO
+									    </button>
+					    			</div>
+					    		</div>
+					    	</div>
+			    		</div>
+			    	</div>
+			    </li>
+			    <li>Hello again!</li>
+			    <li>Bazinga!</li>
+			    <li>Hello again 2!</li>
+			    <li>Bazinga 3!</li>
+			</ul>
+    	</div>
+    </div>
+</template>
+
 <div id="audits" class="uk-no-margin-top" uk-grid>
 	<div class="uk-margin-remove-top uk-width-1-1" uk-grid>
 		<div id="auditsfilters" class="uk-width-2-3 uk-margin-top">
@@ -267,7 +443,7 @@
 		            </td>
 		            <td id="audit-c-2-1" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-1" onclick="projectDetails(123,1,3);" uk-tooltip="pos:top-left;title:View Buildings and Common Areas;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-1" onclick="projectDetails(1,1,3);" uk-tooltip="pos:top-left;title:View Buildings and Common Areas;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div>
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
 		            		<h3 id="audit-project-name-1" class="uk-margin-bottom-remove" uk-tooltip="title:Open Audit Details in Tab;">19200114</h3>
@@ -374,7 +550,7 @@
 		            </td>
 		            <td id="audit-c-2-2" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-2" onclick="projectDetails(123,2,6);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-2" onclick="projectDetails(2,2,6);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div> 
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
 		            		<h3 id="audit-project-name-2" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
@@ -467,7 +643,7 @@
 		            </td>
 		            <td id="audit-c-2-3" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-3" onclick="projectDetails(123,3,4);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-3" onclick="projectDetails(3,3,4);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div> 
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
 		            		<h3 id="audit-project-name-3" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
@@ -559,7 +735,7 @@
 		            </td>
 		            <td id="audit-c-2-4" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<span id="audit-i-project-detail-4" onclick="projectDetails(123,4,6);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-4" onclick="projectDetails(4,4,6);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div> 
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
 		            		<h3 id="audit-project-name-4" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
@@ -651,7 +827,7 @@
 		            </td>
 		            <td id="audit-c-2-5" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-1" onclick="projectDetails(123,5,3);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-1" onclick="projectDetails(5,5,3);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div>
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
 		            		<h3 id="audit-project-name-5" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
@@ -744,7 +920,7 @@
 		            </td>
 		            <td id="audit-c-2-6" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-6" onclick="projectDetails(123,6,6);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-6" onclick="projectDetails(6,6,6);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div> 
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
 		            		<h3 id="audit-project-name-6" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
@@ -837,7 +1013,7 @@
 		            </td>
 		            <td id="audit-c-2-7" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-7" onclick="projectDetails(123,7,4);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-7" onclick="projectDetails(7,7,4);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div> 
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
 		            		<h3 id="audit-project-name-7" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
@@ -929,7 +1105,7 @@
 		            </td>
 		            <td id="audit-c-2-4" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<span id="audit-i-project-detail-8" onclick="projectDetails(123,8,6);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-8" onclick="projectDetails(8,8,6);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div> 
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
 		            		<h3 id="audit-project-name-8" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
@@ -1107,6 +1283,7 @@ The following div is defined in this particular tab and pushed to the main layou
 			scrollTop: $('#audit-r-'+targetaudit).offset().top - 59
 		}, 500, 'linear');
 		if ($('#building-r-'+target+'-details').length){
+
 			if ($('#building-r-'+target).attr('expanded')){
 				$('#building-r-'+target).removeAttr('expanded');
 			}
@@ -1178,7 +1355,7 @@ The following div is defined in this particular tab and pushed to the main layou
 		});
 		$('#inspection-menus-'+id).html(inspectionLeftTemplate);
 		$('#inspection-menus-'+id+' .inspection-menu').html(menus);
-		$('#inspection-menus-'+id).fadeIn( "slow", function() {
+		$('#inspection-menus-'+id+'-container').fadeIn( "slow", function() {
 		    // Animation complete
 		  });
 
@@ -1195,7 +1372,7 @@ The following div is defined in this particular tab and pushed to the main layou
 		var inspectionToolsTemplate = $('#inspection-tools-template').html();
 
 		$('#inspection-tools-'+id).html(inspectionToolsTemplate);
-		$('#inspection-tools-'+id).fadeIn( "slow", function() {
+		$('#inspection-tools-'+id+'-container').fadeIn( "slow", function() {
 			    // Animation complete
 			  });
 		
@@ -1227,25 +1404,34 @@ The following div is defined in this particular tab and pushed to the main layou
 			});
 			$('#inspection-main-'+id).html(inspectionMainTemplate);
 			$('#inspection-main-'+id+' .inspection-areas').html(areas);
-			$('#inspection-main-'+id).fadeIn( "slow", function() {
+			$('#inspection-main-'+id+'-container').fadeIn( "slow", function() {
 			    // Animation complete
 			  });
 		}
 
 	}
 
-	function inspectionDetails(id, buildingid, auditid, target, targetaudit, rowid) {
-		// scroll to row early
-        $('html, body').animate({
-			scrollTop: $('#audit-r-'+targetaudit).offset().top - 59
-		}, 500, 'linear');
-		if ($('#building-detail-r-'+target).attr('expanded')){
-			$('#building-detail-r-'+target).removeAttr('expanded');
+	function closeInspections(target) {
+		$('#building-r-'+target).removeAttr('expanded');
+		// close own details
+
+		$('#inspection-tools-'+target+'-container').fadeOut("slow", function() {
+			$('#inspection-main-'+target+'-container').slideUp("slow");
+			$('#inspection-menus-'+target+'-container').slideUp("slow");
+		    $('#inspection-tools-switch-'+target).fadeIn( "slow", function() {
+			    // Animation complete
+			  });
+		    $('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).slideDown();
+			// unblur other building inspection rows
+			$('div[id^="building-r-"]').removeClass('blur');
+		 });
+
+		$('#building-detail-r-'+target).removeAttr('expanded');
 			// close own details
 
-			$('#inspection-tools-'+target).fadeOut("slow", function() {
-				$('#inspection-main-'+target).slideUp("slow");
-				$('#inspection-menus-'+target).slideUp("slow");
+			$('#inspection-tools-'+target+'-container').fadeOut("slow", function() {
+				$('#inspection-main-'+target+'-container').slideUp("slow");
+				$('#inspection-menus-'+target+'-container').slideUp("slow");
 			    $('#inspection-tools-switch-'+target).fadeIn( "slow", function() {
 				    // Animation complete
 				  });
@@ -1253,6 +1439,94 @@ The following div is defined in this particular tab and pushed to the main layou
 				// unblur other building inspection rows
 				$('div[id^="building-detail-r-"]').removeClass('blur');
 			 });
+	}
+
+	function inspectionDetailsFromBuilding(buildingid, auditid, target, targetaudit, rowid){
+		// scroll to row early
+		$('html, body').animate({
+			scrollTop: $('#audit-r-'+targetaudit).offset().top - 59
+		}, 500, 'linear');
+
+		$('#inspection-tools-'+target+'-container').fadeOut("slow", function() {
+			$('#inspection-main-'+target+'-container').slideUp("slow");
+			$('#inspection-menus-'+target+'-container').slideUp("slow");
+		    $('#inspection-tools-switch-'+target).fadeIn( "slow", function() {
+			    // Animation complete
+			  });
+		    $('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).slideDown();
+			// unblur other building inspection rows
+			$('div[id^="building-r-"]').removeClass('blur');
+		 });
+
+		if ($('#building-r-'+target).attr('expanded')){
+			// $('#building-r-'+target).removeAttr('expanded');
+			// close own details
+
+			
+			// closeInspections(target);
+			
+		}else{
+
+			// blur all other building rows
+			$('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).addClass('blur');
+			$('div[id^="building-r-"]').not( 'div[id="building-r-'+target+'"]' ).slideUp();
+    	
+        	// open the expanded div early based on expected number of buildings
+        	var tempdiv = '<div>';
+        	tempdiv = tempdiv + '<div style="height:1000px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+        	tempdiv = tempdiv + '</div>';
+        	$('#inspection-main-'+target).html(tempdiv);
+        	$('#inspection-main-'+target+'-container').slideDown();
+
+        	$('#inspection-tools-switch-'+target).fadeOut("slow");
+
+			// fetch and display new details
+			var url = '{{route("audit.inspection", ["audit" => "xa", "building" => "xi"])}}';
+			url = url.replace('xa', auditid);
+			url = url.replace('xi', buildingid);
+		    $.get(url, {
+	            '_token' : '{{ csrf_token() }}',
+	            'target' : target,
+	            'rowid' : rowid,
+	            'targetaudit' : targetaudit
+	            }, function(data) {
+	                if(data=='0'){ 
+	                    UIkit.modal.alert("There was a problem getting the building details' information.");
+	                } else {
+						// $('#building-detail-r-'+target+'-inspect').html(data);
+						$('#building-r-'+target).attr( "expanded", true );
+						loadInspectionMenu(data.menu, target);
+						loadInspectionMain(data.areas, target);
+						loadInspectionTools(data, target);
+					}
+		    });
+		}
+	}
+
+
+	function inspectionDetails(id, buildingid, auditid, target, targetaudit, rowid) {
+		// scroll to row early
+        $('html, body').animate({
+			scrollTop: $('#audit-r-'+targetaudit).offset().top - 59
+		}, 500, 'linear');
+
+        
+
+		if ($('#building-detail-r-'+target).attr('expanded')){
+			$('#building-detail-r-'+target).removeAttr('expanded');
+			// close own details
+			$('#inspection-tools-'+target+'-container').fadeOut("slow", function() {
+				$('#inspection-main-'+target+'-container').slideUp("slow");
+				$('#inspection-menus-'+target+'-container').slideUp("slow");
+			    $('#inspection-tools-switch-'+target).fadeIn( "slow", function() {
+				    // Animation complete
+				  });
+			    $('div[id^="building-detail-r-"]').not( 'div[id="building-detail-r-'+target+'"]' ).slideDown();
+				// unblur other building inspection rows
+				$('div[id^="building-detail-r-"]').removeClass('blur');
+			 });
+			
+			// closeInspections(target);
 
 			
 		}else{
@@ -1265,7 +1539,8 @@ The following div is defined in this particular tab and pushed to the main layou
         	var tempdiv = '<div>';
         	tempdiv = tempdiv + '<div style="height:1000px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
         	tempdiv = tempdiv + '</div>';
-        	$('#inspection-main-'+target).html(tempdiv).slideDown();
+        	$('#inspection-main-'+target).html(tempdiv);
+        	$('#inspection-main-'+target+'-container').slideDown();
 
         	$('#inspection-tools-switch-'+target).fadeOut("slow");
 
