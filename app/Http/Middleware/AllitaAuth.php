@@ -129,7 +129,7 @@ class AllitaAuth
 
         $name = $this->auth->getRecallerName();
         if($name){
-            $rememberMeCookieValue = $request->cookie($name);
+            $rememberMeCookieValue = $request->cookie($name)->value;
             /// check if token is for remembering user:
             if(!is_null($rememberMeCookieValue)){
                 // the remember me cookie is set - let's expolode it so we can get the user values from it.
