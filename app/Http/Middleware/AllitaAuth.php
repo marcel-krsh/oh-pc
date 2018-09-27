@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Cookie;
-use Crypt;
+use Illuminate\Support\Facades\Crypt;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Guard;
