@@ -137,11 +137,9 @@ class AllitaAuth
             
                 // the remember me cookie is set - let's expolode it so we can get the user values from it.
                 $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
-                $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
-                dd($rememberMeCookieValue);
-
-                $credentials = explode('|', $rememberMeCookieValue);
-                dd($name, $rememberMeCookieValue, $credentials);
+                $rememberMeCookieValueDecrypted = $encryptor->decrypt($rememberMeCookieValue,false);
+                $credentials = explode('|', $rememberMeCookieValueDecrypted);
+                dd('name:'.$name, 'remember_me_token:'.$rememberMeCookieValue, 'decrypted:'.$rememberMeCookieValueDecrypted, 'credentials:'.$credentials);
                 // make sure this is not double encrypted:
                 if(count($credentials)>2){
                     $explodedCredentials = true;
