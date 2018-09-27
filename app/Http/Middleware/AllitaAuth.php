@@ -405,8 +405,8 @@ class AllitaAuth
         // user false // not logged in and/or no credentials
         if($user == false){
             //dd('User login failed: '.$failedLoginReason);
-            print('<script>alert(\'Uh oh, looks like your login expired. Taking you to DevCo to get you all set.\'); window.location=\'$devcoLoginUrl\');</script>');
-            dd('ACCESS DENIED');
+            exit('<script>alert(\'Uh oh, looks like your login expired. Taking you to DevCo to get you all set.\'); window.location=\'$devcoLoginUrl\');</script>');
+            
         }
 
         // 2fa redirect
