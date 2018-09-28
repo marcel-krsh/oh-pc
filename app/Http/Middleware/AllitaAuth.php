@@ -135,11 +135,11 @@ class AllitaAuth
             $rememberMeCookieValue = Cookie::get($name);
             /// check if token is for remembering user:
             if(!is_null($rememberMeCookieValue) && strlen($rememberMeCookieValue) > 10){
-                dd('V6 ',$this->auth->check(),$request->user(),$this->auth->user());
                 //dd($rememberMeCookieValue);
                 $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
                 $rememberMeCookieValueDecrypted = $encryptor->decrypt($rememberMeCookieValue,false);
-
+                dd('V6 ',$this->auth, $rememberMeCookieValueDecrypted);
+                
 
                 //$rememberMeCookieValueDecrypted = Crypt::decryptString($rememberMeCookieValue);
                 // the remember me cookie is set - let's expolode it so we can get the user values from it.
