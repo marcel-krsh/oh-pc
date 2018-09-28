@@ -101,6 +101,7 @@ class AllitaAuth
         $blockAccess = false;
         $maxUnlockTries = config('allita.api.max_unlock_tries'); // update to be a system setting.
         $rememberMeSessionLength = config('allita.api.remember_me_session_length');
+        $rememberMeCookieValueDecrypted = "";
         $blockUnlock = false;
         $thisIp = $request->ip();
         $thisAgent = $request->header('User-Agent');
