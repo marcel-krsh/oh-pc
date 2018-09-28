@@ -184,7 +184,7 @@ class AllitaAuth
                             Cookie::queue(\Cookie::forget($name));
                             // forget the seesion!
                             Session::flush();
-                            Auth::logout();
+                            $this->auth->logout();
                             // incorrect attempt with a remember me token
                             // record as an attempt to login (albeit via a hijacked cookie)
                             $failedLoginAttempt = true;
@@ -258,7 +258,7 @@ class AllitaAuth
 
                 }          
                 if($allitaUser->active == 1){
-                    Auth::loginUsingId($allitaUser->id,true);
+                    $this->auth->loginUsingId($allitaUser->id,true);
                     $allitaUser->update(['last_accessed'=> time()]);
                     //$name = $this->auth->getRecallerName();
                     // set userActive and user to be true for final test.
