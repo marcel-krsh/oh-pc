@@ -870,4 +870,8 @@ class AuditController extends Controller
     public function getProject( $project=null) {
         return view('projects.project');
     }
+
+    public function getProjectTitle ( $project = null ) {
+        return '<i class="a-mobile-repeat"></i><i class="a-home-question"></i> <span class="list-tab-text"> PROJECT TAB :: CREATED DYNAMICALLY FROM CONTROLLER</span>';
+    }
 }

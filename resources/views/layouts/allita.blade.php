@@ -115,7 +115,7 @@ if(Auth::check()){
 								<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.reports') }}', '3');">
 									<a href=""><i class="a-file-chart-3"></i> <span class="list-tab-text"> <span class="uk-badge">99,999</span> REPORTS</span></a>
 								</li>
-								<li id="detail-tab-4" class="detail-tab-4" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" ><a href=""><i class="a-mobile-repeat"></i><i class="a-home-question"></i> <span class="list-tab-text"> PROJECT 200114 :: REVIEW AND ASSIGN INSPECTABLE AREAS</span></a></li>
+								<li id="detail-tab-5" class="detail-tab-5" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" ><a href=""><i class="a-mobile-repeat"></i><i class="a-home-question"></i> <span class="list-tab-text"> PROJECT 200114 :: REVIEW AND ASSIGN INSPECTABLE AREAS</span></a></li>
 							</ul>
 						</div>
 				    </div>
@@ -135,7 +135,7 @@ if(Auth::check()){
 						</div>
 					</li>
 					<li>
-						<div id="detail-tab-4-content">
+						<div id="detail-tab-5-content">
 						</div>
 					</li>
 				</ul>

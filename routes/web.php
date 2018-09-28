@@ -48,6 +48,7 @@ Route::group(['middleware' => 'web'], function () {
         Route::post('/communications/parcel/{parcel?}', 'CommunicationController@searchCommunications')->name('communications.search');
 
         Route::get('/projects/{project}', 'AuditController@getProject')->name('project');
+        Route::get('/projects/{project}/title', 'AuditController@getProjectTitle')->name('project.title');
     // });
 
 });
