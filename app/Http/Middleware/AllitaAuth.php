@@ -172,18 +172,14 @@ class AllitaAuth
                         // make sure user is active and it hasn't been longer than their maximum time since last load.
                         if($rememberedUser->active == 1 && ($rememberedUser->last_accessed > (time() - 1200))){
                             // user is active - log them in
-                            //$this->auth->loginUsingId($rememberedUser->id);
+                            $this->auth->loginUsingId($rememberedUser->id);
                             $rememberedUser->update(['last_accessed'=>time()]);
                             //dd($this->auth);
                             // set userActive and user to be true for final test.
                             $userActive = true;
                             $user = true;   
                         } else {
-                            // forget the cookie!
-                            Cookie::queue(\Cookie::forget($name));
-                            // forget the seesion!
-                            Session::flush();
-                            $this->auth->logout();
+                            
                             // incorrect attempt with a remember me token
                             // record as an attempt to login (albeit via a hijacked cookie)
                             $failedLoginAttempt = true;

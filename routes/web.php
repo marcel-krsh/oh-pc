@@ -13,12 +13,13 @@
 Route::group(['middleware' => 'web'], function () {
     Route::group(['middleware' => ['allita.auth']], function() {
         Route::get('unified_login', function (){
+                session(['brian'=>'test']);
                 return redirect('/');
         });
 
 
         //Route::get('/', 'DashboardController@index');
-        Route::get('/', function(){dd(\Auth::user());});
+        Route::get('/', function(){dd(\Auth::user(),session('brian'));});
         Route::get('dashboard/audits', 'DashboardController@audits')->name('dashboard.audits');
         Route::get('dashboard/audits/{audit}/buildings', 'AuditController@buildingsFromAudit')->name('audit.buildings');
         Route::get('dashboard/audits/{audit}/building/{building}/details', 'AuditController@detailsFromBuilding')->name('audit.building.details');
