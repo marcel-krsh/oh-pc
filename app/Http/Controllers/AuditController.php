@@ -866,4 +866,8 @@ class AuditController extends Controller
         return response()->json($data);
         //return view('dashboard.partials.audit_building_inspection', compact('audit_id', 'target', 'detail_id', 'building_id', 'detail', 'inspection', 'areas', 'rowid'));
     }
+
+    public function getProject( $project=null) {
+        dd('yo');
+    }
 }

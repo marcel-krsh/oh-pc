@@ -30,7 +30,7 @@ Route::group(['middleware' => ['web','allita.auth']], function() {
     Route::get('autocomplete/auditname', 'DashboardController@autocomplete');
     Route::get('autocomplete/auditaddress', 'DashboardController@autocomplete');
 
-    Route::get('/session/filters/{type}/{value}', function ($type, $value) {
+    Route::get('/session/filters/{type}/{value?}', function ($type, $value=null) {
         if($value != 'null'){
             session([$type => $value]);
             $new_filter = session($type);
@@ -40,6 +40,10 @@ Route::group(['middleware' => ['web','allita.auth']], function() {
             return 1;
         }
     })->name('session.setfilter');
+
+    Route::post('/communications/parcel/{parcel?}', 'CommunicationController@searchCommunications')->name('communications.search');
+
+    Route::get('/projects/{project}', 'AuditController@getProject')->name('project');
 });
 /* Route::get('/', 'PagesController@dashboard');
 

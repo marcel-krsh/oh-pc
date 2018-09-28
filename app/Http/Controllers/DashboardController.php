@@ -74,9 +74,11 @@ class DashboardController extends Controller
 
     public function communications(Request $request)
     {
-        
+        $owners_array = array();
+        $programs = array();
+        $messages = array();
         //return \view('dashboard.index'); //, compact('user')
-        return view('dashboard.communications');
+        return view('dashboard.communications', compact('owners_array', 'programs', 'messages'));
     }
 
     public function autocomplete(Request $request)

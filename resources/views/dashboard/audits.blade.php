@@ -449,7 +449,7 @@
 		            		<span id="audit-i-project-detail-1" onclick="projectDetails(1,1,3);" uk-tooltip="pos:top-left;title:View Buildings and Common Areas;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
 		            	</div>
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-1" class="uk-margin-bottom-remove" uk-tooltip="title:Open Audit Details in Tab;">19200114</h3>
+		            		<h3 id="audit-project-name-1" class="uk-margin-bottom-remove" uk-tooltip="title:Open Audit Details in Tab;" onClick="loadTab('{{ route('project', '19200114') }}', '4');">19200114</h3>
 			            	<small id="audit-project-aid-1" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
 			            </div>
 		            </td>
