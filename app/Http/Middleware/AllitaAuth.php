@@ -154,18 +154,18 @@ class AllitaAuth
                 // make sure this is not double encrypted:
                 if(count($credentials)>2){
                     $explodedCredentials = true;
-                } elseif(strlen($credentials)>10 && $invalidCookie == false) {
+                } elseif(is_string($rememberMeCookieValueDecrypted) && strlen($rememberMeCookieValueDecrypted)>10 && $invalidCookie == false) {
                     /// cookie may be double encrypted - decrypt again.
                     //dd('oops');
                     try {   
-                        $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
+                        $rememberMeCookieValueDecrypted = $encryptor->decrypt($rememberMeCookieValueDecrypted,false);
                    
                     } catch (DecryptException $e) {
                             $invalidCookie = true;
                             $failedLoginAttempt = true;
                             $failedLoginReason = $e;
                     }
-                    $credentials = explode('|', $rememberMeCookieValue);
+                    $credentials = explode('|', $rememberMeCookieValueDecrypted);
                     if(count($credentials)>2){
                         $explodedCredentials = true;
                     } 
