@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Cookie;
 //use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Guard;
@@ -100,10 +101,12 @@ class AllitaAuth
         $blockAccess = false;
         $maxUnlockTries = config('allita.api.max_unlock_tries'); // update to be a system setting.
         $rememberMeSessionLength = config('allita.api.remember_me_session_length');
+        $rememberMeCookieValueDecrypted = "";
         $blockUnlock = false;
         $thisIp = $request->ip();
         $thisAgent = $request->header('User-Agent');
         $explodedCredentials = false;
+        $invalidCookie = false;
         $user = false;
         $userActive = false;
         $addUser = false;
@@ -131,32 +134,38 @@ class AllitaAuth
 
         $name = $this->auth->getRecallerName();
         if($name){
+
             $rememberMeCookieValue = Cookie::get($name);
             /// check if token is for remembering user:
             if(!is_null($rememberMeCookieValue) && strlen($rememberMeCookieValue) > 10){
                 //dd($rememberMeCookieValue);
                 $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
-                $rememberMeCookieValueDecrypted = $encryptor->decrypt($rememberMeCookieValue,false);
+                try {
+                    $rememberMeCookieValueDecrypted = $encryptor->decrypt($rememberMeCookieValue,false);
+                } catch (DecryptException $e) {
+                            $invalidCookie = true;
+                            $failedLoginAttempt = true;
+                            $failedLoginReason = 'Invalid Cookie Used:'.$e;
+                }
 
-
-                //$rememberMeCookieValueDecrypted = Crypt::decryptString($rememberMeCookieValue);
-                // the remember me cookie is set - let's expolode it so we can get the user values from it.
-                // try {
-                //     $rememberMeCookieValueDecrypted = decrypt($rememberMeCookieValue);
-                // } catch (DecryptException $e) {
-                //     //
-                //     dd($e);
-                // }
                 
                 $credentials = explode('|', $rememberMeCookieValueDecrypted);
-                dd('V5 - name:',$name, 'remember_me_token:',$rememberMeCookieValue, 'decrypted:',$rememberMeCookieValueDecrypted, 'credentials:',$credentials,'encryptor:',$encryptor);
+                
                 // make sure this is not double encrypted:
                 if(count($credentials)>2){
                     $explodedCredentials = true;
-                } elseif(strlen($credentials)>10) {
+                } elseif(is_string($rememberMeCookieValueDecrypted) && strlen($rememberMeCookieValueDecrypted)>10 && $invalidCookie == false) {
                     /// cookie may be double encrypted - decrypt again.
-                    $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
-                    $credentials = explode('|', $rememberMeCookieValue);
+                    //dd('oops');
+                    try {   
+                        $rememberMeCookieValueDecrypted = $encryptor->decrypt($rememberMeCookieValueDecrypted,false);
+                   
+                    } catch (DecryptException $e) {
+                            $invalidCookie = true;
+                            $failedLoginAttempt = true;
+                            $failedLoginReason = 'Invalid Cookie Used:'.$e;
+                    }
+                    $credentials = explode('|', $rememberMeCookieValueDecrypted);
                     if(count($credentials)>2){
                         $explodedCredentials = true;
                     } 
@@ -170,18 +179,14 @@ class AllitaAuth
                         // make sure user is active and it hasn't been longer than their maximum time since last load.
                         if($rememberedUser->active == 1 && ($rememberedUser->last_accessed > (time() - 1200))){
                             // user is active - log them in
-                            $this->auth->loginUsingId($rememberedUser->id,true);
-                            Auth::user()->update(['last_accessed'=>time()]);
-
+                            $this->auth->loginUsingId($rememberedUser->id);
+                            $rememberedUser->update(['last_accessed'=>time()]);
+                            //dd($this->auth);
                             // set userActive and user to be true for final test.
                             $userActive = true;
                             $user = true;   
                         } else {
-                            // forget the cookie!
-                            Cookie::queue(\Cookie::forget($name));
-                            // forget the seesion!
-                            Session::flush();
-                            Auth::logout();
+                            
                             // incorrect attempt with a remember me token
                             // record as an attempt to login (albeit via a hijacked cookie)
                             $failedLoginAttempt = true;
@@ -255,7 +260,7 @@ class AllitaAuth
 
                 }          
                 if($allitaUser->active == 1){
-                    Auth::loginUsingId($allitaUser->id,true);
+                    $this->auth->loginUsingId($allitaUser->id,true);
                     $allitaUser->update(['last_accessed'=> time()]);
                     //$name = $this->auth->getRecallerName();
                     // set userActive and user to be true for final test.

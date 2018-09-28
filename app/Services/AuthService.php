@@ -147,10 +147,10 @@ class AuthService
                 $result = json_decode($response->getBody()->getContents());
 
                 //$timestamp = intval((new Ticks($this->_getTokenExpiresValueInTicks($result->expires_in)))->timestamp());
-                $Expires_at = date('Y-m-d h:i:s', time()+$this->_pcapi_access_token_expires_in  );
+                $expiresAt = date('Y-m-d h:i:s', time()+$this->_pcapi_access_token_expires_in  );
 
                 $this->_updateAccessToken($result->access_token);
-                $this->_updateAccessTokenExpires($expires_at);
+                $this->_updateAccessTokenExpires($expiresAt);
                 $this->_updateRefreshToken($result->refresh_token);
 
                 $is_successful = true;
@@ -266,7 +266,7 @@ class AuthService
         return SystemSetting::updateOrCreate([
             'key' => 'pcapi_access_token_expires'
         ],[
-            'value' => $Expires
+            'value' => $expires
         ]);
     }
 
