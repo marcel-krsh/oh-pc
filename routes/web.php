@@ -44,6 +44,10 @@ Route::group(['middleware' => 'web'], function () {
                 return 1;
             }
         })->name('session.setfilter');
+
+        Route::post('/communications/parcel/{parcel?}', 'CommunicationController@searchCommunications')->name('communications.search');
+
+        Route::get('/projects/{project}', 'AuditController@getProject')->name('project');
     // });
 
 });
