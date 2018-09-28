@@ -69,7 +69,7 @@ function clickTab(){
 
 }
 
-function loadTab(route, tabNumber) {
+function loadTab(route, tabNumber, doTheClick=0) {
 	//take back to top
  	$('#smoothscrollLink').trigger("click");		
 	//load the selected detail tab content
@@ -86,6 +86,9 @@ function loadTab(route, tabNumber) {
 		    UIkit.modal.alert(msg);
 		}
 	});
+	if(doTheClick == 1){
+		$('#detail-tab-'+tabNumber).trigger("click");
+	}
 }
 
 // function loadDetailTab(typeId,detailId,tabNumber,overrideSaveCheck,subTabType) {

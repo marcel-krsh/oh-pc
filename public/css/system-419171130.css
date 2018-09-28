@@ -1183,16 +1183,19 @@ margin-top:10px;
 #top-tabs a {
 	color:#97afa3;
 }
+#top-tabs > li:not(.uk-active) > a:hover, #top-tabs > li:not(.uk-active) > a:focus, #top-tabs > li.uk-open:not(.uk-active) > a {
+    margin-bottom: 0px;
+}
 #top-tabs > li > a{
   text-transform: initial;
   color: #76787b;
-  
+      min-height: 23px;
     font-size: 0.9em;
 }
 #top-tabs > li.uk-active > a{
 	background-color:white;
       border-bottom-color: #fff;
-    border-bottom-width: 1px;
+    border-bottom-width: 0px;
 }
 #top-tabs i {
     font-size: 17px;
@@ -2920,6 +2923,8 @@ table.uk-table tr:first-child {
   margin: 0;
     padding-left: 0;
     padding-right: 25px;
+    position: relative;
+    top: 60px;
 }
 .uk-grid-divider>:not(.uk-first-column)::before {
     left: 0px;

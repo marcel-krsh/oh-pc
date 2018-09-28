@@ -1898,7 +1898,7 @@ html:not(.uk-touch) .uk-nav-offcanvas ul a:hover {
 .uk-tab > li:not(.uk-active) > a:focus,
 .uk-tab > li.uk-open:not(.uk-active) > a {
   margin-bottom: 1px;
-  padding-bottom: 7px;
+  padding-bottom: 8px;
 }
 .uk-tab > li.uk-active > a {
     border-color: transparent;

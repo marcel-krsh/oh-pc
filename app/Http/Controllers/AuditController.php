@@ -868,6 +868,6 @@ class AuditController extends Controller
     }
 
     public function getProject( $project=null) {
-        dd('yo');
+        return view('projects.project');
     }
 }
