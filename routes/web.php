@@ -11,7 +11,7 @@
 |
 */
 Route::group(['middleware' => 'web'], function () {
-    Route::group(['middleware' => ['allita.auth']], function() {
+    //Route::group(['middleware' => ['allita.auth']], function() {
         Route::get('unified_login', function (){
                 session(['brian'=>'test']);
                 return redirect('/');
@@ -43,7 +43,7 @@ Route::group(['middleware' => 'web'], function () {
                 return 1;
             }
         })->name('session.setfilter');
-    });
+    //});
 });
 /* Route::get('/', 'PagesController@dashboard');
 
