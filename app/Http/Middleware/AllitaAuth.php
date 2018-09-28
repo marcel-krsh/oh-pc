@@ -104,6 +104,7 @@ class AllitaAuth
         $thisIp = $request->ip();
         $thisAgent = $request->header('User-Agent');
         $explodedCredentials = false;
+        $invalidCookie = false;
         $user = false;
         $userActive = false;
         $addUser = false;
@@ -137,27 +138,31 @@ class AllitaAuth
             if(!is_null($rememberMeCookieValue) && strlen($rememberMeCookieValue) > 10){
                 //dd($rememberMeCookieValue);
                 $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
-                $rememberMeCookieValueDecrypted = $encryptor->decrypt($rememberMeCookieValue,false);
-                
+                try {
+                    $rememberMeCookieValueDecrypted = $encryptor->decrypt($rememberMeCookieValue,false);
+                } catch (DecryptException $e) {
+                            $invalidCookie = true;
+                            $failedLoginAttempt = true;
+                            $failedLoginReason = $e;
+                }
 
-                //$rememberMeCookieValueDecrypted = Crypt::decryptString($rememberMeCookieValue);
-                // the remember me cookie is set - let's expolode it so we can get the user values from it.
-                // try {
-                //     $rememberMeCookieValueDecrypted = decrypt($rememberMeCookieValue);
-                // } catch (DecryptException $e) {
-                //     //
-                //     dd($e);
-                // }
                 
                 $credentials = explode('|', $rememberMeCookieValueDecrypted);
                 
                 // make sure this is not double encrypted:
                 if(count($credentials)>2){
                     $explodedCredentials = true;
-                } elseif(strlen($credentials)>10) {
+                } elseif(strlen($credentials)>10 && $invalidCookie == false) {
                     /// cookie may be double encrypted - decrypt again.
-                    dd('oops');
-                    $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
+                    //dd('oops');
+                    try {   
+                        $rememberMeCookieValue = $encryptor->decrypt($rememberMeCookieValue,false);
+                   
+                    } catch (DecryptException $e) {
+                            $invalidCookie = true;
+                            $failedLoginAttempt = true;
+                            $failedLoginReason = $e;
+                    }
                     $credentials = explode('|', $rememberMeCookieValue);
                     if(count($credentials)>2){
                         $explodedCredentials = true;
