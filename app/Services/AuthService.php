@@ -266,7 +266,7 @@ class AuthService
         return SystemSetting::updateOrCreate([
             'key' => 'pcapi_access_token_expires'
         ],[
-            'value' => $Expires
+            'value' => $expires
         ]);
     }
 
