@@ -18,7 +18,7 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class AllitaAuth extends RefreshToken
+class AllitaAuth extends Illuminate\Auth\RefreshToken
 {
     /**
      * AuthService
