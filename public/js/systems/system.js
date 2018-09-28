@@ -77,7 +77,7 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0) {
         $( newTabContent ).appendTo( $('#tabs') );
 	}
 	if($('#detail-tab-'+tabNumber).length == 0){
-		var newTabTitle = '<li id="detail-tab-'+tabNumber+'" class="detail-tab-'+tabNumber+'" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" >';
+		var newTabTitle = '<li id="detail-tab-'+tabNumber+'" onclick="loadTab(\''+route+'\', \''+tabNumber+'\', 0, 1);" class="detail-tab-'+tabNumber+'" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" >';
 		newTabTitle = newTabTitle + '<a href=""></a>';
 		newTabTitle = newTabTitle + '</li>';
         $( newTabTitle ).appendTo( $('#top-tabs') );

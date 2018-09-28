@@ -54,6 +54,7 @@ if(Auth::check()){
 	<link rel="stylesheet" href="/css/auto-complete.css">
 
 	@endif
+	
 	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
 	@if(session('disablePacer')==1)
 	<style type="text/css">
