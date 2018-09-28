@@ -116,12 +116,12 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0) {
 		    
 		    UIkit.modal.alert(msg);
 		}
-	});
 
-	// if tab is opened by a link, trigger click to switch tab
-	if(doTheClick == 1){
-		$("#top-tabs").find($('#detail-tab-'+tabNumber)).trigger("click");
-	}
+		// if tab is opened by a link, trigger click to switch tab
+		if(doTheClick == 1){
+			$("#top-tabs").find($('#detail-tab-'+tabNumber)).trigger("click");
+		}
+	});
 
 }
 
