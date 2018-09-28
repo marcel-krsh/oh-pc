@@ -100,9 +100,6 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0) {
 		});
 	}
 
-	//take back to top
- 	$('#smoothscrollLink').trigger("click");
-
 	//load the selected detail tab content
 	$('#detail-tab-'+tabNumber+'-content').load(route, function(response, status, xhr) {
 		if (status == "error") {
@@ -121,6 +118,9 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0) {
 		if(doTheClick == 1){
 			$("#top-tabs").find($('#detail-tab-'+tabNumber)).trigger("click");
 		}
+
+		//take back to top
+	 	$('#smoothscrollLink').trigger("click");
 	});
 
 }

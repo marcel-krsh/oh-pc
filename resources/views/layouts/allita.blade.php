@@ -293,6 +293,7 @@ if(Auth::check()){
 
 	    $( document ).ready(function() {
 	    	$('.uk-sticky-placeholder:last').remove();
+	    	$("html, body").animate({ scrollTop: 0 }, "slow");
 	    });
 
 	</script>
