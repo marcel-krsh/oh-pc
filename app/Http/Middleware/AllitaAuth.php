@@ -18,7 +18,7 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class AllitaAuth extends Illuminate\Auth\RefreshToken
+class AllitaAuth
 {
     /**
      * AuthService
@@ -135,7 +135,7 @@ class AllitaAuth extends Illuminate\Auth\RefreshToken
             $rememberMeCookieValue = Cookie::get($name);
             /// check if token is for remembering user:
             if(!is_null($rememberMeCookieValue) && strlen($rememberMeCookieValue) > 10){
-                dd('V6 ',Auth::check(),$request->user(),Auth::user());
+                dd('V6 ',$this->auth->check(),$request->user(),$this->auth->user());
                 //dd($rememberMeCookieValue);
                 $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
                 $rememberMeCookieValueDecrypted = $encryptor->decrypt($rememberMeCookieValue,false);
