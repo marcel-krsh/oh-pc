@@ -2923,8 +2923,8 @@ table.uk-table tr:first-child {
   margin: 0;
     padding-left: 0;
     padding-right: 25px;
-    position: relative;
-    top: 60px;
+    /*position: relative;
+    top: 60px;*/
 }
 .uk-grid-divider>:not(.uk-first-column)::before {
     left: 0px;
