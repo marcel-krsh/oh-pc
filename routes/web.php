@@ -17,7 +17,8 @@ Route::group(['middleware' => 'web'], function () {
         });
 
 
-        Route::get('/', 'DashboardController@index');
+        //Route::get('/', 'DashboardController@index');
+        Rout::get('/', function(){dd(\Auth::user());});
         Route::get('dashboard/audits', 'DashboardController@audits')->name('dashboard.audits');
         Route::get('dashboard/audits/{audit}/buildings', 'AuditController@buildingsFromAudit')->name('audit.buildings');
         Route::get('dashboard/audits/{audit}/building/{building}/details', 'AuditController@detailsFromBuilding')->name('audit.building.details');
