@@ -138,7 +138,6 @@ class AllitaAuth
                 //dd($rememberMeCookieValue);
                 $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
                 $rememberMeCookieValueDecrypted = $encryptor->decrypt($rememberMeCookieValue,false);
-                dd('V6 ',$this->auth, $rememberMeCookieValueDecrypted);
                 
 
                 //$rememberMeCookieValueDecrypted = Crypt::decryptString($rememberMeCookieValue);
@@ -175,7 +174,7 @@ class AllitaAuth
                             // user is active - log them in
                             $this->auth->loginUsingId($rememberedUser->id);
                             $rememberedUser->update(['last_accessed'=>time()]);
-
+                            dd($this->auth);
                             // set userActive and user to be true for final test.
                             $userActive = true;
                             $user = true;   
