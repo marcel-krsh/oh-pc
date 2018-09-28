@@ -145,7 +145,7 @@ class AllitaAuth
                 } catch (DecryptException $e) {
                             $invalidCookie = true;
                             $failedLoginAttempt = true;
-                            $failedLoginReason = $e;
+                            $failedLoginReason = 'Invalid Cookie Used:'.$e;
                 }
 
                 
@@ -163,7 +163,7 @@ class AllitaAuth
                     } catch (DecryptException $e) {
                             $invalidCookie = true;
                             $failedLoginAttempt = true;
-                            $failedLoginReason = $e;
+                            $failedLoginReason = 'Invalid Cookie Used:'.$e;
                     }
                     $credentials = explode('|', $rememberMeCookieValueDecrypted);
                     if(count($credentials)>2){
