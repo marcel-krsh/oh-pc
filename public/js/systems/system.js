@@ -69,23 +69,27 @@ function clickTab(){
 
 }
 
-
-function loadTab(route, tabNumber, doTheClick=0, loadTitle=0) {
+// works for main tabs and also sub tabs using prefix
+function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='') {
 	// check if tab already exist, if not create it
-	if($('#detail-tab-'+tabNumber+'-content').length == 0){
-		var newTabContent = '<li><div id="detail-tab-'+tabNumber+'-content"></div></li>';
+	if($('#'+prefix+'detail-tab-'+tabNumber+'-content').length == 0){
+		var newTabContent = '<li><div id="'+prefix+'detail-tab-'+tabNumber+'-content"></div></li>';
         $( newTabContent ).appendTo( $('#tabs') );
 	}
-	if($('#detail-tab-'+tabNumber).length == 0){
-		var newTabTitle = '<li id="detail-tab-'+tabNumber+'" onclick="loadTab(\''+route+'\', \''+tabNumber+'\', 0, 1);" class="detail-tab-'+tabNumber+'" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" >';
+	if($('#'+prefix+'detail-tab-'+tabNumber).length == 0){
+		var newTabTitle = '<li id="'+prefix+'detail-tab-'+tabNumber+'" onclick="loadTab(\''+route+'\', \''+tabNumber+'\', 0, 1);" class="detail-tab-'+tabNumber+'" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" >';
 		newTabTitle = newTabTitle + '<a href=""></a>';
 		newTabTitle = newTabTitle + '</li>';
-        $( newTabTitle ).appendTo( $('#top-tabs') );
+        $( newTabTitle ).appendTo( $('#'+prefix+'top-tabs') );
 	}
+
+	// display spinner
+	var tempdiv = '<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% auto;"></div></div>';
+	$('#'+prefix+'detail-tab-'+tabNumber+'-content').html(tempdiv);
 
 	// get the tab title and statuses
 	if(loadTitle){
-		$('#detail-tab-'+tabNumber+' a').load(route+'/title', function(response, status, xhr) {
+		$('#'+prefix+'detail-tab-'+tabNumber+' a').load(route+'/title', function(response, status, xhr) {
 			if (status == "error") {
 			  	if(xhr.status == "401") {
 			  		var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
@@ -101,7 +105,7 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0) {
 	}
 
 	//load the selected detail tab content
-	$('#detail-tab-'+tabNumber+'-content').load(route, function(response, status, xhr) {
+	$('#'+prefix+'detail-tab-'+tabNumber+'-content').load(route, function(response, status, xhr) {
 		if (status == "error") {
 		  	if(xhr.status == "401") {
 		  		var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
@@ -116,7 +120,7 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0) {
 
 		// if tab is opened by a link, trigger click to switch tab
 		if(doTheClick == 1){
-			$("#top-tabs").find($('#detail-tab-'+tabNumber)).trigger("click");
+			$("#"+prefix+"top-tabs").find($('#'+prefix+'detail-tab-'+tabNumber)).trigger("click");
 		}
 
 		//take back to top

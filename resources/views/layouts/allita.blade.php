@@ -54,7 +54,7 @@ if(Auth::check()){
 	<link rel="stylesheet" href="/css/auto-complete.css">
 
 	@endif
-	
+
 	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
 	@if(session('disablePacer')==1)
 	<style type="text/css">
@@ -90,6 +90,13 @@ if(Auth::check()){
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.5/Chart.bundle.js"></script>
 	@endif
 	@yield('head')
+	@if(env('APP_DEBUG_NO_DEVCO') == 'true')
+    <style>
+    ul#tabs {
+	    margin-top: 60px;
+	}
+	</style>
+    @endif
 </head>
 <body >
 	<a name="top"></a>
@@ -309,7 +316,7 @@ if(Auth::check()){
 	$('#detail-tab-1').trigger("click");
 	</script>
 	@endif
-
+	
 	@if(session('disablePacer') != 1)
 	<script>
 		window.paceOptions = { ajax: { trackMethods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'], ignoreURLs: ['https://pcinspectdev.ohiohome.org'] } }

@@ -49,6 +49,7 @@ Route::group(['middleware' => 'web'], function () {
 
         Route::get('/projects/{project}', 'AuditController@getProject')->name('project');
         Route::get('/projects/{project}/title', 'AuditController@getProjectTitle')->name('project.title');
+        Route::get('/projects/{project}/details', 'AuditController@getProjectDetails')->name('project.details');
     // });
 
 });
