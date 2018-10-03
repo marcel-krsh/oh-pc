@@ -423,6 +423,60 @@
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-link">
 			            		<i class="a-checklist"></i>
+			            		<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right;" style="top: 26px; left: 0px;">
+			            			<form>
+			            				<fieldset class="uk-fieldset">
+			            					<div class="uk-margin uk-child-width-auto uk-grid">
+			            					@if(session('step-all') == 0)
+									            <input id="filter-step-all" type="checkbox" />
+												<label for="filter-step-all">ALL STEPS (CLICK TO SELECT ALL)</label>
+											@else
+									            <input id="filter-step-all" type="checkbox" checked/>
+												<label for="filter-step-all">ALL STEPS (CLICK TO DESELECT ALL)</label>
+											@endif
+											@if(session('step-review-area') == 0)
+												<input id="filter-step-review-area" type="checkbox" />
+												<label for="filter-step-review-area"><i class="a-home-question"></i> Review and Assign Inspectable Areas</label>
+											@else	
+												<input id="filter-step-review-area" type="checkbox" checked/>
+												<label for="filter-step-review-area"><i class="a-home-question"></i> Review and Assign Inspectable Areas</label>
+											@endif
+												<input id="filter-step-schedule" type="checkbox" />
+												<label for="filter-step-schedule"><i class="a-calendar-7"></i> Schedule Audit</label>
+												<input id="filter-step-audit-pending" type="checkbox" />
+												<label for="filter-step-audit-pending"><i class="a-stopwatch-3"></i> Audit Pending</label>
+												<input id="filter-step-audit-progress" type="checkbox" />
+												<label for="filter-step-audit-progress"><i class="a-rotate-left"></i> Audit In-Progress</label>
+												<input id="filter-step-lead-approval" type="checkbox" />
+												<label for="filter-step-lead-approval"><i class="a-file-pen"></i> Lead Approval</label>
+												<input id="filter-step-lead-requested" type="checkbox" />
+												<label for="filter-step-lead-requested" style="padding-left:40px;">Lead Requested Edits</label>
+												<input id="filter-step-report-generate" type="checkbox" />
+												<label for="filter-step-report-generate"><i class="a-file-chart-3"></i> Generate Report</label>
+												<input id="filter-step-report-generate" type="checkbox" />
+												<label for="filter-step-report-generate"><i class="a-magnify-chart-up"></i> Review Report</label>
+												<input id="filter-step-report-comment" type="checkbox" />
+												<label for="filter-step-report-comment"><i class="a-comment-chart-up"></i> See Report Comments</label>
+												<input id="filter-step-report-send" type="checkbox" />
+												<label for="filter-step-report-send"><i class="a-mail-chart-up"></i> Send Report</label>
+												<input id="filter-step-followup-pending" type="checkbox" />
+												<label for="filter-step-followup-pending"><i class="a-avatar-chat-up"></i> Pending Follow-Up</label>
+												<input id="filter-step-audit-archive" type="checkbox" />
+												<label for="filter-step-audit-archive"><i class="a-folder-box"></i> Archive Audit</label>
+												<input id="filter-step-audit-score" type="checkbox" />
+												<label for="filter-step-audit-score">00% Audit Score</label>
+									        </div>
+									        <div class="uk-margin-remove" uk-grid>
+			                            		<div class="uk-width-1-2">
+			                            			<button class="uk-button uk-button-primary uk-width-1-1"><i class="a-rotate-left-2"></i> APPLY FILTER</button>
+			                            		</div>
+			                            		<div class="uk-width-1-2">
+			                            			<button class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+			                            		</div>
+			                            	</div>
+			            				</fieldset>
+			            			</form>
+			                    </div>
 			            	</div>
 			            	<span data-uk-tooltip="{pos:'bottom'}" title="Sort By" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top"><a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'file-status-sort',1);"></a></span> 
 			            </div>
@@ -437,20 +491,21 @@
 		        </tr>
 		    </thead>
 		    <tbody>
-		        <tr id="audit-r-1" class="notcritical">
-		            <td id="audit-c-1-1" class="uk-text-center audit-td-lead">
-		            	<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:Brian Greenwood;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float uk-link">
-							BG
+		    	@foreach($audits as $audit)
+		    	<tr id="audit-r-{{$loop->iteration}}" class="{{$audit['status']}}">
+		            <td id="audit-c-1-{{$loop->iteration}}" class="uk-text-center audit-td-lead">
+		            	<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$audit['lead']['name']}};" title="" aria-expanded="false" class="user-badge user-badge-{{$audit['lead']['color']}} no-float uk-link">
+							{{$audit['lead']['initials']}}
 						</span>
-						<span id="audit-rid-1"><small>#1</small></span>
+						<span id="audit-rid-{{$loop->iteration}}"><small>#{{$loop->iteration}}</small></span>
 		            </td>
-		            <td id="audit-c-2-1" class="audit-td-project">
+		            <td id="audit-c-2-{{$loop->iteration}}" class="audit-td-project">
 		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-1" onclick="projectDetails(1,1,3);" uk-tooltip="pos:top-left;title:View Buildings and Common Areas;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
+		            		<span id="audit-i-project-detail-{{$loop->iteration}}" onclick="projectDetails({{$audit['id']}},{{$loop->iteration}},{{$audit['total_buildings']}});" uk-tooltip="pos:top-left;title:View Buildings and Common Areas;" class="uk-link"><i class="a-menu uk-text-muted"></i></span>
 		            	</div>
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-1" class="uk-margin-bottom-remove uk-link" uk-tooltip="title:Open Audit Details in Tab;" onClick="loadTab('{{ route('project', '19200114') }}', '4', 1, 1);">19200114</h3>
-			            	<small id="audit-project-aid-1" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
+		            		<h3 id="audit-project-name-{{$loop->iteration}}" class="uk-margin-bottom-remove uk-link" uk-tooltip="title:Open Audit Details in Tab;" onClick="loadTab('{{ route('project', $audit['id']) }}', '4', 1, 1);">{{$audit['audit_id']}}</h3>
+			            	<small id="audit-project-aid-{{$loop->iteration}}" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT {{$audit['audit_id']}}</small>
 			            </div>
 		            </td>
 		            <td class="audit-td-name">
@@ -458,739 +513,98 @@
 		            		<i class="a-info-circle uk-text-muted uk-link" uk-tooltip="title:View Contact Details;"></i>
 		            	</div> 
 		            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
-		            		<h3 class="uk-margin-bottom-remove">Great American Apartments</h3>
-			            	<small class="uk-text-muted">THE NOT SO LONG PROPERTY MANAGER NAME</small>
+		            		<h3 class="uk-margin-bottom-remove">{{$audit['title']}}</h3>
+			            	<small class="uk-text-muted">{{$audit['subtitle']}}</small>
 		            	</div>
 		            </td>
 		            <td class="hasdivider audit-td-address">
+		            	<div class="divider"></div>
 		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
 		            		<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;"></i>
 		            	</div> 
 		            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
-		            		<h3 class="uk-margin-bottom-remove">3045 Cumberland Woods Street, Suite 202</h3>
-			            	<small class="uk-text-muted">COLUMBUS, OH 43219</small>
+		            		<h3 class="uk-margin-bottom-remove">{{$audit['address']}}</h3>
+			            	<small class="uk-text-muted">{{$audit['city']}}, {{$audit['state']}} {{$audit['zip']}}</small>
 		            	</div>
-		            	<div class="divider"></div>
 		            </td>
 		            <td class="hasdivider audit-td-scheduled">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
+		            	<div class="divider"></div>
+		            	<div class="uk-display-inline-block uk-margin-small-top uk-text-center fullwidth" uk-grid>
 			            	<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
 			            		<div class="uk-width-1-3">
-			            			<i class="a-mobile-repeat action-needed" uk-tooltip="title:Inspection in progress;"></i>
+			            			<i class="a-mobile-repeat {{$audit['inspection_status']}}" uk-tooltip="title:{{$audit['inspection_status_text']}};"></i>
 			            		</div>
-			            		<div class="uk-width-2-3">
-				            		<h3 class="uk=link" uk-tooltip="title:Click to reschedule audits;">12/21</h3>
-				            		<div class="dateyear">2018</div>
+			            		<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top">
+				            		<h3 class="uk-link" uk-tooltip="title:{{$audit['inspection_schedule_text']}};">{{$audit['inspection_schedule_date']}}</h3>
+				            		<div class="dateyear">{{$audit['inspection_schedule_year']}}</div>
 			            		</div>
 			            	</div> 
-			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
-			            	<div class="uk-width-1-6 uk-text-left">72</div> 
+			            	<div class="uk-width-1-6 uk-text-right uk-padding-remove" uk-tooltip="title:{{$audit['inspectable_items']}} INSPECTABLE ITEMS;">{{$audit['inspectable_items']}} /</div> 
+			            	<div class="uk-width-1-6 uk-text-left uk-padding-remove">{{$audit['total_items']}}</div> 
 			            	<div class="uk-width-1-6 uk-text-left">
-			            		<i class="a-circle-checked ok-actionable"  uk-tooltip="title:Audit Compliant;"></i>
+			            		<i class="{{$audit['audit_compliance_icon']}} {{$audit['audit_compliance_status']}}"  uk-tooltip="title:{{$audit['audit_compliance_status_text']}};"></i>
 			            	</div>
 			            </div>
-		            	<div class="divider"></div>
 		            </td>
 		            <td class="hasdivider audit-td-due">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
+		            	<div class="divider"></div>
+		            	<div class="uk-display-inline-block uk-margin-small-top uk-text-center fullwidth" uk-grid>
 			            	<div class="uk-width-1-3">
-			            		<i class="a-bell-2" uk-tooltip="title:No followups;"></i>
+			            		<i class="a-bell-2 {{$audit['followup_status']}}" uk-tooltip="title:{{$audit['followup_status_text']}};"></i>
 			            	</div> 
-			            	<div class="uk-width-2-3">
+			            	<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top">
+			            		@if($audit['followup_date'])
+			            		<h3 class="uk=link" uk-tooltip="title:Click to reschedule audits;">{{$audit['followup_date']}}</h3>
+				            	<div class="dateyear">{{$audit['followup_year']}}</div>
+			            		@else
 			            		<i class="a-calendar-pencil" uk-tooltip="title:New followup;"></i>
+			            		@endif
 			            	</div> 
 			            </div>
-		            	<div class="divider"></div>
 		            </td>
 		            <td class="hasdivider">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
+		            	<div class="divider"></div>
+		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
+			            	<div class="uk-width-1-4 {{$audit['file_audit_status']}}" uk-tooltip="title:{{$audit['file_audit_status_text']}};">
+			            		<i class="{{$audit['file_audit_icon']}}"></i>
 			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
+			            	<div class="uk-width-1-4 {{$audit['nlt_audit_status']}}" uk-tooltip="title:{{$audit['nlt_audit_status_text']}};">
+			            		<i class="{{$audit['nlt_audit_icon']}}"></i>
 			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
+			            	<div class="uk-width-1-4 {{$audit['lt_audit_status']}}" uk-tooltip="title:{{$audit['lt_audit_status_text']}};">
+			            		<i class="{{$audit['lt_audit_icon']}}"></i>
 			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
+			            	<div class="uk-width-1-4 {{$audit['smoke_audit_status']}}" uk-tooltip="title:{{$audit['smoke_audit_status_text']}};">
+			            		<i class="{{$audit['smoke_audit_icon']}}"></i>
 			            	</div> 
 			            </div>
-		            	<div class="divider"></div>
 		            </td>
 		            <td class="hasdivider">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
+		            	<div class="divider"></div>
+		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
 			            	<div class="uk-width-1-4">
-			            		<i class="a-avatar" uk-tooltip="title:Auditors / schedule conflicts / unasigned items;"></i>
+			            		<i class="{{$audit['auditor_status_icon']}} {{$audit['auditor_status']}}" uk-tooltip="title:{{$audit['auditor_status_text']}};"></i>
 			            	</div> 
 			            	<div class="uk-width-1-4">
-			            		<i class="a-envelope-4" uk-tooltip="title:;"></i>
+			            		<i class="{{$audit['message_status_icon']}} {{$audit['message_status']}}" uk-tooltip="title:{{$audit['message_status_text']}};"></i>
 			            	</div> 
 			            	<div class="uk-width-1-4">
-			            		<i class="a-files" uk-tooltip="title:Document status;"></i>
+			            		<i class="{{$audit['document_status_icon']}} {{$audit['document_status']}}" uk-tooltip="title:{{$audit['document_status_text']}};"></i>
 			            	</div> 
 			            	<div class="uk-width-1-4">
-			            		<i class="a-person-clock" uk-tooltip="title:NO/VIEW HISTORY;"></i>
+			            		<i class="{{$audit['history_status_icon']}} {{$audit['history_status']}}" uk-tooltip="title:{{$audit['history_status_text']}};"></i>
 			            	</div> 
 			            </div>
-		            	<div class="divider"></div>
 		            </td>
 		            <td>
-		            	<div class="uk-margin-small-top" uk-grid>
-		            		<div class="uk-width-1-1 no-action">
-			            		<i class="a-calendar-7"></i>
+		            	<div class="uk-margin-top" uk-grid>
+		            		<div class="uk-width-1-1  uk-padding-remove-top">
+			            		<i class="{{$audit['step_status_icon']}} {{$audit['step_status']}}" uk-tooltip="title:{{$audit['step_status_text']}};"></i>
 							</div>
 		            	</div>
 		            </td>
 		        </tr>
-		        <tr id="audit-r-2" class="critical">
-		            <td id="audit-c-1-2" class="uk-text-center audit-td-lead">
-		            	<span id="audit-avatar-badge-2" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
-							BG
-						</span>
-						<small id="audit-rid-2" class="uk-text-muted">#2</small>
-		            </td>
-		            <td id="audit-c-2-2" class="audit-td-project">
-		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-2" onclick="projectDetails(2,2,6);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
-		            	</div> 
-		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-2" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
-			            	<small id="audit-project-aid-2" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
-			            </div>
-		            </td>
-		            <td class="audit-td-name">
-		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<i class="a-info-circle uk-text-muted"></i>
-		            	</div> 
-		            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
-		            		<h3 class="uk-margin-bottom-remove">Great American Apartments</h3>
-			            	<small class="uk-text-muted">THE NOT SO LONG PROPERTY MANAGER NAME</small>
-		            	</div>
-		            </td>
-		            <td class="hasdivider audit-td-address">
-		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<i class="a-marker-basic uk-text-muted"></i>
-		            	</div> 
-		            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
-		            		<h3 class="uk-margin-bottom-remove">3045 Cumberland Woods Street, Suite 202</h3>
-			            	<small class="uk-text-muted">COLUMBUS, OH 43219</small>
-		            	</div>
-		            	<div class="divider"></div>
-		            </td>
-		            <td class="hasdivider audit-td-scheduled">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-		            		<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
-			            		<div class="uk-width-1-3 uk-margin-small-top">
-			            			<i class="a-mobile-repeat"></i>
-			            		</div>
-			            		<div class="uk-width-2-3 uk-margin-small-top">
-			            			<i class="a-calendar-pencil"></i>
-			            		</div>
-			            	</div> 
-			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
-			            	<div class="uk-width-1-6 uk-text-left">21</div> 
-			            	<div class="uk-width-1-6 uk-text-left">
-			            		<i class="a-circle-checked"></i>
-			            	</div>
-			            </div>
-		            	<div class="divider"></div>
-		            </td>
-		            <td class="hasdivider audit-td-due">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-			            	<div class="uk-width-1-3 uk-text-large">
-			            		<i class="a-bell-2"></i>
-			            	</div> 
-			            	<div class="uk-width-2-3 uk-text-large">
-			            		<h3>12/21</h3>
-			            		<div class="dateyear">2018</div>
-			            	</div> 
-			            </div>
-		            	<div class="divider"></div>
-		            </td>
-		            <td class="hasdivider ">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            </div>
-		            	<div class="divider"></div>
-		            </td>
-		            <td class="hasdivider">
-		            	<div class="divider"></div>
-		            </td>
-		            <td>
-		            	<div class="uk-margin-small-top" uk-grid>
-		            		<div class="uk-width-1-1 no-action">
-			            		<i class="a-calendar-7"></i>
-							</div>
-		            	</div>
-		            </td>
-		        </tr>
-		        <tr id="audit-r-3" class="notcritical">
-		            <td id="audit-c-1-3" class="uk-text-center audit-td-lead">
-		            	<span id="audit-avatar-badge-3" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
-							BG
-						</span>
-						<small id="audit-rid-3" >#3</small>
-		            </td>
-		            <td id="audit-c-2-3" class="audit-td-project">
-		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-3" onclick="projectDetails(3,3,4);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
-		            	</div> 
-		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-3" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
-			            	<small id="audit-project-aid-3" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
-			            </div>
-		            </td>
-		            <td class="audit-td-name">
-		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<i class="a-info-circle uk-text-muted"></i>
-		            	</div> 
-		            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
-		            		<h3 class="uk-margin-bottom-remove">Great American Apartments</h3>
-			            	<small class="uk-text-muted">THE NOT SO LONG PROPERTY MANAGER NAME</small>
-		            	</div>
-		            </td>
-		            <td class="hasdivider audit-td-address">
-		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<h3><i class="a-marker-basic uk-text-muted"></i></h3>
-		            	</div> 
-		            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
-		            		<h3 class="uk-margin-bottom-remove">3045 Cumberland Woods Street, Suite 202</h3>
-			            	<small class="uk-text-muted">COLUMBUS, OH 43219</small>
-		            	</div>
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td class="hasdivider audit-td-scheduled">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-		            		<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
-			            		<div class="uk-width-1-3">
-			            			<i class="a-mobile-repeat"></i>
-			            		</div>
-			            		<div class="uk-width-2-3">
-			            			<i class="a-calendar-pencil"></i>
-			            		</div>
-			            	</div> 
-			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
-			            	<div class="uk-width-1-6 uk-text-left">21</div> 
-			            	<div class="uk-width-1-6 uk-text-left">
-			            		<i class="a-circle-checked"></i>
-			            	</div>
-			            </div>
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td class="hasdivider audit-td-due">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-			            	<div class="uk-width-1-3">
-			            		<i class="a-bell-2"></i>
-			            	</div> 
-			            	<div class="uk-width-2-3">
-			            		<i class="a-calendar-pencil"></i>
-			            	</div> 
-			            </div>
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td class="hasdivider">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-			            	<div class="uk-width-1-4 no-action">
-			            		<i class="a-folder"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4 action-needed">
-			            		<i class="a-booboo"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4 action-required">
-			            		<i class="a-skull"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4 in-progress">
-			            		<i class="a-flames"></i>
-			            	</div> 
-			            </div>
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td class="hasdivider">
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td>
-		            	<div class="uk-margin-small-top" uk-grid>
-		            		<div class="uk-width-1-1 no-action">
-			            		<i class="a-calendar-7"></i>
-							</div>
-		            	</div>
-		            </td>
-		        </tr>
-		        <tr id="audit-r-4" class="notcritical">
-		            <td id="audit-c-1-4" class="uk-text-center audit-td-lead">
-		            	<span id="audit-avatar-badge-4" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
-							BG
-						</span>
-						<small id="audit-rid-4">#4</small>
-		            </td>
-		            <td id="audit-c-2-4" class="audit-td-project">
-		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<span id="audit-i-project-detail-4" onclick="projectDetails(4,4,6);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
-		            	</div> 
-		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-4" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
-			            	<small id="audit-project-aid-4" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
-			            </div>
-		            </td>
-		            <td class="audit-td-name">
-		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<h3><i class="a-info-circle uk-text-muted"></i></h3>
-		            	</div> 
-		            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
-		            		<h3 class="uk-margin-bottom-remove">Great American Apartments</h3>
-			            	<small class="uk-text-muted">THE NOT SO LONG PROPERTY MANAGER NAME</small>
-		            	</div>
-		            </td>
-		            <td class="hasdivider audit-td-address">
-		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<i class="a-marker-basic uk-text-muted"></i>
-		            	</div> 
-		            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
-		            		<h3 class="uk-margin-bottom-remove">3045 Cumberland Woods Street, Suite 202</h3>
-			            	<small class="uk-text-muted">COLUMBUS, OH 43219</small>
-		            	</div>
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td class="hasdivider audit-td-scheduled">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-		            		<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
-			            		<div class="uk-width-1-3">
-			            			<i class="a-mobile-repeat"></i>
-			            		</div>
-			            		<div class="uk-width-2-3">
-			            			<i class="a-calendar-pencil"></i>
-			            		</div>
-			            	</div> 
-			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
-			            	<div class="uk-width-1-6 uk-text-left">21</div> 
-			            	<div class="uk-width-1-6 uk-text-left">
-			            		<i class="a-circle-checked"></i>
-			            	</div>
-			            </div>
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td class="hasdivider audit-td-due">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-			            	<div class="uk-width-1-3">
-			            		<i class="a-bell-2"></i>
-			            	</div> 
-			            	<div class="uk-width-2-3">
-			            		<i class="a-calendar-pencil"></i>
-			            	</div> 
-			            </div>
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td class="hasdivider">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            </div>
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td class="hasdivider">
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td>
-		            	<div class="uk-margin-small-top" uk-grid>
-		            		<div class="uk-width-1-1 no-action">
-			            		<i class="a-calendar-7"></i>
-							</div>
-		            	</div>
-		            </td>
-		        </tr>
-		        <tr id="audit-r-5" class="notcritical">
-		            <td id="audit-c-1-5" class="uk-text-center audit-td-lead">
-		            	<span id="audit-avatar-badge-5" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
-							BG
-						</span>
-						<span id="audit-rid-5"><small>#5</small></span>
-		            </td>
-		            <td id="audit-c-2-5" class="audit-td-project">
-		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-1" onclick="projectDetails(5,5,3);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
-		            	</div>
-		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-5" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
-			            	<small id="audit-project-aid-5" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
-			            </div>
-		            </td>
-		            <td class="audit-td-name">
-		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<i class="a-info-circle uk-text-muted"></i>
-		            	</div> 
-		            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
-		            		<h3 class="uk-margin-bottom-remove">Great American Apartments</h3>
-			            	<small class="uk-text-muted">THE NOT SO LONG PROPERTY MANAGER NAME</small>
-		            	</div>
-		            </td>
-		            <td class="hasdivider audit-td-address">
-		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<i class="a-marker-basic uk-text-muted"></i>
-		            	</div> 
-		            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
-		            		<h3 class="uk-margin-bottom-remove">3045 Cumberland Woods Street, Suite 202</h3>
-			            	<small class="uk-text-muted">COLUMBUS, OH 43219</small>
-		            	</div>
-		            	<div class="divider"></div>
-		            </td>
-		            <td class="hasdivider audit-td-scheduled">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-			            	<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
-			            		<div class="uk-width-1-3">
-			            			<i class="a-mobile-repeat action-needed"></i>
-			            		</div>
-			            		<div class="uk-width-2-3">
-				            		<h3>12/21</h3>
-				            		<div class="dateyear">2018</div>
-			            		</div>
-			            	</div> 
-			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
-			            	<div class="uk-width-1-6 uk-text-left">72</div> 
-			            	<div class="uk-width-1-6 uk-text-left">
-			            		<i class="a-circle-checked ok-actionable"></i>
-			            	</div>
-			            </div>
-		            	<div class="divider"></div>
-		            </td>
-		            <td class="hasdivider audit-td-due">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-			            	<div class="uk-width-1-3">
-			            		<i class="a-bell-2"></i>
-			            	</div> 
-			            	<div class="uk-width-2-3">
-			            		<i class="a-calendar-pencil"></i>
-			            	</div> 
-			            </div>
-		            	<div class="divider"></div>
-		            </td>
-		            <td class="hasdivider">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            </div>
-		            	<div class="divider"></div>
-		            </td>
-		            <td class="hasdivider">
-		            	<div class="divider"></div>
-		            </td>
-		            <td>
-		            	<div class="uk-margin-small-top" uk-grid>
-		            		<div class="uk-width-1-1 no-action">
-			            		<i class="a-calendar-7"></i>
-							</div>
-		            	</div>
-		            </td>
-		        </tr>
-		        <tr id="audit-r-6" class="critical">
-		            <td id="audit-c-1-6" class="uk-text-center audit-td-lead">
-		            	<span id="audit-avatar-badge-2" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
-							BG
-						</span>
-						<small id="audit-rid-6" class="uk-text-muted">#6</small>
-		            </td>
-		            <td id="audit-c-2-6" class="audit-td-project">
-		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-6" onclick="projectDetails(6,6,6);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
-		            	</div> 
-		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-6" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
-			            	<small id="audit-project-aid-6" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
-			            </div>
-		            </td>
-		            <td class="audit-td-name">
-		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<i class="a-info-circle uk-text-muted"></i>
-		            	</div> 
-		            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
-		            		<h3 class="uk-margin-bottom-remove">Great American Apartments</h3>
-			            	<small class="uk-text-muted">THE NOT SO LONG PROPERTY MANAGER NAME</small>
-		            	</div>
-		            </td>
-		            <td class="hasdivider audit-td-address">
-		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<i class="a-marker-basic uk-text-muted"></i>
-		            	</div> 
-		            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
-		            		<h3 class="uk-margin-bottom-remove">3045 Cumberland Woods Street, Suite 202</h3>
-			            	<small class="uk-text-muted">COLUMBUS, OH 43219</small>
-		            	</div>
-		            	<div class="divider"></div>
-		            </td>
-		            <td class="hasdivider audit-td-scheduled">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-		            		<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
-			            		<div class="uk-width-1-3 uk-margin-small-top">
-			            			<i class="a-mobile-repeat"></i>
-			            		</div>
-			            		<div class="uk-width-2-3 uk-margin-small-top">
-			            			<i class="a-calendar-pencil"></i>
-			            		</div>
-			            	</div> 
-			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
-			            	<div class="uk-width-1-6 uk-text-left">21</div> 
-			            	<div class="uk-width-1-6 uk-text-left">
-			            		<i class="a-circle-checked"></i>
-			            	</div>
-			            </div>
-		            	<div class="divider"></div>
-		            </td>
-		            <td class="hasdivider audit-td-due">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-			            	<div class="uk-width-1-3 uk-text-large">
-			            		<i class="a-bell-2"></i>
-			            	</div> 
-			            	<div class="uk-width-2-3 uk-text-large">
-			            		<h3>12/21</h3>
-			            		<div class="dateyear">2018</div>
-			            	</div> 
-			            </div>
-		            	<div class="divider"></div>
-		            </td>
-		            <td class="hasdivider ">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            </div>
-		            	<div class="divider"></div>
-		            </td>
-		            <td class="hasdivider">
-		            	<div class="divider"></div>
-		            </td>
-		            <td>
-		            	<div class="uk-margin-small-top" uk-grid>
-		            		<div class="uk-width-1-1 no-action">
-			            		<i class="a-calendar-7"></i>
-							</div>
-		            	</div>
-		            </td>
-		        </tr>
-		        <tr id="audit-r-7" class="notcritical">
-		            <td id="audit-c-1-7" class="uk-text-center audit-td-lead">
-		            	<span id="audit-avatar-badge-7" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
-							BG
-						</span>
-						<small id="audit-rid-7" >#7</small>
-		            </td>
-		            <td id="audit-c-2-7" class="audit-td-project">
-		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-7" onclick="projectDetails(7,7,4);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
-		            	</div> 
-		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-7" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
-			            	<small id="audit-project-aid-7" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
-			            </div>
-		            </td>
-		            <td class="audit-td-name">
-		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<i class="a-info-circle uk-text-muted"></i>
-		            	</div> 
-		            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
-		            		<h3 class="uk-margin-bottom-remove">Great American Apartments</h3>
-			            	<small class="uk-text-muted">THE NOT SO LONG PROPERTY MANAGER NAME</small>
-		            	</div>
-		            </td>
-		            <td class="hasdivider audit-td-address">
-		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<h3><i class="a-marker-basic uk-text-muted"></i></h3>
-		            	</div> 
-		            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
-		            		<h3 class="uk-margin-bottom-remove">3045 Cumberland Woods Street, Suite 202</h3>
-			            	<small class="uk-text-muted">COLUMBUS, OH 43219</small>
-		            	</div>
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td class="hasdivider audit-td-scheduled">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-		            		<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
-			            		<div class="uk-width-1-3">
-			            			<i class="a-mobile-repeat"></i>
-			            		</div>
-			            		<div class="uk-width-2-3">
-			            			<i class="a-calendar-pencil"></i>
-			            		</div>
-			            	</div> 
-			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
-			            	<div class="uk-width-1-6 uk-text-left">21</div> 
-			            	<div class="uk-width-1-6 uk-text-left">
-			            		<i class="a-circle-checked"></i>
-			            	</div>
-			            </div>
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td class="hasdivider audit-td-due">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-			            	<div class="uk-width-1-3">
-			            		<i class="a-bell-2"></i>
-			            	</div> 
-			            	<div class="uk-width-2-3">
-			            		<i class="a-calendar-pencil"></i>
-			            	</div> 
-			            </div>
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td class="hasdivider">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-			            	<div class="uk-width-1-4 no-action">
-			            		<i class="a-folder"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4 action-needed">
-			            		<i class="a-booboo"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4 action-required">
-			            		<i class="a-skull"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4 in-progress">
-			            		<i class="a-flames"></i>
-			            	</div> 
-			            </div>
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td class="hasdivider">
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td>
-		            	<div class="uk-margin-small-top" uk-grid>
-		            		<div class="uk-width-1-1 no-action">
-			            		<i class="a-calendar-7"></i>
-							</div>
-		            	</div>
-		            </td>
-		        </tr>
-		        <tr id="audit-r-8" class="notcritical">
-		            <td id="audit-c-1-8" class="uk-text-center audit-td-lead">
-		            	<span id="audit-avatar-badge-8" uk-tooltip="pos:top-left;title:Brian Greenwood - Vendor;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float">
-							BG
-						</span>
-						<small id="audit-rid-8">#8</small>
-		            </td>
-		            <td id="audit-c-2-4" class="audit-td-project">
-		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<span id="audit-i-project-detail-8" onclick="projectDetails(8,8,6);" uk-tooltip="pos:top-left;title:Quick View Audit;" class="uk-link"><i class="a-list uk-text-muted"></i></span>
-		            	</div> 
-		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-8" class="uk-margin-bottom-remove" uk-tooltip="title:View Project's Audit Details;">19200114</h3>
-			            	<small id="audit-project-aid-8" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT 2015697</small>
-			            </div>
-		            </td>
-		            <td class="audit-td-name">
-		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<h3><i class="a-info-circle uk-text-muted"></i></h3>
-		            	</div> 
-		            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
-		            		<h3 class="uk-margin-bottom-remove">Great American Apartments</h3>
-			            	<small class="uk-text-muted">THE NOT SO LONG PROPERTY MANAGER NAME</small>
-		            	</div>
-		            </td>
-		            <td class="hasdivider audit-td-address">
-		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<i class="a-marker-basic uk-text-muted"></i>
-		            	</div> 
-		            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
-		            		<h3 class="uk-margin-bottom-remove">3045 Cumberland Woods Street, Suite 202</h3>
-			            	<small class="uk-text-muted">COLUMBUS, OH 43219</small>
-		            	</div>
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td class="hasdivider audit-td-scheduled">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-		            		<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
-			            		<div class="uk-width-1-3">
-			            			<i class="a-mobile-repeat"></i>
-			            		</div>
-			            		<div class="uk-width-2-3">
-			            			<i class="a-calendar-pencil"></i>
-			            		</div>
-			            	</div> 
-			            	<div class="uk-width-1-6 uk-text-right">0* /</div> 
-			            	<div class="uk-width-1-6 uk-text-left">21</div> 
-			            	<div class="uk-width-1-6 uk-text-left">
-			            		<i class="a-circle-checked"></i>
-			            	</div>
-			            </div>
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td class="hasdivider audit-td-due">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-			            	<div class="uk-width-1-3">
-			            		<i class="a-bell-2"></i>
-			            	</div> 
-			            	<div class="uk-width-2-3">
-			            		<i class="a-calendar-pencil"></i>
-			            	</div> 
-			            </div>
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td class="hasdivider">
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top" uk-grid>
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="a-star-3"></i>
-			            	</div> 
-			            </div>
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td class="hasdivider">
-		            	<div class="divider dotted"></div>
-		            </td>
-		            <td>
-		            	<div class="uk-margin-small-top" uk-grid>
-		            		<div class="uk-width-1-1 no-action">
-			            		<i class="a-calendar-7"></i>
-							</div>
-		            	</div>
-		            </td>
-		        </tr>
+		    	@endforeach
 		    </tbody>
 		</table>
 	</div>

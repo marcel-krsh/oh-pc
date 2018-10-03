@@ -50,6 +50,23 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('/projects/{project}', 'AuditController@getProject')->name('project');
         Route::get('/projects/{project}/title', 'AuditController@getProjectTitle')->name('project.title');
         Route::get('/projects/{project}/details', 'AuditController@getProjectDetails')->name('project.details');
+        Route::get('/projects/{project}/details/title', 'AuditController@getProjectDetailsTitle')->name('project.details.title');
+        Route::get('/projects/{project}/communications', 'AuditController@getProjectCommunications')->name('project.communications');
+        Route::get('/projects/{project}/communications/title', 'AuditController@getProjectCommunicationsTitle')->name('project.communications.title');
+        Route::get('/projects/{project}/documents', 'AuditController@getProjectDocuments')->name('project.documents');
+        Route::get('/projects/{project}/documents/title', 'AuditController@getProjectDocumentsTitle')->name('project.documents.title');
+        Route::get('/projects/{project}/notes', 'AuditController@getProjectNotes')->name('project.notes');
+        Route::get('/projects/{project}/notes/title', 'AuditController@getProjectNotesTitle')->name('project.notes.title');
+        Route::get('/projects/{project}/comments', 'AuditController@getProjectComments')->name('project.comments');
+        Route::get('/projects/{project}/comments/title', 'AuditController@getProjectCommentsTitle')->name('project.comments.title');
+        Route::get('/projects/{project}/photos', 'AuditController@getProjectPhotos')->name('project.photos');
+        Route::get('/projects/{project}/photos/title', 'AuditController@getProjectPhotosTitle')->name('project.photos.title');
+        Route::get('/projects/{project}/findings', 'AuditController@getProjectFindings')->name('project.findings');
+        Route::get('/projects/{project}/findings/title', 'AuditController@getProjectFindingsTitle')->name('project.findings.title');
+        Route::get('/projects/{project}/followups', 'AuditController@getProjectFollowups')->name('project.followups');
+        Route::get('/projects/{project}/followups/title', 'AuditController@getProjectFollowupsTitle')->name('project.followups.title');
+        Route::get('/projects/{project}/reports', 'AuditController@getProjectReports')->name('project.reports');
+        Route::get('/projects/{project}/reports/title', 'AuditController@getProjectReportsTitle')->name('project.reports.title');
     // });
 
 });

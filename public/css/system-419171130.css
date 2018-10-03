@@ -1300,7 +1300,7 @@ margin-top:10px;
     background-color: #bbbbbb;
     font-size: 0.6em;
     line-height: normal;
-    margin: 0 3px -7px 0;
+    margin: 0 3px -12px 0;
     color: #fff;
     padding: 2px 0;
 }
@@ -1387,12 +1387,14 @@ margin-top:10px;
     padding-right: 0;
 }
 #auditstable table td.hasdivider > div.fullwidth {
-  margin-right: -6px;
+  /*margin-right: -6px;*/
+  margin-right: 10px;
   width: 96%;
   padding-top: 4px;
+      line-height: 34px;
 }
 #auditstable table td.hasdivider > div.fullwidthleftpad {
-  margin-right: -6px;
+  margin-right: -4px;
   width: 90%;
 }
 #auditstable table tr .divider {
@@ -1402,8 +1404,8 @@ margin-top:10px;
     border-color: #000;
     display: inline-block;
     height: 54px;
-    float: right;
     margin-right: 2px;
+    float: right;
 }
 #auditstable table tr .divider.dotted {
     border-style: dotted;
@@ -1561,6 +1563,82 @@ margin-top:10px;
   vertical-align: baseline;
   font-size: 15px;
 }
+
+.filter-dropdown {
+  margin-top: 0;
+  padding: 10px 15px;
+  text-transform: none;
+}
+.filter-dropdown label {
+    width: 100%;
+    padding: 5px 5px;
+}
+.filter-dropdown label i {
+    font-size: 20px !important;
+    vertical-align: sub;
+    color: #000;
+    padding-right: 5px;
+}
+.filter-dropdown label:hover {
+  background-color: rgba(0,0,0,0.15);
+}
+.filter-dropdown button {
+  color: #fff;  
+  font-size: 12px;
+}
+.filter-dropdown button i {
+  vertical-align: sub;
+  color: #fff;  
+  font-size: 10px;
+}
+.filter-dropdown button.uk-button-primary {
+  background-color:#1f2a64;
+  text-shadow:none; 
+}
+.filter-dropdown button.uk-button-secondary {
+  background-color:#898a89;
+  text-shadow:none;  
+  color: #fff;
+}
+/*** custom checkboxes ***/
+.filter-dropdown input[type=checkbox] { display:none; } /* to hide the checkbox itself */
+.filter-dropdown input[type=checkbox] + label:before {
+  font-family: 'allita' !important;
+  display: inline-block;
+  font-size: 18px;
+  vertical-align: sub;
+}
+
+.filter-dropdown input[type=checkbox] + label:before { content: "\e9bd"; } /* unchecked icon */
+.filter-dropdown input[type=checkbox] + label:before { letter-spacing: 5px; } /* space between checkbox and label */
+
+.filter-dropdown input[type=checkbox]:checked + label:before { content: "\e997"; } /* checked icon */
+.filter-dropdown input[type=checkbox]:checked + label:before { letter-spacing: 5px; } /* allow space for check mark */
+
+.filter-dropdown.uk-dropdown {
+  min-width: 350px;
+}
+
+/*.filter-dropdown ul li {
+  padding-top: 3px;
+}
+.filter-dropdown ul li:hover {
+    background-color: rgba(0,0,0,0.15);
+}
+.filter-dropdown ul li button {
+
+}
+.filter-dropdown ul li button:hover {
+  text-decoration: none;
+}
+.filter-dropdown ul li button span {
+  margin-right: 3px;
+  font-size: 19px;
+  vertical-align: sub;
+}
+.filter-dropdown ul li button.uk-button-link {
+  color: #000;
+}*/
 
 .inspection-areas {
     margin-left: -30px;
@@ -2473,6 +2551,107 @@ ul.leaders span + span {
     padding-left: 0.33em;
     background: white}
 
+span.indented {
+    padding-left: 30px;
+}
+.address {
+  padding-left:20px;
+}
+.address i {
+    margin-left: -20px;
+}
+.address i.nomargin {
+    margin-left: 0px;
+}
+#project-details-main {
+      margin-left: 15px;
+    margin-right: 15px;
+    border: 1px solid #333;
+}
+#project-details-main-row {
+  min-width:1480px;
+  padding: 15px 10px;
+}
+#project-details-main-row .a-square-right-2 {
+  font-size: 22px;
+}
+#project-details-main-row .fullwidthleftpad {
+  width: 90%;
+  margin-right: -6px;
+}
+#project-details-main-row .fadetext {
+    position: relative;
+    white-space: nowrap;
+    overflow-x: hidden;
+}
+#project-details-main-row .fadetext:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20%;
+    height: 100%;
+    background-size: 100%;
+  pointer-events: none;
+  background-image: -webkit-gradient(linear, 0% 50%, 100% 50%, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(80%, #ffffff), color-stop(100%, #ffffff));
+  background-image: -moz-linear-gradient(left, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
+  background-image: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
+}
+
+#project-details-buttons button { color:#ddd; border-color:#ddd; background-color:transparent; border:2px solid; }
+#project-details-buttons button.no-action { color:#939598; border-color:#939598;  }
+#project-details-buttons button.action-needed { color:#76338b; border-color:#76338b; }
+#project-details-buttons button.action-required { color:#da328a; border-color:#da328a;}
+#project-details-buttons button.ok-actionable { color:#56b285; border-color:#56b285; }
+#project-details-buttons button.in-progress { color:#49ade9; border-color:#49ade9; }
+
+#project-details-main-row i {
+  line-height: 20px;
+    font-size: 20px;
+}
+#project-details-main-row .user-badge {
+    height: 28px;
+    width: 28px;
+    line-height: 28px;
+}
+#project-details-main-row .divider {
+    border-style: solid;
+    border-width: 0;
+    border-right-width: 2px;
+    border-color: #000;
+    display: inline-block;
+    height: 48px;
+    float: right;
+    margin-right: 2px;
+}
+#project-details-main-row .divider.dotted {
+    border-style: dotted;
+}
+#project-details-main-row .hasdivider {
+    width: 96%;
+    display: inline-block;
+}
+#project-details-main-row .hasdivider > div {
+    padding-top: 8px;
+    padding-left: 0;
+    padding-right: 0;
+}
+#project-details-main-row .iconpadding, #project-details-main-row .hasdivider > div.iconpadding {
+    padding-top: 12px;
+    padding-left: 8px;
+}
+#project-details-main-row .fullwidthleftpad {
+    width: 80%;
+}
+#project-details-main-row .dateyear {
+    background-color: #bbbbbb;
+    font-size: 0.6em;
+    line-height: normal;
+    margin: 0 3px -7px 0;
+    color: #fff;
+    padding: 2px 0;
+}
 .tab-sub-nav {
   width: 100%;
   padding: 0;
@@ -3041,4 +3220,8 @@ ul ul, ol ul {
   -moz-transform: rotate(-180deg);
   -ms-transform: rotate(-180deg);
   -o-transform: rotate(-180deg);
+}
+
+.uk-dropdown {
+  box-shadow: 3px 3px 10px rgba(0,0,0,.6);
 }

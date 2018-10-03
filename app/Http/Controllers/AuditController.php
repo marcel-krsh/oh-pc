@@ -869,8 +869,22 @@ class AuditController extends Controller
 
     public function getProject( $project=null) {
 
-        $tab = 'project-detail-tab-3';
-        return view('projects.project', compact('tab'));
+        $projectId = '19200114';
+
+        $projectTabs = collect([
+                ['title' => 'Details', 'icon' => 'a-clipboard', 'status' => '', 'badge' => '', 'action' => 'project.details'],
+                ['title' => 'Communications', 'icon' => 'a-envelope-incoming', 'status' => '', 'badge' => '', 'action' => 'project.communications'],
+                ['title' => 'Documents', 'icon' => 'a-file-clock', 'status' => '', 'badge' => '', 'action' => 'project.documents'],
+                ['title' => 'Notes', 'icon' => 'a-file-text', 'status' => '', 'badge' => '', 'action' => 'project.notes'],
+                ['title' => 'Comments', 'icon' => 'a-comment-text', 'status' => '', 'badge' => '', 'action' => 'project.comments'],
+                ['title' => 'Photos', 'icon' => 'a-picture', 'status' => '', 'badge' => '', 'action' => 'project.photos'],
+                ['title' => 'Findings', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.findings'],
+                ['title' => 'Follow-ups', 'icon' => 'a-bell-ring', 'status' => '', 'badge' => '', 'action' => 'project.followups'],
+                ['title' => 'Reports', 'icon' => 'a-file-chart-3', 'status' => '', 'badge' => '', 'action' => 'project.reports'],
+            ]);
+        $tab = 'project-detail-tab-1';
+
+        return view('projects.project', compact('tab', 'projectTabs', 'projectId'));
     }
 
     public function getProjectTitle ( $project = null ) {
@@ -878,6 +892,83 @@ class AuditController extends Controller
     }
 
     public function getProjectDetails ( $project = null ) {
-        return 'Details from controller';
+        $stats = collect([
+                "project_id" => "1920114",
+                "project_name" => "The Garden Oaks",
+                "last_audit_completed" => "December 12, 2017",
+                "next_audit_due" => "December 31, 2018",
+                "score_percentage" => "88%",
+                "score" => "B-",
+                "total_building" => "99",
+                "total_building_common_areas" => "99",
+                "total_project_common_areas" => "10",
+                "total_units" => "9,999",
+                "market_rate" => "8,999",
+                "subsidized" => "1,000",
+                "programs" => [
+                    ["name" => "Program Name 1", "units" => "250"],
+                    ["name" => "Program Name 2", "units" => "250"],
+                    ["name" => "Program Name 3", "units" => "50"],
+                    ["name" => "Program Name 4", "units" => "550"],
+                    ["name" => "Program Name 5", "units" => "1000"],
+                ]
+            ]);
+        $owner = collect([
+                "name" => "Jane Doe Properties",
+                "poc" => "Jane Doe",
+                "phone" => "(123) 344-4444",
+                "fax" => "(123) 448-8888",
+                "email" => "bob@bob.com",
+                "address" => "123 Sesame Street",
+                "address2" => "Suite 123",
+                "city" => "City",
+                "state" => "State",
+                "zip" => "12345",
+            ]);
+        $manager = collect([
+                "name" => "The Really Long Named Property Manager Name",
+                "poc" => "Bob Doe",
+                "phone" => "(123) 344-3333",
+                "fax" => "(123) 448-3333",
+                "email" => "bob3@bob.com",
+                "address" => "12333 Sesame Street",
+                "address2" => "Suite 12345",
+                "city" => "City2",
+                "state" => "State2",
+                "zip" => "22222",
+            ]);
+        return view('projects.partials.details', compact('stats', 'owner', 'manager'));
+    }
+
+    public function getProjectCommunications ( $project = null ) {
+        return view('projects.partials.communications');
+    }
+
+    public function getProjectDocuments ( $project = null ) {
+        return view('projects.partials.documents');
+    }
+
+    public function getProjectNotes ( $project = null ) {
+        return view('projects.partials.notes');
+    }
+
+    public function getProjectComments ( $project = null ) {
+        return view('projects.partials.comments');
+    }
+
+    public function getProjectPhotos ( $project = null ) {
+        return view('projects.partials.photos');
+    }
+
+    public function getProjectFindings ( $project = null ) {
+        return view('projects.partials.findings');
+    }
+
+    public function getProjectFollowups ( $project = null ) {
+        return view('projects.partials.followups');
+    }
+
+    public function getProjectReports ( $project = null ) {
+        return view('projects.partials.reports');
     }
 }
