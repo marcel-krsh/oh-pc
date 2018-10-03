@@ -1589,7 +1589,7 @@ margin-top:10px;
 .filter-dropdown button i {
   vertical-align: sub;
   color: #fff;  
-  font-size: 10px;
+  font-size: 15px !important;
 }
 .filter-dropdown button.uk-button-primary {
   background-color:#1f2a64;
@@ -1597,6 +1597,15 @@ margin-top:10px;
 }
 .filter-dropdown button.uk-button-secondary {
   background-color:#898a89;
+  text-shadow:none;  
+  color: #fff;
+}
+.filter-dropdown button.uk-button-primary:hover {
+  background-color:rgba(31,42,100,0.7);
+  text-shadow:none; 
+}
+.filter-dropdown button.uk-button-secondary:hover {
+  background-color:rgba(137,138,137,0.7);
   text-shadow:none;  
   color: #fff;
 }

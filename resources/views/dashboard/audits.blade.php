@@ -450,11 +450,11 @@
 												<input id="filter-step-lead-approval" type="checkbox" />
 												<label for="filter-step-lead-approval"><i class="a-file-pen"></i> Lead Approval</label>
 												<input id="filter-step-lead-requested" type="checkbox" />
-												<label for="filter-step-lead-requested" style="padding-left:40px;">Lead Requested Edits</label>
+												<label for="filter-step-lead-requested" style="padding-left:40px;"><i class="a-avatar-refresh"></i> Lead Requested Edits</label>
 												<input id="filter-step-report-generate" type="checkbox" />
 												<label for="filter-step-report-generate"><i class="a-file-chart-3"></i> Generate Report</label>
-												<input id="filter-step-report-generate" type="checkbox" />
-												<label for="filter-step-report-generate"><i class="a-magnify-chart-up"></i> Review Report</label>
+												<input id="filter-step-report-review" type="checkbox" />
+												<label for="filter-step-report-review"><i class="a-magnify-chart-up"></i> Review Report</label>
 												<input id="filter-step-report-comment" type="checkbox" />
 												<label for="filter-step-report-comment"><i class="a-comment-chart-up"></i> See Report Comments</label>
 												<input id="filter-step-report-send" type="checkbox" />
@@ -468,7 +468,7 @@
 									        </div>
 									        <div class="uk-margin-remove" uk-grid>
 			                            		<div class="uk-width-1-2">
-			                            			<button class="uk-button uk-button-primary uk-width-1-1"><i class="a-rotate-left-2"></i> APPLY FILTER</button>
+			                            			<button class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
 			                            		</div>
 			                            		<div class="uk-width-1-2">
 			                            			<button class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>

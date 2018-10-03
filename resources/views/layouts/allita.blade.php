@@ -34,6 +34,7 @@ if(Auth::check()){
 	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 	<meta name="theme-color" content="#ffffff">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 	<link rel="stylesheet" href="/css/allita-font.css">
 	<link rel="stylesheet" href="/css/uikit.min.css">
 	<link rel="stylesheet" href="/css/allita-admin-419171046.css">
@@ -316,7 +317,7 @@ if(Auth::check()){
 	$('#detail-tab-1').trigger("click");
 	</script>
 	@endif
-	
+
 	@if(session('disablePacer') != 1)
 	<script>
 		window.paceOptions = { ajax: { trackMethods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'], ignoreURLs: ['https://pcinspectdev.ohiohome.org'] } }
