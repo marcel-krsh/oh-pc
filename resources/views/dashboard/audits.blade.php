@@ -226,7 +226,7 @@
 			@if(session()->has('audit-mymessage'))
 			@if(session('audit-mymessage') == 1)
 				<div class="uk-badge uk-text-right@s badge-filter">
-					<a onClick="applyFilter('audit-message',null);" class="uk-dark uk-light">
+					<a onClick="applyFilter('audit-mymessage',null);" class="uk-dark uk-light">
 						<i class="a-circle-cross"></i> 
 						<span>MESSAGES FOR ME</span>
 					</a>
