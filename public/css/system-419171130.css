@@ -490,7 +490,7 @@ stickynav {
 	/*padding-top:16px;*/
 	padding-left:0;
 	padding-right:0;
-	padding-bottom:40px;
+	padding-bottom:140px;
 	margin-bottom:15px;
 }
 #main-tabs {
@@ -1452,6 +1452,7 @@ margin-top:10px;
 #auditstable table tr td.audit-td-lead .user-badge {
   left: 5px;
   position: relative;
+  border-width: 0px;
 }
 #auditstable table tr td.audit-td-lead .user-badge.uk-link:hover {
   color: #fff;

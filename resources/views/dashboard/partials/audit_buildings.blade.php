@@ -219,11 +219,36 @@
 						console.log( item.detail[1].id + " ended at index: " + endIndex );
 						UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
 						reorder(".building-details > .sortable", '.building-detail');
+
 					}else if($('#'+item.detail[1].id).hasClass('building')){
 						endIndex = $( ".building" ).index( listItem );
 						console.log( item.detail[1].id + " ended at index: " + endIndex );
 						UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
 						reorder(".buildings > .sortable", '.building');
+						console.log("endIndex "+endIndex+' '+item.detail[1].id);
+						// update journey icons
+						var length = $('.building').length;
+						$('.building').each(function(index, element) {
+							$(element).find( ".journey-start" ).addClass('journey');
+							$(element).find( ".journey-start" ).removeClass('journey-start');
+							$(element).find( ".journey-end" ).addClass('journey');
+							$(element).find( ".journey-end" ).removeClass('journey-end');
+							$(element).find( ".a-home-marker" ).addClass('a-marker-basic');
+							$(element).find( ".a-home-marker" ).removeClass('a-home-marker');
+
+						    if (index == 0) {
+						        $(element).find( ".journey" ).addClass('journey-start');
+								$(element).find( ".journey" ).removeClass('journey');
+								$(element).find( ".a-marker-basic" ).addClass('a-home-marker');
+								$(element).find( ".a-marker-basic" ).removeClass('a-marker-basic');
+					        }
+							if (index == (length - 2)) {
+						        $(element).find( ".journey" ).addClass('journey-end');
+								$(element).find( ".journey" ).removeClass('journey');
+								$(element).find( ".a-marker-basic" ).addClass('a-home-marker');
+								$(element).find( ".a-marker-basic" ).removeClass('a-marker-basic');
+						    }
+						});
 					}else if($('#'+item.detail[1].id).hasClass('inspection-area')){
 						endIndex = $( ".inspection-area" ).index( listItem );
 						console.log( item.detail[1].id + " ended at index: " + endIndex );
