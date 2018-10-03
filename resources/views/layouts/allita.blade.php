@@ -93,9 +93,9 @@ if(Auth::check()){
 	@yield('head')
 	@if(env('APP_DEBUG_NO_DEVCO') == 'true')
     <style>
-    ul#tabs {
+    /*ul#tabs {
 	    margin-top: 60px;
-	}
+	}*/
 	</style>
     @endif
 </head>
