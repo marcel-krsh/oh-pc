@@ -492,7 +492,7 @@
 		    </thead>
 		    <tbody>
 		    	@foreach($audits as $audit)
-		    	<tr id="audit-r-{{$loop->iteration}}" class="{{$audit['status']}}">
+		    	<tr id="audit-r-{{$loop->iteration}}" class="{{$audit['status']}} @if($audit['status'] != 'critical') notcritical @endif" style=" @if(session('audit-hidenoncritical') == 1 && $audit['status'] != 'critical') display:none; @endif ">
 		            <td id="audit-c-1-{{$loop->iteration}}" class="uk-text-center audit-td-lead">
 		            	<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$audit['lead']['name']}};" title="" aria-expanded="false" class="user-badge user-badge-{{$audit['lead']['color']}} no-float uk-link">
 							{{$audit['lead']['initials']}}
@@ -617,8 +617,13 @@ The following div is defined in this particular tab and pushed to the main layou
 */
 ?>
 <div id="footer-actions" hidden>
+	@if(session('audit-hidenoncritical') != 1)
 	<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();"><i class="a-eye-not"></i> HIDE NON CRITICAL</button>
 	<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();" style="display:none;"><i class="a-eye-2"></i> SHOW NON CRITICAL</button>
+	@else
+	<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();" style="display:none;"><i class="a-eye-not"></i> HIDE NON CRITICAL</button>
+	<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();"><i class="a-eye-2"></i> SHOW NON CRITICAL</button>
+	@endif
 	<a href="#top" id="smoothscrollLink" uk-scroll="{offset: 90}" class="uk-button uk-button-default"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
 </div>
 
@@ -634,23 +639,17 @@ The following div is defined in this particular tab and pushed to the main layou
     });
 
 	function toggleCritical() {
-		var shownoncritical = 1;
-		@if(session()->has('audit-shownoncritical'))
-		console.log("session audit-shownoncritical {{session('audit-shownoncritical')}}");
-			@if(session('audit-shownoncritical') == 1)
-			shownoncritical = '';
-			
-			@endif
-		@endif
+		
 
-		$.get( '/session/filters/audit-shownoncritical/'+shownoncritical, function( data ) {  
+		$.get( '/session/filters/audit-hidenoncritical/', function( data ) {  
            // reload
-			 $('#detail-tab-1').trigger("click");
+			// $('#detail-tab-1').trigger("click");
 			// UIkit.switcher('#top-tabs').show(0);
+			$(".notcritical").fadeToggle();
+			$('.btnToggleCritical').toggle();
         });
 
-		$(".notcritical").fadeToggle();
-		$('.btnToggleCritical').toggle();
+		
 	}
 
 	function createAudits(){

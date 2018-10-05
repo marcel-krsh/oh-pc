@@ -35,12 +35,22 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('autocomplete/auditaddress', 'DashboardController@autocomplete');
 
         Route::get('/session/filters/{type}/{value?}', function ($type, $value=null) {
-            if($value !== 'null'){
+            if($value !== null){
                 session([$type => $value]);
                 $new_filter = session($type);
                 return $new_filter;
             }else{
-                session([$type => '']);
+                if(!session()->has($type)){
+                    session([$type => 1]);
+                }else{
+                    if( session($type) == 0 || session($type) === null || session($type) == '') { 
+                        session([$type => 1]); 
+                    }else{
+                        session()->forget($type);
+                    }
+                }
+                
+                
                 return 1;
             }
         })->name('session.setfilter');

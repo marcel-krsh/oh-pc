@@ -24,10 +24,18 @@
 
 <script>
 $( document ).ready(function() {
-@if($tab !== null)
-$('#{{$tab}}').trigger("click");
-@else
-$('#project-detail-tab-1').trigger("click");
-@endif
+	// place tab's buttons on main footer
+	$('#footer-actions-tpl').html('');
+	@if(session()->has('audit-message'))
+		@if(session('audit-message') == 1)
+
+		@endif
+	@endif
+
+	@if($tab !== null)
+	$('#{{$tab}}').trigger("click");
+	@else
+	$('#project-detail-tab-1').trigger("click");
+	@endif
 });
 </script>
