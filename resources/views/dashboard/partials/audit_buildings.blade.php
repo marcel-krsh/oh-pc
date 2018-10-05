@@ -3,7 +3,7 @@
 			<div class="buildings uk-overflow-auto" style="">
 				<div class="sortable" uk-sortable="handle: .uk-sortable-handle">
 					@foreach($buildings as $key=>$building)
-					<div id="building-r-{{$key}}" class="uk-margin-remove building @if($building['status']) building-{{$building['status']}} {{$building['status']}} @endif uk-grid-match" uk-grid>
+					<div id="building-r-{{$key}}" class="uk-margin-remove building @if($building['status']) building-{{$building['status']}} {{$building['status']}} @endif @if($building['status'] != 'critical') notcritical @endif uk-grid-match" style=" @if(session('audit-hidenoncritical') == 1 && $building['status'] != 'critical') display:none; @endif " uk-grid>
 						<div class="uk-width-1-6 uk-padding-remove">
 							<div class="uk-padding-remove uk-flex">
 								<div id="building-{{$target}}-c-1-{{$key}}" class="uk-inline uk-sortable-handle" style="min-width: 16px; padding: 0 3px;">
