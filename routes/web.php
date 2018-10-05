@@ -34,8 +34,8 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('autocomplete/auditname', 'DashboardController@autocomplete');
         Route::get('autocomplete/auditaddress', 'DashboardController@autocomplete');
 
-        Route::get('/session/filters/{type}/{value}', function ($type, $value) {
-            if($value != 'null'){
+        Route::get('/session/filters/{type}/{value?}', function ($type, $value=null) {
+            if($value !== 'null'){
                 session([$type => $value]);
                 $new_filter = session($type);
                 return $new_filter;
@@ -50,7 +50,9 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('/projects/{project}', 'AuditController@getProject')->name('project');
         Route::get('/projects/{project}/title', 'AuditController@getProjectTitle')->name('project.title');
         Route::get('/projects/{project}/details', 'AuditController@getProjectDetails')->name('project.details');
-        Route::get('/projects/{project}/details/title', 'AuditController@getProjectDetailsTitle')->name('project.details.title');
+        // Route::get('/projects/{project}/details/title', 'AuditController@getProjectDetailsTitle')->name('project.details.title');
+         Route::get('/projects/{project}/details/{type}', 'AuditController@getProjectDetailsInfo')->name('project.details.info');
+
         Route::get('/projects/{project}/communications', 'AuditController@getProjectCommunications')->name('project.communications');
         Route::get('/projects/{project}/communications/title', 'AuditController@getProjectCommunicationsTitle')->name('project.communications.title');
         Route::get('/projects/{project}/documents', 'AuditController@getProjectDocuments')->name('project.documents');
@@ -67,6 +69,7 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('/projects/{project}/followups/title', 'AuditController@getProjectFollowupsTitle')->name('project.followups.title');
         Route::get('/projects/{project}/reports', 'AuditController@getProjectReports')->name('project.reports');
         Route::get('/projects/{project}/reports/title', 'AuditController@getProjectReportsTitle')->name('project.reports.title');
+
     // });
 
 });

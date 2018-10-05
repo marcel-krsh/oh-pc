@@ -940,6 +940,51 @@ class AuditController extends Controller
         return view('projects.partials.details', compact('stats', 'owner', 'manager'));
     }
 
+    public function getProjectDetailsInfo ( $project, $type ) {
+        // types: compliance, assignment, findings, followups, reports, documents, comments, photos
+        // project: project_id?
+
+        switch ($type) {
+            case 'compliance':
+                $data = collect([
+                    "summary" => [
+                        'required_unit_selected' => 0,
+                        'inspectable_areas_assignment_needed' => 12,
+                        'required_units_selection' => 13,
+                        'file_audits_needed' => 14,
+                        'physical_audits_needed' => 15,
+                        'schedule_conflicts' => 16
+                    ]
+                ]);
+                break;
+            case 'assignment':
+                
+                break;
+            case 'findings':
+                
+                break;
+            case 'followups':
+                
+                break;
+            case 'reports':
+                
+                break;
+            case 'documents':
+                
+                break;
+            case 'comments':
+                
+                break;
+            case 'photos':
+                
+                break;
+            default:
+               
+        }
+
+        return view('projects.partials.details-'.$type, compact('data'));
+    }
+
     public function getProjectCommunications ( $project = null ) {
         return view('projects.partials.communications');
     }

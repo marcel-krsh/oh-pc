@@ -636,15 +636,19 @@ The following div is defined in this particular tab and pushed to the main layou
 	function toggleCritical() {
 		var shownoncritical = 1;
 		@if(session()->has('audit-shownoncritical'))
-			@if(session('audit-shownoncritical') != 1)
-			shownoncritical = 0;
+		console.log("session audit-shownoncritical {{session('audit-shownoncritical')}}");
+			@if(session('audit-shownoncritical') == 1)
+			shownoncritical = '';
+			
 			@endif
 		@endif
-		$.get( '/session/filters/audit-shownoncritical/', function( data ) {  
+
+		$.get( '/session/filters/audit-shownoncritical/'+shownoncritical, function( data ) {  
            // reload
-			$('#detail-tab-1').trigger("click");
+			 $('#detail-tab-1').trigger("click");
 			// UIkit.switcher('#top-tabs').show(0);
         });
+
 		$(".notcritical").fadeToggle();
 		$('.btnToggleCritical').toggle();
 	}

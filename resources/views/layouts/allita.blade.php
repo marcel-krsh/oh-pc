@@ -88,14 +88,14 @@ if(Auth::check()){
 	@if (Auth::guest())
 	@else
 	<script src="/js/taffy.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.5/Chart.bundle.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
 	@endif
 	@yield('head')
 	@if(env('APP_DEBUG_NO_DEVCO') == 'true')
     <style>
-    /*ul#tabs {
+    ul#tabs {
 	    margin-top: 60px;
-	}*/
+	}
 	</style>
     @endif
 </head>

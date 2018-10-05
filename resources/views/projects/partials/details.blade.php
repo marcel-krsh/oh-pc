@@ -52,7 +52,7 @@
 
 <div id="project-details-main" class="uk-overflow-auto" uk-grid>
 	<div class="uk-width-1-1 uk-padding-remove">
-		<div id="project-details-main-row">
+		<div id="project-details-main-row" class="ok-actionable">
 			<div class="uk-grid-match" uk-grid>
 				<div class="uk-width-1-2 uk-padding-remove">
 					<div uk-grid>
@@ -81,6 +81,7 @@
 					            	</div>
 								</div>
 								<div class="uk-width-1-2 uk-padding-remove">
+					            	<div class="divider"></div>
 									<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
 					            		<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;"></i>
 					            	</div> 
@@ -88,7 +89,6 @@
 					            		<h3 class="uk-margin-bottom-remove">3045 Cumberland Woods Street, Suite 202</h3>
 						            	<small class="uk-text-muted">COLUMBUS, OH 43219</small>
 					            	</div>
-					            	<div class="divider"></div>
 								</div>
 							</div>
 						</div>
@@ -99,6 +99,7 @@
 						<div class="uk-width-1-2 uk-padding-remove">
 							<div uk-grid>
 								<div class="uk-width-2-3 uk-padding-remove">
+						            <div class="divider"></div>
 									<div class="uk-text-center hasdivider" uk-grid>
 						            	<div class="uk-width-1-2 uk-padding-remove" uk-grid>
 						            		<div class="uk-width-1-3 iconpadding">
@@ -115,9 +116,9 @@
 						            		<i class="a-circle-checked ok-actionable"  uk-tooltip="title:Audit Compliant;"></i>
 						            	</div>
 						            </div>
-						            <div class="divider"></div>
 								</div>
 								<div class="uk-width-1-3 uk-padding-remove">
+									<div class="divider"></div>
 									<div class="uk-text-center hasdivider uk-margin-small-top" uk-grid>
 						            	<div class="uk-width-1-3">
 						            		<i class="a-bell-2" uk-tooltip="title:No followups;"></i>
@@ -126,13 +127,13 @@
 						            		<i class="a-calendar-pencil" uk-tooltip="title:New followup;"></i>
 						            	</div> 
 						            </div>
-									<div class="divider"></div>
 								</div>
 							</div>
 						</div>
 						<div class="uk-width-1-2 uk-padding-remove">
 							<div uk-grid>
 								<div class="uk-width-2-5 uk-padding-remove">
+									<div class="divider"></div>
 									<div class="uk-text-center hasdivider uk-margin-small-top" uk-grid>
 						            	<div class="uk-width-1-4">
 						            		<i class="a-star-3"></i>
@@ -147,24 +148,23 @@
 						            		<i class="a-star-3"></i>
 						            	</div> 
 						            </div>
-									<div class="divider"></div>
 								</div>
 								<div class="uk-width-2-5 uk-padding-remove">
+									<div class="divider"></div>
 									<div class="uk-text-center hasdivider uk-margin-small-top" uk-grid>
 						            	<div class="uk-width-1-4">
-						            		<i class="a-avatar" uk-tooltip="title:Auditors / schedule conflicts / unasigned items;"></i>
+						            		<i class="a-avatar action-needed" uk-tooltip="title:Auditors / schedule conflicts / unasigned items;"></i>
 						            	</div> 
 						            	<div class="uk-width-1-4">
-						            		<i class="a-envelope-4" uk-tooltip="title:;"></i>
+						            		<i class="a-envelope-4 action-required" uk-tooltip="title:;"></i>
 						            	</div> 
 						            	<div class="uk-width-1-4">
-						            		<i class="a-files" uk-tooltip="title:Document status;"></i>
+						            		<i class="a-files ok-actionable" uk-tooltip="title:Document status;"></i>
 						            	</div> 
 						            	<div class="uk-width-1-4">
 						            		<i class="a-person-clock" uk-tooltip="title:NO/VIEW HISTORY;"></i>
 						            	</div> 
 						            </div>
-									<div class="divider"></div>
 								</div>
 								<div class="uk-width-1-5 iconpadding">
 									<i class="a-calendar-7"></i>
@@ -177,42 +177,69 @@
 		</div>
 	</div>
 </div>
-<div id="project-details-buttons" uk-grid>
+<div id="project-details-buttons" class="" uk-grid>
 	<div class="uk-width-1-1">
 		<div uk-grid>
-			<div class="uk-width-1-2">
+			<div class="uk-width-1-2 uk-padding-remove">
 				<div uk-grid>
 					<div class="uk-width-1-4">
-						<button class="uk-button uk-link action-needed active" style=""><i class="a-circle-checked"></i> COMPLIANCE</button>
+						<button class="uk-button uk-link action-needed active" onclick="projectDetailsInfo({{$stats['project_id']}}, 'compliance');" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button class="uk-button uk-link critical active" style=""><i class="a-circle-checked"></i> ASSIGNMENT</button>
+						<button class="uk-button uk-link critical" onclick="projectDetailsInfo({{$stats['project_id']}}, 'assignment');" type="button"><i class="a-avatar-fail"></i> ASSIGNMENT</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button class="uk-button uk-link action-required active" style=""><i class="a-mobile-info"></i> FINDINGS</button>
+						<button class="uk-button uk-link action-required" onclick="projectDetailsInfo({{$stats['project_id']}}, 'findings');" type="button"><i class="a-mobile-info"></i> FINDINGS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button class="uk-button uk-link ok-actionable active" style=""><i class="a-bell-ring"></i> FOLLOW-UPS</button>
+						<button class="uk-button uk-link ok-actionable" onclick="projectDetailsInfo({{$stats['project_id']}}, 'followups');" type="button"><i class="a-bell-ring"></i> FOLLOW-UPS</button>
 					</div>
 				</div>
 			</div>
-			<div class="uk-width-1-2">
+			<div class="uk-width-1-2 uk-padding-remove">
 				<div uk-grid>
 					<div class="uk-width-1-4">
-						<button class="uk-button uk-link in-progress active" style=""><i class="a-file-chart-3"></i> REPORTS</button>
+						<button class="uk-button uk-link in-progress" onclick="projectDetailsInfo({{$stats['project_id']}}, 'reports');" type="button"><i class="a-file-chart-3"></i> REPORTS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button class="uk-button uk-link no-action active" style=""><i class="a-file-clock"></i> DOCUMENTS</button>
+						<button class="uk-button uk-link no-action" onclick="projectDetailsInfo({{$stats['project_id']}}, 'documents');" type="button"><i class="a-file-clock"></i> DOCUMENTS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button class="uk-button uk-link active" style=""><i class="a-comment-text"></i> COMMENTS</button>
+						<button class="uk-button uk-link" onclick="projectDetailsInfo({{$stats['project_id']}}, 'comments');" type="button"><i class="a-comment-text"></i> COMMENTS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button class="uk-button uk-link active" style=""><i class="a-picture"></i> PHOTOS</button>
+						<button class="uk-button uk-link" onclick="projectDetailsInfo({{$stats['project_id']}}, 'photos');" type="button"><i class="a-picture"></i> PHOTOS</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<div id="project-details-info-container">
+</div>
+
+<div id="project-details-buildings">
+</div>
+
+<script>
+function projectDetailsInfo(id, type) {
+	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+	$('#project-details-info-container').html(tempdiv);
+
+	var url = '{{route("project.details.info", ["project" => "xi", "type" => "ti"])}}';
+	url = url.replace('xi', id);
+	url = url.replace('ti', type);
+    $.get(url, {
+        '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            if(data=='0'){ 
+                UIkit.modal.alert("There was a problem getting the project information.");
+            } else {
+            	
+				$('#project-details-info-container').html(data);
+        	}
+    });
+}
+</script>
 	    
