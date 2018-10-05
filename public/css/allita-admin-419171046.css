@@ -8111,9 +8111,9 @@ a.uk-datepicker-table-muted {
   list-style: none;
 }
 .uk-slider > * {
-  position: absolute;
+  /*position: absolute;
   top: 0;
-  left: 0;
+  left: 0;*/
 }
 .uk-slider-container {
   overflow: hidden;

@@ -35,10 +35,6 @@ if(Auth::check()){
 
 	<meta name="theme-color" content="#ffffff">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-	<link rel="stylesheet" href="/css/allita-font.css">
-	<link rel="stylesheet" href="/css/uikit.min.css">
-	<link rel="stylesheet" href="/css/allita-admin-419171046.css">
-	<link rel="stylesheet" href="/css/system-419171130.css">
 	@if (Auth::guest())
 	@else
 
@@ -90,6 +86,12 @@ if(Auth::check()){
 	<script src="/js/taffy.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
 	@endif
+
+	<link rel="stylesheet" href="/css/allita-font.css">
+	<link rel="stylesheet" href="/css/uikit.min.css">
+	<link rel="stylesheet" href="/css/allita-admin-419171046.css">
+	<link rel="stylesheet" href="/css/system-419171130.css">
+	
 	@yield('head')
 	@if(env('APP_DEBUG_NO_DEVCO') == 'true')
     <style>

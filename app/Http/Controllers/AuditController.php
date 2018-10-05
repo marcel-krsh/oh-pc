@@ -954,6 +954,14 @@ class AuditController extends Controller
                         'file_audits_needed' => 14,
                         'physical_audits_needed' => 15,
                         'schedule_conflicts' => 16
+                    ],
+                    "programs" => [
+                        ['id' => 1, 'name' => 'Program Name A'],
+                        ['id' => 2, 'name' => 'Program Name B'],
+                        ['id' => 3, 'name' => 'Program Name C'],
+                        ['id' => 4, 'name' => 'Program Name D'],
+                        ['id' => 5, 'name' => 'Program Name E'],
+                        ['id' => 6, 'name' => 'Program Name F']
                     ]
                 ]);
                 break;

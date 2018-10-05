@@ -183,32 +183,32 @@
 			<div class="uk-width-1-2 uk-padding-remove">
 				<div uk-grid>
 					<div class="uk-width-1-4">
-						<button class="uk-button uk-link action-needed active" onclick="projectDetailsInfo({{$stats['project_id']}}, 'compliance');" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
+						<button id="project-details-button-1" class="uk-button uk-link action-needed active" onclick="projectDetailsInfo({{$stats['project_id']}}, 'compliance');" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button class="uk-button uk-link critical" onclick="projectDetailsInfo({{$stats['project_id']}}, 'assignment');" type="button"><i class="a-avatar-fail"></i> ASSIGNMENT</button>
+						<button id="project-details-button-2" class="uk-button uk-link critical" onclick="projectDetailsInfo({{$stats['project_id']}}, 'assignment');" type="button"><i class="a-avatar-fail"></i> ASSIGNMENT</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button class="uk-button uk-link action-required" onclick="projectDetailsInfo({{$stats['project_id']}}, 'findings');" type="button"><i class="a-mobile-info"></i> FINDINGS</button>
+						<button id="project-details-button-3" class="uk-button uk-link action-required" onclick="projectDetailsInfo({{$stats['project_id']}}, 'findings');" type="button"><i class="a-mobile-info"></i> FINDINGS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button class="uk-button uk-link ok-actionable" onclick="projectDetailsInfo({{$stats['project_id']}}, 'followups');" type="button"><i class="a-bell-ring"></i> FOLLOW-UPS</button>
+						<button id="project-details-button-4" class="uk-button uk-link ok-actionable" onclick="projectDetailsInfo({{$stats['project_id']}}, 'followups');" type="button"><i class="a-bell-ring"></i> FOLLOW-UPS</button>
 					</div>
 				</div>
 			</div>
 			<div class="uk-width-1-2 uk-padding-remove">
 				<div uk-grid>
 					<div class="uk-width-1-4">
-						<button class="uk-button uk-link in-progress" onclick="projectDetailsInfo({{$stats['project_id']}}, 'reports');" type="button"><i class="a-file-chart-3"></i> REPORTS</button>
+						<button id="project-details-button-5" class="uk-button uk-link in-progress" onclick="projectDetailsInfo({{$stats['project_id']}}, 'reports');" type="button"><i class="a-file-chart-3"></i> REPORTS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button class="uk-button uk-link no-action" onclick="projectDetailsInfo({{$stats['project_id']}}, 'documents');" type="button"><i class="a-file-clock"></i> DOCUMENTS</button>
+						<button id="project-details-button-6" class="uk-button uk-link no-action" onclick="projectDetailsInfo({{$stats['project_id']}}, 'documents');" type="button"><i class="a-file-clock"></i> DOCUMENTS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button class="uk-button uk-link" onclick="projectDetailsInfo({{$stats['project_id']}}, 'comments');" type="button"><i class="a-comment-text"></i> COMMENTS</button>
+						<button id="project-details-button-7" class="uk-button uk-link" onclick="projectDetailsInfo({{$stats['project_id']}}, 'comments');" type="button"><i class="a-comment-text"></i> COMMENTS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button class="uk-button uk-link" onclick="projectDetailsInfo({{$stats['project_id']}}, 'photos');" type="button"><i class="a-picture"></i> PHOTOS</button>
+						<button id="project-details-button-8" class="uk-button uk-link" onclick="projectDetailsInfo({{$stats['project_id']}}, 'photos');" type="button"><i class="a-picture"></i> PHOTOS</button>
 					</div>
 				</div>
 			</div>
@@ -216,13 +216,33 @@
 	</div>
 </div>
 
-<div id="project-details-info-container">
-</div>
+<div id="project-details-info-container"></div>
 
-<div id="project-details-buildings">
-</div>
+<div id="project-details-buildings-container"></div>
 
 <script>
+
+function loadProjectDetailsBuildings(id, target) {
+	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+	$('#project-details-buildings-container').html(tempdiv);
+
+	var url = '{{route("audit.buildings", ["audit" => "xi", "target" => "ti"])}}';
+	url = url.replace('xi', id);
+	url = url.replace('ti', target);
+    $.get(url, {
+        '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            if(data=='0'){ 
+                UIkit.modal.alert("There was a problem getting the buildings' information.");
+            } else {
+            	var newdiv = '<div uk-grid><div id="auditstable" class="uk-width-1-1 uk-overflow-auto"><table class="uk-table uk-table-striped uk-table-hover uk-table-small uk-table-divider" style="min-width: 1420px;"><tr>';
+            	newdiv = newdiv + data;
+            	newdiv = newdiv + '</tr></table></div></div>'
+				$('#project-details-buildings-container').html(newdiv);
+        	}
+    });
+}
+
 function projectDetailsInfo(id, type) {
 	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
 	$('#project-details-info-container').html(tempdiv);
@@ -241,5 +261,12 @@ function projectDetailsInfo(id, type) {
         	}
     });
 }
+
+$( document ).ready(function() {
+	if($('#project-details-info-container').html() == ''){
+		$('#project-details-button-1').trigger("click");
+	}	
+	loadProjectDetailsBuildings( {{ $stats['project_id'] }}, {{ $stats['project_id'] }} ) ;
+});
 </script>
 	    
