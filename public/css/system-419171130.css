@@ -2616,13 +2616,13 @@ span.indented, div.indented {
 #project-details-buttons button.no-action { color:#939598; border-color:#939598;  }
 #project-details-buttons button.no-action:hover, #project-details-buttons button:hover,
 #project-details-buttons button.no-action.active, #project-details-buttons button.active { background-color:rgba(147,149,152,0.5); color:#fff;  }
-#project-details-buttons button.action-needed { color:#76338b; border-color:#76338b;  }
+#project-details-buttons button.action-needed { color:#76338b; border-color:#76338b; border-style: dashed; }
 #project-details-buttons button.action-needed:hover,
-#project-details-buttons button.action-needed.active { background-color:rgba(118,51,139,0.5); color:#fff; }
+#project-details-buttons button.action-needed.active {  background-color:rgba(118,51,139,0.5); color:#fff; }
 #project-details-buttons button.ok-actionable { color:#56b285; border-color:#56b285; }
 #project-details-buttons button.ok-actionable:hover,
 #project-details-buttons button.ok-actionable.active { background-color:rgba(86,178,133,0.5);color:#fff; }
-#project-details-buttons button.in-progress { color:#49ade9; border-color:#49ade9; }
+#project-details-buttons button.in-progress { color:#49ade9; border-color:#49ade9;border-style: dotted; }
 #project-details-buttons button.in-progress:hover,
 #project-details-buttons button.in-progress.active { background-color:rgba(73,173,233,0.5);color:#fff; }
 #project-details-buttons button.action-required, #project-details-buttons button.critical { 
@@ -2800,6 +2800,10 @@ span.indented, div.indented {
 }
 .project-details-info-compliance-summary table i {
 
+}
+
+#project-details-buildings-container .rowinset-top {
+    display: none;
 }
 
 .chart-color-required { color:#191818; }

@@ -183,7 +183,7 @@
 			<div class="uk-width-1-2 uk-padding-remove">
 				<div uk-grid>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-1" class="uk-button uk-link action-needed active" onclick="projectDetailsInfo({{$stats['project_id']}}, 'compliance');" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
+						<button id="project-details-button-1" class="uk-button uk-link ok-actionable active" onclick="projectDetailsInfo({{$stats['project_id']}}, 'compliance');" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
 					</div>
 					<div class="uk-width-1-4">
 						<button id="project-details-button-2" class="uk-button uk-link critical" onclick="projectDetailsInfo({{$stats['project_id']}}, 'assignment');" type="button"><i class="a-avatar-fail"></i> ASSIGNMENT</button>
@@ -192,7 +192,7 @@
 						<button id="project-details-button-3" class="uk-button uk-link action-required" onclick="projectDetailsInfo({{$stats['project_id']}}, 'findings');" type="button"><i class="a-mobile-info"></i> FINDINGS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-4" class="uk-button uk-link ok-actionable" onclick="projectDetailsInfo({{$stats['project_id']}}, 'followups');" type="button"><i class="a-bell-ring"></i> FOLLOW-UPS</button>
+						<button id="project-details-button-4" class="uk-button uk-link action-needed" onclick="projectDetailsInfo({{$stats['project_id']}}, 'followups');" type="button"><i class="a-bell-ring"></i> FOLLOW-UPS</button>
 					</div>
 				</div>
 			</div>

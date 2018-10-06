@@ -91,7 +91,7 @@ if(Auth::check()){
 	<link rel="stylesheet" href="/css/uikit.min.css">
 	<link rel="stylesheet" href="/css/allita-admin-419171046.css">
 	<link rel="stylesheet" href="/css/system-419171130.css">
-	
+
 	@yield('head')
 	@if(env('APP_DEBUG_NO_DEVCO') == 'true')
     <style>
@@ -168,7 +168,7 @@ if(Auth::check()){
 			&copy; 2018<?php if(date('Y',time()) != '2018') echo " — ".date('Y',time()); ?>: @include('git-version::version-comment')</a> </p>
 		</div>
 		<div id="footer-content" class="uk-width-1-3">
-			<div id="footer-actions-tpl"></div>
+			<div id="footer-actions-tpl"  class="uk-text-right"></div>
 		</div>
 	</div>
 	<script>

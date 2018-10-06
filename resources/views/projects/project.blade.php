@@ -22,10 +22,14 @@
 	</ul>
 </div>
 
+<div id="footer-actions-project" hidden>
+		<a href="#top" id="smoothscrollLink" uk-scroll="{offset: 90}" class="uk-button uk-button-default"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
+</div>
+
 <script>
 $( document ).ready(function() {
 	// place tab's buttons on main footer
-	$('#footer-actions-tpl').html('');
+	$('#footer-actions-tpl').html($('#footer-actions-project').html());
 	@if(session()->has('audit-message'))
 		@if(session('audit-message') == 1)
 
