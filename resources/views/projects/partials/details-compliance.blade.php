@@ -87,9 +87,9 @@
         //The percentage of the chart that we cut out of the middle.
         // cutoutPercentage : 67,
 
-        easing: "easeOutBounce",
+        easing: "linear",
 
-        duration: 100,
+        duration: 100000,
 
         tooltips: {
             enabled: true,
@@ -287,11 +287,8 @@
 								"datasets":[
 									{
 										"label":"Program 1",
-										"data":[10,50,20,15,5],
+										"data":[50,40],
 										"backgroundColor":[
-											chartColors.required,
-											chartColors.selected,
-											chartColors.needed,
 											chartColors.inspected,
 											chartColors.tobeinspected
 										],
@@ -299,25 +296,18 @@
 									},
 									{
 										"label":"Program 2",
-										"data":[100],
+										"data":[20,40],
 										"backgroundColor":[
-											chartColors.required,
 											chartColors.selected,
-											chartColors.needed,
-											chartColors.inspected,
-											chartColors.tobeinspected
+											chartColors.needed
 										],
 										"borderWidth": 1
 									},
 									{
 										"label":"Program 3",
-										"data":[30,50,20],
+										"data":[90],
 										"backgroundColor":[
-											chartColors.required,
-											chartColors.selected,
-											chartColors.needed,
-											chartColors.inspected,
-											chartColors.tobeinspected
+											chartColors.required
 										],
 										"borderWidth": 1
 									}
@@ -366,23 +356,8 @@
 			"datasets":[
 				{
 					"label":"Program 1",
-					"data":[10,50,20,15,5],
+					"data":[30,70],
 					"backgroundColor":[
-						chartColors.required,
-						chartColors.selected,
-						chartColors.needed,
-						chartColors.inspected,
-						chartColors.tobeinspected
-					],
-					"borderWidth": 1
-				},
-				{
-					"label":"Program 2",
-					"data":[100],
-					"backgroundColor":[
-						chartColors.required,
-						chartColors.selected,
-						chartColors.needed,
 						chartColors.inspected,
 						chartColors.tobeinspected
 					],
@@ -390,13 +365,18 @@
 				},
 				{
 					"label":"Program 3",
-					"data":[30,50,20],
+					"data":[30,50],
 					"backgroundColor":[
-						chartColors.required,
 						chartColors.selected,
 						chartColors.needed,
-						chartColors.inspected,
-						chartColors.tobeinspected
+					],
+					"borderWidth": 1
+				},
+				{
+					"label":"Program 2",
+					"data":[100],
+					"backgroundColor":[
+						chartColors.required
 					],
 					"borderWidth": 1
 				}
