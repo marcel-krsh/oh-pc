@@ -1861,7 +1861,7 @@ margin-top:10px;
 }
 @keyframes border-pulsate {
     0%   { border-color: rgba(218, 50, 138, 1); }
-    50% { border-color: rgba(218, 50, 138, 0); }
+    50% { border-color: rgba(218, 50, 138, 0.5); }
     100%   { border-color: rgba(218, 50, 138, 1); }
 }
 #auditstable .building-in-progress .building-type .building-type-icon i {
