@@ -1,14 +1,14 @@
 		<div class="building-details uk-overflow-auto" style="">
 			<div class="sortable" uk-sortable="handle: .uk-sortable-details">
 				@foreach($details as $key=>$detail)
-				<div id="building-detail-r-{{$key}}" class="building building-detail @if($detail['status']) building-{{$detail['status']}} {{$detail['status']}} @endif uk-grid-match uk-margin-remove" uk-grid>
+				<div id="building-{{$context}}-detail-r-{{$key}}" class="building building-detail @if($detail['status']) building-{{$detail['status']}} {{$detail['status']}} @endif uk-grid-match uk-margin-remove" uk-grid>
 					<div class="uk-width-1-6 uk-padding-remove">
 						<div class="uk-padding-remove uk-flex">
-							<div id="building-detail-{{$target}}-c-1-{{$key}}" class="uk-inline uk-sortable-details" style="    min-width: 16px; padding: 0 3px;">
+							<div id="building-{{$context}}-detail-{{$target}}-c-1-{{$key}}" class="uk-inline uk-sortable-details" style="    min-width: 16px; padding: 0 3px;">
 								<div class="linespattern"></div>
-								<span id="building-detail-rid-{{$key}}" class="uk-position-bottom-center colored"><small>#<span class="rowindex">{{$loop->iteration}}</span></small></span>
+								<span id="building-{{$context}}-detail-rid-{{$key}}" class="uk-position-bottom-center colored"><small>#<span class="rowindex">{{$loop->iteration}}</span></small></span>
 							</div>
-							<div id="building-detail-{{$target}}-c-2-{{$key}}" class="building-type">
+							<div id="building-{{$context}}-detail-{{$target}}-c-2-{{$key}}" class="building-type">
 								<div class="uk-padding-remove building-type-top uk-height-1-1" uk-grid>
 									<div class="uk-width-3-4 uk-padding-remove">
 										<div uk-grid>
@@ -24,7 +24,7 @@
 														            	<div uk-grid>
 														                @foreach($detail['auditors'] as $auditor)
 																		<div class="building-auditor uk-width-1-2 uk-margin-remove">
-																			<div id="building-detail-{{$target}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor['name']}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor['color']}} no-float">
+																			<div id="building-{{$context}}-detail-{{$target}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor['name']}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor['color']}} no-float">
 																				{{$auditor['initials']}}
 																			</div>
 																			<div class="auditor-status"><i class="a-circle-checked"></i></div>
@@ -61,8 +61,8 @@
 													</div>
 												</div>
 											</div>
-											<div id="inspection-detail-menus-{{$key}}-container" class="uk-width-1-1 uk-margin-remove building-type-bottom" style="display:none;">
-							            		<div id="inspection-detail-menus-{{$key}}"></div>
+											<div id="inspection-{{$context}}-detail-menus-{{$key}}-container" class="uk-width-1-1 uk-margin-remove building-type-bottom" style="display:none;">
+							            		<div id="inspection-{{$context}}-detail-menus-{{$key}}"></div>
 							            	</div>
 										</div>
 									</div>
@@ -81,7 +81,7 @@
 					<div class="uk-width-5-6 uk-padding-remove">
 						<div uk-grid>
 							<div class="uk-width-1-2">
-								<div id="building-detail-{{$target}}-c-3-{{$key}}" class="uk-margin-remove" style="flex: 750px;" uk-grid>
+								<div id="building-{{$context}}-detail-{{$target}}-c-3-{{$key}}" class="uk-margin-remove" style="flex: 750px;" uk-grid>
 									<div class="uk-width-1-1">
 										<div uk-grid>
 											<div class="uk-width-1-2 uk-padding-remove">
@@ -140,14 +140,14 @@
 											</div>
 										</div>
 									</div>
-									<div id="inspection-detail-main-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
-										<div id="inspection-detail-main-{{$key}}" class="inspection-detail-main-list"></div>
+									<div id="inspection-{{$context}}-detail-main-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
+										<div id="inspection-{{$context}}-detail-main-{{$key}}" class="inspection-detail-main-list"></div>
 									</div>
 								</div>
 							</div>
 							<div class="uk-width-1-2 uk-flex">
-								<div id="building-detail-{{$target}}-c-5-{{$key}}" style="flex: 640px;" class="uk-margin-remove" uk-grid>
-									<div class="uk-width-1-1" id="inspection-detail-tools-switch-{{$key}}">
+								<div id="building-{{$context}}-detail-{{$target}}-c-5-{{$key}}" style="flex: 640px;" class="uk-margin-remove" uk-grid>
+									<div class="uk-width-1-1" id="inspection-{{$context}}-detail-tools-switch-{{$key}}">
 										<div uk-grid class="area-status-list">
 											@foreach($detail['areas'] as $area)
 										    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status area-status-{{$area['status']}} colored">
@@ -157,11 +157,11 @@
 										    @endforeach
 										</div>
 									</div>
-									<div id="inspection-detail-tools-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
-										<div id="inspection-detail-tools-{{$key}}"></div>
+									<div id="inspection-{{$context}}-detail-tools-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
+										<div id="inspection-{{$context}}-detail-tools-{{$key}}"></div>
 									</div>
 								</div>
-								<div id="building-detail-{{$target}}-c-6-{{$key}}">
+								<div id="building-{{$context}}-detail-{{$target}}-c-6-{{$key}}">
 									<div uk-grid class="building-history">
 										<div class="uk-width-1-1">
 											<i class="a-person-clock colored uk-link"></i>

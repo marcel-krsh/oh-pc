@@ -2148,7 +2148,7 @@ margin-top:10px;
 .action-needed .findings-icon-status i { background-color: #76338b; color: #ffffff; }
 .action-required .findings-icon-status i, .critical .findings-icon-status i { background-color: #da328a; color: #ffffff; }
 .ok-actionable .findings-icon-status i { background-color: #56b285; color: #ffffff; }
-.in-progress .findings-icon-status i { background-color: #49ade9; color: #ffffff; }
+.in-progress .findings-icon-status i { background-color: #49ade9; color: #ffffff;border-width: 0px !important;    top: -3px !important; }
 
 .building .program-status {
     width: 100%;
@@ -2284,7 +2284,7 @@ margin-top:10px;
 }
 #auditstable .building .findings-icon-status span{
     position: absolute;
-    right: 2px;
+    right: -5px;
     top: -3px;
     border-radius: 50%;
     border-width: 2px;

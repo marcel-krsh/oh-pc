@@ -246,7 +246,9 @@ if(Auth::check()){
 		//$('#detail-tab-5').slideToggle();
 
 	</script>
+	<script src="/js/auto-complete.js"></script>
 	<script type="text/javascript" src="/js/systems/system.js"></script>
+	<script type="text/javascript" src="/js/systems/audits.js"></script>
 	<!-- <script type="text/javascript" src="/js/systems/cdfs-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/communications-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/documents-tab.js"></script>
@@ -255,7 +257,6 @@ if(Auth::check()){
 	<script type="text/javascript" src="/js/systems/notes-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/outcomes-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/processing-tab.js"></script> -->
-	<script src="/js/auto-complete.js"></script>
 	<script>
 	    var quicklookupbox = new autoComplete({
 	    	selector: '#quick-lookup-box',

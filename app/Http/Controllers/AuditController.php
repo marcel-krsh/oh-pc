@@ -504,6 +504,7 @@ class AuditController extends Controller
     public function inspectionFromBuilding($audit_id, $building_id, Request $request) {
         $target = $request->get('target');
         $rowid = $request->get('rowid');
+        $context = $request->get('context');
         $inspection = "test";
         $data['detail'] = collect([
                             'id' => 1, 
@@ -688,6 +689,7 @@ class AuditController extends Controller
     public function inspectionFromBuildingDetail($audit_id, $building_id, $detail_id, Request $request) {
         $target = $request->get('target');
         $rowid = $request->get('rowid');
+        $context = $request->get('context');
         $inspection = "test";
         $data['detail'] = collect([
                             'id' => 1, 

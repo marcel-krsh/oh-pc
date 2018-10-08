@@ -1,16 +1,16 @@
 		<td colspan="10">
 			<div class="rowinset-top">INSPECTION AREAS <span class="uk-link" style="color:#ffffff;" onclick="$('#audit-r-{{$target}}-buildings').remove();"><i class="a-circle-cross"></i></span></div>
 			<div class="buildings uk-overflow-auto" style="">
-				<div class="sortable" uk-sortable="handle: .uk-sortable-handle">
+				<div class="sortable" uk-sortable="handle: .uk-sortable-handle-{{$context}}">
 					@foreach($buildings as $key=>$building)
-					<div id="building-r-{{$key}}" class="uk-margin-remove building @if($building['status']) building-{{$building['status']}} {{$building['status']}} @endif @if($building['status'] != 'critical') notcritical @endif uk-grid-match" style=" @if(session('audit-hidenoncritical') == 1 && $building['status'] != 'critical') display:none; @endif " uk-grid>
+					<div id="building-{{$context}}-r-{{$key}}" class="uk-margin-remove building @if($building['status']) building-{{$building['status']}} {{$building['status']}} @endif @if($building['status'] != 'critical') notcritical @endif uk-grid-match" style=" @if(session('audit-hidenoncritical') == 1 && $building['status'] != 'critical') display:none; @endif " uk-grid>
 						<div class="uk-width-1-6 uk-padding-remove">
 							<div class="uk-padding-remove uk-flex">
-								<div id="building-{{$target}}-c-1-{{$key}}" class="uk-inline uk-sortable-handle" style="min-width: 16px; padding: 0 3px;">
+								<div id="building-{{$context}}-{{$target}}-c-1-{{$key}}" class="uk-inline uk-sortable-handle-{{$context}}" style="min-width: 16px; padding: 0 3px;">
 									<div class="linespattern"></div>
-									<span id="building-rid-1" class="uk-position-bottom-center colored"><small>#<span class="rowindex">{{$loop->iteration}}</span></small></span>
+									<span id="building-{{$context}}-rid-1" class="uk-position-bottom-center colored"><small>#<span class="rowindex">{{$loop->iteration}}</span></small></span>
 								</div>
-								<div id="building-{{$target}}-c-2-{{$key}}" class="building-type">
+								<div id="building-{{$context}}-{{$target}}-c-2-{{$key}}" class="building-type">
 									<div class="uk-padding-remove building-type-top uk-height-1-1" uk-grid>
 										<div class="uk-width-3-4 uk-padding-remove">
 											<div uk-grid>
@@ -26,7 +26,7 @@
 															            	<div uk-grid>
 															                @foreach($building['auditors'] as $auditor)
 																			<div class="building-auditor uk-width-1-2 uk-margin-remove">
-																				<div id="building-{{$target}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor['name']}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor['color']}} no-float">
+																				<div id="building-{{$context}}-{{$target}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor['name']}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor['color']}} no-float">
 																					{{$auditor['initials']}}
 																				</div>
 																				<div class="auditor-status"><i class="a-circle-checked"></i></div>
@@ -62,8 +62,8 @@
 														</div>
 													</div>
 												</div>
-												<div id="inspection-menus-{{$key}}-container" class="uk-width-1-1 uk-margin-remove building-type-bottom" style="display:none;">
-								            		<div id="inspection-menus-{{$key}}"></div>
+												<div id="inspection-{{$context}}-menus-{{$key}}-container" class="uk-width-1-1 uk-margin-remove building-type-bottom" style="display:none;">
+								            		<div id="inspection-{{$context}}-menus-{{$key}}"></div>
 								            	</div>
 											</div>
 										</div>
@@ -82,7 +82,7 @@
 						<div class="uk-width-5-6 uk-padding-remove">
 							<div uk-grid>
 								<div class="uk-width-1-2">
-									<div id="building-{{$target}}-c-3-{{$key}}" class="uk-margin-remove" style="flex: 750px;" uk-grid>
+									<div id="building-{{$context}}-{{$target}}-c-3-{{$key}}" class="uk-margin-remove" style="flex: 750px;" uk-grid>
 										<div class="uk-width-1-1">
 											<div uk-grid>
 												<div class="uk-width-1-2 uk-padding-remove">
@@ -138,14 +138,14 @@
 												</div>
 											</div>
 										</div>
-										<div id="inspection-main-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
-											<div id="inspection-main-{{$key}}" class="inspection-main-list"></div>
+										<div id="inspection-{{$context}}-main-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
+											<div id="inspection-{{$context}}-main-{{$key}}" class="inspection-main-list"></div>
 										</div>
 									</div>
 								</div>
 								<div class="uk-width-1-2 uk-flex">
-									<div id="building-{{$target}}-c-5-{{$key}}" style="flex: 640px;" class="uk-margin-remove" uk-grid>
-										<div class="uk-width-1-1" id="inspection-tools-switch-{{$key}}">
+									<div id="building-{{$context}}-{{$target}}-c-5-{{$key}}" style="flex: 640px;" class="uk-margin-remove" uk-grid>
+										<div class="uk-width-1-1" id="inspection-{{$context}}-tools-switch-{{$key}}">
 											<div uk-grid class="area-status-list">
 												@foreach($building['areas'] as $area)
 												@if($loop->iteration < 9)
@@ -164,11 +164,11 @@
 											    @endforeach
 											</div>
 										</div>
-										<div id="inspection-tools-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
-											<div id="inspection-tools-{{$key}}"></div>
+										<div id="inspection-{{$context}}-tools-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
+											<div id="inspection-{{$context}}-tools-{{$key}}"></div>
 										</div>
 									</div>
-									<div id="building-{{$target}}-c-6-{{$key}}">
+									<div id="building-{{$context}}-{{$target}}-c-6-{{$key}}">
 										<div uk-grid class="building-history">
 											<div class="uk-width-1-1">
 												<i class="a-person-clock colored uk-link"></i>
@@ -186,75 +186,6 @@
 				<span class="uk-link" onclick="addArea({{$audit}});">+ ADD INSPECTABLE AREA TO PROJECT</span>
 			</div>
 			<script>
-				var startIndex;
-				var endIndex;
-
-				function reorder(classname, childclassname) {
-					var currentIndex;
-					$(classname+" > div").each(function () { 
-						// console.log(this.id);
-						currentIndex = $(childclassname).index(this) + 1;
-						$("#"+this.id).find(".rowindex").each(function () { 
-							$(this).html(currentIndex);
-						});
-					});
-				}
-
-				UIkit.util.on('.sortable', 'start', function (item) {
-					var listItem = document.getElementById( item.detail[1].id );
-					console.log(item.detail[1].id);
-					if($('#'+item.detail[1].id).hasClass('building-detail')){
-						startIndex = $( ".building-detail" ).index( listItem );
-					}else if($('#'+item.detail[1].id).hasClass('building')){
-						startIndex = $( ".building" ).index( listItem );
-					}else if($('#'+item.detail[1].id).hasClass('inspection-area')){
-						startIndex = $( ".inspection-area" ).index( listItem );
-					} 				
-					console.log( item.detail[1].id + " started at index: " + startIndex );
-				});
-				UIkit.util.on('.sortable', 'moved', function (item) {
-					var listItem = document.getElementById( item.detail[1].id );
-					if($('#'+item.detail[1].id).hasClass('building-detail')){
-						endIndex = $( ".building-detail" ).index( listItem );
-						console.log( item.detail[1].id + " ended at index: " + endIndex );
-						UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
-						reorder(".building-details > .sortable", '.building-detail');
-
-					}else if($('#'+item.detail[1].id).hasClass('building')){
-						endIndex = $( ".building" ).index( listItem );
-						console.log( item.detail[1].id + " ended at index: " + endIndex );
-						UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
-						reorder(".buildings > .sortable", '.building');
-						console.log("endIndex "+endIndex+' '+item.detail[1].id);
-						// update journey icons
-						var length = $('.building').length;
-						$('.building').each(function(index, element) {
-							$(element).find( ".journey-start" ).addClass('journey');
-							$(element).find( ".journey-start" ).removeClass('journey-start');
-							$(element).find( ".journey-end" ).addClass('journey');
-							$(element).find( ".journey-end" ).removeClass('journey-end');
-							$(element).find( ".a-home-marker" ).addClass('a-marker-basic');
-							$(element).find( ".a-home-marker" ).removeClass('a-home-marker');
-
-						    if (index == 0) {
-						        $(element).find( ".journey" ).addClass('journey-start');
-								$(element).find( ".journey" ).removeClass('journey');
-								$(element).find( ".a-marker-basic" ).addClass('a-home-marker');
-								$(element).find( ".a-marker-basic" ).removeClass('a-marker-basic');
-					        }
-							if (index == (length - 2)) {
-						        $(element).find( ".journey" ).addClass('journey-end');
-								$(element).find( ".journey" ).removeClass('journey');
-								$(element).find( ".a-marker-basic" ).addClass('a-home-marker');
-								$(element).find( ".a-marker-basic" ).removeClass('a-marker-basic');
-						    }
-						});
-					}else if($('#'+item.detail[1].id).hasClass('inspection-area')){
-						endIndex = $( ".inspection-area" ).index( listItem );
-						console.log( item.detail[1].id + " ended at index: " + endIndex );
-						UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
-						// reorder(".inspection-main-list > .sortable", '.inspection-area');
-					}
-				});
+				
 			</script>
 		</td>

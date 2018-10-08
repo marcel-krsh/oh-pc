@@ -222,46 +222,7 @@
 
 <script>
 
-function loadProjectDetailsBuildings(id, target) {
-	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
-	$('#project-details-buildings-container').html(tempdiv);
 
-	var url = '{{route("audit.buildings", ["audit" => "xi", "target" => "ti"])}}';
-	url = url.replace('xi', id);
-	url = url.replace('ti', target);
-    $.get(url, {
-        '_token' : '{{ csrf_token() }}',
-        'context' : 'project-details'
-        }, function(data) {
-            if(data=='0'){ 
-                UIkit.modal.alert("There was a problem getting the buildings' information.");
-            } else {
-            	var newdiv = '<div uk-grid><div id="auditstable" class="uk-width-1-1 uk-overflow-auto"><table class="uk-table uk-table-striped uk-table-hover uk-table-small uk-table-divider" style="min-width: 1440px;"><tr>';
-            	newdiv = newdiv + data;
-            	newdiv = newdiv + '</tr></table></div></div>'
-				$('#project-details-buildings-container').html(newdiv);
-        	}
-    });
-}
-
-function projectDetailsInfo(id, type) {
-	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
-	$('#project-details-info-container').html(tempdiv);
-
-	var url = '{{route("project.details.info", ["project" => "xi", "type" => "ti"])}}';
-	url = url.replace('xi', id);
-	url = url.replace('ti', type);
-    $.get(url, {
-        '_token' : '{{ csrf_token() }}'
-        }, function(data) {
-            if(data=='0'){ 
-                UIkit.modal.alert("There was a problem getting the project information.");
-            } else {
-            	
-				$('#project-details-info-container').html(data);
-        	}
-    });
-}
 
 $( document ).ready(function() {
 	if($('#project-details-info-container').html() == ''){
