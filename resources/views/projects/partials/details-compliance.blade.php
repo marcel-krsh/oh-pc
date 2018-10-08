@@ -98,7 +98,7 @@
                 label: function(tooltipItem, data) {
                     var label = data.labels[tooltipItem.index];
                     var datasetLabel = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                    return label + ': $' + addCommas(datasetLabel) ;
+                    return label + ': ' + addCommas(datasetLabel) + ' units' ;
                 }
             }
         }
@@ -228,7 +228,7 @@
         		@foreach($data['programs'] as $program)
 		        <li>
 					<div class="project-details-info-compliance-program uk-panel uk-grid-match" style="height:180px" uk-grid>
-						<div class="uk-width-1-3">
+						<div class="uk-width-1-3 uk-padding-remove">
 							<canvas id="chartjs-{{$program['id']}}" class="chartjs" style="height:100%"></canvas>
 						</div>
 						<div class="uk-width-2-3">
@@ -283,12 +283,27 @@
 							"type":"doughnut",
 							"options": summaryOptions,
 							"data":{
-								"labels": ["Red","Blue","Yellow"],
+								"labels": ["Required","Selected","Needed","Inspected", "To Be Inspected"],
 								"datasets":[
 									{
 										"label":"Program 1",
-										"data":[50,40],
+										"data":[0,0,0,30,70],
 										"backgroundColor":[
+											chartColors.required,
+											chartColors.selected,
+											chartColors.needed,
+											chartColors.inspected,
+											chartColors.tobeinspected
+										],
+										"borderWidth": 1
+									},
+									{
+										"label":"Program 3",
+										"data":[0,30,50,0,0],
+										"backgroundColor":[
+											chartColors.required,
+											chartColors.selected,
+											chartColors.needed,
 											chartColors.inspected,
 											chartColors.tobeinspected
 										],
@@ -296,18 +311,13 @@
 									},
 									{
 										"label":"Program 2",
-										"data":[20,40],
+										"data":[100,0,0,0,0],
 										"backgroundColor":[
+											chartColors.required,
 											chartColors.selected,
-											chartColors.needed
-										],
-										"borderWidth": 1
-									},
-									{
-										"label":"Program 3",
-										"data":[90],
-										"backgroundColor":[
-											chartColors.required
+											chartColors.needed,
+											chartColors.inspected,
+											chartColors.tobeinspected
 										],
 										"borderWidth": 1
 									}
@@ -347,17 +357,20 @@
 
 	// }
 
-	new Chart(document.getElementById("chartjs-summary"),{
+	var mainSummaryChart = new Chart(document.getElementById("chartjs-summary"),{
 		"type":"doughnut",
 		"options": summaryOptions,
 		
 		"data":{
-			"labels": ["Red","Blue","Yellow"],
+			"labels": ["Required","Selected","Needed","Inspected", "To Be Inspected"],
 			"datasets":[
 				{
 					"label":"Program 1",
-					"data":[30,70],
+					"data":[0,0,0,30,70],
 					"backgroundColor":[
+						chartColors.required,
+						chartColors.selected,
+						chartColors.needed,
 						chartColors.inspected,
 						chartColors.tobeinspected
 					],
@@ -365,25 +378,67 @@
 				},
 				{
 					"label":"Program 3",
-					"data":[30,50],
+					"data":[0,30,50,0,0],
 					"backgroundColor":[
+						chartColors.required,
 						chartColors.selected,
 						chartColors.needed,
+						chartColors.inspected,
+						chartColors.tobeinspected
 					],
 					"borderWidth": 1
 				},
 				{
 					"label":"Program 2",
-					"data":[100],
+					"data":[100,0,0,0,0],
 					"backgroundColor":[
-						chartColors.required
+						chartColors.required,
+						chartColors.selected,
+						chartColors.needed,
+						chartColors.inspected,
+						chartColors.tobeinspected
 					],
 					"borderWidth": 1
 				}
 			]
 		}
 	});
-</script>
 
-	
-	
+	document.getElementById("chartjs-summary").onclick = function(e) {
+	   var slice = mainSummaryChart.getElementAtEvent(e);
+	   if (!slice.length) return; // return if not clicked on slice
+	   var label = slice[0]._model.label;
+	   var color = slice[0]._view.backgroundColor;
+	   console.log(slice[0]._view.backgroundColor);
+	   var programName = label;
+	   // switch (label) {
+	   //    // add case for each label/slice
+	   //    case 'Program 1':
+	   //       alert('clicked on Prorgam 1');
+	   //       break;
+	   //    case 'Program 2':
+	   //       alert('clicked on program 2');
+	   //       break;
+	   //    case 'Program 3':
+	   //       alert('clicked on program 3');
+	   //       break;
+	   // }
+	   switch (color) {
+	   		case 'rgb(24, 22, 22)':
+	         alert(label + ' / required');
+	         break;
+	   		case 'rgb(0, 139, 194)':
+	         alert(label + ' / selected');
+	         break;
+	   		case 'rgb(209, 0, 105)':
+	         alert(label + ' / needed');
+	         break;
+	   		case 'rgb(1, 173, 104)':
+	         alert(label + ' / inspected');
+	         break;
+	   		case 'rgb(203, 203, 200)':
+	         alert(label + ' / to be inspected');
+	         break;
+	   }
+	}
+</script>
