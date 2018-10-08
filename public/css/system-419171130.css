@@ -2611,7 +2611,7 @@ span.indented, div.indented {
 }
 
 #project-details-buttons {margin-top:25px; }
-#project-details-buttons button { text-shadow: none;line-height: 20px; color:#939598; border-color:#939598; background-color:transparent; border:2px solid; width: 100%; }
+#project-details-buttons button { padding: 4px 0;text-shadow: none;line-height: 20px; color:#939598; border-color:#939598; background-color:transparent; border:2px solid; width: 100%; }
 #project-details-buttons button i { font-size: 19px; vertical-align: sub; }
 #project-details-buttons button.no-action { color:#939598; border-color:#939598;  }
 #project-details-buttons button.no-action:hover, #project-details-buttons button:hover,

@@ -134,7 +134,7 @@
 														</div> 
 													</div>
 													<div class="uk-width-1-1 findings-action ok-actionable" style="margin-top: 0px;">
-														<button class="uk-button program-status uk-link" onclick="inspectionDetails({{$detail['id']}},{{$building}},{{$audit}},{{$key}},{{$targetaudit}},{{$loop->iteration}});"><i class="a-home-search"></i> 2 PROGRAMS</button>
+														<button class="uk-button program-status uk-link" onclick="inspectionDetails({{$detail['id']}},{{$building}},{{$audit}},{{$key}},{{$targetaudit}},{{$loop->iteration}},'{{$context}}');"><i class="a-home-search"></i> 2 PROGRAMS</button>
 													</div>
 												</div>
 											</div>

@@ -230,12 +230,13 @@ function loadProjectDetailsBuildings(id, target) {
 	url = url.replace('xi', id);
 	url = url.replace('ti', target);
     $.get(url, {
-        '_token' : '{{ csrf_token() }}'
+        '_token' : '{{ csrf_token() }}',
+        'context' : 'project-details'
         }, function(data) {
             if(data=='0'){ 
                 UIkit.modal.alert("There was a problem getting the buildings' information.");
             } else {
-            	var newdiv = '<div uk-grid><div id="auditstable" class="uk-width-1-1 uk-overflow-auto"><table class="uk-table uk-table-striped uk-table-hover uk-table-small uk-table-divider" style="min-width: 1420px;"><tr>';
+            	var newdiv = '<div uk-grid><div id="auditstable" class="uk-width-1-1 uk-overflow-auto"><table class="uk-table uk-table-striped uk-table-hover uk-table-small uk-table-divider" style="min-width: 1440px;"><tr>';
             	newdiv = newdiv + data;
             	newdiv = newdiv + '</tr></table></div></div>'
 				$('#project-details-buildings-container').html(newdiv);

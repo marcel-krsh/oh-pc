@@ -21,7 +21,8 @@ class AuditController extends Controller
 
     public function buildingsFromAudit($audit, Request $request)
     {
-    	$target = $request->get('target');
+        $target = $request->get('target');
+        $context = $request->get('context');
     	$buildings = collect([
     					[
     						'id' => 144, 
@@ -361,12 +362,13 @@ class AuditController extends Controller
     					]
     				]);
 
-    	return view('dashboard.partials.audit_buildings', compact('audit', 'target', 'buildings'));
+    	return view('dashboard.partials.audit_buildings', compact('audit', 'target', 'buildings', 'context'));
     }
 
     public function detailsFromBuilding($audit, $building, Request $request) {
     	$target = $request->get('target');
     	$targetaudit = $request->get('targetaudit');
+        $context = $request->get('context');
     	$details = collect([
     						[
     						'id' => 1, 
@@ -496,7 +498,7 @@ class AuditController extends Controller
     					]
     				]);
 
-    	return view('dashboard.partials.audit_building_details', compact('audit', 'target', 'building', 'details', 'targetaudit'));
+    	return view('dashboard.partials.audit_building_details', compact('audit', 'target', 'building', 'details', 'targetaudit', 'context'));
     }
 
     public function inspectionFromBuilding($audit_id, $building_id, Request $request) {

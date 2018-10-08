@@ -90,7 +90,7 @@
 										            	<div class="uk-width-1-1 uk-padding-remove">
 										            		<h3 class="uk-margin-bottom-remove colored">{{$building['street']}}</h3>
 											            	<small class="colored">{{$building['city']}}, {{$building['state']}} {{$building['zip']}}</small><br />
-											            	<small class="colored" onclick="buildingDetails(123,{{$audit}},{{$key}},{{$target}});" uk-tooltip="pos:top-left;title:Building details;" ><span class="uk-badge colored">3</span> <i class="a-list colored uk-text-middle"></i> <span class="uk-text-middle">TOWN HOMES</span></small>
+											            	<small class="colored" onclick="buildingDetails(123,{{$audit}},{{$key}},{{$target}},10,'{{$context}}');" uk-tooltip="pos:top-left;title:Building details;" ><span class="uk-badge colored">3</span> <i class="a-list colored uk-text-middle"></i> <span class="uk-text-middle">TOWN HOMES</span></small>
 										            	</div>
 										            </div>
 										        </div>
@@ -132,7 +132,7 @@
 															</div> 
 														</div>
 														<div class="uk-width-1-1 uk-margin-remove findings-action ok-actionable" style="margin-top: 0px;">
-															<button class="uk-button program-status uk-link" onclick="inspectionDetailsFromBuilding({{$building['id']}}, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}}); "><i class="a-home-search"></i> 2 PROGRAMS</button>
+															<button class="uk-button program-status uk-link" onclick="inspectionDetailsFromBuilding({{$building['id']}}, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); "><i class="a-home-search"></i> 2 PROGRAMS</button>
 														</div>
 													</div>
 												</div>
