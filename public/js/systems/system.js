@@ -294,7 +294,7 @@ function reloadUnseenMessages(){
 
 
 // DYNAMIC MODAL FUNCTION //
-function dynamicModalLoad(modalSource,fullscreen,warnAboutSave) {
+function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight) {
 	// UIkit.offcanvas.hide();
 	var continueToLoad = 1;
 	if (window.saved !== 1 && warnAboutSave === 1) {
@@ -322,11 +322,15 @@ function dynamicModalLoad(modalSource,fullscreen,warnAboutSave) {
 			$('#dynamic-modal-content').addClass('uk-height-viewport');
 				
 		} else {
-			// remove the class in case it is still there.
-			$('#modal-size').removeClass('uk-modal-dialog-blank');
-			$('#dynamic-modal-content').removeClass('uk-height-viewport');
+			if(fixedHeight === 1){
+				$('#modal-size').addClass('modal-fixed-height');
+			}else{
+				// remove the class in case it is still there.
+				$('#modal-size').removeClass('uk-modal-dialog-blank');
+				$('#dynamic-modal-content').removeClass('uk-height-viewport');
+			}
 		}
-		UIkit.modal('#dynamic-modal', {center: true, bgclose: false, keyboard:false}).show();
+		UIkit.modal('#dynamic-modal', {center: true, bgclose: false, keyboard:false,  stack:true}).show();
 	}
 }
 
@@ -448,8 +452,8 @@ $(document).ready(function() {
     },
 
     'hide.uk.modal': function(){
-        console.log("Dynamic Modal Closed and Content Removed.");
-		$('#dynamic-modal-content').html('<!--LOADING CONENT --><div style="height:500px;>&nbsp;</div>"');
+        // console.log("Dynamic Modal Closed and Content Removed.");
+		// $('#dynamic-modal-content').html('<!--LOADING CONENT --><div style="height:500px;>&nbsp;</div>"');
     }
 });
 });

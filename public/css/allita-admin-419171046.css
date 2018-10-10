@@ -5997,6 +5997,16 @@ a.uk-thumbnail:focus {
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
+#modal-size.modal-fixed-height {
+    height: 80%;
+    max-height: 80%;
+    overflow-y: auto;
+}
+#modal-size.modal-fixed-height #dynamic-modal-content {
+    height: -webkit-fill-available;
+    overflow-y: auto;
+}
+
 @media (max-width: 767px) {
   .uk-modal-dialog {
     width: auto;

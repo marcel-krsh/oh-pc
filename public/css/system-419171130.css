@@ -2831,6 +2831,132 @@ i.fa-square.chart-color-to-be-inspected { background-color:#e0e0df; }
     vertical-align: sub;
 }
 
+.button-filter {
+  background: none;
+  border: 1px solid #3a3a3a;
+  line-height: inherit;
+  text-shadow: none;
+  letter-spacing: 0.5px;
+}
+.button-filter:hover, .button-filter:active {
+  background-color: #3a3a3a;
+  color: #ffffff;
+  border: 1px solid #3a3a3a;
+}
+.button-filter-selected {
+  background-color: #3a3a3a;
+  color: #ffffff;
+}
+.button-filter-wide {
+  width:100%;
+  margin-left:5px;
+  margin-right:5px;
+}
+
+.modal-project-summary-left{
+  width: 45%;
+  position: absolute;
+  top: 0;
+}
+.modal-project-summary-right {
+  width: 45%;
+  padding-left: 53%;
+  padding-bottom: 20px;
+  position:relative;
+}
+.modal-project-summary-right-top {
+  width: 45%;
+  padding-bottom: 20px;
+  position: fixed;
+}
+.modal-project-summary-right-bottom{
+  height: calc(100% - 100px);
+  overflow-y: auto;
+  position: absolute;
+}
+.modal-project-summary-unit-status {
+  float: left;
+  padding-right: 20px;
+}
+.modal-project-summary-unit-status i {
+  font-size: 20px;
+  vertical-align: middle;
+}
+.modal-project-summary-unit-status i.a-circle-cross {
+}
+.modal-project-summary-unit-status i.a-circle-plus {
+}
+.modal-project-summary-unit-status i.a-circle-checked {
+    color:#0099d5;
+}
+.modal-project-summary-unit {
+    padding-bottom: 25px;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 25px !important;
+    margin-top: 0 !important;
+}
+.modal-project-summary-unit-info-icon {
+  float:left;
+  padding-right: 10px;
+}
+.modal-project-summary-unit-info {
+  float:left;
+}
+.modal-project-summary-unit-info-icon i {
+  font-size: 15px;
+  vertical-align: middle;
+}
+.modal-project-summary-unit-info-main {
+  padding-left: 30px;
+}
+.modal-project-summary-unit-programs {
+  margin-top:10px;
+}
+.modal-project-summary-unit-program {
+  padding: 5px;
+}
+.modal-project-summary-unit-program i {
+    vertical-align: text-bottom;
+}
+.modal-project-summary-unit-program:hover {
+  background:rgba(0,0,0,0.1);
+}
+.modal-project-summary-unit-program-icon {
+  display: inline-block;
+  margin-right:5px;
+}
+.modal-project-summary-unit-program-icon i {
+  position: relative;
+  font-size: 20px;
+}
+.modal-project-summary-unit.inspectable .modal-project-summary-unit-program-icon i,
+.modal-project-summary-unit.inspectable .modal-project-summary-unit-program-quick-toggle i {
+  color:#0099d5;
+}
+.modal-project-summary-unit-program-icon > div {
+  position: relative;
+}
+.modal-project-summary-unit-program-icon-status i {
+  position: absolute;
+  right: -3px;
+  bottom: 0px;
+  background-color: #fff;
+  font-size: 12px;
+  line-height: 12px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+}
+.modal-project-summary-unit-program-info {
+  padding-left: 25px;
+}
+.modal-project-summary-unit-program-quick-toggle {
+  float: left;
+  padding-right: 0px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
 .uk-sortable-item {
   /*border: 3px solid #000;
   -webkit-box-shadow: 3px 3px 5px 3px rgba(0,0,0,0.75);
@@ -2928,11 +3054,11 @@ li.uk-tab-responsive.uk-active {
 	background: rgba(245,251,254,0.43);	
 }
 .uk-modal-content, .uk-modal-body {
-background-image:url(../images/apple-touch-icon.png);
+/*background-image:url(../images/apple-touch-icon.png);
 background-size: 80px;
 background-repeat:no-repeat;
 padding-left:100px;
-min-height: 80px;	
+min-height: 80px;	*/
 }
 /*List Pages */
 .sticky-over {
