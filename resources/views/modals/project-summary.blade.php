@@ -5,7 +5,7 @@
 				<canvas id="chartjs-modal-summary" class="chartjs" style="display: block;"></canvas>
 			</div>
 			<div class="uk-width-1-1 uk-padding-remove uk-text-center">
-				<h3>Program Name<br /><small>Project # | Audit #</small></h3>
+				<h3>{{$data['project']['name']}}<br /><small>Project # | Audit #</small></h3>
 				<table class="uk-table uk-table-small uk-text-left noline small-padding">
 					<tbody>
 						<tr>
@@ -61,32 +61,94 @@
 		</div>
 	</div>
 	<div class="modal-project-summary-right">
+		
+		<div style="position: fixed;
+		    top: 80px;
+		    height: 100%;
+		    width: 45%;">
+		<div class="modal-project-summary-right-bottom">
+			<div id="modal-project-summary-units" class="uk-padding-remove" uk-grid>
+				@foreach($data["units"] as $unit)
+				<div class="modal-project-summary-unit uk-width-1-1 {{$unit['status']}}">
+					<div class="modal-project-summary-unit-status">
+						@if($unit['status'] == 'inspectable')
+						<i class="a-circle-checked" uk-tooltip="title:INSPECTABLE;" title="" aria-expanded="false"></i>
+						@elseif($unit['status'] == 'not-inspectable')
+						<i class="a-circle-cross" uk-tooltip="title:NOT INSPECTABLE;" title="" aria-expanded="false"></i>
+						@else
+						<i class="a-circle-plus" uk-tooltip="title:SELECT ALL ELIGIBLE PROGRAMS FOR BOTH INSPECTIONS;" title="" aria-expanded="false"></i>
+						@endif
+					</div>
+					<div class="modal-project-summary-unit-info">
+						<div class="modal-project-summary-unit-info-icon">
+							<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;" title="" aria-expanded="false"></i>
+						</div>
+						<div class="modal-project-summary-unit-info-main">
+		            		<h4 class="uk-margin-bottom-remove">{{$unit['address']}}<br />{{$unit['address2']}}<br />
+			            	Move In Date: {{$unit['move_in_date']}}</h4>
+				        </div>
+				        <div class="modal-project-summary-unit-programs">
+			            	@foreach($unit['programs'] as $program)
+			            	<div class="modal-project-summary-unit-program uk-visible-toggle">
+			            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle">
+			            			<i class="a-circle"></i>
+			            		</div>
+			            		<div class="modal-project-summary-unit-program-info">
+			            			<div class="modal-project-summary-unit-program-icon">
+			            				<i class="a-mobile"></i>
+			            				<div class="modal-project-summary-unit-program-icon-status">
+			            					@if($program['physical_audit_checked'] == 'true')
+					            			<i class="a-circle-checked"></i>
+					            			@else
+					            			<i class="a-circle"></i>
+					            			@endif
+			            				</div>
+			            			</div>
+			            			<div class="modal-project-summary-unit-program-icon">
+			            				<i class="a-folder"></i>
+			            				<div class="modal-project-summary-unit-program-icon-status">
+			            					@if($program['file_audit_checked'] == 'true')
+					            			<i class="a-circle-checked"></i>
+					            			@else
+					            			<i class="a-circle"></i>
+					            			@endif
+			            				</div>
+			            			</div>
+			            			
+			            			{{$program['name']}}
+			            		</div>
+			            	</div>
+			            	@endforeach
+			            </div>
+					</div>
+				</div>
+				@endforeach
+			</div>
+		</div>
+		</div>
 		<div class="modal-project-summary-right-top">
 			<div class="uk-padding-remove uk-margin-top uk-flex uk-flex-between" >
 				<button id="" class="uk-button uk-button-default uk-button-small button-filter button-filter-selected button-filter-wide" onclick="" type="button">ALL</button>
 				<button id="" class="uk-button uk-button-default uk-button-small button-filter button-filter-wide" onclick="" type="button">SELECTED</button>
 				<button id="" class="uk-button uk-button-default uk-button-small button-filter button-filter-wide" onclick="" type="button">UNSELECTED</button>
 				<button id="" class="uk-button uk-button-default uk-button-small button-filter" onclick="" type="button"><i class="fas fa-filter"></i></button>
-				<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="mode: click; flip: false; pos: bottom-right;" style="top: 26px; left: 0px;">
-        			<form>
+				<div class="uk-dropdown uk-dropdown-bottom filter-dropdown filter-program-dropdown" uk-dropdown=" flip: false; pos: bottom-right;" style="top: 26px; left: 0px;">
+        			<form id="modal-project-summary-program-filter-form">
         				<fieldset class="uk-fieldset">
-        					<div class="uk-margin uk-child-width-auto uk-grid">
-        					@if(session('step-all') == 0)
-					            <input id="filter-step-all" type="checkbox" />
-								<label for="filter-step-all">ALL STEPS (CLICK TO SELECT ALL)</label>
-							@else
-					            <input id="filter-step-all" type="checkbox" checked/>
-								<label for="filter-step-all">ALL STEPS (CLICK TO DESELECT ALL)</label>
-							@endif
-								<input id="filter-step-schedule" type="checkbox" />
-								<label for="filter-step-schedule"><i class="a-calendar-7"></i> Schedule Audit</label>
+        					<div id="modal-project-summary-program-filters" class="uk-margin uk-child-width-auto uk-grid">
+        						@foreach($data['programs'] as $program)
+        							@if(session('project-summary-program-{{$program["id"]}}') == 1)
+						            <input id="filter-project-summary-program-{{$program['id']}}" value="{{ $program['id'] }}" type="checkbox" checked/>
+									<label for="filter-project-summary-program-{{$program['id']}}">{{$program['name']}}</label>
+									@else
+						            <input id="filter-project-summary-program-{{$program['id']}}" value="{{ $program['id'] }}" type="checkbox"/>
+									<label for="filter-project-summary-program-{{$program['id']}}">{{$program['name']}}</label>
+									@endif
+        						@endforeach
 					        </div>
 					        <div class="uk-margin-remove" uk-grid>
-                        		<div class="uk-width-1-2">
-                        			<button class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
-                        		</div>
-                        		<div class="uk-width-1-2">
-                        			<button class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+                        		<div class="uk-width-1-1">
+                        			<button class="uk-button uk-button-primary uk-width-1-1" onclick="filterProgramSummary()">APPLY SELECTION</button>
                         		</div>
                         	</div>
         				</fieldset>
@@ -94,76 +156,36 @@
                 </div>
 			</div>
 		</div>
-		<div style="position: fixed;
-		    top: 80px;
-		    height: 100%;
-		    width: 45%;">
-		<div class="modal-project-summary-right-bottom">
-			<div id="modal-project-summary-units" class="uk-padding-remove">
-				<div uk-grid>
-					@foreach($data["units"] as $unit)
-					<div class="modal-project-summary-unit uk-width-1-1 {{$unit['status']}}">
-						<div class="modal-project-summary-unit-status">
-							@if($unit['status'] == 'inspectable')
-							<i class="a-circle-checked" uk-tooltip="title:INSPECTABLE;" title="" aria-expanded="false"></i>
-							@elseif($unit['status'] == 'not-inspectable')
-							<i class="a-circle-cross" uk-tooltip="title:NOT INSPECTABLE;" title="" aria-expanded="false"></i>
-							@else
-							<i class="a-circle-plus" uk-tooltip="title:SELECT ALL ELIGIBLE PROGRAMS FOR BOTH INSPECTIONS;" title="" aria-expanded="false"></i>
-							@endif
-						</div>
-						<div class="modal-project-summary-unit-info">
-							<div class="modal-project-summary-unit-info-icon">
-								<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;" title="" aria-expanded="false"></i>
-							</div>
-							<div class="modal-project-summary-unit-info-main">
-			            		<h4 class="uk-margin-bottom-remove">{{$unit['address']}}<br />{{$unit['address2']}}<br />
-				            	Move In Date: {{$unit['move_in_date']}}</h4>
-					        </div>
-					        <div class="modal-project-summary-unit-programs">
-				            	@foreach($unit['programs'] as $program)
-				            	<div class="modal-project-summary-unit-program uk-visible-toggle">
-				            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle">
-				            			<i class="a-circle"></i>
-				            		</div>
-				            		<div class="modal-project-summary-unit-program-info">
-				            			<div class="modal-project-summary-unit-program-icon">
-				            				<i class="a-mobile"></i>
-				            				<div class="modal-project-summary-unit-program-icon-status">
-				            					@if($program['physical_audit_checked'] == 'true')
-						            			<i class="a-circle-checked"></i>
-						            			@else
-						            			<i class="a-circle"></i>
-						            			@endif
-				            				</div>
-				            			</div>
-				            			<div class="modal-project-summary-unit-program-icon">
-				            				<i class="a-folder"></i>
-				            				<div class="modal-project-summary-unit-program-icon-status">
-				            					@if($program['file_audit_checked'] == 'true')
-						            			<i class="a-circle-checked"></i>
-						            			@else
-						            			<i class="a-circle"></i>
-						            			@endif
-				            				</div>
-				            			</div>
-				            			
-				            			{{$program['name']}}
-				            		</div>
-				            	</div>
-				            	@endforeach
-				            </div>
-						</div>
-					</div>
-					@endforeach
-				</div>
-			</div>
-		</div>
-		</div>
 	</div>
 </div>
 
 <script>
+	function filterProgramSummary() {
+		event.preventDefault();
+
+		$('.filter-program-dropdown').fadeOut("slow", function() {
+			var spinner = '<div style="height:200px;width: 100%;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+	        $('#modal-project-summary-units').html(spinner);
+
+			var form = $('#modal-project-summary-program-filter-form');
+			var programsSelected = [];
+	        $("#modal-project-summary-program-filter-form input:checkbox:checked").each(function(){
+	            programsSelected.push($(this).val());
+	        });
+
+			$.post('/modals/projects/{{$data["project"]["id"]}}/programs/{{$data["project"]["selected_program"]}}/summary', {
+					'programs' : programsSelected, 
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					$('#modal-project-summary-units').fadeOut( "slow", function() {
+					    $('#modal-project-summary-units').html(data).fadeIn();	
+					});
+				} 
+			);
+		});
+		
+	}
+
 	$('.modal-project-summary-unit-program-quick-toggle').click(function() {
 		// ajax call here
 

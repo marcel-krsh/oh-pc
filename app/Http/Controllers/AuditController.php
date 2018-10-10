@@ -1032,11 +1032,76 @@ class AuditController extends Controller
         return view('projects.partials.reports');
     }
 
-    public function modalProjectProgramSummary( $project_id, $program_id ) {
+    public function modalProjectProgramSummaryFilterProgram( $project_id, $program_id, Request $request) {
+        $programs = $request->get('programs');
+
+        if(is_array($programs) && count($programs)>0){
+            $filters = collect([
+                'programs' => $programs
+            ]);
+        }else{
+            $filters = null;
+        }
+
+        // query here
+
+        $data = collect([
+                'project' => [
+                    "id" => 1,
+                    "name" => "Project Name",
+                    'selected_program' => $program_id
+                ],
+                'programs' => [
+                    ["id" => 1, "name" => "Program Name 1"],
+                    ["id" => 2, "name" => "Program Name 2"],
+                    ["id" => 3, "name" => "Program Name 3"],
+                    ["id" => 4, "name" => "Program Name 4"]
+                ],
+                'units' => [
+                    [
+                        "id" => 1, 
+                        "status" => "not-inspectable", 
+                        "address" => "123457 Silvegwood Street",
+                        "address2" => "#102",
+                        "move_in_date" => "1/29/2018",
+                        "programs" => [
+                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "" ],
+                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "" ]
+                        ]
+                    ],
+                    [
+                        "id" => 2, 
+                        "status" => "inspectable", 
+                        "address" => "123457 Silvegwood Street",
+                        "address2" => "#102",
+                        "move_in_date" => "1/29/2018",
+                        "programs" => [
+                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "" ],
+                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "" ]
+                        ]
+                    ]
+                ]
+            ]);
+
+        return view('dashboard.partials.project-summary-unit', compact('data'));
+    }
+    public function modalProjectProgramSummary($project_id, $program_id) {
         // units are automatically selected using the selection process
         // then randomize all units before displaying them on the modal
         // then user can adjust selection for that program
+
         $data = collect([
+            'project' => [
+                "id" => 1,
+                "name" => "Project Name",
+                'selected_program' => $program_id
+            ],
+            'programs' => [
+                ["id" => 1, "name" => "Program Name 1"],
+                ["id" => 2, "name" => "Program Name 2"],
+                ["id" => 3, "name" => "Program Name 3"],
+                ["id" => 4, "name" => "Program Name 4"]
+            ],
             'units' => [
                 [
                     "id" => 1, 
@@ -1106,6 +1171,7 @@ class AuditController extends Controller
                 ]
             ]
         ]);
+        
         return view('modals.project-summary', compact('data'));
     }
 }

@@ -1628,6 +1628,9 @@ margin-top:10px;
 .filter-dropdown.uk-dropdown {
   min-width: 350px;
 }
+.filter-program-dropdown.uk-dropdown {
+  min-width: 250px;
+}
 
 /*.filter-dropdown ul li {
   padding-top: 3px;
@@ -2873,6 +2876,7 @@ i.fa-square.chart-color-to-be-inspected { background-color:#e0e0df; }
   height: calc(100% - 100px);
   overflow-y: auto;
   position: absolute;
+  width: 100%;
 }
 .modal-project-summary-unit-status {
   float: left;
