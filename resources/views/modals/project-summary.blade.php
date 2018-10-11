@@ -90,28 +90,42 @@
 				        <div class="modal-project-summary-unit-programs">
 			            	@foreach($unit['programs'] as $program)
 			            	<div class="modal-project-summary-unit-program uk-visible-toggle">
+			            		@if($unit['status'] != 'not-inspectable')
 			            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle">
-			            			<i class="a-circle"></i>
+			            			@if($program['physical_audit_checked'] == 'true' && $program['file_audit_checked'] == 'true')
+			            			<i class="a-circle-checked" onclick="projectSummarySelection(this, {{$unit['id']}}, {{$program['id']}});"></i>
+			            			@else
+			            			<i class="a-circle" onclick="projectSummarySelection(this, {{$unit['id']}}, {{$program['id']}});"></i>
+			            			@endif
 			            		</div>
+			            		@endif
 			            		<div class="modal-project-summary-unit-program-info">
-			            			<div class="modal-project-summary-unit-program-icon">
+			            			<div class="modal-project-summary-unit-program-icon @if($program['physical_audit_checked'] == 'true') inspectable-selected @endif" @if($unit['status'] != 'not-inspectable') onclick="projectSummarySelection(this, {{$unit['id']}}, {{$program['id']}}, 'physical');" @endif>
 			            				<i class="a-mobile"></i>
-			            				<div class="modal-project-summary-unit-program-icon-status">
+			            				<div class="modal-project-summary-unit-program-icon-status">	
+		            					@if($unit['status'] == 'not-inspectable')
+		            						<i class="a-circle-cross"></i>
+		            					@else
 			            					@if($program['physical_audit_checked'] == 'true')
 					            			<i class="a-circle-checked"></i>
 					            			@else
 					            			<i class="a-circle"></i>
 					            			@endif
+					            		@endif
 			            				</div>
 			            			</div>
-			            			<div class="modal-project-summary-unit-program-icon">
+			            			<div class="modal-project-summary-unit-program-icon @if($program['file_audit_checked'] == 'true') inspectable-selected @endif" @if($unit['status'] != 'not-inspectable') onclick="projectSummarySelection(this, {{$unit['id']}}, {{$program['id']}}, 'file');" @endif >
 			            				<i class="a-folder"></i>
 			            				<div class="modal-project-summary-unit-program-icon-status">
+			            				@if($unit['status'] == 'not-inspectable')
+		            						<i class="a-circle-cross"></i>
+		            					@else
 			            					@if($program['file_audit_checked'] == 'true')
 					            			<i class="a-circle-checked"></i>
 					            			@else
 					            			<i class="a-circle"></i>
 					            			@endif
+					            		@endif
 			            				</div>
 			            			</div>
 			            			
@@ -186,12 +200,83 @@
 		
 	}
 
-	$('.modal-project-summary-unit-program-quick-toggle').click(function() {
+	function projectSummarySelection(element, unitid, programid, type="both"){
 		// ajax call here
 
-		// switch icons
-	  	$('.modal-project-summary-unit-program-quick-toggle i').toggleClass("a-circle").toggleClass("a-circle-checked");
-	});
+		// we know which project {{$data["project"]["id"]}}
+		// we need to know which unit, which program, if file or physical audit and whether it is checked or unchecked
+		
+		if(type == 'physical'){
+			if($(element).find('.modal-project-summary-unit-program-icon-status i').hasClass('a-circle')){
+				$(element).find('.modal-project-summary-unit-program-icon-status i').toggleClass("a-circle").toggleClass("a-circle-checked");
+				$(element).addClass("inspectable-selected");
+			}else{
+				$(element).find('.modal-project-summary-unit-program-icon-status i').toggleClass("a-circle-checked").toggleClass("a-circle");
+				$(element).removeClass("inspectable-selected");
+			}
+
+			// AJAX CALL HERE
+
+
+			// if both file and physical are checked, change the status of the "both" icon
+			var auditIconDivs = $(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-icon');
+			var bothSelected = 1;
+			$.each( auditIconDivs, function( key, e ) {
+			  if(!$(e).hasClass('inspectable-selected')){
+			  	bothSelected = 0;
+			  }
+			});
+			if(bothSelected){
+				$(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-quick-toggle i').removeClass('a-circle').addClass('a-circle-checked');
+			}else{
+				$(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-quick-toggle i').removeClass('a-circle-checked').addClass('a-circle');
+			}
+
+		}else if(type == 'file'){
+			if($(element).find('.modal-project-summary-unit-program-icon-status i').hasClass('a-circle')){
+				$(element).find('.modal-project-summary-unit-program-icon-status i').toggleClass("a-circle").toggleClass("a-circle-checked");
+				$(element).addClass("inspectable-selected");
+			}else{
+				$(element).find('.modal-project-summary-unit-program-icon-status i').toggleClass("a-circle-checked").toggleClass("a-circle");
+				$(element).removeClass("inspectable-selected");
+			}
+
+			// AJAX CALL HERE
+
+			// if both file and physical are checked, change the status of the "both" icon
+			var auditIconDivs = $(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-icon');
+			var bothSelected = 1;
+			$.each( auditIconDivs, function( key, e ) {
+			  if(!$(e).hasClass('inspectable-selected')){
+			  	bothSelected = 0;
+			  }
+			});
+			if(bothSelected){
+				$(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-quick-toggle i').removeClass('a-circle').addClass('a-circle-checked');
+			}else{
+				$(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-quick-toggle i').removeClass('a-circle-checked').addClass('a-circle');
+			}
+
+		}else {
+			// selecting or deselecting both audits
+			if($(element).hasClass('a-circle')){
+				$(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-icon-status i.a-circle').toggleClass("a-circle").toggleClass("a-circle-checked");
+				$(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-icon').addClass("inspectable-selected");
+
+		 		$(element).toggleClass("a-circle");
+		 		$(element).toggleClass("a-circle-checked");
+			}else{
+				$(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-icon-status i.a-circle-checked').toggleClass("a-circle").toggleClass("a-circle-checked");
+				$(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-icon').removeClass("inspectable-selected");
+
+		 		$(element).toggleClass("a-circle-checked");
+		 		$(element).toggleClass("a-circle");
+			}
+
+			// AJAX CALL HERE
+			
+		}
+	}
 
 	var modalSummaryChart = new Chart(document.getElementById("chartjs-modal-summary"),{
 		"type":"doughnut",

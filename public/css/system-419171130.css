@@ -2932,8 +2932,13 @@ i.fa-square.chart-color-to-be-inspected { background-color:#e0e0df; }
 .modal-project-summary-unit-program-icon i {
   position: relative;
   font-size: 20px;
+  vertical-align: sub;
 }
-.modal-project-summary-unit.inspectable .modal-project-summary-unit-program-icon i,
+.modal-project-summary-unit-program-icon i:hover{
+  cursor: pointer;
+}
+
+.modal-project-summary-unit.inspectable .modal-project-summary-unit-program-icon.inspectable-selected i,
 .modal-project-summary-unit.inspectable .modal-project-summary-unit-program-quick-toggle i {
   color:#0099d5;
 }

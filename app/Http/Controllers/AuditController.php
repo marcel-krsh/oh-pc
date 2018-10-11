@@ -1121,7 +1121,7 @@ class AuditController extends Controller
                     "address2" => "#102",
                     "move_in_date" => "1/29/2018",
                     "programs" => [
-                        ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "" ],
+                        ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "true", "selected" => "" ],
                         ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "" ]
                     ]
                 ],

@@ -20,28 +20,42 @@
 				        <div class="modal-project-summary-unit-programs">
 			            	@foreach($unit['programs'] as $program)
 			            	<div class="modal-project-summary-unit-program uk-visible-toggle">
+			            		@if($unit['status'] != 'not-inspectable')
 			            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle">
-			            			<i class="a-circle"></i>
+			            			@if($program['physical_audit_checked'] == 'true' && $program['file_audit_checked'] == 'true')
+			            			<i class="a-circle-checked" onclick="projectSummarySelection(this, {{$unit['id']}}, {{$program['id']}});"></i>
+			            			@else
+			            			<i class="a-circle" onclick="projectSummarySelection(this, {{$unit['id']}}, {{$program['id']}});"></i>
+			            			@endif
 			            		</div>
+			            		@endif
 			            		<div class="modal-project-summary-unit-program-info">
-			            			<div class="modal-project-summary-unit-program-icon">
+			            			<div class="modal-project-summary-unit-program-icon @if($program['physical_audit_checked'] == 'true') inspectable-selected @endif" @if($unit['status'] != 'not-inspectable') onclick="projectSummarySelection(this, {{$unit['id']}}, {{$program['id']}}, 'physical');" @endif>
 			            				<i class="a-mobile"></i>
-			            				<div class="modal-project-summary-unit-program-icon-status">
+			            				<div class="modal-project-summary-unit-program-icon-status">	
+		            					@if($unit['status'] == 'not-inspectable')
+		            						<i class="a-circle-cross"></i>
+		            					@else
 			            					@if($program['physical_audit_checked'] == 'true')
 					            			<i class="a-circle-checked"></i>
 					            			@else
 					            			<i class="a-circle"></i>
 					            			@endif
+					            		@endif
 			            				</div>
 			            			</div>
-			            			<div class="modal-project-summary-unit-program-icon">
+			            			<div class="modal-project-summary-unit-program-icon @if($program['file_audit_checked'] == 'true') inspectable-selected @endif" @if($unit['status'] != 'not-inspectable') onclick="projectSummarySelection(this, {{$unit['id']}}, {{$program['id']}}, 'file');" @endif >
 			            				<i class="a-folder"></i>
 			            				<div class="modal-project-summary-unit-program-icon-status">
+			            				@if($unit['status'] == 'not-inspectable')
+		            						<i class="a-circle-cross"></i>
+		            					@else
 			            					@if($program['file_audit_checked'] == 'true')
 					            			<i class="a-circle-checked"></i>
 					            			@else
 					            			<i class="a-circle"></i>
 					            			@endif
+					            		@endif
 			            				</div>
 			            			</div>
 			            			
