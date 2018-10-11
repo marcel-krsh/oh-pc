@@ -11,6 +11,9 @@ body > :not(.pace),body:before,body:after {
 body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-done):after {
   opacity:0;
 }
+.uk-tooltip {
+    z-index: 2200;
+}
 .uk-vertical-align-top {
   vertical-align: top;
 }
@@ -2938,8 +2941,11 @@ i.fa-square.chart-color-to-be-inspected { background-color:#e0e0df; }
   cursor: pointer;
 }
 
+.modal-project-summary-unit.not-inspectable, .modal-project-summary-unit:not(.not-inspectable) .modal-project-summary-unit-program-info.not-inspectable {
+    opacity: 0.5;
+}
 .modal-project-summary-unit.inspectable .modal-project-summary-unit-program-icon.inspectable-selected i,
-.modal-project-summary-unit.inspectable .modal-project-summary-unit-program-quick-toggle i {
+.modal-project-summary-unit.inspectable .modal-project-summary-unit-program-quick-toggle.inspectable-selected i {
   color:#0099d5;
 }
 .modal-project-summary-unit-program-icon > div {
@@ -2963,6 +2969,9 @@ i.fa-square.chart-color-to-be-inspected { background-color:#e0e0df; }
   float: left;
   padding-right: 0px;
   font-size: 20px;
+  cursor: pointer;
+}
+.modal-project-summary-unit-status {
   cursor: pointer;
 }
 

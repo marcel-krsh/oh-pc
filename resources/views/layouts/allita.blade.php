@@ -84,7 +84,8 @@ if(Auth::check()){
 	@if (Auth::guest())
 	@else
 	<script src="/js/taffy.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script> -->
+	<script type="text/javascript" src="/js/Chart.bundle.js"></script>
 	@endif
 
 	<link rel="stylesheet" href="/css/allita-font.css">
