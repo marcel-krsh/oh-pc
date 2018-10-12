@@ -319,11 +319,17 @@ function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight) {
 		if(fullscreen === 1) {
 			// add class to modal so it opens full screen.
 			$('#modal-size').addClass('uk-modal-dialog-blank');
+			$('#dynamic-modal').addClass('fullscreen');
 			$('#dynamic-modal-content').addClass('uk-height-viewport');
+			$('#modal-size').removeClass('modal-fixed-height');
 				
 		} else {
+
+			$('#dynamic-modal').removeClass('fullscreen');
+
 			if(fixedHeight === 1){
 				$('#modal-size').addClass('modal-fixed-height');
+				$('#modal-size').removeClass('uk-modal-dialog-blank');
 			}else{
 				// remove the class in case it is still there.
 				$('#modal-size').removeClass('uk-modal-dialog-blank');

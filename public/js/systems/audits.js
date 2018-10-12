@@ -89,7 +89,7 @@ function buildingDetails(id, auditid, target, targetaudit, detailcount=10, conte
 			$('.rowinset-top').slideDown();
 			$('.rowinset-bottom').slideDown();
 		}
-		$('div[id^="building'+context+'-r-"]').removeClass('blur');
+		$('div[id^="building-'+context+'-r-"]').removeClass('blur');
 	}else{
 
     	if ($('#building-'+context+'-r-'+target).attr('expanded')){
@@ -140,7 +140,7 @@ function buildingDetails(id, auditid, target, targetaudit, detailcount=10, conte
                 if(data=='0'){ 
                     UIkit.modal.alert("There was a problem getting the building details' information.");
                 } else {
-                	console.log('loading details in new divs '+'#building'+context+'-r-'+target);
+                	console.log('loading details in new divs '+'#building-'+context+'-r-'+target);
                 	$('#building-'+context+'-r-'+target).attr( "expanded", true );
 					$('#building-'+context+'-r-'+target+'-details').html(data);
             	}
@@ -537,6 +537,11 @@ function reorder(classname, childclassname) {
 			$(this).html(currentIndex);
 		});
 	});
+}
+
+function openFindings(element, auditid, buildingid, unitid=null, type){
+	console.log('opening findings modal');
+	dynamicModalLoad('findings',1,0,1);
 }
 
 UIkit.util.on('.sortable', 'start', function (item) {

@@ -99,7 +99,7 @@
 									            	<div class="uk-width-1-1 findings-icons"  style="margin-top: 0px;" uk-grid> 
 									            		
 									            		<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center action-needed">
-									            			<div class="findings-icon">
+									            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail['id']}}, 'file');">
 																<i class="a-folder"></i>
 																<div class="findings-icon-status">
 																	<span class="uk-badge action-needed">3</span>
@@ -109,7 +109,7 @@
 														</div>
 														
 														<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center in-progress">
-															<div class="findings-icon">
+															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail['id']}}, 'nlt');">
 																<i class="a-booboo"></i>
 																<div class="findings-icon-status">
 																	<i class="a-rotate-left in-progress"></i>
@@ -117,7 +117,7 @@
 															</div>
 														</div>
 														<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center in-progress">
-															<div class="findings-icon">
+															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail['id']}}, 'lt');">
 																<i class="a-skull"></i>
 																<div class="findings-icon-status">
 																	<span class="uk-badge in-progress">3</span>
@@ -125,7 +125,7 @@
 															</div>
 														</div>
 														<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center action-required">	
-															<div class="findings-icon">
+															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail['id']}}, 'critical');">
 																<i class="a-flames"></i>
 																<div class="findings-icon-status">
 																	<span class="uk-badge action-required">3</span>

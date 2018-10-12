@@ -11,6 +11,12 @@ body > :not(.pace),body:before,body:after {
 body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-done):after {
   opacity:0;
 }
+#dynamic-modal.fullscreen {
+  padding:0;
+}
+#dynamic-modal.fullscreen #dynamic-modal-content {
+    padding: 15px 40px;
+}
 .uk-tooltip {
     z-index: 2200;
 }
@@ -1613,20 +1619,59 @@ margin-top:10px;
   text-shadow:none;  
   color: #fff;
 }
+
+.modal-form button {
+  color: #fff;  
+  font-size: 12px;
+}
+.modal-form button i {
+  vertical-align: sub;
+  color: #fff;  
+  font-size: 15px !important;
+}
+.modal-form button.uk-button-primary {
+  background-color:#1f2a64;
+  text-shadow:none; 
+}
+.modal-form button.uk-button-secondary {
+  background-color:#898a89;
+  text-shadow:none;  
+  color: #fff;
+}
+.modal-form button.uk-button-primary:hover {
+  background-color:rgba(31,42,100,0.7);
+  text-shadow:none; 
+}
+.modal-form button.uk-button-secondary:hover {
+  background-color:rgba(137,138,137,0.7);
+  text-shadow:none;  
+  color: #fff;
+}
 /*** custom checkboxes ***/
-.filter-dropdown input[type=checkbox] { display:none; } /* to hide the checkbox itself */
-.filter-dropdown input[type=checkbox] + label:before {
+.filter-dropdown input[type=checkbox],
+.filter-checkbox-list input[type=checkbox] { display:none; } /* to hide the checkbox itself */
+.filter-dropdown input[type=checkbox] + label:before,
+.filter-checkbox-list input[type=checkbox] + label:before {
   font-family: 'allita' !important;
   display: inline-block;
   font-size: 18px;
   vertical-align: sub;
 }
 
-.filter-dropdown input[type=checkbox] + label:before { content: "\e9bd"; } /* unchecked icon */
-.filter-dropdown input[type=checkbox] + label:before { letter-spacing: 5px; } /* space between checkbox and label */
+.filter-dropdown input[type=checkbox] + label:before,
+.filter-checkbox-list input[type=checkbox] + label:before { content: "\e9bd"; } /* unchecked icon */
+.filter-dropdown input[type=checkbox] + label:before,
+.filter-checkbox-list input[type=checkbox] + label:before { letter-spacing: 5px; } /* space between checkbox and label */
 
-.filter-dropdown input[type=checkbox]:checked + label:before { content: "\e997"; } /* checked icon */
-.filter-dropdown input[type=checkbox]:checked + label:before { letter-spacing: 5px; } /* allow space for check mark */
+.filter-dropdown input[type=checkbox]:checked + label:before,
+.filter-checkbox-list input[type=checkbox]:checked + label:before { content: "\e997"; } /* checked icon */
+.filter-dropdown input[type=checkbox]:checked + label:before,
+.filter-checkbox-list input[type=checkbox]:checked + label:before { letter-spacing: 5px; } /* allow space for check mark */
+
+.filter-checkbox-list-item {
+    display: inherit;
+    width: 100%;
+}
 
 .filter-dropdown.uk-dropdown {
   min-width: 350px;
@@ -1678,7 +1723,7 @@ margin-top:10px;
     font-size: 29px;
 }
 
-#auditstable .building .inspection-area .findings-icon i { color:#ddd; border-color:#ddd;  }
+#auditstable .building .inspection-area .findings-icon i { color:#ddd; border-color:#ddd; cursor: pointer;  }
 #auditstable .building .inspection-area .findings-icon.no-action i { color:#939598; border-color:#939598;  }
 #auditstable .building .inspection-area .findings-icon.action-needed i { color:#76338b; border-color:#76338b; }
 #auditstable .building .inspection-area .findings-icon.action-required i, #auditstable .building .inspection-area .findings-icon.critical i { color:#da328a; border-color:#da328a; }
@@ -2280,6 +2325,7 @@ margin-top:10px;
 
 #auditstable .building .findings-icon {
   position:relative;
+  cursor: pointer;
 }
 #auditstable .building .findings-icon i {
       padding: 1px;
@@ -2454,9 +2500,10 @@ margin-top:10px;
 .inspec-tools-tab-finding .inspec-tools-tab-finding-button i {
   vertical-align: sub;
   font-size: 19px !important;
-  font-weight: bold;
   padding-right: 2px;
+  padding-left: 5px;
   text-shadow: none;
+  vertical-align: sub;
 }
 
 .inspec-tools-tab-finding .inspec-tools-tab-finding-button.colored { color:#fff !important; background-color:#ddd; border:none;}
@@ -2973,6 +3020,127 @@ i.fa-square.chart-color-to-be-inspected { background-color:#e0e0df; }
 }
 .modal-project-summary-unit-status {
   cursor: pointer;
+}
+
+.modal-findings-left{
+  width: 45%;
+  position: absolute;
+  top: 30px;
+      border-right: 1px dotted #3a3a3a;
+    padding-right: 35px;
+    height: 95%;
+}
+.modal-findings-right {
+  width: 44%;
+  padding-left: 53%;
+  padding-bottom: 20px;
+  position:relative;
+}
+.modal-findings-right-top {
+  width: 44%;
+  padding-bottom: 0px;
+  position: fixed;
+  border-bottom: 1px dashed #3a3a3a;
+}
+.modal-findings-right-bottom-container {
+  position: fixed;
+  top: 100px;
+  height: 100%;
+  width: 45%;
+}
+.modal-findings-right-bottom{
+  height: calc(100% - 100px);
+  overflow-y: auto;
+  position: absolute;
+  width: 100%;
+}
+.modal-findings-left-top {
+  width: 44%;
+  padding-bottom: 0px;
+  position: fixed;
+  border-bottom: 1px dashed #3a3a3a;
+}
+.modal-findings-left-bottom-container {
+  border-top: 1px dashed #3a3a3a;
+  position: fixed;
+  bottom: 0px;
+  height: 260px;
+  width: 45%;
+}
+.modal-findings-left-bottom{
+  height: 260px;
+  overflow-y: auto;
+  position: absolute;
+  width: 100%;
+  margin-top: 15px;
+}
+.modal-findings-left-main-container{
+  position: fixed;
+  top: 100px;
+  height: calc(100% - 370px);
+  width: 45%;
+}
+.modal-findings-left-main{
+  height: 100%;
+  overflow-y: auto;
+  position: absolute;
+  width: 100%;
+}
+#modal-findings-list-filters label {
+    width: 100%;
+    padding: 12px 5px;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-left: 50px;
+    text-indent: -20px;
+}
+
+.filter-button-set, .filter-button-set [class*="uk-width-"] {
+    padding: 0;
+}
+.filter-button-set button.button-filter {
+  width:100%;
+  border-radius: 0;
+  border-left: 0px;    
+  padding-bottom: 2px;
+  padding-top: 2px;
+  height:32px;
+  max-height:32px;
+}
+.filter-button-set button.button-filter.button-filter-border-left {
+  border-left:1px solid #3a3a3a;
+}
+.filter-button-set button.button-filter i {
+    font-size: 24px;
+    vertical-align: text-bottom;
+}
+.filter-button-set .uk-button:active, .filter-button-set .uk-button.uk-active {
+  background-color: #3a3a3a;
+  color:#fff;
+}
+.filter-button-set .uk-input {
+    height: 32px;
+}
+.filter-button-set .uk-form-icon {
+      top: 9px;
+    bottom: unset;
+}
+.filter-button-set .uk-input:focus,
+.modal-form .uk-input:focus {
+  border-color:inherit;
+}
+.modal-form .uk-input {
+    height: 32px;
+}
+.modal-form, .modal-form .uk-input {
+    font-weight: bold;
+}
+.modal-form i {
+    font-size: 20px;
+    color: #3a3a3a;
+}
+.modal-form .uk-input:disabled, .uk-select:disabled, .uk-textarea:disabled {
+  color: #3a3a3a;
 }
 
 .uk-sortable-item {

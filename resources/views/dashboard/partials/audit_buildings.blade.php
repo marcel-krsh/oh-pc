@@ -98,7 +98,7 @@
 													<div uk-grid>
 														<div class="uk-width-1-1 findings-icons" uk-grid style="margin-top: 0px;"> 
 										            		<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center action-needed">
-										            			<div class="findings-icon">
+										            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building['id']}}, null, 'file');">
 																	<i class="a-folder"></i>
 																	<div class="findings-icon-status">
 																		<span class="uk-badge action-needed">3</span>
@@ -107,7 +107,7 @@
 																
 															</div>
 															<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center in-progress">
-																<div class="findings-icon">
+																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building['id']}}, null, 'nlt');">
 																	<i class="a-booboo"></i>
 																	<div class="findings-icon-status">
 																		<i class="a-rotate-left in-progress" uk-tooltip="pos:top-left;title:23 in progress<br />19 completed;"></i>
@@ -115,7 +115,7 @@
 																</div>
 															</div>
 															<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center in-progress">
-																<div class="findings-icon">
+																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building['id']}}, null, 'lt');">
 																	<i class="a-skull" uk-tooltip="pos:top-left;title:Reason;"></i>
 																	<div class="findings-icon-status">
 																		<span class="uk-badge in-progress" uk-tooltip="pos:top-left;title:Unit # finding;">3</span>
@@ -123,7 +123,7 @@
 																</div>
 															</div>
 															<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center action-required">	
-																<div class="findings-icon">
+																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building['id']}}, null, 'critical');">
 																	<i class="a-flames"></i>
 																	<div class="findings-icon-status">
 																		<span class="uk-badge action-required">3</span>
