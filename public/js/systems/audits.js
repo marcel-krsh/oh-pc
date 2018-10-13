@@ -539,9 +539,8 @@ function reorder(classname, childclassname) {
 	});
 }
 
-function openFindings(element, auditid, buildingid, unitid=null, type){
-	console.log('opening findings modal');
-	dynamicModalLoad('findings',1,0,1);
+function openFindings(element, auditid, buildingid, unitid='', type){
+	dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid,1,0,1);
 }
 
 UIkit.util.on('.sortable', 'start', function (item) {

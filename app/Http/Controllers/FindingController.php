@@ -19,12 +19,102 @@ class FindingController extends Controller
         }
     }
 
-    public function modalFindings()
+    public function modalFindings($type, $auditid, $buildingid, $unitid='')
     {
+    	// get user's audits, projects, buildings, areas, units based on click
+    	/*
+    	
+		• Clicking on the finding icon from the audit list level will default to the project name - project common areas - and the first common area of that project.
+		• Clicking on an amenity item listed on a building or unit will filter to that item, and use the "*" finding type (the auditor should select a specific type to shorten the list).
+		• Clicking on the finding icon from the building level list will default to the building address, the building,
+		and the first amenity on the building.
+		• Clicking on the finding icon at the unit level will default to unit's building address, the unit number, and the first amenity on the unit.
+		• Clicking on the finding icon in the program expansion screen will automatically select that specific item.
+
+    	 */
+    	
+
+
+    	/*
+    	if the auditor did not open the add findings window from
+		the program detail expansion of a building or unit, and they click the "Done Adding Findings" button or they change to a different building, unit or common area set checkDoneAddingFindings to 1 otherwise 0.
+    	 */
+    	$checkDoneAddingFindings = 1;
+
     	$data = collect([
-    		
+    		'selected-audit' => [
+    			'id' => 123,
+    			'ref' => "1234567",
+    			'address' => '12345 Bob Street, City, State 22233',
+    			'selected-location' => [
+    				'id' => 2,
+    				'name' => 'Building 2',
+    				'amenities' => [
+    					[
+    						'id' => 9,
+    						'name' => 'Inspectable area 9'
+    					],
+    					[
+    						'id' => 8,
+    						'name' => 'Inspectable area 8'
+    					],
+    					[
+    						'id' => 7,
+    						'name' => 'Inspectable area 7'
+    					]
+    				]
+    			], 
+    			'selected-amenity' => [
+    				'id' => 9,
+    				'name' => 'Inspectable area 9'
+    			]
+    		],
+    		'audits' => [
+    			[
+	    			'id' => 123,
+	    			'ref' => "1234567",
+	    			'address' => '12345 Bob Street, City, State 22233'
+	    		],
+    			[
+	    			'id' => 456,
+	    			'ref' => "567",
+	    			'address' => '555 Other Street, City, State 11111'
+	    		],
+    			[
+	    			'id' => 789,
+	    			'ref' => "12555",
+	    			'address' => '66666 Bobby Street, City, State 55555'
+	    		],
+    			[
+	    			'id' => 555,
+	    			'ref' => "44467",
+	    			'address' => '99877 John Street, City, State 66666'
+	    		]
+    		],
+    		'finding-types' => [
+    			['id'=> 1, 'name' => 'Inspection Group SD finding description here', 'type' => 'file', 'icon' => 'a-folder'],
+    			['id'=> 2, 'name' => 'INSPECTION GROUP SD FINDING DESCRIPTION HERE WITH A REALLY LONG NAME THAT FLOWS TO THE NEXT LINE', 'type' => 'sd', 'icon' => 'a-flames'],
+    			['id'=> 3, 'name' => 'Inspection Group SD finding description here 3', 'type' => 'file', 'icon' => 'a-folder'],
+    			['id'=> 4, 'name' => 'Inspection Group SD finding description here 6', 'type' => 'nlt', 'icon' => 'a-booboo'],
+    			['id'=> 5, 'name' => 'Inspection Group SD finding description here 1', 'type' => 'file', 'icon' => 'a-folder'],
+    			['id'=> 6, 'name' => 'Inspection Group SD finding description here 9', 'type' => 'sd', 'icon' => 'a-flames'],
+    			['id'=> 7, 'name' => 'INSPECTION GROUP SD FINDING DESCRIPTION HERE WITH A REALLY LONG NAME THAT FLOWS TO THE NEXT LINE 4', 'type' => 'file', 'icon' => 'a-folder'],
+    			['id'=> 8, 'name' => 'Inspection Group SD finding description here 23', 'type' => 'file', 'icon' => 'a-folder'],
+    			['id'=> 9, 'name' => 'Inspection Group SD finding description here 44', 'type' => 'lt', 'icon' => 'a-skull'],
+    			['id'=> 10, 'name' => 'Inspection Group SD finding description here 12', 'type' => 'file', 'icon' => 'a-folder'],
+    			['id'=> 11, 'name' => 'Inspection Group SD finding description here33', 'type' => 'file', 'icon' => 'a-folder'],
+    			['id'=> 12, 'name' => 'Inspection Group SD finding description here1', 'type' => 'nlt', 'icon' => 'a-booboo'],
+    			['id'=> 13, 'name' => 'Inspection Group SD finding description here093', 'type' => 'file', 'icon' => 'a-folder'],
+    			['id'=> 14, 'name' => 'Inspection Group SD finding description here56', 'type' => 'file', 'icon' => 'a-folder'],
+    			['id'=> 15, 'name' => 'Inspection Group SD finding description here 7', 'type' => 'nlt', 'icon' => 'a-booboo'],
+    			['id'=> 16, 'name' => 'Inspection Group SD finding description here 8', 'type' => 'file', 'icon' => 'a-folder'],
+    			['id'=> 17, 'name' => 'Inspection Group SD finding description here 9', 'type' => 'lt', 'icon' => 'a-skull'],
+    			['id'=> 18, 'name' => 'Inspection Group SD finding description here45', 'type' => 'file', 'icon' => 'a-folder'],
+    			['id'=> 19, 'name' => 'Inspection Group SD finding description here43', 'type' => 'file', 'icon' => 'a-folder'],
+    			['id'=> 20, 'name' => 'Inspection Group SD finding description here23', 'type' => 'lt', 'icon' => 'a-skull']
+    		]
     	]);
-    	return view('modals.findings', compact('data'));
+    	return view('modals.findings', compact('data', 'checkDoneAddingFindings'));
     }
 
 }

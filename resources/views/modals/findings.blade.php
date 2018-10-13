@@ -91,87 +91,38 @@
 	<div class="modal-findings-left" uk-filter="target: .js-filter-findings">
 		<div class="modal-findings-left-bottom-container">
 			<div class="modal-findings-left-bottom">
-				<form id="modal-findings-filter-form" class="modal-form">
-    				<fieldset class="uk-fieldset">
-    					<div id="modal-findings-filters" class="uk-margin uk-child-width-auto" uk-grid>
-					        <div class="uk-width-1-1 uk-padding-remove uk-inline">
-					            <i class="a-mobile-home uk-form-icon"></i>
-					            <input class="uk-input" type="text" value="Elevator #2" disabled>
-							</div>
-					        <div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
-					            <i class="a-buildings uk-form-icon"></i>
-					            <input class="uk-input" type="text" value="Building" disabled>
-							</div>
-					        <div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
-					            <i class="a-buildings uk-form-icon"></i>
-					            <input class="uk-input" type="text" value="1234567 Silvegwood Street, Colombus, OH 43219" disabled>
-							</div>
-					        <div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
-					            <i class="a-calendar-pencil uk-form-icon"></i>
-					            <input class="uk-input" type="text" value="December 22, 2018" disabled>
-							</div>
-				        </div>
-				        <div class="uk-margin-remove" uk-grid>
-                    		<div class="uk-width-1-1 uk-padding-remove">
-                    			<button class="uk-button uk-button-primary uk-width-1-1 uk-modal-close">DONE ADDING FINDINGS</button>
-                    		</div>
-                    	</div>
-    				</fieldset>
-    			</form>
+				<div id="modal-findings-filters" class="uk-margin uk-child-width-auto" uk-grid>
+			        <div class="uk-width-1-1 uk-padding-remove uk-inline">
+			            <button class="uk-button button-finding-filter" onclick="alert('Showing all inspectable amenities for the buiding selected');"><i class="a-mobile-home"></i> Elevator #2</button>
+					</div>
+			        <div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
+			            <button class="uk-button button-finding-filter" onclick="alert('Showing all buildings for the address selected');"><i class="a-buildings"></i> Building</button>
+					</div>
+			        <div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
+			            <button class="uk-button button-finding-filter" onclick="alert('Change address within project');"><i class="a-buildings"></i> 1234567 Silvegwood Street, Colombus, OH 43219</button>
+					</div>
+			        <div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
+			            <button class="uk-button button-finding-filter" disabled><i class="a-calendar-pencil"></i> December 22, 2018</button>
+					</div>
+		        </div>
+		        <div class="uk-margin-remove" uk-grid>
+            		<div class="uk-width-1-1 uk-padding-remove">
+            			<button class="uk-button uk-button-primary button-finding-filter uk-width-1-1 @if(!$checkDoneAddingFindings) uk-modal-close @endif" @if($checkDoneAddingFindings) onclick="completionCheck();return false;" @endif>DONE ADDING FINDINGS</button>
+            		</div>
+            	</div>
 			</div>
 		</div>
 		<div class="modal-findings-left-main-container">
 			<div class="modal-findings-left-main">
 				<div id="modal-findings-list-filters" class="uk-margin uk-child-width-auto uk-grid filter-checkbox-list js-filter-findings">
-						<div class="filter-checkbox-list-item" data-finding="file" data-title-finding="Inspection Name here 5">
-				            <input id="filter-project-summary-program-" value="" type="checkbox" data-finding="file"/>
-							<label for="filter-project-summary-program-" data-finding="file" ><i class="a-folder"></i> Inspection Name here 5</label>
+						@foreach($data['finding-types'] as $finding_type)
+						<div id="filter-checkbox-list-item-{{$finding_type['id']}}" class=" uk-padding-remove filter-checkbox-list-item" data-finding="{{$finding_type['type']}}" data-title-finding="{{$finding_type['name']}}" uk-grid>
+							<div class="uk-width-1-1 uk-padding-remove indented">
+					            <input id="filter-findings-filter-{{$finding_type['id']}}" value="" type="checkbox" data-finding="{{$finding_type['type']}}" onclick="newFinding({{$finding_type['id']}});"/>
+								<label for="filter-findings-filter-{{$finding_type['id']}}" data-finding="{{$finding_type['type']}}" ><i class="{{$finding_type['icon']}}"></i> {{$finding_type['name']}}</label>
+							</div>
 						</div>
-						<div class="filter-checkbox-list-item"  data-finding="file" data-title-finding="INSPECTION GROUP SD FINDING DESCRIPTION HERE 2">
-				            <input id="filter-project-summary-program-" value="" type="checkbox" data-finding="file" checked/>
-							<label for="filter-project-summary-program-" data-finding="file" ><i class="a-folder"></i> INSPECTION GROUP SD FINDING DESCRIPTION HERE 2</label>
-						</div>
-						<div class="filter-checkbox-list-item"  data-finding="critical" data-title-finding="Inspection Name here2">
-				            <input id="filter-project-summary-program-" value="" type="checkbox" data-finding="critical" checked/>
-							<label for="filter-project-summary-program-" data-finding="critical" ><i class="a-flames"></i> Inspection Name here2</label>
-				        </div>
-						<div class="filter-checkbox-list-item"  data-finding="critical" data-title-finding="Inspection Name here1">
-				            <input id="filter-project-summary-program-" value="" type="checkbox" data-finding="critical" checked/>
-							<label for="filter-project-summary-program-" data-finding="critical" ><i class="a-flames"></i> Inspection Name here1</label>
-				        </div>
-				        <div class="filter-checkbox-list-item"  data-finding="file" data-title-finding="Inspection Name here 5">
-				            <input id="filter-project-summary-program-" value="" type="checkbox" data-finding="file"/>
-							<label for="filter-project-summary-program-" data-finding="file" ><i class="a-folder"></i> Inspection Name here 5</label>
-						</div>
-						<div class="filter-checkbox-list-item"  data-finding="file" data-title-finding="INSPECTION GROUP SD FINDING DESCRIPTION HERE 2">
-				            <input id="filter-project-summary-program-" value="" type="checkbox" data-finding="file" checked/>
-							<label for="filter-project-summary-program-" data-finding="file" ><i class="a-folder"></i> INSPECTION GROUP SD FINDING DESCRIPTION HERE 2</label>
-						</div>
-						<div class="filter-checkbox-list-item"  data-finding="critical" data-title-finding="Inspection Name here2">
-				            <input id="filter-project-summary-program-" value="" type="checkbox" data-finding="critical" checked/>
-							<label for="filter-project-summary-program-" data-finding="critical" ><i class="a-flames"></i> Inspection Name here2</label>
-				        </div>
-						<div class="filter-checkbox-list-item"  data-finding="critical" data-title-finding="Inspection Name here1">
-				            <input id="filter-project-summary-program-" value="" type="checkbox" data-finding="critical" checked/>
-							<label for="filter-project-summary-program-" data-finding="critical" ><i class="a-flames"></i> Inspection Name here1</label>
-				        </div>
-				        <div class="filter-checkbox-list-item"  data-finding="file" data-title-finding="Inspection Name here 5">
-				            <input id="filter-project-summary-program-" value="" type="checkbox" data-finding="file"/>
-							<label for="filter-project-summary-program-" data-finding="file" ><i class="a-folder"></i> Inspection Name here 5</label>
-						</div>
-						<div class="filter-checkbox-list-item"  data-finding="file" data-title-finding="INSPECTION GROUP SD FINDING DESCRIPTION HERE 2">
-				            <input id="filter-project-summary-program-" value="" type="checkbox" data-finding="file" checked/>
-							<label for="filter-project-summary-program-" data-finding="file" ><i class="a-folder"></i> INSPECTION GROUP SD FINDING DESCRIPTION HERE 2</label>
-						</div>
-						<div class="filter-checkbox-list-item"  data-finding="critical" data-title-finding="Inspection Name here2">
-				            <input id="filter-project-summary-program-" value="" type="checkbox" data-finding="critical" checked/>
-							<label for="filter-project-summary-program-" data-finding="critical" ><i class="a-flames"></i> Inspection Name here2</label>
-				        </div>
-						<div class="filter-checkbox-list-item"  data-finding="critical" data-title-finding="Inspection Name here1">
-				            <input id="filter-project-summary-program-" value="" type="checkbox" data-finding="critical" checked/>
-							<label for="filter-project-summary-program-" data-finding="critical" ><i class="a-flames"></i> Inspection Name here1</label>
-				        </div>
-				            
+						@endforeach
 
 		        </div>
 			</div>
@@ -210,7 +161,7 @@
 								</span>
 			        		</div>
 			        		<div class="uk-width-1-5">
-			        			<button class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='critical'];"><i class="a-flames"></i></button>
+			        			<button class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='sd'];"><i class="a-flames"></i></button>
 					        	<span style="display: none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
 									<a id="" class="sort-desc" onclick="loadFindingsList();"></a>
 								</span>
@@ -223,8 +174,88 @@
 	</div>
 </div>
 
+<template class="uk-hidden" id="modal-findings-new-template">
+    <button class="uk-button uk-link menuStatus" onclick="switchInspectionMenu('menuAction', 'menuLevel', 'menuTarget');" style="menuStyle"><i class="menuIcon"></i> menuName</button>
+</template>
+
+<div id="modal-findings-completion-check" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body uk-modal-content" uk-overflow-auto> 
+  	<a class="uk-modal-close-default" uk-close></a>
+  	<div uk-grid>
+  		<div class="uk-width-1-2  uk-margin-medium-top">
+  			<p>Have you finished inspecting all items for that building/unit/common area?</p> 
+  			<div class="uk-padding-remove" uk-grid>
+	  			<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
+	  				<button class="uk-button uk-button-primary uk-margin-left uk-margin-right uk-padding-remove uk-margin-remove uk-width-1-1">Yes, Mark as Complete and Submit to Lead.</button>
+	  			</div>
+	  			<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
+	  				<button class="uk-button uk-button-primary uk-padding-remove uk-margin-remove uk-width-1-1">Just the Items I have Findings For.</button>
+	  			</div>
+	  			<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
+	  				<button class="uk-button uk-button-default uk-padding-remove uk-margin-remove uk-width-1-1 uk-modal-close">No, I am still working on it.</button>
+	  			</div>
+	  		</div>
+  		</div>
+  		<div class="uk-width-1-2  uk-margin-medium-top">
+  			<div>bulleted list of items that have not had any findings here<br />
+  			<ul class="uk-list">
+  				<li>item</li>
+  				<li>item</li>
+  			</ul>
+  		</div>
+  	</div>
+  </div>
+ </div>
+
 <script>
+
+function completionCheck() {
+	UIkit.modal('#modal-findings-completion-check', {center: true, bgclose: false, keyboard:false,  stack:true}).show();
+}
+
+function searchFilterTerm(valThis) {
+	var sortableElementParent = $('.js-filter-findings');
+  	var sortableElements = sortableElementParent.children();
+  	sortableElements.each(function(){
+     	var text = this.getAttribute('data-title-finding').toLowerCase();
+        (text.indexOf(valThis) >= 0) ? $(this).show() : $(this).hide();         
+    });
+}
+
+$('#finding-description').keyup(function(){
+   var valThis = $(this).val();
+   searchFilterTerm(valThis); 
+});
+
+function newFinding(id){
+	
+	// scroll to row early
+    $('html, body').animate({
+		scrollTop: $('#filter-checkbox-list-item-'+id).offset().top - 59
+	}, 500, 'linear');
+
+	if ($('#filter-checkbox-list-item-'+id).attr('expanded')){
+		$('#filter-checkbox-list-item-'+id).removeAttr('expanded');
+		$('.filter-checkbox-new-item-'+id).fadeOut("slow", function() {
+			// unblur other building inspection rows
+			$('div[id^="filter-checkbox-list-item-"]').not( 'div[id="filter-checkbox-list-item-'+id+'"]' ).slideDown();
+			$('div[id^="filter-checkbox-list-item-"]').removeClass('blur');
+
+
+			$(this).remove();
+		 });
+	}else{
+		$('div[id^="filter-checkbox-list-item-"]').not( 'div[id="filter-checkbox-list-item-'+id+'"]' ).addClass('blur');
+		$('div[id^="filter-checkbox-list-item-"]').not( 'div[id="filter-checkbox-list-item-'+id+'"]' ).slideUp();
+		$('#filter-checkbox-list-item-'+id).append('<div style="display:none" class="uk-width-1-1 uk-padding-remove filter-checkbox-new-item-'+id+'">Yo</div>');
+		$('.filter-checkbox-new-item-'+id).fadeIn("slow");
+		$('#filter-checkbox-list-item-'+id).attr( "expanded", true );
+	}
+	
+}
+
 $('.filter-button-set').find('button.button-filter').click(function() {
+  $('#finding-description').val('');
   // check if selected span is already visible, if so switch the order
   if($(this).closest('div').find('span').is(':visible')){
   	// what is the current ordering
@@ -279,5 +310,12 @@ $('.filter-button-set').find('button.button-filter').click(function() {
 	var orderSpan = $(this).closest('div').find('span');
 	orderSpan.toggle();
   }
+
+  // is there a search term?
+  var searchTerm = $('#finding-description').val();
+  if(searchTerm.length > 0){
+  	searchFilterTerm(searchTerm); 
+  }
+  
 });
 </script>
