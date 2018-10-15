@@ -175,7 +175,29 @@
 </div>
 
 <template class="uk-hidden" id="modal-findings-new-template">
-    <button class="uk-button uk-link menuStatus" onclick="switchInspectionMenu('menuAction', 'menuLevel', 'menuTarget');" style="menuStyle"><i class="menuIcon"></i> menuName</button>
+	<div class="findings-new-add-comment">
+	    <div class="findings-new-add-comment-textarea">
+	    	<textarea class="uk-textarea">Custom comment based on what I saw... %%date-in-7-days%%</textarea>
+	    	<div class="textarea-status">SAVED</div>
+	    </div>
+	    <div class="findings-new-add-comment-boilerplate-action">
+	    	<button><i class="a-file-text"></i> Use a boilerplate</button>
+	    	<button><i class="a-file-minus"></i> Clear</button>
+	    	<button><i class="a-file-plus"></i> Append a boilerplate</button>
+	    </div>
+	    <div class="findings-new-add-comment-quick-entry-list">
+	    	<span class="uk-badge findings-quick-entry">PROPERTY MANAGER CONTACT NAME</span>
+	    	<span class="uk-badge findings-quick-entry">ADDRESS OF THIS BUILDING</span>
+	    	<span class="uk-badge findings-quick-entry">DATE IN 7 DAYS</span>
+	    	<span class="uk-badge findings-quick-entry">TOMORROW'S DATE</span>
+	    	<span class="uk-badge findings-quick-entry">HEAD OF HOUSEHOLD NAME</span>
+	    	<span class="uk-badge findings-quick-entry">ANOTHER QUICK ENTRY BUTTON</span>
+	    </div>
+	    <div class="findings-new-add-comment-boilerplate-save">
+	    	<button><i class="a-file-text"></i> Save as new boilerplate for this finding</button>
+	    	<button><i class="a-file-copy-2"></i> Save and add another of this same finding</button>
+	    </div>
+	</div>
 </template>
 
 <div id="modal-findings-completion-check" uk-modal>
@@ -214,11 +236,26 @@ function completionCheck() {
 }
 
 function searchFilterTerm(valThis) {
+	// combine with active filter
+	var currentActiveFilter = $('.button-filter.uk-active');
+	var filterFindings= $('.js-filter-findings');
+
+    var activeFilterButton = $('.button-filter.uk-active').attr('uk-filter-control');
+
+    var regexFilter = "data-finding='(.*)'"; //[data-finding='sd']
+    var currentFilter = activeFilterButton.match(regexFilter)[1];
+
 	var sortableElementParent = $('.js-filter-findings');
-  	var sortableElements = sortableElementParent.children();
+
+  	// if currentFilter is set, only search through the visible items
+  	if(currentFilter.length){
+  		var sortableElements = sortableElementParent.children("[data-finding='"+currentFilter+"']");
+  	}else{
+  		var sortableElements = sortableElementParent.children();
+  	}
   	sortableElements.each(function(){
      	var text = this.getAttribute('data-title-finding').toLowerCase();
-        (text.indexOf(valThis) >= 0) ? $(this).show() : $(this).hide();         
+        (text.indexOf(valThis) >= 0) ? $(this).show() : $(this).hide(); 
     });
 }
 
@@ -245,9 +282,13 @@ function newFinding(id){
 			$(this).remove();
 		 });
 	}else{
+		var newFindingsTemplate = $('#modal-findings-new-template').html();;
+
 		$('div[id^="filter-checkbox-list-item-"]').not( 'div[id="filter-checkbox-list-item-'+id+'"]' ).addClass('blur');
 		$('div[id^="filter-checkbox-list-item-"]').not( 'div[id="filter-checkbox-list-item-'+id+'"]' ).slideUp();
-		$('#filter-checkbox-list-item-'+id).append('<div style="display:none" class="uk-width-1-1 uk-padding-remove filter-checkbox-new-item-'+id+'">Yo</div>');
+
+		$('#filter-checkbox-list-item-'+id).append('<div style="display:none" class="uk-width-1-1 uk-padding-remove filter-checkbox-new-item-'+id+'">'+newFindingsTemplate+'</div>');
+
 		$('.filter-checkbox-new-item-'+id).fadeIn("slow");
 		$('#filter-checkbox-list-item-'+id).attr( "expanded", true );
 	}

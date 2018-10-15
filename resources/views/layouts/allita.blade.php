@@ -69,8 +69,8 @@ if(Auth::check()){
 	</script>
 
 	<script defer src="{{ mix('js/app.js') }}"></script>
-	<script src="/js/uikit.js"></script>
 	<script src="/js/jquery.js"></script>
+	<script src="/js/uikit.js"></script>
 	<script src="/js/uikit-icons.min.js"></script>
 	<script src="/js/handsontable.full.min.js"></script>
 

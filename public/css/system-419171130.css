@@ -3201,6 +3201,26 @@ button.button-finding-filter.uk-button-secondary:hover {
   color: #fff;
 }
 
+.findings-new-add-comment{}
+.findings-new-add-comment-textarea{
+  position:relative;
+  }
+.findings-new-add-comment-textarea textarea {
+  outline: none;
+}
+.findings-new-add-comment-textarea .textarea-status{
+      position: absolute;
+    display: block;
+    right: 5px;
+    bottom: 0%;
+    font-size: 10px;
+}
+.findings-new-add-comment-boilerplate-action{}
+.findings-new-add-comment-quick-entry-list{}
+.findings-new-add-comment-boilerplate-save{}
+
+
+
 .uk-sortable-item {
   /*border: 3px solid #000;
   -webkit-box-shadow: 3px 3px 5px 3px rgba(0,0,0,0.75);
