@@ -235,15 +235,25 @@ function completionCheck() {
 	UIkit.modal('#modal-findings-completion-check', {center: true, bgclose: false, keyboard:false,  stack:true}).show();
 }
 
+function getCurrentFilter() {
+	var activeFilterButton = $('.button-filter.uk-active').attr('uk-filter-control');
+    var regexFilter = "data-finding='(.*)'"; //[data-finding='sd']
+   
+    var activeFilter = activeFilterButton.match(regexFilter);
+
+    if(activeFilter !== null){
+    	return activeFilter[1];
+    }else{
+    	return '';
+    }
+}
+
 function searchFilterTerm(valThis) {
 	// combine with active filter
 	var currentActiveFilter = $('.button-filter.uk-active');
 	var filterFindings= $('.js-filter-findings');
 
-    var activeFilterButton = $('.button-filter.uk-active').attr('uk-filter-control');
-
-    var regexFilter = "data-finding='(.*)'"; //[data-finding='sd']
-    var currentFilter = activeFilterButton.match(regexFilter)[1];
+    var currentFilter = getCurrentFilter();
 
 	var sortableElementParent = $('.js-filter-findings');
 
@@ -273,24 +283,38 @@ function newFinding(id){
 
 	if ($('#filter-checkbox-list-item-'+id).attr('expanded')){
 		$('#filter-checkbox-list-item-'+id).removeAttr('expanded');
-		$('.filter-checkbox-new-item-'+id).fadeOut("slow", function() {
-			// unblur other building inspection rows
-			$('div[id^="filter-checkbox-list-item-"]').not( 'div[id="filter-checkbox-list-item-'+id+'"]' ).slideDown();
-			$('div[id^="filter-checkbox-list-item-"]').removeClass('blur');
-
+		$('.filter-checkbox-new-item-'+id).slideUp("slow", function() {
 
 			$(this).remove();
+
+			// reapply search
+			var valThis = $('#finding-description').val();
+   			searchFilterTerm(valThis); 
+
+
+			// enable search term input
+			// $('#finding-description').prop('disabled', false);
+			// // enable filters
+			// $('.button-filter').on('click',function() {
+			//     $(this).prop("disabled",false);
+			// });
 		 });
 	}else{
-		var newFindingsTemplate = $('#modal-findings-new-template').html();;
 
-		$('div[id^="filter-checkbox-list-item-"]').not( 'div[id="filter-checkbox-list-item-'+id+'"]' ).addClass('blur');
-		$('div[id^="filter-checkbox-list-item-"]').not( 'div[id="filter-checkbox-list-item-'+id+'"]' ).slideUp();
+		// disable search term input
+		// $('#finding-description').prop('disabled', true);
+		// // disable filters
+		// $('.button-filter').on('click',function() {
+		//     $(this).prop("disabled",true);
+		// });
+
+		var newFindingsTemplate = $('#modal-findings-new-template').html();;
 
 		$('#filter-checkbox-list-item-'+id).append('<div style="display:none" class="uk-width-1-1 uk-padding-remove filter-checkbox-new-item-'+id+'">'+newFindingsTemplate+'</div>');
 
-		$('.filter-checkbox-new-item-'+id).fadeIn("slow");
+		$('.filter-checkbox-new-item-'+id).slideDown("slow");
 		$('#filter-checkbox-list-item-'+id).attr( "expanded", true );
+
 	}
 	
 }
