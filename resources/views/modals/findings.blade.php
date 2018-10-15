@@ -180,10 +180,10 @@
 	    	<textarea class="uk-textarea">Custom comment based on what I saw... %%date-in-7-days%%</textarea>
 	    	<div class="textarea-status">SAVED</div>
 	    </div>
-	    <div class="findings-new-add-comment-boilerplate-action">
-	    	<button><i class="a-file-text"></i> Use a boilerplate</button>
-	    	<button><i class="a-file-minus"></i> Clear</button>
-	    	<button><i class="a-file-plus"></i> Append a boilerplate</button>
+	    <div class="findings-new-add-comment-boilerplate-action" uk-grid>
+	    	<button class="uk-width-1-3"><i class="a-file-text"></i> Use a boilerplate</button>
+	    	<button class="uk-width-1-3"><i class="a-file-minus"></i> Clear</button>
+	    	<button class="uk-width-1-3"><i class="a-file-plus"></i> Append a boilerplate</button>
 	    </div>
 	    <div class="findings-new-add-comment-quick-entry-list">
 	    	<span class="uk-badge findings-quick-entry">PROPERTY MANAGER CONTACT NAME</span>
@@ -193,9 +193,13 @@
 	    	<span class="uk-badge findings-quick-entry">HEAD OF HOUSEHOLD NAME</span>
 	    	<span class="uk-badge findings-quick-entry">ANOTHER QUICK ENTRY BUTTON</span>
 	    </div>
-	    <div class="findings-new-add-comment-boilerplate-save">
-	    	<button><i class="a-file-text"></i> Save as new boilerplate for this finding</button>
-	    	<button><i class="a-file-copy-2"></i> Save and add another of this same finding</button>
+	    <div class="findings-new-add-comment-boilerplate-save" uk-grid>
+	    	<div class="uk-width-1-2">
+	    		<button><i class="a-file-text"></i> Save as new boilerplate for this finding</button>
+	    	</div>
+	    	<div class="uk-width-1-2">
+	    		<button><i class="a-file-copy-2"></i> Save and add another of this same finding</button>
+	    	</div>
 	    </div>
 	</div>
 </template>

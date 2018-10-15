@@ -3206,18 +3206,76 @@ button.button-finding-filter.uk-button-secondary:hover {
   position:relative;
   }
 .findings-new-add-comment-textarea textarea {
+  min-height:130px;
+}
+.findings-new-add-comment-textarea textarea:focus {
   outline: none;
 }
 .findings-new-add-comment-textarea .textarea-status{
-      position: absolute;
+    position: absolute;
     display: block;
-    right: 5px;
+    right: 10px;
     bottom: 0%;
+    font-size: 9px;
+    color: #aaa;
+}
+.findings-new-add-comment-boilerplate-action{
+  background-color: #3a3a3a;
+  height: 25px;
+  margin-bottom:10px;
+}
+.findings-new-add-comment-boilerplate-action button {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-align: left;
+}
+
+.findings-new-add-comment-boilerplate-action button i {
+  font-size: 14px;
+  vertical-align: text-bottom;
+}
+.findings-new-add-comment-boilerplate-action button:focus {
+  outline:none;
+}
+.findings-new-add-comment-quick-entry-list{
+
+}
+.findings-new-add-comment-quick-entry-list span.uk-badge {
+  background-color: #1f2a64;
+  color: #d3d2d3;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  text-shadow: none;
+     padding-left: 10px;
+    padding-right: 10px;
+}
+.findings-new-add-comment-boilerplate-save {
+  
+}
+.findings-new-add-comment-boilerplate-save > div {
+    padding-left: 2px;
+    padding-right: 0px;
+}
+.findings-new-add-comment-boilerplate-save > div.uk-first-column {
+    padding-right: 2px;
+    padding-left: 0;
+}
+.findings-new-add-comment-boilerplate-save button {
+    background-color: #a1a2a1;
+    border: none;
+    color: #fff;
+    padding: 4px 5px;
+    width: 100%;
+    text-transform: uppercase;
     font-size: 10px;
 }
-.findings-new-add-comment-boilerplate-action{}
-.findings-new-add-comment-quick-entry-list{}
-.findings-new-add-comment-boilerplate-save{}
+.findings-new-add-comment-boilerplate-save button i {
+    font-size: 15px;
+    vertical-align: sub;
+}
 
 
 
