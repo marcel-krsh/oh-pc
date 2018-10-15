@@ -3231,11 +3231,12 @@ button.button-finding-filter.uk-button-secondary:hover {
     text-transform: uppercase;
     cursor: pointer;
     text-align: left;
+    font-size: 10px;
 }
 
 .findings-new-add-comment-boilerplate-action button i {
-  font-size: 14px;
-  vertical-align: text-bottom;
+      font-size: 15px;
+    vertical-align: sub;
 }
 .findings-new-add-comment-boilerplate-action button:focus {
   outline:none;
