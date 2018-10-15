@@ -175,30 +175,30 @@
 </div>
 
 <template class="uk-hidden" id="modal-findings-new-template">
-	<div class="findings-new-add-comment">
+	<div class="findings-new-add-comment" data-finding-id="tplFindingId">
 	    <div class="findings-new-add-comment-textarea">
 	    	<textarea class="uk-textarea">Custom comment based on what I saw... %%date-in-7-days%%</textarea>
 	    	<div class="textarea-status">SAVED</div>
 	    </div>
 	    <div class="findings-new-add-comment-boilerplate-action" uk-grid>
-	    	<button class="uk-width-1-3"><i class="a-file-text"></i> Use a boilerplate</button>
-	    	<button class="uk-width-1-3"><i class="a-file-minus"></i> Clear</button>
-	    	<button class="uk-width-1-3"><i class="a-file-plus"></i> Append a boilerplate</button>
+	    	<button class="uk-width-1-3" onclick="useBoilerplate();"><i class="a-file-text"></i> Use a boilerplate</button>
+	    	<button class="uk-width-1-3" onclick="clearTextarea();"><i class="a-file-minus"></i> Clear</button>
+	    	<button class="uk-width-1-3" onclick="appendBoilerplate();"><i class="a-file-plus"></i> Append a boilerplate</button>
 	    </div>
 	    <div class="findings-new-add-comment-quick-entry-list">
-	    	<span class="uk-badge findings-quick-entry">PROPERTY MANAGER CONTACT NAME</span>
-	    	<span class="uk-badge findings-quick-entry">ADDRESS OF THIS BUILDING</span>
-	    	<span class="uk-badge findings-quick-entry">DATE IN 7 DAYS</span>
-	    	<span class="uk-badge findings-quick-entry">TOMORROW'S DATE</span>
-	    	<span class="uk-badge findings-quick-entry">HEAD OF HOUSEHOLD NAME</span>
-	    	<span class="uk-badge findings-quick-entry">ANOTHER QUICK ENTRY BUTTON</span>
+	    	<span class="uk-badge findings-quick-entry" onclick="insertTag();" data-tag="property-manager-contact-name">PROPERTY MANAGER CONTACT NAME</span>
+	    	<span class="uk-badge findings-quick-entry" onclick="insertTag();" data-tag="address-of-this-building">ADDRESS OF THIS BUILDING</span>
+	    	<span class="uk-badge findings-quick-entry" onclick="insertTag();" data-tag="date-in-7-days">DATE IN 7 DAYS</span>
+	    	<span class="uk-badge findings-quick-entry" onclick="insertTag();" data-tag="tomorrow-date">TOMORROW'S DATE</span>
+	    	<span class="uk-badge findings-quick-entry" onclick="insertTag();" data-tag="head-of-household-name">HEAD OF HOUSEHOLD NAME</span>
+	    	<span class="uk-badge findings-quick-entry" onclick="insertTag();" data-tag="another-tag">ANOTHER QUICK ENTRY BUTTON</span>
 	    </div>
 	    <div class="findings-new-add-comment-boilerplate-save" uk-grid>
 	    	<div class="uk-width-1-2">
-	    		<button><i class="a-file-text"></i> Save as new boilerplate for this finding</button>
+	    		<button onclick="saveBoilerplace();"><i class="a-file-text"></i> Save as new boilerplate for this finding</button>
 	    	</div>
 	    	<div class="uk-width-1-2">
-	    		<button><i class="a-file-copy-2"></i> Save and add another of this same finding</button>
+	    		<button onclick="saveBoilerplaceAndNewFinding();"><i class="a-file-copy-2"></i> Save and add another of this same finding</button>
 	    	</div>
 	    </div>
 	</div>
@@ -294,30 +294,26 @@ function newFinding(id){
 			// reapply search
 			var valThis = $('#finding-description').val();
    			searchFilterTerm(valThis); 
-
-
-			// enable search term input
-			// $('#finding-description').prop('disabled', false);
-			// // enable filters
-			// $('.button-filter').on('click',function() {
-			//     $(this).prop("disabled",false);
-			// });
 		 });
 	}else{
 
-		// disable search term input
-		// $('#finding-description').prop('disabled', true);
-		// // disable filters
-		// $('.button-filter').on('click',function() {
-		//     $(this).prop("disabled",true);
-		// });
+		var newFindingsTemplate = $('#modal-findings-new-template').html();
 
-		var newFindingsTemplate = $('#modal-findings-new-template').html();;
+		var newfinding = newFindingsTemplate.replace(/tplFindingId/g, id);
 
-		$('#filter-checkbox-list-item-'+id).append('<div style="display:none" class="uk-width-1-1 uk-padding-remove filter-checkbox-new-item-'+id+'">'+newFindingsTemplate+'</div>');
+		$('#filter-checkbox-list-item-'+id).append('<div style="display:none" class="uk-width-1-1 uk-padding-remove filter-checkbox-new-item-'+id+'">'+newfinding+'</div>');
 
 		$('.filter-checkbox-new-item-'+id).slideDown("slow");
 		$('#filter-checkbox-list-item-'+id).attr( "expanded", true );
+
+		$('.findings-new-add-comment-textarea textarea').bind('input propertychange', function() {
+		    console.log("trying to save to db... "+$(this).val());
+		    $.post('/autosave', {
+		        '_token' : '{{ csrf_token() }}'
+		        }, function(data) {
+		        	console.log("saved textarea returned "+data);
+		    });
+		});
 
 	}
 	
@@ -387,4 +383,30 @@ $('.filter-button-set').find('button.button-filter').click(function() {
   }
   
 });
+
+function useBoilerplate(){
+	var currentFinding = $('.findings-new-add-comment').data("finding-id");
+
+}
+function clearTextarea(){
+	var currentFinding = $('.findings-new-add-comment').data("finding-id");
+
+}
+function appendBoilerplate(){
+	var currentFinding = $('.findings-new-add-comment').data("finding-id");
+
+}
+function insertTag(){
+	var currentFinding = $('.findings-new-add-comment').data("finding-id");
+
+}
+function saveBoilerplace(){
+	var currentFinding = $('.findings-new-add-comment').data("finding-id");
+
+}
+function saveBoilerplaceAndNewFinding(){
+	var currentFinding = $('.findings-new-add-comment').data("finding-id");
+
+}
+
 </script>

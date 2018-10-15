@@ -117,4 +117,8 @@ class FindingController extends Controller
     	return view('modals.findings', compact('data', 'checkDoneAddingFindings'));
     }
 
+    function autosave(Request $request) {
+    	return "done";
+    }
+
 }
