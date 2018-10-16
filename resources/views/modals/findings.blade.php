@@ -186,12 +186,12 @@
 	    	<button class="uk-width-1-3" onclick="appendBoilerplate();"><i class="a-file-plus"></i> Append a boilerplate</button>
 	    </div>
 	    <div class="findings-new-add-comment-quick-entry-list">
-	    	<span class="uk-badge findings-quick-entry" onclick="insertTag();" data-tag="property-manager-contact-name">PROPERTY MANAGER CONTACT NAME</span>
-	    	<span class="uk-badge findings-quick-entry" onclick="insertTag();" data-tag="address-of-this-building">ADDRESS OF THIS BUILDING</span>
-	    	<span class="uk-badge findings-quick-entry" onclick="insertTag();" data-tag="date-in-7-days">DATE IN 7 DAYS</span>
-	    	<span class="uk-badge findings-quick-entry" onclick="insertTag();" data-tag="tomorrow-date">TOMORROW'S DATE</span>
-	    	<span class="uk-badge findings-quick-entry" onclick="insertTag();" data-tag="head-of-household-name">HEAD OF HOUSEHOLD NAME</span>
-	    	<span class="uk-badge findings-quick-entry" onclick="insertTag();" data-tag="another-tag">ANOTHER QUICK ENTRY BUTTON</span>
+	    	<span class="uk-badge findings-quick-entry" onclick="insertTag(this);" data-tag="property-manager-contact-name">PROPERTY MANAGER CONTACT NAME</span>
+	    	<span class="uk-badge findings-quick-entry" onclick="insertTag(this);" data-tag="address-of-this-building">ADDRESS OF THIS BUILDING</span>
+	    	<span class="uk-badge findings-quick-entry" onclick="insertTag(this);" data-tag="date-in-7-days">DATE IN 7 DAYS</span>
+	    	<span class="uk-badge findings-quick-entry" onclick="insertTag(this);" data-tag="tomorrow-date">TOMORROW'S DATE</span>
+	    	<span class="uk-badge findings-quick-entry" onclick="insertTag(this);" data-tag="head-of-household-name">HEAD OF HOUSEHOLD NAME</span>
+	    	<span class="uk-badge findings-quick-entry" onclick="insertTag(this);" data-tag="another-tag">ANOTHER QUICK ENTRY BUTTON</span>
 	    </div>
 	    <div class="findings-new-add-comment-boilerplate-save" uk-grid>
 	    	<div class="uk-width-1-2">
@@ -396,8 +396,14 @@ function appendBoilerplate(){
 	var currentFinding = $('.findings-new-add-comment').data("finding-id");
 
 }
-function insertTag(){
+function insertTag(elem){
 	var currentFinding = $('.findings-new-add-comment').data("finding-id");
+    var cursorPos = $('.findings-new-add-comment-textarea textarea').prop('selectionStart');
+    var v = $('.findings-new-add-comment-textarea textarea').val();
+    var textBefore = v.substring(0,  cursorPos);
+    var textAfter  = v.substring(cursorPos, v.length);
+
+    $('.findings-new-add-comment-textarea textarea').val(textBefore + '%%' + $(elem).data("tag")+ '%%' + textAfter);
 
 }
 function saveBoilerplace(){
