@@ -2395,6 +2395,8 @@ margin-top:10px;
 }
 .inspec-tools-tab-findings-container {
   border:0;
+  height: 100%;
+  margin-bottom: 70px;
 }
 #inspec-tools-tab-findings{
   padding-bottom: 12px;
@@ -2406,6 +2408,13 @@ margin-top:10px;
 }
 #inspec-tools-tab-findings .auditinfo {
   font-size:80%;
+}
+.inspec-tools-tab-finding i {
+      font-size: 22px;
+}
+.inspec-tools-tab-finding p {
+  font-size: 18px;
+  line-height: 23px;
 }
 .inspec-tools-tab-finding .inspec-tools-findings-resolve, #auditstable .inspec-tools-tab-finding .inspec-tools-findings-resolve {
   background-color: transparent;
@@ -2433,6 +2442,15 @@ margin-top:10px;
     vertical-align: baseline;
     background-color:transparent;
 }
+.inspec-tools-tab-finding-stats {
+    font-size: 15px;
+}
+.inspec-tools-tab-finding-stats i {
+    vertical-align: sub;
+    margin-right: 6px;
+    line-height: 27px;
+    cursor: pointer;
+}
 .inspec-tools-tab-finding-comment {
     color: #57585a;
 }
@@ -2442,9 +2460,11 @@ margin-top:10px;
 .inspec-tools-tab-finding.ok-actionable { border-top: 3px solid; border-color: #56b285; color: #56b285; }
 .inspec-tools-tab-finding.in-progress { border-top: 3px dotted; border-color: #49ade9; color: #49ade9; }
 
-.inspec-tools-tab-finding.no-action .bordered, .inspec-tools-tab-finding .bordered { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px solid; border-color: #939598; color: #939598; }
-.inspec-tools-tab-finding.action-needed .bordered { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px dashed; border-color: #76338b; color: #76338b; }
-.inspec-tools-tab-finding.action-required .bordered, .inspec-tools-tab-finding.critical .bordered { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px double; animation: border-pulsate 2s infinite; border-color: #da328a; color: #da328a; }
+.inspec-tools-tab-finding.no-action .bordered, 
+.inspec-tools-tab-finding .bordered { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px solid; border-color: #939598; color: #939598; }
+.inspec-tools-tab-finding.action-needed .bordered { padding-bottom: 20px;margin-bottom: 0px; border-bottom: 3px dashed; border-color: #76338b; color: #76338b; }
+.inspec-tools-tab-finding.action-required .bordered, 
+.inspec-tools-tab-finding.critical .bordered { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px double; animation: border-pulsate 2s infinite; border-color: #da328a; color: #da328a; }
 .inspec-tools-tab-finding.ok-actionable .bordered { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px solid; border-color: #56b285; color: #56b285; }
 .inspec-tools-tab-finding.in-progress .bordered { padding-bottom: 20px; margin-bottom: 5px; border-bottom: 3px dotted; border-color: #49ade9; color: #49ade9; }
 
@@ -2454,22 +2474,47 @@ margin-top:10px;
 .inspec-tools-tab-finding.ok-actionable .borderedcomment { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px solid; border-color: #56b285;  }
 .inspec-tools-tab-finding.in-progress .borderedcomment { padding-bottom: 20px; margin-bottom: 5px; border-bottom: 3px dotted; border-color: #49ade9;  }
 
-.inspec-tools-tab-finding .inspec-tools-tab-finding-reply { 
+.inspec-tools-tab-finding .inspec-tools-tab-finding-description {
+  position: relative;
+}
+.inspec-tools-tab-finding .inspec-tools-tab-finding-top-actions {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.inspec-tools-tab-finding .inspec-tools-tab-finding-actions {
+  position: absolute;
+  right:0;
+  bottom: 15px;
+}
+.inspec-tools-tab-finding .inspec-tools-tab-finding-info {
+
+}
+.inspec-tools-tab-finding .inspec-tools-tab-finding-items {
+  padding-top: 15px;
+}
+.inspec-tools-tab-finding .inspec-tools-tab-finding-reply, 
+.inspec-tools-tab-finding .inspec-tools-tab-finding-actions button { 
   background-color: transparent;
   border: 1px solid #bbb;
   padding: 0 20px 0 7px;
   float: right;
-  font-size: 12px;
+  font-size: 14px;
   color: #bbb;
   text-shadow: none;
+  margin: 0 5px;
+      line-height: 24px;
+    min-height: 26px;
 }
-.inspec-tools-tab-finding .inspec-tools-tab-finding-reply:hover { 
+.inspec-tools-tab-finding .inspec-tools-tab-finding-reply:hover, 
+.inspec-tools-tab-finding .inspec-tools-tab-finding-actions button:hover { 
   background-color: #bbb;
   border: 1px solid #bbb;
   color: #fff;
 }
-.inspec-tools-tab-finding .inspec-tools-tab-finding-reply i {
-  vertical-align: inherit;
+.inspec-tools-tab-finding .inspec-tools-tab-finding-reply i, 
+.inspec-tools-tab-finding .inspec-tools-tab-finding-actions button i {
+  vertical-align: sub;
   font-size: 19px !important;
   font-weight: bold;
   padding-right: 2px;
@@ -2513,8 +2558,20 @@ margin-top:10px;
 .inspec-tools-tab-finding.no-action .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #939598; color: #939598;}
 .inspec-tools-tab-finding.action-needed .inspec-tools-findings-resolve { border: 2px dashed #76338b; color: #76338b;}
 .inspec-tools-tab-finding.action-needed .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #76338b; color: #76338b;}
-.inspec-tools-tab-finding.action-required .inspec-tools-findings-resolve { border-top: 3px double; animation: border-pulsate 2s infinite; border-color: #da328a; color: #da328a; }
-.inspec-tools-tab-finding.action-required .inspec-tools-findings-resolve .uk-badge  { border-top: 2px solid; animation: border-pulsate 2s infinite; border-color: #da328a; color: #da328a; }
+.inspec-tools-tab-finding.action-required .inspec-tools-findings-resolve { 
+  animation: pulsate 2s infinite; 
+  border-color: #da328a;     
+  color: #fff;
+  background-color: #da328a;
+  text-shadow: none;
+  font-size: 14px; 
+  line-height: inherit;
+}
+.inspec-tools-tab-finding.action-required .inspec-tools-findings-resolve .uk-badge  { 
+  border-top: 2px solid; 
+  border-color: #fff; 
+  color: #fff; 
+}
 .inspec-tools-tab-finding.ok-actionable .inspec-tools-findings-resolve { border: 2px solid #56b285; color: #56b285;}
 .inspec-tools-tab-finding.ok-actionable .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #56b285; color: #56b285;}
 .inspec-tools-tab-finding.in-progress .inspec-tools-findings-resolve { border: 2px dotted #49ade9; color: #49ade9;}
@@ -3024,7 +3081,7 @@ i.fa-square.chart-color-to-be-inspected { background-color:#e0e0df; }
   position: absolute;
   top: 30px;
       border-right: 1px dotted #3a3a3a;
-    padding-right: 35px;
+    padding-right: 25px;
     height: 95%;
 }
 .modal-findings-right {

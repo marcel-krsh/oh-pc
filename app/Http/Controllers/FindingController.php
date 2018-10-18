@@ -112,6 +112,122 @@ class FindingController extends Controller
     			['id'=> 18, 'name' => 'Inspection Group SD finding description here45', 'type' => 'file', 'icon' => 'a-folder'],
     			['id'=> 19, 'name' => 'Inspection Group SD finding description here43', 'type' => 'file', 'icon' => 'a-folder'],
     			['id'=> 20, 'name' => 'Inspection Group SD finding description here23', 'type' => 'lt', 'icon' => 'a-skull']
+    		],
+    		'findings' => [
+    			[
+    				'id' => 987,
+    				'ref' => '20120394',
+    				'status' => 'action-needed',
+    				'type' => 'nlt',
+    				'icon' => 'a-booboo',
+    				'audit' => '20120394',
+    				'date' => '12/22/2018 12:51:38 PM',
+    				'description' => 'Inspection Group NLT Finding Description Here',
+    				'auditor' => [
+    					'id' => 1,
+    					'name' => 'Holly Swisher'
+    				],
+    				'building' => [
+    					'id' => 144,
+    					'name' => 'Building 2'
+    				],
+    				'amenity' => [
+    					'id' => '111',
+    					'name' => 'STAIR #1',
+	    				'address' => '123457 Silvegwood Street',
+	    				'city' => 'Columbus',
+	    				'state' => 'OH',
+	    				'zip' => '43219'
+    				],
+    				'items' => [
+    					[
+    						'id' => 333,
+    						'type' => 'comment',
+    						'date' => '12/22/2018 12:51:38 PM',
+		    				'auditor' => [
+		    					'id' => 1,
+		    					'name' => 'Holly Swisher'
+		    				]
+    					]
+    				]
+
+    			],
+    			[
+    				'id' => 947,
+    				'ref' => '11112394',
+    				'status' => 'action-required',
+    				'type' => 'sd',
+    				'icon' => 'a-flames',
+    				'audit' => '20121111',
+    				'date' => '12/22/2018 12:51:38 PM',
+    				'description' => 'Inspection Group SD Finding Description Here',
+    				'auditor' => [
+    					'id' => 1,
+    					'name' => 'Holly Swisher'
+    				],
+    				'building' => [
+    					'id' => 144,
+    					'name' => 'Building 2'
+    				],
+    				'amenity' => [
+    					'id' => '111',
+    					'name' => 'STAIR #1',
+	    				'address' => '123457 Silvegwood Street',
+	    				'city' => 'Columbus',
+	    				'state' => 'OH',
+	    				'zip' => '43219'
+    				],
+    				'items' => [
+    					[
+    						'id' => 333,
+    						'type' => 'comment',
+    						'date' => '12/22/2018 12:51:38 PM',
+		    				'auditor' => [
+		    					'id' => 1,
+		    					'name' => 'Holly Swisher'
+		    				]
+    					]
+    				]
+
+    			],
+    			[
+    				'id' => 947,
+    				'ref' => '11112394',
+    				'status' => 'action-required',
+    				'type' => 'sd',
+    				'icon' => 'a-flames',
+    				'audit' => '20121111',
+    				'date' => '12/22/2018 12:51:38 PM',
+    				'description' => 'Inspection Group SD Finding Description Here',
+    				'auditor' => [
+    					'id' => 1,
+    					'name' => 'Holly Swisher'
+    				],
+    				'building' => [
+    					'id' => 144,
+    					'name' => 'Building 2'
+    				],
+    				'amenity' => [
+    					'id' => '111',
+    					'name' => 'STAIR #1',
+	    				'address' => '123457 Silvegwood Street',
+	    				'city' => 'Columbus',
+	    				'state' => 'OH',
+	    				'zip' => '43219'
+    				],
+    				'items' => [
+    					[
+    						'id' => 333,
+    						'type' => 'comment',
+    						'date' => '12/22/2018 12:51:38 PM',
+		    				'auditor' => [
+		    					'id' => 1,
+		    					'name' => 'Holly Swisher'
+		    				]
+    					]
+    				]
+
+    			]
     		]
     	]);
     	return view('modals.findings', compact('data', 'checkDoneAddingFindings'));

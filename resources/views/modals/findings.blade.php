@@ -4,61 +4,50 @@
 		
 		<div class="modal-findings-right-bottom-container">
 			<div class="modal-findings-right-bottom">
-				<div class="inspec-tools-tab-findings-container uk-panel uk-panel-scrollable uk-height-large uk-height-max-large">
-		    		<div class="inspec-tools-tab-finding action-needed uk-grid uk-grid-stack" uk-grid="">
-		    			<div class="uk-width-1-1 uk-first-column" style="padding-top: 15px;">
-		    				<div uk-grid="" class="uk-grid">
-				    			<div class="uk-width-1-4 uk-first-column">
-				    				<i class="a-booboo"></i> NLT<br>
-				    				<span class="auditinfo">AUDIT 20120394</span><br /><br />
-				    				<button class="uk-button inspec-tools-findings-resolve uk-link"><span class="uk-badge">
-								    	 &nbsp; </span>RESOLVE</button>
+				<div class="inspec-tools-tab-findings-container uk-panel uk-panel-scrollable">
+					@foreach($data['findings'] as $finding)
+					<div id="inspec-tools-tab-finding-{{$finding['id']}}" class="inspec-tools-tab-finding {{$finding['status']}} " data-finding-id="{{$finding['id']}}" uk-grid>
+						<div class="inspec-tools-tab-finding-info uk-width-1-1 uk-first-column" style="padding-top: 15px;">
+		    				<div class="uk-grid-match" uk-grid>
+				    			<div class="uk-width-1-4 uk-padding-remove-left uk-first-column">
+				    				<div class="uk-display-block">
+					    				<i class="{{$finding['icon']}}"></i><br>
+					    				<span class="auditinfo">AUDIT {{$finding['audit']}}</span>
+					    			</div>
+					    			<div class="uk-display-block" style="margin: 15px 0;">
+					    				<button class="uk-button inspec-tools-findings-resolve uk-link"><span class="uk-badge">
+									    	 &nbsp; </span>RESOLVE</button>
+									</div>
+									<div class="inspec-tools-tab-finding-stats" style="margin: 0 0 15px 0;">
+										<i class="a-bell-plus"></i> <span id="inspec-tools-tab-finding-stat-reminders">0</span><br />
+										<i class="a-comment-plus"></i> 1<br />
+										<i class="a-file-plus"></i> 0<br />
+										<i class="a-picture"></i> 0<br />
+
+										<i class="a-menu" onclick="expandFindingItems(this);"></i>
+									</div>
 				    			</div>
-				    			<div class="uk-width-3-4 bordered">
-				    				<p>12/22/2018 12:51:38 PM: By Holly Swisher<br>
-				    				STAIR #1 : Finding Description Goes here and continues here for when it is long</p>
-				    			</div>
-				    		</div>
-				    	</div>
-				    	<div class="uk-width-1-1 uk-margin-remove inspec-tools-tab-finding-comment uk-grid-margin uk-first-column">
-				    		<div uk-grid="" class="uk-grid">
-				    			<div class="uk-width-1-4 uk-first-column">
-				    				<i class="a-comment-text"></i> COMMENT
-				    			</div>
-				    			<div class="uk-width-3-4 borderedcomment">
-				    				<p>12/31/2018 12:59:38 PM: By Holly Swisher<br>
-				    					<span class="finding-comment">Comment goes here and is italicised to show that it is a comment and not a finding.</span></p>
-									<button class="uk-button inspec-tools-tab-finding-reply uk-link">
-				    					<i class="a-comment-pencil"></i> REPLY
-								    </button>
-				    			</div>
-				    		</div>
-				    	</div>
-				    	<div class="uk-width-1-1 uk-margin-remove uk-grid-margin uk-first-column">
-				    		<div uk-grid="" class="uk-grid">
-				    			<div class="uk-width-1-4 uk-first-column">
-				    				<button class="uk-button uk-link inspec-tools-tab-finding-button">
-				    					<i class="a-calendar-pencil"></i> FOLLOW UP
-								    </button>
-				    			</div>
-				    			<div class="uk-width-1-4">
-				    				<button class="uk-button uk-link inspec-tools-tab-finding-button">
-				    					<i class="a-comment-text"></i> COMMENT
-								    </button>
-				    			</div>
-				    			<div class="uk-width-1-4">
-				    				<button class="uk-button uk-link inspec-tools-tab-finding-button colored">
-				    					<i class="a-file-clock"></i> DOCUMENT
-								    </button>
-				    			</div>
-				    			<div class="uk-width-1-4">
-				    				<button class="uk-button uk-link inspec-tools-tab-finding-button">
-				    					<i class="a-picture"></i> PHOTO
-								    </button>
+				    			<div class="uk-width-3-4 uk-padding-remove-right uk-padding-remove">
+				    				<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description">
+					    				<p>{{$finding['date']}}: FN#{{$finding['ref']}}<br />
+					    					By {{$finding['auditor']['name']}}<br>
+					    					{{$finding['amenity']['address']}}<br />
+					    					{{$finding['amenity']['city']}}, {{$finding['amenity']['state']}} {{$finding['amenity']['zip']}}
+					    				</p>
+					    				<p>{{$finding['building']['name']}}: {{$finding['amenity']['name']}}<br />{{$finding['description']}}</p>
+					    				<div class="inspec-tools-tab-finding-actions">
+										    <button class="uk-button uk-link"><i class="a-pencil-2"></i> EDIT</button>
+					    					<button class="uk-button uk-link"><i class="a-trash-3"></i> DELETE</button>
+					    				</div>
+					    				<div class="inspec-tools-tab-finding-top-actions">
+					    					<i class="a-circle-plus"></i>
+					    				</div>
+					    			</div>
 				    			</div>
 				    		</div>
 				    	</div>
-		    		</div>
+					</div>
+					@endforeach
 		    	</div>
 			</div>
 		</div>
@@ -174,7 +163,7 @@
 	</div>
 </div>
 
-<template class="uk-hidden" id="modal-findings-new-template">
+<template class="uk-hidden" id="modal-findings-new-form-template">
 	<div class="findings-new-add-comment" data-finding-id="tplFindingId">
 	    <div class="findings-new-add-comment-textarea">
 	    	<textarea class="uk-textarea">Custom comment based on what I saw... %%date-in-7-days%%</textarea>
@@ -200,6 +189,113 @@
 	    	<div class="uk-width-1-2">
 	    		<button onclick="saveBoilerplaceAndNewFinding();"><i class="a-file-copy-2"></i> Save and add another of this same finding</button>
 	    	</div>
+	    </div>
+	</div>
+</template>
+
+<template class="uk-hidden" id="modal-findings-new-template">
+	<div class="inspec-tools-tab-finding action-needed uk-grid uk-grid-stack" uk-grid="">
+		<div class="uk-width-1-1 uk-first-column" style="padding-top: 15px;">
+			<div uk-grid="" class="uk-grid">
+    			<div class="uk-width-1-4 uk-first-column">
+    				<i class="a-booboo"></i> NLT<br>
+    				<span class="auditinfo">AUDIT 20120394</span><br /><br />
+    				<button class="uk-button inspec-tools-findings-resolve uk-link"><span class="uk-badge">
+				    	 &nbsp; </span>RESOLVE</button>
+    			</div>
+    			<div class="uk-width-3-4 bordered">
+    				<p>12/22/2018 12:51:38 PM: By Holly Swisher<br>
+    				STAIR #1 : Finding Description Goes here and continues here for when it is long</p>
+    			</div>
+    		</div>
+    	</div>
+    	<div class="uk-width-1-1 uk-margin-remove inspec-tools-tab-finding-comment uk-grid-margin uk-first-column">
+    		<div uk-grid="" class="uk-grid">
+    			<div class="uk-width-1-4 uk-first-column">
+    				<i class="a-comment-text"></i> COMMENT
+    			</div>
+    			<div class="uk-width-3-4 borderedcomment">
+    				<p>12/31/2018 12:59:38 PM: By Holly Swisher<br>
+    					<span class="finding-comment">Comment goes here and is italicised to show that it is a comment and not a finding.</span></p>
+					<button class="uk-button inspec-tools-tab-finding-reply uk-link">
+    					<i class="a-comment-pencil"></i> REPLY
+				    </button>
+    			</div>
+    		</div>
+    	</div>
+    	<div class="uk-width-1-1 uk-margin-remove uk-grid-margin uk-first-column">
+    		<div uk-grid="" class="uk-grid">
+    			<div class="uk-width-1-4 uk-first-column">
+    				<button class="uk-button uk-link inspec-tools-tab-finding-button">
+    					<i class="a-calendar-pencil"></i> FOLLOW UP
+				    </button>
+    			</div>
+    			<div class="uk-width-1-4">
+    				<button class="uk-button uk-link inspec-tools-tab-finding-button">
+    					<i class="a-comment-text"></i> COMMENT
+				    </button>
+    			</div>
+    			<div class="uk-width-1-4">
+    				<button class="uk-button uk-link inspec-tools-tab-finding-button colored">
+    					<i class="a-file-clock"></i> DOCUMENT
+				    </button>
+    			</div>
+    			<div class="uk-width-1-4">
+    				<button class="uk-button uk-link inspec-tools-tab-finding-button">
+    					<i class="a-picture"></i> PHOTO
+				    </button>
+    			</div>
+    		</div>
+    	</div>
+	</div>
+</template>
+
+<template class="uk-hidden" id="inspec-tools-tab-finding-item-template">
+	<div class="uk-width-1-1 uk-margin-remove inspec-tools-tab-finding-comment uk-first-column">
+		<div uk-grid="" class="uk-grid">
+			<div class="uk-width-1-4 uk-first-column">
+				<i class="a-comment-text"></i> COMMENT
+			</div>
+			<div class="uk-width-3-4 borderedcomment">
+				<p>12/31/2018 12:59:38 PM: By Holly Swisher<br>
+					<span class="finding-comment">Comment goes here and is italicised to show that it is a comment and not a finding.</span></p>
+				<button class="uk-button inspec-tools-tab-finding-reply uk-link">
+					<i class="a-comment-pencil"></i> REPLY
+			    </button>
+			</div>
+		</div>
+	</div>
+
+	<div class="uk-width-1-1 uk-margin-remove uk-grid-margin uk-first-column">
+		<div uk-grid="" class="uk-grid">
+			<div class="uk-width-1-4 uk-first-column">
+				<button class="uk-button uk-link inspec-tools-tab-finding-button">
+					<i class="a-calendar-pencil"></i> FOLLOW UP
+			    </button>
+			</div>
+			<div class="uk-width-1-4">
+				<button class="uk-button uk-link inspec-tools-tab-finding-button">
+					<i class="a-comment-text"></i> COMMENT
+			    </button>
+			</div>
+			<div class="uk-width-1-4">
+				<button class="uk-button uk-link inspec-tools-tab-finding-button colored">
+					<i class="a-file-clock"></i> DOCUMENT
+			    </button>
+			</div>
+			<div class="uk-width-1-4">
+				<button class="uk-button uk-link inspec-tools-tab-finding-button">
+					<i class="a-picture"></i> PHOTO
+			    </button>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template class="uk-hidden" id="inspec-tools-tab-finding-items-template">
+	<div class="inspec-tools-tab-finding-items uk-width-1-1 uk-first-column uk-margin-remove" style="display:none">
+		<div class="inspec-tools-tab-finding-items-list" uk-grid>
+	    	
 	    </div>
 	</div>
 </template>
@@ -297,9 +393,10 @@ function newFinding(id){
 		 });
 	}else{
 
-		var newFindingsTemplate = $('#modal-findings-new-template').html();
+		var newFindingsFormTemplate = $('#modal-findings-new-form-template').html();
+		var newFindingsTemplate = $('#modal-findings-new-form-template').html();
 
-		var newfinding = newFindingsTemplate.replace(/tplFindingId/g, id);
+		var newfinding = newFindingsFormTemplate.replace(/tplFindingId/g, id);
 
 		$('#filter-checkbox-list-item-'+id).append('<div style="display:none" class="uk-width-1-1 uk-padding-remove filter-checkbox-new-item-'+id+'">'+newfinding+'</div>');
 
@@ -413,6 +510,41 @@ function saveBoilerplace(){
 function saveBoilerplaceAndNewFinding(){
 	var currentFinding = $('.findings-new-add-comment').data("finding-id");
 
+}
+
+function expandFindingItems(element) {
+
+	var parentFindingContainer = $(element).closest("[data-finding-id], .inspec-tools-tab-finding");
+	var findingId = parentFindingContainer.data('finding-id');
+	console.log(findingId);
+
+	if (parentFindingContainer.attr('expanded')){
+		parentFindingContainer.removeAttr('expanded');
+		$('#inspec-tools-tab-finding-items-'+findingId).slideUp("slow", function() {
+
+			$(this).remove();
+		 });
+	}else{
+
+		var tempdiv = '<div id="inspec-tools-tab-finding-items-'+findingId+'" class="uk-width-1-1">';
+		tempdiv = tempdiv + '<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+		tempdiv = tempdiv + '</div>';
+		parentFindingContainer.append(tempdiv);
+
+		var findingsItemsTemplate = $('#inspec-tools-tab-finding-items-template').html();
+		var findingsItemTemplate = $('#inspec-tools-tab-finding-item-template').html();
+
+		// var newfinding = newFindingsFormTemplate.replace(/tplFindingId/g, id);
+
+		$('#inspec-tools-tab-finding-items-'+findingId).html(findingsItemsTemplate);
+		$('#inspec-tools-tab-finding-items-'+findingId).find('.inspec-tools-tab-finding-items-list').html(findingsItemTemplate);
+
+		$('#inspec-tools-tab-finding-items-'+findingId).find('.inspec-tools-tab-finding-items').slideDown("slow");
+		parentFindingContainer.attr( "expanded", true );
+
+	}	
+
+	
 }
 
 </script>
