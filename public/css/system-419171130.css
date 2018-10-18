@@ -2454,7 +2454,7 @@ margin-top:10px;
 .inspec-tools-tab-finding-comment {
     color: #57585a;
 }
-.inspec-tools-tab-finding.no-action, .inspec-tools-tab-finding { border-top: 3px solid; border-color: #939598; color: #939598; }
+.inspec-tools-tab-finding.no-action, .inspec-tools-tab-finding { border-top: 3px solid; border-color: #939598; color: #939598; margin-top: 0px !important; margin-bottom: 10px;}
 .inspec-tools-tab-finding.action-needed { border-top: 3px dashed; border-color: #76338b; color: #76338b; }
 .inspec-tools-tab-finding.action-required, .inspec-tools-tab-finding.critical { border-top: 3px double; animation: border-pulsate 2s infinite; border-color: #da328a; color: #da328a; }
 .inspec-tools-tab-finding.ok-actionable { border-top: 3px solid; border-color: #56b285; color: #56b285; }
@@ -3164,10 +3164,12 @@ i.fa-square.chart-color-to-be-inspected { background-color:#e0e0df; }
     display: inherit;
 }
 
-.filter-button-set, .filter-button-set [class*="uk-width-"] {
+.filter-button-set, .filter-button-set [class*="uk-width-"],
+.filter-button-set-right, .filter-button-set-right [class*="uk-width-"] {
     padding: 0;
 }
-.filter-button-set button.button-filter {
+.filter-button-set button.button-filter,
+.filter-button-set-right button.button-filter {
   width:100%;
   border-radius: 0;
   border-left: 0px;    
@@ -3176,25 +3178,31 @@ i.fa-square.chart-color-to-be-inspected { background-color:#e0e0df; }
   height:32px;
   max-height:32px;
 }
-.filter-button-set button.button-filter.button-filter-border-left {
+.filter-button-set button.button-filter.button-filter-border-left,
+.filter-button-set-right button.button-filter.button-filter-border-left {
   border-left:1px solid #3a3a3a;
 }
-.filter-button-set button.button-filter i {
+.filter-button-set button.button-filter i,
+.filter-button-set-right button.button-filter i {
     font-size: 24px;
     vertical-align: text-bottom;
 }
-.filter-button-set .uk-button:active, .filter-button-set .uk-button.uk-active {
+.filter-button-set .uk-button:active, .filter-button-set .uk-button.uk-active,
+.filter-button-set-right .uk-button:active, .filter-button-set-right .uk-button.uk-active {
   background-color: #3a3a3a;
   color:#fff;
 }
-.filter-button-set .uk-input {
+.filter-button-set .uk-input,
+.filter-button-set-right .uk-input {
     height: 32px;
 }
-.filter-button-set .uk-form-icon {
+.filter-button-set .uk-form-icon,
+.filter-button-set-right .uk-form-icon {
       top: 9px;
     bottom: unset;
 }
 .filter-button-set .uk-input:focus,
+.filter-button-set-right .uk-input:focus,
 .modal-form .uk-input:focus {
   border-color:inherit;
 }
@@ -3493,7 +3501,7 @@ min-height: 80px;	*/
 }
 .sort-asc{
 	display:inline-block;
-	width:100%;
+	width:99%;
 	height:18px;
 	background-image:url(../images/filter-sort-asc.png);
 	background-position:center;
