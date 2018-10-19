@@ -1,12 +1,38 @@
-<div id="modal-findings" class="uk-margin-top">
-	
-	<div class="modal-findings-right" uk-filter="target: .js-filter-findings-right">
-		
-		<div class="modal-findings-right-bottom-container">
+<div id="modal-findings" class="uk-margin-top" >
+	<div class="modal-findings-right" uk-filter="target: .js-findings">
+		<div class="modal-findings-right-top">
+		    <div class="uk-width-1-1 filter-button-set-right" uk-grid>
+		        <div class="uk-width-1-4 uk-active findinggroup" uk-filter-control="filter: [data-finding-filter*='my-finding']; group: findingfilter;">
+	                <button class="uk-button uk-button-default button-filter button-filter-border-left" >My finding</button>
+		        	<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
+						<a class="sort-asc"></a>
+					</span>
+	            </div>
+	            <div class="uk-width-1-4 findinggroup" uk-filter-control="filter: [data-finding-filter*='all']; group: findingfilter;">    
+	            	<button class="uk-button uk-button-default button-filter">All findings</button>
+		        	<span style="display:none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
+						<a class="sort-asc"></a>
+					</span>
+	            </div>
+	            <div class="uk-width-1-4 uk-active auditgroup" uk-filter-control="filter: [data-audit-filter*='this-audit']; group: auditfilter;">
+	                <button class="uk-button uk-button-default button-filter">this audit</button>
+	                <span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
+						<a class="sort-asc"></a>
+					</span>
+	            </div>
+	            <div class="uk-width-1-4 auditgroup" uk-filter-control="filter: [data-audit-filter*='all']; group: auditfilter; ">
+	                <button class="uk-button uk-button-default button-filter">all audits</button>
+	                <span style="display:none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
+						<a class="sort-asc"></a>
+					</span>
+		        </div>
+		    </div>
+		   </div>
+	    <div class="modal-findings-right-bottom-container">
 			<div class="modal-findings-right-bottom">
-				<div class="inspec-tools-tab-findings-container uk-panel uk-panel-scrollable js-filter-findings-right">
-					@foreach($data['findings'] as $finding)
-					<div id="inspec-tools-tab-finding-{{$finding['id']}}" class="inspec-tools-tab-finding {{$finding['status']}} " data-finding-id="{{$finding['id']}}" data-audit-filter="{{$finding['audit-filter']}}"" data-finding-filter="{{$finding['finding-filter']}}" uk-grid>
+				<div class="inspec-tools-tab-findings-container uk-panel uk-panel-scrollable js-findings">
+			    	@foreach($data['findings'] as $finding)
+			        <div id="inspec-tools-tab-finding-{{$finding['id']}}" class="inspec-tools-tab-finding {{$finding['status']}}" data-ordering-finding="{{$finding['id']}}" data-finding-id="{{$finding['id']}}" data-audit-filter="{{$finding['audit-filter']}} all" data-finding-filter="{{$finding['finding-filter']}} all" uk-grid>
 						<div class="inspec-tools-tab-finding-info uk-width-1-1 uk-first-column  uk-active" style="padding-top: 15px;">
 		    				<div class="uk-grid-match" uk-grid>
 				    			<div class="uk-width-1-4 uk-padding-remove-left uk-first-column">
@@ -47,45 +73,11 @@
 				    		</div>
 				    	</div>
 					</div>
-					@endforeach
-		    	</div>
+				    @endforeach
+				</div>
 			</div>
 		</div>
-		<div class="modal-findings-right-top">
-			<div class="uk-width-1-1 filter-button-set-right">
-	        	<div  uk-grid>
-	        		<div class="uk-width-1-4">
-	        			<button class="uk-button uk-button-default button-filter button-filter-border-left" uk-filter-control="filter: [data-finding-filter='my-finding']; goup: finding-filter;">MY FINDINGS</button>
-			        	<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
-							<a class="sort-asc" uk-filter-control="sort: data-finding-filter;filter: [data-finding-filter='my-finding']; goup: finding-filter;" onclick="$(this).toggle();$(this).siblings().toggle();"></a>
-							<a class="sort-desc" uk-filter-control="filter: [data-finding-filter='my-finding']; goup: finding-filter;sort: data-finding-filter; order: desc" onclick="$(this).toggle();$(this).siblings().toggle();" style="display:none;"></a>
-						</span>
-	        		</div>
-	        		<div class="uk-width-1-4">
-	        			<button class="uk-button uk-button-default button-filter uk-active" uk-filter-control="goup: finding-filter;">ALL FINDINGS</button>
-			        	<span style="display:none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
-							<a class="sort-asc" uk-filter-control="sort: data-finding-filter; goup: finding-filter;" onclick="$(this).toggle();$(this).siblings().toggle();"></a>
-							<a class="sort-desc" uk-filter-control="goup: finding-filter;sort: data-finding-filter; order: desc" onclick="$(this).toggle();$(this).siblings().toggle();" style="display:none;"></a>
-						</span>
-	        		</div>
-	        		<div class="uk-width-1-4">
-	        			<button class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-audit-filter='this-audit']; goup: audit-filter;">THIS AUDIT</button>
-	        			<span style="display:none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
-							<a class="sort-asc" uk-filter-control="sort: data-audit-filter;filter: [data-audit-filter='this-audit']; goup: audit-filter;" onclick="$(this).toggle();$(this).siblings().toggle();"></a>
-							<a class="sort-desc" uk-filter-control="filter: [data-audit-filter='this-audit']; goup: audit-filter;sort: data-audit-filter; order: desc" onclick="$(this).toggle();$(this).siblings().toggle();" style="display:none;"></a>
-						</span>
-			        	
-	        		</div>
-	        		<div class="uk-width-1-4">
-	        			<button class="uk-button uk-button-default button-filter uk-active" uk-filter-control="goup: audit-filter;">ALL AUDITS</button>
-			        	<span style="display:none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
-							<a class="sort-asc" uk-filter-control="sort: data-audit-filter;filter: [data-audit-filter='this-audit']; goup: audit-filter;" onclick="$(this).toggle();$(this).siblings().toggle();"></a>
-							<a class="sort-desc" uk-filter-control="filter: [data-audit-filter='this-audit']; goup: audit-filter;sort: data-audit-filter; order: desc" onclick="$(this).toggle();$(this).siblings().toggle();" style="display:none;"></a>
-						</span>
-	        		</div>
-	        	</div>
-	        </div>
-		</div>
+
 	</div>
 	<div class="modal-findings-left" uk-filter="target: .js-filter-findings">
 		<div class="modal-findings-left-bottom-container">
@@ -138,31 +130,31 @@
 			        		<div class="uk-width-1-5">
 			        			<button class="uk-button uk-button-default button-filter uk-active" uk-filter-control><i class="uk-icon-asterisk"></i></button>
 					        	<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
-									<a id="" class="sort-desc" onclick="loadFindingsList();"></a>
+									<a id="" class="sort-desc"></a>
 								</span>
 			        		</div>
 			        		<div class="uk-width-1-5">
 			        			<button class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='file'];"><i class="a-folder"></i></button>
 					        	<span style="display: none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
-									<a id="" class="sort-desc" onclick="loadFindingsList();"></a>
+									<a id="" class="sort-desc"></a>
 								</span>
 			        		</div>
 			        		<div class="uk-width-1-5">
 			        			<button class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='nlt'];"><i class="a-booboo"></i></button>
 					        	<span style="display: none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
-									<a id="" class="sort-desc" onclick="loadFindingsList();"></a>
+									<a id="" class="sort-desc"></a>
 								</span>
 			        		</div>
 			        		<div class="uk-width-1-5">
 			        			<button class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='lt'];"><i class="a-skull"></i></button>
 					        	<span style="display: none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
-									<a id="" class="sort-asc" onclick="loadFindingsList();"></a>
+									<a id="" class="sort-asc"></a>
 								</span>
 			        		</div>
 			        		<div class="uk-width-1-5">
 			        			<button class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='sd'];"><i class="a-flames"></i></button>
 					        	<span style="display: none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
-									<a id="" class="sort-desc" onclick="loadFindingsList();"></a>
+									<a id="" class="sort-desc"></a>
 								</span>
 			        		</div>
 			        	</div>
@@ -426,16 +418,62 @@ function newFinding(id){
 	
 }
 
-$('.filter-button-set-right').find('button.button-filter').click(function() {
-	if($(this).closest('div').find('span').is(':visible')){
-		// switch order
-		$(this).closest('div.uk-grid').find('span a:visible').trigger("click");
-	}else{
-		// close all spans
-		$('.filter-button-set-right').find('div.uk-grid span').hide();
+$('.filter-button-set-right').find('[uk-filter-control]').click(function() {
+	if($(this).find('span').is(':visible')){
 
-		// open current span
-		$(this).closest('div').find('span').show();
+		// switch order
+		var currentOrdering = 'sort-asc';
+	  	if($(this).find('span a').hasClass('sort-desc')){
+			currentOrdering = 'sort-desc';
+	  	}
+
+	  	// switch the span data and the visual
+	  	if(currentOrdering == "sort-asc"){
+	  		var sortableElementParent = $('.js-findings');
+		  	var sortableElements = sortableElementParent.children(); console.log(sortableElements.length);
+		  	sortableElements.sort(function(a,b){
+				var an = a.getAttribute('data-ordering-finding'),
+					bn = b.getAttribute('data-ordering-finding');
+
+				if(an > bn) {
+					return 1;
+				}
+				if(an < bn) {
+					return -1;
+				}
+				return 0;
+			});
+			 sortableElements.detach().appendTo(sortableElementParent);
+	  		$(this).find('span a').removeClass('sort-asc').addClass('sort-desc');
+	  	}else{
+	  		var sortableElementParent = $('.js-findings');
+		  	var sortableElements = sortableElementParent.children();console.log(sortableElements.length);
+		  	sortableElements.sort(function(a,b){
+				var an = a.getAttribute('data-ordering-finding'),
+					bn = b.getAttribute('data-ordering-finding');
+
+				if(an < bn) {
+					return 1;
+				}
+				if(an > bn) {
+					return -1;
+				}
+				return 0;
+			});
+		    sortableElements.detach().appendTo(sortableElementParent);
+	  		$(this).find('span a').removeClass('sort-desc').addClass('sort-asc');
+	  	}
+	}else{
+
+		// close all spans in the group
+		if($(this).hasClass('auditgroup')){
+			$('.auditgroup').find('span').hide();
+		}else if($(this).hasClass('findinggroup')){
+			$('.findinggroup').find('span').hide();
+		}
+
+		// show selected one
+		$(this).find('span').toggle();
 	}
 });
 
