@@ -2577,6 +2577,21 @@ margin-top:10px;
 .inspec-tools-tab-finding.in-progress .inspec-tools-findings-resolve { border: 2px dotted #49ade9; color: #49ade9;}
 .inspec-tools-tab-finding.in-progress .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #49ade9; color: #49ade9;}
       
+.inspec-tools-tab-finding-top-actions .uk-card-default {
+  box-shadow: 2px 3px 7px rgba(0,0,0,.6);
+  border-radius: 5px;
+  border: 1px solid rgba(0,0,0,0.5);
+}
+.inspec-tools-tab-finding-top-actions .uk-card-small.uk-card-body {
+    padding: 30px 20px;
+}
+.icon-circle i {
+    border: 3px solid #666;
+    border-radius: 50%;
+    padding: 7px;
+    font-size: 35px;
+}
+
 .uk-table-hover tbody tr.rowinset:hover {
     background: inherit;
 }

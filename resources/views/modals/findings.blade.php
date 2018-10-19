@@ -66,7 +66,17 @@
 					    					<button class="uk-button uk-link"><i class="a-trash-3"></i> DELETE</button>
 					    				</div>
 					    				<div class="inspec-tools-tab-finding-top-actions">
-					    					<i class="a-circle-plus"></i>
+					    					<i class="a-circle-plus use-hand-cursor"></i>
+										    <div uk-drop="mode: click">
+										        <div class="uk-card uk-card-body uk-card-default uk-card-small">
+										    	 	<div class="uk-drop-grid uk-child-width-1-4" uk-grid>
+										    	 		<div class="icon-circle use-hand-cursor" onclick="addChildItem({{$finding['id']}}, 'followup')"><i class="a-bell-plus"></i></div>
+										    	 		<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{$finding['id']}}, 'comment')"><i class="a-comment-plus"></i></div>
+										    	 		<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{$finding['id']}}, 'document')"><i class="a-file-plus"></i></div>
+										    	 		<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{$finding['id']}}, 'photo')"><i class="a-picture"></i></div>
+										    	 	</div>
+										        </div>
+										    </div>
 					    				</div>
 					    			</div>
 				    			</div>
@@ -607,5 +617,10 @@ function expandFindingItems(element) {
 
 	
 }
+
+function addChildItem(findingId, type) {
+	console.log("adding a child item to this finding");
+}
+
 
 </script>
