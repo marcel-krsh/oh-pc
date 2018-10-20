@@ -222,21 +222,64 @@ class FindingController extends Controller
 	    				'zip' => '43219'
     				],
     				'items' => [
-    					[
-    						'id' => 333,
-    						'type' => 'comment',
-    						'date' => '12/22/2018 12:51:38 PM',
-		    				'auditor' => [
-		    					'id' => 1,
-		    					'name' => 'Holly Swisher'
-		    				]
-    					]
     				]
 
     			]
     		]
     	]);
     	return view('modals.findings', compact('data', 'checkDoneAddingFindings'));
+    }
+
+    function findingItems($findingid, $itemid = '') {
+    	// itemid used for children of items
+
+    	$data['items'] = collect([
+				[
+					'id' => 333,
+					'ref' => '123456',
+    				'status' => 'action-required',
+    				'audit' => '20121111',
+					'findingid' => $findingid,
+					'parentitemid' => $itemid,
+					'type' => 'comment',
+    				'icon' => 'a-comment-text',
+					'date' => '12/05/2018 12:51:38 PM',
+    				'auditor' => [
+    					'id' => 1,
+    					'name' => 'Holly Swisher'
+    				],
+    				'comment' => 'Custom comment based on stuff I saw...',
+    				'stats' => [
+    					['type' => 'comment', 'icon' => 'a-comment-plus', 'count' => 1],
+    					['type' => 'file', 'icon' => 'a-file-plus', 'count' => 2],
+    					['type' => 'photo', 'icon' => 'a-picture', 'count' => 3]
+    				]
+				],
+				[
+					'id' => 444,
+					'ref' => '333444',
+    				'status' => 'action-needed',
+    				'audit' => '20121111',
+					'findingid' => $findingid,
+					'parentitemid' => $itemid,
+					'type' => 'followup',
+    				'icon' => 'a-bell-plus',
+    				'duedate' => '12/22/2018',
+					'date' => '12/22/2018 3:51:38 PM',
+					'assigned' => ['id' => 3, 'name' => 'PM Name Here'],
+    				'auditor' => [
+    					'id' => 1,
+    					'name' => 'Holly Swisher'
+    				],
+    				'comment' => 'Auto-generated follow-up for SD with tasks and due date auto-set for same day.',
+    				'stats' => [
+    					['type' => 'comment', 'icon' => 'a-comment-plus', 'count' => 0],
+    					['type' => 'file', 'icon' => 'a-file-plus', 'count' => 0],
+    					['type' => 'photo', 'icon' => 'a-picture', 'count' => 0]
+    				]
+				]
+    	]);
+        return response()->json($data);
     }
 
     function autosave(Request $request) {

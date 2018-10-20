@@ -84,6 +84,8 @@ Route::group(['middleware' => 'web'], function () {
         Route::post('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummaryFilterProgram');
         Route::get('/modals/findings/{type}/audit/{auditid}/building/{buildingid}/unit/{unitid?}', 'FindingController@modalFindings');
 
+        Route::get('/findings/{id}/items', 'FindingController@findingItems');
+
         Route::post('/autosave', 'FindingController@autosave');
     // });
 
