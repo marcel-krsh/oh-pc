@@ -2609,6 +2609,30 @@ margin-top:10px;
     background-color: #666;
 }
 
+.photo-gallery {
+  margin-bottom: 50px !important;
+}
+.photo-gallery .photo-caption {
+  background-color:rgba(31,42,100,0.8);
+      width: 100%;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+        font-size: 18;
+}
+.photo-gallery .photo-caption i {
+      vertical-align: middle;
+          font-size: 25px;
+}
+.photo-gallery .uk-slider-nav {
+  margin-top:5px;
+  margin-bottom:5px;
+}
+.photo-gallery .uk-dotnav > * > * {
+      width: 8px;
+    height: 8px;
+}
+
 .uk-table-hover tbody tr.rowinset:hover {
     background: inherit;
 }

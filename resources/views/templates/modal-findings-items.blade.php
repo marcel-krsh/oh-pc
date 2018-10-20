@@ -42,6 +42,24 @@
 	</div>
 </template>
 
+<template id="photo-gallery-item-template">
+	<li class="findings-item-photo-tplPhotoId use-hand-cursor" onclick="openFindingPhoto(tplPhotoId);">
+        <img src="tplUrlhttp://fpoimg.com/420x300" alt="">
+        <div class="uk-position-bottom-center uk-panel photo-caption use-hand-cursor"><i class="a-comment"></i> tplComments</div>
+    </li>
+</template>
+
+<template id="photo-gallery-template">
+	<div class="photo-gallery" uk-slider>
+	    <div class="uk-position-relative uk-visible-toggle uk-light">
+	        <ul class="uk-slider-items uk-child-width-1-1">
+	            tplPhotos
+	        </ul>
+	    </div>
+	    <ul class="uk-slider-nav uk-dotnav uk-flex-center"></ul>
+	</div>
+</template>
+
 <template class="uk-hidden" id="inspec-tools-tab-finding-items-template">
 	<div class="inspec-tools-tab-finding-items uk-width-1-1 uk-first-column uk-margin-remove" style="display:none">
 		<div class="inspec-tools-tab-finding-items-list" uk-grid>

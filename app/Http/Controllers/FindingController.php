@@ -277,7 +277,35 @@ class FindingController extends Controller
     					['type' => 'file', 'icon' => 'a-file-plus', 'count' => 0],
     					['type' => 'photo', 'icon' => 'a-picture', 'count' => 0]
     				]
-				]
+				],
+                [
+                    'id' => 555,
+                    'ref' => '123666',
+                    'status' => '',
+                    'audit' => '20121111',
+                    'findingid' => $findingid,
+                    'parentitemid' => $itemid,
+                    'type' => 'photo',
+                    'icon' => 'a-picture',
+                    'date' => '12/05/2018 12:51:38 PM',
+                    'auditor' => [
+                        'id' => 1,
+                        'name' => 'Holly Swisher'
+                    ],
+                    'photos' => [
+                        ['id' => 22, 'url' => '', 'commentscount' => 2],
+                        ['id' => 23, 'url' => '', 'commentscount' => 1],
+                        ['id' => 24, 'url' => '', 'commentscount' => 3],
+                        ['id' => 25, 'url' => '', 'commentscount' => 4],
+                        ['id' => 26, 'url' => '', 'commentscount' => 6],
+                        ['id' => 27, 'url' => '', 'commentscount' => 0]
+                    ],
+                    'comment' => '',
+                    'stats' => [
+                        ['type' => 'comment', 'icon' => 'a-comment-plus', 'count' => 2],
+                        ['type' => 'photo', 'icon' => 'a-picture', 'count' => 5]
+                    ]
+                ]
     	]);
         return response()->json($data);
     }

@@ -481,6 +481,8 @@ function expandFindingItems(element) {
 					var findingsItemsTemplate = $('#inspec-tools-tab-finding-items-template').html();
 					var findingsItemTemplate = $('#inspec-tools-tab-finding-item-template').html();
 					var findingsItemStatTemplate = '<i class="tplStatIcon"></i> <span id="inspec-tools-tab-finding-stat-tplStatType">tplStatCount</span><br />';
+					var findingsPhotoGalleryTemplate = $('#photo-gallery-template').html();
+					var findingsPhotoGalleryItemTemplate = $('#photo-gallery-item-template').html();
 
 					var items = '';
 					var newitem = '';
@@ -492,10 +494,10 @@ function expandFindingItems(element) {
 						newitem = newitem.replace(/tplIcon/g, item.icon);
 						newitem = newitem.replace(/tplDate/g, item.date);
 						newitem = newitem.replace(/tplRef/g, item.ref);
-						newitem = newitem.replace(/tplContent/g, item.comment);
 
 						var itemtype = item.type;
 						var itemauditorname = item.auditor.name;
+						var itemcontent = item.comment;
 						switch(item.type) {
 						    case 'followup':
 						        itemauditorname = item.auditor.name+'<br />Assigned To: '+item.assigned.name;
@@ -506,6 +508,17 @@ function expandFindingItems(element) {
 						        break;
 						    case 'photo':
 						        itemtype = 'PIC';
+						        var images = '';
+						        var newimage = '';
+						        item.photos.forEach(function(pic) {
+						        	newimage = findingsPhotoGalleryItemTemplate;
+						        	newimage = newimage.replace(/tplUrl/g, pic.url);
+						        	newimage = newimage.replace(/tplComments/g, pic.commentscount);
+						        	newimage = newimage.replace(/tplPhotoId/g, pic.id);
+
+						        	images = images + newimage;
+						        });
+						        itemcontent = findingsPhotoGalleryTemplate.replace(/tplPhotos/g, images);
 						        break;
 						    case 'file':
 						        itemtype = 'DOC';
@@ -513,6 +526,7 @@ function expandFindingItems(element) {
 						}
 						newitem = newitem.replace(/tplType/g, itemtype);
 						newitem = newitem.replace(/tplName/g, itemauditorname);
+						newitem = newitem.replace(/tplContent/g, itemcontent);
 
 						var newstat = '';
 						var stats = '';
@@ -551,6 +565,10 @@ function expandFindingItems(element) {
 
 function addChildItem(findingId, type) {
 	console.log("adding a child item to this finding");
+}
+
+function openFindingPhoto(id) {
+	console.log("opening a photo");
 }
 
 
