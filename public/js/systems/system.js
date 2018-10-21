@@ -292,17 +292,29 @@ function reloadUnseenMessages(){
 	});
 }
 
-
 // DYNAMIC MODAL FUNCTION //
-function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight) {
+function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight,inmodallevel) {
+	if(inmodallevel > 0){
+		// copy modal divs and rename ids
+		var newmodal = $('#dynamic-modal').clone().prop('id', 'dynamic-modal-'+inmodallevel);
+		$('#dynamic-modal').after(newmodal);
+		var newmodalsize = $(newmodal).find('#modal-size').prop('id', 'modal-size-'+inmodallevel);
+		var newmodalcontent = $(newmodal).find('#dynamic-modal-content').prop('id', 'dynamic-modal-content-'+inmodallevel);
+		
+	}else{
+		var newmodal = $('#dynamic-modal');
+		var newmodalsize = $('#modal-size');
+		var newmodalcontent = $('#dynamic-modal-content');
+	}
+
 	// UIkit.offcanvas.hide();
 	var continueToLoad = 1;
 	if (window.saved !== 1 && warnAboutSave === 1) {
 		var goober = UIkit.modal.alert("You have changes you haven't saved yet. You might want to cancel this window and save your changes first.");
 	}
 	if(continueToLoad === 1) {
-		$('#dynamic-modal-content').html('');
-		$('#dynamic-modal-content').load('/modals/'+modalSource, function(response, status, xhr) {
+		$(newmodalcontent).html('');
+		$(newmodalcontent).load('/modals/'+modalSource, function(response, status, xhr) {
 				  if (status == "error") {
 				  	if(xhr.status == "401") {
 				  		var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
@@ -318,31 +330,37 @@ function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight) {
 		console.log('loaded /modals/'+modalSource+' into #dynamic-modal-content');
 		if(fullscreen === 1) {
 			// add class to modal so it opens full screen.
-			$('#modal-size').addClass('uk-modal-dialog-blank');
-			$('#dynamic-modal').addClass('fullscreen');
-			$('#dynamic-modal-content').addClass('uk-height-viewport');
-			$('#modal-size').removeClass('modal-fixed-height');
+			$(newmodalsize).addClass('uk-modal-dialog-blank');
+			$(newmodal).addClass('fullscreen');
+			$(newmodalcontent).addClass('uk-height-viewport');
+			$(newmodalsize).removeClass('modal-fixed-height');
 				
 		} else {
 
-			$('#dynamic-modal').removeClass('fullscreen');
+			$(newmodal).removeClass('fullscreen');
 
 			if(fixedHeight === 1){
-				$('#modal-size').addClass('modal-fixed-height');
-				$('#modal-size').removeClass('uk-modal-dialog-blank');
+				$(newmodalsize).addClass('modal-fixed-height');
+				$(newmodalsize).removeClass('uk-modal-dialog-blank');
 			}else{
 				// remove the class in case it is still there.
-				$('#modal-size').removeClass('uk-modal-dialog-blank');
-				$('#dynamic-modal-content').removeClass('uk-height-viewport');
+				$(newmodalsize).removeClass('uk-modal-dialog-blank');
+				$(newmodalcontent).removeClass('uk-height-viewport');
 			}
 		}
-		UIkit.modal('#dynamic-modal', {center: true, bgclose: false, keyboard:false,  stack:true}).show();
+		
+		UIkit.modal(newmodal, {center: true, bgclose: false, keyboard:false,  stack:true}).show();
 	}
 }
 
 
-function dynamicModalClose() {
-	UIkit.modal('#dynamic-modal').hide();
+function dynamicModalClose(inmodallevel) {
+	if(inmodallevel > 0){
+		UIkit.modal('#dynamic-modal-'+inmodallevel).hide();
+	}else{
+		UIkit.modal('#dynamic-modal').hide();
+	}
+	
 	//REMOVE CLASS FROM HTML TAG THAT BLOCKS THE MENU (workaround)
 	$('#parentHTML').removeClass('uk-modal-page');
 																						
