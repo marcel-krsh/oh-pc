@@ -295,12 +295,17 @@ function reloadUnseenMessages(){
 // DYNAMIC MODAL FUNCTION //
 function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight,inmodallevel) {
 	if(inmodallevel > 0){
-		// copy modal divs and rename ids
-		var newmodal = $('#dynamic-modal').clone().prop('id', 'dynamic-modal-'+inmodallevel);
-		$('#dynamic-modal').after(newmodal);
-		var newmodalsize = $(newmodal).find('#modal-size').prop('id', 'modal-size-'+inmodallevel);
-		var newmodalcontent = $(newmodal).find('#dynamic-modal-content').prop('id', 'dynamic-modal-content-'+inmodallevel);
-		
+		// copy modal divs and rename ids if it doesn't alreay exist
+		if($('#dynamic-modal-'+inmodallevel).length){
+			var newmodal = $('#dynamic-modal-'+inmodallevel);
+			var newmodalsize = $('#modal-size-'+inmodallevel);
+			var newmodalcontent = $('#dynamic-modal-content-'+inmodallevel);
+		}else{
+			var newmodal = $('#dynamic-modal').clone().prop('id', 'dynamic-modal-'+inmodallevel);
+			$('#dynamic-modal').after(newmodal);
+			var newmodalsize = $(newmodal).find('#modal-size').prop('id', 'modal-size-'+inmodallevel);
+			var newmodalcontent = $(newmodal).find('#dynamic-modal-content').prop('id', 'dynamic-modal-content-'+inmodallevel);
+		}		
 	}else{
 		var newmodal = $('#dynamic-modal');
 		var newmodalsize = $('#modal-size');
