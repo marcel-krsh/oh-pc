@@ -293,12 +293,12 @@ class FindingController extends Controller
                         'name' => 'Holly Swisher'
                     ],
                     'photos' => [
-                        ['id' => 22, 'url' => '', 'commentscount' => 2],
-                        ['id' => 23, 'url' => '', 'commentscount' => 1],
-                        ['id' => 24, 'url' => '', 'commentscount' => 3],
-                        ['id' => 25, 'url' => '', 'commentscount' => 4],
-                        ['id' => 26, 'url' => '', 'commentscount' => 6],
-                        ['id' => 27, 'url' => '', 'commentscount' => 0]
+                        ['id' => 22, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 2],
+                        ['id' => 23, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 1],
+                        ['id' => 24, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 3],
+                        ['id' => 25, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 4],
+                        ['id' => 26, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 6],
+                        ['id' => 27, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 0]
                     ],
                     'comment' => '',
                     'stats' => [
@@ -308,6 +308,50 @@ class FindingController extends Controller
                 ]
     	]);
         return response()->json($data);
+    }
+
+    function findingItemPhoto($finding_id, $item_id, $photo_id) {
+        $photo = collect([
+            'id' => $photo_id,
+            'url' => 'http://fpoimg.com/840x600',
+            'comments' => [
+                [
+                    'id' => 1,
+                    'ref' => '123456',
+                    'status' => '',
+                    'audit' => '20121111',
+                    'findingid' => $finding_id,
+                    'parentitemid' => $item_id,
+                    'photoid' => $photo_id,
+                    'type' => 'comment',
+                    'icon' => 'a-comment-text',
+                    'date' => '12/05/2018 12:51:38 PM',
+                    'auditor' => [
+                        'id' => 1,
+                        'name' => 'Holly Swisher'
+                    ],
+                    'comment' => 'Custom comment based on stuff I saw...'
+                ],
+                [
+                    'id' => 2,
+                    'ref' => '123457',
+                    'status' => '',
+                    'audit' => '20121111',
+                    'findingid' => $finding_id,
+                    'parentitemid' => $item_id,
+                    'photoid' => $photo_id,
+                    'type' => 'comment',
+                    'icon' => 'a-comment-text',
+                    'date' => '12/06/2018 12:51:38 PM',
+                    'auditor' => [
+                        'id' => 1,
+                        'name' => 'Holly Swisher'
+                    ],
+                    'comment' => 'Second custom comment based on stuff I saw...'
+                ]
+            ]
+        ]);
+        return view('modals.photo', compact('photo'));
     }
 
     function autosave(Request $request) {

@@ -85,6 +85,7 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('/modals/findings/{type}/audit/{auditid}/building/{buildingid}/unit/{unitid?}', 'FindingController@modalFindings');
 
         Route::get('/findings/{id}/items', 'FindingController@findingItems');
+        Route::get('/modals/findings/{id}/items/{itemid}/photos/{photoid}', 'FindingController@findingItemPhoto');
 
         Route::post('/autosave', 'FindingController@autosave');
     // });

@@ -32,8 +32,8 @@
 			<div class="modal-findings-right-bottom">
 				<div class="inspec-tools-tab-findings-container uk-panel uk-panel-scrollable js-findings">
 			    	@foreach($data['findings'] as $finding)
-			        <div id="inspec-tools-tab-finding-{{$finding['id']}}" class="inspec-tools-tab-finding {{$finding['status']}}" data-ordering-finding="{{$finding['id']}}" data-finding-id="{{$finding['id']}}" data-audit-filter="{{$finding['audit-filter']}} all" data-finding-filter="{{$finding['finding-filter']}} all" uk-grid>
-						<div class="inspec-tools-tab-finding-info uk-width-1-1 uk-first-column  uk-active" style="padding-top: 15px;">
+			        <div id="inspec-tools-tab-finding-{{$finding['id']}}" class="inspec-tools-tab-finding" data-ordering-finding="{{$finding['id']}}" data-finding-id="{{$finding['id']}}" data-audit-filter="{{$finding['audit-filter']}} all" data-finding-filter="{{$finding['finding-filter']}} all" uk-grid>
+						<div class="inspec-tools-tab-finding-info uk-width-1-1 uk-first-column  uk-active {{$finding['status']}}" style="padding-top: 15px;">
 		    				<div class="uk-grid-match" uk-grid>
 				    			<div class="uk-width-1-4 uk-padding-remove-left uk-first-column">
 				    				<div class="uk-display-block">
@@ -489,6 +489,7 @@ function expandFindingItems(element) {
 					data.items.forEach(function(item) {
 						newitem = findingsItemTemplate;
 						newitem = newitem.replace(/tplFindingId/g, item.findingid);
+						newitem = newitem.replace(/tplStatus/g, item.status);
 						newitem = newitem.replace(/tplAuditId/g, item.audit);
 						newitem = newitem.replace(/tplFindingId/g, item.findingid);
 						newitem = newitem.replace(/tplIcon/g, item.icon);
@@ -514,6 +515,8 @@ function expandFindingItems(element) {
 						        	newimage = findingsPhotoGalleryItemTemplate;
 						        	newimage = newimage.replace(/tplUrl/g, pic.url);
 						        	newimage = newimage.replace(/tplComments/g, pic.commentscount);
+						        	newimage = newimage.replace(/tplFindingId/g, item.findingid);
+						        	newimage = newimage.replace(/tplItemId/g, item.id);
 						        	newimage = newimage.replace(/tplPhotoId/g, pic.id);
 
 						        	images = images + newimage;
@@ -567,8 +570,8 @@ function addChildItem(findingId, type) {
 	console.log("adding a child item to this finding");
 }
 
-function openFindingPhoto(id) {
-	console.log("opening a photo");
+function openFindingPhoto(findingid, itemid, id) {
+	dynamicModalLoad('findings/'+findingid+'/items/'+itemid+'/photos/'+id, 0, 0, 0, 2);
 }
 
 

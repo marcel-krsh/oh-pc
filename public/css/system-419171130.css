@@ -2444,6 +2444,8 @@ margin-top:10px;
 }
 .inspec-tools-tab-finding-stats {
     font-size: 15px;
+    margin-top:15px;
+    margin-bottom:15px !important;
 }
 .inspec-tools-tab-finding-stats i {
     vertical-align: sub;
@@ -2454,18 +2456,33 @@ margin-top:10px;
 .inspec-tools-tab-finding-comment {
     color: #57585a;
 }
-.inspec-tools-tab-finding.no-action, .inspec-tools-tab-finding,
-.inspec-tools-tab-finding.no-action .inspec-tools-tab-finding-item > div > .uk-width-3-4,
-.inspec-tools-tab-finding .inspec-tools-tab-finding-item > div > .uk-width-3-4 { border-top: 3px solid; border-color: #939598; color: #939598; margin-top: 0px !important; margin-bottom: 10px;}
-.inspec-tools-tab-finding.action-needed,
-.inspec-tools-tab-finding.action-needed .inspec-tools-tab-finding-item > div > .uk-width-3-4 { border-top: 3px dashed; border-color: #76338b; color: #76338b; }
-.inspec-tools-tab-finding.action-required, .inspec-tools-tab-finding.critical,
-.inspec-tools-tab-finding.action-required .inspec-tools-tab-finding-item > div > .uk-width-3-4, 
-.inspec-tools-tab-finding.critical .inspec-tools-tab-finding-item > div > .uk-width-3-4 { border-top: 3px double; animation: border-pulsate 2s infinite; border-color: #da328a; color: #da328a; }
-.inspec-tools-tab-finding.ok-actionable,
-.inspec-tools-tab-finding.ok-actionable .inspec-tools-tab-finding-item > div > .uk-width-3-4 { border-top: 3px solid; border-color: #56b285; color: #56b285; }
-.inspec-tools-tab-finding.in-progress,
-.inspec-tools-tab-finding.in-progress .inspec-tools-tab-finding-item > div > .uk-width-3-4 { border-top: 3px dotted; border-color: #49ade9; color: #49ade9; }
+.inspec-tools-tab-finding-item > div > .uk-width-3-4 {position:relative;}
+
+.inspec-tools-tab-finding > .inspec-tools-tab-finding-info,
+.inspec-tools-tab-finding > .inspec-tools-tab-finding-info.no-action,
+.inspec-tools-tab-finding-info.no-action .inspec-tools-tab-finding-item > div > .uk-width-3-4,
+.inspec-tools-tab-finding-item > div > .uk-width-3-4,
+.inspec-tools-tab-finding-item.no-action > div > .uk-width-3-4 { 
+  border-top: 3px solid; border-color: #939598; color: #939598; margin-top: 0px !important; margin-bottom: 10px;
+}
+.inspec-tools-tab-finding > .inspec-tools-tab-finding-info.action-needed,
+.inspec-tools-tab-finding-item.action-needed > div > .uk-width-3-4 { 
+  border-top: 3px dashed; border-color: #76338b; color: #76338b; 
+}
+.inspec-tools-tab-finding > .inspec-tools-tab-finding-info.action-required,
+.inspec-tools-tab-finding > .inspec-tools-tab-finding-info.critical,
+.inspec-tools-tab-finding-item.action-required > div > .uk-width-3-4, 
+.inspec-tools-tab-finding-item.critical > div > .uk-width-3-4 { 
+  border-top: 3px double; animation: border-pulsate 2s infinite; border-color: #da328a; color: #da328a; 
+}
+.inspec-tools-tab-finding > .inspec-tools-tab-finding-info.ok-actionable,
+.inspec-tools-tab-finding-item.ok-actionable > div > .uk-width-3-4 { 
+  border-top: 3px solid; border-color: #56b285; color: #56b285; 
+}
+.inspec-tools-tab-finding > .inspec-tools-tab-finding-info.in-progress,
+.inspec-tools-tab-finding-item.in-progress > div > .uk-width-3-4 { 
+  border-top: 3px dotted; border-color: #49ade9; color: #49ade9; 
+}
 
 .inspec-tools-tab-finding.no-action .bordered, 
 .inspec-tools-tab-finding .bordered { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px solid; border-color: #939598; color: #939598; }
@@ -2483,6 +2500,7 @@ margin-top:10px;
 
 .inspec-tools-tab-finding .inspec-tools-tab-finding-description {
   position: relative;
+  margin-bottom: 30px;
 }
 .inspec-tools-tab-finding .inspec-tools-tab-finding-top-actions {
   position: absolute;
@@ -2562,13 +2580,13 @@ margin-top:10px;
 .inspec-tools-tab-finding.ok-actionable .inspec-tools-tab-finding-button.colored {color:#fff !important; background-color:#56b285; border:none;}
 .inspec-tools-tab-finding.in-progress .inspec-tools-tab-finding-button.colored {color:#fff !important; background-color:#49ade9; border:none;}
 
-.inspec-tools-tab-finding .inspec-tools-findings-resolve { border: 2px solid #ddd; color: #ddd;}
-.inspec-tools-tab-finding .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #ddd; color: #ddd;}
-.inspec-tools-tab-finding.no-action .inspec-tools-findings-resolve { border: 2px solid #939598; color: #939598;}
-.inspec-tools-tab-finding.no-action .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #939598; color: #939598;}
-.inspec-tools-tab-finding.action-needed .inspec-tools-findings-resolve { border: 2px dashed #76338b; color: #76338b;}
-.inspec-tools-tab-finding.action-needed .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #76338b; color: #76338b;}
-.inspec-tools-tab-finding.action-required .inspec-tools-findings-resolve { 
+.inspec-tools-tab-finding-info .inspec-tools-findings-resolve { border: 2px solid #ddd; color: #ddd;}
+.inspec-tools-tab-finding-info .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #ddd; color: #ddd;}
+.inspec-tools-tab-finding-info.no-action .inspec-tools-findings-resolve { border: 2px solid #939598; color: #939598;}
+.inspec-tools-tab-finding-info.no-action .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #939598; color: #939598;}
+.inspec-tools-tab-finding-info.action-needed .inspec-tools-findings-resolve { border: 2px dashed #76338b; color: #76338b;}
+.inspec-tools-tab-finding-info.action-needed .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #76338b; color: #76338b;}
+.inspec-tools-tab-finding-info.action-required .inspec-tools-findings-resolve { 
   animation: pulsate 2s infinite; 
   border-color: #da328a;     
   color: #fff;
@@ -2577,15 +2595,15 @@ margin-top:10px;
   font-size: 14px; 
   line-height: inherit;
 }
-.inspec-tools-tab-finding.action-required .inspec-tools-findings-resolve .uk-badge  { 
+.inspec-tools-tab-finding-info.action-required .inspec-tools-findings-resolve .uk-badge  { 
   border-top: 2px solid; 
   border-color: #fff; 
   color: #fff; 
 }
-.inspec-tools-tab-finding.ok-actionable .inspec-tools-findings-resolve { border: 2px solid #56b285; color: #56b285;}
-.inspec-tools-tab-finding.ok-actionable .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #56b285; color: #56b285;}
-.inspec-tools-tab-finding.in-progress .inspec-tools-findings-resolve { border: 2px dotted #49ade9; color: #49ade9;}
-.inspec-tools-tab-finding.in-progress .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #49ade9; color: #49ade9;}
+.inspec-tools-tab-finding-info.ok-actionable .inspec-tools-findings-resolve { border: 2px solid #56b285; color: #56b285;}
+.inspec-tools-tab-finding-info.ok-actionable .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #56b285; color: #56b285;}
+.inspec-tools-tab-finding-info.in-progress .inspec-tools-findings-resolve { border: 2px dotted #49ade9; color: #49ade9;}
+.inspec-tools-tab-finding-info.in-progress .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #49ade9; color: #49ade9;}
       
 .inspec-tools-tab-finding-top-actions .uk-card-default {
   box-shadow: 2px 3px 7px rgba(0,0,0,.6);
@@ -2610,7 +2628,7 @@ margin-top:10px;
 }
 
 .photo-gallery {
-  margin-bottom: 50px !important;
+  
 }
 .photo-gallery .photo-caption {
   background-color:rgba(31,42,100,0.8);

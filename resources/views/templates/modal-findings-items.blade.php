@@ -1,27 +1,21 @@
 <template class="uk-hidden" id="inspec-tools-tab-finding-item-template">
 	<div class="inspec-tools-tab-finding-item tplStatus inspec-tools-tab-finding-info uk-width-1-1 uk-margin-remove" data-finding-id="tplFindingId" data-parent-id="tplParentItemId">
-		<div class="uk-grid-match" uk-grid>
+		<div class="" uk-grid>
 			<div class="uk-width-1-4 uk-padding-remove-left uk-first-column">
 				<div class="uk-display-block">
     				<i class="tplIcon"></i><br>
     				<small class="auditinfo">AUDIT tplAuditId</small><br />
     				<small class="findinginfo">FND#: tplFindingId</small>
     			</div>
-    			<div class="uk-display-block" style="margin: 15px 0;">
-    				
-				</div>
-				<div class="inspec-tools-tab-finding-stats" style="margin: 0 0 15px 0;">
+				<div class="inspec-tools-tab-finding-stats">
 					tplStats
 				</div>
 			</div>
 			<div class="uk-width-3-4 uk-padding-remove-right ">
-				<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description">
+				<div class="uk-display-inline-block uk-padding-remove inspec-tools-tab-finding-description">
     				<p>tplDate: tplType#tplRef<br />
     					By tplName</p>
     				<p>tplContent</p>
-    				<div class="inspec-tools-tab-finding-actions">
-					    <button class="uk-button uk-link"><i class="a-comment-plus"></i> REPLY</button>
-    				</div>
     				<div class="inspec-tools-tab-finding-top-actions">
     					<i class="a-circle-plus use-hand-cursor"></i>
 					    <div uk-drop="mode: click" style="min-width: 315px;">
@@ -37,15 +31,18 @@
 					    </div>
     				</div>
     			</div>
+				<div class="inspec-tools-tab-finding-actions">
+				    <button class="uk-button uk-link"><i class="a-comment-plus"></i> REPLY</button>
+				</div>
     		</div>
     	</div>
 	</div>
 </template>
 
 <template id="photo-gallery-item-template">
-	<li class="findings-item-photo-tplPhotoId use-hand-cursor" onclick="openFindingPhoto(tplPhotoId);">
-        <img src="tplUrlhttp://fpoimg.com/420x300" alt="">
-        <div class="uk-position-bottom-center uk-panel photo-caption use-hand-cursor"><i class="a-comment"></i> tplComments</div>
+	<li class="findings-item-photo-tplPhotoId use-hand-cursor" onclick="openFindingPhoto(tplFindingId,tplItemId,tplPhotoId);">
+        <img src="tplUrl" alt="">
+        <div class="uk-position-bottom-center uk-panel photo-caption use-hand-cursor"><i class="a-comment-text"></i> tplComments</div>
     </li>
 </template>
 
