@@ -2682,7 +2682,25 @@ margin-top:10px;
     font-size: 40px;
     vertical-align: text-top;
     padding-right: 15px;
-        margin-left: -60px;
+    margin-left: -60px;
+}
+.inspec-tools-tab-finding-sticky.no-action > div, .inspec-tools-tab-finding-sticky > div { border-top: 2px solid #fff; margin-top: 2px; }
+.inspec-tools-tab-finding-sticky.action-needed > div { border-top: 2px dashed #fff; margin-top: 2px; }
+.inspec-tools-tab-finding-sticky.action-required > div, .inspec-tools-tab-finding-sticky.critical > div { border-top: 2px double #fff; margin-top: 2px; }
+.inspec-tools-tab-finding-sticky.ok-actionable > div { border-top: 2px solid #fff; margin-top: 2px; }
+.inspec-tools-tab-finding-sticky.in-progress > div { border-top: 2px dotted #fff; margin-top: 2px; }
+
+.inspec-tools-tab-finding-sticky .uk-width-1-4 i {
+    padding-right: 4px;
+    padding-left: 4px;
+    font-size: 24px;
+}
+.inspec-tools-tab-finding-sticky .uk-width-3-4 {
+    font-size: 18px;
+    margin-top: 3px;
+}
+.inspec-tools-tab-finding-sticky .uk-width-3-4 .uk-float-right {
+    margin-top: -2px;
 }
 
 .uk-table-hover tbody tr.rowinset:hover {

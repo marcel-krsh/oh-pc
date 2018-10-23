@@ -35,8 +35,17 @@
 			        <div id="inspec-tools-tab-finding-{{$finding['id']}}" class="inspec-tools-tab-finding" data-ordering-finding="{{$finding['id']}}" data-finding-id="{{$finding['id']}}" data-audit-filter="{{$finding['audit-filter']}} all" data-finding-filter="{{$finding['finding-filter']}} all" uk-grid>
 			        	<div class="inspec-tools-tab-finding-sticky uk-width-1-1 uk-padding-remove  {{$finding['status']}}" style="display:none">
 			        		<div class="uk-grid-match" uk-grid>
-								<div class="uk-width-1-4 uk-padding-remove-top uk-padding-remove-left">1</div>
-								<div class="uk-width-3-4 uk-padding-remove-top uk-padding-remove-right">2</div>
+								<div class="uk-width-1-4 uk-padding-remove-top uk-padding-remove-left">
+									<div>
+										<i class="uk-inline {{$finding['icon']}}"></i> <i class="uk-inline a-menu" onclick="expandFindingItems(this);"></i>
+									</div>
+								</div>
+								<div class="uk-width-3-4 uk-padding-remove-top uk-padding-remove-right">
+									<div>
+										{{$finding['date']}}: FN#{{$finding['ref']}}
+										<div class="uk-float-right"><i class="a-circle-plus use-hand-cursor"></i></div>
+									</div>
+								</div>
 			        		</div>
 			        	</div>
 
