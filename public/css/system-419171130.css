@@ -2395,7 +2395,7 @@ margin-top:10px;
 }
 .inspec-tools-tab-findings-container {
   border:0;
-  height: 100%;
+  height: inherit;
   margin-bottom: 70px;
 }
 #inspec-tools-tab-findings{
@@ -2456,7 +2456,7 @@ margin-top:10px;
 .inspec-tools-tab-finding-comment {
     color: #57585a;
 }
-.inspec-tools-tab-finding-item > div > .uk-width-3-4 {position:relative;}
+.inspec-tools-tab-finding-item > div > .uk-width-3-4 {position:relative; background-color: rgba(0,0,0,0.05);}
 
 .inspec-tools-tab-finding > .inspec-tools-tab-finding-info,
 .inspec-tools-tab-finding > .inspec-tools-tab-finding-info.no-action,
@@ -2482,6 +2482,19 @@ margin-top:10px;
 .inspec-tools-tab-finding > .inspec-tools-tab-finding-info.in-progress,
 .inspec-tools-tab-finding-item.in-progress > div > .uk-width-3-4 { 
   border-top: 3px dotted; border-color: #49ade9; color: #49ade9; 
+}
+
+.inspec-tools-tab-finding-sticky {
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  z-index: 10;
+}
+.inspec-tools-tab-finding-sticky > div {
+    padding: 10px 10px;
+}
+.inspec-tools-tab-finding-sticky.action-needed {
+    background-color: #76338b; color: #fff;
 }
 
 .inspec-tools-tab-finding.no-action .bordered, 
@@ -2649,6 +2662,27 @@ margin-top:10px;
 .photo-gallery .uk-dotnav > * > * {
       width: 8px;
     height: 8px;
+}
+
+.finding-file-category {
+    padding: 3px 0;
+    font-size: 15px;
+}
+.finding-file-category i {
+    vertical-align: sub;
+}
+.finding-file {
+    margin-top: 20px;
+    font-size: 19px;
+    font-style: italic;
+    padding-left: 60px;
+    line-height: 0px;
+}
+.finding-file i {
+    font-size: 40px;
+    vertical-align: text-top;
+    padding-right: 15px;
+        margin-left: -60px;
 }
 
 .uk-table-hover tbody tr.rowinset:hover {
@@ -3174,7 +3208,7 @@ i.fa-square.chart-color-to-be-inspected { background-color:#e0e0df; }
   position: fixed;
   top: 100px;
   height: 100%;
-  width: 45%;
+  width: 44%;
 }
 .modal-findings-right-bottom{
   height: calc(100% - 100px);

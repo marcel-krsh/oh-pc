@@ -12,7 +12,7 @@
 				</div>
 			</div>
 			<div class="uk-width-3-4 uk-padding-remove-right ">
-				<div class="uk-display-inline-block uk-padding-remove inspec-tools-tab-finding-description">
+				<div class="uk-width-1-1 uk-display-inline-block uk-padding-remove inspec-tools-tab-finding-description">
     				<p>tplDate: tplType#tplRef<br />
     					By tplName</p>
     				<p>tplContent</p>
@@ -54,6 +54,12 @@
 	        </ul>
 	    </div>
 	    <ul class="uk-slider-nav uk-dotnav uk-flex-center"></ul>
+	</div>
+</template>
+
+<template id="file-template">
+	<div class="finding-file-container">
+	    tplFileContent
 	</div>
 </template>
 

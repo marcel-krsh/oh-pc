@@ -30,12 +30,19 @@
 		   </div>
 	    <div class="modal-findings-right-bottom-container">
 			<div class="modal-findings-right-bottom">
-				<div class="inspec-tools-tab-findings-container uk-panel uk-panel-scrollable js-findings">
+				<div class="inspec-tools-tab-findings-container uk-panel uk-panel-scrollable uk-padding-remove js-findings">
 			    	@foreach($data['findings'] as $finding)
 			        <div id="inspec-tools-tab-finding-{{$finding['id']}}" class="inspec-tools-tab-finding" data-ordering-finding="{{$finding['id']}}" data-finding-id="{{$finding['id']}}" data-audit-filter="{{$finding['audit-filter']}} all" data-finding-filter="{{$finding['finding-filter']}} all" uk-grid>
-						<div class="inspec-tools-tab-finding-info uk-width-1-1 uk-first-column  uk-active {{$finding['status']}}" style="padding-top: 15px;">
+			        	<div class="inspec-tools-tab-finding-sticky uk-width-1-1 uk-padding-remove  {{$finding['status']}}" style="display:none">
+			        		<div class="uk-grid-match" uk-grid>
+								<div class="uk-width-1-4 uk-padding-remove-top uk-padding-remove-left">1</div>
+								<div class="uk-width-3-4 uk-padding-remove-top uk-padding-remove-right">2</div>
+			        		</div>
+			        	</div>
+
+						<div class="inspec-tools-tab-finding-info uk-width-1-1  uk-active {{$finding['status']}}" style="padding-top: 15px;">
 		    				<div class="uk-grid-match" uk-grid>
-				    			<div class="uk-width-1-4 uk-padding-remove-left uk-first-column">
+				    			<div class="uk-width-1-4 uk-padding-remove-top uk-padding-remove-left">
 				    				<div class="uk-display-block">
 					    				<i class="{{$finding['icon']}}"></i><br>
 					    				<span class="auditinfo">AUDIT {{$finding['audit']}}</span>
@@ -209,6 +216,26 @@
  </div>
 
 <script>
+
+$(".inspec-tools-tab-findings-container").on( 'scroll', function(){
+
+	// what is the current finding
+	// 
+	// is that finding expanded
+	// 
+	// if expanded, check for scrolling position and display sticky header
+
+    var offset = $(".inspec-tools-tab-findings-container").scrollTop(); 
+
+    if ($(".inspec-tools-tab-findings-container").scrollTop() > 40) {
+        $(".inspec-tools-tab-finding-sticky").fadeIn( "fast" );
+        $(".inspec-tools-tab-finding-sticky").css("margin-top", $(".inspec-tools-tab-findings-container").scrollTop());
+    } else {
+        $(".inspec-tools-tab-finding-sticky").css("margin-top", 0);
+        $(".inspec-tools-tab-finding-sticky").fadeOut("fast");
+    };
+
+});    
 
 function completionCheck() {
 	UIkit.modal('#modal-findings-completion-check', {center: true, bgclose: false, keyboard:false,  stack:true}).show();
@@ -483,6 +510,7 @@ function expandFindingItems(element) {
 					var findingsItemStatTemplate = '<i class="tplStatIcon"></i> <span id="inspec-tools-tab-finding-stat-tplStatType">tplStatCount</span><br />';
 					var findingsPhotoGalleryTemplate = $('#photo-gallery-template').html();
 					var findingsPhotoGalleryItemTemplate = $('#photo-gallery-item-template').html();
+					var findingsFileTemplate = $('#file-template').html();
 
 					var items = '';
 					var newitem = '';
@@ -525,6 +553,30 @@ function expandFindingItems(element) {
 						        break;
 						    case 'file':
 						        itemtype = 'DOC';
+						        var categoryTemplate = "<div class='finding-file-category'><i class='tplCatIcon'></i> tplCatName</div>";
+						        var categories = '';
+						        var newcategory = '';
+						        var file = '';
+						        item.categories.forEach(function(cat) {
+						        	newcategory = categoryTemplate;
+						        	switch(cat.status) {
+						        		case 'checked':
+						        			newcategory = newcategory.replace(/tplCatIcon/g, 'a-circle-checked');
+						        		break;
+						        		case 'notchecked':
+						        			newcategory = newcategory.replace(/tplCatIcon/g, 'a-circle-cross');
+						        		break;
+						        		case '':
+						        			newcategory = newcategory.replace(/tplCatIcon/g, 'a-circle');
+						        		break;
+						        	}
+						        	newcategory = newcategory.replace(/tplCatName/g, cat.name);
+						        	categories = categories + newcategory;
+						        });
+
+						        file = categories+"<div class='finding-file use-hand-cursor' onclick='openFindingFile();'><i class='a-down-arrow-circle'></i> "+item.file.name+"<br />"+item.file.size+" MB "+item.file.type+"</div>";
+
+						        itemcontent = findingsFileTemplate.replace(/tplFileContent/g, file);
 						        break;
 						}
 						newitem = newitem.replace(/tplType/g, itemtype);
@@ -572,6 +624,10 @@ function addChildItem(findingId, type) {
 
 function openFindingPhoto(findingid, itemid, id) {
 	dynamicModalLoad('findings/'+findingid+'/items/'+itemid+'/photos/'+id, 0, 0, 0, 2);
+}
+
+function openFindingFile() {
+	console.log("open file");
 }
 
 

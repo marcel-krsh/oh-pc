@@ -305,6 +305,42 @@ class FindingController extends Controller
                         ['type' => 'comment', 'icon' => 'a-comment-plus', 'count' => 2],
                         ['type' => 'photo', 'icon' => 'a-picture', 'count' => 5]
                     ]
+                ],
+                [
+                    'id' => 444,
+                    'ref' => '333444',
+                    'status' => 'action-required',
+                    'audit' => '20121111',
+                    'findingid' => $findingid,
+                    'parentitemid' => $itemid,
+                    'type' => 'file',
+                    'icon' => 'a-file-left',
+                    'duedate' => '12/22/2018',
+                    'date' => '12/22/2018 3:51:38 PM',
+                    'assigned' => ['id' => 3, 'name' => 'PM Name Here'],
+                    'auditor' => [
+                        'id' => 1,
+                        'name' => 'Holly Swisher'
+                    ],
+                    'categories' => [
+                        ['id' => 1, 'name' => 'Category Name 1', 'status' => 'checked'],
+                        ['id' => 2, 'name' => 'Category Name 2', 'status' => 'checked'],
+                        ['id' => 3, 'name' => 'Category Name 3', 'status' => 'notchecked'],
+                        ['id' => 4, 'name' => 'Category Name 4', 'status' => '']
+                    ],
+                    'file' => [
+                        'id' => 1, 
+                        'name' => 'my_long-filename.pdf', 
+                        'url' => '#', 
+                        'type' => 'pdf', 
+                        'size' => '1.3'
+                    ],
+                    'comment' => '',
+                    'stats' => [
+                        ['type' => 'comment', 'icon' => 'a-comment-plus', 'count' => 0],
+                        ['type' => 'file', 'icon' => 'a-file-plus', 'count' => 0],
+                        ['type' => 'photo', 'icon' => 'a-picture', 'count' => 0]
+                    ]
                 ]
     	]);
         return response()->json($data);
