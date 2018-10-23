@@ -228,20 +228,36 @@
 
 $(".inspec-tools-tab-findings-container").on( 'scroll', function(){
 
-	// what is the current finding
-	// 
-	// is that finding expanded
-	// 
-	// if expanded, check for scrolling position and display sticky header
-
     var offset = $(".inspec-tools-tab-findings-container").scrollTop(); 
 
+    var currentFinding ="";
+    var currentFindingId ="";
+    var position = 0;
+    var findingId= "";
+    var tmpPosition = -offset;
+
+    $.each($(".inspec-tools-tab-finding-sticky"), function(index, item) {
+
+    	currentFinding = $(item).closest("[data-finding-id], .inspec-tools-tab-finding");
+	    currentFindingId = currentFinding.data('finding-id');
+	    position = $(currentFinding).offset().top - $(currentFinding).offsetParent().offset().top;
+
+        if(position < 0){
+        	if(position >= tmpPosition) {
+        		tmpPosition = position;
+        		findingId = currentFindingId;
+        	}
+        }
+    });
+
+    console.log("Visible finding: "+findingId);
+
     if ($(".inspec-tools-tab-findings-container").scrollTop() > 40) {
-        $(".inspec-tools-tab-finding-sticky").fadeIn( "fast" );
-        $(".inspec-tools-tab-finding-sticky").css("margin-top", $(".inspec-tools-tab-findings-container").scrollTop());
+        $("#inspec-tools-tab-finding-"+findingId+" .inspec-tools-tab-finding-sticky").fadeIn( "fast" );
+        $("#inspec-tools-tab-finding-"+findingId+" .inspec-tools-tab-finding-sticky").css("margin-top", $(".inspec-tools-tab-findings-container").scrollTop());
     } else {
-        $(".inspec-tools-tab-finding-sticky").css("margin-top", 0);
-        $(".inspec-tools-tab-finding-sticky").fadeOut("fast");
+        $("#inspec-tools-tab-finding-"+findingId+" .inspec-tools-tab-finding-sticky").css("margin-top", 0);
+        $("#inspec-tools-tab-finding-"+findingId+" .inspec-tools-tab-finding-sticky").fadeOut("fast");
     };
 
 });    
