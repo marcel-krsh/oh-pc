@@ -517,25 +517,52 @@ function saveBoilerplaceAndNewFinding(){
 
 function expandFindingItems(element) {
 
+	// is element a grandchild of a finding? if so add witin child
+
+	// var parentitemid = '';
+
 	var parentFindingContainer = $(element).closest("[data-finding-id], .inspec-tools-tab-finding");
 	var findingId = parentFindingContainer.data('finding-id');
-	console.log(findingId);
+	console.log("finding id: "+findingId);
 
-	if (parentFindingContainer.attr('expanded')){
-		parentFindingContainer.removeAttr('expanded');
-		$('#inspec-tools-tab-finding-items-'+findingId).slideUp("slow", function() {
-			$(this).remove();
 
-			// also remove corresponding sticky header
-			$('#inspec-tools-tab-finding-sticky-'+findingId).slideOut("fast");
-		 });
+	var parentItemContainer = $(element).closest("[data-parent-id], .inspec-tools-tab-finding-item");
+	var parentitemid = parentItemContainer.data('parent-id');
+	console.log("item id: "+parentitemid);
+
+
+	if (parentFindingContainer.attr('expanded') || parentItemContainer.attr('expanded')){
+		if(parentitemid !== undefined){
+			parentItemContainer.removeAttr('expanded');
+			$('#inspec-tools-tab-finding-item-replies-'+parentitemid).slideUp("slow", function() {
+				$(this).remove();
+			 });
+		}else{
+			parentFindingContainer.removeAttr('expanded');
+			$('#inspec-tools-tab-finding-items-'+findingId).slideUp("slow", function() {
+				$(this).remove();
+
+				// also remove corresponding sticky header
+				$('#inspec-tools-tab-finding-sticky-'+findingId).slideOut("fast");
+			 });
+		}
+		
 	}else{
 
-		if($('#inspec-tools-tab-finding-items-'+findingId).length == 0){
-			var tempdiv = '<div id="inspec-tools-tab-finding-items-'+findingId+'" class="uk-width-1-1 uk-margin-remove uk-padding-remove ">';
-			tempdiv = tempdiv + '<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
-			tempdiv = tempdiv + '</div>';
-			parentFindingContainer.append(tempdiv);
+		if(parentitemid !== undefined){
+			if($('#inspec-tools-tab-finding-item-replies-'+parentitemid).length == 0){
+				var tempdiv = '<div id="inspec-tools-tab-finding-item-replies-'+parentitemid+'" class="uk-width-1-1 uk-margin-remove uk-padding-remove ">';
+				tempdiv = tempdiv + '<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+				tempdiv = tempdiv + '</div>';
+				parentItemContainer.after(tempdiv);
+			}
+		}else{
+			if($('#inspec-tools-tab-finding-items-'+findingId).length == 0){
+				var tempdiv = '<div id="inspec-tools-tab-finding-items-'+findingId+'" class="uk-width-1-1 uk-margin-remove uk-padding-remove ">';
+				tempdiv = tempdiv + '<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+				tempdiv = tempdiv + '</div>';
+				parentFindingContainer.append(tempdiv);
+			}
 		}
 
 		// fetch and display new details
@@ -546,6 +573,7 @@ function expandFindingItems(element) {
                     UIkit.modal.alert("There was a problem getting the finding's replies.");
                 } else {
 					var findingsItemsTemplate = $('#inspec-tools-tab-finding-items-template').html();
+					var findingsItemRepliesTemplate = $('#inspec-tools-tab-finding-item-replies-template').html();
 					var findingsItemTemplate = $('#inspec-tools-tab-finding-item-template').html();
 					var findingsItemStatTemplate = '<i class="tplStatIcon"></i> <span id="inspec-tools-tab-finding-stat-tplStatType">tplStatCount</span><br />';
 					var findingsPhotoGalleryTemplate = $('#photo-gallery-template').html();
@@ -556,6 +584,7 @@ function expandFindingItems(element) {
 					var newitem = '';
 					data.items.forEach(function(item) {
 						newitem = findingsItemTemplate;
+						newitem = newitem.replace(/tplItemId/g, item.id);
 						newitem = newitem.replace(/tplFindingId/g, item.findingid);
 						newitem = newitem.replace(/tplStatus/g, item.status);
 						newitem = newitem.replace(/tplAuditId/g, item.audit);
@@ -642,14 +671,31 @@ function expandFindingItems(element) {
 
 						newitem = newitem.replace(/tplStats/g, stats);
 
+						if(parentitemid !== undefined){
+							newitem = newitem.replace(/tplIsReply/g, 'reply');
+						}else{
+							newitem = newitem.replace(/tplIsReply/g, 'notreply');
+						}
+
 						items = items + newitem.replace(/tplParentItemId/g, item.parentitemid);
 					});
 
-					$('#inspec-tools-tab-finding-items-'+findingId).html(findingsItemsTemplate);
-					$('#inspec-tools-tab-finding-items-'+findingId).find('.inspec-tools-tab-finding-items-list').html(items);
+					if(parentitemid !== undefined){
+						console.log("opening replies "+'#inspec-tools-tab-finding-item-replies-'+parentitemid);
+						$('#inspec-tools-tab-finding-item-replies-'+parentitemid).html(findingsItemRepliesTemplate);
+						$('#inspec-tools-tab-finding-item-replies-'+parentitemid).find('.inspec-tools-tab-finding-item-replies-list').html(items);
 
-					$('#inspec-tools-tab-finding-items-'+findingId).find('.inspec-tools-tab-finding-items').slideDown("slow");
-					parentFindingContainer.attr( "expanded", true );
+						$('#inspec-tools-tab-finding-item-replies-'+parentitemid).find('.inspec-tools-tab-finding-item-replies').slideDown("slow");
+						parentItemContainer.attr( "expanded", true );
+					}else{
+						console.log("opening finding items");
+						$('#inspec-tools-tab-finding-items-'+findingId).html(findingsItemsTemplate);
+						$('#inspec-tools-tab-finding-items-'+findingId).find('.inspec-tools-tab-finding-items-list').html(items);
+
+						$('#inspec-tools-tab-finding-items-'+findingId).find('.inspec-tools-tab-finding-items').slideDown("slow");
+						parentFindingContainer.attr( "expanded", true );
+					}
+					
 				}
 	    });
 

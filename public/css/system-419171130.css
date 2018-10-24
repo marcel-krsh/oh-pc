@@ -2461,7 +2461,8 @@ margin-top:10px;
 .inspec-tools-tab-finding-comment {
     color: #57585a;
 }
-.inspec-tools-tab-finding-item > div > .uk-width-3-4 {position:relative; background-color: rgba(0,0,0,0.05);}
+.inspec-tools-tab-finding-item > div > .uk-width-3-4 {position:relative;}
+.inspec-tools-tab-finding-item.reply > div > .uk-width-3-4 {background-color: rgba(0,0,0,0.05); border-top:0px !important;}
 
 .inspec-tools-tab-finding > .inspec-tools-tab-finding-info,
 .inspec-tools-tab-finding > .inspec-tools-tab-finding-info.no-action,
@@ -2634,6 +2635,13 @@ margin-top:10px;
 .inspec-tools-tab-finding-top-actions .uk-card-small.uk-card-body {
     padding: 30px 20px;
 }
+
+.inspec-tools-tab-finding-item.reply .uk-width-1-4 .auditinfo,
+.inspec-tools-tab-finding-item.reply .uk-width-1-4 .findinginfo,
+.inspec-tools-tab-finding-item.reply .uk-width-1-4 .inspec-tools-tab-finding-stats {
+    display: none !important;
+}
+
 .icon-circle {
     padding-left: 5px;
 }

@@ -1,7 +1,7 @@
 		<td colspan="10">
 			<div class="rowinset-top">INSPECTION AREAS <span class="uk-link" style="color:#ffffff;" onclick="$('#audit-r-{{$target}}-buildings').remove();"><i class="a-circle-cross"></i></span></div>
 			<div class="buildings uk-overflow-auto" style="">
-				<div class="sortable" uk-sortable="handle: .uk-sortable-handle-{{$context}}">
+				<div class="sortablebuildings sortable" uk-sortable="handle: .uk-sortable-handle-{{$context}}">
 					@foreach($buildings as $key=>$building)
 					<div id="building-{{$context}}-r-{{$key}}" class="uk-margin-remove building @if($building['status']) building-{{$building['status']}} {{$building['status']}} @endif @if($building['status'] != 'critical') notcritical @endif uk-grid-match" style=" @if(session('audit-hidenoncritical') == 1 && $building['status'] != 'critical') display:none; @endif " uk-grid>
 						<div class="uk-width-1-6 uk-padding-remove">

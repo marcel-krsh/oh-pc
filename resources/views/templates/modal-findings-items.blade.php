@@ -1,5 +1,5 @@
 <template class="uk-hidden" id="inspec-tools-tab-finding-item-template">
-	<div class="inspec-tools-tab-finding-item tplStatus inspec-tools-tab-finding-info uk-width-1-1 uk-margin-remove" data-finding-id="tplFindingId" data-parent-id="tplParentItemId">
+	<div id="inspec-tools-tab-finding-item-tplItemId" class="inspec-tools-tab-finding-item tplIsReply tplStatus inspec-tools-tab-finding-info uk-width-1-1 uk-margin-remove" data-finding-id="tplFindingId" data-parent-id="tplItemId">
 		<div class="" uk-grid>
 			<div class="uk-width-1-4 uk-padding-remove-left uk-first-column">
 				<div class="uk-display-block">
@@ -64,8 +64,16 @@
 </template>
 
 <template class="uk-hidden" id="inspec-tools-tab-finding-items-template">
-	<div class="inspec-tools-tab-finding-items uk-width-1-1 uk-first-column uk-margin-remove" style="display:none">
+	<div class="inspec-tools-tab-finding-items uk-width-1-1 uk-margin-remove" style="display:none">
 		<div class="inspec-tools-tab-finding-items-list" uk-grid>
+	    	
+	    </div>
+	</div>
+</template>
+
+<template class="uk-hidden" id="inspec-tools-tab-finding-item-replies-template">
+	<div class="inspec-tools-tab-finding-item-replies uk-width-1-1 uk-margin-remove" style="display:none">
+		<div class="inspec-tools-tab-finding-item-replies-list" uk-grid>
 	    	
 	    </div>
 	</div>
