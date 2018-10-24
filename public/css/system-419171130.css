@@ -1909,6 +1909,11 @@ margin-top:10px;
     50% { border-color: rgba(218, 50, 138, 0.5); }
     100%   { border-color: rgba(218, 50, 138, 1); }
 }
+@keyframes border-pulsate-white {
+    0%   { border-color: rgba(255, 255, 255, 1); }
+    50% { border-color: rgba(255, 255, 255, 0.5); }
+    100%   { border-color: rgba(255, 255, 255, 1); }
+}
 #auditstable .building-in-progress .building-type .building-type-icon i {
      border: 4px dotted;
 }
@@ -2493,9 +2498,12 @@ margin-top:10px;
 .inspec-tools-tab-finding-sticky > div {
     padding: 10px 10px;
 }
-.inspec-tools-tab-finding-sticky.action-needed {
-    background-color: #76338b; color: #fff;
-}
+.inspec-tools-tab-finding-sticky.no-action {  }
+.inspec-tools-tab-finding-sticky.action-needed { background-color: #76338b; color: #fff; }
+.inspec-tools-tab-finding-sticky.action-required,
+.inspec-tools-tab-finding-sticky.critical { background-color: #da328a; color: #fff; }
+.inspec-tools-tab-finding-sticky.ok-actionable { background-color: #56b285; color: #fff; }
+.inspec-tools-tab-finding-sticky.in-progress { background-color: #49ade9; color: #fff; }
 
 .inspec-tools-tab-finding.no-action .bordered, 
 .inspec-tools-tab-finding .bordered { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px solid; border-color: #939598; color: #939598; }
@@ -2686,7 +2694,7 @@ margin-top:10px;
 }
 .inspec-tools-tab-finding-sticky.no-action > div, .inspec-tools-tab-finding-sticky > div { border-top: 2px solid #fff; margin-top: 2px; }
 .inspec-tools-tab-finding-sticky.action-needed > div { border-top: 2px dashed #fff; margin-top: 2px; }
-.inspec-tools-tab-finding-sticky.action-required > div, .inspec-tools-tab-finding-sticky.critical > div { border-top: 2px double #fff; margin-top: 2px; }
+.inspec-tools-tab-finding-sticky.action-required > div, .inspec-tools-tab-finding-sticky.critical > div { border-top: 3px double #fff; margin-top: 2px;  animation: border-pulsate-white 2s infinite;}
 .inspec-tools-tab-finding-sticky.ok-actionable > div { border-top: 2px solid #fff; margin-top: 2px; }
 .inspec-tools-tab-finding-sticky.in-progress > div { border-top: 2px dotted #fff; margin-top: 2px; }
 
