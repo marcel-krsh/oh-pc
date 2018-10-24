@@ -318,7 +318,7 @@ function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight,inmod
 		var goober = UIkit.modal.alert("You have changes you haven't saved yet. You might want to cancel this window and save your changes first.");
 	}
 	if(continueToLoad === 1) {
-		$(newmodalcontent).html('');
+		$(newmodalcontent).html('<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>');
 		$(newmodalcontent).load('/modals/'+modalSource, function(response, status, xhr) {
 				  if (status == "error") {
 				  	if(xhr.status == "401") {
