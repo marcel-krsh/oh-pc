@@ -543,61 +543,63 @@ function openFindings(element, auditid, buildingid, unitid='', type){
 	dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid,1,0,1);
 }
 
-UIkit.util.on('.sortable', 'start', function (item) {
-	var listItem = document.getElementById( item.detail[1].id );
-	console.log(item.detail[1].id);
-	if($('#'+item.detail[1].id).hasClass('building-detail')){
-		startIndex = $( ".building-detail" ).index( listItem );
-	}else if($('#'+item.detail[1].id).hasClass('building')){
-		startIndex = $( ".building" ).index( listItem );
-	}else if($('#'+item.detail[1].id).hasClass('inspection-area')){
-		startIndex = $( ".inspection-area" ).index( listItem );
-	} 				
-	console.log( item.detail[1].id + " started at index: " + startIndex );
-});
-UIkit.util.on('.sortable', 'moved', function (item) {
-	var listItem = document.getElementById( item.detail[1].id );
-	if($('#'+item.detail[1].id).hasClass('building-detail')){
-		endIndex = $( ".building-detail" ).index( listItem );
-		console.log( item.detail[1].id + " ended at index: " + endIndex );
-		UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
-		reorder(".building-details > .sortable", '.building-detail');
+$(function () {
+	$(document).on('start', '.sortablebuildings', function (item) {console.log("almost moving....");
+		var listItem = document.getElementById( item.detail[1].id );
+		console.log(item.detail[1].id);
+		if($('#'+item.detail[1].id).hasClass('building-detail')){
+			startIndex = $( ".building-detail" ).index( listItem );
+		}else if($('#'+item.detail[1].id).hasClass('building')){
+			startIndex = $( ".building" ).index( listItem );
+		}else if($('#'+item.detail[1].id).hasClass('inspection-area')){
+			startIndex = $( ".inspection-area" ).index( listItem );
+		} 				
+		console.log( item.detail[1].id + " started at index: " + startIndex );
+	});
+	$(document).on('moved', '.sortablebuildings', function (item) {console.log("moving....");
+		var listItem = document.getElementById( item.detail[1].id );
+		if($('#'+item.detail[1].id).hasClass('building-detail')){
+			endIndex = $( ".building-detail" ).index( listItem );
+			console.log( item.detail[1].id + " ended at index: " + endIndex );
+			UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
+			reorder(".building-details > .sortable", '.building-detail');
 
-	}else if($('#'+item.detail[1].id).hasClass('building')){
-		endIndex = $( ".building" ).index( listItem );
-		console.log( item.detail[1].id + " ended at index: " + endIndex );
-		UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
-		reorder(".buildings > .sortable", '.building');
-		console.log("endIndex "+endIndex+' '+item.detail[1].id);
-		// update journey icons
-		var length = $('.building').length;
-		$('.building').each(function(index, element) {
-			$(element).find( ".journey-start" ).addClass('journey');
-			$(element).find( ".journey-start" ).removeClass('journey-start');
-			$(element).find( ".journey-end" ).addClass('journey');
-			$(element).find( ".journey-end" ).removeClass('journey-end');
-			$(element).find( ".a-home-marker" ).addClass('a-marker-basic');
-			$(element).find( ".a-home-marker" ).removeClass('a-home-marker');
+		}else if($('#'+item.detail[1].id).hasClass('building')){
+			endIndex = $( ".building" ).index( listItem );
+			console.log( item.detail[1].id + " ended at index: " + endIndex );
+			UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
+			reorder(".buildings > .sortable", '.building');
+			console.log("endIndex "+endIndex+' '+item.detail[1].id);
+			// update journey icons
+			var length = $('.building').length;
+			$('.building').each(function(index, element) {
+				$(element).find( ".journey-start" ).addClass('journey');
+				$(element).find( ".journey-start" ).removeClass('journey-start');
+				$(element).find( ".journey-end" ).addClass('journey');
+				$(element).find( ".journey-end" ).removeClass('journey-end');
+				$(element).find( ".a-home-marker" ).addClass('a-marker-basic');
+				$(element).find( ".a-home-marker" ).removeClass('a-home-marker');
 
-		    if (index == 0) {
-		        $(element).find( ".journey" ).addClass('journey-start');
-				$(element).find( ".journey" ).removeClass('journey');
-				$(element).find( ".a-marker-basic" ).addClass('a-home-marker');
-				$(element).find( ".a-marker-basic" ).removeClass('a-marker-basic');
-	        }
-			if (index == (length - 2)) {
-		        $(element).find( ".journey" ).addClass('journey-end');
-				$(element).find( ".journey" ).removeClass('journey');
-				$(element).find( ".a-marker-basic" ).addClass('a-home-marker');
-				$(element).find( ".a-marker-basic" ).removeClass('a-marker-basic');
-		    }
-		});
-	}else if($('#'+item.detail[1].id).hasClass('inspection-area')){
-		endIndex = $( ".inspection-area" ).index( listItem );
-		console.log( item.detail[1].id + " ended at index: " + endIndex );
-		UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
-		// reorder(".inspection-main-list > .sortable", '.inspection-area');
-	}
+			    if (index == 0) {
+			        $(element).find( ".journey" ).addClass('journey-start');
+					$(element).find( ".journey" ).removeClass('journey');
+					$(element).find( ".a-marker-basic" ).addClass('a-home-marker');
+					$(element).find( ".a-marker-basic" ).removeClass('a-marker-basic');
+		        }
+				if (index == (length - 2)) {
+			        $(element).find( ".journey" ).addClass('journey-end');
+					$(element).find( ".journey" ).removeClass('journey');
+					$(element).find( ".a-marker-basic" ).addClass('a-home-marker');
+					$(element).find( ".a-marker-basic" ).removeClass('a-marker-basic');
+			    }
+			});
+		}else if($('#'+item.detail[1].id).hasClass('inspection-area')){
+			endIndex = $( ".inspection-area" ).index( listItem );
+			console.log( item.detail[1].id + " ended at index: " + endIndex );
+			UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
+			// reorder(".inspection-main-list > .sortable", '.inspection-area');
+		}
+	});
 });
 
 function loadProjectDetailsBuildings(id, target) {
