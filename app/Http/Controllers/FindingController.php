@@ -115,7 +115,7 @@ class FindingController extends Controller
     		],
     		'findings' => [
     			[
-    				'id' => 987,
+    				'id' => rand ( 100 , 10000 ),
     				'ref' => '20120394',
     				'status' => 'action-needed',
     				'type' => 'nlt',
@@ -130,7 +130,7 @@ class FindingController extends Controller
     					'name' => 'Holly Swisher'
     				],
     				'building' => [
-    					'id' => 144,
+    					'id' => rand ( 100 , 10000 ),
     					'name' => 'Building 2'
     				],
     				'amenity' => [
@@ -143,7 +143,7 @@ class FindingController extends Controller
     				],
     				'items' => [
     					[
-    						'id' => 333,
+    						'id' => rand ( 100 , 10000 ),
     						'type' => 'comment',
     						'date' => '12/22/2018 12:51:38 PM',
 		    				'auditor' => [
@@ -155,7 +155,7 @@ class FindingController extends Controller
 
     			],
     			[
-    				'id' => 947,
+    				'id' => rand ( 100 , 10000 ),
     				'ref' => '11112394',
     				'status' => 'action-required',
     				'type' => 'sd',
@@ -170,7 +170,7 @@ class FindingController extends Controller
     					'name' => 'Holly Swisher'
     				],
     				'building' => [
-    					'id' => 144,
+    					'id' => rand ( 100 , 10000 ),
     					'name' => 'Building 2'
     				],
     				'amenity' => [
@@ -183,7 +183,7 @@ class FindingController extends Controller
     				],
     				'items' => [
     					[
-    						'id' => 333,
+    						'id' => rand ( 100 , 10000 ),
     						'type' => 'comment',
     						'date' => '12/22/2018 12:51:38 PM',
 		    				'auditor' => [
@@ -195,7 +195,7 @@ class FindingController extends Controller
 
     			],
     			[
-    				'id' => 948,
+    				'id' => rand ( 100 , 10000 ),
     				'ref' => '999999948',
     				'status' => 'action-required',
     				'type' => 'sd',
@@ -235,7 +235,7 @@ class FindingController extends Controller
 
     	$data['items'] = collect([
 				[
-					'id' => 333,
+					'id' => rand ( 100 , 10000 ),
 					'ref' => '123456',
     				'status' => 'action-required',
     				'audit' => '20121111',
@@ -256,7 +256,7 @@ class FindingController extends Controller
     				]
 				],
 				[
-					'id' => 444,
+					'id' => rand ( 100 , 10000 ),
 					'ref' => '333444',
     				'status' => 'action-needed',
     				'audit' => '20121111',
@@ -279,7 +279,7 @@ class FindingController extends Controller
     				]
 				],
                 [
-                    'id' => 555,
+                    'id' => rand ( 100 , 10000 ),
                     'ref' => '123666',
                     'status' => '',
                     'audit' => '20121111',
@@ -307,7 +307,7 @@ class FindingController extends Controller
                     ]
                 ],
                 [
-                    'id' => 444,
+                    'id' => rand ( 100 , 10000 ),
                     'ref' => '333444',
                     'status' => 'action-required',
                     'audit' => '20121111',

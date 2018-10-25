@@ -1,5 +1,23 @@
 <template class="uk-hidden" id="inspec-tools-tab-finding-item-template">
 	<div id="inspec-tools-tab-finding-item-tplItemId" class="inspec-tools-tab-finding-item tplIsReply tplStatus inspec-tools-tab-finding-info uk-width-1-1 uk-margin-remove" data-finding-id="tplFindingId" data-parent-id="tplItemId">
+		<div id="inspec-tools-tab-finding-reply-sticky-tplItemId" class="inspec-tools-tab-finding-reply-sticky tplStatus uk-width-1-1 uk-padding-remove" style="display:none">
+			<div class="uk-grid-match" uk-grid>
+				<div class="uk-width-1-4 uk-padding-remove-top uk-padding-remove-left">
+					<div>
+						<i class="uk-inline tplIcon"></i> <i class="uk-inline a-menu" onclick="expandFindingItems(this);"></i>
+					</div>
+				</div>
+				<div class="uk-width-3-4 uk-padding-remove-top uk-padding-remove-right">
+					<div>
+						tplDate: tplType#tplRef
+						<div class="uk-float-right"><i class="a-circle-plus use-hand-cursor"></i></div>
+					</div>
+					<div>
+						tplStickyContent
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="" uk-grid>
 			<div class="uk-width-1-4 uk-padding-remove-left uk-first-column">
 				<div class="uk-display-block">

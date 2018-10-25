@@ -2496,15 +2496,25 @@ margin-top:10px;
   width: 100%;
   z-index: 10;
 }
-.inspec-tools-tab-finding-sticky > div {
+.inspec-tools-tab-finding-reply-sticky {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  border-top: 1px solid #fff;
+}
+.inspec-tools-tab-finding-sticky > div, .inspec-tools-tab-finding-reply-sticky > div{
     padding: 10px 10px;
 }
-.inspec-tools-tab-finding-sticky.no-action {  }
-.inspec-tools-tab-finding-sticky.action-needed { background-color: #76338b; color: #fff; }
-.inspec-tools-tab-finding-sticky.action-required,
-.inspec-tools-tab-finding-sticky.critical { background-color: #da328a; color: #fff; }
-.inspec-tools-tab-finding-sticky.ok-actionable { background-color: #56b285; color: #fff; }
-.inspec-tools-tab-finding-sticky.in-progress { background-color: #49ade9; color: #fff; }
+
+.inspec-tools-tab-finding-sticky.no-action, .inspec-tools-tab-finding-reply-sticky.no-action,
+.inspec-tools-tab-finding-sticky, .inspec-tools-tab-finding-reply-sticky { background-color: #939598; color: #fff; }
+.inspec-tools-tab-finding-sticky.action-needed, .inspec-tools-tab-finding-reply-sticky.action-needed { background-color: #76338b; color: #fff; }
+.inspec-tools-tab-finding-sticky.action-required, .inspec-tools-tab-finding-sticky.critical,
+.inspec-tools-tab-finding-reply-sticky.action-required, .inspec-tools-tab-finding-reply-sticky.critical { background-color: #da328a; color: #fff; }
+.inspec-tools-tab-finding-sticky.ok-actionable, .inspec-tools-tab-finding-reply-sticky.ok-actionable { background-color: #56b285; color: #fff; }
+.inspec-tools-tab-finding-sticky.in-progress, .inspec-tools-tab-finding-reply-sticky.in-progress { background-color: #49ade9; color: #fff; }
 
 .inspec-tools-tab-finding.no-action .bordered, 
 .inspec-tools-tab-finding .bordered { padding-bottom: 20px;margin-bottom: 5px; border-bottom: 3px solid; border-color: #939598; color: #939598; }
@@ -2706,16 +2716,17 @@ margin-top:10px;
 .inspec-tools-tab-finding-sticky.ok-actionable > div { border-top: 2px solid #fff; margin-top: 2px; }
 .inspec-tools-tab-finding-sticky.in-progress > div { border-top: 2px dotted #fff; margin-top: 2px; }
 
-.inspec-tools-tab-finding-sticky .uk-width-1-4 i {
+.inspec-tools-tab-finding-sticky .uk-width-1-4 i, .inspec-tools-tab-finding-reply-sticky .uk-width-1-4 i {
     padding-right: 4px;
     padding-left: 4px;
     font-size: 24px;
 }
-.inspec-tools-tab-finding-sticky .uk-width-3-4 {
+.inspec-tools-tab-finding-sticky .uk-width-3-4, .inspec-tools-tab-finding-reply-sticky .uk-width-3-4 {
     font-size: 18px;
     margin-top: 3px;
+    margin-bottom: 4px;
 }
-.inspec-tools-tab-finding-sticky .uk-width-3-4 .uk-float-right {
+.inspec-tools-tab-finding-sticky .uk-width-3-4 .uk-float-right, .inspec-tools-tab-finding-reply-sticky .uk-width-3-4 .uk-float-right {
     margin-top: -2px;
 }
 

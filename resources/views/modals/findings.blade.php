@@ -234,7 +234,12 @@ $(".inspec-tools-tab-findings-container").on( 'scroll', function(){
     var currentFindingId ="";
     var position = 0;
     var findingId= "";
+    var currentItem ="";
+    var currentItemId ="";
+    var positionItem = 0;
+    var itemId= "";
     var tmpPosition = -offset;
+    var tmpPositionItem = - offset - 48;
 
     if ($(".inspec-tools-tab-findings-container").scrollTop() > 40) {
     	// console.log('scrolltop > 40');
@@ -253,8 +258,25 @@ $(".inspec-tools-tab-findings-container").on( 'scroll', function(){
 	        }
 	    });
 
+    	$.each($(".inspec-tools-tab-finding-reply-sticky"), function(index, item) {
+
+	    	currentItem = $(item).closest("[data-parent-id], .inspec-tools-tab-finding-item");
+		    currentItemId = currentItem.data('parent-id');
+		    positionItem = $(currentItem).offset().top - $(currentItem).offsetParent().offset().top;
+			// console.log("currentItemId "+currentItemId+" | positionItem "+positionItem+" | tmpPositionItem "+tmpPositionItem);
+	        if(positionItem < 40){
+	        	if(positionItem >= tmpPositionItem) {
+	        		tmpPositionItem = positionItem;
+	        		itemId = currentItemId;
+	        	}
+	        }
+	    });
+
+	    // console.log("Finding id: "+findingId+" | Item id: "+itemId);
+
     	// console.log("finding: "+findingId);
     	$('div[id^="inspec-tools-tab-finding-sticky-"]').not( 'div[id="inspec-tools-tab-finding-sticky-'+findingId+'"]' ).hide();
+    	$('div[id^="inspec-tools-tab-finding-reply-sticky-"]').not( 'div[id="inspec-tools-tab-finding-reply-sticky-'+itemId+'"]' ).hide();
 
 	    if($('#inspec-tools-tab-finding-'+findingId).attr('expanded')){
 	    	// console.log('#inspec-tools-tab-finding-'+findingId+' expanded');
@@ -265,6 +287,16 @@ $(".inspec-tools-tab-findings-container").on( 'scroll', function(){
 			// hide that sticky
 			// console.log('hiding #inspec-tools-tab-finding-sticky-'+findingId+'');
 			$('#inspec-tools-tab-finding-sticky-'+findingId).fadeOut("fast");
+		}
+		
+		if($(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-item-'+itemId).attr('expanded')){
+	    	
+	        $(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).fadeIn( "fast" );
+	        $(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).css("margin-top", $(".inspec-tools-tab-findings-container").scrollTop());
+		}else{
+			// hide that sticky
+			// console.log('hiding #inspec-tools-tab-finding-sticky-'+findingId+'');
+			$(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).fadeOut("fast");
 		}
     } else {
     	// hide the sticky for all findings
@@ -523,12 +555,12 @@ function expandFindingItems(element) {
 
 	var parentFindingContainer = $(element).closest("[data-finding-id], .inspec-tools-tab-finding");
 	var findingId = parentFindingContainer.data('finding-id');
-	console.log("finding id: "+findingId);
+	//console.log("finding id: "+findingId);
 
 
 	var parentItemContainer = $(element).closest("[data-parent-id], .inspec-tools-tab-finding-item");
 	var parentitemid = parentItemContainer.data('parent-id');
-	console.log("item id: "+parentitemid);
+	//console.log("item id: "+parentitemid);
 
 
 	if (parentFindingContainer.attr('expanded') || parentItemContainer.attr('expanded')){
@@ -596,6 +628,7 @@ function expandFindingItems(element) {
 						var itemtype = item.type;
 						var itemauditorname = item.auditor.name;
 						var itemcontent = item.comment;
+						var itemstickycontent = item.comment;
 						switch(item.type) {
 						    case 'followup':
 						        itemauditorname = item.auditor.name+'<br />Assigned To: '+item.assigned.name;
@@ -619,6 +652,7 @@ function expandFindingItems(element) {
 						        	images = images + newimage;
 						        });
 						        itemcontent = findingsPhotoGalleryTemplate.replace(/tplPhotos/g, images);
+						        itemstickycontent = '';
 						        break;
 						    case 'file':
 						        itemtype = 'DOC';
@@ -651,6 +685,7 @@ function expandFindingItems(element) {
 						newitem = newitem.replace(/tplType/g, itemtype);
 						newitem = newitem.replace(/tplName/g, itemauditorname);
 						newitem = newitem.replace(/tplContent/g, itemcontent);
+						newitem = newitem.replace(/tplStickyContent/g, itemstickycontent);
 
 						var newstat = '';
 						var stats = '';
@@ -681,9 +716,13 @@ function expandFindingItems(element) {
 					});
 
 					if(parentitemid !== undefined){
-						console.log("opening replies "+'#inspec-tools-tab-finding-item-replies-'+parentitemid);
+						console.log("opening replies "+'#inspec-tools-tab-finding-item-replies-'+parentitemid);			
+
 						$('#inspec-tools-tab-finding-item-replies-'+parentitemid).html(findingsItemRepliesTemplate);
 						$('#inspec-tools-tab-finding-item-replies-'+parentitemid).find('.inspec-tools-tab-finding-item-replies-list').html(items);
+
+						//remove sticky div
+						$('#inspec-tools-tab-finding-item-replies-'+parentitemid).find('.inspec-tools-tab-finding-reply-sticky').remove();
 
 						$('#inspec-tools-tab-finding-item-replies-'+parentitemid).find('.inspec-tools-tab-finding-item-replies').slideDown("slow");
 						parentItemContainer.attr( "expanded", true );
