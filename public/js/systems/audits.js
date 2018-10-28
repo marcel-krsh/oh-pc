@@ -642,5 +642,25 @@ function projectDetailsInfo(id, type, target) {
     });
 }
 
+function assignmentDay(id, dateid, target) {
+	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+	$('.project-details-info-assignment-schedule').html(tempdiv);
+
+	// remove active buttons
+	$('#project-details-assignment-buttons').find('.uk-button').removeClass('active');
+	$(target).addClass('active');
+
+	var url = '/projects/'+id+'/details/assignment/date/'+dateid;
+    $.get(url, {
+        }, function(data) {
+            if(data=='0'){ 
+                UIkit.modal.alert("There was a problem getting the assignment information.");
+            } else {
+            	
+				$('.project-details-info-assignment-schedule').html(data);
+        	}
+    });
+}
+
 
 

@@ -62,6 +62,7 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('/projects/{project}/details', 'AuditController@getProjectDetails')->name('project.details');
         // Route::get('/projects/{project}/details/title', 'AuditController@getProjectDetailsTitle')->name('project.details.title');
          Route::get('/projects/{project}/details/{type}', 'AuditController@getProjectDetailsInfo')->name('project.details.info');
+         Route::get('/projects/{project}/details/assignment/date/{dateid}', 'AuditController@getProjectDetailsAssignmentSchedule')->name('project.details.assignment.schedule');
 
         Route::get('/projects/{project}/communications', 'AuditController@getProjectCommunications')->name('project.communications');
         Route::get('/projects/{project}/communications/title', 'AuditController@getProjectCommunicationsTitle')->name('project.communications.title');

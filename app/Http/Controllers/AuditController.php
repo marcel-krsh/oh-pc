@@ -973,7 +973,111 @@ class AuditController extends Controller
                 ]);
                 break;
             case 'assignment':
-                
+                $data = collect([
+                    "project" => [
+                        'id' => 1
+                    ],
+                    "summary" => [
+                        'required_unit_selected' => 0,
+                        'inspectable_areas_assignment_needed' => 12,
+                        'required_units_selection' => 13,
+                        'file_audits_needed' => 14,
+                        'physical_audits_needed' => 15,
+                        'schedule_conflicts' => 16,
+                        'estimated' => '107:00',
+                        'needed' => '27:00',
+                    ],
+                    'auditors' => [
+                        [
+                            'id' => 1,
+                            'name' => 'Brian Greenwood',
+                            'initials' => 'BG',
+                            'color' => 'pink'
+                        ],
+                        [
+                            'id' => 2,
+                            'name' => 'Brianna Bluewood',
+                            'initials' => 'BB',
+                            'color' => 'blue'
+                        ],
+                        [
+                            'id' => 3,
+                            'name' => 'John Smith',
+                            'initials' => 'JS',
+                            'color' => 'black'
+                        ],
+                        [
+                            'id' => 4,
+                            'name' => 'Sarah Connor',
+                            'initials' => 'SC',
+                            'color' => 'red'
+                        ]
+                    ],
+                    "days" => [
+                        [
+                            'id' => 6, 
+                            'date' => '12/22/2018',
+                            'status' => 'action-required',
+                            'icon' => 'a-avatar-fail'
+                        ],
+                        [
+                            'id' => 7, 
+                            'date' => '12/23/2018',
+                            'status' => 'ok-actionable',
+                            'icon' => 'a-avatar-approve'
+                        ]
+                    ],
+                    'projects' => [
+                        [
+                            'id' => '19200114',
+                            'date' => '12/22/2018',
+                            'name' => 'The Garden Oaks', 
+                            'street' => '123466 Silvegwood Street', 
+                            'city' => 'Columbus', 
+                            'state' => 'OH', 
+                            'zip' => '43219', 
+                            'lead' => 2, // user_id
+                            'schedules' => [
+                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0],
+                                ['icon' => '', 'status' => '', 'is_lead' => 0],
+                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1],
+                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0]
+                            ]
+                        ],
+                        [
+                            'id' => '19200115',
+                            'date' => '12/22/2018',
+                            'name' => 'The Garden Oaks 2', 
+                            'street' => '123466 Silvegwood Street', 
+                            'city' => 'Columbus', 
+                            'state' => 'OH', 
+                            'zip' => '43219', 
+                            'lead' => 1, // user_id
+                            'schedules' => [
+                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1],
+                                ['icon' => '', 'status' => '', 'is_lead' => 0],
+                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0],
+                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0]
+                            ]
+                        ],
+                        [
+                            'id' => '19200116',
+                            'date' => '12/22/2018',
+                            'name' => 'The Garden Oaks 3', 
+                            'street' => '123466 Silvegwood Street', 
+                            'city' => 'Columbus', 
+                            'state' => 'OH', 
+                            'zip' => '43219', 
+                            'lead' => 2, // user_id
+                            'schedules' => [
+                                ['icon' => '', 'status' => '', 'is_lead' => 0],
+                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0],
+                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0],
+                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1]
+                            ]
+                        ]
+                    ]
+                ]);
                 break;
             case 'findings':
                 
@@ -998,6 +1102,116 @@ class AuditController extends Controller
         }
 
         return view('projects.partials.details-'.$type, compact('data'));
+    }
+
+    public function getProjectDetailsAssignmentSchedule( $project, $dateid ) {
+
+        $data = collect([
+            "project" => [
+                'id' => 1
+            ],
+            "summary" => [
+                'required_unit_selected' => 0,
+                'inspectable_areas_assignment_needed' => 12,
+                'required_units_selection' => 13,
+                'file_audits_needed' => 14,
+                'physical_audits_needed' => 15,
+                'schedule_conflicts' => 16,
+                'estimated' => '107:00',
+                'needed' => '27:00',
+            ],
+            'auditors' => [
+                [
+                    'id' => 1,
+                    'name' => 'Brian Greenwood',
+                    'initials' => 'BG',
+                    'color' => 'pink'
+                ],
+                [
+                    'id' => 2,
+                    'name' => 'Brianna Bluewood',
+                    'initials' => 'BB',
+                    'color' => 'blue'
+                ],
+                [
+                    'id' => 3,
+                    'name' => 'John Smith',
+                    'initials' => 'JS',
+                    'color' => 'black'
+                ],
+                [
+                    'id' => 4,
+                    'name' => 'Sarah Connor',
+                    'initials' => 'SC',
+                    'color' => 'red'
+                ]
+            ],
+            "days" => [
+                [
+                    'id' => 6, 
+                    'date' => '12/22/2018',
+                    'status' => 'action-required',
+                    'icon' => 'a-avatar-fail'
+                ],
+                [
+                    'id' => 7, 
+                    'date' => '12/23/2018',
+                    'status' => 'ok-actionable',
+                    'icon' => 'a-avatar-approve'
+                ]
+            ],
+            'projects' => [
+                [
+                    'id' => '19200114',
+                    'date' => '12/22/2018',
+                    'name' => 'The Garden Oaks', 
+                    'street' => '123466 Silvegwood Street', 
+                    'city' => 'Columbus', 
+                    'state' => 'OH', 
+                    'zip' => '43219', 
+                    'lead' => 2, // user_id
+                    'schedules' => [
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0],
+                        ['icon' => '', 'status' => '', 'is_lead' => 0],
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1],
+                        ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0]
+                    ]
+                ],
+                [
+                    'id' => '19200115',
+                    'date' => '12/22/2018',
+                    'name' => 'The Garden Oaks 2', 
+                    'street' => '123466 Silvegwood Street', 
+                    'city' => 'Columbus', 
+                    'state' => 'OH', 
+                    'zip' => '43219', 
+                    'lead' => 1, // user_id
+                    'schedules' => [
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1],
+                        ['icon' => '', 'status' => '', 'is_lead' => 0],
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0],
+                        ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0]
+                    ]
+                ],
+                [
+                    'id' => '19200116',
+                    'date' => '12/22/2018',
+                    'name' => 'The Garden Oaks 3', 
+                    'street' => '123466 Silvegwood Street', 
+                    'city' => 'Columbus', 
+                    'state' => 'OH', 
+                    'zip' => '43219', 
+                    'lead' => 2, // user_id
+                    'schedules' => [
+                        ['icon' => '', 'status' => '', 'is_lead' => 0],
+                        ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0],
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0],
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1]
+                    ]
+                ]
+            ]
+        ]);
+        return view('projects.partials.details-assignment-schedule', compact('data'));
     }
 
     public function getProjectCommunications ( $project = null ) {
