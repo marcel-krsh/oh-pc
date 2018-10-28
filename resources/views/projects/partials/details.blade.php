@@ -177,38 +177,38 @@
 		</div>
 	</div>
 </div>
-<div id="project-details-buttons" class="" uk-grid>
+<div id="project-details-buttons" class="project-details-buttons" uk-grid>
 	<div class="uk-width-1-1">
 		<div uk-grid>
 			<div class="uk-width-1-2 uk-padding-remove">
 				<div uk-grid>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-1" class="uk-button uk-link ok-actionable active" onclick="projectDetailsInfo({{$stats['project_id']}}, 'compliance');" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
+						<button id="project-details-button-1" class="uk-button uk-link ok-actionable active" onclick="projectDetailsInfo({{$stats['project_id']}}, 'compliance', this);" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-2" class="uk-button uk-link critical" onclick="projectDetailsInfo({{$stats['project_id']}}, 'assignment');" type="button"><i class="a-avatar-fail"></i> ASSIGNMENT</button>
+						<button id="project-details-button-2" class="uk-button uk-link critical" onclick="projectDetailsInfo({{$stats['project_id']}}, 'assignment', this);" type="button"><i class="a-avatar-fail"></i> ASSIGNMENT</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-3" class="uk-button uk-link action-required" onclick="projectDetailsInfo({{$stats['project_id']}}, 'findings');" type="button"><i class="a-mobile-info"></i> FINDINGS</button>
+						<button id="project-details-button-3" class="uk-button uk-link action-required" onclick="projectDetailsInfo({{$stats['project_id']}}, 'findings', this);" type="button"><i class="a-mobile-info"></i> FINDINGS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-4" class="uk-button uk-link action-needed" onclick="projectDetailsInfo({{$stats['project_id']}}, 'followups');" type="button"><i class="a-bell-ring"></i> FOLLOW-UPS</button>
+						<button id="project-details-button-4" class="uk-button uk-link action-needed" onclick="projectDetailsInfo({{$stats['project_id']}}, 'followups', this);" type="button"><i class="a-bell-ring"></i> FOLLOW-UPS</button>
 					</div>
 				</div>
 			</div>
 			<div class="uk-width-1-2 uk-padding-remove">
 				<div uk-grid>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-5" class="uk-button uk-link in-progress" onclick="projectDetailsInfo({{$stats['project_id']}}, 'reports');" type="button"><i class="a-file-chart-3"></i> REPORTS</button>
+						<button id="project-details-button-5" class="uk-button uk-link in-progress" onclick="projectDetailsInfo({{$stats['project_id']}}, 'reports', this);" type="button"><i class="a-file-chart-3"></i> REPORTS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-6" class="uk-button uk-link no-action" onclick="projectDetailsInfo({{$stats['project_id']}}, 'documents');" type="button"><i class="a-file-clock"></i> DOCUMENTS</button>
+						<button id="project-details-button-6" class="uk-button uk-link no-action" onclick="projectDetailsInfo({{$stats['project_id']}}, 'documents', this);" type="button"><i class="a-file-clock"></i> DOCUMENTS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-7" class="uk-button uk-link" onclick="projectDetailsInfo({{$stats['project_id']}}, 'comments');" type="button"><i class="a-comment-text"></i> COMMENTS</button>
+						<button id="project-details-button-7" class="uk-button uk-link" onclick="projectDetailsInfo({{$stats['project_id']}}, 'comments', this);" type="button"><i class="a-comment-text"></i> COMMENTS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-8" class="uk-button uk-link" onclick="projectDetailsInfo({{$stats['project_id']}}, 'photos');" type="button"><i class="a-picture"></i> PHOTOS</button>
+						<button id="project-details-button-8" class="uk-button uk-link" onclick="projectDetailsInfo({{$stats['project_id']}}, 'photos', this);" type="button"><i class="a-picture"></i> PHOTOS</button>
 					</div>
 				</div>
 			</div>
@@ -219,6 +219,71 @@
 <div id="project-details-info-container"></div>
 
 <div id="project-details-buildings-container"></div>
+
+<script>
+	var chartColors = {
+		  required: '#191818',
+		  selected: '#0099d5',
+		  needed: '#d31373',
+		  inspected: '#21a26e',
+		  tobeinspected: '#e0e0df'
+		};
+	Chart.defaults.global.legend.display = false;
+    Chart.defaults.global.tooltips.enabled = true;
+
+    // THIS SCRIPT MUST BE UPDATED WITH NEW VALUES AFTER A NEW FUNDING SUBMISSION HAS BEEN MADE  - to make this simple - this tab is reloaded on form submission of new payment/ payment edits //
+    var summaryOptions = {
+        //Boolean - Whether we should show a stroke on each segment
+        segmentShowStroke : false,
+        legendPosition : 'bottom',
+
+        "cutoutPercentage":40,
+			"legend" : {
+				"display" : false
+			},
+			"responsive" : true,
+			"maintainAspectRatio" : false,
+
+        //String - The colour of each segment stroke
+        segmentStrokeColor : "#fff",
+
+        //Number - The width of each segment stroke
+        segmentStrokeWidth : 0,
+
+        //The percentage of the chart that we cut out of the middle.
+        // cutoutPercentage : 67,
+
+        easing: "linear",
+
+        duration: 100000,
+
+        tooltips: {
+            enabled: true,
+            mode: 'single',
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    var label = data.labels[tooltipItem.index];
+                    var datasetLabel = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                    return label + ': ' + addCommas(datasetLabel) + ' units' ;
+                }
+            }
+        }
+
+
+    }
+    function addCommas(nStr)
+    {
+        nStr += '';
+        x = nStr.split('.');
+        x1 = x[0];
+        x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) {
+            x1 = x1.replace(rgx, '$1' + ',' + '$2');
+        }
+        return x1 + x2;
+    }
+</script>
 
 <script>
 

@@ -235,7 +235,6 @@ if(Auth::check()){
 
 	
 	<!-- <script src="/js/app.js"></script> -->
-
 	@if (Auth::guest())
 	@else
 	<script type="text/javascript">

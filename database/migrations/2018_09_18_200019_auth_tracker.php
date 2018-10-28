@@ -13,6 +13,7 @@ class AuthTracker extends Migration
      */
     public function up()
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Schema::create('auth_tracker', function (Blueprint $table) {
             $table->increments('id');
             $table->string('token'); // provided with user_id after user logged in Devco
@@ -24,6 +25,7 @@ class AuthTracker extends Migration
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
         });
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
     /**

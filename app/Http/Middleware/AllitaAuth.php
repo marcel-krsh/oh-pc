@@ -53,7 +53,6 @@ class AllitaAuth
     {
         // Do they have an active session?
 
-
         //if(!$request->user()){
         if(env('APP_DEBUG_NO_DEVCO') != 'true'){ // allows for local testing
             $this->_auth_service = new AuthService;

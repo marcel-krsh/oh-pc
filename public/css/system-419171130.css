@@ -2867,23 +2867,23 @@ span.indented, div.indented {
   background-image: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, #ffffff 80%, #ffffff 100%);
 }
 
-#project-details-buttons {margin-top:25px; }
-#project-details-buttons button { padding: 4px 0;text-shadow: none;line-height: 20px; color:#939598; border-color:#939598; background-color:transparent; border:2px solid; width: 100%; }
-#project-details-buttons button i { font-size: 19px; vertical-align: sub; }
-#project-details-buttons button.no-action { color:#939598; border-color:#939598;  }
-#project-details-buttons button.no-action:hover, #project-details-buttons button:hover,
-#project-details-buttons button.no-action.active, #project-details-buttons button.active { background-color:rgba(147,149,152,0.5); color:#fff;  }
-#project-details-buttons button.action-needed { color:#76338b; border-color:#76338b; border-style: dashed; }
-#project-details-buttons button.action-needed:hover,
-#project-details-buttons button.action-needed.active {  background-color:rgba(118,51,139,0.5); color:#fff; }
-#project-details-buttons button.ok-actionable { color:#56b285; border-color:#56b285; }
-#project-details-buttons button.ok-actionable:hover,
-#project-details-buttons button.ok-actionable.active { background-color:rgba(86,178,133,0.5);color:#fff; }
-#project-details-buttons button.in-progress { color:#49ade9; border-color:#49ade9;border-style: dotted; }
-#project-details-buttons button.in-progress:hover,
-#project-details-buttons button.in-progress.active { background-color:rgba(73,173,233,0.5);color:#fff; }
-#project-details-buttons button.action-required, #project-details-buttons button.critical { 
-  color:#da328a; 
+.project-details-buttons {margin-top:25px; }
+.project-details-buttons button { padding: 4px 0;text-shadow: none;line-height: 20px; color:#939598 !important; border-color:#939598; background-color:transparent; border:2px solid; width: 100%; }
+.project-details-buttons button i { font-size: 19px; vertical-align: sub; }
+.project-details-buttons button.no-action { color:#939598 !important; border-color:#939598;  }
+.project-details-buttons button.no-action:hover, .project-details-buttons button:hover,
+.project-details-buttons button.no-action.active, .project-details-buttons button.active { background-color:rgba(147,149,152,0.5); color:#fff !important;  }
+.project-details-buttons button.action-needed { color:#76338b !important; border-color:#76338b; border-style: dashed; }
+.project-details-buttons button.action-needed:hover,
+.project-details-buttons button.action-needed.active {  background-color:rgba(118,51,139,0.5); color:#fff !important; }
+.project-details-buttons button.ok-actionable { color:#56b285 !important; border-color:#56b285; }
+.project-details-buttons button.ok-actionable:hover,
+.project-details-buttons button.ok-actionable.active { background-color:rgba(86,178,133,0.5);color:#fff !important; }
+.project-details-buttons button.in-progress { color:#49ade9 !important; border-color:#49ade9;border-style: dotted; }
+.project-details-buttons button.in-progress:hover,
+.project-details-buttons button.in-progress.active { background-color:rgba(73,173,233,0.5);color:#fff !important; }
+.project-details-buttons button.action-required, .project-details-buttons button.critical { 
+  color:#da328a !important; 
   border-color:#da328a;
   border-style: double;
   border-width: 3px;
@@ -2892,10 +2892,18 @@ span.indented, div.indented {
   opacity: 0.5;
   line-height: 18px;
 }
-#project-details-buttons button.action-required:hover, #project-details-buttons button.critical:hover,
-#project-details-buttons button.action-required.active:hover, #project-details-buttons button.critical.active:hover {
+.project-details-buttons button.action-required:hover, .project-details-buttons button.critical:hover,
+.project-details-buttons button.action-required.active, .project-details-buttons button.critical.active {
   background-color:rgba(218,50,138,0.5);
-  color:#fff;
+  color:#fff !important;
+}
+
+.project-details-button-container {
+    width: 12%;
+    position: relative;
+    display: inline-block;
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
 #project-details-main-row i {
@@ -2993,7 +3001,9 @@ span.indented, div.indented {
     margin-right: 0px;
     height: 52px;
 }
-
+#project-details-info-container {
+    margin-bottom: 20px;
+}
 #project-details-info-container .no-action { color: #3a3a3a; border-color:#939598;  }
 #project-details-info-container .no-action hr { color: #939598 border-top: 3px solid;  }
 #project-details-info-container .no-action .project-details-info-compliance-summary {
@@ -3057,6 +3067,11 @@ span.indented, div.indented {
 }
 .project-details-info-compliance-summary table i {
 
+}
+.project-details-info-assignment-summary h3 {
+    margin-top: 30px;
+    font-size: 19px;
+    line-height: 25px;
 }
 
 #project-details-buildings-container .rowinset-top {
@@ -4059,4 +4074,10 @@ ul ul, ol ul {
 
 .uk-dropdown {
   box-shadow: 3px 3px 10px rgba(0,0,0,.6);
+}
+.underlined {
+  text-decoration: underline;
+}
+.italic {
+  font-style: italic;
 }

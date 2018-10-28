@@ -29,7 +29,7 @@
 					tplStats
 				</div>
 			</div>
-			<div class="uk-width-3-4 uk-padding-remove-right ">
+			<div class="uk-width-3-4 ">
 				<div class="uk-width-1-1 uk-display-inline-block uk-padding-remove inspec-tools-tab-finding-description">
     				<p>tplDate: tplType#tplRef<br />
     					By tplName</p>
