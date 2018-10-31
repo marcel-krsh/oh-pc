@@ -178,7 +178,7 @@
 }
 .itinerary {
     border: none;
-    padding: 7px 0px 5px;
+    padding: 0;
     margin-top: 3px;
     font-weight: bold;
 }
@@ -192,6 +192,7 @@
 .itinerary.itinerary-start, .itinerary.itinerary-end {
     border: 1px solid #ddd;
     margin-bottom: 5px;
+    padding: 7px 0px 5px;
 }
 .itinerary.itinerary-child {
 	margin-top: 5px;
