@@ -85,7 +85,7 @@
 						<div class="uk-width-1-6 uk-padding-remove uk-text-center">
 							<div uk-grid>
 								<div class="uk-width-1-1 uk-padding-remove {{$auditor['status']}}">
-									<i class="a-circle-checked large use-hand-cursor" onclick=""  uk-tooltip="title:CLICK TO REMOVE AUDITOR;"></i>
+									<i class="{{$auditor['icon']}} large use-hand-cursor" onclick=""  uk-tooltip="title:{{$auditor['icon_tooltip']}};"></i>
 					            </div>
 							</div>
 						</div>
