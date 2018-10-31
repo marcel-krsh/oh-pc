@@ -249,7 +249,7 @@
 			            	<div class="filter-box filter-icons uk-text-center uk-width-1-1 uk-link">
 			            		<i class="a-avatar-star"></i>
 			            	</div>
-			            	<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'file-status-sort',1);"></a></span>
+			            	<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'file-status-sort',1);"></a></span>
 			            </div>
 		            </th>
 		            <th class="uk-table-small" style="width:130px;">
@@ -269,10 +269,10 @@
 								<input id="filter-by-name" class="filter-box filter-name" type="text" placeholder="FILTER PROJECT / PM NAME">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="Sort By">
-								<a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'first-name-sort',1);"></a>
+								<a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'first-name-sort',1);"></a>
 							</span> 
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="Sort By">
-								<a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'last-name-sort',1);"></a>
+								<a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'last-name-sort',1);"></a>
 							</span> 
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
@@ -283,13 +283,13 @@
 								<input id="filter-by-address" class="filter-box filter-address" type="text" placeholder="FILTER PRIMARY ADDRESS">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="Sort By">
-								<a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'sort-by-street',1);"></a>
+								<a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'sort-by-street',1);"></a>
 							</span> 
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="Sort By">
-								<a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'sort-by-city',1);"></a>
+								<a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'sort-by-city',1);"></a>
 							</span> 
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="Sort By">
-								<a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'sort-by-zip',1);"></a>
+								<a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'sort-by-zip',1);"></a>
 							</span> 
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
@@ -308,10 +308,10 @@
 									<i class="a-circle-checked"></i>
 								</span>
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'date-aging-range-sort',1);"></a></span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'date-aging-days-sort',1);"></a></span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'date-aging-days-sort',1);"></a></span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'date-aging-days-sort',1);"></a></span>
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'date-aging-range-sort',1);"></a></span>
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'date-aging-days-sort',1);"></a></span>
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'date-aging-days-sort',1);"></a></span>
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'date-aging-days-sort',1);"></a></span>
 						</div>
 		            </th>
 		            <th style="min-width: 80px;">
@@ -321,7 +321,7 @@
 									<a class="uk-link-muted" onclick="dynamicModalLoad('date-aging-range');"><i class="a-calendar-8 uk-vertical-align-middle"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text"></i> <i class="a-calendar-8 uk-vertical-align-middle"></i></a>
 								</span>
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'date-aging-range-sort',1);"></a></span>
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'date-aging-range-sort',1);"></a></span>
 						</div>
 					</th>
 		            <th style="min-width: 120px;">
@@ -340,10 +340,10 @@
 									<i class="a-flames"></i>
 								</span> 
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'file-status-sort',1);"></a></span> 
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'documents-waiting-sort',1);"></a></span> 
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'home-owner-replied-sort',1);"></a></span> 
-							<span data-uk-tooltip="{pos:'bottom-right'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="Sort By Document Send Status"><a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'documents-waiting-sort',1);"></a></span>
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'file-status-sort',1);"></a></span> 
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'documents-waiting-sort',1);"></a></span> 
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'home-owner-replied-sort',1);"></a></span> 
+							<span data-uk-tooltip="{pos:'bottom-right'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="Sort By Document Send Status"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'documents-waiting-sort',1);"></a></span>
 						</div>
 					</th>
 		            <th style="min-width: 120px;">
@@ -413,10 +413,10 @@
 									<i class="a-person-clock"></i>
 								</span> 
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'file-status-sort',1);"></a></span> 
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'documents-waiting-sort',1);"></a></span> 
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'home-owner-replied-sort',1);"></a></span> 
-							<span data-uk-tooltip="{pos:'bottom-right'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="Sort By Document Send Status"><a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'documents-waiting-sort',1);"></a></span>
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'file-status-sort',1);"></a></span> 
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'documents-waiting-sort',1);"></a></span> 
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="Sort By"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'home-owner-replied-sort',1);"></a></span> 
+							<span data-uk-tooltip="{pos:'bottom-right'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="Sort By Document Send Status"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'documents-waiting-sort',1);"></a></span>
 						</div>
 		            </th>
 		            <th >
@@ -478,7 +478,7 @@
 			            			</form>
 			                    </div>
 			            	</div>
-			            	<span data-uk-tooltip="{pos:'bottom'}" title="Sort By" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top"><a id="" class="sort-nuetral" onclick="loadListTab(1,null,null,'file-status-sort',1);"></a></span> 
+			            	<span data-uk-tooltip="{pos:'bottom'}" title="Sort By" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'file-status-sort',1);"></a></span> 
 			            </div>
 		            </th>
 		            <th style="vertical-align:top;">

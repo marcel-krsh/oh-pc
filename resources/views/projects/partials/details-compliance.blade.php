@@ -239,6 +239,69 @@
 	// 	  });
 
 	// }
+	// 
+	var chartColors = {
+		  required: '#191818',
+		  selected: '#0099d5',
+		  needed: '#d31373',
+		  inspected: '#21a26e',
+		  tobeinspected: '#e0e0df'
+		};
+	Chart.defaults.global.legend.display = false;
+    Chart.defaults.global.tooltips.enabled = true;
+
+    // THIS SCRIPT MUST BE UPDATED WITH NEW VALUES AFTER A NEW FUNDING SUBMISSION HAS BEEN MADE  - to make this simple - this tab is reloaded on form submission of new payment/ payment edits //
+    var summaryOptions = {
+        //Boolean - Whether we should show a stroke on each segment
+        segmentShowStroke : false,
+        legendPosition : 'bottom',
+
+        "cutoutPercentage":40,
+			"legend" : {
+				"display" : false
+			},
+			"responsive" : true,
+			"maintainAspectRatio" : false,
+
+        //String - The colour of each segment stroke
+        segmentStrokeColor : "#fff",
+
+        //Number - The width of each segment stroke
+        segmentStrokeWidth : 0,
+
+        //The percentage of the chart that we cut out of the middle.
+        // cutoutPercentage : 67,
+
+        easing: "linear",
+
+        duration: 100000,
+
+        tooltips: {
+            enabled: true,
+            mode: 'single',
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    var label = data.labels[tooltipItem.index];
+                    var datasetLabel = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                    return label + ': ' + addCommas(datasetLabel) + ' units' ;
+                }
+            }
+        }
+
+
+    }
+    function addCommas(nStr)
+    {
+        nStr += '';
+        x = nStr.split('.');
+        x1 = x[0];
+        x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) {
+            x1 = x1.replace(rgx, '$1' + ',' + '$2');
+        }
+        return x1 + x2;
+    }
 
 	var mainSummaryChart = new Chart(document.getElementById("chartjs-summary"),{
 		"type":"doughnut",

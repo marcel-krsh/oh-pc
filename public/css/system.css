@@ -15,6 +15,7 @@ body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-do
     display: inline-block;
     margin: 34px;
 }
+
 .pace {
   -webkit-pointer-events: none;
   pointer-events: none;
@@ -1078,7 +1079,7 @@ min-height: 80px;
 	background-position:center;
 	background-repeat:no-repeat;	
 }
-.sort-nuetral{
+.sort-neutral{
 	display:inline-block;
 	width:99%;
 	height:18px;

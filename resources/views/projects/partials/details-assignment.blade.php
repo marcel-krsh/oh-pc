@@ -10,14 +10,14 @@
 			</div>
 			<div class="uk-width-4-5">
 				<h3>
-					It will take an <span class="underlined italic">ESTIMATED</span> <i class="a-pencil-2 use-hand-cursor" onclick="editEstimatedHours();"></i>{{$data['summary']['estimated']}} to complete this audit.<br />
+					It will take an <span class="underlined italic">ESTIMATED</span> <i class="a-pencil-2 use-hand-cursor" onclick="editEstimatedHours();" uk-tooltip="title:EDIT ESTIMATED HOURS;"></i>{{$data['summary']['estimated']}} to complete this audit.<br />
 					{{$data['summary']['needed']}} Need Assigned
 				</h3>
 			</div>
 			<div id="project-details-assignment-buttons" class="uk-width-1-1 project-details-buttons uk-margin-small">
 				@foreach($data['days'] as $day)
 				<div class="project-details-button-container">
-					<button class="uk-button uk-link {{$day['status']}} active" onclick="assignmentDay({{$data['project']['id']}}, {{$day['id']}}, this);" type="button"><i class="{{$day['icon']}}"></i> {{$day['date']}}</button>
+					<button class="uk-button uk-link {{$day['status']}} active" onclick="assignmentDay({{$data['project']['id']}}, {{$day['id']}}, this);" type="button" ><i class="{{$day['icon']}}"></i> {{$day['date']}}</button>
 				</div>
 				@endforeach
 				<div class="project-details-button-container">
@@ -34,11 +34,11 @@
 							<div class="divTableCell">&nbsp;</div>
 							@foreach($data['auditors'] as $auditor)
 							<div class="divTableCell">
-								<span uk-tooltip="pos:top-left;title:{{$auditor['name']}};" title="" aria-expanded="false" class="user-badge user-badge-{{$auditor['color']}} no-float uk-link">{{$auditor['initials']}}</span>
+								<span uk-tooltip="title:VIEW AUDITOR STATS & DETAILED SCHEDULE;" title="" aria-expanded="false" class="user-badge user-badge-{{$auditor['color']}} no-float uk-link" >{{$auditor['initials']}}</span>
 							</div>
 							@endforeach
 							<div class="divTableCell">
-								<i class="a-circle-plus"></i>
+								<i class="a-circle-plus" onclick="addAssignmentAuditor({{$data['project']['id']}});" uk-tooltip="title:CLICK TO ADD AUDITORS;"></i>
 							</div>
 							<div class="divTableCell">&nbsp;</div>
 						</div>
@@ -54,7 +54,7 @@
 							@foreach($project['schedules'] as $schedule)
 							<div class="divTableCell {{$schedule['status']}} @if($schedule['is_lead']) isLead @endif">
 								@if($schedule['is_lead']) <i class="a-star-3 corner"></i> @endif
-								<i class="{{$schedule['icon']}}"></i>
+								<i class="{{$schedule['icon']}}" uk-tooltip="title:{{$schedule['tooltip']}};"></i>
 							</div>
 							@endforeach
 							<div class="divTableCell">&nbsp;</div>
@@ -287,4 +287,10 @@
 			]
 		}
 	});
+</script>
+
+<script>
+	function addAssignmentAuditor(projectid){
+		dynamicModalLoad('projects/'+projectid+'/assignments/addauditor',1,0,1);
+	}
 </script>

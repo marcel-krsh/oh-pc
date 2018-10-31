@@ -1038,10 +1038,10 @@ class AuditController extends Controller
                             'zip' => '43219', 
                             'lead' => 2, // user_id
                             'schedules' => [
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0],
-                                ['icon' => '', 'status' => '', 'is_lead' => 0],
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1],
-                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0]
+                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                                ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT']
                             ]
                         ],
                         [
@@ -1054,10 +1054,10 @@ class AuditController extends Controller
                             'zip' => '43219', 
                             'lead' => 1, // user_id
                             'schedules' => [
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1],
-                                ['icon' => '', 'status' => '', 'is_lead' => 0],
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0],
-                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0]
+                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                                ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT']
                             ]
                         ],
                         [
@@ -1070,10 +1070,10 @@ class AuditController extends Controller
                             'zip' => '43219', 
                             'lead' => 2, // user_id
                             'schedules' => [
-                                ['icon' => '', 'status' => '', 'is_lead' => 0],
-                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0],
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0],
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1]
+                                ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' =>'APPROVE SCHEDULE CONFLICT']
                             ]
                         ]
                     ]
@@ -1171,10 +1171,10 @@ class AuditController extends Controller
                     'zip' => '43219', 
                     'lead' => 2, // user_id
                     'schedules' => [
-                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0],
-                        ['icon' => '', 'status' => '', 'is_lead' => 0],
-                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1],
-                        ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0]
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT']
                     ]
                 ],
                 [
@@ -1187,10 +1187,10 @@ class AuditController extends Controller
                     'zip' => '43219', 
                     'lead' => 1, // user_id
                     'schedules' => [
-                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1],
-                        ['icon' => '', 'status' => '', 'is_lead' => 0],
-                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0],
-                        ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0]
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT']
                     ]
                 ],
                 [
@@ -1203,10 +1203,10 @@ class AuditController extends Controller
                     'zip' => '43219', 
                     'lead' => 2, // user_id
                     'schedules' => [
-                        ['icon' => '', 'status' => '', 'is_lead' => 0],
-                        ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0],
-                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0],
-                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1]
+                        ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' =>'APPROVE SCHEDULE CONFLICT']
                     ]
                 ]
             ]
@@ -1387,5 +1387,122 @@ class AuditController extends Controller
         ]);
         
         return view('modals.project-summary', compact('data'));
+    }
+
+    public function addAssignmentAuditor($id, $orderby=null) {
+
+        $data = collect([
+            "project" => [
+                "id" => 1,
+                "name" => "Project Name",
+                'selected_program' => $id
+            ],
+            "summary" => [
+                'date' => 'DECEMBER 22, 2018',
+                'estimated' => '107:00',
+                'needed' => '27:00'
+            ],
+            "auditors" => [
+                [
+                    "id" => 1,
+                    "name" => "Jane Doe",
+                    "status" => "ok-actionable",
+                    "availability" => "Available 8:30 AM - 6:00 PM",
+                    "open" => "08:00",
+                    "open_tooltip" => "8 HOURS ARE OPEN FOR SCHEDULING",
+                    "starting" => "08:30",
+                    "starting_tooltip" => "JILL DOE CAN START ON THIS AUDIT AT APPROXIMATELY 8:30 AM",
+                    "distance_time" => "01:15",
+                    "distance" => "54",
+                    "distance_icon" => "a-home-marker",
+                    "distance_tooltip" => "The Other Place<br />123 Sesame Street, City, OH 12345"
+                ],
+                [
+                    "id" => 2,
+                    "name" => "Jane Doe 2",
+                    "status" => "",
+                    "availability" => "Available 8:30 AM - 6:00 PM",
+                    "open" => "08:00",
+                    "open_tooltip" => "8 HOURS ARE OPEN FOR SCHEDULING",
+                    "starting" => "08:30",
+                    "starting_tooltip" => "JILL DOE CAN START ON THIS AUDIT AT APPROXIMATELY 8:30 AM",
+                    "distance_time" => "01:15",
+                    "distance" => "54",
+                    "distance_icon" => "a-home-marker",
+                    "distance_tooltip" => "The Other Place<br />123 Sesame Street, City, OH 12345"
+                ],
+                [
+                    "id" => 3,
+                    "name" => "Jane Doe 3",
+                    "status" => "action-required",
+                    "availability" => "Available 8:30 AM - 6:00 PM",
+                    "open" => "08:00",
+                    "open_tooltip" => "8 HOURS ARE OPEN FOR SCHEDULING",
+                    "starting" => "08:30",
+                    "starting_tooltip" => "JILL DOE CAN START ON THIS AUDIT AT APPROXIMATELY 8:30 AM",
+                    "distance_time" => "01:15",
+                    "distance" => "54",
+                    "distance_icon" => "a-marker-basic",
+                    "distance_tooltip" => "The Other Place<br />123 Sesame Street, City, OH 12345"
+                ],
+                [
+                    "id" => 4,
+                    "name" => "Jane Doe 4",
+                    "status" => "action-required",
+                    "availability" => "Available 8:30 AM - 6:00 PM",
+                    "open" => "08:00",
+                    "open_tooltip" => "8 HOURS ARE OPEN FOR SCHEDULING",
+                    "starting" => "08:30",
+                    "starting_tooltip" => "JILL DOE CAN START ON THIS AUDIT AT APPROXIMATELY 8:30 AM",
+                    "distance_time" => "01:15",
+                    "distance" => "54",
+                    "distance_icon" => "a-marker-basic",
+                    "distance_tooltip" => "The Other Place<br />123 Sesame Street, City, OH 12345"
+                ],
+                [
+                    "id" => 5,
+                    "name" => "Jane Doe 5",
+                    "status" => "action-required",
+                    "availability" => "Available 8:30 AM - 6:00 PM",
+                    "open" => "08:00",
+                    "open_tooltip" => "8 HOURS ARE OPEN FOR SCHEDULING",
+                    "starting" => "08:30",
+                    "starting_tooltip" => "JILL DOE CAN START ON THIS AUDIT AT APPROXIMATELY 8:30 AM",
+                    "distance_time" => "01:15",
+                    "distance" => "54",
+                    "distance_icon" => "a-marker-basic",
+                    "distance_tooltip" => "The Other Place<br />123 Sesame Street, City, OH 12345"
+                ],
+                [
+                    "id" => 6,
+                    "name" => "Jane Doe 6",
+                    "status" => "action-required",
+                    "availability" => "Available 8:30 AM - 6:00 PM",
+                    "open" => "08:00",
+                    "open_tooltip" => "8 HOURS ARE OPEN FOR SCHEDULING",
+                    "starting" => "08:30",
+                    "starting_tooltip" => "JILL DOE CAN START ON THIS AUDIT AT APPROXIMATELY 8:30 AM",
+                    "distance_time" => "01:15",
+                    "distance" => "54",
+                    "distance_icon" => "a-marker-basic",
+                    "distance_tooltip" => "The Other Place<br />123 Sesame Street, City, OH 12345"
+                ],
+                [
+                    "id" => 7,
+                    "name" => "Jane Doe 7",
+                    "status" => "action-required",
+                    "availability" => "Available 8:30 AM - 6:00 PM",
+                    "open" => "08:00",
+                    "open_tooltip" => "8 HOURS ARE OPEN FOR SCHEDULING",
+                    "starting" => "08:30",
+                    "starting_tooltip" => "JILL DOE CAN START ON THIS AUDIT AT APPROXIMATELY 8:30 AM",
+                    "distance_time" => "01:15",
+                    "distance" => "54",
+                    "distance_icon" => "a-marker-basic",
+                    "distance_tooltip" => "The Other Place<br />123 Sesame Street, City, OH 12345"
+                ]
+            ]
+        ]);
+        return view('modals.project-assignment-add-auditor', compact('data'));
     }
 }

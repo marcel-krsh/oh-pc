@@ -88,6 +88,8 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('/findings/{id}/items', 'FindingController@findingItems');
         Route::get('/modals/findings/{id}/items/{itemid}/photos/{photoid}', 'FindingController@findingItemPhoto');
 
+        Route::get('/modals/projects/{id}/assignments/addauditor', 'AuditController@addAssignmentAuditor')->name('project.assignment.addauditor');
+
         Route::post('/autosave', 'FindingController@autosave');
     // });
 
