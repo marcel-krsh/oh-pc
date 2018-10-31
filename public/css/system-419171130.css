@@ -2808,7 +2808,7 @@ margin-top:10px;
 }
 
 ul.leaders, .leaders {
-    max-width: 40em;
+    /*max-width: 40em;*/
     padding: 0;
     overflow-x: hidden;
     list-style: none}
@@ -3119,6 +3119,7 @@ span.indented, div.indented {
 .project-assignment-add-auditor-row.action-required {
     opacity: 0.5;
 }
+#project-details-info-assignment-stats {width:100%;}
 
 #project-details-buildings-container .rowinset-top {
     display: none;

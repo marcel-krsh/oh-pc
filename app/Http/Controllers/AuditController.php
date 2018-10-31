@@ -1393,9 +1393,8 @@ class AuditController extends Controller
 
         $data = collect([
             "project" => [
-                "id" => 1,
-                "name" => "Project Name",
-                'selected_program' => $id
+                "id" => $id,
+                "name" => "Project Name"
             ],
             "summary" => [
                 'date' => 'DECEMBER 22, 2018',
@@ -1518,5 +1517,137 @@ class AuditController extends Controller
             ]
         ]);
         return view('modals.project-assignment-add-auditor', compact('data'));
+    }
+
+    public function addAssignmentAuditorStats($id, $auditorid) {
+        // id is project id
+        
+        $data = collect([
+            "project" => [
+                "id" => $id,
+                "name" => "Project Name"
+            ],
+            "summary" => [
+                "id" => $auditorid,
+                "name" => "Jane Doe",
+                'initials' => 'JD',
+                'color' => 'blue',
+                'date' => 'DECEMBER 22, 2018',
+                'preferred_longest_drive' => '02:30',
+                'preferred_lunch' => '00:30',
+                'total_estimated_commitment' => "07:40"
+            ],
+            "itinerary-start" => [
+                "id" => 1,
+                "icon" => "a-home-marker",
+                "type" => "start",
+                "status" => "",
+                "name" => "Default address",                    
+                "average" => "00:00",
+                "end" => "08:30 AM",
+                "lead" => 1, // user id
+                "order" => 1,
+                "itinerary" => []
+            ],
+            "itinerary-end" => [
+                "id" => 9,
+                "icon" => "a-home-marker",
+                "type" => "end",
+                "status" => "",
+                "name" => "The Ending Address",
+                "average" => "01:00",
+                "end" => "4:10 PM",
+                "lead" => 1,
+                "order" => 5,
+                "itinerary" => []
+            ],
+            "itinerary" => [
+                [
+                    "id" => 2,
+                    "icon" => "a-marker-basic",
+                    "type" => "site",
+                    "status" => "in-progress",
+                    "name" => "The Garden Oaks",
+                    "average" => "00:00",
+                    "end" => "08:30 AM",
+                    "lead" => 1,
+                    "order" => 2,
+                    "itinerary" => [
+                        [
+                            "id" => 3,
+                            "icon" => "a-mobile-home",
+                            "type" => "site",
+                            "status" => "in-progress",
+                            "name" => "The Garden Oaks",
+                            "average" => "02:00",
+                            "end" => "11:30 AM",
+                            "lead" => 1,
+                            "order" => 1,
+                        ],
+                        [
+                            "id" => 4,
+                            "icon" => "a-suitcase-2",
+                            "type" => "break",
+                            "status" => "",
+                            "name" => "LUNCH",
+                            "average" => "00:30",
+                            "end" => "12:00 AM",
+                            "lead" => 1,
+                            "order" => 2,
+                        ]
+                    ]
+                ],
+                [
+                    "id" => 5,
+                    "icon" => "a-marker-basic",
+                    "type" => "site",
+                    "status" => "",
+                    "name" => "The Other Place",
+                    "average" => "00:15",
+                    "end" => "12:15 PM",
+                    "lead" => 1,
+                    "order" => 3,
+                    "itinerary" => [
+                        [
+                            "id" => 6,
+                            "icon" => "a-folder",
+                            "type" => "file",
+                            "status" => "in-progress",
+                            "name" => "The Other Place",
+                            "average" => "01:40",
+                            "end" => "1:55 PM",
+                            "lead" => 1,
+                            "order" => 1,
+                        ]
+                    ]
+                ],
+                [
+                    "id" => 7,
+                    "icon" => "a-marker-basic",
+                    "type" => "site",
+                    "status" => "",
+                    "name" => "The Womping Willow",
+                    "average" => "00:15",
+                    "end" => "2:10 PM",
+                    "lead" => 2,
+                    "order" => 4,
+                    "itinerary" => [
+                        [
+                            "id" => 8,
+                            "icon" => "a-folder",
+                            "type" => "file",
+                            "status" => "in-progress",
+                            "name" => "The Womping Willow",
+                            "average" => "01:00",
+                            "end" => "3:10 PM",
+                            "lead" => 2,
+                            "order" => 1,
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+
+        return view('projects.partials.details-assignment-auditor-stat', compact('data'));
     }
 }

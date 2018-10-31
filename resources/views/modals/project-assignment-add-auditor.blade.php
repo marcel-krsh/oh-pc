@@ -85,7 +85,7 @@
 						<div class="uk-width-1-6 uk-padding-remove uk-text-center">
 							<div uk-grid>
 								<div class="uk-width-1-1 uk-padding-remove {{$auditor['status']}}">
-									<i class="{{$auditor['icon']}} large use-hand-cursor" onclick=""  uk-tooltip="title:{{$auditor['icon_tooltip']}};"></i>
+									<i class="{{$auditor['icon']}} large use-hand-cursor" onclick="" uk-tooltip="title:{{$auditor['icon_tooltip']}};"></i>
 					            </div>
 							</div>
 						</div>
@@ -94,7 +94,7 @@
 								<div class="uk-width-1-2 uk-padding-remove">
 									<div class="leaders uk-width-1-1">
 					    				<div>
-					    					<span><i class="a-person-chart-bar large use-hand-cursor" style="padding-right: 8px;" onclick="" uk-tooltip="title:CLICK TO VIEW AUDITOR'S SCHEDULE & STATS;"></i> {{$auditor['name']}}</span>
+					    					<span><i class="a-person-chart-bar large use-hand-cursor" style="padding-right: 8px;" onclick="addAssignmentAuditorStats({{$data['project']['id']}}, {{$auditor['id']}});" uk-tooltip="title:CLICK TO VIEW AUDITOR'S SCHEDULE & STATS;"></i> {{$auditor['name']}}</span>
 					    				</div>
 					    			</div>
 								</div>
@@ -124,10 +124,10 @@
 	</div>
 
 	<div class="project-details-info-assignment-summary uk-margin-top uk-flex-middle" uk-grid>
-		<div class="uk-width-1-6">
+		<div class="uk-width-1-6 uk-margin-top ">
 			<canvas id="chartjs-assignment-auditor" class="chartjs" style="display: block;"></canvas>
 		</div>
-		<div class="uk-width-1-2 uk-padding-remove">
+		<div class="uk-width-1-2 uk-margin-top uk-padding-remove">
 			<h4>
 				It will take an <span class="underlined italic">ESTIMATED</span> <i class="a-pencil-2 use-hand-cursor" onclick="editEstimatedHours();" uk-tooltip="title:EDIT ESTIMATED HOURS;"></i>{{$data['summary']['estimated']}} to complete this audit.<br />
 				{{$data['summary']['needed']}} Need Assigned
@@ -136,6 +136,9 @@
 		<div class="uk-width-1-3 uk-padding-remove">
 			<button class="uk-button uk-button-border uk-link" onclick="" type="button"><i class="far fa-calendar-check"></i> DONE SCHEDULING</button>
 		</div>
+	</div>
+
+	<div id="project-details-info-assignment-stats" class="uk-margin-top uk-flex-middle" uk-grid>
 		<div class="uk-width-2-3" uk-padding-remove>
 			<div class="uk-card uk-card-info uk-card-body">
 				<div class="uk-grid-small uk-flex-top" uk-grid>

@@ -293,4 +293,21 @@
 	function addAssignmentAuditor(projectid){
 		dynamicModalLoad('projects/'+projectid+'/assignments/addauditor',1,0,1);
 	}
+	function addAssignmentAuditorStats(projectid, auditorid){
+		$('#project-details-info-assignment-stats').html("updating...");
+
+		var tempdiv = '<div style="height:100px;text-align:center;width:100%;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+		$('#project-details-info-assignment-stats').html(tempdiv);
+
+		var url = 'projects/'+projectid+'/assignments/addauditor/'+auditorid+'/stats';
+	    $.get(url, {
+	        }, function(data) {
+	            if(data=='0'){ 
+	                UIkit.modal.alert("There was a problem getting the assignment information.");
+	            } else {
+	            	
+					$('#project-details-info-assignment-stats').html(data);
+	        	}
+	    });
+	}
 </script>

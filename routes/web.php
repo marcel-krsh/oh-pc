@@ -89,6 +89,8 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('/modals/findings/{id}/items/{itemid}/photos/{photoid}', 'FindingController@findingItemPhoto');
 
         Route::get('/modals/projects/{id}/assignments/addauditor', 'AuditController@addAssignmentAuditor')->name('project.assignment.addauditor');
+        Route::get('projects/{id}/assignments/addauditor/{auditorid}/stats', 'AuditController@addAssignmentAuditorStats')->name('project.assignment.addauditorstats');
+
 
         Route::post('/autosave', 'FindingController@autosave');
     // });
