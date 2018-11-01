@@ -98,7 +98,7 @@
 			</div>
 		</div>
 
-		<div class="uk-width-1-1 uk-padding-remove" style="margin-top: 25px;">
+		<div class="uk-width-1-1 uk-padding-remove" style="margin-top: 25px; margin-bottom: 30px;">
 			<div uk-grid>
 				<div class="uk-width-1-1 uk-margin-remove uk-padding-remove-left uk-text-bold" style="color:#56b285;">
 					<div uk-grid>
@@ -116,7 +116,7 @@
 				</div>
 				<div class="uk-width-1-1 uk-padding-remove-left uk-text-bold uk-margin-small">
 					<div uk-grid>
-						<div class="uk-width-4-5">
+						<div class="uk-width-3-5">
 							<div class="leaders uk-width-1-1">
 			    				<div>
 			    					<span>Preferred longest single drive time</span>
@@ -124,21 +124,17 @@
 			    				</div>
 			    			</div>
 						</div>
-						<div class="uk-width-1-5 uk-text-center">
-						</div>
 					</div>
 				</div>
 				<div class="uk-width-1-1 uk-margin-remove uk-padding-remove-left uk-text-bold">
 					<div uk-grid>
-						<div class="uk-width-4-5">
+						<div class="uk-width-3-5">
 							<div class="leaders uk-width-1-1">
 			    				<div>
 			    					<span>Preferred lunch time</span>
 			    					<span>{{$data['summary']['preferred_lunch']}}</span>
 			    				</div>
 			    			</div>
-						</div>
-						<div class="uk-width-1-5 uk-text-right">
 						</div>
 					</div>
 				</div>
@@ -148,66 +144,197 @@
 	</div>
 </div>
 
-<div id="project-details-info-assignment-auditor-calendar" class="uk-width-1-1 uk-margin">
-	<div class="week">
-	  <div class="week-day">Sunday</div>
-	  <div class="week-day">Monday</div>
-	  <div class="week-day">Tuesday</div>
-	  <div class="week-day">Wednesday</div>
-	  <div class="week-day">Thursday</div>
-	  <div class="week-day">Friday</div>
-	  <div class="week-day">Saturday</div>  
+<div id="project-details-info-assignment-auditor-calendar" class="grid-schedule uk-width-1-1 uk-margin">
+	<div class="grid-schedule-header">
+		<div class="week-spacer"></div>
+		<div class="week-day">12/18</div>
+		<div class="week-spacer"></div>
+		<div class="week-day">12/19</div>
+		<div class="week-spacer"></div>
+		<div class="week-day">12/20</div>
+		<div class="week-spacer"></div>
+		<div class="week-day">12/21</div>
+		<div class="week-spacer"></div>
+		<div class="week-day selected">12/22</div>
+		<div class="week-spacer"></div>
+		<div class="week-day">12/23</div>
+		<div class="week-spacer"></div>
+		<div class="week-day">12/24</div>  
+		<div class="week-spacer"></div>
+		<div class="week-day">12/25</div>  
+		<div class="week-spacer"></div>
+		<div class="week-day">12/26</div> 
+		<div class="week-spacer"></div> 
 	</div>
-	<div class="week">
-	  <div class="day">
-	    <h3 class="day-label">1</h3>
-	    <div class="event event-start event-end" data-span="2">Class</div>
-	    <div class="event event-end">Interview</div>
-	  </div>
-	  <div class="day">
-	    <h3 class="day-label">2</h3>
-	    <div class="event event-start event-end" data-span="1">Dinner</div>
-	  </div>
-	  <div class="day">
-	    <h3 class="day-label">3</h3>
-	    <div class="event event-start event-end" data-span="2">School</div>
-	  </div>
-	  <div class="day">
-	    <h3 class="day-label">4</h3>
-	    <div class="event event-start" data-span="4">Meeting</div>
-	  </div>
-	  <div class="day">
-	    <h3 class="day-label">5</h3>
-	  </div>
-	  <div class="day">
-	    <h3 class="day-label">6</h3>
-	  </div>
-	  <div class="day">
-	    <h3 class="day-label">7</h3>
-	  </div>
+	<div class="grid-schedule-sidebar">
+		<div>6a</div>
+		<div></div>
+		<div>8a</div>
+		<div></div>
+		<div>10a</div>
+		<div></div>
+		<div>12p</div>
+		<div></div>
+		<div>2p</div>
+		<div></div>
+		<div>4p</div>
+		<div></div>
+		<div>6p</div>
+		<div></div>
+		<div>8p</div>
+	</div>
+	<div class="grid-schedule-content">
+		<div class="day-spacer">
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+		</div>
+		<div class="day">
+			<div class="event event-start event-end" data-start="2" data-span="2">Class</div>
+			<div class="event event-start event-end" data-start="5">Interview</div>
+		</div>
+		<div class="day-spacer">
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+		</div>
+		<div class="day">
+			<div class="event event-start event-end" data-start="6" data-span="4">Dinner</div>
+		</div>
+		<div class="day-spacer">
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+		</div>
+		<div class="day">
+			<div class="event event-start event-end" data-start="1" data-span="2">School</div>
+		</div>
+		<div class="day-spacer">
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+		</div>
+		<div class="day">
+			<div class="event event-start" data-start="2" data-span="4">Meeting</div>
+		</div>
+		<div class="day-spacer">
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+		</div>
+		<div class="day selected">
+		</div>
+		<div class="day-spacer">
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+		</div>
+		<div class="day">
+		</div>
+		<div class="day-spacer">
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+		</div>
+		<div class="day">
+		</div>
+		<div class="day-spacer">
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+		</div>
+		<div class="day">
+		</div>
+		<div class="day-spacer">
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+		</div>
+		<div class="day">
+		</div>
+		<div class="day-spacer">
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+		</div>
+	</div>
+	<div class="grid-schedule-footer">
+		Navigation here
 	</div>
 
 
 	<style>
-	.week {
-	  display:grid;
-	  grid-template-columns: repeat(7, 1fr);
+	.grid-schedule {
+		display: grid;
+		grid-gap: 0px;
+		grid-template-columns: 45px 9fr;
+	    grid-template-areas: 
+	      "header header "
+	      "sidebar content "
+	      "footer footer";
+	}
+	.grid-schedule-header {
+	  grid-area: header;
+	  display: grid;
+	  grid-template-columns: repeat(9, 30px 1fr) 30px;
 	  grid-auto-flow: dense;
-	  grid-gap: 2px 10px;
+	  grid-gap: 0px;
+	  padding-left: 46px;
+      text-align: center;
 	}
+	.grid-schedule-header .week-day {
 
+	  
+	}
+	.grid-schedule-sidebar {
+		grid-area: sidebar;
+		padding-top: 15px;
+	}
+	.grid-schedule-content {
+		grid-area: content;
+		display: grid;
+		  /*grid-template-columns: repeat(9, 1fr);*/
+		  grid-template-columns: repeat(9, 30px 1fr) 30px;
+		  grid-auto-flow: dense;
+		  grid-gap: 0;
+	}
+	.grid-schedule-footer {
+		grid-area: footer;
+	}
+	.day, .day-spacer {
+		display: grid;
+		grid-row-start: 1;
+		grid-row-end: 15;
+		grid-template-rows: repeat(15, 1fr);
+		grid-auto-flow: dense;
+		grid-gap: 0px 10px;
+	}
 	.day {
-	  display:contents;
-	  background-color: #DDD; /* if display contents, this won't color */
+	    border: 2px solid #ccc;
 	}
-	.day-label {
-	  grid-row-start: 1;
-	  text-align: right;
-	  margin:0;
+	.day-spacer div {
+	    border-top: 2px solid #ccc;
 	}
+	.day-spacer div:first-child {
+		border-top: 1px solid #ccc;
+	}
+	.day-spacer div:last-child {
+		border-bottom: 1px solid #ccc;
+	}
+	.day-spacer div:nth-child(even) {
+		background-color: #ddd;
+	}
+	.grid-schedule-sidebar > div {
+    	height: 20px;
+	}	
 
-	.week-day, .day-label, .event {
-	  padding: 4px 10px;
+	.week-day, .event, .grid-schedule-sidebar > div {
+	  padding: 0px 10px;
+	}
+	.week-day {
+		padding-bottom: 15px;
+		padding-top: 5px;
+	}
+	.week-day.selected {
+	    border-top: 2px solid #2a2a2a;
+	    border-left: 2px solid #2a2a2a;
+	    border-right: 2px solid #2a2a2a;
+	}
+	.day.selected {
+		border-top: 0px;
+		border-left: 2px solid #2a2a2a;
+	    border-right: 2px solid #2a2a2a;
+	    border-bottom: 2px solid #2a2a2a;
 	}
 
 	.event {
@@ -215,27 +342,46 @@
 	}
 
 	.event-end { 
-	  border-top-right-radius: 10px; 
-	  border-bottom-right-radius: 10px; 
+	  /*border-bottom-left-radius: 10px; 
+	  border-bottom-right-radius: 10px; */
 	}
 
 	.event-start { 
-	  border-top-left-radius: 10px; 
-	  border-bottom-left-radius: 10px; 
+	  /*border-top-left-radius: 10px; 
+	  border-top-right-radius: 10px; */
 	}
 
-	.day:nth-child(1) > .event { grid-column-start: 1; }
-	.day:nth-child(2) > .event { grid-column-start: 2; }
-	.day:nth-child(3) > .event { grid-column-start: 3; }
-	.day:nth-child(4) > .event { grid-column-start: 4; }
+	[data-start="1"] { grid-row-start: 1; }
+	[data-start="2"] { grid-row-start: 2; }
+	[data-start="3"] { grid-row-start: 3; }
+	[data-start="4"] { grid-row-start: 4; }
+	[data-start="5"] { grid-row-start: 5; }
+	[data-start="6"] { grid-row-start: 6; }
+	[data-start="7"] { grid-row-start: 7; }
+	[data-start="8"] { grid-row-start: 8; }
+	[data-start="9"] { grid-row-start: 9; }
+	[data-start="10"] { grid-row-start: 10; }
+	[data-start="11"] { grid-row-start: 11; }
+	[data-start="12"] { grid-row-start: 12; }
+	[data-start="13"] { grid-row-start: 13; }
+	[data-start="14"] { grid-row-start: 14; }
+	[data-start="15"] { grid-row-start: 15; }
 
-	[data-span="1"] { grid-column-end: span 1; }
-	[data-span="2"] { grid-column-end: span 2; }
-	[data-span="3"] { grid-column-end: span 3; }
-	[data-span="4"] { grid-column-end: span 4; }
-	[data-span="5"] { grid-column-end: span 5; }
-	[data-span="6"] { grid-column-end: span 6; }
-	[data-span="7"] { grid-column-end: span 7; }
+	[data-span="1"] { grid-row-end: span 1; }
+	[data-span="2"] { grid-row-end: span 2; }
+	[data-span="3"] { grid-row-end: span 3; }
+	[data-span="4"] { grid-row-end: span 4; }
+	[data-span="5"] { grid-row-end: span 5; }
+	[data-span="6"] { grid-row-end: span 6; }
+	[data-span="7"] { grid-row-end: span 7; }
+	[data-span="8"] { grid-row-end: span 8; }
+	[data-span="9"] { grid-row-end: span 9; }
+	[data-span="10"] { grid-row-end: span 10; }
+	[data-span="11"] { grid-row-end: span 11; }
+	[data-span="12"] { grid-row-end: span 12; }
+	[data-span="13"] { grid-row-end: span 13; }
+	[data-span="14"] { grid-row-end: span 14; }
+	[data-span="15"] { grid-row-end: span 15; }
 
 	</style>
 </div>
