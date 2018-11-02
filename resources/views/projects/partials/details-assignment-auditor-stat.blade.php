@@ -144,7 +144,7 @@
 	</div>
 </div>
 
-<div id="project-details-info-assignment-auditor-calendar" class="grid-schedule uk-width-1-1 uk-margin">
+<div id="project-details-info-assignment-auditor-calendar" class="grid-schedule uk-padding-remove uk-width-1-1 uk-margin">
 	<div class="grid-schedule-header">
 		<div class="week-spacer"></div>
 		<div class="week-day">12/18</div>
@@ -167,91 +167,109 @@
 		<div class="week-spacer"></div> 
 	</div>
 	<div class="grid-schedule-sidebar">
-		<div>6a</div>
-		<div></div>
-		<div>8a</div>
-		<div></div>
-		<div>10a</div>
-		<div></div>
-		<div>12p</div>
-		<div></div>
-		<div>2p</div>
-		<div></div>
-		<div>4p</div>
-		<div></div>
-		<div>6p</div>
-		<div></div>
-		<div>8p</div>
+		<div>6a</div><div></div><div></div><div></div>
+		<div></div><div></div><div></div><div></div>
+		<div>8a</div><div></div><div></div><div></div>
+		<div></div><div></div><div></div><div></div>
+		<div>10a</div><div></div><div></div><div></div>
+		<div></div><div></div><div></div><div></div>
+		<div>12p</div><div></div><div></div><div></div>
+		<div></div><div></div><div></div><div></div>
+		<div>2p</div><div></div><div></div><div></div>
+		<div></div><div></div><div></div><div></div>
+		<div>4p</div><div></div><div></div><div></div>
+		<div></div><div></div><div></div><div></div>
+		<div>6p</div><div></div><div></div><div></div>
+		<div></div><div></div><div></div><div></div>
+		<div>8p</div><div></div><div></div><div></div>
 	</div>
 	<div class="grid-schedule-content">
-		<div class="day-spacer">
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-		</div>
+		<div class="day-spacer"></div>
 		<div class="day">
-			<div class="event event-start event-end" data-start="2" data-span="2">Class</div>
-			<div class="event event-start event-end" data-start="5">Interview</div>
+			<div class="event beforetime" data-start="1" data-span="8"></div>
+			<div class="event event-start event-end action-required" data-start="9" data-span="24"><i class="a-mobile-not"></i></div>
+			<div class="event breaktime" data-start="33"></div>
+			<div class="event event-start event-end isLead no-border-bottom" data-start="34" data-span="12"><i class="a-mobile-checked"></i></div>
+			<div class="event aftertime" data-start="46" data-span="4"></div>
 		</div>
-		<div class="day-spacer">
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-		</div>
+		<div class="day-spacer"></div>
 		<div class="day">
-			<div class="event event-start event-end" data-start="6" data-span="4">Dinner</div>
+			<div class="event beforetime" data-start="1" data-span="8"></div>
+			<div class="event event-start event-end isLead" data-start="9" data-span="12"><i class="a-mobile-not"></i></div>
+			<div class="event breaktime" data-start="21"></div>
+			<div class="event available no-border-top no-border-bottom" data-start="22" data-span="24"><i class="a-circle-plus"></i></div>
+			<div class="event aftertime" data-start="46" data-span="4"></div>
 		</div>
-		<div class="day-spacer">
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-		</div>
+		<div class="day-spacer"></div>
 		<div class="day">
-			<div class="event event-start event-end" data-start="1" data-span="2">School</div>
+			<div class="event beforetime" data-start="1" data-span="8"></div>
+			<div class="event event-start event-end action-required isLead" data-start="9" data-span="12"><i class="a-mobile-not"></i></div>
+			<div class="event breaktime" data-start="21" data-span="4"></div>
+			<div class="event available no-border-top no-border-bottom" data-start="25" data-span="21"><i class="a-circle-plus"></i></div>
+			<div class="event aftertime" data-start="46" data-span="4"></div>
 		</div>
-		<div class="day-spacer">
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-		</div>
+		<div class="day-spacer"></div>
 		<div class="day">
-			<div class="event event-start" data-start="2" data-span="4">Meeting</div>
+			<div class="event beforetime" data-start="1" data-span="8"></div>
+			<div class="event available no-border-top" data-start="9" data-span="16"><i class="a-circle-plus"></i></div>
+			<div class="event available no-border-bottom" data-start="30" data-span="16"><i class="a-circle-plus"></i></div>
+			<div class="event aftertime" data-start="46" data-span="4"></div>
 		</div>
-		<div class="day-spacer">
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-		</div>
+		<div class="day-spacer"></div>
 		<div class="day selected">
+			<div class="event beforetime" data-start="1" data-span="8"></div>
+			<div class="event in-progress isLead" data-start="9" data-span="16"><i class="a-mobile-checked"></i></div>
+			<div class="event breaktime" data-start="25"></div>
+			<div class="event isLead" data-start="26" data-span="12"><i class="a-folder"></i></div>
+			<div class="event no-border-bottom isLead" data-start="38" data-span="8"><i class="a-folder"></i></div>
+			<div class="event aftertime" data-start="46" data-span="4"></div>
 		</div>
-		<div class="day-spacer">
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+		<div class="day-spacer"></div>
+		<div class="day no-availability">
+			<div class="event event-start event-end" data-start="1" data-span="15">
+				<i class="a-circle-cross"></i>
+			</div>
 		</div>
-		<div class="day">
+		<div class="day-spacer"></div>
+		<div class="day no-availability">
+			<div class="event event-start event-end" data-start="1" data-span="15">
+				<i class="a-circle-cross"></i>
+			</div>
 		</div>
-		<div class="day-spacer">
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+		<div class="day-spacer"></div>
+		<div class="day no-availability">
+			<div class="event event-start event-end" data-start="1" data-span="15">
+				<i class="a-circle-cross"></i>
+			</div>
 		</div>
-		<div class="day">
+		<div class="day-spacer"></div>
+		<div class="day no-availability">
+			<div class="event event-start event-end" data-start="1" data-span="15">
+				<i class="a-circle-cross"></i>
+			</div>
 		</div>
-		<div class="day-spacer">
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-		</div>
-		<div class="day">
-		</div>
-		<div class="day-spacer">
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-		</div>
-		<div class="day">
-		</div>
-		<div class="day-spacer">
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-			<div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-		</div>
+		<div class="day-spacer"></div>
 	</div>
 	<div class="grid-schedule-footer">
-		Navigation here
+		<div uk-grid>
+			<div class="uk-width-1-3 uk-padding-remove"><i class="a-arrow-left-2"></i> DECEMBER 13, 2018</div>
+			<div class="uk-width-1-3 uk-text-center"><i class="a-calendar-pencil"></i> DECEMBER 22, 2018</div>
+			<div class="uk-width-1-3 uk-text-right">DECEMBER 31, 2018 <i class="a-arrow-right-2_1"></i></div>
+		</div>
 	</div>
 
+<script>
+
+	$( document ).ready(function() {
+		var TotalRows = 60;
+		var i = 0;
+		var spacers = '';
+		for (i = 0; i < TotalRows; i++) { 
+		    spacers = spacers+"<div></div>";
+		}
+		$('.day-spacer').html(spacers);
+	});
+</script>
 
 	<style>
 	.grid-schedule {
@@ -266,43 +284,58 @@
 	.grid-schedule-header {
 	  grid-area: header;
 	  display: grid;
-	  grid-template-columns: repeat(9, 30px 1fr) 30px;
+	  grid-template-columns: repeat(9, 2% 1fr) 2%;
 	  grid-auto-flow: dense;
 	  grid-gap: 0px;
-	  padding-left: 46px;
+	  padding-left: 45px;
       text-align: center;
+      color: #999;
 	}
+
 	.grid-schedule-header .week-day {
 
 	  
 	}
 	.grid-schedule-sidebar {
 		grid-area: sidebar;
-		padding-top: 15px;
+		color: #999;
 	}
 	.grid-schedule-content {
 		grid-area: content;
 		display: grid;
 		  /*grid-template-columns: repeat(9, 1fr);*/
-		  grid-template-columns: repeat(9, 30px 1fr) 30px;
+		  grid-template-columns: repeat(9, 2% 1fr) 2%;
 		  grid-auto-flow: dense;
 		  grid-gap: 0;
 	}
 	.grid-schedule-footer {
 		grid-area: footer;
+		padding: 6px 15px;
+    	background-color: #aaa;
+    	color: #666;
+    	margin-bottom: 50px;
+    	margin-top: 2px;
+    	margin-left: 45px;
+	}
+	.grid-schedule-footer i {
+		vertical-align: middle;
+    	font-size: 18px;
 	}
 	.day, .day-spacer {
 		display: grid;
 		grid-row-start: 1;
-		grid-row-end: 15;
-		grid-template-rows: repeat(15, 1fr);
+		grid-row-end: 60;
+		grid-template-rows: repeat(60, 8px);
 		grid-auto-flow: dense;
 		grid-gap: 0px 10px;
 	}
 	.day {
 	    border: 2px solid #ccc;
 	}
-	.day-spacer div {
+	.day-spacer div:nth-child(2n+1) {
+	    border-top: 2px solid #eee;
+	}
+	.day-spacer div:nth-child(4n+1) {
 	    border-top: 2px solid #ccc;
 	}
 	.day-spacer div:first-child {
@@ -311,11 +344,18 @@
 	.day-spacer div:last-child {
 		border-bottom: 1px solid #ccc;
 	}
-	.day-spacer div:nth-child(even) {
+	.day-spacer div:nth-child(8n), .day-spacer div:nth-child(8n-1),
+	.day-spacer div:nth-child(8n-2), .day-spacer div:nth-child(8n-3) {
 		background-color: #ddd;
 	}
+	.day-spacer:first-child div {
+		border-left: 1px solid #ccc;
+	}
+	.day-spacer:last-child div {
+		border-right: 1px solid #ccc;
+	}
 	.grid-schedule-sidebar > div {
-    	height: 20px;
+    	height: 8px;
 	}	
 
 	.week-day, .event, .grid-schedule-sidebar > div {
@@ -326,19 +366,33 @@
 		padding-top: 5px;
 	}
 	.week-day.selected {
-	    border-top: 2px solid #2a2a2a;
-	    border-left: 2px solid #2a2a2a;
-	    border-right: 2px solid #2a2a2a;
+	    border-top: 2px solid #7b7b7b;
+	    border-left: 2px solid #7b7b7b;
+	    border-right: 2px solid #7b7b7b;
 	}
 	.day.selected {
 		border-top: 0px;
-		border-left: 2px solid #2a2a2a;
-	    border-right: 2px solid #2a2a2a;
-	    border-bottom: 2px solid #2a2a2a;
+		border-left: 2px solid #7b7b7b;
+	    border-right: 2px solid #7b7b7b;
+	    border-bottom: 2px solid #7b7b7b;
 	}
-
+	.day.no-availability {
+		border-top: 2px solid #ddd;
+		border-left: 1px solid #eee;
+	    border-right: 1px solid #eee;
+	    border-bottom: 2px solid #ddd;
+	    display: flex;
+		align-items: center;
+		justify-content: center;
+	}
 	.event {
-	  background-color: #CCC;
+	  	background-color: #888;
+    	font-size: 16px;
+	    align-items: center;
+	    display: flex;
+	    justify-content: center;
+	    border-bottom: 2px solid #fff;
+	    color:#fff;
 	}
 
 	.event-end { 
@@ -350,8 +404,53 @@
 	  /*border-top-left-radius: 10px; 
 	  border-top-right-radius: 10px; */
 	}
+	.event.beforetime {
+	    background-color: #fff;
+	    border-bottom: 2px solid #56b285;
+	}
+	.event.aftertime {
+	    background-color: #fff;
+	    border-top: 2px solid #56b285;
+	}
+	.event.available {
+	    background-color: rgb(86, 178, 133, 0.2);
+	    border-top: 2px solid rgb(86, 178, 133);
+	    border-bottom: 2px solid rgb(86, 178, 133);
+	    color: rgb(86, 178, 133);
+	}
 
-	[data-start="1"] { grid-row-start: 1; }
+	.event.no-border-top {
+		border-top: none !important;
+	}
+	.event.no-border-bottom {
+		border-bottom: none !important;
+	}
+
+	.day.no-availability .event {
+		background-color:#ddd;
+		width: 100%;
+    	text-align: center;
+    	height: 100%;
+    	display: initial;
+	}
+	.day.no-availability .event i {
+		position: relative;
+    	top: 45%;
+    	color: #fff;
+    	font-size: 16px;
+	}
+
+	.event.no-action, .event.no-action.uk-badge { color:#fff; background-color:#939598; opacity: 0.5;}
+	.event.action-needed { color:#fff; background-color:#76338b; opacity: 0.5; }
+	.event.action-required, .event.critical { color:#fff; background-color:#da328a; opacity: 0.5; }
+	.event.ok-actionable, .event.ok-actionable { color:#fff; background-color:#56b285; opacity: 0.5; }
+	.event.in-progress, .event.in-progress { color:#fff; background-color:#49ade9; opacity: 0.5; }
+
+	.event.isLead, .event.available, .event.beforetime, .event.aftertime, .event.breaktime, .no-availability .event {
+		opacity: 1;
+	}
+
+	[data-start="1"] { grid-row-start: 1;}
 	[data-start="2"] { grid-row-start: 2; }
 	[data-start="3"] { grid-row-start: 3; }
 	[data-start="4"] { grid-row-start: 4; }
@@ -366,6 +465,51 @@
 	[data-start="13"] { grid-row-start: 13; }
 	[data-start="14"] { grid-row-start: 14; }
 	[data-start="15"] { grid-row-start: 15; }
+	[data-start="16"] { grid-row-start: 16;}
+	[data-start="17"] { grid-row-start: 17; }
+	[data-start="18"] { grid-row-start: 18; }
+	[data-start="19"] { grid-row-start: 19; }
+	[data-start="20"] { grid-row-start: 20; }
+	[data-start="21"] { grid-row-start: 21; }
+	[data-start="22"] { grid-row-start: 22; }
+	[data-start="23"] { grid-row-start: 23; }
+	[data-start="24"] { grid-row-start: 24; }
+	[data-start="25"] { grid-row-start: 25; }
+	[data-start="26"] { grid-row-start: 26; }
+	[data-start="27"] { grid-row-start: 27; }
+	[data-start="28"] { grid-row-start: 28; }
+	[data-start="29"] { grid-row-start: 29; }
+	[data-start="30"] { grid-row-start: 30; }
+	[data-start="31"] { grid-row-start: 31;}
+	[data-start="32"] { grid-row-start: 32; }
+	[data-start="33"] { grid-row-start: 33; }
+	[data-start="34"] { grid-row-start: 34; }
+	[data-start="35"] { grid-row-start: 35; }
+	[data-start="36"] { grid-row-start: 36; }
+	[data-start="37"] { grid-row-start: 37; }
+	[data-start="38"] { grid-row-start: 38; }
+	[data-start="39"] { grid-row-start: 39; }
+	[data-start="40"] { grid-row-start: 40; }
+	[data-start="41"] { grid-row-start: 41;}
+	[data-start="42"] { grid-row-start: 42; }
+	[data-start="43"] { grid-row-start: 43; }
+	[data-start="44"] { grid-row-start: 44; }
+	[data-start="45"] { grid-row-start: 45; }
+	[data-start="46"] { grid-row-start: 46; }
+	[data-start="47"] { grid-row-start: 47; }
+	[data-start="48"] { grid-row-start: 48; }
+	[data-start="49"] { grid-row-start: 49; }
+	[data-start="50"] { grid-row-start: 50; }
+	[data-start="51"] { grid-row-start: 51;}
+	[data-start="52"] { grid-row-start: 52; }
+	[data-start="53"] { grid-row-start: 53; }
+	[data-start="54"] { grid-row-start: 54; }
+	[data-start="55"] { grid-row-start: 55; }
+	[data-start="56"] { grid-row-start: 56; }
+	[data-start="57"] { grid-row-start: 57; }
+	[data-start="58"] { grid-row-start: 58; }
+	[data-start="59"] { grid-row-start: 59; }
+	[data-start="60"] { grid-row-start: 60; }
 
 	[data-span="1"] { grid-row-end: span 1; }
 	[data-span="2"] { grid-row-end: span 2; }
@@ -382,6 +526,51 @@
 	[data-span="13"] { grid-row-end: span 13; }
 	[data-span="14"] { grid-row-end: span 14; }
 	[data-span="15"] { grid-row-end: span 15; }
+	[data-span="16"] { grid-row-end: span 16; }
+	[data-span="17"] { grid-row-end: span 17; }
+	[data-span="18"] { grid-row-end: span 18; }
+	[data-span="19"] { grid-row-end: span 19; }
+	[data-span="20"] { grid-row-end: span 20; }
+	[data-span="21"] { grid-row-end: span 21; }
+	[data-span="22"] { grid-row-end: span 22; }
+	[data-span="23"] { grid-row-end: span 23; }
+	[data-span="24"] { grid-row-end: span 24; }
+	[data-span="25"] { grid-row-end: span 25; }
+	[data-span="26"] { grid-row-end: span 26; }
+	[data-span="27"] { grid-row-end: span 27; }
+	[data-span="28"] { grid-row-end: span 28; }
+	[data-span="29"] { grid-row-end: span 29; }
+	[data-span="30"] { grid-row-end: span 30; }
+	[data-span="31"] { grid-row-end: span 31; }
+	[data-span="32"] { grid-row-end: span 32; }
+	[data-span="33"] { grid-row-end: span 33; }
+	[data-span="34"] { grid-row-end: span 34; }
+	[data-span="35"] { grid-row-end: span 35; }
+	[data-span="36"] { grid-row-end: span 36; }
+	[data-span="37"] { grid-row-end: span 37; }
+	[data-span="38"] { grid-row-end: span 38; }
+	[data-span="39"] { grid-row-end: span 39; }
+	[data-span="40"] { grid-row-end: span 40; }
+	[data-span="41"] { grid-row-end: span 41; }
+	[data-span="42"] { grid-row-end: span 42; }
+	[data-span="43"] { grid-row-end: span 43; }
+	[data-span="44"] { grid-row-end: span 44; }
+	[data-span="45"] { grid-row-end: span 45; }
+	[data-span="46"] { grid-row-end: span 46; }
+	[data-span="47"] { grid-row-end: span 47; }
+	[data-span="48"] { grid-row-end: span 48; }
+	[data-span="49"] { grid-row-end: span 49; }
+	[data-span="50"] { grid-row-end: span 50; }
+	[data-span="51"] { grid-row-end: span 51; }
+	[data-span="52"] { grid-row-end: span 52; }
+	[data-span="53"] { grid-row-end: span 53; }
+	[data-span="54"] { grid-row-end: span 54; }
+	[data-span="55"] { grid-row-end: span 55; }
+	[data-span="56"] { grid-row-end: span 56; }
+	[data-span="57"] { grid-row-end: span 57; }
+	[data-span="58"] { grid-row-end: span 58; }
+	[data-span="59"] { grid-row-end: span 59; }
+	[data-span="60"] { grid-row-end: span 60; }
 
 	</style>
 </div>

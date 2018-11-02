@@ -3,7 +3,7 @@
 
 	<div id="project-assignment-add-auditor-table">
 		<div id="project-assignment-add-auditor-table-header" uk-grid>
-			<div class="uk-width-1-2 uk-padding-remove">
+			<div class="uk-width-3-5 uk-padding-remove">
 				<div uk-grid>
 					<div class="uk-width-1-6 uk-padding-remove">
 						<div uk-grid>
@@ -39,7 +39,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="uk-width-1-2 uk-padding-remove">
+			<div class="uk-width-2-5 uk-padding-remove">
 				<div uk-grid>
 					<div class="uk-width-1-4 uk-padding-remove">
 						<div uk-grid>
@@ -80,7 +80,7 @@
 		<div class="uk-overflow-auto">
 			@foreach($data['auditors'] as $auditor)
 			<div class="project-assignment-add-auditor-row @if($auditor['status'] == 'action-required') {{$auditor['status']}} @endif" uk-grid>
-				<div class="uk-width-1-2 uk-padding-remove">
+				<div class="uk-width-3-5 uk-padding-remove">
 					<div uk-grid>
 						<div class="uk-width-1-6 uk-padding-remove uk-text-center">
 							<div uk-grid>
@@ -105,7 +105,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="uk-width-1-2 uk-padding-remove">
+				<div class="uk-width-2-5 uk-padding-remove">
 					<div uk-grid>
 						<div class="uk-width-1-4 uk-text-center">
 							<span uk-tooltip="title:{{$auditor['open_tooltip']}};">{{$auditor['open']}}</span>
