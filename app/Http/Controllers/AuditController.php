@@ -1542,7 +1542,12 @@ class AuditController extends Controller
                 "icon" => "a-home-marker",
                 "type" => "start",
                 "status" => "",
-                "name" => "Default address",                    
+                "name" => "Default address",  
+                "address" => "address here",
+                "unit" => "unit 3",
+                "city" => "city",
+                "state" => "OH",
+                "zip" => "12345",                  
                 "average" => "00:00",
                 "end" => "08:30 AM",
                 "lead" => 1, // user id
@@ -1554,7 +1559,12 @@ class AuditController extends Controller
                 "icon" => "a-home-marker",
                 "type" => "end",
                 "status" => "",
-                "name" => "The Ending Address",
+                "name" => "The Ending Address", 
+                "address" => "address here",
+                "unit" => "unit 3",
+                "city" => "city",
+                "state" => "OH",
+                "zip" => "12345",          
                 "average" => "01:00",
                 "end" => "4:10 PM",
                 "lead" => 1,
@@ -1644,6 +1654,251 @@ class AuditController extends Controller
                             "order" => 1,
                         ]
                     ]
+                ]
+            ],
+            "calendar" => [
+                "header" => ["12/18", "12/19", "12/20", "12/21", "12/22", "12/23", "12/24", "12/25", "12/26"],
+                "content" => [
+                    [
+                        "id" => 111,
+                        "date" => "12/18",
+                        "no_availability" => 0,
+                        "start_time" => "08:00 AM",
+                        "end_time" => "05:30 PM",
+                        "before_time_start" => "1",
+                        "before_time_span" => "8",
+                        "after_time_start" => "46",
+                        "after_time_span" => "15",
+                        "events" => [
+                            [
+                                "id" => 112,
+                                "status" => "action-required",
+                                "start" => "9",
+                                "span" =>  "24",
+                                "icon" => "a-mobile-not",
+                                "lead" => 2,
+                                "class" => "",
+                                "modal_type" => ""
+                            ],
+                            [
+                                "id" => 113,
+                                "status" => "breaktime",
+                                "start" => "33",
+                                "span" =>  "2",
+                                "icon" => "",
+                                "lead" => 1,
+                                "class" => "",
+                                "modal_type" => ""
+                            ],
+                            [
+                                "id" => 114,
+                                "status" => "",
+                                "start" => "35",
+                                "span" =>  "11",
+                                "icon" => "a-mobile-checked",
+                                "lead" => 1,
+                                "class" => "no-border-bottom",
+                                "modal_type" => ""
+                            ]
+                        ]
+                    ],
+                    [
+                        "id" => 112,
+                        "date" => "12/19",
+                        "no_availability" => 0,
+                        "start_time" => "08:00 AM",
+                        "end_time" => "05:30 PM",
+                        "before_time_start" => "1",
+                        "before_time_span" => "8",
+                        "after_time_start" => "46",
+                        "after_time_span" => "15",
+                        "events" => [
+                            [
+                                "id" => 112,
+                                "status" => "",
+                                "start" => "9",
+                                "span" =>  "12",
+                                "icon" => "a-mobile-not",
+                                "lead" => 2,
+                                "class" => "",
+                                "modal_type" => ""
+                            ],
+                            [
+                                "id" => 113,
+                                "status" => "breaktime",
+                                "start" => "21",
+                                "span" =>  "1",
+                                "icon" => "",
+                                "lead" => 1,
+                                "class" => "",
+                                "modal_type" => ""
+                            ],
+                            [
+                                "id" => 114,
+                                "status" => "",
+                                "start" => "22",
+                                "span" =>  "24",
+                                "icon" => "a-circle-plus",
+                                "lead" => 1,
+                                "class" => "available no-border-top no-border-bottom",
+                                "modal_type" => "choose-filing"
+                            ]
+                        ]
+                    ],
+                    [
+                        "id" => 113,
+                        "date" => "12/20",
+                        "no_availability" => 0,
+                        "start_time" => "08:00 AM",
+                        "end_time" => "05:30 PM",
+                        "before_time_start" => "1",
+                        "before_time_span" => "8",
+                        "after_time_start" => "46",
+                        "after_time_span" => "15",
+                        "events" => [
+                            [
+                                "id" => 112,
+                                "status" => "action-required",
+                                "start" => "9",
+                                "span" =>  "12",
+                                "icon" => "a-mobile-not",
+                                "lead" => 1,
+                                "class" => "",
+                                "modal_type" => ""
+                            ],
+                            [
+                                "id" => 113,
+                                "status" => "breaktime",
+                                "start" => "21",
+                                "span" =>  "4",
+                                "icon" => "",
+                                "lead" => 1,
+                                "class" => "",
+                                "modal_type" => ""
+                            ],
+                            [
+                                "id" => 114,
+                                "status" => "",
+                                "start" => "25",
+                                "span" =>  "21",
+                                "icon" => "a-circle-plus",
+                                "lead" => 1,
+                                "class" => "available no-border-top no-border-bottom",
+                                "modal_type" => "choose-filing"
+                            ]
+                        ]
+                    ],
+                    [
+                        "id" => 115,
+                        "date" => "12/21",
+                        "no_availability" => 0,
+                        "start_time" => "08:00 AM",
+                        "end_time" => "05:30 PM",
+                        "before_time_start" => "1",
+                        "before_time_span" => "8",
+                        "after_time_start" => "46",
+                        "after_time_span" => "15",
+                        "events" => [
+                            [
+                                "id" => 112,
+                                "status" => "",
+                                "start" => "9",
+                                "span" =>  "16",
+                                "icon" => "a-circle-plus",
+                                "lead" => 1,
+                                "class" => "available no-border-top",
+                                "modal_type" => "choose-filing"
+                            ],
+                            [
+                                "id" => 113,
+                                "status" => "",
+                                "start" => "30",
+                                "span" =>  "16",
+                                "icon" => "a-circle-plus",
+                                "lead" => 1,
+                                "class" => "available no-border-bottom",
+                                "modal_type" => "choose-filing"
+                            ]
+                        ]
+                    ],
+                    [
+                        "id" => 116,
+                        "date" => "12/22",
+                        "no_availability" => 0,
+                        "start_time" => "08:00 AM",
+                        "end_time" => "05:30 PM",
+                        "before_time_start" => "1",
+                        "before_time_span" => "8",
+                        "after_time_start" => "46",
+                        "after_time_span" => "15",
+                        "events" => [
+                            [
+                                "id" => 112,
+                                "status" => "in-progress",
+                                "start" => "9",
+                                "span" =>  "16",
+                                "icon" => "a-mobile-checked",
+                                "lead" => 1,
+                                "class" => "",
+                                "modal_type" => "change-date"
+                            ],
+                            [
+                                "id" => 113,
+                                "status" => "breaktime",
+                                "start" => "25",
+                                "span" =>  "1",
+                                "icon" => "",
+                                "lead" => 1,
+                                "class" => "",
+                                "modal_type" => ""
+                            ],
+                            [
+                                "id" => 113,
+                                "status" => "",
+                                "start" => "26",
+                                "span" =>  "12",
+                                "icon" => "a-folder",
+                                "lead" => 2,
+                                "class" => "",
+                                "modal_type" => ""
+                            ],
+                            [
+                                "id" => 113,
+                                "status" => "",
+                                "start" => "38",
+                                "span" =>  "8",
+                                "icon" => "a-folder",
+                                "lead" => 1,
+                                "class" => "no-border-bottom",
+                                "modal_type" => ""
+                            ]
+                        ]
+                    ],
+                    [
+                        "id" => 114,
+                        "date" => "12/23",
+                        "no_availability" => 1
+                    ],
+                    [
+                        "id" => 114,
+                        "date" => "12/24",
+                        "no_availability" => 1
+                    ],
+                    [
+                        "id" => 114,
+                        "date" => "12/25",
+                        "no_availability" => 1
+                    ],
+                    [
+                        "id" => 114,
+                        "date" => "12/26",
+                        "no_availability" => 1
+                    ]
+                ],
+                "footer" => [
+                    "previous" => "DECEMBER 13, 2018", 
+                    "today" => "DECEMBER 22, 2018", 
+                    "next" => "DECEMBER 31, 2018"
                 ]
             ]
         ]);
