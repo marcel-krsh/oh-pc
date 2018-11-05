@@ -366,9 +366,14 @@
 </div>
 
 <div id="project-details-info-assignment-auditor-calendar" class="uk-padding-remove uk-width-1-1 uk-margin" >
-	<div class="uk-position-relative">
-		<ul id="auditor-calendar" class="uk-child-width-1-1 uk-grid">
-			<li id="auditor-calendar-{{$data['summary']['ref-previous']}}" class="grid-schedule" style="display:none;">
+	<div id="auditor-calendar-switcher-buttons" uk-switcher="connect: #auditor-calendar-switcher;swiping:false;animation: uk-animation-fade;" style="display:none">
+	    <button class="uk-button uk-button-default" type="button" data-date="{{$data['summary']['date-previous']}}"></button>
+	    <button class="uk-button uk-button-default uk-active" type="button" data-date="{{$data['summary']['date']}}"></button>
+	    <button class="uk-button uk-button-default" type="button" data-date="{{$data['summary']['date-next']}}"></button>
+	</div>
+	<div class="uk-position-relative uk-visible-toggle">
+		<ul id="auditor-calendar-switcher" class="uk-switcher uk-child-width-1-1 uk-grid">
+			<li class="grid-schedule" data-date="{{$data['summary']['date-previous']}}">
 				<div class="auditor-calendar-header grid-schedule-header">
 					<div class="week-spacer"></div>
 					@foreach($data['calendar-previous']['header'] as $header_date)
@@ -486,13 +491,13 @@
 				</div>
 				<div class="grid-schedule-footer">
 					<div uk-grid>
-						<div class="uk-width-1-3 uk-padding-remove use-hand-cursor auditor-calendar-nav" onclick="fetchCalendar(this);" data-target="{{$data['calendar-previous']['footer']['ref-previous']}}"><i class="a-arrow-left-2"></i> {{$data['calendar-previous']['footer']['previous']}}</div>
+						<div class="uk-width-1-3 uk-padding-remove"><a class="" href="#" uk-switcher-item="previous"><i class="a-arrow-left-2"></i> {{$data['calendar-previous']['footer']['previous']}}</a></div>
 						<div class="uk-width-1-3 uk-text-center"><i class="a-calendar-pencil"></i> {{$data['calendar-previous']['footer']['today']}}</div>
-						<div class="uk-width-1-3 uk-text-right use-hand-cursor auditor-calendar-nav" onclick="fetchCalendar(this);" data-target="{{$data['calendar-previous']['footer']['ref-next']}}">{{$data['calendar-previous']['footer']['next']}} <i class="a-arrow-right-2_1"></i></div>
+						<div class="uk-width-1-3 uk-text-right"><a class="" href="#" uk-switcher-item="next">{{$data['calendar-previous']['footer']['next']}} <i class="a-arrow-right-2_1"></i></a></div>
 					</div>
 				</div>
 			</li>
-			<li id="auditor-calendar-{{$data['summary']['ref']}}" class="grid-schedule">
+			<li class="grid-schedule" data-date="{{$data['summary']['date']}}">
 				<div class="auditor-calendar-header grid-schedule-header">
 					<div class="week-spacer"></div>
 					@foreach($data['calendar']['header'] as $header_date)
@@ -610,13 +615,13 @@
 				</div>
 				<div class="grid-schedule-footer">
 					<div uk-grid>
-						<div class="uk-width-1-3 uk-padding-remove use-hand-cursor auditor-calendar-nav" onclick="fetchCalendar(this);" data-target="{{$data['calendar']['footer']['ref-previous']}}"><i class="a-arrow-left-2"></i> {{$data['calendar']['footer']['previous']}}</div>
+						<div class="uk-width-1-3 uk-padding-remove"><a class="" href="#" uk-switcher-item="previous"><i class="a-arrow-left-2"></i> {{$data['calendar']['footer']['previous']}}</a></div>
 						<div class="uk-width-1-3 uk-text-center"><i class="a-calendar-pencil"></i> {{$data['calendar']['footer']['today']}}</div>
-						<div class="uk-width-1-3 uk-text-right use-hand-cursor auditor-calendar-nav" onclick="fetchCalendar(this);" data-target="{{$data['calendar']['footer']['ref-next']}}">{{$data['calendar']['footer']['next']}} <i class="a-arrow-right-2_1"></i></div>
+						<div class="uk-width-1-3 uk-text-right"><a class="" href="#" uk-switcher-item="next">{{$data['calendar']['footer']['next']}} <i class="a-arrow-right-2_1"></i></a></div>
 					</div>
 				</div>
 			</li>
-			<li id="auditor-calendar-{{$data['summary']['ref-next']}}" class="grid-schedule" style="display:none;">
+			<li class="grid-schedule" data-date="{{$data['summary']['date-next']}}">
 				<div class="auditor-calendar-header grid-schedule-header">
 					<div class="week-spacer"></div>
 					@foreach($data['calendar-next']['header'] as $header_date)
@@ -734,9 +739,9 @@
 				</div>
 				<div class="grid-schedule-footer">
 					<div uk-grid>
-						<div class="uk-width-1-3 uk-padding-remove use-hand-cursor auditor-calendar-nav" onclick="fetchCalendar(this);" data-target="{{$data['calendar-next']['footer']['ref-previous']}}"><i class="a-arrow-left-2"></i> {{$data['calendar-next']['footer']['previous']}}</div>
+						<div class="uk-width-1-3 uk-padding-remove"><a class="" href="#" uk-switcher-item="previous"><i class="a-arrow-left-2"></i> {{$data['calendar-next']['footer']['previous']}}</a></div>
 						<div class="uk-width-1-3 uk-text-center"><i class="a-calendar-pencil"></i> {{$data['calendar-next']['footer']['today']}}</div>
-						<div class="uk-width-1-3 uk-text-right use-hand-cursor auditor-calendar-nav" onclick="fetchCalendar(this);" data-target="{{$data['calendar-next']['footer']['ref-next']}}">{{$data['calendar-next']['footer']['next']}} <i class="a-arrow-right-2_1"></i></div>
+						<div class="uk-width-1-3 uk-text-right"><a class="" href="#" uk-switcher-item="next">{{$data['calendar-next']['footer']['next']}} <i class="a-arrow-right-2_1"></i></a></div>
 					</div>
 				</div>
 			</li>
@@ -755,49 +760,36 @@
 
 	});
 
+	$(function () {
+		$(document).on('beforeshow', '#auditor-calendar-switcher', function (item) {
+			console.log("changing calendar....");
+			var currentDate = $(item.target).attr('data-date');
+			console.log("current date: "+currentDate);
 
-	function fetchCalendar(element){
-	    
-	    var target = $(element).attr('data-target');
-	    // hide all 
-	    $(element).closest('.grid-schedule').fadeOut("slow", function() {
-	    	// fade in new calendar
-	    	$('#auditor-calendar-'+target).fadeIn("slow");
-	    });
-
-	    // next or previous dates are already loaded, load the next set
-		if($('#auditor-calendar-'+target).prev().length){
-
-			// console.log("there is another calendar available before");
-
-		}else{
-
-			// console.log("we need to load a calendar before");
-
-			var url = 'projects/'+{{$data['project']['id']}}+'/assignments/addauditor/'+{{$data['summary']['id']}}+'/loadcal/'+target+'/before';
-		    $.get(url, {}, function(data) {
-	            if(data=='0'){ 
-	                UIkit.modal.alert("There was a problem getting the calendar.");
-	            } else {
-					$('#auditor-calendar-'+target).before(data);
-	        	}
-	        });
-
-		}
-
-		if($('#auditor-calendar-'+target).next().length){
-			// console.log("there is another calendar available after");
-		}else{
-			// console.log("we need to load a calendar after");
-			var url = 'projects/'+{{$data['project']['id']}}+'/assignments/addauditor/'+{{$data['summary']['id']}}+'/loadcal/'+target+'/after';
-		    $.get(url, {}, function(data) {
-	            if(data=='0'){ 
-	                UIkit.modal.alert("There was a problem getting the calendar.");
-	            } else {
-					$('#auditor-calendar-'+target).after(data);
-	        	}
-	        });
-		}
-	}
-
+			// next or previous dates are already loaded, load the next set
+			if($(item.target).prev().length){
+				console.log("there is another calendar available before");
+			}else{
+				console.log("we need to load a calendar before");
+				// var url = 'projects/'+{{$data['project']['id']}}+'/assignments/addauditor/'+{{$data['summary']['id']}}+'/loadcal/'+currentDate+'/before';
+			 //    $.get(url, {
+			 //        }, function(data) {
+			 //            if(data=='0'){ 
+			 //                UIkit.modal.alert("There was a problem getting the calendar.");
+			 //            } else {
+				// 			$(item.target).before('<li class="grid-schedule">Yep before</li>');
+			 //        	}
+			 //    });
+			 	$(item.target).before('<li class="grid-schedule">Yep before</li>');
+			}
+			if($(item.target).next().length){
+				console.log("there is another calendar available after");
+			}else{
+				console.log("we need to load a calendar after");
+				$(item.target).after('<li class="grid-schedule">Yep after</li>');
+				
+			}
+			
+		});
+	});
 </script>

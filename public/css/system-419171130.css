@@ -2840,7 +2840,8 @@ margin-top:10px;
       color: #666;
       margin-bottom: 50px;
       margin-top: 2px;
-      margin-left: 45px;
+      margin-left: 45px;    
+      height: 22px;
   }
   .grid-schedule-footer i {
     vertical-align: middle;
