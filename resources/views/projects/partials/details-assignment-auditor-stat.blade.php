@@ -745,6 +745,10 @@
 </div>
 <script>
 	$( document ).ready(function() {
+		fillSpacers();
+	});
+
+	function fillSpacers() {
 		var TotalRows = 60;
 		var i = 0;
 		var spacers = '';
@@ -752,8 +756,7 @@
 		    spacers = spacers+"<div></div>";
 		}
 		$('.day-spacer').html(spacers);
-
-	});
+	}
 
 
 	function fetchCalendar(element){
@@ -780,6 +783,7 @@
 	                UIkit.modal.alert("There was a problem getting the calendar.");
 	            } else {
 					$('#auditor-calendar-'+target).before(data);
+					fillSpacers();
 	        	}
 	        });
 
@@ -795,6 +799,7 @@
 	                UIkit.modal.alert("There was a problem getting the calendar.");
 	            } else {
 					$('#auditor-calendar-'+target).after(data);
+					fillSpacers();
 	        	}
 	        });
 		}
