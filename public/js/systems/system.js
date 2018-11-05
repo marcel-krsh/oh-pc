@@ -311,6 +311,8 @@ function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight,inmod
 		var newmodalsize = $('#modal-size');
 		var newmodalcontent = $('#dynamic-modal-content');
 	}
+	
+	$(newmodalsize).removeAttr('style');
 
 	// UIkit.offcanvas.hide();
 	var continueToLoad = 1;

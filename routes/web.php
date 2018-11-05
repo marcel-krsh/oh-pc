@@ -92,6 +92,8 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('projects/{id}/assignments/addauditor/{auditorid}/stats', 'AuditController@addAssignmentAuditorStats')->name('project.assignment.addauditorstats');
         Route::get('projects/{id}/assignments/addauditor/{auditorid}/loadcal/{currentdate}/{beforeafter}', 'AuditController@getAssignmentAuditorCalendar')->name('project.assignment.getauditorcalendar');
 
+        Route::get('/modals/auditors/{id}/preferences', 'UserController@preferences')->name('auditor.preferences');
+
         Route::post('/autosave', 'FindingController@autosave');
     // });
 

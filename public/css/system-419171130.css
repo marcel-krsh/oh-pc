@@ -405,9 +405,19 @@ float: left;
     border: 1px solid #fff;
     background-color: #7A7A7A;
     color: white;
-    font-weight: 100;
+    font-weight: 300;
     line-height: 25px;
     margin-right: 3px;
+}
+.user-badge-bigger {
+      height: 30px;
+    width: 30px;
+    color: #ffffff;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 29px;
+    margin-top: -4px;
+    margin-right: 10px;
 }
 .user-badge-green {
 	background-color: #56aa80 !important;	
@@ -2806,10 +2816,29 @@ margin-top:10px;
         "sidebar content "
         "footer footer";
   }
+.grid-schedule-availability {
+  display: grid;
+  grid-gap: 0px;
+  grid-template-columns: 45px 7fr;
+    grid-template-areas: 
+      "header header "
+      "sidebar content "
+      "footer footer";
+}
   .grid-schedule-header {
     grid-area: header;
     display: grid;
     grid-template-columns: repeat(9, 2% 1fr) 2%;
+    grid-auto-flow: dense;
+    grid-gap: 0px;
+    padding-left: 45px;
+      text-align: center;
+      color: #999;
+  }
+  .grid-schedule-availability-header {
+    grid-area: header;
+    display: grid;
+    grid-template-columns: repeat(7, 2% 1fr) 2%;
     grid-auto-flow: dense;
     grid-gap: 0px;
     padding-left: 45px;
@@ -2821,7 +2850,7 @@ margin-top:10px;
 
     
   }
-  .grid-schedule-sidebar {
+  .grid-schedule-sidebar, .grid-schedule-availability-sidebar {
     grid-area: sidebar;
     color: #999;
   }
@@ -2830,6 +2859,14 @@ margin-top:10px;
     display: grid;
       /*grid-template-columns: repeat(9, 1fr);*/
       grid-template-columns: repeat(9, 2% 1fr) 2%;
+      grid-auto-flow: dense;
+      grid-gap: 0;
+  }
+  .grid-schedule-availability-content {
+    grid-area: content;
+    display: grid;
+      /*grid-template-columns: repeat(9, 1fr);*/
+      grid-template-columns: repeat(7, 2% 1fr) 2%;
       grid-auto-flow: dense;
       grid-gap: 0;
   }
@@ -2843,15 +2880,38 @@ margin-top:10px;
       margin-left: 45px;    
       height: 22px;
   }
+  .grid-schedule-availability-footer {
+    grid-area: footer;
+    padding: 6px 15px;
+      background-color: #aaa;
+      color: #666;
+      margin-bottom: 50px;
+      margin-top: 2px;
+      margin-left: 45px;    
+      height: 22px;
+      font-size:12px;
+  }
   .grid-schedule-footer i {
     vertical-align: middle;
       font-size: 18px;
+  }
+  .grid-schedule-availability-footer i {
+    vertical-align: middle;
+      font-size: 14px;
   }
   .day, .day-spacer {
     display: grid;
     grid-row-start: 1;
     grid-row-end: 60;
     grid-template-rows: repeat(60, 8px);
+    grid-auto-flow: dense;
+    grid-gap: 0px 10px;
+  }
+  .grid-schedule-availability-content .day, .grid-schedule-availability-content .day-spacer {
+    display: grid;
+    grid-row-start: 1;
+    grid-row-end: 60;
+    grid-template-rows: repeat(60, 4px);
     grid-auto-flow: dense;
     grid-gap: 0px 10px;
   }
@@ -2882,6 +2942,9 @@ margin-top:10px;
   }
   .grid-schedule-sidebar > div {
       height: 8px;
+  } 
+  .grid-schedule-availability-sidebar > div {
+      height: 4px;
   } 
 
   .week-day, .event, .grid-schedule-sidebar > div {

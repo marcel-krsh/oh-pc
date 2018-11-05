@@ -662,5 +662,15 @@ function assignmentDay(id, dateid, target) {
     });
 }
 
+function fillSpacers() {
+	var TotalRows = 60;
+	var i = 0;
+	var spacers = '';
+	for (i = 0; i < TotalRows; i++) { 
+	    spacers = spacers+"<div></div>";
+	}
+	$('.day-spacer').html(spacers);
+}
+
 
 
