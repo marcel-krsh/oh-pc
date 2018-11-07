@@ -12,6 +12,9 @@
 */
 
 Route::group(['middleware' => 'web'], function () {
+
+    Route::get('/sockets', 'DataController@testSockets');
+
     //Route::group(['middleware' => ['allita.auth']], function() {
         Route::get('unified_login', function (){
                 //session(['brian'=>'test']);
@@ -546,6 +549,7 @@ Route::get('/notices/images/{notice}', 'HomeController@NoticeImageTrack');
 */
 
 Route::group(['prefix'=>'poc','namespace'=>'POC'], function() {
+
     Route::get('auth', 'AuthIndexController@index');
     Route::post('auth', 'AuthIndexController@store');
     Route::get('auth/second-factor', 'AuthSecondFactorController@index');

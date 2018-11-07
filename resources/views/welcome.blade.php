@@ -9,84 +9,50 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <script>
+            window.Laravel = { csrfToken: '{{ csrf_token() }}' }
+        </script>
 
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Raleway';
-                font-weight: 100;
-                height: 100vh;
-                margin: 0;
-            }
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 
-            .full-height {
-                height: 100vh;
-            }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 12px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
     </head>
     <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    <a href="{{ url('/login') }}">Login</a>
-                    <a href="{{ url('/register') }}">Register</a>
-                </div>
-            @endif
-
-            <div class="content">
-                <div class="title m-b-md">
-
-                    Blight Management
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">We are OHFA</a>
-                    <a href="https://laracasts.com">Landbank Login</a>
-                    <a href="https://laravel-news.com">OHFA Login</a>
-                    <a href="https://forge.laravel.com">Help</a>
-                    
-                </div>
+        <div id="app">
+            <h1>New Users</h1>
+            <example></example>
+        
+           
+            <div>
+                <ul id="names">
+                    <li v-for="user in users">@{{ user }}</li>
+                </ul>
             </div>
         </div>
+
+        <script  src="{{ mix('js/app.js') }}"></script>
+
+        <script>
+          //  var socket = io('http://192.168.100.100:3000');
+            // load all components
+          //  Vue.component('example', require('./components/Example.vue')); 
+
+          //  new Vue({
+          //      el: '#app',
+
+            //   data: {
+            //         users: [ 'JohnDoe' ]
+            //     },
+
+            //     ready: function() {
+            //         socket.on('test-channel:UserSignedUp', function(data){
+            //             console.log("socket message received");
+            //             this.users.push(data.username);
+            //         }.bind(this));
+            //     }
+            // });
+
+        </script>
     </body>
 </html>
