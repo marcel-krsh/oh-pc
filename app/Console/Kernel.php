@@ -28,11 +28,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $test = DB::table('jobs')->where('payload','like','%SyncDevco%')->first();
-        if( is_null($test)) {
+        if(is_null($test)) {
             Log::info('Count is '.DB::table('jobs')->where('payload','like','%App\\Jobs\\SyncDevco%')->count());      
             $schedule->job(new SyncDevco)->everyMinute();
         } else {
-            Log::info('Sync Job Already Started. '.$test);
+            Log::info('Sync Job Already Started. '.print_r($test));
         }
     }
 
