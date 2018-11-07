@@ -29,10 +29,10 @@ class Kernel extends ConsoleKernel
     {
         $test = DB::table('jobs')->where('payload','like','%SyncDevco%')->first();
         if(is_null($test)) {
-            Log::info('Count is '.DB::table('jobs')->where('payload','like','%App\\Jobs\\SyncDevco%')->count());      
+            Log::info('Starting Devco Sync Job');      
             $schedule->job(new SyncDevco)->everyMinute();
         } else {
-            Log::info('Sync Job Already Started. '.print_r($test));
+            //Log::info('Sync Job Already Started.');
         }
     }
 
