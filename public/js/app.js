@@ -991,7 +991,7 @@ new Vue({
         users: ['JohnDoe']
     },
 
-    ready: function ready() {
+    mounted: function mounted() {
         socket.on('test-channel:UserSignedUp', function (data) {
             console.log("socket message received");
             this.users.push(data.username);
