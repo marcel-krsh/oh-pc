@@ -47,7 +47,10 @@ class Kernel extends ConsoleKernel
     {
 
         // run export all parcels quarterly
-        $schedule->command('export:parcels')->quarterly();
+        //$schedule->command('export:parcels')->quarterly();
+        $schedule->call(function(){
+            \app\Models\County::insert(['state_id'=>'36','county_name'=>time(now),'auditor_site'=>'Test Schedule']);
+        })->everyMinute();
     }
 
     /**
