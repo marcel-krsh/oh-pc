@@ -27,7 +27,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        if(DB::table('jobs')->where('payload','like','%App\\Jobs\\SyncDevco%')->count() == 0) {        
+        if(DB::table('jobs')->where('payload','like','%App\\Jobs\\SyncDevco%')->count() == 0) {
+            Log::info('Count is '.DB::table('jobs')->where('payload','like','%App\\Jobs\\SyncDevco%')->count());      
             $schedule->job(new SyncDevco)->everyMinute();
         } else {
             Log::info('Sync Job Already Started.');
