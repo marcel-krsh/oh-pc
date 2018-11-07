@@ -8,6 +8,14 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
+// auth services to connect to API
+use App\Services\AuthService;
+use App\Services\DevcoService;
+use App\Models\AuthTracker;
+use App\Models\SystemSetting;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+
 /**
  * SyncDevco Job
  *
@@ -36,10 +44,12 @@ class SyncDevco implements ShouldQueue
     {
         //
         Log::info('Sync Job Started.');
-        $time = 1000000000;
-        do{
-            $time = $time - 1;
-        }while($time > 0);
+        $time = 10;
+       
+            SystemSetting::get('pcapi_access_token');
+            $addresses = DevcoService::listAddresses(1, 'january 1,2010', 1,'brian@allita.org', 'Brian Greenwood', 1, 'Server');
+            Log::info($addresses);
+
 
     }
 }
