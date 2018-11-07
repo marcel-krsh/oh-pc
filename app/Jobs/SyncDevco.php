@@ -38,7 +38,7 @@ class SyncDevco implements ShouldQueue
         Log::info('Sync Job Started.');
         $time = 1000000000;
         do{
-            $time = $time - .000001;
+            $time = $time - 1;
         }while($time > 0);
 
     }
