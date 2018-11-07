@@ -27,12 +27,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('queue:listen')->everyMinute();
+        //$schedule->command('queue:listen')->everyMinute();
 
         $test = DB::table('jobs')->where('payload','like','%SyncDevco%')->first();
         if(is_null($test)) {
             $schedule->job(new SyncDevco)->everyMinute();
-            Log::info('Queing Devco Sync Job'.time());      
+            //Log::info('Queing Devco Sync Job'.time());      
             
         } else {
             //Log::info('Sync Job Already Started.');
