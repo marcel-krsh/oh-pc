@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Console;
-
+use DB;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Log;
 use App\Jobs\SyncDevco;
@@ -28,8 +28,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 
-        
-        $schedule->job(new SyncDevco)->everyMinute();
+        if(DB::table('jobs')->where('payload','{"displayName":"App\\Jobs\\SyncDevco","job":"Illuminate\\Queue\\CallQueuedHandler@call","maxTries":null,"timeout":null,"timeoutAt":null,"data":{"commandName":"App\\Jobs\\SyncDevco","command":"O:18:\"App\\Jobs\\SyncDevco\":7:{s:6:\"\u0000*\u0000job\";N;s:10:\"connection\";N;s:5:\"queue\";N;s:15:\"chainConnection\";N;s:10:\"chainQueue\";N;s:5:\"delay\";N;s:7:\"chained\";a:0:{}}"}}')->count() == 0) {        
+            $schedule->job(new SyncDevco)->everyMinute();
+        }
     }
 
     /**
