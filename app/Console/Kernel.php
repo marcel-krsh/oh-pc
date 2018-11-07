@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
 
         
         $schedule->call(function(){
-            Log::info('Testing Scheduler.');
+            Log::info('Testing Scheduler Update.');
         })->everyMinute();
     }
 
