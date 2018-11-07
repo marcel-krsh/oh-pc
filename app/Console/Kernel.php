@@ -32,7 +32,7 @@ class Kernel extends ConsoleKernel
             Log::info('Count is '.DB::table('jobs')->where('payload','like','%App\\Jobs\\SyncDevco%')->count());      
             $schedule->job(new SyncDevco)->everyMinute();
         } else {
-            Log::info('Sync Job Already Started. '.count($test));
+            Log::info('Sync Job Already Started. '.$test);
         }
     }
 
