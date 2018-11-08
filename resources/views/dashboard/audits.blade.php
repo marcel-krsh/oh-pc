@@ -255,7 +255,7 @@
 		            <th class="uk-table-small" style="width:130px;">
 		            	<div uk-grid>
 		            		<div class="filter-box uk-width-1-1">
-								<input id="filter-by-project" class="filter-box filter-file" type="text" placeholder="FILTER PROJECT & AUDIT">
+								<input id="filter-by-project" class="filter-box filter-file" type="text" placeholder="PROJECT & AUDIT">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="Sort By">
 								<a id="" class="sort-asc" onclick="loadListTab(1,null,null,'file-number-sort',1);"></a>
@@ -266,7 +266,7 @@
 		            <th>
 		            	<div uk-grid>
 			            	<div class="filter-box uk-width-1-1">
-								<input id="filter-by-name" class="filter-box filter-name" type="text" placeholder="FILTER PROJECT / PM NAME">
+								<input id="filter-by-name" class="filter-box filter-name" type="text" placeholder="PROJECT / PM NAME">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="Sort By">
 								<a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'first-name-sort',1);"></a>
@@ -280,7 +280,7 @@
 		            <th class="uk-table-expand">
 		            	<div uk-grid>
 			            	<div class="filter-box uk-width-1-1">
-								<input id="filter-by-address" class="filter-box filter-address" type="text" placeholder="FILTER PRIMARY ADDRESS">
+								<input id="filter-by-address" class="filter-box filter-address" type="text" placeholder="PRIMARY ADDRESS">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="Sort By">
 								<a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'sort-by-street',1);"></a>
