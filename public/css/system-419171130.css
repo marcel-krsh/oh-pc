@@ -1317,6 +1317,9 @@ margin-top:10px;
   padding: 0;
   margin: 0;
 }
+#auditstable .uk-link:hover {
+  color:initial;
+}
 #auditstable table tr td .dateyear {
    display:none;
     background-color: #bbbbbb;
@@ -2059,10 +2062,14 @@ margin-top:10px;
     position: absolute;
     right: -9px;
     bottom: -15px;
+    line-height: 8px;
+    font-size: 11px;
 }
-#auditstable .building .building-status .uk-badge, #auditstable .building.no-action .building-status .uk-badge { border: 2px solid #3a3a3a; color:#3a3a3a;}
+#auditstable .building .building-status .uk-badge, 
+#auditstable .building.no-action .building-status .uk-badge { border: 2px solid #3a3a3a; color:#3a3a3a;}
 #auditstable .building.action-needed .building-status .uk-badge { border: 2px dashed #76338b; color: #76338b; }
-#auditstable .building.action-required .building-status .uk-badge { border: 3px double #da328a; color:#da328a;}
+#auditstable .building.action-required .building-status .uk-badge,
+#auditstable .building.critical .building-status .uk-badge { border: 3px double #da328a; color:#da328a; line-height: 10px;}
 #auditstable .building.ok-actionable .building-status .uk-badge { border: 2px solid #56b285; color:#56b285;}
 #auditstable .building.in-progress .building-status .uk-badge { border: 2px dotted #49ade9; color:#49ade9; }
 
@@ -2071,8 +2078,13 @@ margin-top:10px;
     color: #57585a;
     font-size: 0.9em;
 }
-#auditstable .building .area-status.area-status-pending {
-    color: #50b8ec;
+
+#auditstable .building .area-status {
+    color: #3a3a3a;
+}
+#auditstable .building.critical .area-status,
+#auditstable .building.action-required .area-status {
+    color: #da328a;
 }
 #auditstable .building .area-status .uk-badge{
   background-color: #57585a;
@@ -2110,9 +2122,6 @@ margin-top:10px;
     line-height: 15px;
     margin-left: -2px;
     animation: border-pulsate 2s infinite;
-}
-#auditstable .building .area-status.area-status-action{
-  color: #da328a;
 }
 
 /*#auditstable .building .area-status, 

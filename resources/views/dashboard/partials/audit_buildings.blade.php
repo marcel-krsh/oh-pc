@@ -149,14 +149,14 @@
 											<div uk-grid class="area-status-list">
 												@foreach($building['areas'] as $area)
 												@if($loop->iteration < 9)
-											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status area-status-{{$area['status']}} colored">
+											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($area['status'] != '') area-status-{{$area['status']}} @endif colored">
 											    	<span class="uk-badge">
 											    	@if($area['qty']){{$area['qty']}} @else 3 @endif </span>
 											    	{{$area['type']}}
 											    </div>
 											    @else
 											    	@if($loop->iteration == 9)
-												    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status area-status-{{$area['status']}} colored">
+												    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($area['status'] != '') area-status-{{$area['status']}} @endif colored">
 												    	<span class="uk-badge" uk-tooltip="pos:top-left;title: @endif @if($area['qty']) {{$area['qty']}} @endif {{$area['type']}}<br /> @if($loop->last) ;"><i class="a-plus"></i> </span> MORE...
 												    </div>
 												    @endif
