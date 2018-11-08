@@ -22,7 +22,7 @@ class SyncController extends Controller
     	// 	$output .= $addresses['id']."<br />";
     	// }
 
-    	$addresses = json_decond($addresses, true);
+    	$addresses = json_decode($addresses, true);
     	return print_r($addresses['data']);
 
 		
