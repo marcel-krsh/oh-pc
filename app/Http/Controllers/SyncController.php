@@ -23,7 +23,10 @@ class SyncController extends Controller
     	// }
 
     	$addresses = json_decode($addresses, true);
-    	return $addresses['data'];
+    	foreach($addresses['data'] as $i => $v)
+            {
+                echo $v['id'].'<br/>';
+            }
 
 		
     }
