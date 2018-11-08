@@ -1601,6 +1601,13 @@ margin-top:10px;
   color:#fff;
 }
 
+#auditstable table tr td small.faded {
+  opacity: 0.5;
+} 
+#auditstable table tr:hover td small.faded {
+  opacity: 1;
+} 
+
 .filter-dropdown {
   margin-top: 0;
   padding: 10px 15px;

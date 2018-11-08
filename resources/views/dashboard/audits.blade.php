@@ -508,7 +508,7 @@
 		            	</div>
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
 		            		<h3 id="audit-project-name-{{$loop->iteration}}" class="uk-margin-bottom-remove uk-link" uk-tooltip="title:Open Audit Details in Tab;" onClick="loadTab('{{ route('project', $audit['id']) }}', '4', 1, 1);">{{$audit['audit_id']}}</h3>
-			            	<small id="audit-project-aid-{{$loop->iteration}}" class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;">AUDIT {{$audit['audit_id']}}</small>
+			            	<small id="audit-project-aid-{{$loop->iteration}}" class="uk-text-muted faded" uk-tooltip="title:View Project's Audit Details;">AUDIT {{$audit['audit_id']}}</small>
 			            </div>
 		            </td>
 		            <td class="audit-td-name">
@@ -517,7 +517,7 @@
 		            	</div> 
 		            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
 		            		<h3 class="uk-margin-bottom-remove">{{$audit['title']}}</h3>
-			            	<small class="uk-text-muted">{{$audit['subtitle']}}</small>
+			            	<small class="uk-text-muted faded">{{$audit['subtitle']}}</small>
 		            	</div>
 		            </td>
 		            <td class="hasdivider audit-td-address">
@@ -527,7 +527,7 @@
 		            	</div> 
 		            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
 		            		<h3 class="uk-margin-bottom-remove">{{$audit['address']}}</h3>
-			            	<small class="uk-text-muted">{{$audit['city']}}, {{$audit['state']}} {{$audit['zip']}}</small>
+			            	<small class="uk-text-muted faded">{{$audit['city']}}, {{$audit['state']}} {{$audit['zip']}}</small>
 		            	</div>
 		            </td>
 		            <td class="hasdivider audit-td-scheduled">
