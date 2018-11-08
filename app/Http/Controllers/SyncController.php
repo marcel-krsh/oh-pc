@@ -16,7 +16,7 @@ class SyncController extends Controller
     //
     public function sync() {
     	$test = new DevcoService();
-    	$addresses = $test->listAddresses(1, 'january 1, 2010', 1,'brian@allita.org', 'Brian Greenwood', 1, 'Server');
+    	$addresses = $test->listAddresses(2, 'january 1, 2010', 1,'brian@allita.org', 'Brian Greenwood', 1, 'Server');
     	return $addresses;
 
 		
