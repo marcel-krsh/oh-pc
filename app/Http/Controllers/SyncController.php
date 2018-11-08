@@ -15,8 +15,8 @@ class SyncController extends Controller
 {
     //
     public function sync() {
-    	
-    	return listAddresses(1, 'january 1, 2010', 1,'brian@allita.org', 'Brian Greenwood', 1, 'Server');
+    	$test = new listAddresses();
+    	return $test->(1, 'january 1, 2010', 1,'brian@allita.org', 'Brian Greenwood', 1, 'Server');
 
 		
     }
