@@ -57,7 +57,7 @@
 																@endif
 															</div>
 															<div class="building-status">
-																<i class="a-check colored" uk-tooltip="pos:top-left;title:# finding icon;"></i>
+																<span class="uk-badge colored" uk-tooltip="pos:top-left;title:# finding icon;">2</span>
 															</div>
 														</div>
 													</div>
@@ -151,7 +151,7 @@
 												@if($loop->iteration < 9)
 											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status area-status-{{$area['status']}} colored">
 											    	<span class="uk-badge">
-											    	@if($area['qty']){{$area['qty']}} @else <i class="a-check"></i>@endif </span>
+											    	@if($area['qty']){{$area['qty']}} @else 3 @endif </span>
 											    	{{$area['type']}}
 											    </div>
 											    @else

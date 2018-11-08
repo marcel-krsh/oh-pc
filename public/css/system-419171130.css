@@ -2043,7 +2043,7 @@ margin-top:10px;
 #auditstable .building-status {
   position: relative;
 }
-#auditstable .building-status i {
+#auditstable .building-status .uk-badge {
     position: absolute;
     right: -5px;
     bottom: -15px;
@@ -2055,16 +2055,16 @@ margin-top:10px;
     border: 2px solid;
     padding: 4px;
 }
-#auditstable .building-details .building-status i {
+#auditstable .building-details .building-status .uk-badge {
     position: absolute;
     right: -9px;
     bottom: -15px;
 }
-#auditstable .building.no-action .building-status i { border: 2px solid; }
-#auditstable .building.action-needed .building-status i { border: 2px dashed; }
-#auditstable .building.action-required .building-status i { border: 3px double; }
-#auditstable .building.ok-actionable .building-status i { border: 2px solid; }
-#auditstable .building.in-progress .building-status i { border: 2px dotted; }
+#auditstable .building .building-status .uk-badge, #auditstable .building.no-action .building-status .uk-badge { border: 2px solid #3a3a3a; color:#3a3a3a;}
+#auditstable .building.action-needed .building-status .uk-badge { border: 2px dashed #76338b; color: #76338b; }
+#auditstable .building.action-required .building-status .uk-badge { border: 3px double #da328a; color:#da328a;}
+#auditstable .building.ok-actionable .building-status .uk-badge { border: 2px solid #56b285; color:#56b285;}
+#auditstable .building.in-progress .building-status .uk-badge { border: 2px dotted #49ade9; color:#49ade9; }
 
 #auditstable .building .area-status {
     text-transform: uppercase;
