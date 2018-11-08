@@ -1587,6 +1587,20 @@ margin-top:10px;
   font-size: 15px;
 }
 
+#auditstable .archived-icon {
+  background-color:#f0f8ff;
+  vertical-align:top;
+  height: 26px;
+  padding: 2px;
+  text-align: center;
+  color: #919191;
+}
+
+#auditstable .archived-icon.selected {
+  background-color:#000;
+  color:#fff;
+}
+
 .filter-dropdown {
   margin-top: 0;
   padding: 10px 15px;

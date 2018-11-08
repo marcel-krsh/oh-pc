@@ -12,6 +12,10 @@ function toggleCritical() {
 	
 }
 
+function toggleArchivedAudits() {
+	$(".archived-icon").toggle();
+}
+
 function createAudits(){
 	console.log("create audits clicked");
 }

@@ -483,7 +483,10 @@
 		            </th>
 		            <th style="vertical-align:top;">
 		            	<div uk-grid>
-			            	<div class="uk-link uk-width-1-1" style="background-color:#000;vertical-align:top;height: 26px;padding: 2px;text-align: center;color:#fff;">
+			            	<div class="uk-link uk-width-1-1 archived-icon" onclick="toggleArchivedAudits();" data-uk-tooltip="{pos:'bottom'}" title="Click to Hide Archived Audits">
+				            	<i class="a-folder-box"></i>
+							</div>
+			            	<div class="uk-link uk-width-1-1 archived-icon selected" onclick="toggleArchivedAudits();" data-uk-tooltip="{pos:'bottom'}" title="Click to Show Archived Audits" style="display:none;">
 				            	<i class="a-folder-box"></i>
 							</div>
 						</div>
