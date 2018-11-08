@@ -25,7 +25,7 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function listAddresses(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
+	public function listAddresses(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
 	{
 		// example call
 		// /api/v1/devco/addresses?page={{default=1/value}}&newer_than={{null/value}}
