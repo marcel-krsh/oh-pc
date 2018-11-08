@@ -17,7 +17,7 @@ class SyncController extends Controller
     public function sync() {
     	$test = new DevcoService();
     	$addresses = $test->listAddresses(1, '2019-04-23T08:50:19.637', 1,'brian@allita.org', 'Brian Greenwood', 1, 'Server');
-    	forEach($addresses[0] as $address){
+    	forEach($addresses as $address){
     		$output .= $addresses['id']."<br />";
     	}
     	return $output;
