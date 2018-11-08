@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Services\AuthService;
 use GuzzleHttp\Client;
+use App\Models\SystemSetting;
 
 class PCAPIService {
 
@@ -33,7 +34,7 @@ class PCAPIService {
             'verify' => false,
         ]);
 
-        $response = $client->request('GET', $this->_api_v.$url."");
+        $response = $client->request('GET', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'));
 
         return $response->getBody();
     }
