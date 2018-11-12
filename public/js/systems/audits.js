@@ -12,22 +12,29 @@ function toggleCritical() {
 	
 }
 
-function sortAuditList(sortBy, sortOrder) {
+function sortAuditList(sortBy, sortOrder, inputClass='') {
 	// 'audit-sort-by'
     // 'audit-sort-order'
     
     $('#audits').fadeOut('slow');
     
     // capture input value if any
-    // var filter = '';
-    // var filterId = 0;
+    if(inputClass != ''){
+    	var filter = '';
+	    var filterId = 0;
 
-    // $('#auditstable').find('.filter-box').each(function(){
-    // 	if($(this).val().length){
-    // 		filter = $(this).val();
-    // 		filterId = $(this).attr('id');
-    // 	}
-    // });
+	    if( $('.'+inputClass).val().length ){
+	    	// clear all other session variables
+	    	$.get( '/session/filters/filter-search-project-input/');
+	    	$.get( '/session/filters/filter-search-pm-input/');
+	    	$.get( '/session/filters/filter-search-address-input/');
+
+	    	// set new filter
+	    	filter = $('.'+inputClass).val();
+	    	$.get( '/session/filters/'+inputClass+'/'+filter, function( data ) {});
+	    }
+	    
+    }
 
 	$.get( '/session/filters/audit-sort-by/'+sortBy, function( data ) {  
 		$.get( '/session/filters/audit-sort-order/'+sortOrder, function( data ) {  

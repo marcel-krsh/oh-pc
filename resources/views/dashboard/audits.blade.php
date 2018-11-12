@@ -251,7 +251,7 @@
 			            	</div>
 			            	<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LEAD AUDITOR">
 			            		@if($sort_by == 'audit-sort-lead')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-lead', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-lead', @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-lead', 1);"></a>
 			            		@endif
@@ -261,13 +261,13 @@
 		            <th class="uk-table-small" style="width:130px;">
 		            	<div uk-grid>
 		            		<div class="filter-box uk-width-1-1">
-								<input id="filter-by-project" class="filter-box filter-search-project-input" type="text" placeholder="PROJECT & AUDIT" onkeyup="filterAuditList(this, 'filter-search-project')" value="@if(session('audit-filter') == 'filter-search-project'){{session('audit-filter-value')}} @endif">
+								<input id="filter-by-project" class="filter-box filter-search-project-input" type="text" placeholder="PROJECT & AUDIT" onkeyup="filterAuditList(this, 'filter-search-project')" value="@if(session()->has('filter-search-project-input')){{session('filter-search-project-input')}}@endif">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROJECT ID">
 			            		@if($sort_by == 'audit-sort-project')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-project', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-project', @php echo 1-$sort_order; @endphp, 'filter-search-project-input');"></a>
 			            		@else
-			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-project', 1);"></a>
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-project', 1, 'filter-search-project-input');"></a>
 			            		@endif
 							</span> 
 							<div class="uk-dropdown" aria-expanded="false"></div>
@@ -276,20 +276,20 @@
 		            <th>
 		            	<div uk-grid>
 			            	<div class="filter-box uk-width-1-1">
-								<input id="filter-by-name" class="filter-box filter-search-pm-input" type="text" placeholder="PROJECT / PM NAME" onkeyup="filterAuditList(this, 'filter-search-pm')">
+								<input id="filter-by-name" class="filter-box filter-search-pm-input" type="text" placeholder="PROJECT / PM NAME" onkeyup="filterAuditList(this, 'filter-search-pm')" value="@if(session()->has('filter-search-pm-input')){{session('filter-search-pm-input')}}@endif">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROJECT NAME">
 			            		@if($sort_by == 'audit-sort-project-name')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-project-name', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-project-name',  @php echo 1-$sort_order; @endphp, 'filter-search-pm-input');"></a>
 			            		@else
-			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-project-name', 1);"></a>
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-project-name', 1, 'filter-search-pm-input');"></a>
 			            		@endif
 							</span> 
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROPERTY MANAGER NAME">
 			            		@if($sort_by == 'audit-sort-pm')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-pm', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-pm',  @php echo 1-$sort_order; @endphp, 'filter-search-pm-input');"></a>
 			            		@else
-			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-pm', 1);"></a>
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-pm', 1, 'filter-search-pm-input');"></a>
 			            		@endif
 							</span> 
 							<div class="uk-dropdown" aria-expanded="false"></div>
@@ -298,27 +298,27 @@
 		            <th class="uk-table-expand">
 		            	<div uk-grid>
 			            	<div class="filter-box uk-width-1-1">
-								<input id="filter-by-address" class="filter-box filter-search-address-input" type="text" placeholder="PRIMARY ADDRESS" onkeyup="filterAuditList(this, 'filter-search-address')">
+								<input id="filter-by-address" class="filter-box filter-search-address-input" type="text" placeholder="PRIMARY ADDRESS" onkeyup="filterAuditList(this, 'filter-search-address')" value="@if(session()->has('filter-search-address-input')){{session('filter-search-address-input')}}@endif">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY STREET ADDRESS">
 			            		@if($sort_by == 'audit-sort-address')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-address', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-address',  @php echo 1-$sort_order; @endphp, 'filter-search-address-input');"></a>
 			            		@else
-			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-address', 1);"></a>
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-address', 1, 'filter-search-address-input');"></a>
 			            		@endif
 							</span> 
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY CITY">
 			            		@if($sort_by == 'audit-sort-city')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-city', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-city',  @php echo 1-$sort_order; @endphp, 'filter-search-address-input');"></a>
 			            		@else
-			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-city', 1);"></a>
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-city', 1, 'filter-search-address-input');"></a>
 			            		@endif
 							</span> 
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY ZIP">
 			            		@if($sort_by == 'audit-sort-zip')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-zip', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-zip',  @php echo 1-$sort_order; @endphp, 'filter-search-address-input');"></a>
 			            		@else
-			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-zip', 1);"></a>
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-zip', 1, 'filter-search-address-input');"></a>
 			            		@endif
 							</span> 
 							<div class="uk-dropdown" aria-expanded="false"></div>
@@ -340,28 +340,28 @@
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY SCHEDULED DATE">
 			            		@if($sort_by == 'audit-sort-scheduled-date')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-scheduled-date', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-scheduled-date',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-scheduled-date', 1);"></a>
 			            		@endif
 							</span>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL ASSIGNED INSPECTION AREAS">
 			            		@if($sort_by == 'audit-sort-assigned-areas')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-assigned-areas', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-assigned-areas',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-assigned-areas', 1);"></a>
 			            		@endif
 							</span>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL INSPECTION AREAS">
 			            		@if($sort_by == 'audit-sort-total-areas')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-total-areas', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-total-areas',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-total-areas', 1);"></a>
 			            		@endif
 							</span>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="SORT BY COMPLIANCE STATUS">
 			            		@if($sort_by == 'audit-sort-compliance-status')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-compliance-status', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-compliance-status',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-compliance-status', 1);"></a>
 			            		@endif
@@ -377,7 +377,7 @@
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY FOLLOW-UP DATE">
 			            		@if($sort_by == 'audit-sort-followup-date')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-followup-date', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-followup-date',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-followup-date', 1);"></a>
 			            		@endif
@@ -402,28 +402,28 @@
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY FILE FINDING COUNT">
 			            		@if($sort_by == 'audit-sort-finding-file')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-finding-file', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-finding-file',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-finding-file', 1);"></a>
 			            		@endif
 							</span> 
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY NLT FINDING COUNT">
 			            		@if($sort_by == 'audit-sort-finding-nlt')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-finding-nlt', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-finding-nlt',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-finding-nlt', 1);"></a>
 			            		@endif
 							</span> 
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LT FINDING COUNT">
 			            		@if($sort_by == 'audit-sort-finding-lt')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-finding-lt', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-finding-lt',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-finding-lt', 1);"></a>
 			            		@endif
 							</span> 
 							<span data-uk-tooltip="{pos:'bottom-right'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY SD FINDING COUNT">
 			            		@if($sort_by == 'audit-sort-finding-sd')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-finding-sd', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-finding-sd',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-finding-sd', 1);"></a>
 			            		@endif
@@ -499,28 +499,28 @@
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY AUDITOR ASSIGNMENT STATUS">
 			            		@if($sort_by == 'audit-sort-status-auditor')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-status-auditor', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-status-auditor',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-status-auditor', 1);"></a>
 			            		@endif
 							</span> 
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS">
 			            		@if($sort_by == 'audit-sort-status-message')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-status-message', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-status-message',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-status-message', 1);"></a>
 			            		@endif
 							</span> 
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY DOCUMENT STATUS">
 			            		@if($sort_by == 'audit-sort-status-document')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-status-document', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-status-document',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-status-document', 1);"></a>
 			            		@endif
 							</span> 
 							<span data-uk-tooltip="{pos:'bottom-right'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY HISTORY STATUS">
 			            		@if($sort_by == 'audit-sort-status-history')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-status-history', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-status-history',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-status-history', 1);"></a>
 			            		@endif
@@ -588,7 +588,7 @@
 			            	</div>
 			            	<span data-uk-tooltip="{pos:'bottom'}" title="SORT BY NEXT TASK" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top">
 			            		@if($sort_by == 'audit-sort-next-task')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-next-task', {{!$sort_order}});"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-next-task',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-next-task', 1);"></a>
 			            		@endif
@@ -755,6 +755,10 @@ The following div is defined in this particular tab and pushed to the main layou
 		@endif
 
 		// apply filter if any
-		
+		$('input.filter-box').each(function(){
+			if( $(this).val().length ){
+				$(this).keyup();
+			}
+		});
     });
 </script>
