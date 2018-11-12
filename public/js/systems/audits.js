@@ -12,6 +12,57 @@ function toggleCritical() {
 	
 }
 
+function sortAuditList(sortBy, sortOrder) {
+	// 'audit-sort-by'
+    // 'audit-sort-order'
+    
+    $('#audits').fadeOut('slow');
+    
+    // capture input value if any
+    // var filter = '';
+    // var filterId = 0;
+
+    // $('#auditstable').find('.filter-box').each(function(){
+    // 	if($(this).val().length){
+    // 		filter = $(this).val();
+    // 		filterId = $(this).attr('id');
+    // 	}
+    // });
+
+	$.get( '/session/filters/audit-sort-by/'+sortBy, function( data ) {  
+		$.get( '/session/filters/audit-sort-order/'+sortOrder, function( data ) {  
+			//?filter="+filter+"&filterId="+filterId
+			loadTab("dashboard/audits", "1");
+
+      	});	
+    });
+}
+
+function filterAuditList(element, searchClass){
+	// clear all other filters
+	$('.filter-box').not(element).val('');
+
+	var value = $(element).val().toLowerCase();
+	
+	$('tr[id^="audit-r-"]').each(function() {
+		var parentElement = this;
+		var found = 0; // we may look through multiple fields with the same class
+
+		$(this).find('.'+searchClass).each(function() {
+    		if($(this).text().toLowerCase().search(value) > -1) {
+    			if(found == 0){
+    				found = 1;
+    				$(parentElement).show();
+    			}
+    		}else{
+    			if(found == 0){
+    				$(parentElement).hide();
+    			}
+    		}
+    	});
+	});
+}
+
 function toggleArchivedAudits() {
 	$(".archived-icon").toggle();
 }

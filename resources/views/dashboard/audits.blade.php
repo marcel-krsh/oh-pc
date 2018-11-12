@@ -249,16 +249,26 @@
 			            	<div class="filter-box filter-icons uk-text-center uk-width-1-1 uk-link">
 			            		<i class="a-avatar-star"></i>
 			            	</div>
-			            	<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LEAD AUDITOR"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'file-status-sort',1);"></a></span>
+			            	<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LEAD AUDITOR">
+			            		@if($sort_by == 'audit-sort-lead')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-lead', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-lead', 1);"></a>
+			            		@endif
+			            	</span>
 			            </div>
 		            </th>
 		            <th class="uk-table-small" style="width:130px;">
 		            	<div uk-grid>
 		            		<div class="filter-box uk-width-1-1">
-								<input id="filter-by-project" class="filter-box filter-file" type="text" placeholder="PROJECT & AUDIT">
+								<input id="filter-by-project" class="filter-box filter-search-project-input" type="text" placeholder="PROJECT & AUDIT" onkeyup="filterAuditList(this, 'filter-search-project')" value="@if(session('audit-filter') == 'filter-search-project'){{session('audit-filter-value')}} @endif">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROJECT ID">
-								<a id="" class="sort-asc" onclick="loadListTab(1,null,null,'file-number-sort',1);"></a>
+			            		@if($sort_by == 'audit-sort-project')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-project', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-project', 1);"></a>
+			            		@endif
 							</span> 
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
@@ -266,13 +276,21 @@
 		            <th>
 		            	<div uk-grid>
 			            	<div class="filter-box uk-width-1-1">
-								<input id="filter-by-name" class="filter-box filter-name" type="text" placeholder="PROJECT / PM NAME">
+								<input id="filter-by-name" class="filter-box filter-search-pm-input" type="text" placeholder="PROJECT / PM NAME" onkeyup="filterAuditList(this, 'filter-search-pm')">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROJECT NAME">
-								<a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'first-name-sort',1);"></a>
+			            		@if($sort_by == 'audit-sort-project-name')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-project-name', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-project-name', 1);"></a>
+			            		@endif
 							</span> 
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROPERTY MANAGER NAME">
-								<a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'last-name-sort',1);"></a>
+			            		@if($sort_by == 'audit-sort-pm')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-pm', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-pm', 1);"></a>
+			            		@endif
 							</span> 
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
@@ -280,16 +298,28 @@
 		            <th class="uk-table-expand">
 		            	<div uk-grid>
 			            	<div class="filter-box uk-width-1-1">
-								<input id="filter-by-address" class="filter-box filter-address" type="text" placeholder="PRIMARY ADDRESS">
+								<input id="filter-by-address" class="filter-box filter-search-address-input" type="text" placeholder="PRIMARY ADDRESS" onkeyup="filterAuditList(this, 'filter-search-address')">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY STREET ADDRESS">
-								<a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'sort-by-street',1);"></a>
+			            		@if($sort_by == 'audit-sort-address')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-address', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-address', 1);"></a>
+			            		@endif
 							</span> 
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY CITY">
-								<a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'sort-by-city',1);"></a>
+			            		@if($sort_by == 'audit-sort-city')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-city', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-city', 1);"></a>
+			            		@endif
 							</span> 
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY ZIP">
-								<a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'sort-by-zip',1);"></a>
+			            		@if($sort_by == 'audit-sort-zip')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-zip', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-zip', 1);"></a>
+			            		@endif
 							</span> 
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
@@ -308,10 +338,34 @@
 									<i class="a-circle-checked"></i>
 								</span>
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY SCHEDULED DATE"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'date-aging-range-sort',1);"></a></span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL ASSIGNED INSPECTION AREAS"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'date-aging-days-sort',1);"></a></span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL INSPECTION AREAS"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'date-aging-days-sort',1);"></a></span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="SORT BY COMPLIANCE STATUS"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'date-aging-days-sort',1);"></a></span>
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY SCHEDULED DATE">
+			            		@if($sort_by == 'audit-sort-scheduled-date')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-scheduled-date', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-scheduled-date', 1);"></a>
+			            		@endif
+							</span>
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL ASSIGNED INSPECTION AREAS">
+			            		@if($sort_by == 'audit-sort-assigned-areas')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-assigned-areas', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-assigned-areas', 1);"></a>
+			            		@endif
+							</span>
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL INSPECTION AREAS">
+			            		@if($sort_by == 'audit-sort-total-areas')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-total-areas', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-total-areas', 1);"></a>
+			            		@endif
+							</span>
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="SORT BY COMPLIANCE STATUS">
+			            		@if($sort_by == 'audit-sort-compliance-status')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-compliance-status', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-compliance-status', 1);"></a>
+			            		@endif
+							</span>
 						</div>
 		            </th>
 		            <th style="min-width: 80px;">
@@ -321,7 +375,13 @@
 									<a class="uk-link-muted" onclick="dynamicModalLoad('date-aging-range');"><i class="a-calendar-8 uk-vertical-align-middle"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text"></i> <i class="a-calendar-8 uk-vertical-align-middle"></i></a>
 								</span>
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY FOLLOW-UP DATE"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'date-aging-range-sort',1);"></a></span>
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY FOLLOW-UP DATE">
+			            		@if($sort_by == 'audit-sort-followup-date')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-followup-date', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-followup-date', 1);"></a>
+			            		@endif
+							</span>
 						</div>
 					</th>
 		            <th style="min-width: 120px;">
@@ -340,10 +400,34 @@
 									<i class="a-flames"></i>
 								</span> 
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY FILE FINDING COUNT"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'file-status-sort',1);"></a></span> 
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY NLT FINDING COUNT"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'documents-waiting-sort',1);"></a></span> 
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LT FINDING COUNT"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'home-owner-replied-sort',1);"></a></span> 
-							<span data-uk-tooltip="{pos:'bottom-right'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY SD FINDING COUNT"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'documents-waiting-sort',1);"></a></span>
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY FILE FINDING COUNT">
+			            		@if($sort_by == 'audit-sort-finding-file')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-finding-file', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-finding-file', 1);"></a>
+			            		@endif
+							</span> 
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY NLT FINDING COUNT">
+			            		@if($sort_by == 'audit-sort-finding-nlt')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-finding-nlt', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-finding-nlt', 1);"></a>
+			            		@endif
+							</span> 
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LT FINDING COUNT">
+			            		@if($sort_by == 'audit-sort-finding-lt')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-finding-lt', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-finding-lt', 1);"></a>
+			            		@endif
+							</span> 
+							<span data-uk-tooltip="{pos:'bottom-right'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY SD FINDING COUNT">
+			            		@if($sort_by == 'audit-sort-finding-sd')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-finding-sd', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-finding-sd', 1);"></a>
+			            		@endif
+							</span>
 						</div>
 					</th>
 		            <th style="min-width: 120px;">
@@ -413,10 +497,34 @@
 									<i class="a-person-clock"></i>
 								</span> 
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY AUDITOR ASSIGNMENT STATUS"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'file-status-sort',1);"></a></span> 
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'documents-waiting-sort',1);"></a></span> 
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY DOCUMENT STATUS"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'home-owner-replied-sort',1);"></a></span> 
-							<span data-uk-tooltip="{pos:'bottom-right'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY HISTORY STATUS"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'documents-waiting-sort',1);"></a></span>
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY AUDITOR ASSIGNMENT STATUS">
+			            		@if($sort_by == 'audit-sort-status-auditor')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-status-auditor', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-status-auditor', 1);"></a>
+			            		@endif
+							</span> 
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS">
+			            		@if($sort_by == 'audit-sort-status-message')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-status-message', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-status-message', 1);"></a>
+			            		@endif
+							</span> 
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY DOCUMENT STATUS">
+			            		@if($sort_by == 'audit-sort-status-document')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-status-document', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-status-document', 1);"></a>
+			            		@endif
+							</span> 
+							<span data-uk-tooltip="{pos:'bottom-right'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY HISTORY STATUS">
+			            		@if($sort_by == 'audit-sort-status-history')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-status-history', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-status-history', 1);"></a>
+			            		@endif
+							</span>
 						</div>
 		            </th>
 		            <th >
@@ -478,7 +586,13 @@
 			            			</form>
 			                    </div>
 			            	</div>
-			            	<span data-uk-tooltip="{pos:'bottom'}" title="SORT BY NEXT TASK" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top"><a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'file-status-sort',1);"></a></span> 
+			            	<span data-uk-tooltip="{pos:'bottom'}" title="SORT BY NEXT TASK" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top">
+			            		@if($sort_by == 'audit-sort-next-task')
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-next-task', {{!$sort_order}});"></a>
+			            		@else
+			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-next-task', 1);"></a>
+			            		@endif
+							</span> 
 			            </div>
 		            </th>
 		            <th style="vertical-align:top;">
@@ -497,8 +611,8 @@
 		    	@foreach($audits as $audit)
 		    	<tr id="audit-r-{{$loop->iteration}}" class="{{$audit['status']}} @if($audit['status'] != 'critical') notcritical @endif" style=" @if(session('audit-hidenoncritical') == 1 && $audit['status'] != 'critical') display:none; @endif ">
 		            <td id="audit-c-1-{{$loop->iteration}}" class="uk-text-center audit-td-lead">
-		            	<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$audit['lead']['name']}};" title="" aria-expanded="false" class="user-badge user-badge-{{$audit['lead']['color']}} no-float uk-link">
-							{{$audit['lead']['initials']}}
+		            	<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$audit->lead_json->name}};" title="" aria-expanded="false" class="user-badge user-badge-{{$audit->lead_json->color}} no-float uk-link">
+							{{$audit->lead_json->initials}}
 						</span>
 						<span id="audit-rid-{{$loop->iteration}}"><small>#{{$loop->iteration}}</small></span>
 		            </td>
@@ -507,8 +621,8 @@
 		            		<span id="audit-i-project-detail-{{$loop->iteration}}" onclick="projectDetails({{$audit['id']}},{{$loop->iteration}},{{$audit['total_buildings']}});" uk-tooltip="pos:top-left;title:View Buildings and Common Areas;" class="uk-link"><i class="a-menu uk-text-muted"></i></span>
 		            	</div>
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-{{$loop->iteration}}" class="uk-margin-bottom-remove uk-link" uk-tooltip="title:Open Audit Details in Tab;" onClick="loadTab('{{ route('project', $audit['id']) }}', '4', 1, 1);">{{$audit['audit_id']}}</h3>
-			            	<small id="audit-project-aid-{{$loop->iteration}}" class="uk-text-muted faded" uk-tooltip="title:View Project's Audit Details;">AUDIT {{$audit['audit_id']}}</small>
+		            		<h3 id="audit-project-name-{{$loop->iteration}}" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip="title:Open Audit Details in Tab;" onClick="loadTab('{{ route('project', $audit['id']) }}', '4', 1, 1);">{{$audit['project_id']}}</h3>
+			            	<small id="audit-project-aid-{{$loop->iteration}}" class="uk-text-muted faded filter-search-project" uk-tooltip="title:View Project's Audit Details;">AUDIT {{$audit['id']}}</small>
 			            </div>
 		            </td>
 		            <td class="audit-td-name">
@@ -516,8 +630,8 @@
 		            		<i class="a-info-circle uk-text-muted uk-link" uk-tooltip="title:View Contact Details;"></i>
 		            	</div> 
 		            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
-		            		<h3 class="uk-margin-bottom-remove">{{$audit['title']}}</h3>
-			            	<small class="uk-text-muted faded">{{$audit['subtitle']}}</small>
+		            		<h3 class="uk-margin-bottom-remove filter-search-pm">{{$audit['title']}}</h3>
+			            	<small class="uk-text-muted faded filter-search-pm">{{$audit['pm']}}</small>
 		            	</div>
 		            </td>
 		            <td class="hasdivider audit-td-address">
@@ -526,8 +640,8 @@
 		            		<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;"></i>
 		            	</div> 
 		            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
-		            		<h3 class="uk-margin-bottom-remove">{{$audit['address']}}</h3>
-			            	<small class="uk-text-muted faded">{{$audit['city']}}, {{$audit['state']}} {{$audit['zip']}}</small>
+		            		<h3 class="uk-margin-bottom-remove filter-search-address">{{$audit['address']}}</h3>
+			            	<small class="uk-text-muted faded filter-search-address">{{$audit['city']}}, {{$audit['state']}} {{$audit['zip']}}</small>
 		            	</div>
 		            </td>
 		            <td class="hasdivider audit-td-scheduled">
@@ -538,8 +652,8 @@
 			            			<i class="a-mobile-repeat {{$audit['inspection_status']}}" uk-tooltip="title:{{$audit['inspection_status_text']}};"></i>
 			            		</div>
 			            		<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top">
-				            		<h3 class="uk-link" uk-tooltip="title:{{$audit['inspection_schedule_text']}};">{{$audit['inspection_schedule_date']}}</h3>
-				            		<div class="dateyear">{{$audit['inspection_schedule_year']}}</div>
+				            		<h3 class="uk-link" uk-tooltip="title:{{$audit['inspection_schedule_text']}};">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('m/d')}}</h3>
+				            		<div class="dateyear">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('Y')}}</div>
 			            		</div>
 			            	</div> 
 			            	<div class="uk-width-1-6 uk-text-right uk-padding-remove" uk-tooltip="title:{{$audit['inspectable_items']}} INSPECTABLE ITEMS;">{{$audit['inspectable_items']}} /</div> 
@@ -557,8 +671,8 @@
 			            	</div> 
 			            	<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top">
 			            		@if($audit['followup_date'])
-			            		<h3 class="uk=link" uk-tooltip="title:Click to reschedule audits;">{{$audit['followup_date']}}</h3>
-				            	<div class="dateyear">{{$audit['followup_year']}}</div>
+			            		<h3 class="uk=link" uk-tooltip="title:Click to reschedule audits;">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('m/d')}}</h3>
+				            	<div class="dateyear">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('Y')}}</div>
 			            		@else
 			            		<i class="a-calendar-pencil" uk-tooltip="title:New followup;"></i>
 			            		@endif
@@ -639,5 +753,8 @@ The following div is defined in this particular tab and pushed to the main layou
 
 			@endif
 		@endif
+
+		// apply filter if any
+		
     });
 </script>

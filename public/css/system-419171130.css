@@ -1972,7 +1972,7 @@ margin-top:10px;
     border: 1px solid #50b8ec;
     background-color: #ffffff;
     color: #50b8ec;
-    font-weight: 100;
+    font-weight: 400;
     line-height: 21px;
     margin: 3px 3px 3px 3px;
 }
@@ -2027,14 +2027,20 @@ margin-top:10px;
     font-size: 8px;
     line-height: 8px;
 }
-#auditstable .building-auditors .auditor-status i {
-        position: absolute;
+#auditstable .building-auditors .auditor-status span {
+    position: absolute;
     bottom: 0px;
-    right: 9px;
-    font-size: 10px;
+    right: 7px;
+    font-size: 8px;
     line-height: 8px;
-        background-color: #ffffff;
+    background-color: #da328a;
     border-radius: 50%;
+    color: #fff;
+    border-color: #da328a;
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    text-align: center;
 }
 #auditstable .building-auditors .building-type-icon {
   padding: 0;

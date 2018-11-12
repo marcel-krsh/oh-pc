@@ -27,7 +27,9 @@
 																			<div id="building-{{$context}}-detail-{{$target}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor['name']}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor['color']}} no-float">
 																				{{$auditor['initials']}}
 																			</div>
-																			<div class="auditor-status"><i class="a-circle-checked"></i></div>
+																			@if($auditor['status'] != '')
+																			<div class="auditor-status"><span>!</span></div>
+																			@endif
 																		</div>
 																	@if($loop->iteration % 6 == 0 && $loop->iteration < count($detail['auditors']) )
 														            	</div>
@@ -56,7 +58,7 @@
 															@endif
 														</div>
 														<div class="building-status">
-															<i class="a-check colored"></i>
+															<span class="uk-badge colored" uk-tooltip="pos:top-left;title:# finding icon;" title="" aria-expanded="false">2</span>
 														</div>
 													</div>
 												</div>
