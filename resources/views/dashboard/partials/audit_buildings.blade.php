@@ -24,16 +24,16 @@
 															        <ul class="uk-slideshow-items">
 															            <li>
 															            	<div uk-grid>
-															                @foreach($building['auditors'] as $auditor)
+															                @foreach($building->auditors_json as $auditor)
 																			<div class="building-auditor uk-width-1-2 uk-margin-remove">
-																				<div id="building-{{$context}}-{{$target}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor['name']}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor['color']}} no-float">
-																					{{$auditor['initials']}}
+																				<div id="building-{{$context}}-{{$target}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor->name}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor->color}} no-float">
+																					{{$auditor->initials}}
 																				</div>
-																				@if($auditor['status'] != '')
+																				@if($auditor->status != '')
 																				<div class="auditor-status"><span>!</span></div>
 																				@endif
 																			</div>
-																		@if($loop->iteration % 6 == 0 && $loop->iteration < count($building['auditors']) )
+																		@if($loop->iteration % 6 == 0 && $loop->iteration < count($building->auditors_json) )
 															            	</div>
 															            </li>
 															            <li>
@@ -149,17 +149,17 @@
 									<div id="building-{{$context}}-{{$target}}-c-5-{{$key}}" style="flex: 640px;" class="uk-margin-remove" uk-grid>
 										<div class="uk-width-1-1" id="inspection-{{$context}}-tools-switch-{{$key}}">
 											<div uk-grid class="area-status-list">
-												@foreach($building['areas'] as $area)
+												@foreach($building->areas_json as $area)
 												@if($loop->iteration < 9)
-											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($area['status'] != '') area-status-{{$area['status']}} @endif colored">
+											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($area->status != '') area-status-{{$area->status}} @endif colored">
 											    	<span class="uk-badge">
-											    	@if($area['qty']){{$area['qty']}} @else 3 @endif </span>
-											    	{{$area['type']}}
+											    	@if($area->qty){{$area->qty}} @else 3 @endif </span>
+											    	{{$area->type}}
 											    </div>
 											    @else
 											    	@if($loop->iteration == 9)
-												    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($area['status'] != '') area-status-{{$area['status']}} @endif colored">
-												    	<span class="uk-badge" uk-tooltip="pos:top-left;title: @endif @if($area['qty']) {{$area['qty']}} @endif {{$area['type']}}<br /> @if($loop->last) ;"><i class="a-plus"></i> </span> MORE...
+												    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($area->status != '') area-status-{{$area->status}} @endif colored">
+												    	<span class="uk-badge" uk-tooltip="pos:top-left;title: @endif @if($area->qty) {{$area->qty}} @endif {{$area->type}}<br /> @if($loop->last) ;"><i class="a-plus"></i> </span> MORE...
 												    </div>
 												    @endif
 											    @endif
