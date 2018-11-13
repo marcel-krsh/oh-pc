@@ -605,10 +605,24 @@ function openFindings(element, auditid, buildingid, unitid='', type){
 	dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid,1,0,1);
 }
 
+function reorderBuildings(auditId, buildingId, endIndex) {
+	var url = 'dashboard/audits/'+auditId+'/buildings/reorder';
+	$.get(url, {
+        'building' : buildingId,
+        'index' : endIndex
+        }, function(data) {
+            if(data=='0'){ 
+                UIkit.modal.alert("There was a problem reordering the buildings.");
+            } else {
+				console.log("reordering completed");
+			}
+    });
+}
+
 $(function () {
 	$(document).on('start', '.sortablebuildings', function (item) {console.log("almost moving....");
 		var listItem = document.getElementById( item.detail[1].id );
-		console.log(item.detail[1].id);
+		//console.log(item.detail[1].id);
 		if($('#'+item.detail[1].id).hasClass('building-detail')){
 			startIndex = $( ".building-detail" ).index( listItem );
 		}else if($('#'+item.detail[1].id).hasClass('building')){
@@ -616,10 +630,13 @@ $(function () {
 		}else if($('#'+item.detail[1].id).hasClass('inspection-area')){
 			startIndex = $( ".inspection-area" ).index( listItem );
 		} 				
-		console.log( item.detail[1].id + " started at index: " + startIndex );
+		//console.log( item.detail[1].id + " started at index: " + startIndex );
 	});
 	$(document).on('moved', '.sortablebuildings', function (item) {console.log("moving....");
 		var listItem = document.getElementById( item.detail[1].id );
+		var auditId = $(listItem).data('audit');
+		var buildingId = $(listItem).data('building');
+
 		if($('#'+item.detail[1].id).hasClass('building-detail')){
 			endIndex = $( ".building-detail" ).index( listItem );
 			console.log( item.detail[1].id + " ended at index: " + endIndex );
@@ -628,10 +645,13 @@ $(function () {
 
 		}else if($('#'+item.detail[1].id).hasClass('building')){
 			endIndex = $( ".building" ).index( listItem );
-			console.log( item.detail[1].id + " ended at index: " + endIndex );
-			UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
+			//console.log( item.detail[1].id + " ended at index: " + endIndex );
+			//UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
 			reorder(".buildings > .sortable", '.building');
-			console.log("endIndex "+endIndex+' '+item.detail[1].id);
+
+			reorderBuildings(auditId, buildingId, endIndex);
+			
+			//console.log("endIndex "+endIndex+' '+item.detail[1].id);
 			// update journey icons
 			var length = $('.building').length;
 			$('.building').each(function(index, element) {

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\CachedAudit;
 use App\Models\CachedBuilding;
+use App\Models\OrderingBuilding;
 use Auth;
 use Session;
 use App\LogConverter;
@@ -27,7 +28,44 @@ class AuditController extends Controller
         $target = $request->get('target');
         $context = $request->get('context');
 
-        $buildings = CachedBuilding::get();
+        // check if user can see that audit
+        // 
+
+        // FILTER BUILDINGS BY AUDIT TBD
+        // $buildings = CachedBuilding::get();
+
+        // count buildings & count ordering_buildings
+        if(OrderingBuilding::where('audit_id', '=', $audit)->where('user_id','=',Auth::user()->id)->count() == 0 && CachedBuilding::where('audit_id', '=', $audit)->count() != 0){
+
+            // if ordering_buildings is empty, create a default entry for the ordering
+            $buildings = CachedBuilding::where('audit_id','=',$audit)->orderBy('id','desc')->get();
+            
+            $i = 1;
+            $new_ordering = array();
+
+            foreach($buildings as $building){
+
+                $ordering = new OrderingBuilding([
+                    'user_id' => Auth::user()->id,
+                    'audit_id' => $audit,
+                    'building_id' => $building->id,
+                    'order' => $i
+                ]);
+                $ordering->save();
+                $i++;
+
+            }   
+
+        }elseif(CachedBuilding::where('audit_id', '=', $audit)->count() != OrderingBuilding::where('audit_id', '=', $audit)->where('user_id','=',Auth::user()->id)->count() && CachedBuilding::where('audit_id', '=', $audit)->count() != 0){
+
+            $buildings = null;
+
+        }
+        
+        $buildings = OrderingBuilding::where('audit_id','=',$audit)->where('user_id','=',Auth::user()->id)->orderBy('order','asc')->with('building')->get();
+
+        // query building using join ordering_building using that order
+        
 
     	// $buildings = collect([
     	// 				[
@@ -370,6 +408,40 @@ class AuditController extends Controller
     	// 			]);
 
     	return view('dashboard.partials.audit_buildings', compact('audit', 'target', 'buildings', 'context'));
+    }
+
+    public function reorderBuildingsFromAudit($audit, Request $request) {
+        $building = $request->get('building');
+        $index = $request->get('index');
+
+        // select all building orders except for the one we want to reorder
+        $current_ordering = OrderingBuilding::where('audit_id','=',$audit)->where('user_id','=',Auth::user()->id)->where('building_id','!=',$building)->orderBy('order','asc')->get()->toArray();
+
+        $inserted = array( [
+                    'user_id' => Auth::user()->id,
+                    'audit_id' => $audit,
+                    'building_id' => $building,
+                    'order' => $index
+               ]);
+
+        // insert the building ordering in the array
+        $reordered_array = $current_ordering;
+        array_splice( $reordered_array, $index, 0, $inserted );
+
+        // delete previous ordering
+        OrderingBuilding::where('audit_id','=',$audit)->where('user_id','=',Auth::user()->id)->delete();
+
+        // clean-up the ordering and store
+        foreach($reordered_array as $key => $ordering){
+            $new_ordering = new OrderingBuilding([
+                'user_id' => $ordering['user_id'],
+                'audit_id' => $ordering['audit_id'],
+                'building_id' => $ordering['building_id'],
+                'order' => $key+1
+            ]);
+            $new_ordering->save();
+        }
+
     }
 
     public function detailsFromBuilding($audit, $building, Request $request) {

@@ -3,7 +3,7 @@
 			<div class="buildings uk-overflow-auto" style="">
 				<div class="sortablebuildings sortable" uk-sortable="handle: .uk-sortable-handle-{{$context}}">
 					@foreach($buildings as $key=>$building)
-					<div id="building-{{$context}}-r-{{$key}}" class="uk-margin-remove building @if($building['status']) building-{{$building['status']}} {{$building['status']}} @endif @if($building['status'] != 'critical') notcritical @endif uk-grid-match" style=" @if(session('audit-hidenoncritical') == 1 && $building['status'] != 'critical') display:none; @endif " uk-grid>
+					<div id="building-{{$context}}-r-{{$key}}" class="uk-margin-remove building @if($building->building->status) building-{{$building->building->status}} {{$building->building->status}} @endif @if($building->building->status != 'critical') notcritical @endif uk-grid-match" style=" @if(session('audit-hidenoncritical') == 1 && $building->building->status != 'critical') display:none; @endif " data-audit="{{$building->building->audit_id}}" data-building="{{$building->building->id}}" uk-grid>
 						<div class="uk-width-1-6 uk-padding-remove">
 							<div class="uk-padding-remove uk-flex">
 								<div id="building-{{$context}}-{{$target}}-c-1-{{$key}}" class="uk-inline uk-sortable-handle-{{$context}}" style="min-width: 16px; padding: 0 3px;">
@@ -24,7 +24,7 @@
 															        <ul class="uk-slideshow-items">
 															            <li>
 															            	<div uk-grid>
-															                @foreach($building->auditors_json as $auditor)
+															                @foreach($building->building->auditors_json as $auditor)
 																			<div class="building-auditor uk-width-1-2 uk-margin-remove">
 																				<div id="building-{{$context}}-{{$target}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor->name}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor->color}} no-float">
 																					{{$auditor->initials}}
@@ -33,7 +33,7 @@
 																				<div class="auditor-status"><span>!</span></div>
 																				@endif
 																			</div>
-																		@if($loop->iteration % 6 == 0 && $loop->iteration < count($building->auditors_json) )
+																		@if($loop->iteration % 6 == 0 && $loop->iteration < count($building->building->auditors_json) )
 															            	</div>
 															            </li>
 															            <li>
@@ -51,8 +51,8 @@
 															</div>
 														</div>
 														<div class="uk-width-1-2 uk-padding-remove">
-															<div class="building-type-icon ">
-																@if($building['type'] == "pool")
+															<div class="building-type-icon " uk-tooltip="pos:top-left;title:Building ID {{$building->building->id}};">
+																@if($building->building->type == "pool")
 																<i class="a-pool colored"></i>
 																@else
 																<i class="a-buildings colored"></i>
@@ -90,8 +90,8 @@
 												<div class="uk-width-1-2 uk-padding-remove">
 													<div class="building-address" uk-grid>
 										            	<div class="uk-width-1-1 uk-padding-remove">
-										            		<h3 class="uk-margin-bottom-remove colored">{{$building['street']}}</h3>
-											            	<small class="colored">{{$building['city']}}, {{$building['state']}} {{$building['zip']}}</small><br />
+										            		<h3 class="uk-margin-bottom-remove colored">{{$building->building->street}}</h3>
+											            	<small class="colored">{{$building->building->city}}, {{$building->building->state}} {{$building->building->zip}}</small><br />
 											            	<small class="colored" onclick="buildingDetails(123,{{$audit}},{{$key}},{{$target}},10,'{{$context}}');" uk-tooltip="pos:top-left;title:Building details;" ><span class="uk-badge colored">3</span> <i class="a-list colored uk-text-middle"></i> <span class="uk-text-middle">TOWN HOMES</span></small>
 										            	</div>
 										            </div>
@@ -100,7 +100,7 @@
 													<div uk-grid>
 														<div class="uk-width-1-1 findings-icons" uk-grid style="margin-top: 0px;"> 
 										            		<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center action-needed">
-										            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building['id']}}, null, 'file');">
+										            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'file');">
 																	<i class="a-folder"></i>
 																	<div class="findings-icon-status">
 																		<span class="uk-badge action-needed">3</span>
@@ -109,7 +109,7 @@
 																
 															</div>
 															<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center in-progress">
-																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building['id']}}, null, 'nlt');">
+																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'nlt');">
 																	<i class="a-booboo"></i>
 																	<div class="findings-icon-status">
 																		<i class="a-rotate-left in-progress" uk-tooltip="pos:top-left;title:23 in progress<br />19 completed;"></i>
@@ -117,7 +117,7 @@
 																</div>
 															</div>
 															<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center in-progress">
-																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building['id']}}, null, 'lt');">
+																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'lt');">
 																	<i class="a-skull" uk-tooltip="pos:top-left;title:Reason;"></i>
 																	<div class="findings-icon-status">
 																		<span class="uk-badge in-progress" uk-tooltip="pos:top-left;title:Unit # finding;">3</span>
@@ -125,7 +125,7 @@
 																</div>
 															</div>
 															<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center action-required">	
-																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building['id']}}, null, 'critical');">
+																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'critical');">
 																	<i class="a-flames"></i>
 																	<div class="findings-icon-status">
 																		<span class="uk-badge action-required">3</span>
@@ -134,7 +134,7 @@
 															</div> 
 														</div>
 														<div class="uk-width-1-1 uk-margin-remove findings-action ok-actionable" style="margin-top: 0px;">
-															<button class="uk-button program-status uk-link" onclick="inspectionDetailsFromBuilding({{$building['id']}}, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); "><i class="a-home-search"></i> 2 PROGRAMS</button>
+															<button class="uk-button program-status uk-link" onclick="inspectionDetailsFromBuilding({{$building->building->id}}, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); "><i class="a-home-search"></i> 2 PROGRAMS</button>
 														</div>
 													</div>
 												</div>
@@ -149,7 +149,7 @@
 									<div id="building-{{$context}}-{{$target}}-c-5-{{$key}}" style="flex: 640px;" class="uk-margin-remove" uk-grid>
 										<div class="uk-width-1-1" id="inspection-{{$context}}-tools-switch-{{$key}}">
 											<div uk-grid class="area-status-list">
-												@foreach($building->areas_json as $area)
+												@foreach($building->building->areas_json as $area)
 												@if($loop->iteration < 9)
 											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($area->status != '') area-status-{{$area->status}} @endif colored">
 											    	<span class="uk-badge">
