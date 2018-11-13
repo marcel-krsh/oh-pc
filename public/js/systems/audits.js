@@ -620,7 +620,8 @@ function reorderBuildings(auditId, buildingId, endIndex) {
 }
 
 $(function () {
-	$(document).on('start', '.sortablebuildings', function (item) {console.log("almost moving....");
+	$(document).on('start', '.sortablebuildings', function (item) {
+		//console.log("almost moving....");
 		var listItem = document.getElementById( item.detail[1].id );
 		//console.log(item.detail[1].id);
 		if($('#'+item.detail[1].id).hasClass('building-detail')){
@@ -632,7 +633,8 @@ $(function () {
 		} 				
 		//console.log( item.detail[1].id + " started at index: " + startIndex );
 	});
-	$(document).on('moved', '.sortablebuildings', function (item) {console.log("moving....");
+	$(document).on('moved', '.sortablebuildings', function (item) {
+		//console.log("moving....");
 		var listItem = document.getElementById( item.detail[1].id );
 		var auditId = $(listItem).data('audit');
 		var buildingId = $(listItem).data('building');
