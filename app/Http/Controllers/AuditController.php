@@ -104,19 +104,19 @@ class AuditController extends Controller
 
     }
 
-    public function reorderBuildingAreasFromAudit($audit, $building, Request $request) {
+    public function reorderUnitsFromAudit($audit, $building, Request $request) {
 
-        $area = $request->get('area');
+        $unit = $request->get('unit');
         $index = $request->get('index');
 
         // select all building orders except for the one we want to reorder
-        $current_ordering = OrderingBuildingArea::where('audit_id','=',$audit)->where('user_id','=',Auth::user()->id)->where('building_id','=',$building)->where('area_id','!=',$area)->orderBy('order','asc')->get()->toArray();
+        $current_ordering = OrderingUnit::where('audit_id','=',$audit)->where('user_id','=',Auth::user()->id)->where('building_id','=',$building)->where('unit_id','!=',$unit)->orderBy('order','asc')->get()->toArray();
 
         $inserted = array( [
                     'user_id' => Auth::user()->id,
                     'audit_id' => $audit,
                     'building_id' => $building,
-                    'area_id' => $area,
+                    'unit_id' => $unit,
                     'order' => $index
                ]);
 
@@ -125,15 +125,15 @@ class AuditController extends Controller
         array_splice( $reordered_array, $index, 0, $inserted );
 
         // delete previous ordering
-        OrderingBuildingArea::where('audit_id','=',$audit)->where('building_id','=',$building)->where('user_id','=',Auth::user()->id)->delete();
+        OrderingUnit::where('audit_id','=',$audit)->where('building_id','=',$building)->where('user_id','=',Auth::user()->id)->delete();
 
         // clean-up the ordering and store
         foreach($reordered_array as $key => $ordering){
-            $new_ordering = new OrderingBuildingArea([
+            $new_ordering = new OrderingUnit([
                 'user_id' => $ordering['user_id'],
                 'audit_id' => $ordering['audit_id'],
                 'building_id' => $ordering['building_id'],
-                'area_id' => $ordering['area_id'],
+                'unit_id' => $ordering['unit_id'],
                 'order' => $key+1
             ]);
             $new_ordering->save();
