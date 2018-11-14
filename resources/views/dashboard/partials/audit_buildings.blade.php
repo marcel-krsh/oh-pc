@@ -170,17 +170,17 @@
 									<div id="building-{{$context}}-{{$target}}-c-5-{{$key}}" style="flex: 640px;" class="uk-margin-remove" uk-grid>
 										<div class="uk-width-1-1" id="inspection-{{$context}}-tools-switch-{{$key}}">
 											<div uk-grid class="area-status-list">
-												@foreach($building->building->areas_json as $area)
+												@foreach($building->building->amenities_json as $amenity)
 												@if($loop->iteration < 9)
-											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($area->status != '') area-status-{{$area->status}} @endif colored">
+											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($amenity->status != '') area-status-{{$amenity->status}} @endif colored">
 											    	<span class="uk-badge">
-											    	@if($area->qty){{$area->qty}} @else 3 @endif </span>
-											    	{{$area->type}}
+											    	@if($amenity->qty){{$amenity->qty}} @else 3 @endif </span>
+											    	{{$amenity->type}}
 											    </div>
 											    @else
 											    	@if($loop->iteration == 9)
-												    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($area->status != '') area-status-{{$area->status}} @endif colored">
-												    	<span class="uk-badge" uk-tooltip="pos:top-left;title: @endif @if($area->qty) {{$area->qty}} @endif {{$area->type}}<br /> @if($loop->last) ;"><i class="a-plus"></i> </span> MORE...
+												    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($amenity->status != '') area-status-{{$amenity->status}} @endif colored">
+												    	<span class="uk-badge" uk-tooltip="pos:top-left;title: @endif @if($amenity->qty) {{$amenity->qty}} @endif {{$amenity->type}}<br /> @if($loop->last) ;"><i class="a-plus"></i> </span> MORE...
 												    </div>
 												    @endif
 											    @endif

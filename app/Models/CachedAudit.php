@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Carbon;
 
 class CachedAudit extends Model
@@ -10,6 +11,7 @@ class CachedAudit extends Model
     protected $fillable = [
         'id',
         'project_id',
+        'project_ref',
         'status',
         'lead',
         'lead_json',
@@ -65,5 +67,15 @@ class CachedAudit extends Model
 
     public function getLeadJsonAttribute($value) {
       return json_decode($value);
+    }
+
+    /**
+     * Project
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function project() : HasOne
+    {
+        return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
     }
 }

@@ -621,7 +621,7 @@
 		            		<span id="audit-i-project-detail-{{$loop->iteration}}" onclick="projectDetails({{$audit['id']}},{{$loop->iteration}},{{$audit['total_buildings']}});" uk-tooltip="pos:top-left;title:View Buildings and Common Areas;" class="uk-link"><i class="a-menu uk-text-muted"></i></span>
 		            	</div>
 		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-{{$loop->iteration}}" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip="title:Open Audit Details in Tab;" onClick="loadTab('{{ route('project', $audit['id']) }}', '4', 1, 1);">{{$audit['project_id']}}</h3>
+		            		<h3 id="audit-project-name-{{$loop->iteration}}" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip="title:Open Audit Details in Tab;" onClick="loadTab('{{ route('project', $audit['id']) }}', '4', 1, 1);">{{$audit['project_ref']}}</h3>
 			            	<small id="audit-project-aid-{{$loop->iteration}}" class="uk-text-muted faded filter-search-project" uk-tooltip="title:View Project's Audit Details;">AUDIT {{$audit['id']}}</small>
 			            </div>
 		            </td>

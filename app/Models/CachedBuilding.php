@@ -8,8 +8,9 @@ use Carbon;
 class CachedBuilding extends Model
 {
     protected $fillable = [
-        'id',
         'audit_id',
+        'project_id',
+        'is_amenity',
         'status',
         'type',
         'type_total',
@@ -35,12 +36,12 @@ class CachedBuilding extends Model
         'state',
         'zip',
         'auditors_json',
-        'areas_json',
+        'amenities_json',
         'created_at',
         'updated_at'
     ];
 
-    public function getAreasJsonAttribute($value) {
+    public function getAmenitiesJsonAttribute($value) {
       return json_decode($value);
     }
 

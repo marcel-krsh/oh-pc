@@ -5,17 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class OrderingBuilding extends Model
+class OrderingUnit extends Model
 {
-    protected $table = 'ordering_building';
+    protected $table = 'ordering_unit';
 
     public $timestamps = false;
-
+    
     protected $fillable = [
         'user_id',
         'audit_id',
         'project_id',
         'building_id',
+        'unit_id',
         'order'
     ];
 
@@ -40,6 +41,16 @@ class OrderingBuilding extends Model
     }
 
     /**
+     * Area
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function unit() : HasOne
+    {
+        return $this->hasOne(\App\Models\CachedUnit::class, 'id', 'unit_id');
+    }
+
+    /**
      * Audit
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -58,5 +69,4 @@ class OrderingBuilding extends Model
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
     }
-
 }

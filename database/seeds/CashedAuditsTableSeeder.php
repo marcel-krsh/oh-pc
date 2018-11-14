@@ -14,7 +14,8 @@ class CashedAuditsTableSeeder extends Seeder
         $auditsSeeder = [
             [
                 'id' => '123', // this is the audit id, when displayed, add leading zeros?
-                'project_id' => '19200114', // this is the project id from Devco, rename project_id
+                'project_id' => '123',
+                'project_ref' => '19200114', // this is the project id from Devco, rename project_ref
                 'status' => 'critical',
                 'lead' => 1, // id
                 'lead_json' => '{
@@ -73,7 +74,8 @@ class CashedAuditsTableSeeder extends Seeder
             ],
             [
                 'id' => '456',
-                'project_id' => '19200115',
+                'project_id' => '123',
+                'project_ref' => '19200115',
                 'status' => 'no-action',
                 'lead' => 2, // id
                 'lead_json' => '{
@@ -132,7 +134,8 @@ class CashedAuditsTableSeeder extends Seeder
             ],
             [
                 'id' => '789',
-                'project_id' => '19200116',
+                'project_id' => '123',
+                'project_ref' => '19200116',
                 'status' => 'action-needed',
                 'lead' => 3, // id
                 'lead_json' => '{
@@ -191,7 +194,8 @@ class CashedAuditsTableSeeder extends Seeder
             ],
             [
                 'id' => '222',
-                'project_id' => '19200133',
+                'project_id' => '123',
+                'project_ref' => '19200133',
                 'status' => 'critical',
                 'lead' => 4, // id
                 'lead_json' => '{
@@ -250,7 +254,8 @@ class CashedAuditsTableSeeder extends Seeder
             ],
             [
                 'id' => '445',
-                'project_id' => '19200234',
+                'project_id' => '123',
+                'project_ref' => '19200234',
                 'status' => 'ok-actionable',
                 'lead' => 5, // id
                 'lead_json' => '{
@@ -309,7 +314,8 @@ class CashedAuditsTableSeeder extends Seeder
             ],
             [
                 'id' => '334',
-                'project_id' => '19200221',
+                'project_id' => '123',
+                'project_ref' => '19200221',
                 'status' => 'action-needed',
                 'lead' => 6, // id
                 'lead_json' => '{

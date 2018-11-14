@@ -87,7 +87,7 @@ class DashboardController extends Controller
                 $sort_by_field = 'lead';
                 break;
             case "audit-sort-project":
-                $sort_by_field = 'project_id';
+                $sort_by_field = 'project_ref';
                 break;
             case "audit-sort-project-name":
                 $sort_by_field = 'title';

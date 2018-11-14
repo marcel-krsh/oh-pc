@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Carbon;
 
-class CachedBuildingArea extends Model
+class CachedUnit extends Model
 {
     protected $fillable = [
-        'id',
         'audit_id',
+        'project_id',
+        'amenity_id',
         'building_id',
         'status',
         'type',
@@ -36,12 +37,12 @@ class CachedBuildingArea extends Model
         'state',
         'zip',
         'auditors_json',
-        'areas_json',
+        'amenities_json',
         'created_at',
         'updated_at'
     ];
 
-    public function getAreasJsonAttribute($value) {
+    public function getAmenitiesJsonAttribute($value) {
       return json_decode($value);
     }
 

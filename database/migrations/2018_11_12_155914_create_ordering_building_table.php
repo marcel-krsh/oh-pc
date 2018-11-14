@@ -23,6 +23,7 @@ class CreateOrderingBuildingTable extends Migration
                 $table->increments('id');
                 $table->unsignedInteger('user_id')->nullable();
                 $table->unsignedInteger('audit_id')->nullable();
+                $table->unsignedInteger('project_id')->nullable();
                 $table->unsignedInteger('building_id')->nullable();
                 $table->integer('order')->nullable();
 

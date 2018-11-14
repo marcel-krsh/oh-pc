@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class CashedBuildingAreasTableSeeder extends Seeder
+class CashedUnitsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,10 +11,11 @@ class CashedBuildingAreasTableSeeder extends Seeder
      */
     public function run()
     {
-        $buildingAreasSeeder = [
+        $UnitsSeeder = [
             [
                 'id' => '123', 
                 'audit_id' => '123',
+                'project_id' => '123',
                 'building_id' => '123',
                 'status' => 'critical',
                 'type' => 'building',
@@ -76,6 +77,7 @@ class CashedBuildingAreasTableSeeder extends Seeder
             [
                 'id' => '345', 
                 'audit_id' => '111',
+                'project_id' => '123',
                 'building_id' => '123',
                 'status' => 'action-needed',
                 'type' => 'pool',
@@ -137,6 +139,7 @@ class CashedBuildingAreasTableSeeder extends Seeder
             [
                 'id' => '12333', 
                 'audit_id' => '12344',
+                'project_id' => '123',
                 'building_id' => '123',
                 'status' => 'in-progress',
                 'type' => 'building',
@@ -198,6 +201,7 @@ class CashedBuildingAreasTableSeeder extends Seeder
             [
                 'id' => '123876', 
                 'audit_id' => '123',
+                'project_id' => '123',
                 'building_id' => '123',
                 'status' => 'ok-actionable',
                 'type' => 'building',
@@ -259,6 +263,7 @@ class CashedBuildingAreasTableSeeder extends Seeder
             [
                 'id' => '12399', 
                 'audit_id' => '123',
+                'project_id' => '123',
                 'building_id' => '123',
                 'status' => '',
                 'type' => 'building',
@@ -320,6 +325,7 @@ class CashedBuildingAreasTableSeeder extends Seeder
             [
                 'id' => '999', 
                 'audit_id' => '123',
+                'project_id' => '123',
                 'building_id' => '123',
                 'status' => '',
                 'type' => 'pool',
@@ -381,6 +387,7 @@ class CashedBuildingAreasTableSeeder extends Seeder
             [
                 'id' => '999888', 
                 'audit_id' => '123',
+                'project_id' => '123',
                 'building_id' => '123',
                 'status' => '',
                 'type' => 'pool',
@@ -442,6 +449,7 @@ class CashedBuildingAreasTableSeeder extends Seeder
             [
                 'id' => '123221', 
                 'audit_id' => '123',
+                'project_id' => '123',
                 'building_id' => '123',
                 'status' => 'critical',
                 'type' => 'building',

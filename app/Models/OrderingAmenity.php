@@ -5,17 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class OrderingBuildingArea extends Model
+class OrderingAmenity extends Model
 {
-    protected $table = 'ordering_building_area';
+    protected $table = 'ordering_amenity';
 
     public $timestamps = false;
     
     protected $fillable = [
         'user_id',
         'audit_id',
+        'project_id',
         'building_id',
-        'area_id',
+        'unit_id',
+        'amenity_id',
         'order'
     ];
 
@@ -30,13 +32,33 @@ class OrderingBuildingArea extends Model
     }
 
     /**
+     * Amenity
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function amenity() : HasOne
+    {
+        return $this->hasOne(\App\Models\Amenity::class, 'id', 'amenity_id');
+    }
+
+    /**
+     * Project
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function project() : HasOne
+    {
+        return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
+    }
+
+    /**
      * Area
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function area() : HasOne
+    public function unit() : HasOne
     {
-        return $this->hasOne(\App\Models\CachedBuildingArea::class, 'id', 'area_id');
+        return $this->hasOne(\App\Models\CachedBuildingUnit::class, 'id', 'unit_id');
     }
 
     /**

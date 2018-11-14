@@ -1,7 +1,7 @@
 		<div class="building-details uk-overflow-auto" style="">
 			<div class="sortable" uk-sortable="handle: .uk-sortable-details">
 				@foreach($details as $key=>$detail)
-				<div id="building-{{$context}}-detail-r-{{$key}}" class="building building-detail @if($detail->area->status) building-{{$detail->area->status}} {{$detail->area->status}} @endif uk-grid-match uk-margin-remove" data-audit="{{$detail->area->audit_id}}" data-building="{{$detail->area->building_id}}" data-area="{{$detail->area->id}}" uk-grid>
+				<div id="building-{{$context}}-detail-r-{{$key}}" class="building building-detail @if($detail->unit->status) building-{{$detail->unit->status}} {{$detail->unit->status}} @endif uk-grid-match uk-margin-remove" data-audit="{{$detail->unit->audit_id}}" data-building="{{$detail->unit->building_id}}" data-area="{{$detail->unit->id}}" uk-grid>
 					<div class="uk-width-1-6 uk-padding-remove">
 						<div class="uk-padding-remove uk-flex">
 							<div id="building-{{$context}}-detail-{{$target}}-c-1-{{$key}}" class="uk-inline uk-sortable-details" style="    min-width: 16px; padding: 0 3px;">
@@ -22,7 +22,7 @@
 														        <ul class="uk-slideshow-items">
 														            <li>
 														            	<div uk-grid>
-														                @foreach($detail->area->auditors_json as $auditor)
+														                @foreach($detail->unit->auditors_json as $auditor)
 																		<div class="building-auditor uk-width-1-2 uk-margin-remove">
 																			<div id="building-{{$context}}-detail-{{$target}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor->name}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor->color}} no-float">
 																				{{$auditor->initials}}
@@ -31,7 +31,7 @@
 																			<div class="auditor-status"><span>!</span></div>
 																			@endif
 																		</div>
-																	@if($loop->iteration % 6 == 0 && $loop->iteration < count($detail->area->auditors_json) )
+																	@if($loop->iteration % 6 == 0 && $loop->iteration < count($detail->unit->auditors_json) )
 														            	</div>
 														            </li>
 														            <li>
@@ -51,7 +51,7 @@
 													</div>
 													<div class="uk-width-1-2 uk-padding-remove">
 														<div class="building-type-icon ">
-															@if($detail->area->type == "pool")
+															@if($detail->unit->type == "pool")
 															<i class="a-pool colored"></i>
 															@else
 															<i class="a-buildings colored"></i>
@@ -71,9 +71,9 @@
 									<div class="uk-width-1-4 uk-padding-remove uk-text-right">
 										<div class="journey">
 						            		<i class=" a-marker-basic colored"></i>
-						            		@if($detail->area->followup_date !== null)
-							            		<div class="alert-icon {{$detail->area->status}}">
-								            		<i class="a-bell-ring" uk-tooltip="pos:top-left;title:Followup: {{\Carbon\Carbon::createFromFormat('Y-m-d', $detail->area->followup_date)->format('m/d/Y')}};"></i>
+						            		@if($detail->unit->followup_date !== null)
+							            		<div class="alert-icon {{$detail->unit->status}}">
+								            		<i class="a-bell-ring" uk-tooltip="pos:top-left;title:Followup: {{\Carbon\Carbon::createFromFormat('Y-m-d', $detail->unit->followup_date)->format('m/d/Y')}};"></i>
 												</div>
 											@endif
 										</div>
@@ -92,9 +92,9 @@
 												<div uk-grid class="building-address">
 													
 									            	<div class="uk-width-1-1 uk-padding-remove">
-									            		<h3 class="uk-margin-bottom-remove colored">{{$detail->area->address}}</h3>
-										            	<small class="colored">{{$detail->area->city}}, {{$detail->area->state}} {{$detail->area->zip}}</small><br />
-										            	<small class="colored"><span class="uk-badge colored">{{$detail->area->type_total}}</span> <span class="uk-text-middle">@if($detail->area->type_total > 1) {{$detail->area->type_text_plural}} @else {{$detail->area->type_text}} @endif</span></small>
+									            		<h3 class="uk-margin-bottom-remove colored">{{$detail->unit->address}}</h3>
+										            	<small class="colored">{{$detail->unit->city}}, {{$detail->unit->state}} {{$detail->unit->zip}}</small><br />
+										            	<small class="colored"><span class="uk-badge colored">{{$detail->unit->type_total}}</span> <span class="uk-text-middle">@if($detail->unit->type_total > 1) {{$detail->unit->type_text_plural}} @else {{$detail->unit->type_text}} @endif</span></small>
 									            	</div>
 									            </div>
 								            </div>
@@ -102,59 +102,59 @@
 												<div uk-grid>
 									            	<div class="uk-width-1-1 findings-icons"  style="margin-top: 0px;" uk-grid> 
 									            		
-									            		<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->area->finding_file_status}}">
-									            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->area->id}}, 'file');">
+									            		<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_file_status}}">
+									            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'file');">
 																<i class="a-folder"></i>
 																<div class="findings-icon-status">
-																	@if($detail->area->finding_file_completed == 0)
-																		<span class="uk-badge {{$detail->area->finding_file_status}}" uk-tooltip="pos:top-left;title:Unit # finding;">{{$detail->area->finding_file_total}}</span>
+																	@if($detail->unit->finding_file_completed == 0)
+																		<span class="uk-badge {{$detail->unit->finding_file_status}}" uk-tooltip="pos:top-left;title:Unit # finding;">{{$detail->unit->finding_file_total}}</span>
 																		@else
-																		<i class="a-rotate-left {{$detail->area->finding_file_status}}" uk-tooltip="pos:top-left;title:{{$detail->area->finding_file_total - $detail->area->finding_file_completed}} in progress<br />{{$detail->area->finding_file_completed}} completed;"></i>
+																		<i class="a-rotate-left {{$detail->unit->finding_file_status}}" uk-tooltip="pos:top-left;title:{{$detail->unit->finding_file_total - $detail->unit->finding_file_completed}} in progress<br />{{$detail->unit->finding_file_completed}} completed;"></i>
 																	@endif
 																</div>
 															</div>
 															
 														</div>
 														
-														<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->area->finding_nlt_status}}">
-															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->area->id}}, 'nlt');">
+														<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_nlt_status}}">
+															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'nlt');">
 																<i class="a-booboo"></i>
 																<div class="findings-icon-status">
-																	@if($detail->area->finding_nlt_completed == 0)
-																		<span class="uk-badge {{$detail->area->finding_nlt_status}}" uk-tooltip="pos:top-left;title:Unit # finding;">{{$detail->area->finding_nlt_total}}</span>
+																	@if($detail->unit->finding_nlt_completed == 0)
+																		<span class="uk-badge {{$detail->unit->finding_nlt_status}}" uk-tooltip="pos:top-left;title:Unit # finding;">{{$detail->unit->finding_nlt_total}}</span>
 																		@else
-																		<i class="a-rotate-left {{$detail->area->finding_nlt_status}}" uk-tooltip="pos:top-left;title:{{$detail->area->finding_nlt_total - $detail->area->finding_nlt_completed}} in progress<br />{{$detail->area->finding_nlt_completed}} completed;"></i>
+																		<i class="a-rotate-left {{$detail->unit->finding_nlt_status}}" uk-tooltip="pos:top-left;title:{{$detail->unit->finding_nlt_total - $detail->unit->finding_nlt_completed}} in progress<br />{{$detail->unit->finding_nlt_completed}} completed;"></i>
 																	@endif
 																</div>
 															</div>
 														</div>
-														<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->area->finding_lt_status}}">
-															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->area->id}}, 'lt');">
+														<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_lt_status}}">
+															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'lt');">
 																<i class="a-skull"></i>
 																<div class="findings-icon-status">
-																	@if($detail->area->finding_lt_completed == 0)
-																		<span class="uk-badge {{$detail->area->finding_lt_status}}" uk-tooltip="pos:top-left;title:Unit # finding;">{{$detail->area->finding_lt_total}}</span>
+																	@if($detail->unit->finding_lt_completed == 0)
+																		<span class="uk-badge {{$detail->unit->finding_lt_status}}" uk-tooltip="pos:top-left;title:Unit # finding;">{{$detail->unit->finding_lt_total}}</span>
 																		@else
-																		<i class="a-rotate-left {{$detail->area->finding_lt_status}}" uk-tooltip="pos:top-left;title:{{$detail->area->finding_lt_total - $detail->area->finding_lt_completed}} in progress<br />{{$detail->area->finding_lt_completed}} completed;"></i>
+																		<i class="a-rotate-left {{$detail->unit->finding_lt_status}}" uk-tooltip="pos:top-left;title:{{$detail->unit->finding_lt_total - $detail->unit->finding_lt_completed}} in progress<br />{{$detail->unit->finding_lt_completed}} completed;"></i>
 																	@endif
 																</div>
 															</div>
 														</div>
-														<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->area->finding_sd_status}}">	
-															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->area->id}}, 'critical');">
+														<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_sd_status}}">	
+															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'critical');">
 																<i class="a-flames"></i>
 																<div class="findings-icon-status">
-																	@if($detail->area->finding_sd_completed == 0)
-																		<span class="uk-badge {{$detail->area->finding_sd_status}}" uk-tooltip="pos:top-left;title:Unit # finding;">{{$detail->area->finding_sd_total}}</span>
+																	@if($detail->unit->finding_sd_completed == 0)
+																		<span class="uk-badge {{$detail->unit->finding_sd_status}}" uk-tooltip="pos:top-left;title:Unit # finding;">{{$detail->unit->finding_sd_total}}</span>
 																		@else
-																		<i class="a-rotate-left {{$detail->area->finding_sd_status}}" uk-tooltip="pos:top-left;title:{{$detail->area->finding_sd_total - $detail->area->finding_sd_completed}} in progress<br />{{$detail->area->finding_sd_completed}} completed;"></i>
+																		<i class="a-rotate-left {{$detail->unit->finding_sd_status}}" uk-tooltip="pos:top-left;title:{{$detail->unit->finding_sd_total - $detail->unit->finding_sd_completed}} in progress<br />{{$detail->unit->finding_sd_completed}} completed;"></i>
 																	@endif
 																</div>
 															</div>
 														</div> 
 													</div>
 													<div class="uk-width-1-1 findings-action ok-actionable" style="margin-top: 0px;">
-														<button class="uk-button program-status uk-link" onclick="inspectionDetails({{$detail->area->id}},{{$building}},{{$audit}},{{$key}},{{$targetaudit}},{{$loop->iteration}},'{{$context}}');"><i class="a-home-search"></i> 2 PROGRAMS</button>
+														<button class="uk-button program-status uk-link" onclick="inspectionDetails({{$detail->unit->id}},{{$building}},{{$audit}},{{$key}},{{$targetaudit}},{{$loop->iteration}},'{{$context}}');"><i class="a-home-search"></i> 2 PROGRAMS</button>
 													</div>
 												</div>
 											</div>
@@ -169,17 +169,17 @@
 								<div id="building-{{$context}}-detail-{{$target}}-c-5-{{$key}}" style="flex: 640px;" class="uk-margin-remove" uk-grid>
 									<div class="uk-width-1-1" id="inspection-{{$context}}-detail-tools-switch-{{$key}}">
 										<div uk-grid class="area-status-list">
-										    @foreach($detail->area->areas_json as $area)
+										    @foreach($detail->unit->amenities_json as $amenity)
 												@if($loop->iteration < 9)
-											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($area->status != '') area-status-{{$area->status}} @endif colored">
+											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($amenity->status != '') area-status-{{$amenity->status}} @endif colored">
 											    	<span class="uk-badge">
-											    	@if($area->qty){{$area->qty}} @else 3 @endif </span>
-											    	{{$area->type}}
+											    	@if($amenity->qty){{$amenity->qty}} @else 3 @endif </span>
+											    	{{$amenity->type}}
 											    </div>
 											    @else
 											    	@if($loop->iteration == 9)
-												    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($area->status != '') area-status-{{$area->status}} @endif colored">
-												    	<span class="uk-badge" uk-tooltip="pos:top-left;title: @endif @if($area->qty) {{$area->qty}} @endif {{$area->type}}<br /> @if($loop->last) ;"><i class="a-plus"></i> </span> MORE...
+												    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($amenity->status != '') area-status-{{$amenity->status}} @endif colored">
+												    	<span class="uk-badge" uk-tooltip="pos:top-left;title: @endif @if($amenity->qty) {{$amenity->qty}} @endif {{$amenity->type}}<br /> @if($loop->last) ;"><i class="a-plus"></i> </span> MORE...
 												    </div>
 												    @endif
 											    @endif

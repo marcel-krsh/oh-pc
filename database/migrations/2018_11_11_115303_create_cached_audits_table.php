@@ -21,7 +21,8 @@ class CreateCachedAuditsTable extends Migration
         {
             Schema::create('cached_audits', function (Blueprint $table) {
                 $table->increments('id');
-                $table->string('project_id', 100)->default('');
+                $table->unsignedInteger('project_id')->nullable();
+                $table->string('project_ref', 100)->default('');
                 $table->string('status', 100)->nullable();
                 $table->integer('lead')->nullable();
                 $table->json('lead_json')->nullable();
