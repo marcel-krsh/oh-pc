@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Carbon;
 
-class CachedBuilding extends Model
+class CachedBuildingArea extends Model
 {
     protected $fillable = [
         'id',
         'audit_id',
+        'building_id',
         'status',
         'type',
         'type_total',

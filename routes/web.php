@@ -28,6 +28,7 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('dashboard/audits', 'DashboardController@audits')->name('dashboard.audits');
         Route::get('dashboard/audits/{audit}/buildings', 'AuditController@buildingsFromAudit')->name('audit.buildings');
         Route::get('dashboard/audits/{audit}/buildings/reorder', 'AuditController@reorderBuildingsFromAudit')->name('audit.reorder.buildings');
+        Route::get('dashboard/audits/{audit}/building/{building}/areas/reorder', 'AuditController@reorderBuildingAreasFromAudit')->name('audit.reorder.buildingareas');
 
         Route::get('dashboard/audits/{audit}/building/{building}/details', 'AuditController@detailsFromBuilding')->name('audit.building.details');
         Route::get('dashboard/audits/{audit_id}/building/{building_id}/inspection', 'AuditController@inspectionFromBuilding')->name('audit.inspection');

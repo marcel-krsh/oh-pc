@@ -59,7 +59,7 @@
 																@endif
 															</div>
 															<div class="building-status">
-																<span class="uk-badge colored" uk-tooltip="pos:top-left;title:# finding icon;">2</span>
+																<span class="uk-badge colored" uk-tooltip="pos:top-left;title:# finding icon;">{{$building->building->finding_total}}</span>
 															</div>
 														</div>
 													</div>
@@ -73,7 +73,7 @@
 											<div class=" @if($loop->last) journey-end @elseif($loop->first) journey-start @else journey @endif">
 							            		<i class="@if($loop->last) a-home-marker @elseif($loop->first) a-home-marker @else a-marker-basic @endif colored"></i>
 							            		@if($building->building->followup_date !== null)
-							            		<div class="alert-icon action-required">
+							            		<div class="alert-icon {{$building->building->status}}">
 								            		<i class="a-bell-ring" uk-tooltip="pos:top-left;title:Followup: {{\Carbon\Carbon::createFromFormat('Y-m-d', $building->building->followup_date)->format('m/d/Y')}};"></i>
 												</div>
 												@endif
@@ -92,7 +92,7 @@
 												<div class="uk-width-1-2 uk-padding-remove">
 													<div class="building-address" uk-grid>
 										            	<div class="uk-width-1-1 uk-padding-remove">
-										            		<h3 class="uk-margin-bottom-remove colored">{{$building->building->street}}</h3>
+										            		<h3 class="uk-margin-bottom-remove colored">{{$building->building->address}}</h3>
 											            	<small class="colored">{{$building->building->city}}, {{$building->building->state}} {{$building->building->zip}}</small>
 											            	@if($building->building->type != "pool")
 											            	<br />
@@ -117,7 +117,7 @@
 																</div>
 																
 															</div>
-															<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center in-progress">
+															<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$building->building->finding_nlt_status}}">
 																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'nlt');">
 																	<i class="a-booboo"></i>
 																	<div class="findings-icon-status">
@@ -129,7 +129,7 @@
 																	</div>
 																</div>
 															</div>
-															<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center in-progress">
+															<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$building->building->finding_lt_status}}">
 																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'lt');">
 																	<i class="a-skull" uk-tooltip="pos:top-left;title:Reason;"></i>
 																	<div class="findings-icon-status">
@@ -141,7 +141,7 @@
 																	</div>
 																</div>
 															</div>
-															<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center action-required">	
+															<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$building->building->finding_sd_status}}">	
 																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'critical');">
 																	<i class="a-flames"></i>
 																	<div class="findings-icon-status">

@@ -619,6 +619,20 @@ function reorderBuildings(auditId, buildingId, endIndex) {
     });
 }
 
+function reorderBuildingAreas(auditId, buildingId, areaId, endIndex) {
+	var url = 'dashboard/audits/'+auditId+'/building/'+buildingId+'/areas/reorder'; 
+	$.get(url, {
+        'area' : areaId,
+        'index' : endIndex
+        }, function(data) {
+            if(data=='0'){ 
+                UIkit.modal.alert("There was a problem reordering the building areas.");
+            } else {
+				console.log("reordering completed");
+			}
+    });
+}
+
 $(function () {
 	$(document).on('start', '.sortablebuildings', function (item) {
 		//console.log("almost moving....");
@@ -640,10 +654,13 @@ $(function () {
 		var buildingId = $(listItem).data('building');
 
 		if($('#'+item.detail[1].id).hasClass('building-detail')){
+			var areaId = $(listItem).data('area');
 			endIndex = $( ".building-detail" ).index( listItem );
 			console.log( item.detail[1].id + " ended at index: " + endIndex );
 			UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
 			reorder(".building-details > .sortable", '.building-detail');
+
+			reorderBuildingAreas(auditId, buildingId, areaId, endIndex);
 
 		}else if($('#'+item.detail[1].id).hasClass('building')){
 			endIndex = $( ".building" ).index( listItem );

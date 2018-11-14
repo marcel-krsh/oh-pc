@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\CachedAudit;
 use App\Models\CachedBuilding;
+use App\Models\CachedBuildingArea;
 use App\Models\OrderingBuilding;
+use App\Models\OrderingBuildingArea;
 use Auth;
 use Session;
 use App\LogConverter;
@@ -30,9 +32,6 @@ class AuditController extends Controller
 
         // check if user can see that audit
         // 
-
-        // FILTER BUILDINGS BY AUDIT TBD
-        // $buildings = CachedBuilding::get();
 
         // count buildings & count ordering_buildings
         if(OrderingBuilding::where('audit_id', '=', $audit)->where('user_id','=',Auth::user()->id)->count() == 0 && CachedBuilding::where('audit_id', '=', $audit)->count() != 0){
@@ -444,138 +443,211 @@ class AuditController extends Controller
 
     }
 
+    public function reorderBuildingAreasFromAudit($audit, $building, Request $request) {
+
+        $area = $request->get('area');
+        $index = $request->get('index');
+
+        // select all building orders except for the one we want to reorder
+        $current_ordering = OrderingBuildingArea::where('audit_id','=',$audit)->where('user_id','=',Auth::user()->id)->where('building_id','=',$building)->where('area_id','!=',$area)->orderBy('order','asc')->get()->toArray();
+
+        $inserted = array( [
+                    'user_id' => Auth::user()->id,
+                    'audit_id' => $audit,
+                    'building_id' => $building,
+                    'area_id' => $area,
+                    'order' => $index
+               ]);
+
+        // insert the building ordering in the array
+        $reordered_array = $current_ordering;
+        array_splice( $reordered_array, $index, 0, $inserted );
+
+        // delete previous ordering
+        OrderingBuildingArea::where('audit_id','=',$audit)->where('building_id','=',$building)->where('user_id','=',Auth::user()->id)->delete();
+
+        // clean-up the ordering and store
+        foreach($reordered_array as $key => $ordering){
+            $new_ordering = new OrderingBuildingArea([
+                'user_id' => $ordering['user_id'],
+                'audit_id' => $ordering['audit_id'],
+                'building_id' => $ordering['building_id'],
+                'area_id' => $ordering['area_id'],
+                'order' => $key+1
+            ]);
+            $new_ordering->save();
+        }
+
+    }
+
     public function detailsFromBuilding($audit, $building, Request $request) {
     	$target = $request->get('target');
     	$targetaudit = $request->get('targetaudit');
         $context = $request->get('context');
-    	$details = collect([
-    						[
-    						'id' => 1, 
-    						'status' => 'critical',
-    						'street' => '123457 Silvegwood Street', 
-    						'city' => 'Columbus', 
-    						'state' => 'OH', 
-    						'zip' => '43219', 
-    						'auditors' => [
-    							['name' => 'Brian Greenwood',
-    							'initials' => 'BG',
-    							'color' => 'green',
-    							'status' => 'warning'],
-    							['name' => 'Another Name',
-    							'initials' => 'AN',
-    							'color' => 'blue',
-    							'status' => '']
-    						],
-    						'type' => 'building',
-    						'areas' => [
-    							['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
-    							['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
-    							['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
-    							['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
-    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
-    						]
-    					],
-    					[
-    						'id' => 2, 
-    						'status' => 'action-needed',
-    						'street' => '123466 Silvegwood Street', 
-    						'city' => 'Columbus', 
-    						'state' => 'OH', 
-    						'zip' => '43219', 
-    						'auditors' => [
-    							['name' => 'Brian Greenwood',
-    							'initials' => 'BG',
-    							'color' => 'green',
-    							'status' => 'warning'],
-    							['name' => 'Another Name',
-    							'initials' => 'AN',
-    							'color' => 'blue',
-    							'status' => ''],
-    							['name' => 'Another Name',
-    							'initials' => 'AN',
-    							'color' => 'blue',
-    							'status' => ''],
-    							['name' => 'Another Name',
-    							'initials' => 'AN',
-    							'color' => 'blue',
-    							'status' => ''],
-    							['name' => 'Brian Greenwood',
-    							'initials' => 'BG',
-    							'color' => 'green',
-    							'status' => 'warning'],
-    							['name' => 'Another Name',
-    							'initials' => 'AN',
-    							'color' => 'blue',
-    							'status' => ''],
-    							['name' => 'Another Name',
-    							'initials' => 'AN',
-    							'color' => 'blue',
-    							'status' => ''],
-    							['name' => 'Another Name',
-    							'initials' => 'AN',
-    							'color' => 'blue',
-    							'status' => ''],
-    							['name' => 'Brian Greenwood',
-    							'initials' => 'BG',
-    							'color' => 'green',
-    							'status' => 'warning'],
-    							['name' => 'Another Name',
-    							'initials' => 'AN',
-    							'color' => 'blue',
-    							'status' => ''],
-    							['name' => 'Another Name',
-    							'initials' => 'AN',
-    							'color' => 'blue',
-    							'status' => ''],
-    							['name' => 'Another Name',
-    							'initials' => 'AN',
-    							'color' => 'blue',
-    							'status' => '']
-    						],
-    						'type' => 'pool',
-    						'areas' => [
-    							['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
-    							['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
-    							['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
-    							['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
-    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
-    						]
-    					],
-    					[
-    						'id' => 3, 
-    						'status' => 'in-progress',
-    						'street' => '123466 Silvegwood Street', 
-    						'city' => 'Columbus', 
-    						'state' => 'OH', 
-    						'zip' => '43219', 
-    						'auditors' => [
-    							['name' => 'Brian Greenwood',
-    							'initials' => 'BG',
-    							'color' => 'green',
-    							'status' => 'warning'],
-    							['name' => 'Another Name',
-    							'initials' => 'AN',
-    							'color' => 'blue',
-    							'status' => ''],
-    							['name' => 'Another Name',
-    							'initials' => 'AN',
-    							'color' => 'blue',
-    							'status' => ''],
-    							['name' => 'Another Name',
-    							'initials' => 'AN',
-    							'color' => 'blue',
-    							'status' => '']
-    						],
-    						'type' => 'building',
-    						'areas' => [
-    							['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
-    							['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
-    							['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
-    							['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
-    							['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
-    						]
-    					]
-    				]);
+    	// $details = collect([
+    	// 					[
+    	// 					'id' => 1, 
+    	// 					'status' => 'critical',
+    	// 					'street' => '123457 Silvegwood Street', 
+    	// 					'city' => 'Columbus', 
+    	// 					'state' => 'OH', 
+    	// 					'zip' => '43219', 
+    	// 					'auditors' => [
+    	// 						['name' => 'Brian Greenwood',
+    	// 						'initials' => 'BG',
+    	// 						'color' => 'green',
+    	// 						'status' => 'warning'],
+    	// 						['name' => 'Another Name',
+    	// 						'initials' => 'AN',
+    	// 						'color' => 'blue',
+    	// 						'status' => '']
+    	// 					],
+    	// 					'type' => 'building',
+    	// 					'areas' => [
+    	// 						['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
+    	// 						['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
+    	// 						['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
+    	// 						['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
+    	// 						['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
+    	// 					]
+    	// 				],
+    	// 				[
+    	// 					'id' => 2, 
+    	// 					'status' => 'action-needed',
+    	// 					'street' => '123466 Silvegwood Street', 
+    	// 					'city' => 'Columbus', 
+    	// 					'state' => 'OH', 
+    	// 					'zip' => '43219', 
+    	// 					'auditors' => [
+    	// 						['name' => 'Brian Greenwood',
+    	// 						'initials' => 'BG',
+    	// 						'color' => 'green',
+    	// 						'status' => 'warning'],
+    	// 						['name' => 'Another Name',
+    	// 						'initials' => 'AN',
+    	// 						'color' => 'blue',
+    	// 						'status' => ''],
+    	// 						['name' => 'Another Name',
+    	// 						'initials' => 'AN',
+    	// 						'color' => 'blue',
+    	// 						'status' => ''],
+    	// 						['name' => 'Another Name',
+    	// 						'initials' => 'AN',
+    	// 						'color' => 'blue',
+    	// 						'status' => ''],
+    	// 						['name' => 'Brian Greenwood',
+    	// 						'initials' => 'BG',
+    	// 						'color' => 'green',
+    	// 						'status' => 'warning'],
+    	// 						['name' => 'Another Name',
+    	// 						'initials' => 'AN',
+    	// 						'color' => 'blue',
+    	// 						'status' => ''],
+    	// 						['name' => 'Another Name',
+    	// 						'initials' => 'AN',
+    	// 						'color' => 'blue',
+    	// 						'status' => ''],
+    	// 						['name' => 'Another Name',
+    	// 						'initials' => 'AN',
+    	// 						'color' => 'blue',
+    	// 						'status' => ''],
+    	// 						['name' => 'Brian Greenwood',
+    	// 						'initials' => 'BG',
+    	// 						'color' => 'green',
+    	// 						'status' => 'warning'],
+    	// 						['name' => 'Another Name',
+    	// 						'initials' => 'AN',
+    	// 						'color' => 'blue',
+    	// 						'status' => ''],
+    	// 						['name' => 'Another Name',
+    	// 						'initials' => 'AN',
+    	// 						'color' => 'blue',
+    	// 						'status' => ''],
+    	// 						['name' => 'Another Name',
+    	// 						'initials' => 'AN',
+    	// 						'color' => 'blue',
+    	// 						'status' => '']
+    	// 					],
+    	// 					'type' => 'pool',
+    	// 					'areas' => [
+    	// 						['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
+    	// 						['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
+    	// 						['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
+    	// 						['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
+    	// 						['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
+    	// 					]
+    	// 				],
+    	// 				[
+    	// 					'id' => 3, 
+    	// 					'status' => 'in-progress',
+    	// 					'street' => '123466 Silvegwood Street', 
+    	// 					'city' => 'Columbus', 
+    	// 					'state' => 'OH', 
+    	// 					'zip' => '43219', 
+    	// 					'auditors' => [
+    	// 						['name' => 'Brian Greenwood',
+    	// 						'initials' => 'BG',
+    	// 						'color' => 'green',
+    	// 						'status' => 'warning'],
+    	// 						['name' => 'Another Name',
+    	// 						'initials' => 'AN',
+    	// 						'color' => 'blue',
+    	// 						'status' => ''],
+    	// 						['name' => 'Another Name',
+    	// 						'initials' => 'AN',
+    	// 						'color' => 'blue',
+    	// 						'status' => ''],
+    	// 						['name' => 'Another Name',
+    	// 						'initials' => 'AN',
+    	// 						'color' => 'blue',
+    	// 						'status' => '']
+    	// 					],
+    	// 					'type' => 'building',
+    	// 					'areas' => [
+    	// 						['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
+    	// 						['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
+    	// 						['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
+    	// 						['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
+    	// 						['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
+    	// 					]
+    	// 				]
+    	// 			]);
+
+
+        // check if user can see that audit
+        // 
+
+        // count buildings & count ordering_buildings
+        if(OrderingBuildingArea::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id','=',Auth::user()->id)->count() == 0 && CachedBuildingArea::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count() != 0){
+
+            // if ordering_buildings is empty, create a default entry for the ordering
+            $details = CachedBuildingArea::where('audit_id','=',$audit)->where('building_id', '=', $building)->orderBy('id','desc')->get();
+            
+            $i = 1;
+            $new_ordering = array();
+
+            foreach($details as $detail){
+
+                $ordering = new OrderingBuildingArea([
+                    'user_id' => Auth::user()->id,
+                    'audit_id' => $audit,
+                    'building_id' => $detail->building_id,
+                    'area_id' => $detail->id,
+                    'order' => $i
+                ]);
+                $ordering->save();
+                $i++;
+
+            }   
+
+        }elseif(CachedBuildingArea::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count() != OrderingBuildingArea::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id','=',Auth::user()->id)->count() && CachedBuildingArea::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count() != 0){
+
+            $details = null;
+
+        }
+        
+        $details = OrderingBuildingArea::where('audit_id','=',$audit)->where('building_id', '=', $building)->where('user_id','=',Auth::user()->id)->orderBy('order','asc')->with('area')->get();
+
 
     	return view('dashboard.partials.audit_building_details', compact('audit', 'target', 'building', 'details', 'targetaudit', 'context'));
     }
