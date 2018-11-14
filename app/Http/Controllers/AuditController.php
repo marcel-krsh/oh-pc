@@ -62,7 +62,7 @@ class AuditController extends Controller
         }elseif(CachedBuilding::where('audit_id', '=', $audit)->count() != OrderingBuilding::where('audit_id', '=', $audit)->where('user_id','=',Auth::user()->id)->count() && CachedBuilding::where('audit_id', '=', $audit)->count() != 0){
 
             $buildings = null;
-            dd($buildings);
+            //dd($buildings);
 
         }
         
