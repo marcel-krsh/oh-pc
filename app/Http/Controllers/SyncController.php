@@ -22,7 +22,7 @@ class SyncController extends Controller
         $lastModifiedDate = SyncAddress::select('updated_at')->orderBy('updated_at','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
-            $modified = '10/1/2018';
+            $modified = '10/1/2017';
         }else{
             $modified = $lastModifiedDate->updated_at;
         }
@@ -32,7 +32,7 @@ class SyncController extends Controller
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             do{
-                dd($syncData);
+                //dd($syncData);
                 echo "<hr />PAGE ".$syncPage."<hr />";
                 foreach($syncData['data'] as $i => $v)
                     {
