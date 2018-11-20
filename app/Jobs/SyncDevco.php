@@ -43,7 +43,7 @@ class SyncDevco implements ShouldQueue
     public function handle()
     {
         //
-        Log::info('Sync Job Started.');
+        //Log::info('Sync Job Started.');
         $time = 10;
        
             // SystemSetting::get('pcapi_access_token');
