@@ -38,8 +38,7 @@ class SyncController extends Controller
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             do{
-                //dd($syncData);
-                echo "<hr />PAGE ".$syncPage."<hr />";
+                
                 foreach($syncData['data'] as $i => $v)
                     {
                         // check if record exists
@@ -47,6 +46,7 @@ class SyncController extends Controller
 
                         if(isset($updateRecord->id)) {
                             // record exists - update it.
+                            dd('duplicate'.$v['attributes']['addressKey']);
                             SyncAddress::where('id',$updateRecord['id'])
                             ->update([
                                 'line_1'=>$v['attributes']['line1'],
@@ -57,7 +57,6 @@ class SyncController extends Controller
                                 'zip_4'=>$v['attributes']['zip4'],
                                 'longitude'=>$v['attributes']['latitude'],
                                 'latitude'=>$v['attributes']['longitude'],
-                                'address_key'=>$v['attributes']['addressKey'],
                                 'last_edited'=>$v['attributes']['lastEdited'],
                             ]);
                         } else {
