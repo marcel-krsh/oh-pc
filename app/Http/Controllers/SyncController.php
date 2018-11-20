@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-// API Specific
 use App\Services\AuthService;
 use App\Services\DevcoService;
 use App\Models\AuthTracker;
@@ -12,7 +11,6 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-// SYNC MODLES
 use App\Models\SyncAddress;
 use App\Models\Address;
 
