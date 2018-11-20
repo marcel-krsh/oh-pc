@@ -9,6 +9,7 @@ use App\Services\DevcoService;
 use App\Models\AuthTracker;
 use App\Models\SystemSetting;
 use App\Models\User;
+use App\Models\SyncAddress;
 use Illuminate\Support\Facades\Hash;
 
 class SyncController extends Controller
@@ -18,7 +19,7 @@ class SyncController extends Controller
         /// Addresses sync
 
         /// get last modified date inside the database
-        $lastModifiedDate = App\Models\SyncAddress::select('updated_at')->orderBy('updated_at','desc')->first();
+        $lastModifiedDate = SyncAddress::select('updated_at')->orderBy('updated_at','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/2018';
