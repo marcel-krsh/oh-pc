@@ -62,7 +62,7 @@ class SyncController extends Controller
                             ]);
                         } else {
                             SyncAddress::insert([
-                                'devco_id'=>$v['attributes']['id'],
+                                'devco_id'=>$v['attributes']['addressKey'],
                                 'line_1'=>$v['attributes']['line1'],
                                 'line_2'=>$v['attributes']['line2'],
                                 'city'=>$v['attributes']['city'],
@@ -71,7 +71,6 @@ class SyncController extends Controller
                                 'zip_4'=>$v['attributes']['zip4'],
                                 'longitude'=>$v['attributes']['latitude'],
                                 'latitude'=>$v['attributes']['longitude'],
-                                'address_key'=>$v['attributes']['addressKey'],
                                 'last_edited'=>$v['attributes']['lastEdited'],
                             ]);
                         }
