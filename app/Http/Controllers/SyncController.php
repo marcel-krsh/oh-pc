@@ -66,7 +66,7 @@ class SyncController extends Controller
                                 'last_edited'=>$v['attributes']['lastEdited'],
                             ]);
                         } else {
-                            SyncAddress::insert([
+                            SyncAddress::create([
                                 'devco_id'=>$v['attributes']['addressKey'],
                                 'line_1'=>$v['attributes']['line1'],
                                 'line_2'=>$v['attributes']['line2'],
