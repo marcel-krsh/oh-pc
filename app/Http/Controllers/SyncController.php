@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Carbon\Carbon;
 use App\Services\AuthService;
 use App\Services\DevcoService;
 use App\Models\AuthTracker;
@@ -25,7 +25,7 @@ class SyncController extends Controller
         /////
 
         /// get last modified date inside the database
-        $lastModifiedDate = SyncAddress::select('updated_at')->orderBy('updated_at','desc')->first();
+        $lastModifiedDate = SyncAddress::select('last_edited')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
