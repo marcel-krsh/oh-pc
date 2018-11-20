@@ -30,7 +30,8 @@ class SyncController extends Controller
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
         }else{
-            $modified = date('m/d/Y',$lastModifiedDate->last_edited);
+            // format date stored to the format we are looking for...
+            $modified = date('m/d/Y',strtotime($lastModifiedDate->last_edited));
         }
     	$apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
@@ -64,7 +65,9 @@ class SyncController extends Controller
                                 'last_edited'=>$v['attributes']['lastEdited'],
                             ]);
                         } else {
-                            SyncAddress::insert([
+                            $newData = new SyncAddress;
+
+                            $newData->insert([
                                 'devco_id'=>$v['attributes']['addressKey'],
                                 'line_1'=>$v['attributes']['line1'],
                                 'line_2'=>$v['attributes']['line2'],
@@ -75,7 +78,8 @@ class SyncController extends Controller
                                 'longitude'=>$v['attributes']['latitude'],
                                 'latitude'=>$v['attributes']['longitude'],
                                 'last_edited'=>$v['attributes']['lastEdited'],
-                            ]);
+                            ])
+                            ->save();
                         }
 
                         //echo $v['id'].' '.$v['attributes']['line1'].' '.' '.$v['attributes']['city'].' '.$v['attributes']['state'].' '.$v['attributes']['zipCode'].' '.$v['attributes']['zip4'].' '.$v['attributes']['latitude'].' '.$v['attributes']['longitude'].' '.$v['attributes']['addressKey'].' '.$v['attributes']['lastEdited'].'<br/>';
