@@ -1,9 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Jobs;
 
-use Illuminate\Http\Request;
-use Carbon\Carbon;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use App\Services\AuthService;
 use App\Services\DevcoService;
 use App\Models\AuthTracker;
@@ -14,12 +17,27 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\SyncAddress;
 use App\Models\Address;
 
-
-
-class SyncController extends Controller
+class SyncAddresses implements ShouldQueue
 {
-    //
-    public function sync() {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
         //////////////////////////////////////////////////
         /////// Address Sync
         /////
@@ -34,7 +52,7 @@ class SyncController extends Controller
             // we resync the last second of the data to be sure we get any records that happened to be recorded at the same second.
             $modified = date('m/d/Y g:i:sa',(strtotime($lastModifiedDate->last_edited)-1));
         }
-    	$apiConnect = new DevcoService();
+        $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
             $syncData = $apiConnect->listAddresses(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
@@ -84,7 +102,5 @@ class SyncController extends Controller
                 $syncPage++;
             }while($syncPage < $syncData['meta']['totalPageCount']);
         }
-
-		
     }
 }
