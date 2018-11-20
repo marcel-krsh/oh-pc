@@ -43,11 +43,11 @@ class SyncController extends Controller
                 foreach($syncData['data'] as $i => $v)
                     {
                         // check if record exists
-                        $updateRecord = Address::select('id')->where('devco_id',$v['id'])->first();
+                        $updateRecord = SyncAddress::select('id')->where('devco_id',$v['id'])->first();
 
                         if(isset($updateRecord->id)) {
                             // record exists - update it.
-                            Address::where('id',$updateRecord['id'])
+                            SyncAddress::where('id',$updateRecord['id'])
                             ->update([
                                 'line_1'=>$v['attributes']['line1'],
                                 'line_2'=>$v['attributes']['line2'],
@@ -61,7 +61,7 @@ class SyncController extends Controller
                                 'last_edited'=>$v['attributes']['lastEdited'],
                             ]);
                         } else {
-                            Address::insert([
+                            SyncAddress::insert([
                                 'line_1'=>$v['attributes']['line1'],
                                 'line_2'=>$v['attributes']['line2'],
                                 'city'=>$v['attributes']['city'],
