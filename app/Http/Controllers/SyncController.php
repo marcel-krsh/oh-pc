@@ -62,7 +62,7 @@ class SyncController extends Controller
                             ]);
                         } else {
                             SyncAddress::insert([
-                                'devco_id'=>$['attributes']['id'],
+                                'devco_id'=>$v['attributes']['id'],
                                 'line_1'=>$v['attributes']['line1'],
                                 'line_2'=>$v['attributes']['line2'],
                                 'city'=>$v['attributes']['city'],
