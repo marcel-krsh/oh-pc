@@ -38,7 +38,10 @@ class SyncController extends Controller
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             do{
-                
+                if($syncPage > 1){
+                    //Get Next Page
+                    $syncData = $apiConnect->listAddresses($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                }
                 foreach($syncData['data'] as $i => $v)
                     {
                         // check if record exists
