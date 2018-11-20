@@ -51,7 +51,7 @@ class SyncController extends Controller
 
                         if(isset($updateRecord->id)) {
                             // record exists - update it.
-                            dd('duplicate'.$v['attributes']['addressKey']);
+                            //dd('duplicate'.$v['attributes']['addressKey']);
                             SyncAddress::where('id',$updateRecord['id'])
                             ->update([
                                 'line_1'=>$v['attributes']['line1'],
