@@ -30,7 +30,7 @@ class SyncController extends Controller
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
         }else{
-            $modified = $lastModifiedDate->last_edited;
+            $modified = date('m/d/Y',$lastModifiedDate->last_edited);
         }
     	$apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
