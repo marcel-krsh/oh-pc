@@ -78,8 +78,7 @@ class SyncController extends Controller
                                 'longitude'=>$v['attributes']['latitude'],
                                 'latitude'=>$v['attributes']['longitude'],
                                 'last_edited'=>$v['attributes']['lastEdited'],
-                            ])
-                            ->save();
+                            ]);
                         }
 
                         //echo $v['id'].' '.$v['attributes']['line1'].' '.' '.$v['attributes']['city'].' '.$v['attributes']['state'].' '.$v['attributes']['zipCode'].' '.$v['attributes']['zip4'].' '.$v['attributes']['latitude'].' '.$v['attributes']['longitude'].' '.$v['attributes']['addressKey'].' '.$v['attributes']['lastEdited'].'<br/>';
