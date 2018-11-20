@@ -15,19 +15,31 @@ class SyncController extends Controller
 {
     //
     public function sync() {
-    	$test = new DevcoService();
-    	$addresses = $test->listAddresses(1, '1/1/2017', 1,'brian@allita.org', 'Brian Greenwood', 1, 'Server');
-    	// $addresses = $addresses->data;
-    	// forEach($addresses as $address){
-    	// 	$output .= $addresses['id']."<br />";
-    	// }
+        /// Addresses sync
 
-    	$addresses = json_decode($addresses, true);
-        dd($addresses);
-    	foreach($addresses['data'] as $i => $v)
-            {
-                echo $v['id'].' '.$v['attributes']['line1'].' '.' '.$v['attributes']['city'].' '.$v['attributes']['state'].' '.$v['attributes']['zipCode'].' '.$v['attributes']['zip4'].' '.$v['attributes']['latitude'].' '.$v['attributes']['longitude'].' '.$v['attributes']['addressKey'].' '.$v['attributes']['lastEdited'].'<br/>';
-            }
+        /// get last modified date inside the database
+        $lastModifiedDate = App\Models\SyncAddress::select('updated_at')->orderBy('updated_at','desc')->first();
+        // if the value is null set a default start date to start the sync.
+        if(is_null($lastModifiedDate)) {
+            $modified = '10/1/2018';
+        }else{
+            $modified = $lastModifiedDate->updated_at;
+        }
+    	$apiConnect = new DevcoService();
+        if(!is_null($apiConnect)){
+            $syncData = $apiConnect->listAddresses(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = json_decode($syncData, true);
+            $syncPage = 1;
+            do{
+                dd($syncData);
+                echo "<hr />PAGE ".$syncPage."<hr />";
+                foreach($syncData['data'] as $i => $v)
+                    {
+                        echo $v['id'].' '.$v['attributes']['line1'].' '.' '.$v['attributes']['city'].' '.$v['attributes']['state'].' '.$v['attributes']['zipCode'].' '.$v['attributes']['zip4'].' '.$v['attributes']['latitude'].' '.$v['attributes']['longitude'].' '.$v['attributes']['addressKey'].' '.$v['attributes']['lastEdited'].'<br/>';
+                    }
+                $syncPage++;
+            }while($syncPage < $syncData['meta']['totalPageCount']);
+        }
 
 		
     }
