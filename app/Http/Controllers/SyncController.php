@@ -31,7 +31,7 @@ class SyncController extends Controller
             $modified = '10/1/1900';
         }else{
             // format date stored to the format we are looking for...
-            $modified = date('m/d/Y',strtotime($lastModifiedDate->last_edited));
+            $modified = date('m/d/Y g:i:sa',strtotime($lastModifiedDate->last_edited));
         }
     	$apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
@@ -65,9 +65,7 @@ class SyncController extends Controller
                                 'last_edited'=>$v['attributes']['lastEdited'],
                             ]);
                         } else {
-                            $newData = new SyncAddress;
-
-                            $newData->insert([
+                            SyncAddress::insert([
                                 'devco_id'=>$v['attributes']['addressKey'],
                                 'line_1'=>$v['attributes']['line1'],
                                 'line_2'=>$v['attributes']['line2'],
