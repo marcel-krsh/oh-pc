@@ -31,7 +31,8 @@ class SyncController extends Controller
             $modified = '10/1/1900';
         }else{
             // format date stored to the format we are looking for...
-            $modified = date('m/d/Y g:i:sa',strtotime($lastModifiedDate->last_edited));
+            // we resync the last second of the data to be sure we get any records that happened to be recorded at the same second.
+            $modified = date('m/d/Y g:i:sa',(strtotime($lastModifiedDate->last_edited)-1));
         }
     	$apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
