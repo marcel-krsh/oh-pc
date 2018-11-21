@@ -40,7 +40,7 @@ class SyncController extends Controller
         }else{
             // format date stored to the format we are looking for...
             // we resync the last second of the data to be sure we get any records that happened to be recorded at the same second.
-            $modified = $lastModifiedDate->last_edited_convert;
+            $modified = date('m/d/Y',(strtotime($lastModifiedDate->last_edited_convert)-1);
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
@@ -62,6 +62,8 @@ class SyncController extends Controller
 
                             if(isset($updateRecord->id)) {
                                 // record exists - update it.
+
+                                // convert dates to seconds and miliseconds to see if the current record is newer.
                                 $devcoDate = new DateTime($v['attributes']['lastEdited']);
                                 $allitaDate = new DateTime($lastModifiedDate->last_edited_convert);
                                 $allitaFloat = ".".$allitaDate->format('u');
@@ -70,9 +72,9 @@ class SyncController extends Controller
                                 settype($devcoFloat, 'float');
                                 $devcoDateEval = strtotime($devcoDate->format('Y-m-d H:i:s')) + $devcoFloat;
                                 $allitaDateEval = strtotime($allitaDate->format('Y-m-d H:i:s')) + $allitaFloat;
-                                dd($devcoDate->format('Y-m-d H:i:s'),$devcoFloat,$devcoDateEval,$allitaDate->format('Y-m-d H:i:s'),$allitaFloat,$allitaDateEval);
+                                //dd($devcoDate->format('Y-m-d H:i:s'),$devcoFloat,$devcoDateEval,$allitaDate->format('Y-m-d H:i:s'),$allitaFloat,$allitaDateEval);
 
-                                if($v['attributes']['lastEdited'] > $lastModifiedDate->last_edited){
+                                if($devcoDateEval > $allitaDateEval){
                                     // record is newer than the one currently on file
                                     SyncAddress::where('id',$updateRecord['id'])
                                     ->update([
