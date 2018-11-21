@@ -55,7 +55,7 @@ class SyncController extends Controller
 
                             // record exists - update it.
                             
-                            if(strtotime(strtotime($v['attributes']['lastEdited']) > (strtotime($modified) + 1)){
+                            if(strtotime($v['attributes']['lastEdited']) > (strtotime($modified) + 1)){
                                 // update is newer than the one on file
                                 SyncMonitoringStatusTypes::where('id',$updateRecord['id'])
                                 ->update([
