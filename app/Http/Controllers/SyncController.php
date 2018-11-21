@@ -32,7 +32,7 @@ class SyncController extends Controller
         }else{
             // format date stored to the format we are looking for...
             // we resync the last second of the data to be sure we get any records that happened to be recorded at the same second.
-            $modified = date('m/d/Y g:i:sa',(strtotime($lastModifiedDate->last_edited)-1));
+            $modified = $lastModifiedDate->last_edited;
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
@@ -52,8 +52,12 @@ class SyncController extends Controller
 
                         if(isset($updateRecord->id)) {
                             // record exists - update it.
-                            dd($v['attributes']['lastEdited'],$lastModifiedDate->last_edited,strtotime($v['attributes']['lastEdited']), strtotime($lastModifiedDate->last_edited));
-                            if(strtotime($v['attributes']['lastEdited']) > strtotime($lastModifiedDate->last_edited)){
+                            $devcoDate = new DateTime($v['attributes']['lastEdited']);
+                            $allitaDate = new DateTime($modified);
+
+                            dd($devcoDate,$devcoDate->format('u'),$allitaDate,$allitaDate->format('u'));
+                            
+                            if($v['attributes']['lastEdited']) > $lastModifiedDate->last_edited){
                                 // record is newer than the one currently on file
                                 SyncAddress::where('id',$updateRecord['id'])
                                 ->update([
