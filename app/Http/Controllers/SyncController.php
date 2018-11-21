@@ -11,7 +11,7 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncMonitoringStatusTypes;
+use App\Models\SyncAddress;
 use App\Models\Address;
 
 
@@ -21,11 +21,11 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// Monitoring Status Types Sync
+        /////// Address Sync
         /////
 
         /// get last modified date inside the database
-        $lastModifiedDate = SyncMonitoringStatusTypes::select('last_edited')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncAddress::select('last_edited')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -34,39 +34,50 @@ class SyncController extends Controller
             // we resync the last second of the data to be sure we get any records that happened to be recorded at the same second.
             $modified = date('m/d/Y g:i:sa',(strtotime($lastModifiedDate->last_edited)-1));
         }
-    	$apiConnect = new DevcoService();
+        $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listMonitoringStatusTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listAddresses(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
-            //dd($syncData);
             $syncPage = 1;
             do{
                 if($syncPage > 1){
                     //Get Next Page
-                    $syncData = $apiConnect->listMonitoringStatusTypes($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                    $syncData = $apiConnect->listAddresses($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                     $syncData = json_decode($syncData, true);
                 }
                 foreach($syncData['data'] as $i => $v)
                     {
                         // check if record exists
-                        $updateRecord = SyncMonitoringStatusTypes::select('id','last_edited')->where('monitoring_status_type_key',$v['attributes']['monitoringStatusTypeKey'])->first();
+                        $updateRecord = SyncAddress::select('id')->where('devco_id',$v['attributes']['addressKey'])->first();
 
                         if(isset($updateRecord->id)) {
-
                             // record exists - update it.
-                            
-                            if(strtotime($v['attributes']['lastEdited']) > (strtotime($modified) + 1)){
-                                // update is newer than the one on file
-                                SyncMonitoringStatusTypes::where('id',$updateRecord['id'])
+                            if(strtotime($v['attributes']['lastEdited']) > strtotime($lastModifiedDate->last_edited)){
+                                // record is newer than the one currently on file
+                                SyncAddress::where('id',$updateRecord['id'])
                                 ->update([
-                                    'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
+                                    'line_1'=>$v['attributes']['line1'],
+                                    'line_2'=>$v['attributes']['line2'],
+                                    'city'=>$v['attributes']['city'],
+                                    'state'=>$v['attributes']['state'],
+                                    'zip'=>$v['attributes']['zipCode'],
+                                    'zip_4'=>$v['attributes']['zip4'],
+                                    'longitude'=>$v['attributes']['latitude'],
+                                    'latitude'=>$v['attributes']['longitude'],
                                     'last_edited'=>$v['attributes']['lastEdited'],
                                 ]);
-                            } 
+                            }
                         } else {
-                            SyncMonitoringStatusTypes::create([
-                                'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
-                                'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
+                            SyncAddress::create([
+                                'devco_id'=>$v['attributes']['addressKey'],
+                                'line_1'=>$v['attributes']['line1'],
+                                'line_2'=>$v['attributes']['line2'],
+                                'city'=>$v['attributes']['city'],
+                                'state'=>$v['attributes']['state'],
+                                'zip'=>$v['attributes']['zipCode'],
+                                'zip_4'=>$v['attributes']['zip4'],
+                                'longitude'=>$v['attributes']['latitude'],
+                                'latitude'=>$v['attributes']['longitude'],
                                 'last_edited'=>$v['attributes']['lastEdited'],
                             ]);
                         }
@@ -74,8 +85,6 @@ class SyncController extends Controller
                     }
                 $syncPage++;
             }while($syncPage < $syncData['meta']['totalPageCount']);
-        }
-
-		
+        }	
     }
 }
