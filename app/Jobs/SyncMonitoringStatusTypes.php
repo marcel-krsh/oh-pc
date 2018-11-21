@@ -92,5 +92,5 @@ class SyncMonitoringStatusTypes implements ShouldQueue
 
         
     }
-    }
+    
 }
