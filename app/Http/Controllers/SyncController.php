@@ -65,7 +65,7 @@ class SyncController extends Controller
                                 $devcoDate = new DateTime($v['attributes']['lastEdited']);
                                 $allitaDate = new DateTime($lastModifiedDate->last_edited_convert);
                                 (float)$allitaFloat = $allitaDate->format('u');
-                                (float)$devcoFloat = $devcoDate->format(u);
+                                (float)$devcoFloat = $devcoDate->format('u');
                                 $devcoDateEval = strtotime($devcoDate->format('Y-m-d H:i:s')) + $devcoFloat;
                                 $allitaDateEval = strtotime($allitaDate->format('Y-m-d H:i:s')) + $allitaFloat;
                                 dd($devcoDate->format('Y-m-d H:i:s'),$devcoFloat,$devcoDateEval,$allitaDate->format('Y-m-d H:i:s'),$allitaFloat,$allitaDateEval);
