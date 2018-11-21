@@ -66,7 +66,7 @@ class SyncAddresses implements ShouldQueue
                 foreach($syncData['data'] as $i => $v)
                     {
                         // check if record exists
-                        $updateRecord = SyncAddress::select('id')->where('devco_id',$v['addressKey'])->first();
+                        $updateRecord = SyncAddress::select('id')->where('devco_id',$v['attributes']['addressKey'])->first();
 
                         if(isset($updateRecord->id)) {
                             // record exists - update it.
