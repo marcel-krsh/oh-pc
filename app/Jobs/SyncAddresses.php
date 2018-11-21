@@ -14,10 +14,10 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncMonitoringStatusTypes;
-//use App\Models\Address;
+use App\Models\SyncAddress;
+use App\Models\Address;
 
-class SyncMonitoringStatusTypeses implements ShouldQueue
+class SyncAddresses implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -43,7 +43,7 @@ class SyncMonitoringStatusTypeses implements ShouldQueue
         /////
 
         /// get last modified date inside the database
-        $lastModifiedDate = SyncMonitoringStatusTypes::select('last_edited')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncAddress::select('last_edited')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -54,9 +54,8 @@ class SyncMonitoringStatusTypeses implements ShouldQueue
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listAuditStatuses(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listAddresses(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
-            dd($syncData);
             $syncPage = 1;
             do{
                 if($syncPage > 1){
@@ -67,12 +66,12 @@ class SyncMonitoringStatusTypeses implements ShouldQueue
                 foreach($syncData['data'] as $i => $v)
                     {
                         // check if record exists
-                        $updateRecord = SyncMonitoringStatusTypes::select('id')->where('devco_id',$v['id'])->first();
+                        $updateRecord = SyncAddress::select('id')->where('devco_id',$v['id'])->first();
 
                         if(isset($updateRecord->id)) {
                             // record exists - update it.
                             //dd('duplicate'.$v['attributes']['addressKey']);
-                            SyncMonitoringStatusTypes::where('id',$updateRecord['id'])
+                            SyncAddress::where('id',$updateRecord['id'])
                             ->update([
                                 'line_1'=>$v['attributes']['line1'],
                                 'line_2'=>$v['attributes']['line2'],
@@ -85,7 +84,7 @@ class SyncMonitoringStatusTypeses implements ShouldQueue
                                 'last_edited'=>$v['attributes']['lastEdited'],
                             ]);
                         } else {
-                            SyncMonitoringStatusTypes::create([
+                            SyncAddress::create([
                                 'devco_id'=>$v['attributes']['addressKey'],
                                 'line_1'=>$v['attributes']['line1'],
                                 'line_2'=>$v['attributes']['line2'],
@@ -102,8 +101,6 @@ class SyncMonitoringStatusTypeses implements ShouldQueue
                     }
                 $syncPage++;
             }while($syncPage < $syncData['meta']['totalPageCount']);
-        } else {
-            echo "Bad Things";
         }
     }
 }
