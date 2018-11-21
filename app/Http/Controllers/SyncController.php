@@ -41,16 +41,16 @@ class SyncController extends Controller
             // format date stored to the format we are looking for...
             // we resync the last second of the data to be sure we get any records that happened to be recorded at the same second.
             $currentModifiedDateTimeStamp1 = strtotime($lastModifiedDate->last_edited_convert);
-            $currentModifiedDateTimeStamp2 = settype($currentModifiedDateTimeStamp1,'float');
-            $currentModifiedDateTimeStamp3 = $currentModifiedDateTimeStamp2 - .001;
-            $modified = date('m/d/Y g:i:s.u a',$currentModifiedDateTimeStamp3);
+            settype($currentModifiedDateTimeStamp1,'float');
+            $currentModifiedDateTimeStamp2 = $currentModifiedDateTimeStamp1 - .001;
+            $modified = date('m/d/Y g:i:s.u a',$currentModifiedDateTimeStamp2);
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
             $syncData = $apiConnect->listMonitoringStatusTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp1,$currentModifiedDateTimeStamp2,$currentModifiedDateTimeStamp3,$modified,$syncData);
+            dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp1,$currentModifiedDateTimeStamp2,,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
                     if($syncPage > 1){
