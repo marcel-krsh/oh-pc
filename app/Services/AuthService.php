@@ -120,7 +120,7 @@ class AuthService
      */
     public function rootKeyReset()
     {
-        $endpoint = "{$this->_base_directory}/root/key-reset?username={$this->_username}&password={$this->_password}&key={$this->_pcapi_key}";
+        $endpoint = "{$this->_base_directory}/root/key_reset?username={$this->_username}&password={$this->_password}&key={$this->_pcapi_key}";
     }
 
     /**
@@ -199,7 +199,7 @@ class AuthService
     public function rootRefreshToken()
     {
         // https://www.oauth.com/oauth2-servers/access-tokens/access-token-response/
-        $endpoint = "{$this->_base_directory}/root/refresh-token?token={$this->_pcapi_refresh_token}";
+        $endpoint = "{$this->_base_directory}/root/refresh_token?token={$this->_pcapi_refresh_token}";
 
 
 
@@ -219,7 +219,7 @@ class AuthService
      */
     public function userAuthenticateToken(int $user_id, string $user_token, $ip_address = null, $useragent = null)
     {
-        $endpoint = "{$this->_base_directory}/devco/user/authenticate-token?devcotoken={$user_token}&token={$this->_pcapi_access_token}&ipaddress={$ip_address}&useragent={$useragent}";
+        $endpoint = "{$this->_base_directory}/devco/user/authenticate_token?devcotoken={$user_token}&token={$this->_pcapi_access_token}&ipaddress={$ip_address}&useragent={$useragent}";
 
         try {
             $response = $this->_client->request('GET', $endpoint);

@@ -38,7 +38,7 @@ class SyncController extends Controller
         if(!is_null($apiConnect)){
             $syncData = $apiConnect->listMonitoringStatusTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
-            dd($syncData);
+            //dd($syncData);
             $syncPage = 1;
             do{
                 if($syncPage > 1){
@@ -49,34 +49,20 @@ class SyncController extends Controller
                 foreach($syncData['data'] as $i => $v)
                     {
                         // check if record exists
-                        $updateRecord = SyncMonitoringStatusTypes::select('id')->where('devco_id',$v['id'])->first();
+                        $updateRecord = SyncMonitoringStatusTypes::select('id')->where('monitoring_status_key',$v['monitoringStatusKey'])->first();
 
                         if(isset($updateRecord->id)) {
                             // record exists - update it.
                             //dd('duplicate'.$v['attributes']['addressKey']);
                             SyncMonitoringStatusTypes::where('id',$updateRecord['id'])
                             ->update([
-                                'line_1'=>$v['attributes']['line1'],
-                                'line_2'=>$v['attributes']['line2'],
-                                'city'=>$v['attributes']['city'],
-                                'state'=>$v['attributes']['state'],
-                                'zip'=>$v['attributes']['zipCode'],
-                                'zip_4'=>$v['attributes']['zip4'],
-                                'longitude'=>$v['attributes']['latitude'],
-                                'latitude'=>$v['attributes']['longitude'],
+                                'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
                                 'last_edited'=>$v['attributes']['lastEdited'],
                             ]);
                         } else {
                             SyncMonitoringStatusTypes::create([
-                                'devco_id'=>$v['attributes']['addressKey'],
-                                'line_1'=>$v['attributes']['line1'],
-                                'line_2'=>$v['attributes']['line2'],
-                                'city'=>$v['attributes']['city'],
-                                'state'=>$v['attributes']['state'],
-                                'zip'=>$v['attributes']['zipCode'],
-                                'zip_4'=>$v['attributes']['zip4'],
-                                'longitude'=>$v['attributes']['latitude'],
-                                'latitude'=>$v['attributes']['longitude'],
+                                'monitoring_status_key'=>$v['attributes']['monitoringStatusKey'],
+                                'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
                                 'last_edited'=>$v['attributes']['lastEdited'],
                             ]);
                         }
