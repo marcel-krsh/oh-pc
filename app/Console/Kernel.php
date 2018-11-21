@@ -45,7 +45,7 @@ class Kernel extends ConsoleKernel
         // Monitoring Status Types
         $test = DB::table('jobs')->where('payload','like','%SyncMonitoringStatusTypes%')->first();
         if(is_null($test)) {
-            $schedule->job(new SyncMonitoringStatusTypes)->everyMinute();
+            $schedule->job(new SyncMonitoringStatusTypesJob)->everyMinute();
             
         } else {
             //Log::info('Sync Job Already Started.');
