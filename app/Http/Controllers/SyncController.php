@@ -12,8 +12,8 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncAddress;
-use App\Models\Address;
+use App\Models\SyncMonitoringStatusTypes;
+
 
 
 
@@ -22,7 +22,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// Address Sync
+        /////// MonitoringStatusTypes Sync
         /////
 
         /// get last modified date inside the database
@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncAddress::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncMonitoringStatusTypes::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -58,7 +58,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncAddress::select('id')->where('devco_id',$v['attributes']['addressKey'])->first();
+                            $updateRecord = SyncMonitoringStatusTypes::select('id')->where('devco_id',$v['attributes']['monitoringStatusTypeKey'])->first();
 
                             if(isset($updateRecord->id)) {
                                 // record exists - update it.
@@ -76,31 +76,17 @@ class SyncController extends Controller
 
                                 if($devcoDateEval > $allitaDateEval){
                                     // record is newer than the one currently on file
-                                    SyncAddress::where('id',$updateRecord['id'])
+                                    SyncMonitoringStatusTypes::where('id',$updateRecord['id'])
                                     ->update([
-                                        'line_1'=>$v['attributes']['line1'],
-                                        'line_2'=>$v['attributes']['line2'],
-                                        'city'=>$v['attributes']['city'],
-                                        'state'=>$v['attributes']['state'],
-                                        'zip'=>$v['attributes']['zipCode'],
-                                        'zip_4'=>$v['attributes']['zip4'],
-                                        'longitude'=>$v['attributes']['latitude'],
-                                        'latitude'=>$v['attributes']['longitude'],
-                                        'last_edited'=>$v['attributes']['lastEdited'],
+                                    'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
+                                    'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
                                 }
                             } else {
-                                SyncAddress::create([
-                                    'devco_id'=>$v['attributes']['addressKey'],
-                                    'line_1'=>$v['attributes']['line1'],
-                                    'line_2'=>$v['attributes']['line2'],
-                                    'city'=>$v['attributes']['city'],
-                                    'state'=>$v['attributes']['state'],
-                                    'zip'=>$v['attributes']['zipCode'],
-                                    'zip_4'=>$v['attributes']['zip4'],
-                                    'longitude'=>$v['attributes']['latitude'],
-                                    'latitude'=>$v['attributes']['longitude'],
-                                    'last_edited'=>$v['attributes']['lastEdited'],
+                                SyncMonitoringStatusTypes::create([
+                                    'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
+                                'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
+                                'last_edited'=>$v['attributes']['lastEdited'],
                                 ]);
                             }
 
