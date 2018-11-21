@@ -47,7 +47,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listAddresses(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
                     if($syncPage > 1){
@@ -64,8 +64,9 @@ class SyncController extends Controller
                                 // record exists - update it.
                                 $devcoDate = new DateTime($v['attributes']['lastEdited']);
                                 $allitaDate = new DateTime($lastModifiedDate->last_edited_convert);
-
-                                dd($v['attributes']['lastEdited'],$devcoDate,$devcoDate->format('u'),$allitaDate,$allitaDate->format('u'),$lastModifiedDate->last_edited_convert);
+                                $devcoDateEval = strtotime($devcoDate) + $devcoDate->format('u');
+                                $allitaDateEval = strtotime($allitaDate) + $allitaDate->format('u');
+                                dd($devcoDateEval,$allitaDateEval);
 
                                 if($v['attributes']['lastEdited'] > $lastModifiedDate->last_edited){
                                     // record is newer than the one currently on file
