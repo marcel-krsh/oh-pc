@@ -70,19 +70,21 @@ class SyncAddresses implements ShouldQueue
 
                         if(isset($updateRecord->id)) {
                             // record exists - update it.
-                            //dd('duplicate'.$v['attributes']['addressKey']);
-                            SyncAddress::where('id',$updateRecord['id'])
-                            ->update([
-                                'line_1'=>$v['attributes']['line1'],
-                                'line_2'=>$v['attributes']['line2'],
-                                'city'=>$v['attributes']['city'],
-                                'state'=>$v['attributes']['state'],
-                                'zip'=>$v['attributes']['zipCode'],
-                                'zip_4'=>$v['attributes']['zip4'],
-                                'longitude'=>$v['attributes']['latitude'],
-                                'latitude'=>$v['attributes']['longitude'],
-                                'last_edited'=>$v['attributes']['lastEdited'],
-                            ]);
+                            if(strtotime($updateRecord->last_edited) > (strtotime($modified) + 1)){
+                                // record is newer than the one currently on file
+                                SyncAddress::where('id',$updateRecord['id'])
+                                ->update([
+                                    'line_1'=>$v['attributes']['line1'],
+                                    'line_2'=>$v['attributes']['line2'],
+                                    'city'=>$v['attributes']['city'],
+                                    'state'=>$v['attributes']['state'],
+                                    'zip'=>$v['attributes']['zipCode'],
+                                    'zip_4'=>$v['attributes']['zip4'],
+                                    'longitude'=>$v['attributes']['latitude'],
+                                    'latitude'=>$v['attributes']['longitude'],
+                                    'last_edited'=>$v['attributes']['lastEdited'],
+                                ]);
+                            }
                         } else {
                             SyncAddress::create([
                                 'devco_id'=>$v['attributes']['addressKey'],
