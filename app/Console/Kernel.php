@@ -29,10 +29,9 @@ class Kernel extends ConsoleKernel
     {
         //$schedule->command('queue:listen')->everyMinute();
 
-        $test = DB::table('jobs')->where('payload','like','%SyncDevco%')->first();
+        $test = DB::table('jobs')->where('payload','like','%SyncAddresses%')->first();
         if(is_null($test)) {
-            $schedule->job(new SyncDevco)->everyMinute();
-            //Log::info('Queing Devco Sync Job'.time());      
+            $schedule->job(new SyncAddresses)->everyMinute();
             
         } else {
             //Log::info('Sync Job Already Started.');
