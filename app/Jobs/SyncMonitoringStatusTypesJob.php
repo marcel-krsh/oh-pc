@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Models\SyncMonitoringStatusTypes;
 
-class SyncMonitoringStatusTypes implements ShouldQueue
+class SyncMonitoringStatusTypesJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 

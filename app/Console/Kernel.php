@@ -5,7 +5,7 @@ use DB;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Log;
 use App\Jobs\SyncAddresses;
-use App\Jobs\SyncMonitoringStatusTypes;
+use App\Jobs\SyncMonitoringStatusTypesJob;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
