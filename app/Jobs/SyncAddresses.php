@@ -15,7 +15,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 use App\Models\SyncAddress;
-use App\Models\Address;
+//use App\Models\Address;
 
 class SyncAddresses implements ShouldQueue
 {

@@ -5,6 +5,7 @@ use DB;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Log;
 use App\Jobs\SyncAddresses;
+use App\Jobs\SyncMonitoringStatusTypes;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -27,11 +28,24 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //$schedule->command('queue:listen')->everyMinute();
+        /////////////////
+        ////// SYNC JOBS
+        ////
 
+        // @TODO Make it check for tables that need to be updated first.
+        // Addresses
         $test = DB::table('jobs')->where('payload','like','%SyncAddresses%')->first();
         if(is_null($test)) {
             $schedule->job(new SyncAddresses)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        // Monitoring Status Types
+        $test = DB::table('jobs')->where('payload','like','%SyncMonitoringStatusTypes%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncMonitoringStatusTypes)->everyMinute();
             
         } else {
             //Log::info('Sync Job Already Started.');

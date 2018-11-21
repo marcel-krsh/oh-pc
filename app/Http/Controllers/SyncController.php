@@ -21,7 +21,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// Address Sync
+        /////// Monitoring Status Types Sync
         /////
 
         /// get last modified date inside the database
