@@ -125,7 +125,7 @@ class SyncAddresses implements ShouldQueue
 
                         }
                     $syncPage++;
-                }while($syncPage < $syncData['meta']['totalPageCount']);
+                }while($syncPage <= $syncData['meta']['totalPageCount']);
             }
         }
     }
