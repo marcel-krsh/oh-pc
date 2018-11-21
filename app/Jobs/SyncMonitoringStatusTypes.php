@@ -38,7 +38,7 @@ class SyncMonitoringStatusTypes implements ShouldQueue
      */
     public function handle()
     {
-         //////////////////////////////////////////////////
+        //////////////////////////////////////////////////
         /////// Monitoring Status Types Sync
         /////
 
@@ -67,16 +67,20 @@ class SyncMonitoringStatusTypes implements ShouldQueue
                 foreach($syncData['data'] as $i => $v)
                     {
                         // check if record exists
-                        $updateRecord = SyncMonitoringStatusTypes::select('id')->where('monitoring_status_type_key',$v['attributes']['monitoringStatusTypeKey'])->first();
+                        $updateRecord = SyncMonitoringStatusTypes::select('id','last_edited')->where('monitoring_status_type_key',$v['attributes']['monitoringStatusTypeKey'])->first();
 
                         if(isset($updateRecord->id)) {
+
                             // record exists - update it.
-                            //dd('duplicate'.$v['attributes']['addressKey']);
-                            SyncMonitoringStatusTypes::where('id',$updateRecord['id'])
-                            ->update([
-                                'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
-                                'last_edited'=>$v['attributes']['lastEdited'],
-                            ]);
+                            
+                            if(strtotime($v['attributes']['lastEdited']) > (strtotime($modified) + 1)){
+                                // update is newer than the one on file
+                                SyncMonitoringStatusTypes::where('id',$updateRecord['id'])
+                                ->update([
+                                    'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
+                                    'last_edited'=>$v['attributes']['lastEdited'],
+                                ]);
+                            } 
                         } else {
                             SyncMonitoringStatusTypes::create([
                                 'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
@@ -90,6 +94,7 @@ class SyncMonitoringStatusTypes implements ShouldQueue
             }while($syncPage < $syncData['meta']['totalPageCount']);
         }
 
+    
         
     }
     
