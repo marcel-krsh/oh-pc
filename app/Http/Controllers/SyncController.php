@@ -56,8 +56,8 @@ class SyncController extends Controller
                             $allitaDate = new DateTime($modified);
 
                             dd($devcoDate,$devcoDate->format('u'),$allitaDate,$allitaDate->format('u'));
-                            
-                            if($v['attributes']['lastEdited']) > $lastModifiedDate->last_edited){
+
+                            if($v['attributes']['lastEdited'] > $lastModifiedDate->last_edited){
                                 // record is newer than the one currently on file
                                 SyncAddress::where('id',$updateRecord['id'])
                                 ->update([
