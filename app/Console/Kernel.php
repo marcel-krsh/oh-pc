@@ -4,7 +4,7 @@ namespace App\Console;
 use DB;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Log;
-use App\Jobs\SyncDevco;
+use App\Jobs\SyncAddresses;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
