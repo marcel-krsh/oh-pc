@@ -49,7 +49,7 @@ class SyncController extends Controller
                 foreach($syncData['data'] as $i => $v)
                     {
                         // check if record exists
-                        $updateRecord = SyncMonitoringStatusTypes::select('id')->where('monitoring_status_type_key',$v['monitoringStatusKey'])->first();
+                        $updateRecord = SyncMonitoringStatusTypes::select('id')->where('monitoring_status_type_key',$v['monitoringStatusTypeKey'])->first();
 
                         if(isset($updateRecord->id)) {
                             // record exists - update it.
@@ -61,7 +61,7 @@ class SyncController extends Controller
                             ]);
                         } else {
                             SyncMonitoringStatusTypes::create([
-                                'monitoring_status_key'=>$v['attributes']['monitoringStatusKey'],
+                                'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
                                 'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
                                 'last_edited'=>$v['attributes']['lastEdited'],
                             ]);
