@@ -11,7 +11,7 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncAddress;
+use App\Models\SyncMonitoringStatusTypes;
 use App\Models\Address;
 
 
@@ -25,7 +25,7 @@ class SyncController extends Controller
         /////
 
         /// get last modified date inside the database
-        $lastModifiedDate = SyncAddress::select('last_edited')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncMonitoringStatusTypes::select('last_edited')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -36,24 +36,25 @@ class SyncController extends Controller
         }
     	$apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listAddresses(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listAuditStatuses(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
+            dd($syncData);
             $syncPage = 1;
             do{
                 if($syncPage > 1){
                     //Get Next Page
-                    $syncData = $apiConnect->listAddresses($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                    $syncData = $apiConnect->listAuditStatuses($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                     $syncData = json_decode($syncData, true);
                 }
                 foreach($syncData['data'] as $i => $v)
                     {
                         // check if record exists
-                        $updateRecord = SyncAddress::select('id')->where('devco_id',$v['id'])->first();
+                        $updateRecord = SyncMonitoringStatusTypes::select('id')->where('devco_id',$v['id'])->first();
 
                         if(isset($updateRecord->id)) {
                             // record exists - update it.
                             //dd('duplicate'.$v['attributes']['addressKey']);
-                            SyncAddress::where('id',$updateRecord['id'])
+                            SyncMonitoringStatusTypes::where('id',$updateRecord['id'])
                             ->update([
                                 'line_1'=>$v['attributes']['line1'],
                                 'line_2'=>$v['attributes']['line2'],
@@ -66,7 +67,7 @@ class SyncController extends Controller
                                 'last_edited'=>$v['attributes']['lastEdited'],
                             ]);
                         } else {
-                            SyncAddress::create([
+                            SyncMonitoringStatusTypes::create([
                                 'devco_id'=>$v['attributes']['addressKey'],
                                 'line_1'=>$v['attributes']['line1'],
                                 'line_2'=>$v['attributes']['line2'],
