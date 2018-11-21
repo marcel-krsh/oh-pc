@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use DB;
 use DateTime;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
