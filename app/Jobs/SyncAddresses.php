@@ -102,6 +102,8 @@ class SyncMonitoringStatusTypeses implements ShouldQueue
                     }
                 $syncPage++;
             }while($syncPage < $syncData['meta']['totalPageCount']);
+        } else {
+            echo "Bad Things";
         }
     }
 }
