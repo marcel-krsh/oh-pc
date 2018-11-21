@@ -73,7 +73,7 @@ class SyncMonitoringStatusTypesJob implements ShouldQueue
 
                             // record exists - update it.
                             
-                            if(strtotime($v['attributes']['lastEdited']) > (strtotime($modified) + 1)){
+                            if(strtotime($v['attributes']['lastEdited']) > strtotime($lastModifiedDate->last_edited)){
                                 // update is newer than the one on file
                                 SyncMonitoringStatusTypes::where('id',$updateRecord['id'])
                                 ->update([

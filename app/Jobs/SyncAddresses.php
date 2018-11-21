@@ -70,7 +70,7 @@ class SyncAddresses implements ShouldQueue
 
                         if(isset($updateRecord->id)) {
                             // record exists - update it.
-                            if(strtotime($v['attributes']['lastEdited']) > (strtotime($modified) + 1)){
+                            if(strtotime($v['attributes']['lastEdited']) > strtotime($lastModifiedDate->last_edited)){
                                 // record is newer than the one currently on file
                                 SyncAddress::where('id',$updateRecord['id'])
                                 ->update([
