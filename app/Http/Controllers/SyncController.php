@@ -64,9 +64,9 @@ class SyncController extends Controller
                                 // record exists - update it.
                                 $devcoDate = new DateTime($v['attributes']['lastEdited']);
                                 $allitaDate = new DateTime($lastModifiedDate->last_edited_convert);
-                                $devcoDateEval = strtotime($devcoDate) + $devcoDate->format('u');
-                                $allitaDateEval = strtotime($allitaDate) + $allitaDate->format('u');
-                                dd($devcoDateEval,$allitaDateEval);
+                                $devcoDateEval = strtotime($devcoDate->format('Y-m-d H:i:s')) + $devcoDate->format('u');
+                                $allitaDateEval = strtotime($allitaDate->format('Y-m-d H:i:s')) + $allitaDate->format('u');
+                                dd($devcoDate->format('Y-m-d H:i:s'),$devcoDateEval,$allitaDate->format('Y-m-d H:i:s')$allitaDateEval);
 
                                 if($v['attributes']['lastEdited'] > $lastModifiedDate->last_edited){
                                     // record is newer than the one currently on file
