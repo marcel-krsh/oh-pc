@@ -52,6 +52,7 @@ class SyncAddresses implements ShouldQueue
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
         $lastModifiedDate = SyncAddress::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate == NULL;
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
