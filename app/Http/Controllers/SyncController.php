@@ -44,7 +44,7 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listAddresses(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listAddresses(1, urlencode($modified), 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             dd($modified,$syncData);
