@@ -26,7 +26,7 @@ class SyncController extends Controller
         /////
 
         /// get last modified date inside the database
-        $lastModifiedDate = SyncAddress::select('last_edited')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncAddress::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"))->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -54,9 +54,9 @@ class SyncController extends Controller
                         if(isset($updateRecord->id)) {
                             // record exists - update it.
                             $devcoDate = new DateTime($v['attributes']['lastEdited']);
-                            $allitaDate = new DateTime($lastModifiedDate->last_edited);
+                            $allitaDate = new DateTime($lastModifiedDate->last_edited_convert);
 
-                            dd($v['attributes']['lastEdited'],$devcoDate,$devcoDate->format('u'),$allitaDate,$allitaDate->format('u'),$lastModifiedDate->last_edited);
+                            dd($v['attributes']['lastEdited'],$devcoDate,$devcoDate->format('u'),$allitaDate,$allitaDate->format('u'),$lastModifiedDate->last_edited_convert);
 
                             if($v['attributes']['lastEdited'] > $lastModifiedDate->last_edited){
                                 // record is newer than the one currently on file
