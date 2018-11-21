@@ -40,7 +40,9 @@ class SyncController extends Controller
         }else{
             // format date stored to the format we are looking for...
             // we resync the last second of the data to be sure we get any records that happened to be recorded at the same second.
-            $currentModifiedDateTimeStamp = settype(strtotime($lastModifiedDate->last_edited_convert),'float') - .001;
+            $currentModifiedDateTimeStamp = strtotime($lastModifiedDate->last_edited_convert);
+            $currentModifiedDateTimeStamp = settype($currentModifiedDateTimeStamp,'float');
+            $currentModifiedDateTimeStamp = $currentModifiedDateTimeStamp - .001;
             $modified = date('m/d/Y g:i:s.u a',$currentModifiedDateTimeStamp);
         }
         $apiConnect = new DevcoService();
