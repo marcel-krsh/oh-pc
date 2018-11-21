@@ -52,6 +52,7 @@ class SyncController extends Controller
 
                         if(isset($updateRecord->id)) {
                             // record exists - update it.
+                            dd(strtotime($v['attributes']['lastEdited']), strtotime($lastModifiedDate->last_edited));
                             if(strtotime($v['attributes']['lastEdited']) > strtotime($lastModifiedDate->last_edited)){
                                 // record is newer than the one currently on file
                                 SyncAddress::where('id',$updateRecord['id'])
