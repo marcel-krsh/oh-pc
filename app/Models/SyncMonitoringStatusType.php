@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SyncMonitoringStatusTypes extends Model
+class SyncMonitoringStatusType extends Model
 {
     //\
-    public $timestamps = true;
+    	public $timestamps = true;
+		protected $dateFormat = 'Y-m-d\TH:i:s.u';
+
+	
+
     //
     protected $fillable = [
         'monitoring_status_type_key',
