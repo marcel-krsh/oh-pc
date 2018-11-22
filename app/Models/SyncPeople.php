@@ -11,14 +11,5 @@ class SyncPeople extends Model
     
 
     //
-    protected $fillable = [
-        'allita_id',
-    	'person_key',
-    	'last_name',
-    	'first_name',
-    	'default_phone_number_key',
-    	'default_fax_number_key',
-    	'default_email_address_key',
-    	'last_edited',
-    ];
+    protected $guarded = ['id'];
 }

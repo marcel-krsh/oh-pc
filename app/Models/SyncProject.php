@@ -12,17 +12,5 @@ class SyncProject extends Model
 	
 
     //
-    protected $fillable = [
-    	'allita_id',
-    	'project_key',
-    	'project_name',
-    	'physical_address_key',
-    	'default_phone_number_key',
-    	'total_unit_count',
-    	'total_building_count',
-    	'project_number',
-    	'sample_size',
-    	'last_edited'
-
-    ]
+    protected $guarded = ['id'];
 }

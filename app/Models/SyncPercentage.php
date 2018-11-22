@@ -4,14 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SyncProjectRole extends Model
+class SyncPercentage extends Model
 {
-    public $timestamps = true;
+	public $timestamps = true;
 	protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
 	
 
     //
     protected $guarded = ['id'];
-
 }

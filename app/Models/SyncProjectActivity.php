@@ -12,12 +12,5 @@ class SyncProjectActivity extends Model
 	
 
     //
-    protected $fillable = [
-    	'allita_id',
-    	'project_activity_key',
-    	'project_key',
-    	'project_program_key',
-    	'project_activity_type_key',
-    	'last_edited'
-    ];
+    protected $guarded = ['id'];
 }

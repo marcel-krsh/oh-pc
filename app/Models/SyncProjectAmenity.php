@@ -12,13 +12,5 @@ class SyncProjectAmenity extends Model
 	
 
     //
-    protected $fillable = [
-    	'allita_id',
-    	'project_amenity_key',
-    	'project_key',
-    	'project_program_key',
-    	'amenity_type_key',
-    	'comment',
-    	'last_edited'
-    ];
+    protected $guarded = ['id'];
 }

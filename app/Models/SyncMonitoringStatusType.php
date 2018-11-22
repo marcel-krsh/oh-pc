@@ -13,12 +13,5 @@ class SyncMonitoringStatusType extends Model
 	
 
     //
-    protected $fillable = [
-        'monitoring_status_type_key',
-        'allita_id',
-        'monitoring_status_description',
-        'last_edited',
-        'created_at',
-        'updated_at'
-    ];
+    protected $guarded = ['id'];
 }

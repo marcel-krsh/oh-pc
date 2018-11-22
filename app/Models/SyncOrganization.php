@@ -12,16 +12,5 @@ class SyncOrganization extends Model
 	
 
     //
-    protected $fillable = [
-    	'allita_id',
-    	'organization_key',
-    	'default_address_key',
-    	'default_phone_number_key',
-    	'default_fax_number_key',
-    	'default_contact_person_key',
-    	'parent_organization_key',
-    	'organization_name',
-    	'fed_id_number',
-    	'last_edited',
-    ];
+    protected $guarded = ['id'];
 }

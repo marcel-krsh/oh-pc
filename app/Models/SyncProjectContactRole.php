@@ -12,12 +12,5 @@ class SyncProjectContactRole extends Model
 	
 
     //
-    protected $fillable = [
-    	'allita_id',
-    	'project_contact_role_key',
-    	'project_key',
-    	'project_role_key',
-    	'organization_key',
-    	'last_edited'
-    ];
+    protected $guarded = ['id'];
 }
