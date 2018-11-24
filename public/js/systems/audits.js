@@ -293,6 +293,8 @@ function loadInspectionComments(data, id, context='audits', level = '') {
 	var newcomment = '';
 	var newreply = '';
 	var replies = '';
+	var actions = '';
+	var newaction = '';
 
 	data.forEach(function(comment) {
 		newcomment = inspectionCommentTemplate;
@@ -303,19 +305,31 @@ function loadInspectionComments(data, id, context='audits', level = '') {
 		newcomment = newcomment.replace(/tplCommentCreatedAt/g, comment.created_at);
 		newcomment = newcomment.replace(/tplCommentUserName/g, comment.user_name);
 
-		comment.replies.forEach(function(reply){
-			newreply = inspectionCommentReplyTemplate;
-			newreply = newreply.replace(/tplCommentTypeIcon/g, reply.type_icon);
-			newreply = newreply.replace(/tplCommentType/g, reply.type_text);
-			newreply = newreply.replace(/tplCommentAuditId/g, reply.audit_id);
-			newreply = newreply.replace(/tplCommentCreatedAt/g, reply.created_at);
-			newreply = newreply.replace(/tplCommentUserName/g, reply.user_name);
-			newreply = newreply.replace(/tplCommentContent/g, reply.content);
+		if(comment.replies){
+			comment.replies.forEach(function(reply){
+				newreply = inspectionCommentReplyTemplate;
+				newreply = newreply.replace(/tplCommentTypeIcon/g, reply.type_icon);
+				newreply = newreply.replace(/tplCommentType/g, reply.type_text);
+				newreply = newreply.replace(/tplCommentAuditId/g, reply.audit_id);
+				newreply = newreply.replace(/tplCommentCreatedAt/g, reply.created_at);
+				newreply = newreply.replace(/tplCommentUserName/g, reply.user_name);
+				newreply = newreply.replace(/tplCommentContent/g, reply.content);
 
-			replies = replies + newreply;
-		});
+				replies = replies + newreply;
+			});
+		}
 
-		console.log(comment);
+		if(comment.actions_json){
+			JSON.parse(comment.actions_json).forEach(function(action){
+				newaction = '<div class="uk-width-1-4"><button class="uk-button uk-link inspec-tools-tab-finding-button"><i class="tplActionIcon"></i> tplActionText</button></div>';
+				newaction = newaction.replace(/tplActionIcon/g, action.icon);
+				newaction = newaction.replace(/tplActionText/g, action.name);
+
+				actions = actions + newaction;
+			});
+
+			newcomment = newcomment.replace(/tplCommentActions/g, actions);
+		}
 
 		newcomment = newcomment.replace(/tplCommentReplies/g, newreply);
 

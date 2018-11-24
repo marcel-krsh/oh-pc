@@ -129,9 +129,10 @@ class CachedComment extends Model
         return $this->hasOne(\App\Models\Document::class, 'id', 'document_id');
     }
 
-    public function getActionsJsonAttribute($value) {
-      return json_decode($value);
-    }
+    // breaks the jquery templating in audits.js 
+    // public function getActionsJsonAttribute($value) {
+    //   return json_decode($value);
+    // }
 
     public function getPhotosJsonAttribute($value) {
       return json_decode($value);

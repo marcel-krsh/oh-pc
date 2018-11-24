@@ -47,26 +47,6 @@
 	    	<div class="uk-width-1-1 uk-margin-remove">
 	    		<div uk-grid>
 	    			tplCommentActions
-	    			<div class="uk-width-1-4">
-	    				<button class="uk-button uk-link inspec-tools-tab-finding-button">
-	    					<i class="a-calendar-pencil"></i> FOLLOW UP
-					    </button>
-	    			</div>
-	    			<div class="uk-width-1-4">
-	    				<button class="uk-button uk-link inspec-tools-tab-finding-button">
-	    					<i class="a-comment-text"></i> COMMENT
-					    </button>
-	    			</div>
-	    			<div class="uk-width-1-4">
-	    				<button class="uk-button uk-link inspec-tools-tab-finding-button colored">
-	    					<i class="a-file-clock"></i> DOCUMENT
-					    </button>
-	    			</div>
-	    			<div class="uk-width-1-4">
-	    				<button class="uk-button uk-link inspec-tools-tab-finding-button">
-	    					<i class="a-picture"></i> PHOTO
-					    </button>
-	    			</div>
 	    		</div>
 	    	</div>
 		</div>
