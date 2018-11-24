@@ -4,7 +4,7 @@ namespace App\Console;
 use DB;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Log;
-use App\Jobs\SyncAddresses;
+use App\Jobs\SyncAddressesJob;
 use App\Jobs\SyncMonitoringStatusTypesJob;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -36,7 +36,7 @@ class Kernel extends ConsoleKernel
         // Addresses
         $test = DB::table('jobs')->where('payload','like','%SyncAddresses%')->first();
         if(is_null($test)) {
-            $schedule->job(new SyncAddresses)->everyMinute();
+            $schedule->job(new SyncAddressesJob)->everyMinute();
             
         } else {
             //Log::info('Sync Job Already Started.');

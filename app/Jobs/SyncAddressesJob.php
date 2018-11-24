@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Jobs;
-use DB;
-use DateTime;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -13,12 +12,14 @@ use App\Services\DevcoService;
 use App\Models\AuthTracker;
 use App\Models\SystemSetting;
 use App\Models\User;
+use DB;
+use DateTime;
 use Illuminate\Support\Facades\Hash;
 
 use App\Models\SyncAddress;
 //use App\Models\Address;
 
-class SyncAddresses implements ShouldQueue
+class SyncAddressesJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
