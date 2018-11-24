@@ -50,7 +50,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listPeople(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp1,$currentModifiedDateTimeStamp2,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -62,7 +62,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncPeople::select('id')->where('person_key',$v['attributes']['PersonKey'])->first();
+                            $updateRecord = SyncPeople::select('id')->where('person_key',$v['attributes']['personKey'])->first();
 
                             if(isset($updateRecord->id)) {
                                 // record exists - update it.
@@ -83,21 +83,22 @@ class SyncController extends Controller
                                     SyncPeople::where('id',$updateRecord['id'])
                                     ->update([
                                     'last_name'=>$v['attributes']['LastName'],
-                                    'first_name'=>$v['attributes']['FirstName'],
+                                    'first_name'=>$v['attributes']['firstName'],
                                     'default_phone_number_key'=>$v['attributes']['DefaultPhoneNumberKey'],
                                     'default_fax_number_key'=>$v['attributes']['DefaultFaxNumberKey'],
-                                    'default_email_address_key'=>$v['attributes']['FirstName'],
+                                    'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
                                     'last_edited'=>$v['attributes']['LastEdited'],
                                     ]);
                                 }
                             } else {
                                 SyncPeople::create([
-                                    'person_key'=>$v['attributes']['PersonKey'],'last_name'=>$v['attributes']['LastName'],
-                                    'first_name'=>$v['attributes']['FirstName'],
+                                    'person_key'=>$v['attributes']['personKey'],'last_name'=>$v['attributes']['LastName'],
+                                    'first_name'=>$v['attributes']['firstName'],
                                     'default_phone_number_key'=>$v['attributes']['DefaultPhoneNumberKey'],
                                     'default_fax_number_key'=>$v['attributes']['DefaultFaxNumberKey'],
-                                    'default_email_address_key'=>$v['attributes']['FirstName'],
+                                    'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
                                     'last_edited'=>$v['attributes']['LastEdited'],
+                                    'is_active'=>$v['attributes']['isActive'],
                                 ]);
                             }
 
