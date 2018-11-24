@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class CashedBuildingsTableSeeder extends Seeder
+class CachedUnitsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,12 +11,12 @@ class CashedBuildingsTableSeeder extends Seeder
      */
     public function run()
     {
-        $buildingsSeeder = [
+        $unitsSeeder = [
             [
-                'id' => '123', 
                 'audit_id' => '123',
+                'project_id' => '123',
+                'building_id' => '123',
                 'status' => 'critical',
-                'amenity_id' => null,
                 'type' => 'building',
                 'type_text' => 'Building',
                 'type_text_plural' => 'Buildings',
@@ -74,10 +74,10 @@ class CashedBuildingsTableSeeder extends Seeder
 				]',
             ],
             [
-                'id' => '345', 
                 'audit_id' => '111',
+                'project_id' => '123',
+                'building_id' => '123',
                 'status' => 'action-needed',
-                'amenity_id' => 122,
                 'type' => 'pool',
                 'type_text' => '',
                 'type_text_plural' => '',
@@ -116,13 +116,29 @@ class CashedBuildingsTableSeeder extends Seeder
 						"status": ""
 					}
 				]',
-                'amenities_json' => '[]',
+                'amenities_json' => '[
+	                { "type": "Elevator", "qty": "2", "status": "pending" },
+	                { "type": "ADA", "qty": null, "status": "inspected" },
+	                { "type": "Floors", "qty": "2", "status": "pending" },
+	                { "type": "Common Areas", "qty": "2", "status": "action" },
+	                { "type": "Fitness Room", "qty": "1", "status": "pending" },
+	                { "type": "Elevator", "qty": "2", "status": "pending" },
+	                { "type": "ADA", "qty": null, "status": "inspected" },
+	                { "type": "Floors", "qty": "2", "status": "pending" },
+	                { "type": "Common Areas", "qty": "2", "status": "action" },
+	                { "type": "Fitness Room", "qty": "1", "status": "pending" },
+	                { "type": "Elevator", "qty": "2", "status": "pending" },
+	                { "type": "ADA", "qty": null, "status": "inspected" },
+	                { "type": "Floors", "qty": "2", "status": "pending" },
+	                { "type": "Common Areas", "qty": "2", "status": "action" },
+	                { "type": "Fitness Room", "qty": "1", "status": "pending" }
+				]',
             ],
             [
-                'id' => '12333', 
                 'audit_id' => '12344',
+                'project_id' => '123',
+                'building_id' => '123',
                 'status' => 'in-progress',
-                'amenity_id' => null,
                 'type' => 'building',
                 'type_text' => 'Building',
                 'type_text_plural' => 'Buildings',
@@ -180,10 +196,10 @@ class CashedBuildingsTableSeeder extends Seeder
 				]',
             ],
             [
-                'id' => '123876', 
                 'audit_id' => '123',
+                'project_id' => '123',
+                'building_id' => '123',
                 'status' => 'ok-actionable',
-                'amenity_id' => null,
                 'type' => 'building',
                 'type_text' => 'Building',
                 'type_text_plural' => 'Buildings',
@@ -241,10 +257,10 @@ class CashedBuildingsTableSeeder extends Seeder
 				]',
             ],
             [
-                'id' => '12399', 
                 'audit_id' => '123',
+                'project_id' => '123',
+                'building_id' => '123',
                 'status' => '',
-                'amenity_id' => null,
                 'type' => 'building',
                 'type_text' => 'Building',
                 'type_text_plural' => 'Buildings',
@@ -302,10 +318,10 @@ class CashedBuildingsTableSeeder extends Seeder
 				]',
             ],
             [
-                'id' => '999', 
                 'audit_id' => '123',
+                'project_id' => '123',
+                'building_id' => '123',
                 'status' => '',
-                'amenity_id' => 133,
                 'type' => 'pool',
                 'type_text' => '',
                 'type_text_plural' => '',
@@ -344,13 +360,29 @@ class CashedBuildingsTableSeeder extends Seeder
 						"status": ""
 					}
 				]',
-                'amenities_json' => '[]',
+                'amenities_json' => '[
+	                { "type": "Elevator", "qty": "2", "status": "pending" },
+	                { "type": "ADA", "qty": null, "status": "inspected" },
+	                { "type": "Floors", "qty": "2", "status": "pending" },
+	                { "type": "Common Areas", "qty": "2", "status": "action" },
+	                { "type": "Fitness Room", "qty": "1", "status": "pending" },
+	                { "type": "Elevator", "qty": "2", "status": "pending" },
+	                { "type": "ADA", "qty": null, "status": "inspected" },
+	                { "type": "Floors", "qty": "2", "status": "pending" },
+	                { "type": "Common Areas", "qty": "2", "status": "action" },
+	                { "type": "Fitness Room", "qty": "1", "status": "pending" },
+	                { "type": "Elevator", "qty": "2", "status": "pending" },
+	                { "type": "ADA", "qty": null, "status": "inspected" },
+	                { "type": "Floors", "qty": "2", "status": "pending" },
+	                { "type": "Common Areas", "qty": "2", "status": "action" },
+	                { "type": "Fitness Room", "qty": "1", "status": "pending" }
+				]',
             ],
             [
-                'id' => '999888', 
                 'audit_id' => '123',
+                'project_id' => '123',
+                'building_id' => '123',
                 'status' => '',
-                'is_amenity' => 1,
                 'type' => 'pool',
                 'type_text' => '',
                 'type_text_plural' => '',
@@ -389,14 +421,30 @@ class CashedBuildingsTableSeeder extends Seeder
 						"status": ""
 					}
 				]',
-                'amenities_json' => '',
+                'amenities_json' => '[
+	                { "type": "Elevator", "qty": "2", "status": "pending" },
+	                { "type": "ADA", "qty": null, "status": "inspected" },
+	                { "type": "Floors", "qty": "2", "status": "pending" },
+	                { "type": "Common Areas", "qty": "2", "status": "action" },
+	                { "type": "Fitness Room", "qty": "1", "status": "pending" },
+	                { "type": "Elevator", "qty": "2", "status": "pending" },
+	                { "type": "ADA", "qty": null, "status": "inspected" },
+	                { "type": "Floors", "qty": "2", "status": "pending" },
+	                { "type": "Common Areas", "qty": "2", "status": "action" },
+	                { "type": "Fitness Room", "qty": "1", "status": "pending" },
+	                { "type": "Elevator", "qty": "2", "status": "pending" },
+	                { "type": "ADA", "qty": null, "status": "inspected" },
+	                { "type": "Floors", "qty": "2", "status": "pending" },
+	                { "type": "Common Areas", "qty": "2", "status": "action" },
+	                { "type": "Fitness Room", "qty": "1", "status": "pending" }
+				]',
             ],
             [
-                'id' => '123221', 
                 'audit_id' => '123',
+                'project_id' => '123',
+                'building_id' => '123',
                 'status' => 'critical',
                 'type' => 'building',
-                'amenity_id' => null,
                 'type_text' => 'Building',
                 'type_text_plural' => 'Buildings',
                 'type_total' => '4',
@@ -506,6 +554,6 @@ class CashedBuildingsTableSeeder extends Seeder
             ]
         ];
 
-        \Illuminate\Support\Facades\DB::table('cached_buildings')->insert($buildingsSeeder);
+        \Illuminate\Support\Facades\DB::table('cached_units')->insert($unitsSeeder);
     }
 }

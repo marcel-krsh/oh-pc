@@ -13,7 +13,7 @@ use App\Models\OrderingUnit;
 use App\Models\OrderingAmenity;
 use App\Models\CachedInspection;
 use App\Models\CachedAmenity;
-use App\Models\CachedInspectionComment;
+use App\Models\CachedComment;
 use Auth;
 use Session;
 use App\LogConverter;
@@ -62,7 +62,6 @@ class AuditController extends Controller
         }elseif(CachedBuilding::where('audit_id', '=', $audit)->count() != OrderingBuilding::where('audit_id', '=', $audit)->where('user_id','=',Auth::user()->id)->count() && CachedBuilding::where('audit_id', '=', $audit)->count() != 0){
 
             $buildings = null;
-            //dd($buildings);
 
         }
         
@@ -190,182 +189,16 @@ class AuditController extends Controller
         $rowid = $request->get('rowid');
         $context = $request->get('context');
         $inspection = "test";
-        $data['detail'] = collect([
-                            'id' => 1, 
-                            'status' => 'critical',
-                            'street' => '123457 Silvegwood Street', 
-                            'city' => 'Columbus', 
-                            'state' => 'OH', 
-                            'zip' => '43219', 
-                            'auditors' => [
-                                ['name' => 'Brian Greenwood',
-                                'initials' => 'BG',
-                                'color' => 'green',
-                                'status' => 'warning'],
-                                ['name' => 'Another Name',
-                                'initials' => 'AN',
-                                'color' => 'blue',
-                                'status' => '']
-                            ],
-                            'type' => 'building',
-                            'areas' => [
-                                ['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
-                                ['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
-                                ['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
-                                ['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
-                                ['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
-                            ]
-                    ]);
-        // ok-actionable, no-action, action-needed, action-required, in-progress, critical
-        $data['menu'] = collect([
-                            ['name' => 'SITE AUDIT', 'icon' => 'a-mobile-home', 'status' => 'critical active', 'style' => '', 'action' => 'site_audit'],
-                            ['name' => 'FILE AUDIT', 'icon' => 'a-folder', 'status' => 'action-required', 'style' => '', 'action' => 'file_audit'],
-                            ['name' => 'MESSAGES', 'icon' => 'a-envelope-incoming', 'status' => 'action-needed', 'style' => '', 'action' => 'messages'],
-                            ['name' => 'FOLLOW UPS', 'icon' => 'a-bell-2', 'status' => 'no-action', 'style' => '', 'action' => 'followups'],
-                            ['name' => 'SUBMIT', 'icon' => 'a-avatar-star', 'status' => 'in-progress', 'style' => 'margin-top:30px;', 'action' => 'submit'],
-                    ]);
-        $data['areas'] = collect([
-                            [
-                                'id' => 1, 
-                                'status' => 'action-needed',
-                                'name' => 'Stair #1', 
-                                'auditor' => [
-                                    'name' => 'Brian Greenwood',
-                                    'initials' => 'BG',
-                                    'color' => 'green',
-                                    'status' => 'warning'
-                                ],
-                                'findings' => [
-                                    'nltstatus' => 'action-needed',
-                                    'ltstatus' => 'action-required',
-                                    'sdstatus' => 'no-action',
-                                    'photostatus' => '',
-                                    'commentstatus' => '',
-                                    'copystatus' => 'no-action',
-                                    'trashstatus' => ''
-                                ]
-                            ],
-                            [
-                                'id' => 2, 
-                                'status' => 'critical',
-                                'name' => 'Bedroom #1', 
-                                'auditor' => [
-                                    'name' => 'Brian Greenwood',
-                                    'initials' => 'BG',
-                                    'color' => 'yellow',
-                                    'status' => 'warning'
-                                ],
-                                'findings' => [
-                                    'nltstatus' => 'action-needed',
-                                    'ltstatus' => 'action-required',
-                                    'sdstatus' => 'no-action',
-                                    'photostatus' => '',
-                                    'commentstatus' => '',
-                                    'copystatus' => 'no-action',
-                                    'trashstatus' => ''
-                                ]
-                            ],
-                            [
-                                'id' => 3, 
-                                'status' => 'in-progress',
-                                'name' => 'Bedroom #2', 
-                                'auditor' => [
-                                    'name' => 'Brian Greenwood',
-                                    'initials' => 'BG',
-                                    'color' => 'pink',
-                                    'status' => 'warning'
-                                ],
-                                'findings' => [
-                                    'nltstatus' => 'action-needed',
-                                    'ltstatus' => 'action-required',
-                                    'sdstatus' => 'no-action',
-                                    'photostatus' => '',
-                                    'commentstatus' => '',
-                                    'copystatus' => 'no-action',
-                                    'trashstatus' => ''
-                                ]
-                            ],
-                            [
-                                'id' => 3, 
-                                'status' => 'in-progress',
-                                'name' => 'Bedroom #2', 
-                                'auditor' => [
-                                    'name' => 'Brian Greenwood',
-                                    'initials' => 'BG',
-                                    'color' => 'pink',
-                                    'status' => 'warning'
-                                ],
-                                'findings' => [
-                                    'nltstatus' => 'action-needed',
-                                    'ltstatus' => 'action-required',
-                                    'sdstatus' => 'no-action',
-                                    'photostatus' => '',
-                                    'commentstatus' => '',
-                                    'copystatus' => 'no-action',
-                                    'trashstatus' => ''
-                                ]
-                            ],
-                            [
-                                'id' => 3, 
-                                'status' => 'in-progress',
-                                'name' => 'Bedroom #2', 
-                                'auditor' => [
-                                    'name' => 'Brian Greenwood',
-                                    'initials' => 'BG',
-                                    'color' => 'pink',
-                                    'status' => 'warning'
-                                ],
-                                'findings' => [
-                                    'nltstatus' => 'action-needed',
-                                    'ltstatus' => 'action-required',
-                                    'sdstatus' => 'no-action',
-                                    'photostatus' => '',
-                                    'commentstatus' => '',
-                                    'copystatus' => 'no-action',
-                                    'trashstatus' => ''
-                                ]
-                            ],
-                            [
-                                'id' => 3, 
-                                'status' => 'in-progress',
-                                'name' => 'Bedroom #2', 
-                                'auditor' => [
-                                    'name' => 'Brian Greenwood',
-                                    'initials' => 'BG',
-                                    'color' => 'pink',
-                                    'status' => 'warning'
-                                ],
-                                'findings' => [
-                                    'nltstatus' => 'action-needed',
-                                    'ltstatus' => 'action-required',
-                                    'sdstatus' => 'no-action',
-                                    'photostatus' => '',
-                                    'commentstatus' => '',
-                                    'copystatus' => 'no-action',
-                                    'trashstatus' => ''
-                                ]
-                            ],
-                            [
-                                'id' => 3, 
-                                'status' => 'in-progress',
-                                'name' => 'Bedroom #2', 
-                                'auditor' => [
-                                    'name' => 'Brian Greenwood',
-                                    'initials' => 'BG',
-                                    'color' => 'pink',
-                                    'status' => 'warning'
-                                ],
-                                'findings' => [
-                                    'nltstatus' => 'action-needed',
-                                    'ltstatus' => 'action-required',
-                                    'sdstatus' => 'no-action',
-                                    'photostatus' => '',
-                                    'commentstatus' => '',
-                                    'copystatus' => 'no-action',
-                                    'trashstatus' => ''
-                                ]
-                            ]
-                    ]);
+        
+        $data['detail'] = CachedInspection::first();
+
+        $data['menu'] = $data['detail']->menu_json;
+
+        //$data['amenities'] = CachedAmenity::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->get();
+        $data['amenities'] = CachedAmenity::get()->toArray();
+
+        $data['comments'] = CachedComment::where('parent_id', '=', null)->with('replies')->get();
+
         return response()->json($data);
         //return view('dashboard.partials.audit_building_inspection', compact('audit_id', 'target', 'detail_id', 'building_id', 'detail', 'inspection', 'areas', 'rowid'));
     }
@@ -381,186 +214,16 @@ class AuditController extends Controller
         // $areas (cached_audit_inspection_areas)
         // $comments (cached_audit_inspection_comments)
         
-        $data['detail'] = CachedInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->get();
+        //$data['detail'] = CachedInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->get();
+        $data['detail'] = CachedInspection::first();
 
-        // $data['detail'] = collect([
-        //                     'id' => 1, 
-        //                     'status' => 'critical',
-        //                     'street' => '123457 Silvegwood Street', 
-        //                     'city' => 'Columbus', 
-        //                     'state' => 'OH', 
-        //                     'zip' => '43219', 
-        //                     'auditors' => [
-        //                         ['name' => 'Brian Greenwood',
-        //                         'initials' => 'BG',
-        //                         'color' => 'green',
-        //                         'status' => 'warning'],
-        //                         ['name' => 'Another Name',
-        //                         'initials' => 'AN',
-        //                         'color' => 'blue',
-        //                         'status' => '']
-        //                     ],
-        //                     'type' => 'building',
-        //                     'areas' => [ // needed ???
-        //                         ['type' => 'Elevators', 'qty' => 2, 'status' => 'pending'],
-        //                         ['type' => 'ADA', 'qty' => null, 'status' => 'inspected'],
-        //                         ['type' => 'Floors', 'qty' => 2, 'status' => 'pending'],
-        //                         ['type' => 'Common Areas', 'qty' => 2, 'status' => 'inspected'],
-        //                         ['type' => 'Fitness Room', 'qty' => 1, 'status' => 'action']
-        //                     ]
-        //             ]);
-        // ok-actionable, no-action, action-needed, action-required, in-progress, critical
-        $data['menu'] = collect([
-                            ['name' => 'SITE AUDIT', 'icon' => 'a-mobile-home', 'status' => 'critical active', 'style' => '', 'action' => 'site_audit'],
-                            ['name' => 'FILE AUDIT', 'icon' => 'a-folder', 'status' => 'action-required', 'style' => '', 'action' => 'file_audit'],
-                            ['name' => 'MESSAGES', 'icon' => 'a-envelope-incoming', 'status' => 'action-needed', 'style' => '', 'action' => 'messages'],
-                            ['name' => 'FOLLOW UPS', 'icon' => 'a-bell-2', 'status' => 'no-action', 'style' => '', 'action' => 'followups'],
-                            ['name' => 'SUBMIT', 'icon' => 'a-avatar-star', 'status' => 'in-progress', 'style' => 'margin-top:30px;', 'action' => 'submit']
-                    ]);
-        $data['areas'] = collect([
-                            [
-                                'id' => 1, 
-                                'status' => 'action-needed',
-                                'name' => 'Stair #1', 
-                                'auditor_id' => 1,  // add
-                                'auditor' => [
-                                    'id' => 1,  // add
-                                    'name' => 'Brian Greenwood',
-                                    'initials' => 'BG',
-                                    'color' => 'green',
-                                    'status' => 'warning'
-                                ],
-                                'findings' => [
-                                    'nltstatus' => 'action-needed',
-                                    'ltstatus' => 'action-required',
-                                    'sdstatus' => 'no-action',
-                                    'photostatus' => '',
-                                    'commentstatus' => '',
-                                    'copystatus' => 'no-action',
-                                    'trashstatus' => ''
-                                ]
-                            ],
-                            [
-                                'id' => 2, 
-                                'status' => 'critical',
-                                'name' => 'Bedroom #1', 
-                                'auditor' => [
-                                    'name' => 'Brian Greenwood',
-                                    'initials' => 'BG',
-                                    'color' => 'yellow',
-                                    'status' => 'warning'
-                                ],
-                                'findings' => [
-                                    'nltstatus' => 'action-needed',
-                                    'ltstatus' => 'action-required',
-                                    'sdstatus' => 'no-action',
-                                    'photostatus' => '',
-                                    'commentstatus' => '',
-                                    'copystatus' => 'no-action',
-                                    'trashstatus' => ''
-                                ]
-                            ],
-                            [
-                                'id' => 3, 
-                                'status' => 'in-progress',
-                                'name' => 'Bedroom #2', 
-                                'auditor' => [
-                                    'name' => 'Brian Greenwood',
-                                    'initials' => 'BG',
-                                    'color' => 'pink',
-                                    'status' => 'warning'
-                                ],
-                                'findings' => [
-                                    'nltstatus' => 'action-needed',
-                                    'ltstatus' => 'action-required',
-                                    'sdstatus' => 'no-action',
-                                    'photostatus' => '',
-                                    'commentstatus' => '',
-                                    'copystatus' => 'no-action',
-                                    'trashstatus' => ''
-                                ]
-                            ],
-                            [
-                                'id' => 3, 
-                                'status' => 'in-progress',
-                                'name' => 'Bedroom #2', 
-                                'auditor' => [
-                                    'name' => 'Brian Greenwood',
-                                    'initials' => 'BG',
-                                    'color' => 'pink',
-                                    'status' => 'warning'
-                                ],
-                                'findings' => [
-                                    'nltstatus' => 'action-needed',
-                                    'ltstatus' => 'action-required',
-                                    'sdstatus' => 'no-action',
-                                    'photostatus' => '',
-                                    'commentstatus' => '',
-                                    'copystatus' => 'no-action',
-                                    'trashstatus' => ''
-                                ]
-                            ],
-                            [
-                                'id' => 3, 
-                                'status' => 'in-progress',
-                                'name' => 'Bedroom #2', 
-                                'auditor' => [
-                                    'name' => 'Brian Greenwood',
-                                    'initials' => 'BG',
-                                    'color' => 'pink',
-                                    'status' => 'warning'
-                                ],
-                                'findings' => [
-                                    'nltstatus' => 'action-needed',
-                                    'ltstatus' => 'action-required',
-                                    'sdstatus' => 'no-action',
-                                    'photostatus' => '',
-                                    'commentstatus' => '',
-                                    'copystatus' => 'no-action',
-                                    'trashstatus' => ''
-                                ]
-                            ],
-                            [
-                                'id' => 3, 
-                                'status' => 'in-progress',
-                                'name' => 'Bedroom #2', 
-                                'auditor' => [
-                                    'name' => 'Brian Greenwood',
-                                    'initials' => 'BG',
-                                    'color' => 'pink',
-                                    'status' => 'warning'
-                                ],
-                                'findings' => [
-                                    'nltstatus' => 'action-needed',
-                                    'ltstatus' => 'action-required',
-                                    'sdstatus' => 'no-action',
-                                    'photostatus' => '',
-                                    'commentstatus' => '',
-                                    'copystatus' => 'no-action',
-                                    'trashstatus' => ''
-                                ]
-                            ],
-                            [
-                                'id' => 3, 
-                                'status' => 'in-progress',
-                                'name' => 'Bedroom #2', 
-                                'auditor' => [
-                                    'name' => 'Brian Greenwood',
-                                    'initials' => 'BG',
-                                    'color' => 'pink',
-                                    'status' => 'warning'
-                                ],
-                                'findings' => [
-                                    'nltstatus' => 'action-needed',
-                                    'ltstatus' => 'action-required',
-                                    'sdstatus' => 'no-action',
-                                    'photostatus' => '',
-                                    'commentstatus' => '',
-                                    'copystatus' => 'no-action',
-                                    'trashstatus' => ''
-                                ]
-                            ]
-                    ]);
+        $data['menu'] = $data['detail']->menu_json;
+
+        //$data['amenities'] = CachedAmenity::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->get();
+        $data['amenities'] = CachedAmenity::get()->toArray();
+
+        $data['comments'] = CachedComment::get();
+
         return response()->json($data);
         //return view('dashboard.partials.audit_building_inspection', compact('audit_id', 'target', 'detail_id', 'building_id', 'detail', 'inspection', 'areas', 'rowid'));
     }
