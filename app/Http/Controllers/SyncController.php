@@ -12,7 +12,7 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncMonitoringStatusTypes;
+use App\Models\SyncPeople;
 
 
 
@@ -22,7 +22,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// MonitoringStatusTypes Sync
+        /////// People Sync
         /////
 
         /// get last modified date inside the database
@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncMonitoringStatusTypes::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncPeople::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -47,7 +47,7 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listMonitoringStatusTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listPeople(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp1,$currentModifiedDateTimeStamp2,$modified,$syncData);
@@ -55,13 +55,13 @@ class SyncController extends Controller
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listMonitoringStatusTypes($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listPeople($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
                     }
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncMonitoringStatusTypes::select('id')->where('monitoring_status_type_key',$v['attributes']['monitoringStatusTypeKey'])->first();
+                            $updateRecord = SyncPeople::select('id')->where('person_key',$v['attributes']['PersonKey'])->first();
 
                             if(isset($updateRecord->id)) {
                                 // record exists - update it.
@@ -79,17 +79,24 @@ class SyncController extends Controller
 
                                 if($devcoDateEval > $allitaDateEval){
                                     // record is newer than the one currently on file
-                                    SyncMonitoringStatusTypes::where('id',$updateRecord['id'])
+                                    SyncPeople::where('id',$updateRecord['id'])
                                     ->update([
-                                    'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
-                                    'last_edited'=>$v['attributes']['lastEdited'],
+                                    'last_name'=>$v['attributes']['LastName'],
+                                    'first_name'=>$v['attributes']['FirstName'],
+                                    'default_phone_number_key'=>$v['attributes']['DefaultPhoneNumberKey'],
+                                    'default_fax_number_key'=>$v['attributes']['DefaultFaxNumberKey'],
+                                    'default_email_address_key'=>$v['attributes']['FirstName'],
+                                    'last_edited'=>$v['attributes']['LastEdited'],
                                     ]);
                                 }
                             } else {
-                                SyncMonitoringStatusTypes::create([
-                                    'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
-                                'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
-                                'last_edited'=>$v['attributes']['lastEdited'],
+                                SyncPeople::create([
+                                    'person_key'=>$v['attributes']['PersonKey'],'last_name'=>$v['attributes']['LastName'],
+                                    'first_name'=>$v['attributes']['FirstName'],
+                                    'default_phone_number_key'=>$v['attributes']['DefaultPhoneNumberKey'],
+                                    'default_fax_number_key'=>$v['attributes']['DefaultFaxNumberKey'],
+                                    'default_email_address_key'=>$v['attributes']['FirstName'],
+                                    'last_edited'=>$v['attributes']['LastEdited'],
                                 ]);
                             }
 
