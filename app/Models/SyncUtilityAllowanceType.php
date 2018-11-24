@@ -4,15 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * VisitLists Model
- *
- * @category Models
- * @license  Proprietary and confidential
- */
-class VisitLists extends Model
+class SyncUtilityAllowanceType extends Model
 {
-    public $timestamps = true;
+	public $timestamps = true;
 	protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
 	

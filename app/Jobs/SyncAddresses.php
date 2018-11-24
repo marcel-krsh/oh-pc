@@ -1,10 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Jobs;
 use DB;
 use DateTime;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use App\Services\AuthService;
 use App\Services\DevcoService;
 use App\Models\AuthTracker;
@@ -12,17 +15,32 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncMonitoringStatusTypes;
+use App\Models\SyncAddress;
+//use App\Models\Address;
 
-
-
-
-class SyncController extends Controller
+class SyncAddresses implements ShouldQueue
 {
-    //
-    public function sync() {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
+    {
         //////////////////////////////////////////////////
-        /////// MonitoringStatusTypes Sync
+        /////// Address Sync
         /////
 
         /// get last modified date inside the database
@@ -33,7 +51,8 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncMonitoringStatusTypes::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncAddress::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited')->orderBy('last_edited','desc')->first();
+        //$lastModifiedDate == NULL;
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -47,21 +66,21 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listMonitoringStatusTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listAddresses(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp1,$currentModifiedDateTimeStamp2,$modified,$syncData);
+            //dd($syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listMonitoringStatusTypes($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listAddresses($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
                     }
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncMonitoringStatusTypes::select('id')->where('monitoring_status_type_key',$v['attributes']['monitoringStatusTypeKey'])->first();
+                            $updateRecord = SyncAddress::select('id')->where('devco_id',$v['attributes']['addressKey'])->first();
 
                             if(isset($updateRecord->id)) {
                                 // record exists - update it.
@@ -79,24 +98,38 @@ class SyncController extends Controller
 
                                 if($devcoDateEval > $allitaDateEval){
                                     // record is newer than the one currently on file
-                                    SyncMonitoringStatusTypes::where('id',$updateRecord['id'])
+                                    SyncAddress::where('id',$updateRecord['id'])
                                     ->update([
-                                    'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
-                                    'last_edited'=>$v['attributes']['lastEdited'],
+                                        'line_1'=>$v['attributes']['line1'],
+                                        'line_2'=>$v['attributes']['line2'],
+                                        'city'=>$v['attributes']['city'],
+                                        'state'=>$v['attributes']['state'],
+                                        'zip'=>$v['attributes']['zipCode'],
+                                        'zip_4'=>$v['attributes']['zip4'],
+                                        'longitude'=>$v['attributes']['latitude'],
+                                        'latitude'=>$v['attributes']['longitude'],
+                                        'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
                                 }
                             } else {
-                                SyncMonitoringStatusTypes::create([
-                                    'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
-                                'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
-                                'last_edited'=>$v['attributes']['lastEdited'],
+                                SyncAddress::create([
+                                    'devco_id'=>$v['attributes']['addressKey'],
+                                    'line_1'=>$v['attributes']['line1'],
+                                    'line_2'=>$v['attributes']['line2'],
+                                    'city'=>$v['attributes']['city'],
+                                    'state'=>$v['attributes']['state'],
+                                    'zip'=>$v['attributes']['zipCode'],
+                                    'zip_4'=>$v['attributes']['zip4'],
+                                    'longitude'=>$v['attributes']['latitude'],
+                                    'latitude'=>$v['attributes']['longitude'],
+                                    'last_edited'=>$v['attributes']['lastEdited'],
                                 ]);
                             }
 
                         }
                     $syncPage++;
-                }while($syncPage < $syncData['meta']['totalPageCount']);
+                }while($syncPage <= $syncData['meta']['totalPageCount']);
             }
-        }	
+        }
     }
 }
