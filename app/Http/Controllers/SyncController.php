@@ -82,22 +82,22 @@ class SyncController extends Controller
                                     // record is newer than the one currently on file
                                     SyncPeople::where('id',$updateRecord['id'])
                                     ->update([
-                                    'last_name'=>$v['attributes']['LastName'],
+                                    'last_name'=>$v['attributes']['lastName'],
                                     'first_name'=>$v['attributes']['firstName'],
-                                    'default_phone_number_key'=>$v['attributes']['DefaultPhoneNumberKey'],
-                                    'default_fax_number_key'=>$v['attributes']['DefaultFaxNumberKey'],
+                                    'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                    'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                     'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
-                                    'last_edited'=>$v['attributes']['LastEdited'],
+                                    'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
                                 }
                             } else {
                                 SyncPeople::create([
-                                    'person_key'=>$v['attributes']['personKey'],'last_name'=>$v['attributes']['LastName'],
+                                    'person_key'=>$v['attributes']['personKey'],'last_name'=>$v['attributes']['lastName'],
                                     'first_name'=>$v['attributes']['firstName'],
-                                    'default_phone_number_key'=>$v['attributes']['DefaultPhoneNumberKey'],
-                                    'default_fax_number_key'=>$v['attributes']['DefaultFaxNumberKey'],
+                                    'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                    'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                     'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
-                                    'last_edited'=>$v['attributes']['LastEdited'],
+                                    'last_edited'=>$v['attributes']['lastEdited'],
                                     'is_active'=>$v['attributes']['isActive'],
                                 ]);
                             }
