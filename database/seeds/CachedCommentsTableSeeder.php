@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class CashedCommentsTableSeeder extends Seeder
+class CachedCommentsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.

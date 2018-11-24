@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class CashedAuditsTableSeeder extends Seeder
+class CachedAuditsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.

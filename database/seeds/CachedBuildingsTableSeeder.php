@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class CashedBuildingsTableSeeder extends Seeder
+class CachedBuildingsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
