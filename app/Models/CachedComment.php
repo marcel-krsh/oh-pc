@@ -5,20 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon;
 
-class CachedInspectionComment extends Model
+class CachedComment extends Model
 {
     protected $fillable = [
         'audit_id',
         'building_id',
         'area_id',
+        'project_id',
         'parent_id',
         'user_id', // author
+        'user_name', // author
         'user_json', // user id, name, etc
 
         'status',
         'type', // finding, comment, photo, document, followup
+        'type_icon',
+        'type_text',
         'content',
 
         'finding_type',
@@ -39,8 +44,25 @@ class CachedInspectionComment extends Model
         'updated_at'
     ];
 
-    public function replies() : HasMany {
-        return $this->hasMany('\App\Models\CachedAuditInspectionFinding', 'parent_id');
+   
+    /**
+     * Parent
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function parent() : BelongsTo
+    {
+        return $this->belongsTo('\App\Models\CachedComment', 'parent_id');
+    }
+
+    /**
+     * Replies
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function replies() : HasMany
+    {
+        return $this->hasMany('\App\Models\CachedComment', 'parent_id');
     }
 
     public function stats_replies_followup_count() {
@@ -74,7 +96,7 @@ class CachedInspectionComment extends Model
      */
     public function building() : HasOne
     {
-        return $this->hasOne(\App\Models\CachedBuilding::class, 'id', 'building_id');
+        return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
     }
 
     /**
@@ -94,7 +116,7 @@ class CachedInspectionComment extends Model
      */
     public function audit() : HasOne
     {
-        return $this->hasOne(\App\Models\CachedAudit::class, 'id', 'audit_id');
+        return $this->hasOne(\App\Models\Audit::class, 'id', 'audit_id');
     }
 
     /**

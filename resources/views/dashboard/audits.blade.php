@@ -7,6 +7,71 @@
     <button class="uk-button uk-link menuStatus" onclick="switchInspectionMenu('menuAction', 'menuLevel', 'menuTarget');" style="menuStyle"><i class="menuIcon"></i> menuName</button>
 </template>
 
+<template class="uk-hidden" id="inspection-comment-reply-template">
+	<div class="uk-width-1-1 uk-margin-remove inspec-tools-tab-finding-comment">
+		<div uk-grid>
+			<div class="uk-width-1-4">
+				<i class="tplCommentTypeIcon"></i> tplCommentType
+			</div>
+			<div class="uk-width-3-4 borderedcomment">
+				<p>tplCommentCreatedAt: By tplCommentUserName<br />
+					<span class="finding-comment">tplCommentContent</span>
+				</p>
+				<button class="uk-button inspec-tools-tab-finding-reply uk-link">
+					<i class="a-comment-pencil"></i> REPLY
+			    </button>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template class="uk-hidden" id="inspection-comment-template">
+		<div class="inspec-tools-tab-finding tplCommentStatus" uk-grid>
+			<div class="uk-width-1-1" style="padding-top: 15px;">
+				<div uk-grid>
+	    			<div class="uk-width-1-4">
+	    				<i class="tplCommentTypeIcon"></i> tplCommentType<br />
+	    				<span class="auditinfo">AUDIT tplCommentAuditId</span><br />
+	    				<button class="uk-button inspec-tools-findings-resolve uk-link"><span class="uk-badge">
+					    	 &nbsp; </span>RESOLVE</button>
+	    			</div>
+	    			<div class="uk-width-3-4 bordered">
+	    				<p>tplCommentCreatedAt: By tplCommentUserName<br />
+	    				tplCommentContent</p>
+	    			</div>
+	    		</div>
+	    	</div>
+
+	    	tplCommentReplies
+
+	    	<div class="uk-width-1-1 uk-margin-remove">
+	    		<div uk-grid>
+	    			tplCommentActions
+	    			<div class="uk-width-1-4">
+	    				<button class="uk-button uk-link inspec-tools-tab-finding-button">
+	    					<i class="a-calendar-pencil"></i> FOLLOW UP
+					    </button>
+	    			</div>
+	    			<div class="uk-width-1-4">
+	    				<button class="uk-button uk-link inspec-tools-tab-finding-button">
+	    					<i class="a-comment-text"></i> COMMENT
+					    </button>
+	    			</div>
+	    			<div class="uk-width-1-4">
+	    				<button class="uk-button uk-link inspec-tools-tab-finding-button colored">
+	    					<i class="a-file-clock"></i> DOCUMENT
+					    </button>
+	    			</div>
+	    			<div class="uk-width-1-4">
+	    				<button class="uk-button uk-link inspec-tools-tab-finding-button">
+	    					<i class="a-picture"></i> PHOTO
+					    </button>
+	    			</div>
+	    		</div>
+	    	</div>
+		</div>
+</template>
+
 <template class="uk-hidden" id="inspection-areas-template">
     <div class="inspection-areas uk-height-large uk-height-max-large uk-panel uk-panel-scrollable sortable" uk-sortable="handle: .uk-sortable-inspec-area;">
     </div>
@@ -112,6 +177,9 @@
 			    		<i class="a-arrow-top-3 flipfont"></i> FILTER FINDINGS
 			    	</div>
 			    	<div class="inspec-tools-tab-findings-container uk-panel uk-panel-scrollable uk-height-large uk-height-max-large">
+
+
+
 			    		<div class="inspec-tools-tab-finding action-needed" uk-grid>
 			    			<div class="uk-width-1-1" style="padding-top: 15px;">
 			    				<div uk-grid>

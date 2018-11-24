@@ -8,7 +8,6 @@ use Carbon;
 class CachedInspection extends Model
 {
     protected $fillable = [
-        'id',
         'audit_id',
         'project_id',
         'building_id',

@@ -257,30 +257,78 @@ function loadInspectionMain(data, id, context='audits', level = '') {
 
 	var areas = '';
 	var newarea = '';
+
 	data.forEach(function(area) {
 		newarea = inspectionAreaTemplate;
 		newarea = newarea.replace(/areaContext/g, context);
 		newarea = newarea.replace(/areaRowId/g, area.id);
 		newarea = newarea.replace(/areaName/g, area.name);
 		newarea = newarea.replace(/areaStatus/g, area.status);
-		newarea = newarea.replace(/areaAuditorInitials/g, area.auditor.initials);
-		newarea = newarea.replace(/areaAuditorName/g, area.auditor.name);
+		newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);
+		newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);
 
-		newarea = newarea.replace(/areaNLTStatus/g, area.findings.nltstatus);
-		newarea = newarea.replace(/areaLTStatus/g, area.findings.ltstatus);
-		newarea = newarea.replace(/areaSDStatus/g, area.findings.sdstatus);
-		newarea = newarea.replace(/areaPicStatus/g, area.findings.photostatus);
-		newarea = newarea.replace(/areaCommentStatus/g, area.findings.commentstatus);
-		newarea = newarea.replace(/areaCopyStatus/g, area.findings.copystatus);
-		newarea = newarea.replace(/areaTrashStatus/g, area.findings.trashstatus);
+		newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);
+		newarea = newarea.replace(/areaLTStatus/g, area.finding_lt_status);
+		newarea = newarea.replace(/areaSDStatus/g, area.finding_sd_status);
+		newarea = newarea.replace(/areaPicStatus/g, area.finding_photo_status);
+		newarea = newarea.replace(/areaCommentStatus/g, area.finding_comment_status);
+		newarea = newarea.replace(/areaCopyStatus/g, area.finding_copy_status);
+		newarea = newarea.replace(/areaTrashStatus/g, area.finding_trash_status);
 
-		areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor.color);
+		areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor_color);
 	});
 	$('#inspection-'+context+'-'+level+'main-'+id).html(inspectionMainTemplate);
 	$('#inspection-'+context+'-'+level+'main-'+id+' .inspection-areas').html(areas);
 	$('#inspection-'+context+'-'+level+'main-'+id+'-container').fadeIn( "slow", function() {
 	    // Animation complete
 	  });
+
+}
+
+function loadInspectionComments(data, id, context='audits', level = '') {
+	var inspectionCommentTemplate = $('#inspection-comment-template').html();
+	var inspectionCommentReplyTemplate = $('#inspection-comment-reply-template').html();
+
+	var comments = '';
+	var newcomment = '';
+	var newreply = '';
+	var replies = '';
+
+	data.forEach(function(comment) {
+		newcomment = inspectionCommentTemplate;
+		newcomment = newcomment.replace(/tplCommentTypeIcon/g, comment.type_icon);
+		newcomment = newcomment.replace(/tplCommentType/g, comment.type_text);
+		newcomment = newcomment.replace(/tplCommentAuditId/g, comment.audit_id);
+		newcomment = newcomment.replace(/tplCommentStatus/g, comment.status);
+		newcomment = newcomment.replace(/tplCommentCreatedAt/g, comment.created_at);
+		newcomment = newcomment.replace(/tplCommentUserName/g, comment.user_name);
+
+		comment.replies.forEach(function(reply){
+			newreply = inspectionCommentReplyTemplate;
+			newreply = newreply.replace(/tplCommentTypeIcon/g, reply.type_icon);
+			newreply = newreply.replace(/tplCommentType/g, reply.type_text);
+			newreply = newreply.replace(/tplCommentAuditId/g, reply.audit_id);
+			newreply = newreply.replace(/tplCommentCreatedAt/g, reply.created_at);
+			newreply = newreply.replace(/tplCommentUserName/g, reply.user_name);
+			newreply = newreply.replace(/tplCommentContent/g, reply.content);
+
+			replies = replies + newreply;
+		});
+
+		console.log(comment);
+
+		newcomment = newcomment.replace(/tplCommentReplies/g, newreply);
+
+		comments = comments + newcomment.replace(/tplCommentContent/g, comment.content);
+	});
+	
+	$('.inspec-tools-tab-finding').replaceWith(comments);
+//	$('#inspection-'+context+'-tools-'+id).html(inspectionCommentTemplate);
+	
+	// $('#inspection-'+context+'-'+level+'comments-'+id+' .inspection-comments').html(comments);
+	// $('#inspection-'+context+'-'+level+'comments-'+id+'-container').fadeIn( "slow", function() {
+	    // Animation complete
+	 // });
 
 }
 
@@ -360,8 +408,9 @@ function inspectionDetailsFromBuilding(buildingid, auditid, target, targetaudit,
 					// $('#building-detail-r-'+target+'-inspect').html(data);
 					$('#building-'+context+'-r-'+target).attr( "expanded", true );
 					loadInspectionMenu(data.menu, target, context);
-					loadInspectionMain(data.areas, target, context);
+					loadInspectionMain(data.amenities, target, context);
 					loadInspectionTools(data, target, context);
+					loadInspectionComments(data.comments, target, context);
 				}
 	    });
 	}
@@ -421,10 +470,12 @@ function inspectionDetails(id, buildingid, auditid, target, targetaudit, rowid, 
                     UIkit.modal.alert("There was a problem getting the building details' information.");
                 } else {
 					// $('#building-detail-r-'+target+'-inspect').html(data);
+
 					$('#building-'+context+'-detail-r-'+target).attr( "expanded", true );
 					loadInspectionMenu(data.menu, target, context, 'detail-');
-					loadInspectionMain(data.areas, target, context, 'detail-');
+					loadInspectionMain(data.amenities, target, context, 'detail-');
 					loadInspectionTools(data, target, context, 'detail-');
+					loadInspectionComments(data.comments, target, context, 'detail-');
 				}
 	    });
 	}

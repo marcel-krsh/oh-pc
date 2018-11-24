@@ -11,9 +11,8 @@ class CashedUnitsTableSeeder extends Seeder
      */
     public function run()
     {
-        $UnitsSeeder = [
+        $unitsSeeder = [
             [
-                'id' => '123', 
                 'audit_id' => '123',
                 'project_id' => '123',
                 'building_id' => '123',
@@ -56,7 +55,7 @@ class CashedUnitsTableSeeder extends Seeder
 						"status": ""
 					}
 				]',
-                'areas_json' => '[
+                'amenities_json' => '[
 	                { "type": "Elevator", "qty": "2", "status": "pending" },
 	                { "type": "ADA", "qty": null, "status": "inspected" },
 	                { "type": "Floors", "qty": "2", "status": "pending" },
@@ -75,7 +74,6 @@ class CashedUnitsTableSeeder extends Seeder
 				]',
             ],
             [
-                'id' => '345', 
                 'audit_id' => '111',
                 'project_id' => '123',
                 'building_id' => '123',
@@ -118,7 +116,7 @@ class CashedUnitsTableSeeder extends Seeder
 						"status": ""
 					}
 				]',
-                'areas_json' => '[
+                'amenities_json' => '[
 	                { "type": "Elevator", "qty": "2", "status": "pending" },
 	                { "type": "ADA", "qty": null, "status": "inspected" },
 	                { "type": "Floors", "qty": "2", "status": "pending" },
@@ -137,7 +135,6 @@ class CashedUnitsTableSeeder extends Seeder
 				]',
             ],
             [
-                'id' => '12333', 
                 'audit_id' => '12344',
                 'project_id' => '123',
                 'building_id' => '123',
@@ -180,7 +177,7 @@ class CashedUnitsTableSeeder extends Seeder
 						"status": ""
 					}
 				]',
-                'areas_json' => '[
+                'amenities_json' => '[
 	                { "type": "Elevator", "qty": "2", "status": "pending" },
 	                { "type": "ADA", "qty": null, "status": "inspected" },
 	                { "type": "Floors", "qty": "2", "status": "pending" },
@@ -199,7 +196,6 @@ class CashedUnitsTableSeeder extends Seeder
 				]',
             ],
             [
-                'id' => '123876', 
                 'audit_id' => '123',
                 'project_id' => '123',
                 'building_id' => '123',
@@ -242,7 +238,7 @@ class CashedUnitsTableSeeder extends Seeder
 						"status": ""
 					}
 				]',
-                'areas_json' => '[
+                'amenities_json' => '[
 	                { "type": "Elevator", "qty": "2", "status": "pending" },
 	                { "type": "ADA", "qty": null, "status": "inspected" },
 	                { "type": "Floors", "qty": "2", "status": "pending" },
@@ -261,7 +257,6 @@ class CashedUnitsTableSeeder extends Seeder
 				]',
             ],
             [
-                'id' => '12399', 
                 'audit_id' => '123',
                 'project_id' => '123',
                 'building_id' => '123',
@@ -304,7 +299,7 @@ class CashedUnitsTableSeeder extends Seeder
 						"status": ""
 					}
 				]',
-                'areas_json' => '[
+                'amenities_json' => '[
 	                { "type": "Elevator", "qty": "2", "status": "pending" },
 	                { "type": "ADA", "qty": null, "status": "inspected" },
 	                { "type": "Floors", "qty": "2", "status": "pending" },
@@ -323,7 +318,6 @@ class CashedUnitsTableSeeder extends Seeder
 				]',
             ],
             [
-                'id' => '999', 
                 'audit_id' => '123',
                 'project_id' => '123',
                 'building_id' => '123',
@@ -366,7 +360,7 @@ class CashedUnitsTableSeeder extends Seeder
 						"status": ""
 					}
 				]',
-                'areas_json' => '[
+                'amenities_json' => '[
 	                { "type": "Elevator", "qty": "2", "status": "pending" },
 	                { "type": "ADA", "qty": null, "status": "inspected" },
 	                { "type": "Floors", "qty": "2", "status": "pending" },
@@ -385,7 +379,6 @@ class CashedUnitsTableSeeder extends Seeder
 				]',
             ],
             [
-                'id' => '999888', 
                 'audit_id' => '123',
                 'project_id' => '123',
                 'building_id' => '123',
@@ -428,7 +421,7 @@ class CashedUnitsTableSeeder extends Seeder
 						"status": ""
 					}
 				]',
-                'areas_json' => '[
+                'amenities_json' => '[
 	                { "type": "Elevator", "qty": "2", "status": "pending" },
 	                { "type": "ADA", "qty": null, "status": "inspected" },
 	                { "type": "Floors", "qty": "2", "status": "pending" },
@@ -447,7 +440,6 @@ class CashedUnitsTableSeeder extends Seeder
 				]',
             ],
             [
-                'id' => '123221', 
                 'audit_id' => '123',
                 'project_id' => '123',
                 'building_id' => '123',
@@ -542,7 +534,7 @@ class CashedUnitsTableSeeder extends Seeder
 						"status": ""
 					}
 				]',
-                'areas_json' => '[
+                'amenities_json' => '[
 	                { "type": "Elevator", "qty": "2", "status": "pending" },
 	                { "type": "ADA", "qty": null, "status": "inspected" },
 	                { "type": "Floors", "qty": "2", "status": "pending" },
@@ -562,6 +554,6 @@ class CashedUnitsTableSeeder extends Seeder
             ]
         ];
 
-        \Illuminate\Support\Facades\DB::table('cached_building_areas')->insert($buildingAreasSeeder);
+        \Illuminate\Support\Facades\DB::table('cached_units')->insert($unitsSeeder);
     }
 }
