@@ -222,7 +222,7 @@ class AuditController extends Controller
         //$data['amenities'] = CachedAmenity::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->get();
         $data['amenities'] = CachedAmenity::get()->toArray();
 
-        $data['comments'] = CachedComment::get();
+        $data['comments'] = CachedComment::where('parent_id', '=', null)->with('replies')->get();
 
         return response()->json($data);
         //return view('dashboard.partials.audit_building_inspection', compact('audit_id', 'target', 'detail_id', 'building_id', 'detail', 'inspection', 'areas', 'rowid'));
