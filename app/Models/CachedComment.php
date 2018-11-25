@@ -15,6 +15,7 @@ class CachedComment extends Model
         'building_id',
         'area_id',
         'project_id',
+        'finding_id',
         'parent_id',
         'user_id', // author
         'user_name', // author
@@ -97,6 +98,16 @@ class CachedComment extends Model
     public function building() : HasOne
     {
         return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
+    }
+
+    /**
+     * Finding
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function finding() : HasOne
+    {
+        return $this->hasOne(\App\Models\Building::class, 'id', 'finding_id');
     }
 
     /**

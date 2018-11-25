@@ -252,6 +252,7 @@ if(Auth::check()){
 	<script src="/js/auto-complete.js"></script>
 	<script type="text/javascript" src="/js/systems/system.js"></script>
 	<script type="text/javascript" src="/js/systems/audits.js"></script>
+	<script type="text/javascript" src="/js/systems/findings.js"></script>
 	<!-- <script type="text/javascript" src="/js/systems/cdfs-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/communications-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/documents-tab.js"></script>
