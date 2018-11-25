@@ -540,7 +540,7 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function listDevelopmentActivities(int $page=1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
+	public function listDevelopmentActivities(int $page=1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
 	{
 		$params = "page={$page}&newer_than={$newer_than}";
 
