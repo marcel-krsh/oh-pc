@@ -156,6 +156,7 @@ class SyncController extends Controller
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
                                 $allitaTableRecord = Address::create([
+                                        'address_key'=>$v['attributes']['addressKey'],
                                         'line_1'=>$v['attributes']['line1'],
                                         'line_2'=>$v['attributes']['line2'],
                                         'city'=>$v['attributes']['city'],
@@ -168,6 +169,7 @@ class SyncController extends Controller
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncAddress::create([
                                         'allita_id'=>$allitaTableRecord->id,
+                                        'address_key'=>$v['attributes']['addressKey'],
                                         'line_1'=>$v['attributes']['line1'],
                                         'line_2'=>$v['attributes']['line2'],
                                         'city'=>$v['attributes']['city'],
