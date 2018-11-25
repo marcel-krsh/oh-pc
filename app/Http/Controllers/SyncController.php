@@ -52,7 +52,7 @@ class SyncController extends Controller
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             //dd($syncData);
-            dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
+            //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
                     if($syncPage > 1){
@@ -66,7 +66,7 @@ class SyncController extends Controller
                             // check if record exists
                             $updateRecord = SyncAddress::select('id','allita_id','last_edited')->where('address_key',$v['attributes']['addressKey'])->first();
                             
-
+                            dd($updateRecord);
                             if(isset($updateRecord->id)) {
                                 // record exists - get matching table record
 
