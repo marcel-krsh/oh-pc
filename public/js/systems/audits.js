@@ -247,6 +247,7 @@ function loadInspectionTools(data, id, context='audits', level = '') {
 	$('#inspection-'+context+'-'+level+'tools-'+id).html(inspectionToolsTemplate);
 	$('#inspection-'+context+'-'+level+'tools-'+id+'-container').fadeIn( "slow", function() {
 		    // Animation complete
+		    loadInspectionComments(data.comments, id, context, level);
 		  });
 	
 }
@@ -285,6 +286,62 @@ function loadInspectionMain(data, id, context='audits', level = '') {
 
 }
 
+function formatCommentType(item, type) {
+	var inspectionCommentPhotosTemplate = '<div class="photo-gallery" uk-slider><div class="uk-position-relative uk-visible-toggle uk-light"><ul class="uk-slider-items uk-child-width-1-1">tplPhotos</ul></div><ul class="uk-slider-nav uk-dotnav uk-flex-center"></ul></div>';
+	var inspectionCommentPhotoTemplate = '<li class="findings-item-photo-tplPhotoId use-hand-cursor" onclick="openFindingPhoto(tplFindingId,tplItemId,tplPhotoId);"><img src="tplUrl" alt=""><div class="uk-position-bottom-center uk-panel photo-caption use-hand-cursor"><i class="a-comment-text"></i> tplComments</div></li>';
+
+	var itemcontent = '';
+
+	switch(type) {
+	    case 'photo':
+	        var itemtype = 'PIC';
+	        var images = '';
+	        var newimage = '';
+
+	        JSON.parse(item.photos_json).forEach(function(pic){
+	        	newimage = inspectionCommentPhotoTemplate;
+	        	newimage = newimage.replace(/tplUrl/g, pic.url);
+	        	newimage = newimage.replace(/tplComments/g, pic.commentscount);
+	        	// newimage = newimage.replace(/tplFindingId/g, item.findingid);
+	        	newimage = newimage.replace(/tplItemId/g, item.id);
+	        	newimage = newimage.replace(/tplPhotoId/g, pic.id);
+
+	        	images = images + newimage;
+	        });
+	        itemcontent = inspectionCommentPhotosTemplate.replace(/tplPhotos/g, images);
+	        break;
+	    case 'file':
+	        // var itemtype = 'DOC';
+	        // var categoryTemplate = "<div class='finding-file-category'><i class='tplCatIcon'></i> tplCatName</div>";
+	        // var categories = '';
+	        // var newcategory = '';
+	        // var file = '';
+	        // item.categories.forEach(function(cat) {
+	        // 	newcategory = categoryTemplate;
+	        // 	switch(cat.status) {
+	        // 		case 'checked':
+	        // 			newcategory = newcategory.replace(/tplCatIcon/g, 'a-circle-checked');
+	        // 		break;
+	        // 		case 'notchecked':
+	        // 			newcategory = newcategory.replace(/tplCatIcon/g, 'a-circle-cross');
+	        // 		break;
+	        // 		case '':
+	        // 			newcategory = newcategory.replace(/tplCatIcon/g, 'a-circle');
+	        // 		break;
+	        // 	}
+	        // 	newcategory = newcategory.replace(/tplCatName/g, cat.name);
+	        // 	categories = categories + newcategory;
+	        // });
+
+	        // file = categories+"<div class='finding-file use-hand-cursor' onclick='openFindingFile();'><i class='a-down-arrow-circle'></i> "+item.file.name+"<br />"+item.file.size+" MB "+item.file.type+"</div>";
+
+	        // itemcontent = findingsFileTemplate.replace(/tplFileContent/g, file);
+	        // break;
+	}
+
+	return itemcontent;
+}
+
 function loadInspectionComments(data, id, context='audits', level = '') {
 	var inspectionCommentTemplate = $('#inspection-comment-template').html();
 	var inspectionCommentReplyTemplate = $('#inspection-comment-reply-template').html();
@@ -304,8 +361,12 @@ function loadInspectionComments(data, id, context='audits', level = '') {
 		newcomment = newcomment.replace(/tplCommentStatus/g, comment.status);
 		newcomment = newcomment.replace(/tplCommentCreatedAt/g, comment.created_at);
 		newcomment = newcomment.replace(/tplCommentUserName/g, comment.user_name);
+		if(comment.type !== undefined && comment.type.length){
+			newcomment = newcomment.replace(/comment-type/g, 'comment-type-'+comment.type);
+		}
 
-		if(comment.replies){
+		if(comment.replies !== undefined && comment.replies.length){
+			replies = '';
 			comment.replies.forEach(function(reply){
 				newreply = inspectionCommentReplyTemplate;
 				newreply = newreply.replace(/tplCommentTypeIcon/g, reply.type_icon);
@@ -313,13 +374,23 @@ function loadInspectionComments(data, id, context='audits', level = '') {
 				newreply = newreply.replace(/tplCommentAuditId/g, reply.audit_id);
 				newreply = newreply.replace(/tplCommentCreatedAt/g, reply.created_at);
 				newreply = newreply.replace(/tplCommentUserName/g, reply.user_name);
-				newreply = newreply.replace(/tplCommentContent/g, reply.content);
+
+				if(reply.type == 'file' || reply.type == 'photo'){
+					var content = formatCommentType(reply, reply.type);
+					newreply = newreply.replace(/tplCommentContent/g, content);
+				}else{
+					newreply = newreply.replace(/tplCommentContent/g, reply.content);
+				}
 
 				replies = replies + newreply;
 			});
+			newcomment = newcomment.replace(/tplCommentReplies/g, replies);
+		}else{
+			newcomment = newcomment.replace(/tplCommentReplies/g, '');
 		}
 
-		if(comment.actions_json){
+		if(comment.actions_json !== undefined && comment.actions_json.length){
+			actions = '';
 			JSON.parse(comment.actions_json).forEach(function(action){
 				newaction = '<div class="uk-width-1-4"><button class="uk-button uk-link inspec-tools-tab-finding-button"><i class="tplActionIcon"></i> tplActionText</button></div>';
 				newaction = newaction.replace(/tplActionIcon/g, action.icon);
@@ -329,14 +400,15 @@ function loadInspectionComments(data, id, context='audits', level = '') {
 			});
 
 			newcomment = newcomment.replace(/tplCommentActions/g, actions);
+		}else{
+			newcomment = newcomment.replace(/tplCommentActions/g, '');
 		}
-
-		newcomment = newcomment.replace(/tplCommentReplies/g, newreply);
 
 		comments = comments + newcomment.replace(/tplCommentContent/g, comment.content);
 	});
 	
-	$('.inspec-tools-tab-finding').replaceWith(comments);
+	$(".inspec-tools-tab-findings-container").html(comments);
+	//$('.inspec-tools-tab-finding').replaceWith(comments);
 //	$('#inspection-'+context+'-tools-'+id).html(inspectionCommentTemplate);
 	
 	// $('#inspection-'+context+'-'+level+'comments-'+id+' .inspection-comments').html(comments);
@@ -424,7 +496,7 @@ function inspectionDetailsFromBuilding(buildingid, auditid, target, targetaudit,
 					loadInspectionMenu(data.menu, target, context);
 					loadInspectionMain(data.amenities, target, context);
 					loadInspectionTools(data, target, context);
-					loadInspectionComments(data.comments, target, context);
+					//loadInspectionComments(data.comments, target, context);
 				}
 	    });
 	}
@@ -488,8 +560,8 @@ function inspectionDetails(id, buildingid, auditid, target, targetaudit, rowid, 
 					$('#building-'+context+'-detail-r-'+target).attr( "expanded", true );
 					loadInspectionMenu(data.menu, target, context, 'detail-');
 					loadInspectionMain(data.amenities, target, context, 'detail-');
-					loadInspectionTools(data, target, context, 'detail-');
-					loadInspectionComments(data.comments, target, context, 'detail-');
+					loadInspectionTools(data, target, context, 'detail-'); // includes the comments
+					//loadInspectionComments(data.comments, target, context, 'detail-');
 				}
 	    });
 	}

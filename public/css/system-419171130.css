@@ -2457,11 +2457,20 @@ margin-top:10px;
   color: #999999;
       font-size: 0.9em;
 }
-#inspec-tools-tab-findings .finding-comment {
+.inspec-tools-tab-findings-container .finding-comment {
   font-style: italic;
 }
-#inspec-tools-tab-findings .auditinfo {
+.inspec-tools-tab-findings-container .auditinfo {
   font-size:80%;
+}
+.inspection-tools-tabs li.uk-badge {
+    line-height: 15px;
+    font-size: 14px;
+    background-color: #4b494a;
+    padding: 3px 10px;
+    font-weight: normal;
+    margin-right: 6px;
+    border-radius: 7px;
 }
 .inspec-tools-tab-finding i {
       font-size: 22px;
