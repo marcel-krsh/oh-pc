@@ -12,7 +12,7 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncProjectActivity;
+use App\Models\SyncProjectActivityType;
 
 
 
@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncProjectActivity::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncProjectActivityType::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -62,7 +62,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProjectActivity::select('id')->where('project_activity_key',$v['attributes']['developmentActivityKey'])->first();
+                            $updateRecord = SyncProjectActivityType::select('id')->where('project_activity_type_key',$v['attributes']['developmentActivityTypeKey'])->first();
 
                             if(isset($updateRecord->id)) {
                                 // record exists - update it.
@@ -80,20 +80,16 @@ class SyncController extends Controller
 
                                 if($devcoDateEval > $allitaDateEval){
                                     // record is newer than the one currently on file
-                                    SyncProjectActivity::where('id',$updateRecord['id'])
+                                    SyncProjectActivityType::where('id',$updateRecord['id'])
                                     ->update([
-                                    'project_key'=>$v['attributes']['developmentKey'],
-                                    'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                    'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
+                                    'activity_name'=>$v['attributes']['activityName'],
                                     'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
                                 }
                             } else {
-                                SyncProjectActivity::create([
-                                    'project_activity_key'=>$v['attributes']['developmentActivityKey'],
-                                    'project_key'=>$v['attributes']['developmentKey'],
-                                    'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                    'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
+                                SyncProjectActivityType::create([
+                                    'project_activity_type_key'=>$v['attributes']['developmentActivityTypeKey'],
+                                    'activity_name'=>$v['attributes']['activityName'],
                                     'last_edited'=>$v['attributes']['lastEdited'],
                                 ]);
                             }
