@@ -12,7 +12,7 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncProjectActivityType;
+use App\Models\SyncProjectRole;
 
 
 
@@ -22,7 +22,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// Development Activities Sync
+        /////// Project Roles Sync
         /////
 
         /// get last modified date inside the database
@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncProjectActivityType::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncProjectRole::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -62,7 +62,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProjectActivityType::select('id')->where('project_activity_type_key',$v['attributes']['projectActivityTypeKey'])->first();
+                            $updateRecord = SyncProjectRole::select('id')->where('project_role_key',$v['attributes']['developmentRoleKey'])->first();
 
                             if(isset($updateRecord->id)) {
                                 // record exists - update it.
@@ -80,16 +80,16 @@ class SyncController extends Controller
 
                                 if($devcoDateEval > $allitaDateEval){
                                     // record is newer than the one currently on file
-                                    SyncProjectActivityType::where('id',$updateRecord['id'])
+                                    SyncProjectRole::where('id',$updateRecord['id'])
                                     ->update([
-                                    'activity_name'=>$v['attributes']['activityName'],
+                                    'role_name'=>$v['attributes']['roleName'],
                                     'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
                                 }
                             } else {
-                                SyncProjectActivityType::create([
-                                    'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
-                                    'activity_name'=>$v['attributes']['activityName'],
+                                SyncProjectRole::create([
+                                    'project_activity_type_key'=>$v['attributes']['developmentRoleKey'],
+                                    'role_name'=>$v['attributes']['roleName'],
                                     'last_edited'=>$v['attributes']['lastEdited'],
                                 ]);
                             }
