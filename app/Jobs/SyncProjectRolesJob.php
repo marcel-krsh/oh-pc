@@ -131,7 +131,7 @@ class SyncProjectRolesJob implements ShouldQueue
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = Address::create([
+                                        $allitaTableRecord = AllitaProjectRole::create([
                                             'role_name'=>$v['attributes']['roleName'],
                                         ]);
                                         // Create the sync table entry with the allita id
