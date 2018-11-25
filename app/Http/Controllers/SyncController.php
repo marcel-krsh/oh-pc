@@ -96,7 +96,7 @@ class SyncController extends Controller
                                         $allitaTableRecord->update([
                                             'role_name'=>$v['attributes']['roleName'],
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
-                                        ])
+                                        ]);
                                     } elseIf(is_null($allitaTableRecord)){
                                         // the allita table record doesn't exist
                                         // create the allita table record and then update the record
