@@ -304,7 +304,7 @@ function formatCommentType(item, type) {
 	        	newimage = inspectionCommentPhotoTemplate;
 	        	newimage = newimage.replace(/tplUrl/g, pic.url);
 	        	newimage = newimage.replace(/tplComments/g, pic.commentscount);
-	        	// newimage = newimage.replace(/tplFindingId/g, item.findingid);
+	        	newimage = newimage.replace(/tplFindingId/g, item.finding_id);
 	        	newimage = newimage.replace(/tplItemId/g, item.id);
 	        	newimage = newimage.replace(/tplPhotoId/g, pic.id);
 

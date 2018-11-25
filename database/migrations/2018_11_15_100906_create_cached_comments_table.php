@@ -24,6 +24,7 @@ class CreateCachedCommentsTable extends Migration
                 $table->unsignedInteger('audit_id');
                 $table->unsignedInteger('building_id')->nullable();
                 $table->unsignedInteger('project_id')->nullable();
+                $table->unsignedInteger('finding_id')->nullable();
                 $table->unsignedInteger('unit_id')->nullable();
                 $table->unsignedInteger('parent_id')->nullable();
                 $table->unsignedInteger('user_id')->nullable();
