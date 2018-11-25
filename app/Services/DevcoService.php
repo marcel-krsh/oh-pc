@@ -540,13 +540,34 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function listDevelopmentActivities(int $page=1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
+	public function listDevelopmentActivities(int $page=1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
 	{
 		$params = "page={$page}&newer_than={$newer_than}";
 
 		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
-		return $this->get("devco/development_activities?{$params}&{$log_params}");
+		return $this->get("devco/development-activities?{$params}&{$log_params}");
+	}
+
+	/**
+	 * List Development Activity Types
+	 * 
+	 * @param  int|integer $page
+	 * @param  string|null $newer_than
+	 * @param  int|null $user
+	 * @param  string|null $user_email
+	 * @param  string|null $user_name
+	 * @param  int|null $device_id
+	 * @param  string|null $device_name
+	 * @return string
+	 */
+	public function listProjectActivityTypes(int $page=1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	{
+		$params = "page={$page}&newer_than={$newer_than}";
+
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+		return $this->get("devco/project_activity_types?{$params}&{$log_params}");
 	}
 
 	/**
@@ -679,7 +700,7 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function listDevelopmentRoles(int $page=1, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
+	public function listDevelopmentRoles(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
 	{
 		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 

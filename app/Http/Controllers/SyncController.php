@@ -12,7 +12,7 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncPeople;
+use App\Models\SyncProjectRole;
 
 
 
@@ -22,7 +22,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// People Sync
+        /////// Project Roles Sync
         /////
 
         /// get last modified date inside the database
@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncPeople::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncProjectRole::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -47,7 +47,7 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listPeople(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listDevelopmentRoles(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             //dd($syncData);
@@ -56,13 +56,13 @@ class SyncController extends Controller
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listPeople($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listDevelopmentRoles($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
                     }
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncPeople::select('id')->where('person_key',$v['attributes']['personKey'])->first();
+                            $updateRecord = SyncProjectRole::select('id')->where('project_role_key',$v['attributes']['developmentRoleKey'])->first();
 
                             if(isset($updateRecord->id)) {
                                 // record exists - update it.
@@ -80,31 +80,23 @@ class SyncController extends Controller
 
                                 if($devcoDateEval > $allitaDateEval){
                                     // record is newer than the one currently on file
-                                    SyncPeople::where('id',$updateRecord['id'])
+                                    SyncProjectRole::where('id',$updateRecord['id'])
                                     ->update([
-                                    'last_name'=>$v['attributes']['lastName'],
-                                    'first_name'=>$v['attributes']['firstName'],
-                                    'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
-                                    'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
-                                    'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
+                                    'role_name'=>$v['attributes']['roleName'],
                                     'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
                                 }
                             } else {
-                                SyncPeople::create([
-                                    'person_key'=>$v['attributes']['personKey'],'last_name'=>$v['attributes']['lastName'],
-                                    'first_name'=>$v['attributes']['firstName'],
-                                    'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
-                                    'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
-                                    'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
+                                SyncProjectRole::create([
+                                    'project_role_key'=>$v['attributes']['developmentRoleKey'],
+                                    'role_name'=>$v['attributes']['roleName'],
                                     'last_edited'=>$v['attributes']['lastEdited'],
-                                    'is_active'=>$v['attributes']['isActive'],
                                 ]);
                             }
 
                         }
                     $syncPage++;
-                }while($syncPage < $syncData['meta']['totalPageCount']);
+                }while($syncPage <= $syncData['meta']['totalPageCount']);
             }
         }	
     }

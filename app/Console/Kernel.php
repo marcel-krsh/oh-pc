@@ -5,7 +5,11 @@ use DB;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Log;
 use App\Jobs\SyncAddressesJob;
+use App\Jobs\SyncPeopleJob;
 use App\Jobs\SyncMonitoringStatusTypesJob;
+use App\Jobs\SyncProjectActivitiesJob;
+use App\Jobs\SyncProjectActivityTypesJob;
+use App\Jobs\SyncProjectRolesJob;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -46,6 +50,42 @@ class Kernel extends ConsoleKernel
         $test = DB::table('jobs')->where('payload','like','%SyncMonitoringStatusTypes%')->first();
         if(is_null($test)) {
             $schedule->job(new SyncMonitoringStatusTypesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        // Monitoring People
+        $test = DB::table('jobs')->where('payload','like','%SyncPeopleJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncPeopleJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        // Project Activities
+        $test = DB::table('jobs')->where('payload','like','%SyncProjectActivitiesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncProjectActivitiesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        // Project Activity Types
+        $test = DB::table('jobs')->where('payload','like','%SyncProjectActivityTypesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncProjectActivityTypesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        // Project Roles
+        $test = DB::table('jobs')->where('payload','like','%SyncProjectRolesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncProjectRolesJob)->everyMinute();
             
         } else {
             //Log::info('Sync Job Already Started.');
