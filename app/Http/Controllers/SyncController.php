@@ -66,7 +66,7 @@ class SyncController extends Controller
                             // check if record exists
                             $updateRecord = SyncAddress::select('id','allita_id','last_edited')->where('address_key',$v['attributes']['addressKey'])->first();
                             
-                            dd($updateRecord);
+                            //dd($updateRecord);
                             if(isset($updateRecord->id)) {
                                 // record exists - get matching table record
 
@@ -84,9 +84,10 @@ class SyncController extends Controller
                                 $devcoDateEval = strtotime($devcoDate->format('Y-m-d H:i:s')) + $devcoFloat;
                                 $allitaDateEval = strtotime($allitaDate->format('Y-m-d H:i:s')) + $allitaFloat;
                                 
-
+                                dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
                                 if($devcoDateEval > $allitaDateEval){
                                     if(!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at){
+
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
                                         $UpdateAllitaValues = SyncAddress::where('id',$updateRecord['id'])
