@@ -290,6 +290,8 @@ function formatCommentType(item, type) {
 	var inspectionCommentPhotosTemplate = '<div class="photo-gallery" uk-slider><div class="uk-position-relative uk-visible-toggle uk-light"><ul class="uk-slider-items uk-child-width-1-1">tplPhotos</ul></div><ul class="uk-slider-nav uk-dotnav uk-flex-center"></ul></div>';
 	var inspectionCommentPhotoTemplate = '<li class="findings-item-photo-tplPhotoId use-hand-cursor" onclick="openFindingPhoto(tplFindingId,tplItemId,tplPhotoId);"><img src="tplUrl" alt=""><div class="uk-position-bottom-center uk-panel photo-caption use-hand-cursor"><i class="a-comment-text"></i> tplComments</div></li>';
 
+	var inspectionCommentFileTemplate = '<div class="finding-file-container">tplFileContent</div>';
+
 	var itemcontent = '';
 
 	switch(type) {
@@ -311,32 +313,35 @@ function formatCommentType(item, type) {
 	        itemcontent = inspectionCommentPhotosTemplate.replace(/tplPhotos/g, images);
 	        break;
 	    case 'file':
-	        // var itemtype = 'DOC';
-	        // var categoryTemplate = "<div class='finding-file-category'><i class='tplCatIcon'></i> tplCatName</div>";
-	        // var categories = '';
-	        // var newcategory = '';
-	        // var file = '';
-	        // item.categories.forEach(function(cat) {
-	        // 	newcategory = categoryTemplate;
-	        // 	switch(cat.status) {
-	        // 		case 'checked':
-	        // 			newcategory = newcategory.replace(/tplCatIcon/g, 'a-circle-checked');
-	        // 		break;
-	        // 		case 'notchecked':
-	        // 			newcategory = newcategory.replace(/tplCatIcon/g, 'a-circle-cross');
-	        // 		break;
-	        // 		case '':
-	        // 			newcategory = newcategory.replace(/tplCatIcon/g, 'a-circle');
-	        // 		break;
-	        // 	}
-	        // 	newcategory = newcategory.replace(/tplCatName/g, cat.name);
-	        // 	categories = categories + newcategory;
-	        // });
+	        var itemtype = 'DOC';
+	        var categoryTemplate = "<div class='finding-file-category'><i class='tplCatIcon'></i> tplCatName</div>";
+	        var categories = '';
+	        var newcategory = '';
+	        var file = '';
+	        
+	        var doc = JSON.parse(item.document_json);
 
-	        // file = categories+"<div class='finding-file use-hand-cursor' onclick='openFindingFile();'><i class='a-down-arrow-circle'></i> "+item.file.name+"<br />"+item.file.size+" MB "+item.file.type+"</div>";
+	        doc.categories.forEach(function(cat) {
+	        	newcategory = categoryTemplate;
+	        	switch(cat.status) {
+	        		case 'checked':
+	        			newcategory = newcategory.replace(/tplCatIcon/g, 'a-circle-checked');
+	        		break;
+	        		case 'notchecked':
+	        			newcategory = newcategory.replace(/tplCatIcon/g, 'a-circle-cross');
+	        		break;
+	        		case '':
+	        			newcategory = newcategory.replace(/tplCatIcon/g, 'a-circle');
+	        		break;
+	        	}
+	        	newcategory = newcategory.replace(/tplCatName/g, cat.name);
+	        	categories = categories + newcategory;
+	        });
 
-	        // itemcontent = findingsFileTemplate.replace(/tplFileContent/g, file);
-	        // break;
+	        file = categories+"<div class='finding-file use-hand-cursor' onclick='openFindingFile();'><i class='a-down-arrow-circle'></i> "+doc.file.name+"<br />"+doc.file.size+" MB "+doc.file.type+"</div>";
+
+	        itemcontent = inspectionCommentFileTemplate.replace(/tplFileContent/g, file);
+	        break;
 	}
 
 	return itemcontent;

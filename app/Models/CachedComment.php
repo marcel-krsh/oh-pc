@@ -142,9 +142,9 @@ class CachedComment extends Model
       return json_decode($value);
     }
 
-    public function getDocumentJsonAttribute($value) {
-      return json_decode($value);
-    }
+    // public function getDocumentJsonAttribute($value) {
+    //   return json_decode($value);
+    // }
 
     public function getFollowupActionsJsonAttribute($value) {
       return json_decode($value);
