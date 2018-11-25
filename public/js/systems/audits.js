@@ -367,7 +367,15 @@ function loadInspectionComments(data, id, context='audits', level = '') {
 		newcomment = newcomment.replace(/tplCommentCreatedAt/g, comment.created_at);
 		newcomment = newcomment.replace(/tplCommentUserName/g, comment.user_name);
 		if(comment.type !== undefined && comment.type.length){
+			if(comment.type == 'finding'){
+				newcomment = newcomment.replace(/tplCommentResolve/g, '<button class="uk-button inspec-tools-findings-resolve uk-link"><span class="uk-badge">&nbsp; </span>RESOLVE</button>');
+			}else{
+				newcomment = newcomment.replace(/tplCommentResolve/g, '');
+			}
+
 			newcomment = newcomment.replace(/comment-type/g, 'comment-type-'+comment.type);
+		}else{
+			newcomment = newcomment.replace(/tplCommentResolve/g, '');
 		}
 
 		if(comment.replies !== undefined && comment.replies.length){
@@ -386,6 +394,8 @@ function loadInspectionComments(data, id, context='audits', level = '') {
 				}else{
 					newreply = newreply.replace(/tplCommentContent/g, reply.content);
 				}
+
+				newreply = newreply.replace(/tplCommentResolve/g, '');
 
 				replies = replies + newreply;
 			});
@@ -409,7 +419,13 @@ function loadInspectionComments(data, id, context='audits', level = '') {
 			newcomment = newcomment.replace(/tplCommentActions/g, '');
 		}
 
-		comments = comments + newcomment.replace(/tplCommentContent/g, comment.content);
+		if(comment.type == 'file' || comment.type == 'photo'){
+			var content = formatCommentType(comment, comment.type);
+			comments = comments + newcomment.replace(/tplCommentContent/g, content);
+		}else{
+			comments = comments + newcomment.replace(/tplCommentContent/g, comment.content);
+		}
+		
 	});
 	
 	$(".inspec-tools-tab-findings-container").html(comments);

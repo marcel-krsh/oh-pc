@@ -26,15 +26,14 @@
 </template>
 
 <template class="uk-hidden" id="inspection-comment-template">
-	<li class="uk-active comment-type">
+	<li class="comment-type">
 		<div class="inspec-tools-tab-finding tplCommentStatus" uk-grid>
 			<div class="uk-width-1-1" style="padding-top: 15px;">
 				<div uk-grid>
 	    			<div class="uk-width-1-4">
 	    				<i class="tplCommentTypeIcon"></i> tplCommentType<br />
 	    				<span class="auditinfo">AUDIT tplCommentAuditId</span><br />
-	    				<button class="uk-button inspec-tools-findings-resolve uk-link"><span class="uk-badge">
-					    	 &nbsp; </span>RESOLVE</button>
+	    				tplCommentResolve
 	    			</div>
 	    			<div class="uk-width-3-4 bordered">
 	    				<p>tplCommentCreatedAt: By tplCommentUserName<br />
@@ -153,8 +152,7 @@
 			    <li class="uk-badge use-hand-cursor" uk-filter-control=".comment-type-followup">FOLLOW UPS</li>
 			</ul>
 
-
-			<div>
+			<div style="color:#bbb;">
 	    		<i class="fas fa-filter"></i> FILTER FINDINGS
 	    	</div>
 

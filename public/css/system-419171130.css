@@ -2451,6 +2451,7 @@ margin-top:10px;
   border:0;
   height: inherit;
   margin-bottom: 70px;
+  padding-bottom: 30px;
 }
 #inspec-tools-tab-findings{
   padding-bottom: 12px;
@@ -2466,11 +2467,18 @@ margin-top:10px;
 .inspection-tools-tabs li.uk-badge {
     line-height: 15px;
     font-size: 14px;
-    background-color: #4b494a;
+    color: #4b494a;
+    background-color: transparent;
+    border-color: transparent;
     padding: 3px 10px;
     font-weight: normal;
     margin-right: 6px;
     border-radius: 7px;
+}
+.inspection-tools-tabs li.uk-badge.uk-active {
+    color: #fff;
+    background-color: #4b494a;
+    border-color: #4b494a;
 }
 .inspec-tools-tab-finding i {
       font-size: 22px;
