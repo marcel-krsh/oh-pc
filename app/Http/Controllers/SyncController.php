@@ -64,7 +64,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncAddress::select('id','allita_id','last_edited')->where('address_key',$v['attributes']['addressKey'])->first();
+                            $updateRecord = SyncAddress::select('id','allita_id','last_edited','updated_at')->where('address_key',$v['attributes']['addressKey'])->first();
                             
                             //dd($updateRecord);
                             if(isset($updateRecord->id)) {
