@@ -12,8 +12,8 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncAddress;
-use App\Models\Address;
+use App\Models\SyncProjectRole;
+use App\Models\AllitaProjectRole;
 
 
 
@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncAddress::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncProjectRole::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -48,7 +48,7 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listAddresses(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listDevelopmentRoles(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             //dd($syncData);
@@ -57,14 +57,14 @@ class SyncController extends Controller
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listAddresses($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listDevelopmentRoles($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
                         //dd('Page Count is Higher'.$syncData);
                     }
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncAddress::select('id','allita_id','last_edited','updated_at')->where('address_key',$v['attributes']['addressKey'])->first();
+                            $updateRecord = SyncProjectRole::select('id','allita_id','last_edited','updated_at')->where('address_key',$v['attributes']['developmentRoleKey'])->first();
                             
                             //dd($updateRecord,$updateRecord->updated_at);
                             if(isset($updateRecord->id)) {
@@ -91,29 +91,15 @@ class SyncController extends Controller
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        SyncAddress::where('id',$updateRecord['id'])
+                                        SyncProjectRole::where('id',$updateRecord['id'])
                                         ->update([
-                                        'line_1'=>$v['attributes']['line1'],
-                                        'line_2'=>$v['attributes']['line2'],
-                                        'city'=>$v['attributes']['city'],
-                                        'state'=>$v['attributes']['state'],
-                                        'zip'=>$v['attributes']['zipCode'],
-                                        'zip_4'=>$v['attributes']['zip4'],
-                                        'longitude'=>$v['attributes']['latitude'],
-                                        'latitude'=>$v['attributes']['longitude'],
+                                        'role_name'=>$v['attributes']['roleName'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
-                                        $UpdateAllitaValues = SyncAddress::find($updateRecord['id']);
+                                        $UpdateAllitaValues = SyncProjectRole::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
-                                            'line_1'=>$v['attributes']['line1'],
-                                            'line_2'=>$v['attributes']['line2'],
-                                            'city'=>$v['attributes']['city'],
-                                            'state'=>$v['attributes']['state'],
-                                            'zip'=>$v['attributes']['zipCode'],
-                                            'zip_4'=>$v['attributes']['zip4'],
-                                            'longitude'=>$v['attributes']['latitude'],
-                                            'latitude'=>$v['attributes']['longitude'],
+                                            'role_name'=>$v['attributes']['roleName'],
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
                                         ]);
                                         //dd('inside.');
@@ -125,26 +111,12 @@ class SyncController extends Controller
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
                                         $allitaTableRecord = Address::create([
-                                            'line_1'=>$v['attributes']['line1'],
-                                            'line_2'=>$v['attributes']['line2'],
-                                            'city'=>$v['attributes']['city'],
-                                            'state'=>$v['attributes']['state'],
-                                            'zip'=>$v['attributes']['zipCode'],
-                                            'zip_4'=>$v['attributes']['zip4'],
-                                            'longitude'=>$v['attributes']['latitude'],
-                                            'latitude'=>$v['attributes']['longitude'],
+                                            'role_name'=>$v['attributes']['roleName'],
                                         ]);
                                         // Create the sync table entry with the allita id
-                                        $syncTableRecord = SyncAddress::where('id',$updateRecord['id'])
+                                        $syncTableRecord = SyncProjectRole::where('id',$updateRecord['id'])
                                         ->update([
-                                            'line_1'=>$v['attributes']['line1'],
-                                            'line_2'=>$v['attributes']['line2'],
-                                            'city'=>$v['attributes']['city'],
-                                            'state'=>$v['attributes']['state'],
-                                            'zip'=>$v['attributes']['zipCode'],
-                                            'zip_4'=>$v['attributes']['zip4'],
-                                            'longitude'=>$v['attributes']['latitude'],
-                                            'latitude'=>$v['attributes']['longitude'],
+                                            'role_name'=>$v['attributes']['roleName'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);                                     
                                         // Update the Allita Table Record with the Sync Table's updated at date
@@ -160,28 +132,14 @@ class SyncController extends Controller
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
                                 $allitaTableRecord = Address::create([
-                                        'address_key'=>$v['attributes']['addressKey'],
-                                        'line_1'=>$v['attributes']['line1'],
-                                        'line_2'=>$v['attributes']['line2'],
-                                        'city'=>$v['attributes']['city'],
-                                        'state'=>$v['attributes']['state'],
-                                        'zip'=>$v['attributes']['zipCode'],
-                                        'zip_4'=>$v['attributes']['zip4'],
-                                        'longitude'=>$v['attributes']['latitude'],
-                                        'latitude'=>$v['attributes']['longitude'],
+                                        'address_key'=>$v['attributes']['developmentRoleKey'],
+                                        'role_name'=>$v['attributes']['roleName'],
                                 ]);
                                 // Create the sync table entry with the allita id
-                                $syncTableRecord = SyncAddress::create([
+                                $syncTableRecord = SyncProjectRole::create([
                                         'allita_id'=>$allitaTableRecord->id,
-                                        'address_key'=>$v['attributes']['addressKey'],
-                                        'line_1'=>$v['attributes']['line1'],
-                                        'line_2'=>$v['attributes']['line2'],
-                                        'city'=>$v['attributes']['city'],
-                                        'state'=>$v['attributes']['state'],
-                                        'zip'=>$v['attributes']['zipCode'],
-                                        'zip_4'=>$v['attributes']['zip4'],
-                                        'longitude'=>$v['attributes']['latitude'],
-                                        'latitude'=>$v['attributes']['longitude'],
+                                        'address_key'=>$v['attributes']['developmentRoleKey'],
+                                        'role_name'=>$v['attributes']['roleName'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                 ]);
                                 // Update the Allita Table Record with the Sync Table's updated at date
