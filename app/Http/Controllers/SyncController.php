@@ -43,7 +43,7 @@ class SyncController extends Controller
             $currentModifiedDateTimeStamp = strtotime($lastModifiedDate->last_edited_convert);
             settype($currentModifiedDateTimeStamp,'float');
             $currentModifiedDateTimeStamp = $currentModifiedDateTimeStamp - .001;
-            $modified = date('m/d/Y g:i:s.u a',$currentModifiedDateTimeStamp);
+            $modified = date('m/d/Y h:i:s.u',$currentModifiedDateTimeStamp);
             dd($lastModifiedDate, $modified);
         }
         $apiConnect = new DevcoService();
