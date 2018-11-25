@@ -84,7 +84,7 @@ class SyncController extends Controller
                                     ->update([
                                     'project_key'=>$v['attributes']['developmentKey'],
                                     'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                    'project_activity_type_key'=>$v['attributes']['developmentActivityTypeKey'],
+                                    'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
                                     'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
                                 }
@@ -93,7 +93,7 @@ class SyncController extends Controller
                                     'project_activity_key'=>$v['attributes']['developmentActivityKey'],
                                     'project_key'=>$v['attributes']['developmentKey'],
                                     'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                    'project_activity_type_key'=>$v['attributes']['developmentActivityTypeKey'],
+                                    'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
                                     'last_edited'=>$v['attributes']['lastEdited'],
                                 ]);
                             }
