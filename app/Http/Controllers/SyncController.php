@@ -88,7 +88,7 @@ class SyncController extends Controller
                                 }
                             } else {
                                 SyncProjectActivityType::create([
-                                    'project_activity_type_key'=>$v['attributes']['developmentActivityTypeKey'],
+                                    'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
                                     'activity_name'=>$v['attributes']['activityName'],
                                     'last_edited'=>$v['attributes']['lastEdited'],
                                 ]);
