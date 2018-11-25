@@ -52,7 +52,7 @@ class SyncAddressesJob implements ShouldQueue
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncAddress::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncAddress::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -62,7 +62,7 @@ class SyncAddressesJob implements ShouldQueue
             $currentModifiedDateTimeStamp = strtotime($lastModifiedDate->last_edited_convert);
             settype($currentModifiedDateTimeStamp,'float');
             $currentModifiedDateTimeStamp = $currentModifiedDateTimeStamp - .001;
-            $modified = date('m/d/Y g:i:s.u a',$currentModifiedDateTimeStamp);
+            $modified = date('m/d/Y G:i:s.u',$currentModifiedDateTimeStamp);
             //dd($lastModifiedDate, $modified);
         }
         $apiConnect = new DevcoService();
@@ -71,7 +71,7 @@ class SyncAddressesJob implements ShouldQueue
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             //dd($syncData);
-            //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp1,$currentModifiedDateTimeStamp2,$modified,$syncData);
+            //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
                     if($syncPage > 1){
@@ -83,9 +83,9 @@ class SyncAddressesJob implements ShouldQueue
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncAddress::select('id','allita_id','last_edited')->where('address_key',$v['attributes']['addressKey'])->first();
+                            $updateRecord = SyncAddress::select('id','allita_id','last_edited','updated_at')->where('address_key',$v['attributes']['addressKey'])->first();
                             
-
+                            //dd($updateRecord,$updateRecord->updated_at);
                             if(isset($updateRecord->id)) {
                                 // record exists - get matching table record
 
@@ -100,15 +100,17 @@ class SyncAddressesJob implements ShouldQueue
                                 $devcoFloat = ".".$devcoDate->format('u');
                                 settype($allitaFloat,'float');
                                 settype($devcoFloat, 'float');
-                                $devcoDateEval = strtotime($devcoDate->format('Y-m-d H:i:s')) + $devcoFloat;
-                                $allitaDateEval = strtotime($allitaDate->format('Y-m-d H:i:s')) + $allitaFloat;
+                                $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
+                                $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
                                 
-
+                                //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
                                 if($devcoDateEval > $allitaDateEval){
                                     if(!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at){
+
+
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        $UpdateAllitaValues = SyncAddress::where('id',$updateRecord['id'])
+                                        SyncAddress::where('id',$updateRecord['id'])
                                         ->update([
                                         'line_1'=>$v['attributes']['line1'],
                                         'line_2'=>$v['attributes']['line2'],
@@ -120,6 +122,7 @@ class SyncAddressesJob implements ShouldQueue
                                         'latitude'=>$v['attributes']['longitude'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
+                                        $UpdateAllitaValues = SyncAddress::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
                                             'line_1'=>$v['attributes']['line1'],
@@ -132,6 +135,7 @@ class SyncAddressesJob implements ShouldQueue
                                             'latitude'=>$v['attributes']['longitude'],
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
                                         ]);
+                                        //dd('inside.');
                                     } elseIf(is_null($allitaTableRecord)){
                                         // the allita table record doesn't exist
                                         // create the allita table record and then update the record

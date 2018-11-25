@@ -116,7 +116,7 @@ class SyncController extends Controller
                                             'latitude'=>$v['attributes']['longitude'],
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
                                         ]);
-                                        dd('inside.');
+                                        //dd('inside.');
                                     } elseIf(is_null($allitaTableRecord)){
                                         // the allita table record doesn't exist
                                         // create the allita table record and then update the record
