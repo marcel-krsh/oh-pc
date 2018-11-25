@@ -152,7 +152,7 @@ class SyncProjectRolesJob implements ShouldQueue
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = Address::create([
+                                $allitaTableRecord = AllitaProjectRole::create([
                                         'project_role_key'=>$v['attributes']['developmentRoleKey'],
                                         'role_name'=>$v['attributes']['roleName'],
                                 ]);
