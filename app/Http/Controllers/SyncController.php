@@ -91,7 +91,7 @@ class SyncController extends Controller
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        $UpdateAllitaValues = SyncAddress::where('id',$updateRecord['id'])
+                                        SyncAddress::where('id',$updateRecord['id'])
                                         ->update([
                                         'line_1'=>$v['attributes']['line1'],
                                         'line_2'=>$v['attributes']['line2'],
@@ -103,6 +103,7 @@ class SyncController extends Controller
                                         'latitude'=>$v['attributes']['longitude'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
+                                        $UpdateAllitaValues = SyncAddress::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
                                             'line_1'=>$v['attributes']['line1'],
