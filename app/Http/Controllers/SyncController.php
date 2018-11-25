@@ -84,9 +84,10 @@ class SyncController extends Controller
                                 $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
                                 $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
                                 
-                                dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
+                                //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
                                 if($devcoDateEval > $allitaDateEval){
                                     if(!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at){
+
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
@@ -114,6 +115,7 @@ class SyncController extends Controller
                                             'latitude'=>$v['attributes']['longitude'],
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
                                         ]);
+                                        dd('inside.');
                                     } elseIf(is_null($allitaTableRecord)){
                                         // the allita table record doesn't exist
                                         // create the allita table record and then update the record
