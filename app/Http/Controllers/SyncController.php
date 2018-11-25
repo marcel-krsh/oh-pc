@@ -66,7 +66,7 @@ class SyncController extends Controller
                             // check if record exists
                             $updateRecord = SyncAddress::select('id','allita_id','last_edited','updated_at')->where('address_key',$v['attributes']['addressKey'])->first();
                             
-                            dd($updateRecord,$updateRecord->id);
+                            dd($updateRecord,$updateRecord->created_at);
                             if(isset($updateRecord->id)) {
                                 // record exists - get matching table record
 
