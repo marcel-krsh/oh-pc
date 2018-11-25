@@ -36,8 +36,7 @@ class Kernel extends ConsoleKernel
         ////// SYNC JOBS
         ////
 
-        // @TODO Make it check for tables that need to be updated first.
-        // Addresses
+        
         $test = DB::table('jobs')->where('payload','like','%SyncAddresses%')->first();
         if(is_null($test)) {
             $schedule->job(new SyncAddressesJob)->everyMinute();
@@ -82,14 +81,14 @@ class Kernel extends ConsoleKernel
             //Log::info('Sync Job Already Started.');
         }
 
-        // Project Roles
-        $test = DB::table('jobs')->where('payload','like','%SyncProjectRolesJob%')->first();
-        if(is_null($test)) {
-            $schedule->job(new SyncProjectRolesJob)->everyMinute();
+        // // Project Roles
+        // $test = DB::table('jobs')->where('payload','like','%SyncProjectRolesJob%')->first();
+        // if(is_null($test)) {
+        //     $schedule->job(new SyncProjectRolesJob)->everyMinute();
             
-        } else {
-            //Log::info('Sync Job Already Started.');
-        }
+        // } else {
+        //     //Log::info('Sync Job Already Started.');
+        // }
     }
 
     /**
