@@ -64,7 +64,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProjectRole::select('id','allita_id','last_edited','updated_at')->where('address_key',$v['attributes']['developmentRoleKey'])->first();
+                            $updateRecord = SyncProjectRole::select('id','allita_id','last_edited','updated_at')->where('development_role_key',$v['attributes']['developmentRoleKey'])->first();
                             
                             //dd($updateRecord,$updateRecord->updated_at);
                             if(isset($updateRecord->id)) {
@@ -132,13 +132,13 @@ class SyncController extends Controller
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
                                 $allitaTableRecord = Address::create([
-                                        'address_key'=>$v['attributes']['developmentRoleKey'],
+                                        'development_role_key'=>$v['attributes']['developmentRoleKey'],
                                         'role_name'=>$v['attributes']['roleName'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncProjectRole::create([
                                         'allita_id'=>$allitaTableRecord->id,
-                                        'address_key'=>$v['attributes']['developmentRoleKey'],
+                                        'development_role_key'=>$v['attributes']['developmentRoleKey'],
                                         'role_name'=>$v['attributes']['roleName'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                 ]);
