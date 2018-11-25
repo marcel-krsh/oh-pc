@@ -167,6 +167,7 @@ class SyncController extends Controller
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncAddress::create([
+                                        'allita_id'=>$allitaTableRecord->id,
                                         'line_1'=>$v['attributes']['line1'],
                                         'line_2'=>$v['attributes']['line2'],
                                         'city'=>$v['attributes']['city'],
