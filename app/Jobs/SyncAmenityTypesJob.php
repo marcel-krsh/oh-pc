@@ -30,7 +30,7 @@ class SyncAmenityTypesJob implements ShouldQueue
     {
         //
     }
-
+    public $tries = 5;
     /**
      * Execute the job.
      *

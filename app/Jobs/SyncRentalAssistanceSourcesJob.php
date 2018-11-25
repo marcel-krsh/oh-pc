@@ -30,6 +30,7 @@ class SyncRentalAssistanceSourcesJob implements ShouldQueue
     {
         //
     }
+    public $tries = 5;
 
     /**
      * Execute the job.

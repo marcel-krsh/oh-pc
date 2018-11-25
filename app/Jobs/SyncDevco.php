@@ -40,6 +40,7 @@ class SyncDevco implements ShouldQueue
      * Execute the job.
      *
      */
+    public $tries = 5;
     public function handle()
     {
         //
