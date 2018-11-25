@@ -41,7 +41,7 @@ class SyncProjectRolesJob implements ShouldQueue
     public function handle()
     {
         //////////////////////////////////////////////////
-        /////// Project Roles Sync
+        /////// Project Role Sync
         /////
 
         /// get last modified date inside the database
@@ -52,7 +52,7 @@ class SyncProjectRolesJob implements ShouldQueue
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncProjectRole::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncProjectRole::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -62,8 +62,8 @@ class SyncProjectRolesJob implements ShouldQueue
             $currentModifiedDateTimeStamp = strtotime($lastModifiedDate->last_edited_convert);
             settype($currentModifiedDateTimeStamp,'float');
             $currentModifiedDateTimeStamp = $currentModifiedDateTimeStamp - .001;
-            $modified = date('m/d/Y g:i:s.u a',$currentModifiedDateTimeStamp);
-            dd($lastModifiedDate, $modified);
+            $modified = date('m/d/Y G:i:s.u',$currentModifiedDateTimeStamp);
+            //dd($lastModifiedDate, $modified);
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
@@ -71,21 +71,21 @@ class SyncProjectRolesJob implements ShouldQueue
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             //dd($syncData);
-            //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp1,$currentModifiedDateTimeStamp2,$modified,$syncData);
+            //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
                     if($syncPage > 1){
                         //Get Next Page
                         $syncData = $apiConnect->listDevelopmentRoles($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
-                        dd('Page Count is Higher'.$syncData);
+                        //dd('Page Count is Higher'.$syncData);
                     }
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProjectRole::select('id','allita_id','last_edited')->where('project_role_key',$v['attributes']['developmentRoleKey'])->first();
+                            $updateRecord = SyncProjectRole::select('id','allita_id','last_edited','updated_at')->where('project_role_key',$v['attributes']['developmentRoleKey'])->first();
                             
-
+                            //dd($updateRecord,$updateRecord->updated_at);
                             if(isset($updateRecord->id)) {
                                 // record exists - get matching table record
 
@@ -100,24 +100,28 @@ class SyncProjectRolesJob implements ShouldQueue
                                 $devcoFloat = ".".$devcoDate->format('u');
                                 settype($allitaFloat,'float');
                                 settype($devcoFloat, 'float');
-                                $devcoDateEval = strtotime($devcoDate->format('Y-m-d H:i:s')) + $devcoFloat;
-                                $allitaDateEval = strtotime($allitaDate->format('Y-m-d H:i:s')) + $allitaFloat;
+                                $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
+                                $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
                                 
-
+                                //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
                                 if($devcoDateEval > $allitaDateEval){
                                     if(!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at){
+
+
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        $UpdateAllitaValues = SyncProjectRole::where('id',$updateRecord['id'])
+                                        SyncProjectRole::where('id',$updateRecord['id'])
                                         ->update([
                                         'role_name'=>$v['attributes']['roleName'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
+                                        $UpdateAllitaValues = SyncProjectRole::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
                                             'role_name'=>$v['attributes']['roleName'],
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
                                         ]);
+                                        //dd('inside.');
                                     } elseIf(is_null($allitaTableRecord)){
                                         // the allita table record doesn't exist
                                         // create the allita table record and then update the record
@@ -125,15 +129,14 @@ class SyncProjectRolesJob implements ShouldQueue
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = AllitaProjectRole::create([
-                                            'project_role_key'=>$v['attributes']['developmentRoleKey'],
+                                        $allitaTableRecord = Address::create([
                                             'role_name'=>$v['attributes']['roleName'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncProjectRole::where('id',$updateRecord['id'])
                                         ->update([
-                                        'role_name'=>$v['attributes']['roleName'],
-                                        'last_edited'=>$v['attributes']['lastEdited'],
+                                            'role_name'=>$v['attributes']['roleName'],
+                                            'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);                                     
                                         // Update the Allita Table Record with the Sync Table's updated at date
                                         $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
@@ -147,16 +150,16 @@ class SyncProjectRolesJob implements ShouldQueue
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = AllitaProjectRole::create([
-                                    'project_role_key'=>$v['attributes']['developmentRoleKey'],
-                                    'role_name'=>$v['attributes']['roleName'],
+                                $allitaTableRecord = Address::create([
+                                        'project_role_key'=>$v['attributes']['developmentRoleKey'],
+                                        'role_name'=>$v['attributes']['roleName'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncProjectRole::create([
-                                    'project_role_key'=>$v['attributes']['developmentRoleKey'],
-                                    'role_name'=>$v['attributes']['roleName'],
-                                    'allita_id'=>$allitaTableRecord->id,
-                                    'last_edited'=>$v['attributes']['lastEdited'],
+                                        'allita_id'=>$allitaTableRecord->id,
+                                        'project_role_key'=>$v['attributes']['developmentRoleKey'],
+                                        'role_name'=>$v['attributes']['roleName'],
+                                        'last_edited'=>$v['attributes']['lastEdited'],
                                 ]);
                                 // Update the Allita Table Record with the Sync Table's updated at date
                                 $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
