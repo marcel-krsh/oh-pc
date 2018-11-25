@@ -88,7 +88,7 @@ class SyncController extends Controller
                                 }
                             } else {
                                 SyncProjectRole::create([
-                                    'project_activity_type_key'=>$v['attributes']['developmentRoleKey'],
+                                    'project_role_key'=>$v['attributes']['developmentRoleKey'],
                                     'role_name'=>$v['attributes']['roleName'],
                                     'last_edited'=>$v['attributes']['lastEdited'],
                                 ]);
