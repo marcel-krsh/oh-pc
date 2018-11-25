@@ -104,7 +104,7 @@ class SyncController extends Controller
 
                         }
                     $syncPage++;
-                }while($syncPage < $syncData['meta']['totalPageCount']);
+                }while($syncPage <= $syncData['meta']['totalPageCount']);
             }
         }	
     }
