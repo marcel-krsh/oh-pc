@@ -546,7 +546,7 @@ class DevcoService extends PCAPIService
 
 		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
-		return $this->get("devco/development_activities?{$params}&{$log_params}");
+		return $this->get("devco/development-activities?{$params}&{$log_params}");
 	}
 
 	/**
