@@ -75,7 +75,7 @@ class Kernel extends ConsoleKernel
         // Project Activity Types
         $test = DB::table('jobs')->where('payload','like','%SyncProjectActivityTypesJob%')->first();
         if(is_null($test)) {
-            $schedule->job(new SyncProjectActivitiesTypesJob)->everyMinute();
+            $schedule->job(new SyncProjectActivityTypesJob)->everyMinute();
             
         } else {
             //Log::info('Sync Job Already Started.');
