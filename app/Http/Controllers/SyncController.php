@@ -62,7 +62,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProjectActivityType::select('id')->where('project_activity_type_key',$v['attributes']['developmentActivityTypeKey'])->first();
+                            $updateRecord = SyncProjectActivityType::select('id')->where('project_activity_type_key',$v['attributes']['projectActivityTypeKey'])->first();
 
                             if(isset($updateRecord->id)) {
                                 // record exists - update it.
