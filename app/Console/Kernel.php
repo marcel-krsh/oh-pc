@@ -10,6 +10,7 @@ use App\Jobs\SyncMonitoringStatusTypesJob;
 use App\Jobs\SyncProjectActivitiesJob;
 use App\Jobs\SyncProjectActivityTypesJob;
 use App\Jobs\SyncProjectRolesJob;
+use App\Jobs\SyncProjectContactRolesJob;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -85,6 +86,15 @@ class Kernel extends ConsoleKernel
         $test = DB::table('jobs')->where('payload','like','%SyncProjectRolesJob%')->first();
         if(is_null($test)) {
             $schedule->job(new SyncProjectRolesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        // Project Contact Roles
+        $test = DB::table('jobs')->where('payload','like','%SyncProjectContactRolesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncProjectContactRolesJob)->everyMinute();
             
         } else {
             //Log::info('Sync Job Already Started.');
