@@ -54,23 +54,23 @@ class Kernel extends ConsoleKernel
             //Log::info('Sync Job Already Started.');
         }
 
-        // // People
-        // $test = DB::table('jobs')->where('payload','like','%SyncPeopleJob%')->first();
-        // if(is_null($test)) {
-        //     $schedule->job(new SyncPeopleJob)->everyMinute();
-            
-        // } else {
-        //     //Log::info('Sync Job Already Started.');
-        // }
-
-        // Project Activities
-        $test = DB::table('jobs')->where('payload','like','%SyncProjectActivitiesJob%')->first();
+        // People
+        $test = DB::table('jobs')->where('payload','like','%SyncPeopleJob%')->first();
         if(is_null($test)) {
-            $schedule->job(new SyncProjectActivitiesJob)->everyMinute();
+            $schedule->job(new SyncPeopleJob)->everyMinute();
             
         } else {
             //Log::info('Sync Job Already Started.');
         }
+
+        // // Project Activities
+        // $test = DB::table('jobs')->where('payload','like','%SyncProjectActivitiesJob%')->first();
+        // if(is_null($test)) {
+        //     $schedule->job(new SyncProjectActivitiesJob)->everyMinute();
+            
+        // } else {
+        //     //Log::info('Sync Job Already Started.');
+        // }
 
         // Project Activity Types
         $test = DB::table('jobs')->where('payload','like','%SyncProjectActivityTypesJob%')->first();
