@@ -17,6 +17,7 @@ use DateTime;
 use Illuminate\Support\Facades\Hash;
 
 use App\Models\SyncProjectActivity;
+use App\Models\ProjectActivity;
 class SyncProjectActivitiesJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -40,7 +41,7 @@ class SyncProjectActivitiesJob implements ShouldQueue
     public function handle()
     {
         //////////////////////////////////////////////////
-        /////// Development Activities Sync
+        /////// ProjectActivity Sync
         /////
 
         /// get last modified date inside the database
@@ -51,7 +52,7 @@ class SyncProjectActivitiesJob implements ShouldQueue
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncProjectActivity::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncProjectActivity::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -61,7 +62,8 @@ class SyncProjectActivitiesJob implements ShouldQueue
             $currentModifiedDateTimeStamp = strtotime($lastModifiedDate->last_edited_convert);
             settype($currentModifiedDateTimeStamp,'float');
             $currentModifiedDateTimeStamp = $currentModifiedDateTimeStamp - .001;
-            $modified = date('m/d/Y g:i:s.u a',$currentModifiedDateTimeStamp);
+            $modified = date('m/d/Y G:i:s.u',$currentModifiedDateTimeStamp);
+            //dd($lastModifiedDate, $modified);
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
@@ -69,21 +71,28 @@ class SyncProjectActivitiesJob implements ShouldQueue
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             //dd($syncData);
-            //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp1,$currentModifiedDateTimeStamp2,$modified,$syncData);
+            //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
                     if($syncPage > 1){
                         //Get Next Page
                         $syncData = $apiConnect->listDevelopmentActivities($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
+                        //dd('Page Count is Higher',$syncData);
                     }
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProjectActivity::select('id')->where('project_activity_key',$v['attributes']['developmentActivityKey'])->first();
-
+                            $updateRecord = SyncProjectActivity::select('id','allita_id','last_edited','updated_at')->where('project_activity_key',$v['attributes']['developmentActivityKey'])->first();
+                            // convert booleans
+                            //settype($v['attributes']['isActive'], 'boolean');
+                            //dd($updateRecord,$updateRecord->updated_at);
                             if(isset($updateRecord->id)) {
-                                // record exists - update it.
+                                // record exists - get matching table record
+
+                                /// NEW CODE TO UPDATE ALLITA TABLE PART 1
+                                $allitaTableRecord = ProjectActivity::find($updateRecord->allita_id);
+                                /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
                                 $devcoDate = new DateTime($v['attributes']['lastEdited']);
@@ -92,34 +101,93 @@ class SyncProjectActivitiesJob implements ShouldQueue
                                 $devcoFloat = ".".$devcoDate->format('u');
                                 settype($allitaFloat,'float');
                                 settype($devcoFloat, 'float');
-                                $devcoDateEval = strtotime($devcoDate->format('Y-m-d H:i:s')) + $devcoFloat;
-                                $allitaDateEval = strtotime($allitaDate->format('Y-m-d H:i:s')) + $allitaFloat;
-                                //dd($devcoDate->format('Y-m-d H:i:s'),$devcoFloat,$devcoDateEval,$allitaDate->format('Y-m-d H:i:s'),$allitaFloat,$allitaDateEval);
-
+                                $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
+                                $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
+                                
+                                //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
+                                
                                 if($devcoDateEval > $allitaDateEval){
-                                    // record is newer than the one currently on file
-                                    SyncProjectActivity::where('id',$updateRecord['id'])
-                                    ->update([
-                                    'project_key'=>$v['attributes']['developmentKey'],
+                                    if(!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at){
+
+
+                                        // record is newer than the one currently on file in the allita db.
+                                        // update the sync table first
+                                        SyncProjectActivity::where('id',$updateRecord['id'])
+                                        ->update([
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                     'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                     'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
-                                    'last_edited'=>$v['attributes']['lastEdited'],
-                                    ]);
+                                        'last_edited'=>$v['attributes']['lastEdited'],
+                                        ]);
+                                        $UpdateAllitaValues = SyncProjectActivity::find($updateRecord['id']);
+                                        // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
+                                        $allitaTableRecord->update([
+                                            'project_key'=>$v['attributes']['developmentKey'],
+                                    'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                    'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
+                                            'last_edited'=>$UpdateAllitaValues->updated_at,
+                                        ]);
+                                        //dd('inside.');
+                                    } elseIf(is_null($allitaTableRecord)){
+                                        // the allita table record doesn't exist
+                                        // create the allita table record and then update the record
+                                        // we create it first so we can ensure the correct updated at 
+                                        // date ends up in the allita table record
+                                        // (if we create the sync record first the updated at date would become out of sync with the allita table.)
+
+                                        $allitaTableRecord = ProjectActivity::create([
+                                            'project_activity_key'=>$v['attributes']['developmentActivityKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
+                                        ]);
+                                        // Create the sync table entry with the allita id
+                                        $syncTableRecord = SyncProjectActivity::where('id',$updateRecord['id'])
+                                        ->update([
+                                            'project_activity_key'=>$v['attributes']['developmentActivityKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
+                                            'last_edited'=>$v['attributes']['lastEdited'],
+                                            'allita_id'=>$allitaTableRecord->id,
+                                        ]);                                     
+                                        // Update the Allita Table Record with the Sync Table's updated at date
+                                        $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
+
+
+                                    }
                                 }
+
+                                
                             } else {
-                                SyncProjectActivity::create([
+                                // Create the Allita Entry First
+                                // We do this so the updated_at value of the Sync Table does not become newer
+                                // when we add in the allita_id
+                                $allitaTableRecord = ProjectActivity::create([
                                     'project_activity_key'=>$v['attributes']['developmentActivityKey'],
                                     'project_key'=>$v['attributes']['developmentKey'],
                                     'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                     'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
-                                    'last_edited'=>$v['attributes']['lastEdited'],
                                 ]);
+                                // Create the sync table entry with the allita id
+                                $syncTableRecord = SyncProjectActivity::create([
+                                    'project_activity_key'=>$v['attributes']['developmentActivityKey'],
+                                    'project_key'=>$v['attributes']['developmentKey'],
+                                    'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                    'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
+                                        'last_edited'=>$v['attributes']['lastEdited'],
+                                        'allita_id'=>$allitaTableRecord->id,
+                                ]);
+                                // Update the Allita Table Record with the Sync Table's updated at date
+                                $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
+
+
                             }
 
                         }
                     $syncPage++;
                 }while($syncPage <= $syncData['meta']['totalPageCount']);
             }
-        }   
+        }  
     }
 }
