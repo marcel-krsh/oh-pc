@@ -44,14 +44,14 @@ class SyncController extends Controller
             settype($currentModifiedDateTimeStamp,'float');
             $currentModifiedDateTimeStamp = $currentModifiedDateTimeStamp - .001;
             $modified = date('m/d/Y G:i:s.u',$currentModifiedDateTimeStamp);
-            dd($lastModifiedDate, $modified);
+            //dd($lastModifiedDate, $modified);
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
             $syncData = $apiConnect->listOrganizations(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            //dd($syncData);
+            dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
