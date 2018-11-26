@@ -64,7 +64,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProjectContactRole::select('id','allita_id','last_edited','updated_at')->where('project_activity_type_key',$v['attributes']['ProjectContactRoleKey'])->first();
+                            $updateRecord = SyncProjectContactRole::select('id','allita_id','last_edited','updated_at')->where('project_contact_role_key',$v['attributes']['developmentContactRoleKey'])->first();
                             // convert booleans
                             //settype($v['attributes']['isActive'], 'boolean');
                             //dd($updateRecord,$updateRecord->updated_at);
