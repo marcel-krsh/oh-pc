@@ -2460,4 +2460,72 @@ class AuditController extends Controller
 
         return view('projects.partials.details-assignment-auditor-calendar', compact('data'));
     }
+
+    function addAmenity($type, $id) {
+
+        switch ($type) {
+            case 'project':
+                $project_id = $id;
+                $building_id = null;
+                $unit_id = null;
+
+                break;
+            case 'building':
+                $building_id = $id;
+                $unit_id = null;
+
+                // get project_id from db
+                $building = CachedBuilding::where('id', '=', $building_id)->first();
+                if($building){
+                    $project_id = $building->project_id;
+                }else{
+                    $project_id = null;
+                }
+
+                break;
+            case 'unit':
+                $unit_id = $id;
+
+                // get building_id and project_id from db
+                $unit = CachedUnit::where('id', '=', $unit_id)->first();
+                if($unit){
+                    $project_id = $unit->project_id;
+                    $building_id = $unit->building_id;
+                }else{
+                    $project_id = null;
+                    $building_id = null;
+                }
+                
+                break;
+            default:
+               // something is wrong, there should be at least either a unit_id or a building_id or a project_id
+               dd("Error 2464 - cannot add amenity");
+        }
+
+        $data = collect([
+            "project_id" => $project_id,
+            "building_id" => $building_id,
+            "unit_id" => $unit_id
+        ]);
+
+        return view('modals.amenity-add', compact('data'));
+    }
+
+    function saveAmenity(Request $request){
+        // TBD
+        $project_id = $request->get('project_id');
+        $building_id =  $request->get('building_id');
+        $unit_id =  $request->get('unit_id');
+
+        // also get name and auditor's information
+
+        // check name and add numeric counter at the end if duplicate
+
+        // save new amenity
+        
+        // reload amenities (!! filter, not all of them, ok for now as we need to test)
+        $data = CachedAmenity::get()->toArray();
+            
+        return $data;
+    }
 }

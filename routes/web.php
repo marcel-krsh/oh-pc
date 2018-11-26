@@ -101,6 +101,9 @@ Route::group(['middleware' => 'web'], function () {
 
         Route::get('/modals/auditors/{id}/preferences', 'UserController@preferences')->name('auditor.preferences');
 
+        Route::get('/modals/amenities/add/{type}/{id}', 'AuditController@addAmenity')->name('amenities.add');
+        Route::post('/modals/amenities/save', 'AuditController@saveAmenity')->name('amenities.save');
+
         Route::post('/autosave', 'FindingController@autosave');
     // });
 

@@ -54,12 +54,12 @@
 </template>
 
 <template class="uk-hidden" id="inspection-areas-template">
-    <div class="inspection-areas uk-height-large uk-height-max-large uk-panel uk-panel-scrollable sortable" uk-sortable="handle: .uk-sortable-inspec-area;">
+    <div class="inspection-areas uk-height-large uk-height-max-large uk-panel uk-panel-scrollable sortable" uk-sortable="handle: .uk-sortable-inspec-area;" data-context="areaContext">
     </div>
 </template>
 
 <template class="uk-hidden" id="inspection-area-template">
-	    <div id="inspection-areaContext-area-r-areaRowId" class="inspection-area uk-flex uk-flex-row areaStatus" style="padding:6px 0 0 0;">
+	    <div id="inspection-areaContext-area-r-areaRowId" data-context="areaContext" class="inspection-area uk-flex uk-flex-row areaStatus" style="padding:6px 0 0 0;">
 	    	<div class="uk-inline uk-sortable-inspec-area" style="min-width: 16px; padding: 0 3px;">
 				<div class="linespattern"></div>
 				<span id="" class="uk-position-bottom-center colored"><small><span class="rowindex" style="display:none;">areaRowId</span></small></span>
@@ -133,7 +133,7 @@
     	<div class="inspection-tools-top uk-width-1-1">
     		<div uk-grid>
     			<div class="uk-width-1-3">
-    				<button class="uk-button tool-add-area uk-link"><i class="a-plus"></i> AREA</button>
+    				<button class="uk-button tool-add-area uk-link" onclick="addAmenity('tplId', 'tplBuildingOrUnit');"><i class="a-plus"></i> AREA</button>
     			</div>
     			<div class="uk-width-1-3">
     				<button class="uk-button tool-edit uk-link"><i class="a-pencil-2"></i> EDIT</button>

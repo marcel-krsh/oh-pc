@@ -243,12 +243,28 @@ function loadInspectionMenu(data, id, context='audits', level='') {
 
 function loadInspectionTools(data, id, context='audits', level = '') {
 	var inspectionToolsTemplate = $('#inspection-tools-template').html();
+	var unitOrBuildingOrProjectId = null;
+	var unitOrBuildingOrProject = null;
+
+	if(data.detail.unit_id != null){
+		unitOrBuildingOrProjectId = data.detail.unit_id;
+		unitOrBuildingOrProject = 'unit';
+	} else if(data.detail.building_id != null){
+		unitOrBuildingOrProjectId = data.detail.building_id;
+		unitOrBuildingOrProject = 'building';
+	} else if(data.detail.project_id != null){
+		unitOrBuildingOrProjectId = data.detail.project_id;
+		unitOrBuildingOrProject = 'project';
+	}
+
+	inspectionToolsTemplate = inspectionToolsTemplate.replace(/tplId/g, unitOrBuildingOrProjectId);
+	inspectionToolsTemplate = inspectionToolsTemplate.replace(/tplBuildingOrUnit/g, unitOrBuildingOrProject);
 
 	$('#inspection-'+context+'-'+level+'tools-'+id).html(inspectionToolsTemplate);
 	$('#inspection-'+context+'-'+level+'tools-'+id+'-container').fadeIn( "slow", function() {
-		    // Animation complete
-		    loadInspectionComments(data.comments, id, context, level);
-		  });
+	    // Animation complete
+	    loadInspectionComments(data.comments, id, context, level);
+	});
 	
 }
 
@@ -278,6 +294,9 @@ function loadInspectionMain(data, id, context='audits', level = '') {
 
 		areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor_color);
 	});
+
+	inspectionMainTemplate = inspectionMainTemplate.replace(/areaContext/g, context);
+
 	$('#inspection-'+context+'-'+level+'main-'+id).html(inspectionMainTemplate);
 	$('#inspection-'+context+'-'+level+'main-'+id+' .inspection-areas').html(areas);
 	$('#inspection-'+context+'-'+level+'main-'+id+'-container').fadeIn( "slow", function() {
@@ -929,6 +948,12 @@ function fillSpacers() {
 	    spacers = spacers+"<div></div>";
 	}
 	$('.day-spacer').html(spacers);
+}
+
+// either building id or unit id is given
+function addAmenity(id, type) {
+	console.log("adding an amenity for "+type+" "+id);
+	dynamicModalLoad('amenities/add/'+type+'/'+id, 0, 0, 0);
 }
 
 
