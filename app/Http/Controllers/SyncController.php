@@ -119,17 +119,18 @@ class SyncController extends Controller
                                         $allitaTableRecord = ProjectActivity::create([
                                             'project_activity_key'=>$v['attributes']['developmentActivityKey'],
                                             'project_key'=>$v['attributes']['developmentKey'],
-                                    'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                    'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncProjectActivity::where('id',$updateRecord['id'])
                                         ->update([
                                             'project_activity_key'=>$v['attributes']['developmentActivityKey'],
                                             'project_key'=>$v['attributes']['developmentKey'],
-                                    'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                    'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
+                                            'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
                                         // Update the Allita Table Record with the Sync Table's updated at date
                                         $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
@@ -156,6 +157,7 @@ class SyncController extends Controller
                                     'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                     'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
+                                        'allita_id'=>$allitaTableRecord->id,
                                 ]);
                                 // Update the Allita Table Record with the Sync Table's updated at date
                                 $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
