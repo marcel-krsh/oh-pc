@@ -169,7 +169,6 @@ class SyncController extends Controller
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
                                             'fed_id_number'=>$v['attributes']['fedIdNumber'],
-                                            
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
@@ -179,8 +178,7 @@ class SyncController extends Controller
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
-                                            'fed_id_number'=>$v['attributes']['fedIdNumber'],,
-                                            
+                                            'fed_id_number'=>$v['attributes']['fedIdNumber'],
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
