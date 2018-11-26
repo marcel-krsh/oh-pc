@@ -45,23 +45,23 @@ class Kernel extends ConsoleKernel
             //Log::info('Sync Job Already Started.');
         }
 
-        // // Monitoring Status Types
-        // $test = DB::table('jobs')->where('payload','like','%SyncMonitoringStatusTypes%')->first();
-        // if(is_null($test)) {
-        //     $schedule->job(new SyncMonitoringStatusTypesJob)->everyMinute();
-            
-        // } else {
-        //     //Log::info('Sync Job Already Started.');
-        // }
-
-        // Monitoring People
-        $test = DB::table('jobs')->where('payload','like','%SyncPeopleJob%')->first();
+        // Monitoring Status Types
+        $test = DB::table('jobs')->where('payload','like','%SyncMonitoringStatusTypes%')->first();
         if(is_null($test)) {
-            $schedule->job(new SyncPeopleJob)->everyMinute();
+            $schedule->job(new SyncMonitoringStatusTypesJob)->everyMinute();
             
         } else {
             //Log::info('Sync Job Already Started.');
         }
+
+        // // People
+        // $test = DB::table('jobs')->where('payload','like','%SyncPeopleJob%')->first();
+        // if(is_null($test)) {
+        //     $schedule->job(new SyncPeopleJob)->everyMinute();
+            
+        // } else {
+        //     //Log::info('Sync Job Already Started.');
+        // }
 
         // Project Activities
         $test = DB::table('jobs')->where('payload','like','%SyncProjectActivitiesJob%')->first();
