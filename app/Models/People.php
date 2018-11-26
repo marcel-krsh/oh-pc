@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class People extends Model
 {
     public $timestamps = true;
-	protected $table = "sync_people";
+	protected $table = "people";
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
     
