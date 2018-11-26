@@ -121,7 +121,6 @@ class SyncController extends Controller
                                             'project_key'=>$v['attributes']['developmentKey'],
                                     'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                     'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
-                                    'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncProjectActivity::where('id',$updateRecord['id'])
@@ -149,7 +148,6 @@ class SyncController extends Controller
                                     'project_key'=>$v['attributes']['developmentKey'],
                                     'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                     'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
-                                    'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncProjectActivity::create([
