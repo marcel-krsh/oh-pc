@@ -48,7 +48,7 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listDevelopmentActivityTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listProjectActivityTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             //dd($syncData);
@@ -57,14 +57,14 @@ class SyncController extends Controller
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listDevelopmentActivityTypes($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listProjectActivityTypes($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
                         //dd('Page Count is Higher',$syncData);
                     }
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProjectActivityType::select('id','allita_id','last_edited','updated_at')->where('project_activity_type_key',$v['attributes']['developmentActivityTypeKey'])->first();
+                            $updateRecord = SyncProjectActivityType::select('id','allita_id','last_edited','updated_at')->where('project_activity_type_key',$v['attributes']['projectActivityTypeKey'])->first();
                             // convert booleans
                             //settype($v['attributes']['isActive'], 'boolean');
                             //dd($updateRecord,$updateRecord->updated_at);
