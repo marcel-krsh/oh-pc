@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listDevelopmentContactRoles(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -95,13 +95,23 @@ class SyncController extends Controller
                                         // update the sync table first
                                         SyncProjectContactRole::where('id',$updateRecord['id'])
                                         ->update([
-                                            'activity_name'=>$v['attributes']['activityName'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'person_key'=>$v['attributes']['personKey'],
+                                            'project_role_key'=>$v['attributes']['developmentRoleKey'],
+                                            
+                                            'organization_key'=>$v['attributes']['organizationKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
                                         $UpdateAllitaValues = SyncProjectContactRole::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
-                                            'activity_name'=>$v['attributes']['activityName'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'person_key'=>$v['attributes']['personKey'],
+                                            'project_role_key'=>$v['attributes']['developmentRoleKey'],
+                                            
+                                            'organization_key'=>$v['attributes']['organizationKey'],
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
                                         ]);
                                         //dd('inside.');
@@ -113,13 +123,24 @@ class SyncController extends Controller
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
                                         $allitaTableRecord = ProjectContactRole::create([
-                                             'project_activity_type_key'=>$v['attributes']['ProjectContactRoleKey'],
-                                            'activity_name'=>$v['attributes']['activityName'],
+                                             'project_contact_role_key'=>$v['attributes']['developmentContactRoleKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'person_key'=>$v['attributes']['personKey'],
+                                            'project_role_key'=>$v['attributes']['developmentRoleKey'],
+                                            
+                                            'organization_key'=>$v['attributes']['organizationKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncProjectContactRole::where('id',$updateRecord['id'])
                                         ->update([
-                                            'activity_name'=>$v['attributes']['activityName'],
+                                            'project_contact_role_key'=>$v['attributes']['developmentContactRoleKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'person_key'=>$v['attributes']['personKey'],
+                                            'project_role_key'=>$v['attributes']['developmentRoleKey'],
+                                            
+                                            'organization_key'=>$v['attributes']['organizationKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -136,13 +157,23 @@ class SyncController extends Controller
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
                                 $allitaTableRecord = ProjectContactRole::create([
-                                     'project_activity_type_key'=>$v['attributes']['ProjectContactRoleKey'],
-                                    'activity_name'=>$v['attributes']['activityName'],
+                                     'project_contact_role_key'=>$v['attributes']['developmentContactRoleKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'person_key'=>$v['attributes']['personKey'],
+                                            'project_role_key'=>$v['attributes']['developmentRoleKey'],
+                                            
+                                            'organization_key'=>$v['attributes']['organizationKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncProjectContactRole::create([
-                                     'project_activity_type_key'=>$v['attributes']['ProjectContactRoleKey'],
-                                    'activity_name'=>$v['attributes']['activityName'],
+                                     'project_contact_role_key'=>$v['attributes']['developmentContactRoleKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'person_key'=>$v['attributes']['personKey'],
+                                            'project_role_key'=>$v['attributes']['developmentRoleKey'],
+                                            
+                                            'organization_key'=>$v['attributes']['organizationKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
