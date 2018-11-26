@@ -44,7 +44,7 @@ class SyncController extends Controller
             settype($currentModifiedDateTimeStamp,'float');
             $currentModifiedDateTimeStamp = $currentModifiedDateTimeStamp - .001;
             $modified = date('m/d/Y G:i:s.u',$currentModifiedDateTimeStamp);
-            //dd($lastModifiedDate, $modified);
+            dd($lastModifiedDate, $modified);
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
