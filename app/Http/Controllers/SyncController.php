@@ -59,13 +59,14 @@ class SyncController extends Controller
                         //Get Next Page
                         $syncData = $apiConnect->listPeople($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
-                        dd('Page Count is Higher',$syncData);
+                        //dd('Page Count is Higher',$syncData);
                     }
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
                             $updateRecord = SyncPeople::select('id','allita_id','last_edited','updated_at')->where('person_key',$v['attributes']['personKey'])->first();
-                            
+                            // convert booleans
+                            settype($v['attributes']['isActive'], boolean);
                             //dd($updateRecord,$updateRecord->updated_at);
                             if(isset($updateRecord->id)) {
                                 // record exists - get matching table record
@@ -85,6 +86,7 @@ class SyncController extends Controller
                                 $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
                                 
                                 //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
+                                
                                 if($devcoDateEval > $allitaDateEval){
                                     if(!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at){
 
@@ -93,6 +95,7 @@ class SyncController extends Controller
                                         // update the sync table first
                                         SyncPeople::where('id',$updateRecord['id'])
                                         ->update([
+                                            'is_active'=>$v['attributes']['isActive'],
                                         'last_name'=>$v['attributes']['lastName'],
                                     'first_name'=>$v['attributes']['firstName'],
                                     'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
@@ -103,6 +106,7 @@ class SyncController extends Controller
                                         $UpdateAllitaValues = SyncPeople::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
+                                            'is_active'=>$v['attributes']['isActive'],
                                             'last_name'=>$v['attributes']['lastName'],
                                     'first_name'=>$v['attributes']['firstName'],
                                     'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
@@ -120,6 +124,7 @@ class SyncController extends Controller
 
                                         $allitaTableRecord = People::create([
                                             'person_key'=>$v['attributes']['personKey'],
+                                            'is_active'=>$v['attributes']['isActive'],
                                             'last_name'=>$v['attributes']['lastName'],
                                     'first_name'=>$v['attributes']['firstName'],
                                     'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
@@ -130,6 +135,7 @@ class SyncController extends Controller
                                         $syncTableRecord = SyncPeople::where('id',$updateRecord['id'])
                                         ->update([
                                             'person_key'=>$v['attributes']['personKey'],
+                                            'is_active'=>$v['attributes']['isActive'],
                                             'last_name'=>$v['attributes']['lastName'],
                                     'first_name'=>$v['attributes']['firstName'],
                                     'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
@@ -151,6 +157,7 @@ class SyncController extends Controller
                                 // when we add in the allita_id
                                 $allitaTableRecord = People::create([
                                     'person_key'=>$v['attributes']['personKey'],
+                                    'is_active'=>$v['attributes']['isActive'],
                                         'last_name'=>$v['attributes']['lastName'],
                                     'first_name'=>$v['attributes']['firstName'],
                                     'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
@@ -160,6 +167,7 @@ class SyncController extends Controller
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncPeople::create([
                                     'person_key'=>$v['attributes']['personKey'],
+                                    'is_active'=>$v['attributes']['isActive'],
                                         'allita_id'=>$allitaTableRecord->id,
                                         'last_name'=>$v['attributes']['lastName'],
                                     'first_name'=>$v['attributes']['firstName'],
