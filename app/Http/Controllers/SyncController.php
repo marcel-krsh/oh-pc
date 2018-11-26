@@ -119,6 +119,7 @@ class SyncController extends Controller
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
                                         $allitaTableRecord = People::create([
+                                            'person_key'=>$v['attributes']['personKey'],
                                             'last_name'=>$v['attributes']['lastName'],
                                     'first_name'=>$v['attributes']['firstName'],
                                     'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
@@ -128,6 +129,7 @@ class SyncController extends Controller
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncPeople::where('id',$updateRecord['id'])
                                         ->update([
+                                            'person_key'=>$v['attributes']['personKey'],
                                             'last_name'=>$v['attributes']['lastName'],
                                     'first_name'=>$v['attributes']['firstName'],
                                     'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
@@ -148,6 +150,7 @@ class SyncController extends Controller
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
                                 $allitaTableRecord = People::create([
+                                    'person_key'=>$v['attributes']['personKey'],
                                         'last_name'=>$v['attributes']['lastName'],
                                     'first_name'=>$v['attributes']['firstName'],
                                     'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
@@ -156,6 +159,7 @@ class SyncController extends Controller
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncPeople::create([
+                                    'person_key'=>$v['attributes']['personKey'],
                                         'allita_id'=>$allitaTableRecord->id,
                                         'last_name'=>$v['attributes']['lastName'],
                                     'first_name'=>$v['attributes']['firstName'],
