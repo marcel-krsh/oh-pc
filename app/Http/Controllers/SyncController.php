@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listOrganizations(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -102,7 +102,7 @@ class SyncController extends Controller
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
                                             'parent_organization_key'=>$v['attributes']['parentOrganizationKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
-                                            'fed_id_number'=>$v['attributes']['fedIdNumber'],
+                                            'fed_id_number'=>$v['attributes']['fedIDNumber'],
                                             
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
@@ -117,7 +117,7 @@ class SyncController extends Controller
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
                                             'parent_organization_key'=>$v['attributes']['parentOrganizationKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
-                                            'fed_id_number'=>$v['attributes']['fedIdNumber'],
+                                            'fed_id_number'=>$v['attributes']['fedIDNumber'],
                                             
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
@@ -138,7 +138,7 @@ class SyncController extends Controller
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
                                             'parent_organization_key'=>$v['attributes']['parentOrganizationKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
-                                            'fed_id_number'=>$v['attributes']['fedIdNumber'],
+                                            'fed_id_number'=>$v['attributes']['fedIDNumber'],
                                             
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                         ]);
@@ -152,7 +152,7 @@ class SyncController extends Controller
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
                                             'parent_organization_key'=>$v['attributes']['parentOrganizationKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
-                                            'fed_id_number'=>$v['attributes']['fedIdNumber'],
+                                            'fed_id_number'=>$v['attributes']['fedIDNumber'],
                                             
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
@@ -178,7 +178,7 @@ class SyncController extends Controller
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
                                             'parent_organization_key'=>$v['attributes']['parentOrganizationKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
-                                            'fed_id_number'=>$v['attributes']['fedIdNumber'],
+                                            'fed_id_number'=>$v['attributes']['fedIDNumber'],
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
@@ -189,7 +189,7 @@ class SyncController extends Controller
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
-                                            'fed_id_number'=>$v['attributes']['fedIdNumber'],
+                                            'fed_id_number'=>$v['attributes']['fedIDNumber'],
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'parent_organization_key'=>$v['attributes']['parentOrganizationKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
