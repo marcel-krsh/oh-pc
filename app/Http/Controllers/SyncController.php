@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listOrganizations(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -66,7 +66,7 @@ class SyncController extends Controller
                             // check if record exists
                             $updateRecord = SyncOrganization::select('id','allita_id','last_edited','updated_at')->where('organization_key',$v['attributes']['organizationKey'])->first();
                             // convert booleans
-                            //settype($v['attributes']['isActive'], 'boolean');
+                            settype($v['attributes']['isActive'], 'boolean');
                             //dd($updateRecord,$updateRecord->updated_at);
                             if(isset($updateRecord->id)) {
                                 // record exists - get matching table record
@@ -96,9 +96,11 @@ class SyncController extends Controller
                                         SyncOrganization::where('id',$updateRecord['id'])
                                         ->update([
                                             'default_address_key'=>$v['attributes']['defaultAddressKey'],
+                                            'is_active'=>$v['attributes']['isActive'],
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
+                                            'parent_organization_key'=>$v['attributes']['parentOrganizatinKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
                                             'fed_id_number'=>$v['attributes']['fedIdNumber'],
                                             
@@ -109,9 +111,11 @@ class SyncController extends Controller
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
                                             'default_address_key'=>$v['attributes']['defaultAddressKey'],
+                                            'is_active'=>$v['attributes']['isActive'],
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
+                                            'parent_organization_key'=>$v['attributes']['parentOrganizatinKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
                                             'fed_id_number'=>$v['attributes']['fedIdNumber'],
                                             
@@ -128,9 +132,11 @@ class SyncController extends Controller
 
                                         $allitaTableRecord = Organization::create([
                                              'default_address_key'=>$v['attributes']['defaultAddressKey'],
+                                             'is_active'=>$v['attributes']['isActive'],
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
+                                            'parent_organization_key'=>$v['attributes']['parentOrganizatinKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
                                             'fed_id_number'=>$v['attributes']['fedIdNumber'],
                                             
@@ -140,9 +146,11 @@ class SyncController extends Controller
                                         $syncTableRecord = SyncOrganization::where('id',$updateRecord['id'])
                                         ->update([
                                             'default_address_key'=>$v['attributes']['defaultAddressKey'],
+                                            'is_active'=>$v['attributes']['isActive'],
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
+                                            'parent_organization_key'=>$v['attributes']['parentOrganizatinKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
                                             'fed_id_number'=>$v['attributes']['fedIdNumber'],
                                             
@@ -164,9 +172,11 @@ class SyncController extends Controller
                                 // when we add in the allita_id
                                 $allitaTableRecord = Organization::create([
                                      'default_address_key'=>$v['attributes']['defaultAddressKey'],
+                                     'is_active'=>$v['attributes']['isActive'],
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
+                                            'parent_organization_key'=>$v['attributes']['parentOrganizatinKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
                                             'fed_id_number'=>$v['attributes']['fedIdNumber'],
                                             'organization_key'=>$v['attributes']['organizationKey'],
@@ -174,12 +184,14 @@ class SyncController extends Controller
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncOrganization::create([
                                      'default_address_key'=>$v['attributes']['defaultAddressKey'],
+                                     'is_active'=>$v['attributes']['isActive'],
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
                                             'fed_id_number'=>$v['attributes']['fedIdNumber'],
                                             'organization_key'=>$v['attributes']['organizationKey'],
+                                            'parent_organization_key'=>$v['attributes']['parentOrganizatinKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
