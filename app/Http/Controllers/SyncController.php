@@ -12,8 +12,8 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncMonitoringStatusType;
-use App\Models\AuditStatusType;
+use App\Models\SyncPeople;
+use App\Models\People;
 
 
 
@@ -22,7 +22,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// Project Role Sync
+        /////// People Sync
         /////
 
         /// get last modified date inside the database
@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncMonitoringStatusType::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncPeople::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -48,7 +48,7 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listMonitoringStatusTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listPeople(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             //dd($syncData);
@@ -57,21 +57,21 @@ class SyncController extends Controller
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listMonitoringStatusTypes($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listPeople($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
                         //dd('Page Count is Higher'.$syncData);
                     }
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncMonitoringStatusType::select('id','allita_id','last_edited','updated_at')->where('monitoring_status_type_key',$v['attributes']['monitoringStatusTypeKey'])->first();
+                            $updateRecord = SyncPeople::select('id','allita_id','last_edited','updated_at')->where('person_key',$v['attributes']['personKey'])->first();
                             
                             //dd($updateRecord,$updateRecord->updated_at);
                             if(isset($updateRecord->id)) {
                                 // record exists - get matching table record
 
                                 /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                                $allitaTableRecord = AuditStatusType::find($updateRecord->allita_id);
+                                $allitaTableRecord = People::find($updateRecord->allita_id);
                                 /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
@@ -91,15 +91,23 @@ class SyncController extends Controller
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        SyncMonitoringStatusType::where('id',$updateRecord['id'])
+                                        SyncPeople::where('id',$updateRecord['id'])
                                         ->update([
-                                        'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
+                                        'last_name'=>$v['attributes']['lastName'],
+                                    'first_name'=>$v['attributes']['firstName'],
+                                    'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                    'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
+                                    'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
-                                        $UpdateAllitaValues = SyncMonitoringStatusType::find($updateRecord['id']);
+                                        $UpdateAllitaValues = SyncPeople::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
-                                            'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
+                                            'last_name'=>$v['attributes']['lastName'],
+                                    'first_name'=>$v['attributes']['firstName'],
+                                    'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                    'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
+                                    'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
                                         ]);
                                         //dd('inside.');
@@ -110,13 +118,21 @@ class SyncController extends Controller
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = AuditStatusType::create([
-                                            'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
+                                        $allitaTableRecord = People::create([
+                                            'last_name'=>$v['attributes']['lastName'],
+                                    'first_name'=>$v['attributes']['firstName'],
+                                    'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                    'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
+                                    'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
-                                        $syncTableRecord = SyncMonitoringStatusType::where('id',$updateRecord['id'])
+                                        $syncTableRecord = SyncPeople::where('id',$updateRecord['id'])
                                         ->update([
-                                            'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
+                                            'last_name'=>$v['attributes']['lastName'],
+                                    'first_name'=>$v['attributes']['firstName'],
+                                    'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                    'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
+                                    'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);                                     
                                         // Update the Allita Table Record with the Sync Table's updated at date
@@ -131,15 +147,21 @@ class SyncController extends Controller
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = AuditStatusType::create([
-                                        'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
-                                        'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
+                                $allitaTableRecord = People::create([
+                                        'last_name'=>$v['attributes']['lastName'],
+                                    'first_name'=>$v['attributes']['firstName'],
+                                    'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                    'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
+                                    'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
-                                $syncTableRecord = SyncMonitoringStatusType::create([
+                                $syncTableRecord = SyncPeople::create([
                                         'allita_id'=>$allitaTableRecord->id,
-                                        'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
-                                        'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
+                                        'last_name'=>$v['attributes']['lastName'],
+                                    'first_name'=>$v['attributes']['firstName'],
+                                    'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                    'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
+                                    'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                 ]);
                                 // Update the Allita Table Record with the Sync Table's updated at date

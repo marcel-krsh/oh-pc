@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SyncPeople extends Model
-{	public $timestamps = true;
+class People extends Model
+{
+    public $timestamps = true;
 	protected $table = "sync_people";
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
