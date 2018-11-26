@@ -100,7 +100,7 @@ class SyncController extends Controller
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
-                                            'parent_organization_key'=>$v['attributes']['parentOrganizatinKey'],
+                                            'parent_organization_key'=>$v['attributes']['parentOrganizationKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
                                             'fed_id_number'=>$v['attributes']['fedIdNumber'],
                                             
@@ -115,7 +115,7 @@ class SyncController extends Controller
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
-                                            'parent_organization_key'=>$v['attributes']['parentOrganizatinKey'],
+                                            'parent_organization_key'=>$v['attributes']['parentOrganizationKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
                                             'fed_id_number'=>$v['attributes']['fedIdNumber'],
                                             
@@ -136,7 +136,7 @@ class SyncController extends Controller
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
-                                            'parent_organization_key'=>$v['attributes']['parentOrganizatinKey'],
+                                            'parent_organization_key'=>$v['attributes']['parentOrganizationKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
                                             'fed_id_number'=>$v['attributes']['fedIdNumber'],
                                             
@@ -150,7 +150,7 @@ class SyncController extends Controller
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
-                                            'parent_organization_key'=>$v['attributes']['parentOrganizatinKey'],
+                                            'parent_organization_key'=>$v['attributes']['parentOrganizationKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
                                             'fed_id_number'=>$v['attributes']['fedIdNumber'],
                                             
@@ -176,7 +176,7 @@ class SyncController extends Controller
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
-                                            'parent_organization_key'=>$v['attributes']['parentOrganizatinKey'],
+                                            'parent_organization_key'=>$v['attributes']['parentOrganizationKey'],
                                             'organization_name'=>$v['attributes']['organizationName'],
                                             'fed_id_number'=>$v['attributes']['fedIdNumber'],
                                             'organization_key'=>$v['attributes']['organizationKey'],
@@ -191,7 +191,7 @@ class SyncController extends Controller
                                             'organization_name'=>$v['attributes']['organizationName'],
                                             'fed_id_number'=>$v['attributes']['fedIdNumber'],
                                             'organization_key'=>$v['attributes']['organizationKey'],
-                                            'parent_organization_key'=>$v['attributes']['parentOrganizatinKey'],
+                                            'parent_organization_key'=>$v['attributes']['parentOrganizationKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
