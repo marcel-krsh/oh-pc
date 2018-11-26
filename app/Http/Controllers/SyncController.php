@@ -110,7 +110,7 @@ class SyncController extends Controller
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = ProjectRole::create([
+                                        $allitaTableRecord = AuditStatusType::create([
                                             'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
                                         ]);
                                         // Create the sync table entry with the allita id
@@ -131,7 +131,7 @@ class SyncController extends Controller
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = ProjectRole::create([
+                                $allitaTableRecord = AuditStatusType::create([
                                         'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
                                         'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
                                 ]);
