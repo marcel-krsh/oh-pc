@@ -611,10 +611,9 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function listDevelopmentContactRoles(int $page=1, string $newer_than = null, 
+	public function listDevelopmentContactRoles(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null,
 		int $development_key=null, int $development_program_key=null, int $development_role_key=null, 
-		int $organization_key=null, int $person_key=null, string $group_by=null, 
-		int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+		int $organization_key=null, int $person_key=null, string $group_by=null) : object
 	{
 		
 
