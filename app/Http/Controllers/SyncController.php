@@ -113,6 +113,7 @@ class SyncController extends Controller
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
                                         $allitaTableRecord = ProjectActivityType::create([
+                                             'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
                                             'activity_name'=>$v['attributes']['activityName'],
                                         ]);
                                         // Create the sync table entry with the allita id
@@ -135,10 +136,12 @@ class SyncController extends Controller
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
                                 $allitaTableRecord = ProjectActivityType::create([
+                                     'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
                                     'activity_name'=>$v['attributes']['activityName'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncProjectActivityType::create([
+                                     'project_activity_type_key'=>$v['attributes']['projectActivityTypeKey'],
                                     'activity_name'=>$v['attributes']['activityName'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
