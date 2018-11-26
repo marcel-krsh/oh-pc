@@ -66,7 +66,7 @@ class SyncController extends Controller
                             // check if record exists
                             $updateRecord = SyncPeople::select('id','allita_id','last_edited','updated_at')->where('person_key',$v['attributes']['personKey'])->first();
                             // convert booleans
-                            settype($v['attributes']['isActive'], boolean);
+                            settype($v['attributes']['isActive'], 'boolean');
                             //dd($updateRecord,$updateRecord->updated_at);
                             if(isset($updateRecord->id)) {
                                 // record exists - get matching table record
