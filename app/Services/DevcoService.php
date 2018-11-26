@@ -611,13 +611,12 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function listContacts(int $page=1, string $newer_than = null, 
+	public function listDevelopmentContactRoles(int $page=1, string $newer_than = null, 
 		int $development_key=null, int $development_program_key=null, int $development_role_key=null, 
 		int $organization_key=null, int $person_key=null, string $group_by=null, 
-		int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : string
+		int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
 	{
-		// example call
-		// "/api/v1/devco/development-contact-roles?page={{default=1/value}}&development_key={{null/value}}&development_program_key={{null/value}}&development_role_key={{null/value}}&organization_key={{null/value}}&person_key={{null/value}}&group_by={{null/value}}&user={{user_id}}&user_email={{user_email}}&user_name={{user_name}}&device_id={{device_id}}&device_name={{device_name}}&newer_than={{null/value}}"
+		
 
 		$params = "page={$page}&newer_than={$newer_than}&development_key={$development_key}&development_program_key={$development_program_key}&development_role_key={$development_role_key}&organization_key={$organization_key}&person_key={$person_key}&group_by={$group_by}";
 
