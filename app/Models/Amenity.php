@@ -7,14 +7,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Amenity extends Model
 {
-    public $timestamps = false;
-    
-    protected $fillable = [
-        'project_id',
-        'building_id',
-        'unit_id',
-        'name'
-    ];
+    public $timestamps = true;
+    //protected $dateFormat = 'Y-m-d\TH:i:s.u';
+
+    protected $guarded = ['id'];
+
 
     /**
      * Building
