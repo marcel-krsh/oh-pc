@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class OrderingAmenity extends Model
 {
-    protected $table = 'ordering_amenity';
+    protected $table = 'ordering_amenities';
 
     public $timestamps = false;
     
@@ -38,7 +38,7 @@ class OrderingAmenity extends Model
      */
     public function amenity() : HasOne
     {
-        return $this->hasOne(\App\Models\Amenity::class, 'id', 'amenity_id');
+        return $this->hasOne(\App\Models\CachedAmenity::class, 'id', 'amenity_id');
     }
 
     /**

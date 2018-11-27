@@ -275,25 +275,39 @@ function loadInspectionMain(data, id, context='audits', level = '') {
 	var areas = '';
 	var newarea = '';
 
-	data.forEach(function(area) {
-		newarea = inspectionAreaTemplate;
-		newarea = newarea.replace(/areaContext/g, context);
-		newarea = newarea.replace(/areaRowId/g, area.id);
-		newarea = newarea.replace(/areaName/g, area.name);
-		newarea = newarea.replace(/areaStatus/g, area.status);
-		newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);
-		newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);
+	if(data.length == 0){
+		console.log("no amenity found");
+		areas = "No amenity inspection area found.";
+	}else{
 
-		newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);
-		newarea = newarea.replace(/areaLTStatus/g, area.finding_lt_status);
-		newarea = newarea.replace(/areaSDStatus/g, area.finding_sd_status);
-		newarea = newarea.replace(/areaPicStatus/g, area.finding_photo_status);
-		newarea = newarea.replace(/areaCommentStatus/g, area.finding_comment_status);
-		newarea = newarea.replace(/areaCopyStatus/g, area.finding_copy_status);
-		newarea = newarea.replace(/areaTrashStatus/g, area.finding_trash_status);
+		data.forEach(function(area) {
+			newarea = inspectionAreaTemplate;
+			newarea = newarea.replace(/areaContext/g, context);
+			newarea = newarea.replace(/areaRowId/g, area.id);
+			newarea = newarea.replace(/areaName/g, area.name);
+			newarea = newarea.replace(/areaStatus/g, area.status);
+			newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);
+			newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);
 
-		areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor_color);
-	});
+			newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);
+			newarea = newarea.replace(/areaLTStatus/g, area.finding_lt_status);
+			newarea = newarea.replace(/areaSDStatus/g, area.finding_sd_status);
+			newarea = newarea.replace(/areaPicStatus/g, area.finding_photo_status);
+			newarea = newarea.replace(/areaCommentStatus/g, area.finding_comment_status);
+			newarea = newarea.replace(/areaCopyStatus/g, area.finding_copy_status);
+			newarea = newarea.replace(/areaTrashStatus/g, area.finding_trash_status);
+
+			newarea = newarea.replace(/areaDataAudit/g, area.audit_id);
+			newarea = newarea.replace(/areaDataBuilding/g, area.building_id);
+			newarea = newarea.replace(/areaDataArea/g, area.unit_id);
+			newarea = newarea.replace(/areaDataAmenity/g, area.id);
+
+			areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor_color);
+
+			
+		});
+
+	}
 
 	inspectionMainTemplate = inspectionMainTemplate.replace(/areaContext/g, context);
 
@@ -810,6 +824,23 @@ function reorderUnits(auditId, buildingId, unitId, endIndex) {
     });
 }
 
+function reorderAmenities(auditId, buildingId, unitId, amenityId, endIndex) {
+	// console.log(auditId+" "+buildingId+" "+unitId+" "+amenityId+" "+endIndex);
+	var url = 'dashboard/audits/'+auditId+'/amenities/reorder'; 
+	$.get(url, {
+        'amenity_id' : amenityId,
+        'building_id' : buildingId,
+        'unit_id' : unitId,
+        'index' : endIndex
+        }, function(data) {
+            if(data=='0'){ 
+                UIkit.modal.alert("There was a problem reordering the amenities.");
+            } else {
+				console.log("reordering completed");
+			}
+    });
+}
+
 $(function () {
 	$(document).on('start', '.sortablebuildings', function (item) {
 		//console.log("almost moving....");
@@ -872,10 +903,14 @@ $(function () {
 			    }
 			});
 		}else if($('#'+item.detail[1].id).hasClass('inspection-area')){
+			var unitId = $(listItem).data('unit');
+			var amenityId = $(listItem).data('amenity');
 			endIndex = $( ".inspection-area" ).index( listItem );
-			console.log( item.detail[1].id + " ended at index: " + endIndex );
-			UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
+			// console.log( item.detail[1].id + " ended at index: " + endIndex );
+			// UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
 			// reorder(".inspection-main-list > .sortable", '.inspection-area');
+			
+			reorderAmenities(auditId, buildingId, unitId, amenityId, endIndex);
 		}
 	});
 });

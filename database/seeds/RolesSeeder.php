@@ -12,121 +12,30 @@ class RolesSeeder extends Seeder
     public function run()
     {
         $rolesData = [
-            [
+            [ 
                 'role_parent_id'=>0,
-                'role_name'=>'HFA Roles',
+                'role_name'=>'Property Manager',
                 'protected'=>1,
                 'active'=>1
             ],
-            [
+            [ 
                 'role_parent_id'=>0,
-                'role_name'=>'Land Bank Roles',
+                'role_name'=>'Auditor',
                 'protected'=>1,
                 'active'=>1
             ],
-            [
-                'role_parent_id'=>1,
-                'role_name'=>'OHFA Admin',
+            [ 
+                'role_parent_id'=>0,
+                'role_name'=>'Manager',
                 'protected'=>1,
                 'active'=>1
             ],
-            [
-                'role_parent_id'=>2,
-                'role_name'=>'Landbank Admin',
-                'protected'=>1,
-                'active'=>1
-            ],
-            [ //5
-                'role_parent_id'=>1,
-                'role_name'=>'New Landbank Approver',
-                'protected'=>1,
-                'active'=>1
-            ],
-            [ //6
-                'role_parent_id'=>2,
-                'role_name'=>'New Member Approver',
-                'protected'=>1,
-                'active'=>1
-            ],
-            [ //7
-                'role_parent_id'=>1,
-                'role_name'=>'Disposition Approver',
-                'protected'=>1,
-                'active'=>1
-            ],
-            [ //8
-                'role_parent_id'=>1,
-                'role_name'=>'Lien Manager',
-                'protected'=>1,
-                'active'=>1
-            ],
-            [ //9
-                'role_parent_id'=>1,
-                'role_name'=>'Disposition Reviewer',
-                'protected'=>1,
-                'active'=>1
-            ],
-            [ //10
-                'role_parent_id'=>2,
-                'role_name'=>'Disposition Reviewer',
-                'protected'=>1,
-                'active'=>1
-            ],
-            [ //11
-                'role_parent_id'=>2,
-                'role_name'=>'Disposition Approver',
-                'protected'=>1,
-                'active'=>1
-            ],
-            [ //12
-                'role_parent_id'=>2,
-                'role_name'=>'Disposition Manager',
+            [ 
+                'role_parent_id'=>0,
+                'role_name'=>'System Admin',
                 'protected'=>1,
                 'active'=>1
             ]
-        ];
-        DB::table('roles')->insert($rolesData);
-
-
-        $rolesData = [
-            [ //7
-                'role_parent_id'=>1,
-                'role_name'=>'Disposition Approver',
-                'protected'=>1,
-                'active'=>1
-            ],
-            [ //8
-                'role_parent_id'=>1,
-                'role_name'=>'Lien Manager',
-                'protected'=>1,
-                'active'=>1
-            ],
-            [ //9
-                'role_parent_id'=>1,
-                'role_name'=>'Disposition Reviewer',
-                'protected'=>1,
-                'active'=>1
-            ],
-            [ //10
-                'role_parent_id'=>2,
-                'role_name'=>'Disposition Reviewer',
-                'protected'=>1,
-                'active'=>1
-            ],
-            [ //11
-                'role_parent_id'=>2,
-                'role_name'=>'Disposition Approver',
-                'protected'=>1,
-                'active'=>1
-            ],
-            [ //12
-                'role_parent_id'=>2,
-                'role_name'=>'Disposition Manager',
-                'protected'=>1,
-                'active'=>1
-            ]
-
-            
         ];
 
         \Illuminate\Support\Facades\DB::table('roles')->insert($rolesData);

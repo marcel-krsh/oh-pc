@@ -5,21 +5,22 @@
 	  			
 	  			<h3>New Amenity Inspectable Area</h3>
 
-	  			<form id="modal-amenity-form" class="uk-margin-small-top">
+	  			<form id="modal-amenity-form" class="uk-margin-small-top" onsubmit="saveAmenity()">
 					<fieldset class="uk-fieldset">
 						<div class="uk-margin-small-top uk-grid">
-				            <input type="text" class="uk-input" value=""  placeholder="Name"/>
+				            <input id="modal-amenity-form-name" type="text" class="uk-input" value=""  placeholder="Name"/>
 				        </div>
 						<div class="uk-margin uk-grid uk-grid-small uk-margin-small-top" style="margin-left:0;">
 							<div class="uk-width-1-1 uk-padding-remove">
-					            <select class="uk-select">
-					                <option>Auditor name 1</option>
-					                <option>Auditor name 2</option>
-					                <option>Auditor name 3</option>
+					            <select id="modal-amenity-form-auditor" class="uk-select">
+					                <option>Select an auditor</option>
+					                @foreach($auditors as $auditor)
+					                <option value="{{$auditor['id']}}">{{$auditor['name']}}</option>
+					                @endforeach
 					            </select>
 					        </div>
 				        </div>
-				        <button class="uk-button uk-button-default" onclick="saveAmenity()">Submit</button>
+				        <button class="uk-button uk-button-default" >Submit</button>
 					</fieldset>
 				</form>
 	  		</div>
@@ -27,18 +28,23 @@
 	</div>
 </div>
 <script>
+
 	function saveAmenity() {
 		event.preventDefault();
-		
+
+        var name = $('#modal-amenity-form-name').val();
+        var auditorId = $('#modal-amenity-form-auditor').val();
+
 		var spinner = '<div style="height:200px;width: 100%;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
         $('.modal-amenity-add').html(spinner);
-
 		var form = $('#modal-amenity-form');
 		
 		$.post('/modals/amenities/save', {
 				'project_id' : '{{$data['project_id']}}',
 				'building_id' : '{{$data['building_id']}}',
 				'unit_id' : '{{$data['unit_id']}}',
+				'name' : name,
+				'auditor_id' : auditorId,
 				'_token' : '{{ csrf_token() }}'
 			}, function(data) {
 				// locate where to update data
@@ -74,6 +80,11 @@
 					newarea = newarea.replace(/areaCommentStatus/g, area.finding_comment_status);
 					newarea = newarea.replace(/areaCopyStatus/g, area.finding_copy_status);
 					newarea = newarea.replace(/areaTrashStatus/g, area.finding_trash_status);
+					
+					newarea = newarea.replace(/areaDataAudit/g, area.audit_id);
+					newarea = newarea.replace(/areaDataBuilding/g, area.building_id);
+					newarea = newarea.replace(/areaDataArea/g, area.unit_id);
+					newarea = newarea.replace(/areaDataAmenity/g, area.id);
 
 					areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor_color);
 				});
@@ -91,4 +102,5 @@
 
 		
 	}
+
 </script>
