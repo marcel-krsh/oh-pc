@@ -59,7 +59,7 @@
 </template>
 
 <template class="uk-hidden" id="inspection-area-template">
-	    <div id="inspection-areaContext-area-r-areaRowId" data-context="areaContext" class="inspection-area uk-flex uk-flex-row areaStatus" style="padding:6px 0 0 0;">
+	    <div id="inspection-areaContext-area-r-areaRowId" class="inspection-area uk-flex uk-flex-row areaStatus" style="padding:6px 0 0 0;" data-context="areaContext" data-audit="areaDataAudit" data-building="areaDataBuilding" data-area="areaDataArea" data-amenity="areaDataAmenity">
 	    	<div class="uk-inline uk-sortable-inspec-area" style="min-width: 16px; padding: 0 3px;">
 				<div class="linespattern"></div>
 				<span id="" class="uk-position-bottom-center colored"><small><span class="rowindex" style="display:none;">areaRowId</span></small></span>

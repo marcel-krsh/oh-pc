@@ -80,6 +80,11 @@
 					newarea = newarea.replace(/areaCommentStatus/g, area.finding_comment_status);
 					newarea = newarea.replace(/areaCopyStatus/g, area.finding_copy_status);
 					newarea = newarea.replace(/areaTrashStatus/g, area.finding_trash_status);
+					
+					newarea = newarea.replace(/areaDataAudit/g, area.audit_id);
+					newarea = newarea.replace(/areaDataBuilding/g, area.building_id);
+					newarea = newarea.replace(/areaDataArea/g, area.unit_id);
+					newarea = newarea.replace(/areaDataAmenity/g, area.id);
 
 					areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor_color);
 				});

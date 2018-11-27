@@ -563,6 +563,7 @@ stickynav {
     margin-left: auto;
     margin-right: auto;
     padding: 0;
+    padding-bottom: 30px;
     /*margin-top: 50px;*/
   }
 	#logged-in-user-badge{
