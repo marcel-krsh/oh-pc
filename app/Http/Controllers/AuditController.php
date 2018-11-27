@@ -194,8 +194,8 @@ class AuditController extends Controller
 
         $data['menu'] = $data['detail']->menu_json;
 
-        //$data['amenities'] = CachedAmenity::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->get();
-        $data['amenities'] = CachedAmenity::get()->toArray();
+        $data['amenities'] = CachedAmenity::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->get();
+        // $data['amenities'] = CachedAmenity::get()->toArray();
 
         $data['comments'] = CachedComment::where('parent_id', '=', null)->with('replies')->get();
 
@@ -219,8 +219,8 @@ class AuditController extends Controller
 
         $data['menu'] = $data['detail']->menu_json;
 
-        //$data['amenities'] = CachedAmenity::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->get();
-        $data['amenities'] = CachedAmenity::get()->toArray();
+        $data['amenities'] = CachedAmenity::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->get();
+        // $data['amenities'] = CachedAmenity::get()->toArray();
 
         $data['comments'] = CachedComment::where('parent_id', '=', null)->with('replies')->get();
 
@@ -2604,7 +2604,9 @@ class AuditController extends Controller
         $amenity->save();
         
         // reload amenities (!! filter, not all of them, ok for now as we need to test)
-        $data = CachedAmenity::get()->toArray();
+        $data = CachedAmenity::where('audit_id', '=', $audit->id)->where('building_id', '=', $building_id);
+        if($unit_id) $data = $data->where('unit_id', '=', $unit_id);
+        $data = $data->get();
             
         return $data;
     }
