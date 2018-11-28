@@ -25,6 +25,7 @@ class CreateCachedAmenitiesTable extends Migration
                 $table->unsignedInteger('project_id')->nullable();
                 $table->unsignedInteger('building_id')->nullable();
                 $table->unsignedInteger('unit_id')->nullable();
+                $table->unsignedInteger('amenity_type_id')->nullable();
                 $table->string('name', 250)->nullable();
                 $table->string('status', 100)->nullable();
                 $table->string('finding_nlt_status', 100)->nullable();
