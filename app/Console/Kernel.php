@@ -111,14 +111,14 @@ class Kernel extends ConsoleKernel
             //Log::info('Sync Job Already Started.');
         }
 
-        // Projects
-        $test = DB::table('jobs')->where('payload','like','%SyncProjectsJob%')->first();
-        if(is_null($test)) {
-            $schedule->job(new SyncProjectsJob)->everyMinute();
+        // // Projects
+        // $test = DB::table('jobs')->where('payload','like','%SyncProjectsJob%')->first();
+        // if(is_null($test)) {
+        //     $schedule->job(new SyncProjectsJob)->everyMinute();
             
-        } else {
-            //Log::info('Sync Job Already Started.');
-        }
+        // } else {
+        //     //Log::info('Sync Job Already Started.');
+        // }
     }
 
     /**
