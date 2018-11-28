@@ -95,7 +95,7 @@ class SyncController extends Controller
                                         // update the sync table first
                                         SyncProject::where('id',$updateRecord['id'])
                                         ->update([
-                                            'development_name'=>$v['attributes']['developmentName'],
+                                            'project_name'=>$v['attributes']['developmentName'],
                                             'physical_address_key'=>$v['attributes']['physicalAddressKey'],
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
@@ -110,7 +110,7 @@ class SyncController extends Controller
                                         $UpdateAllitaValues = SyncProject::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
-                                            'development_name'=>$v['attributes']['developmentName'],
+                                            'project_name'=>$v['attributes']['developmentName'],
                                             'physical_address_key'=>$v['attributes']['physicalAddressKey'],
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
@@ -131,7 +131,7 @@ class SyncController extends Controller
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
                                         $allitaTableRecord = Project::create([
-                                            'development_name'=>$v['attributes']['developmentName'],
+                                            'project_name'=>$v['attributes']['developmentName'],
                                             'physical_address_key'=>$v['attributes']['physicalAddressKey'],
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
@@ -145,7 +145,7 @@ class SyncController extends Controller
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncProject::where('id',$updateRecord['id'])
                                         ->update([
-                                            'development_name'=>$v['attributes']['developmentName'],
+                                            'project_name'=>$v['attributes']['developmentName'],
                                             'physical_address_key'=>$v['attributes']['physicalAddressKey'],
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
@@ -171,7 +171,7 @@ class SyncController extends Controller
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
                                 $allitaTableRecord = Project::create([
-                                    'development_name'=>$v['attributes']['developmentName'],
+                                    'project_name'=>$v['attributes']['developmentName'],
                                             'physical_address_key'=>$v['attributes']['physicalAddressKey'],
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
@@ -183,7 +183,7 @@ class SyncController extends Controller
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncProject::create([
-                                            'development_name'=>$v['attributes']['developmentName'],
+                                            'project_name'=>$v['attributes']['developmentName'],
                                             'physical_address_key'=>$v['attributes']['physicalAddressKey'],
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
