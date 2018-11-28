@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listDevelopments(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            //dd($syncData);
+            dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -59,12 +59,12 @@ class SyncController extends Controller
                         //Get Next Page
                         $syncData = $apiConnect->listDevelopments($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
-                        dd('Page Count is Higher',$syncData);
+                        //dd('Page Count is Higher',$syncData);
                     }
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProject::select('id','allita_id','last_edited','updated_at')->where('project_key',$v['attributes']['DevelopmentKey'])->first();
+                            $updateRecord = SyncProject::select('id','allita_id','last_edited','updated_at')->where('project_key',$v['attributes']['developmentKey'])->first();
                             // convert booleans
                             //settype($v['attributes']['isActive'], 'boolean');
                             //dd($updateRecord,$updateRecord->updated_at);
@@ -100,11 +100,11 @@ class SyncController extends Controller
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
-                                            'parent_project_key'=>$v['attributes']['parentDevelopmentKey'],
+                                            'parent_project_key'=>$v['attributes']['parentdevelopmentKey'],
                                             'Project_name'=>$v['attributes']['ProjectName'],
                                             'fed_id_number'=>$v['attributes']['fedIDNumber'],
                                             
-                                            'project_key'=>$v['attributes']['DevelopmentKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
                                         $UpdateAllitaValues = SyncProject::find($updateRecord['id']);
@@ -115,11 +115,11 @@ class SyncController extends Controller
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
-                                            'parent_project_key'=>$v['attributes']['parentDevelopmentKey'],
+                                            'parent_project_key'=>$v['attributes']['parentdevelopmentKey'],
                                             'Project_name'=>$v['attributes']['ProjectName'],
                                             'fed_id_number'=>$v['attributes']['fedIDNumber'],
                                             
-                                            'project_key'=>$v['attributes']['DevelopmentKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
                                         ]);
                                         //dd('inside.');
@@ -136,11 +136,11 @@ class SyncController extends Controller
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
-                                            'parent_project_key'=>$v['attributes']['parentDevelopmentKey'],
+                                            'parent_project_key'=>$v['attributes']['parentdevelopmentKey'],
                                             'Project_name'=>$v['attributes']['ProjectName'],
                                             'fed_id_number'=>$v['attributes']['fedIDNumber'],
                                             
-                                            'project_key'=>$v['attributes']['DevelopmentKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncProject::where('id',$updateRecord['id'])
@@ -150,11 +150,11 @@ class SyncController extends Controller
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
-                                            'parent_project_key'=>$v['attributes']['parentDevelopmentKey'],
+                                            'parent_project_key'=>$v['attributes']['parentdevelopmentKey'],
                                             'Project_name'=>$v['attributes']['ProjectName'],
                                             'fed_id_number'=>$v['attributes']['fedIDNumber'],
                                             
-                                            'project_key'=>$v['attributes']['DevelopmentKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -176,10 +176,10 @@ class SyncController extends Controller
                                             'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
                                             'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
-                                            'parent_project_key'=>$v['attributes']['parentDevelopmentKey'],
+                                            'parent_project_key'=>$v['attributes']['parentdevelopmentKey'],
                                             'Project_name'=>$v['attributes']['ProjectName'],
                                             'fed_id_number'=>$v['attributes']['fedIDNumber'],
-                                            'project_key'=>$v['attributes']['DevelopmentKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncProject::create([
@@ -190,8 +190,8 @@ class SyncController extends Controller
                                             'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
                                             'Project_name'=>$v['attributes']['ProjectName'],
                                             'fed_id_number'=>$v['attributes']['fedIDNumber'],
-                                            'project_key'=>$v['attributes']['DevelopmentKey'],
-                                            'parent_project_key'=>$v['attributes']['parentDevelopmentKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'parent_project_key'=>$v['attributes']['parentdevelopmentKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
