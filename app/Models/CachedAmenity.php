@@ -13,6 +13,7 @@ class CachedAmenity extends Model
         'project_id',
         'building_id',
         'unit_id',
+        'amenity_type_id',
         'status',
         'auditor',
         'auditor_name',
@@ -68,5 +69,15 @@ class CachedAmenity extends Model
     public function building() : HasOne
     {
         return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
+    }
+
+    /**
+     * Amenity Type
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function amenity_type() : HasOne
+    {
+        return $this->hasOne(\App\Models\AmenityType::class, 'id', 'amenity_type_id');
     }
 }

@@ -2573,18 +2573,14 @@ class AuditController extends Controller
 
     function saveAmenity(Request $request){
         // TBD
+        // 
+        // 
+        // 
         $project_id = $request->get('project_id'); 
         $building_id =  $request->get('building_id');
         $unit_id =  $request->get('unit_id');
 
-        $name =  $request->get('name');
-        $auditor_id =  $request->get('auditor_id');
-
-        // TBD
-        // Get auditor's name, color and initials
-        $auditor_color = 'green';
-        $auditor_initials = "BG";
-        $auditor_name = "Brian Greenwood";
+        $new_amenities = $request->get('new_amenities');
 
         // get current audit id using project_id
         // only one audit can be active at one time
@@ -2596,65 +2592,91 @@ class AuditController extends Controller
 
         $user = Auth::user();
 
-        // check name and add numeric counter at the end if duplicate
-
-        $existing_amenities = CachedAmenity::where('project_id', '=', $project_id);
-            if($building_id) $existing_amenities = $existing_amenities->where('building_id', '=', $building_id);
-            if($unit_id) $existing_amenities = $existing_amenities->where('unit_id', '=', $unit_id);
-            $existing_amenities = $existing_amenities->whereRaw('LOWER(name) like ?', [strtolower($name).'%']);
-            $existing_amenities = $existing_amenities->get();
-
-        if($existing_amenities){
-            if(count($existing_amenities) == 1){
-                // only one record that could be the same
-                if(strlen(rtrim($existing_amenities[0]->name)) == strlen(rtrim($name))){
-                    // definitely replace the name
-                    $name = $name." #2";
+        if(count($new_amenities)){
+            foreach($new_amenities as $new_amenity){
+                // TBD
+                // Get auditor's name, color and initials
+                // 1) check if auditor_id is a valid auditor on that audit
+                // 2) get the information
+                
+                $auditor = Auditor::where("id", "=", $auditor_id)->where("audit_id", "=", $audit->id)->with('user')->first();
+                if(!$auditor){
+                    dd("There is an error - this auditor doesn't seem to be assigned to this audit.");
                 }
-            }else{
-                // we have more than one, but we need to make sure they are actually duplicates
-                $found_one = 0;
-                $new_index = 0;
-                $name = rtrim($name);
-                foreach($existing_amenities as $existing_amenity){
-                    if(strlen(rtrim($existing_amenities[0]->name)) == strlen($name)){
-                        $new_index = 2;
-                    }else{
-                        // there is a second part to the string ( #000), make sure it has the right format and get the highest digit
-                        $name_end = substr(rtrim($existing_amenity->name), strpos(rtrim($existing_amenity->name), $name." #") + strlen($name." #"));
 
-                        if(substr(rtrim($existing_amenity->name), 0, strlen($name." #")) === $name." #" && ctype_digit($name_end)){
-                            // the string starts with the exact name and there is a digit after space #
-                            if(int($name_end) > $new_index){
-                                $new_index = int($name_end);
+                //tmp
+    $auditor_color = 'green';
+    $auditor_initials = "BG";
+    $auditor_name = "Brian Greenwood";
+                
+                // get amenity type
+                $amenity_type = AmenityType::where("id", "=", $new_amenity['amenity_id'])->first();
+
+                // check name and add numeric counter at the end if duplicate
+                $existing_amenities = CachedAmenity::where('project_id', '=', $project_id);
+                    if($building_id) $existing_amenities = $existing_amenities->where('building_id', '=', $building_id);
+                    if($unit_id) $existing_amenities = $existing_amenities->where('unit_id', '=', $unit_id);
+                    //$existing_amenities = $existing_amenities->whereRaw('LOWER(name) like ?', [strtolower($amenity->name).'%']);
+                    $existing_amenities = $existing_amenities->where('amenity_type_id', '=', $amenity_type->id);
+                    $existing_amenities = $existing_amenities->get();
+
+                if($existing_amenities){
+                    if(count($existing_amenities) == 1){
+                        // only one record that could be the same
+                        if(strlen(rtrim($existing_amenities[0]->name)) == strlen(rtrim($name))){
+                            // definitely replace the name
+                            $name = $name." #2";
+                        }
+                    }else{
+                        // we have more than one, but we need to make sure they are actually duplicates
+                        $found_one = 0;
+                        $new_index = 0;
+                        $name = rtrim($name);
+                        foreach($existing_amenities as $existing_amenity){
+                            if(strlen(rtrim($existing_amenities[0]->name)) == strlen($name)){
+                                $new_index = 2;
+                            }else{
+                                // there is a second part to the string ( #000), make sure it has the right format and get the highest digit
+                                $name_end = substr(rtrim($existing_amenity->name), strpos(rtrim($existing_amenity->name), $name." #") + strlen($name." #"));
+
+                                if(substr(rtrim($existing_amenity->name), 0, strlen($name." #")) === $name." #" && ctype_digit($name_end)){
+                                    // the string starts with the exact name and there is a digit after space #
+                                    if(int($name_end) > $new_index){
+                                        $new_index = int($name_end);
+                                    }
+                                }
                             }
                         }
+
+                        if($new_index > 0){
+                            $name = $name." #".$new_index;
+                        }
                     }
+                }else{
+                    // when no existing amenities, nothing to rename
                 }
 
-                if($new_index > 0){
-                    $name = $name." #".$new_index;
-                }
+                // save new amenity
+                $amenity = new CachedAmenity([
+                            'audit_id' => $audit->id,
+                            'project_id' => $project_id,
+                            'building_id' => $building_id,
+                            'unit_id' => $unit_id,
+                            'amenity_type_id' => $amenity_type->id,
+                            'name' => $name,
+                            'finding_nlt_status' => 'action-needed',
+                            'finding_lt_status' => 'action-required',
+                            'finding_sd_status' => 'no-action',
+                            'finding_copy_status' => 'no-action',
+                            'auditor_id' => $auditor_id,
+                            'auditor_name' => $auditor_name,
+                            'auditor_initials' => $auditor_initials,
+                            'auditor_color' => $auditor_color
+                        ]);
+                $amenity->save();
+
             }
         }
-
-        // save new amenity
-        $amenity = new CachedAmenity([
-                    'audit_id' => $audit->id,
-                    'project_id' => $project_id,
-                    'building_id' => $building_id,
-                    'unit_id' => $unit_id,
-                    'name' => $name,
-                    'finding_nlt_status' => 'action-needed',
-                    'finding_lt_status' => 'action-required',
-                    'finding_sd_status' => 'no-action',
-                    'finding_copy_status' => 'no-action',
-                    'auditor_id' => $auditor_id,
-                    'auditor_name' => $auditor_name,
-                    'auditor_initials' => $auditor_initials,
-                    'auditor_color' => $auditor_color
-                ]);
-        $amenity->save();
         
         // reload amenities (!! filter, not all of them, ok for now as we need to test)
         $data = CachedAmenity::where('audit_id', '=', $audit->id)->where('building_id', '=', $building_id);
