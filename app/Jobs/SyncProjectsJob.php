@@ -124,7 +124,6 @@ class SyncProjectsJob implements ShouldQueue
                                             'project_number'=>$v['attributes']['projectNumber'],
                                             'sample_size'=>$v['attributes']['sampleSize'],
                                             
-                                            'project_key'=>$v['attributes']['developmentKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
                                         $UpdateAllitaValues = SyncProject::find($updateRecord['id']);
@@ -138,8 +137,7 @@ class SyncProjectsJob implements ShouldQueue
                                             'total_building_count'=>$v['attributes']['totalBuildingCount'],
                                             'project_number'=>$v['attributes']['projectNumber'],
                                             'sample_size'=>$v['attributes']['sampleSize'],
-                                            
-                                            'project_key'=>$v['attributes']['developmentKey'],
+
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
                                         ]);
                                         //dd('inside.');
@@ -211,6 +209,8 @@ class SyncProjectsJob implements ShouldQueue
                                             'total_building_count'=>$v['attributes']['totalBuildingCount'],
                                             'project_number'=>$v['attributes']['projectNumber'],
                                             'sample_size'=>$v['attributes']['sampleSize'],
+
+                                        'project_key'=>$v['attributes']['developmentKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
