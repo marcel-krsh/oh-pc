@@ -39,7 +39,7 @@ if(Auth::check()){
 	@else
 
 	<!-- <link rel="stylesheet" href="/css/cdfs-tab.css">
-	<link rel="stylesheet" href="/css/communications-tab.css">
+	
 	<link rel="stylesheet" href="/css/documents-tab.css">
 	<link rel="stylesheet" href="/css/funding-tab.css">
 	<link rel="stylesheet" href="/css/history-tab.css">
@@ -48,6 +48,7 @@ if(Auth::check()){
 	<link rel="stylesheet" href="/css/processing-tab.css">
 	<link rel="stylesheet" href="/css/handsontable.full.min.css">
 	<link rel="stylesheet" href="/css/components/slideshow.css"> -->
+	<link rel="stylesheet" href="/css/communications-tab.css">
 	<link rel="stylesheet" href="/css/auto-complete.css">
 
 	@endif
@@ -77,7 +78,8 @@ if(Auth::check()){
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
 	
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
 
 	<script>
@@ -104,6 +106,16 @@ if(Auth::check()){
 	}
 	</style>
     @endif
+    <style>
+	  [v-cloak] {
+	    display: none;
+	  }
+	</style>
+
+	<script>
+		// initial values
+	    var statsCommunicationTotal = "{{$stats_communication_total}}";
+	</script>
 </head>
 <body >
 	<a name="top"></a>
@@ -126,7 +138,7 @@ if(Auth::check()){
 				    	<div id="top-tabs-container">
 					        <ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m">
 				    			<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.audits') }}', '1');"><a href=""><i class="a-mobile-home"></i> <span class="list-tab-text"> <span class="uk-badge">24</span> AUDITS</span></a></li>
-								<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.communications') }}', '2');"><a href=""><i class="a-envelope-attention"></i> <span class="list-tab-text"> <span class="uk-badge">99,999</span> COMMUNICATIONS</span></a></li>
+								<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('communication.tab') }}', '2');"><a href=""><i class="a-envelope-attention"></i> <span class="list-tab-text"> <span class="uk-badge" id="v-tab-com-stat" v-cloak>@{{stat}}</span> COMMUNICATIONS</span></a></li>
 								<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.reports') }}', '3');">
 									<a href=""><i class="a-file-chart-3"></i> <span class="list-tab-text"> <span class="uk-badge">99,999</span> REPORTS</span></a>
 								</li>
@@ -259,8 +271,8 @@ if(Auth::check()){
 	<script type="text/javascript" src="/js/systems/funding-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/history-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/notes-tab.js"></script>
-	<script type="text/javascript" src="/js/systems/outcomes-tab.js"></script>
-	<script type="text/javascript" src="/js/systems/processing-tab.js"></script> -->
+	<script type="text/javascript" src="/js/systems/outcomes-tab.js"></script> -->
+	<script type="text/javascript" src="/js/systems/processing-tab.js"></script>
 	<script>
 	    var quicklookupbox = new autoComplete({
 	    	selector: '#quick-lookup-box',

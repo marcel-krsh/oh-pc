@@ -10,7 +10,12 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MessagePushed
+use App\Models\Communication;
+use App\Models\CommunicationRecipient;
+use Illuminate\Support\Facades\Redis;
+use Auth;
+
+class CommunicationsEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -21,7 +26,9 @@ class MessagePushed
      */
     public function __construct()
     {
-        //
+        if(env('APP_DEBUG_NO_DEVCO') == 'true'){
+           Auth::onceUsingId(1); // TEST BRIAN
+        }
     }
 
     /**
@@ -32,5 +39,20 @@ class MessagePushed
     public function broadcastOn()
     {
         return new PrivateChannel('channel-name');
+    }
+
+    public function communicationCreated(Communication $communication)
+    {
+        $stats_communication_total = CommunicationRecipient::where('user_id', $communication->owner_id)
+                    ->where('seen', 0)
+                    ->count();
+        $data = [
+            'event' => 'NewMessage',
+            'data' => [
+                'stats_communication_total' => $stats_communication_total
+            ]
+        ];
+
+        Redis::publish('communications', json_encode($data)); 
     }
 }

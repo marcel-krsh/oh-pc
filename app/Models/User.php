@@ -25,7 +25,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'entity_id',
+        'organization_id',
         'badge_color',
         'email_token',
         'active',
@@ -39,7 +39,7 @@ class User extends Authenticatable
     protected static $logAttributes = [
         'name',
         'email',
-        'entity_id',
+        'organization_id',
         'badge_color'
     ];
     
@@ -64,15 +64,15 @@ class User extends Authenticatable
     }
 
     /**
-     * Is From Entity
+     * Is From Organization
      *
      * @param $id
      *
      * @return int
      */
-    public function isFromEntity($id) : int
+    public function isFromOrganization($id) : int
     {
-        if ($id == $this->entity_id) {
+        if ($id == $this->organization_id) {
             return 1;
         }
         return 0;

@@ -11,12 +11,11 @@ use Gate;
 use Auth;
 use Session;
 use App\Models\User;
+use App\Models\SystemSetting;
 use File;
 use Storage;
 use DB;
 use App\Models\Program;
-use App\Models\Entity;
-use App\Models\Parcel;
 use App\Models\Document;
 use App\Models\DocumentCategory;
 use App\Models\Mail\EmailNotification;
@@ -24,6 +23,7 @@ use App\Models\Communication;
 use App\Models\CommunicationRecipient;
 use App\Models\CommunicationDocument;
 use App\LogConverter;
+use App\Models\CachedAudit;
 
 class CommunicationController extends Controller
 {
@@ -31,7 +31,12 @@ class CommunicationController extends Controller
     {
         // $this->middleware('auth');
         //Auth::onceUsingId(2);
+        //
+        if(env('APP_DEBUG_NO_DEVCO') == 'true'){
+            Auth::onceUsingId(1); // TEST BRIAN
+        }
     }
+
 
     /**
      * Show the communication list for a specific parcel.
@@ -133,65 +138,67 @@ class CommunicationController extends Controller
 
 
 
-    public function newCommunicationEntry($parcel_id = null)
+    public function newCommunicationEntry($audit_id = null)
     {
-        if ($parcel_id !== null) {
-            $parcel = Parcel::where('id', '=', $parcel_id)->first();
+        $ohfa_id = SystemSetting::get('ohfa_organization_id');
 
-            $documents = Document::where('parcel_id', $parcel->id)
-                ->orderBy('created_at', 'desc')
-                ->get();
+        if ($audit_id !== null) {
+            // $parcel = Parcel::where('id', '=', $parcel_id)->first();
 
-            $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
+            // $documents = Document::where('parcel_id', $parcel->id)
+            //     ->orderBy('created_at', 'desc')
+            //     ->get();
 
-            // build a list of all categories used for uploaded documents in this parcel
-            $categories_used = [];
-            // category keys for name reference ['id' => 'name']
-            $document_categories_key = [];
+            // $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
 
-            if (count($documents)) {
-                // create an associative array to simplify category references for each document
-                foreach ($documents as $document) {
-                    $categories = []; // store the new associative array cat id, cat name
+            // // build a list of all categories used for uploaded documents in this parcel
+            // $categories_used = [];
+            // // category keys for name reference ['id' => 'name']
+            // $document_categories_key = [];
+
+            // if (count($documents)) {
+            //     // create an associative array to simplify category references for each document
+            //     foreach ($documents as $document) {
+            //         $categories = []; // store the new associative array cat id, cat name
                      
-                    if ($document->categories) {
-                        $categories_decoded = json_decode($document->categories, true); // cats used by the doc
-                            $categories_used = array_merge($categories_used, $categories_decoded); // merge document categories
-                    } else {
-                        $categories_decoded = [];
-                    }
+            //         if ($document->categories) {
+            //             $categories_decoded = json_decode($document->categories, true); // cats used by the doc
+            //                 $categories_used = array_merge($categories_used, $categories_decoded); // merge document categories
+            //         } else {
+            //             $categories_decoded = [];
+            //         }
 
-                    foreach ($document_categories as $document_category) {
-                        $document_categories_key[$document_category->id] = $document_category->document_category_name;
+            //         foreach ($document_categories as $document_category) {
+            //             $document_categories_key[$document_category->id] = $document_category->document_category_name;
 
-                        // sub key for each document's categories for quick reference
-                        if (in_array($document_category->id, $categories_decoded)) {
-                            $categories[$document_category->id] = $document_category->document_category_name;
-                        }
-                    }
-                    $document->categoriesarray = $categories;
-                }
-            } else {
-                $documents = [];
-            }
+            //             // sub key for each document's categories for quick reference
+            //             if (in_array($document_category->id, $categories_decoded)) {
+            //                 $categories[$document_category->id] = $document_category->document_category_name;
+            //             }
+            //         }
+            //         $document->categoriesarray = $categories;
+            //     }
+            // } else {
+            //     $documents = [];
+            // }
 
-            $recipients_from_hfa = User::where('entity_id', '1')
-                    ->where('active', 1)
-                    ->orderBy('name', 'asc')
-                    ->get();
-            if (Auth::user()->entity_id != 1) {
-                $recipients = User::where('entity_id', Auth::user()->entity_id)
-                    ->where('active', 1)
-                    ->orderBy('name', 'asc')
-                    ->get();
-            } else {
-                $recipients = User::where('entity_id', '!=', 1)
-                    ->where('active', 1)
-                    ->orderBy('name', 'asc')
-                    ->get();
-            }
+            // $recipients_from_hfa = User::where('entity_id', '1')
+            //         ->where('active', 1)
+            //         ->orderBy('name', 'asc')
+            //         ->get();
+            // if (Auth::user()->entity_id != 1) {
+            //     $recipients = User::where('entity_id', Auth::user()->entity_id)
+            //         ->where('active', 1)
+            //         ->orderBy('name', 'asc')
+            //         ->get();
+            // } else {
+            //     $recipients = User::where('entity_id', '!=', 1)
+            //         ->where('active', 1)
+            //         ->orderBy('name', 'asc')
+            //         ->get();
+            // }
 
-            return view('modals.new-outbound-email-entry', compact('parcel', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa'));
+            // return view('modals.new-outbound-email-entry', compact('parcel', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa'));
         } else {
             $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
 
@@ -201,31 +208,25 @@ class CommunicationController extends Controller
             $document_categories_key = [];
             $documents = [];
 
-            $recipients_from_hfa = User::where('entity_id', '1')
+            $recipients_from_hfa = User::where('organization_id', '=', $ohfa_id)
                     ->where('active', 1)
                     ->orderBy('name', 'asc')
                     ->get();
-            if (Auth::user()->entity_id != 1) {
-                $recipients = User::where('entity_id', Auth::user()->entity_id)
-                    ->where('active', 1)
-                    ->orderBy('name', 'asc')
-                    ->get();
-            } else {
-                $recipients = User::where('entity_id', '!=', 1)
-                    ->where('active', 1)
-                    ->orderBy('name', 'asc')
-                    ->get();
-            }
+           
+            $recipients = User::where('organization_id', '!=', $ohfa_id)
+                ->orWhereNull('organization_id')
+                ->where('active', 1)
+                ->orderBy('name', 'asc')->get();
 
-            $parcel = null;
+            $audit = null;
 
-            return view('modals.new-outbound-email-entry', compact('parcel', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa'));
+            return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id'));
         }
     }
 
 
 
-    public function searchCommunications(Parcel $parcel, Request $request)
+    public function searchCommunications(CachedAudit $audit, Request $request)
     {
         if ($request->has('communications-search')) {
             Session::put('communications-search', $request->get('communications-search'));
@@ -253,20 +254,20 @@ class CommunicationController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      * @throws \Exception
      */
-    public function viewReplies($parcel_id = null, $message_id)
+    public function viewReplies($audit_id = null, $message_id)
     {
         $message = Communication::where('id', $message_id)
                     ->with('owner')
                     ->firstOrFail();
 
-        if ($parcel_id === null || $parcel_id == 0) {
+        if ($audit_id === null || $audit_id == 0) {
             // used to redirect to dashboard communications
             // tab instead of parcel's communications tab
-            $noparcel = 1;
-            $parcel = $message->parcel;
+            $noaudit = 1;
+            $audit = $message->audit;
         } else {
-            $noparcel = 0;
-            $parcel = Parcel::find((int) $parcel_id);
+            $noaudit = 0;
+            $audit = CachedAudit::find((int) $audit_id);
         }
 
         // if(!$parcel) {
@@ -288,9 +289,9 @@ class CommunicationController extends Controller
         }
         $user_needs_to_read_more = CommunicationRecipient::whereIn('communication_id', $message_id_array)->where('user_id', $current_user->id)->where('seen', 0)->update(['seen' => 1]);
 
-        if ($parcel) {
+        if ($audit) {
             // fetch documents and categories
-            $documents = Document::where('parcel_id', $parcel->id)
+            $documents = Document::where('audit_id', $audit->id)
                 ->orderBy('created_at', 'desc')
                 ->get();
             $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
@@ -387,7 +388,7 @@ class CommunicationController extends Controller
 
 
         // help build the upload category list
-        if (count($documents)) {
+        if ($documents !== null && count($documents)) {
             // create an associative array to simplify category references for each document
             foreach ($documents as $document) {
                 $categories = []; // store the new associative array cat id, cat name
@@ -419,7 +420,7 @@ class CommunicationController extends Controller
                 ->where('seen', 0)
                 ->update(['seen' => 1]);
                 
-        return view('modals.communication-replies', compact('message', 'replies', 'parcel', 'documents', 'document_categories', 'noparcel'));
+        return view('modals.communication-replies', compact('message', 'replies', 'audit', 'documents', 'document_categories', 'noaudit'));
     }
 
 
@@ -436,16 +437,16 @@ class CommunicationController extends Controller
         }
 
         if ($forminputs['messageBody']) {
-            if (isset($forminputs['parcel'])) {
+            if (isset($forminputs['audit'])) {
                 try {
-                    $parcel_id = (int) $forminputs['parcel'];
-                    $parcel = Parcel::where('id', $parcel_id)->first();
+                    $audit_id = (int) $forminputs['audit'];
+                    $audit = Audit::where('id', $audit_id)->first();
                 } catch (\Illuminate\Database\QueryException $ex) {
                     dd($ex->getMessage());
                 }
-                $parcel_id = $parcel->id;
+                $audit_id = $audit->id;
             } else {
-                $parcel_id = null;
+                $audit_id = null;
             }
 
             $user = Auth::user();
@@ -464,7 +465,7 @@ class CommunicationController extends Controller
                 }
                 $message = new Communication([
                     'owner_id' => $user->id,
-                    'parcel_id' => $parcel_id,
+                    'audit_id' => $audit_id,
                     'parent_id' => $originalMessageId,
                     'message' => $message_posted
                 ]);
@@ -474,7 +475,7 @@ class CommunicationController extends Controller
                 $subject = (string) $forminputs['subject'];
                 $message = new Communication([
                     'owner_id' => $user->id,
-                    'parcel_id' => $parcel_id,
+                    'audit_id' => $audit_id,
                     'message' => $message_posted,
                     'subject' => $subject
                 ]);
@@ -564,7 +565,7 @@ class CommunicationController extends Controller
                     ->where('seen', 0)
                     ->with('communication')
                     ->with('communication.owner')
-                    ->with('communication.parcel')
+                    ->with('communication.audit')
                     ->orderBy('id', 'desc')
                     ->get();
 
@@ -579,10 +580,10 @@ class CommunicationController extends Controller
             $message['communication_id'] = $message_unseen->communication_id;
             $message['summary'] = strlen($message_unseen->communication->message) > 400 ? substr($message_unseen->communication->message, 0, 200)."..." : $message_unseen->communication->message;
             $message['owner_name'] = $message_unseen->communication->owner->name;
-            if ($message_unseen->communication->parcel !== null) {
-                $message['parcel_id'] = $message_unseen->communication->parcel->parcel_id;
+            if ($message_unseen->communication->audit !== null) {
+                $message['audit_id'] = $message_unseen->communication->audit->audit_id;
             } else {
-                $message['parcel_id'] = null;
+                $message['audit_id'] = null;
             }
             $output_array['messages'][] = $message;
         }
@@ -652,17 +653,29 @@ class CommunicationController extends Controller
         return view('pages.error', compact('error', 'message', 'type'));
     }
 
+    // public function communications(Request $request)
+    // {
+    //     $ohfa_id = SystemSetting::get('ohfa_organization_id');
+
+    //     $owners_array = array();
+    //     $programs = array();
+    //     $messages = array();
+    //     //return \view('dashboard.index'); //, compact('user')
+    //     return view('dashboard.communications', compact('owners_array', 'programs', 'messages', 'ohfa_id'));
+    // }
+
     public function communicationsTab()
     {
         $current_user = Auth::user();
+        $ohfa_id = SystemSetting::get('ohfa_organization_id');
 
         //Search (in session)
         if (Session::has('communications-search') && Session::get('communications-search') != '') {
             $search = Session::get('communications-search');
             $search_messages = Communication::where(function ($query) use ($search) {
                 $query->where('message', 'LIKE', '%'.$search.'%');
-                $query->orWhereHas('parcel', function ($query) use ($search) {
-                    $query->where('parcel_id', 'LIKE', '%'.$search.'%');
+                $query->orWhereHas('audit', function ($query) use ($search) {
+                    $query->where('audit_id', 'LIKE', '%'.$search.'%');
                 });
             })
                     ->where(function ($query) use ($current_user) {
@@ -830,6 +843,6 @@ class CommunicationController extends Controller
         $owners_array = collect($owners_array)->sortBy('name')->toArray();
         $programs = Program::orderBy('program_name', 'ASC')->get();
 
-        return view('dashboard.communications', compact('messages', 'owners', 'owners_array', 'current_user', 'programs'));
+        return view('dashboard.communications', compact('messages', 'owners', 'owners_array', 'current_user', 'programs', 'ohfa_id'));
     }
 }
