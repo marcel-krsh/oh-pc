@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SyncAmenityType extends Model
+class SyncProjectBuilding extends Model
 {
     public $timestamps = true;
-	//protected $dateFormat = 'Y-m-d\TH:i:s.u';
+	protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
 	
 

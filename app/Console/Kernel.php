@@ -13,6 +13,8 @@ use App\Jobs\SyncProjectRolesJob;
 use App\Jobs\SyncProjectContactRolesJob;
 use App\Jobs\SyncOrganizationsJob;
 use App\Jobs\SyncProjectsJob;
+use App\Jobs\SyncAmenityTypesJob;
+
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -111,14 +113,23 @@ class Kernel extends ConsoleKernel
             //Log::info('Sync Job Already Started.');
         }
 
-        // // Projects
-        // $test = DB::table('jobs')->where('payload','like','%SyncProjectsJob%')->first();
-        // if(is_null($test)) {
-        //     $schedule->job(new SyncProjectsJob)->everyMinute();
+        // Projects
+        $test = DB::table('jobs')->where('payload','like','%SyncProjectsJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncProjectsJob)->everyMinute();
             
-        // } else {
-        //     //Log::info('Sync Job Already Started.');
-        // }
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        // Amenities
+        $test = DB::table('jobs')->where('payload','like','%SyncAmenityTypesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncAmenityTypesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
     }
 
     /**

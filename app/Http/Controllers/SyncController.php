@@ -12,8 +12,8 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncProject;
-use App\Models\Project;
+use App\Models\SyncProgram;
+use App\Models\Program;
 
 
 
@@ -22,7 +22,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// Project Sync
+        /////// Program Sync
         /////
 
         /// get last modified date inside the database
@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncProject::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncProgram::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -48,23 +48,23 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listDevelopments(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listPrograms(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            //dd($syncData);
+            dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listDevelopments($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listPrograms($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
-                        //dd('Page Count is Higher',$syncData);
+                        dd('Page Count is Higher',$syncData);
                     }
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProject::select('id','allita_id','last_edited','updated_at')->where('project_key',$v['attributes']['developmentKey'])->first();
+                            $updateRecord = SyncProgram::select('id','allita_id','last_edited','updated_at')->where('program_key',$v['attributes']['programKey'])->first();
                             // convert booleans
                             //settype($v['attributes']['isActive'], 'boolean');
                             //dd($updateRecord,$updateRecord->updated_at);
@@ -72,7 +72,7 @@ class SyncController extends Controller
                                 // record exists - get matching table record
 
                                 /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                                $allitaTableRecord = Project::find($updateRecord->allita_id);
+                                $allitaTableRecord = Program::find($updateRecord->allita_id);
                                 /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
@@ -93,31 +93,21 @@ class SyncController extends Controller
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        SyncProject::where('id',$updateRecord['id'])
+                                        SyncProgram::where('id',$updateRecord['id'])
                                         ->update([
-                                            'project_name'=>$v['attributes']['developmentName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
-                                            'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'project_number'=>$v['attributes']['projectNumber'],
-                                            'sample_size'=>$v['attributes']['sampleSize'],
-                                            
+                                            'program_abreviation'=>$v['attributes']['programAbreviation'],
+                                            'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
+                                            'program_name'=>$v['attributes']['programName'],
+                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
-                                        $UpdateAllitaValues = SyncProject::find($updateRecord['id']);
+                                        $UpdateAllitaValues = SyncProgram::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
-                                            'project_name'=>$v['attributes']['developmentName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
-                                            'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'project_number'=>$v['attributes']['projectNumber'],
-                                            'sample_size'=>$v['attributes']['sampleSize'],
-
+                                            'program_abreviation'=>$v['attributes']['programAbreviation'],
+                                            'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
+                                            'program_name'=>$v['attributes']['programName'],
+                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
                                         ]);
                                         //dd('inside.');
@@ -128,31 +118,23 @@ class SyncController extends Controller
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = Project::create([
-                                            'project_name'=>$v['attributes']['developmentName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
-                                            'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'project_number'=>$v['attributes']['projectNumber'],
-                                            'sample_size'=>$v['attributes']['sampleSize'],
+                                        $allitaTableRecord = Program::create([
+                                            'program_abreviation'=>$v['attributes']['programAbreviation'],
+                                            'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
+                                            'program_name'=>$v['attributes']['programName'],
+                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
                                             
-                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'program_key'=>$v['attributes']['programKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
-                                        $syncTableRecord = SyncProject::where('id',$updateRecord['id'])
+                                        $syncTableRecord = SyncProgram::where('id',$updateRecord['id'])
                                         ->update([
-                                            'project_name'=>$v['attributes']['developmentName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
-                                            'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'project_number'=>$v['attributes']['projectNumber'],
-                                            'sample_size'=>$v['attributes']['sampleSize'],
+                                            'program_abreviation'=>$v['attributes']['programAbreviation'],
+                                            'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
+                                            'program_name'=>$v['attributes']['programName'],
+                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
                                             
-                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'program_key'=>$v['attributes']['programKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -168,29 +150,21 @@ class SyncController extends Controller
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = Project::create([
-                                    'project_name'=>$v['attributes']['developmentName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
-                                            'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'project_number'=>$v['attributes']['projectNumber'],
-                                            'sample_size'=>$v['attributes']['sampleSize'],
-                                            'project_key'=>$v['attributes']['developmentKey'],
+                                $allitaTableRecord = Program::create([
+                                    'program_abreviation'=>$v['attributes']['programAbreviation'],
+                                    'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
+                                    'program_name'=>$v['attributes']['programName'],
+                                    'funding_program_key'=>$v['attributes']['fundingProgramKey'],
+                                            'program_key'=>$v['attributes']['programKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
-                                $syncTableRecord = SyncProject::create([
-                                            'project_name'=>$v['attributes']['developmentName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
-                                            'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'project_number'=>$v['attributes']['projectNumber'],
-                                            'sample_size'=>$v['attributes']['sampleSize'],
+                                $syncTableRecord = SyncProgram::create([
+                                            'program_abreviation'=>$v['attributes']['programAbreviation'],
+                                            'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
+                                            'program_name'=>$v['attributes']['programName'],
+                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
 
-                                        'project_key'=>$v['attributes']['developmentKey'],
+                                        'program_key'=>$v['attributes']['programKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
@@ -204,6 +178,6 @@ class SyncController extends Controller
                     $syncPage++;
                 }while($syncPage <= $syncData['meta']['totalPageCount']);
             }
-        }	
+        }
     }
 }
