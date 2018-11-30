@@ -38,12 +38,12 @@ class SyncController extends Controller
         /////
 
         $projectsToSync = \App\Models\SyncProject::select('project_key','allita_id','updated_at','last_edited')->get()->all();
-        dd($projectsToSync);
+        //dd($projectsToSync);
         if(!is_null($projectsToSync)){
         foreach ($projectsToSync as $projectToSync) {
             
 
-            $lastModifiedDate = SyncProjectAmenity::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->where('project_key',$projectsToSync->project_key)->orderBy('last_edited','desc')->first();
+            $lastModifiedDate = SyncProjectAmenity::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->where('project_key',$projectToSync->project_key)->orderBy('last_edited','desc')->first();
             // if the value is null set a default start date to start the sync.
             if(is_null($lastModifiedDate)) {
                 $modified = '10/1/1900';
@@ -60,7 +60,7 @@ class SyncController extends Controller
             if(!is_null($apiConnect)){
                 //get all the developments/projects with a modified date newer than the newest last modified date
 
-                $syncData = $apiConnect->listDevelopmentAmenities(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server',$projectsToSync->project_key);
+                $syncData = $apiConnect->listDevelopmentAmenities(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server',$projectToSync->project_key);
                 $syncData = json_decode($syncData, true);
                 $syncPage = 1;
                 dd($syncData);
@@ -69,7 +69,7 @@ class SyncController extends Controller
                     do{
                         if($syncPage > 1){
                             //Get Next Page
-                            $syncData = $apiConnect->listDevelopmentAmenities($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server',$projectsToSync->project_key);
+                            $syncData = $apiConnect->listDevelopmentAmenities($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server',$projectToSync->project_key);
                             $syncData = json_decode($syncData, true);
                             //dd('Page Count is Higher',$syncData);
                         }
