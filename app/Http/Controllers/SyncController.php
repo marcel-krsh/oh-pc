@@ -37,7 +37,7 @@ class SyncController extends Controller
         /////// Obtain the list of projects to process
         /////
 
-        $projectsToSync = \App\SyncProject::get()->all();
+        $projectsToSync = \App\SyncProject::select('project_key','allita_id','updated_at','last_edited')->get()->all();
 
         foreach ($projectsToSync as $projectToSync) {
             
