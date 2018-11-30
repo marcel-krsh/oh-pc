@@ -22,7 +22,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// Project Sync
+        /////// Amenity Sync
         /////
 
         /// get last modified date inside the database
@@ -72,7 +72,7 @@ class SyncController extends Controller
                                 // record exists - get matching table record
 
                                 /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                                $allitaTableRecord = Project::find($updateRecord->allita_id);
+                                $allitaTableRecord = Amenity::find($updateRecord->allita_id);
                                 /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
@@ -95,29 +95,13 @@ class SyncController extends Controller
                                         // update the sync table first
                                         SyncAmenityType::where('id',$updateRecord['id'])
                                         ->update([
-                                            'project_name'=>$v['attributes']['developmentName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
-                                            'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'project_number'=>$v['attributes']['projectNumber'],
-                                            'sample_size'=>$v['attributes']['sampleSize'],
-                                            
+                                            'amenity_description'=>$v['attributes']['amenityDescription'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
                                         $UpdateAllitaValues = SyncAmenityType::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
-                                            'project_name'=>$v['attributes']['developmentName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
-                                            'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'project_number'=>$v['attributes']['projectNumber'],
-                                            'sample_size'=>$v['attributes']['sampleSize'],
-
+                                            'amenity_description'=>$v['attributes']['amenityDescription'],
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
                                         ]);
                                         //dd('inside.');
@@ -128,29 +112,15 @@ class SyncController extends Controller
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = Project::create([
-                                            'project_name'=>$v['attributes']['developmentName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
-                                            'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'project_number'=>$v['attributes']['projectNumber'],
-                                            'sample_size'=>$v['attributes']['sampleSize'],
+                                        $allitaTableRecord = Amenity::create([
+                                            'amenity_description'=>$v['attributes']['amenityDescription'],
                                             
                                             'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncAmenityType::where('id',$updateRecord['id'])
                                         ->update([
-                                            'project_name'=>$v['attributes']['developmentName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
-                                            'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'project_number'=>$v['attributes']['projectNumber'],
-                                            'sample_size'=>$v['attributes']['sampleSize'],
+                                            'amenity_description'=>$v['attributes']['amenityDescription'],
                                             
                                             'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
@@ -168,27 +138,13 @@ class SyncController extends Controller
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = Project::create([
-                                    'project_name'=>$v['attributes']['developmentName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
-                                            'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'project_number'=>$v['attributes']['projectNumber'],
-                                            'sample_size'=>$v['attributes']['sampleSize'],
+                                $allitaTableRecord = Amenity::create([
+                                    'amenity_description'=>$v['attributes']['amenityDescription'],
                                             'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncAmenityType::create([
-                                            'project_name'=>$v['attributes']['developmentName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
-                                            'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'project_number'=>$v['attributes']['projectNumber'],
-                                            'sample_size'=>$v['attributes']['sampleSize'],
+                                            'amenity_description'=>$v['attributes']['amenityDescription'],
 
                                         'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
