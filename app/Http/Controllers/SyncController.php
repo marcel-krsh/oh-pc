@@ -38,7 +38,8 @@ class SyncController extends Controller
         /////
 
         $projectsToSync = \App\Models\SyncProject::select('project_key','allita_id','updated_at','last_edited')->get()->all();
-
+        dd($projectsToSync);
+        if(!is_null($projectsToSync)){
         foreach ($projectsToSync as $projectToSync) {
             
 
@@ -215,7 +216,8 @@ class SyncController extends Controller
                         $syncPage++;
                     }while($syncPage <= $syncData['meta']['totalPageCount']);
                 }
-            }// end for each project
-        }	
+            }
+        }// end for each project
+        }// end if for project amenity sync	
     }
 }
