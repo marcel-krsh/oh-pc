@@ -60,7 +60,7 @@ class SyncController extends Controller
             if(!is_null($apiConnect)){
                 //get all the developments/projects with a modified date newer than the newest last modified date
 
-                $syncData = $apiConnect->listDevelopmentAmenities(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server',$projectToSync->project_key);
+                $syncData = $apiConnect->listDevelopmentBuildings(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server',$projectToSync->project_key);
                 $syncData = json_decode($syncData, true);
                 $syncPage = 1;
                 dd($syncData);
