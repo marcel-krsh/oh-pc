@@ -498,7 +498,7 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function listDevelopmentAmenities(int $development_key, int $page=1, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	public function listDevelopmentAmenities(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
 	{
 		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
@@ -517,7 +517,7 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function listDevelopmentBuildings(int $development_key, int $page=1, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	public function listDevelopmentBuildings(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
 	{
 		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
@@ -540,7 +540,7 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function listDevelopmentActivities(int $page=1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	public function listDevelopmentActivities(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
 	{
 		$params = "page={$page}&newer_than={$newer_than}";
 
@@ -561,7 +561,7 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function listProjectActivityTypes(int $page=1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	public function listProjectActivityTypes(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
 	{
 		$params = "page={$page}&newer_than={$newer_than}";
 
@@ -611,9 +611,7 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function listDevelopmentContactRoles(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null,
-		int $development_key=null, int $development_program_key=null, int $development_role_key=null, 
-		int $organization_key=null, int $person_key=null, string $group_by=null) : object
+	public function listDevelopmentContactRoles(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
 	{
 		
 
@@ -988,13 +986,37 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function listStates(int $page = 1, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	public function listStates(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
 	{
-		$params = "page={$page}";
+		$params = "page={$page}&newer_than={$newer_than}";
 
 		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/states?{$params}&{$log_params}");
+	}
+
+	/**
+	 * Users
+	 */
+	
+	/**
+	 * List Users
+	 * 
+	 * @param  int $page
+	 * @param  int|null $user
+	 * @param  string|null $user_email
+	 * @param  string|null $user_name
+	 * @param  int|null $device_id
+	 * @param  string|null $device_name
+	 * @return string
+	 */
+	public function listUsers(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	{
+		$params = "page={$page}&newer_than={$newer_than}";
+
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+		return $this->get("devco/users?{$params}&{$log_params}");
 	}
 
 	/**
@@ -1078,7 +1100,7 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return string
 	 */
-	public function listUnitAmenities(int $unit_key, int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	public function listUnitAmenities(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
 	{
 		$params = "page={$page}&newer_than={$newer_than}";
 
