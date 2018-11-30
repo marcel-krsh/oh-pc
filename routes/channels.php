@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Communication;
 /*
 |--------------------------------------------------------------------------
 | Broadcast Channels
@@ -13,4 +14,8 @@
 
 Broadcast::channel('App.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
+});
+
+Broadcast::channel('message.{messageId}', function ($user, $messageId) {
+    return $user->id === Communication::findOrNew($messageId)->owner_id;
 });

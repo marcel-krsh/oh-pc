@@ -16,41 +16,8 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\SomeEvent' => [
             'App\Listeners\EventListener',
         ],
-        'transactions.created' => [
-            'App\Events\TransactionsEvent@transactionCreated'
-        ],
-        'transactions.updated' => [
-            'App\Events\TransactionsEvent@transactionUpdated'
-        ],
-        'transactions.deleted' => [
-            'App\Events\TransactionsEvent@transactionDeleted'
-        ],
-        'invoice_items.created' => [
-            'App\Events\InvoiceItemsEvent@reimbursementItemCreated'
-        ],
-        'invoice_items.updated' => [
-            'App\Events\InvoiceItemsEvent@reimbursementItemUpdated'
-        ],
-        'invoice_items.deleted' => [
-            'App\Events\InvoiceItemsEvent@reimbursementItemDeleted'
-        ],
-        'disposition_items.created' => [
-            'App\Events\InvoiceItemsEvent@dispositionItemCreated'
-        ],
-        'disposition_items.updated' => [
-            'App\Events\InvoiceItemsEvent@dispositionItemUpdated'
-        ],
-        'disposition_items.deleted' => [
-            'App\Events\InvoiceItemsEvent@dispositionItemDeleted'
-        ],
-        'recapture_items.created' => [
-            'App\Events\InvoiceItemsEvent@recaptureItemCreated'
-        ],
-        'recapture_items.updated' => [
-            'App\Events\InvoiceItemsEvent@recaptureItemUpdated'
-        ],
-        'recapture_items.deleted' => [
-            'App\Events\InvoiceItemsEvent@recaptureItemDeleted'
+        'communications.created' => [
+            'App\Events\CommunicationsEvent@communicationCreated'
         ]
     ];
 

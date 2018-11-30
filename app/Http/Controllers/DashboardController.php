@@ -7,9 +7,13 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Auth;
 use Session;
+use App\Models\SystemSetting;
 use App\LogConverter;
 use App\Models\CachedAudit;
 use Carbon;
+use App\Models\CommunicationRecipient;
+
+use Illuminate\Support\Facades\Redis;
 
 class DashboardController extends Controller
 {
@@ -49,8 +53,12 @@ class DashboardController extends Controller
 
         $tab = "detail-tab-1";
 
+        $stats_communication_total = CommunicationRecipient::where('user_id', $current_user->id)
+                    ->where('seen', 0)
+                    ->count();
+
         //return \view('dashboard.index'); //, compact('user')
-        return view('dashboard.index', compact('tab', 'loadDetailTab'));
+        return view('dashboard.index', compact('tab', 'loadDetailTab', 'stats_communication_total'));
     }
 
     public function audits(Request $request)
@@ -533,15 +541,6 @@ class DashboardController extends Controller
         
         //return \view('dashboard.index'); //, compact('user')
         return view('dashboard.reports');
-    }
-
-    public function communications(Request $request)
-    {
-        $owners_array = array();
-        $programs = array();
-        $messages = array();
-        //return \view('dashboard.index'); //, compact('user')
-        return view('dashboard.communications', compact('owners_array', 'programs', 'messages'));
     }
 
     public function autocomplete(Request $request)

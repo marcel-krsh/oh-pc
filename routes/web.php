@@ -34,7 +34,6 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('dashboard/audits/{audit}/building/{building}/details', 'AuditController@detailsFromBuilding')->name('audit.building.details');
         Route::get('dashboard/audits/{audit_id}/building/{building_id}/inspection', 'AuditController@inspectionFromBuilding')->name('audit.inspection');
         Route::get('dashboard/audits/{audit_id}/building/{building_id}/details/{detail_id}/inspection', 'AuditController@inspectionFromBuildingDetail')->name('audit.building.inspection');
-        Route::get('dashboard/communications', 'DashboardController@communications')->name('dashboard.communications');
         Route::get('dashboard/reports', 'DashboardController@reports')->name('dashboard.reports');
 
         Route::get('autocomplete/all', 'DashboardController@autocomplete');
@@ -106,6 +105,15 @@ Route::group(['middleware' => 'web'], function () {
         Route::post('/modals/amenities/save', 'AuditController@saveAmenity')->name('amenities.save');
 
         Route::post('/autosave', 'FindingController@autosave');
+
+
+        // communications
+        Route::get('dashboard/communications', 'CommunicationController@communicationsTab')->name('communication.tab');
+        Route::post('/modals/new-outbound-email-entry', 'CommunicationController@create')->name('communication.create');
+        Route::get('/modals/new-outbound-email-entry/{audit?}', 'CommunicationController@newCommunicationEntry');
+        Route::get('/modals/communication/{audit_id}/replies/{message}', 'CommunicationController@viewReplies');
+        Route::post('/communications/audit/{audit?}', 'CommunicationController@searchCommunications')->name('communications.search');
+        Route::get('/communications/unseen', 'CommunicationController@getUnseenMessages');
     // });
 
 });
@@ -291,10 +299,10 @@ Route::post('/notes/parcel/{parcel}', 'NoteController@searchNotes')->name('notes
 Route::post('/activities/parcel/{parcel}', 'bgHistoryController@searchActivities')->name('activities.search');
 // Communications
 Route::get('/communications/new-messages', 'CommunicationController@getNewMessages');
-Route::get('/communications/unseen', 'CommunicationController@getUnseenMessages');
+
 Route::get('/communications/parcel/{parcel}', 'CommunicationController@showTabFromParcelId')->name('communications.list');
 Route::get('/communications/{parcel}.json', 'CommunicationController@communicationsFromParcelIdJson')->name('communications.loadjson');
-Route::post('/communications/parcel/{parcel?}', 'CommunicationController@searchCommunications')->name('communications.search');
+
 Route::post('/modals/new-outbound-email-entry', 'CommunicationController@create')->name('communication.create');
 Route::get('/modals/new-outbound-email-entry/{parcel?}', 'CommunicationController@newCommunicationEntry');
 Route::get('/modals/communication/{parcel_id}/replies/{message}', 'CommunicationController@viewReplies');

@@ -11,6 +11,9 @@ body > :not(.pace),body:before,body:after {
 body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-done):after {
   opacity:0;
 }
+#communications_tab {
+   padding-top: 15px;
+}
 #dynamic-modal.fullscreen {
   padding:10px 20px;
 }

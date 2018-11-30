@@ -999,6 +999,20 @@ new Vue({
     }
 });
 
+new Vue({
+    el: '#v-tab-com-stat',
+    data: {
+        stat: statsCommunicationTotal
+    },
+
+    mounted: function mounted() {
+        socket.on('communications:NewMessage', function (data) {
+            console.log(data.stats_communication_total);
+            this.stat = data.stats_communication_total;
+        }.bind(this));
+    }
+});
+
 /***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
