@@ -33,7 +33,8 @@ class User extends Authenticatable
         'entity_type',
         'api_token',
         'devco_key',
-        'last_accessed'
+        'last_accessed',
+        'socket_id'
     ];
 
     protected static $logAttributes = [

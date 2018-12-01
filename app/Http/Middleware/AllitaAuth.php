@@ -435,6 +435,11 @@ class AllitaAuth
             dd('need to two factor auth');
         }
 
+        // creation of a fresh socket_id for that user
+        $current_user = Auth::user();
+        $token = str_random(10);
+        $current_user->socket_id = $token;
+        $current_user->save();
         
 
         //////////////// OLD STUFF ///////////////////
