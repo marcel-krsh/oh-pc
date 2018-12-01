@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Event;
 
 /**
  * CommunicationRecipient Model
@@ -20,6 +21,25 @@ class CommunicationRecipient extends Model
         'seen'
     ];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        /* @todo: move to observer class */
+
+        static::created(function ($communication_recipient) {
+            Event::fire('communication.recipient.created', $communication_recipient);
+        });
+
+        // static::updated(function ($transaction) {
+        //     Event::fire('transactions.updated', $transaction);
+        // });
+
+        // static::deleted(function ($transaction) {
+        //     Event::fire('transactions.deleted', $transaction);
+        // });
+    }
+
     /**
      * Communication
      *
@@ -30,13 +50,8 @@ class CommunicationRecipient extends Model
         return $this->belongsTo(\App\Models\Communication::class);
     }
 
-    /**
-     * User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
     public function user() : HasOne
     {
-        return $this->hasOne(\App\Models\User::class);
+        return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
     }
 }

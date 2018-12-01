@@ -28,6 +28,7 @@ class CommunicationsEvent
     {
         if(env('APP_DEBUG_NO_DEVCO') == 'true'){
            Auth::onceUsingId(1); // TEST BRIAN
+           //Auth::onceUsingId(286); // TEST 
         }
     }
 
@@ -43,13 +44,40 @@ class CommunicationsEvent
 
     public function communicationCreated(Communication $communication)
     {
-        $stats_communication_total = CommunicationRecipient::where('user_id', $communication->owner_id)
-                    ->where('seen', 0)
-                    ->count();
+        // wrong event to track, we need to detect when recipients are added instead
+        //
+        //
+        // total of unread message for the current user
+        // $communication_recipients = CommunicationRecipient::where('communication_id', $communication->id)->with('user')->get()->pluck('user.id','user.socket_id');
+
+        // $data = [
+        //     'event' => 'NewMessage',
+        //     'users' => [$communication->owner_id],
+        //     'data' => [
+        //         'stats_communication_total' => $stats_communication_total
+        //     ]
+        // ];
+
+        // Redis::publish('communications', json_encode($data)); 
+    }
+
+    public function communicationRecipientCreated(CommunicationRecipient $communication_recipient)
+    { 
+        $id = $communication_recipient->id;
+        $communication_recipient = CommunicationRecipient::where('id', '=', $id)
+                ->with('user')
+                ->first();
+
+        $stat = CommunicationRecipient::where('user_id', '=', $communication_recipient->user->id)
+                ->where('seen', '=', 0)
+                ->count();
+
         $data = [
-            'event' => 'NewMessage',
+            'event' => 'NewRecipient',
             'data' => [
-                'stats_communication_total' => $stats_communication_total
+                'userId' => $communication_recipient->user->id,
+                'socketId' => $communication_recipient->user->socket_id,
+                'stat' => $stat
             ]
         ];
 

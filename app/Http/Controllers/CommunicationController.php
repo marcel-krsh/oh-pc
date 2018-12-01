@@ -34,6 +34,7 @@ class CommunicationController extends Controller
         //
         if(env('APP_DEBUG_NO_DEVCO') == 'true'){
             Auth::onceUsingId(1); // TEST BRIAN
+            //Auth::onceUsingId(286); // TEST BRIAN
         }
     }
 
@@ -237,10 +238,10 @@ class CommunicationController extends Controller
     }
 
 
-    public function communicationsFromParcelIdJson(Parcel $parcel)
+    public function communicationsFromAuditIdJson(CachedAudit $audit)
     {
         // not being used at this time.
-        $messages = Communication::where('parcel_id', $parcel->id)->get();
+        $messages = Communication::where('audit_id', $audit->id)->get();
 
         return $messages->toJSON();
     }

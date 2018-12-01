@@ -115,6 +115,8 @@ if(Auth::check()){
 	<script>
 		// initial values
 	    var statsCommunicationTotal = "{{$stats_communication_total}}";
+	    var uid = "{{$current_user->id}}";
+	    var sid = "{{$current_user->socket_id}}";
 	</script>
 </head>
 <body >

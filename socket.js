@@ -1,5 +1,5 @@
 //https://laracasts.com/discuss/channels/general-discussion/step-by-step-guide-to-installing-socketio-and-broadcasting-events-with-laravel-51
-//
+
 var server = require('http').Server();
 
 var io = require('socket.io')(server);
@@ -7,24 +7,31 @@ var io = require('socket.io')(server);
 var Redis = require('ioredis');
 
 var redis = new Redis();
-redis.subscribe('test-channel');
+
+// redis.psubscribe('*', function(err, count) {});
+// redis.on('pmessage', function(subscribed, channel, message) {
+//     console.log(channel);
+//     message = JSON.parse(message);
+//     io.emit(channel + ':' + message.event, message.data);
+// });
+
+redis.subscribe('communications');
 redis.on('message', function(channel, message) {
 	message = JSON.parse(message);
-	console.log(message.data.username);
-	io.emit(channel + ':' + message.event, message.data); //test-channer:UserSignedUp
-});
+	if(message.event == 'NewRecipient'){
+		console.log("new recipient "+message.data.userId);
 
-var redis2 = new Redis();
-redis2.subscribe('communications');
-redis2.on('message', function(channel, message) {
-	message = JSON.parse(message);
-	if(message.event == 'NewMessage'){
-		io.emit(channel + ':' + message.event, message.data);  // communications:NewMessage
+		// channel_name.userid.socketid:typename
+		io.emit(channel + '.' + message.data.userId + '.' + message.data.socketId + ':' + message.event, message.data);  
 	}
 	
 });
 
-//server.listen(3000);
+
 server.listen(3000, function(){
     console.log('Listening on Port 3000');
+});
+
+redis.on("error", function (err) {
+    console.log(err);
 });

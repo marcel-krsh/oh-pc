@@ -22,6 +22,16 @@ class DashboardController extends Controller
         // $this->middleware('allita.auth');
         if(env('APP_DEBUG_NO_DEVCO') == 'true'){
             Auth::onceUsingId(1); // TEST BRIAN
+            //Auth::onceUsingId(286); // TEST BRIAN
+            
+            // this is normally setup upon login
+            $current_user = Auth::user();
+            if($current_user->socket_id === null){
+                // create a socket id and store in user table
+                $token = str_random(10);
+                $current_user->socket_id = $token;
+                $current_user->save();
+            }
         }
     }
 
@@ -58,7 +68,7 @@ class DashboardController extends Controller
                     ->count();
 
         //return \view('dashboard.index'); //, compact('user')
-        return view('dashboard.index', compact('tab', 'loadDetailTab', 'stats_communication_total'));
+        return view('dashboard.index', compact('tab', 'loadDetailTab', 'stats_communication_total', 'current_user'));
     }
 
     public function audits(Request $request)

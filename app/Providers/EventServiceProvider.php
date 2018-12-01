@@ -18,6 +18,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         'communications.created' => [
             'App\Events\CommunicationsEvent@communicationCreated'
+        ],
+        'communication.recipient.created' => [
+            'App\Events\CommunicationsEvent@communicationRecipientCreated'
         ]
     ];
 

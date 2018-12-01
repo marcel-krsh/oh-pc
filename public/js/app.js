@@ -984,20 +984,20 @@ Vue.component('example', __webpack_require__(38));
 // connect sockets
 var socket = io('http://192.168.100.100:3000');
 
-new Vue({
-    el: '#app',
+// new Vue({
+//     el: '#app',
 
-    data: {
-        users: ['JohnDoe']
-    },
+//     data: {
+//         users: [ 'JohnDoe' ]
+//     },
 
-    mounted: function mounted() {
-        socket.on('test-channel:UserSignedUp', function (data) {
-            console.log("socket message received");
-            this.users.push(data.username);
-        }.bind(this));
-    }
-});
+//     mounted: function() {
+//         socket.on('test-channel:UserSignedUp', function(data){
+//             console.log("socket message received");
+//             this.users.push(data.username);
+//         }.bind(this));
+//     }
+// });
 
 new Vue({
     el: '#v-tab-com-stat',
@@ -1006,9 +1006,9 @@ new Vue({
     },
 
     mounted: function mounted() {
-        socket.on('communications:NewMessage', function (data) {
-            console.log(data.stats_communication_total);
-            this.stat = data.stats_communication_total;
+        socket.on('communications.' + uid + '.' + sid + ':NewRecipient', function (data) {
+            console.log("user " + data.userId + " is getting a message because a new message has been sent.");
+            this.stat = data.stat;
         }.bind(this));
     }
 });

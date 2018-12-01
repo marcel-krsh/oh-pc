@@ -13,7 +13,6 @@
 
 Route::group(['middleware' => 'web'], function () {
 
-    Route::get('/sockets', 'DataController@testSockets');
     Route::get('/sync', 'SyncController@sync');
 
     //Route::group(['middleware' => ['allita.auth']], function() {

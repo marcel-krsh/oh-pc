@@ -68,7 +68,7 @@
                 </div> 
     </div>
 
-    @if(count($messages))
+    @if(count((array)$messages))
     <div uk-grid class="uk-margin-top uk-visible@m">
         <div class="uk-width-1-1">
             <div uk-grid>
@@ -89,7 +89,7 @@
     </div>
     @endif
     <div uk-grid class="uk-container uk-grid-collapse uk-margin-top" id="communication-list" style="position: relative; height: 222.5px;" uk-scrollspy="target:.communication-summary;cls:uk-animation-slide-top-small uk-animation-fast; delay: 100">
-        @if(count($messages))
+        @if(count((array)$messages))
         @foreach ($messages as $message)
 
             <div class="filter_element uk-width-1-1 communication-list-item @if($message->owner)staff-{{ $message->owner->id}}@endif @if($message->audit)program-{{ $message->audit->program_id}}@endif attachment<?php if(count($message->documents)){?>-true<?php } ?>" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1;">
