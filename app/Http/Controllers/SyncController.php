@@ -59,7 +59,7 @@ class SyncController extends Controller
                         //Get Next Page
                         $syncData = $apiConnect->listPrograms($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
-                        dd('Page Count is Higher',$syncData);
+                        //dd('Page Count is Higher',$syncData);
                     }
                     foreach($syncData['data'] as $i => $v)
                         {
@@ -95,7 +95,7 @@ class SyncController extends Controller
                                         // update the sync table first
                                         SyncProgram::where('id',$updateRecord['id'])
                                         ->update([
-                                            'program_abreviation'=>$v['attributes']['programAbreviation'],
+                                            'program_abreviation'=>$v['attributes']['programAbbreviation'],
                                             'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
                                             'program_name'=>$v['attributes']['programName'],
                                             'funding_program_key'=>$v['attributes']['fundingProgramKey'],
@@ -104,7 +104,7 @@ class SyncController extends Controller
                                         $UpdateAllitaValues = SyncProgram::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
-                                            'program_abreviation'=>$v['attributes']['programAbreviation'],
+                                            'program_abreviation'=>$v['attributes']['programAbbreviation'],
                                             'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
                                             'program_name'=>$v['attributes']['programName'],
                                             'funding_program_key'=>$v['attributes']['fundingProgramKey'],
@@ -119,7 +119,7 @@ class SyncController extends Controller
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
                                         $allitaTableRecord = Program::create([
-                                            'program_abreviation'=>$v['attributes']['programAbreviation'],
+                                            'program_abreviation'=>$v['attributes']['programAbbreviation'],
                                             'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
                                             'program_name'=>$v['attributes']['programName'],
                                             'funding_program_key'=>$v['attributes']['fundingProgramKey'],
@@ -129,7 +129,7 @@ class SyncController extends Controller
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncProgram::where('id',$updateRecord['id'])
                                         ->update([
-                                            'program_abreviation'=>$v['attributes']['programAbreviation'],
+                                            'program_abreviation'=>$v['attributes']['programAbbreviation'],
                                             'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
                                             'program_name'=>$v['attributes']['programName'],
                                             'funding_program_key'=>$v['attributes']['fundingProgramKey'],
@@ -151,7 +151,7 @@ class SyncController extends Controller
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
                                 $allitaTableRecord = Program::create([
-                                    'program_abreviation'=>$v['attributes']['programAbreviation'],
+                                    'program_abreviation'=>$v['attributes']['programAbbreviation'],
                                     'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
                                     'program_name'=>$v['attributes']['programName'],
                                     'funding_program_key'=>$v['attributes']['fundingProgramKey'],
@@ -159,7 +159,7 @@ class SyncController extends Controller
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncProgram::create([
-                                            'program_abreviation'=>$v['attributes']['programAbreviation'],
+                                            'program_abreviation'=>$v['attributes']['programAbbreviation'],
                                             'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
                                             'program_name'=>$v['attributes']['programName'],
                                             'funding_program_key'=>$v['attributes']['fundingProgramKey'],
