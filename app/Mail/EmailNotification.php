@@ -2,12 +2,12 @@
 
 namespace App\Mail;
 
-use App\User;
-use App\Communication;
+use App\Models\User;
+use App\Models\Communication;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use App\HistoricEmail;
+use App\Models\HistoricEmail;
 
 /**
  * EmailNotification
@@ -40,7 +40,7 @@ class EmailNotification extends Mailable
         $this->message = Communication::where('id', '=', $message_id)->get()->first();
         $this->owner = User::where('id', '=', $recipient_id)->get()->first();
         $this->user = $this->owner;
-        $this->subject = "[OHFA Allita] New message";
+        $this->subject = "[OHFA Allita PC] New message";
     }
 
     /**

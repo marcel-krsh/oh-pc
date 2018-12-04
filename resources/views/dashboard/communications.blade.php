@@ -89,6 +89,8 @@
     </div>
     @endif
     <div uk-grid class="uk-container uk-grid-collapse uk-margin-top" id="communication-list" style="position: relative; height: 222.5px;" uk-scrollspy="target:.communication-summary;cls:uk-animation-slide-top-small uk-animation-fast; delay: 100">
+        <communication-row v-if="messages" v-for="message in messages.slice().reverse()" :key="message.id" :message="message"></communication-row>
+        
         @if(count((array)$messages))
         @foreach ($messages as $message)
 
@@ -315,6 +317,94 @@
         $("#communication-"+communicationId+"-details").removeClass('uk-hidden');
         $("#communication-"+communicationId+"-summary").addClass('uk-hidden');
     }
+    </script>
 
+    <script>
+
+        new Vue({
+            el: '#communication-list',
+            
+            data: function() {
+                 return  {
+                   messages: [
+                        // {
+                        //     id: '1',
+                        //     parentId: '1',
+                        //     staffId: 'staff-9',
+                        //     programId: 'program-12',
+                        //     hasAttachment: 'attachement-true', // or attachment
+                        //     communicationId: 'communication-432',
+                        //     communicationUnread: 'communication-unread',
+                        //     createdDate: '12/02/18 04:27 pm',
+                        //     createdDateRight: '12/02/18<br />04:27 pm',
+                        //     recipients: 'Me, Amelia Atchinson (OSM Test)',
+                        //     userBadgeColor: 'user-badge-green',
+                        //     tooltip: 'pos:top-left;title:2 unread messages',
+                        //     unseen: '2',
+                        //     auditId: '22',
+                        //     tooltipOrganization: 'pos:left;title:Organization Name',
+                        //     organizationAddress: 'address here',
+                        //     tooltipFilenames: 'pos:top-left;title:file1, file2',
+                        //     subject: 'Some subject here',
+                        //     summary: 'Some summary here'
+                        // }
+                    ]
+                 }
+            },
+            
+            methods: {
+                addNewMessage: function(){
+                    this.messages.push({
+                        id: '665',
+                        parentId: '1',
+                        staffId: 'staff-91',
+                        programId: 'program-12',
+                        hasAttachment: 'attachement-true', 
+                        communicationId: 'communication-432',
+                        communicationUnread: 'communication-unread',
+                        createdDate: '12/02/18 04:27 pm',
+                        createdDateRight: '12/02/18<br />04:27 pm',
+                        recipients: 'Me, Amelia Atchinson (OSM Test)',
+                        userBadgeColor: 'user-badge-green',
+                        tooltip: 'pos:top-left;title:2 unread messages',
+                        unseen: '2',
+                        auditId: '22',
+                        tooltipOrganization: 'pos:left;title:Organization Name',
+                        organizationAddress: 'address here',
+                        tooltipFilenames: 'pos:top-left;title:file1, file2',
+                        subject: 'Some subject here',
+                        summary: 'Some summary here'
+                    });
+                }
+            },
+
+            mounted: function() {
+                 console.log("initializing vue at the communication-list element");
+                socket.on('communications.'+uid+'.'+sid+':NewMessage', function(data){
+                    console.log("user " + data.userId + " received a new message.");
+                    this.messages.push({
+                        id: data.id,
+                        parentId: data.parent_id,
+                        staffId: data.staff_class,
+                        programId: data.program_class,
+                        hasAttachment: data.attachment_class,
+                        communicationId: data.communication_id,
+                        communicationUnread: data.communication_unread_class,
+                        createdDate: data.created,
+                        createdDateRight: data.created_right,
+                        recipients: data.recipients,
+                        userBadgeColor: data.user_badge_color,
+                        tooltip: data.tooltip,
+                        unseen: data.unseen,
+                        auditId: data.audit_id,
+                        tooltipOrganization: data.tooltip_organization,
+                        organizationAddress: data.organization_address,
+                        tooltipFilenames: data.tooltip_filenames,
+                        subject: data.subject,
+                        summary: data.summary
+                    });
+                }.bind(this));
+            }
+        });
 
     </script>

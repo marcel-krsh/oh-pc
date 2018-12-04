@@ -18,7 +18,7 @@ use DB;
 use App\Models\Program;
 use App\Models\Document;
 use App\Models\DocumentCategory;
-use App\Models\Mail\EmailNotification;
+use App\Mail\EmailNotification;
 use App\Models\Communication;
 use App\Models\CommunicationRecipient;
 use App\Models\CommunicationDocument;
