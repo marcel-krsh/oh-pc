@@ -144,7 +144,8 @@ class SyncController extends Controller
                                 // when we add in the allita_id
                                 $allitaTableRecord = ProjectProgramStatusType::create([
                                     'status_name'=>$v['attributes']['statusName'],
-                                    'status_description'=>$v['attributes']['statusDescription']
+                                    'status_description'=>$v['attributes']['statusDescription'],
+                                    'project_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncProjectProgramStatusType::create([
