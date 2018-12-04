@@ -24,6 +24,12 @@ redis.on('message', function(channel, message) {
 		// channel_name.userid.socketid:typename
 		io.emit(channel + '.' + message.data.userId + '.' + message.data.socketId + ':' + message.event, message.data);  
 	}
+	if(message.event == 'NewMessage'){
+		console.log("new message for user "+message.data.userId);
+
+		// channel_name.userid.socketid:typename
+		io.emit(channel + '.' + message.data.userId + '.' + message.data.socketId + ':' + message.event, message.data);  
+	}
 	
 });
 

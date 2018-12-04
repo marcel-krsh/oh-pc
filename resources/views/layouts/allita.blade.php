@@ -113,6 +113,8 @@ if(Auth::check()){
 	</style>
 
 	<script>
+		var socket = io('http://192.168.100.100:3000');
+
 		// initial values
 	    var statsCommunicationTotal = "{{$stats_communication_total}}";
 	    var uid = "{{$current_user->id}}";
@@ -121,9 +123,9 @@ if(Auth::check()){
 </head>
 <body >
 	<a name="top"></a>
-	<div id="app" style="display:none;"><example></example></div>
 	<!-- MAIN VIEW -->
 	<div id="pcapp" class="uk-container uk-align-center">
+
 		<div uk-grid class="uk-grid-collapse">
 			<div id="main-window" class=" uk-margin-large-bottom" uk-scrollspy="cls:uk-animation-fade; delay: 900">
 			
@@ -347,6 +349,22 @@ if(Auth::check()){
 	@endif
 
 	<script type="text/javascript" src="https://devco.ohiohome.org/AuthorityOnlineALT/Unified/UnifiedHeader.aspx"></script>
+	<script>		
+		new Vue({
+		  el: '#v-tab-com-stat',
+		  data: {
+		    stat: statsCommunicationTotal
+		  },
+
+		    mounted: function() {
+		    	console.log("Component working");
+		        socket.on('communications.'+uid+'.'+sid+':NewRecipient', function(data){
+		            console.log("user " + data.userId + " is getting a message because a new message has been sent.");
+		            this.stat = data.stat;
+		        }.bind(this));
+		    }
+		});
+	</script>
 </body>
 </html>
 
