@@ -16,8 +16,8 @@ use DB;
 use DateTime;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncProgramDateType;
-use App\Models\ProgramDateType;
+use App\Models\SyncPercentage;
+use App\Models\Percentage;
 
 class SyncPercentagesJob implements ShouldQueue
 {
