@@ -12,8 +12,8 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncProgram;
-use App\Models\Program;
+use App\Models\SyncFinancialType;
+use App\Models\FinancialType;
 
 
 
@@ -22,7 +22,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// Program Sync
+        /////// FinancialType Sync
         /////
 
         /// get last modified date inside the database
@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncProgram::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncFinancialType::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -48,23 +48,23 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listPrograms(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listFinancialTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listPrograms($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listFinancialTypes($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
-                        //dd('Page Count is Higher',$syncData);
+                        dd('Page Count is Higher',$syncData);
                     }
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProgram::select('id','allita_id','last_edited','updated_at')->where('program_key',$v['attributes']['programKey'])->first();
+                            $updateRecord = SyncFinancialType::select('id','allita_id','last_edited','updated_at')->where('financial_type_key',$v['attributes']['financialTypeKey'])->first();
                             // convert booleans
                             //settype($v['attributes']['isActive'], 'boolean');
                             //dd($updateRecord,$updateRecord->updated_at);
@@ -72,7 +72,7 @@ class SyncController extends Controller
                                 // record exists - get matching table record
 
                                 /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                                $allitaTableRecord = Program::find($updateRecord->allita_id);
+                                $allitaTableRecord = FinancialType::find($updateRecord->allita_id);
                                 /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
@@ -93,21 +93,17 @@ class SyncController extends Controller
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        SyncProgram::where('id',$updateRecord['id'])
+                                        SyncFinancialType::where('id',$updateRecord['id'])
                                         ->update([
-                                            'program_abreviation'=>$v['attributes']['programAbbreviation'],
-                                            'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
-                                            'program_name'=>$v['attributes']['programName'],
-                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
+                                            'financial_type_name'=>$v['attributes']['financialTypeName'],
+                                            
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
-                                        $UpdateAllitaValues = SyncProgram::find($updateRecord['id']);
+                                        $UpdateAllitaValues = SyncFinancialType::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
-                                            'program_abreviation'=>$v['attributes']['programAbbreviation'],
-                                            'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
-                                            'program_name'=>$v['attributes']['programName'],
-                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
+                                            'financial_type_name'=>$v['attributes']['financialTypeName'],
+                                            
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
                                         ]);
                                         //dd('inside.');
@@ -118,23 +114,19 @@ class SyncController extends Controller
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = Program::create([
-                                            'program_abreviation'=>$v['attributes']['programAbbreviation'],
-                                            'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
-                                            'program_name'=>$v['attributes']['programName'],
-                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
+                                        $allitaTableRecord = FinancialType::create([
+                                            'financial_type_name'=>$v['attributes']['financialTypeName'],
                                             
-                                            'program_key'=>$v['attributes']['programKey'],
+                                            
+                                            'financial_type_key'=>$v['attributes']['financialTypeKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
-                                        $syncTableRecord = SyncProgram::where('id',$updateRecord['id'])
+                                        $syncTableRecord = SyncFinancialType::where('id',$updateRecord['id'])
                                         ->update([
-                                            'program_abreviation'=>$v['attributes']['programAbbreviation'],
-                                            'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
-                                            'program_name'=>$v['attributes']['programName'],
-                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
+                                            'financial_type_name'=>$v['attributes']['financialTypeName'],
                                             
-                                            'program_key'=>$v['attributes']['programKey'],
+                                            
+                                            'financial_type_key'=>$v['attributes']['financialTypeKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -150,21 +142,17 @@ class SyncController extends Controller
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = Program::create([
-                                    'program_abreviation'=>$v['attributes']['programAbbreviation'],
-                                    'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
-                                    'program_name'=>$v['attributes']['programName'],
-                                    'funding_program_key'=>$v['attributes']['fundingProgramKey'],
-                                            'program_key'=>$v['attributes']['programKey'],
+                                $allitaTableRecord = FinancialType::create([
+                                    'financial_type_name'=>$v['attributes']['financialTypeName'],
+                                    
+                                    'financial_type_key'=>$v['attributes']['financialTypeKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
-                                $syncTableRecord = SyncProgram::create([
-                                            'program_abreviation'=>$v['attributes']['programAbbreviation'],
-                                            'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
-                                            'program_name'=>$v['attributes']['programName'],
-                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
+                                $syncTableRecord = SyncFinancialType::create([
+                                            'financial_type_name'=>$v['attributes']['financialTypeName'],
+                                            
 
-                                        'program_key'=>$v['attributes']['programKey'],
+                                        'financial_type_key'=>$v['attributes']['financialTypeKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
