@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\SyncProgramDateType;
 use App\Models\ProgramDateType;
 
-class SyncPercentages implements ShouldQueue
+class SyncPercentagesJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
