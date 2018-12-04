@@ -17,6 +17,7 @@ use App\Jobs\SyncAmenityTypesJob;
 use App\Jobs\SyncProgramsJob;
 use App\Jobs\SyncProjectProgramStatusTypesJob;
 use App\Jobs\SyncFinancialTypesJob;
+use App\Jobs\SyncProgramDateTypesJob;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -153,6 +154,15 @@ class Kernel extends ConsoleKernel
         }
 
         // SyncFinancialTypesJob
+        $test = DB::table('jobs')->where('payload','like','%SyncFinancialTypesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncFinancialTypesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        //SyncProgramDateTypesJob
         $test = DB::table('jobs')->where('payload','like','%SyncFinancialTypesJob%')->first();
         if(is_null($test)) {
             $schedule->job(new SyncFinancialTypesJob)->everyMinute();
