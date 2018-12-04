@@ -64,7 +64,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProjectProgramStatusType::select('id','allita_id','last_edited','updated_at')->where('project_program_status_type_key',$v['attributes']['develpmentProgramStatusTypeKey'])->first();
+                            $updateRecord = SyncProjectProgramStatusType::select('id','allita_id','last_edited','updated_at')->where('project_program_status_type_key',$v['attributes']['developmentProgramStatusTypeKey'])->first();
                             // convert booleans
                             //settype($v['attributes']['isActive'], 'boolean');
                             //dd($updateRecord,$updateRecord->updated_at);
@@ -151,7 +151,7 @@ class SyncController extends Controller
                                             'status_name'=>$v['attributes']['statusName'],
                                             'status_description'=>$v['attributes']['statusDescription'],
 
-                                        'project_program_status_type_key'=>$v['attributes']['develpmentProgramStatusTypeKey'],
+                                        'project_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
