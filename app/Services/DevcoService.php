@@ -888,6 +888,31 @@ class DevcoService extends PCAPIService
 		return $this->get("devco/monitoring_status_types?{$params}&{$log_params}");
 	}
 
+
+	/**
+	 * Monitoring Statuses
+	 */
+	
+	/**
+	 * List Federal Set Asides
+	 * 
+	 * @param  int|integer $page
+	 * @param  int|null $user
+	 * @param  string|null $user_email
+	 * @param  string|null $user_name
+	 * @param  int|null $device_id
+	 * @param  string|null $device_name
+	 * @return object
+	 */
+	public function listFederalSetAsides(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	{
+		$params = "page={$page}&newer_than={$newer_than}";
+
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+		return $this->get("devco/federal_set_asides?{$params}&{$log_params}");
+	}
+
 	/**
 	 * Amenity Types
 	 */
