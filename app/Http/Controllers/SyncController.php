@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listFinancialTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -95,15 +95,15 @@ class SyncController extends Controller
                                         // update the sync table first
                                         SyncFinancialType::where('id',$updateRecord['id'])
                                         ->update([
-                                            'status_name'=>$v['attributes']['statusName'],
-                                            'status_description'=>$v['attributes']['statusDescription'],
+                                            'financial_type_name'=>$v['attributes']['financialTypeName'],
+                                            
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
                                         $UpdateAllitaValues = SyncFinancialType::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
-                                            'status_name'=>$v['attributes']['statusName'],
-                                            'status_description'=>$v['attributes']['statusDescription'],
+                                            'financial_type_name'=>$v['attributes']['financialTypeName'],
+                                            
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
                                         ]);
                                         //dd('inside.');
@@ -115,16 +115,16 @@ class SyncController extends Controller
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
                                         $allitaTableRecord = FinancialType::create([
-                                            'status_name'=>$v['attributes']['statusName'],
-                                            'status_description'=>$v['attributes']['statusDescription'],
+                                            'financial_type_name'=>$v['attributes']['financialTypeName'],
+                                            
                                             
                                             'financial_type_key'=>$v['attributes']['financialTypeKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncFinancialType::where('id',$updateRecord['id'])
                                         ->update([
-                                            'status_name'=>$v['attributes']['statusName'],
-                                            'status_description'=>$v['attributes']['statusDescription'],
+                                            'financial_type_name'=>$v['attributes']['financialTypeName'],
+                                            
                                             
                                             'financial_type_key'=>$v['attributes']['financialTypeKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
@@ -143,14 +143,14 @@ class SyncController extends Controller
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
                                 $allitaTableRecord = FinancialType::create([
-                                    'status_name'=>$v['attributes']['statusName'],
-                                    'status_description'=>$v['attributes']['statusDescription'],
+                                    'financial_type_name'=>$v['attributes']['financialTypeName'],
+                                    
                                     'financial_type_key'=>$v['attributes']['financialTypeKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncFinancialType::create([
-                                            'status_name'=>$v['attributes']['statusName'],
-                                            'status_description'=>$v['attributes']['statusDescription'],
+                                            'financial_type_name'=>$v['attributes']['financialTypeName'],
+                                            
 
                                         'financial_type_key'=>$v['attributes']['financialTypeKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
