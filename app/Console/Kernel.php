@@ -163,9 +163,9 @@ class Kernel extends ConsoleKernel
         }
 
         //SyncProgramDateTypesJob
-        $test = DB::table('jobs')->where('payload','like','%SyncFinancialTypesJob%')->first();
+        $test = DB::table('jobs')->where('payload','like','%SyncProgramDateTypesJob%')->first();
         if(is_null($test)) {
-            $schedule->job(new SyncFinancialTypesJob)->everyMinute();
+            $schedule->job(new SyncProgramDateTypesJob)->everyMinute();
             
         } else {
             //Log::info('Sync Job Already Started.');
