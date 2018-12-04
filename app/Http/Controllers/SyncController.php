@@ -59,12 +59,12 @@ class SyncController extends Controller
                         //Get Next Page
                         $syncData = $apiConnect->listPercentages($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
-                        dd('Page Count is Higher',$syncData);
+                        //dd('Page Count is Higher',$syncData);
                     }
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncPercentage::select('id','allita_id','last_edited','updated_at')->where('multiple_building_election_key',$v['attributes']['multipleBuildingElectionKey'])->first();
+                            $updateRecord = SyncPercentage::select('id','allita_id','last_edited','updated_at')->where('percentage_key',$v['attributes']['percentageKey'])->first();
                             // convert booleans
                             //settype($v['attributes']['isActive'], 'boolean');
                             //dd($updateRecord,$updateRecord->updated_at);
@@ -96,7 +96,9 @@ class SyncController extends Controller
                                         SyncPercentage::where('id',$updateRecord['id'])
                                         ->update([
                                             
-                                            'election_description'=>$v['attributes']['electionDescription'],
+                                            'percentage_description'=>$v['attributes']['percentageDesc'],
+                                            'min_percentage'=>$v['attributes']['minPercentage'],
+                                            'max_percentage'=>$v['attributes']['maxPercentage'],
                                             
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
@@ -104,7 +106,9 @@ class SyncController extends Controller
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
                                             
-                                            'election_description'=>$v['attributes']['electionDescription'],
+                                            'percentage_description'=>$v['attributes']['percentageDesc'],
+                                            'min_percentage'=>$v['attributes']['minPercentage'],
+                                            'max_percentage'=>$v['attributes']['maxPercentage'],
                                             
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
                                         ]);
@@ -119,18 +123,22 @@ class SyncController extends Controller
                                         $allitaTableRecord = Percentage::create([
                                             
                                             
-                                            'election_description'=>$v['attributes']['electionDescription'],
+                                            'percentage_description'=>$v['attributes']['percentageDesc'],
+                                            'min_percentage'=>$v['attributes']['minPercentage'],
+                                            'max_percentage'=>$v['attributes']['maxPercentage'],
                                             
-                                            'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
+                                            'percentage_key'=>$v['attributes']['percentageKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncPercentage::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
-                                            'election_description'=>$v['attributes']['electionDescription'],
+                                            'percentage_description'=>$v['attributes']['percentageDesc'],
+                                            'min_percentage'=>$v['attributes']['minPercentage'],
+                                            'max_percentage'=>$v['attributes']['maxPercentage'],
                                             
-                                            'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
+                                            'percentage_key'=>$v['attributes']['percentageKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -149,17 +157,21 @@ class SyncController extends Controller
                                 $allitaTableRecord = Percentage::create([
                                     
 
-                                            'election_description'=>$v['attributes']['electionDescription'],
+                                            'percentage_description'=>$v['attributes']['percentageDesc'],
+                                            'min_percentage'=>$v['attributes']['minPercentage'],
+                                            'max_percentage'=>$v['attributes']['maxPercentage'],
                                     
-                                    'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
+                                    'percentage_key'=>$v['attributes']['percentageKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncPercentage::create([
                                             
                                             
-                                            'election_description'=>$v['attributes']['electionDescription'],
+                                            'percentage_description'=>$v['attributes']['percentageDesc'],
+                                            'min_percentage'=>$v['attributes']['minPercentage'],
+                                            'max_percentage'=>$v['attributes']['maxPercentage'],
 
-                                        'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
+                                        'percentage_key'=>$v['attributes']['percentageKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
