@@ -810,7 +810,7 @@ class DevcoService extends PCAPIService
 
 		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
-		return $this->get("devco/percentage/?{$log_params}&{$params}");
+		return $this->get("devco/percentages/?{$log_params}&{$params}");
 	}
 
 	/**
