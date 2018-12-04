@@ -19,7 +19,7 @@ use App\Jobs\SyncProjectProgramStatusTypesJob;
 use App\Jobs\SyncFinancialTypesJob;
 use App\Jobs\SyncProgramDateTypesJob;
 use App\Jobs\SyncMultipleBuildingTypesJob;
-use App\Jobs\SyncPercentages;
+use App\Jobs\SyncPercentagesJob;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
