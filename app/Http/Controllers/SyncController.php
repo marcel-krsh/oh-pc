@@ -103,7 +103,7 @@ class SyncController extends Controller
                                             'unit_name'=>$v['attributes']['unitName'],
                                             'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
                                             'status_date'=>$v['attributes']['statusDate'],
-                                            'is_unit_hadicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
+                                            'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
                                             
@@ -121,7 +121,7 @@ class SyncController extends Controller
                                             'unit_name'=>$v['attributes']['unitName'],
                                             'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
                                             'status_date'=>$v['attributes']['statusDate'],
-                                            'is_unit_hadicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
+                                            'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
                                             
@@ -146,7 +146,7 @@ class SyncController extends Controller
                                             'unit_name'=>$v['attributes']['unitName'],
                                             'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
                                             'status_date'=>$v['attributes']['statusDate'],
-                                            'is_unit_hadicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
+                                            'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
                                             
@@ -165,7 +165,7 @@ class SyncController extends Controller
                                             'unit_name'=>$v['attributes']['unitName'],
                                             'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
                                             'status_date'=>$v['attributes']['statusDate'],
-                                            'is_unit_hadicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
+                                            'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
                                             
@@ -196,7 +196,7 @@ class SyncController extends Controller
                                             'unit_name'=>$v['attributes']['unitName'],
                                             'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
                                             'status_date'=>$v['attributes']['statusDate'],
-                                            'is_unit_hadicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
+                                            'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
                                             
@@ -214,7 +214,7 @@ class SyncController extends Controller
                                             'unit_name'=>$v['attributes']['unitName'],
                                             'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
                                             'status_date'=>$v['attributes']['statusDate'],
-                                            'is_unit_hadicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
+                                            'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
                                             
