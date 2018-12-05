@@ -17,6 +17,12 @@ use App\Jobs\SyncAmenityTypesJob;
 use App\Jobs\SyncProgramsJob;
 use App\Jobs\SyncProjectProgramStatusTypesJob;
 use App\Jobs\SyncFinancialTypesJob;
+use App\Jobs\SyncProgramDateTypesJob;
+use App\Jobs\SyncMultipleBuildingTypesJob;
+use App\Jobs\SyncPercentagesJob;
+use App\Jobs\SyncFederalMinimumSetAsidesJob;
+use App\Jobs\SyncUnitStatusJob;
+use App\Jobs\SyncUnitsJob;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -156,6 +162,59 @@ class Kernel extends ConsoleKernel
         $test = DB::table('jobs')->where('payload','like','%SyncFinancialTypesJob%')->first();
         if(is_null($test)) {
             $schedule->job(new SyncFinancialTypesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        //SyncProgramDateTypesJob
+        $test = DB::table('jobs')->where('payload','like','%SyncProgramDateTypesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncProgramDateTypesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        // SyncMultipleBuildingTypesJob
+        $test = DB::table('jobs')->where('payload','like','%SyncMultipleBuildingTypesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncMultipleBuildingTypesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        // SyncPercentages
+        $test = DB::table('jobs')->where('payload','like','%SyncPercentagesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncPercentagesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        // SyncFederalMinimumSetAsidesJob
+        $test = DB::table('jobs')->where('payload','like','%SyncFederalMinimumSetAsidesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncFederalMinimumSetAsidesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        //SyncUnitStatusJob
+        $test = DB::table('jobs')->where('payload','like','%SyncUnitStatusJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncUnitStatusJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+        //SyncUnitsJob
+        $test = DB::table('jobs')->where('payload','like','%SyncUnitsJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncUnitsJob)->everyMinute();
             
         } else {
             //Log::info('Sync Job Already Started.');

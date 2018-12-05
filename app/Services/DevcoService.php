@@ -635,7 +635,7 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return object
 	 */
-	public function listDevelopmentContactRoles(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	public function listDevelopmentContactRoles(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null, int $development_key=null,int $development_program_key=null, int $development_role_key=null, int $organization_key=null, int $person_key=null, string $group_by='developmentKey') : object
 	{
 		
 
@@ -774,6 +774,46 @@ class DevcoService extends PCAPIService
 	}
 
 	/**
+	 * List Multiple Building Election Types
+	 * 
+	 * @param  int|integer $page
+	 * @param  int|null $user
+	 * @param  string|null $user_email
+	 * @param  string|null $user_name
+	 * @param  int|null $device_id
+	 * @param  string|null $device_name
+	 * @return object
+	 */
+	public function listMultipleBuildingElectionTypes(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	{
+		$params = "page={$page}&newer_than={$newer_than}";
+
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+		return $this->get("devco/multiple_building_election_types/?{$log_params}&{$params}");
+	}
+
+	/**
+	 * List Percentages
+	 * 
+	 * @param  int|integer $page
+	 * @param  int|null $user
+	 * @param  string|null $user_email
+	 * @param  string|null $user_name
+	 * @param  int|null $device_id
+	 * @param  string|null $device_name
+	 * @return object
+	 */
+	public function listPercentages(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	{
+		$params = "page={$page}&newer_than={$newer_than}";
+
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+		return $this->get("devco/percentages/?{$log_params}&{$params}");
+	}
+
+	/**
 	 * Update Development Program
 	 * 
 	 * @param  int $development_program_key
@@ -846,6 +886,31 @@ class DevcoService extends PCAPIService
 		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/monitoring_status_types?{$params}&{$log_params}");
+	}
+
+
+	/**
+	 * Monitoring Statuses
+	 */
+	
+	/**
+	 * List Federal Set Asides
+	 * 
+	 * @param  int|integer $page
+	 * @param  int|null $user
+	 * @param  string|null $user_email
+	 * @param  string|null $user_name
+	 * @param  int|null $device_id
+	 * @param  string|null $device_name
+	 * @return object
+	 */
+	public function listFederalSetAsides(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	{
+		$params = "page={$page}&newer_than={$newer_than}";
+
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+		return $this->get("devco/federal_minimum_set_asides?{$params}&{$log_params}");
 	}
 
 	/**
@@ -1039,6 +1104,31 @@ class DevcoService extends PCAPIService
 	}
 
 	/**
+	 * Program Date Types
+	 */
+
+	/**
+	 * List Program Date Types
+	 * 
+	 * @param  int $page
+	 * @param  string|null $newer_than
+	 * @param  int|null $user
+	 * @param  string|null $user_email
+	 * @param  string|null $user_name
+	 * @param  int|null $device_id
+	 * @param  string|null $device_name
+	 * @return object
+	 */
+	public function listProgramDateTypes(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	{
+		$params = "page={$page}&newer_than={$newer_than}";
+
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+		return $this->get("devco/program_date_types?{$params}&{$log_params}");
+	}
+
+	/**
 	 * Program Status Types
 	 */
 
@@ -1229,5 +1319,27 @@ class DevcoService extends PCAPIService
 		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->put("devco/unit_statuses/{$unit_status_key}?{$log_params}", $metadata);
+	}
+
+	/**
+	 * List Unit Status
+	 * 
+	 * @param  int $unit_key
+	 * @param  int $page
+	 * @param  string|null $newer_than
+	 * @param  int|null $user
+	 * @param  string|null $user_email
+	 * @param  string|null $user_name
+	 * @param  int|null $device_id
+	 * @param  string|null $device_name
+	 * @return object
+	 */
+	public function listUnitStatuses(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	{
+		$params = "page={$page}&newer_than={$newer_than}";
+
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+		return $this->get("devco/unit_statuses?{$params}&{$log_params}");
 	}
 }
