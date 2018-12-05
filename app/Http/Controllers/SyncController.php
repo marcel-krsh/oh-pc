@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listUnitStatuses(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -64,7 +64,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncUnitStatus::select('id','allita_id','last_edited','updated_at')->where('federal_minimum_set_aside_key',$v['attributes']['federalMinimumSetAsideKey'])->first();
+                            $updateRecord = SyncUnitStatus::select('id','allita_id','last_edited','updated_at')->where('unit_status_key',$v['attributes']['unitStatusKey'])->first();
                             // convert booleans
                             //settype($v['attributes']['isActive'], 'boolean');
                             //dd($updateRecord,$updateRecord->updated_at);
@@ -96,8 +96,8 @@ class SyncController extends Controller
                                         SyncUnitStatus::where('id',$updateRecord['id'])
                                         ->update([
                                             
-                                            'set_aside_name'=>$v['attributes']['setAsideName'],
-                                            'set_aside_description'=>$v['attributes']['setAsideDescription'],
+                                            'unit_status'=>$v['attributes']['unitStatus'],
+                                            
                                             
                                             
                                             'last_edited'=>$v['attributes']['lastEdited'],
@@ -106,8 +106,8 @@ class SyncController extends Controller
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
                                             
-                                            'set_aside_name'=>$v['attributes']['setAsideName'],
-                                            'set_aside_description'=>$v['attributes']['setAsideDescription'],
+                                            'unit_status'=>$v['attributes']['unitStatus'],
+                                            
                                             
                                             
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
@@ -123,22 +123,22 @@ class SyncController extends Controller
                                         $allitaTableRecord = UnitStatus::create([
                                             
                                             
-                                            'set_aside_name'=>$v['attributes']['setAsideName'],
-                                            'set_aside_description'=>$v['attributes']['setAsideDescription'],
+                                            'unit_status'=>$v['attributes']['unitStatus'],
                                             
                                             
-                                            'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
+                                            
+                                            'unit_status_key'=>$v['attributes']['unitStatusKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncUnitStatus::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
-                                            'set_aside_name'=>$v['attributes']['setAsideName'],
-                                            'set_aside_description'=>$v['attributes']['setAsideDescription'],
+                                            'unit_status'=>$v['attributes']['unitStatus'],
                                             
                                             
-                                            'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
+                                            
+                                            'unit_status_key'=>$v['attributes']['unitStatusKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -157,21 +157,21 @@ class SyncController extends Controller
                                 $allitaTableRecord = UnitStatus::create([
                                     
 
-                                            'set_aside_name'=>$v['attributes']['setAsideName'],
-                                            'set_aside_description'=>$v['attributes']['setAsideDescription'],
+                                            'unit_status'=>$v['attributes']['unitStatus'],
+                                            
                                             
                                     
-                                    'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
+                                    'unit_status_key'=>$v['attributes']['unitStatusKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncUnitStatus::create([
                                             
                                             
-                                            'set_aside_name'=>$v['attributes']['setAsideName'],
-                                            'set_aside_description'=>$v['attributes']['setAsideDescription'],
+                                            'unit_status'=>$v['attributes']['unitStatus'],
+                                            
                                             
 
-                                        'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
+                                        'unit_status_key'=>$v['attributes']['unitStatusKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
