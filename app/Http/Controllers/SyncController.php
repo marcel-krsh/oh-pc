@@ -12,8 +12,8 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncFederalSetAside;
-use App\Models\FederalSetAside;
+use App\Models\SyncUnitStatus;
+use App\Models\UnitStatus;
 
 
 
@@ -22,7 +22,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// FederalSetAside Sync
+        /////// UnitStatus Sync
         /////
 
         /// get last modified date inside the database
@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncFederalSetAside::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncUnitStatus::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -48,23 +48,23 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listFederalSetAsides(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listUnitStatuss(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            //dd($syncData);
+            dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listFederalSetAsides($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listUnitStatuss($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
                         //dd('Page Count is Higher',$syncData);
                     }
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncFederalSetAside::select('id','allita_id','last_edited','updated_at')->where('federal_minimum_set_aside_key',$v['attributes']['federalMinimumSetAsideKey'])->first();
+                            $updateRecord = SyncUnitStatus::select('id','allita_id','last_edited','updated_at')->where('federal_minimum_set_aside_key',$v['attributes']['federalMinimumSetAsideKey'])->first();
                             // convert booleans
                             //settype($v['attributes']['isActive'], 'boolean');
                             //dd($updateRecord,$updateRecord->updated_at);
@@ -72,7 +72,7 @@ class SyncController extends Controller
                                 // record exists - get matching table record
 
                                 /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                                $allitaTableRecord = FederalSetAside::find($updateRecord->allita_id);
+                                $allitaTableRecord = UnitStatus::find($updateRecord->allita_id);
                                 /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
@@ -93,7 +93,7 @@ class SyncController extends Controller
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        SyncFederalSetAside::where('id',$updateRecord['id'])
+                                        SyncUnitStatus::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             'set_aside_name'=>$v['attributes']['setAsideName'],
@@ -102,7 +102,7 @@ class SyncController extends Controller
                                             
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
-                                        $UpdateAllitaValues = SyncFederalSetAside::find($updateRecord['id']);
+                                        $UpdateAllitaValues = SyncUnitStatus::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
                                             
@@ -120,7 +120,7 @@ class SyncController extends Controller
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = FederalSetAside::create([
+                                        $allitaTableRecord = UnitStatus::create([
                                             
                                             
                                             'set_aside_name'=>$v['attributes']['setAsideName'],
@@ -130,7 +130,7 @@ class SyncController extends Controller
                                             'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
-                                        $syncTableRecord = SyncFederalSetAside::where('id',$updateRecord['id'])
+                                        $syncTableRecord = SyncUnitStatus::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
@@ -154,7 +154,7 @@ class SyncController extends Controller
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = FederalSetAside::create([
+                                $allitaTableRecord = UnitStatus::create([
                                     
 
                                             'set_aside_name'=>$v['attributes']['setAsideName'],
@@ -164,7 +164,7 @@ class SyncController extends Controller
                                     'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
-                                $syncTableRecord = SyncFederalSetAside::create([
+                                $syncTableRecord = SyncUnitStatus::create([
                                             
                                             
                                             'set_aside_name'=>$v['attributes']['setAsideName'],
