@@ -1,6 +1,6 @@
 <template>
 	<div :class="{ [message.staffId]: true, [message.programId]:true, [message.hasAttachment]:true, 'filter_element': true, 'uk-width-1-1': true, 'communication-list-item': true }" uk-filter="outbound-phone" :id="message.communicationId" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1;">
-		<div uk-grid :class="{'communication-summary': true, [message.communicationUnread]: true}">
+		<div uk-grid :class="{'communication-summary': true, [message.communicationUnread]: true, 'uk-grid':true}">
 			<div class="uk-width-1-5@m uk-width-3-6@s communication-item-tt-to-from uk-margin-small-bottom" v-on:click.self="openCommunication">
                 <div class="communication-item-date-time">
                     <small v-html="message.createdDate"></small>
@@ -28,12 +28,12 @@
 	        	</p>
 	        </div>
 	        <div class="uk-width-2-5@m uk-width-1-1@s communication-item-excerpt " v-on:click.self="openCommunication">
-	        	<div uk-grid class="uk-grid-collapse" v-if="message.hasAttachment">
+	        	<div uk-grid class="uk-grid-collapse" v-if="message.hasAttachment == 'attachment-true'">
 	                <div class="uk-width-5-6@m uk-width-1-1@s communication-item-excerpt" v-on:click.self="openCommunication">
-	                    <strong v-if="message.subject" v-html="message.subject"></strong><hr v-if="message.subject" />
+	                    <strong v-if="message.subject" v-html="message.subject"></strong><br />
 	                    <span v-html="message.summary"></span>
 	                </div>
-	                <div class="uk-width-1-6@m uk-width-1-1@s communication-item-excerpt" v-on:click.self="openCommunication">
+	                <div class="uk-width-1-6@m uk-width-1-1@s communication-item-excerpt" v-on:click.self="openCommunication" v-if="message.hasAttachment == 'attachment-true'">
 	                    <div class="uk-align-right communication-item-attachment uk-margin-right">
 	                        <span :uk-tooltip="message.tooltipFilenames">
 	                        	<i class="a-lower"></i>
@@ -42,7 +42,7 @@
 	                </div>
 	            </div>
 	            <div v-else-if="message.subject">
-	            	<strong v-if="message.subject" v-html="message.subject"></strong><hr v-if="message.subject" />
+	            	<strong v-if="message.subject" v-html="message.subject"></strong><br />
 	                <span v-html="message.summary"></span>
 	            </div>
 	        </div>

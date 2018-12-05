@@ -43525,7 +43525,7 @@ var render = function() {
       _c(
         "div",
         {
-          class: ((_obj$1 = { "communication-summary": true }),
+          class: ((_obj$1 = { "communication-summary": true, "uk-grid": true }),
           (_obj$1[_vm.message.communicationUnread] = true),
           _obj$1),
           attrs: { "uk-grid": "" }
@@ -43678,7 +43678,7 @@ var render = function() {
               }
             },
             [
-              _vm.message.hasAttachment
+              _vm.message.hasAttachment == "attachment-true"
                 ? _c(
                     "div",
                     {
@@ -43708,7 +43708,7 @@ var render = function() {
                                 }
                               })
                             : _vm._e(),
-                          _vm.message.subject ? _c("hr") : _vm._e(),
+                          _c("br"),
                           _vm._v(" "),
                           _c("span", {
                             domProps: { innerHTML: _vm._s(_vm.message.summary) }
@@ -43716,41 +43716,44 @@ var render = function() {
                         ]
                       ),
                       _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "uk-width-1-6@m uk-width-1-1@s communication-item-excerpt",
-                          on: {
-                            click: function($event) {
-                              if ($event.target !== $event.currentTarget) {
-                                return null
-                              }
-                              return _vm.openCommunication($event)
-                            }
-                          }
-                        },
-                        [
-                          _c(
+                      _vm.message.hasAttachment == "attachment-true"
+                        ? _c(
                             "div",
                             {
                               staticClass:
-                                "uk-align-right communication-item-attachment uk-margin-right"
+                                "uk-width-1-6@m uk-width-1-1@s communication-item-excerpt",
+                              on: {
+                                click: function($event) {
+                                  if ($event.target !== $event.currentTarget) {
+                                    return null
+                                  }
+                                  return _vm.openCommunication($event)
+                                }
+                              }
                             },
                             [
                               _c(
-                                "span",
+                                "div",
                                 {
-                                  attrs: {
-                                    "uk-tooltip": _vm.message.tooltipFilenames
-                                  }
+                                  staticClass:
+                                    "uk-align-right communication-item-attachment uk-margin-right"
                                 },
-                                [_c("i", { staticClass: "a-lower" })]
+                                [
+                                  _c(
+                                    "span",
+                                    {
+                                      attrs: {
+                                        "uk-tooltip":
+                                          _vm.message.tooltipFilenames
+                                      }
+                                    },
+                                    [_c("i", { staticClass: "a-lower" })]
+                                  )
+                                ]
                               )
                             ]
                           )
-                        ]
-                      )
+                        : _vm._e()
                     ]
                   )
                 : _vm.message.subject
@@ -43760,7 +43763,7 @@ var render = function() {
                             domProps: { innerHTML: _vm._s(_vm.message.subject) }
                           })
                         : _vm._e(),
-                      _vm.message.subject ? _c("hr") : _vm._e(),
+                      _c("br"),
                       _vm._v(" "),
                       _c("span", {
                         domProps: { innerHTML: _vm._s(_vm.message.summary) }
