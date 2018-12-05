@@ -67,6 +67,7 @@ class SyncController extends Controller
                             $updateRecord = SyncUnit::select('id','allita_id','last_edited','updated_at')->where('unit_key',$v['attributes']['unitKey'])->first();
                             // convert booleans
                             settype($v['attributes']['isActive'], 'boolean');
+                            settype($v['attributes']['isUnitHandicapAccessible'], 'boolean');
                             //dd($updateRecord,$updateRecord->updated_at);
                             if(isset($updateRecord->id)) {
                                 // record exists - get matching table record
