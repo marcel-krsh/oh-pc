@@ -99,7 +99,7 @@ class SyncController extends Controller
                                         ->update([
                                             
                                             
-                                            'owner_certification_key'=>$v['attributes']['ownerCertificationKey'],
+                                            'owner_certification_year_key'=>$v['attributes']['ownerCertificationYearKey'],
                                             'development_key'=>$v['attributes']['developmentKey'],
                                             'house_hold_key'=>$v['attributes']['houseHoldKey'],
                                             'unit_key'=>$v['attributes']['unitKey'],
@@ -130,7 +130,7 @@ class SyncController extends Controller
                                         $allitaTableRecord->update([
                                             
                                             
-                                            'owner_certification_key'=>$v['attributes']['ownerCertificationKey'],
+                                            'owner_certification_year_key'=>$v['attributes']['ownerCertificationYearKey'],
                                             'development_key'=>$v['attributes']['developmentKey'],
                                             'house_hold_key'=>$v['attributes']['houseHoldKey'],
                                             'unit_key'=>$v['attributes']['unitKey'],
@@ -168,7 +168,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'owner_certification_key'=>$v['attributes']['ownerCertificationKey'],
+                                            'owner_certification_year_key'=>$v['attributes']['ownerCertificationYearKey'],
                                             'development_key'=>$v['attributes']['developmentKey'],
                                             'house_hold_key'=>$v['attributes']['houseHoldKey'],
                                             'unit_key'=>$v['attributes']['unitKey'],
@@ -200,7 +200,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'owner_certification_key'=>$v['attributes']['ownerCertificationKey'],
+                                            'owner_certification_year_key'=>$v['attributes']['ownerCertificationYearKey'],
                                             'development_key'=>$v['attributes']['developmentKey'],
                                             'house_hold_key'=>$v['attributes']['houseHoldKey'],
                                             'unit_key'=>$v['attributes']['unitKey'],
@@ -244,7 +244,7 @@ class SyncController extends Controller
                                     
 
                                             'house_hold_event_key'=>$v['attributes']['houseHoldEventKey'],
-                                            'owner_certification_key'=>$v['attributes']['ownerCertificationKey'],
+                                            'owner_certification_year_key'=>$v['attributes']['ownerCertificationYearKey'],
                                             'development_key'=>$v['attributes']['developmentKey'],
                                             'house_hold_key'=>$v['attributes']['houseHoldKey'],
                                             'unit_key'=>$v['attributes']['unitKey'],
@@ -275,7 +275,7 @@ class SyncController extends Controller
                                             
                                             
                                             'house_hold_event_key'=>$v['attributes']['houseHoldEventKey'],
-                                            'owner_certification_key'=>$v['attributes']['ownerCertificationKey'],
+                                            'owner_certification_year_key'=>$v['attributes']['ownerCertificationYearKey'],
                                             'development_key'=>$v['attributes']['developmentKey'],
                                             'house_hold_key'=>$v['attributes']['houseHoldKey'],
                                             'unit_key'=>$v['attributes']['unitKey'],
