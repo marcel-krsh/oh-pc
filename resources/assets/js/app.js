@@ -12,6 +12,12 @@ Vue.component('communication-row', require('./components/CommunicationRow.vue'))
 // connect sockets
 var socket = io('http://192.168.100.100:3000');
 
+var infiniteScroll =  require('vue-infinite-scroll');
+Vue.use(infiniteScroll);
+
+// import VueResource from 'vue-resource';
+// Vue.use(VueResource);
+
 // each page will be its own main Vue instance
 // 
 // 

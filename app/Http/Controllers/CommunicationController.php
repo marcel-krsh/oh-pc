@@ -665,8 +665,10 @@ class CommunicationController extends Controller
     //     return view('dashboard.communications', compact('owners_array', 'programs', 'messages', 'ohfa_id'));
     // }
 
-    public function communicationsTab()
+    public function communicationsTab($page=0)
     {
+        $number_per_page = 5;
+        $skip = $number_per_page * $page;
         $current_user = Auth::user();
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
 
@@ -723,7 +725,7 @@ class CommunicationController extends Controller
                 $orderMessageByIdProvided = implode(',', array_fill(0, count($parents_array), '?'));
                 $messages = Communication::whereIn('id', $parents_array)
                                 ->orderByRaw("field(id,{$orderMessageByIdProvided})", $parents_array)
-                                ->simplePaginate(100);
+                                ->skip($skip)->take($number_per_page)->get();
             } else {
                 $messages = null;
             }
@@ -756,7 +758,8 @@ class CommunicationController extends Controller
                 $orderMessageByIdProvided = implode(',', array_fill(0, count($parents_array), '?'));
                 $messages = Communication::whereIn('id', $parents_array)
                                 ->orderByRaw("field(id,{$orderMessageByIdProvided})", $parents_array)
-                                ->simplePaginate(100);
+                                ->skip($skip)->take($number_per_page)->get();
+                                //->simplePaginate(100);
             //->get();
             } else {
                 $messages = null;
@@ -943,6 +946,10 @@ class CommunicationController extends Controller
         $owners_array = collect($owners_array)->sortBy('name')->toArray();
         $programs = Program::orderBy('program_name', 'ASC')->get();
 
-        return view('dashboard.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'programs', 'ohfa_id'));
+        if($page>0){
+            return response()->json($data);
+        }else{
+            return view('dashboard.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'programs', 'ohfa_id'));
+        }
     }
 }

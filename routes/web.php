@@ -107,7 +107,7 @@ Route::group(['middleware' => 'web'], function () {
 
 
         // communications
-        Route::get('dashboard/communications', 'CommunicationController@communicationsTab')->name('communication.tab');
+        Route::get('dashboard/communications/{page?}', 'CommunicationController@communicationsTab')->name('communication.tab');
         Route::post('/modals/new-outbound-email-entry', 'CommunicationController@create')->name('communication.create');
         Route::get('/modals/new-outbound-email-entry/{audit?}', 'CommunicationController@newCommunicationEntry');
         Route::get('/modals/communication/{audit_id}/replies/{message}', 'CommunicationController@viewReplies');

@@ -269,6 +269,7 @@ if(Auth::check()){
 	<script type="text/javascript" src="/js/systems/system.js"></script>
 	<script type="text/javascript" src="/js/systems/audits.js"></script>
 	<script type="text/javascript" src="/js/systems/findings.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
 	<!-- <script type="text/javascript" src="/js/systems/cdfs-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/communications-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/documents-tab.js"></script>

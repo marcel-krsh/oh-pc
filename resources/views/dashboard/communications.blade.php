@@ -88,8 +88,11 @@
         </div>
     </div>
     @endif
-    <div uk-grid class="uk-container uk-grid-collapse uk-margin-top" id="communication-list" style="position: relative; height: 222.5px;" uk-scrollspy="target:.communication-summary;cls:uk-animation-slide-top-small uk-animation-fast; delay: 100">
+    <div uk-grid class="uk-container uk-grid-collapse uk-margin-top" id="communication-list" style="position: relative; height: 222.5px;" uk-scrollspy="target:.communication-summary;cls:uk-animation-slide-top-small uk-animation-fast; delay: 100" >
         <communication-row v-if="messages" v-for="message in messages.slice().reverse()" :key="message.id" :message="message"></communication-row>
+
+        <div  v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
+ </div>
     </div>
 </div>
 
@@ -209,45 +212,66 @@
     </script>
 
     <script>
-        // initial values
-        // window.initialMessages = '{!! json_encode($data) !!}';
 
         new Vue({
             el: '#communication-list',
             
             data: function() {
                  return {
-                    messages: {!! json_encode($data) !!}
+                    messages: {!! json_encode($data) !!},
+                    page: 1,
+                    loading: 1,
+                    busy: false
                 }
             },
-            // ready: function() {
-            //     this.$set('messages', initialMessages);
-            // },
+            created: function() {
+                this.loading = 0;
+            },
             methods: {
+                loadMore: function () {
+                    var self = this;
+                    self.busy = true;
+                    console.log('loading... ' + new Date());
 
-                // addNewMessage: function(){
-                //     this.messages.push({
-                //         id: '665',
-                //         parentId: '1',
-                //         staffId: 'staff-91',
-                //         programId: 'program-12',
-                //         hasAttachment: 'attachement-true', 
-                //         communicationId: 'communication-432',
-                //         communicationUnread: 'communication-unread',
-                //         createdDate: '12/02/18 04:27 pm',
-                //         createdDateRight: '12/02/18<br />04:27 pm',
-                //         recipients: 'Me, Amelia Atchinson (OSM Test)',
-                //         userBadgeColor: 'user-badge-green',
-                //         tooltip: 'pos:top-left;title:2 unread messages',
-                //         unseen: '2',
-                //         auditId: '22',
-                //         tooltipOrganization: 'pos:left;title:Organization Name',
-                //         organizationAddress: 'address here',
-                //         tooltipFilenames: 'pos:top-left;title:file1, file2',
-                //         subject: 'Some subject here',
-                //         summary: 'Some summary here'
-                //     });
-                // }
+                    setTimeout(() => {
+                        axios.get('dashboard/communications/'+this.page)
+                            .then((response) => {   
+                                //var newmessages = [];
+                                $.each(response.data, function(index, value) {
+                                    //newmessages.push(value);
+                                    self.messages.unshift(value);
+                                });
+                                // console.log(newmessages);
+                                // this.messages.push(newmessages);
+                                // 
+                                // this.messages.push({
+                                //     id: '111dds',
+                                //     parentId: '11',
+                                //     staffId: 'staff-1',
+                                //     programId: null,
+                                //     hasAttachment: 'attachment-true',
+                                //     communicationId: 'communication-222222',
+                                //     communicationUnread: 2,
+                                //     createdDate: null,
+                                //     createdDateRight: null,
+                                //     recipients: 'bob',
+                                //     userBadgeColor: 'user-badge-green',
+                                //     tooltip: null,
+                                //     unseen: null,
+                                //     auditId: null,
+                                //     tooltipOrganization: null,
+                                //     organizationAddress: '',
+                                //     tooltipFilenames: '',
+                                //     subject: 'subject here',
+                                //     summary: 'text'
+                                // });
+                            });
+
+                        this.page = this.page + 1;
+                        this.busy = false;
+                    }, 1000);
+
+                  }
             },
 
             mounted: function() {
