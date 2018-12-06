@@ -135,7 +135,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'unit_bedroom_key'=>$v['attributes']['uniBedroomtKey'],
+                                            'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncUnitBedroom::where('id',$updateRecord['id'])
@@ -148,7 +148,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'unit_bedroom_key'=>$v['attributes']['uniBedroomtKey'],
+                                            'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -173,7 +173,7 @@ class SyncController extends Controller
                                             
                                             
                                     
-                                    'unit_bedroom_key'=>$v['attributes']['uniBedroomtKey'],
+                                    'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncUnitBedroom::create([
@@ -185,7 +185,7 @@ class SyncController extends Controller
                                             
                                             
 
-                                        'unit_bedroom_key'=>$v['attributes']['uniBedroomtKey'],
+                                        'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
