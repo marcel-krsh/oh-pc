@@ -19,7 +19,8 @@
         "laravel-mix": "^3.0.0",
         "lodash": "^4.17.5",
         "popper.js": "^1.14.6",
-        "vue": "^2.5.7"
+        "vue": "^2.5.7",
+        "webpack-dev-server": "^3.1.10"
     },
     "dependencies": {
         "ioredis": "^4.2.0",

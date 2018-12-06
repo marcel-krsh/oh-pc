@@ -1092,79 +1092,11 @@ __webpack_require__(12); // load all components
 Vue.component('example', __webpack_require__(39));
 Vue.component('communication-row', __webpack_require__(42)); // connect sockets
 
-var socket = io('http://192.168.100.100:3000');
+var socket = io('http://192.168.100.100:3000'); // https://github.com/ElemeFE/vue-infinite-scroll
 
 var infiniteScroll = __webpack_require__(45);
 
-Vue.use(infiniteScroll); // import VueResource from 'vue-resource';
-// Vue.use(VueResource);
-// each page will be its own main Vue instance
-// 
-// 
-// new Vue({
-//   el: '#v-tab-com-stat',
-//   data: {
-//     stat: statsCommunicationTotal
-//   },
-//     mounted: function() {
-//         socket.on('communications.'+uid+'.'+sid+':NewRecipient', function(data){
-//             console.log("user " + data.userId + " is getting a message because a new message has been sent.");
-//             this.stat = data.stat;
-//         }.bind(this));
-//     }
-// });
-// new Vue({
-//     el: '#pcapp',
-//     components: {
-//         Example,
-//         CommunicationRow
-//       },
-//     mounted: function() {
-//         console.log("initializing vue at the pcapp element");
-//     }
-// });
-// var newSingleMessage = new Vue({
-//     el: '#communication-row-updates',
-//     data: {
-//         messages: [
-//             {
-//                 DestinationNumber: '',
-//                 TextDecoded: ''
-//             }
-//         ],
-//         submitted:false
-//     },
-//     methods: {
-//         addNewMessage: function(){
-//             this.messages.push({
-//                 DestinationNumber: '',
-//                 TextDecoded: 'You'
-//             });
-//         },
-//         submitForm: function(e) {
-//             console.log(this.messages);
-//             this.$http.post('api/outbox', {messages:this.messages})
-//             .then(function(response){
-//                     //handle success
-//                     console.log(response);
-//             }).error(function(response){
-//                     //handle error
-//                     console.log(response)
-//             });
-//             this.messages = [{ DestinationNumber: '', TextDecoded: '' }];
-//             this.submitted = true;
-//         }
-//     },
-//     mounted: function() {
-//         socket.on('communications.'+uid+'.'+sid+':NewMessage', function(data){
-//             console.log("user " + data.userId + " received a new message.");
-//             this.messages.push({
-//                 DestinationNumber: '',
-//                 TextDecoded: data.summary
-//             });
-//         }.bind(this));
-//     }
-//     });
+Vue.use(infiniteScroll); // each page will be its own main Vue instance
 
 /***/ }),
 /* 12 */

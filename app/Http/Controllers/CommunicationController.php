@@ -667,7 +667,7 @@ class CommunicationController extends Controller
 
     public function communicationsTab($page=0)
     {
-        $number_per_page = 5;
+        $number_per_page = 10;
         $skip = $number_per_page * $page;
         $current_user = Auth::user();
         $ohfa_id = SystemSetting::get('ohfa_organization_id');

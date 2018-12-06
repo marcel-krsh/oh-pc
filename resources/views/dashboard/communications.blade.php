@@ -88,11 +88,9 @@
         </div>
     </div>
     @endif
-    <div uk-grid class="uk-container uk-grid-collapse uk-margin-top" id="communication-list" style="position: relative; height: 222.5px;" uk-scrollspy="target:.communication-summary;cls:uk-animation-slide-top-small uk-animation-fast; delay: 100" >
+    <div uk-grid class="uk-container uk-grid-collapse uk-margin-top" id="communication-list" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10" style="position: relative; height: 222.5px;" uk-scrollspy="target:.communication-summary;cls:uk-animation-slide-top-small uk-animation-fast; delay: 100" >
         <communication-row v-if="messages" v-for="message in messages.slice().reverse()" :key="message.id" :message="message"></communication-row>
-
-        <div  v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
- </div>
+        <div id="spinner" class="uk-width-1-1" style="text-align:center;"></div>
     </div>
 </div>
 
@@ -231,45 +229,21 @@
                 loadMore: function () {
                     var self = this;
                     self.busy = true;
-                    console.log('loading... ' + new Date());
+                    var tempdiv = '<div uk-spinner style="margin: 20px 0;"></div>';
+                    $('#spinner').html(tempdiv);
 
                     setTimeout(() => {
                         axios.get('dashboard/communications/'+this.page)
                             .then((response) => {   
-                                //var newmessages = [];
                                 $.each(response.data, function(index, value) {
-                                    //newmessages.push(value);
+                                    $('#spinner').html('');
                                     self.messages.unshift(value);
                                 });
-                                // console.log(newmessages);
-                                // this.messages.push(newmessages);
-                                // 
-                                // this.messages.push({
-                                //     id: '111dds',
-                                //     parentId: '11',
-                                //     staffId: 'staff-1',
-                                //     programId: null,
-                                //     hasAttachment: 'attachment-true',
-                                //     communicationId: 'communication-222222',
-                                //     communicationUnread: 2,
-                                //     createdDate: null,
-                                //     createdDateRight: null,
-                                //     recipients: 'bob',
-                                //     userBadgeColor: 'user-badge-green',
-                                //     tooltip: null,
-                                //     unseen: null,
-                                //     auditId: null,
-                                //     tooltipOrganization: null,
-                                //     organizationAddress: '',
-                                //     tooltipFilenames: '',
-                                //     subject: 'subject here',
-                                //     summary: 'text'
-                                // });
                             });
 
                         this.page = this.page + 1;
                         this.busy = false;
-                    }, 1000);
+                    }, 2500);
 
                   }
             },
