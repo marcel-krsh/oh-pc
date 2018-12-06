@@ -241,7 +241,7 @@ if(Auth::check()){
 		});
 
 	@if(Auth::check())
-	@if(Auth::user()->entity_type == 'hfa')
+	@if(Auth::user()->entity_type == 'hfa' && env('APP_DEBUG_NO_DEVCO') != 'true')
 			var $zoho=$zoho || {};$zoho.salesiq = $zoho.salesiq || 
 			{widgetcode:"676622b8482bc91a831d0cd4ca9043e6c19fad1e199256fac50d2b5354d1e743a84f59a27361c238a1b1d868cfdeb375", values:{},ready:function(){}};
 			var d=document;s=d.createElement("script");s.type="text/javascript";s.id="zsiqscript";s.defer=true;
@@ -269,6 +269,7 @@ if(Auth::check()){
 	<script type="text/javascript" src="/js/systems/system.js"></script>
 	<script type="text/javascript" src="/js/systems/audits.js"></script>
 	<script type="text/javascript" src="/js/systems/findings.js"></script>
+
 	<!-- <script type="text/javascript" src="/js/systems/cdfs-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/communications-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/documents-tab.js"></script>

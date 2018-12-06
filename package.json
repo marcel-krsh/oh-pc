@@ -14,16 +14,21 @@
         "bootstrap": "^4.0.0",
         "bootstrap-sass": "^3.3.7",
         "cross-env": "^5.1",
+        "img-loader": "^3.0.1",
         "jquery": "^3.2",
-        "laravel-mix": "^2.0",
+        "laravel-mix": "^3.0.0",
         "lodash": "^4.17.5",
-        "popper.js": "^1.12",
-        "vue": "^2.5.7"
+        "popper.js": "^1.14.6",
+        "vue": "^2.5.7",
+        "webpack-dev-server": "^3.1.10"
     },
     "dependencies": {
         "ioredis": "^4.2.0",
-        "laravel-echo": "^1.4.1",
-        "socket.io": "^2.1.1",
-        "socket.io-client": "^2.1.1"
+        "laravel-echo": "^1.5.1",
+        "socket.io": "^2.2.0",
+        "socket.io-client": "^2.2.0",
+        "vue-infinite-loading": "^2.4.3",
+        "vue-infinite-scroll": "^2.0.2",
+        "vue-resource": "^1.5.1"
     }
 }

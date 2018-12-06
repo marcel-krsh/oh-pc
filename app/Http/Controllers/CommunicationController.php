@@ -665,8 +665,10 @@ class CommunicationController extends Controller
     //     return view('dashboard.communications', compact('owners_array', 'programs', 'messages', 'ohfa_id'));
     // }
 
-    public function communicationsTab()
+    public function communicationsTab($page=0)
     {
+        $number_per_page = 10;
+        $skip = $number_per_page * $page;
         $current_user = Auth::user();
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
 
@@ -723,7 +725,7 @@ class CommunicationController extends Controller
                 $orderMessageByIdProvided = implode(',', array_fill(0, count($parents_array), '?'));
                 $messages = Communication::whereIn('id', $parents_array)
                                 ->orderByRaw("field(id,{$orderMessageByIdProvided})", $parents_array)
-                                ->simplePaginate(100);
+                                ->skip($skip)->take($number_per_page)->get();
             } else {
                 $messages = null;
             }
@@ -756,7 +758,8 @@ class CommunicationController extends Controller
                 $orderMessageByIdProvided = implode(',', array_fill(0, count($parents_array), '?'));
                 $messages = Communication::whereIn('id', $parents_array)
                                 ->orderByRaw("field(id,{$orderMessageByIdProvided})", $parents_array)
-                                ->simplePaginate(100);
+                                ->skip($skip)->take($number_per_page)->get();
+                                //->simplePaginate(100);
             //->get();
             } else {
                 $messages = null;
@@ -765,6 +768,7 @@ class CommunicationController extends Controller
 
         $owners_array = [];
 
+        $data = array();
         if ($messages) {
             foreach ($messages as $message) {
                 // create initials
@@ -792,6 +796,21 @@ class CommunicationController extends Controller
                     $recipients_array[$recipient->id] = User::find($recipient->user_id);
                 }
                 $message->recipient_details = $recipients_array;
+
+                $recipients = $message->owner->name;
+                foreach ($message->recipients as $recipient) {
+                    $recipients_array[$recipient->id] = User::find($recipient->user_id);
+                }
+
+                if(count($message->recipient_details)){
+                    foreach ($recipients_array as $recipient){
+                        if($recipient != $current_user && $message->owner != $recipient && $recipient->name != ''){
+                            $recipients = $recipients. ", ".$recipient->name;
+                        }elseif($recipient == $current_user){
+                            $recipients = $recipients. ", me";
+                        }
+                    }
+                }
 
                 $message->summary = strlen($message->message) > 200 ? substr($message->message, 0, 200)."..." : $message->message;
 
@@ -821,6 +840,14 @@ class CommunicationController extends Controller
                     ->where('seen', 0)
                     ->count();
 
+                if($message->unseen){
+                    $unseen = $message->unseen;
+                    $communication_unread_class = 'communication-unread';
+                }else{
+                    $unseen = 0;
+                    $communication_unread_class = '';
+                }
+                
                 // combine all documents from main message and its replies
                 $all_docs = [];
                 if ($message->documents) {
@@ -838,12 +865,91 @@ class CommunicationController extends Controller
                     }
                 }
                 $message->all_docs = $all_docs;
+
+
+                $created = date("m/d/y", strtotime($message->created_at))." ". date('h:i a', strtotime($message->created_at));
+                $created_right = date("m/d/y", strtotime($message->created_at)) ."<br />".date('h:i a', strtotime($message->created_at));
+
+                if(count($message->documents)){
+                    $hasattachment = 'attachment-true';
+                }else{
+                    $hasattachment = 'attachment';
+                }
+
+                if(count($message->documents)){
+                    $attachment_class = 'attachment-true';
+                }else{
+                    $attachment_class = 'attachment';
+                }
+
+                if($message->audit){
+                    if(Auth::user()->isFromOrganization($ohfa_id)){
+                        $organization_name = $message->audit->organization->organization_name;
+                    }else{
+                        $organization_name = '';
+                    } 
+     
+                    $organization_address = $message->audit->street_address.', '.$message->audit->city.', '; 
+                    if($message->audit->state){
+                        $organization_address = $organization_address.$message->audit->state->state_name;
+                    } 
+                    $organization_address = $organization_address.' '.$message->audit->zip;
+                    
+                    if($message->audit->county){
+                        $organization_address = $organization_address. '<br />'.$message->audit->county->county_name; 
+                    }
+                }else{
+                    $organization_address = '';
+                    $organization_name = '';
+                }
+
+                $filenames = '';
+                if($message->all_docs && count($message->all_docs)){
+                    foreach($message->all_docs as $document){
+                        $filenames = $filenames.$document->document->filename.' ';
+                    }
+                }
+
+                if($message->audit){
+                    $program_id = $message->audit->program_id;
+                }else{
+                    $program_id = '';
+                }
+
+                $data[] = [                    
+                        'userId' => '',
+                        'socketId' => '',
+                        'id' => $message->id,
+                        'is_reply' => 0,
+                        'parentId' => $message->parent_id,
+                        'staffId' => 'staff-'.$message->owner->id,
+                        'programId' => 'program-'.$program_id,
+                        'hasAttachment' => $attachment_class,
+                        'communicationId' => 'communication-'.$message->id,
+                        'communicationUnread' => $communication_unread_class,
+                        'createdDate' => $created,
+                        'createdDateRight' => $created_right,
+                        'recipients' => $recipients,
+                        'userBadgeColor' => 'user-badge-'.Auth::user()->badge_color,
+                        'tooltip' => 'pos:top-left;title:'.$unseen.' unread messages',
+                        'unseen' => $unseen,
+                        'auditId' => $message->audit_id,
+                        'tooltipOrganization' => 'pos:left;title:'.$organization_name,
+                        'organizationAddress' => $organization_address,
+                        'tooltipFilenames' => 'pos:top-left;title:'.$filenames,
+                        'subject' => $message->subject,
+                        'summary' => $message->summary
+                ];
             }
         }
-        
+
         $owners_array = collect($owners_array)->sortBy('name')->toArray();
         $programs = Program::orderBy('program_name', 'ASC')->get();
 
-        return view('dashboard.communications', compact('messages', 'owners', 'owners_array', 'current_user', 'programs', 'ohfa_id'));
+        if($page>0){
+            return response()->json($data);
+        }else{
+            return view('dashboard.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'programs', 'ohfa_id'));
+        }
     }
 }
