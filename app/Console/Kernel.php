@@ -24,6 +24,7 @@ use App\Jobs\SyncFederalMinimumSetAsidesJob;
 use App\Jobs\SyncUnitStatusJob;
 use App\Jobs\SyncUnitsJob;
 use App\Jobs\SyncUnitBedroomsJob;
+use App\Jobs\SyncHouseholdEventsJob;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -225,6 +226,15 @@ class Kernel extends ConsoleKernel
         $test = DB::table('jobs')->where('payload','like','%SyncUnitBedroomsJob%')->first();
         if(is_null($test)) {
             $schedule->job(new SyncUnitBedroomsJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        //SyncHouseholdEventsJob
+        $test = DB::table('jobs')->where('payload','like','%SyncHouseholdEventsJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncHouseholdEventsJob)->everyMinute();
             
         } else {
             //Log::info('Sync Job Already Started.');
