@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listHouseholdEvents(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -65,7 +65,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncHouseholdEvent::select('id','allita_id','last_edited','updated_at')->where('unit_bedroom_key',$v['attributes']['unitBedroomKey'])->first();
+                            $updateRecord = SyncHouseholdEvent::select('id','allita_id','last_edited','updated_at')->where('house_hold_event_key',$v['attributes']['houseHoldEventKey'])->first();
                             // convert booleans
                             // settype($v['attributes']['isActive'], 'boolean');
                             // settype($v['attributes']['isHouseholdEventHandicapAccessible'], 'boolean');
@@ -99,9 +99,28 @@ class SyncController extends Controller
                                         ->update([
                                             
                                             
-                                            'unit_bedroom_description'=>$v['attributes']['unitBedroomDesc'],
-                                            'unit_bedroom_number'=>$v['attributes']['unitBedroomNumber'],
-                                            
+                                            'owner_certification_key'=>$v['attributes']['ownerCertificationKey'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'house_hold_key'=>$v['attributes']['houseHoldKey'],
+                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'event_date'=>$v['attributes']['eventDate'],
+                                            'event_type_key'=>$v['attributes']['eventTypeKey'],
+                                            'unit_status_key'=>$v['attributes']['unitStatusKey'],
+                                            'current_income'=>$v['attributes']['currentIncome'],
+                                            'rent_level_key'=>$v['attributes']['rentLevelKey'],
+                                            'income_level_key'=>$v['attributes']['incomeLevelKey'],
+                                            'tenant_rent_portion'=>$v['attributes']['tenantRentPortion'],
+                                            'rental_assistance_amount'=>$v['attributes']['rentalAssistanceAmount'],
+                                            'utility_allowance'=>$v['attributes']['utilityAllowance'],
+                                            'household_count'=>$v['attributes']['householdCount'],
+                                            'student_count'=>$v['attributes']['studentCount'],
+                                            'all_student_house'=>$v['attributes']['allStudentHouse'],
+                                            'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
+                                            'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
+                                            'rental_assistance_source_key'=>$v['attributes']['rentalAssistanceSourceKey'],
+                                            'notes'=>$v['attributes']['notes'],
+                                            'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
+                                            'certification_date'=>$v['attributes']['certificationDate'],
                                             
                                             
                                             'last_edited'=>$v['attributes']['lastEdited'],
@@ -111,9 +130,28 @@ class SyncController extends Controller
                                         $allitaTableRecord->update([
                                             
                                             
-                                            'unit_bedroom_description'=>$v['attributes']['unitBedroomDesc'],
-                                            'unit_bedroom_number'=>$v['attributes']['unitBedroomNumber'],
-                                            
+                                            'owner_certification_key'=>$v['attributes']['ownerCertificationKey'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'house_hold_key'=>$v['attributes']['houseHoldKey'],
+                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'event_date'=>$v['attributes']['eventDate'],
+                                            'event_type_key'=>$v['attributes']['eventTypeKey'],
+                                            'unit_status_key'=>$v['attributes']['unitStatusKey'],
+                                            'current_income'=>$v['attributes']['currentIncome'],
+                                            'rent_level_key'=>$v['attributes']['rentLevelKey'],
+                                            'income_level_key'=>$v['attributes']['incomeLevelKey'],
+                                            'tenant_rent_portion'=>$v['attributes']['tenantRentPortion'],
+                                            'rental_assistance_amount'=>$v['attributes']['rentalAssistanceAmount'],
+                                            'utility_allowance'=>$v['attributes']['utilityAllowance'],
+                                            'household_count'=>$v['attributes']['householdCount'],
+                                            'student_count'=>$v['attributes']['studentCount'],
+                                            'all_student_house'=>$v['attributes']['allStudentHouse'],
+                                            'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
+                                            'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
+                                            'rental_assistance_source_key'=>$v['attributes']['rentalAssistanceSourceKey'],
+                                            'notes'=>$v['attributes']['notes'],
+                                            'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
+                                            'certification_date'=>$v['attributes']['certificationDate'],
                                             
                                             
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
@@ -130,12 +168,31 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'unit_bedroom_description'=>$v['attributes']['unitBedroomDesc'],
-                                            'unit_bedroom_number'=>$v['attributes']['unitBedroomNumber'],
+                                            'owner_certification_key'=>$v['attributes']['ownerCertificationKey'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'house_hold_key'=>$v['attributes']['houseHoldKey'],
+                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'event_date'=>$v['attributes']['eventDate'],
+                                            'event_type_key'=>$v['attributes']['eventTypeKey'],
+                                            'unit_status_key'=>$v['attributes']['unitStatusKey'],
+                                            'current_income'=>$v['attributes']['currentIncome'],
+                                            'rent_level_key'=>$v['attributes']['rentLevelKey'],
+                                            'income_level_key'=>$v['attributes']['incomeLevelKey'],
+                                            'tenant_rent_portion'=>$v['attributes']['tenantRentPortion'],
+                                            'rental_assistance_amount'=>$v['attributes']['rentalAssistanceAmount'],
+                                            'utility_allowance'=>$v['attributes']['utilityAllowance'],
+                                            'household_count'=>$v['attributes']['householdCount'],
+                                            'student_count'=>$v['attributes']['studentCount'],
+                                            'all_student_house'=>$v['attributes']['allStudentHouse'],
+                                            'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
+                                            'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
+                                            'rental_assistance_source_key'=>$v['attributes']['rentalAssistanceSourceKey'],
+                                            'notes'=>$v['attributes']['notes'],
+                                            'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
+                                            'certification_date'=>$v['attributes']['certificationDate'],
                                             
                                             
-                                            
-                                            'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
+                                            'house_hold_event_key'=>$v['attributes']['houseHoldEventKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncHouseholdEvent::where('id',$updateRecord['id'])
@@ -143,12 +200,31 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'unit_bedroom_description'=>$v['attributes']['unitBedroomDesc'],
-                                            'unit_bedroom_number'=>$v['attributes']['unitBedroomNumber'],
+                                            'owner_certification_key'=>$v['attributes']['ownerCertificationKey'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'house_hold_key'=>$v['attributes']['houseHoldKey'],
+                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'event_date'=>$v['attributes']['eventDate'],
+                                            'event_type_key'=>$v['attributes']['eventTypeKey'],
+                                            'unit_status_key'=>$v['attributes']['unitStatusKey'],
+                                            'current_income'=>$v['attributes']['currentIncome'],
+                                            'rent_level_key'=>$v['attributes']['rentLevelKey'],
+                                            'income_level_key'=>$v['attributes']['incomeLevelKey'],
+                                            'tenant_rent_portion'=>$v['attributes']['tenantRentPortion'],
+                                            'rental_assistance_amount'=>$v['attributes']['rentalAssistanceAmount'],
+                                            'utility_allowance'=>$v['attributes']['utilityAllowance'],
+                                            'household_count'=>$v['attributes']['householdCount'],
+                                            'student_count'=>$v['attributes']['studentCount'],
+                                            'all_student_house'=>$v['attributes']['allStudentHouse'],
+                                            'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
+                                            'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
+                                            'rental_assistance_source_key'=>$v['attributes']['rentalAssistanceSourceKey'],
+                                            'notes'=>$v['attributes']['notes'],
+                                            'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
+                                            'certification_date'=>$v['attributes']['certificationDate'],
                                             
                                             
-                                            
-                                            'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
+                                            'house_hold_event_key'=>$v['attributes']['houseHoldEventKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -167,25 +243,63 @@ class SyncController extends Controller
                                 $allitaTableRecord = HouseholdEvent::create([
                                     
 
-                                            'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
-                                            'unit_bedroom_description'=>$v['attributes']['unitBedroomDesc'],
-                                            'unit_bedroom_number'=>$v['attributes']['unitBedroomNumber'],
-                                            
+                                            'house_hold_event_key'=>$v['attributes']['houseHoldEventKey'],
+                                            'owner_certification_key'=>$v['attributes']['ownerCertificationKey'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'house_hold_key'=>$v['attributes']['houseHoldKey'],
+                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'event_date'=>$v['attributes']['eventDate'],
+                                            'event_type_key'=>$v['attributes']['eventTypeKey'],
+                                            'unit_status_key'=>$v['attributes']['unitStatusKey'],
+                                            'current_income'=>$v['attributes']['currentIncome'],
+                                            'rent_level_key'=>$v['attributes']['rentLevelKey'],
+                                            'income_level_key'=>$v['attributes']['incomeLevelKey'],
+                                            'tenant_rent_portion'=>$v['attributes']['tenantRentPortion'],
+                                            'rental_assistance_amount'=>$v['attributes']['rentalAssistanceAmount'],
+                                            'utility_allowance'=>$v['attributes']['utilityAllowance'],
+                                            'household_count'=>$v['attributes']['householdCount'],
+                                            'student_count'=>$v['attributes']['studentCount'],
+                                            'all_student_house'=>$v['attributes']['allStudentHouse'],
+                                            'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
+                                            'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
+                                            'rental_assistance_source_key'=>$v['attributes']['rentalAssistanceSourceKey'],
+                                            'notes'=>$v['attributes']['notes'],
+                                            'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
+                                            'certification_date'=>$v['attributes']['certificationDate'],
                                             
                                     
-                                    'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
+                                    'house_hold_event_key'=>$v['attributes']['houseHoldEventKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncHouseholdEvent::create([
                                             
                                             
-                                            'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
-                                            'unit_bedroom_description'=>$v['attributes']['unitBedroomDesc'],
-                                            'unit_bedroom_number'=>$v['attributes']['unitBedroomNumber'],
-                                            
+                                            'house_hold_event_key'=>$v['attributes']['houseHoldEventKey'],
+                                            'owner_certification_key'=>$v['attributes']['ownerCertificationKey'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'house_hold_key'=>$v['attributes']['houseHoldKey'],
+                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'event_date'=>$v['attributes']['eventDate'],
+                                            'event_type_key'=>$v['attributes']['eventTypeKey'],
+                                            'unit_status_key'=>$v['attributes']['unitStatusKey'],
+                                            'current_income'=>$v['attributes']['currentIncome'],
+                                            'rent_level_key'=>$v['attributes']['rentLevelKey'],
+                                            'income_level_key'=>$v['attributes']['incomeLevelKey'],
+                                            'tenant_rent_portion'=>$v['attributes']['tenantRentPortion'],
+                                            'rental_assistance_amount'=>$v['attributes']['rentalAssistanceAmount'],
+                                            'utility_allowance'=>$v['attributes']['utilityAllowance'],
+                                            'household_count'=>$v['attributes']['householdCount'],
+                                            'student_count'=>$v['attributes']['studentCount'],
+                                            'all_student_house'=>$v['attributes']['allStudentHouse'],
+                                            'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
+                                            'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
+                                            'rental_assistance_source_key'=>$v['attributes']['rentalAssistanceSourceKey'],
+                                            'notes'=>$v['attributes']['notes'],
+                                            'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
+                                            'certification_date'=>$v['attributes']['certificationDate'],
                                             
 
-                                        'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
+                                        'house_hold_event_key'=>$v['attributes']['houseHoldEventKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
