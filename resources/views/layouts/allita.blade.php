@@ -153,16 +153,13 @@ if(Auth::check()){
 				
 				<ul id="tabs" class="maintabs uk-switcher"> 
 					<li>
-						<div id="detail-tab-1-content">
-						</div>
+						<div id="detail-tab-1-content"></div>
 					</li>
 					<li>
-						<div id="detail-tab-2-content">
-						</div>
+						<div id="detail-tab-2-content"></div>
 					</li>
 					<li>
-						<div id="detail-tab-3-content">
-						</div>
+						<div id="detail-tab-3-content"></div>
 					</li>
 				</ul>
 
