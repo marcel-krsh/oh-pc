@@ -220,7 +220,6 @@
 			@endif
 		</div>
 		<div class="uk-width-1-3 uk-text-right uk-margin-top">
-			<example></example>
 			 <button class="uk-button uk-button-primary" onclick="createAudits();"><i class="a-mobile-plus"></i> <span class="uk-badge">22</span> CREATE AUDITS</button>
 		</div>
 	</div>
@@ -593,6 +592,7 @@
 		        </tr>
 		    </thead>
 		    <tbody>
+		    	@if(0)
 		    	@foreach($audits as $audit)
 		    	<tr id="audit-r-{{$loop->iteration}}" class="{{$audit['status']}} @if($audit['status'] != 'critical') notcritical @endif" style=" @if(session('audit-hidenoncritical') == 1 && $audit['status'] != 'critical') display:none; @endif ">
 		            <td id="audit-c-1-{{$loop->iteration}}" class="uk-text-center audit-td-lead">
@@ -707,6 +707,9 @@
 		            </td>
 		        </tr>
 		    	@endforeach
+		    	@endif
+		    	<tr is="audit-row" :class="{[audit.notcritical]:true}" :style="{ display: [audit.display] }" v-if="audits" v-for="(audit, index) in audits.slice().reverse()" :id="'audit-r-'+index" :key="audit.id" :index="index" :audit="audit"></tr>
+        		<div id="spinner-audits" class="uk-width-1-1" style="text-align:center;"></div>
 		    </tbody>
 		</table>
 	</div>
@@ -746,4 +749,100 @@ The following div is defined in this particular tab and pushed to the main layou
 			}
 		});
     });
+</script>
+<script>
+
+    new Vue({
+        el: '#auditstable',
+        
+        data: function() {
+             return {
+                audits: {!! json_encode($data) !!},
+                
+                // page: 1,
+                // loading: 1,
+                // busy: false
+            }
+        },
+        created: function() {
+            this.loading = 0;
+        },
+        methods: {
+            // loadMore: function () {
+                // var self = this;
+                // self.busy = true;
+                // var tempdiv = '<div uk-spinner style="margin: 20px 0;"></div>';
+                // $('#spinner').html(tempdiv);
+
+                // setTimeout(() => {
+                //     axios.get('dashboard/communications/'+this.page)
+                //         .then((response) => {   
+                //             $.each(response.data, function(index, value) {
+                //                 $('#spinner').html('');
+                //                 self.messages.unshift(value);
+                //             });
+                //         });
+
+                //     this.page = this.page + 1;
+                //     this.busy = false;
+                // }, 2500);
+            //  }
+        },
+
+        mounted: function() {
+            console.log("initializing vue at the audits-list element");
+            socket.on('audits.'+uid+'.'+sid+':UpdatedAudit', function(data){
+            	console.log('got an audit update');
+                // if(data.is_reply){
+                //     console.log("user " + data.userId + " received a new reply for message "+data.id);
+                //     var updateddata = [{
+                //         id: data.id,
+                //         parentId: data.parent_id,
+                //         staffId: data.staff_class,
+                //         programId: data.program_class,
+                //         hasAttachment: data.attachment_class,
+                //         communicationId: data.communication_id,
+                //         communicationUnread: data.communication_unread_class,
+                //         createdDate: data.created,
+                //         createdDateRight: data.created_right,
+                //         recipients: data.recipients,
+                //         userBadgeColor: data.user_badge_color,
+                //         tooltip: data.tooltip,
+                //         unseen: data.unseen,
+                //         auditId: data.audit_id,
+                //         tooltipOrganization: data.tooltip_organization,
+                //         organizationAddress: data.organization_address,
+                //         tooltipFilenames: data.tooltip_filenames,
+                //         subject: data.subject,
+                //         summary: data.summary
+                //     }];
+                //     this.messages = this.messages.map(obj => updateddata.find(o => o.id === obj.id) || obj);
+                // }else{
+                //     console.log("audit " + data.id + " has been updated.");
+                //     this.messages.push({
+                //         id: data.id,
+                //         parentId: data.parent_id,
+                //         staffId: data.staff_class,
+                //         programId: data.program_class,
+                //         hasAttachment: data.attachment_class,
+                //         communicationId: data.communication_id,
+                //         communicationUnread: data.communication_unread_class,
+                //         createdDate: data.created,
+                //         createdDateRight: data.created_right,
+                //         recipients: data.recipients,
+                //         userBadgeColor: data.user_badge_color,
+                //         tooltip: data.tooltip,
+                //         unseen: data.unseen,
+                //         auditId: data.audit_id,
+                //         tooltipOrganization: data.tooltip_organization,
+                //         organizationAddress: data.organization_address,
+                //         tooltipFilenames: data.tooltip_filenames,
+                //         subject: data.subject,
+                //         summary: data.summary
+                //     });
+                // }
+            }.bind(this));
+        }
+    });
+
 </script>

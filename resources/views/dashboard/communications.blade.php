@@ -97,8 +97,23 @@
 <div id="list-tab-bottom-bar" class="uk-flex-middle"  style="height:50px;">
 
 </div>
+
+<?php
+/*
+The following div is defined in this particular tab and pushed to the main layout's footer.
+*/
+?>
+<div id="communications-footer-actions" hidden>
+    <a href="#top" id="smoothscrollLink" uk-scroll="{offset: 90}" class="uk-button uk-button-default"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
+</div>
+
 <script>
     //loadCommunications(window.currentDetailId);
+    
+    $( document ).ready(function() {
+        // place tab's buttons on main footer
+        $('#footer-actions-tpl').html($('#communications-footer-actions').html());
+    });
 
     function searchMessages(){
         $.post('{{ URL::route("communications.search") }}', {

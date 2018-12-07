@@ -71,7 +71,7 @@ class DashboardController extends Controller
         return view('dashboard.index', compact('tab', 'loadDetailTab', 'stats_communication_total', 'current_user'));
     }
 
-    public function audits(Request $request)
+    public function audits(Request $request, $page=0)
     {
         
         // $request will contain filters
@@ -179,371 +179,99 @@ class DashboardController extends Controller
 
         $audits = CachedAudit::orderBy($sort_by_field, $sort_order_query)->get();
 
-        // $sortOrder is either 1 or 0
-        // $sortBy can be 'audit-sort-lead'
+        $data = [];
 
-        // statuses
-        // no-action action-required in-progress action-needed ok-actionable readonly
-        // $audits = collect([
-        //     [
-        //         'id' => '123', // this is the audit id, when displayed, add leading zeros?
-        //         'audit_id' => '19200114', // this is the project id from Devco, rename project_id
-        //         'status' => 'critical',
-        //         'lead' => 1, // id
-        //         'lead_json' => [ // data in json format
-        //                 'id' => 1, 
-        //                 'name' => 'Brian Greenwood',
-        //                 'initials' => 'BG',
-        //                 'color' => 'green',
-        //                 'status' => 'warning'
-        //             ],
-        //         'title' => 'Great American Apartments',
-        //         'subtitle' => 'THE NOT SO LONG PROPERTY MANAGER NAME', // PM name, not subtitle! 
-        //         'address' => '3045 Cumberland Woods Street, Suite 20',
-        //         'city' => 'COLUMBUS',
-        //         'state' => 'OH',
-        //         'zip' => '43219',
-        //         'total_buildings' => '10',
-        //         'inspection_status' => 'action-needed',
-        //         'inspection_status_text' => 'Inspection in progress',
-        //         'inspection_schedule_date' => '12/21', // combine and use one date for both fields
-        //         'inspection_schedule_year' => '2018',
-        //         'inspection_schedule_text' => 'Inspection in progress',
-        //         'inspectable_items' => '10',
-        //         'total_items' => '21',
-        //         'audit_compliance_icon' => 'a-circle-checked',
-        //         'audit_compliance_status' => 'ok-actionable', 
-        //         'audit_compliance_status_text' => 'Audit Compliant',
-        //         'followup_status' => 'ok-actionable',
-        //         'followup_status_text' => 'No followups',
-        //         'followup_date' => '12/10', // combine and use one date for both fields
-        //         'followup_year' => '2018',
-        //         'file_audit_icon' => 'a-folder',
-        //         'file_audit_status' => 'ok-actionable',
-        //         'file_audit_status_text' => '',
-        //         'nlt_audit_icon' => 'a-booboo',
-        //         'nlt_audit_status' => 'action-required',
-        //         'nlt_audit_status_text' => '',
-        //         'lt_audit_icon' => 'a-skull',
-        //         'lt_audit_status' => 'in-progress',
-        //         'lt_audit_status_text' => '',
-        //         'smoke_audit_icon' => 'a-flames',
-        //         'smoke_audit_status' => 'action-needed',
-        //         'smoke_audit_status_text' => '',
-        //         'auditor_status_icon' => 'a-avatar',
-        //         'auditor_status' => 'action-required',
-        //         'auditor_status_text' => 'Auditors / schedule conflicts / unasigned items',
-        //         'message_status_icon' => 'a-envelope-4',
-        //         'message_status' => '',
-        //         'message_status_text' => '',
-        //         'document_status_icon' => 'a-files',
-        //         'document_status' => '',
-        //         'document_status_text' => 'Document status',
-        //         'history_status_icon' => 'a-person-clock',
-        //         'history_status' => '',
-        //         'history_status_text' => 'NO/VIEW HISTORY',
-        //         'step_status_icon' => 'a-calendar-7',
-        //         'step_status' => 'no-action',
-        //         'step_status_text' => ''
-        //     ],
-        //     [
-        //         'id' => '456',
-        //         'audit_id' => '19200115',
-        //         'status' => 'no-action',
-        //         'lead' => [
-        //                 'name' => 'Brian Greenwood',
-        //                 'initials' => 'BG',
-        //                 'color' => 'green',
-        //                 'status' => 'warning'
-        //             ],
-        //         'title' => 'Great American Apartments',
-        //         'subtitle' => 'THE NOT SO LONG PROPERTY MANAGER NAME',
-        //         'address' => '3045 Cumberland Woods Street, Suite 20',
-        //         'city' => 'COLUMBUS',
-        //         'state' => 'OH',
-        //         'zip' => '43219',
-        //         'total_buildings' => '10',
-        //         'inspection_status' => 'action-needed',
-        //         'inspection_status_text' => 'Inspection in progress',
-        //         'inspection_schedule_date' => '12/21',
-        //         'inspection_schedule_year' => '2018',
-        //         'inspection_schedule_text' => 'Inspection in progress',
-        //         'inspectable_items' => '10',
-        //         'total_items' => '21',
-        //         'audit_compliance_icon' => 'a-circle-checked',
-        //         'audit_compliance_status' => 'ok-actionable', 
-        //         'audit_compliance_status_text' => 'Audit Compliant',
-        //         'followup_status' => 'ok-actionable',
-        //         'followup_status_text' => 'No followups',
-        //         'followup_date' => '12/10',
-        //         'followup_year' => '2018',
-        //         'file_audit_icon' => 'a-folder',
-        //         'file_audit_status' => 'ok-actionable',
-        //         'file_audit_status_text' => '',
-        //         'nlt_audit_icon' => 'a-booboo',
-        //         'nlt_audit_status' => 'action-required',
-        //         'nlt_audit_status_text' => '',
-        //         'lt_audit_icon' => 'a-skull',
-        //         'lt_audit_status' => 'in-progress',
-        //         'lt_audit_status_text' => '',
-        //         'smoke_audit_icon' => 'a-flames',
-        //         'smoke_audit_status' => 'action-needed',
-        //         'smoke_audit_status_text' => '',
-        //         'auditor_status_icon' => 'a-avatar',
-        //         'auditor_status' => 'action-required',
-        //         'auditor_status_text' => 'Auditors / schedule conflicts / unasigned items',
-        //         'message_status_icon' => 'a-envelope-4',
-        //         'message_status' => '',
-        //         'message_status_text' => '',
-        //         'document_status_icon' => 'a-files',
-        //         'document_status' => '',
-        //         'document_status_text' => 'Document status',
-        //         'history_status_icon' => 'a-person-clock',
-        //         'history_status' => '',
-        //         'history_status_text' => 'NO/VIEW HISTORY',
-        //         'step_status_icon' => 'a-calendar-7',
-        //         'step_status' => 'no-action',
-        //         'step_status_text' => ''
-        //     ],
-        //     [
-        //         'id' => '789',
-        //         'audit_id' => '19200116',
-        //         'status' => 'action-needed',
-        //         'lead' => [
-        //                 'name' => 'Brian Greenwood',
-        //                 'initials' => 'BG',
-        //                 'color' => 'green',
-        //                 'status' => 'warning'
-        //             ],
-        //         'title' => 'Great American Apartments',
-        //         'subtitle' => 'THE NOT SO LONG PROPERTY MANAGER NAME',
-        //         'address' => '3045 Cumberland Woods Street, Suite 20',
-        //         'city' => 'COLUMBUS',
-        //         'state' => 'OH',
-        //         'zip' => '43219',
-        //         'total_buildings' => '10',
-        //         'inspection_status' => 'action-needed',
-        //         'inspection_status_text' => 'Inspection in progress',
-        //         'inspection_schedule_date' => '12/21',
-        //         'inspection_schedule_year' => '2018',
-        //         'inspection_schedule_text' => 'Inspection in progress',
-        //         'inspectable_items' => '10',
-        //         'total_items' => '21',
-        //         'audit_compliance_icon' => 'a-circle-checked',
-        //         'audit_compliance_status' => 'ok-actionable', 
-        //         'audit_compliance_status_text' => 'Audit Compliant',
-        //         'followup_status' => 'ok-actionable',
-        //         'followup_status_text' => 'No followups',
-        //         'followup_date' => '12/10',
-        //         'followup_year' => '2018',
-        //         'file_audit_icon' => 'a-folder',
-        //         'file_audit_status' => 'ok-actionable',
-        //         'file_audit_status_text' => '',
-        //         'nlt_audit_icon' => 'a-booboo',
-        //         'nlt_audit_status' => 'action-required',
-        //         'nlt_audit_status_text' => '',
-        //         'lt_audit_icon' => 'a-skull',
-        //         'lt_audit_status' => 'in-progress',
-        //         'lt_audit_status_text' => '',
-        //         'smoke_audit_icon' => 'a-flames',
-        //         'smoke_audit_status' => 'action-needed',
-        //         'smoke_audit_status_text' => '',
-        //         'auditor_status_icon' => 'a-avatar',
-        //         'auditor_status' => 'action-required',
-        //         'auditor_status_text' => 'Auditors / schedule conflicts / unasigned items',
-        //         'message_status_icon' => 'a-envelope-4',
-        //         'message_status' => '',
-        //         'message_status_text' => '',
-        //         'document_status_icon' => 'a-files',
-        //         'document_status' => '',
-        //         'document_status_text' => 'Document status',
-        //         'history_status_icon' => 'a-person-clock',
-        //         'history_status' => '',
-        //         'history_status_text' => 'NO/VIEW HISTORY',
-        //         'step_status_icon' => 'a-calendar-7',
-        //         'step_status' => 'no-action',
-        //         'step_status_text' => ''
-        //     ],
-        //     [
-        //         'id' => '222',
-        //         'audit_id' => '19200133',
-        //         'status' => 'critical',
-        //         'lead' => [
-        //                 'name' => 'Brian Greenwood',
-        //                 'initials' => 'BG',
-        //                 'color' => 'green',
-        //                 'status' => 'warning'
-        //             ],
-        //         'title' => 'Great American Apartments',
-        //         'subtitle' => 'THE NOT SO LONG PROPERTY MANAGER NAME',
-        //         'address' => '3045 Cumberland Woods Street, Suite 20',
-        //         'city' => 'COLUMBUS',
-        //         'state' => 'OH',
-        //         'zip' => '43219',
-        //         'total_buildings' => '10',
-        //         'inspection_status' => 'action-needed',
-        //         'inspection_status_text' => 'Inspection in progress',
-        //         'inspection_schedule_date' => '12/21',
-        //         'inspection_schedule_year' => '2018',
-        //         'inspection_schedule_text' => 'Inspection in progress',
-        //         'inspectable_items' => '10',
-        //         'total_items' => '21',
-        //         'audit_compliance_icon' => 'a-circle-checked',
-        //         'audit_compliance_status' => 'ok-actionable', 
-        //         'audit_compliance_status_text' => 'Audit Compliant',
-        //         'followup_status' => 'ok-actionable',
-        //         'followup_status_text' => 'No followups',
-        //         'followup_date' => '12/10',
-        //         'followup_year' => '2018',
-        //         'file_audit_icon' => 'a-folder',
-        //         'file_audit_status' => 'ok-actionable',
-        //         'file_audit_status_text' => '',
-        //         'nlt_audit_icon' => 'a-booboo',
-        //         'nlt_audit_status' => 'action-required',
-        //         'nlt_audit_status_text' => '',
-        //         'lt_audit_icon' => 'a-skull',
-        //         'lt_audit_status' => 'in-progress',
-        //         'lt_audit_status_text' => '',
-        //         'smoke_audit_icon' => 'a-flames',
-        //         'smoke_audit_status' => 'action-needed',
-        //         'smoke_audit_status_text' => '',
-        //         'auditor_status_icon' => 'a-avatar',
-        //         'auditor_status' => 'action-required',
-        //         'auditor_status_text' => 'Auditors / schedule conflicts / unasigned items',
-        //         'message_status_icon' => 'a-envelope-4',
-        //         'message_status' => '',
-        //         'message_status_text' => '',
-        //         'document_status_icon' => 'a-files',
-        //         'document_status' => '',
-        //         'document_status_text' => 'Document status',
-        //         'history_status_icon' => 'a-person-clock',
-        //         'history_status' => '',
-        //         'history_status_text' => 'NO/VIEW HISTORY',
-        //         'step_status_icon' => 'a-calendar-7',
-        //         'step_status' => 'no-action',
-        //         'step_status_text' => ''
-        //     ],
-        //     [
-        //         'id' => '445',
-        //         'audit_id' => '19200234',
-        //         'status' => 'ok-actionable',
-        //         'lead' => [
-        //                 'name' => 'Brian Greenwood',
-        //                 'initials' => 'BG',
-        //                 'color' => 'green',
-        //                 'status' => 'warning'
-        //             ],
-        //         'title' => 'Great American Apartments',
-        //         'subtitle' => 'THE NOT SO LONG PROPERTY MANAGER NAME',
-        //         'address' => '3045 Cumberland Woods Street, Suite 20',
-        //         'city' => 'COLUMBUS',
-        //         'state' => 'OH',
-        //         'zip' => '43219',
-        //         'total_buildings' => '10',
-        //         'inspection_status' => 'action-needed',
-        //         'inspection_status_text' => 'Inspection in progress',
-        //         'inspection_schedule_date' => '12/21',
-        //         'inspection_schedule_year' => '2018',
-        //         'inspection_schedule_text' => 'Inspection in progress',
-        //         'inspectable_items' => '10',
-        //         'total_items' => '21',
-        //         'audit_compliance_icon' => 'a-circle-checked',
-        //         'audit_compliance_status' => 'ok-actionable', 
-        //         'audit_compliance_status_text' => 'Audit Compliant',
-        //         'followup_status' => 'ok-actionable',
-        //         'followup_status_text' => 'No followups',
-        //         'followup_date' => '12/10',
-        //         'followup_year' => '2018',
-        //         'file_audit_icon' => 'a-folder',
-        //         'file_audit_status' => 'ok-actionable',
-        //         'file_audit_status_text' => '',
-        //         'nlt_audit_icon' => 'a-booboo',
-        //         'nlt_audit_status' => 'action-required',
-        //         'nlt_audit_status_text' => '',
-        //         'lt_audit_icon' => 'a-skull',
-        //         'lt_audit_status' => 'in-progress',
-        //         'lt_audit_status_text' => '',
-        //         'smoke_audit_icon' => 'a-flames',
-        //         'smoke_audit_status' => 'action-needed',
-        //         'smoke_audit_status_text' => '',
-        //         'auditor_status_icon' => 'a-avatar',
-        //         'auditor_status' => 'action-required',
-        //         'auditor_status_text' => 'Auditors / schedule conflicts / unasigned items',
-        //         'message_status_icon' => 'a-envelope-4',
-        //         'message_status' => '',
-        //         'message_status_text' => '',
-        //         'document_status_icon' => 'a-files',
-        //         'document_status' => '',
-        //         'document_status_text' => 'Document status',
-        //         'history_status_icon' => 'a-person-clock',
-        //         'history_status' => '',
-        //         'history_status_text' => 'NO/VIEW HISTORY',
-        //         'step_status_icon' => 'a-calendar-7',
-        //         'step_status' => 'no-action',
-        //         'step_status_text' => ''
-        //     ],
-        //     [
-        //         'id' => '334',
-        //         'audit_id' => '19200221',
-        //         'status' => 'action-needed',
-        //         'lead' => [
-        //                 'name' => 'Brian Greenwood',
-        //                 'initials' => 'BG',
-        //                 'color' => 'green',
-        //                 'status' => 'warning'
-        //             ],
-        //         'title' => 'Great American Apartments',
-        //         'subtitle' => 'THE NOT SO LONG PROPERTY MANAGER NAME',
-        //         'address' => '3045 Cumberland Woods Street, Suite 20',
-        //         'city' => 'COLUMBUS',
-        //         'state' => 'OH',
-        //         'zip' => '43219',
-        //         'total_buildings' => '10',
-        //         'inspection_status' => 'action-needed',
-        //         'inspection_status_text' => 'Inspection in progress',
-        //         'inspection_schedule_date' => '12/21',
-        //         'inspection_schedule_year' => '2018',
-        //         'inspection_schedule_text' => 'Inspection in progress',
-        //         'inspectable_items' => '10',
-        //         'total_items' => '21',
-        //         'audit_compliance_icon' => 'a-circle-checked',
-        //         'audit_compliance_status' => 'ok-actionable', 
-        //         'audit_compliance_status_text' => 'Audit Compliant',
-        //         'followup_status' => 'ok-actionable',
-        //         'followup_status_text' => 'No followups',
-        //         'followup_date' => '12/10',
-        //         'followup_year' => '2018',
-        //         'file_audit_icon' => 'a-folder',
-        //         'file_audit_status' => 'ok-actionable',
-        //         'file_audit_status_text' => '',
-        //         'nlt_audit_icon' => 'a-booboo',
-        //         'nlt_audit_status' => 'action-required',
-        //         'nlt_audit_status_text' => '',
-        //         'lt_audit_icon' => 'a-skull',
-        //         'lt_audit_status' => 'in-progress',
-        //         'lt_audit_status_text' => '',
-        //         'smoke_audit_icon' => 'a-flames',
-        //         'smoke_audit_status' => 'action-needed',
-        //         'smoke_audit_status_text' => '',
-        //         'auditor_status_icon' => 'a-avatar',
-        //         'auditor_status' => 'action-required',
-        //         'auditor_status_text' => 'Auditors / schedule conflicts / unasigned items',
-        //         'message_status_icon' => 'a-envelope-4',
-        //         'message_status' => '',
-        //         'message_status_text' => '',
-        //         'document_status_icon' => 'a-files',
-        //         'document_status' => '',
-        //         'document_status_text' => 'Document status',
-        //         'history_status_icon' => 'a-person-clock',
-        //         'history_status' => '',
-        //         'history_status_text' => 'NO/VIEW HISTORY',
-        //         'step_status_icon' => 'a-calendar-7',
-        //         'step_status' => 'no-action',
-        //         'step_status_text' => ''
-        //     ]
-        // ]);
+        foreach($audits as $audit){
 
-        return view('dashboard.audits', compact('filter', 'auditFilterMineOnly', 'audits', 'sort_by', 'sort_order'));
+            if($audit['status'] != 'critical') {
+                $notcritical = 'notcritical';
+            }else{
+                $notcritical = 'critical';
+            }
+
+            if(session('audit-hidenoncritical') == 1 && $audit['status'] != 'critical'){
+                $display = 'none';
+            }else{
+                $display = 'table-row';
+            }
+
+            if($audit->lead_json){
+                $lead_name = $audit->lead_json->name;
+                $lead_color = $audit->lead_json->color;
+                $lead_initials = $audit->lead_json->initials;
+            }else{
+                $lead_name = '';
+                $lead_color = '';
+                $lead_initials = '';
+            }
+
+            $pm = strtoupper($audit['pm']);
+            $inspectionScheduleDate = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('m/d');
+            $inspectionScheduleDateYear = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('Y');
+            $followupDate = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('m/d');
+            $followupDateYear = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('Y');
+
+            $data[] = [    
+                'id' => $audit->id,
+                'title' => $audit->title,
+                'notcritical' => $notcritical,
+                'display' => $display,
+                'tooltipLead' => 'pos:top-left;title:'.$lead_name.';',
+                'userBadgeColor' => 'user-badge-'.$lead_color,
+                'initials' => $lead_initials,
+                'total_buildings' => $audit['total_buildings'],
+                'projectRef' => $audit['project_ref'],
+                'pm' => $pm,
+                'address' => $audit['address'],
+                'address2' => $audit['city'].', '.$audit['state'].' '.$audit['zip'],
+                'inspectionStatus' => $audit['inspection_status'],
+                'tooltipInspectionStatus' => 'title:'.$audit['inspection_status_text'],
+                'tooltipInspectionSchedule' => 'title:'.$audit['inspection_schedule_text'],
+                'inspectionScheduleDate' => $inspectionScheduleDate,
+                'inspectionScheduleDateYear' => $inspectionScheduleDateYear,
+                'tooltipInspectableItems' => 'title:'.$audit['inspectable_items'].' INSPECTABLE ITEMS;',
+                'inspectableItems' => $audit['inspectable_items'],
+                'totalItems' => $audit['total_items'],
+                'complianceIconClass' => $audit['audit_compliance_icon'],
+                'complianceStatusClass' => $audit['audit_compliance_status'],
+                'tooltipComplianceStatus' => 'title:'.$audit['audit_compliance_status_text'],
+                'followupStatusClass' => $audit['followup_status'],
+                'tooltipFollowupStatus' => 'title:'.$audit['followup_status_text'],
+                'followupDate' => $followupDate,
+                'followupDateYear' => $followupDateYear,
+                'fileAuditStatusClass' => $audit['file_audit_status'],
+                'tooltipFileAuditStatus' => 'title:'.$audit['file_audit_status_text'],
+                'fileAuditIconClass' => $audit['file_audit_icon'],
+                'nltAuditStatusClass' => $audit['nlt_audit_status'],
+                'tooltipNltAuditStatus' => 'title:'.$audit['nlt_audit_status_text'],
+                'nltAuditIconClass' => $audit['nlt_audit_icon'],
+                'ltAuditStatusClass' => $audit['lt_audit_status'],
+                'tooltipLtAuditStatus' => 'title:'.$audit['smoke_audit_status_text'],
+                'ltAuditIconClass' => $audit['smoke_audit_icon'],
+
+                'auditorStatusIconClass' => $audit['auditor_status_icon'], 
+                'messageStatusClass' => $audit['auditor_status'],
+                'tooltipAuditorStatus' => 'title:'.$audit['auditor_status_text'].';',
+                'messageStatusIconClass' => $audit['message_status_icon'], 
+                'messageStatusClass' => $audit['message_status'],
+                'tooltipMessageStatus' => 'title:'.$audit['message_status_text'].';',
+                'documentStatusIconClass' => $audit['document_status_icon'], 
+                'documentStatusClass' => $audit['document_status'],
+                'tooltipDocumentStatus' => 'title:'.$audit['document_status_text'].';',
+                'historyStatusIconClass' => $audit['history_status_icon'], 
+                'historyStatusClass' => $audit['history_status'],
+                'tooltipHistoryStatus' => 'title:'.$audit['history_status_text'].';',
+                'stepStatusIconClass' => $audit['step_status_icon'],
+                'stepStatusClass' => $audit['step_status'],
+                'tooltipStepStatus' => 'title:'.$audit['step_status_text'].';'
+            ];
+        }   
+
+        if($page>0){
+            return response()->json($data);
+        }else{
+            return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'audits', 'sort_by', 'sort_order'));
+        }
     }
 
     public function reports(Request $request)
@@ -616,6 +344,9 @@ class DashboardController extends Controller
         //                 $data->manager_name,
         //                 $data->project_name
         //             ];
+        //             
+                    
+        // search for primary address (project), project #, audit#
         $results[] = [
                         '123 Street Name',
                         'City Name',

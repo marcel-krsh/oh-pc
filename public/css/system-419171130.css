@@ -521,6 +521,7 @@ stickynav {
 #main-tabs {
   background-color: #d2ebf9;
   padding-top: 20px;
+  width: 100% !important;
 }
 #main-tabs .uk-badge {
     background-color: #939598;
