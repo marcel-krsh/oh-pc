@@ -1323,7 +1323,7 @@ margin-top:10px;
   margin: 0;
 }
 #auditstable .uk-link:hover {
-  color:initial;
+  /*color:initial;*/
 }
 #auditstable table tr td .dateyear {
    display:none;

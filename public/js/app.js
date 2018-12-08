@@ -1091,7 +1091,9 @@ __webpack_require__(12); // load all components
 
 Vue.component('example', __webpack_require__(39));
 Vue.component('communication-row', __webpack_require__(42));
-Vue.component('audit-row', __webpack_require__(45)); // connect sockets
+Vue.component('audit-row', __webpack_require__(45), {
+  name: 'audit-row'
+}); // connect sockets
 
 var socket = io('http://192.168.100.100:3000'); // https://github.com/ElemeFE/vue-infinite-scroll
 

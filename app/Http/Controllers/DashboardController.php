@@ -10,6 +10,7 @@ use Session;
 use App\Models\SystemSetting;
 use App\LogConverter;
 use App\Models\CachedAudit;
+use App\Models\Report;
 use Carbon;
 use App\Models\CommunicationRecipient;
 
@@ -69,8 +70,10 @@ class DashboardController extends Controller
                     ->where('seen', 0)
                     ->count();
 
+        $stats_reports_total = Report::where('user_id', '=', Auth::user()->id)->count();
+
         //return \view('dashboard.index'); //, compact('user')
-        return view('dashboard.index', compact('tab', 'loadDetailTab', 'stats_audits_total', 'stats_communication_total', 'current_user'));
+        return view('dashboard.index', compact('tab', 'loadDetailTab', 'stats_audits_total', 'stats_communication_total', 'stats_reports_total', 'current_user'));
     }
 
     public function adminTools()
@@ -260,8 +263,8 @@ class DashboardController extends Controller
                 'tooltipNltAuditStatus' => 'title:'.$audit['nlt_audit_status_text'],
                 'nltAuditIconClass' => $audit['nlt_audit_icon'],
                 'ltAuditStatusClass' => $audit['lt_audit_status'],
-                'tooltipLtAuditStatus' => 'title:'.$audit['smoke_audit_status_text'],
-                'ltAuditIconClass' => $audit['smoke_audit_icon'],
+                'tooltipLtAuditStatus' => 'title:'.$audit['lt_audit_status_text'],
+                'ltAuditIconClass' => $audit['lt_audit_icon'],
 
                 'auditorStatusIconClass' => $audit['auditor_status_icon'], 
                 'messageStatusClass' => $audit['auditor_status'],

@@ -39,7 +39,7 @@ function sortAuditList(sortBy, sortOrder, inputClass='') {
 	$.get( '/session/filters/audit-sort-by/'+sortBy, function( data ) {  
 		$.get( '/session/filters/audit-sort-order/'+sortOrder, function( data ) {  
 			//?filter="+filter+"&filterId="+filterId
-			loadTab("dashboard/audits", "1");
+			loadTab("dashboard/audits", "1", 0, 0, '', 1);
 
       	});	
     });

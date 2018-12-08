@@ -118,6 +118,7 @@ if(Auth::check()){
 		// initial values
 	    var statsAuditsTotal = "{{$stats_audits_total}}";
 	    var statsCommunicationTotal = "{{$stats_communication_total}}";
+	    var statsReportsTotal = "{{$stats_reports_total}}";
 	    var uid = "{{$current_user->id}}";
 	    var sid = "{{$current_user->socket_id}}";
 	</script>
@@ -142,10 +143,10 @@ if(Auth::check()){
 				    <div class="uk-width-5-6">
 				    	<div id="top-tabs-container">
 					        <ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m">
-				    			<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.audits') }}', '1');"><a href=""><i class="a-mobile-home"></i> <span class="list-tab-text"> <span class="uk-badge" v-if="statsAuditsTotal">@{{statsAuditsTotal}}</span> AUDITS</span></a></li>
-								<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('communication.tab') }}', '2');"><a href=""><i class="a-envelope-attention"></i> <span class="list-tab-text"> <span class="uk-badge" v-if="statsCommunicationTotal">@{{statsCommunicationTotal}}</span> COMMUNICATIONS</span></a></li>
+				    			<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.audits') }}', '1');"><a href=""><i class="a-mobile-home"></i> <span class="list-tab-text"> <span class="uk-badge" v-if="statsAuditsTotal" v-cloak>@{{statsAuditsTotal}}</span> AUDITS</span></a></li>
+								<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('communication.tab') }}', '2');"><a href=""><i class="a-envelope-attention"></i> <span class="list-tab-text"> <span class="uk-badge" v-if="statsCommunicationTotal" v-cloak>@{{statsCommunicationTotal}}</span> COMMUNICATIONS</span></a></li>
 								<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.reports') }}', '3');">
-									<a href=""><i class="a-file-chart-3"></i> <span class="list-tab-text"> <span class="uk-badge">99,999</span> REPORTS</span></a>
+									<a href=""><i class="a-file-chart-3"></i> <span class="list-tab-text"> <span class="uk-badge" v-if="statsReportsTotal" v-cloak>@{{statsReportsTotal}}</span> REPORTS</span></a>
 								</li>
 								<li id="detail-tab-5" class="detail-tab-5" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.admin') }}', '5');">
 									<a href=""><span class="list-tab-text">ADMIN</span></a>
@@ -360,6 +361,7 @@ if(Auth::check()){
 		  data: {
 		    statsAuditsTotal: statsAuditsTotal,
 		    statsCommunicationTotal: statsCommunicationTotal,
+		    statsReportsTotal: statsReportsTotal
 		  },
 
 		    mounted: function() {

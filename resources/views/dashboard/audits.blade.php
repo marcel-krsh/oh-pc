@@ -365,50 +365,40 @@
 							</span>
 						</div>
 					</th>
-		            <th style="min-width: 120px;">
+		            <th style="min-width: 90px;">
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid> 
-			            		<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
+			            		<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-folder"></i>
 								</span>
-								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
+								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-booboo"></i>
 								</span>
-								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
+								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-skull"></i>
 								</span>
-								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i class="a-flames"></i>
-								</span> 
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY FILE FINDING COUNT">
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY FILE FINDING COUNT">
 			            		@if($sort_by == 'audit-sort-finding-file')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-finding-file',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-finding-file', 1);"></a>
 			            		@endif
 							</span> 
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY NLT FINDING COUNT">
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY NLT FINDING COUNT">
 			            		@if($sort_by == 'audit-sort-finding-nlt')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-finding-nlt',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-finding-nlt', 1);"></a>
 			            		@endif
 							</span> 
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LT FINDING COUNT">
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LT FINDING COUNT">
 			            		@if($sort_by == 'audit-sort-finding-lt')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-finding-lt',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-finding-lt', 1);"></a>
 			            		@endif
 							</span> 
-							<span data-uk-tooltip="{pos:'bottom-right'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY SD FINDING COUNT">
-			            		@if($sort_by == 'audit-sort-finding-sd')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif" onclick="sortAuditList('audit-sort-finding-sd',  @php echo 1-$sort_order; @endphp);"></a>
-			            		@else
-			            		<a id="" class="sort-neutral" onclick="sortAuditList('audit-sort-finding-sd', 1);"></a>
-			            		@endif
-							</span>
 						</div>
 					</th>
 		            <th style="min-width: 120px;">

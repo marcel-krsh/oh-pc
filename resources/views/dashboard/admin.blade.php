@@ -8,7 +8,7 @@
             <br/>
             <ul style="list-style-type: none;">
                 <li >
-                <a onclick="dynamicModalLoad('admin/entity/create')" class="uk-button uk-button-default uk-width-2-5@m" >CREATE NEW ENTITY</a>
+                <a onclick="dynamicModalLoad('admin/entity/create')" class="uk-button uk-button-default uk-width-2-5@m" >CREATE NEW ORGANIZATION</a>
                 <a onclick="dynamicModalLoad('admin/program/create')" class="uk-button uk-button-default uk-width-2-5@m uk-float-right">CREATE NEW PROGRAM</a>
                 <hr class="dashed-hr uk-margin-bottom">
                 <a onclick="dynamicModalLoad('admin/rule/create')" class="uk-button uk-button-default uk-width-2-5@m">CREATE NEW RULE</a>
@@ -32,7 +32,7 @@
     <div class="uk-grid">
         <div class="uk-width-1-1 ">
             <ul class="uk-subnav uk-subnav-pill" uk-switcher="animation: uk-animation-fade">
-                <li id="entities-tab" class="uk-active"><a>Entities</a></li>
+                <li id="organizations-tab" class="uk-active"><a>Organizations</a></li>
                 <li id="programs-tab"><a>Programs</a></li>
                 <li id="rules-tab"><a>Rules</a></li>
                 <li id="accounts-tab"><a>Accounts</a></li>
@@ -122,6 +122,6 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">$('#entities-tab-content').load('/tabs/entity');
+<script type="text/javascript">$('#organizations-tab-content').load('/tabs/organizations');
                     </script>
 
