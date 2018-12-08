@@ -29,6 +29,7 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('dashboard/audits/{audit}/buildings/reorder', 'AuditController@reorderBuildingsFromAudit')->name('audit.reorder.buildings');
         Route::get('dashboard/audits/{audit}/building/{building}/units/reorder', 'AuditController@reorderUnitsFromAudit')->name('audit.reorder.units');
         Route::get('dashboard/audits/{audit}/amenities/reorder', 'AuditController@reorderAmenitiesFromAudit')->name('audit.reorder.amenities');
+        Route::get('/dashboard/admin_tools', 'DashboardController@adminTools')->name('dashboard.admin');
 
         Route::get('dashboard/audits/{audit}/building/{building}/details', 'AuditController@detailsFromBuilding')->name('audit.building.details');
         Route::get('dashboard/audits/{audit_id}/building/{building_id}/inspection', 'AuditController@inspectionFromBuilding')->name('audit.inspection');
@@ -132,7 +133,6 @@ Route::get('/dashboard/accounting', 'AccountingController@accounting');
 Route::get('/dashboard/parcel_list', 'PagesController@parcelList');
 Route::get('/dashboard/stats', 'PagesController@stats');
 Route::get('/dashboard/map', 'PagesController@map');
-Route::get('/dashboard/admin_tools', 'PagesController@adminTools');
 Route::get('/dashboard/communications', 'CommunicationController@communicationsTab');
 Route::get('/dashboard/disposition_list', 'DispositionController@dispositionList');
 Route::get('/dashboard/disposition_invoice_list', 'DispositionController@dispositionInvoiceList');

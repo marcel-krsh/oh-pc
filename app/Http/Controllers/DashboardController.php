@@ -73,6 +73,18 @@ class DashboardController extends Controller
         return view('dashboard.index', compact('tab', 'loadDetailTab', 'stats_audits_total', 'stats_communication_total', 'current_user'));
     }
 
+    public function adminTools()
+    {
+        // TBD based on role
+        if (1) {
+            $sumStatData = [];
+            $stats = [];
+            return view('dashboard.admin', compact('stats', 'sumStatData'));
+        } else {
+            return 'Sorry you do not have access to this page';
+        }
+    }
+
     public function audits(Request $request, $page=0)
     {
         

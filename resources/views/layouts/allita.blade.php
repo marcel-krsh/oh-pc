@@ -147,6 +147,9 @@ if(Auth::check()){
 								<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.reports') }}', '3');">
 									<a href=""><i class="a-file-chart-3"></i> <span class="list-tab-text"> <span class="uk-badge">99,999</span> REPORTS</span></a>
 								</li>
+								<li id="detail-tab-5" class="detail-tab-5" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.admin') }}', '5');">
+									<a href=""><span class="list-tab-text">ADMIN</span></a>
+								</li>
 							</ul>
 						</div>
 				    </div>
@@ -161,6 +164,9 @@ if(Auth::check()){
 					</li>
 					<li>
 						<div id="detail-tab-3-content"></div>
+					</li>
+					<li>
+						<div id="detail-tab-5-content"></div>
 					</li>
 				</ul>
 
