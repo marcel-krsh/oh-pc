@@ -116,6 +116,7 @@ if(Auth::check()){
 		var socket = io('http://192.168.100.100:3000');
 
 		// initial values
+	    var statsAuditsTotal = "{{$stats_audits_total}}";
 	    var statsCommunicationTotal = "{{$stats_communication_total}}";
 	    var uid = "{{$current_user->id}}";
 	    var sid = "{{$current_user->socket_id}}";
@@ -141,8 +142,8 @@ if(Auth::check()){
 				    <div class="uk-width-5-6">
 				    	<div id="top-tabs-container">
 					        <ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m">
-				    			<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.audits') }}', '1');"><a href=""><i class="a-mobile-home"></i> <span class="list-tab-text"> <span class="uk-badge">24</span> AUDITS</span></a></li>
-								<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('communication.tab') }}', '2');"><a href=""><i class="a-envelope-attention"></i> <span class="list-tab-text"> <span class="uk-badge" id="v-tab-com-stat" v-cloak>@{{stat}}</span> COMMUNICATIONS</span></a></li>
+				    			<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.audits') }}', '1');"><a href=""><i class="a-mobile-home"></i> <span class="list-tab-text"> <span class="uk-badge" v-if="statsAuditsTotal">@{{statsAuditsTotal}}</span> AUDITS</span></a></li>
+								<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('communication.tab') }}', '2');"><a href=""><i class="a-envelope-attention"></i> <span class="list-tab-text"> <span class="uk-badge" v-if="statsCommunicationTotal">@{{statsCommunicationTotal}}</span> COMMUNICATIONS</span></a></li>
 								<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.reports') }}', '3');">
 									<a href=""><i class="a-file-chart-3"></i> <span class="list-tab-text"> <span class="uk-badge">99,999</span> REPORTS</span></a>
 								</li>
@@ -349,16 +350,17 @@ if(Auth::check()){
 	<script type="text/javascript" src="https://devco.ohiohome.org/AuthorityOnlineALT/Unified/UnifiedHeader.aspx"></script>
 	<script>		
 		new Vue({
-		  el: '#v-tab-com-stat',
+		  el: '#top-tabs',
 		  data: {
-		    stat: statsCommunicationTotal
+		    statsAuditsTotal: statsAuditsTotal,
+		    statsCommunicationTotal: statsCommunicationTotal,
 		  },
 
 		    mounted: function() {
 		    	console.log("Component working");
 		        socket.on('communications.'+uid+'.'+sid+':NewRecipient', function(data){
 		            console.log("user " + data.userId + " is getting a message because a new message has been sent.");
-		            this.stat = data.stat;
+		            this.communicationTotal = data.communicationTotal;
 		        }.bind(this));
 		    }
 		});

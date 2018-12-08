@@ -63,12 +63,14 @@ class DashboardController extends Controller
 
         $tab = "detail-tab-1";
 
+        $stats_audits_total = CachedAudit::count(); // all?
+
         $stats_communication_total = CommunicationRecipient::where('user_id', $current_user->id)
                     ->where('seen', 0)
                     ->count();
 
         //return \view('dashboard.index'); //, compact('user')
-        return view('dashboard.index', compact('tab', 'loadDetailTab', 'stats_communication_total', 'current_user'));
+        return view('dashboard.index', compact('tab', 'loadDetailTab', 'stats_audits_total', 'stats_communication_total', 'current_user'));
     }
 
     public function audits(Request $request, $page=0)

@@ -15,8 +15,7 @@
 	<ul id="project-main" class="uk-switcher">
 		@foreach($projectTabs as $projectTab)
 		<li class="project-tab">
-			<div id="project-detail-tab-{{$loop->iteration}}-content">
-			</div>
+			<div id="project-detail-tab-{{$loop->iteration}}-content"></div>
 		</li>
 		@endforeach	
 	</ul>

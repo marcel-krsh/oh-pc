@@ -43900,11 +43900,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   props: ['audit', 'index'],
   methods: {
     openAudit: function openAudit() {
-      console.log("calling open audit ");
-      loadTab('/projects/' + this.audit.id, '4', 1, 1);
+      loadTab('/projects/' + this.audit.id, '4', 1, 1, '', 1);
     },
     openProjectDetails: function openProjectDetails() {
-      console.log("calling open project " + this.audit.id + ' ' + this.index + ' ' + this.audit.total_buildings);
       projectDetails(this.audit.id, this.index, this.audit.total_buildings);
     }
   },

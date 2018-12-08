@@ -85,7 +85,7 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='', forceRe
 
 	// check if tab has already been loaded
 	// if content is already there, just switch tab, do not reload
-	if($('#detail-tab-'+tabNumber+'-content').html().length == 0 || forceReload == 1){
+	if($('#'+prefix+'detail-tab-'+tabNumber+'-content').html().length == 0 || forceReload == 1){
 		// display spinner
 		var tempdiv = '<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% auto;"></div></div>';
 		$('#'+prefix+'detail-tab-'+tabNumber+'-content').html(tempdiv);
