@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listHouseholds(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -65,7 +65,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncHousehold::select('id','allita_id','last_edited','updated_at')->where('owner_certification_year_key',$v['attributes']['ownerCertificationYearKey'])->first();
+                            $updateRecord = SyncHousehold::select('id','allita_id','last_edited','updated_at')->where('household_key',$v['attributes']['householdKey'])->first();
                             // convert booleans
                             // settype($v['attributes']['isActive'], 'boolean');
                             // settype($v['attributes']['isHouseholdHandicapAccessible'], 'boolean');
@@ -100,7 +100,15 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'schedule_end_date'=>$v['attributes']['scheduleEndDate'],
+                                            'project_key'=>$v['attributes']['dvelopmentKey'],
+                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'household_size_key'=>$v['attributes']['household_size_key'],
+                                            'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
+                                            'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
+                                            'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
+                                            'ethnicity_key'=>$v['attributes']['ethnicityKey'],
+                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
+                                            'head_of_household_name'=>$v['attributes']['headOfHouseHoldName'],
                                             
                                             
                                             
@@ -112,7 +120,15 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'schedule_end_date'=>$v['attributes']['scheduleEndDate'],
+                                            'project_key'=>$v['attributes']['dvelopmentKey'],
+                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'household_size_key'=>$v['attributes']['household_size_key'],
+                                            'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
+                                            'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
+                                            'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
+                                            'ethnicity_key'=>$v['attributes']['ethnicityKey'],
+                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
+                                            'head_of_household_name'=>$v['attributes']['headOfHouseHoldName'],
                                             
                                             
                                             
@@ -131,11 +147,19 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'schedule_end_date'=>$v['attributes']['scheduleEndDate'],
+                                            'project_key'=>$v['attributes']['dvelopmentKey'],
+                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'household_size_key'=>$v['attributes']['household_size_key'],
+                                            'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
+                                            'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
+                                            'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
+                                            'ethnicity_key'=>$v['attributes']['ethnicityKey'],
+                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
+                                            'head_of_household_name'=>$v['attributes']['headOfHouseHoldName'],
                                             
                                             
                                             
-                                            'owner_certification_year_key'=>$v['attributes']['ownerCertificationYearKey'],
+                                            'household_key'=>$v['attributes']['householdKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncHousehold::where('id',$updateRecord['id'])
@@ -144,11 +168,19 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'schedule_end_date'=>$v['attributes']['scheduleEndDate'],
+                                            'project_key'=>$v['attributes']['dvelopmentKey'],
+                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'household_size_key'=>$v['attributes']['household_size_key'],
+                                            'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
+                                            'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
+                                            'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
+                                            'ethnicity_key'=>$v['attributes']['ethnicityKey'],
+                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
+                                            'head_of_household_name'=>$v['attributes']['headOfHouseHoldName'],
                                             
                                             
                                             
-                                            'owner_certification_year_key'=>$v['attributes']['ownerCertificationYearKey'],
+                                            'household_key'=>$v['attributes']['householdKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -168,12 +200,20 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'owner_certification_year_key'=>$v['attributes']['ownerCertificationYearKey'],
-                                            'schedule_end_date'=>$v['attributes']['scheduleEndDate'],
+                                            'household_key'=>$v['attributes']['householdKey'],
+                                            'project_key'=>$v['attributes']['dvelopmentKey'],
+                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'household_size_key'=>$v['attributes']['household_size_key'],
+                                            'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
+                                            'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
+                                            'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
+                                            'ethnicity_key'=>$v['attributes']['ethnicityKey'],
+                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
+                                            'head_of_household_name'=>$v['attributes']['headOfHouseHoldName'],
                                             
                                             
                                     
-                                    'owner_certification_year_key'=>$v['attributes']['ownerCertificationYearKey'],
+                                    'household_key'=>$v['attributes']['householdKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncHousehold::create([
@@ -181,11 +221,19 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'schedule_end_date'=>$v['attributes']['scheduleEndDate'],
+                                            'project_key'=>$v['attributes']['dvelopmentKey'],
+                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'household_size_key'=>$v['attributes']['household_size_key'],
+                                            'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
+                                            'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
+                                            'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
+                                            'ethnicity_key'=>$v['attributes']['ethnicityKey'],
+                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
+                                            'head_of_household_name'=>$v['attributes']['headOfHouseHoldName'],
                                             
                                             
 
-                                        'owner_certification_year_key'=>$v['attributes']['ownerCertificationYearKey'],
+                                        'household_key'=>$v['attributes']['householdKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
