@@ -65,7 +65,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncOwnerCertificationYear::select('id','allita_id','last_edited','updated_at')->where('owner_certification_key',$v['attributes']['ownerCertificationYearKey'])->first();
+                            $updateRecord = SyncOwnerCertificationYear::select('id','allita_id','last_edited','updated_at')->where('owner_certification_year_key',$v['attributes']['ownerCertificationYearKey'])->first();
                             // convert booleans
                             // settype($v['attributes']['isActive'], 'boolean');
                             // settype($v['attributes']['isOwnerCertificationYearHandicapAccessible'], 'boolean');
@@ -135,7 +135,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'owner_certification_key'=>$v['attributes']['ownerCertificationYearKey'],
+                                            'owner_certification_year_key'=>$v['attributes']['ownerCertificationYearKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncOwnerCertificationYear::where('id',$updateRecord['id'])
@@ -148,7 +148,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'owner_certification_key'=>$v['attributes']['ownerCertificationYearKey'],
+                                            'owner_certification_year_key'=>$v['attributes']['ownerCertificationYearKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -173,7 +173,7 @@ class SyncController extends Controller
                                             
                                             
                                     
-                                    'owner_certification_key'=>$v['attributes']['ownerCertificationYearKey'],
+                                    'owner_certification_year_key'=>$v['attributes']['ownerCertificationYearKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncOwnerCertificationYear::create([
@@ -185,7 +185,7 @@ class SyncController extends Controller
                                             
                                             
 
-                                        'owner_certification_key'=>$v['attributes']['ownerCertificationYearKey'],
+                                        'owner_certification_year_key'=>$v['attributes']['ownerCertificationYearKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
