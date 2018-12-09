@@ -70,7 +70,7 @@
 "use strict";
 
 
-var bind = __webpack_require__(4);
+var bind = __webpack_require__(5);
 var isBuffer = __webpack_require__(22);
 
 /*global toString:true*/
@@ -424,10 +424,10 @@ function getDefaultAdapter() {
   var adapter;
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
-    adapter = __webpack_require__(5);
+    adapter = __webpack_require__(6);
   } else if (typeof process !== 'undefined') {
     // For node use HTTP adapter
-    adapter = __webpack_require__(5);
+    adapter = __webpack_require__(6);
   }
   return adapter;
 }
@@ -502,10 +502,119 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports) {
+
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file.
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier /* server only */
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = injectStyles
+  }
+
+  if (hook) {
+    var functional = options.functional
+    var existing = functional
+      ? options.render
+      : options.beforeCreate
+
+    if (!functional) {
+      // inject component registration as beforeCreate hook
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    } else {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return existing(h, context)
+      }
+    }
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -695,7 +804,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -713,7 +822,7 @@ module.exports = function bind(fn, thisArg) {
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -724,7 +833,7 @@ var settle = __webpack_require__(25);
 var buildURL = __webpack_require__(27);
 var parseHeaders = __webpack_require__(28);
 var isURLSameOrigin = __webpack_require__(29);
-var createError = __webpack_require__(6);
+var createError = __webpack_require__(7);
 var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(30);
 
 module.exports = function xhrAdapter(config) {
@@ -900,7 +1009,7 @@ module.exports = function xhrAdapter(config) {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -925,7 +1034,7 @@ module.exports = function createError(message, config, code, request, response) 
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -937,7 +1046,7 @@ module.exports = function isCancel(value) {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -963,120 +1072,11 @@ module.exports = Cancel;
 
 
 /***/ }),
-/* 9 */
-/***/ (function(module, exports) {
-
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file.
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier /* server only */
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
-  }
-
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = injectStyles
-  }
-
-  if (hook) {
-    var functional = options.functional
-    var existing = functional
-      ? options.render
-      : options.beforeCreate
-
-    if (!functional) {
-      // inject component registration as beforeCreate hook
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    } else {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return existing(h, context)
-      }
-    }
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
-/***/ }),
 /* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(11);
-module.exports = __webpack_require__(46);
+module.exports = __webpack_require__(49);
 
 
 /***/ }),
@@ -1090,11 +1090,14 @@ __webpack_require__(12); // load all components
 
 
 Vue.component('example', __webpack_require__(39));
-Vue.component('communication-row', __webpack_require__(42)); // connect sockets
+Vue.component('communication-row', __webpack_require__(42));
+Vue.component('audit-row', __webpack_require__(45), {
+  name: 'audit-row'
+}); // connect sockets
 
 var socket = io('http://192.168.100.100:3000'); // https://github.com/ElemeFE/vue-infinite-scroll
 
-var infiniteScroll = __webpack_require__(45);
+var infiniteScroll = __webpack_require__(48);
 
 Vue.use(infiniteScroll); // each page will be its own main Vue instance
 
@@ -29519,7 +29522,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(4)))
 
 /***/ }),
 /* 18 */
@@ -42289,7 +42292,7 @@ module.exports = __webpack_require__(21);
 
 
 var utils = __webpack_require__(0);
-var bind = __webpack_require__(4);
+var bind = __webpack_require__(5);
 var Axios = __webpack_require__(23);
 var defaults = __webpack_require__(2);
 
@@ -42324,9 +42327,9 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(8);
+axios.Cancel = __webpack_require__(9);
 axios.CancelToken = __webpack_require__(37);
-axios.isCancel = __webpack_require__(7);
+axios.isCancel = __webpack_require__(8);
 
 // Expose all/spread
 axios.all = function all(promises) {
@@ -42479,7 +42482,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 "use strict";
 
 
-var createError = __webpack_require__(6);
+var createError = __webpack_require__(7);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -42912,7 +42915,7 @@ module.exports = InterceptorManager;
 
 var utils = __webpack_require__(0);
 var transformData = __webpack_require__(34);
-var isCancel = __webpack_require__(7);
+var isCancel = __webpack_require__(8);
 var defaults = __webpack_require__(2);
 var isAbsoluteURL = __webpack_require__(35);
 var combineURLs = __webpack_require__(36);
@@ -43072,7 +43075,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 "use strict";
 
 
-var Cancel = __webpack_require__(8);
+var Cancel = __webpack_require__(9);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -43168,7 +43171,7 @@ module.exports = function spread(callback) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(9)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 var __vue_script__ = __webpack_require__(40)
 /* template */
@@ -43286,7 +43289,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(9)
+var normalizeComponent = __webpack_require__(3)
 /* script */
 var __vue_script__ = __webpack_require__(43)
 /* template */
@@ -43619,7 +43622,7 @@ var render = function() {
                         },
                         [
                           _vm.message.subject
-                            ? _c("strong", {
+                            ? _c("span", {
                                 domProps: {
                                   innerHTML: _vm._s(_vm.message.subject)
                                 }
@@ -43731,6 +43734,682 @@ if (false) {
 
 /***/ }),
 /* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(46)
+/* template */
+var __vue_template__ = __webpack_require__(47)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/AuditRow.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-35fc9494", Component.options)
+  } else {
+    hotAPI.reload("data-v-35fc9494", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 46 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['audit', 'index'],
+  methods: {
+    openAudit: function openAudit() {
+      loadTab('/projects/' + this.audit.id, '4', 1, 1, '', 1);
+    },
+    openProjectDetails: function openProjectDetails() {
+      projectDetails(this.audit.id, this.index, this.audit.total_buildings);
+    }
+  },
+  computed: {
+    auditIndex: function auditIndex() {
+      return this.index + 1;
+    }
+  }
+});
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("tr", [
+    _c(
+      "td",
+      {
+        staticClass: "uk-text-center audit-td-lead",
+        attrs: { id: "audit-c-1-" + _vm.auditIndex }
+      },
+      [
+        _c(
+          "span",
+          {
+            class: ((_obj = {
+              "user-badge": true,
+              "no-float": true,
+              "uk-link": true
+            }),
+            (_obj[_vm.audit.userBadgeColor] = true),
+            _obj),
+            attrs: {
+              id: "audit-avatar-badge-1",
+              "uk-tooltip": _vm.audit.tooltipLead,
+              title: "",
+              "aria-expanded": "false"
+            }
+          },
+          [_c("span", { domProps: { innerHTML: _vm._s(_vm.audit.initials) } })]
+        ),
+        _vm._v(" "),
+        _c("span", { attrs: { id: "audit-rid-" + _vm.auditIndex } }, [
+          _c("small", [
+            _vm._v("#"),
+            _c("span", { domProps: { innerHTML: _vm._s(_vm.auditIndex) } })
+          ])
+        ])
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "td",
+      {
+        staticClass: "audit-td-project",
+        attrs: { id: "audit-c-2-" + _vm.auditIndex }
+      },
+      [
+        _c(
+          "div",
+          {
+            staticClass:
+              "uk-vertical-align-middle uk-display-inline-block uk-margin-small-top"
+          },
+          [
+            _c(
+              "span",
+              {
+                staticClass: "uk-link",
+                attrs: {
+                  id: "audit-i-project-detail-" + _vm.auditIndex,
+                  "uk-tooltip":
+                    "pos:top-left;title:View Buildings and Common Areas;"
+                },
+                on: { click: _vm.openProjectDetails }
+              },
+              [_c("i", { staticClass: "a-menu uk-text-muted" })]
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "uk-vertical-align-middle uk-display-inline-block" },
+          [
+            _c(
+              "h3",
+              {
+                staticClass:
+                  "uk-margin-bottom-remove uk-link filter-search-project",
+                attrs: {
+                  id: "audit-project-name-" + _vm.auditIndex,
+                  "uk-tooltip": "title:Open Audit Details in Tab;"
+                },
+                on: { click: _vm.openAudit }
+              },
+              [
+                _c("span", {
+                  domProps: { innerHTML: _vm._s(_vm.audit.projectRef) }
+                })
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "small",
+              {
+                staticClass: "uk-text-muted faded filter-search-project",
+                attrs: {
+                  id: "audit-project-aid-" + _vm.auditIndex,
+                  "uk-tooltip": "title:View Project's Audit Details;"
+                }
+              },
+              [
+                _vm._v("AUDIT "),
+                _c("span", { domProps: { innerHTML: _vm._s(_vm.audit.id) } })
+              ]
+            )
+          ]
+        )
+      ]
+    ),
+    _vm._v(" "),
+    _c("td", { staticClass: "audit-td-name" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "uk-vertical-align-top uk-display-inline-block fadetext"
+        },
+        [
+          _c("h3", {
+            staticClass: "uk-margin-bottom-remove filter-search-pm",
+            domProps: { innerHTML: _vm._s(_vm.audit.title) }
+          }),
+          _vm._v(" "),
+          _c("small", {
+            staticClass: "uk-text-muted faded filter-search-pm",
+            domProps: { innerHTML: _vm._s(_vm.audit.pm) }
+          })
+        ]
+      )
+    ]),
+    _vm._v(" "),
+    _c("td", { staticClass: "hasdivider audit-td-address" }, [
+      _c("div", { staticClass: "divider" }),
+      _vm._v(" "),
+      _vm._m(1),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass:
+            "uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext"
+        },
+        [
+          _c("h3", {
+            staticClass: "uk-margin-bottom-remove filter-search-address",
+            domProps: { innerHTML: _vm._s(_vm.audit.address) }
+          }),
+          _vm._v(" "),
+          _c("small", {
+            staticClass: "uk-text-muted faded filter-search-address",
+            domProps: { innerHTML: _vm._s(_vm.audit.address2) }
+          })
+        ]
+      )
+    ]),
+    _vm._v(" "),
+    _c("td", { staticClass: "hasdivider audit-td-scheduled" }, [
+      _c("div", { staticClass: "divider" }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass:
+            "uk-display-inline-block uk-margin-small-top uk-text-center fullwidth",
+          attrs: { "uk-grid": "" }
+        },
+        [
+          _c(
+            "div",
+            {
+              staticClass: "uk-width-1-2 uk-padding-remove-top",
+              attrs: { "uk-grid": "" }
+            },
+            [
+              _c("div", { staticClass: "uk-width-1-3" }, [
+                _c("i", {
+                  class: ((_obj$1 = { "a-mobile-repeat": true }),
+                  (_obj$1[_vm.audit.inspectionStatus] = true),
+                  _obj$1),
+                  attrs: { "uk-tooltip": _vm.audit.tooltipInspectionStatus }
+                })
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass:
+                    "uk-width-2-3 uk-padding-remove uk-margin-small-top"
+                },
+                [
+                  _c("h3", {
+                    staticClass: "uk-link",
+                    attrs: {
+                      "uk-tooltip": _vm.audit.tooltipInspectionSchedule
+                    },
+                    domProps: {
+                      innerHTML: _vm._s(_vm.audit.inspectionScheduleDate)
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("div", {
+                    staticClass: "dateyear",
+                    domProps: {
+                      innerHTML: _vm._s(_vm.audit.inspectionScheduleDateYear)
+                    }
+                  })
+                ]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c("div", {
+            staticClass: "uk-width-1-6 uk-text-right uk-padding-remove",
+            attrs: { "uk-tooltip": _vm.audit.tooltipInspectableItems },
+            domProps: { innerHTML: _vm._s(_vm.audit.inspectableItems + " /") }
+          }),
+          _vm._v(" "),
+          _c("div", {
+            staticClass: "uk-width-1-6 uk-text-left uk-padding-remove",
+            domProps: { innerHTML: _vm._s(_vm.audit.totalItems) }
+          }),
+          _vm._v(" "),
+          _c("div", { staticClass: "uk-width-1-6 uk-text-left" }, [
+            _c("i", {
+              class: ((_obj$2 = {}),
+              (_obj$2[_vm.audit.complianceIconClass] = true),
+              (_obj$2[_vm.audit.complianceStatusClass] = true),
+              _obj$2),
+              attrs: { "uk-tooltip": _vm.audit.tooltipComplianceStatus }
+            })
+          ])
+        ]
+      )
+    ]),
+    _vm._v(" "),
+    _c("td", { staticClass: "hasdivider audit-td-due" }, [
+      _c("div", { staticClass: "divider" }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass:
+            "uk-display-inline-block uk-margin-small-top uk-text-center fullwidth",
+          attrs: { "uk-grid": "" }
+        },
+        [
+          _c("div", { staticClass: "uk-width-1-3" }, [
+            _c("i", {
+              class: ((_obj$3 = { "a-bell-2": true }),
+              (_obj$3[_vm.audit.followupStatusClass] = true),
+              _obj$3),
+              attrs: { "uk-tooltip": _vm.audit.tooltipFollowupStatus }
+            })
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass: "uk-width-2-3 uk-padding-remove uk-margin-small-top"
+            },
+            [
+              _vm.audit.followupDate
+                ? _c("div", [
+                    _c("h3", {
+                      staticClass: "uk=link",
+                      attrs: {
+                        "uk-tooltip": "title:Click to reschedule audits;"
+                      },
+                      domProps: { innerHTML: _vm._s(_vm.audit.followupDate) }
+                    }),
+                    _vm._v(" "),
+                    _c("div", {
+                      staticClass: "dateyear",
+                      domProps: {
+                        innerHTML: _vm._s(_vm.audit.followupDateYear)
+                      }
+                    })
+                  ])
+                : _c("div", [
+                    _c("i", {
+                      staticClass: "a-calendar-pencil",
+                      attrs: { "uk-tooltip": "title:New followup;" }
+                    })
+                  ])
+            ]
+          )
+        ]
+      )
+    ]),
+    _vm._v(" "),
+    _c("td", { staticClass: "hasdivider" }, [
+      _c("div", { staticClass: "divider" }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass:
+            "uk-display-inline-block uk-text-center fullwidth uk-margin-small-top ",
+          attrs: { "uk-grid": "" }
+        },
+        [
+          _c(
+            "div",
+            {
+              class: ((_obj$4 = { "uk-width-1-3": true }),
+              (_obj$4[_vm.audit.fileAuditStatusClass] = true),
+              _obj$4),
+              attrs: { "uk-tooltip": _vm.audit.tooltipFileAuditStatus }
+            },
+            [
+              _c("i", {
+                class: ((_obj$5 = {}),
+                (_obj$5[_vm.audit.fileAuditIconClass] = true),
+                _obj$5)
+              })
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              class: ((_obj$6 = { "uk-width-1-3": true }),
+              (_obj$6[_vm.audit.nltAuditStatusClass] = true),
+              _obj$6),
+              attrs: { "uk-tooltip": _vm.audit.tooltipNltAuditStatus }
+            },
+            [
+              _c("i", {
+                class: ((_obj$7 = {}),
+                (_obj$7[_vm.audit.nltAuditIconClass] = true),
+                _obj$7)
+              })
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              class: ((_obj$8 = { "uk-width-1-3": true }),
+              (_obj$8[_vm.audit.ltAuditStatusClass] = true),
+              _obj$8),
+              attrs: { "uk-tooltip": _vm.audit.tooltipLtAuditStatus }
+            },
+            [
+              _c("i", {
+                class: ((_obj$9 = {}),
+                (_obj$9[_vm.audit.ltAuditIconClass] = true),
+                _obj$9)
+              })
+            ]
+          )
+        ]
+      )
+    ]),
+    _vm._v(" "),
+    _c("td", { staticClass: "hasdivider" }, [
+      _c("div", { staticClass: "divider" }),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass:
+            "uk-display-inline-block uk-text-center fullwidth uk-margin-small-top ",
+          attrs: { "uk-grid": "" }
+        },
+        [
+          _c("div", { staticClass: "uk-width-1-4" }, [
+            _c("i", {
+              class: ((_obj$10 = {}),
+              (_obj$10[_vm.audit.auditorStatusIconClass] = true),
+              (_obj$10[_vm.audit.auditorStatusClass] = true),
+              _obj$10),
+              attrs: { "uk-tooltip": _vm.audit.tooltipAuditorStatus }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "uk-width-1-4" }, [
+            _c("i", {
+              class: ((_obj$11 = {}),
+              (_obj$11[_vm.audit.messageStatusIconClass] = true),
+              (_obj$11[_vm.audit.messageStatusClass] = true),
+              _obj$11),
+              attrs: { "uk-tooltip": _vm.audit.tooltipMessageStatus }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "uk-width-1-4" }, [
+            _c("i", {
+              class: ((_obj$12 = {}),
+              (_obj$12[_vm.audit.documentStatusIconClass] = true),
+              (_obj$12[_vm.audit.documentStatusClass] = true),
+              _obj$12),
+              attrs: { "uk-tooltip": _vm.audit.tooltipDocumentStatus }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "uk-width-1-4" }, [
+            _c("i", {
+              class: ((_obj$13 = {}),
+              (_obj$13[_vm.audit.historyStatusIconClass] = true),
+              (_obj$13[_vm.audit.historyStatusClass] = true),
+              _obj$13),
+              attrs: { "uk-tooltip": _vm.audit.tooltipHistoryStatus }
+            })
+          ])
+        ]
+      )
+    ]),
+    _vm._v(" "),
+    _c("td", [
+      _c("div", { staticClass: "uk-margin-top", attrs: { "uk-grid": "" } }, [
+        _c("div", { staticClass: "uk-width-1-1  uk-padding-remove-top" }, [
+          _c("i", {
+            class: ((_obj$14 = {}),
+            (_obj$14[_vm.audit.stepStatusIconClass] = true),
+            (_obj$14[_vm.audit.stepStatusClass] = true),
+            _obj$14),
+            attrs: { "uk-tooltip": _vm.audit.tooltipStepStatus }
+          })
+        ])
+      ])
+    ])
+  ])
+  var _obj
+  var _obj$1
+  var _obj$2
+  var _obj$3
+  var _obj$4
+  var _obj$5
+  var _obj$6
+  var _obj$7
+  var _obj$8
+  var _obj$9
+  var _obj$10
+  var _obj$11
+  var _obj$12
+  var _obj$13
+  var _obj$14
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass:
+          "uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left"
+      },
+      [
+        _c("i", {
+          staticClass: "a-info-circle uk-text-muted uk-link",
+          attrs: { "uk-tooltip": "title:View Contact Details;" }
+        })
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass:
+          "uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left"
+      },
+      [
+        _c("i", {
+          staticClass: "a-marker-basic uk-text-muted uk-link",
+          attrs: { "uk-tooltip": "title:View On Map;" }
+        })
+      ]
+    )
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-35fc9494", module.exports)
+  }
+}
+
+/***/ }),
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 (function (global, factory) {
@@ -43970,7 +44649,7 @@ if (false) {
 }));
 
 /***/ }),
-/* 46 */
+/* 49 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

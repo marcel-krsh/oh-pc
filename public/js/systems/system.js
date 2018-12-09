@@ -70,7 +70,7 @@ function clickTab(){
 }
 
 // works for main tabs and also sub tabs using prefix
-function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='') {
+function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='', forceReload=0) {
 	// check if tab already exist, if not create it
 	if($('#'+prefix+'detail-tab-'+tabNumber+'-content').length == 0){
 		var newTabContent = '<li><div id="'+prefix+'detail-tab-'+tabNumber+'-content"></div></li>';
@@ -83,13 +83,32 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='') {
         $( newTabTitle ).appendTo( $('#'+prefix+'top-tabs') );
 	}
 
-	// display spinner
-	var tempdiv = '<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% auto;"></div></div>';
-	$('#'+prefix+'detail-tab-'+tabNumber+'-content').html(tempdiv);
+	// check if tab has already been loaded
+	// if content is already there, just switch tab, do not reload
+	if($('#'+prefix+'detail-tab-'+tabNumber+'-content').html().length == 0 || forceReload == 1){
+		// display spinner
+		var tempdiv = '<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% auto;"></div></div>';
+		$('#'+prefix+'detail-tab-'+tabNumber+'-content').html(tempdiv);
 
-	// get the tab title and statuses
-	if(loadTitle){
-		$('#'+prefix+'detail-tab-'+tabNumber+' a').load(route+'/title', function(response, status, xhr) {
+		// get the tab title and statuses
+		if(loadTitle){
+			$('#'+prefix+'detail-tab-'+tabNumber+' a').load(route+'/title', function(response, status, xhr) {
+				if (status == "error") {
+				  	if(xhr.status == "401") {
+				  		var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
+				  	} else if( xhr.status == "500"){
+				  		var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
+				  	} else {
+				  		var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
+				  	}
+				    
+				    UIkit.modal.alert(msg);
+				}
+			});
+		}
+
+		//load the selected detail tab content
+		$('#'+prefix+'detail-tab-'+tabNumber+'-content').load(route, function(response, status, xhr) {
 			if (status == "error") {
 			  	if(xhr.status == "401") {
 			  		var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
@@ -101,31 +120,24 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='') {
 			    
 			    UIkit.modal.alert(msg);
 			}
+
+			// if tab is opened by a link, trigger click to switch tab
+			if(doTheClick == 1){
+				$("#"+prefix+"top-tabs").find($('#'+prefix+'detail-tab-'+tabNumber)).trigger("click");
+			}
+
+			//take back to top
+		 	$('#smoothscrollLink').trigger("click");
 		});
-	}
-
-	//load the selected detail tab content
-	$('#'+prefix+'detail-tab-'+tabNumber+'-content').load(route, function(response, status, xhr) {
-		if (status == "error") {
-		  	if(xhr.status == "401") {
-		  		var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
-		  	} else if( xhr.status == "500"){
-		  		var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
-		  	} else {
-		  		var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
-		  	}
-		    
-		    UIkit.modal.alert(msg);
-		}
-
-		// if tab is opened by a link, trigger click to switch tab
+	}else{
 		if(doTheClick == 1){
 			$("#"+prefix+"top-tabs").find($('#'+prefix+'detail-tab-'+tabNumber)).trigger("click");
 		}
-
 		//take back to top
-	 	$('#smoothscrollLink').trigger("click");
-	});
+		$('#smoothscrollLink').trigger("click");
+	}
+
+	
 
 }
 

@@ -88,21 +88,21 @@
 								<div id="building-{{$context}}-detail-{{$target}}-c-3-{{$key}}" class="uk-margin-remove" style="flex: 750px;" uk-grid>
 									<div class="uk-width-1-1">
 										<div uk-grid>
-											<div class="uk-width-1-2 uk-padding-remove">
+											<div class="uk-width-3-5 uk-padding-remove">
 												<div uk-grid class="building-address">
 													
 									            	<div class="uk-width-1-1 uk-padding-remove">
 									            		<h3 class="uk-margin-bottom-remove colored">{{$detail->unit->address}}</h3>
 										            	<small class="colored">{{$detail->unit->city}}, {{$detail->unit->state}} {{$detail->unit->zip}}</small><br />
-										            	<small class="colored"><span class="uk-badge colored">{{$detail->unit->type_total}}</span> <span class="uk-text-middle">@if($detail->unit->type_total > 1) {{$detail->unit->type_text_plural}} @else {{$detail->unit->type_text}} @endif</span></small>
+										            	<small class="colored"><span class="uk-text-middle">{{$detail->unit->type_total}} @if($detail->unit->type_total > 1) {{$detail->unit->type_text_plural}} @else {{$detail->unit->type_text}} @endif</span></small>
 									            	</div>
 									            </div>
 								            </div>
-											<div class="uk-width-1-2 uk-padding-remove uk-margin-small-top">
+											<div class="uk-width-2-5 uk-padding-remove uk-margin-small-top">
 												<div uk-grid>
 									            	<div class="uk-width-1-1 findings-icons"  style="margin-top: 0px;" uk-grid> 
 									            		
-									            		<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_file_status}}">
+									            		<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_file_status}}">
 									            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'file');">
 																<i class="a-folder"></i>
 																<div class="findings-icon-status">
@@ -116,7 +116,7 @@
 															
 														</div>
 														
-														<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_nlt_status}}">
+														<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_nlt_status}}">
 															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'nlt');">
 																<i class="a-booboo"></i>
 																<div class="findings-icon-status">
@@ -128,7 +128,7 @@
 																</div>
 															</div>
 														</div>
-														<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_lt_status}}">
+														<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_lt_status}}">
 															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'lt');">
 																<i class="a-skull"></i>
 																<div class="findings-icon-status">
@@ -140,21 +140,9 @@
 																</div>
 															</div>
 														</div>
-														<div class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_sd_status}}">	
-															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'critical');">
-																<i class="a-flames"></i>
-																<div class="findings-icon-status">
-																	@if($detail->unit->finding_sd_completed == 0)
-																		<span class="uk-badge {{$detail->unit->finding_sd_status}}" uk-tooltip="pos:top-left;title:Unit # finding;">{{$detail->unit->finding_sd_total}}</span>
-																		@else
-																		<i class="a-rotate-left {{$detail->unit->finding_sd_status}}" uk-tooltip="pos:top-left;title:{{$detail->unit->finding_sd_total - $detail->unit->finding_sd_completed}} in progress<br />{{$detail->unit->finding_sd_completed}} completed;"></i>
-																	@endif
-																</div>
-															</div>
-														</div> 
 													</div>
 													<div class="uk-width-1-1 findings-action ok-actionable" style="margin-top: 0px;">
-														<button class="uk-button program-status uk-link" onclick="inspectionDetails({{$detail->unit->id}},{{$building}},{{$audit}},{{$key}},{{$targetaudit}},{{$loop->iteration}},'{{$context}}');"><i class="a-home-search"></i> 2 PROGRAMS</button>
+														<button class="uk-button program-status uk-link" onclick="inspectionDetails({{$detail->unit->id}},{{$building}},{{$audit}},{{$key}},{{$targetaudit}},{{$loop->iteration}},'{{$context}}');"><i class="a-home-search"></i> INSPECT UNITS</button>
 													</div>
 												</div>
 											</div>

@@ -30,7 +30,7 @@
 	        <div class="uk-width-2-5@m uk-width-1-1@s communication-item-excerpt " v-on:click.self="openCommunication">
 	        	<div uk-grid class="uk-grid-collapse" v-if="message.hasAttachment == 'attachment-true'">
 	                <div class="uk-width-5-6@m uk-width-1-1@s communication-item-excerpt" v-on:click.self="openCommunication">
-	                    <strong v-if="message.subject" v-html="message.subject"></strong><br />
+	                    <span v-if="message.subject" v-html="message.subject"></span><br />
 	                    <span v-html="message.summary"></span>
 	                </div>
 	                <div class="uk-width-1-6@m uk-width-1-1@s communication-item-excerpt" v-on:click.self="openCommunication" v-if="message.hasAttachment == 'attachment-true'">

@@ -66,7 +66,7 @@ class CommunicationsEvent
                 ->with('user')
                 ->first();
 
-        $stat = CommunicationRecipient::where('user_id', '=', $communication_recipient->user->id)
+        $communicationTotal = CommunicationRecipient::where('user_id', '=', $communication_recipient->user->id)
                 ->where('seen', '=', 0)
                 ->count();
 
@@ -76,7 +76,7 @@ class CommunicationsEvent
             'data' => [
                 'userId' => $communication_recipient->user->id,
                 'socketId' => $communication_recipient->user->socket_id,
-                'stat' => $stat
+                'communicationTotal' => $communicationTotal
             ]
         ];
 
