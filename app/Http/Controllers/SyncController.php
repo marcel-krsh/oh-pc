@@ -106,7 +106,7 @@ class SyncController extends Controller
                                             'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
                                             'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
                                             'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
-                                            'ethnicity_key'=>$v['attributes']['ethnicityKey'],
+                                            
                                             'special_needs_key'=>$v['attributes']['specialNeedsKey'],
                                             'head_of_household_name'=>$v['attributes']['headOfHouseholdName'],
                                             
@@ -126,7 +126,7 @@ class SyncController extends Controller
                                             'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
                                             'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
                                             'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
-                                            'ethnicity_key'=>$v['attributes']['ethnicityKey'],
+                                            
                                             'special_needs_key'=>$v['attributes']['specialNeedsKey'],
                                             'head_of_household_name'=>$v['attributes']['headOfHouseholdName'],
                                             
@@ -153,7 +153,7 @@ class SyncController extends Controller
                                             'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
                                             'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
                                             'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
-                                            'ethnicity_key'=>$v['attributes']['ethnicityKey'],
+                                            
                                             'special_needs_key'=>$v['attributes']['specialNeedsKey'],
                                             'head_of_household_name'=>$v['attributes']['headOfHouseholdName'],
                                             
@@ -174,7 +174,7 @@ class SyncController extends Controller
                                             'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
                                             'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
                                             'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
-                                            'ethnicity_key'=>$v['attributes']['ethnicityKey'],
+                                            
                                             'special_needs_key'=>$v['attributes']['specialNeedsKey'],
                                             'head_of_household_name'=>$v['attributes']['headOfHouseholdName'],
                                             
@@ -207,7 +207,7 @@ class SyncController extends Controller
                                             'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
                                             'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
                                             'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
-                                            'ethnicity_key'=>$v['attributes']['ethnicityKey'],
+                                            
                                             'special_needs_key'=>$v['attributes']['specialNeedsKey'],
                                             'head_of_household_name'=>$v['attributes']['headOfHouseholdName'],
                                             
@@ -227,7 +227,7 @@ class SyncController extends Controller
                                             'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
                                             'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
                                             'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
-                                            'ethnicity_key'=>$v['attributes']['ethnicityKey'],
+                                            
                                             'special_needs_key'=>$v['attributes']['specialNeedsKey'],
                                             'head_of_household_name'=>$v['attributes']['headOfHouseholdName'],
                                             
