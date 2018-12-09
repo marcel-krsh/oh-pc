@@ -108,7 +108,7 @@ class SyncController extends Controller
                                             'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
                                             'ethnicity_key'=>$v['attributes']['ethnicityKey'],
                                             'special_needs_key'=>$v['attributes']['specialNeedsKey'],
-                                            'head_of_household_name'=>$v['attributes']['headOfHouseHoldName'],
+                                            'head_of_household_name'=>$v['attributes']['headOfHouseholdName'],
                                             
                                             
                                             
@@ -128,7 +128,7 @@ class SyncController extends Controller
                                             'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
                                             'ethnicity_key'=>$v['attributes']['ethnicityKey'],
                                             'special_needs_key'=>$v['attributes']['specialNeedsKey'],
-                                            'head_of_household_name'=>$v['attributes']['headOfHouseHoldName'],
+                                            'head_of_household_name'=>$v['attributes']['headOfHouseholdName'],
                                             
                                             
                                             
@@ -155,7 +155,7 @@ class SyncController extends Controller
                                             'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
                                             'ethnicity_key'=>$v['attributes']['ethnicityKey'],
                                             'special_needs_key'=>$v['attributes']['specialNeedsKey'],
-                                            'head_of_household_name'=>$v['attributes']['headOfHouseHoldName'],
+                                            'head_of_household_name'=>$v['attributes']['headOfHouseholdName'],
                                             
                                             
                                             
@@ -176,7 +176,7 @@ class SyncController extends Controller
                                             'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
                                             'ethnicity_key'=>$v['attributes']['ethnicityKey'],
                                             'special_needs_key'=>$v['attributes']['specialNeedsKey'],
-                                            'head_of_household_name'=>$v['attributes']['headOfHouseHoldName'],
+                                            'head_of_household_name'=>$v['attributes']['headOfHouseholdName'],
                                             
                                             
                                             
@@ -209,7 +209,7 @@ class SyncController extends Controller
                                             'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
                                             'ethnicity_key'=>$v['attributes']['ethnicityKey'],
                                             'special_needs_key'=>$v['attributes']['specialNeedsKey'],
-                                            'head_of_household_name'=>$v['attributes']['headOfHouseHoldName'],
+                                            'head_of_household_name'=>$v['attributes']['headOfHouseholdName'],
                                             
                                             
                                     
@@ -229,7 +229,7 @@ class SyncController extends Controller
                                             'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
                                             'ethnicity_key'=>$v['attributes']['ethnicityKey'],
                                             'special_needs_key'=>$v['attributes']['specialNeedsKey'],
-                                            'head_of_household_name'=>$v['attributes']['headOfHouseHoldName'],
+                                            'head_of_household_name'=>$v['attributes']['headOfHouseholdName'],
                                             
                                             
 
