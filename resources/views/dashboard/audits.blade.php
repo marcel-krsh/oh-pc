@@ -695,7 +695,7 @@
 		        </tr>
 		    	@endforeach
 		    	@endif
-		    	<tr is="audit-row" :class="{[audit.notcritical]:true}" :style="{ display: [audit.display] }" v-if="audits" v-for="(audit, index) in audits.slice().reverse()" :id="'audit-r-'+index" :key="audit.id" :index="index" :audit="audit"></tr>
+		    	<tr is="auditrow" :class="{[audit.notcritical]:true}" :style="{ display: [audit.display] }" v-if="audits" v-for="(audit, index) in audits.slice().reverse()" :id="'audit-r-'+index" :key="audit.id" :index="index" :audit="audit"></tr>
         		<div id="spinner-audits" class="uk-width-1-1" style="text-align:center;"></div>
 		    </tbody>
 		</table>

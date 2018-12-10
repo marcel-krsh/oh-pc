@@ -79,6 +79,15 @@ class User extends Authenticatable
         return 0;
     }
 
+    public function isOhfa() : bool 
+    {
+        $ohfa_id = SystemSetting::get('ohfa_organization_id');
+        if ($ohfa_id == $this->organization_id) {
+            return 1;
+        }
+        return 0;
+    }
+
     /**
      * Is Landbank Admin
      *

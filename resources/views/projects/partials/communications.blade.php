@@ -27,7 +27,7 @@
 	           
 	        </div>
 	        <div class=" uk-width-1-1@s  uk-width-1-5@m">
-	            <input id="communications-search" name="communications-search" type="text" value="{{ Session::get('communications-search') }}" class="uk-width-1-1 uk-input" placeholder="Search Within Messages Or By Audit ID (press enter)">                                
+	            <input id="communications-audit-search" name="communications-search" type="text" value="{{ Session::get('communications-search') }}" class="uk-width-1-1 uk-input" placeholder="Search Within Messages (press enter)">                                
 	        </div>
 	        
 	        <div class="uk-width-1-1@s uk-width-1-4@m" id="recipient-dropdown" style="vertical-align: top;">
@@ -90,6 +90,29 @@
   
 </v-container>
 <script>
+	function searchProjectMessages(project){
+        $.post('{{ URL::route("communications.search") }}', {
+                'communications-search' : $("#communications-audit-search").val(),
+                '_token' : '{{ csrf_token() }}'
+            }, function(data) {
+                if(data!=1){ 
+                    UIkit.modal.alert(data);
+                } else {
+                	$('#project-detail-tab-2').trigger('click');
+                    loadTab('/projects/'+project+'/communications/', '2', 0, 0, 'project-', 1);                                                                   
+                }
+        } );
+    }
+
+	$(document).ready(function() {
+		$('#communications-audit-search').keydown(function (e) {
+	      if (e.keyCode == 13) {
+	        searchProjectMessages('{{$project}}');
+	        e.preventDefault();
+	        return false; 
+	      }
+	    });
+	});
 
     new Vue({
         el: '#project-communications',
@@ -111,13 +134,22 @@
                 self.busy = true;
                 var tempdiv = '<div uk-spinner style="margin: 20px 0;"></div>';
                 $('#spinner').html(tempdiv);
+                var duplicate = 0;
 
                 setTimeout(() => {
                     axios.get('/projects/{{$project}}/communications/'+this.page)
-                        .then((response) => {   
+                        .then((response) => { 
+                            $('#spinner').html('');  
                             $.each(response.data, function(index, value) {
-                                $('#spinner').html('');
-                                self.messages.unshift(value);
+                                duplicate = 0;
+                                $.each(self.messages, function(mindex, mvalue) {
+                                    if(mvalue.id == value.id){
+                                        duplicate = 1;
+                                    }
+                                });
+                                if(duplicate == 0){
+                                    self.messages.unshift(value);
+                                }
                             });
                         });
 

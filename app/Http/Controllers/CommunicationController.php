@@ -710,8 +710,13 @@ class CommunicationController extends Controller
                         $query->orWhereHas('recipients', function ($query) use ($current_user) {
                             $query->where('user_id', '=', $current_user->id);
                         });
-                    })
-                    ->with('owner')
+                    });
+
+            if($project){
+                $search_messages = $search_messages->whereIn('audit_id', $project_audits);
+            }
+
+            $search_messages = $search_messages->with('owner')
                     ->with('recipients')
                     ->where(function ($query) {
                         if ($query->has('recipients')) {
@@ -754,24 +759,6 @@ class CommunicationController extends Controller
                 $messages = null;
             }
         } else {
-            // $all_messages = Communication::where(function ($query) use ($current_user){
-            //                 $query->where(function ($query) use ($current_user) {
-            //                     $query->where('owner_id', '=', $current_user->id);
-            //                     $query->whereHas('replies');
-            //                 });
-            //                 $query->orWhereHas('recipients', function ($query) use ($current_user) {
-            //                     $query->where('user_id', '=', $current_user->id);
-            //                 });
-            //             });
-
-            // if($project){
-            //     $all_messages = $all_messages->whereIn('audit_id', $project_audits);
-            // }
-
-            // $all_messages = $all_messages->with('owner')
-            //             ->orderBy('created_at', 'desc')
-            //             ->get();
-
 
             $messages = Communication::where(function ($query) use ($current_user){
                         $query->where(function ($query) use ($current_user) {
@@ -792,36 +779,8 @@ class CommunicationController extends Controller
                         ->orderBy('created_at', 'desc')
                         ->skip($skip)->take($number_per_page)->get();
 
-            //if($page == 0){
-                $messages = $messages->reverse();
-            //}
-
-            //if (count($all_messages)) {
-                // now that we have all the messages ordered we need to only keep parents
-                // $parents_array = [];
-                // foreach ($all_messages as $all_message) {
-                //     if ($all_message->parent_id === null) {
-                //         if (!in_array($all_message->id, $parents_array)) {
-                //             $parents_array[] = $all_message->id;
-                //         }
-                //     } else {
-                //         if (!in_array($all_message->parent_id, $parents_array)) {
-                //             $parents_array[] = $all_message->parent_id;
-                //         }
-                //     }
-                // }
-                // $orderMessageByIdProvided = implode(',', array_fill(0, count($parents_array), '?'));
-                // $messages = Communication::whereIn('id', $parents_array)
-                //                 ->orderByRaw("field(id,{$orderMessageByIdProvided})", $parents_array)
-                //                 ->skip($skip)->take($number_per_page)->get();
-                                //->simplePaginate(100);
-            //->get();
+            $messages = $messages->reverse();
             
-                
-
-            // } else {
-            //     $messages = null;
-            // }
         }
 
         $owners_array = [];
