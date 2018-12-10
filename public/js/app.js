@@ -1090,8 +1090,8 @@ __webpack_require__(12); // load all components
 
 
 Vue.component('example', __webpack_require__(39));
-Vue.component('audit-row', __webpack_require__(42), {
-  name: 'audit-row'
+Vue.component('auditrow', __webpack_require__(42), {
+  name: 'auditrow'
 });
 Vue.component('communication-row', __webpack_require__(45)); // connect sockets
 

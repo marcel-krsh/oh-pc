@@ -109,7 +109,7 @@ The following div is defined in this particular tab and pushed to the main layou
 
 <script>
     //loadCommunications(window.currentDetailId);
-    
+
     $( document ).ready(function() {
         // place tab's buttons on main footer
         $('#footer-actions-tpl').html($('#communications-footer-actions').html());
@@ -123,9 +123,23 @@ The following div is defined in this particular tab and pushed to the main layou
                 if(data!=1){ 
                     UIkit.modal.alert(data);
                 } else {
-                    $('#detail-tab-2').trigger('click');                                                                          
+                    $('#detail-tab-2').trigger('click');
+                    loadTab('/dashboard/communications/', '2', 0, 0, '', 1);
                 }
         } );
+    }
+
+
+    function closeOpenMessage(){
+        $('.communication-list-item').removeClass('communication-open');
+        $('.communication-details').addClass('uk-hidden');
+        $('.communication-summary').removeClass('uk-hidden');
+    }
+    function openMessage(communicationId){
+        closeOpenMessage();
+        $("#communication-"+communicationId).addClass('communication-open');
+        $("#communication-"+communicationId+"-details").removeClass('uk-hidden');
+        $("#communication-"+communicationId+"-summary").addClass('uk-hidden');
     }
 
     // process search
@@ -161,41 +175,15 @@ The following div is defined in this particular tab and pushed to the main layou
 
             // reset dropdowns
             $('#filter-by-owner').prop('selectedIndex',0);
-            @if(Auth::user()->isFromOrganization($ohfa_id))
+            @if(Auth::user()->isOhfa())
             $('#filter-by-program').prop('selectedIndex',0);
             @endif
            });
         
     });
 
-    function filterElement(filterVal, filter_element){
-        if (filterVal === 'all') {
-         $(filter_element).show();
-        }
-        else {
-         // hide all then filter the ones to show
-         $(filter_element).hide().filter('.' + filterVal).show();
-        }
-        UIkit.update(event = 'update');
-    }
 
-    function filterByOwner(){
-        var myGrid = UIkit.grid($('#communication-list'), {
-            controls: '#message-filters',
-            animation: false
-        });
-        var textinput = $("#filter-by-owner").val();
-
-        @if(Auth::user()->isFromOrganization($ohfa_id))
-        $('#filter-by-program').prop('selectedIndex',0);
-        @endif
-
-        // filter grid items
-        //myGrid.filter(textinput);
-        filterElement(textinput, '.filter_element');
-    }   
-
-    @if(Auth::user()->isFromOrganization($ohfa_id))
+@if(Auth::user()->isOhfa())
     function filterByProgram(){
         var myGrid = UIkit.grid($('#communication-list'), {
             controls: '#message-filters',
@@ -209,20 +197,36 @@ The following div is defined in this particular tab and pushed to the main layou
         //myGrid.filter(textinput);
         filterElement(textinput, '.filter_element');
     }  
-    @endif 
+@endif 
 
-    function closeOpenMessage(){
-        $('.communication-list-item').removeClass('communication-open');
-        $('.communication-details').addClass('uk-hidden');
-        $('.communication-summary').removeClass('uk-hidden');
+function filterElement(filterVal, filter_element){
+    if (filterVal === 'all') {
+     $(filter_element).show();
     }
-    function openMessage(communicationId){
-        closeOpenMessage();
-        $("#communication-"+communicationId).addClass('communication-open');
-        $("#communication-"+communicationId+"-details").removeClass('uk-hidden');
-        $("#communication-"+communicationId+"-summary").addClass('uk-hidden');
+    else {
+     // hide all then filter the ones to show
+     $(filter_element).hide().filter('.' + filterVal).show();
     }
-    </script>
+    UIkit.update(event = 'update');
+}
+
+function filterByOwner(){
+    var myGrid = UIkit.grid($('#communication-list'), {
+        controls: '#message-filters',
+        animation: false
+    });
+    var textinput = $("#filter-by-owner").val();
+
+    @if(Auth::user()->isOhfa())
+    $('#filter-by-program').prop('selectedIndex',0);
+    @endif
+
+    // filter grid items
+    //myGrid.filter(textinput);
+    filterElement(textinput, '.filter_element');
+}   
+
+</script>
 
     <script>
 

@@ -69,7 +69,6 @@ if(Auth::check()){
 	    ]); ?>
 	</script>
 
-	<script defer src="{{ mix('js/app.js') }}"></script>
 	<script src="/js/jquery.js"></script>
 	<script src="/js/uikit.js"></script>
 	<script src="/js/uikit-icons.min.js"></script>
@@ -81,9 +80,10 @@ if(Auth::check()){
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+	<script src="{{ mix('js/app.js') }}"></script>
 
 	<script>
-		$('select').multipleSelect();
+		// $('select').multipleSelect();
 	</script>
 
 	@if (Auth::guest())
@@ -274,6 +274,7 @@ if(Auth::check()){
 	<script type="text/javascript" src="/js/systems/system.js"></script>
 	<script type="text/javascript" src="/js/systems/audits.js"></script>
 	<script type="text/javascript" src="/js/systems/findings.js"></script>
+	<script type="text/javascript" src="/js/systems/communications.js"></script>
 
 	<!-- <script type="text/javascript" src="/js/systems/cdfs-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/communications-tab.js"></script>

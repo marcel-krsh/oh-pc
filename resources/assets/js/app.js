@@ -6,8 +6,8 @@ require('./bootstrap');
 
 // load all components
 Vue.component('example', require('./components/Example.vue'));
-Vue.component('audit-row', require('./components/AuditRow.vue'), {
-    name: 'audit-row'
+Vue.component('auditrow', require('./components/AuditRow.vue'), {
+    name: 'auditrow'
 });
 Vue.component('communication-row', require('./components/CommunicationRow.vue'));
 
