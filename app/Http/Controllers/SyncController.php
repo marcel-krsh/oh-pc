@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listUtilityAllowances(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -65,7 +65,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncUtilityAllowance::select('id','allita_id','last_edited','updated_at')->where('rental_assistance_type_key',$v['attributes']['rentalAssistanceTypeKey'])->first();
+                            $updateRecord = SyncUtilityAllowance::select('id','allita_id','last_edited','updated_at')->where('utility_allowance_key',$v['attributes']['utilityAllowanceKey'])->first();
                             // convert booleans
                             // settype($v['attributes']['isActive'], 'boolean');
                             // settype($v['attributes']['isUtilityAllowanceHandicapAccessible'], 'boolean');
@@ -100,7 +100,10 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'rental_assistance_type_name'=>$v['attributes']['rentalAssistanceTypeName'],
+                                            'utility_allowance_description'=>$v['attributes']['utilityAllowanceDesc'],
+                                            'effective_date'=>$v['attributes']['effectiveDate'],
+                                            'effective_date_2'=>$v['attributes']['efffectiveDate2'],
+                                            'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                             
                                             
                                             
@@ -113,7 +116,10 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'rental_assistance_type_name'=>$v['attributes']['rentalAssistanceTypeName'],
+                                            'utility_allowance_description'=>$v['attributes']['utilityAllowanceDesc'],
+                                            'effective_date'=>$v['attributes']['effectiveDate'],
+                                            'effective_date_2'=>$v['attributes']['efffectiveDate2'],
+                                            'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                             
                                             
                                             
@@ -133,12 +139,15 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'rental_assistance_type_name'=>$v['attributes']['rentalAssistanceTypeName'],
+                                            'utility_allowance_description'=>$v['attributes']['utilityAllowanceDesc'],
+                                            'effective_date'=>$v['attributes']['effectiveDate'],
+                                            'effective_date_2'=>$v['attributes']['efffectiveDate2'],
+                                            'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                             
                                             
                                             
                                             
-                                            'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
+                                            'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncUtilityAllowance::where('id',$updateRecord['id'])
@@ -147,12 +156,15 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'rental_assistance_type_name'=>$v['attributes']['rentalAssistanceTypeName'],
+                                            'utility_allowance_description'=>$v['attributes']['utilityAllowanceDesc'],
+                                            'effective_date'=>$v['attributes']['effectiveDate'],
+                                            'effective_date_2'=>$v['attributes']['efffectiveDate2'],
+                                            'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                             
                                             
                                             
                                             
-                                            'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
+                                            'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -172,13 +184,16 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
-                                            'rental_assistance_type_name'=>$v['attributes']['rentalAssistanceTypeName'],
+                                            'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
+                                            'utility_allowance_description'=>$v['attributes']['utilityAllowanceDesc'],
+                                            'effective_date'=>$v['attributes']['effectiveDate'],
+                                            'effective_date_2'=>$v['attributes']['efffectiveDate2'],
+                                            'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                             
                                             
                                             
                                     
-                                    'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
+                                    'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncUtilityAllowance::create([
@@ -186,12 +201,15 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'rental_assistance_type_name'=>$v['attributes']['rentalAssistanceTypeName'],
+                                            'utility_allowance_description'=>$v['attributes']['utilityAllowanceDesc'],
+                                            'effective_date'=>$v['attributes']['effectiveDate'],
+                                            'effective_date_2'=>$v['attributes']['efffectiveDate2'],
+                                            'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                             
                                             
                                             
 
-                                        'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
+                                        'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
