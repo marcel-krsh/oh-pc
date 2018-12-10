@@ -69,6 +69,14 @@ class SyncController extends Controller
                             // convert booleans
                             // settype($v['attributes']['isActive'], 'boolean');
                             // settype($v['attributes']['isUtilityAllowanceHandicapAccessible'], 'boolean');
+
+                            // Set dates older than 1950 to be NULL:
+                            if($v['attributes']['effectiveDate'] < 1951){
+                                $v['attributes']['effectiveDate'] = NULL;
+                            }
+                            if($v['attributes']['effectiveDate2'] < 1951){
+                                $v['attributes']['effectiveDate2'] = NULL;
+                            }
                             //dd($updateRecord,$updateRecord->updated_at);
                             if(isset($updateRecord->id)) {
                                 // record exists - get matching table record
