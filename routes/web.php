@@ -71,7 +71,7 @@ Route::group(['middleware' => 'web'], function () {
          Route::get('/projects/{project}/details/{type}', 'AuditController@getProjectDetailsInfo')->name('project.details.info');
          Route::get('/projects/{project}/details/assignment/date/{dateid}', 'AuditController@getProjectDetailsAssignmentSchedule')->name('project.details.assignment.schedule');
 
-        Route::get('/projects/{project}/communications', 'AuditController@getProjectCommunications')->name('project.communications');
+        Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');
         Route::get('/projects/{project}/communications/title', 'AuditController@getProjectCommunicationsTitle')->name('project.communications.title');
         Route::get('/projects/{project}/documents', 'AuditController@getProjectDocuments')->name('project.documents');
         Route::get('/projects/{project}/documents/title', 'AuditController@getProjectDocumentsTitle')->name('project.documents.title');
@@ -87,6 +87,7 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('/projects/{project}/followups/title', 'AuditController@getProjectFollowupsTitle')->name('project.followups.title');
         Route::get('/projects/{project}/reports', 'AuditController@getProjectReports')->name('project.reports');
         Route::get('/projects/{project}/reports/title', 'AuditController@getProjectReportsTitle')->name('project.reports.title');
+        Route::get('/projects/{project}/stream', 'AuditController@getProjectStream')->name('project.stream');
 
         Route::get('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummary');
         Route::post('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummaryFilterProgram');
@@ -110,10 +111,20 @@ Route::group(['middleware' => 'web'], function () {
         // communications
         Route::get('dashboard/communications/{page?}', 'CommunicationController@communicationsTab')->name('communication.tab');
         Route::post('/modals/new-outbound-email-entry', 'CommunicationController@create')->name('communication.create');
-        Route::get('/modals/new-outbound-email-entry/{audit?}', 'CommunicationController@newCommunicationEntry');
+        Route::get('/modals/new-outbound-email-entry/{audit_id?}', 'CommunicationController@newCommunicationEntry');
         Route::get('/modals/communication/{audit_id}/replies/{message}', 'CommunicationController@viewReplies');
         Route::post('/communications/audit/{audit?}', 'CommunicationController@searchCommunications')->name('communications.search');
         Route::get('/communications/unseen', 'CommunicationController@getUnseenMessages');
+
+
+        Route::post('/documents/audit/{audit}/upload', 'DocumentController@upload')->name('documents.upload');
+        Route::get('/documents/audit/{audit}', 'DocumentController@showTabFromParcelId');
+        Route::post('/documents/audit/{audit}/comment', 'DocumentController@uploadComment')->name('documents.uploadComment');
+        Route::post('/documents/audit/{audit}/deletedocument', 'DocumentController@deleteDocument')->name('documents.deleteDocument');
+        Route::get('/documents/audit/{audit}/downloaddocument/{document}', 'DocumentController@downloadDocument')->name('documents.downloadDocument');
+        Route::post('/documents/audit/{audit}/approve', 'DocumentController@approveDocument')->name('documents.approve');
+        Route::post('/documents/audit/{audit}/notapprove', 'DocumentController@notApproveDocument')->name('documents.notapprove');
+        Route::post('/documents/audit/{audit}/documentinfo', 'DocumentController@documentInfo')->name('documents.documentInfo');
     // });
 
 });
@@ -226,13 +237,7 @@ Route::get('/modals/new-note-entry/{parcel}', 'NoteController@newNoteEntry');
 
 // Documents Routes - line 220
 
-Route::get('/documents/parcel/{parcel}', 'DocumentController@showTabFromParcelId');
-Route::post('/documents/parcel/{parcel}/upload', 'DocumentController@upload')->name('documents.upload');
-Route::post('/documents/parcel/{parcel}/comment', 'DocumentController@uploadComment')->name('documents.uploadComment');
-Route::post('/documents/parcel/{parcel}/deletedocument', 'DocumentController@deleteDocument')->name('documents.deleteDocument');
-Route::get('/documents/parcel/{parcel}/downloaddocument/{document}', 'DocumentController@downloadDocument')->name('documents.downloadDocument');
-Route::post('/documents/parcel/{parcel}/approve', 'DocumentController@approveDocument')->name('documents.approve');
-Route::post('/documents/parcel/{parcel}/notapprove', 'DocumentController@notApproveDocument')->name('documents.notapprove');
+
 
 // Notes Routes - line 234
 Route::get('/notes/parcel/{parcel}', 'NoteController@showTabFromParcelId')->name('notes.list');
@@ -305,7 +310,7 @@ Route::get('/communications/{parcel}.json', 'CommunicationController@communicati
 Route::post('/modals/new-outbound-email-entry', 'CommunicationController@create')->name('communication.create');
 Route::get('/modals/new-outbound-email-entry/{parcel?}', 'CommunicationController@newCommunicationEntry');
 Route::get('/modals/communication/{parcel_id}/replies/{message}', 'CommunicationController@viewReplies');
-Route::post('/documents/parcel/{parcel}/documentinfo', 'DocumentController@documentInfo')->name('documents.documentInfo');
+
 // Emails
 Route::get('/preview/send/communication', 'CommunicationController@previewEmail');
 Route::get('/view_message/{message}', 'CommunicationController@goToMessage');

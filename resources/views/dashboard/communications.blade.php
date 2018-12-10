@@ -88,7 +88,7 @@
         </div>
     </div>
     @endif
-    <div uk-grid class="uk-container uk-grid-collapse uk-margin-top" id="communication-list" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10" style="position: relative; height: 222.5px;" uk-scrollspy="target:.communication-summary;cls:uk-animation-slide-top-small uk-animation-fast; delay: 100" >
+    <div uk-grid class="uk-container uk-grid-collapse uk-margin-top" id="communication-list" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-immediate-check="false" infinite-scroll-distance="10" style="position: relative; height: 222.5px;" uk-scrollspy="target:.communication-summary;cls:uk-animation-slide-top-small uk-animation-fast; delay: 100" >
         <communication-row v-if="messages" v-for="message in messages.slice().reverse()" :key="message.id" :message="message"></communication-row>
         <div id="spinner" class="uk-width-1-1" style="text-align:center;"></div>
     </div>
@@ -246,13 +246,22 @@ The following div is defined in this particular tab and pushed to the main layou
                     self.busy = true;
                     var tempdiv = '<div uk-spinner style="margin: 20px 0;"></div>';
                     $('#spinner').html(tempdiv);
+                    var duplicate = 0;
 
                     setTimeout(() => {
                         axios.get('dashboard/communications/'+this.page)
                             .then((response) => {   
+                                $('#spinner').html('');
                                 $.each(response.data, function(index, value) {
-                                    $('#spinner').html('');
-                                    self.messages.unshift(value);
+                                    duplicate = 0;
+                                    $.each(self.messages, function(mindex, mvalue) {
+                                        if(mvalue.id == value.id){
+                                            duplicate = 1;
+                                        }
+                                    });
+                                    if(duplicate == 0){
+                                        self.messages.unshift(value);
+                                    }
                                 });
                             });
 

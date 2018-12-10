@@ -144,62 +144,63 @@ class CommunicationController extends Controller
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
 
         if ($audit_id !== null) {
-            // $parcel = Parcel::where('id', '=', $parcel_id)->first();
+            $audit = CachedAudit::where('id', '=', $audit_id)->first();
 
-            // $documents = Document::where('parcel_id', $parcel->id)
-            //     ->orderBy('created_at', 'desc')
-            //     ->get();
+            $documents = Document::where('audit_id', $audit->id)
+                ->orderBy('created_at', 'desc')
+                ->get();
 
-            // $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
+            $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
 
-            // // build a list of all categories used for uploaded documents in this parcel
-            // $categories_used = [];
-            // // category keys for name reference ['id' => 'name']
-            // $document_categories_key = [];
+            // build a list of all categories used for uploaded documents in this parcel
+            $categories_used = [];
+            // category keys for name reference ['id' => 'name']
+            $document_categories_key = [];
 
-            // if (count($documents)) {
-            //     // create an associative array to simplify category references for each document
-            //     foreach ($documents as $document) {
-            //         $categories = []; // store the new associative array cat id, cat name
+            if (count($documents)) {
+                // create an associative array to simplify category references for each document
+                foreach ($documents as $document) {
+                    $categories = []; // store the new associative array cat id, cat name
                      
-            //         if ($document->categories) {
-            //             $categories_decoded = json_decode($document->categories, true); // cats used by the doc
-            //                 $categories_used = array_merge($categories_used, $categories_decoded); // merge document categories
-            //         } else {
-            //             $categories_decoded = [];
-            //         }
+                    if ($document->categories) {
+                        $categories_decoded = json_decode($document->categories, true); // cats used by the doc
+                            $categories_used = array_merge($categories_used, $categories_decoded); // merge document categories
+                    } else {
+                        $categories_decoded = [];
+                    }
 
-            //         foreach ($document_categories as $document_category) {
-            //             $document_categories_key[$document_category->id] = $document_category->document_category_name;
+                    foreach ($document_categories as $document_category) {
+                        $document_categories_key[$document_category->id] = $document_category->document_category_name;
 
-            //             // sub key for each document's categories for quick reference
-            //             if (in_array($document_category->id, $categories_decoded)) {
-            //                 $categories[$document_category->id] = $document_category->document_category_name;
-            //             }
-            //         }
-            //         $document->categoriesarray = $categories;
-            //     }
-            // } else {
-            //     $documents = [];
-            // }
+                        // sub key for each document's categories for quick reference
+                        if (in_array($document_category->id, $categories_decoded)) {
+                            $categories[$document_category->id] = $document_category->document_category_name;
+                        }
+                    }
+                    $document->categoriesarray = $categories;
+                }
+            } else {
+                $documents = [];
+            }
 
-            // $recipients_from_hfa = User::where('entity_id', '1')
-            //         ->where('active', 1)
-            //         ->orderBy('name', 'asc')
-            //         ->get();
-            // if (Auth::user()->entity_id != 1) {
-            //     $recipients = User::where('entity_id', Auth::user()->entity_id)
-            //         ->where('active', 1)
-            //         ->orderBy('name', 'asc')
-            //         ->get();
-            // } else {
-            //     $recipients = User::where('entity_id', '!=', 1)
-            //         ->where('active', 1)
-            //         ->orderBy('name', 'asc')
-            //         ->get();
-            // }
+            $recipients_from_hfa = User::where('organization_id', '=', $ohfa_id)
+                    ->where('active', 1)
+                    ->orderBy('name', 'asc')
+                    ->get();
 
-            // return view('modals.new-outbound-email-entry', compact('parcel', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa'));
+            if (Auth::user()->organization_id != $ohfa_id) {
+                $recipients = User::where('organization_id', Auth::user()->organization_id)
+                    ->where('active', 1)
+                    ->orderBy('name', 'asc')
+                    ->get();
+            } else {
+                $recipients = User::where('organization_id', '!=', 1)
+                    ->where('active', 1)
+                    ->orderBy('name', 'asc')
+                    ->get();
+            }
+
+            return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id'));
         } else {
             $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
 
@@ -214,10 +215,22 @@ class CommunicationController extends Controller
                     ->orderBy('name', 'asc')
                     ->get();
            
-            $recipients = User::where('organization_id', '!=', $ohfa_id)
-                ->orWhereNull('organization_id')
-                ->where('active', 1)
-                ->orderBy('name', 'asc')->get();
+            // $recipients = User::where('organization_id', '!=', $ohfa_id)
+            //     ->orWhereNull('organization_id')
+            //     ->where('active', 1)
+            //     ->orderBy('name', 'asc')->get();
+
+            if (Auth::user()->organization_id != $ohfa_id) {
+                $recipients = User::where('organization_id', '=', Auth::user()->organization_id)
+                    ->where('active', 1)
+                    ->orderBy('name', 'asc')
+                    ->get();
+            } else {
+                $recipients = User::where('organization_id', '!=', $ohfa_id)
+                    ->where('active', 1)
+                    ->orderBy('name', 'asc')
+                    ->get();
+            }
 
             $audit = null;
 
@@ -441,7 +454,7 @@ class CommunicationController extends Controller
             if (isset($forminputs['audit'])) {
                 try {
                     $audit_id = (int) $forminputs['audit'];
-                    $audit = Audit::where('id', $audit_id)->first();
+                    $audit = CachedAudit::where('id', $audit_id)->first();
                 } catch (\Illuminate\Database\QueryException $ex) {
                     dd($ex->getMessage());
                 }
@@ -665,22 +678,33 @@ class CommunicationController extends Controller
     //     return view('dashboard.communications', compact('owners_array', 'programs', 'messages', 'ohfa_id'));
     // }
 
-    public function communicationsTab($page=0)
+    public function communicationsFromProjectTab($project, $page=0) 
+    {
+        return $this->communicationsTab($page, $project);
+    }
+
+    public function communicationsTab($page=0, $project=0)
     {
         $number_per_page = 10;
         $skip = $number_per_page * $page;
         $current_user = Auth::user();
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
 
+        // TBD project_id in searches
+        if($project){
+            $project_audits = CachedAudit::where('project_ref', '=', $project)->pluck('id')->toArray();
+        }
+
         //Search (in session)
         if (Session::has('communications-search') && Session::get('communications-search') != '') {
             $search = Session::get('communications-search');
             $search_messages = Communication::where(function ($query) use ($search) {
-                $query->where('message', 'LIKE', '%'.$search.'%');
-                $query->orWhereHas('audit', function ($query) use ($search) {
-                    $query->where('audit_id', 'LIKE', '%'.$search.'%');
-                });
-            })
+                        $query->where('message', 'LIKE', '%'.$search.'%');
+                        $query->orWhereHas('audit', function ($query) use ($search) {
+                            $query->where('audit_id', 'LIKE', '%'.$search.'%');
+
+                        });
+                    })
                     ->where(function ($query) use ($current_user) {
                         $query->where('owner_id', '=', $current_user->id);
                         $query->orWhereHas('recipients', function ($query) use ($current_user) {
@@ -730,40 +754,74 @@ class CommunicationController extends Controller
                 $messages = null;
             }
         } else {
-            $all_messages = Communication::where(function ($query) use ($current_user) {
-                $query->where('owner_id', '=', $current_user->id);
-                $query->whereHas('replies');
-            })
-                        ->orWhereHas('recipients', function ($query) use ($current_user) {
-                            $query->where('user_id', '=', $current_user->id);
-                        })
-                        ->with('owner')
-                        ->orderBy('created_at', 'desc')
-                        ->get();
+            // $all_messages = Communication::where(function ($query) use ($current_user){
+            //                 $query->where(function ($query) use ($current_user) {
+            //                     $query->where('owner_id', '=', $current_user->id);
+            //                     $query->whereHas('replies');
+            //                 });
+            //                 $query->orWhereHas('recipients', function ($query) use ($current_user) {
+            //                     $query->where('user_id', '=', $current_user->id);
+            //                 });
+            //             });
 
-            if (count($all_messages)) {
+            // if($project){
+            //     $all_messages = $all_messages->whereIn('audit_id', $project_audits);
+            // }
+
+            // $all_messages = $all_messages->with('owner')
+            //             ->orderBy('created_at', 'desc')
+            //             ->get();
+
+
+            $messages = Communication::where(function ($query) use ($current_user){
+                        $query->where(function ($query) use ($current_user) {
+                            $query->where('owner_id', '=', $current_user->id);
+                            $query->whereHas('replies');
+                        });
+                        $query->orWhereHas('recipients', function ($query) use ($current_user) {
+                            $query->where('user_id', '=', $current_user->id);
+                        });
+                    })
+                    ->where('parent_id', '=', null);
+
+            if($project){
+                $messages = $messages->whereIn('audit_id', $project_audits);
+            }
+
+            $messages = $messages->with('owner')
+                        ->orderBy('created_at', 'desc')
+                        ->skip($skip)->take($number_per_page)->get();
+
+            //if($page == 0){
+                $messages = $messages->reverse();
+            //}
+
+            //if (count($all_messages)) {
                 // now that we have all the messages ordered we need to only keep parents
-                $parents_array = [];
-                foreach ($all_messages as $all_message) {
-                    if ($all_message->parent_id === null) {
-                        if (!in_array($all_message->id, $parents_array)) {
-                            $parents_array[] = $all_message->id;
-                        }
-                    } else {
-                        if (!in_array($all_message->parent_id, $parents_array)) {
-                            $parents_array[] = $all_message->parent_id;
-                        }
-                    }
-                }
-                $orderMessageByIdProvided = implode(',', array_fill(0, count($parents_array), '?'));
-                $messages = Communication::whereIn('id', $parents_array)
-                                ->orderByRaw("field(id,{$orderMessageByIdProvided})", $parents_array)
-                                ->skip($skip)->take($number_per_page)->get();
+                // $parents_array = [];
+                // foreach ($all_messages as $all_message) {
+                //     if ($all_message->parent_id === null) {
+                //         if (!in_array($all_message->id, $parents_array)) {
+                //             $parents_array[] = $all_message->id;
+                //         }
+                //     } else {
+                //         if (!in_array($all_message->parent_id, $parents_array)) {
+                //             $parents_array[] = $all_message->parent_id;
+                //         }
+                //     }
+                // }
+                // $orderMessageByIdProvided = implode(',', array_fill(0, count($parents_array), '?'));
+                // $messages = Communication::whereIn('id', $parents_array)
+                //                 ->orderByRaw("field(id,{$orderMessageByIdProvided})", $parents_array)
+                //                 ->skip($skip)->take($number_per_page)->get();
                                 //->simplePaginate(100);
             //->get();
-            } else {
-                $messages = null;
-            }
+            
+                
+
+            // } else {
+            //     $messages = null;
+            // }
         }
 
         $owners_array = [];
@@ -889,15 +947,15 @@ class CommunicationController extends Controller
                         $organization_name = '';
                     } 
      
-                    $organization_address = $message->audit->street_address.', '.$message->audit->city.', '; 
+                    $organization_address = $message->audit->address.', '.$message->audit->city.', '; 
                     if($message->audit->state){
-                        $organization_address = $organization_address.$message->audit->state->state_name;
+                        $organization_address = $organization_address.$message->audit->state;
                     } 
                     $organization_address = $organization_address.' '.$message->audit->zip;
                     
-                    if($message->audit->county){
-                        $organization_address = $organization_address. '<br />'.$message->audit->county->county_name; 
-                    }
+                    // if($message->audit->county){
+                    //     $organization_address = $organization_address. '<br />'.$message->audit->county->county_name; 
+                    // }
                 }else{
                     $organization_address = '';
                     $organization_name = '';
@@ -949,7 +1007,13 @@ class CommunicationController extends Controller
         if($page>0){
             return response()->json($data);
         }else{
-            return view('dashboard.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'programs', 'ohfa_id'));
+            if($project){
+                // get latest audit
+                $audit = CachedAudit::where('project_ref', '=', $project)->orderBy('id', 'desc')->first();
+                return view('projects.partials.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'programs', 'ohfa_id', 'project', 'audit'));
+            }else{
+                return view('dashboard.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'programs', 'ohfa_id', 'project'));
+            }
         }
     }
 }

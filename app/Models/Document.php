@@ -42,7 +42,7 @@ class Document extends Model
         'provider_full_text',
         'provider_file_name',
         'provider_file_extension',
-        'provider_file_size'
+        'provider_file_size',
         'provider_page_count',
         'provider_created_at',
         'provider_updated_at',

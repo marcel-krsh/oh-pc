@@ -290,10 +290,11 @@ class AuditController extends Controller
                 ['title' => 'Communications', 'icon' => 'a-envelope-incoming', 'status' => '', 'badge' => '', 'action' => 'project.communications'],
                 ['title' => 'Documents', 'icon' => 'a-file-clock', 'status' => '', 'badge' => '', 'action' => 'project.documents'],
                 ['title' => 'Notes', 'icon' => 'a-file-text', 'status' => '', 'badge' => '', 'action' => 'project.notes'],
-                ['title' => 'Comments', 'icon' => 'a-comment-text', 'status' => '', 'badge' => '', 'action' => 'project.comments'],
-                ['title' => 'Photos', 'icon' => 'a-picture', 'status' => '', 'badge' => '', 'action' => 'project.photos'],
-                ['title' => 'Findings', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.findings'],
-                ['title' => 'Follow-ups', 'icon' => 'a-bell-ring', 'status' => '', 'badge' => '', 'action' => 'project.followups'],
+                // ['title' => 'Comments', 'icon' => 'a-comment-text', 'status' => '', 'badge' => '', 'action' => 'project.comments'],
+                // ['title' => 'Photos', 'icon' => 'a-picture', 'status' => '', 'badge' => '', 'action' => 'project.photos'],
+                // ['title' => 'Findings', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.findings'],
+                // ['title' => 'Follow-ups', 'icon' => 'a-bell-ring', 'status' => '', 'badge' => '', 'action' => 'project.followups'],
+                ['title' => 'Audit Stream', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.stream'],
                 ['title' => 'Reports', 'icon' => 'a-file-chart-3', 'status' => '', 'badge' => '', 'action' => 'project.reports'],
             ]);
         $tab = 'project-detail-tab-1';
@@ -624,9 +625,11 @@ class AuditController extends Controller
         return view('projects.partials.details-assignment-schedule', compact('data'));
     }
 
-    public function getProjectCommunications ( $project = null ) {
-        return view('projects.partials.communications');
-    }
+    // public function getProjectCommunications ( $project = null, $page=0 ) {
+        
+    //     $data = [];
+    //     return view('projects.partials.communications', compact('data'));
+    // }
 
     public function getProjectDocuments ( $project = null ) {
         return view('projects.partials.documents');
@@ -636,20 +639,24 @@ class AuditController extends Controller
         return view('projects.partials.notes');
     }
 
-    public function getProjectComments ( $project = null ) {
-        return view('projects.partials.comments');
-    }
+    // public function getProjectComments ( $project = null ) {
+    //     return view('projects.partials.comments');
+    // }
 
-    public function getProjectPhotos ( $project = null ) {
-        return view('projects.partials.photos');
-    }
+    // public function getProjectPhotos ( $project = null ) {
+    //     return view('projects.partials.photos');
+    // }
 
-    public function getProjectFindings ( $project = null ) {
-        return view('projects.partials.findings');
-    }
+    // public function getProjectFindings ( $project = null ) {
+    //     return view('projects.partials.findings');
+    // }
 
-    public function getProjectFollowups ( $project = null ) {
-        return view('projects.partials.followups');
+    // public function getProjectFollowups ( $project = null ) {
+    //     return view('projects.partials.followups');
+    // }
+
+    public function getProjectStream ( $project = null ) {
+        return view('projects.partials.stream');
     }
 
     public function getProjectReports ( $project = null ) {
