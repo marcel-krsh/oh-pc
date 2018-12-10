@@ -29,6 +29,7 @@ use App\Jobs\SyncOwnerCertificationYearsJob;
 use App\Jobs\SyncHouseholdsJob;
 use App\Jobs\SyncEventTypesJob;
 use App\Jobs\SyncRentalAssistanceSourcesJob;
+use App\Jobs\SyncRentalAssistanceTypesJob;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -287,7 +288,7 @@ class Kernel extends ConsoleKernel
         } else {
             //Log::info('Sync Job Already Started.');
         }
-        
+
     }
 
     /**
