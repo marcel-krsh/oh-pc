@@ -102,7 +102,7 @@ class SyncController extends Controller
                                             
                                             'utility_allowance_description'=>$v['attributes']['utilityAllowanceDesc'],
                                             'effective_date'=>$v['attributes']['effectiveDate'],
-                                            'effective_date_2'=>$v['attributes']['efffectiveDate2'],
+                                            'effective_date2'=>$v['attributes']['effectiveDate2'],
                                             'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                             
                                             
@@ -118,7 +118,7 @@ class SyncController extends Controller
                                             
                                             'utility_allowance_description'=>$v['attributes']['utilityAllowanceDesc'],
                                             'effective_date'=>$v['attributes']['effectiveDate'],
-                                            'effective_date_2'=>$v['attributes']['efffectiveDate2'],
+                                            'effective_date2'=>$v['attributes']['effectiveDate2'],
                                             'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                             
                                             
@@ -141,7 +141,7 @@ class SyncController extends Controller
                                             
                                             'utility_allowance_description'=>$v['attributes']['utilityAllowanceDesc'],
                                             'effective_date'=>$v['attributes']['effectiveDate'],
-                                            'effective_date_2'=>$v['attributes']['efffectiveDate2'],
+                                            'effective_date2'=>$v['attributes']['effectiveDate2'],
                                             'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                             
                                             
@@ -158,7 +158,7 @@ class SyncController extends Controller
                                             
                                             'utility_allowance_description'=>$v['attributes']['utilityAllowanceDesc'],
                                             'effective_date'=>$v['attributes']['effectiveDate'],
-                                            'effective_date_2'=>$v['attributes']['efffectiveDate2'],
+                                            'effective_date2'=>$v['attributes']['effectiveDate2'],
                                             'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                             
                                             
@@ -187,7 +187,7 @@ class SyncController extends Controller
                                             'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
                                             'utility_allowance_description'=>$v['attributes']['utilityAllowanceDesc'],
                                             'effective_date'=>$v['attributes']['effectiveDate'],
-                                            'effective_date_2'=>$v['attributes']['efffectiveDate2'],
+                                            'effective_date2'=>$v['attributes']['effectiveDate2'],
                                             'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                             
                                             
@@ -203,7 +203,7 @@ class SyncController extends Controller
                                             
                                             'utility_allowance_description'=>$v['attributes']['utilityAllowanceDesc'],
                                             'effective_date'=>$v['attributes']['effectiveDate'],
-                                            'effective_date_2'=>$v['attributes']['efffectiveDate2'],
+                                            'effective_date2'=>$v['attributes']['effectiveDate2'],
                                             'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                             
                                             
