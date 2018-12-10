@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listEventTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -65,7 +65,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncEventType::select('id','allita_id','last_edited','updated_at')->where('household_key',$v['attributes']['householdKey'])->first();
+                            $updateRecord = SyncEventType::select('id','allita_id','last_edited','updated_at')->where('event_type_key',$v['attributes']['eventTypeKey'])->first();
                             // convert booleans
                             // settype($v['attributes']['isActive'], 'boolean');
                             // settype($v['attributes']['isEventTypeHandicapAccessible'], 'boolean');
@@ -100,15 +100,8 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_key'=>$v['attributes']['developmentKey'],
-                                            'unit_key'=>$v['attributes']['unitKey'],
-                                            'household_size_key'=>$v['attributes']['householdSizeKey'],
-                                            'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
-                                            'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
-                                            'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
+                                            'event_type_descriptoin'=>$v['attributes']['eventTypeDesc'],
                                             
-                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
-                                            'head_of_household_name'=>$v['attributes']['headOfEventTypeName'],
                                             
                                             
                                             
@@ -120,15 +113,8 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_key'=>$v['attributes']['developmentKey'],
-                                            'unit_key'=>$v['attributes']['unitKey'],
-                                            'household_size_key'=>$v['attributes']['householdSizeKey'],
-                                            'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
-                                            'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
-                                            'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
+                                            'event_type_descriptoin'=>$v['attributes']['eventTypeDesc'],
                                             
-                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
-                                            'head_of_household_name'=>$v['attributes']['headOfEventTypeName'],
                                             
                                             
                                             
@@ -147,19 +133,12 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_key'=>$v['attributes']['developmentKey'],
-                                            'unit_key'=>$v['attributes']['unitKey'],
-                                            'household_size_key'=>$v['attributes']['householdSizeKey'],
-                                            'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
-                                            'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
-                                            'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
-                                            
-                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
-                                            'head_of_household_name'=>$v['attributes']['headOfEventTypeName'],
+                                            'event_type_descriptoin'=>$v['attributes']['eventTypeDesc'],
                                             
                                             
                                             
-                                            'household_key'=>$v['attributes']['householdKey'],
+                                            
+                                            'event_type_key'=>$v['attributes']['eventTypeKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncEventType::where('id',$updateRecord['id'])
@@ -168,19 +147,12 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_key'=>$v['attributes']['developmentKey'],
-                                            'unit_key'=>$v['attributes']['unitKey'],
-                                            'household_size_key'=>$v['attributes']['householdSizeKey'],
-                                            'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
-                                            'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
-                                            'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
-                                            
-                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
-                                            'head_of_household_name'=>$v['attributes']['headOfEventTypeName'],
+                                            'event_type_descriptoin'=>$v['attributes']['eventTypeDesc'],
                                             
                                             
                                             
-                                            'household_key'=>$v['attributes']['householdKey'],
+                                            
+                                            'event_type_key'=>$v['attributes']['eventTypeKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -200,20 +172,13 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'household_key'=>$v['attributes']['householdKey'],
-                                            'development_key'=>$v['attributes']['developmentKey'],
-                                            'unit_key'=>$v['attributes']['unitKey'],
-                                            'household_size_key'=>$v['attributes']['householdSizeKey'],
-                                            'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
-                                            'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
-                                            'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
+                                            'event_type_key'=>$v['attributes']['eventTypeKey'],
+                                            'event_type_descriptoin'=>$v['attributes']['eventTypeDesc'],
                                             
-                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
-                                            'head_of_household_name'=>$v['attributes']['headOfEventTypeName'],
                                             
                                             
                                     
-                                    'household_key'=>$v['attributes']['householdKey'],
+                                    'event_type_key'=>$v['attributes']['eventTypeKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncEventType::create([
@@ -221,19 +186,12 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_key'=>$v['attributes']['developmentKey'],
-                                            'unit_key'=>$v['attributes']['unitKey'],
-                                            'household_size_key'=>$v['attributes']['householdSizeKey'],
-                                            'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
-                                            'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
-                                            'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
+                                            'event_type_descriptoin'=>$v['attributes']['eventTypeDesc'],
                                             
-                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
-                                            'head_of_household_name'=>$v['attributes']['headOfEventTypeName'],
                                             
                                             
 
-                                        'household_key'=>$v['attributes']['householdKey'],
+                                        'event_type_key'=>$v['attributes']['eventTypeKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
