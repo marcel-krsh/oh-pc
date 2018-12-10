@@ -100,7 +100,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'event_type_descriptoin'=>$v['attributes']['eventTypeDesc'],
+                                            'event_type_description'=>$v['attributes']['eventTypeDesc'],
                                             
                                             
                                             
@@ -113,7 +113,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'event_type_descriptoin'=>$v['attributes']['eventTypeDesc'],
+                                            'event_type_description'=>$v['attributes']['eventTypeDesc'],
                                             
                                             
                                             
@@ -133,7 +133,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'event_type_descriptoin'=>$v['attributes']['eventTypeDesc'],
+                                            'event_type_description'=>$v['attributes']['eventTypeDesc'],
                                             
                                             
                                             
@@ -147,7 +147,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'event_type_descriptoin'=>$v['attributes']['eventTypeDesc'],
+                                            'event_type_description'=>$v['attributes']['eventTypeDesc'],
                                             
                                             
                                             
@@ -173,7 +173,7 @@ class SyncController extends Controller
 
                                             
                                             'event_type_key'=>$v['attributes']['eventTypeKey'],
-                                            'event_type_descriptoin'=>$v['attributes']['eventTypeDesc'],
+                                            'event_type_description'=>$v['attributes']['eventTypeDesc'],
                                             
                                             
                                             
@@ -186,7 +186,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'event_type_descriptoin'=>$v['attributes']['eventTypeDesc'],
+                                            'event_type_description'=>$v['attributes']['eventTypeDesc'],
                                             
                                             
                                             
