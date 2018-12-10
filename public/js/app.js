@@ -1090,10 +1090,10 @@ __webpack_require__(12); // load all components
 
 
 Vue.component('example', __webpack_require__(39));
-Vue.component('communication-row', __webpack_require__(42));
-Vue.component('audit-row', __webpack_require__(45), {
+Vue.component('audit-row', __webpack_require__(42), {
   name: 'audit-row'
-}); // connect sockets
+});
+Vue.component('communication-row', __webpack_require__(45)); // connect sockets
 
 var socket = io('http://192.168.100.100:3000'); // https://github.com/ElemeFE/vue-infinite-scroll
 
@@ -43310,454 +43310,6 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources/assets/js/components/CommunicationRow.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-1eb7125b", Component.options)
-  } else {
-    hotAPI.reload("data-v-1eb7125b", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 43 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['message'],
-  methods: {
-    openCommunication: function openCommunication(event) {
-      if (this.message.parentId) {
-        dynamicModalLoad('communication/0/replies/' + this.message.parentId);
-      } else {
-        dynamicModalLoad('communication/0/replies/' + this.message.id);
-      }
-    },
-    openAudit: function openAudit(event) {
-      window.open('/viewparcel/' + this.message.auditId, '_blank');
-    }
-  }
-});
-
-/***/ }),
-/* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    {
-      class: ((_obj = {
-        filter_element: true,
-        "uk-width-1-1": true,
-        "communication-list-item": true
-      }),
-      (_obj[_vm.message.staffId] = true),
-      (_obj[_vm.message.programId] = true),
-      (_obj[_vm.message.hasAttachment] = true),
-      _obj),
-      staticStyle: {
-        position: "absolute",
-        "box-sizing": "border-box",
-        top: "0px",
-        left: "0px",
-        opacity: "1"
-      },
-      attrs: {
-        "uk-filter": "outbound-phone",
-        id: _vm.message.communicationId,
-        "data-grid-prepared": "true"
-      }
-    },
-    [
-      _c(
-        "div",
-        {
-          class: ((_obj$1 = { "communication-summary": true, "uk-grid": true }),
-          (_obj$1[_vm.message.communicationUnread] = true),
-          _obj$1),
-          attrs: { "uk-grid": "" }
-        },
-        [
-          _c(
-            "div",
-            {
-              staticClass:
-                "uk-width-1-5@m uk-width-3-6@s communication-item-tt-to-from uk-margin-small-bottom",
-              on: {
-                click: function($event) {
-                  if ($event.target !== $event.currentTarget) {
-                    return null
-                  }
-                  return _vm.openCommunication($event)
-                }
-              }
-            },
-            [
-              _c("div", { staticClass: "communication-item-date-time" }, [
-                _c("small", {
-                  domProps: { innerHTML: _vm._s(_vm.message.createdDate) }
-                })
-              ]),
-              _vm._v(" "),
-              _c("span", {
-                domProps: { innerHTML: _vm._s(_vm.message.recipients) }
-              }),
-              _vm._v(" "),
-              _vm.message.unseen
-                ? _c("div", {
-                    class: ((_obj$2 = {
-                      "uk-label": true,
-                      "no-text-shadow": true
-                    }),
-                    (_obj$2[_vm.message.userBadgeColor] = true),
-                    _obj$2),
-                    attrs: { "uk-tooltip": _vm.message.tooltip },
-                    domProps: { innerHTML: _vm._s(_vm.message.unseen) }
-                  })
-                : _vm._e()
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass:
-                "uk-width-1-5@s communication-type-and-who uk-hidden@m uk-text-right "
-            },
-            [
-              _c("div", { staticClass: "uk-margin-right" }, [
-                _vm.message.auditId
-                  ? _c("p", { staticStyle: { "margin-bottom": "0" } }, [
-                      _c("a", {
-                        staticClass: "uk-link-muted",
-                        attrs: { "uk-tooltip": "OPEN AUDIT" },
-                        domProps: { innerHTML: _vm._s(_vm.message.auditId) },
-                        on: {
-                          click: function($event) {
-                            if ($event.target !== $event.currentTarget) {
-                              return null
-                            }
-                            return _vm.openAudit($event)
-                          }
-                        }
-                      })
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.message.auditId
-                  ? _c(
-                      "p",
-                      {
-                        staticClass: "uk-visible@m",
-                        staticStyle: { "margin-top": "0" },
-                        attrs: { "uk-tooltip": _vm.message.tooltipOrganization }
-                      },
-                      [
-                        _c("small", {
-                          domProps: {
-                            innerHTML: _vm._s(_vm.message.organizationAddress)
-                          }
-                        })
-                      ]
-                    )
-                  : _vm._e()
-              ])
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass:
-                "uk-width-1-5@m communication-item-parcel uk-visible@m"
-            },
-            [
-              _vm.message.auditId
-                ? _c("p", { staticStyle: { "margin-bottom": "0" } }, [
-                    _c("a", {
-                      staticClass: "uk-link-muted",
-                      attrs: { "uk-tooltip": "OPEN AUDIT" },
-                      domProps: { innerHTML: _vm._s(_vm.message.auditId) },
-                      on: {
-                        click: function($event) {
-                          if ($event.target !== $event.currentTarget) {
-                            return null
-                          }
-                          return _vm.openAudit($event)
-                        }
-                      }
-                    })
-                  ])
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.message.auditId
-                ? _c(
-                    "p",
-                    {
-                      staticClass: "uk-visible@m",
-                      staticStyle: { "margin-top": "0" },
-                      attrs: { "uk-tooltip": _vm.message.tooltipOrganization }
-                    },
-                    [
-                      _c("small", {
-                        domProps: {
-                          innerHTML: _vm._s(_vm.message.organizationAddress)
-                        }
-                      })
-                    ]
-                  )
-                : _vm._e()
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass:
-                "uk-width-2-5@m uk-width-1-1@s communication-item-excerpt ",
-              on: {
-                click: function($event) {
-                  if ($event.target !== $event.currentTarget) {
-                    return null
-                  }
-                  return _vm.openCommunication($event)
-                }
-              }
-            },
-            [
-              _vm.message.hasAttachment == "attachment-true"
-                ? _c(
-                    "div",
-                    {
-                      staticClass: "uk-grid-collapse",
-                      attrs: { "uk-grid": "" }
-                    },
-                    [
-                      _c(
-                        "div",
-                        {
-                          staticClass:
-                            "uk-width-5-6@m uk-width-1-1@s communication-item-excerpt",
-                          on: {
-                            click: function($event) {
-                              if ($event.target !== $event.currentTarget) {
-                                return null
-                              }
-                              return _vm.openCommunication($event)
-                            }
-                          }
-                        },
-                        [
-                          _vm.message.subject
-                            ? _c("span", {
-                                domProps: {
-                                  innerHTML: _vm._s(_vm.message.subject)
-                                }
-                              })
-                            : _vm._e(),
-                          _c("br"),
-                          _vm._v(" "),
-                          _c("span", {
-                            domProps: { innerHTML: _vm._s(_vm.message.summary) }
-                          })
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _vm.message.hasAttachment == "attachment-true"
-                        ? _c(
-                            "div",
-                            {
-                              staticClass:
-                                "uk-width-1-6@m uk-width-1-1@s communication-item-excerpt",
-                              on: {
-                                click: function($event) {
-                                  if ($event.target !== $event.currentTarget) {
-                                    return null
-                                  }
-                                  return _vm.openCommunication($event)
-                                }
-                              }
-                            },
-                            [
-                              _c(
-                                "div",
-                                {
-                                  staticClass:
-                                    "uk-align-right communication-item-attachment uk-margin-right"
-                                },
-                                [
-                                  _c(
-                                    "span",
-                                    {
-                                      attrs: {
-                                        "uk-tooltip":
-                                          _vm.message.tooltipFilenames
-                                      }
-                                    },
-                                    [_c("i", { staticClass: "a-lower" })]
-                                  )
-                                ]
-                              )
-                            ]
-                          )
-                        : _vm._e()
-                    ]
-                  )
-                : _vm.message.subject
-                ? _c("div", [
-                    _vm.message.subject
-                      ? _c("strong", {
-                          domProps: { innerHTML: _vm._s(_vm.message.subject) }
-                        })
-                      : _vm._e(),
-                    _c("br"),
-                    _vm._v(" "),
-                    _c("span", {
-                      domProps: { innerHTML: _vm._s(_vm.message.summary) }
-                    })
-                  ])
-                : _vm._e()
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass:
-                "uk-width-1-5@m uk-width-1-1@s communication-type-and-who uk-text-right uk-visible@m",
-              on: {
-                click: function($event) {
-                  if ($event.target !== $event.currentTarget) {
-                    return null
-                  }
-                  return _vm.openCommunication($event)
-                }
-              }
-            },
-            [
-              _c("div", {
-                staticClass: "uk-margin-right communication-item-date-time",
-                domProps: { innerHTML: _vm._s(_vm.message.createdDateRight) }
-              })
-            ]
-          )
-        ]
-      )
-    ]
-  )
-  var _obj
-  var _obj$1
-  var _obj$2
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-1eb7125b", module.exports)
-  }
-}
-
-/***/ }),
-/* 45 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(3)
-/* script */
-var __vue_script__ = __webpack_require__(46)
-/* template */
-var __vue_template__ = __webpack_require__(47)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
 Component.options.__file = "resources/assets/js/components/AuditRow.vue"
 
 /* hot reload */
@@ -43780,7 +43332,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 46 */
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -43916,7 +43468,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 47 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -44405,6 +43957,456 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-35fc9494", module.exports)
+  }
+}
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(46)
+/* template */
+var __vue_template__ = __webpack_require__(47)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/CommunicationRow.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-1eb7125b", Component.options)
+  } else {
+    hotAPI.reload("data-v-1eb7125b", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 46 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['message'],
+  methods: {
+    openCommunication: function openCommunication(event) {
+      if (this.message.parentId) {
+        dynamicModalLoad('communication/0/replies/' + this.message.parentId);
+      } else {
+        dynamicModalLoad('communication/0/replies/' + this.message.id);
+      }
+    },
+    openAudit: function openAudit(event) {
+      window.open('/viewparcel/' + this.message.auditId, '_blank');
+    }
+  }
+});
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      class: ((_obj = {
+        filter_element: true,
+        "uk-width-1-1": true,
+        "communication-list-item": true
+      }),
+      (_obj[_vm.message.staffId] = true),
+      (_obj[_vm.message.programId] = true),
+      (_obj[_vm.message.hasAttachment] = true),
+      _obj),
+      staticStyle: {
+        position: "absolute",
+        "box-sizing": "border-box",
+        top: "0px",
+        left: "0px",
+        opacity: "1"
+      },
+      attrs: {
+        "uk-filter": "outbound-phone",
+        id: _vm.message.communicationId,
+        "data-grid-prepared": "true"
+      }
+    },
+    [
+      _c(
+        "div",
+        {
+          class: ((_obj$1 = { "communication-summary": true, "uk-grid": true }),
+          (_obj$1[_vm.message.communicationUnread] = true),
+          _obj$1),
+          attrs: { "uk-grid": "" }
+        },
+        [
+          _c(
+            "div",
+            {
+              staticClass:
+                "uk-width-1-5@m uk-width-3-6@s communication-item-tt-to-from uk-margin-small-bottom",
+              on: {
+                click: function($event) {
+                  if ($event.target !== $event.currentTarget) {
+                    return null
+                  }
+                  return _vm.openCommunication($event)
+                }
+              }
+            },
+            [
+              _c("div", { staticClass: "communication-item-date-time" }, [
+                _c("small", {
+                  domProps: { innerHTML: _vm._s(_vm.message.createdDate) }
+                })
+              ]),
+              _vm._v(" "),
+              _c("span", {
+                domProps: { innerHTML: _vm._s(_vm.message.recipients) }
+              }),
+              _vm._v(" "),
+              _vm.message.unseen
+                ? _c("div", {
+                    class: ((_obj$2 = {
+                      "uk-label": true,
+                      "no-text-shadow": true
+                    }),
+                    (_obj$2[_vm.message.userBadgeColor] = true),
+                    _obj$2),
+                    attrs: { "uk-tooltip": _vm.message.tooltip },
+                    domProps: { innerHTML: _vm._s(_vm.message.unseen) }
+                  })
+                : _vm._e()
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass:
+                "uk-width-1-5@s communication-type-and-who uk-hidden@m uk-text-right "
+            },
+            [
+              _c("div", { staticClass: "uk-margin-right" }, [
+                _vm.message.auditId
+                  ? _c("p", { staticStyle: { "margin-bottom": "0" } }, [
+                      _c("a", {
+                        staticClass: "uk-link-muted",
+                        attrs: { "uk-tooltip": "OPEN AUDIT" },
+                        domProps: { innerHTML: _vm._s(_vm.message.auditId) },
+                        on: {
+                          click: function($event) {
+                            if ($event.target !== $event.currentTarget) {
+                              return null
+                            }
+                            return _vm.openAudit($event)
+                          }
+                        }
+                      })
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.message.auditId
+                  ? _c(
+                      "p",
+                      {
+                        staticClass: "uk-visible@m",
+                        staticStyle: { "margin-top": "0" },
+                        attrs: { "uk-tooltip": _vm.message.tooltipOrganization }
+                      },
+                      [
+                        _c("small", {
+                          domProps: {
+                            innerHTML: _vm._s(_vm.message.organizationAddress)
+                          }
+                        })
+                      ]
+                    )
+                  : _vm._e()
+              ])
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass:
+                "uk-width-1-5@m communication-item-parcel uk-visible@m"
+            },
+            [
+              _vm.message.auditId
+                ? _c("p", { staticStyle: { "margin-bottom": "0" } }, [
+                    _c("a", {
+                      staticClass: "uk-link-muted",
+                      attrs: { "uk-tooltip": "OPEN AUDIT" },
+                      domProps: { innerHTML: _vm._s(_vm.message.auditId) },
+                      on: {
+                        click: function($event) {
+                          if ($event.target !== $event.currentTarget) {
+                            return null
+                          }
+                          return _vm.openAudit($event)
+                        }
+                      }
+                    })
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.message.auditId
+                ? _c(
+                    "p",
+                    {
+                      staticClass: "uk-visible@m",
+                      staticStyle: { "margin-top": "0" },
+                      attrs: { "uk-tooltip": _vm.message.tooltipOrganization }
+                    },
+                    [
+                      _c("small", {
+                        domProps: {
+                          innerHTML: _vm._s(_vm.message.organizationAddress)
+                        }
+                      })
+                    ]
+                  )
+                : _vm._e()
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass:
+                "uk-width-2-5@m uk-width-1-1@s communication-item-excerpt ",
+              on: {
+                click: function($event) {
+                  if ($event.target !== $event.currentTarget) {
+                    return null
+                  }
+                  return _vm.openCommunication($event)
+                }
+              }
+            },
+            [
+              _vm.message.hasAttachment == "attachment-true"
+                ? _c(
+                    "div",
+                    {
+                      staticClass: "uk-grid-collapse",
+                      attrs: { "uk-grid": "" }
+                    },
+                    [
+                      _c(
+                        "div",
+                        {
+                          staticClass:
+                            "uk-width-5-6@m uk-width-1-1@s communication-item-excerpt",
+                          on: {
+                            click: function($event) {
+                              if ($event.target !== $event.currentTarget) {
+                                return null
+                              }
+                              return _vm.openCommunication($event)
+                            }
+                          }
+                        },
+                        [
+                          _vm.message.subject
+                            ? _c("span", {
+                                domProps: {
+                                  innerHTML: _vm._s(_vm.message.subject)
+                                }
+                              })
+                            : _vm._e(),
+                          _c("br"),
+                          _vm._v(" "),
+                          _c("span", {
+                            staticStyle: { "font-size": "0.9em" },
+                            domProps: { innerHTML: _vm._s(_vm.message.summary) }
+                          })
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _vm.message.hasAttachment == "attachment-true"
+                        ? _c(
+                            "div",
+                            {
+                              staticClass:
+                                "uk-width-1-6@m uk-width-1-1@s communication-item-excerpt",
+                              on: {
+                                click: function($event) {
+                                  if ($event.target !== $event.currentTarget) {
+                                    return null
+                                  }
+                                  return _vm.openCommunication($event)
+                                }
+                              }
+                            },
+                            [
+                              _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "uk-align-right communication-item-attachment uk-margin-right"
+                                },
+                                [
+                                  _c(
+                                    "span",
+                                    {
+                                      attrs: {
+                                        "uk-tooltip":
+                                          _vm.message.tooltipFilenames
+                                      }
+                                    },
+                                    [_c("i", { staticClass: "a-lower" })]
+                                  )
+                                ]
+                              )
+                            ]
+                          )
+                        : _vm._e()
+                    ]
+                  )
+                : _vm.message.subject
+                ? _c("div", [
+                    _vm.message.subject
+                      ? _c("span", {
+                          domProps: { innerHTML: _vm._s(_vm.message.subject) }
+                        })
+                      : _vm._e(),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c("span", {
+                      staticStyle: { "font-size": "0.9em" },
+                      domProps: { innerHTML: _vm._s(_vm.message.summary) }
+                    })
+                  ])
+                : _vm._e()
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass:
+                "uk-width-1-5@m uk-width-1-1@s communication-type-and-who uk-text-right uk-visible@m",
+              on: {
+                click: function($event) {
+                  if ($event.target !== $event.currentTarget) {
+                    return null
+                  }
+                  return _vm.openCommunication($event)
+                }
+              }
+            },
+            [
+              _c("div", {
+                staticClass: "uk-margin-right communication-item-date-time",
+                domProps: { innerHTML: _vm._s(_vm.message.createdDateRight) }
+              })
+            ]
+          )
+        ]
+      )
+    ]
+  )
+  var _obj
+  var _obj$1
+  var _obj$2
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-1eb7125b", module.exports)
   }
 }
 

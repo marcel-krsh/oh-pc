@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Carbon;
 
 class CachedAudit extends Model
@@ -77,5 +78,15 @@ class CachedAudit extends Model
     public function project() : HasOne
     {
         return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
+    }
+
+    /**
+     * audits
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function communications() : HasMany
+    {
+        return $this->hasMany(\App\Models\Communication::class, 'audit_id');
     }
 }

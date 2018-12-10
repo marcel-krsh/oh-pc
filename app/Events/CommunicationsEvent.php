@@ -138,15 +138,15 @@ class CommunicationsEvent
                     $organization_name = '';
                 } 
  
-                $organization_address = $communication->audit->street_address.', '.$communication->audit->city.', '; 
+                $organization_address = $communication->audit->address.', '.$communication->audit->city.', '; 
                 if($communication->audit->state){
-                    $organization_address = $organization_address.$communication->audit->state->state_name;
+                    $organization_address = $organization_address.$communication->audit->state;
                 } 
                 $organization_address = $organization_address.' '.$communication->audit->zip;
                 
-                if($communication->audit->county){
-                    $organization_address = $organization_address. '<br />'.$communication->audit->county->county_name; 
-                }
+                // if($communication->audit->county){
+                //     $organization_address = $organization_address. '<br />'.$communication->audit->county->county_name; 
+                // }
             }else{
                 $organization_address = '';
                 $organization_name = '';

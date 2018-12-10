@@ -6,10 +6,10 @@ require('./bootstrap');
 
 // load all components
 Vue.component('example', require('./components/Example.vue'));
-Vue.component('communication-row', require('./components/CommunicationRow.vue'));
 Vue.component('audit-row', require('./components/AuditRow.vue'), {
     name: 'audit-row'
 });
+Vue.component('communication-row', require('./components/CommunicationRow.vue'));
 
 // connect sockets
 var socket = io('http://192.168.100.100:3000');

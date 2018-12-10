@@ -31,7 +31,7 @@
 	        	<div uk-grid class="uk-grid-collapse" v-if="message.hasAttachment == 'attachment-true'">
 	                <div class="uk-width-5-6@m uk-width-1-1@s communication-item-excerpt" v-on:click.self="openCommunication">
 	                    <span v-if="message.subject" v-html="message.subject"></span><br />
-	                    <span v-html="message.summary"></span>
+	                    <span v-html="message.summary" style="font-size: 0.9em;"></span>
 	                </div>
 	                <div class="uk-width-1-6@m uk-width-1-1@s communication-item-excerpt" v-on:click.self="openCommunication" v-if="message.hasAttachment == 'attachment-true'">
 	                    <div class="uk-align-right communication-item-attachment uk-margin-right">
@@ -42,8 +42,8 @@
 	                </div>
 	            </div>
 	            <div v-else-if="message.subject">
-	            	<strong v-if="message.subject" v-html="message.subject"></strong><br />
-	                <span v-html="message.summary"></span>
+	            	<span v-if="message.subject" v-html="message.subject"></span><br />
+	                <span v-html="message.summary" style="font-size: 0.9em;"></span>
 	            </div>
 	        </div>
 	        <div class="uk-width-1-5@m uk-width-1-1@s communication-type-and-who uk-text-right uk-visible@m" v-on:click.self="openCommunication">
