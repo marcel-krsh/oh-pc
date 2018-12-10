@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listRentalAssistanceTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -65,7 +65,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncRentalAssistanceType::select('id','allita_id','last_edited','updated_at')->where('rental_assistance_source_key',$v['attributes']['rentalAssistanceSourceKey'])->first();
+                            $updateRecord = SyncRentalAssistanceType::select('id','allita_id','last_edited','updated_at')->where('rental_assistance_type_key',$v['attributes']['rentalAssistanceTypeKey'])->first();
                             // convert booleans
                             // settype($v['attributes']['isActive'], 'boolean');
                             // settype($v['attributes']['isRentalAssistanceTypeHandicapAccessible'], 'boolean');
@@ -100,7 +100,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'rental_assistance_source_name'=>$v['attributes']['rentalAssistanceSourceName'],
+                                            'rental_assistance_type_name'=>$v['attributes']['rentalAssistanceTypeName'],
                                             
                                             
                                             
@@ -113,7 +113,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'rental_assistance_source_name'=>$v['attributes']['rentalAssistanceSourceName'],
+                                            'rental_assistance_type_name'=>$v['attributes']['rentalAssistanceTypeName'],
                                             
                                             
                                             
@@ -133,12 +133,12 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'rental_assistance_source_name'=>$v['attributes']['rentalAssistanceSourceName'],
+                                            'rental_assistance_type_name'=>$v['attributes']['rentalAssistanceTypeName'],
                                             
                                             
                                             
                                             
-                                            'rental_assistance_source_key'=>$v['attributes']['rentalAssistanceSourceKey'],
+                                            'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncRentalAssistanceType::where('id',$updateRecord['id'])
@@ -147,12 +147,12 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'rental_assistance_source_name'=>$v['attributes']['rentalAssistanceSourceName'],
+                                            'rental_assistance_type_name'=>$v['attributes']['rentalAssistanceTypeName'],
                                             
                                             
                                             
                                             
-                                            'rental_assistance_source_key'=>$v['attributes']['rentalAssistanceSourceKey'],
+                                            'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -172,13 +172,13 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'rental_assistance_source_key'=>$v['attributes']['rentalAssistanceSourceKey'],
-                                            'rental_assistance_source_name'=>$v['attributes']['rentalAssistanceSourceName'],
+                                            'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
+                                            'rental_assistance_type_name'=>$v['attributes']['rentalAssistanceTypeName'],
                                             
                                             
                                             
                                     
-                                    'rental_assistance_source_key'=>$v['attributes']['rentalAssistanceSourceKey'],
+                                    'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncRentalAssistanceType::create([
@@ -186,12 +186,12 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'rental_assistance_source_name'=>$v['attributes']['rentalAssistanceSourceName'],
+                                            'rental_assistance_type_name'=>$v['attributes']['rentalAssistanceTypeName'],
                                             
                                             
                                             
 
-                                        'rental_assistance_source_key'=>$v['attributes']['rentalAssistanceSourceKey'],
+                                        'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
