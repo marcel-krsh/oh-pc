@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listMonitorings(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -127,7 +127,7 @@ class SyncController extends Controller
                                             'comment'=>$v['attributes']['comment'],
                                             'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
                                             'user_key'=>$v['attributes']['userKey'],
-                                            'on_site_monitoring_end_date'=>$v['attributes']['onSiteMonitoringEndDate'],
+                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
                                             'status_results'=>$v['attributes']['statusResults'],
                                             
                                             
@@ -154,7 +154,7 @@ class SyncController extends Controller
                                             'comment'=>$v['attributes']['comment'],
                                             'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
                                             'user_key'=>$v['attributes']['userKey'],
-                                            'on_site_monitoring_end_date'=>$v['attributes']['onSiteMonitoringEndDate'],
+                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
                                             'status_results'=>$v['attributes']['statusResults'],
                                             
                                             
@@ -188,7 +188,7 @@ class SyncController extends Controller
                                             'comment'=>$v['attributes']['comment'],
                                             'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
                                             'user_key'=>$v['attributes']['userKey'],
-                                            'on_site_monitoring_end_date'=>$v['attributes']['onSiteMonitoringEndDate'],
+                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
                                             'status_results'=>$v['attributes']['statusResults'],
                                             
                                             
@@ -216,7 +216,7 @@ class SyncController extends Controller
                                             'comment'=>$v['attributes']['comment'],
                                             'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
                                             'user_key'=>$v['attributes']['userKey'],
-                                            'on_site_monitoring_end_date'=>$v['attributes']['onSiteMonitoringEndDate'],
+                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
                                             'status_results'=>$v['attributes']['statusResults'],
                                             
                                             
@@ -256,7 +256,7 @@ class SyncController extends Controller
                                             'comment'=>$v['attributes']['comment'],
                                             'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
                                             'user_key'=>$v['attributes']['userKey'],
-                                            'on_site_monitoring_end_date'=>$v['attributes']['onSiteMonitoringEndDate'],
+                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
                                             'status_results'=>$v['attributes']['statusResults'],
                                             
                                             
@@ -283,7 +283,7 @@ class SyncController extends Controller
                                             'comment'=>$v['attributes']['comment'],
                                             'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
                                             'user_key'=>$v['attributes']['userKey'],
-                                            'on_site_monitoring_end_date'=>$v['attributes']['onSiteMonitoringEndDate'],
+                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
                                             'status_results'=>$v['attributes']['statusResults'],
                                             
                                             
