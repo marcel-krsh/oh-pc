@@ -12,8 +12,8 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncMonitoring;
-use App\Models\Audit;
+use App\Models\SyncProjectAmenity;
+use App\Models\ProjectAmenity;
 
 
 
@@ -22,7 +22,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// Audit Sync
+        /////// ProjectAmenity Sync
         /////
 
         /// get last modified date inside the database
@@ -48,16 +48,16 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listMonitorings(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listProjectAmenities(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            //dd($syncData);
+            dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listMonitorings($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listProjectAmenities($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
                         //dd('Page Count is Higher',$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     }
@@ -68,7 +68,7 @@ class SyncController extends Controller
                             $updateRecord = SyncMonitoring::select('id','allita_id','last_edited','updated_at')->where('monitoring_key',$v['attributes']['monitoringKey'])->first();
                             // convert booleans
                             // settype($v['attributes']['isActive'], 'boolean');
-                            // settype($v['attributes']['isAuditHandicapAccessible'], 'boolean');
+                            // settype($v['attributes']['isProjectAmenityHandicapAccessible'], 'boolean');
 
                             // Set dates older than 1950 to be NULL:
                             if($v['attributes']['startDate'] < 1951){
@@ -88,7 +88,7 @@ class SyncController extends Controller
                                 // record exists - get matching table record
 
                                 /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                                $allitaTableRecord = Audit::find($updateRecord->allita_id);
+                                $allitaTableRecord = ProjectAmenity::find($updateRecord->allita_id);
                                 /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
@@ -170,7 +170,7 @@ class SyncController extends Controller
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = Audit::create([
+                                        $allitaTableRecord = ProjectAmenity::create([
                                             
                                             
                                             
@@ -238,7 +238,7 @@ class SyncController extends Controller
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = Audit::create([
+                                $allitaTableRecord = ProjectAmenity::create([
                                     
 
                                             
