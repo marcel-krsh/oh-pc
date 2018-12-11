@@ -14,6 +14,7 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use DB;
 use DateTime;
+use Log;
 use Illuminate\Support\Facades\Hash;
 
 use App\Models\SyncUtilityAllowance;
@@ -55,6 +56,7 @@ class SyncUtilityAllowancesJob implements ShouldQueue
 
         $lastModifiedDate = SyncUtilityAllowance::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
+        //Log::info('Sync Job Already Started.');
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
         }else{
@@ -72,6 +74,7 @@ class SyncUtilityAllowancesJob implements ShouldQueue
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             //dd($syncData);
+            Log::info('Sync Utility Allowances using last modified date of '.$lastModifiedDate->last_edited_convert.' and returning '.$syncData['meta']['totalPageCount'].' pages of results.');
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
