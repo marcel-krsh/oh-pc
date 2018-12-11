@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncMonitoring::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncProjectAmenity::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -65,7 +65,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncMonitoring::select('id','allita_id','last_edited','updated_at')->where('monitoring_key',$v['attributes']['monitoringKey'])->first();
+                            $updateRecord = SyncProjectAmenity::select('id','allita_id','last_edited','updated_at')->where('monitoring_key',$v['attributes']['monitoringKey'])->first();
                             // convert booleans
                             // settype($v['attributes']['isActive'], 'boolean');
                             // settype($v['attributes']['isProjectAmenityHandicapAccessible'], 'boolean');
@@ -109,7 +109,7 @@ class SyncController extends Controller
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        SyncMonitoring::where('id',$updateRecord['id'])
+                                        SyncProjectAmenity::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
@@ -135,7 +135,7 @@ class SyncController extends Controller
                                             
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
-                                        $UpdateAllitaValues = SyncMonitoring::find($updateRecord['id']);
+                                        $UpdateAllitaValues = SyncProjectAmenity::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
                                             
@@ -197,7 +197,7 @@ class SyncController extends Controller
                                             'monitoring_key'=>$v['attributes']['monitoringKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
-                                        $syncTableRecord = SyncMonitoring::where('id',$updateRecord['id'])
+                                        $syncTableRecord = SyncProjectAmenity::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
@@ -265,7 +265,7 @@ class SyncController extends Controller
                                     'monitoring_key'=>$v['attributes']['monitoringKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
-                                $syncTableRecord = SyncMonitoring::create([
+                                $syncTableRecord = SyncProjectAmenity::create([
                                             
                                             
                                             
