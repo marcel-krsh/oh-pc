@@ -299,6 +299,15 @@ class Kernel extends ConsoleKernel
             //Log::info('Sync Job Already Started.');
         }
 
+        //SyncMonitoringsJob
+        $test = DB::table('jobs')->where('payload','like','%SyncMonitoringsJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncMonitoringsJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
     }
 
     /**
