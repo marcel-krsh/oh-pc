@@ -31,6 +31,7 @@ use App\Jobs\SyncEventTypesJob;
 use App\Jobs\SyncRentalAssistanceSourcesJob;
 use App\Jobs\SyncRentalAssistanceTypesJob;
 use App\Jobs\SyncUtilityAllowancesJob;
+use App\Jobs\SyncMonitoringsJob;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
