@@ -43453,8 +43453,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['audit', 'index'],
   methods: {
-    openAudit: function openAudit() {
-      loadTab('/projects/' + this.audit.id, '4', 1, 1, '', 1);
+    openProject: function openProject() {
+      loadTab('/projects/' + this.audit.projectRef, '4', 1, 1, '', 1);
     },
     openProjectDetails: function openProjectDetails() {
       projectDetails(this.audit.id, this.index, this.audit.total_buildings);
@@ -43555,7 +43555,7 @@ var render = function() {
                   id: "audit-project-name-" + _vm.auditIndex,
                   "uk-tooltip": "title:Open Audit Details in Tab;"
                 },
-                on: { click: _vm.openAudit }
+                on: { click: _vm.openProject }
               },
               [
                 _c("span", {

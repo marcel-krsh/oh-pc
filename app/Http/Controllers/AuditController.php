@@ -15,6 +15,7 @@ use App\Models\OrderingAmenity;
 use App\Models\CachedInspection;
 use App\Models\CachedAmenity;
 use App\Models\CachedComment;
+use App\Models\ProjectDetail;
 use Auth;
 use Session;
 use App\LogConverter;
@@ -303,11 +304,38 @@ class AuditController extends Controller
     }
 
     public function getProjectTitle ( $project = null ) {
-        return '<i class="a-mobile-repeat"></i><i class="a-home-question"></i> <span class="list-tab-text"> PROJECT TAB :: CREATED DYNAMICALLY FROM CONTROLLER</span>';
+
+        $audit = CachedAudit::where('project_ref', '=', $project)->orderBy('id', 'desc')->first();
+
+        // TBD add step to title
+        $step = ''; //  :: CREATED DYNAMICALLY FROM CONTROLLER
+
+        return '<i class="a-mobile-repeat"></i><i class="a-home-question"></i> <span class="list-tab-text"> PROJECT '.$project.$step.'</span>';
     }
 
     public function getProjectDetails ( $project = null ) {
-        $stats = collect([
+
+        $latest_audit = CachedAudit::where('project_ref', '=', $project)->orderBy('id', 'desc')->first();
+
+        if(!$latest_audit) {
+            // no audit for this project yet, use default project default
+            $details = ProjectDetail::where('project_id', '=', $project)
+                    ->orderBy('id', 'desc')
+                    ->first();
+        }else{
+            $details = ProjectDetail::where('project_id', '=', $project)
+                    ->where('audit_id', '=', $latest_audit)
+                    ->orderBy('id', 'desc')
+                    ->first();
+        }
+
+        if(!$details){
+            // TBD get initial data from project information?
+        }
+
+
+        // test only
+        $details = collect([
                 "project_id" => "1920114",
                 "project_name" => "The Garden Oaks",
                 "last_audit_completed" => "December 12, 2017",
@@ -326,9 +354,7 @@ class AuditController extends Controller
                     ["name" => "Program Name 3", "units" => "50"],
                     ["name" => "Program Name 4", "units" => "550"],
                     ["name" => "Program Name 5", "units" => "1000"],
-                ]
-            ]);
-        $owner = collect([
+                ],
                 "name" => "Jane Doe Properties",
                 "poc" => "Jane Doe",
                 "phone" => "(123) 344-4444",
@@ -339,8 +365,6 @@ class AuditController extends Controller
                 "city" => "City",
                 "state" => "State",
                 "zip" => "12345",
-            ]);
-        $manager = collect([
                 "name" => "The Really Long Named Property Manager Name",
                 "poc" => "Bob Doe",
                 "phone" => "(123) 344-3333",
@@ -350,9 +374,56 @@ class AuditController extends Controller
                 "address2" => "Suite 12345",
                 "city" => "City2",
                 "state" => "State2",
-                "zip" => "22222",
+                "zip" => "22222"
             ]);
-        return view('projects.partials.details', compact('stats', 'owner', 'manager'));
+       
+        
+        // $stats = collect([
+        //         "project_id" => "1920114",
+        //         "project_name" => "The Garden Oaks",
+        //         "last_audit_completed" => "December 12, 2017",
+        //         "next_audit_due" => "December 31, 2018",
+        //         "score_percentage" => "88%",
+        //         "score" => "B-",
+        //         "total_building" => "99",
+        //         "total_building_common_areas" => "99",
+        //         "total_project_common_areas" => "10",
+        //         "total_units" => "9,999",
+        //         "market_rate" => "8,999",
+        //         "subsidized" => "1,000",
+        //         "programs" => [
+        //             ["name" => "Program Name 1", "units" => "250"],
+        //             ["name" => "Program Name 2", "units" => "250"],
+        //             ["name" => "Program Name 3", "units" => "50"],
+        //             ["name" => "Program Name 4", "units" => "550"],
+        //             ["name" => "Program Name 5", "units" => "1000"],
+        //         ]
+        //     ]);
+        // $owner = collect([
+        //         "name" => "Jane Doe Properties",
+        //         "poc" => "Jane Doe",
+        //         "phone" => "(123) 344-4444",
+        //         "fax" => "(123) 448-8888",
+        //         "email" => "bob@bob.com",
+        //         "address" => "123 Sesame Street",
+        //         "address2" => "Suite 123",
+        //         "city" => "City",
+        //         "state" => "State",
+        //         "zip" => "12345",
+        //     ]);
+        // $manager = collect([
+        //         "name" => "The Really Long Named Property Manager Name",
+        //         "poc" => "Bob Doe",
+        //         "phone" => "(123) 344-3333",
+        //         "fax" => "(123) 448-3333",
+        //         "email" => "bob3@bob.com",
+        //         "address" => "12333 Sesame Street",
+        //         "address2" => "Suite 12345",
+        //         "city" => "City2",
+        //         "state" => "State2",
+        //         "zip" => "22222",
+        //     ]);
+        return view('projects.partials.details', compact('details'));
     }
 
     public function getProjectDetailsInfo ( $project, $type ) {
@@ -626,7 +697,7 @@ class AuditController extends Controller
     }
 
     // public function getProjectCommunications ( $project = null, $page=0 ) {
-        
+
     //     $data = [];
     //     return view('projects.partials.communications', compact('data'));
     // }

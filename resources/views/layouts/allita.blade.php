@@ -144,7 +144,7 @@ if(Auth::check()){
 				    	<div id="top-tabs-container">
 					        <ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m">
 				    			<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.audits') }}', '1');"><a href=""><i class="a-mobile-home"></i> <span class="list-tab-text"> <span class="uk-badge" v-if="statsAuditsTotal" v-cloak>@{{statsAuditsTotal}}</span> AUDITS</span></a></li>
-								<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('communication.tab') }}', '2');"><a href=""><i class="a-envelope-attention"></i> <span class="list-tab-text"> <span class="uk-badge" v-if="statsCommunicationTotal" v-cloak>@{{statsCommunicationTotal}}</span> COMMUNICATIONS</span></a></li>
+								<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('communication.tab') }}', '2');"><a href=""><i class="a-envelope-attention"></i> <span class="list-tab-text"> <span class="uk-badge" v-if="statsCommunicationTotal" v-cloak v-html="statsCommunicationTotal"></span> COMMUNICATIONS</span></a></li>
 								<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="loadTab('{{ route('dashboard.reports') }}', '3');">
 									<a href=""><i class="a-file-chart-3"></i> <span class="list-tab-text"> <span class="uk-badge" v-if="statsReportsTotal" v-cloak>@{{statsReportsTotal}}</span> REPORTS</span></a>
 								</li>
@@ -368,8 +368,9 @@ if(Auth::check()){
 		    mounted: function() {
 		    	console.log("Component working");
 		        socket.on('communications.'+uid+'.'+sid+':NewRecipient', function(data){
-		            console.log("user " + data.userId + " is getting a message because a new message has been sent.");
-		            this.communicationTotal = data.communicationTotal;
+		            // console.log("user " + data.userId + " is getting a message because a new message has been sent.");
+		            // console.log("new total "+data.communicationTotal);
+		            this.statsCommunicationTotal = data.communicationTotal;
 		        }.bind(this));
 		    }
 		});

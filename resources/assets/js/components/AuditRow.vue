@@ -11,7 +11,7 @@
         		<span :id="'audit-i-project-detail-'+auditIndex" v-on:click="openProjectDetails" uk-tooltip="pos:top-left;title:View Buildings and Common Areas;" class="uk-link"><i class="a-menu uk-text-muted"></i></span>
         	</div>
         	<div class="uk-vertical-align-middle uk-display-inline-block">
-        		<h3 :id="'audit-project-name-'+auditIndex" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip="title:Open Audit Details in Tab;" v-on:click="openAudit"><span v-html="audit.projectRef"></span></h3>
+        		<h3 :id="'audit-project-name-'+auditIndex" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip="title:Open Audit Details in Tab;" v-on:click="openProject"><span v-html="audit.projectRef"></span></h3>
             	<small :id="'audit-project-aid-'+auditIndex" class="uk-text-muted faded filter-search-project" uk-tooltip="title:View Project's Audit Details;">AUDIT <span v-html="audit.id"></span></small>
             </div>
         </td>
@@ -115,8 +115,8 @@
     export default {
 	    props: ['audit','index'],
 	    methods: {
-            openAudit: function() {
-            	loadTab('/projects/'+this.audit.id, '4', 1, 1, '', 1);
+            openProject: function() {
+            	loadTab('/projects/'+this.audit.projectRef, '4', 1, 1, '', 1);
             },
             openProjectDetails: function() {
             	projectDetails(this.audit.id, this.index, this.audit.total_buildings);

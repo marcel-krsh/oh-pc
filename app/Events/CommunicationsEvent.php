@@ -61,12 +61,12 @@ class CommunicationsEvent
     { 
         $current_user = Auth::user();
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
-        $id = $communication_recipient->id;
-        $communication_recipient = CommunicationRecipient::where('id', '=', $id)
-                ->with('user')
-                ->first();
+        // $id = $communication_recipient->id;
+        // $communication_recipient = CommunicationRecipient::where('id', '=', $id)
+        //         ->with('user')
+        //         ->first();
 
-        $communicationTotal = CommunicationRecipient::where('user_id', '=', $communication_recipient->user->id)
+        $communicationTotal = CommunicationRecipient::where('user_id', '=', $communication_recipient->user_id)
                 ->where('seen', '=', 0)
                 ->count();
 
@@ -74,7 +74,7 @@ class CommunicationsEvent
         $data = [
             'event' => 'NewRecipient',
             'data' => [
-                'userId' => $communication_recipient->user->id,
+                'userId' => $communication_recipient->user_id,
                 'socketId' => $communication_recipient->user->socket_id,
                 'communicationTotal' => $communicationTotal
             ]
