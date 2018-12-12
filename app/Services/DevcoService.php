@@ -1514,7 +1514,7 @@ class DevcoService extends PCAPIService
 		$params = "page={$page}&newer_than={$newer_than}";
 
 		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
-		Log::info("URL sent to API for Utility Allowances devco/utility_allowances?{$params}&{$log_params} pages of results.");
+		//Log::info("URL sent to API for Utility Allowances devco/utility_allowances?{$params}&{$log_params} pages of results.");
 		return $this->get("devco/utility_allowances?{$params}&{$log_params}");
 	}
 

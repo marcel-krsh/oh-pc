@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listProjectAmenities(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -65,24 +65,24 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProjectAmenity::select('id','allita_id','last_edited','updated_at')->where('monitoring_key',$v['attributes']['monitoringKey'])->first();
+                            $updateRecord = SyncProjectAmenity::select('id','allita_id','last_edited','updated_at')->where('development_amenity_key',$v['attributes']['developmentAmenityKey'])->first();
                             // convert booleans
                             // settype($v['attributes']['isActive'], 'boolean');
                             // settype($v['attributes']['isProjectAmenityHandicapAccessible'], 'boolean');
 
                             // Set dates older than 1950 to be NULL:
-                            if($v['attributes']['startDate'] < 1951){
-                                $v['attributes']['startDate'] = NULL;
-                            }
-                            if($v['attributes']['completedDate'] < 1951){
-                                $v['attributes']['completedDate'] = NULL;
-                            }
-                            if($v['attributes']['confirmedDate'] < 1951){
-                                $v['attributes']['confirmedDate'] = NULL;
-                            }
-                            if($v['attributes']['onSiteMonitorEndDate'] < 1951){
-                                $v['attributes']['onSiteMonitorEndDate'] = NULL;
-                            }
+                            // if($v['attributes']['comment'] < 1951){
+                            //     $v['attributes']['comment'] = NULL;
+                            // }
+                            // if($v['attributes']['completedDate'] < 1951){
+                            //     $v['attributes']['completedDate'] = NULL;
+                            // }
+                            // if($v['attributes']['confirmedDate'] < 1951){
+                            //     $v['attributes']['confirmedDate'] = NULL;
+                            // }
+                            // if($v['attributes']['onSiteMonitorEndDate'] < 1951){
+                            //     $v['attributes']['onSiteMonitorEndDate'] = NULL;
+                            // }
                             //dd($updateRecord,$updateRecord->updated_at);
                             if(isset($updateRecord->id)) {
                                 // record exists - get matching table record
@@ -117,18 +117,9 @@ class SyncController extends Controller
                                             'development_key'=>$v['attributes']['developmentKey'],
                                             
                                             'development_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'monitoring_type_key'=>$v['attributes']['monitoringTypeKey'],
-                                            'start_date'=>$v['attributes']['startDate'],
-                                            'completed_date'=>$v['attributes']['completedDate'],
-                                            'contact_person_key'=>$v['attributes']['contactPersonKey'],
-                                            'contact_title'=>$v['attributes']['contactTitle'],
-                                            'confirmed_date'=>$v['attributes']['confirmedDate'],
-                                            'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
+                                            'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
-                                            'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
-                                            'user_key'=>$v['attributes']['userKey'],
-                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
-                                            'status_results'=>$v['attributes']['statusResults'],
+                                            
                                             
                                             
                                             
@@ -144,18 +135,9 @@ class SyncController extends Controller
                                             'development_key'=>$v['attributes']['developmentKey'],
                                             
                                             'development_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'monitoring_type_key'=>$v['attributes']['monitoringTypeKey'],
-                                            'start_date'=>$v['attributes']['startDate'],
-                                            'completed_date'=>$v['attributes']['completedDate'],
-                                            'contact_person_key'=>$v['attributes']['contactPersonKey'],
-                                            'contact_title'=>$v['attributes']['contactTitle'],
-                                            'confirmed_date'=>$v['attributes']['confirmedDate'],
-                                            'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
+                                            'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
-                                            'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
-                                            'user_key'=>$v['attributes']['userKey'],
-                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
-                                            'status_results'=>$v['attributes']['statusResults'],
+                                            
                                             
                                             
                                             
@@ -178,23 +160,14 @@ class SyncController extends Controller
                                             'development_key'=>$v['attributes']['developmentKey'],
                                             
                                             'development_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'monitoring_type_key'=>$v['attributes']['monitoringTypeKey'],
-                                            'start_date'=>$v['attributes']['startDate'],
-                                            'completed_date'=>$v['attributes']['completedDate'],
-                                            'contact_person_key'=>$v['attributes']['contactPersonKey'],
-                                            'contact_title'=>$v['attributes']['contactTitle'],
-                                            'confirmed_date'=>$v['attributes']['confirmedDate'],
-                                            'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
+                                            'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
-                                            'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
-                                            'user_key'=>$v['attributes']['userKey'],
-                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
-                                            'status_results'=>$v['attributes']['statusResults'],
                                             
                                             
                                             
                                             
-                                            'monitoring_key'=>$v['attributes']['monitoringKey'],
+                                            
+                                            'development_amenity_key'=>$v['attributes']['developmentAmenityKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncProjectAmenity::where('id',$updateRecord['id'])
@@ -206,23 +179,14 @@ class SyncController extends Controller
                                             'development_key'=>$v['attributes']['developmentKey'],
                                             
                                             'development_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'monitoring_type_key'=>$v['attributes']['monitoringTypeKey'],
-                                            'start_date'=>$v['attributes']['startDate'],
-                                            'completed_date'=>$v['attributes']['completedDate'],
-                                            'contact_person_key'=>$v['attributes']['contactPersonKey'],
-                                            'contact_title'=>$v['attributes']['contactTitle'],
-                                            'confirmed_date'=>$v['attributes']['confirmedDate'],
-                                            'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
+                                            'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
-                                            'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
-                                            'user_key'=>$v['attributes']['userKey'],
-                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
-                                            'status_results'=>$v['attributes']['statusResults'],
                                             
                                             
                                             
                                             
-                                            'monitoring_key'=>$v['attributes']['monitoringKey'],
+                                            
+                                            'development_amenity_key'=>$v['attributes']['developmentAmenityKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -242,27 +206,18 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'monitoring_key'=>$v['attributes']['monitoringKey'],
+                                            'development_amenity_key'=>$v['attributes']['developmentAmenityKey'],
                                             'development_key'=>$v['attributes']['developmentKey'],
                                             
                                             'development_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'monitoring_type_key'=>$v['attributes']['monitoringTypeKey'],
-                                            'start_date'=>$v['attributes']['startDate'],
-                                            'completed_date'=>$v['attributes']['completedDate'],
-                                            'contact_person_key'=>$v['attributes']['contactPersonKey'],
-                                            'contact_title'=>$v['attributes']['contactTitle'],
-                                            'confirmed_date'=>$v['attributes']['confirmedDate'],
-                                            'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
+                                            'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
-                                            'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
-                                            'user_key'=>$v['attributes']['userKey'],
-                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
-                                            'status_results'=>$v['attributes']['statusResults'],
+                                            
                                             
                                             
                                             
                                     
-                                    'monitoring_key'=>$v['attributes']['monitoringKey'],
+                                    'development_amenity_key'=>$v['attributes']['developmentAmenityKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncProjectAmenity::create([
@@ -273,23 +228,14 @@ class SyncController extends Controller
                                             'development_key'=>$v['attributes']['developmentKey'],
                                             
                                             'development_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'monitoring_type_key'=>$v['attributes']['monitoringTypeKey'],
-                                            'start_date'=>$v['attributes']['startDate'],
-                                            'completed_date'=>$v['attributes']['completedDate'],
-                                            'contact_person_key'=>$v['attributes']['contactPersonKey'],
-                                            'contact_title'=>$v['attributes']['contactTitle'],
-                                            'confirmed_date'=>$v['attributes']['confirmedDate'],
-                                            'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
+                                            'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
-                                            'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
-                                            'user_key'=>$v['attributes']['userKey'],
-                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
-                                            'status_results'=>$v['attributes']['statusResults'],
+                                            
                                             
                                             
                                             
 
-                                        'monitoring_key'=>$v['attributes']['monitoringKey'],
+                                        'development_amenity_key'=>$v['attributes']['developmentAmenityKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
