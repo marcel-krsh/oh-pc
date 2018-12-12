@@ -14,36 +14,6 @@ class Amenity extends Model
     protected $table = 'amenities';
     protected $guarded = ['id'];
 
-    /**
-     * Building
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function building() : HasOne
-    {
-        return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
-    }
-
-    /**
-     * Project
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function project() : HasOne
-    {
-        return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
-    }
-
-    /**
-     * Area
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function unit() : HasOne
-    {
-        return $this->hasOne(\App\Models\Unit::class, 'id', 'unit_id');
-    }
-
      /**
      * hud
      */
@@ -53,7 +23,7 @@ class Amenity extends Model
                             'created_by',
                             'updated_by'
                         ]);
-    );
+    }
 
     /**
      * finding types
@@ -65,7 +35,7 @@ class Amenity extends Model
             ->join('hud_inspectable_areas','amenity_hud.hud_inspectable_area_id','=','hud_inspectable_areas.id')
             ->join('hud_finding_type','hud_inspectable_areas.id','=','hud_finding_type.hud_inspectable_area_id')
             ->join('finding_types','hud_finding_type.finding_type_id','=','finding_types.id')
-            ->select('finding_types.*')get();
+            ->select('finding_types.*')->get();
 
         return $finding_types;
     }

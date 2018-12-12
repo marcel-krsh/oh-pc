@@ -130,7 +130,7 @@
 	  				</div>
 	  				<div class="uk-width-1-1 uk-margin-top">
 						<div id="auditor-availability-calendar" class="uk-padding-remove uk-margin-top" >
-							<div class="uk-position-relative">
+							<div>
 								<ul id="auditor-calendar" class="uk-child-width-1-1 uk-grid">
 									<li id="auditor-calendar-{{$data['summary']['ref-previous']}}" class="grid-schedule-availability" style="display:none;">
 										<div class="auditor-calendar-header grid-schedule-header">
