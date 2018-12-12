@@ -10,8 +10,8 @@ class Amenity extends Model
     public $timestamps = true;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
+    protected $table = 'amenities';
     protected $guarded = ['id'];
-
 
     /**
      * Building
