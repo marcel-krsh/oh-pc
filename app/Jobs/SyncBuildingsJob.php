@@ -15,8 +15,9 @@ use App\Models\User;
 use DB;
 use DateTime;
 use Illuminate\Support\Facades\Hash;
+use App\Models\SyncBuilding;
+use App\Models\Building;
 
-use App\Models\SyncAddress;
 class SyncBuildingsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
