@@ -65,7 +65,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncPhoneNumber::select('id','allita_id','last_edited','updated_at')->where('building_key',$v['attributes']['buildingKey'])->first();
+                            $updateRecord = SyncPhoneNumber::select('id','allita_id','last_edited','updated_at')->where('phone_number_key',$v['attributes']['phoneNumberKey'])->first();
                             // convert booleans
                              settype($v['attributes']['ownerPaidUtilities'], 'boolean');
                             // settype($v['attributes']['isPhoneNumberHandicapAccessible'], 'boolean');
@@ -179,7 +179,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'building_key'=>$v['attributes']['buildingKey'],
+                                            'phone_number_key'=>$v['attributes']['phoneNumberKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncPhoneNumber::where('id',$updateRecord['id'])
@@ -202,7 +202,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'building_key'=>$v['attributes']['buildingKey'],
+                                            'phone_number_key'=>$v['attributes']['phoneNumberKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -222,7 +222,7 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'building_key'=>$v['attributes']['buildingKey'],
+                                            'phone_number_key'=>$v['attributes']['phoneNumberKey'],
                                             'development_key'=>$v['attributes']['developmentKey'],
                                             'building_status_key'=>$v['attributes']['buildingStatusKey'],
                                             'building_name'=>$v['attributes']['buildingName'],
@@ -237,7 +237,7 @@ class SyncController extends Controller
                                             
                                             
                                     
-                                    'building_key'=>$v['attributes']['buildingKey'],
+                                    'phone_number_key'=>$v['attributes']['phoneNumberKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncPhoneNumber::create([
@@ -259,7 +259,7 @@ class SyncController extends Controller
                                             
                                             
 
-                                        'building_key'=>$v['attributes']['buildingKey'],
+                                        'phone_number_key'=>$v['attributes']['phoneNumberKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
