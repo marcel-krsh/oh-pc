@@ -115,6 +115,7 @@ class SyncController extends Controller
                                             
                                             
                                             'address'=>$v['attributes']['address'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             'city'=>$v['attributes']['city'],
                                             'zip'=>$v['attributes']['zip'],
@@ -134,6 +135,7 @@ class SyncController extends Controller
                                             
                                             
                                             'address'=>$v['attributes']['address'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             'city'=>$v['attributes']['city'],
                                             'zip'=>$v['attributes']['zip'],
@@ -160,6 +162,7 @@ class SyncController extends Controller
                                             
                                             
                                             'address'=>$v['attributes']['address'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             'city'=>$v['attributes']['city'],
                                             'zip'=>$v['attributes']['zip'],
@@ -180,6 +183,7 @@ class SyncController extends Controller
                                             
                                             
                                             'address'=>$v['attributes']['address'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             'city'=>$v['attributes']['city'],
                                             'zip'=>$v['attributes']['zip'],
@@ -212,6 +216,7 @@ class SyncController extends Controller
                                             
                                             'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
                                             'address'=>$v['attributes']['address'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             'city'=>$v['attributes']['city'],
                                             'zip'=>$v['attributes']['zip'],
@@ -231,6 +236,7 @@ class SyncController extends Controller
                                             
                                             
                                             'address'=>$v['attributes']['address'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             'city'=>$v['attributes']['city'],
                                             'zip'=>$v['attributes']['zip'],
