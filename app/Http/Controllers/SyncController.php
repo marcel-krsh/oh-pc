@@ -118,7 +118,7 @@ class SyncController extends Controller
                                             
                                             'city'=>$v['attributes']['city'],
                                             'zip'=>$v['attributes']['zip'],
-                                            'award_number'=>$v['attributes']['reviewCycle'],
+                                            'review_cycle'=>$v['attributes']['reviewCycle'],
                                             'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
@@ -137,7 +137,7 @@ class SyncController extends Controller
                                             
                                             'city'=>$v['attributes']['city'],
                                             'zip'=>$v['attributes']['zip'],
-                                            'award_number'=>$v['attributes']['reviewCycle'],
+                                            'review_cycle'=>$v['attributes']['reviewCycle'],
                                             'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
@@ -163,7 +163,7 @@ class SyncController extends Controller
                                             
                                             'city'=>$v['attributes']['city'],
                                             'zip'=>$v['attributes']['zip'],
-                                            'award_number'=>$v['attributes']['reviewCycle'],
+                                            'review_cycle'=>$v['attributes']['reviewCycle'],
                                             'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
@@ -215,7 +215,7 @@ class SyncController extends Controller
                                             
                                             'city'=>$v['attributes']['city'],
                                             'zip'=>$v['attributes']['zip'],
-                                            'award_number'=>$v['attributes']['reviewCycle'],
+                                            'review_cycle'=>$v['attributes']['reviewCycle'],
                                             'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
@@ -234,7 +234,7 @@ class SyncController extends Controller
                                             
                                             'city'=>$v['attributes']['city'],
                                             'zip'=>$v['attributes']['zip'],
-                                            'award_number'=>$v['attributes']['reviewCycle'],
+                                            'review_cycle'=>$v['attributes']['reviewCycle'],
                                             'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
