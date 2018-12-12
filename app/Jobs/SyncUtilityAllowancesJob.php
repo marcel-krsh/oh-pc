@@ -74,7 +74,7 @@ class SyncUtilityAllowancesJob implements ShouldQueue
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             //dd($syncData);
-            Log::info('Sync Utility Allowances using last modified date of '.$lastModifiedDate->last_edited_convert.' and returning '.$syncData['meta']['totalPageCount'].' pages of results.');
+            Log::info('Sync Utility Allowances using last modified date of '.$modified.' and returning '.$syncData['meta']['totalPageCount'].' pages of results.');
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
