@@ -9,7 +9,7 @@ class SyncUser extends Model
 {
     public $timestamps = true;
 	//protected $dateFormat = 'Y-m-d\TH:i:s.u';
-	$ohfa_id = SystemSetting::get('ohfa_organization_id');
+	public $ohfa_id = SystemSetting::get('ohfa_organization_id');
 
 	
 
