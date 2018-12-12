@@ -65,7 +65,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProjectAmenity::select('id','allita_id','last_edited','updated_at')->where('development_amenity_key',$v['attributes']['developmentAmenityKey'])->first();
+                            $updateRecord = SyncProjectAmenity::select('id','allita_id','last_edited','updated_at')->where('project_amenity_key',$v['attributes']['developmentAmenityKey'])->first();
                             // convert booleans
                             // settype($v['attributes']['isActive'], 'boolean');
                             // settype($v['attributes']['isProjectAmenityHandicapAccessible'], 'boolean');
@@ -114,9 +114,9 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                             'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             
@@ -132,9 +132,9 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                             'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             
@@ -157,9 +157,9 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                             'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             
@@ -167,7 +167,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_amenity_key'=>$v['attributes']['developmentAmenityKey'],
+                                            'project_amenity_key'=>$v['attributes']['developmentAmenityKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncProjectAmenity::where('id',$updateRecord['id'])
@@ -176,9 +176,9 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                             'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             
@@ -186,7 +186,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_amenity_key'=>$v['attributes']['developmentAmenityKey'],
+                                            'project_amenity_key'=>$v['attributes']['developmentAmenityKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -206,10 +206,10 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'development_amenity_key'=>$v['attributes']['developmentAmenityKey'],
-                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'project_amenity_key'=>$v['attributes']['developmentAmenityKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                             'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             
@@ -217,7 +217,7 @@ class SyncController extends Controller
                                             
                                             
                                     
-                                    'development_amenity_key'=>$v['attributes']['developmentAmenityKey'],
+                                    'project_amenity_key'=>$v['attributes']['developmentAmenityKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncProjectAmenity::create([
@@ -225,9 +225,9 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                             'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             
@@ -235,7 +235,7 @@ class SyncController extends Controller
                                             
                                             
 
-                                        'development_amenity_key'=>$v['attributes']['developmentAmenityKey'],
+                                        'project_amenity_key'=>$v['attributes']['developmentAmenityKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
