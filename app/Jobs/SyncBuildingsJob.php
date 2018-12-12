@@ -40,7 +40,7 @@ class SyncBuildingsJob implements ShouldQueue
     public function handle()
     {
         //////////////////////////////////////////////////
-        /////// Building Sync
+        /////// Building Sync YAY
         /////
 
         /// get last modified date inside the database
