@@ -21,7 +21,6 @@ class CreateDefaultFollowupsTable extends Migration
             Schema::create('default_followups', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('finding_type_id')->nullable();
-                $table->string('name', 255)->nullable();
                 $table->string('description', 255)->nullable();
                 $table->integer('quantity')->nullable();
                 $table->string('duration', 20)->nullable();

@@ -17,11 +17,10 @@ class DefaultFollowup extends Model
 
     protected $fillable = [
         'finding_type_id',
-        'name',
         'description',
         'quantity',
         'duration',
-        'assigned_user_id',
+        'assignment',
         'reply',
         'photo',
         'doc',
@@ -36,16 +35,6 @@ class DefaultFollowup extends Model
     public function finding_type() : HasOne
     {
         return $this->hasOne(\App\Models\FindingType::class, 'id', 'finding_type_id');
-    }
-
-    /**
-     * User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function user() : HasOne
-    {
-        return $this->hasOne(\App\Models\User::class, 'id', 'assigned_user_id');
     }
 
 }
