@@ -129,14 +129,9 @@ Route::group(['middleware' => 'web'], function () {
 
         // ADMIN
         Route::group(['prefix'=>'modals/admin'], function () {
-            Route::get('entity/create/{id?}', 'AdminToolController@entityCreate');
+            Route::get('boilerplate/create/{id?}', 'AdminToolController@boilerplateCreate');
             Route::get('program/create/{id?}', 'AdminToolController@programCreate');
-            Route::get('rule/create/{id?}', 'AdminToolController@ruleCreate');
-            Route::get('account/create/{id?}', 'AdminToolController@accountCreate');
             Route::get('document_category/create/{id?}', 'AdminToolController@documentCategoryCreate');
-            Route::get('expense_category/create/{id?}', 'AdminToolController@expenseCategoryCreate');
-            Route::get('vendor/create/{id?}', 'AdminToolController@vendorCreate');
-            Route::get('target_area/create/{id?}', 'AdminToolController@targetAreaCreate');
             Route::get('county/create/{id?}', 'AdminToolController@countyCreate');
         });
 
@@ -149,14 +144,17 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('defaultfollowup', 'AdminToolController@defaultfollowupIndex');
             Route::get('boilerplate', 'AdminToolController@boilerplateIndex');
             Route::get('program', 'AdminToolController@programIndex');
-            Route::get('rule', 'AdminToolController@ruleIndex');
-            Route::get('account', 'AdminToolController@accountIndex');
             Route::get('document_category', 'AdminToolController@documentIndex');
-            Route::get('expense_category', 'AdminToolController@expenseIndex');
-            Route::get('vendor', 'AdminToolController@vendorIndex');
-            Route::get('target_area', 'AdminToolController@targetIndex');
             Route::get('county', 'AdminToolController@countyIndex');
             Route::get('emails', 'PagesController@emailsTab');
+        });
+
+        // Admin store
+        Route::group(['prefix'=>'admin'], function () {
+            Route::post('boilerplate/store/{id?}', 'AdminToolController@boilerplateStore');
+            Route::post('program/store/{id?}', 'AdminToolController@programStore');
+            Route::post('document_category/store/{id?}', 'AdminToolController@documentCategoryStore');
+            Route::post('county/store/{id?}', 'AdminToolController@countyStore');
         });
 
     // });
@@ -279,17 +277,7 @@ Route::get('/notes/parcel/{parcel}.json', 'NoteController@notesFromParcelIdJson'
 Route::get('/external-window/print-notes-{parcel}.html', 'NoteController@printNotes')->name('notes.print');
 
 //Admin store
-Route::group(['prefix'=>'admin'], function () {
-    Route::post('entity/store/{id?}', 'AdminToolController@entityStore');
-    Route::post('program/store/{id?}', 'AdminToolController@programStore');
-    Route::post('rule/store/{id?}', 'AdminToolController@ruleStore');
-    Route::post('account/store/{id?}', 'AdminToolController@accountStore');
-    Route::post('document_category/store/{id?}', 'AdminToolController@documentCategoryStore');
-    Route::post('expense_category/store/{id?}', 'AdminToolController@expenseCategoryStore');
-    Route::post('vendor/store/{id?}', 'AdminToolController@vendorStore');
-    Route::post('target_area/store/{id?}', 'AdminToolController@targetAreaStore');
-    Route::post('county/store/{id?}', 'AdminToolController@countyStore');
-});
+
 
 //Admin Deactivate/Activate
 Route::group(['prefix'=>'modals/admin'], function () {

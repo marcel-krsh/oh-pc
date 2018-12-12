@@ -13,8 +13,8 @@
             <tr>
                 <td><small>{{$data->name}}</small></td>
                 <td><small>{{$data->boilerplate}}</small></td>
-                <td><small>@if($data->user){{$data->user->first_name.' '.$data->user->last_name}}@endif</small></td>
-                <td><small>{{$data->global}}</small></td>
+                <td><small>@if($data->user){{$data->user->name}}@endif</small></td>
+                <td><small>@if($data->global)Yes @else No @endif</small></td>
             </tr>
             @endforeach
 

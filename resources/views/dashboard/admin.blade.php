@@ -9,7 +9,7 @@
             <ul style="list-style-type: none; padding:0">
                 <li>
                 <a onclick="dynamicModalLoad('admin/document_category/create')" class="uk-button uk-button-default uk-width-2-5@m">CREATE NEW DOCUMENT CATEGORY</a>
-                <a onclick="dynamicModalLoad('admin/program/create')" class="uk-button uk-button-default uk-width-2-5@m uk-float-right">CREATE NEW BOILERPLATE</a>
+                <a onclick="dynamicModalLoad('admin/boilerplate/create')" class="uk-button uk-button-default uk-width-2-5@m uk-float-right">CREATE NEW BOILERPLATE</a>
                 <hr class="dashed-hr uk-margin-bottom">
                 </li>
                 <li>

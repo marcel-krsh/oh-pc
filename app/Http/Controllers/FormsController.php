@@ -112,7 +112,7 @@ class FormsController extends Controller
      */
     public function checkbox($array)
     {
-        $row = [['type'=>'checkbox','for'=>$array[0],'id'=>$array[0],'required'=>$array[5]]];
+        $row = ['type'=>'checkbox','for'=>$array[0],'id'=>$array[0],'required'=>$array[5]];
         $row['name']=$array[1];
         $row['value']=$array[2];
         $row['optionLabel']=$array[3];

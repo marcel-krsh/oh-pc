@@ -27,7 +27,7 @@ class Boilerplate extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function creator() : HasOne
+    public function user() : HasOne
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'creator_id');
     }
