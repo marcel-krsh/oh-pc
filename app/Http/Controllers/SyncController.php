@@ -12,8 +12,8 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncProjectFinancial;
-use App\Models\ProjectFinancial;
+use App\Models\SyncProjectProgram;
+use App\Models\ProjectProgram;
 
 
 
@@ -22,7 +22,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// ProjectFinancial Sync
+        /////// ProjectProgram Sync
         /////
 
         /// get last modified date inside the database
@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncProjectFinancial::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncProjectProgram::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -48,7 +48,7 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listProjectFinancials(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listProjectPrograms(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             //dd($syncData);
@@ -57,7 +57,7 @@ class SyncController extends Controller
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listProjectFinancials($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listProjectPrograms($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
                         //dd('Page Count is Higher',$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     }
@@ -65,10 +65,10 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProjectFinancial::select('id','allita_id','last_edited','updated_at')->where('project_financial_key',$v['attributes']['developmentFinancialKey'])->first();
+                            $updateRecord = SyncProjectProgram::select('id','allita_id','last_edited','updated_at')->where('project_program_key',$v['attributes']['developmentProgramKey'])->first();
                             // convert booleans
-                            // settype($v['attributes']['isActive'], 'boolean');
-                            // settype($v['attributes']['isProjectFinancialHandicapAccessible'], 'boolean');
+                             settype($v['attributes']['floatingUnits'], 'boolean');
+                            // settype($v['attributes']['isProjectProgramHandicapAccessible'], 'boolean');
 
                             // Set dates older than 1950 to be NULL:
                             // if($v['attributes']['comment'] < 1951){
@@ -88,7 +88,7 @@ class SyncController extends Controller
                                 // record exists - get matching table record
 
                                 /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                                $allitaTableRecord = ProjectFinancial::find($updateRecord->allita_id);
+                                $allitaTableRecord = ProjectProgram::find($updateRecord->allita_id);
                                 /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
@@ -109,16 +109,29 @@ class SyncController extends Controller
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        SyncProjectFinancial::where('id',$updateRecord['id'])
+                                        SyncProjectProgram::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
                                             
-                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
-                                            'financial_type_key'=>$v['attributes']['financialTypeKey'],
-                                            'amount'=>$v['attributes']['amount'],
                                             'project_key'=>$v['attributes']['developmentKey'],
+                                            
+                                            'program_key'=>$v['attributes']['programKey'],
+                                            'development_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
+                                            'award_number'=>$v['attributes']['awardNumber'],
+                                            'application_number'=>$v['attributes']['applicationNumber'],
+                                            'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
+                                            'assisted_units_actual'=>$v['attributes']['assistedUnitsActual'],
+                                            'floating_units'=>$v['attributes']['floatingUnits'],
+                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
+                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
+                                            'first_year_award_claimed'=>$v['attributes']['firstYearAwardClaimed'],
+                                            'federal_minimum_set_aside_key'=>$v['attributes']['federal_minimum_set_aside_key'],
+                                            'special_needs_units'=>$v['attributes']['special_needs_units'],
+                                            'non_special_needs_units'=>$v['attributes']['non_special_needs_units'],
+                                            'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
+                                            'employee_unit_count'=>$v['attributes']['employeeUnitCount'],
+                                            'guide_l_year'=>$v['attributes']['guideLYear'],
                                             
                                             
                                             
@@ -126,17 +139,30 @@ class SyncController extends Controller
                                             
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
-                                        $UpdateAllitaValues = SyncProjectFinancial::find($updateRecord['id']);
+                                        $UpdateAllitaValues = SyncProjectProgram::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
                                             
                                             
                                             
-                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
-                                            'financial_type_key'=>$v['attributes']['financialTypeKey'],
-                                            'amount'=>$v['attributes']['amount'],
                                             'project_key'=>$v['attributes']['developmentKey'],
+                                            
+                                            'program_key'=>$v['attributes']['programKey'],
+                                            'development_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
+                                            'award_number'=>$v['attributes']['awardNumber'],
+                                            'application_number'=>$v['attributes']['applicationNumber'],
+                                            'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
+                                            'assisted_units_actual'=>$v['attributes']['assistedUnitsActual'],
+                                            'floating_units'=>$v['attributes']['floatingUnits'],
+                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
+                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
+                                            'first_year_award_claimed'=>$v['attributes']['firstYearAwardClaimed'],
+                                            'federal_minimum_set_aside_key'=>$v['attributes']['federal_minimum_set_aside_key'],
+                                            'special_needs_units'=>$v['attributes']['special_needs_units'],
+                                            'non_special_needs_units'=>$v['attributes']['non_special_needs_units'],
+                                            'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
+                                            'employee_unit_count'=>$v['attributes']['employeeUnitCount'],
+                                            'guide_l_year'=>$v['attributes']['guideLYear'],
                                             
                                             
                                             
@@ -152,41 +178,67 @@ class SyncController extends Controller
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = ProjectFinancial::create([
+                                        $allitaTableRecord = ProjectProgram::create([
+                                            
+                                            
+                                            
+                                            
+                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            
+                                            'program_key'=>$v['attributes']['programKey'],
+                                            'development_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
+                                            'award_number'=>$v['attributes']['awardNumber'],
+                                            'application_number'=>$v['attributes']['applicationNumber'],
+                                            'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
+                                            'assisted_units_actual'=>$v['attributes']['assistedUnitsActual'],
+                                            'floating_units'=>$v['attributes']['floatingUnits'],
+                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
+                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
+                                            'first_year_award_claimed'=>$v['attributes']['firstYearAwardClaimed'],
+                                            'federal_minimum_set_aside_key'=>$v['attributes']['federal_minimum_set_aside_key'],
+                                            'special_needs_units'=>$v['attributes']['special_needs_units'],
+                                            'non_special_needs_units'=>$v['attributes']['non_special_needs_units'],
+                                            'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
+                                            'employee_unit_count'=>$v['attributes']['employeeUnitCount'],
+                                            'guide_l_year'=>$v['attributes']['guideLYear'],
+                                            
                                             
                                             
                                             
                                             
                                             'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
-                                            'financial_type_key'=>$v['attributes']['financialTypeKey'],
-                                            'amount'=>$v['attributes']['amount'],
-                                            'project_key'=>$v['attributes']['developmentKey'],
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            'project_financial_key'=>$v['attributes']['developmentFinancialKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
-                                        $syncTableRecord = SyncProjectFinancial::where('id',$updateRecord['id'])
+                                        $syncTableRecord = SyncProjectProgram::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
                                             
                                             
-                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
-                                            'financial_type_key'=>$v['attributes']['financialTypeKey'],
-                                            'amount'=>$v['attributes']['amount'],
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
+                                            'program_key'=>$v['attributes']['programKey'],
+                                            'development_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
+                                            'award_number'=>$v['attributes']['awardNumber'],
+                                            'application_number'=>$v['attributes']['applicationNumber'],
+                                            'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
+                                            'assisted_units_actual'=>$v['attributes']['assistedUnitsActual'],
+                                            'floating_units'=>$v['attributes']['floatingUnits'],
+                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
+                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
+                                            'first_year_award_claimed'=>$v['attributes']['firstYearAwardClaimed'],
+                                            'federal_minimum_set_aside_key'=>$v['attributes']['federal_minimum_set_aside_key'],
+                                            'special_needs_units'=>$v['attributes']['special_needs_units'],
+                                            'non_special_needs_units'=>$v['attributes']['non_special_needs_units'],
+                                            'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
+                                            'employee_unit_count'=>$v['attributes']['employeeUnitCount'],
+                                            'guide_l_year'=>$v['attributes']['guideLYear'],
                                             
                                             
                                             
                                             
-                                            'project_financial_key'=>$v['attributes']['developmentFinancialKey'],
+                                            
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -202,39 +254,66 @@ class SyncController extends Controller
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = ProjectFinancial::create([
+                                $allitaTableRecord = ProjectProgram::create([
                                     
 
                                             
                                             'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
-                                            'financial_type_key'=>$v['attributes']['financialTypeKey'],
-                                            'amount'=>$v['attributes']['amount'],
                                             'project_key'=>$v['attributes']['developmentKey'],
+                                            
+                                            'program_key'=>$v['attributes']['programKey'],
+                                            'development_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
+                                            'award_number'=>$v['attributes']['awardNumber'],
+                                            'application_number'=>$v['attributes']['applicationNumber'],
+                                            'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
+                                            'assisted_units_actual'=>$v['attributes']['assistedUnitsActual'],
+                                            'floating_units'=>$v['attributes']['floatingUnits'],
+                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
+                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
+                                            'first_year_award_claimed'=>$v['attributes']['firstYearAwardClaimed'],
+                                            'federal_minimum_set_aside_key'=>$v['attributes']['federal_minimum_set_aside_key'],
+                                            'special_needs_units'=>$v['attributes']['special_needs_units'],
+                                            'non_special_needs_units'=>$v['attributes']['non_special_needs_units'],
+                                            'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
+                                            'employee_unit_count'=>$v['attributes']['employeeUnitCount'],
+                                            'guide_l_year'=>$v['attributes']['guideLYear'],
                                             
                                             
                                             
                                             
                                     
-                                    'project_financial_key'=>$v['attributes']['developmentFinancialKey'],
+                                    'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
-                                $syncTableRecord = SyncProjectFinancial::create([
+                                $syncTableRecord = SyncProjectProgram::create([
                                             
                                             
                                             
                                             
-                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
-                                            'financial_type_key'=>$v['attributes']['financialTypeKey'],
-                                            'amount'=>$v['attributes']['amount'],
                                             'project_key'=>$v['attributes']['developmentKey'],
+                                            
+                                            'program_key'=>$v['attributes']['programKey'],
+                                            'development_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
+                                            'award_number'=>$v['attributes']['awardNumber'],
+                                            'application_number'=>$v['attributes']['applicationNumber'],
+                                            'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
+                                            'assisted_units_actual'=>$v['attributes']['assistedUnitsActual'],
+                                            'floating_units'=>$v['attributes']['floatingUnits'],
+                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
+                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
+                                            'first_year_award_claimed'=>$v['attributes']['firstYearAwardClaimed'],
+                                            'federal_minimum_set_aside_key'=>$v['attributes']['federal_minimum_set_aside_key'],
+                                            'special_needs_units'=>$v['attributes']['special_needs_units'],
+                                            'non_special_needs_units'=>$v['attributes']['non_special_needs_units'],
+                                            'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
+                                            'employee_unit_count'=>$v['attributes']['employeeUnitCount'],
+                                            'guide_l_year'=>$v['attributes']['guideLYear'],
                                             
                                             
                                             
                                             
 
-                                        'project_financial_key'=>$v['attributes']['developmentFinancialKey'],
+                                        'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
