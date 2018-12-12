@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listComplianceContacts(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -65,9 +65,9 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncComplianceContact::select('id','allita_id','last_edited','updated_at')->where('project_program_key',$v['attributes']['developmentProgramKey'])->first();
+                            $updateRecord = SyncComplianceContact::select('id','allita_id','last_edited','updated_at')->where('compliance_contact_key',$v['attributes']['complianceContactKey'])->first();
                             // convert booleans
-                             settype($v['attributes']['floatingUnits'], 'boolean');
+                            // settype($v['attributes']['floatingUnits'], 'boolean');
                             // settype($v['attributes']['isComplianceContactHandicapAccessible'], 'boolean');
 
                             // Set dates older than 1950 to be NULL:
@@ -114,24 +114,12 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'address'=>$v['attributes']['address'],
                                             
-                                            'program_key'=>$v['attributes']['programKey'],
-                                            'project_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
-                                            'award_number'=>$v['attributes']['awardNumber'],
-                                            'application_number'=>$v['attributes']['applicationNumber'],
-                                            'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
-                                            'assisted_units_actual'=>$v['attributes']['assistedUnitsActual'],
-                                            'floating_units'=>$v['attributes']['floatingUnits'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'first_year_award_claimed'=>$v['attributes']['firstYearAwardClaimed'],
-                                            'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
-                                            'special_needs_units'=>$v['attributes']['specialNeedsUnits'],
-                                            'non_special_needs_units'=>$v['attributes']['nonSpecialNeedsUnits'],
-                                            'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
-                                            'employee_unit_count'=>$v['attributes']['employeeUnitCount'],
-                                            'guide_l_year'=>$v['attributes']['guideLYear'],
+                                            'city'=>$v['attributes']['city'],
+                                            'zip'=>$v['attributes']['zip'],
+                                            'award_number'=>$v['attributes']['reviewCycle'],
+                                            'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
                                             
@@ -145,24 +133,12 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'address'=>$v['attributes']['address'],
                                             
-                                            'program_key'=>$v['attributes']['programKey'],
-                                            'project_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
-                                            'award_number'=>$v['attributes']['awardNumber'],
-                                            'application_number'=>$v['attributes']['applicationNumber'],
-                                            'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
-                                            'assisted_units_actual'=>$v['attributes']['assistedUnitsActual'],
-                                            'floating_units'=>$v['attributes']['floatingUnits'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'first_year_award_claimed'=>$v['attributes']['firstYearAwardClaimed'],
-                                            'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
-                                            'special_needs_units'=>$v['attributes']['specialNeedsUnits'],
-                                            'non_special_needs_units'=>$v['attributes']['nonSpecialNeedsUnits'],
-                                            'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
-                                            'employee_unit_count'=>$v['attributes']['employeeUnitCount'],
-                                            'guide_l_year'=>$v['attributes']['guideLYear'],
+                                            'city'=>$v['attributes']['city'],
+                                            'zip'=>$v['attributes']['zip'],
+                                            'award_number'=>$v['attributes']['reviewCycle'],
+                                            'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
                                             
@@ -183,30 +159,18 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'address'=>$v['attributes']['address'],
                                             
-                                            'program_key'=>$v['attributes']['programKey'],
-                                            'project_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
-                                            'award_number'=>$v['attributes']['awardNumber'],
-                                            'application_number'=>$v['attributes']['applicationNumber'],
-                                            'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
-                                            'assisted_units_actual'=>$v['attributes']['assistedUnitsActual'],
-                                            'floating_units'=>$v['attributes']['floatingUnits'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'first_year_award_claimed'=>$v['attributes']['firstYearAwardClaimed'],
-                                            'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
-                                            'special_needs_units'=>$v['attributes']['specialNeedsUnits'],
-                                            'non_special_needs_units'=>$v['attributes']['nonSpecialNeedsUnits'],
-                                            'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
-                                            'employee_unit_count'=>$v['attributes']['employeeUnitCount'],
-                                            'guide_l_year'=>$v['attributes']['guideLYear'],
+                                            'city'=>$v['attributes']['city'],
+                                            'zip'=>$v['attributes']['zip'],
+                                            'award_number'=>$v['attributes']['reviewCycle'],
+                                            'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
                                             
                                             
                                             
-                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncComplianceContact::where('id',$updateRecord['id'])
@@ -215,30 +179,18 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'address'=>$v['attributes']['address'],
                                             
-                                            'program_key'=>$v['attributes']['programKey'],
-                                            'project_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
-                                            'award_number'=>$v['attributes']['awardNumber'],
-                                            'application_number'=>$v['attributes']['applicationNumber'],
-                                            'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
-                                            'assisted_units_actual'=>$v['attributes']['assistedUnitsActual'],
-                                            'floating_units'=>$v['attributes']['floatingUnits'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'first_year_award_claimed'=>$v['attributes']['firstYearAwardClaimed'],
-                                            'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
-                                            'special_needs_units'=>$v['attributes']['specialNeedsUnits'],
-                                            'non_special_needs_units'=>$v['attributes']['nonSpecialNeedsUnits'],
-                                            'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
-                                            'employee_unit_count'=>$v['attributes']['employeeUnitCount'],
-                                            'guide_l_year'=>$v['attributes']['guideLYear'],
+                                            'city'=>$v['attributes']['city'],
+                                            'zip'=>$v['attributes']['zip'],
+                                            'review_cycle'=>$v['attributes']['reviewCycle'],
+                                            'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
                                             
                                             
                                             
-                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -258,31 +210,19 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
+                                            'address'=>$v['attributes']['address'],
                                             
-                                            'program_key'=>$v['attributes']['programKey'],
-                                            'project_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
-                                            'award_number'=>$v['attributes']['awardNumber'],
-                                            'application_number'=>$v['attributes']['applicationNumber'],
-                                            'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
-                                            'assisted_units_actual'=>$v['attributes']['assistedUnitsActual'],
-                                            'floating_units'=>$v['attributes']['floatingUnits'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'first_year_award_claimed'=>$v['attributes']['firstYearAwardClaimed'],
-                                            'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
-                                            'special_needs_units'=>$v['attributes']['specialNeedsUnits'],
-                                            'non_special_needs_units'=>$v['attributes']['nonSpecialNeedsUnits'],
-                                            'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
-                                            'employee_unit_count'=>$v['attributes']['employeeUnitCount'],
-                                            'guide_l_year'=>$v['attributes']['guideLYear'],
+                                            'city'=>$v['attributes']['city'],
+                                            'zip'=>$v['attributes']['zip'],
+                                            'award_number'=>$v['attributes']['reviewCycle'],
+                                            'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
                                             
                                             
                                     
-                                    'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                    'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncComplianceContact::create([
@@ -290,30 +230,18 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'address'=>$v['attributes']['address'],
                                             
-                                            'program_key'=>$v['attributes']['programKey'],
-                                            'project_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
-                                            'award_number'=>$v['attributes']['awardNumber'],
-                                            'application_number'=>$v['attributes']['applicationNumber'],
-                                            'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
-                                            'assisted_units_actual'=>$v['attributes']['assistedUnitsActual'],
-                                            'floating_units'=>$v['attributes']['floatingUnits'],
-                                            'total_building_count'=>$v['attributes']['totalBuildingCount'],
-                                            'total_unit_count'=>$v['attributes']['totalUnitCount'],
-                                            'first_year_award_claimed'=>$v['attributes']['firstYearAwardClaimed'],
-                                            'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
-                                            'special_needs_units'=>$v['attributes']['specialNeedsUnits'],
-                                            'non_special_needs_units'=>$v['attributes']['nonSpecialNeedsUnits'],
-                                            'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
-                                            'employee_unit_count'=>$v['attributes']['employeeUnitCount'],
-                                            'guide_l_year'=>$v['attributes']['guideLYear'],
+                                            'city'=>$v['attributes']['city'],
+                                            'zip'=>$v['attributes']['zip'],
+                                            'award_number'=>$v['attributes']['reviewCycle'],
+                                            'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
                                             
                                             
 
-                                        'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                        'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
