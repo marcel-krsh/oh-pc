@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listBuildings(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -65,18 +65,18 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncBuilding::select('id','allita_id','last_edited','updated_at')->where('compliance_contact_key',$v['attributes']['complianceContactKey'])->first();
+                            $updateRecord = SyncBuilding::select('id','allita_id','last_edited','updated_at')->where('building_key',$v['attributes']['buildingKey'])->first();
                             // convert booleans
-                            // settype($v['attributes']['floatingUnits'], 'boolean');
+                             settype($v['attributes']['ownerPaidUtilities'], 'boolean');
                             // settype($v['attributes']['isBuildingHandicapAccessible'], 'boolean');
 
                             // Set dates older than 1950 to be NULL:
-                            // if($v['attributes']['comment'] < 1951){
-                            //     $v['attributes']['comment'] = NULL;
-                            // }
-                            // if($v['attributes']['completedDate'] < 1951){
-                            //     $v['attributes']['completedDate'] = NULL;
-                            // }
+                             if($v['attributes']['acquisitionDate'] < 1951){
+                                $v['attributes']['acquisitionDate'] = NULL;
+                            }
+                            if($v['attributes']['buildingBuiltDate'] < 1951){
+                                $v['attributes']['buildingBuiltDate'] = NULL;
+                            }
                             // if($v['attributes']['confirmedDate'] < 1951){
                             //     $v['attributes']['confirmedDate'] = NULL;
                             // }
@@ -114,13 +114,15 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'address'=>$v['attributes']['address'],
-                                            'project_key'=>$v['attributes']['developmentKey'],
-                                            
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'building_status_key'=>$v['attributes']['buildingStatusKey'],
+                                            'building_name'=>$v['attributes']['building_name'],
+                                            'physical_address_key'=>$v['attributes']['physical_address_key'],
+                                            'in_service_date'=>$v['attributes']['inServiceDate'],
+                                            'applicable_fraction'=>$v['attributes']['applicableFraction'],
+                                            'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
+                                            'acquisition_date'=>$v['attributes']['acquisitionDate'],
+                                            'building_built_date'=>$v['attributes']['buildingBuiltDate'],
                                             
                                             
                                             
@@ -134,13 +136,15 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'address'=>$v['attributes']['address'],
-                                            'project_key'=>$v['attributes']['developmentKey'],
-                                            
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'building_status_key'=>$v['attributes']['buildingStatusKey'],
+                                            'building_name'=>$v['attributes']['building_name'],
+                                            'physical_address_key'=>$v['attributes']['physical_address_key'],
+                                            'in_service_date'=>$v['attributes']['inServiceDate'],
+                                            'applicable_fraction'=>$v['attributes']['applicableFraction'],
+                                            'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
+                                            'acquisition_date'=>$v['attributes']['acquisitionDate'],
+                                            'building_built_date'=>$v['attributes']['buildingBuiltDate'],
                                             
                                             
                                             
@@ -161,19 +165,21 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'address'=>$v['attributes']['address'],
-                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'building_status_key'=>$v['attributes']['buildingStatusKey'],
+                                            'building_name'=>$v['attributes']['building_name'],
+                                            'physical_address_key'=>$v['attributes']['physical_address_key'],
+                                            'in_service_date'=>$v['attributes']['inServiceDate'],
+                                            'applicable_fraction'=>$v['attributes']['applicableFraction'],
+                                            'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
+                                            'acquisition_date'=>$v['attributes']['acquisitionDate'],
+                                            'building_built_date'=>$v['attributes']['buildingBuiltDate'],
                                             
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
                                             
                                             
-                                            
-                                            'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
+                                            'building_key'=>$v['attributes']['buildingKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncBuilding::where('id',$updateRecord['id'])
@@ -182,19 +188,21 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'address'=>$v['attributes']['address'],
-                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'building_status_key'=>$v['attributes']['buildingStatusKey'],
+                                            'building_name'=>$v['attributes']['building_name'],
+                                            'physical_address_key'=>$v['attributes']['physical_address_key'],
+                                            'in_service_date'=>$v['attributes']['inServiceDate'],
+                                            'applicable_fraction'=>$v['attributes']['applicableFraction'],
+                                            'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
+                                            'acquisition_date'=>$v['attributes']['acquisitionDate'],
+                                            'building_built_date'=>$v['attributes']['buildingBuiltDate'],
                                             
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
                                             
                                             
-                                            
-                                            'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
+                                            'building_key'=>$v['attributes']['buildingKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -214,20 +222,22 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
-                                            'address'=>$v['attributes']['address'],
-                                            'project_key'=>$v['attributes']['developmentKey'],
-                                            
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            'building_key'=>$v['attributes']['buildingKey'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'building_status_key'=>$v['attributes']['buildingStatusKey'],
+                                            'building_name'=>$v['attributes']['building_name'],
+                                            'physical_address_key'=>$v['attributes']['physical_address_key'],
+                                            'in_service_date'=>$v['attributes']['inServiceDate'],
+                                            'applicable_fraction'=>$v['attributes']['applicableFraction'],
+                                            'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
+                                            'acquisition_date'=>$v['attributes']['acquisitionDate'],
+                                            'building_built_date'=>$v['attributes']['buildingBuiltDate'],
                                             
                                             
                                             
                                             
                                     
-                                    'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
+                                    'building_key'=>$v['attributes']['buildingKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncBuilding::create([
@@ -235,19 +245,21 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'address'=>$v['attributes']['address'],
-                                            'project_key'=>$v['attributes']['developmentKey'],
-                                            
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'building_status_key'=>$v['attributes']['buildingStatusKey'],
+                                            'building_name'=>$v['attributes']['building_name'],
+                                            'physical_address_key'=>$v['attributes']['physical_address_key'],
+                                            'in_service_date'=>$v['attributes']['inServiceDate'],
+                                            'applicable_fraction'=>$v['attributes']['applicableFraction'],
+                                            'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
+                                            'acquisition_date'=>$v['attributes']['acquisitionDate'],
+                                            'building_built_date'=>$v['attributes']['buildingBuiltDate'],
                                             
                                             
                                             
                                             
 
-                                        'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
+                                        'building_key'=>$v['attributes']['buildingKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
