@@ -482,6 +482,26 @@ class DevcoService extends PCAPIService
 	}
 
 	/**
+	 * List Project Financials
+	 * 
+	 * @param  int|integer $page
+	 * @param  int|null $user
+	 * @param  string|null $user_email
+	 * @param  string|null $user_name
+	 * @param  int|null $device_id
+	 * @param  string|null $device_name
+	 * @return object
+	 */
+	public function listProjectFinancials(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	{
+		$params = "page={$page}&newer_than={$newer_than}";
+
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+		return $this->get("devco/development_financials/?{$log_params}&{$params}");
+	}
+
+	/**
 	 * Update Development
 	 * 
 	 * @param  int $development_key
@@ -1514,7 +1534,7 @@ class DevcoService extends PCAPIService
 		$params = "page={$page}&newer_than={$newer_than}";
 
 		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
-		Log::info("URL sent to API for Utility Allowances devco/utility_allowances?{$params}&{$log_params} pages of results.");
+		//Log::info("URL sent to API for Utility Allowances devco/utility_allowances?{$params}&{$log_params} pages of results.");
 		return $this->get("devco/utility_allowances?{$params}&{$log_params}");
 	}
 
@@ -1560,5 +1580,27 @@ class DevcoService extends PCAPIService
 		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/development_amenities?{$params}&{$log_params}");
+	}
+
+	/**
+	 * List Project Programs
+	 * 
+	 * @param  int $unit_key
+	 * @param  int $page
+	 * @param  string|null $newer_than
+	 * @param  int|null $user
+	 * @param  string|null $user_email
+	 * @param  string|null $user_name
+	 * @param  int|null $device_id
+	 * @param  string|null $device_name
+	 * @return object
+	 */
+	public function listProjectPrograms(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	{
+		$params = "page={$page}&newer_than={$newer_than}";
+
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+		return $this->get("devco/project_programs?{$params}&{$log_params}");
 	}
 }
