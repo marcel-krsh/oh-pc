@@ -115,7 +115,6 @@ class SyncController extends Controller
                                             
                                             
                                             'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'building_status_key'=>$v['attributes']['buildingStatusKey'],
                                             'area_code'=>$v['attributes']['areaCode'],
                                             'phone_number'=>$v['attributes']['phoneNumber'],
                                             'extension'=>$v['attributes']['extension'],
@@ -133,7 +132,6 @@ class SyncController extends Controller
                                             
                                             
                                             'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'building_status_key'=>$v['attributes']['buildingStatusKey'],
                                             'area_code'=>$v['attributes']['areaCode'],
                                             'phone_number'=>$v['attributes']['phoneNumber'],
                                             'extension'=>$v['attributes']['extension'],
@@ -158,7 +156,6 @@ class SyncController extends Controller
                                             
                                             
                                             'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'building_status_key'=>$v['attributes']['buildingStatusKey'],
                                             'area_code'=>$v['attributes']['areaCode'],
                                             'phone_number'=>$v['attributes']['phoneNumber'],
                                             'extension'=>$v['attributes']['extension'],
@@ -177,7 +174,6 @@ class SyncController extends Controller
                                             
                                             
                                             'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'building_status_key'=>$v['attributes']['buildingStatusKey'],
                                             'area_code'=>$v['attributes']['areaCode'],
                                             'phone_number'=>$v['attributes']['phoneNumber'],
                                             'extension'=>$v['attributes']['extension'],
@@ -208,7 +204,6 @@ class SyncController extends Controller
                                             
                                             'phone_number_key'=>$v['attributes']['phoneNumberKey'],
                                             'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'building_status_key'=>$v['attributes']['buildingStatusKey'],
                                             'area_code'=>$v['attributes']['areaCode'],
                                             'phone_number'=>$v['attributes']['phoneNumber'],
                                             'extension'=>$v['attributes']['extension'],
@@ -226,7 +221,6 @@ class SyncController extends Controller
                                             
                                             
                                             'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'building_status_key'=>$v['attributes']['buildingStatusKey'],
                                             'area_code'=>$v['attributes']['areaCode'],
                                             'phone_number'=>$v['attributes']['phoneNumber'],
                                             'extension'=>$v['attributes']['extension'],
