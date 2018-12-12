@@ -12,8 +12,8 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncProjectDate;
-use App\Models\ProjectDate;
+use App\Models\SyncUtilityAllowanceType;
+use App\Models\UtilityAllowanceType;
 
 
 
@@ -22,7 +22,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// ProjectDate Sync
+        /////// UtilityAllowanceType Sync
         /////
 
         /// get last modified date inside the database
@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncProjectDate::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncUtilityAllowanceType::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -48,7 +48,7 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listProjectDates(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listUtilityAllowanceTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             dd($syncData);
@@ -57,7 +57,7 @@ class SyncController extends Controller
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listProjectDates($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listUtilityAllowanceTypes($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
                         //dd('Page Count is Higher',$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     }
@@ -65,10 +65,10 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProjectDate::select('id','allita_id','last_edited','updated_at')->where('compliance_contact_key',$v['attributes']['complianceContactKey'])->first();
+                            $updateRecord = SyncUtilityAllowanceType::select('id','allita_id','last_edited','updated_at')->where('compliance_contact_key',$v['attributes']['complianceContactKey'])->first();
                             // convert booleans
                             // settype($v['attributes']['floatingUnits'], 'boolean');
-                            // settype($v['attributes']['isProjectDateHandicapAccessible'], 'boolean');
+                            // settype($v['attributes']['isUtilityAllowanceTypeHandicapAccessible'], 'boolean');
 
                             // Set dates older than 1950 to be NULL:
                             // if($v['attributes']['comment'] < 1951){
@@ -88,7 +88,7 @@ class SyncController extends Controller
                                 // record exists - get matching table record
 
                                 /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                                $allitaTableRecord = ProjectDate::find($updateRecord->allita_id);
+                                $allitaTableRecord = UtilityAllowanceType::find($updateRecord->allita_id);
                                 /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
@@ -109,7 +109,7 @@ class SyncController extends Controller
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        SyncProjectDate::where('id',$updateRecord['id'])
+                                        SyncUtilityAllowanceType::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
@@ -128,7 +128,7 @@ class SyncController extends Controller
                                             
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
-                                        $UpdateAllitaValues = SyncProjectDate::find($updateRecord['id']);
+                                        $UpdateAllitaValues = SyncUtilityAllowanceType::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
                                             
@@ -156,7 +156,7 @@ class SyncController extends Controller
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = ProjectDate::create([
+                                        $allitaTableRecord = UtilityAllowanceType::create([
                                             
                                             
                                             
@@ -176,7 +176,7 @@ class SyncController extends Controller
                                             'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
-                                        $syncTableRecord = SyncProjectDate::where('id',$updateRecord['id'])
+                                        $syncTableRecord = SyncUtilityAllowanceType::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
@@ -210,7 +210,7 @@ class SyncController extends Controller
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = ProjectDate::create([
+                                $allitaTableRecord = UtilityAllowanceType::create([
                                     
 
                                             
@@ -230,7 +230,7 @@ class SyncController extends Controller
                                     'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
-                                $syncTableRecord = SyncProjectDate::create([
+                                $syncTableRecord = SyncUtilityAllowanceType::create([
                                             
                                             
                                             
