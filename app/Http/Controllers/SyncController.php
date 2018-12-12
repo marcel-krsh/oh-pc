@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listPhoneNumbers(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -67,16 +67,16 @@ class SyncController extends Controller
                             // check if record exists
                             $updateRecord = SyncPhoneNumber::select('id','allita_id','last_edited','updated_at')->where('phone_number_key',$v['attributes']['phoneNumberKey'])->first();
                             // convert booleans
-                             settype($v['attributes']['ownerPaidUtilities'], 'boolean');
+                             //settype($v['attributes']['ownerPaidUtilities'], 'boolean');
                             // settype($v['attributes']['isPhoneNumberHandicapAccessible'], 'boolean');
 
                             // Set dates older than 1950 to be NULL:
-                             if($v['attributes']['acquisitionDate'] < 1951){
-                                $v['attributes']['acquisitionDate'] = NULL;
-                            }
-                            if($v['attributes']['buildingBuiltDate'] < 1951){
-                                $v['attributes']['buildingBuiltDate'] = NULL;
-                            }
+                            //  if($v['attributes']['acquisitionDate'] < 1951){
+                            //     $v['attributes']['acquisitionDate'] = NULL;
+                            // }
+                            // if($v['attributes']['buildingBuiltDate'] < 1951){
+                            //     $v['attributes']['buildingBuiltDate'] = NULL;
+                            // }
                             // if($v['attributes']['confirmedDate'] < 1951){
                             //     $v['attributes']['confirmedDate'] = NULL;
                             // }
@@ -114,15 +114,11 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
                                             'building_status_key'=>$v['attributes']['buildingStatusKey'],
-                                            'building_name'=>$v['attributes']['buildingName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'in_service_date'=>$v['attributes']['inServiceDate'],
-                                            'applicable_fraction'=>$v['attributes']['applicableFraction'],
-                                            'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
-                                            'acquisition_date'=>$v['attributes']['acquisitionDate'],
-                                            'building_built_date'=>$v['attributes']['buildingBuiltDate'],
+                                            'area_code'=>$v['attributes']['areaCode'],
+                                            'phone_number'=>$v['attributes']['phoneNumber'],
+                                            'extension'=>$v['attributes']['extension'],
                                             
                                             
                                             
@@ -136,15 +132,11 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
                                             'building_status_key'=>$v['attributes']['buildingStatusKey'],
-                                            'building_name'=>$v['attributes']['buildingName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'in_service_date'=>$v['attributes']['inServiceDate'],
-                                            'applicable_fraction'=>$v['attributes']['applicableFraction'],
-                                            'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
-                                            'acquisition_date'=>$v['attributes']['acquisitionDate'],
-                                            'building_built_date'=>$v['attributes']['buildingBuiltDate'],
+                                            'area_code'=>$v['attributes']['areaCode'],
+                                            'phone_number'=>$v['attributes']['phoneNumber'],
+                                            'extension'=>$v['attributes']['extension'],
                                             
                                             
                                             
@@ -165,15 +157,11 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
                                             'building_status_key'=>$v['attributes']['buildingStatusKey'],
-                                            'building_name'=>$v['attributes']['buildingName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'in_service_date'=>$v['attributes']['inServiceDate'],
-                                            'applicable_fraction'=>$v['attributes']['applicableFraction'],
-                                            'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
-                                            'acquisition_date'=>$v['attributes']['acquisitionDate'],
-                                            'building_built_date'=>$v['attributes']['buildingBuiltDate'],
+                                            'area_code'=>$v['attributes']['areaCode'],
+                                            'phone_number'=>$v['attributes']['phoneNumber'],
+                                            'extension'=>$v['attributes']['extension'],
                                             
                                             
                                             
@@ -188,15 +176,11 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
                                             'building_status_key'=>$v['attributes']['buildingStatusKey'],
-                                            'building_name'=>$v['attributes']['buildingName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'in_service_date'=>$v['attributes']['inServiceDate'],
-                                            'applicable_fraction'=>$v['attributes']['applicableFraction'],
-                                            'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
-                                            'acquisition_date'=>$v['attributes']['acquisitionDate'],
-                                            'building_built_date'=>$v['attributes']['buildingBuiltDate'],
+                                            'area_code'=>$v['attributes']['areaCode'],
+                                            'phone_number'=>$v['attributes']['phoneNumber'],
+                                            'extension'=>$v['attributes']['extension'],
                                             
                                             
                                             
@@ -223,15 +207,11 @@ class SyncController extends Controller
 
                                             
                                             'phone_number_key'=>$v['attributes']['phoneNumberKey'],
-                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
                                             'building_status_key'=>$v['attributes']['buildingStatusKey'],
-                                            'building_name'=>$v['attributes']['buildingName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'in_service_date'=>$v['attributes']['inServiceDate'],
-                                            'applicable_fraction'=>$v['attributes']['applicableFraction'],
-                                            'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
-                                            'acquisition_date'=>$v['attributes']['acquisitionDate'],
-                                            'building_built_date'=>$v['attributes']['buildingBuiltDate'],
+                                            'area_code'=>$v['attributes']['areaCode'],
+                                            'phone_number'=>$v['attributes']['phoneNumber'],
+                                            'extension'=>$v['attributes']['extension'],
                                             
                                             
                                             
@@ -245,15 +225,11 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
                                             'building_status_key'=>$v['attributes']['buildingStatusKey'],
-                                            'building_name'=>$v['attributes']['buildingName'],
-                                            'physical_address_key'=>$v['attributes']['physicalAddressKey'],
-                                            'in_service_date'=>$v['attributes']['inServiceDate'],
-                                            'applicable_fraction'=>$v['attributes']['applicableFraction'],
-                                            'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
-                                            'acquisition_date'=>$v['attributes']['acquisitionDate'],
-                                            'building_built_date'=>$v['attributes']['buildingBuiltDate'],
+                                            'area_code'=>$v['attributes']['areaCode'],
+                                            'phone_number'=>$v['attributes']['phoneNumber'],
+                                            'extension'=>$v['attributes']['extension'],
                                             
                                             
                                             
