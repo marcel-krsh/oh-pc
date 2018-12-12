@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listProjectFinancials(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -65,7 +65,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProjectFinancial::select('id','allita_id','last_edited','updated_at')->where('project_amenity_key',$v['attributes']['developmentFinancialKey'])->first();
+                            $updateRecord = SyncProjectFinancial::select('id','allita_id','last_edited','updated_at')->where('project_financial_key',$v['attributes']['developmentFinancialKey'])->first();
                             // convert booleans
                             // settype($v['attributes']['isActive'], 'boolean');
                             // settype($v['attributes']['isProjectFinancialHandicapAccessible'], 'boolean');
@@ -114,11 +114,11 @@ class SyncController extends Controller
                                             
                                             
                                             
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
+                                            'financial_type_key'=>$v['attributes']['financialTypeKey'],
+                                            'amount'=>$v['attributes']['amount'],
                                             'project_key'=>$v['attributes']['developmentKey'],
-                                            
-                                            'project_program_key'=>$v['attributes']['developmentFinancialKey'],
-                                            'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
-                                            'comment'=>$v['attributes']['comment'],
                                             
                                             
                                             
@@ -132,11 +132,11 @@ class SyncController extends Controller
                                             
                                             
                                             
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
+                                            'financial_type_key'=>$v['attributes']['financialTypeKey'],
+                                            'amount'=>$v['attributes']['amount'],
                                             'project_key'=>$v['attributes']['developmentKey'],
-                                            
-                                            'project_program_key'=>$v['attributes']['developmentFinancialKey'],
-                                            'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
-                                            'comment'=>$v['attributes']['comment'],
                                             
                                             
                                             
@@ -157,17 +157,17 @@ class SyncController extends Controller
                                             
                                             
                                             
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
+                                            'financial_type_key'=>$v['attributes']['financialTypeKey'],
+                                            'amount'=>$v['attributes']['amount'],
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'project_program_key'=>$v['attributes']['developmentFinancialKey'],
-                                            'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
-                                            'comment'=>$v['attributes']['comment'],
                                             
                                             
                                             
                                             
-                                            
-                                            'project_amenity_key'=>$v['attributes']['developmentFinancialKey'],
+                                            'project_financial_key'=>$v['attributes']['developmentFinancialKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncProjectFinancial::where('id',$updateRecord['id'])
@@ -176,17 +176,17 @@ class SyncController extends Controller
                                             
                                             
                                             
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
+                                            'financial_type_key'=>$v['attributes']['financialTypeKey'],
+                                            'amount'=>$v['attributes']['amount'],
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'project_program_key'=>$v['attributes']['developmentFinancialKey'],
-                                            'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
-                                            'comment'=>$v['attributes']['comment'],
                                             
                                             
                                             
                                             
-                                            
-                                            'project_amenity_key'=>$v['attributes']['developmentFinancialKey'],
+                                            'project_financial_key'=>$v['attributes']['developmentFinancialKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -206,18 +206,17 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'project_amenity_key'=>$v['attributes']['developmentFinancialKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
+                                            'financial_type_key'=>$v['attributes']['financialTypeKey'],
+                                            'amount'=>$v['attributes']['amount'],
                                             'project_key'=>$v['attributes']['developmentKey'],
-                                            
-                                            'project_program_key'=>$v['attributes']['developmentFinancialKey'],
-                                            'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
-                                            'comment'=>$v['attributes']['comment'],
                                             
                                             
                                             
                                             
                                     
-                                    'project_amenity_key'=>$v['attributes']['developmentFinancialKey'],
+                                    'project_financial_key'=>$v['attributes']['developmentFinancialKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncProjectFinancial::create([
@@ -225,17 +224,17 @@ class SyncController extends Controller
                                             
                                             
                                             
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'funding_program_key'=>$v['attributes']['fundingProgramKey'],
+                                            'financial_type_key'=>$v['attributes']['financialTypeKey'],
+                                            'amount'=>$v['attributes']['amount'],
                                             'project_key'=>$v['attributes']['developmentKey'],
-                                            
-                                            'project_program_key'=>$v['attributes']['developmentFinancialKey'],
-                                            'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
-                                            'comment'=>$v['attributes']['comment'],
                                             
                                             
                                             
                                             
 
-                                        'project_amenity_key'=>$v['attributes']['developmentFinancialKey'],
+                                        'project_financial_key'=>$v['attributes']['developmentFinancialKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
