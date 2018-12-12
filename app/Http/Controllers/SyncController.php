@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 
 use App\Models\SyncUser;
 //use App\Models\User;
+use App\Models\SystemSetting;
 
 
 
@@ -54,6 +55,8 @@ class SyncController extends Controller
             dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
+                // get the ohfa org id:
+                $ohfa_id = SystemSetting::get('ohfa_organization_id');
                 do{
                     if($syncPage > 1){
                         //Get Next Page
