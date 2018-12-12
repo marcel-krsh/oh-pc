@@ -115,125 +115,7 @@ class AdminToolController extends Controller
     //     }
     // }
 
-    /**
-     * Get Required Document
-     *
-     * @param $program_rule_id
-     *
-     * @return mixed
-     */
-    // protected function getRequiredDocument($program_rule_id)
-    // {
-    //     $document_rule = DocumentRule::where('program_rules_id', $program_rule_id)
-    //         ->where('expense_category_id', 999)
-    //         ->get();
-
-    //     if (!isset($document_rule->id)) {
-    //         return false;
-    //     }
-
-    //     return DocumentRuleEntry::where('document_rule_id', $document_rule->id)
-    //         ->select('document_category_id')
-    //         ->distinct()
-    //         ->get();
-    // }
-
-    /**
-     * Get Acquired Document
-     *
-     * @param $program_rule_id
-     *
-     * @return mixed
-     */
-    // protected function getAcquiredDocument($program_rule_id)
-    // {
-    //     return $this->getDocumentIds($program_rule_id, 'acquisition');
-    // }
-
-    /**
-     * Get Pre Demo Document
-     *
-     * @param $program_rule_id
-     *
-     * @return mixed
-     */
-    // protected function getPreDemoDocument($program_rule_id)
-    // {
-    //     return $this->getDocumentIds($program_rule_id, 'pre-demo');
-    // }
-
-    /**
-     * Get Demolition Document
-     *
-     * @param $program_rule_id
-     *
-     * @return mixed
-     */
-    // protected function getDemolitionDocument($program_rule_id)
-    // {
-    //     return $this->getDocumentIds($program_rule_id, 'demolition');
-    // }
-
-    /**
-     * Get Greening Document
-     *
-     * @param $program_rule_id
-     *
-     * @return mixed
-     */
-    // protected function getGreeningDocument($program_rule_id)
-    // {
-    //     return $this->getDocumentIds($program_rule_id, 'greening');
-    // }
-
-    /**
-     * Get Maintenance Document
-     *
-     * @param $program_rule_id
-     *
-     * @return mixed
-     */
-    // protected function getMaintenanceDocument($program_rule_id)
-    // {
-    //     return $this->getDocumentIds($program_rule_id, 'maintenance');
-    // }
-
-    /**
-     * Get Administration Document
-     *
-     * @param $program_rule_id
-     *
-     * @return mixed
-     */
-    // protected function getAdministrationDocument($program_rule_id)
-    // {
-    //     return $this->getDocumentIds($program_rule_id, 'administration');
-    // }
-
-    /**
-     * Get Other Document
-     *
-     * @param $program_rule_id
-     *
-     * @return mixed
-     */
-    // protected function getOtherDocument($program_rule_id)
-    // {
-    //     return $this->getDocumentIds($program_rule_id, 'other');
-    // }
-
-    /**
-     * Get NIP Document
-     *
-     * @param $program_rule_id
-     *
-     * @return mixed
-     */
-    // protected function getNIPDocument($program_rule_id)
-    // {
-    //     return $this->getDocumentIds($program_rule_id, 'nip loan payoff');
-    // }
-
+    
     /**
      * Joined Doc Rules Expense
      *
@@ -911,6 +793,35 @@ class AdminToolController extends Controller
         }
     }
 
+    /**
+     * Boilerplate Create
+     *
+     * @param \App\Http\Controllers\FormsController $form
+     * @param null                                  $id
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|string
+     */
+    public function boilerplateCreate(Form $form, $id = null)
+    {
+        $boilerplate = Boilerplate::where('id', $id)->first();
+
+        if (!$id) {
+            $formRows['tag'] = $form->formBuilder("/admin/boilerplate/store", "post", "application/x-www-form-urlencoded", "Create New Boilerplate", "plus-circle");
+            $formRows['rows']['ele1']= $form->text(['Name','name','','Enter boilerplate name','required']);
+            $formRows['rows']['ele2']= $form->textArea(['Boilerplate','boilerplate','','','']);
+            $formRows['rows']['ele3']= $form->checkbox(['Global','global','1','','true','required']);
+            $formRows['rows']['ele4'] = $form->submit(['Create Boilerplate']);
+            return view('formtemplate', ['formRows'=>$formRows]);
+        } else {
+            $formRows['tag'] = $form->formBuilder("/admin/boilerplate/store/".$boilerplate->id, "post", "application/x-www-form-urlencoded", "Edit Boilerplate", "edit");
+            $formRows['rows']['ele1']= $form->text(['Boilerplate Name','name',$boilerplate->name,'','required']);
+            $formRows['rows']['ele2']= $form->text(['Boilerplate','boilerplate',$boilerplate->boilerplate,'','required']);
+            $formRows['rows']['ele3']= $form->checkbox(['Global','global','1',$boilerplate->global,'true','required']);
+            $formRows['rows']['ele4'] = $form->submit(['Update Boilerplate Information']);
+            return view('formtemplate', ['formRows'=>$formRows]);
+        }
+    }
+
     // display tabs
 
     /**
@@ -1553,6 +1464,46 @@ class AdminToolController extends Controller
             $lc->smartAddHistory($dold, $dnew);
             $lc->save();
             return response('I updated your document category. That was fun! What else do you have for me?');
+        }
+    }
+
+    /**
+     * Boilerplate Store
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param null                     $id
+     *
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
+    public function boilerplateStore(Request $request, $id = null)
+    {
+        $this->validate($request, [
+           'name'=> 'string|required'
+        ]);
+        if (!$id) {
+            $d = Boilerplate::create([
+                'name' => Input::get('name'),
+                'boilerplate' => Input::get('boilerplate'),
+                'global' => Input::get('global'),
+                'creator_id' => Auth::user()->id
+            ]);
+            // $lc = new LogConverter('documentcategory', 'create');
+            // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Created Document Category ' . $d->document_category_name)->save();
+            return response('I created the boilerplate. I stored it. I love it.');
+        } else {
+            $dold = Boilerplate::find($id)->toArray();
+            Boilerplate::where('id', $id)->update([
+                'name' => Input::get('name'),
+                'boilerplate' => Input::get('boilerplate'),
+                'global' => Input::get('global')
+            ]);
+            $d = Boilerplate::find($id);
+            $dnew = $d->toArray();
+            // $lc = new LogConverter('documentcategory', 'update');
+            // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Updated Document Category ' . $d->document_category_name);
+            // $lc->smartAddHistory($dold, $dnew);
+            // $lc->save();
+            return response('I updated your boilerplate. That was fun! What else do you have for me?');
         }
     }
 
