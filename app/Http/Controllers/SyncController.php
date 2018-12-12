@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listUtilityAllowanceTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -65,9 +65,9 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncUtilityAllowanceType::select('id','allita_id','last_edited','updated_at')->where('compliance_contact_key',$v['attributes']['complianceContactKey'])->first();
+                            $updateRecord = SyncUtilityAllowanceType::select('id','allita_id','last_edited','updated_at')->where('utility_allowance_key',$v['attributes']['utilityAllowanceKey'])->first();
                             // convert booleans
-                            // settype($v['attributes']['floatingUnits'], 'boolean');
+                             settype($v['attributes']['isActive'], 'boolean');
                             // settype($v['attributes']['isUtilityAllowanceTypeHandicapAccessible'], 'boolean');
 
                             // Set dates older than 1950 to be NULL:
@@ -114,13 +114,8 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'address'=>$v['attributes']['address'],
-                                            'project_key'=>$v['attributes']['developmentKey'],
-                                            
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
+                                            'is_active'=>$v['attributes']['isActive'],
                                             
                                             
                                             
@@ -134,13 +129,8 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'address'=>$v['attributes']['address'],
-                                            'project_key'=>$v['attributes']['developmentKey'],
-                                            
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
+                                            'is_active'=>$v['attributes']['isActive'],
                                             
                                             
                                             
@@ -161,19 +151,14 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'address'=>$v['attributes']['address'],
-                                            'project_key'=>$v['attributes']['developmentKey'],
-                                            
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
+                                            'is_active'=>$v['attributes']['isActive'],
                                             
                                             
                                             
                                             
                                             
-                                            'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
+                                            'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncUtilityAllowanceType::where('id',$updateRecord['id'])
@@ -182,19 +167,14 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'address'=>$v['attributes']['address'],
-                                            'project_key'=>$v['attributes']['developmentKey'],
-                                            
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
+                                            'is_active'=>$v['attributes']['isActive'],
                                             
                                             
                                             
                                             
                                             
-                                            'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
+                                            'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -214,20 +194,15 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
-                                            'address'=>$v['attributes']['address'],
-                                            'project_key'=>$v['attributes']['developmentKey'],
-                                            
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
+                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
+                                            'is_active'=>$v['attributes']['isActive'],
                                             
                                             
                                             
                                             
                                     
-                                    'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
+                                    'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncUtilityAllowanceType::create([
@@ -235,19 +210,14 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'address'=>$v['attributes']['address'],
-                                            'project_key'=>$v['attributes']['developmentKey'],
-                                            
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
+                                            'is_active'=>$v['attributes']['isActive'],
                                             
                                             
                                             
                                             
 
-                                        'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
+                                        'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
