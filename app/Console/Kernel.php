@@ -33,6 +33,7 @@ use App\Jobs\SyncRentalAssistanceTypesJob;
 use App\Jobs\SyncUtilityAllowancesJob;
 use App\Jobs\SyncMonitoringsJob;
 use App\Jobs\SyncProjectAmenitiesJob;
+use App\Jobs\SyncProjectFinancialsJob;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
