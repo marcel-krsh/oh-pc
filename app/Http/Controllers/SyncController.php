@@ -13,7 +13,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 use App\Models\SyncMonitoringMonitor;
-use App\Models\MonitoringMonitor;
+use App\Models\AuditAuditor;
 
 
 class SyncController extends Controller
@@ -21,7 +21,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// MonitoringMonitor Sync
+        /////// AuditAuditor Sync
         /////
 
         /// get last modified date inside the database
@@ -50,7 +50,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listMonitoringMonitors(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -64,10 +64,10 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncMonitoringMonitor::select('id','allita_id','last_edited','updated_at')->where('special_needs_key',$v['attributes']['specialNeedsKey'])->first();
+                            $updateRecord = SyncMonitoringMonitor::select('id','allita_id','last_edited','updated_at')->where('monitoring_monitor_key',$v['attributes']['monitoringMonitorKey'])->first();
                             // convert booleans
-                             settype($v['attributes']['isActive'], 'boolean');
-                            // settype($v['attributes']['isMonitoringMonitorHandicapAccessible'], 'boolean');
+                            // settype($v['attributes']['isActive'], 'boolean');
+                            // settype($v['attributes']['isAuditAuditorHandicapAccessible'], 'boolean');
 
                             // Set dates older than 1950 to be NULL:
                             // if($v['attributes']['comment'] < 1951){
@@ -87,7 +87,7 @@ class SyncController extends Controller
                                 // record exists - get matching table record
 
                                 /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                                $allitaTableRecord = MonitoringMonitor::find($updateRecord->allita_id);
+                                $allitaTableRecord = AuditAuditor::find($updateRecord->allita_id);
                                 /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
@@ -113,9 +113,9 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'special_needs_description'=>$v['attributes']['specialNeedsDesc'],
-                                            'special_needs_code'=>$v['attributes']['specialNeedsCode'],
-                                            'is_active'=>$v['attributes']['isActive'],
+                                            'monitoring_key'=>$v['attributes']['monitoringKey'],
+                                            'user_key'=>$v['attributes']['userKey'],
+                                            
                                             
                                             
                                             
@@ -129,9 +129,9 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'special_needs_description'=>$v['attributes']['specialNeedsDesc'],
-                                            'special_needs_code'=>$v['attributes']['specialNeedsCode'],
-                                            'is_active'=>$v['attributes']['isActive'],
+                                            'monitoring_key'=>$v['attributes']['monitoringKey'],
+                                            'user_key'=>$v['attributes']['userKey'],
+                                            
                                             
                                             
                                             
@@ -147,20 +147,20 @@ class SyncController extends Controller
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = MonitoringMonitor::create([
+                                        $allitaTableRecord = AuditAuditor::create([
                                             
                                             
                                             
                                             
-                                            'special_needs_description'=>$v['attributes']['specialNeedsDesc'],
-                                            'special_needs_code'=>$v['attributes']['specialNeedsCode'],
-                                            'is_active'=>$v['attributes']['isActive'],
+                                            'monitoring_key'=>$v['attributes']['monitoringKey'],
+                                            'user_key'=>$v['attributes']['userKey'],
                                             
                                             
                                             
                                             
                                             
-                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
+                                            
+                                            'monitoring_monitor_key'=>$v['attributes']['monitoringMonitorKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncMonitoringMonitor::where('id',$updateRecord['id'])
@@ -169,15 +169,15 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'special_needs_description'=>$v['attributes']['specialNeedsDesc'],
-                                            'special_needs_code'=>$v['attributes']['specialNeedsCode'],
-                                            'is_active'=>$v['attributes']['isActive'],
+                                            'monitoring_key'=>$v['attributes']['monitoringKey'],
+                                            'user_key'=>$v['attributes']['userKey'],
                                             
                                             
                                             
                                             
                                             
-                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
+                                            
+                                            'monitoring_monitor_key'=>$v['attributes']['monitoringMonitorKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -193,20 +193,20 @@ class SyncController extends Controller
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = MonitoringMonitor::create([
+                                $allitaTableRecord = AuditAuditor::create([
                                     
 
                                             
-                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
-                                            'special_needs_description'=>$v['attributes']['specialNeedsDesc'],
-                                            'special_needs_code'=>$v['attributes']['specialNeedsCode'],
-                                            'is_active'=>$v['attributes']['isActive'],
+                                            'monitoring_monitor_key'=>$v['attributes']['monitoringMonitorKey'],
+                                            'monitoring_key'=>$v['attributes']['monitoringKey'],
+                                            'user_key'=>$v['attributes']['userKey'],
+                                            
                                             
                                             
                                             
                                             
                                     
-                                    'special_needs_key'=>$v['attributes']['specialNeedsKey'],
+                                    'monitoring_monitor_key'=>$v['attributes']['monitoringMonitorKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncMonitoringMonitor::create([
@@ -214,15 +214,15 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'special_needs_description'=>$v['attributes']['specialNeedsDesc'],
-                                            'special_needs_code'=>$v['attributes']['specialNeedsCode'],
-                                            'is_active'=>$v['attributes']['isActive'],
+                                            'monitoring_key'=>$v['attributes']['monitoringKey'],
+                                            'user_key'=>$v['attributes']['userKey'],
+                                            
                                             
                                             
                                             
                                             
 
-                                        'special_needs_key'=>$v['attributes']['specialNeedsKey'],
+                                        'monitoring_monitor_key'=>$v['attributes']['monitoringMonitorKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
