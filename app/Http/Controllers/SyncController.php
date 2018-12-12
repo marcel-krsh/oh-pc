@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listProjectPrograms(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -117,7 +117,7 @@ class SyncController extends Controller
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             'program_key'=>$v['attributes']['programKey'],
-                                            'development_program_status_key'=>$v['attributes']['developmentProgramStatusKey'],
+                                            'development_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
                                             'award_number'=>$v['attributes']['awardNumber'],
                                             'application_number'=>$v['attributes']['applicationNumber'],
                                             'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
@@ -148,7 +148,7 @@ class SyncController extends Controller
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             'program_key'=>$v['attributes']['programKey'],
-                                            'development_program_status_key'=>$v['attributes']['developmentProgramStatusKey'],
+                                            'development_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
                                             'award_number'=>$v['attributes']['awardNumber'],
                                             'application_number'=>$v['attributes']['applicationNumber'],
                                             'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
@@ -186,7 +186,7 @@ class SyncController extends Controller
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             'program_key'=>$v['attributes']['programKey'],
-                                            'development_program_status_key'=>$v['attributes']['developmentProgramStatusKey'],
+                                            'development_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
                                             'award_number'=>$v['attributes']['awardNumber'],
                                             'application_number'=>$v['attributes']['applicationNumber'],
                                             'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
@@ -218,7 +218,7 @@ class SyncController extends Controller
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             'program_key'=>$v['attributes']['programKey'],
-                                            'development_program_status_key'=>$v['attributes']['developmentProgramStatusKey'],
+                                            'development_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
                                             'award_number'=>$v['attributes']['awardNumber'],
                                             'application_number'=>$v['attributes']['applicationNumber'],
                                             'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
@@ -262,7 +262,7 @@ class SyncController extends Controller
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             'program_key'=>$v['attributes']['programKey'],
-                                            'development_program_status_key'=>$v['attributes']['developmentProgramStatusKey'],
+                                            'development_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
                                             'award_number'=>$v['attributes']['awardNumber'],
                                             'application_number'=>$v['attributes']['applicationNumber'],
                                             'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
@@ -293,7 +293,7 @@ class SyncController extends Controller
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             'program_key'=>$v['attributes']['programKey'],
-                                            'development_program_status_key'=>$v['attributes']['developmentProgramStatusKey'],
+                                            'development_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
                                             'award_number'=>$v['attributes']['awardNumber'],
                                             'application_number'=>$v['attributes']['applicationNumber'],
                                             'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
