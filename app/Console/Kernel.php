@@ -35,6 +35,11 @@ use App\Jobs\SyncMonitoringsJob;
 use App\Jobs\SyncProjectAmenitiesJob;
 use App\Jobs\SyncProjectFinancialsJob;
 use App\Jobs\SyncProjectProgramsJob;
+use App\Jobs\SyncUtilityAllowanceTypesJob;
+use App\Jobs\SyncSpecialNeedsJob;
+use App\Jobs\SyncMonitoringMonitorsJob;
+use App\Jobs\SyncBuildingsJob;
+use App\Jobs\SyncPhoneNumbersJob;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -339,6 +344,51 @@ class Kernel extends ConsoleKernel
             //Log::info('Sync Job Already Started.');
         }
 
+        //SyncUtilityAllowanceTypesJob
+        $test = DB::table('jobs')->where('payload','like','%SyncUtilityAllowanceTypesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncUtilityAllowanceTypesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        //SyncSpecialNeedsJob
+        $test = DB::table('jobs')->where('payload','like','%SyncSpecialNeedsJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncSpecialNeedsJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        //SyncMonitoringMonitorsJob
+        $test = DB::table('jobs')->where('payload','like','%SyncMonitoringMonitorsJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncMonitoringMonitorsJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        //SyncBuildingsJob
+        $test = DB::table('jobs')->where('payload','like','%SyncBuildingsJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncBuildingsJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        //SyncPhoneNumbersJob
+        $test = DB::table('jobs')->where('payload','like','%SyncPhoneNumbersJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncPhoneNumbersJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+        
 
     }
 
