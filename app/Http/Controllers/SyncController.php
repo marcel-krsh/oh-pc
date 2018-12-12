@@ -12,8 +12,8 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncBuilding;
-use App\Models\Building;
+use App\Models\SyncPhoneNumber;
+use App\Models\PhoneNumber;
 
 
 
@@ -22,7 +22,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// Building Sync
+        /////// PhoneNumber Sync
         /////
 
         /// get last modified date inside the database
@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncBuilding::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncPhoneNumber::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -48,16 +48,16 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listBuildings(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listPhoneNumbers(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            //dd($syncData);
+            dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listBuildings($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listPhoneNumbers($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
                         //dd('Page Count is Higher',$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     }
@@ -65,10 +65,10 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncBuilding::select('id','allita_id','last_edited','updated_at')->where('building_key',$v['attributes']['buildingKey'])->first();
+                            $updateRecord = SyncPhoneNumber::select('id','allita_id','last_edited','updated_at')->where('building_key',$v['attributes']['buildingKey'])->first();
                             // convert booleans
                              settype($v['attributes']['ownerPaidUtilities'], 'boolean');
-                            // settype($v['attributes']['isBuildingHandicapAccessible'], 'boolean');
+                            // settype($v['attributes']['isPhoneNumberHandicapAccessible'], 'boolean');
 
                             // Set dates older than 1950 to be NULL:
                              if($v['attributes']['acquisitionDate'] < 1951){
@@ -88,7 +88,7 @@ class SyncController extends Controller
                                 // record exists - get matching table record
 
                                 /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                                $allitaTableRecord = Building::find($updateRecord->allita_id);
+                                $allitaTableRecord = PhoneNumber::find($updateRecord->allita_id);
                                 /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
@@ -109,7 +109,7 @@ class SyncController extends Controller
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        SyncBuilding::where('id',$updateRecord['id'])
+                                        SyncPhoneNumber::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
@@ -130,7 +130,7 @@ class SyncController extends Controller
                                             
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
-                                        $UpdateAllitaValues = SyncBuilding::find($updateRecord['id']);
+                                        $UpdateAllitaValues = SyncPhoneNumber::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
                                             
@@ -160,7 +160,7 @@ class SyncController extends Controller
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = Building::create([
+                                        $allitaTableRecord = PhoneNumber::create([
                                             
                                             
                                             
@@ -182,7 +182,7 @@ class SyncController extends Controller
                                             'building_key'=>$v['attributes']['buildingKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
-                                        $syncTableRecord = SyncBuilding::where('id',$updateRecord['id'])
+                                        $syncTableRecord = SyncPhoneNumber::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
@@ -218,7 +218,7 @@ class SyncController extends Controller
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = Building::create([
+                                $allitaTableRecord = PhoneNumber::create([
                                     
 
                                             
@@ -240,7 +240,7 @@ class SyncController extends Controller
                                     'building_key'=>$v['attributes']['buildingKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
-                                $syncTableRecord = SyncBuilding::create([
+                                $syncTableRecord = SyncPhoneNumber::create([
                                             
                                             
                                             
