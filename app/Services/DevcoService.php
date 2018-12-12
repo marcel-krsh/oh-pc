@@ -890,7 +890,7 @@ class DevcoService extends PCAPIService
 
 
 	/**
-	 * Monitoring Statuses
+	 * Federal Set Asides
 	 */
 	
 	/**
@@ -1450,5 +1450,115 @@ class DevcoService extends PCAPIService
 		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
 		return $this->get("devco/households?{$params}&{$log_params}");
+	}
+
+	/**
+	 * List Rental Assistance Sources
+	 * 
+	 * @param  int $unit_key
+	 * @param  int $page
+	 * @param  string|null $newer_than
+	 * @param  int|null $user
+	 * @param  string|null $user_email
+	 * @param  string|null $user_name
+	 * @param  int|null $device_id
+	 * @param  string|null $device_name
+	 * @return object
+	 */
+	public function listRentalAssistanceSources(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	{
+		$params = "page={$page}&newer_than={$newer_than}";
+
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+		return $this->get("devco/rental_assistance_sources?{$params}&{$log_params}");
+	}
+
+	/**
+	 * List Rental Assistance Types
+	 * 
+	 * @param  int $unit_key
+	 * @param  int $page
+	 * @param  string|null $newer_than
+	 * @param  int|null $user
+	 * @param  string|null $user_email
+	 * @param  string|null $user_name
+	 * @param  int|null $device_id
+	 * @param  string|null $device_name
+	 * @return object
+	 */
+	public function listRentalAssistanceTypes(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	{
+		$params = "page={$page}&newer_than={$newer_than}";
+
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+		return $this->get("devco/rental_assistance_types?{$params}&{$log_params}");
+	}
+
+	/**
+	 * List Utility Allowances
+	 * 
+	 * @param  int $unit_key
+	 * @param  int $page
+	 * @param  string|null $newer_than
+	 * @param  int|null $user
+	 * @param  string|null $user_email
+	 * @param  string|null $user_name
+	 * @param  int|null $device_id
+	 * @param  string|null $device_name
+	 * @return object
+	 */
+	public function listUtilityAllowances(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	{
+		$params = "page={$page}&newer_than={$newer_than}";
+
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+		return $this->get("devco/utility_allowances?{$params}&{$log_params}");
+	}
+
+	/**
+	 * List Monitorings
+	 * 
+	 * @param  int $unit_key
+	 * @param  int $page
+	 * @param  string|null $newer_than
+	 * @param  int|null $user
+	 * @param  string|null $user_email
+	 * @param  string|null $user_name
+	 * @param  int|null $device_id
+	 * @param  string|null $device_name
+	 * @return object
+	 */
+	public function listMonitorings(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	{
+		$params = "page={$page}&newer_than={$newer_than}";
+
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+		return $this->get("devco/monitorings?{$params}&{$log_params}");
+	}
+
+	/**
+	 * List Project Amenities
+	 * 
+	 * @param  int $unit_key
+	 * @param  int $page
+	 * @param  string|null $newer_than
+	 * @param  int|null $user
+	 * @param  string|null $user_email
+	 * @param  string|null $user_name
+	 * @param  int|null $device_id
+	 * @param  string|null $device_name
+	 * @return object
+	 */
+	public function listProjectAmenities(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	{
+		$params = "page={$page}&newer_than={$newer_than}";
+
+		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+		return $this->get("devco/development_amenities?{$params}&{$log_params}");
 	}
 }

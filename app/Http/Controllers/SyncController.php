@@ -12,8 +12,8 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncEventType;
-use App\Models\EventType;
+use App\Models\SyncProjectAmenity;
+use App\Models\ProjectAmenity;
 
 
 
@@ -22,7 +22,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// EventType Sync
+        /////// ProjectAmenity Sync
         /////
 
         /// get last modified date inside the database
@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncEventType::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncProjectAmenity::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -48,16 +48,16 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listEventTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listProjectAmenities(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            //dd($syncData);
+            dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listEventTypes($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listProjectAmenities($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
                         //dd('Page Count is Higher',$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     }
@@ -65,16 +65,30 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncEventType::select('id','allita_id','last_edited','updated_at')->where('event_type_key',$v['attributes']['eventTypeKey'])->first();
+                            $updateRecord = SyncProjectAmenity::select('id','allita_id','last_edited','updated_at')->where('monitoring_key',$v['attributes']['monitoringKey'])->first();
                             // convert booleans
                             // settype($v['attributes']['isActive'], 'boolean');
-                            // settype($v['attributes']['isEventTypeHandicapAccessible'], 'boolean');
+                            // settype($v['attributes']['isProjectAmenityHandicapAccessible'], 'boolean');
+
+                            // Set dates older than 1950 to be NULL:
+                            if($v['attributes']['startDate'] < 1951){
+                                $v['attributes']['startDate'] = NULL;
+                            }
+                            if($v['attributes']['completedDate'] < 1951){
+                                $v['attributes']['completedDate'] = NULL;
+                            }
+                            if($v['attributes']['confirmedDate'] < 1951){
+                                $v['attributes']['confirmedDate'] = NULL;
+                            }
+                            if($v['attributes']['onSiteMonitorEndDate'] < 1951){
+                                $v['attributes']['onSiteMonitorEndDate'] = NULL;
+                            }
                             //dd($updateRecord,$updateRecord->updated_at);
                             if(isset($updateRecord->id)) {
                                 // record exists - get matching table record
 
                                 /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                                $allitaTableRecord = EventType::find($updateRecord->allita_id);
+                                $allitaTableRecord = ProjectAmenity::find($updateRecord->allita_id);
                                 /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
@@ -95,25 +109,53 @@ class SyncController extends Controller
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        SyncEventType::where('id',$updateRecord['id'])
+                                        SyncProjectAmenity::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
                                             
-                                            'event_type_description'=>$v['attributes']['eventTypeDesc'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            
+                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'monitoring_type_key'=>$v['attributes']['monitoringTypeKey'],
+                                            'start_date'=>$v['attributes']['startDate'],
+                                            'completed_date'=>$v['attributes']['completedDate'],
+                                            'contact_person_key'=>$v['attributes']['contactPersonKey'],
+                                            'contact_title'=>$v['attributes']['contactTitle'],
+                                            'confirmed_date'=>$v['attributes']['confirmedDate'],
+                                            'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
+                                            'user_key'=>$v['attributes']['userKey'],
+                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
+                                            'status_results'=>$v['attributes']['statusResults'],
                                             
                                             
                                             
                                             
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
-                                        $UpdateAllitaValues = SyncEventType::find($updateRecord['id']);
+                                        $UpdateAllitaValues = SyncProjectAmenity::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
                                             
                                             
                                             
-                                            'event_type_description'=>$v['attributes']['eventTypeDesc'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            
+                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'monitoring_type_key'=>$v['attributes']['monitoringTypeKey'],
+                                            'start_date'=>$v['attributes']['startDate'],
+                                            'completed_date'=>$v['attributes']['completedDate'],
+                                            'contact_person_key'=>$v['attributes']['contactPersonKey'],
+                                            'contact_title'=>$v['attributes']['contactTitle'],
+                                            'confirmed_date'=>$v['attributes']['confirmedDate'],
+                                            'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
+                                            'user_key'=>$v['attributes']['userKey'],
+                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
+                                            'status_results'=>$v['attributes']['statusResults'],
                                             
                                             
                                             
@@ -128,31 +170,59 @@ class SyncController extends Controller
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = EventType::create([
+                                        $allitaTableRecord = ProjectAmenity::create([
                                             
                                             
                                             
                                             
-                                            'event_type_description'=>$v['attributes']['eventTypeDesc'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            
+                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'monitoring_type_key'=>$v['attributes']['monitoringTypeKey'],
+                                            'start_date'=>$v['attributes']['startDate'],
+                                            'completed_date'=>$v['attributes']['completedDate'],
+                                            'contact_person_key'=>$v['attributes']['contactPersonKey'],
+                                            'contact_title'=>$v['attributes']['contactTitle'],
+                                            'confirmed_date'=>$v['attributes']['confirmedDate'],
+                                            'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
+                                            'user_key'=>$v['attributes']['userKey'],
+                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
+                                            'status_results'=>$v['attributes']['statusResults'],
                                             
                                             
                                             
                                             
-                                            'event_type_key'=>$v['attributes']['eventTypeKey'],
+                                            'monitoring_key'=>$v['attributes']['monitoringKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
-                                        $syncTableRecord = SyncEventType::where('id',$updateRecord['id'])
+                                        $syncTableRecord = SyncProjectAmenity::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
                                             
                                             
-                                            'event_type_description'=>$v['attributes']['eventTypeDesc'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            
+                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'monitoring_type_key'=>$v['attributes']['monitoringTypeKey'],
+                                            'start_date'=>$v['attributes']['startDate'],
+                                            'completed_date'=>$v['attributes']['completedDate'],
+                                            'contact_person_key'=>$v['attributes']['contactPersonKey'],
+                                            'contact_title'=>$v['attributes']['contactTitle'],
+                                            'confirmed_date'=>$v['attributes']['confirmedDate'],
+                                            'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
+                                            'user_key'=>$v['attributes']['userKey'],
+                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
+                                            'status_results'=>$v['attributes']['statusResults'],
                                             
                                             
                                             
                                             
-                                            'event_type_key'=>$v['attributes']['eventTypeKey'],
+                                            'monitoring_key'=>$v['attributes']['monitoringKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -168,30 +238,58 @@ class SyncController extends Controller
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = EventType::create([
+                                $allitaTableRecord = ProjectAmenity::create([
                                     
 
                                             
-                                            'event_type_key'=>$v['attributes']['eventTypeKey'],
-                                            'event_type_description'=>$v['attributes']['eventTypeDesc'],
+                                            'monitoring_key'=>$v['attributes']['monitoringKey'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            
+                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'monitoring_type_key'=>$v['attributes']['monitoringTypeKey'],
+                                            'start_date'=>$v['attributes']['startDate'],
+                                            'completed_date'=>$v['attributes']['completedDate'],
+                                            'contact_person_key'=>$v['attributes']['contactPersonKey'],
+                                            'contact_title'=>$v['attributes']['contactTitle'],
+                                            'confirmed_date'=>$v['attributes']['confirmedDate'],
+                                            'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
+                                            'user_key'=>$v['attributes']['userKey'],
+                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
+                                            'status_results'=>$v['attributes']['statusResults'],
                                             
                                             
                                             
                                     
-                                    'event_type_key'=>$v['attributes']['eventTypeKey'],
+                                    'monitoring_key'=>$v['attributes']['monitoringKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
-                                $syncTableRecord = SyncEventType::create([
+                                $syncTableRecord = SyncProjectAmenity::create([
                                             
                                             
                                             
                                             
-                                            'event_type_description'=>$v['attributes']['eventTypeDesc'],
+                                            'development_key'=>$v['attributes']['developmentKey'],
+                                            
+                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'monitoring_type_key'=>$v['attributes']['monitoringTypeKey'],
+                                            'start_date'=>$v['attributes']['startDate'],
+                                            'completed_date'=>$v['attributes']['completedDate'],
+                                            'contact_person_key'=>$v['attributes']['contactPersonKey'],
+                                            'contact_title'=>$v['attributes']['contactTitle'],
+                                            'confirmed_date'=>$v['attributes']['confirmedDate'],
+                                            'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
+                                            'user_key'=>$v['attributes']['userKey'],
+                                            'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
+                                            'status_results'=>$v['attributes']['statusResults'],
                                             
                                             
                                             
 
-                                        'event_type_key'=>$v['attributes']['eventTypeKey'],
+                                        'monitoring_key'=>$v['attributes']['monitoringKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
