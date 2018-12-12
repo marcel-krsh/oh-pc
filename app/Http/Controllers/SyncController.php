@@ -12,8 +12,8 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncSpecialNeed;
-use App\Models\SpecialNeed;
+use App\Models\SyncMonitoringMonitor;
+use App\Models\MonitoringMonitor;
 
 
 class SyncController extends Controller
@@ -21,7 +21,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// SpecialNeed Sync
+        /////// MonitoringMonitor Sync
         /////
 
         /// get last modified date inside the database
@@ -32,7 +32,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncSpecialNeed::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncMonitoringMonitor::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -47,16 +47,16 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listSpecialNeeds(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listMonitoringMonitors(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            //dd($syncData);
+            dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listSpecialNeeds($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listMonitoringMonitors($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
                         //dd('Page Count is Higher',$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     }
@@ -64,10 +64,10 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncSpecialNeed::select('id','allita_id','last_edited','updated_at')->where('special_needs_key',$v['attributes']['specialNeedsKey'])->first();
+                            $updateRecord = SyncMonitoringMonitor::select('id','allita_id','last_edited','updated_at')->where('special_needs_key',$v['attributes']['specialNeedsKey'])->first();
                             // convert booleans
                              settype($v['attributes']['isActive'], 'boolean');
-                            // settype($v['attributes']['isSpecialNeedHandicapAccessible'], 'boolean');
+                            // settype($v['attributes']['isMonitoringMonitorHandicapAccessible'], 'boolean');
 
                             // Set dates older than 1950 to be NULL:
                             // if($v['attributes']['comment'] < 1951){
@@ -87,7 +87,7 @@ class SyncController extends Controller
                                 // record exists - get matching table record
 
                                 /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                                $allitaTableRecord = SpecialNeed::find($updateRecord->allita_id);
+                                $allitaTableRecord = MonitoringMonitor::find($updateRecord->allita_id);
                                 /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
@@ -108,7 +108,7 @@ class SyncController extends Controller
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        SyncSpecialNeed::where('id',$updateRecord['id'])
+                                        SyncMonitoringMonitor::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
@@ -123,7 +123,7 @@ class SyncController extends Controller
                                             
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
-                                        $UpdateAllitaValues = SyncSpecialNeed::find($updateRecord['id']);
+                                        $UpdateAllitaValues = SyncMonitoringMonitor::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
                                             
@@ -147,7 +147,7 @@ class SyncController extends Controller
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = SpecialNeed::create([
+                                        $allitaTableRecord = MonitoringMonitor::create([
                                             
                                             
                                             
@@ -163,7 +163,7 @@ class SyncController extends Controller
                                             'special_needs_key'=>$v['attributes']['specialNeedsKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
-                                        $syncTableRecord = SyncSpecialNeed::where('id',$updateRecord['id'])
+                                        $syncTableRecord = SyncMonitoringMonitor::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
@@ -193,7 +193,7 @@ class SyncController extends Controller
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = SpecialNeed::create([
+                                $allitaTableRecord = MonitoringMonitor::create([
                                     
 
                                             
@@ -209,7 +209,7 @@ class SyncController extends Controller
                                     'special_needs_key'=>$v['attributes']['specialNeedsKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
-                                $syncTableRecord = SyncSpecialNeed::create([
+                                $syncTableRecord = SyncMonitoringMonitor::create([
                                             
                                             
                                             
