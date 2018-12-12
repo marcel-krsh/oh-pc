@@ -35,7 +35,7 @@
                 <li id="organizations-tab" class="uk-active"><a>Organizations</a></li>
                 <li id="amenities-tab"><a>Amenities</a></li>
                 <li id="hud-tab"><a>HUD Areas</a></li>
-                <li id="finding-types-tab"><a>Finding Types</a></li>
+                <li id="findingtype-tab"><a>Finding Types</a></li>
                 <li id="default-followups-tab"><a>Follow Ups</a></li>
                 <li id="boilerplates-tab"><a>Boilerplates</a></li>
                 <li id="programs-tab"><a>Programs</a></li>
@@ -56,6 +56,34 @@
                     <script type="text/javascript">
                         $('#amenities-tab').on('click',function(){
                             $('#amenities-tab-content').load('/tabs/amenity');
+                        });
+                    </script>
+                </li>
+                <li id="hud-tab-content">
+                    <script type="text/javascript">
+                        $('#hud-tab').on('click',function(){
+                            $('#hud-tab-content').load('/tabs/hud');
+                        });
+                    </script>
+                </li>
+                <li id="findingtype-tab-content">
+                    <script type="text/javascript">
+                        $('#findingtype-tab').on('click',function(){
+                            $('#findingtype-tab-content').load('/tabs/findingtype');
+                        });
+                    </script>
+                </li>
+                <li id="default-followups-tab-content">
+                    <script type="text/javascript">
+                        $('#default-followups-tab').on('click',function(){
+                            $('#default-followups-tab-content').load('/tabs/defaultfollowup');
+                        });
+                    </script>
+                </li>
+                <li id="boilerplates-tab-content">
+                    <script type="text/javascript">
+                        $('#boilerplates-tab').on('click',function(){
+                            $('#boilerplates-tab-content').load('/tabs/boilerplate');
                         });
                     </script>
                 </li>

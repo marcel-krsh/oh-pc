@@ -144,6 +144,10 @@ Route::group(['middleware' => 'web'], function () {
         Route::group(['prefix'=>'tabs'], function () {
             Route::get('organization', 'AdminToolController@organizationIndex');
             Route::get('amenity', 'AdminToolController@amenityIndex');
+            Route::get('hud', 'AdminToolController@hudIndex');
+            Route::get('findingtype', 'AdminToolController@findingtypeIndex');
+            Route::get('defaultfollowup', 'AdminToolController@defaultfollowupIndex');
+            Route::get('boilerplate', 'AdminToolController@boilerplateIndex');
             Route::get('program', 'AdminToolController@programIndex');
             Route::get('rule', 'AdminToolController@ruleIndex');
             Route::get('account', 'AdminToolController@accountIndex');

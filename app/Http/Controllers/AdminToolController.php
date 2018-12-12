@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Organization;
 use App\Models\Amenity;
+use App\Models\HudInspectableArea;
+use App\Models\FindingType;
+use App\Models\DefaultFollowup;
+use App\Models\Boilerplate;
 use App\Models\DocumentCategory;
 use App\Models\Program;
 use App\Models\State;
@@ -932,6 +936,50 @@ class AdminToolController extends Controller
     }
 
     /**
+     * HUD INSPECTABLE AREA Index
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function hudIndex()
+    {
+        $huds = HudInspectableArea::orderBy('name', 'asc')->get();
+        return view('admin_tabs.huds', compact('huds'));
+    }
+
+    /**
+     * Finding Type Index
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function findingtypeIndex()
+    {
+        $findingtypes = FindingType::orderBy('name', 'asc')->get();
+        return view('admin_tabs.findingtypes', compact('findingtypes'));
+    }
+
+    /**
+     * defaultfollowup Index
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function defaultfollowupIndex()
+    {
+        $followups = DefaultFollowup::with('user')->orderBy('name', 'asc')->get();
+        return view('admin_tabs.followups', compact('followups'));
+    }
+
+    /**
+     * defaultfollowup Index
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function boilerplateIndex()
+    {
+        $boilerplates = Boilerplate::with('user')->orderBy('name', 'asc')->get();
+        return view('admin_tabs.boilerplates', compact('boilerplates'));
+    }
+
+    /**
      * Program Index
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -969,11 +1017,11 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    // public function documentIndex()
-    // {
-    //     $documents = DocumentCategory::orderBy('document_category_name', 'asc')->get()->all();
-    //     return view('admin_tabs.document_category', compact('documents'));
-    // }
+    public function documentIndex()
+    {
+        $documents = DocumentCategory::orderBy('document_category_name', 'asc')->get()->all();
+        return view('admin_tabs.document_categories', compact('documents'));
+    }
 
     /**
      * Expense Index
@@ -1013,11 +1061,11 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    // public function countyIndex()
-    // {
-    //     $counties = County::orderBy('county_name', 'asc')->get();
-    //     return view('admin_tabs.counties', compact('counties'));
-    // }
+    public function countyIndex()
+    {
+        $counties = County::orderBy('county_name', 'asc')->get();
+        return view('admin_tabs.counties', compact('counties'));
+    }
 
     //store form data.
 
