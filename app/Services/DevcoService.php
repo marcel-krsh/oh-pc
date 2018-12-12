@@ -1605,7 +1605,7 @@ class DevcoService extends PCAPIService
 	}
 
 	/**
-	 * List Compliance Contas
+	 * List Compliance Contacts
 	 * 
 	 * @param  int $unit_key
 	 * @param  int $page
@@ -1617,12 +1617,12 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return object
 	 */
-	public function listProjectPrograms(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	public function listComplianceContacts(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
 	{
 		$params = "page={$page}&newer_than={$newer_than}";
 
 		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
-		return $this->get("devco/project_programs?{$params}&{$log_params}");
+		return $this->get("devco/compliance_contacts?{$params}&{$log_params}");
 	}
 }
