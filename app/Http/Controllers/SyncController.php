@@ -50,7 +50,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listSpecialNeeds(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -64,7 +64,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncSpecialNeed::select('id','allita_id','last_edited','updated_at')->where('utility_allowance_type_key',$v['attributes']['utilityAllowanceTypeKey'])->first();
+                            $updateRecord = SyncSpecialNeed::select('id','allita_id','last_edited','updated_at')->where('special_needs_key',$v['attributes']['specialNeedsKey'])->first();
                             // convert booleans
                              settype($v['attributes']['isActive'], 'boolean');
                             // settype($v['attributes']['isSpecialNeedHandicapAccessible'], 'boolean');
@@ -113,7 +113,8 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
+                                            'special_needs_description'=>$v['attributes']['specialNeedsDesc'],
+                                            'special_needs_code'=>$v['attributes']['specialNeedsCode'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
                                             
@@ -128,7 +129,8 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
+                                            'special_needs_description'=>$v['attributes']['specialNeedsDesc'],
+                                            'special_needs_code'=>$v['attributes']['specialNeedsCode'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
                                             
@@ -150,14 +152,15 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
+                                            'special_needs_description'=>$v['attributes']['specialNeedsDesc'],
+                                            'special_needs_code'=>$v['attributes']['specialNeedsCode'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
                                             
                                             
                                             
                                             
-                                            'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
+                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncSpecialNeed::where('id',$updateRecord['id'])
@@ -166,14 +169,15 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
+                                            'special_needs_description'=>$v['attributes']['specialNeedsDesc'],
+                                            'special_needs_code'=>$v['attributes']['specialNeedsCode'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
                                             
                                             
                                             
                                             
-                                            'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
+                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -193,15 +197,16 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
-                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
+                                            'special_needs_key'=>$v['attributes']['specialNeedsKey'],
+                                            'special_needs_description'=>$v['attributes']['specialNeedsDesc'],
+                                            'special_needs_code'=>$v['attributes']['specialNeedsCode'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
                                             
                                             
                                             
                                     
-                                    'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
+                                    'special_needs_key'=>$v['attributes']['specialNeedsKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncSpecialNeed::create([
@@ -209,14 +214,15 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
+                                            'special_needs_description'=>$v['attributes']['specialNeedsDesc'],
+                                            'special_needs_code'=>$v['attributes']['specialNeedsCode'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
                                             
                                             
                                             
 
-                                        'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
+                                        'special_needs_key'=>$v['attributes']['specialNeedsKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
