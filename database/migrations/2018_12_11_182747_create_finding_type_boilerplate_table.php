@@ -17,8 +17,8 @@ class CreateFindingTypeBoilerplateTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('default_followups')) {
-            Schema::create('default_followups', function (Blueprint $table) {
+        if (!Schema::hasTable('finding_type_boilerplate')) {
+            Schema::create('finding_type_boilerplate', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('finding_type_id')->nullable();
                 $table->unsignedInteger('boilerplate_id')->nullable();

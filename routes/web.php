@@ -133,6 +133,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('program/create/{id?}', 'AdminToolController@programCreate');
             Route::get('document_category/create/{id?}', 'AdminToolController@documentCategoryCreate');
             Route::get('county/create/{id?}', 'AdminToolController@countyCreate');
+            Route::get('finding_type/create/{id?}', 'AdminToolController@findingtypeCreate');
         });
 
         // Admin tabs
@@ -152,6 +153,7 @@ Route::group(['middleware' => 'web'], function () {
         // Admin store
         Route::group(['prefix'=>'admin'], function () {
             Route::post('boilerplate/store/{id?}', 'AdminToolController@boilerplateStore');
+            Route::post('findingtype/store/{id?}', 'AdminToolController@findingtypeStore');
             Route::post('program/store/{id?}', 'AdminToolController@programStore');
             Route::post('document_category/store/{id?}', 'AdminToolController@documentCategoryStore');
             Route::post('county/store/{id?}', 'AdminToolController@countyStore');

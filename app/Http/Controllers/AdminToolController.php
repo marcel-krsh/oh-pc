@@ -6,6 +6,7 @@ use App\Models\Organization;
 use App\Models\Amenity;
 use App\Models\HudInspectableArea;
 use App\Models\FindingType;
+use App\Models\FindingTypeBoilerplate;
 use App\Models\DefaultFollowup;
 use App\Models\Boilerplate;
 use App\Models\DocumentCategory;
@@ -794,6 +795,40 @@ class AdminToolController extends Controller
     }
 
     /**
+     * Finding Type Create
+     *
+     * @param null  $id
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|string
+     */
+    public function findingtypeCreate($id = null)
+    {
+        $finding_type = FindingType::where('id', $id)->first();
+
+        if (!$finding_type) {
+
+            $boilerplates = Boilerplate::where('global','=',1)->orderBy('name', 'asc')->get();
+
+            // people who can be assigned to the follow ups
+            // the audit lead, or the PM, or whoever is creating the finding (hardcoded)
+
+            $document_categories = DocumentCategory::where('active','=', 1)->get();
+
+            return view('modals.finding-type-create', compact('finding_type', 'boilerplates', 'document_categories'));
+        } else {
+            $finding_type = null;
+            $boilerplates = Boilerplate::where('global','=',1)->orderBy('name', 'asc')->get();
+
+            // people who can be assigned to the follow ups
+            // the audit lead, or the PM, or whoever is creating the finding (hardcoded)
+
+            $document_categories = DocumentCategory::where('active','=', 1)->get();
+
+            return view('modals.finding-type-create', compact('finding_type', 'boilerplates', 'document_categories'));
+        }
+    }
+
+    /**
      * Boilerplate Create
      *
      * @param \App\Http\Controllers\FormsController $form
@@ -1504,6 +1539,81 @@ class AdminToolController extends Controller
             // $lc->smartAddHistory($dold, $dnew);
             // $lc->save();
             return response('I updated your boilerplate. That was fun! What else do you have for me?');
+        }
+    }
+
+    /**
+     * Finding Type Store
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param null                     $id
+     *
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
+    public function findingtypeStore(Request $request, $id = null)
+    {
+        $inputs = $request->get('inputs');
+        $boilerplates = json_decode($request->get('boilerplates'), true);
+        $boilerplates = $boilerplates['items'];
+        $followups = json_decode($request->get('followups'), true);
+        $followups = $followups['items'];
+
+        if (!$id) {
+
+            $f = FindingType::create([
+                'name' => $inputs['name'],
+                'nominal_item_weight' => $inputs['nominal_item_weight'],
+                'criticality' => $inputs['criticality'],
+                'one' => (array_key_exists('one', $inputs)) ? 1 : 0,
+                'two' => (array_key_exists('two', $inputs)) ? 1 : 0,
+                'three' => (array_key_exists('three', $inputs)) ? 1 : 0,
+                'type' => $inputs['type']
+            ]);
+
+            // add boilerplates
+            if(count($boilerplates)){
+                foreach($boilerplates as $boilerplate){
+                    FindingTypeBoilerplate::create([
+                        'finding_type_id' => $f->id,
+                        'boilerplate_id' => $boilerplate['id']
+                    ]);
+                }
+            }
+            
+            // add followups
+            if(count($followups)){
+                foreach($followups as $followup){
+                    DefaultFollowup::create([
+                        'finding_type_id' => $f->id,
+                        'description' => $followup['description'],
+                        'quantity' => $followup['number'],
+                        'duration' => $followup['duration'],
+                        'assignment' => $followup['assignment'],
+                        'reply' => $followup['reply'],
+                        'photo' => $followup['photo'],
+                        'doc' => $followup['doc'],
+                        'doc_categories' => json_encode($followup['cats'])
+                    ]);
+                }
+            }
+
+            // $lc = new LogConverter('documentcategory', 'create');
+            // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Created Document Category ' . $d->document_category_name)->save();
+            return response('I created the finding type. I stored it. I love it.');
+        } else {
+            // $dold = Boilerplate::find($id)->toArray();
+            // Boilerplate::where('id', $id)->update([
+            //     'name' => Input::get('name'),
+            //     'boilerplate' => Input::get('boilerplate'),
+            //     'global' => Input::get('global')
+            // ]);
+            // $d = Boilerplate::find($id);
+            // $dnew = $d->toArray();
+            // // $lc = new LogConverter('documentcategory', 'update');
+            // // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Updated Document Category ' . $d->document_category_name);
+            // // $lc->smartAddHistory($dold, $dnew);
+            // // $lc->save();
+            // return response('I updated your boilerplate. That was fun! What else do you have for me?');
         }
     }
 

@@ -243,29 +243,17 @@
                     $('h2#post-response').hide().html("<span class='uk-text-success'><span uk-icon='check'></span> "+response+"</span>").fadeIn();
                     console.log(action);
                     switch (action){
-                        case "/admin/entity/store":
-                            $('#entities-tab').trigger('click');
-                            break;
                         case "/admin/program/store":
                             $('#programs-tab').trigger('click');
-                            break;
-                        case "/admin/rule/store":
-                            $('#rules-tab').trigger('click');
-                            break;
-                        case "/admin/account/store":
-                            $('#accounts-tab').trigger('click');
-                            break;
-                        case "/admin/vendor/store":
-                            $('#vendors-tab').trigger('click');
-                            break;
-                        case "/admin/target_area/store":
-                            $('#target-tab').trigger('click');
                             break;
                         case "/admin/document_category/store":
                             $('#document-tab').trigger('click');
                             break;
-                        case "/admin/expense_category/store":
-                            $('#expense-tab').trigger('click');
+                        case "/admin/boilerplate/store":
+                            $('#boilerplate-tab').trigger('click');
+                            break;
+                        case "/admin/findingtype/store":
+                            $('#findingtype-tab').trigger('click');
                             break;
                     }
 
