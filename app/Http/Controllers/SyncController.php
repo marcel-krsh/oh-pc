@@ -65,7 +65,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncUtilityAllowanceType::select('id','allita_id','last_edited','updated_at')->where('utility_allowance_key',$v['attributes']['utilityAllowanceKey'])->first();
+                            $updateRecord = SyncUtilityAllowanceType::select('id','allita_id','last_edited','updated_at')->where('utility_allowance_type_key',$v['attributes']['utilityAllowanceTypeKey'])->first();
                             // convert booleans
                              settype($v['attributes']['isActive'], 'boolean');
                             // settype($v['attributes']['isUtilityAllowanceTypeHandicapAccessible'], 'boolean');
@@ -158,7 +158,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
+                                            'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncUtilityAllowanceType::where('id',$updateRecord['id'])
@@ -174,7 +174,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
+                                            'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -194,7 +194,7 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
+                                            'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                             'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
@@ -202,7 +202,7 @@ class SyncController extends Controller
                                             
                                             
                                     
-                                    'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
+                                    'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncUtilityAllowanceType::create([
@@ -217,7 +217,7 @@ class SyncController extends Controller
                                             
                                             
 
-                                        'utility_allowance_key'=>$v['attributes']['utilityAllowanceKey'],
+                                        'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
