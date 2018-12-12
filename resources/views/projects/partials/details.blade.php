@@ -2,13 +2,13 @@
 	<div id="project-details-general" class="uk-width-1-1">
 		<div uk-grid>
 			<div class="uk-width-2-3">
-				<h3>{{$stats['project_name']}}</h3>
-				Project #: {{$stats['project_id']}}
+				<h3>{{$details['project_name']}}</h3>
+				Project #: {{$details['project_id']}}
 			</div>
 			<div class="uk-width-1-3">
-				Last Audit Completed: {{$stats['last_audit_completed']}}<br />
-				Next Audit Due By: {{$stats['next_audit_due']}}<br />
-				Current Project Score : {{$stats['score_percentage']}} / {{$stats['score']}}
+				Last Audit Completed: {{$details['last_audit_completed']}}<br />
+				Next Audit Due By: {{$details['next_audit_due']}}<br />
+				Current Project Score : {{$details['score_percentage']}} / {{$details['score']}}
 			</div>
 		</div>
 	</div>
@@ -16,34 +16,34 @@
 		<div uk-grid>
 			<div class="uk-width-1-3">
 				<ul class="leaders" style="margin-right:30px;">
-					<li><span>Total Buildings</span> <span>{{$stats['total_building']}}</span></li>
-					<li><span class="indented">Total Building Common Areas</span> <span>{{$stats['total_building_common_areas']}}</span></li>
-					<li><span>Total Project Common Areas</span> <span>{{$stats['total_project_common_areas']}}</span></li>
-					<li><span>Total Units</span> <span>{{$stats['total_units']}}</span></li>
-					<li><span class="indented">• Market Rate</span> <span>{{$stats['market_rate']}}</span></li>
-					<li><span class="indented">• Subsidized</span> <span>{{$stats['subsidized']}}</span></li>
-					<li><span>Total Programs</span> <span>{{count($stats['programs'])}}</span></li>
-					@foreach($stats['programs'] as $program) 
+					<li><span>Total Buildings</span> <span>{{$details['total_building']}}</span></li>
+					<li><span class="indented">Total Building Common Areas</span> <span>{{$details['total_building_common_areas']}}</span></li>
+					<li><span>Total Project Common Areas</span> <span>{{$details['total_project_common_areas']}}</span></li>
+					<li><span>Total Units</span> <span>{{$details['total_units']}}</span></li>
+					<li><span class="indented">• Market Rate</span> <span>{{$details['market_rate']}}</span></li>
+					<li><span class="indented">• Subsidized</span> <span>{{$details['subsidized']}}</span></li>
+					<li><span>Total Programs</span> <span>{{count($details['programs'])}}</span></li>
+					@foreach($details['programs'] as $program) 
 					<li><span class="indented">• {{$program['name']}}</span> <span>{{$program['units']}}</span></li>
 					@endforeach
 				</ul>
 			</div>
 			<div class="uk-width-1-3">
-				<h5 class="uk-margin-remove"><strong>OWNER: {{$owner['name']}}</strong></h5>
+				<h5 class="uk-margin-remove"><strong>OWNER: {{$details['name']}}</strong></h5>
 				<div class="address">
-					<i class="a-avatar"></i> {{$owner['poc']}}<br />
-					<i class="a-phone-5"></i> {{$owner['phone']}} <i class="a-fax-2" style="margin-left:10px"></i> {{$owner['fax']}} <br />
-					<i class="a-mail-send"></i> {{$owner['email']}}<br />
-					<i class="a-mailbox"></i> {{$owner['address']}}<br />{{$owner['address2']}}<br />{{$owner['city']}} {{$owner['state']}} {{$owner['zip']}}
+					<i class="a-avatar"></i> {{$details['poc']}}<br />
+					<i class="a-phone-5"></i> {{$details['phone']}} <i class="a-fax-2" style="margin-left:10px"></i> {{$details['fax']}} <br />
+					<i class="a-mail-send"></i> {{$details['email']}}<br />
+					<i class="a-mailbox"></i> {{$details['address']}}<br />{{$details['address2']}}<br />{{$details['city']}} {{$details['state']}} {{$details['zip']}}
 				</div>
 			</div>
 			<div class="uk-width-1-3">
-				<h5 class="uk-margin-remove"><strong>Managed By: {{$manager['name']}}</strong></h5>
+				<h5 class="uk-margin-remove"><strong>Managed By: {{$details['name']}}</strong></h5>
 				<div class="address">
-					<i class="a-avatar"></i> {{$manager['poc']}}<br />
-					<i class="a-phone-5"></i> {{$manager['phone']}} <i class="a-fax-2" style="margin-left:10px"></i> {{$manager['fax']}} <br />
-					<i class="a-mail-send"></i> {{$manager['email']}}<br />
-					<i class="a-mailbox"></i> {{$manager['address']}}<br />{{$manager['address2']}}<br />{{$manager['city']}} {{$manager['state']}}, {{$manager['zip']}}
+					<i class="a-avatar"></i> {{$details['poc']}}<br />
+					<i class="a-phone-5"></i> {{$details['phone']}} <i class="a-fax-2" style="margin-left:10px"></i> {{$details['fax']}} <br />
+					<i class="a-mail-send"></i> {{$details['email']}}<br />
+					<i class="a-mailbox"></i> {{$details['address']}}<br />{{$details['address2']}}<br />{{$details['city']}} {{$details['state']}}, {{$details['zip']}}
 				</div>
 			</div>
 		</div>
@@ -183,32 +183,32 @@
 			<div class="uk-width-1-2 uk-padding-remove">
 				<div uk-grid>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-1" class="uk-button uk-link ok-actionable active" onclick="projectDetailsInfo({{$stats['project_id']}}, 'compliance', this);" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
+						<button id="project-details-button-1" class="uk-button uk-link ok-actionable active" onclick="projectDetailsInfo({{$details['project_id']}}, 'compliance', this);" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-2" class="uk-button uk-link critical" onclick="projectDetailsInfo({{$stats['project_id']}}, 'assignment', this);" type="button"><i class="a-avatar-fail"></i> ASSIGNMENT</button>
+						<button id="project-details-button-2" class="uk-button uk-link critical" onclick="projectDetailsInfo({{$details['project_id']}}, 'assignment', this);" type="button"><i class="a-avatar-fail"></i> ASSIGNMENT</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-3" class="uk-button uk-link action-required" onclick="projectDetailsInfo({{$stats['project_id']}}, 'findings', this);" type="button"><i class="a-mobile-info"></i> FINDINGS</button>
+						<button id="project-details-button-3" class="uk-button uk-link action-required" onclick="projectDetailsInfo({{$details['project_id']}}, 'findings', this);" type="button"><i class="a-mobile-info"></i> FINDINGS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-4" class="uk-button uk-link action-needed" onclick="projectDetailsInfo({{$stats['project_id']}}, 'followups', this);" type="button"><i class="a-bell-ring"></i> FOLLOW-UPS</button>
+						<button id="project-details-button-4" class="uk-button uk-link action-needed" onclick="projectDetailsInfo({{$details['project_id']}}, 'followups', this);" type="button"><i class="a-bell-ring"></i> FOLLOW-UPS</button>
 					</div>
 				</div>
 			</div>
 			<div class="uk-width-1-2 uk-padding-remove">
 				<div uk-grid>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-5" class="uk-button uk-link in-progress" onclick="projectDetailsInfo({{$stats['project_id']}}, 'reports', this);" type="button"><i class="a-file-chart-3"></i> REPORTS</button>
+						<button id="project-details-button-5" class="uk-button uk-link in-progress" onclick="projectDetailsInfo({{$details['project_id']}}, 'reports', this);" type="button"><i class="a-file-chart-3"></i> REPORTS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-6" class="uk-button uk-link no-action" onclick="projectDetailsInfo({{$stats['project_id']}}, 'documents', this);" type="button"><i class="a-file-clock"></i> DOCUMENTS</button>
+						<button id="project-details-button-6" class="uk-button uk-link no-action" onclick="projectDetailsInfo({{$details['project_id']}}, 'documents', this);" type="button"><i class="a-file-clock"></i> DOCUMENTS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-7" class="uk-button uk-link" onclick="projectDetailsInfo({{$stats['project_id']}}, 'comments', this);" type="button"><i class="a-comment-text"></i> COMMENTS</button>
+						<button id="project-details-button-7" class="uk-button uk-link" onclick="projectDetailsInfo({{$details['project_id']}}, 'comments', this);" type="button"><i class="a-comment-text"></i> COMMENTS</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-8" class="uk-button uk-link" onclick="projectDetailsInfo({{$stats['project_id']}}, 'photos', this);" type="button"><i class="a-picture"></i> PHOTOS</button>
+						<button id="project-details-button-8" class="uk-button uk-link" onclick="projectDetailsInfo({{$details['project_id']}}, 'photos', this);" type="button"><i class="a-picture"></i> PHOTOS</button>
 					</div>
 				</div>
 			</div>
@@ -293,7 +293,7 @@ $( document ).ready(function() {
 	if($('#project-details-info-container').html() == ''){
 		$('#project-details-button-1').trigger("click");
 	}	
-	loadProjectDetailsBuildings( {{ $stats['project_id'] }}, {{ $stats['project_id'] }} ) ;
+	loadProjectDetailsBuildings( {{ $details['project_id'] }}, {{ $details['project_id'] }} ) ;
 });
 </script>
 	    

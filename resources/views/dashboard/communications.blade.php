@@ -168,19 +168,19 @@ The following div is defined in this particular tab and pushed to the main layou
 
         var $filteredElements = $('.filter_element');
            $('.filter_link').click(function (e) {
-            e.preventDefault();
-            // get the category from the attribute
-            var filterVal = $(this).data('filter');
-            filterElement(filterVal, '.filter_element');
+                e.preventDefault();
+                // get the category from the attribute
+                var filterVal = $(this).data('filter');
+                filterElement(filterVal, '.filter_element');
 
-            // reset dropdowns
-            $('#filter-by-owner').prop('selectedIndex',0);
-            @if(Auth::user()->isOhfa())
-            $('#filter-by-program').prop('selectedIndex',0);
-            @endif
-           });
-        
-    });
+                // reset dropdowns
+                $('#filter-by-owner').prop('selectedIndex',0);
+                @if(Auth::user()->isOhfa())
+                $('#filter-by-program').prop('selectedIndex',0);
+                @endif
+               });
+            
+        });
 
 
 @if(Auth::user()->isOhfa())
