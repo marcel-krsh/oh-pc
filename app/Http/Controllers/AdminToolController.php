@@ -737,12 +737,12 @@ class AdminToolController extends Controller
             $formRows['tag'] = $form->formBuilder("/admin/document_category/store", "post", "application/x-www-form-urlencoded", "Create New Document Category", "plus-circle");
             $formRows['rows']['ele1']= $form->text(['Document Category Name','document_category_name','','Enter document category name','required']);
             $formRows['rows']['ele2'] = $form->submit(['Create Document Category']);
-            return view('pages.formtemplate', ['formRows'=>$formRows]);
+            return view('formtemplate', ['formRows'=>$formRows]);
         } else {
             $formRows['tag'] = $form->formBuilder("/admin/document_category/store/".$documentCategory->id, "post", "application/x-www-form-urlencoded", "Edit Document Category", "plus-circle");
             $formRows['rows']['ele1']= $form->text(['Document Category Name','document_category_name',$documentCategory->document_category_name,'','required']);
             $formRows['rows']['ele2'] = $form->submit(['Update Document Category']);
-            return view('pages.formtemplate', ['formRows'=>$formRows]);
+            return view('formtemplate', ['formRows'=>$formRows]);
         }
     }
 

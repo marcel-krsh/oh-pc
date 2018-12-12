@@ -10,9 +10,6 @@
         <th>
             <small>NAME</small>
         </th>
-        <th>
-            <small>ACTION</small>
-        </th>
         </thead>
         <tbody>
         @foreach($documents as $data)
@@ -25,15 +22,7 @@
                     @endif
                 </td>
                 <td><small><a onclick="dynamicModalLoad('admin/document_category/create/{{$data->id}}')" class="uk-link-muted"> {{$data->document_category_name}}</a></small></td>
-                <td>
-                    <a @if($data->active == 1) style="display:none;" @endif class='activateDocument uk-link-muted' href="modals/admin/activate/document/{{$data->id }}" title="Click to activate document category" >
-                        <i class="uk-text-danger a-locked-2" onmouseout="$(this).removeClass('a-unlocked');$(this).addClass('a-locked-2');" onmouseover="$(this).removeClass('a-locked-2');$(this).addClass('a-unlocked');">
-                        </i></a>
-                    <a @if($data->active == 0) style="display:none;" @endif class='deactivateDocument uk-link-muted' href="modals/admin/deactivate/document/{{$data->id }}" title="Click to deactivate document category">
-                        <i class="a-unlocked" onmouseover="$(this).removeClass('a-unlocked');$(this).addClass('a-locked-2');" onmouseout="$(this).removeClass('a-locked-2');$(this).addClass('a-unlocked');">
-                        </i>
-                    </a>
-                </td>
+                
             </tr>
         @endforeach
         </tbody>
