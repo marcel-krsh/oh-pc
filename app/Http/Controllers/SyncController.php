@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\SyncHouseholdSize;
 use App\Models\HouseholdSize;
 
-//
 
 class SyncController extends Controller
 {
