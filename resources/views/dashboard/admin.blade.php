@@ -6,20 +6,20 @@
             </h3>
             <hr class="dashed-hr" class="uk-margin-bottom">
             <br/>
-            <ul style="list-style-type: none;">
-                <li >
-                <a onclick="dynamicModalLoad('admin/entity/create')" class="uk-button uk-button-default uk-width-2-5@m" >CREATE NEW ORGANIZATION</a>
-                <a onclick="dynamicModalLoad('admin/program/create')" class="uk-button uk-button-default uk-width-2-5@m uk-float-right">CREATE NEW PROGRAM</a>
-                <hr class="dashed-hr uk-margin-bottom">
-                <a onclick="dynamicModalLoad('admin/rule/create')" class="uk-button uk-button-default uk-width-2-5@m">CREATE NEW RULE</a>
-                <a onclick="dynamicModalLoad('admin/account/create')" class="uk-button uk-button-default uk-width-2-5@m uk-float-right">CREATE NEW ACCOUNT</a>
-                <hr class="dashed-hr uk-margin-bottom">
-                <a onclick="dynamicModalLoad('admin/vendor/create')" class="uk-button uk-button-default uk-width-2-5@m">CREATE NEW VENDOR</a>
-                <a onclick="dynamicModalLoad('admin/target_area/create')" class="uk-button uk-button-default uk-width-2-5@m  uk-float-right">CREATE NEW TARGET AREA</a>
-                <hr class="dashed-hr uk-margin-bottom">
+            <ul style="list-style-type: none; padding:0">
+                <li>
                 <a onclick="dynamicModalLoad('admin/document_category/create')" class="uk-button uk-button-default uk-width-2-5@m">CREATE NEW DOCUMENT CATEGORY</a>
-                <a onclick="dynamicModalLoad('admin/expense_category/create')" class="uk-button uk-button-default uk-width-2-5@m  uk-float-right">CREATE NEW EXPENSE CATEGORY</a>
-
+                <a onclick="dynamicModalLoad('admin/program/create')" class="uk-button uk-button-default uk-width-2-5@m uk-float-right">CREATE NEW BOILERPLATE</a>
+                <hr class="dashed-hr uk-margin-bottom">
+                </li>
+                <li>
+                <a onclick="dynamicModalLoad('admin/document_category/create')" class="uk-button uk-button-default uk-width-2-5@m">CREATE FINDING TYPE</a>
+                <a onclick="dynamicModalLoad('admin/document_category/create')" class="uk-button uk-button-default uk-width-2-5@m  uk-float-right">CREATE HUD AREA</a>
+                <hr class="dashed-hr uk-margin-bottom">
+                </li>
+                <li>
+                <a onclick="dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);" class="uk-button uk-button-default uk-width-2-5@m uk-float-right">EDIT PREFERENCES</a>
+                <hr class="dashed-hr uk-margin-bottom">
                 </li>
             </ul>
 
@@ -33,22 +33,29 @@
         <div class="uk-width-1-1 ">
             <ul class="uk-subnav uk-subnav-pill" uk-switcher="animation: uk-animation-fade">
                 <li id="organizations-tab" class="uk-active"><a>Organizations</a></li>
+                <li id="amenities-tab"><a>Amenities</a></li>
+                <li id="hud-tab"><a>HUD Areas</a></li>
+                <li id="finding-types-tab"><a>Finding Types</a></li>
+                <li id="default-followups-tab"><a>Follow Ups</a></li>
+                <li id="boilerplates-tab"><a>Boilerplates</a></li>
                 <li id="programs-tab"><a>Programs</a></li>
-                <li id="rules-tab"><a>Rules</a></li>
-                <li id="accounts-tab"><a>Accounts</a></li>
-                <li id="vendors-tab"><a>Vendors</a></li>
-                <li id="target-areas-tab"><a>Target Areas</a></li>
-                <li id="document-categories-tab"><a>Document Categories</a></li>
-                <li id="expense-categories-tab"><a>Expense Categories</a></li>
+                <li id="document-categories-tab"><a>Doc Categories</a></li>
                 <li id="counties-tab"><a>Counties</a></li>
                 <li id="emails-tab"><a>Email History</a></li>
             </ul>
 
             <ul class="uk-switcher uk-margin">
-                <li class="uk-active" id="entities-tab-content">
+                <li class="uk-active" id="organizations-tab-content">
                     <script type="text/javascript">
-                         $('#entities-tab').on('click',function(){
-                            $('#entities-tab-content').load('/tabs/entity');
+                         $('#organizations-tab').on('click',function(){
+                            $('#organizations-tab-content').load('/tabs/organization');
+                        });
+                    </script>
+                </li>
+                <li id="amenities-tab-content">
+                    <script type="text/javascript">
+                        $('#amenities-tab').on('click',function(){
+                            $('#amenities-tab-content').load('/tabs/amenity');
                         });
                     </script>
                 </li>
@@ -59,48 +66,12 @@
                         });
                     </script>
                 </li>
-                <li id="rules-tab-content">
-                    <script type="text/javascript">
-                        $('#rules-tab').on('click',function(){
-                            $('#rules-tab-content').load('/tabs/rule');
-                        });
-                    </script>
-                </li>
-                <li id="accounts-tab-content">
-                    <script type="text/javascript">
-                        $('#accounts-tab').on('click', function(){
-                            $('#accounts-tab-content').load('/tabs/account');
-                        });
-                    </script>
-                </li>
-                <li id="vendor-tab-content">
-                    <script type="text/javascript">
-                        $('#vendors-tab').on('click', function(){
-                            $('#vendor-tab-content').load('/tabs/vendor');
-                        });
-                    </script>
-                </li>
-                <li id="target-tab-content">
-                    <script type="text/javascript">
-                        $('#target-areas-tab').on('click', function(){
-                            $('#target-tab-content').load('/tabs/target_area');
-                        });
-
-                    </script>
-                </li>
                 <li id="document-tab-content">
                     <script type="text/javascript">
                         $('#document-categories-tab').on('click', function(){
                             $('#document-tab-content').load('/tabs/document_category');
                         });
 
-                    </script>
-                </li>
-                <li id="expense-tab-content">
-                    <script type="text/javascript">
-                        $('#expense-categories-tab').on('click', function(){
-                            $('#expense-tab-content').load('/tabs/expense_category');
-                        });
                     </script>
                 </li>
                 <li id="counties-content">
@@ -122,6 +93,6 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">$('#organizations-tab-content').load('/tabs/organizations');
+<script type="text/javascript">$('#organizations-tab-content').load('/tabs/organization');
                     </script>
 

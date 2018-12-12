@@ -125,6 +125,36 @@ Route::group(['middleware' => 'web'], function () {
         Route::post('/documents/audit/{audit}/approve', 'DocumentController@approveDocument')->name('documents.approve');
         Route::post('/documents/audit/{audit}/notapprove', 'DocumentController@notApproveDocument')->name('documents.notapprove');
         Route::post('/documents/audit/{audit}/documentinfo', 'DocumentController@documentInfo')->name('documents.documentInfo');
+
+
+        // ADMIN
+        Route::group(['prefix'=>'modals/admin'], function () {
+            Route::get('entity/create/{id?}', 'AdminToolController@entityCreate');
+            Route::get('program/create/{id?}', 'AdminToolController@programCreate');
+            Route::get('rule/create/{id?}', 'AdminToolController@ruleCreate');
+            Route::get('account/create/{id?}', 'AdminToolController@accountCreate');
+            Route::get('document_category/create/{id?}', 'AdminToolController@documentCategoryCreate');
+            Route::get('expense_category/create/{id?}', 'AdminToolController@expenseCategoryCreate');
+            Route::get('vendor/create/{id?}', 'AdminToolController@vendorCreate');
+            Route::get('target_area/create/{id?}', 'AdminToolController@targetAreaCreate');
+            Route::get('county/create/{id?}', 'AdminToolController@countyCreate');
+        });
+
+        // Admin tabs
+        Route::group(['prefix'=>'tabs'], function () {
+            Route::get('organization', 'AdminToolController@organizationIndex');
+            Route::get('amenity', 'AdminToolController@amenityIndex');
+            Route::get('program', 'AdminToolController@programIndex');
+            Route::get('rule', 'AdminToolController@ruleIndex');
+            Route::get('account', 'AdminToolController@accountIndex');
+            Route::get('document_category', 'AdminToolController@documentIndex');
+            Route::get('expense_category', 'AdminToolController@expenseIndex');
+            Route::get('vendor', 'AdminToolController@vendorIndex');
+            Route::get('target_area', 'AdminToolController@targetIndex');
+            Route::get('county', 'AdminToolController@countyIndex');
+            Route::get('emails', 'PagesController@emailsTab');
+        });
+
     // });
 
 });
@@ -243,34 +273,6 @@ Route::get('/modals/new-note-entry/{parcel}', 'NoteController@newNoteEntry');
 Route::get('/notes/parcel/{parcel}', 'NoteController@showTabFromParcelId')->name('notes.list');
 Route::get('/notes/parcel/{parcel}.json', 'NoteController@notesFromParcelIdJson')->name('notes.loadjson');
 Route::get('/external-window/print-notes-{parcel}.html', 'NoteController@printNotes')->name('notes.print');
-
-// Michael A Routes
-// Admin tools routes
-Route::group(['prefix'=>'modals/admin'], function () {
-    Route::get('entity/create/{id?}', 'AdminToolController@entityCreate');
-    Route::get('program/create/{id?}', 'AdminToolController@programCreate');
-    Route::get('rule/create/{id?}', 'AdminToolController@ruleCreate');
-    Route::get('account/create/{id?}', 'AdminToolController@accountCreate');
-    Route::get('document_category/create/{id?}', 'AdminToolController@documentCategoryCreate');
-    Route::get('expense_category/create/{id?}', 'AdminToolController@expenseCategoryCreate');
-    Route::get('vendor/create/{id?}', 'AdminToolController@vendorCreate');
-    Route::get('target_area/create/{id?}', 'AdminToolController@targetAreaCreate');
-    Route::get('county/create/{id?}', 'AdminToolController@countyCreate');
-});
-
-// Admin tabs
-Route::group(['prefix'=>'tabs'], function () {
-    Route::get('entity', 'AdminToolController@entityIndex');
-    Route::get('program', 'AdminToolController@programIndex');
-    Route::get('rule', 'AdminToolController@ruleIndex');
-    Route::get('account', 'AdminToolController@accountIndex');
-    Route::get('document_category', 'AdminToolController@documentIndex');
-    Route::get('expense_category', 'AdminToolController@expenseIndex');
-    Route::get('vendor', 'AdminToolController@vendorIndex');
-    Route::get('target_area', 'AdminToolController@targetIndex');
-    Route::get('county', 'AdminToolController@countyIndex');
-    Route::get('emails', 'PagesController@emailsTab');
-});
 
 //Admin store
 Route::group(['prefix'=>'admin'], function () {

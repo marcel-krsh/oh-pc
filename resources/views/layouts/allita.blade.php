@@ -190,7 +190,7 @@ if(Auth::check()){
 			@else
 			Dev|Co Inspect
 			@endif
-			&copy; 2018<?php if(date('Y',time()) != '2018') echo " — ".date('Y',time()); ?>: @include('git-version::version-comment')</a> </p><i class="a-person-gear uk-light use-hand-cursor" onclick="dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);" uk-tooltip="title:CLICK TO VIEW PREFERENCES;"></i>
+			&copy; 2018<?php if(date('Y',time()) != '2018') echo " — ".date('Y',time()); ?>: @include('git-version::version-comment')</a> </p>
 		</div>
 		<div id="footer-content" class="uk-width-1-3">
 			<div id="footer-actions-tpl"  class="uk-text-right"></div>

@@ -3052,7 +3052,6 @@ margin-top:10px;
       border-bottom: 2px solid #fff;
       color:#fff;
       cursor: pointer;
-      position:relative;
   }
 
   .event-end { 
@@ -3100,13 +3099,15 @@ margin-top:10px;
       font-size: 16px;
   }
 
-  .event.no-action, .event.no-action.uk-badge { color:#fff; background-color:#939598; opacity: 0.5;}
-  .event.action-needed { color:#fff; background-color:#76338b; opacity: 0.5; }
-  .event.action-required, .event.critical { color:#fff; background-color:#da328a; opacity: 0.5; }
-  .event.ok-actionable, .event.ok-actionable { color:#fff; background-color:#56b285; opacity: 0.5; }
-  .event.in-progress, .event.in-progress { color:#fff; background-color:#49ade9; opacity: 0.5; }
+  .event.no-action, .event.no-action.uk-badge { color:#fff; background-color:#939598; opacity: 1;}
+  .event.action-needed { color:#fff; background-color:#76338b; opacity: 1; }
+  .event.action-required, .event.critical { color:#fff; background-color:#da328a; opacity: 1; }
+  .event.ok-actionable, .event.ok-actionable { color:#fff; background-color:#56b285; opacity: 1; }
+  .event.in-progress, .event.in-progress { color:#fff; background-color:#49ade9; opacity: 1; }
 
-  .event.isLead, .event.available, .event.beforetime, .event.aftertime, .event.breaktime, .no-availability .event {
+  .event.isLead, .event.available, 
+  .event.beforetime, .event.aftertime, 
+  .event.breaktime, .no-availability .event {
     opacity: 1;
   }
 
