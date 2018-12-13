@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listUsers(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 
@@ -68,7 +68,7 @@ class SyncController extends Controller
                             
                             $password = str_random(15);
                             // check if record exists
-                            $updateRecord = SyncUser::select('id','allita_id','last_edited','updated_at')->where('user_status_key',$v['attributes']['userStatusKey'])->first();
+                            $updateRecord = SyncUser::select('id','allita_id','last_edited','updated_at')->where('user_key',$v['attributes']['userKey'])->first();
                             // convert booleans
                              //settype($v['attributes']['ownerPaidUtilities'], 'boolean');
                             // settype($v['attributes']['isUserHandicapAccessible'], 'boolean');
@@ -158,6 +158,7 @@ class SyncController extends Controller
                                             'password'=>bcrypt($password),
                                             
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
+                                            'user_key'=>$v['attributes']['userKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncUser::where('id',$updateRecord['id'])
@@ -168,7 +169,7 @@ class SyncController extends Controller
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
                                             
-                                            'user_status_key'=>$v['attributes']['userStatusKey'],
+                                            'user_key'=>$v['attributes']['userKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -194,7 +195,7 @@ class SyncController extends Controller
                                         'name'=>$v['attributes']['login'],
                                         'email'=>$v['attributes']['login'].'@allita.org',
                                         'password'=>bcrypt($password),
-                                        'user_status_key'=>$v['attributes']['userStatusKey'],
+                                        'user_key'=>$v['attributes']['userKey'],
 
                                 ]);
                                 // Create the sync table entry with the allita id
@@ -205,7 +206,7 @@ class SyncController extends Controller
                                         'user_status_key'=>$v['attributes']['userStatusKey'],
                                         'person_key'=>$v['attributes']['personKey'],
 
-                                        'user_status_key'=>$v['attributes']['userStatusKey'],
+                                        'user_key'=>$v['attributes']['userKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
