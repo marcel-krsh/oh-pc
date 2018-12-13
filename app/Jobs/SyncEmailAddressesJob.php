@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\SyncEmailAddress;
 use App\Models\EmailAddress;
 
-class SyncEmailAddressJob implements ShouldQueue
+class SyncEmailAddressesJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
