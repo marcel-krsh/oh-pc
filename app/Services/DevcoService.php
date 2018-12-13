@@ -1861,12 +1861,12 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return object
 	 */
-	public function listEmailAddresseTypes(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	public function listEmailAddressTypes(int $page = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
 	{
 		$params = "page={$page}&newer_than={$newer_than}";
 
 		$log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
-		return $this->get("devco/email_addresse_types?{$params}&{$log_params}");
+		return $this->get("devco/email_address_types?{$params}&{$log_params}");
 	}
 }
