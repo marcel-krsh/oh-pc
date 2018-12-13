@@ -807,6 +807,7 @@ class AdminToolController extends Controller
 
         if (!$finding_type) {
 
+            $finding_type = null;
             $boilerplates = Boilerplate::where('global','=',1)->orderBy('name', 'asc')->get();
 
             // people who can be assigned to the follow ups
@@ -816,12 +817,7 @@ class AdminToolController extends Controller
 
             return view('modals.finding-type-create', compact('finding_type', 'boilerplates', 'document_categories'));
         } else {
-            $finding_type = null;
             $boilerplates = Boilerplate::where('global','=',1)->orderBy('name', 'asc')->get();
-
-            // people who can be assigned to the follow ups
-            // the audit lead, or the PM, or whoever is creating the finding (hardcoded)
-
             $document_categories = DocumentCategory::where('active','=', 1)->get();
 
             return view('modals.finding-type-create', compact('finding_type', 'boilerplates', 'document_categories'));
@@ -1601,19 +1597,57 @@ class AdminToolController extends Controller
             // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Created Document Category ' . $d->document_category_name)->save();
             return response('I created the finding type. I stored it. I love it.');
         } else {
-            // $dold = Boilerplate::find($id)->toArray();
-            // Boilerplate::where('id', $id)->update([
-            //     'name' => Input::get('name'),
-            //     'boilerplate' => Input::get('boilerplate'),
-            //     'global' => Input::get('global')
-            // ]);
-            // $d = Boilerplate::find($id);
-            // $dnew = $d->toArray();
-            // // $lc = new LogConverter('documentcategory', 'update');
-            // // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Updated Document Category ' . $d->document_category_name);
-            // // $lc->smartAddHistory($dold, $dnew);
-            // // $lc->save();
-            // return response('I updated your boilerplate. That was fun! What else do you have for me?');
+            $finding_type = FindingType::where('id', '=', $id)->first();
+
+            if($finding_type){
+                $finding_type->update([
+                    'name' => $inputs['name'],
+                    'nominal_item_weight' => $inputs['nominal_item_weight'],
+                    'criticality' => $inputs['criticality'],
+                    'one' => (array_key_exists('one', $inputs)) ? 1 : 0,
+                    'two' => (array_key_exists('two', $inputs)) ? 1 : 0,
+                    'three' => (array_key_exists('three', $inputs)) ? 1 : 0,
+                    'type' => $inputs['type']
+                ]);
+
+                // remove boilerplates
+                // remove followups
+                
+                FindingTypeBoilerplate::where('finding_type_id', '=', $finding_type->id)->delete();
+                DefaultFollowup::where('finding_type_id', '=', $finding_type->id)->delete();
+
+                // add boilerplates
+                if(count($boilerplates)){
+                    foreach($boilerplates as $boilerplate){
+                        FindingTypeBoilerplate::create([
+                            'finding_type_id' => $finding_type->id,
+                            'boilerplate_id' => $boilerplate['id']
+                        ]);
+                    }
+                }
+                
+                // add followups
+                if(count($followups)){
+                    foreach($followups as $followup){
+                        DefaultFollowup::create([
+                            'finding_type_id' => $finding_type->id,
+                            'description' => $followup['description'],
+                            'quantity' => $followup['number'],
+                            'duration' => $followup['duration'],
+                            'assignment' => $followup['assignment'],
+                            'reply' => $followup['reply'],
+                            'photo' => $followup['photo'],
+                            'doc' => $followup['doc'],
+                            'doc_categories' => json_encode($followup['cats'])
+                        ]);
+                    }
+                }
+
+                return response('I updated the finding type. I stored it. I love it.');
+            }else{
+                return response('I cannot find that record.');
+            }
+           
         }
     }
 
