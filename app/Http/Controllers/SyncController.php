@@ -144,6 +144,7 @@ class SyncController extends Controller
                                             'area_code'=>$v['attributes']['organization'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
+
                                             
                                             
                                             
@@ -168,6 +169,7 @@ class SyncController extends Controller
                                             'area_code'=>$v['attributes']['organization'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
+                                            'name'=>$v['attributes']['login'],
                                             
                                             
                                             
@@ -217,6 +219,7 @@ class SyncController extends Controller
                                             'area_code'=>$v['attributes']['organization'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
+                                            'name'=>$v['attributes']['login'],
                                             
                                             
                                             
