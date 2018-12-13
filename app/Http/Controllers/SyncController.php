@@ -12,8 +12,8 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncBuildingAmenity;
-use App\Models\BuildingAmenity;
+use App\Models\SyncUnit;
+use App\Models\Unit;
 
 
 class SyncController extends Controller
