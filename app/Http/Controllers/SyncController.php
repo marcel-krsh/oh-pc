@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listPhoneNumberTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -65,7 +65,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncPhoneNumberType::select('id','allita_id','last_edited','updated_at')->where('phone_number_key',$v['attributes']['phoneNumberKey'])->first();
+                            $updateRecord = SyncPhoneNumberType::select('id','allita_id','last_edited','updated_at')->where('phone_number_type_key',$v['attributes']['phoneNumberTypeKey'])->first();
                             // convert booleans
                              //settype($v['attributes']['ownerPaidUtilities'], 'boolean');
                             // settype($v['attributes']['isPhoneNumberTypeHandicapAccessible'], 'boolean');
@@ -114,10 +114,9 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'area_code'=>$v['attributes']['areaCode'],
-                                            'phone_number'=>$v['attributes']['phoneNumber'],
-                                            'extension'=>$v['attributes']['extension'],
+                                            
+                                            'phone_number_type_name'=>$v['attributes']['phoneNumberTypeName'],
+                                            
                                             
                                             
                                             
@@ -131,10 +130,9 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'area_code'=>$v['attributes']['areaCode'],
-                                            'phone_number'=>$v['attributes']['phoneNumber'],
-                                            'extension'=>$v['attributes']['extension'],
+                                            
+                                            'phone_number_type_name'=>$v['attributes']['phoneNumberTypeName'],
+                                            
                                             
                                             
                                             
@@ -155,16 +153,15 @@ class SyncController extends Controller
                                             
                                             
                                             
+                                            
+                                            'phone_number_type_name'=>$v['attributes']['phoneNumberTypeName'],
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
                                             'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'area_code'=>$v['attributes']['areaCode'],
-                                            'phone_number'=>$v['attributes']['phoneNumber'],
-                                            'extension'=>$v['attributes']['extension'],
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            'phone_number_key'=>$v['attributes']['phoneNumberKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncPhoneNumberType::where('id',$updateRecord['id'])
@@ -173,16 +170,15 @@ class SyncController extends Controller
                                             
                                             
                                             
+                                            
+                                            'phone_number_type_name'=>$v['attributes']['phoneNumberTypeName'],
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
                                             'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'area_code'=>$v['attributes']['areaCode'],
-                                            'phone_number'=>$v['attributes']['phoneNumber'],
-                                            'extension'=>$v['attributes']['extension'],
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            'phone_number_key'=>$v['attributes']['phoneNumberKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -202,17 +198,16 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'phone_number_key'=>$v['attributes']['phoneNumberKey'],
-                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'area_code'=>$v['attributes']['areaCode'],
-                                            'phone_number'=>$v['attributes']['phoneNumber'],
-                                            'extension'=>$v['attributes']['extension'],
+                                            
+                                            
+                                            'phone_number_type_name'=>$v['attributes']['phoneNumberTypeName'],
+                                            
                                             
                                             
                                             
                                             
                                     
-                                    'phone_number_key'=>$v['attributes']['phoneNumberKey'],
+                                    'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncPhoneNumberType::create([
@@ -220,16 +215,15 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'area_code'=>$v['attributes']['areaCode'],
-                                            'phone_number'=>$v['attributes']['phoneNumber'],
-                                            'extension'=>$v['attributes']['extension'],
+                                            
+                                            'phone_number_type_name'=>$v['attributes']['phoneNumberTypeName'],
+                                            
                                             
                                             
                                             
                                             
 
-                                        'phone_number_key'=>$v['attributes']['phoneNumberKey'],
+                                        'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
