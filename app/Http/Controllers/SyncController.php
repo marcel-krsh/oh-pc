@@ -12,8 +12,8 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncUnit;
-use App\Models\Unit;
+use App\Models\SyncHouseholdSize;
+use App\Models\HouseholdSize;
 
 
 class SyncController extends Controller
@@ -21,7 +21,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// Unit Sync
+        /////// HouseholdSize Sync
         /////
 
         /// get last modified date inside the database
@@ -32,7 +32,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncUnit::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncHouseholdSize::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -47,7 +47,7 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listUnits(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listHouseholdSizes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             dd($syncData);
@@ -56,23 +56,38 @@ class SyncController extends Controller
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listUnits($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listHouseholdSizes($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
-                        //dd('Page Count is Higher',$syncData);
+                        //dd('Page Count is Higher',$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     }
+                    //dd('Page Count is Higher',$syncData,$modified,$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncUnit::select('id','allita_id','last_edited','updated_at')->where('unit_key',$v['attributes']['unitKey'])->first();
+                            $updateRecord = SyncHouseholdSize::select('id','allita_id','last_edited','updated_at')->where('utility_allowance_type_key',$v['attributes']['utilityAllowanceTypeKey'])->first();
                             // convert booleans
-                            settype($v['attributes']['isActive'], 'boolean');
-                            settype($v['attributes']['isUnitHandicapAccessible'], 'boolean');
+                             settype($v['attributes']['isActive'], 'boolean');
+                            // settype($v['attributes']['isHouseholdSizeHandicapAccessible'], 'boolean');
+
+                            // Set dates older than 1950 to be NULL:
+                            // if($v['attributes']['comment'] < 1951){
+                            //     $v['attributes']['comment'] = NULL;
+                            // }
+                            // if($v['attributes']['completedDate'] < 1951){
+                            //     $v['attributes']['completedDate'] = NULL;
+                            // }
+                            // if($v['attributes']['confirmedDate'] < 1951){
+                            //     $v['attributes']['confirmedDate'] = NULL;
+                            // }
+                            // if($v['attributes']['onSiteMonitorEndDate'] < 1951){
+                            //     $v['attributes']['onSiteMonitorEndDate'] = NULL;
+                            // }
                             //dd($updateRecord,$updateRecord->updated_at);
                             if(isset($updateRecord->id)) {
                                 // record exists - get matching table record
 
                                 /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                                $allitaTableRecord = Unit::find($updateRecord->allita_id);
+                                $allitaTableRecord = HouseholdSize::find($updateRecord->allita_id);
                                 /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
@@ -93,36 +108,30 @@ class SyncController extends Controller
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        SyncUnit::where('id',$updateRecord['id'])
+                                        SyncHouseholdSize::where('id',$updateRecord['id'])
                                         ->update([
                                             
-                                            'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
-                                            'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
-                                            'unit_status_key'=>$v['attributes']['unitStatusKey'],
-                                            'ami_percentage_key'=>$v['attributes']['amiPercentageKey'],
-                                            'unit_name'=>$v['attributes']['unitName'],
-                                            'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
-                                            'status_date'=>$v['attributes']['statusDate'],
-                                            'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
+                                            
+                                            
+                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
                                             'is_active'=>$v['attributes']['isActive'],
+                                            
+                                            
                                             
                                             
                                             
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
-                                        $UpdateAllitaValues = SyncUnit::find($updateRecord['id']);
+                                        $UpdateAllitaValues = SyncHouseholdSize::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
                                             
-                                            'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
-                                            'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
-                                            'unit_status_key'=>$v['attributes']['unitStatusKey'],
-                                            'ami_percentage_key'=>$v['attributes']['amiPercentageKey'],
-                                            'unit_name'=>$v['attributes']['unitName'],
-                                            'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
-                                            'status_date'=>$v['attributes']['statusDate'],
-                                            'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
+                                            
+                                            
+                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
                                             'is_active'=>$v['attributes']['isActive'],
+                                            
+                                            
                                             
                                             
                                             
@@ -136,41 +145,35 @@ class SyncController extends Controller
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = Unit::create([
+                                        $allitaTableRecord = HouseholdSize::create([
                                             
                                             
-                                            'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
-                                            'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
-                                            'unit_status_key'=>$v['attributes']['unitStatusKey'],
-                                            'ami_percentage_key'=>$v['attributes']['amiPercentageKey'],
-                                            'unit_name'=>$v['attributes']['unitName'],
-                                            'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
-                                            'status_date'=>$v['attributes']['statusDate'],
-                                            'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
+                                            
+                                            
+                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
                                             
                                             
-                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            
+                                            
+                                            'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
-                                        $syncTableRecord = SyncUnit::where('id',$updateRecord['id'])
+                                        $syncTableRecord = SyncHouseholdSize::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
-                                            'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
-                                            'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
-                                            'unit_status_key'=>$v['attributes']['unitStatusKey'],
-                                            'ami_percentage_key'=>$v['attributes']['amiPercentageKey'],
-                                            'unit_name'=>$v['attributes']['unitName'],
-                                            'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
-                                            'status_date'=>$v['attributes']['statusDate'],
-                                            'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
+                                            
+                                            
+                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
                                             
                                             
-                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            
+                                            
+                                            'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -186,40 +189,34 @@ class SyncController extends Controller
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = Unit::create([
+                                $allitaTableRecord = HouseholdSize::create([
                                     
 
-                                            'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
-                                            'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
-                                            'unit_status_key'=>$v['attributes']['unitStatusKey'],
-                                            'ami_percentage_key'=>$v['attributes']['amiPercentageKey'],
-                                            'unit_name'=>$v['attributes']['unitName'],
-                                            'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
-                                            'status_date'=>$v['attributes']['statusDate'],
-                                            'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
+                                            
+                                            'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
+                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
                                             
+                                            
+                                            
                                     
-                                    'unit_key'=>$v['attributes']['unitKey'],
+                                    'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
-                                $syncTableRecord = SyncUnit::create([
+                                $syncTableRecord = SyncHouseholdSize::create([
                                             
                                             
-                                            'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
-                                            'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
-                                            'unit_status_key'=>$v['attributes']['unitStatusKey'],
-                                            'ami_percentage_key'=>$v['attributes']['amiPercentageKey'],
-                                            'unit_name'=>$v['attributes']['unitName'],
-                                            'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
-                                            'status_date'=>$v['attributes']['statusDate'],
-                                            'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
+                                            
+                                            
+                                            'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
                                             'is_active'=>$v['attributes']['isActive'],
                                             
                                             
+                                            
+                                            
 
-                                        'unit_key'=>$v['attributes']['unitKey'],
+                                        'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
