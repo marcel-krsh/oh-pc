@@ -119,8 +119,8 @@ class SyncController extends Controller
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
-                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
-                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            
                                             'organization'=>$v['attributes']['organization'],
 
                                             
@@ -139,8 +139,8 @@ class SyncController extends Controller
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
-                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
-                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            
                                             'organization'=>$v['attributes']['organization'],
 
                                             
@@ -166,8 +166,8 @@ class SyncController extends Controller
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
-                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
-                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            
                                             'organization'=>$v['attributes']['organization'],
                                             'name'=>$v['attributes']['login'],
                                             'email'=>$v['attributes']['personKey'].'@allita.org',
@@ -190,8 +190,8 @@ class SyncController extends Controller
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
-                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
-                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            
                                             'organization'=>$v['attributes']['organization'],
 
                                             
@@ -223,8 +223,8 @@ class SyncController extends Controller
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
-                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
-                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            
                                             'organization'=>$v['attributes']['organization'],
 
                                             'name'=>$v['attributes']['login'],
@@ -248,8 +248,8 @@ class SyncController extends Controller
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
-                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
-                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            
                                             'organization'=>$v['attributes']['organization'],
 
                                             
