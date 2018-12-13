@@ -935,6 +935,16 @@ class AdminToolController extends Controller
         return view('admin_tabs.huds', compact('huds'));
     }
 
+    public function searchFindingTypes(Request $request)
+    {
+        if ($request->has('findingtypes-search')) {
+            Session::put('findingtypes-search', $request->get('findingtypes-search'));
+        } else {
+            Session::forget('findingtypes-search');
+        }
+        return 1;
+    }
+
     /**
      * Finding Type Index
      *
@@ -942,7 +952,18 @@ class AdminToolController extends Controller
      */
     public function findingtypeIndex()
     {
-        $findingtypes = FindingType::orderBy('name', 'asc')->get();
+        if (Session::has('findingtypes-search') && Session::get('findingtypes-search') != '') {
+            $search = Session::get('findingtypes-search');
+            $findingtypes = FindingType::where(function ($query) use ($search) {
+                                        $query->where('name', 'LIKE', '%'.$search.'%');
+                                    })
+                                    ->orderBy('name', 'asc')
+                                    ->paginate(40);
+                                
+        }else{
+            $findingtypes = FindingType::orderBy('name', 'asc')->paginate(40);
+        }
+        
         return view('admin_tabs.findingtypes', compact('findingtypes'));
     }
 

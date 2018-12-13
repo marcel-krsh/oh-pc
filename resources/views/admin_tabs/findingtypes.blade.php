@@ -1,5 +1,11 @@
 <div class="uk-overflow-container uk-margin-top">
-    <h4 class="uk-text-left">{{count($findingtypes)}} TOTAL FINDING TYPES</h4>
+    
+    <div uk-grid class="uk-margin-remove">
+        <h4 class="uk-text-left uk-width-2-3" style="padding-top: 8px;">{{number_format($findingtypes->total(), 0)}} TOTAL FINDING TYPES</h4> 
+        <div class="uk-width-1-3 uk-text-right">
+            <input id="findingtypes-search" name="findingtypes-search" type="text" value="{{ Session::get('findingtypes-search') }}" class=" uk-input" placeholder="Search by finding types name (press enter)"> 
+        </div>
+    </div>
     <hr>
     <table class="uk-table uk-table-hover uk-table-striped uk-table-condensed small-table-text">
         <thead>
@@ -48,5 +54,32 @@
 
         </tbody>
     </table>
+    {{ $findingtypes->links() }}
 
 </div>
+<script>
+    
+    function searchFindingtypes(){
+        $.post('{{ URL::route("findingtypes.search") }}', {
+                'findingtypes-search' : $("#findingtypes-search").val(),
+                '_token' : '{{ csrf_token() }}'
+            }, function(data) {
+                if(data!=1){ 
+                    UIkit.modal.alert(data);
+                } else {
+                    $('#findingtype-tab-content').load('/tabs/findingtype');
+                }
+        } );
+    }
+
+    // process search
+    $(document).ready(function() {
+        $('#findingtypes-search').keydown(function (e) {
+          if (e.keyCode == 13) {
+            searchFindingtypes();
+            e.preventDefault();
+            return false; 
+          }
+        });
+    });
+</script>
