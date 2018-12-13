@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $password = str_random(15);
+        
 
         $lastModifiedDate = SyncUser::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
@@ -53,10 +53,12 @@ class SyncController extends Controller
             $syncData = $apiConnect->listUsers(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
+                    $password = str_random(15);
+                    $active = 0;
                     if($syncPage > 1){
                         //Get Next Page
                         $syncData = $apiConnect->listUsers($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
@@ -71,7 +73,9 @@ class SyncController extends Controller
                             // convert booleans
                              //settype($v['attributes']['ownerPaidUtilities'], 'boolean');
                             // settype($v['attributes']['isUserHandicapAccessible'], 'boolean');
-
+                            if($v['attributes']['userStatusKey']>0){
+                                $active = 1;
+                            }
                             // Set dates older than 1950 to be NULL:
                             //  if($v['attributes']['acquisitionDate'] < 1951){
                             //     $v['attributes']['acquisitionDate'] = NULL;
@@ -119,8 +123,8 @@ class SyncController extends Controller
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
-                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
-                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            
                                             'organization'=>$v['attributes']['organization'],
 
                                             
@@ -139,8 +143,8 @@ class SyncController extends Controller
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
-                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
-                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            
                                             'organization'=>$v['attributes']['organization'],
 
                                             
@@ -166,12 +170,13 @@ class SyncController extends Controller
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
-                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
-                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            
                                             'organization'=>$v['attributes']['organization'],
                                             'name'=>$v['attributes']['login'],
-                                            'email'=>$v['attributes']['personKey'].'@allita.org',
+                                            'email'=>$v['attributes']['login'].'@allita.org',
                                             'password'=>bcrypt($password),
+                                            'active'=>$active,
 
                                             
                                             
@@ -190,8 +195,8 @@ class SyncController extends Controller
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
-                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
-                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            
                                             'organization'=>$v['attributes']['organization'],
 
                                             
@@ -223,13 +228,14 @@ class SyncController extends Controller
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
-                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
-                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            
                                             'organization'=>$v['attributes']['organization'],
 
                                             'name'=>$v['attributes']['login'],
-                                            'email'=>$v['attributes']['personKey'].'@allita.org',
+                                            'email'=>$v['attributes']['login'].'@allita.org',
                                             'password'=>bcrypt($password),
+                                            'active'=>$active,
 
 
                                             
@@ -248,8 +254,8 @@ class SyncController extends Controller
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
-                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
-                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            
                                             'organization'=>$v['attributes']['organization'],
 
                                             
