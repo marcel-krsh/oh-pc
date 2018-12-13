@@ -45,6 +45,8 @@ use App\Jobs\SyncComplianceContactJob;
 use App\Jobs\SyncPhoneNumberTypesJob;
 use App\Jobs\SyncEmailAddressTypesJob;
 use App\Jobs\SyncEmailAddressesJob;
+use App\Jobs\SyncBuildingAmenitiesJob;
+use App\Jobs\SyncUnitAmenitiesJob;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -438,6 +440,23 @@ class Kernel extends ConsoleKernel
             //Log::info('Sync Job Already Started.');
         }
 
+        //SyncBuildingAmenitiesJob
+        $test = DB::table('jobs')->where('payload','like','%SyncBuildingAmenitiesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncBuildingAmenitiesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+        //SyncUnitAmenitiesJob
+        $test = DB::table('jobs')->where('payload','like','%SyncUnitAmenitiesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncUnitAmenitiesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+        
     }
 
     /**
