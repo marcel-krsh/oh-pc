@@ -1,6 +1,6 @@
 //https://laracasts.com/discuss/channels/general-discussion/step-by-step-guide-to-installing-socketio-and-broadcasting-events-with-laravel-51
 
-var server = require('http').Server();
+var server = require('https').Server();
 
 var io = require('socket.io')(server);
 
