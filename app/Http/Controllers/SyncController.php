@@ -70,7 +70,7 @@ class SyncController extends Controller
                             // settype($v['attributes']['floatingUnits'], 'boolean');
                             // settype($v['attributes']['isProjectDateHandicapAccessible'], 'boolean');
 
-                            Set dates older than 1971 to be NULL:
+                            //Set dates older than 1971 to be NULL:
                             if($v['attributes']['eventDate'] < 1971){
                                 $v['attributes']['eventDate'] = NULL;
                             }
