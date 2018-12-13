@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Organization;
 use App\Models\Amenity;
+use App\Models\AmenityHud;
 use App\Models\HudInspectableArea;
 use App\Models\FindingType;
 use App\Models\FindingTypeBoilerplate;
@@ -862,20 +863,20 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|string
      */
-    public function hudAreaCreate(Form $form, $id = null)
+    public function hudAreaCreate($id = null)
     {
         $hud = HudInspectableArea::where('id', $id)->first();
 
-        if (!$id) {
-            $formRows['tag'] = $form->formBuilder("/admin/hud_area/store", "post", "application/x-www-form-urlencoded", "Create New HUD Inspectable Area", "plus-circle");
-            $formRows['rows']['ele1']= $form->text(['Name','name','','Enter HUD area name','required']);
-            $formRows['rows']['ele2'] = $form->submit(['Create HUD Inspectable Area']);
-            return view('formtemplate', ['formRows'=>$formRows]);
+        if (!$hud) {
+            $hud = null;
+            $amenities = Amenity::orderBy('amenity_description', 'asc')->get();
+
+            return view('modals.hud-area-create', compact('hud', 'amenities'));
         } else {
-            $formRows['tag'] = $form->formBuilder("/admin/hud_area/store/".$hud->id, "post", "application/x-www-form-urlencoded", "Edit HUD Inspectable Area", "edit");
-            $formRows['rows']['ele1']= $form->text(['HUD Name','name',$hud->name,'','required']);
-            $formRows['rows']['ele2'] = $form->submit(['Update HUD Inspectable Area Information']);
-            return view('formtemplate', ['formRows'=>$formRows]);
+
+            $amenities = Amenity::orderBy('amenity_description', 'asc')->get();
+
+            return view('modals.hud-area-create', compact('hud', 'amenities'));
         }
     }
 
@@ -1616,28 +1617,60 @@ class AdminToolController extends Controller
      */
     public function hudAreaStore(Request $request, $id = null)
     {
-        $this->validate($request, [
-           'name'=> 'string|required'
-        ]);
+        $inputs = $request->get('inputs');
+        $amenities = json_decode($request->get('amenities'), true);
+        $amenities = $amenities['items'];
+
         if (!$id) {
+
             $hud = HudInspectableArea::create([
-                'name' => Input::get('name')
+                'name' => $inputs['name']
             ]);
+
+            // add boilerplates
+            if(count($amenities)){
+                foreach($amenities as $amenity){
+                    AmenityHud::create([
+                        'hud_inspectable_area_id' => $hud->id,
+                        'amenity_id' => $amenity['id']
+                    ]);
+                }
+            }
+
             // $lc = new LogConverter('documentcategory', 'create');
             // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Created Document Category ' . $d->document_category_name)->save();
             return response('I created the HUD area. I stored it. I love it.');
         } else {
-            $hudold = HudInspectableArea::find($id)->toArray();
-            HudInspectableArea::where('id', $id)->update([
-                'name' => Input::get('name')
-            ]);
-            $hud = Boilerplate::find($id);
-            $hudnew = $hud->toArray();
+            $hud = HudInspectableArea::where('id', '=', $id)->first();
+            
+            if($hud){
+                $hud->update([
+                    'name' => $inputs['name']
+                ]);
+
+                // remove amenities
+                AmenityHud::where('hud_inspectable_area_id', '=', $hud->id)->delete();
+
+                // add amenities
+                if(count($amenities)){
+                    foreach($amenities as $amenity){
+                        AmenityHud::create([
+                            'hud_inspectable_area_id' => $hud->id,
+                            'amenity_id' => $amenity['id']
+                        ]);
+                    }
+                }
+
+                return response('I updated your HUD area. That was fun! What else do you have for me?');
+            }else{
+                return response('I cannot find that record.');
+            }
+
             // $lc = new LogConverter('documentcategory', 'update');
             // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Updated Document Category ' . $d->document_category_name);
             // $lc->smartAddHistory($dold, $dnew);
             // $lc->save();
-            return response('I updated your HUD area. That was fun! What else do you have for me?');
+            
         }
     }
 
