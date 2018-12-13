@@ -67,6 +67,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             $allitaId = null;
+                            $password = str_random(15);
                             // check if record exists
                             $updateRecord = SyncUser::select('id','allita_id','last_edited','updated_at')->where('user_status_key',$v['attributes']['userStatusKey'])->first();
                             // convert booleans
@@ -171,6 +172,8 @@ class SyncController extends Controller
                                             'person_key'=>$v['attributes']['personKey'],
                                             'name'=>$v['attributes']['login'],
                                             'email'=>$v['attributes']['login'].'@allita.org',
+                                            'password'=>bcrypt($password),
+
 
                                             
                                             
@@ -223,6 +226,7 @@ class SyncController extends Controller
                                             'person_key'=>$v['attributes']['personKey'],
                                             'name'=>$v['attributes']['login'],
                                             'email'=>$v['attributes']['login'].'@allita.org',
+                                            'password'=>bcrypt($password),
                                             
                                             
                                             
