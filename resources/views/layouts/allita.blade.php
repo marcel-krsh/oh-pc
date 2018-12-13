@@ -113,7 +113,8 @@ if(Auth::check()){
 	</style>
 
 	<script>
-		var socket = io('http://192.168.100.100:3000');
+		// var socket = io('{{ env("APP_URL") }}:443'); 
+		var socket = io('https://pcinspectdev.ohiohome.org:443');
 
 		// initial values
 	    var statsAuditsTotal = "{{$stats_audits_total}}";

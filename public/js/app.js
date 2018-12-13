@@ -1095,7 +1095,8 @@ Vue.component('auditrow', __webpack_require__(42), {
 });
 Vue.component('communication-row', __webpack_require__(45)); // connect sockets
 
-var socket = io('http://192.168.100.100:3000'); // https://github.com/ElemeFE/vue-infinite-scroll
+var socket = io('https://pcinspectdev.ohiohome.org:443'); // var socket = io('https://192.168.100.100:443');
+// https://github.com/ElemeFE/vue-infinite-scroll
 
 var infiniteScroll = __webpack_require__(48);
 
