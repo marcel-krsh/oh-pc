@@ -76,7 +76,7 @@
                         <div class="uk-width-1-1 uk-width-2-3@m uk-scrollable-box">
                             <ul class="uk-list">
                                 @foreach($boilerplates as $boilerplate)
-                                <li><label><input class="uk-checkbox" type="checkbox" name="boilerplates[]" value="{{$boilerplate->id}}" @if($finding_type->boilerplates) @if(in_array($boilerplate->id, $finding_type->boilerplates->pluck('boilerplate_id')->toArray())) checked @endif @endif> {{$boilerplate->name}}</label></li>
+                                <li><label><input class="uk-checkbox" type="checkbox" name="boilerplates[]" value="{{$boilerplate->id}}" @if($finding_type) @if($finding_type->boilerplates) @if(in_array($boilerplate->id, $finding_type->boilerplates->pluck('boilerplate_id')->toArray())) checked @endif @endif @endif> {{$boilerplate->name}}</label></li>
                                 @endforeach
                             </ul>
                         </div>
@@ -124,6 +124,7 @@
                             <button class="uk-button uk-button-default uk-button-small" onclick="addDefaultFollowup(this);return false;"><span uk-icon="plus-circle" class="form-title-icon"></span> Add follow-up</button>
                         </div>
                         <div class="uk-width-1-1 form-default-followups">
+                            @if($finding_type)
                             @if($finding_type->default_followups)
                             @foreach($finding_type->default_followups as $default_followup)
                             <div class="form-default-followup" uk-grid>
@@ -171,6 +172,7 @@
                                 </div>
                             </div>
                             @endforeach
+                            @endif
                             @endif
                         </div>
                     </div>
