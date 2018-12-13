@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * FindingType Model
@@ -24,6 +24,26 @@ class FindingType extends Model
         'three',
         'type'
     ];
+
+    /**
+     * Boilerplates
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function boilerplates() : HasMany
+    {
+        return $this->hasMany(FindingTypeBoilerplate::class, 'finding_type_id', 'id');
+    }
+
+    /**
+     * Default Followups
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function default_followups() : HasMany
+    {
+        return $this->hasMany(DefaultFollowup::class, 'finding_type_id', 'id');
+    }
 
 }
     

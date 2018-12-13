@@ -46,9 +46,9 @@
 </template>
 
         <div>
-            <h2 id="post-response" class="uk-margin-top">@if(!$finding_type)<span uk-icon="plus-circle" class="form-title-icon"></span>@else<span uk-icon="edit" class="form-title-icon"></span>@endif Create Finding Type</h2>
+            <h2 id="post-response" class="uk-margin-top">@if(!$finding_type)<span uk-icon="plus-circle" class="form-title-icon"></span> Create Finding Type @else<span class="uk-icon-edit" ></span> Update Finding Type @endif</h2>
             <hr />
-            <form action="/admin/findingtype/store" method="post" target="_blank">
+            <form @if($finding_type) action="/admin/findingtype/store/{{$finding_type->id}}" @else action="/admin/findingtype/store" @endif method="post" target="_blank">
                 {{ csrf_field() }}
                 
                 <div class="uk-form-row">
@@ -62,9 +62,9 @@
                     <div class="uk-grid">
                         <label for="type" class="uk-width-1-1 uk-width-1-3@m">Type: </label>
                         <div class="uk-width-2-3">
-                            <label><input class="uk-radio" type="radio" name="type" value="nlt" checked> NLT</label>
-                            <label><input class="uk-radio" type="radio" name="type" value="lt"> LT</label>
-                            <label><input class="uk-radio" type="radio" name="type" value="file"> FILE</label>
+                            <label><input class="uk-radio" type="radio" name="type" value="nlt" @if($finding_type) @if($finding_type->type == 'nlt') checked @endif @endif> NLT</label>
+                            <label><input class="uk-radio" type="radio" name="type" value="lt" @if($finding_type) @if($finding_type->type == 'lt') checked @endif @endif> LT</label>
+                            <label><input class="uk-radio" type="radio" name="type" value="file" @if($finding_type) @if($finding_type->type == 'file') checked @endif @endif> FILE</label>
                         </div>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
                         <div class="uk-width-1-1 uk-width-2-3@m uk-scrollable-box">
                             <ul class="uk-list">
                                 @foreach($boilerplates as $boilerplate)
-                                <li><label><input class="uk-checkbox" type="checkbox" name="boilerplates[]" value="{{$boilerplate->id}}" checked> {{$boilerplate->name}}</label></li>
+                                <li><label><input class="uk-checkbox" type="checkbox" name="boilerplates[]" value="{{$boilerplate->id}}" @if($finding_type) @if(in_array($boilerplate->id, $finding_type->boilerplates->pluck('boilerplate_id')->toArray())) checked @endif @endif> {{$boilerplate->name}}</label></li>
                                 @endforeach
                             </ul>
                         </div>
@@ -119,11 +119,60 @@
 
                 <div class="uk-form-row">
                     <div class="uk-grid">
-                        <label class="uk-width-2-3">Follow Ups: TBD foreach on edit</label>
+                        <label class="uk-width-2-3">Follow Ups:</label>
                         <div class="uk-width-1-3 uk-text-right  uk-margin-small-top">
                             <button class="uk-button uk-button-default uk-button-small" onclick="addDefaultFollowup(this);return false;"><span uk-icon="plus-circle" class="form-title-icon"></span> Add follow-up</button>
                         </div>
-                        <div class="uk-width-1-1 form-default-followups"></div>
+                        <div class="uk-width-1-1 form-default-followups">
+                            @if($finding_type->default_followups)
+                            @foreach($finding_type->default_followups as $default_followup)
+                            <div class="form-default-followup" uk-grid>
+                                <div class="uk-width-1-6 uk-margin-small-top uk-margin-small-bottom">
+                                    <input type="number" min="1" max="31" value="{{$default_followup->quantity}}" class="uk-form-small followup-number" style="height: 20px;">
+                                </div>
+                                <div class="uk-width-1-6 uk-margin-small-top uk-margin-small-bottom">
+                                    <select class="uk-select uk-form-small followup-duration">
+                                        <option value="hours" @if($default_followup->duration == 'hours') selected @endif>Hours</option>
+                                        <option value="days" @if($default_followup->duration == 'days') selected @endif>Days</option>
+                                        <option value="weeks" @if($default_followup->duration == 'weeks') selected @endif>Weeks</option>
+                                        <option value="months" @if($default_followup->duration == 'months') selected @endif>Months</option>
+                                    </select>
+                                </div>
+                                <div class="uk-width-1-6 uk-margin-small-top uk-margin-small-bottom">
+                                    <select class="uk-select uk-form-small followup-assignment">
+                                        <option value="lead" @if($default_followup->assignment == 'lead') selected @endif>Lead Auditor</option>
+                                        <option value="pm" @if($default_followup->assignment == 'pm') selected @endif>Property Manager</option>
+                                        <option value="user" @if($default_followup->assignment == 'user') selected @endif>User Creating Finding</option>
+                                    </select>
+                                </div>
+                                <div class="uk-width-1-2  uk-margin-small-top uk-margin-small-bottom">
+                                    <input type="text" value="{{$default_followup->description}}" placeholder="Description" class="uk-input uk-form-small followup-description">
+                                </div>
+                                <div class="uk-width-1-6  uk-margin-small-top">
+                                    <label><input class="uk-checkbox followup-reply" type="checkbox" value="1" @if($default_followup->reply) checked @endif> Reply</label><br /><br />
+                                    <button class="uk-button uk-button-default uk-button-small" onclick="removeFollowUp(this);return false;"><span uk-icon="minus-circle" class="form-title-icon uk-icon"></span> Remove</button>
+                                </div>
+                                <div class="uk-width-1-6  uk-margin-small-top">
+                                    <label><input class="uk-checkbox followup-photo" type="checkbox" value="1" @if($default_followup->photo) checked @endif> Add a photo</label>
+                                </div>
+                                <div class="uk-width-1-6  uk-margin-small-top">
+                                    <label><input class="uk-checkbox followup-doc" type="checkbox" value="1" @if($default_followup->doc) checked @endif> Upload a doc</label>
+                                </div>
+                                <div class="uk-width-1-2  uk-margin-small-top">
+                                    @if(count($document_categories))
+                                    <div class="uk-width-1-1 uk-width-2-3@m uk-scrollable-box" style="width:100%; height:100px;">
+                                        <ul class="uk-list">
+                                            @foreach($document_categories as $cat)
+                                            <li><label><input class="uk-checkbox followup-cat" type="checkbox" name="categories[]" value="{{$cat->id}}" @if($default_followup) @if(in_array($cat->id, json_decode($default_followup->doc_categories, true))) checked @endif @endif> {{$cat->document_category_name}}</label></li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+                            @endforeach
+                            @endif
+                        </div>
                     </div>
                 </div>
 
@@ -138,9 +187,6 @@
         </div>
 <script>
     $ = jQuery;
-
-    var followups = {items: []};
-    var boilerplates = {items: []};
 
     function addDefaultFollowup(element){
         var followupTemplate = $('#form-finding-type-followup-template').html();
@@ -169,6 +215,8 @@
             e.preventDefault();
             let form= $(this);
             let action = $(this).attr('action'); 
+            var followups = {items: []};
+            var boilerplates = {items: []};
 
             $.each($('.form-default-followup'), function(index, followup) {
                 var number = $(followup).find('.followup-number').val();
@@ -209,9 +257,11 @@
             });
 
             $.each($('input[name^="boilerplates"]'), function(index, element) {
-                boilerplates.items.push({
-                    id: $(element).val()
-                });
+                if($(element).is(':checked')){
+                    boilerplates.items.push({
+                        id: $(element).val()
+                    });
+                }
             });
 
             $.ajax({
@@ -227,11 +277,7 @@
                     form.remove();
                     $('h2#post-response').hide().html("<span class='uk-text-success'><span uk-icon='check'></span> "+response+"</span><br /><br /><a onclick=\"dynamicModalLoad('admin/finding_type/create')\" class=\"uk-button uk-button-default uk-width-2-5@m\">CREATE ANOTHER FINDING TYPE</a>").fadeIn();
                     console.log(action);
-                    switch (action){
-                        case "/admin/findingtype/store":
-                            $('#findingtype-tab').trigger('click');
-                            break;
-                    }
+                    $('#findingtype-tab').trigger('click');
 
                 },
                 error: function(resp){
