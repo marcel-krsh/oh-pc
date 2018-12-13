@@ -137,7 +137,7 @@ class SyncController extends Controller
                                             
                                             
                                             'organization_key'=>$v['attributes']['organizationKey'],
-                                            'user_status_key'=>$v['attributes']['areaCode'],
+                                            'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
                                             'organization_type_key'=>$v['attributes']['organizationTypeKey'],
                                             'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
@@ -164,7 +164,7 @@ class SyncController extends Controller
                                             
                                             
                                             'organization_key'=>$v['attributes']['organizationKey'],
-                                            'user_status_key'=>$v['attributes']['areaCode'],
+                                            'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
                                             'organization_type_key'=>$v['attributes']['organizationTypeKey'],
                                             'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
@@ -188,7 +188,7 @@ class SyncController extends Controller
                                             
                                             
                                             'organization_key'=>$v['attributes']['organizationKey'],
-                                            'user_status_key'=>$v['attributes']['areaCode'],
+                                            'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
                                             'organization_type_key'=>$v['attributes']['organizationTypeKey'],
                                             'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
@@ -221,7 +221,7 @@ class SyncController extends Controller
                                             
                                             'devco_key'=>$v['attributes']['userKey'],
                                             'organization_key'=>$v['attributes']['organizationKey'],
-                                            'user_status_key'=>$v['attributes']['areaCode'],
+                                            'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
                                             'organization_type_key'=>$v['attributes']['organizationTypeKey'],
                                             'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
@@ -246,7 +246,7 @@ class SyncController extends Controller
                                             
                                             
                                             'organization_key'=>$v['attributes']['organizationKey'],
-                                            'user_status_key'=>$v['attributes']['areaCode'],
+                                            'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
                                             'organization_type_key'=>$v['attributes']['organizationTypeKey'],
                                             'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
