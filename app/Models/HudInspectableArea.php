@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * HudInspectableArea Model
@@ -14,6 +14,20 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class HudInspectableArea extends Model
 {
 	protected $table = 'hud_inspectable_areas';
+
+	protected $fillable = [
+        'name'
+    ];
+
+    /**
+     * finding_types
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function finding_types() : HasMany
+    {
+        return $this->hasMany(HudFindingType::class, 'hud_inspectable_area_id', 'id');
+    }
 
 }
     
