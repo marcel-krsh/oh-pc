@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $password = str_random(15);
+        
 
         $lastModifiedDate = SyncUser::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
@@ -57,6 +57,8 @@ class SyncController extends Controller
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
+                    $password = str_random(15);
+                    $active = 0;
                     if($syncPage > 1){
                         //Get Next Page
                         $syncData = $apiConnect->listUsers($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
@@ -71,7 +73,9 @@ class SyncController extends Controller
                             // convert booleans
                              //settype($v['attributes']['ownerPaidUtilities'], 'boolean');
                             // settype($v['attributes']['isUserHandicapAccessible'], 'boolean');
-
+                            if($v['attributes']['userStatusKey']>0){
+                                $active = 1;
+                            }
                             // Set dates older than 1950 to be NULL:
                             //  if($v['attributes']['acquisitionDate'] < 1951){
                             //     $v['attributes']['acquisitionDate'] = NULL;
@@ -172,6 +176,7 @@ class SyncController extends Controller
                                             'name'=>$v['attributes']['login'],
                                             'email'=>$v['attributes']['personKey'].'@allita.org',
                                             'password'=>bcrypt($password),
+                                            'active'=>$active,
 
                                             
                                             
@@ -230,6 +235,7 @@ class SyncController extends Controller
                                             'name'=>$v['attributes']['login'],
                                             'email'=>$v['attributes']['personKey'].'@allita.org',
                                             'password'=>bcrypt($password),
+                                            'active'=>$active,
 
 
                                             

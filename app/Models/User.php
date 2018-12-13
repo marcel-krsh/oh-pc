@@ -34,7 +34,15 @@ class User extends Authenticatable
         'api_token',
         'devco_key',
         'last_accessed',
-        'socket_id'
+        'socket_id',
+        'person_key',
+        'person_id',
+        'last_edited',
+        'user_status_key',
+        'user_status_id',
+        'organization_id',
+        'organization_key',
+        'organization'
     ];
 
     protected static $logAttributes = [
