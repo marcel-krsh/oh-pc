@@ -47,6 +47,7 @@ use App\Jobs\SyncEmailAddressTypesJob;
 use App\Jobs\SyncEmailAddressesJob;
 use App\Jobs\SyncBuildingAmenitiesJob;
 use App\Jobs\SyncUnitAmenitiesJob;
+use App\Jobs\SyncHouseHoldSizesJob;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
