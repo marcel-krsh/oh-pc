@@ -119,7 +119,7 @@ class SyncController extends Controller
                                             
                                             
                                             'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
+                                            'program_date_type_key'=>$v['attributes']['programDateTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             'event_date'=>$v['attributes']['eventDate'],
                                             
@@ -140,7 +140,7 @@ class SyncController extends Controller
                                             
                                             
                                             'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
+                                            'program_date_type_key'=>$v['attributes']['programDateTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             'event_date'=>$v['attributes']['eventDate'],
                                             
@@ -168,7 +168,7 @@ class SyncController extends Controller
                                             
                                             
                                             'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
+                                            'program_date_type_key'=>$v['attributes']['programDateTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             'event_date'=>$v['attributes']['eventDate'],
                                             
@@ -190,7 +190,7 @@ class SyncController extends Controller
                                             
                                             
                                             'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
+                                            'program_date_type_key'=>$v['attributes']['programDateTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             'event_date'=>$v['attributes']['eventDate'],
                                             
@@ -224,7 +224,7 @@ class SyncController extends Controller
                                             
                                             
                                             'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
+                                            'program_date_type_key'=>$v['attributes']['programDateTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             'event_date'=>$v['attributes']['eventDate'],
                                             
@@ -245,7 +245,7 @@ class SyncController extends Controller
                                             
                                             
                                             'project_program_key'=>$v['attributes']['developmentProgramKey'],
-                                            'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
+                                            'program_date_type_key'=>$v['attributes']['programDateTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             'event_date'=>$v['attributes']['eventDate'],
                                             
