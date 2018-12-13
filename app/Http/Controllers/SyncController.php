@@ -65,7 +65,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProjectDate::select('id','allita_id','last_edited','updated_at')->where('development_date_key',$v['attributes']['developmentDateKey'])->first();
+                            $updateRecord = SyncProjectDate::select('id','allita_id','last_edited','updated_at')->where('project_date_key',$v['attributes']['developmentDateKey'])->first();
                             // convert booleans
                             // settype($v['attributes']['floatingUnits'], 'boolean');
                             // settype($v['attributes']['isProjectDateHandicapAccessible'], 'boolean');
@@ -118,7 +118,7 @@ class SyncController extends Controller
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             
-                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                             'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             'event_date'=>$v['attributes']['eventDate'],
@@ -139,7 +139,7 @@ class SyncController extends Controller
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             
-                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                             'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             'event_date'=>$v['attributes']['eventDate'],
@@ -167,7 +167,7 @@ class SyncController extends Controller
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             
-                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                             'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             'event_date'=>$v['attributes']['eventDate'],
@@ -176,7 +176,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_date_key'=>$v['attributes']['developmentDateKey'],
+                                            'project_date_key'=>$v['attributes']['developmentDateKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncProjectDate::where('id',$updateRecord['id'])
@@ -189,7 +189,7 @@ class SyncController extends Controller
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             
-                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                             'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             'event_date'=>$v['attributes']['eventDate'],
@@ -198,7 +198,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'development_date_key'=>$v['attributes']['developmentDateKey'],
+                                            'project_date_key'=>$v['attributes']['developmentDateKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -218,12 +218,12 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'development_date_key'=>$v['attributes']['developmentDateKey'],
+                                            'project_date_key'=>$v['attributes']['developmentDateKey'],
                                             
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             
-                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                             'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             'event_date'=>$v['attributes']['eventDate'],
@@ -232,7 +232,7 @@ class SyncController extends Controller
                                             
                                             
                                     
-                                    'development_date_key'=>$v['attributes']['developmentDateKey'],
+                                    'project_date_key'=>$v['attributes']['developmentDateKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncProjectDate::create([
@@ -244,7 +244,7 @@ class SyncController extends Controller
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             
-                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                             'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             'event_date'=>$v['attributes']['eventDate'],
@@ -253,7 +253,7 @@ class SyncController extends Controller
                                             
                                             
 
-                                        'development_date_key'=>$v['attributes']['developmentDateKey'],
+                                        'project_date_key'=>$v['attributes']['developmentDateKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
