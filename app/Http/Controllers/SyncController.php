@@ -68,7 +68,7 @@ class SyncController extends Controller
                         {
                             $allitaId = null;
                             // check if record exists
-                            $updateRecord = SyncUser::select('id','allita_id','last_edited','updated_at')->where('user_status_key_key',$v['attributes']['userStatusKey'])->first();
+                            $updateRecord = SyncUser::select('id','allita_id','last_edited','updated_at')->where('user_status_key',$v['attributes']['userStatusKey'])->first();
                             // convert booleans
                              //settype($v['attributes']['ownerPaidUtilities'], 'boolean');
                             // settype($v['attributes']['isUserHandicapAccessible'], 'boolean');
@@ -173,7 +173,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'user_status_key_key'=>$v['attributes']['userStatusKey'],
+                                            'user_status_key'=>$v['attributes']['userStatusKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncUser::where('id',$updateRecord['id'])
@@ -191,7 +191,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'user_status_key_key'=>$v['attributes']['userStatusKey'],
+                                            'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]); 
@@ -212,7 +212,7 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'user_status_key_key'=>$v['attributes']['userStatusKey'],
+                                            'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'area_code'=>$v['attributes']['organization'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
@@ -222,7 +222,7 @@ class SyncController extends Controller
                                             
                                             
                                     
-                                    'user_status_key_key'=>$v['attributes']['userStatusKey'],
+                                    'user_status_key'=>$v['attributes']['userStatusKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncUser::create([
@@ -239,7 +239,7 @@ class SyncController extends Controller
                                             
                                             
 
-                                        'user_status_key_key'=>$v['attributes']['userStatusKey'],
+                                        'user_status_key'=>$v['attributes']['userStatusKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
