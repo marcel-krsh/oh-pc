@@ -17,7 +17,7 @@ use DateTime;
 use Illuminate\Support\Facades\Hash;
 
 use App\Models\SyncProjectRole;
-use App\Models\AllitaProjectRole;
+use App\Models\ProjectRole;
 
 class SyncProjectRolesJob implements ShouldQueue
 {
@@ -92,7 +92,7 @@ class SyncProjectRolesJob implements ShouldQueue
                                 // record exists - get matching table record
 
                                 /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                                $allitaTableRecord = AllitaProjectRole::find($updateRecord->allita_id);
+                                $allitaTableRecord = ProjectRole::find($updateRecord->allita_id);
                                 /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
@@ -131,7 +131,7 @@ class SyncProjectRolesJob implements ShouldQueue
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = AllitaProjectRole::create([
+                                        $allitaTableRecord = ProjectRole::create([
                                             'role_name'=>$v['attributes']['roleName'],
                                         ]);
                                         // Create the sync table entry with the allita id
@@ -152,7 +152,7 @@ class SyncProjectRolesJob implements ShouldQueue
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = AllitaProjectRole::create([
+                                $allitaTableRecord = ProjectRole::create([
                                         'project_role_key'=>$v['attributes']['developmentRoleKey'],
                                         'role_name'=>$v['attributes']['roleName'],
                                 ]);
