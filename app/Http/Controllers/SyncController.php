@@ -50,7 +50,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listBuildingAmenities(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -64,7 +64,7 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncBuildingAmenity::select('id','allita_id','last_edited','updated_at')->where('unit_amenity_key',$v['attributes']['unitAmenityKey'])->first();
+                            $updateRecord = SyncBuildingAmenity::select('id','allita_id','last_edited','updated_at')->where('building_amenity_key',$v['attributes']['buildingAmenityKey'])->first();
                             // convert booleans
                             // settype($v['attributes']['isActive'], 'boolean');
                             // settype($v['attributes']['isBuildingAmenityHandicapAccessible'], 'boolean');
@@ -113,7 +113,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'building_key'=>$v['attributes']['buildingKey'],
                                             'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             
@@ -130,7 +130,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'building_key'=>$v['attributes']['buildingKey'],
                                             'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             
@@ -154,7 +154,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'building_key'=>$v['attributes']['buildingKey'],
                                             'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             
@@ -163,7 +163,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'unit_amenity_key'=>$v['attributes']['unitAmenityKey'],
+                                            'building_amenity_key'=>$v['attributes']['buildingAmenityKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncBuildingAmenity::where('id',$updateRecord['id'])
@@ -172,7 +172,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'building_key'=>$v['attributes']['buildingKey'],
                                             'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             
@@ -181,7 +181,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'unit_amenity_key'=>$v['attributes']['unitAmenityKey'],
+                                            'building_amenity_key'=>$v['attributes']['buildingAmenityKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -201,8 +201,8 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'unit_amenity_key'=>$v['attributes']['unitAmenityKey'],
-                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'building_amenity_key'=>$v['attributes']['buildingAmenityKey'],
+                                            'building_key'=>$v['attributes']['buildingKey'],
                                             'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             
@@ -211,7 +211,7 @@ class SyncController extends Controller
                                             
                                             
                                     
-                                    'unit_amenity_key'=>$v['attributes']['unitAmenityKey'],
+                                    'building_amenity_key'=>$v['attributes']['buildingAmenityKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncBuildingAmenity::create([
@@ -219,7 +219,7 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'unit_key'=>$v['attributes']['unitKey'],
+                                            'building_key'=>$v['attributes']['buildingKey'],
                                             'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                             'comment'=>$v['attributes']['comment'],
                                             
@@ -228,7 +228,7 @@ class SyncController extends Controller
                                             
                                             
 
-                                        'unit_amenity_key'=>$v['attributes']['unitAmenityKey'],
+                                        'building_amenity_key'=>$v['attributes']['buildingAmenityKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
