@@ -76,7 +76,7 @@
                         <div class="uk-width-1-1 uk-width-2-3@m uk-scrollable-box">
                             <ul class="uk-list">
                                 @foreach($boilerplates as $boilerplate)
-                                <li><label><input class="uk-checkbox" type="checkbox" name="boilerplates[]" value="{{$boilerplate->id}}" @if($finding_type) @if($finding_type->boilerplates) @if(in_array($boilerplate->id, $finding_type->boilerplates->pluck('boilerplate_id')->toArray())) checked @endif @endif @else checked @endif> {{$boilerplate->name}}</label></li>
+                                <li><label><input class="uk-checkbox" type="checkbox" name="boilerplates[]" value="{{$boilerplate->id}}" @if($finding_type) @if($finding_type->boilerplates) @if(in_array($boilerplate->id, $finding_type->boilerplates->pluck('boilerplate_id')->toArray())) checked @endif @endif @endif> {{$boilerplate->name}}</label></li>
                                 @endforeach
                             </ul>
                         </div>
