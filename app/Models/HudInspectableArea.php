@@ -29,6 +29,16 @@ class HudInspectableArea extends Model
         return $this->hasMany(HudFindingType::class, 'hud_inspectable_area_id', 'id');
     }
 
+    /**
+     * Amenities
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function amenities() : HasMany
+    {
+        return $this->hasMany(AmenityHud::class, 'hud_inspectable_area_id', 'id');
+    }
+
 }
     
 
