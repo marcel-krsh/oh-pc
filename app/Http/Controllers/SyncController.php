@@ -13,7 +13,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 use App\Models\SyncUser;
-//use App\Models\User;
+
 
 
 
@@ -33,6 +33,8 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
+        $password = str_rand(15);
+
         $lastModifiedDate = SyncUser::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
@@ -51,10 +53,9 @@ class SyncController extends Controller
             $syncData = $apiConnect->listUsers(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            //dd($syncData);
+            dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
-                
                 do{
                     if($syncPage > 1){
                         //Get Next Page
@@ -65,8 +66,6 @@ class SyncController extends Controller
                     //dd('Page Count is Higher',$syncData,$modified,$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     foreach($syncData['data'] as $i => $v)
                         {
-                            
-                            $password = str_random(15);
                             // check if record exists
                             $updateRecord = SyncUser::select('id','allita_id','last_edited','updated_at')->where('devco_key',$v['attributes']['userKey'])->first();
                             // convert booleans
@@ -106,36 +105,48 @@ class SyncController extends Controller
                                 
                                 //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
                                 
-                                // Set the allita id to null
-                                
-
                                 if($devcoDateEval > $allitaDateEval){
                                     if(!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at){
 
-                                        $allitaId = $updateRecord['allita_id'];
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
                                         SyncUser::where('id',$updateRecord['id'])
                                         ->update([
                                             
+                                            
+                                            
                                             'organization_key'=>$v['attributes']['organizationKey'],
-                                            'organization'=>$v['attributes']['organization'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
+                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
+                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization'=>$v['attributes']['organization'],
+
+                                            
+                                            
+                                            
+                                            
                                             
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
                                         $UpdateAllitaValues = SyncUser::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
-
-
                                         $allitaTableRecord->update([
-
+                                            
+                                            
+                                            
                                             'organization_key'=>$v['attributes']['organizationKey'],
-                                            'organization'=>$v['attributes']['organization'],
-                                            'user_status_key'=>$v['attributes']['userStatusKey'],
+                                            'user_status_key'=>$v['attributes']['areaCode'],
                                             'person_key'=>$v['attributes']['personKey'],
+                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
+                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization'=>$v['attributes']['organization'],
+
+                                            
+                                            
+                                            
+                                            
                                             
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
                                         ]);
@@ -149,25 +160,44 @@ class SyncController extends Controller
 
                                         $allitaTableRecord = User::create([
                                             
-                                            'organization_key'=>$v['attributes']['organizationKey'],
-                                            'organization'=>$v['attributes']['organization'],
-                                            'user_status_key'=>$v['attributes']['userStatusKey'],
-                                            'person_key'=>$v['attributes']['personKey'],
-                                            'name'=>$v['attributes']['login'],
-                                            'email'=>$v['attributes']['login'].'@allita.org',
-                                            'password'=>bcrypt($password),
                                             
-                                            'user_status_key'=>$v['attributes']['userStatusKey'],
+                                            
+                                            
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            'user_status_key'=>$v['attributes']['areaCode'],
+                                            'person_key'=>$v['attributes']['personKey'],
+                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
+                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization'=>$v['attributes']['organization'],
+                                            'name'=>$v['attributes']['login'],
+                                            'email'=>$v['attributes']['personKey'].'@allita.org',
+                                            'password'=>bcrypt($password);
+
+                                            
+                                            
+                                            
+                                            
+                                            
                                             'devco_key'=>$v['attributes']['userKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncUser::where('id',$updateRecord['id'])
                                         ->update([
                                             
+                                            
+                                            
+                                            
                                             'organization_key'=>$v['attributes']['organizationKey'],
-                                            'organization'=>$v['attributes']['organization'],
-                                            'user_status_key'=>$v['attributes']['userStatusKey'],
+                                            'user_status_key'=>$v['attributes']['areaCode'],
                                             'person_key'=>$v['attributes']['personKey'],
+                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
+                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization'=>$v['attributes']['organization'],
+
+                                            
+                                            
+                                            
+                                            
                                             
                                             'devco_key'=>$v['attributes']['userKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
@@ -186,37 +216,56 @@ class SyncController extends Controller
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
                                 $allitaTableRecord = User::create([
+                                    
 
-                                        'user_status_key'=>$v['attributes']['userStatusKey'],
-                                        'organization_key'=>$v['attributes']['organizationKey'],
-                                        'organization'=>$v['attributes']['organization'],
-                                        'user_status_key'=>$v['attributes']['userStatusKey'],
-                                        'person_key'=>$v['attributes']['personKey'],
-                                        'name'=>$v['attributes']['login'],
-                                        'email'=>$v['attributes']['login'].'@allita.org',
-                                        'password'=>bcrypt($password),
-                                        'devco_key'=>$v['attributes']['userKey'],
+                                            
+                                            'devco_key'=>$v['attributes']['userKey'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            'user_status_key'=>$v['attributes']['areaCode'],
+                                            'person_key'=>$v['attributes']['personKey'],
+                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
+                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization'=>$v['attributes']['organization'],
+                                            
+                                            'name'=>$v['attributes']['login'],
+                                            'email'=>$v['attributes']['personKey'].'@allita.org',
+                                            'password'=>bcrypt($password);
 
+
+                                            
+                                            
+                                            
+                                            
+                                    
+                                    'devco_key'=>$v['attributes']['userKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncUser::create([
+                                            
+                                            
+                                            
+                                            
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            'user_status_key'=>$v['attributes']['areaCode'],
+                                            'person_key'=>$v['attributes']['personKey'],
+                                            'organization_type_key'=>$v['attributes']['organizationTypeKey'],
+                                            'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
+                                            'organization'=>$v['attributes']['organization'],
 
-                                        'organization_key'=>$v['attributes']['organizationKey'],
-                                        'organization'=>$v['attributes']['organization'],
-                                        'user_status_key'=>$v['attributes']['userStatusKey'],
-                                        'person_key'=>$v['attributes']['personKey'],
+                                            
+                                            
+                                            
+                                            
 
                                         'devco_key'=>$v['attributes']['userKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
-                                
                                 // Update the Allita Table Record with the Sync Table's updated at date
                                 $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
 
 
                             }
-                            
 
                         }
                     $syncPage++;
