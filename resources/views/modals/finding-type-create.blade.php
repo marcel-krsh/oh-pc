@@ -53,15 +53,15 @@
                 
                 <div class="uk-form-row">
                     <div class="uk-grid">
-                        <label for="name" class="uk-width-1-1 uk-width-1-3@m">Name: </label>
-                        <input id="name" type="text" name="name" value="@if($finding_type){{$finding_type->name}}@endif" placeholder="Enter the finding type name" class="uk-input uk-width-1-1 uk-width-2-3@m" required>
+                        <label for="name" class="uk-width-1-1 uk-width-1-2@m">Name: </label>
+                        <input id="name" type="text" name="name" value="@if($finding_type){{$finding_type->name}}@endif" placeholder="Enter the finding type name" class="uk-input uk-width-1-1 uk-width-1-2@m" required>
                     </div>
                 </div>
 
                 <div class="uk-form-row">
                     <div class="uk-grid">
-                        <label for="type" class="uk-width-1-1 uk-width-1-3@m">Type: </label>
-                        <div class="uk-width-2-3">
+                        <label for="type" class="uk-width-1-1 uk-width-1-2@m">Type: </label>
+                        <div class="uk-width-1-2">
                             <label><input class="uk-radio" type="radio" name="type" value="nlt" @if($finding_type) @if($finding_type->type == 'nlt') checked @endif @else checked @endif> NLT</label>
                             <label><input class="uk-radio" type="radio" name="type" value="lt" @if($finding_type) @if($finding_type->type == 'lt') checked @endif @endif> LT</label>
                             <label><input class="uk-radio" type="radio" name="type" value="file" @if($finding_type) @if($finding_type->type == 'file') checked @endif @endif> FILE</label>
@@ -69,18 +69,34 @@
                     </div>
                 </div>
 
+                <hr />
+
                 <div class="uk-form-row">
                     <div class="uk-grid">
-                        <label for="type" class="uk-width-1-1 uk-width-1-3@m">Default Boilerplates: </label>
-                        @if(count($boilerplates))
-                        <div class="uk-width-1-1 uk-width-2-3@m uk-scrollable-box">
-                            <ul class="uk-list">
-                                @foreach($boilerplates as $boilerplate)
-                                <li><label><input class="uk-checkbox" type="checkbox" name="boilerplates[]" value="{{$boilerplate->id}}" @if($finding_type) @if($finding_type->boilerplates) @if(in_array($boilerplate->id, $finding_type->boilerplates->pluck('boilerplate_id')->toArray())) checked @endif @endif @endif> {{$boilerplate->name}}</label></li>
-                                @endforeach
-                            </ul>
+                        <div class="uk-width-1-2">
+                            <label for="type" class="uk-width-1-1">Default Boilerplates: </label>
+                            @if(count($boilerplates))
+                            <div class="uk-width-1-1 uk-scrollable-box">
+                                <ul class="uk-list">
+                                    @foreach($boilerplates as $boilerplate)
+                                    <li><label><input class="uk-checkbox" type="checkbox" name="boilerplates[]" value="{{$boilerplate->id}}" @if($finding_type) @if($finding_type->boilerplates) @if(in_array($boilerplate->id, $finding_type->boilerplates->pluck('boilerplate_id')->toArray())) checked @endif @endif @endif> {{$boilerplate->name}}</label></li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            @endif
                         </div>
-                        @endif
+                        <div class="uk-width-1-2">
+                            <label for="type" class="uk-width-1-1">HUD Inspectable Areas: </label>
+                            @if(count($huds))
+                            <div class="uk-width-1-1 uk-scrollable-box">
+                                <ul class="uk-list">
+                                    @foreach($huds as $hud)
+                                    <li><label><input class="uk-checkbox" type="checkbox" name="huds[]" value="{{$hud->id}}" @if($finding_type) @if($finding_type->huds) @if(in_array($hud->id, $finding_type->huds->pluck('hud_inspectable_area_id')->toArray())) checked @endif @endif @endif> {{$hud->name}}</label></li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
 
@@ -219,6 +235,7 @@
             let action = $(this).attr('action'); 
             var followups = {items: []};
             var boilerplates = {items: []};
+            var huds = {items: []};
 
             $.each($('.form-default-followup'), function(index, followup) {
                 var number = $(followup).find('.followup-number').val();
@@ -266,12 +283,21 @@
                 }
             });
 
+            $.each($('input[name^="huds"]'), function(index, element) {
+                if($(element).is(':checked')){
+                    huds.items.push({
+                        id: $(element).val()
+                    });
+                }
+            });
+
             $.ajax({
                 url: action, 
                 method: 'POST',
                 data: {
                     'inputs': getFormData(form),
                     'boilerplates': JSON.stringify(boilerplates),
+                    'huds': JSON.stringify(huds),
                     'followups' : JSON.stringify(followups),
                     '_token' : '{{ csrf_token() }}'
                 },

@@ -8,6 +8,7 @@ use App\Models\AmenityHud;
 use App\Models\HudInspectableArea;
 use App\Models\FindingType;
 use App\Models\FindingTypeBoilerplate;
+use App\Models\HudFindingType;
 use App\Models\DefaultFollowup;
 use App\Models\Boilerplate;
 use App\Models\DocumentCategory;
@@ -816,13 +817,15 @@ class AdminToolController extends Controller
             // the audit lead, or the PM, or whoever is creating the finding (hardcoded)
 
             $document_categories = DocumentCategory::where('active','=', 1)->get();
+            $huds = HudInspectableArea::orderBy('name', 'asc')->get();
 
-            return view('modals.finding-type-create', compact('finding_type', 'boilerplates', 'document_categories'));
+            return view('modals.finding-type-create', compact('finding_type', 'boilerplates', 'document_categories', 'huds'));
         } else {
             $boilerplates = Boilerplate::where('global','=',1)->orderBy('name', 'asc')->get();
             $document_categories = DocumentCategory::where('active','=', 1)->get();
+            $huds = HudInspectableArea::orderBy('name', 'asc')->get();
 
-            return view('modals.finding-type-create', compact('finding_type', 'boilerplates', 'document_categories'));
+            return view('modals.finding-type-create', compact('finding_type', 'boilerplates', 'document_categories', 'huds'));
         }
     }
 
@@ -1687,6 +1690,8 @@ class AdminToolController extends Controller
         $inputs = $request->get('inputs');
         $boilerplates = json_decode($request->get('boilerplates'), true);
         $boilerplates = $boilerplates['items'];
+        $huds = json_decode($request->get('huds'), true);
+        $huds = $huds['items'];
         $followups = json_decode($request->get('followups'), true);
         $followups = $followups['items'];
 
@@ -1708,6 +1713,16 @@ class AdminToolController extends Controller
                     FindingTypeBoilerplate::create([
                         'finding_type_id' => $f->id,
                         'boilerplate_id' => $boilerplate['id']
+                    ]);
+                }
+            }
+
+            // add huds
+            if(count($huds)){
+                foreach($huds as $hud){
+                    HudFindingType::create([
+                        'finding_type_id' => $f->id,
+                        'hud_inspectable_area_id' => $hud['id']
                     ]);
                 }
             }
@@ -1750,6 +1765,7 @@ class AdminToolController extends Controller
                 // remove followups
                 
                 FindingTypeBoilerplate::where('finding_type_id', '=', $finding_type->id)->delete();
+                HudFindingType::where('finding_type_id', '=', $finding_type->id)->delete();
                 DefaultFollowup::where('finding_type_id', '=', $finding_type->id)->delete();
 
                 // add boilerplates
@@ -1758,6 +1774,16 @@ class AdminToolController extends Controller
                         FindingTypeBoilerplate::create([
                             'finding_type_id' => $finding_type->id,
                             'boilerplate_id' => $boilerplate['id']
+                        ]);
+                    }
+                }
+
+                // add huds
+                if(count($huds)){
+                    foreach($huds as $hud){
+                        HudFindingType::create([
+                            'finding_type_id' => $finding_type->id,
+                            'hud_inspectable_area_id' => $hud['id']
                         ]);
                     }
                 }

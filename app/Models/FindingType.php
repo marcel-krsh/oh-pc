@@ -36,6 +36,16 @@ class FindingType extends Model
     }
 
     /**
+     * HUDS
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function huds() : HasMany
+    {
+        return $this->hasMany(HudFindingType::class, 'finding_type_id', 'id');
+    }
+
+    /**
      * Default Followups
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
