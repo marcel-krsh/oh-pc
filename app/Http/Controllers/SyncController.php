@@ -51,11 +51,10 @@ class SyncController extends Controller
             $syncData = $apiConnect->listUsers(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            //dd($syncData);
+            dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
-                // get the ohfa org id:
-                $ohfa_id = SystemSetting::get('ohfa_organization_id');
+                
                 do{
                     if($syncPage > 1){
                         //Get Next Page
@@ -66,7 +65,7 @@ class SyncController extends Controller
                     //dd('Page Count is Higher',$syncData,$modified,$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     foreach($syncData['data'] as $i => $v)
                         {
-                            $allitaId = null;
+                            
                             $password = str_random(15);
                             // check if record exists
                             $updateRecord = SyncUser::select('id','allita_id','last_edited','updated_at')->where('user_status_key',$v['attributes']['userStatusKey'])->first();
@@ -120,16 +119,10 @@ class SyncController extends Controller
                                         SyncUser::where('id',$updateRecord['id'])
                                         ->update([
                                             
-                                            
-                                            
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'organization'=>$v['attributes']['organization'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
-                                            
-                                            
-                                            
-                                            
                                             
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
@@ -138,18 +131,11 @@ class SyncController extends Controller
 
 
                                         $allitaTableRecord->update([
-                                            
-                                            
-                                            
+
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'organization'=>$v['attributes']['organization'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
-
-                                            
-                                            
-                                            
-                                            
                                             
                                             'last_edited'=>$UpdateAllitaValues->updated_at,
                                         ]);
@@ -163,9 +149,6 @@ class SyncController extends Controller
 
                                         $allitaTableRecord = User::create([
                                             
-                                            
-                                            
-                                            
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'organization'=>$v['attributes']['organization'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
@@ -173,12 +156,6 @@ class SyncController extends Controller
                                             'name'=>$v['attributes']['login'],
                                             'email'=>$v['attributes']['login'].'@allita.org',
                                             'password'=>bcrypt($password),
-
-
-                                            
-                                            
-                                            
-                                            
                                             
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                         ]);
@@ -186,23 +163,15 @@ class SyncController extends Controller
                                         $syncTableRecord = SyncUser::where('id',$updateRecord['id'])
                                         ->update([
                                             
-                                            
-                                            
-                                            
                                             'organization_key'=>$v['attributes']['organizationKey'],
                                             'organization'=>$v['attributes']['organization'],
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'person_key'=>$v['attributes']['personKey'],
                                             
-                                            
-                                            
-                                            
-                                            
                                             'user_status_key'=>$v['attributes']['userStatusKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
-                                        ]); 
-                                        $allitaId=$allitaTableRecord->id;                                    
+                                        ]);                                     
                                         // Update the Allita Table Record with the Sync Table's updated at date
                                         $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
 
@@ -216,44 +185,31 @@ class SyncController extends Controller
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
                                 $allitaTableRecord = User::create([
-                                    
 
-                                            
-                                            'user_status_key'=>$v['attributes']['userStatusKey'],
-                                            'organization_key'=>$v['attributes']['organizationKey'],
-                                            'organization'=>$v['attributes']['organization'],
-                                            'user_status_key'=>$v['attributes']['userStatusKey'],
-                                            'person_key'=>$v['attributes']['personKey'],
-                                            'name'=>$v['attributes']['login'],
-                                            'email'=>$v['attributes']['login'].'@allita.org',
-                                            'password'=>bcrypt($password),
-                                            
-                                            
-                                            
-                                            
-                                    
-                                    'user_status_key'=>$v['attributes']['userStatusKey'],
+                                        'user_status_key'=>$v['attributes']['userStatusKey'],
+                                        'organization_key'=>$v['attributes']['organizationKey'],
+                                        'organization'=>$v['attributes']['organization'],
+                                        'user_status_key'=>$v['attributes']['userStatusKey'],
+                                        'person_key'=>$v['attributes']['personKey'],
+                                        'name'=>$v['attributes']['login'],
+                                        'email'=>$v['attributes']['login'].'@allita.org',
+                                        'password'=>bcrypt($password),
+                                        'user_status_key'=>$v['attributes']['userStatusKey'],
+
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncUser::create([
-                                            
-                                            
-                                            
-                                            
-                                            'organization_key'=>$v['attributes']['organizationKey'],
-                                            'organization'=>$v['attributes']['organization'],
-                                            'user_status_key'=>$v['attributes']['userStatusKey'],
-                                            'person_key'=>$v['attributes']['personKey'],
-                                            
-                                            
-                                            
-                                            
+
+                                        'organization_key'=>$v['attributes']['organizationKey'],
+                                        'organization'=>$v['attributes']['organization'],
+                                        'user_status_key'=>$v['attributes']['userStatusKey'],
+                                        'person_key'=>$v['attributes']['personKey'],
 
                                         'user_status_key'=>$v['attributes']['userStatusKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
-                                $allitaId = $allitaTableRecord->id;
+                                
                                 // Update the Allita Table Record with the Sync Table's updated at date
                                 $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
 
