@@ -62,7 +62,7 @@
                     <div class="uk-grid">
                         <label for="type" class="uk-width-1-1 uk-width-1-3@m">Type: </label>
                         <div class="uk-width-2-3">
-                            <label><input class="uk-radio" type="radio" name="type" value="nlt" @if($finding_type) @if($finding_type->type == 'nlt') checked @endif @endif> NLT</label>
+                            <label><input class="uk-radio" type="radio" name="type" value="nlt" @if($finding_type) @if($finding_type->type == 'nlt') checked @endif @else checked @endif> NLT</label>
                             <label><input class="uk-radio" type="radio" name="type" value="lt" @if($finding_type) @if($finding_type->type == 'lt') checked @endif @endif> LT</label>
                             <label><input class="uk-radio" type="radio" name="type" value="file" @if($finding_type) @if($finding_type->type == 'file') checked @endif @endif> FILE</label>
                         </div>
