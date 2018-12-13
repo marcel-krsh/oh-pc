@@ -144,6 +144,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('amenity', 'AdminToolController@amenityIndex');
             Route::get('hud', 'AdminToolController@hudIndex');
             Route::get('findingtype', 'AdminToolController@findingtypeIndex');
+            Route::post('findingtype', 'AdminToolController@searchFindingTypes')->name('findingtypes.search');
             Route::get('defaultfollowup', 'AdminToolController@defaultfollowupIndex');
             Route::get('boilerplate', 'AdminToolController@boilerplateIndex');
             Route::get('program', 'AdminToolController@programIndex');
