@@ -12,8 +12,8 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncUser;
-
+use App\Models\SyncComplianceContact;
+use App\Models\ComplianceContact;
 
 
 
@@ -22,7 +22,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// User Sync
+        /////// ComplianceContact Sync
         /////
 
         /// get last modified date inside the database
@@ -33,9 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        
-
-        $lastModifiedDate = SyncUser::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncComplianceContact::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -50,18 +48,16 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listUsers(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listComplianceContacts(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            //dd($syncData);
+            dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
-                    $password = str_random(15);
-                    $active = 0;
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listUsers($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listComplianceContacts($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
                         //dd('Page Count is Higher',$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     }
@@ -69,19 +65,17 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncUser::select('id','allita_id','last_edited','updated_at')->where('devco_key',$v['attributes']['userKey'])->first();
+                            $updateRecord = SyncComplianceContact::select('id','allita_id','last_edited','updated_at')->where('compliance_contact_key',$v['attributes']['complianceContactKey'])->first();
                             // convert booleans
-                             //settype($v['attributes']['ownerPaidUtilities'], 'boolean');
-                            // settype($v['attributes']['isUserHandicapAccessible'], 'boolean');
-                            if($v['attributes']['userStatusKey']>0){
-                                $active = 1;
-                            }
+                            // settype($v['attributes']['floatingUnits'], 'boolean');
+                            // settype($v['attributes']['isComplianceContactHandicapAccessible'], 'boolean');
+
                             // Set dates older than 1950 to be NULL:
-                            //  if($v['attributes']['acquisitionDate'] < 1951){
-                            //     $v['attributes']['acquisitionDate'] = NULL;
+                            // if($v['attributes']['comment'] < 1951){
+                            //     $v['attributes']['comment'] = NULL;
                             // }
-                            // if($v['attributes']['buildingBuiltDate'] < 1951){
-                            //     $v['attributes']['buildingBuiltDate'] = NULL;
+                            // if($v['attributes']['completedDate'] < 1951){
+                            //     $v['attributes']['completedDate'] = NULL;
                             // }
                             // if($v['attributes']['confirmedDate'] < 1951){
                             //     $v['attributes']['confirmedDate'] = NULL;
@@ -94,7 +88,7 @@ class SyncController extends Controller
                                 // record exists - get matching table record
 
                                 /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                                $allitaTableRecord = User::find($updateRecord->allita_id);
+                                $allitaTableRecord = ComplianceContact::find($updateRecord->allita_id);
                                 /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
@@ -115,18 +109,18 @@ class SyncController extends Controller
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        SyncUser::where('id',$updateRecord['id'])
+                                        SyncComplianceContact::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
                                             
-                                            'organization_key'=>$v['attributes']['organizationKey'],
-                                            'user_status_key'=>$v['attributes']['userStatusKey'],
-                                            'person_key'=>$v['attributes']['personKey'],
-                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            'address'=>$v['attributes']['address'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'organization'=>$v['attributes']['organization'],
-
+                                            'city'=>$v['attributes']['city'],
+                                            'zip'=>$v['attributes']['zip'],
+                                            'review_cycle'=>$v['attributes']['reviewCycle'],
+                                            'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
                                             
@@ -134,19 +128,19 @@ class SyncController extends Controller
                                             
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
-                                        $UpdateAllitaValues = SyncUser::find($updateRecord['id']);
+                                        $UpdateAllitaValues = SyncComplianceContact::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
                                             
                                             
                                             
-                                            'organization_key'=>$v['attributes']['organizationKey'],
-                                            'user_status_key'=>$v['attributes']['userStatusKey'],
-                                            'person_key'=>$v['attributes']['personKey'],
-                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            'address'=>$v['attributes']['address'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'organization'=>$v['attributes']['organization'],
-
+                                            'city'=>$v['attributes']['city'],
+                                            'zip'=>$v['attributes']['zip'],
+                                            'review_cycle'=>$v['attributes']['reviewCycle'],
+                                            'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
                                             
@@ -162,49 +156,45 @@ class SyncController extends Controller
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = User::create([
+                                        $allitaTableRecord = ComplianceContact::create([
                                             
                                             
                                             
                                             
-                                            'organization_key'=>$v['attributes']['organizationKey'],
-                                            'user_status_key'=>$v['attributes']['userStatusKey'],
-                                            'person_key'=>$v['attributes']['personKey'],
-                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            'address'=>$v['attributes']['address'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'organization'=>$v['attributes']['organization'],
-                                            'name'=>$v['attributes']['login'],
-                                            'email'=>$v['attributes']['login'].'@allita.org',
-                                            'password'=>bcrypt($password),
-                                            'active'=>$active,
-
+                                            'city'=>$v['attributes']['city'],
+                                            'zip'=>$v['attributes']['zip'],
+                                            'review_cycle'=>$v['attributes']['reviewCycle'],
+                                            'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
                                             
                                             
                                             
-                                            'devco_key'=>$v['attributes']['userKey'],
+                                            'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
-                                        $syncTableRecord = SyncUser::where('id',$updateRecord['id'])
+                                        $syncTableRecord = SyncComplianceContact::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
                                             
                                             
-                                            'organization_key'=>$v['attributes']['organizationKey'],
-                                            'user_status_key'=>$v['attributes']['userStatusKey'],
-                                            'person_key'=>$v['attributes']['personKey'],
-                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            'address'=>$v['attributes']['address'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'organization'=>$v['attributes']['organization'],
-
-                                            
-                                            
+                                            'city'=>$v['attributes']['city'],
+                                            'zip'=>$v['attributes']['zip'],
+                                            'review_cycle'=>$v['attributes']['reviewCycle'],
+                                            'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
                                             
-                                            'devco_key'=>$v['attributes']['userKey'],
+                                            
+                                            
+                                            'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -220,50 +210,44 @@ class SyncController extends Controller
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = User::create([
+                                $allitaTableRecord = ComplianceContact::create([
                                     
 
                                             
-                                            'devco_key'=>$v['attributes']['userKey'],
-                                            'organization_key'=>$v['attributes']['organizationKey'],
-                                            'user_status_key'=>$v['attributes']['userStatusKey'],
-                                            'person_key'=>$v['attributes']['personKey'],
-                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
+                                            'address'=>$v['attributes']['address'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'organization'=>$v['attributes']['organization'],
-
-                                            'name'=>$v['attributes']['login'],
-                                            'email'=>$v['attributes']['login'].'@allita.org',
-                                            'password'=>bcrypt($password),
-                                            'active'=>$active,
-
-
+                                            'city'=>$v['attributes']['city'],
+                                            'zip'=>$v['attributes']['zip'],
+                                            'review_cycle'=>$v['attributes']['reviewCycle'],
+                                            'next_inspection'=>$v['attributes']['nextInspection'],
                                             
                                             
                                             
                                             
                                     
-                                    'devco_key'=>$v['attributes']['userKey'],
+                                    'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
-                                $syncTableRecord = SyncUser::create([
+                                $syncTableRecord = SyncComplianceContact::create([
                                             
                                             
                                             
                                             
-                                            'organization_key'=>$v['attributes']['organizationKey'],
-                                            'user_status_key'=>$v['attributes']['userStatusKey'],
-                                            'person_key'=>$v['attributes']['personKey'],
-                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            'address'=>$v['attributes']['address'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'organization'=>$v['attributes']['organization'],
+                                            'city'=>$v['attributes']['city'],
+                                            'zip'=>$v['attributes']['zip'],
+                                            'review_cycle'=>$v['attributes']['reviewCycle'],
+                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            
+                                            
+                                            
+                                            
 
-                                            
-                                            
-                                            
-                                            
-
-                                        'devco_key'=>$v['attributes']['userKey'],
+                                        'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
