@@ -255,6 +255,9 @@
                         case "/admin/findingtype/store":
                             $('#findingtype-tab').trigger('click');
                             break;
+                        case "/admin/hud_area/store":
+                            $('#hud-tab').trigger('click');
+                            break;
                     }
 
                 },

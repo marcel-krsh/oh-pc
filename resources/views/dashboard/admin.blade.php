@@ -14,7 +14,7 @@
                 </li>
                 <li>
                 <a onclick="dynamicModalLoad('admin/finding_type/create')" class="uk-button uk-button-default uk-width-2-5@m">CREATE FINDING TYPE</a>
-                <a onclick="dynamicModalLoad('admin/document_category/create')" class="uk-button uk-button-default uk-width-2-5@m  uk-float-right">CREATE HUD AREA</a>
+                <a onclick="dynamicModalLoad('admin/hud_area/create')" class="uk-button uk-button-default uk-width-2-5@m  uk-float-right">CREATE HUD AREA</a>
                 <hr class="dashed-hr uk-margin-bottom">
                 </li>
                 <li>

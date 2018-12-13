@@ -11,8 +11,7 @@
         <tbody>
             @foreach($huds as $data)
                     <tr>
-                        
-                        <td><small>{{$data->name}}</small></td>
+                        <td><a onclick="dynamicModalLoad('admin/hud_area/create/{{$data->id}}')" class="uk-link-muted"><small>{{$data->name}}</small></a></td>
                     </tr>
                 @endforeach
 

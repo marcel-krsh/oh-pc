@@ -853,6 +853,31 @@ class AdminToolController extends Controller
         }
     }
 
+    /**
+     * Hud Area Create
+     *
+     * @param \App\Http\Controllers\FormsController $form
+     * @param null                                  $id
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|string
+     */
+    public function hudAreaCreate(Form $form, $id = null)
+    {
+        $hud = HudInspectableArea::where('id', $id)->first();
+
+        if (!$id) {
+            $formRows['tag'] = $form->formBuilder("/admin/hud_area/store", "post", "application/x-www-form-urlencoded", "Create New HUD Inspectable Area", "plus-circle");
+            $formRows['rows']['ele1']= $form->text(['Name','name','','Enter HUD area name','required']);
+            $formRows['rows']['ele2'] = $form->submit(['Create HUD Inspectable Area']);
+            return view('formtemplate', ['formRows'=>$formRows]);
+        } else {
+            $formRows['tag'] = $form->formBuilder("/admin/hud_area/store/".$hud->id, "post", "application/x-www-form-urlencoded", "Edit HUD Inspectable Area", "edit");
+            $formRows['rows']['ele1']= $form->text(['Boilerplate Name','name',$hud->name,'','required']);
+            $formRows['rows']['ele2'] = $form->submit(['Update HUD Inspectable Area Information']);
+            return view('formtemplate', ['formRows'=>$formRows]);
+        }
+    }
+
     // display tabs
 
     /**
@@ -1535,6 +1560,41 @@ class AdminToolController extends Controller
             // $lc->smartAddHistory($dold, $dnew);
             // $lc->save();
             return response('I updated your boilerplate. That was fun! What else do you have for me?');
+        }
+    }
+
+    /**
+     * HUD Area Store
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param null                     $id
+     *
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
+    public function hudAreaStore(Request $request, $id = null)
+    {
+        $this->validate($request, [
+           'name'=> 'string|required'
+        ]);
+        if (!$id) {
+            $hud = HudInspectableArea::create([
+                'name' => Input::get('name')
+            ]);
+            // $lc = new LogConverter('documentcategory', 'create');
+            // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Created Document Category ' . $d->document_category_name)->save();
+            return response('I created the HUD area. I stored it. I love it.');
+        } else {
+            $hudold = HudInspectableArea::find($id)->toArray();
+            HudInspectableArea::where('id', $id)->update([
+                'name' => Input::get('name')
+            ]);
+            $hud = Boilerplate::find($id);
+            $hudnew = $hud->toArray();
+            // $lc = new LogConverter('documentcategory', 'update');
+            // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Updated Document Category ' . $d->document_category_name);
+            // $lc->smartAddHistory($dold, $dnew);
+            // $lc->save();
+            return response('I updated your HUD area. That was fun! What else do you have for me?');
         }
     }
 
