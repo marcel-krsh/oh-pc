@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listProjectDates(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 do{
@@ -65,15 +65,15 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncProjectDate::select('id','allita_id','last_edited','updated_at')->where('compliance_contact_key',$v['attributes']['complianceContactKey'])->first();
+                            $updateRecord = SyncProjectDate::select('id','allita_id','last_edited','updated_at')->where('development_date_key',$v['attributes']['developmentDateKey'])->first();
                             // convert booleans
                             // settype($v['attributes']['floatingUnits'], 'boolean');
                             // settype($v['attributes']['isProjectDateHandicapAccessible'], 'boolean');
 
-                            // Set dates older than 1950 to be NULL:
-                            // if($v['attributes']['comment'] < 1951){
-                            //     $v['attributes']['comment'] = NULL;
-                            // }
+                            Set dates older than 1971 to be NULL:
+                            if($v['attributes']['eventDate'] < 1971){
+                                $v['attributes']['eventDate'] = NULL;
+                            }
                             // if($v['attributes']['completedDate'] < 1951){
                             //     $v['attributes']['completedDate'] = NULL;
                             // }
@@ -114,13 +114,14 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'address'=>$v['attributes']['address'],
+                                            
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            
+                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'event_date'=>$v['attributes']['eventDate'],
                                             
                                             
                                             
@@ -134,13 +135,14 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'address'=>$v['attributes']['address'],
+                                            
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            
+                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'event_date'=>$v['attributes']['eventDate'],
                                             
                                             
                                             
@@ -161,19 +163,20 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'address'=>$v['attributes']['address'],
+                                            
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            
+                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'event_date'=>$v['attributes']['eventDate'],
                                             
                                             
                                             
                                             
                                             
-                                            'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
+                                            'development_date_key'=>$v['attributes']['developmentDateKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncProjectDate::where('id',$updateRecord['id'])
@@ -182,19 +185,20 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'address'=>$v['attributes']['address'],
+                                            
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            
+                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'event_date'=>$v['attributes']['eventDate'],
                                             
                                             
                                             
                                             
                                             
-                                            'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
+                                            'development_date_key'=>$v['attributes']['developmentDateKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -214,20 +218,21 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
-                                            'address'=>$v['attributes']['address'],
+                                            'development_date_key'=>$v['attributes']['developmentDateKey'],
+                                            
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            
+                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'event_date'=>$v['attributes']['eventDate'],
                                             
                                             
                                             
                                             
                                     
-                                    'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
+                                    'development_date_key'=>$v['attributes']['developmentDateKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncProjectDate::create([
@@ -235,19 +240,20 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'address'=>$v['attributes']['address'],
+                                            
                                             'project_key'=>$v['attributes']['developmentKey'],
                                             
-                                            'city'=>$v['attributes']['city'],
-                                            'zip'=>$v['attributes']['zip'],
-                                            'review_cycle'=>$v['attributes']['reviewCycle'],
-                                            'next_inspection'=>$v['attributes']['nextInspection'],
+                                            
+                                            'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'program_date_type_key'=>$v['attributes']['pogramDateTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'event_date'=>$v['attributes']['eventDate'],
                                             
                                             
                                             
                                             
 
-                                        'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
+                                        'development_date_key'=>$v['attributes']['developmentDateKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
