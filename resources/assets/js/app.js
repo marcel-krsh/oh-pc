@@ -12,8 +12,8 @@ Vue.component('auditrow', require('./components/AuditRow.vue'), {
 Vue.component('communication-row', require('./components/CommunicationRow.vue'));
 
 // connect sockets
-var socket = io('https://pcinspectdev.ohiohome.org:3000');
-// var socket = io('https://192.168.100.100:3000');
+var socket = io('https://pcinspectdev.ohiohome.org:443');
+// var socket = io('https://192.168.100.100:443');
 
 // https://github.com/ElemeFE/vue-infinite-scroll
 var infiniteScroll =  require('vue-infinite-scroll');

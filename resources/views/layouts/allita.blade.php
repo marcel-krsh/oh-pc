@@ -113,7 +113,7 @@ if(Auth::check()){
 	</style>
 
 	<script>
-		var socket = io('{{ env("APP_URL") }}:3000'); 
+		var socket = io('{{ env("APP_URL") }}:443'); 
 
 		// initial values
 	    var statsAuditsTotal = "{{$stats_audits_total}}";
