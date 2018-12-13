@@ -171,7 +171,7 @@ class SyncController extends Controller
                                             'organization'=>$v['attributes']['organization'],
                                             'name'=>$v['attributes']['login'],
                                             'email'=>$v['attributes']['personKey'].'@allita.org',
-                                            'password'=>bcrypt($password);
+                                            'password'=>bcrypt($password),
 
                                             
                                             
@@ -226,10 +226,10 @@ class SyncController extends Controller
                                             'organization_type_key'=>$v['attributes']['organizationTypeKey'],
                                             'organization_type_sub_type_key'=>$v['attributes']['organizationTypeSubTypeKey'],
                                             'organization'=>$v['attributes']['organization'],
-                                            
+
                                             'name'=>$v['attributes']['login'],
                                             'email'=>$v['attributes']['personKey'].'@allita.org',
-                                            'password'=>bcrypt($password);
+                                            'password'=>bcrypt($password),
 
 
                                             
