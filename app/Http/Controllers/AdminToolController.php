@@ -887,7 +887,7 @@ class AdminToolController extends Controller
      */
     public function organizationIndex()
     {
-        $organizations = Organization::with(['address','person'])->orderBy('organization_name', 'asc')->get();
+        $organizations = Organization::with(['address','person'])->orderBy('organization_name', 'asc')->paginate(40);
         return view('admin_tabs.organizations', compact('organizations'));
     }
 

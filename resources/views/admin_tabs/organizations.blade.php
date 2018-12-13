@@ -1,5 +1,5 @@
 <div class="uk-overflow-container uk-margin-top">
-    <h4 class="uk-text-left">{{count($organizations)}} TOTAL ORGANIZATIONS</h4>
+    <h4 class="uk-text-left">{{$organizations->total()}} TOTAL ORGANIZATIONS</h4>
     <hr>
     <table class="uk-table uk-table-hover uk-table-striped uk-table-condensed small-table-text">
         <thead>
@@ -47,5 +47,6 @@
 
         </tbody>
     </table>
+        {{ $organizations->links() }}
 
 </div>
