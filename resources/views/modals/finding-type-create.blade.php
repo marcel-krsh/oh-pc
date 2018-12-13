@@ -76,7 +76,7 @@
                         <div class="uk-width-1-1 uk-width-2-3@m uk-scrollable-box">
                             <ul class="uk-list">
                                 @foreach($boilerplates as $boilerplate)
-                                <li><label><input class="uk-checkbox" type="checkbox" name="boilerplates[]" value="{{$boilerplate->id}}" @if($finding_type) @if(in_array($boilerplate->id, $finding_type->boilerplates->pluck('boilerplate_id')->toArray())) checked @endif @endif> {{$boilerplate->name}}</label></li>
+                                <li><label><input class="uk-checkbox" type="checkbox" name="boilerplates[]" value="{{$boilerplate->id}}" @if($finding_type->boilerplates) @if(in_array($boilerplate->id, $finding_type->boilerplates->pluck('boilerplate_id')->toArray())) checked @endif @endif> {{$boilerplate->name}}</label></li>
                                 @endforeach
                             </ul>
                         </div>
@@ -163,7 +163,7 @@
                                     <div class="uk-width-1-1 uk-width-2-3@m uk-scrollable-box" style="width:100%; height:100px;">
                                         <ul class="uk-list">
                                             @foreach($document_categories as $cat)
-                                            <li><label><input class="uk-checkbox followup-cat" type="checkbox" name="categories[]" value="{{$cat->id}}" @if($default_followup) @if(in_array($cat->id, json_decode($default_followup->doc_categories, true))) checked @endif @endif> {{$cat->document_category_name}}</label></li>
+                                            <li><label><input class="uk-checkbox followup-cat" type="checkbox" name="categories[]" value="{{$cat->id}}" @if($default_followup->doc_categories) @if(in_array($cat->id, json_decode($default_followup->doc_categories, true))) checked @endif @endif> {{$cat->document_category_name}}</label></li>
                                             @endforeach
                                         </ul>
                                     </div>

@@ -931,7 +931,7 @@ class AdminToolController extends Controller
      */
     public function defaultfollowupIndex()
     {
-        $followups = DefaultFollowup::with('user')->orderBy('name', 'asc')->get();
+        $followups = DefaultFollowup::orderBy('description', 'asc')->get();
         return view('admin_tabs.followups', compact('followups'));
     }
 
