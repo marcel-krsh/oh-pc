@@ -51,7 +51,7 @@ class SyncController extends Controller
             $syncData = $apiConnect->listUsers(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-            dd($syncData);
+            //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
                 // get the ohfa org id:
@@ -66,8 +66,9 @@ class SyncController extends Controller
                     //dd('Page Count is Higher',$syncData,$modified,$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     foreach($syncData['data'] as $i => $v)
                         {
+                            $allitaId = null;
                             // check if record exists
-                            $updateRecord = SyncUser::select('id','allita_id','last_edited','updated_at')->where('phone_number_key',$v['attributes']['phoneNumberKey'])->first();
+                            $updateRecord = SyncUser::select('id','allita_id','last_edited','updated_at')->where('user_status_key_key',$v['attributes']['userStatusKeyKey'])->first();
                             // convert booleans
                              //settype($v['attributes']['ownerPaidUtilities'], 'boolean');
                             // settype($v['attributes']['isUserHandicapAccessible'], 'boolean');
@@ -105,9 +106,13 @@ class SyncController extends Controller
                                 
                                 //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
                                 
+                                // Set the allita id to null
+                                
+
                                 if($devcoDateEval > $allitaDateEval){
                                     if(!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at){
 
+                                        $allitaId = $updateRecord['allita_id'];
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
@@ -116,10 +121,10 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'area_code'=>$v['attributes']['areaCode'],
-                                            'phone_number'=>$v['attributes']['phoneNumber'],
-                                            'extension'=>$v['attributes']['extension'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            'organization'=>$v['attributes']['organization'],
+                                            'user_status_key'=>$v['attributes']['userStatusKey'],
+                                            'person_key'=>$v['attributes']['personKey'],
                                             
                                             
                                             
@@ -129,14 +134,16 @@ class SyncController extends Controller
                                         ]);
                                         $UpdateAllitaValues = SyncUser::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
+
+
                                         $allitaTableRecord->update([
                                             
                                             
                                             
-                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'area_code'=>$v['attributes']['areaCode'],
-                                            'phone_number'=>$v['attributes']['phoneNumber'],
-                                            'extension'=>$v['attributes']['extension'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            'area_code'=>$v['attributes']['organization'],
+                                            'user_status_key'=>$v['attributes']['userStatusKey'],
+                                            'person_key'=>$v['attributes']['personKey'],
                                             
                                             
                                             
@@ -157,16 +164,16 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'area_code'=>$v['attributes']['areaCode'],
-                                            'phone_number'=>$v['attributes']['phoneNumber'],
-                                            'extension'=>$v['attributes']['extension'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            'area_code'=>$v['attributes']['organization'],
+                                            'user_status_key'=>$v['attributes']['userStatusKey'],
+                                            'person_key'=>$v['attributes']['personKey'],
                                             
                                             
                                             
                                             
                                             
-                                            'phone_number_key'=>$v['attributes']['phoneNumberKey'],
+                                            'user_status_key_key'=>$v['attributes']['userStatusKeyKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
                                         $syncTableRecord = SyncUser::where('id',$updateRecord['id'])
@@ -175,19 +182,20 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'area_code'=>$v['attributes']['areaCode'],
-                                            'phone_number'=>$v['attributes']['phoneNumber'],
-                                            'extension'=>$v['attributes']['extension'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            'area_code'=>$v['attributes']['organization'],
+                                            'user_status_key'=>$v['attributes']['userStatusKey'],
+                                            'person_key'=>$v['attributes']['personKey'],
                                             
                                             
                                             
                                             
                                             
-                                            'phone_number_key'=>$v['attributes']['phoneNumberKey'],
+                                            'user_status_key_key'=>$v['attributes']['userStatusKeyKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
-                                        ]);                                     
+                                        ]); 
+                                        $allitaId=$allitaTableRecord->id;                                    
                                         // Update the Allita Table Record with the Sync Table's updated at date
                                         $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
 
@@ -204,17 +212,17 @@ class SyncController extends Controller
                                     
 
                                             
-                                            'phone_number_key'=>$v['attributes']['phoneNumberKey'],
-                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'area_code'=>$v['attributes']['areaCode'],
-                                            'phone_number'=>$v['attributes']['phoneNumber'],
-                                            'extension'=>$v['attributes']['extension'],
+                                            'user_status_key_key'=>$v['attributes']['userStatusKeyKey'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            'area_code'=>$v['attributes']['organization'],
+                                            'user_status_key'=>$v['attributes']['userStatusKey'],
+                                            'person_key'=>$v['attributes']['personKey'],
                                             
                                             
                                             
                                             
                                     
-                                    'phone_number_key'=>$v['attributes']['phoneNumberKey'],
+                                    'user_status_key_key'=>$v['attributes']['userStatusKeyKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
                                 $syncTableRecord = SyncUser::create([
@@ -222,24 +230,26 @@ class SyncController extends Controller
                                             
                                             
                                             
-                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
-                                            'area_code'=>$v['attributes']['areaCode'],
-                                            'phone_number'=>$v['attributes']['phoneNumber'],
-                                            'extension'=>$v['attributes']['extension'],
+                                            'organization_key'=>$v['attributes']['organizationKey'],
+                                            'area_code'=>$v['attributes']['organization'],
+                                            'user_status_key'=>$v['attributes']['userStatusKey'],
+                                            'person_key'=>$v['attributes']['personKey'],
                                             
                                             
                                             
                                             
 
-                                        'phone_number_key'=>$v['attributes']['phoneNumberKey'],
+                                        'user_status_key_key'=>$v['attributes']['userStatusKeyKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);
+                                $allitaId = $allitaTableRecord->id;
                                 // Update the Allita Table Record with the Sync Table's updated at date
                                 $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
 
 
                             }
+                            
 
                         }
                     $syncPage++;
