@@ -74,8 +74,8 @@ class SyncController extends Controller
                             if($v['attributes']['eventDate'] < 1971){
                                 $v['attributes']['eventDate'] = NULL;
                             }
-                            if($v['attributes']['eventDate'] > 2034){
-                                $v['attributes']['eventDate'] = '1/1/2034';
+                            if($v['attributes']['eventDate'] > 2038){
+                                $v['attributes']['eventDate'] = new DateTime('1st January 2999');
                             }
 
                             // if($v['attributes']['completedDate'] < 1951){
