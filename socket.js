@@ -34,8 +34,8 @@ redis.on('message', function(channel, message) {
 });
 
 
-server.listen(3000, function(){
-    console.log('Listening on Port 3000');
+server.listen(443, function(){
+    console.log('Listening on Port 443');
 });
 
 redis.on("error", function (err) {
