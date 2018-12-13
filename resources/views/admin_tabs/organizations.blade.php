@@ -1,6 +1,6 @@
 <div class="uk-overflow-container uk-margin-top">
     <div uk-grid class="uk-margin-remove">
-        <h4 class="uk-text-left uk-width-2-3">{{$organizations->total()}} TOTAL ORGANIZATIONS</h4> 
+        <h4 class="uk-text-left uk-width-2-3" style="padding-top: 8px;">{{$organizations->total()}} TOTAL ORGANIZATIONS</h4> 
         <div class="uk-width-1-3 uk-text-right">
             <input id="organizations-search" name="organizations-search" type="text" value="{{ Session::get('organizations-search') }}" class=" uk-input" placeholder="Search by organization name (press enter)"> 
         </div>
