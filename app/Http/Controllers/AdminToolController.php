@@ -873,7 +873,7 @@ class AdminToolController extends Controller
             return view('formtemplate', ['formRows'=>$formRows]);
         } else {
             $formRows['tag'] = $form->formBuilder("/admin/hud_area/store/".$hud->id, "post", "application/x-www-form-urlencoded", "Edit HUD Inspectable Area", "edit");
-            $formRows['rows']['ele1']= $form->text(['Boilerplate Name','name',$hud->name,'','required']);
+            $formRows['rows']['ele1']= $form->text(['HUD Name','name',$hud->name,'','required']);
             $formRows['rows']['ele2'] = $form->submit(['Update HUD Inspectable Area Information']);
             return view('formtemplate', ['formRows'=>$formRows]);
         }
