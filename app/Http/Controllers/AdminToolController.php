@@ -19,6 +19,7 @@ use App\Http\Controllers\FormsController as Form;
 use Illuminate\Support\Facades\Input;
 use App\LogConverter;
 use \Auth;
+use Session;
 use App\Models\User as UserModel;
 use Illuminate\Support\Facades\DB;
 
@@ -880,6 +881,16 @@ class AdminToolController extends Controller
 
     // display tabs
 
+    public function searchOrganizations(Request $request)
+    {
+        if ($request->has('organizations-search')) {
+            Session::put('organizations-search', $request->get('organizations-search'));
+        } else {
+            Session::forget('organizations-search');
+        }
+        return 1;
+    }
+
     /**
      * Organizations Index
      *
@@ -887,7 +898,18 @@ class AdminToolController extends Controller
      */
     public function organizationIndex()
     {
-        $organizations = Organization::with(['address','person'])->orderBy('organization_name', 'asc')->paginate(40);
+        if (Session::has('organizations-search') && Session::get('organizations-search') != '') {
+            $search = Session::get('organizations-search');
+            $organizations = Organization::with(['address','person'])
+                                    ->where(function ($query) use ($search) {
+                                        $query->where('organization_name', 'LIKE', '%'.$search.'%');
+                                    })
+                                    ->orderBy('organization_name', 'asc')
+                                    ->paginate(40);
+        }else{
+            $organizations = Organization::with(['address','person'])->orderBy('organization_name', 'asc')->paginate(40);
+        }
+        
         return view('admin_tabs.organizations', compact('organizations'));
     }
 

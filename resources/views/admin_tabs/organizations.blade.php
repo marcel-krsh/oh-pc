@@ -1,5 +1,10 @@
 <div class="uk-overflow-container uk-margin-top">
-    <h4 class="uk-text-left">{{$organizations->total()}} TOTAL ORGANIZATIONS</h4>
+    <div uk-grid class="uk-margin-remove">
+        <h4 class="uk-text-left uk-width-2-3">{{$organizations->total()}} TOTAL ORGANIZATIONS</h4> 
+        <div class="uk-width-1-3 uk-text-right">
+            <input id="organizations-search" name="organizations-search" type="text" value="{{ Session::get('organizations-search') }}" class=" uk-input" placeholder="Search by organization name (press enter)"> 
+        </div>
+    </div>
     <hr>
     <table class="uk-table uk-table-hover uk-table-striped uk-table-condensed small-table-text">
         <thead>
@@ -50,3 +55,29 @@
         {{ $organizations->links() }}
 
 </div>
+<script>
+    
+    function searchOrganizations(){
+        $.post('{{ URL::route("organizations.search") }}', {
+                'organizations-search' : $("#organizations-search").val(),
+                '_token' : '{{ csrf_token() }}'
+            }, function(data) {
+                if(data!=1){ 
+                    UIkit.modal.alert(data);
+                } else {
+                    $('#organizations-tab-content').load('/tabs/organization');
+                }
+        } );
+    }
+
+    // process search
+    $(document).ready(function() {
+        $('#organizations-search').keydown(function (e) {
+          if (e.keyCode == 13) {
+            searchOrganizations();
+            e.preventDefault();
+            return false; 
+          }
+        });
+    });
+</script>

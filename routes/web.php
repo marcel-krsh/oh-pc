@@ -140,6 +140,7 @@ Route::group(['middleware' => 'web'], function () {
         // Admin tabs
         Route::group(['prefix'=>'tabs'], function () {
             Route::get('organization', 'AdminToolController@organizationIndex');
+            Route::post('organization', 'AdminToolController@searchOrganizations')->name('organizations.search');
             Route::get('amenity', 'AdminToolController@amenityIndex');
             Route::get('hud', 'AdminToolController@hudIndex');
             Route::get('findingtype', 'AdminToolController@findingtypeIndex');
