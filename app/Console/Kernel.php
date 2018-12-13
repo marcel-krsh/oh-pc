@@ -44,6 +44,7 @@ use App\Jobs\SyncUsersJob;
 use App\Jobs\SyncComplianceContactJob;
 use App\Jobs\SyncPhoneNumberTypesJob;
 use App\Jobs\SyncEmailAddressTypesJob;
+use App\Jobs\SyncEmailAddressesJob;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -424,6 +425,14 @@ class Kernel extends ConsoleKernel
         $test = DB::table('jobs')->where('payload','like','%SyncEmailAddressTypesJob%')->first();
         if(is_null($test)) {
             $schedule->job(new SyncEmailAddressTypesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+        //SyncEmailAddressesJob
+        $test = DB::table('jobs')->where('payload','like','%SyncEmailAddressesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncEmailAddressesJob)->everyMinute();
             
         } else {
             //Log::info('Sync Job Already Started.');
