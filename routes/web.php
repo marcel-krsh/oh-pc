@@ -135,6 +135,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('county/create/{id?}', 'AdminToolController@countyCreate');
             Route::get('finding_type/create/{id?}', 'AdminToolController@findingtypeCreate');
             Route::get('hud_area/create/{id?}', 'AdminToolController@hudAreaCreate');
+            Route::get('amenity/create/{id?}', 'AdminToolController@amenityCreate');
         });
 
         // Admin tabs
@@ -161,6 +162,7 @@ Route::group(['middleware' => 'web'], function () {
             Route::post('document_category/store/{id?}', 'AdminToolController@documentCategoryStore');
             Route::post('county/store/{id?}', 'AdminToolController@countyStore');
             Route::post('hud_area/store/{id?}', 'AdminToolController@hudAreaStore');
+            Route::post('amenity/store/{id?}', 'AdminToolController@amenityStore');
         });
 
     // });
