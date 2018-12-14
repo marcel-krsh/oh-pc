@@ -1,17 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
-use DB;
-use DateTime;
-use Illuminate\Http\Request;
-use Carbon\Carbon;
+namespace App\Jobs;
+
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use App\Services\AuthService;
 use App\Services\DevcoService;
 use App\Models\AuthTracker;
 use App\Models\SystemSetting;
 use App\Models\User;
+use DB;
+use DateTime;
 use Illuminate\Support\Facades\Hash;
-use Log;
+
 
 use App\Jobs\SyncAddress;
 use App\Jobs\SyncPeople;
@@ -60,33 +64,37 @@ use App\Jobs\SyncHouseHoldSize;
 use App\Jobs\SyncProjectDate;
 use App\Jobs\SyncUnitIdentity;
 
-
-
-
-class SyncController extends Controller
+class SyncIdssJob implements ShouldQueue
 {
-    //
-    public function associate($model,$associations){
-        foreach($associations as $associate){
-            $updates = $$model::whereNull($associate['null_field'])->groupBy($associate['look_up_model'])->get()->all();
-            foreach ($updates as $update) {
-                //lookup model
-                $key = $$associate['look_up_model']::select($associate['look_up_foreign_key'])->where($associate['lookup_field'],$update->$$associate['look_up_reference'])->first();
-                if(!is_null($key)){
-                    $$model::whereNull($associate['null_field'])->where($update->$$associate['look_up_reference'],$update->$$associate['look_up_reference'])->update([$associate['null_field'] => $key->$$associate['look_up_foreign_key']
-                    ]);
-                } else {
-                    //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->$$associate['look_up_reference'].' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the '.$associate['look_up_model'].' model.');
-                    echo date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->$$associate['look_up_reference'].' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the '.$associate['look_up_model'].' model.<hr />';
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-                }
-
-            }
-        }
+    /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
     }
+    public $tries = 5;
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function associate($model,$associate){
+        $updates = $$model::whereNull('state_id')->groupBy('state')->get()->all();
+        foreach ($updates as $update) {
+            //look up id value
 
-    public function sync() {
+        }
 
+
+        $update = $$model::where()
+    }
+    public function handle()
+    {
         //////////////////////////////////////////////////
         /////// Address ID update
         /////
@@ -100,10 +108,13 @@ class SyncController extends Controller
             'look_up_foreign_key' => 'id'
         ];
         try{
-            $this->associate($model,$associate);
+            associate($model,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
         }
+
+        
+
+        
     }
 }
