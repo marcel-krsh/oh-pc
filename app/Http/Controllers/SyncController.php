@@ -73,6 +73,7 @@ class SyncController extends Controller
                         ->where($associate['null_field'],$associate['condition_operator'],$associate['condition'])
                         ->groupBy($associate['look_up_reference'])
                         ->get()->all();
+            dd($updates);
             foreach ($updates as $update) {
                 //lookup model
                 dd($update);
