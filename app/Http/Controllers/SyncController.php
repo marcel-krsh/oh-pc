@@ -84,9 +84,8 @@ class SyncController extends Controller
                 if(!is_null($key)){
                     $model::whereNull($associate['null_field'])
                         ->where(
-                                $update->{$associate['null_field']},
-                                $associate['condition_operator'],
-                                $key->{$associate['condition']}
+                                $associate['look_up_reference'],
+                                $update->{$associate['look_up_reference']}
                                 )
                         ->update([
                                   $associate['null_field'] => $key->{$associate['look_up_foreign_key']}
