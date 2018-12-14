@@ -68,7 +68,11 @@ class SyncController extends Controller
     //
     public function associate($model,$lookUpModel,$associations){
         foreach($associations as $associate){
-            $updates = $model::select($associate['look_up_reference'])->whereNull($associate['null_field'])->groupBy($associate['look_up_reference'])->get()->all();
+            $updates = $model::select($associate['look_up_reference'])
+                        ->whereNull($associate['null_field'])
+                        ->where($associate['null_field'],$associate['condition_operator'],$associate['condition'])
+                        ->groupBy($associate['look_up_reference'])
+                        ->get()->all();
             foreach ($updates as $update) {
                 //lookup model
                 dd($update);
@@ -101,6 +105,8 @@ class SyncController extends Controller
             'look_up_reference' => 'state',
             'lookup_field' => 'state_acronym',
             'look_up_foreign_key' => 'id'
+            'condition_operator' => '!=',
+            'condition' => ' '
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
