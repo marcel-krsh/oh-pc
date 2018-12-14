@@ -54,7 +54,7 @@ class SyncController extends Controller
                             //dd($unitProgramData['data']);
                             //dd($unitProgramData['data'][0]['attributes']['programKey']);
                             foreach ($unitProgramData['data'] as $unitProgram) {
-                               dd($unitProgram['attributes']['programKey']);
+                               dd('Unit Program Id - '.$unitProgram['attributes']['programKey']);
                             }
                         
                         } catch(Exception $e){
