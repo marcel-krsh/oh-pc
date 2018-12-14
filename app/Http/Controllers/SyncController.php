@@ -13,10 +13,8 @@ use App\Models\SystemSetting;
 use Illuminate\Support\Facades\Hash;
 use Log;
 
-use App\Models\Address;
-use App\Models\ProjectActivity;
-use App\Models\ProjectActivityType;
-use App\Models\ProjectRole;
+use App\Models\Address; //
+use App\Models\ProjectActivity; //
 use App\Models\ProjectContactRole;
 use App\Models\Organization;
 use App\Models\Project;
@@ -99,6 +97,54 @@ class SyncController extends Controller
     }
 
     public function sync() {
+
+        //////////////////////////////////////////////////
+        /////// Project Contact Roles ID updates
+        /////
+
+        // Do clean ups:
+        // ProjectContactRole::where('state','o')->update(['state'=>'OH']);
+        
+        $model = new ProjectContactRole;
+        $lookUpModel = new \App\Models\Organization;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'organization_id',
+            'look_up_reference' => 'organization_key',
+            'lookup_field' => 'organization_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\ProjectProgram;
+        $associate = array();
+        $associate[] = [
+            //columns in this table
+            'null_field' => 'project_program_id',
+            'look_up_reference' => 'project_program_key',
+            //columns in the foreign table
+            'lookup_field' => 'project_program_key',
+            'look_up_foreign_key' => 'id',
+            //condition against the lookup field - if one is needed.
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        
+
 
         //////////////////////////////////////////////////
         /////// Project Activities ID updates
