@@ -29,7 +29,7 @@ class SyncController extends Controller
         /////// Get the project for audit
         /////
         ///// bring your own audit
-        $audit = Audit::where('development_key',247660)->orderBY('start_date',desc)->first();
+        $audit = Audit::where('development_key',247660)->orderBY('start_date','desc')->first();
         
         dd($audit);
 
