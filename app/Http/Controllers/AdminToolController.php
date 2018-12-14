@@ -34,8 +34,8 @@ class AdminToolController extends Controller
         //Auth::onceUsingId(2);
         //
         if(env('APP_DEBUG_NO_DEVCO') == 'true'){
-            Auth::onceUsingId(1); // TEST BRIAN
-            //Auth::onceUsingId(286); // TEST BRIAN
+            //Auth::onceUsingId(1); // TEST BRIAN
+            Auth::onceUsingId(286); // TEST BRIAN
         }
     }
 
@@ -794,6 +794,24 @@ class AdminToolController extends Controller
             $formRows['rows']['ele2'] = $form->text(['Auditor Site','auditor_site',$county->auditor_site,'','required']);
             $formRows['rows']['ele3'] = $form->submit(['Update County Information']);
             return view('pages.formtemplate', ['formRows'=>$formRows]);
+        }
+    }
+
+    /**
+     * Amenity Update
+     *
+     * @param  $id
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|string
+     */
+    public function amenityCreate($id)
+    {
+        $amenity = Amenity::where('id', '=', $id)->first();
+
+        if (!$amenity) {
+            return '<h2>No amenity was provided? Weird!</h2><p>Try closing and refreshing to come back and try again.</p>';
+        } else {
+            return view('modals.amenity-admin-edit', compact('amenity'));
         }
     }
 
@@ -1675,6 +1693,49 @@ class AdminToolController extends Controller
             // $lc->save();
             
         }
+    }
+
+    /**
+     * Amenity Store
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param null                     $id
+     *
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
+    public function amenityStore(Request $request, $id)
+    {
+        $inputs = $request->get('inputs');
+
+        $project = (array_key_exists('project', $inputs)) ? 1 : 0;
+        $building = (array_key_exists('building', $inputs)) ? 1 : 0;
+        $unit = (array_key_exists('unit', $inputs)) ? 1 : 0;
+        $inspectable = (array_key_exists('inspectable', $inputs)) ? 1 : 0;
+
+        $amenity = Amenity::where('id', '=', $id)->first();
+       
+        if($amenity){
+            $amenity->update([
+                'amenity_description' => $inputs['amenity_description'],
+                'project' => $project,
+                'building' => $building,
+                'unit' => $unit,
+                'inspectable' => $inspectable,
+                'policy' => $inputs['policy'],
+                'time_to_complete' => $inputs['time'],
+                'icon' => $inputs['icon']
+            ]);
+
+            return response('I updated the amenity. That was fun! What else do you have for me?');
+        }else{
+            return response('I cannot find that record.');
+        }
+
+        // $lc = new LogConverter('documentcategory', 'update');
+        // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Updated Document Category ' . $d->document_category_name);
+        // $lc->smartAddHistory($dold, $dnew);
+        // $lc->save();
+            
     }
 
     /**
