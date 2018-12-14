@@ -63,14 +63,16 @@ class SyncController extends Controller
                                 $program = Program::where('program_key',$unitProgram['attributes']['programKey'])->first();
                                 if(!is_null($program)){
                                     UnitProgram::insert([
-                                        'unit_key'      =>  $unit->unit_key,
-                                        'unit_id'       =>  $unit->id,
-                                        'program_key'   =>  $program->program_key,
-                                        'program_id'    =>  $program->id,
-                                        'audit_id'      =>  $audit->id,
-                                        'monitoring_key'=>  $audit->monitoring_key,
-                                        'created_at'    =>  date("Y-m-d g:h:i", time()),
-                                        'updated_at'    =>  date("Y-m-d g:h:i", time())
+                                        'development_key'   =>  $audit->development_key,
+                                        'project_id'        =>  $audit->project_id,
+                                        'unit_key'          =>  $unit->unit_key,
+                                        'unit_id'           =>  $unit->id,
+                                        'program_key'       =>  $program->program_key,
+                                        'program_id'        =>  $program->id,
+                                        'audit_id'          =>  $audit->id,
+                                        'monitoring_key'    =>  $audit->monitoring_key,
+                                        'created_at'        =>  date("Y-m-d H:i:s", time()),
+                                        'updated_at'        =>  date("Y-m-d H:i:s", time())
                                     ]);
                                 }else{
                                    Log::info('Unable to find program with key of '.$unitProgram['attributes']['programKey'].' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key); 
