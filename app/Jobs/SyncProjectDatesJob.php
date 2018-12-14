@@ -94,7 +94,7 @@ class SyncProjectDatesJob implements ShouldQueue
                             if($v['attributes']['eventDate'] < 1971){
                                 $v['attributes']['eventDate'] = NULL;
                             }
-                            if($v['attributes']['eventDate'] > 2038){
+                            if($v['attributes']['eventDate'] > 2037){
                                 $v['attributes']['eventDate'] = new DateTime('1st January 2038 12:00 PM');
                             }
 
