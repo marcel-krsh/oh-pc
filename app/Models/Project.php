@@ -37,11 +37,8 @@ class Project extends Model
     {
         return $this->hasOne(\App\Models\Address::class, 'address_key', 'physical_address_key');
     }
+
     
-    public function audits() : HasMany
-    {
-        return $this->hasMany(\App\Models\Audit::class, 'development_key', 'project_key');
-    }
 
     public function programs() : HasMany
     {
