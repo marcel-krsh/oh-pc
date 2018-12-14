@@ -130,7 +130,7 @@ class SyncController extends Controller
         $associate[] = [
             'null_field' => 'project_program_id',
             'look_up_reference' => 'project_program_key',
-            'lookup_field' => 'project_key',
+            'lookup_field' => 'project_program_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
             'condition' => ' '
