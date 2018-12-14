@@ -66,18 +66,18 @@ use App\Models\UnitIdentity;
 class SyncController extends Controller
 {
     //
-    public function associate($model,$associations){
+    public function associate($model,$lookUpModel,$associations){
         foreach($associations as $associate){
             $updates = $model::select($associate['look_up_reference'])->whereNull($associate['null_field'])->groupBy($associate['look_up_reference'])->get()->all();
             foreach ($updates as $update) {
                 //lookup model
-                $key = $$associate['look_up_model']::select($associate['look_up_foreign_key'])->where($associate['lookup_field'],$update->$$associate['look_up_reference'])->first();
+                $key = $lookUpModel::select($associate['look_up_foreign_key'])->where($associate['lookup_field'],$update->$associate['look_up_reference'])->first();
                 if(!is_null($key)){
-                    $model::whereNull($associate['null_field'])->where($update->$$associate['look_up_reference'],$update->$$associate['look_up_reference'])->update([$associate['null_field'] => $key->$$associate['look_up_foreign_key']
+                    $model::whereNull($associate['null_field'])->where($update->$associate['look_up_reference'],$update->$associate['look_up_reference'])->update([$associate['null_field'] => $key->$associate['look_up_foreign_key']
                     ]);
                 } else {
                     //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->$$associate['look_up_reference'].' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the '.$associate['look_up_model'].' model.');
-                    echo date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->$$associate['look_up_reference'].' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the '.$associate['look_up_model'].' model.<hr />';
+                    echo date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->$associate['look_up_reference'].' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the '.$associate['look_up_model'].' model.<hr />';
 
                 }
 
@@ -91,6 +91,7 @@ class SyncController extends Controller
         /////// Address ID update
         /////
         $model = new Address;
+        $lookUpModel = new App\Models\State;
         $associate = array();
         $associate[] = [
             'null_field' => 'state_id',
@@ -100,7 +101,7 @@ class SyncController extends Controller
             'look_up_foreign_key' => 'id'
         ];
         try{
-            $this->associate($model,$associate);
+            $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
