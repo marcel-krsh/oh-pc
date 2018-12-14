@@ -31,6 +31,10 @@ class SyncController extends Controller
         /////
         ///// bring your own audit
         $audit = Audit::where('development_key',247660)->orderBY('start_date','desc')->first();
+
+        // remove any current programs on units for this audit
+
+        UnitProgram::where('audit_id',$audit->id)->delete();
         
         $apiConnect = new DevcoService();
         // paths to the info we need: dd($audit, $audit->project, $audit->project->buildings);
@@ -54,7 +58,21 @@ class SyncController extends Controller
                             //dd($unitProgramData['data']);
                             //dd($unitProgramData['data'][0]['attributes']['programKey']);
                             foreach ($unitProgramData['data'] as $unitProgram) {
-                               dd('Unit Program Id - '.$unitProgram['attributes']['programKey']);
+                               //dd('Unit Program Id - '.$unitProgram['attributes']['programKey']);
+
+                                $program = Program::where('program_key',$unitProgram['attributes']['programKey'])->first();
+                                if(!is_null($program){
+                                    UnitProgram::insert([
+                                        'unit_key'      =>  $unit->unit_key,
+                                        'unit_id'       =>  $unit->id,
+                                        'program_key'   =>  $program->program_key,
+                                        'program_id'    =>  $program->id,
+                                        'audit_id'      =>  $audit->id,
+                                        'monitoring_key'=>  $audit->monitoring_key
+                                    ]);
+                                }else{
+                                   Log::info('Unable to find program with key of '.$unitProgram['attributes']['programKey'].' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key); 
+                                }
                             }
                         
                         } catch(Exception $e){
