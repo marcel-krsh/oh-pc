@@ -143,6 +143,66 @@ class SyncController extends Controller
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
+        $lookUpModel = new \App\Models\Project;
+        $associate = array();
+        $associate[] = [
+            //columns in this table
+            'null_field' => 'project_id',
+            'look_up_reference' => 'project_key',
+            //columns in the foreign table
+            'lookup_field' => 'project_key',
+            'look_up_foreign_key' => 'id',
+            //condition against the lookup field - if one is needed.
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\People;
+        $associate = array();
+        $associate[] = [
+            //columns in this table
+            'null_field' => 'person_id',
+            'look_up_reference' => 'person_key',
+            //columns in the foreign table
+            'lookup_field' => 'person_key',
+            'look_up_foreign_key' => 'id',
+            //condition against the lookup field - if one is needed.
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\ProjectRole;
+        $associate = array();
+        $associate[] = [
+            //columns in this table
+            'null_field' => 'project_role_id',
+            'look_up_reference' => 'project_role_key',
+            //columns in the foreign table
+            'lookup_field' => 'project_role_key',
+            'look_up_foreign_key' => 'id',
+            //condition against the lookup field - if one is needed.
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
         
 
 
