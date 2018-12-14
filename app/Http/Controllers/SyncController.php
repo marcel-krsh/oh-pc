@@ -61,7 +61,7 @@ class SyncController extends Controller
                                //dd('Unit Program Id - '.$unitProgram['attributes']['programKey']);
 
                                 $program = Program::where('program_key',$unitProgram['attributes']['programKey'])->first();
-                                if(!is_null($program){
+                                if(!is_null($program)){
                                     UnitProgram::insert([
                                         'unit_key'      =>  $unit->unit_key,
                                         'unit_id'       =>  $unit->id,
