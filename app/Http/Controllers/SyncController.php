@@ -68,7 +68,7 @@ class SyncController extends Controller
     //
     public function associate($model,$associations){
         foreach($associations as $associate){
-            $updates = Address::whereNull($associate['null_field'])->groupBy($associate['look_up_model'])->get()->all();
+            $updates = $model::whereNull($associate['null_field'])->groupBy($associate['look_up_reference'])->get()->all();
             foreach ($updates as $update) {
                 //lookup model
                 $key = $$associate['look_up_model']::select($associate['look_up_foreign_key'])->where($associate['lookup_field'],$update->$$associate['look_up_reference'])->first();
@@ -90,7 +90,7 @@ class SyncController extends Controller
         //////////////////////////////////////////////////
         /////// Address ID update
         /////
-        $model = 'Address';
+        $model = new Address;
         $associate = array();
         $associate[] = [
             'null_field' => 'state_id',
