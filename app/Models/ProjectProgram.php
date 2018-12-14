@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ProjectProgram extends Model
 {
@@ -11,5 +12,8 @@ class ProjectProgram extends Model
 
     protected $guarded = ['id'];
 
-    
+    public function programs() : HasOne
+    {
+        return $this->hasOne(\App\Models\Program::class, 'program_key', 'program_key');
+    }
 }

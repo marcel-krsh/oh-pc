@@ -11,6 +11,7 @@ class CachedAudit extends Model
 {
     protected $fillable = [
         'id',
+        'audit_id',
         'project_id',
         'project_ref',
         'status',
@@ -23,6 +24,7 @@ class CachedAudit extends Model
         'state',
         'zip',
         'total_buildings',
+        'inspection_icon',
         'inspection_status',
         'inspection_status_text',
         'inspection_schedule_date',
