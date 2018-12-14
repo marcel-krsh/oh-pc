@@ -14,8 +14,6 @@ use Illuminate\Support\Facades\Hash;
 use Log;
 
 use App\Models\Address;
-use App\Models\People;
-use App\Models\MonitoringStatusType;
 use App\Models\ProjectActivity;
 use App\Models\ProjectActivityType;
 use App\Models\ProjectRole;
@@ -103,26 +101,53 @@ class SyncController extends Controller
     public function sync() {
 
         //////////////////////////////////////////////////
-        /////// People ID update
+        /////// Project Activities ID updates
         /////
 
-        // do clean ups:
-        People::where('state','o')->update(['state'=>'OH']);
-        People::where('state',' O')->update(['state'=>'OH']);
-        People::where('city','Cincinnati')->where('state','')->update(['state'=>'OH']);
-        People::where('city','Youngstown')->where('state','')->update(['state'=>'OH']);
-        People::where('city','Cleveland')->where('state','')->update(['state'=>'OH']);
-        People::where('city','Columbus')->where('state','')->update(['state'=>'OH']);
-        People::where('city','Elyria')->where('state','')->update(['state'=>'OH']);
-        People::where('city','Akron')->where('state','')->update(['state'=>'OH']);
-        People::where('city','Philadelphia')->where('state','')->update(['state'=>'PA']);
-        $model = new People;
-        $lookUpModel = new \App\Models\State;
+        // Do clean ups:
+        // ProjectActivity::where('state','o')->update(['state'=>'OH']);
+        
+        $model = new ProjectActivity;
+        $lookUpModel = new \App\Models\Project;
         $associate = array();
         $associate[] = [
-            'null_field' => 'state_id',
-            'look_up_reference' => 'state',
-            'lookup_field' => 'state_acronym',
+            'null_field' => 'project_id',
+            'look_up_reference' => 'project_key',
+            'lookup_field' => 'project_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\Program;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_program_id',
+            'look_up_reference' => 'project_program_key',
+            'lookup_field' => 'project_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\ProjectActivityType;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_activity_type_id',
+            'look_up_reference' => 'project_activity_type_key',
+            'lookup_field' => 'project_activity_type_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
             'condition' => ' '
