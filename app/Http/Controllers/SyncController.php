@@ -46,8 +46,8 @@ class SyncController extends Controller
                 $unitProgramData = $apiConnect->getUnitPrograms($unit->unit_key, 1,'admin@allita.org', 'Updating Unit Program Data', 1, 'Server');
                 $unitProgramData = json_decode($unitProgramData, true);
                 
-                dd($unitProgramData['data']);
-                dd($unitProgramData['data'][0]['programKey']);
+                //dd($unitProgramData['data']);
+                dd($unitProgramData['data'][0]['attributes']['programKey']);
             
             }
         }
