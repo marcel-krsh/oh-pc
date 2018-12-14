@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\CachedAudit;
+use App\Models\SystemSetting;
 
 class Project extends Model
 {
@@ -53,8 +54,12 @@ class Project extends Model
     // TBD needed for the unit selection process
     public function isLeasePurchase()
     {
-        // project_activity_type_key with lease purchases: 51, 56, 57, 58, 13, 81, 12 // <- not sure if it is useful to us...
-        return 0;
+        
+        $leaseProgramKeys = SystemSetting::get('lease_purchase');
+        settype($leaseProgramKeys, array);
+        
+        if( in_array($this->program_key, $leaseProgramKeys) ){ return 1; }else{ return 0; }
+        
     }
 
 }

@@ -31,9 +31,18 @@ class SyncController extends Controller
         ///// bring your own audit
         $audit = Audit::where('development_key',247660)->orderBY('start_date','desc')->first();
         
-        dd($audit, $audit->project, $audit->project->buildings);
+        // paths to the info we need: dd($audit, $audit->project, $audit->project->buildings);
 
+        // Get all the units we need to get programs for:
 
+        $buildings = $audit->project->buildings;
+
+        //$unitPrograms
+        foreach ($buildings as $building) {
+            //run through each unit
+            $buildingUnits = $building->units;
+            dd($buldingUnits);
+        }
         
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
