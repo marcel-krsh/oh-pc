@@ -71,7 +71,9 @@ class SyncController extends Controller
             $updates = $model::select($associate['look_up_reference'])->whereNull($associate['null_field'])->groupBy($associate['look_up_reference'])->get()->all();
             foreach ($updates as $update) {
                 //lookup model
-                $key = $lookUpModel::select($associate['look_up_foreign_key'])->where($associate['lookup_field'],$update->$associate['look_up_reference'])->first();
+                $key = $lookUpModel::select($associate['look_up_foreign_key'])
+                ->where($associate['lookup_field'],$update->$associate['look_up_reference'])
+                ->first();
                 if(!is_null($key)){
                     $model::whereNull($associate['null_field'])->where($update->$associate['look_up_reference'],$update->$associate['look_up_reference'])->update([$associate['null_field'] => $key->$associate['look_up_foreign_key']
                     ]);
@@ -95,7 +97,6 @@ class SyncController extends Controller
         $associate = array();
         $associate[] = [
             'null_field' => 'state_id',
-            'look_up_model' => 'State',
             'look_up_reference' => 'state',
             'lookup_field' => 'state_acronym',
             'look_up_foreign_key' => 'id'
