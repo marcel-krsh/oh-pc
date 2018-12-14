@@ -104,7 +104,7 @@ class SyncController extends Controller
             'null_field' => 'state_id',
             'look_up_reference' => 'state',
             'lookup_field' => 'state_acronym',
-            'look_up_foreign_key' => 'id'
+            'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
             'condition' => ' '
         ];
