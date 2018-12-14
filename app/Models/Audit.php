@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Event;
 
 class Audit extends Model
@@ -27,5 +29,10 @@ class Audit extends Model
         // static::deleted(function ($audit) {
         //     Event::fire('audit.deleted', $audit);
         // });
+    }
+
+    public function project() : HasOne
+    {
+        return $this->hasMany(\App\Models\Project::class, 'project_key', 'development_key');
     }
 }
