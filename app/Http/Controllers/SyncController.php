@@ -77,7 +77,7 @@ class SyncController extends Controller
             //dd($updates);
             foreach ($updates as $update) {
                 //lookup model
-                dd($update,$update->$$associate['look_up_reference']);
+                dd($update,$update->{$associate['look_up_reference']});
                 $key = $lookUpModel::select($associate['look_up_foreign_key'])
                 ->where($associate['lookup_field'],$update->$associate['look_up_reference'])
                 ->first();
