@@ -56,7 +56,7 @@ class Project extends Model
     {
         
         $leaseProgramKeys = SystemSetting::get('lease_purchase');
-        settype($leaseProgramKeys, array);
+        settype($leaseProgramKeys, 'array');
         
         if( in_array($this->program_key, $leaseProgramKeys) ){ return 1; }else{ return 0; }
         

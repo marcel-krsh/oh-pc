@@ -31,6 +31,7 @@ class SyncController extends Controller
         ///// bring your own audit
         $audit = Audit::where('development_key',247660)->orderBY('start_date','desc')->first();
         
+        $apiConnect = new DevcoService();
         // paths to the info we need: dd($audit, $audit->project, $audit->project->buildings);
 
         // Get all the units we need to get programs for:
@@ -41,14 +42,17 @@ class SyncController extends Controller
         foreach ($buildings as $building) {
             //run through each unit
             $buildingUnits = $building->units;
-            dd($buldingUnits);
+            foreach ($buildingUnits as $unit) {
+                $unitProgramData = $apiConnect->getUnitPrograms($unit->unit_key, 1,'admin@allita.org', 'Updating Unit Program Data', 1, 'Server');
+                $unitProgramData = json_decode($unitProgramData, true);
+                dd($unitProgramData);
+            
+            }
         }
         
-        $apiConnect = new DevcoService();
+        
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listProjectDates(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
-            $syncData = json_decode($syncData, true);
-            $syncPage = 1;
+            
             //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if($syncData['meta']['totalPageCount'] > 0){
