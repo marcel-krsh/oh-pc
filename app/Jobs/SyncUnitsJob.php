@@ -118,6 +118,7 @@ class SyncUnitsJob implements ShouldQueue
                                         ->update([
                                             
                                             'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
+                                            'building_key'=>$v['attributes']['buildingKey'],
                                             'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
                                             'unit_status_key'=>$v['attributes']['unitStatusKey'],
                                             'ami_percentage_key'=>$v['attributes']['amiPercentageKey'],
@@ -136,6 +137,7 @@ class SyncUnitsJob implements ShouldQueue
                                         $allitaTableRecord->update([
                                             
                                             'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
+                                            'building_key'=>$v['attributes']['buildingKey'],
                                             'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
                                             'unit_status_key'=>$v['attributes']['unitStatusKey'],
                                             'ami_percentage_key'=>$v['attributes']['amiPercentageKey'],
@@ -161,6 +163,7 @@ class SyncUnitsJob implements ShouldQueue
                                             
                                             
                                             'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
+                                            'building_key'=>$v['attributes']['buildingKey'],
                                             'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
                                             'unit_status_key'=>$v['attributes']['unitStatusKey'],
                                             'ami_percentage_key'=>$v['attributes']['amiPercentageKey'],
@@ -180,6 +183,7 @@ class SyncUnitsJob implements ShouldQueue
                                             
                                             
                                             'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
+                                            'building_key'=>$v['attributes']['buildingKey'],
                                             'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
                                             'unit_status_key'=>$v['attributes']['unitStatusKey'],
                                             'ami_percentage_key'=>$v['attributes']['amiPercentageKey'],
@@ -211,6 +215,7 @@ class SyncUnitsJob implements ShouldQueue
                                     
 
                                             'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
+                                            'building_key'=>$v['attributes']['buildingKey'],
                                             'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
                                             'unit_status_key'=>$v['attributes']['unitStatusKey'],
                                             'ami_percentage_key'=>$v['attributes']['amiPercentageKey'],
@@ -229,6 +234,7 @@ class SyncUnitsJob implements ShouldQueue
                                             
                                             
                                             'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
+                                            'building_key'=>$v['attributes']['buildingKey'],
                                             'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
                                             'unit_status_key'=>$v['attributes']['unitStatusKey'],
                                             'ami_percentage_key'=>$v['attributes']['amiPercentageKey'],
