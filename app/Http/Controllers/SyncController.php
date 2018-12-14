@@ -12,8 +12,8 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncPhoneNumberType;
-use App\Models\PhoneNumberType;
+use App\Models\SyncProjectDate;
+use App\Models\ProjectDate;
 
 
 
@@ -22,7 +22,7 @@ class SyncController extends Controller
     //
     public function sync() {
         //////////////////////////////////////////////////
-        /////// PhoneNumberType Sync
+        /////// ProjectDate Sync
         /////
 
         /// get last modified date inside the database
@@ -33,7 +33,7 @@ class SyncController extends Controller
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncPhoneNumberType::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
+        $lastModifiedDate = SyncProjectDate::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"),'last_edited','id')->orderBy('last_edited','desc')->first();
         // if the value is null set a default start date to start the sync.
         if(is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -48,7 +48,7 @@ class SyncController extends Controller
         }
         $apiConnect = new DevcoService();
         if(!is_null($apiConnect)){
-            $syncData = $apiConnect->listPhoneNumberTypes(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listProjectDates(1, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             //dd($syncData);
@@ -57,7 +57,7 @@ class SyncController extends Controller
                 do{
                     if($syncPage > 1){
                         //Get Next Page
-                        $syncData = $apiConnect->listPhoneNumberTypes($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listProjectDates($syncPage, $modified, 1,'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
                         //dd('Page Count is Higher',$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     }
@@ -65,17 +65,21 @@ class SyncController extends Controller
                     foreach($syncData['data'] as $i => $v)
                         {
                             // check if record exists
-                            $updateRecord = SyncPhoneNumberType::select('id','allita_id','last_edited','updated_at')->where('phone_number_type_key',$v['attributes']['phoneNumberTypeKey'])->first();
+                            $updateRecord = SyncProjectDate::select('id','allita_id','last_edited','updated_at')->where('project_date_key',$v['attributes']['developmentDateKey'])->first();
                             // convert booleans
-                             //settype($v['attributes']['ownerPaidUtilities'], 'boolean');
-                            // settype($v['attributes']['isPhoneNumberTypeHandicapAccessible'], 'boolean');
+                            // settype($v['attributes']['floatingUnits'], 'boolean');
+                            // settype($v['attributes']['isProjectDateHandicapAccessible'], 'boolean');
 
-                            // Set dates older than 1950 to be NULL:
-                            //  if($v['attributes']['acquisitionDate'] < 1951){
-                            //     $v['attributes']['acquisitionDate'] = NULL;
-                            // }
-                            // if($v['attributes']['buildingBuiltDate'] < 1951){
-                            //     $v['attributes']['buildingBuiltDate'] = NULL;
+                            //Set dates older than 1971 to be NULL:
+                            if($v['attributes']['eventDate'] < 1971){
+                                $v['attributes']['eventDate'] = NULL;
+                            }
+                            if($v['attributes']['eventDate'] > 2038){
+                                $v['attributes']['eventDate'] = new DateTime('1st January 2038 12:00 PM');
+                            }
+
+                            // if($v['attributes']['completedDate'] < 1951){
+                            //     $v['attributes']['completedDate'] = NULL;
                             // }
                             // if($v['attributes']['confirmedDate'] < 1951){
                             //     $v['attributes']['confirmedDate'] = NULL;
@@ -88,7 +92,7 @@ class SyncController extends Controller
                                 // record exists - get matching table record
 
                                 /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                                $allitaTableRecord = PhoneNumberType::find($updateRecord->allita_id);
+                                $allitaTableRecord = ProjectDate::find($updateRecord->allita_id);
                                 /// END NEW CODE PART 1
 
                                 // convert dates to seconds and miliseconds to see if the current record is newer.
@@ -109,14 +113,19 @@ class SyncController extends Controller
 
                                         // record is newer than the one currently on file in the allita db.
                                         // update the sync table first
-                                        SyncPhoneNumberType::where('id',$updateRecord['id'])
+                                        SyncProjectDate::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
                                             
                                             
-                                            'phone_number_type_name'=>$v['attributes']['phoneNumberTypeName'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
+                                            
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'program_date_type_key'=>$v['attributes']['programDateTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'event_date'=>$v['attributes']['eventDate'],
                                             
                                             
                                             
@@ -124,15 +133,20 @@ class SyncController extends Controller
                                             
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                         ]);
-                                        $UpdateAllitaValues = SyncPhoneNumberType::find($updateRecord['id']);
+                                        $UpdateAllitaValues = SyncProjectDate::find($updateRecord['id']);
                                         // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                         $allitaTableRecord->update([
                                             
                                             
                                             
                                             
-                                            'phone_number_type_name'=>$v['attributes']['phoneNumberTypeName'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
+                                            
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'program_date_type_key'=>$v['attributes']['programDateTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'event_date'=>$v['attributes']['eventDate'],
                                             
                                             
                                             
@@ -148,37 +162,47 @@ class SyncController extends Controller
                                         // date ends up in the allita table record
                                         // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                        $allitaTableRecord = PhoneNumberType::create([
+                                        $allitaTableRecord = ProjectDate::create([
                                             
                                             
                                             
                                             
                                             
-                                            'phone_number_type_name'=>$v['attributes']['phoneNumberTypeName'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            
+                                            
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'program_date_type_key'=>$v['attributes']['programDateTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'event_date'=>$v['attributes']['eventDate'],
                                             
                                             
                                             
                                             
                                             
-                                            
-                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
+                                            'project_date_key'=>$v['attributes']['developmentDateKey'],
                                         ]);
                                         // Create the sync table entry with the allita id
-                                        $syncTableRecord = SyncPhoneNumberType::where('id',$updateRecord['id'])
+                                        $syncTableRecord = SyncProjectDate::where('id',$updateRecord['id'])
                                         ->update([
                                             
                                             
                                             
                                             
                                             
-                                            'phone_number_type_name'=>$v['attributes']['phoneNumberTypeName'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
+                                            
+                                            
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'program_date_type_key'=>$v['attributes']['programDateTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'event_date'=>$v['attributes']['eventDate'],
                                             
                                             
                                             
                                             
                                             
-                                            
-                                            'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
+                                            'project_date_key'=>$v['attributes']['developmentDateKey'],
                                             'last_edited'=>$v['attributes']['lastEdited'],
                                             'allita_id'=>$allitaTableRecord->id,
                                         ]);                                     
@@ -194,36 +218,46 @@ class SyncController extends Controller
                                 // Create the Allita Entry First
                                 // We do this so the updated_at value of the Sync Table does not become newer
                                 // when we add in the allita_id
-                                $allitaTableRecord = PhoneNumberType::create([
+                                $allitaTableRecord = ProjectDate::create([
                                     
 
                                             
+                                            'project_date_key'=>$v['attributes']['developmentDateKey'],
+                                            
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
                                             
-                                            'phone_number_type_name'=>$v['attributes']['phoneNumberTypeName'],
-                                            
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'program_date_type_key'=>$v['attributes']['programDateTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'event_date'=>$v['attributes']['eventDate'],
                                             
                                             
                                             
                                             
                                     
-                                    'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
+                                    'project_date_key'=>$v['attributes']['developmentDateKey'],
                                 ]);
                                 // Create the sync table entry with the allita id
-                                $syncTableRecord = SyncPhoneNumberType::create([
+                                $syncTableRecord = SyncProjectDate::create([
                                             
                                             
                                             
                                             
                                             
-                                            'phone_number_type_name'=>$v['attributes']['phoneNumberTypeName'],
+                                            'project_key'=>$v['attributes']['developmentKey'],
                                             
+                                            
+                                            'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                            'program_date_type_key'=>$v['attributes']['programDateTypeKey'],
+                                            'comment'=>$v['attributes']['comment'],
+                                            'event_date'=>$v['attributes']['eventDate'],
                                             
                                             
                                             
                                             
 
-                                        'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
+                                        'project_date_key'=>$v['attributes']['developmentDateKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                 ]);

@@ -44,6 +44,11 @@ use App\Jobs\SyncUsersJob;
 use App\Jobs\SyncComplianceContactJob;
 use App\Jobs\SyncPhoneNumberTypesJob;
 use App\Jobs\SyncEmailAddressTypesJob;
+use App\Jobs\SyncEmailAddressesJob;
+use App\Jobs\SyncBuildingAmenitiesJob;
+use App\Jobs\SyncUnitAmenitiesJob;
+use App\Jobs\SyncHouseHoldSizesJob;
+use App\Jobs\SyncProjectDatesJob;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -424,6 +429,48 @@ class Kernel extends ConsoleKernel
         $test = DB::table('jobs')->where('payload','like','%SyncEmailAddressTypesJob%')->first();
         if(is_null($test)) {
             $schedule->job(new SyncEmailAddressTypesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+        //SyncEmailAddressesJob
+        $test = DB::table('jobs')->where('payload','like','%SyncEmailAddressesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncEmailAddressesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        //SyncBuildingAmenitiesJob
+        $test = DB::table('jobs')->where('payload','like','%SyncBuildingAmenitiesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncBuildingAmenitiesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+        //SyncUnitAmenitiesJob
+        $test = DB::table('jobs')->where('payload','like','%SyncUnitAmenitiesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncUnitAmenitiesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+        //SyncHouseHoldSizesJob
+        $test = DB::table('jobs')->where('payload','like','%SyncHouseHoldSizesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncHouseHoldSizesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        //SyncProjectDatesJob
+        $test = DB::table('jobs')->where('payload','like','%SyncProjectDatesJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncProjectDatesJob)->everyMinute();
             
         } else {
             //Log::info('Sync Job Already Started.');
