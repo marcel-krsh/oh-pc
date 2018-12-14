@@ -84,11 +84,12 @@ class SyncController extends Controller
                 if(!is_null($key)){
                     $model::whereNull($associate['null_field'])
                         ->where(
-                                $update->{$associate['look_up_reference']},
-                                $update->{$associate['look_up_reference']}
+                                $update->{$associate['null_field']},
+                                $associate['condition_operator'],
+                                $key->{$associate['condition']}
                                 )
                         ->update([
-                                    $associate['null_field'] => $key->{$associate['look_up_foreign_key']}
+                                  $associate['null_field'] => $key->{$associate['look_up_foreign_key']}
                                                                     ]);
                 } else {
                     //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->$$associate['look_up_reference'].' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the '.$associate['look_up_model'].' model.');
