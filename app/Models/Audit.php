@@ -33,6 +33,6 @@ class Audit extends Model
 
     public function project() : HasOne
     {
-        return $this->hasMany(\App\Models\Project::class, 'project_key', 'development_key');
+        return $this->hasOne(\App\Models\Project::class, 'project_key', 'development_key');
     }
 }
