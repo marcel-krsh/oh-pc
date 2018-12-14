@@ -177,64 +177,64 @@ class AuditsEvent
         ];
 
         // 1 - FAF || NSP || TCE || RTCAP || 811 units
-        // [30001, 80015, 80016, 45, 30024, 30025, 30023, 49, 222, 30032, 30033, 30034, 30043, 30058]
         // total for all those programs combined
-        $current_program_ids = [30001, 80015, 80016, 45, 30024, 30025, 30023, 49, 222, 30032, 30033, 30034, 30043, 30058];
+        $program_bundle_ids = SystemSetting::get('program_bundle');
         $units = []; // tbd select units for the programs above
 
         $total = count($units);
-        // HTC programs: [30001, 30005, 30004, 30030, 30031, 600009, 600010, 30036, 30049, 30048, 66, 67, 68, 36, 30043, 30059, 30055]
-        $htc_program_ids = [30001, 30005, 30004, 30030, 30031, 600009, 600010, 30036, 30049, 30048, 66, 67, 68, 36, 30043, 30059, 30055];
-        foreach($units as $unit){
-            if(in_array($unit->program->program_key, $htc_program_ids)){
-                $units_with_htc[] = $unit;
-            }else{
-                $units_without_htc[] = $unit;
-            }
-        }
-
-        $units[] = $this->randomSelection($units_without_htc, 20);
-
-        // check in project_program->first_year_award_claimed date for the 15 year test
+        $program_htc_ids = SystemSetting::get('program_htc');
         
-        $first_year = null;
-        foreach($project->programs as $program){
-            if(in_array($program->program_key, $current_program_ids)){
-                if($first_year == null || $first_year < $program->first_year_award_claimed){
-                    $first_year = $program->first_year_award_claimed;
+        if(!in_array($project->programs()->pluck('program_key'), $program_htc_ids)){
+
+            $units[] = $this->randomSelection($units, 20);
+
+        }else{
+
+            // check in project_program->first_year_award_claimed date for the 15 year test
+        
+            $first_year = null;
+            foreach($project->programs as $program){
+                if(in_array($program->program_key, $program_bundle_ids)){
+                    if($first_year == null || $first_year < $program->first_year_award_claimed){
+                        $first_year = $program->first_year_award_claimed;
+                    }
                 }
             }
-        }
-        if(idate("Y")-15 > $first_year && $first_year != null){
-            $first_fifteen_years = 0;
-        }else{
-            $first_fifteen_years = 1;
-        }
-        
-        if($first_fifteen_years){
-            // check project type
-            if($project->isLeasePurchase()){
-                $units[] = $this->randomSelection($units_with_htc, 20);
+            if(idate("Y")-15 > $first_year && $first_year != null){
+                $first_fifteen_years = 0;
             }else{
-                $is_multi_building_project = 0;
-                // for each of the current programs+project, check if multiple_building_election_key is 2 for multi building project 
-                foreach($project->programs as $program){
-                    if(in_array($program->program_key, $current_program_ids){
-                        if($program->multiple_building_election_key == 2){
-                            $is_multi_building_project = 1;
+                $first_fifteen_years = 1;
+            }
+            
+            if($first_fifteen_years){
+                // check project type
+                if($project->isLeasePurchase()){
+                    $units[] = $this->randomSelection($units, 20);
+                }else{
+                    $is_multi_building_project = 0;
+                    // for each of the current programs+project, check if multiple_building_election_key is 2 for multi building project 
+                    foreach($project->programs as $program){
+                        if(in_array($program->program_key, $current_program_ids){
+                            if($program->multiple_building_election_key == 2){
+                                $is_multi_building_project = 1;
+                            }
+                        }
+                    }
+
+                    if($is_multi_building_project){
+                        $units[] = $this->randomSelection($units, 20);
+                    }else{
+                        // group units by building, then proceed with the random selection
+                        // create a new list of units based on building and project key
+                        foreach($buildings as $building){
+                            $units[] = $this->randomSelection($building->units, 20);
                         }
                     }
                 }
-
-                if($is_multi_building_project){
-                    $units[] = $this->randomSelection($units_with_htc, 20);
-                }else{
-                    // group units by building, then proceed with the random selection
-                    
-                }
+            }else{
+                $units[] = $this->randomSelection($units, 20);
             }
-        }else{
-            $units[] = $this->randomSelection($units_with_htc, 20);
+
         }
 
         $selection[] = [
