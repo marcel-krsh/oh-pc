@@ -91,7 +91,7 @@ class SyncController extends Controller
         /////// Address ID update
         /////
         $model = new Address;
-        $lookUpModel = new App\Models\State;
+        $lookUpModel = new \App\Models\State;
         $associate = array();
         $associate[] = [
             'null_field' => 'state_id',
