@@ -27,7 +27,7 @@ class AuditController extends Controller
     {
         // $this->middleware('auth');
         if(env('APP_DEBUG_NO_DEVCO') == 'true'){
-    	   Auth::onceUsingId(1); // TEST BRIAN
+    	   Auth::onceUsingId(286); // TEST BRIAN
         }
     }
 

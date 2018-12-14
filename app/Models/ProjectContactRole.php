@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ProjectContactRole extends Model
 {
@@ -13,4 +14,15 @@ class ProjectContactRole extends Model
 
     //
     protected $guarded = ['id'];
+
+
+    public function organization() : HasOne
+    {
+        return $this->hasOne(\App\Models\Organization::class, 'organization_key', 'organization_key');
+    }
+
+    public function person() : HasOne
+    {
+        return $this->hasOne(\App\Models\Person::class, 'person_key', 'person_key');
+    }
 }
