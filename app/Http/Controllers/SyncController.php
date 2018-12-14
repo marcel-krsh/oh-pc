@@ -74,10 +74,10 @@ class SyncController extends Controller
                         ->groupBy($associate['look_up_reference'])
                         //->toSQL();
                         ->get()->all();
-            dd($updates);
+            //dd($updates);
             foreach ($updates as $update) {
                 //lookup model
-                dd($update);
+                dd($update,$update->$associate['look_up_reference']);
                 $key = $lookUpModel::select($associate['look_up_foreign_key'])
                 ->where($associate['lookup_field'],$update->$associate['look_up_reference'])
                 ->first();
@@ -99,6 +99,10 @@ class SyncController extends Controller
         //////////////////////////////////////////////////
         /////// Address ID update
         /////
+
+        // do clean ups:
+        Address::where('state','o')->update(['state'=>'OH']);
+        Address::where('state',' O')->update(['state'=>'OH']);
         $model = new Address;
         $lookUpModel = new \App\Models\State;
         $associate = array();
