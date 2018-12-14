@@ -32,4 +32,10 @@ class Unit extends Model
         }
         return false;
     }
+
+    public function programs() : HasMany
+    {
+    	return $this->hasMany(\App\Models\UnitProgram::class, 'unit_key', 'unit_key');
+    }
+    
 }
