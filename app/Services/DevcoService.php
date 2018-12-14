@@ -1903,7 +1903,7 @@ class DevcoService extends PCAPIService
 	 * @param  string|null $device_name
 	 * @return object
 	 */
-	public function getUnitPrograms(int $unitId = 1, string $newer_than = null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
+	public function getUnitPrograms(int $unitId = 1, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null) : object
 	{
 		$params = "unit={$unitId}";
 
