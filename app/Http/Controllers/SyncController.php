@@ -11,6 +11,7 @@ use App\Models\AuthTracker;
 use App\Models\SystemSetting;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Log;
 
 use App\Models\Project;
 use App\Models\Building;
@@ -37,18 +38,33 @@ class SyncController extends Controller
         // Get all the units we need to get programs for:
 
         $buildings = $audit->project->buildings;
+        if(!is_null($buildings)){
+        //Process each building
+            foreach ($buildings as $building) {
+                //Get the building's units
+                $buildingUnits = $building->units;
 
-        //$unitPrograms
-        foreach ($buildings as $building) {
-            //run through each unit
-            $buildingUnits = $building->units;
-            foreach ($buildingUnits as $unit) {
-                $unitProgramData = $apiConnect->getUnitPrograms($unit->unit_key, 1,'admin@allita.org', 'Updating Unit Program Data', 1, 'Server');
-                $unitProgramData = json_decode($unitProgramData, true);
-                
-                //dd($unitProgramData['data']);
-                dd($unitProgramData['data'][0]['attributes']['programKey']);
-            
+                if(!is_null($buildingUnits)){
+                // Process each unit
+                    foreach ($buildingUnits as $unit) {
+                        // Get the unit's current program designation from DevCo
+                        try{
+                            $unitProgramData = $apiConnect->getUnitPrograms($unit->unit_key, 1,'admin@allita.org', 'Updating Unit Program Data', 1, 'Server');
+                            $unitProgramData = json_decode($unitProgramData, true);
+                            //dd($unitProgramData['data']);
+                            //dd($unitProgramData['data'][0]['attributes']['programKey']);
+                            foreach ($unitProgramData['data'] as $unitProgram) {
+                               dd($unitProgram['attributes']['programKey']);
+                            }
+                        
+                        } catch(Exception $e){
+                            Log::info('Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key);
+                        }
+                        
+                        
+                    
+                    }
+                }
             }
         }
         
