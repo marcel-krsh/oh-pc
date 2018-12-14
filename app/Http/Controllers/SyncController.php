@@ -103,12 +103,51 @@ class SyncController extends Controller
     public function sync() {
 
         //////////////////////////////////////////////////
+        /////// People ID update
+        /////
+
+        // do clean ups:
+        People::where('state','o')->update(['state'=>'OH']);
+        People::where('state',' O')->update(['state'=>'OH']);
+        People::where('city','Cincinnati')->where('state','')->update(['state'=>'OH']);
+        People::where('city','Youngstown')->where('state','')->update(['state'=>'OH']);
+        People::where('city','Cleveland')->where('state','')->update(['state'=>'OH']);
+        People::where('city','Columbus')->where('state','')->update(['state'=>'OH']);
+        People::where('city','Elyria')->where('state','')->update(['state'=>'OH']);
+        People::where('city','Akron')->where('state','')->update(['state'=>'OH']);
+        People::where('city','Philadelphia')->where('state','')->update(['state'=>'PA']);
+        $model = new People;
+        $lookUpModel = new \App\Models\State;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'state_id',
+            'look_up_reference' => 'state',
+            'lookup_field' => 'state_acronym',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        //////////////////////////////////////////////////
         /////// Address ID update
         /////
 
         // do clean ups:
         Address::where('state','o')->update(['state'=>'OH']);
         Address::where('state',' O')->update(['state'=>'OH']);
+        Address::where('city','Cincinnati')->where('state','')->update(['state'=>'OH']);
+        Address::where('city','Youngstown')->where('state','')->update(['state'=>'OH']);
+        Address::where('city','Cleveland')->where('state','')->update(['state'=>'OH']);
+        Address::where('city','Columbus')->where('state','')->update(['state'=>'OH']);
+        Address::where('city','Elyria')->where('state','')->update(['state'=>'OH']);
+        Address::where('city','Akron')->where('state','')->update(['state'=>'OH']);
+        Address::where('city','Philadelphia')->where('state','')->update(['state'=>'PA']);
         $model = new Address;
         $lookUpModel = new \App\Models\State;
         $associate = array();
