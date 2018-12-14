@@ -77,16 +77,16 @@ class SyncController extends Controller
             //dd($updates);
             foreach ($updates as $update) {
                 //lookup model
-                dd($update,$update->{$associate['look_up_reference']});
+                //dd($update,$update->{$associate['look_up_reference']});
                 $key = $lookUpModel::select($associate['look_up_foreign_key'])
-                ->where($associate['lookup_field'],$update->$associate['look_up_reference'])
+                ->where($associate['lookup_field'],$update->{$associate['look_up_reference']})
                 ->first();
                 if(!is_null($key)){
-                    $model::whereNull($associate['null_field'])->where($update->$associate['look_up_reference'],$update->$associate['look_up_reference'])->update([$associate['null_field'] => $key->$associate['look_up_foreign_key']
+                    $model::whereNull($associate['null_field'])->where($update->{$associate['look_up_reference']},$update->$associate['look_up_reference'])->update([$associate['null_field'] => $key->$associate['look_up_foreign_key']
                     ]);
                 } else {
                     //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->$$associate['look_up_reference'].' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the '.$associate['look_up_model'].' model.');
-                    echo date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->$associate['look_up_reference'].' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the '.$associate['look_up_model'].' model.<hr />';
+                    echo date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->{$associate['look_up_reference']}.' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the '.$associate['look_up_model'].' model.<hr />';
 
                 }
 
