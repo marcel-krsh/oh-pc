@@ -74,7 +74,7 @@
                 },
                 success: function(response){
                     form.remove();
-                    $('h2#post-response').hide().html("<span class='uk-text-success'><span uk-icon='check'></span> "+response+"</span><br /><br /><a onclick=\"dynamicModalLoad('admin/finding_type/create')\" class=\"uk-button uk-button-default uk-width-2-5@m\">CREATE ANOTHER HUD AREA</a>").fadeIn();
+                    $('h2#post-response').hide().html("<span class='uk-text-success'><span uk-icon='check'></span> "+response+"</span><br /><br /><a onclick=\"dynamicModalLoad('admin/hud_area/create')\" class=\"uk-button uk-button-default uk-width-2-5@m\">CREATE ANOTHER HUD AREA</a>").fadeIn();
                     console.log(action);
                     $('#hud-tab').trigger('click');
 
