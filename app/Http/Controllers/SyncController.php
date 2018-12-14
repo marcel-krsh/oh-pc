@@ -69,8 +69,8 @@ class SyncController extends Controller
                                         'program_id'    =>  $program->id,
                                         'audit_id'      =>  $audit->id,
                                         'monitoring_key'=>  $audit->monitoring_key,
-                                        'created_at'    =>  date("m/D/Y g:h:i", time()),
-                                        'updated_at'    =>  date("m/D/Y g:h:i", time())
+                                        'created_at'    =>  date("Y-m-d g:h:i", time()),
+                                        'updated_at'    =>  date("Y-m-d g:h:i", time())
                                     ]);
                                 }else{
                                    Log::info('Unable to find program with key of '.$unitProgram['attributes']['programKey'].' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key); 
