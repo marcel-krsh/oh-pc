@@ -41,7 +41,7 @@ class SyncController extends Controller
         foreach ($buildings as $building) {
             //run through each unit
             $buildingUnits = $building->units;
-            dd($buldingUnits);
+            dd($buildingUnits);
         }
         
         $apiConnect = new DevcoService();
