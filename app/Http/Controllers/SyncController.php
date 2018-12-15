@@ -28,8 +28,8 @@ use App\Models\BuildingAmenity; //
 use App\Models\UnitAmenity; //
 use App\Models\ProjectFinancial; //
 use App\Models\ProjectProgram; //
-use App\Models\AuditAuditor;
-use App\Models\Building;
+use App\Models\AuditAuditor; //
+use App\Models\Building; 
 use App\Models\PhoneNumber;
 use App\Models\User;
 use App\Models\ComplianceContact;
@@ -82,6 +82,51 @@ class SyncController extends Controller
     }
 
     public function sync() {
+
+        //////////////////////////////////////////////////
+        /////// Building ID updates
+        /////
+
+        // Do clean ups:
+        // BuildingContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new Building;
+        
+
+        $lookUpModel = new \App\Models\Project;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_id',
+            'look_up_reference' => 'project_key',
+            'lookup_field' => 'project_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\BuildingStatus;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'building_status_id',
+            'look_up_reference' => 'building_status_key',
+            'lookup_field' => 'building_status_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
 
         //////////////////////////////////////////////////
         /////// Audit Auditors ID updates
