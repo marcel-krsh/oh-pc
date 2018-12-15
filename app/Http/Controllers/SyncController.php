@@ -115,7 +115,7 @@ class SyncController extends Controller
         $associate[] = [
             'null_field' => 'user_id',
             'look_up_reference' => 'user_key',
-            'lookup_field' => 'user_key',
+            'lookup_field' => 'devco_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
