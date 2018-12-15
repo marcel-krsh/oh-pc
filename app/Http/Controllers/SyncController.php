@@ -94,10 +94,30 @@ class SyncController extends Controller
 
         // Do clean ups:
         // ProjectContactRole::where('state','o')->update(['state'=>'OH']);
+
         $model = new Household;
         $i = 0;
         echo 'done with '.$i;
 
+        $lookUpModel = new \App\Models\SpecialNeed;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'special_needs_id',
+            'look_up_reference' => 'special_needs_key',
+            'lookup_field' => 'special_needs_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+        $i++;
+        echo 'done with '.$i;
+        
         $lookUpModel = new \App\Models\HouseholdSize;
         $associate = array();
         $associate[] = [
@@ -180,24 +200,7 @@ class SyncController extends Controller
 
         
 
-        $lookUpModel = new \App\Models\SpecialNeed;
-        $associate = array();
-        $associate[] = [
-            'null_field' => 'special_needs_id',
-            'look_up_reference' => 'special_needs_key',
-            'lookup_field' => 'special_needs_key',
-            'look_up_foreign_key' => 'id',
-            'condition_operator' => '!=',
-            'condition' => '1000000000000000000000'
-        ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
-        }
-        $i++;
-        echo 'done with '.$i;
+        
 
 
 
