@@ -32,8 +32,7 @@ use App\Models\AuditAuditor; //
 use App\Models\Building; //
 use App\Models\User; //
 use App\Models\ComplianceContact; //
-use App\Models\EmailAddress;
-use App\Models\HouseHoldSize;
+use App\Models\EmailAddress; //
 use App\Models\ProjectDate;
 use App\Models\UnitIdentity;
 
@@ -79,6 +78,69 @@ class SyncController extends Controller
     }
 
     public function sync() {
+
+        //////////////////////////////////////////////////
+        /////// Project Dates ID updates
+        /////
+
+        // Do clean ups:
+        // BuildingContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new ProjectDate;
+        
+
+        $lookUpModel = new \App\Models\Project;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_id',
+            'look_up_reference' => 'project_key',
+            'lookup_field' => 'project_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+        $lookUpModel = new \App\Models\ProjectProgram;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_program_id',
+            'look_up_reference' => 'project_program_key',
+            'lookup_field' => 'project_program_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\ProgramDateType;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'program_date_type_id',
+            'look_up_reference' => 'program_date_type_key',
+            'lookup_field' => 'program_date_type_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
 
         //////////////////////////////////////////////////
         /////// Email Address ID updates
