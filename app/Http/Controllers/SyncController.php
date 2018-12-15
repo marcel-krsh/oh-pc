@@ -21,10 +21,7 @@ use App\Models\Project; //
 use App\Models\Program; // only funding_id - which we don't sync
 use App\Models\Unit; //
 use App\Models\HouseholdEvent; //
-use App\Models\Household;
-use App\Models\EventType;
-use App\Models\RentalAssistanceSource;
-use App\Models\RentalAssistanceType;
+use App\Models\Household; //
 use App\Models\UtilityAllowance;
 use App\Models\Monitoring;
 use App\Models\ProjectAmenity;
@@ -89,6 +86,38 @@ class SyncController extends Controller
     public function sync() {
 
         //////////////////////////////////////////////////
+        /////// Utility Allowance ID updates
+        /////
+
+        // Do clean ups:
+        // ProjectContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new UtilityAllowance;
+        
+
+        $lookUpModel = new \App\Models\UtilityAllowanceType;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'utility_allowance_type_id',
+            'look_up_reference' => 'utility_allowance_type_key',
+            'lookup_field' => 'utility_allowance_type_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+        $i++;
+        echo 'done with '.$i;
+
+
+
+
+        //////////////////////////////////////////////////
         /////// Household ID updates
         /////
 
@@ -96,8 +125,7 @@ class SyncController extends Controller
         // ProjectContactRole::where('state','o')->update(['state'=>'OH']);
 
         $model = new Household;
-        $i = 0;
-        echo 'done with '.$i;
+        
 
         $lookUpModel = new \App\Models\SpecialNeed;
         $associate = array();
@@ -117,7 +145,7 @@ class SyncController extends Controller
         }
         $i++;
         echo 'done with '.$i;
-        
+
         $lookUpModel = new \App\Models\HouseholdSize;
         $associate = array();
         $associate[] = [
