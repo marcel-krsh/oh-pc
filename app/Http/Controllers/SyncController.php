@@ -17,16 +17,8 @@ use App\Models\Address; //
 use App\Models\ProjectActivity; //
 use App\Models\ProjectContactRole; //
 use App\Models\Organization; //
-use App\Models\Project;
-use App\Models\AmenityType;
-use App\Models\Program;
-use App\Models\ProjectProgramStatusType;
-use App\Models\FinancialType;
-use App\Models\ProgramDateType;
-use App\Models\MultipleBuildingType;
-use App\Models\Percentage;
-use App\Models\FederalMinimumSetAside;
-use App\Models\UnitStatus;
+use App\Models\Project; //
+use App\Models\Program; // only funding_id - which we don't sync
 use App\Models\Unit;
 use App\Models\UnitBedroom;
 use App\Models\HouseholdEvent;
@@ -97,6 +89,99 @@ class SyncController extends Controller
     }
 
     public function sync() {
+
+        //////////////////////////////////////////////////
+        /////// Unit ID updates
+        /////
+
+        // Do clean ups:
+        // ProjectContactRole::where('state','o')->update(['state'=>'OH']);
+        
+        $model = new Unit;
+        $lookUpModel = new \App\Models\Building;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'building_id',
+            'look_up_reference' => 'building_key',
+            'lookup_field' => 'building_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\UnitBedroom;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'unit_bedroom_id',
+            'look_up_reference' => 'unit_bedroom_key',
+            'lookup_field' => 'unit_bedroom_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\UnitStatus;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'unit_status_id',
+            'look_up_reference' => 'unit_status_key',
+            'lookup_field' => 'unit_status_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\Percentage;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'ami_percentage_id',
+            'look_up_reference' => 'ami_percentage_key',
+            'lookup_field' => 'percentage_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\UnitIdentity;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'unit_identity_id',
+            'look_up_reference' => 'unit_identity_key',
+            'lookup_field' => 'unit_identity_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
 
         //////////////////////////////////////////////////
         /////// Project ID updates
