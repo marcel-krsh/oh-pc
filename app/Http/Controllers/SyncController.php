@@ -23,7 +23,9 @@ use App\Models\Unit; //
 use App\Models\HouseholdEvent; //
 use App\Models\Household; //
 use App\Models\UtilityAllowance; //
-use App\Models\ProjectAmenity;
+use App\Models\ProjectAmenity; //
+use App\Models\BuildingAmenity;
+use App\Models\UnitAmenity;
 use App\Models\ProjectFinancial;
 use App\Models\ProjectProgram;
 use App\Models\UtilityAllowanceType;
@@ -36,8 +38,6 @@ use App\Models\ComplianceContact;
 use App\Models\PhoneNumberType;
 use App\Models\EmailAddressType;
 use App\Models\EmailAddress;
-use App\Models\BuildingAmenity;
-use App\Models\UnitAmenitie;
 use App\Models\HouseHoldSize;
 use App\Models\ProjectDate;
 use App\Models\UnitIdentity;
@@ -83,6 +83,52 @@ class SyncController extends Controller
     }
 
     public function sync() {
+
+        //////////////////////////////////////////////////
+        /////// Building Amenity ID updates
+        /////
+
+        // Do clean ups:
+        // BuildingContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new BuildingAmenity;
+        
+
+        $lookUpModel = new \App\Models\Building;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'building_id',
+            'look_up_reference' => 'building_key',
+            'lookup_field' => 'building_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\Amenity;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'amenity_id',
+            'look_up_reference' => 'amenity_type_key',
+            'lookup_field' => 'amenity_type_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
 
         //////////////////////////////////////////////////
         /////// Project Amenity ID updates
