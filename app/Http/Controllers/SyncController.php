@@ -96,7 +96,7 @@ class SyncController extends Controller
         // ProjectContactRole::where('state','o')->update(['state'=>'OH']);
         $model = new Household;
         $i = 0;
-        
+        echo 'done with '.$i;
 
         $lookUpModel = new \App\Models\HouseholdSize;
         $associate = array();
