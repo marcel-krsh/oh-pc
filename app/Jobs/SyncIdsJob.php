@@ -23,32 +23,20 @@ use App\Models\Organization; //
 use App\Models\Project; //
 use App\Models\Program; // only funding_id - which we don't sync
 use App\Models\Unit; //
-use App\Models\HouseholdEvent;
-use App\Models\OwnerCertificationYear;
-use App\Models\Household;
-use App\Models\EventType;
-use App\Models\RentalAssistanceSource;
-use App\Models\RentalAssistanceType;
-use App\Models\UtilityAllowance;
-use App\Models\Monitoring;
-use App\Models\ProjectAmenity;
-use App\Models\ProjectFinancial;
-use App\Models\ProjectProgram;
-use App\Models\UtilityAllowanceType;
-use App\Models\SpecialNeed;
-use App\Models\MonitoringMonitor;
-use App\Models\Building;
-use App\Models\PhoneNumber;
-use App\Models\User;
-use App\Models\ComplianceContact;
-use App\Models\PhoneNumberType;
-use App\Models\EmailAddressType;
-use App\Models\EmailAddress;
-use App\Models\BuildingAmenity;
-use App\Models\UnitAmenitie;
-use App\Models\HouseHoldSize;
-use App\Models\ProjectDate;
-use App\Models\UnitIdentity;
+use App\Models\HouseholdEvent; //
+use App\Models\Household; //
+use App\Models\UtilityAllowance; //
+use App\Models\ProjectAmenity; //
+use App\Models\BuildingAmenity; //
+use App\Models\UnitAmenity; //
+use App\Models\ProjectFinancial; //
+use App\Models\ProjectProgram; //
+use App\Models\AuditAuditor; //
+use App\Models\Building; //
+use App\Models\User; //
+use App\Models\ComplianceContact; //
+use App\Models\EmailAddress; //
+use App\Models\ProjectDate; //
 
 class SyncIdsJob implements ShouldQueue
 {
@@ -94,7 +82,7 @@ class SyncIdsJob implements ShouldQueue
                                   $associate['null_field'] => $key->{$associate['look_up_foreign_key']}
                                                                     ]);
                 } else {
-                    //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->$$associate['look_up_reference'].' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the '.$associate['look_up_model'].' model.');
+                    //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->{$associate['look_up_reference']}.' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the model.');
                     echo date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->{$associate['look_up_reference']}.' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the model.<hr />';
 
                 }
@@ -105,6 +93,723 @@ class SyncIdsJob implements ShouldQueue
 
     public function handle()
     {
+        //////////////////////////////////////////////////
+        /////// Project Dates ID updates
+        /////
+
+        // Do clean ups:
+        // BuildingContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new ProjectDate;
+        
+
+        $lookUpModel = new \App\Models\Project;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_id',
+            'look_up_reference' => 'project_key',
+            'lookup_field' => 'project_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+        $lookUpModel = new \App\Models\ProjectProgram;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_program_id',
+            'look_up_reference' => 'project_program_key',
+            'lookup_field' => 'project_program_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\ProgramDateType;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'program_date_type_id',
+            'look_up_reference' => 'program_date_type_key',
+            'lookup_field' => 'program_date_type_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+        //////////////////////////////////////////////////
+        /////// Email Address ID updates
+        /////
+
+        // Do clean ups:
+        // BuildingContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new EmailAddress;
+        
+
+        $lookUpModel = new \App\Models\EmailAddressType;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'email_address_type_id',
+            'look_up_reference' => 'email_address_type_key',
+            'lookup_field' => 'email_address_type_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+        //////////////////////////////////////////////////
+        /////// Compliance Contract ID updates
+        /////
+
+        // Do clean ups:
+        // BuildingContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new ComplianceContact;
+        
+
+        $lookUpModel = new \App\Models\Project;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_id',
+            'look_up_reference' => 'project_key',
+            'lookup_field' => 'project_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+
+        //////////////////////////////////////////////////
+        /////// Building ID updates
+        /////
+
+        // Do clean ups:
+        // BuildingContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new User;
+        
+
+        $lookUpModel = new \App\Models\Organization;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'organization_id',
+            'look_up_reference' => 'organization_key',
+            'lookup_field' => 'organization_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+        $lookUpModel = new \App\Models\People;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'person_id',
+            'look_up_reference' => 'person_key',
+            'lookup_field' => 'person_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+
+
+        //////////////////////////////////////////////////
+        /////// Building ID updates
+        /////
+
+        // Do clean ups:
+        // BuildingContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new Building;
+        
+
+        $lookUpModel = new \App\Models\Project;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_id',
+            'look_up_reference' => 'development_key',
+            'lookup_field' => 'project_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\BuildingStatus;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'building_status_id',
+            'look_up_reference' => 'building_status_key',
+            'lookup_field' => 'building_status_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+        //////////////////////////////////////////////////
+        /////// Audit Auditors ID updates
+        /////
+
+        // Do clean ups:
+        // BuildingContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new AuditAuditor;
+        
+
+        $lookUpModel = new \App\Models\Audit;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'audit_id',
+            'look_up_reference' => 'monitoring_key',
+            'lookup_field' => 'monitoring_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\User;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'user_id',
+            'look_up_reference' => 'user_key',
+            'lookup_field' => 'devco_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+
+        //////////////////////////////////////////////////
+        /////// Project Program ID updates
+        /////
+
+        // Do clean ups:
+        // BuildingContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new ProjectProgram;
+        
+
+        $lookUpModel = new \App\Models\Project;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_id',
+            'look_up_reference' => 'project_key',
+            'lookup_field' => 'project_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\Program;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'program_id',
+            'look_up_reference' => 'program_key',
+            'lookup_field' => 'program_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\ProjectProgramStatusType;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'program_status_type_id',
+            'look_up_reference' => 'project_program_status_type_key',
+            'lookup_field' => 'project_program_status_type_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\FederalSetAside;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'federal_minimum_set_aside_id',
+            'look_up_reference' => 'federal_minimum_set_aside_key',
+            'lookup_field' => 'federal_minimum_set_aside_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\MultipleBuildingElectionType;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'multiple_building_election_id',
+            'look_up_reference' => 'multiple_building_election_key',
+            'lookup_field' => 'multiple_building_election_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+
+
+        //////////////////////////////////////////////////
+        /////// Project Financial ID updates
+        /////
+
+        // Do clean ups:
+        // BuildingContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new ProjectFinancial;
+        
+
+        $lookUpModel = new \App\Models\Project;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_id',
+            'look_up_reference' => 'project_key',
+            'lookup_field' => 'project_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\ProjectProgram;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_program_id',
+            'look_up_reference' => 'project_program_key',
+            'lookup_field' => 'project_program_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+        $lookUpModel = new \App\Models\FinancialType;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'financial_type_id',
+            'look_up_reference' => 'financial_type_key',
+            'lookup_field' => 'financial_type_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+
+        //////////////////////////////////////////////////
+        /////// Unit Amenity ID updates
+        /////
+
+        // Do clean ups:
+        // BuildingContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new UnitAmenity;
+        
+
+        $lookUpModel = new \App\Models\Unit;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'unit_id',
+            'look_up_reference' => 'unit_key',
+            'lookup_field' => 'unit_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\Amenity;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'amenity_id',
+            'look_up_reference' => 'amenity_type_key',
+            'lookup_field' => 'amenity_type_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+        //////////////////////////////////////////////////
+        /////// Building Amenity ID updates
+        /////
+
+        // Do clean ups:
+        // BuildingContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new BuildingAmenity;
+        
+
+        $lookUpModel = new \App\Models\Building;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'building_id',
+            'look_up_reference' => 'building_key',
+            'lookup_field' => 'building_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\Amenity;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'amenity_id',
+            'look_up_reference' => 'amenity_type_key',
+            'lookup_field' => 'amenity_type_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+
+        //////////////////////////////////////////////////
+        /////// Project Amenity ID updates
+        /////
+
+        // Do clean ups:
+        // ProjectContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new ProjectAmenity;
+        
+
+        $lookUpModel = new \App\Models\Project;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_id',
+            'look_up_reference' => 'project_key',
+            'lookup_field' => 'project_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\ProjectProgram;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_program_id',
+            'look_up_reference' => 'project_program_key',
+            'lookup_field' => 'project_program_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\Amenity;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'amenity_id',
+            'look_up_reference' => 'amenity_type_key',
+            'lookup_field' => 'amenity_type_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+        //////////////////////////////////////////////////
+        /////// Utility Allowance ID updates
+        /////
+
+        // Do clean ups:
+        // ProjectContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new UtilityAllowance;
+        
+
+        $lookUpModel = new \App\Models\UtilityAllowanceType;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'utility_allowance_type_id',
+            'look_up_reference' => 'utility_allowance_type_key',
+            'lookup_field' => 'utility_allowance_type_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+        
+
+
+
+
+        //////////////////////////////////////////////////
+        /////// Household ID updates
+        /////
+
+        // Do clean ups:
+        // ProjectContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new Household;
+        
+
+        $lookUpModel = new \App\Models\SpecialNeed;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'special_needs_id',
+            'look_up_reference' => 'special_needs_key',
+            'lookup_field' => 'special_needs_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+        
+
+        $lookUpModel = new \App\Models\HouseholdSize;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'household_size_move_in_id',
+            'look_up_reference' => 'household_size_move_in_key',
+            'lookup_field' => 'household_size_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '10000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+        
+
+
+        $lookUpModel = new \App\Models\HouseholdSize;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'household_size_id',
+            'look_up_reference' => 'household_size_key',
+            'lookup_field' => 'household_size_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '100000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+        
+
+        $lookUpModel = new \App\Models\Unit;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'unit_id',
+            'look_up_reference' => 'unit_key',
+            'lookup_field' => 'unit_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+        
+
+        
+        $lookUpModel = new \App\Models\Project;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_id',
+            'look_up_reference' => 'development_key',
+            'lookup_field' => 'project_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+        
+
+        
+
+        
+
+        
+
+
+
+
+
         //////////////////////////////////////////////////
         /////// Household Events ID updates
         /////
@@ -121,7 +826,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'unit_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -129,6 +834,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\OwnerCertificationYear;
         $associate = array();
@@ -138,7 +844,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'owner_certification_year_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -146,6 +852,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\Project;
         $associate = array();
@@ -155,7 +862,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'project_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -163,6 +870,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\Household;
         $associate = array();
@@ -172,7 +880,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'household_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -180,6 +888,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
 
         $lookUpModel = new \App\Models\EventType;
@@ -190,7 +899,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'event_type_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -198,6 +907,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
 
         $lookUpModel = new \App\Models\UnitStatus;
@@ -208,7 +918,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'unit_status_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -216,6 +926,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\UtilityAllowance;
         $associate = array();
@@ -225,7 +936,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'utility_allowance_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -233,6 +944,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\RentalAssistanceType;
         $associate = array();
@@ -242,7 +954,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'rental_assistance_type_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -250,6 +962,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\RentalAssistanceSource;
         $associate = array();
@@ -259,7 +972,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'rental_assistance_source_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -267,6 +980,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\UnitIdenty;
         $associate = array();
@@ -276,7 +990,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'unit_identity_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -284,6 +998,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
 
         //////////////////////////////////////////////////
@@ -302,7 +1017,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'building_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -310,6 +1025,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\UnitBedroom;
         $associate = array();
@@ -319,7 +1035,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'unit_bedroom_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -327,6 +1043,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\UnitStatus;
         $associate = array();
@@ -336,7 +1053,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'unit_status_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -344,6 +1061,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\Percentage;
         $associate = array();
@@ -353,7 +1071,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'percentage_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -361,6 +1079,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\UnitIdentity;
         $associate = array();
@@ -370,7 +1089,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'unit_identity_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -378,6 +1097,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         //////////////////////////////////////////////////
         /////// Project ID updates
@@ -395,7 +1115,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'address_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -403,6 +1123,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\PhoneNumber;
         $associate = array();
@@ -412,7 +1133,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'phone_number_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -420,6 +1141,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\PhoneNumber;
         $associate = array();
@@ -429,7 +1151,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'phone_number_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -437,6 +1159,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
 
         //////////////////////////////////////////////////
@@ -455,7 +1178,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'address_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -463,6 +1186,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\PhoneNumber;
         $associate = array();
@@ -472,7 +1196,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'phone_number_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -480,6 +1204,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\PhoneNumber;
         $associate = array();
@@ -489,7 +1214,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'phone_number_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -497,6 +1222,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\People;
         $associate = array();
@@ -506,7 +1232,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'person_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -514,6 +1240,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\Organization;
         $associate = array();
@@ -523,7 +1250,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'organization_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -531,6 +1258,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
 
 
@@ -551,7 +1279,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'organization_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -559,6 +1287,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\ProjectProgram;
         $associate = array();
@@ -571,7 +1300,7 @@ class SyncIdsJob implements ShouldQueue
             'look_up_foreign_key' => 'id',
             //condition against the lookup field - if one is needed.
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -579,6 +1308,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\Project;
         $associate = array();
@@ -591,7 +1321,7 @@ class SyncIdsJob implements ShouldQueue
             'look_up_foreign_key' => 'id',
             //condition against the lookup field - if one is needed.
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -599,6 +1329,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\People;
         $associate = array();
@@ -611,7 +1342,7 @@ class SyncIdsJob implements ShouldQueue
             'look_up_foreign_key' => 'id',
             //condition against the lookup field - if one is needed.
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -619,6 +1350,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\ProjectRole;
         $associate = array();
@@ -631,7 +1363,7 @@ class SyncIdsJob implements ShouldQueue
             'look_up_foreign_key' => 'id',
             //condition against the lookup field - if one is needed.
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -639,6 +1371,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         
 
@@ -659,7 +1392,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'project_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -667,6 +1400,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\ProjectProgram;
         $associate = array();
@@ -679,7 +1413,7 @@ class SyncIdsJob implements ShouldQueue
             'look_up_foreign_key' => 'id',
             //condition against the lookup field - if one is needed.
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -687,6 +1421,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         $lookUpModel = new \App\Models\ProjectActivityType;
         $associate = array();
@@ -696,7 +1431,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'project_activity_type_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -704,6 +1439,7 @@ class SyncIdsJob implements ShouldQueue
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
+        
 
         //////////////////////////////////////////////////
         /////// Address ID update
@@ -728,7 +1464,7 @@ class SyncIdsJob implements ShouldQueue
             'lookup_field' => 'state_acronym',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
