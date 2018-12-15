@@ -146,7 +146,7 @@ class SyncController extends Controller
         $associate[] = [
             'null_field' => 'default_fax_number_id',
             'look_up_reference' => 'default_fax_number_key',
-            'lookup_field' => 'fax_number_key',
+            'lookup_field' => 'phone_number_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
             'condition' => ' '
@@ -192,7 +192,7 @@ class SyncController extends Controller
             echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
-        
+
 
 
         //////////////////////////////////////////////////
