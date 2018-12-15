@@ -104,7 +104,7 @@ class SyncController extends Controller
             'lookup_field' => 'household_size_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '10000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -112,7 +112,7 @@ class SyncController extends Controller
             Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
-        
+
         $lookUpModel = new \App\Models\Unit;
         $associate = array();
         $associate[] = [
