@@ -85,6 +85,51 @@ class SyncController extends Controller
     public function sync() {
 
         //////////////////////////////////////////////////
+        /////// Unit Amenity ID updates
+        /////
+
+        // Do clean ups:
+        // BuildingContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new UnitAmenity;
+        
+
+        $lookUpModel = new \App\Models\Unit;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'unit_id',
+            'look_up_reference' => 'unit_key',
+            'lookup_field' => 'unit_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\Amenity;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'amenity_id',
+            'look_up_reference' => 'amenity_type_key',
+            'lookup_field' => 'amenity_type_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+        //////////////////////////////////////////////////
         /////// Building Amenity ID updates
         /////
 
