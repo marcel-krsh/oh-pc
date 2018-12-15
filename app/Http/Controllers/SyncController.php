@@ -141,7 +141,7 @@ class SyncController extends Controller
             'lookup_field' => 'unit_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -159,7 +159,7 @@ class SyncController extends Controller
             'lookup_field' => 'project_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -180,7 +180,7 @@ class SyncController extends Controller
             'lookup_field' => 'special_needs_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -209,7 +209,7 @@ class SyncController extends Controller
             'lookup_field' => 'unit_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -226,7 +226,7 @@ class SyncController extends Controller
             'lookup_field' => 'owner_certification_year_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -243,7 +243,7 @@ class SyncController extends Controller
             'lookup_field' => 'project_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -260,7 +260,7 @@ class SyncController extends Controller
             'lookup_field' => 'household_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -278,7 +278,7 @@ class SyncController extends Controller
             'lookup_field' => 'event_type_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -296,7 +296,7 @@ class SyncController extends Controller
             'lookup_field' => 'unit_status_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -313,7 +313,7 @@ class SyncController extends Controller
             'lookup_field' => 'utility_allowance_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -330,7 +330,7 @@ class SyncController extends Controller
             'lookup_field' => 'rental_assistance_type_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -347,7 +347,7 @@ class SyncController extends Controller
             'lookup_field' => 'rental_assistance_source_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -364,7 +364,7 @@ class SyncController extends Controller
             'lookup_field' => 'unit_identity_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -390,7 +390,7 @@ class SyncController extends Controller
             'lookup_field' => 'building_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -407,7 +407,7 @@ class SyncController extends Controller
             'lookup_field' => 'unit_bedroom_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -424,7 +424,7 @@ class SyncController extends Controller
             'lookup_field' => 'unit_status_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -441,7 +441,7 @@ class SyncController extends Controller
             'lookup_field' => 'percentage_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -458,7 +458,7 @@ class SyncController extends Controller
             'lookup_field' => 'unit_identity_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -483,7 +483,7 @@ class SyncController extends Controller
             'lookup_field' => 'address_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -500,7 +500,7 @@ class SyncController extends Controller
             'lookup_field' => 'phone_number_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -517,7 +517,7 @@ class SyncController extends Controller
             'lookup_field' => 'phone_number_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -543,7 +543,7 @@ class SyncController extends Controller
             'lookup_field' => 'address_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -560,7 +560,7 @@ class SyncController extends Controller
             'lookup_field' => 'phone_number_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -577,7 +577,7 @@ class SyncController extends Controller
             'lookup_field' => 'phone_number_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -594,7 +594,7 @@ class SyncController extends Controller
             'lookup_field' => 'person_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -611,7 +611,7 @@ class SyncController extends Controller
             'lookup_field' => 'organization_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -639,7 +639,7 @@ class SyncController extends Controller
             'lookup_field' => 'organization_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -659,7 +659,7 @@ class SyncController extends Controller
             'look_up_foreign_key' => 'id',
             //condition against the lookup field - if one is needed.
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -679,7 +679,7 @@ class SyncController extends Controller
             'look_up_foreign_key' => 'id',
             //condition against the lookup field - if one is needed.
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -699,7 +699,7 @@ class SyncController extends Controller
             'look_up_foreign_key' => 'id',
             //condition against the lookup field - if one is needed.
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -719,7 +719,7 @@ class SyncController extends Controller
             'look_up_foreign_key' => 'id',
             //condition against the lookup field - if one is needed.
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -747,7 +747,7 @@ class SyncController extends Controller
             'lookup_field' => 'project_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -767,7 +767,7 @@ class SyncController extends Controller
             'look_up_foreign_key' => 'id',
             //condition against the lookup field - if one is needed.
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -784,7 +784,7 @@ class SyncController extends Controller
             'lookup_field' => 'project_activity_type_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
@@ -816,7 +816,7 @@ class SyncController extends Controller
             'lookup_field' => 'state_acronym',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
-            'condition' => ' '
+            'condition' => '1000000000000000000000'
         ];
         try{
             $this->associate($model,$lookUpModel,$associate);
