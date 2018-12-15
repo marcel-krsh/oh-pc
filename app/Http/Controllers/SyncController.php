@@ -30,8 +30,8 @@ use App\Models\ProjectFinancial; //
 use App\Models\ProjectProgram; //
 use App\Models\AuditAuditor; //
 use App\Models\Building; //
-use App\Models\User;
-use App\Models\ComplianceContact;
+use App\Models\User; //
+use App\Models\ComplianceContact; 
 use App\Models\PhoneNumberType;
 use App\Models\EmailAddressType;
 use App\Models\EmailAddress;
@@ -81,6 +81,35 @@ class SyncController extends Controller
     }
 
     public function sync() {
+
+        //////////////////////////////////////////////////
+        /////// Compliance Contract ID updates
+        /////
+
+        // Do clean ups:
+        // BuildingContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new ComplianceContact;
+        
+
+        $lookUpModel = new \App\Models\Project;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_id',
+            'look_up_reference' => 'project_key',
+            'lookup_field' => 'project_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
 
         //////////////////////////////////////////////////
         /////// Building ID updates
