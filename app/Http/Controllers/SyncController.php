@@ -31,9 +31,7 @@ use App\Models\ProjectProgram; //
 use App\Models\AuditAuditor; //
 use App\Models\Building; //
 use App\Models\User; //
-use App\Models\ComplianceContact; 
-use App\Models\PhoneNumberType;
-use App\Models\EmailAddressType;
+use App\Models\ComplianceContact; //
 use App\Models\EmailAddress;
 use App\Models\HouseHoldSize;
 use App\Models\ProjectDate;
@@ -81,6 +79,34 @@ class SyncController extends Controller
     }
 
     public function sync() {
+
+        //////////////////////////////////////////////////
+        /////// Email Address ID updates
+        /////
+
+        // Do clean ups:
+        // BuildingContactRole::where('state','o')->update(['state'=>'OH']);
+
+        $model = new EmailAddress;
+        
+
+        $lookUpModel = new \App\Models\EmailAddressType;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'email_address_type_id',
+            'look_up_reference' => 'email_address_type_key',
+            'lookup_field' => 'email_address_type_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
 
         //////////////////////////////////////////////////
         /////// Compliance Contract ID updates
