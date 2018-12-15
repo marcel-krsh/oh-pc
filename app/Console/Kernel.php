@@ -51,6 +51,8 @@ use App\Jobs\SyncHouseHoldSizesJob;
 use App\Jobs\SyncProjectDatesJob;
 use App\Jobs\SyncUnitIdentitiesJob;
 
+use App\Jobs\SyncIdsJob;
+
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -480,6 +482,15 @@ class Kernel extends ConsoleKernel
         $test = DB::table('jobs')->where('payload','like','%SyncUnitIdentitiesJob%')->first();
         if(is_null($test)) {
             $schedule->job(new SyncUnitIdentitiesJob)->everyMinute();
+            
+        } else {
+            //Log::info('Sync Job Already Started.');
+        }
+
+        //SyncIdsJob
+        $test = DB::table('jobs')->where('payload','like','%SyncIdsJob%')->first();
+        if(is_null($test)) {
+            $schedule->job(new SyncIdsJob)->everyMinute();
             
         } else {
             //Log::info('Sync Job Already Started.');

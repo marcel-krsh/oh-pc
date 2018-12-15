@@ -78,8 +78,8 @@ class SyncController extends Controller
                                   $associate['null_field'] => $key->{$associate['look_up_foreign_key']}
                                                                     ]);
                 } else {
-                    //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->$$associate['look_up_reference'].' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the '.$associate['look_up_model'].' model.');
-                    echo date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->{$associate['look_up_reference']}.' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the model.<hr />';
+                    Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->$$associate['look_up_reference'].' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the '.$associate['look_up_model'].' model.');
+                    //echo date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->{$associate['look_up_reference']}.' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the model.<hr />';
 
                 }
 
@@ -110,8 +110,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\OwnerCertificationYear;
@@ -127,8 +127,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\Project;
@@ -144,8 +144,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\Household;
@@ -161,8 +161,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -179,8 +179,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -197,8 +197,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\UtilityAllowance;
@@ -214,8 +214,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\RentalAssistanceType;
@@ -231,8 +231,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\RentalAssistanceSource;
@@ -248,8 +248,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\UnitIdenty;
@@ -265,8 +265,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -291,8 +291,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\UnitBedroom;
@@ -308,8 +308,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\UnitStatus;
@@ -325,8 +325,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\Percentage;
@@ -342,8 +342,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\UnitIdentity;
@@ -359,8 +359,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         //////////////////////////////////////////////////
@@ -384,8 +384,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\PhoneNumber;
@@ -401,8 +401,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\PhoneNumber;
@@ -418,8 +418,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -444,8 +444,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\PhoneNumber;
@@ -461,8 +461,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\PhoneNumber;
@@ -478,8 +478,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\People;
@@ -495,8 +495,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\Organization;
@@ -512,8 +512,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -540,8 +540,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\ProjectProgram;
@@ -560,8 +560,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\Project;
@@ -580,8 +580,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\People;
@@ -600,8 +600,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\ProjectRole;
@@ -620,8 +620,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         
@@ -648,8 +648,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\ProjectProgram;
@@ -668,8 +668,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\ProjectActivityType;
@@ -685,8 +685,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         //////////////////////////////////////////////////
@@ -717,8 +717,8 @@ class SyncController extends Controller
         try{
             $this->associate($model,$lookUpModel,$associate);
         } catch(Exception $e){
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
     }
 }
