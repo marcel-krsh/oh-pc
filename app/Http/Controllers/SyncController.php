@@ -20,8 +20,7 @@ use App\Models\Organization; //
 use App\Models\Project; //
 use App\Models\Program; // only funding_id - which we don't sync
 use App\Models\Unit; //
-use App\Models\HouseholdEvent;
-use App\Models\OwnerCertificationYear;
+use App\Models\HouseholdEvent; //
 use App\Models\Household;
 use App\Models\EventType;
 use App\Models\RentalAssistanceSource;
@@ -88,6 +87,103 @@ class SyncController extends Controller
     }
 
     public function sync() {
+
+        //////////////////////////////////////////////////
+        /////// Household ID updates
+        /////
+
+        // Do clean ups:
+        // ProjectContactRole::where('state','o')->update(['state'=>'OH']);
+        
+        $model = new Household;
+        $lookUpModel = new \App\Models\Project;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'project_id',
+            'look_up_reference' => 'project_key',
+            'lookup_field' => 'development_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\Unit;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'unit_id',
+            'look_up_reference' => 'unit_key',
+            'lookup_field' => 'unit_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\HouseholdSize;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'household_size_id',
+            'look_up_reference' => 'household_size_key',
+            'lookup_field' => 'household_size_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\HouseholdSize;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'household_size_id',
+            'look_up_reference' => 'household_size_move_in_key',
+            'lookup_field' => 'household_size_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\SpecialNeed;
+        $associate = array();
+        $associate[] = [
+            'null_field' => 'special_needs_id',
+            'look_up_reference' => 'special_needs_key',
+            'lookup_field' => 'special_needs_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => ' '
+        ];
+        try{
+            $this->associate($model,$lookUpModel,$associate);
+        } catch(Exception $e){
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            //echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+
+
+
 
         //////////////////////////////////////////////////
         /////// Household Events ID updates
