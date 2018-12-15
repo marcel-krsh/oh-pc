@@ -101,7 +101,7 @@ class SyncController extends Controller
         $lookUpModel = new \App\Models\HouseholdSize;
         $associate = array();
         $associate[] = [
-            'null_field' => 'household_size_id',
+            'null_field' => 'household_size_move_in_id',
             'look_up_reference' => 'household_size_move_in_key',
             'lookup_field' => 'household_size_key',
             'look_up_foreign_key' => 'id',
