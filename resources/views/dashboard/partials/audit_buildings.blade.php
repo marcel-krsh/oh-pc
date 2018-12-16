@@ -51,6 +51,8 @@
 															    <ul class="uk-slideshow-nav uk-dotnav uk-flex-center"></ul>
 
 															</div>
+															@else
+															<i class="a-avatar-plus_1" uk-tooltip="pos:top-left;title:Assign auditor;"></i>
 															@endif
 														</div>
 														<div class="uk-width-1-2 uk-padding-remove">
