@@ -13,7 +13,9 @@ class CachedAudit extends Model
     protected $fillable = [
         'id',
         'audit_id',
+        'audit_key',
         'project_id',
+        'project_key',
         'project_ref',
         'status',
         'lead',
