@@ -342,11 +342,15 @@ if(Auth::check()){
 
 	@if($tab !== null)
 	<script>
-	$('#{{$tab}}').trigger("click");
+		setTimeout(function(){
+			$('#{{$tab}}').trigger("click");
+			},100);
 	</script>
 	@else
-	<script>
-	$('#detail-tab-1').trigger("click");
+	<script type="javascript">
+		setTimeout(function(){
+			$('#detail-tab-1').trigger("click");
+		},100);
 	</script>
 	@endif
 
