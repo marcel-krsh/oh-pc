@@ -27,8 +27,7 @@ class Project extends Model
 
     public function currentAudit() : CachedAudit {
     	$audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->first();
-    	
-    		return $audit;
+    	return $audit;
     	
     }
 
@@ -54,13 +53,9 @@ class Project extends Model
         $programs = $this->programs;
         $programCounts = array();
         foreach ($programs as $program) {
-            $count = 'NA';
-            if(!is_null($this->currentAudit)) {
-                $count = UnitProgram::where('audit_id',$this->currentAudit->audit_id)
+            $count = UnitProgram::where('audit_id',$this->currentAudit()->audit_id)
                                             ->where('program_id',$program->id)
                                             ->count();
-            }
-            
             $programCounts[] = [$program->name => $count];
         }
         if(count($programCounts)<1){
