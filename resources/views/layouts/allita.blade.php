@@ -149,7 +149,7 @@ if(Auth::check()){
 				    				<a href="">
 				    					<span class="list-tab-text"> <span class="uk-badge" v-if="statsAuditsTotal" v-cloak>@{{statsAuditsTotal}}</span> <i class="a-mobile-home"></i> AUDITS</span></a></li>
 								<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
-									<a href=""> <span class="list-tab-text"> <span class="uk-badge" v-if="statsCommunicationTotal" v-cloak v-html="statsCommunicationTotal"></span> <i class="a-envelope-attention"></i>COMMUNICATIONS</span></a></li>
+									<a href=""> <span class="uk-badge" v-if="statsCommunicationTotal" v-cloak v-html="statsCommunicationTotal"></span> <span class="list-tab-text"> <i class="a-envelope-attention"></i>COMMUNICATIONS</span></a></li>
 								<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}', '3','','','',1);}">
 									<a href=""><span class="list-tab-text"><span class="uk-badge" v-if="statsReportsTotal" v-cloak>@{{statsReportsTotal}}</span></span> <i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
 								</li>
