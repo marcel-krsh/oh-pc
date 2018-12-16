@@ -17,6 +17,7 @@ use DateTime;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Audit;
 use Event;
+use Log;
 
 class CreateTestAuditJob implements ShouldQueue
 {
@@ -39,6 +40,11 @@ class CreateTestAuditJob implements ShouldQueue
      */
     public function handle(Audit $audit)
     {
-        Event::fire('audit.created', $audit);
+        Log::info('Creating a test event for audit id'.$audit->id);
+        try{
+            Event::fire('audit.created', $audit);
+        }catch(Exception $e){
+            Log::info('Unable to fire event '.$e)
+        }
     }
 }
