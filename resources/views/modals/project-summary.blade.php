@@ -57,6 +57,10 @@
 						</tr>
 					</tbody>
 				</table>
+
+				<div style="margin-top:30px">
+					<i class="a-server-stack"></i> HOME / OHTF / NHTF overlap
+				</div>
 			</div>
 		</div>
 	</div>
