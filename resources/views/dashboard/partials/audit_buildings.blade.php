@@ -161,14 +161,14 @@
 												@foreach($building->building->amenities_json as $amenity)
 												@if($loop->iteration < 9)
 											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($amenity->status != '') area-status-{{$amenity->status}} @endif colored">
-											    	<span class="uk-badge"  onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'file','{{$amenity->id}}');">
+											    	<span class="uk-badge"  onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'all','{{$amenity->id}}');">
 											    	@if($amenity->qty){{$amenity->qty}} @else 1 @endif </span>
 											    	{{$amenity->type}}
 											    </div>
 											    @else
 											    	@if($loop->iteration == 9)
 												    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($amenity->status != '') area-status-{{$amenity->status}} @endif colored">
-												    	<span class="uk-badge" uk-tooltip="pos:top-left;title: @endif @if($amenity->qty) {{$amenity->qty}} @endif {{$amenity->type}}<br /> @if($loop->last) ;" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'file','{{$amenity->id}}');"><i class="a-plus"></i> </span> MORE...
+												    	<span class="uk-badge" uk-tooltip="pos:top-left;title: @endif @if($amenity->qty) {{$amenity->qty}} @endif {{$amenity->type}}<br /> @if($loop->last) ;" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'all','{{$amenity->id}}');"><i class="a-plus"></i> </span> MORE...
 												    </div>
 												    @endif
 											    @endif
