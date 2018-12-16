@@ -12,7 +12,7 @@ use App\Models\SystemSetting;
 //use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Log;
-
+use Event;
 use App\Models\Audit;
 
 
@@ -59,7 +59,7 @@ class SyncController extends Controller
     public function sync(Request $request) {
 
         //Audit::where('audit_id',$request->get('development_key'))->update(['audit_status_id'=>4]);
-        TEST EVENT
+        //TEST EVENT
         $testaudit = Audit::where('development_key','=', $request->get('development_key'))->where('monitoring_status_type_key', '=', 4)->orderBy('start_date','desc')->first();
         Event::fire('audit.created', $testaudit);
         
