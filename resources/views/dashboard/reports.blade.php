@@ -75,13 +75,14 @@
 	                        @endIf      
                         </select>
                 </div>
-                @endif
+                
                 <div class="uk-width-1-1@s uk-width-1-5@m" style="vertical-align:top">
                     <a class="uk-button uk-button-success green-button uk-width-1-1" onclick="dynamicModalLoad('new-report/')">
                         <span class="a-file-plus"></span> 
                         <span>NEW REPORT</span>
                     </a>    
                 </div> 
+                @endif
     </div>
     @if(count((array)$reports))
     <div uk-grid class="uk-margin-top uk-visible@m">
@@ -110,7 +111,23 @@
         <div class="uk-width-1-1">
             <div uk-grid>
                 <div class=" uk-width-1-1">
-                	SORRY - NO REPORTS - PLEASE TRY APPLYING A FILTER
+                	<article class="uk-comment">
+					    <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
+					        <div class="uk-width-auto">
+					            <h1><i class="a-file-fail"></i></h1>
+					        </div>
+					        <div class="uk-width-expand">
+					            <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="#">System</a></h4>
+					            <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
+					                <li><a href="#">No Reports Found</a></li>
+					            </ul>
+					        </div>
+					    </header>
+					    <div class="uk-comment-body">
+					        <p>SORRY - NO REPORTS ARE AVAILABLE AT THIS TIME @if(Auth::user()->isOhfa())PLEASE TRY APPLYING A FILTER @endIf</p>
+					    </div>
+					</article>
+                	
                 </div>
             </div>
         </div>
