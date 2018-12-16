@@ -174,7 +174,7 @@
 			        		<div class="uk-width-1-4">
 			        			<button data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='lt'];" title="Show Life Threatning Findings Only" onclick="$('#lt-findings-filter').fadeIn();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#all-findings-filter').fadeOut();"><i class="a-skull"></i></button>
 					        	<span id="lt-findings-filter" @if($type != 'lt') style="display: none;" @endIf  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
-									<a  class="sort-asc"></a>
+									<a  class="sort-desc"></a>
 								</span>
 			        		</div>
 			        		
