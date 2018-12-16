@@ -66,9 +66,20 @@ class AuditsEvent
                         //             $query->where('audit_id', '=', $audit->id);
                         //         })->get();
                         // dd($units);
-                        if($this->selectionProcess($audit)){  
-                            $this->createNewCachedAudit($audit);    // finally create the audit
+                        
+                        // run the selection process 10 times and keep the best one
+                        $best_run = null;
+                        $best_total = null;
+                        for($i=0; $i<3; $i++){
+                            $summary = $this->selectionProcess($audit);   
+                            if(count($summary['grouped']) < $best_total || $best_run == null){
+                                $best_run = $summary;
+                                $best_total = count($summary['grouped']);
+                            }
                         }
+                        
+                        $this->createNewCachedAudit($audit, $best_run);    // finally create the audit
+                        
                     }
                 }
             }
@@ -1047,7 +1058,7 @@ class AuditsEvent
         return $optimized_selection;
     }
 
-    public function createNewCachedAudit(Audit $audit)
+    public function createNewCachedAudit(Audit $audit, $summary=null)
     {
         // create cached audit
         // 
@@ -1097,7 +1108,7 @@ class AuditsEvent
                 $total_buildings = $project->total_building_count;
 
                 if($project->address){
-                    $address = $project->address->line1; 
+                    $address = $project->address->line_1; 
                     $city = $project->address->city; 
                     $state = $project->address->state; 
                     $zip = $project->address->zip;
@@ -1123,10 +1134,9 @@ class AuditsEvent
         // total items? from amenity inspection table
         $total_items = 0; // TBD
 
-
-       
-
-        
+        // save summary
+        $audit->selection_summary = json_encode($summary);
+        $audit->save();
 
         $cached_audit = new CachedAudit([
                 'audit_id' => $audit->id,
