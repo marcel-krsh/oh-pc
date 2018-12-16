@@ -56,8 +56,11 @@ class Project extends Model
         $programs = $this->programs;
         $programCounts = array();
         foreach ($programs as $program) {
-            $count = UnitProgram::where('audit_id',$this->currentAudit->audit_id)->where('program_id',$program->id)->count();
-            if(!$count){
+            $count = Null;
+            $if(!is_null($this->currentAudit)){
+                $count = UnitProgram::where('audit_id',$this->currentAudit->audit_id)->where('program_id',$program->id)->count();
+            }
+            if(is_null($count)){
                 $count = "NA";
             }
             $programCounts[] = [$program->name => $count];
