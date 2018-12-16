@@ -221,6 +221,10 @@
  </div>
  @if($type != 'all')
 <script>
-	window.onload($('#{{$type}}-filter-button').trigger('click'));
+	function clickDefault(){
+		$('#{{$type}}-filter-button').trigger('click');
+		alert('filtered');
+	}
+	window.onload(clickDefault());
 </script>
 @endif
