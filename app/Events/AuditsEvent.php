@@ -66,11 +66,64 @@ class AuditsEvent
                         // run the selection process 10 times and keep the best one
                         $best_run = null;
                         $best_total = null;
+                        $overlap = null;
+                        $project = null;
+                        $organization_id = null;
+
                         for($i=0; $i<3; $i++){
                             $summary = $this->selectionProcess($audit);   
-                            if(count($summary['grouped']) < $best_total || $best_run == null){
-                                $best_run = $summary;
-                                $best_total = count($summary['grouped']);
+                            if(count($summary[0]['grouped']) < $best_total || $best_run == null){
+                                $best_run = $summary[0];
+                                $overlap = $summary[1];
+                                $project = $summary[2];
+                                $organization_id = $summary[3];
+                                $best_total = count($summary[0]['grouped']);
+                            }
+                        }
+
+                        // save all units selected in selection table
+                        if($best_run){
+                            $group_id = 1;
+
+                            foreach($best_run['programs'] as $program){
+                                $unit_keys = $program['units_after_optimization'];
+
+                                $units = Unit::whereIn('unit_key', $unit_keys)->get();
+
+                                foreach($units as $unit){
+
+                                    if(in_array($unit->unit_key, $overlap)){
+                                        $has_overlap = 1;
+                                    }else{
+                                        $has_overlap = 0;
+                                    }
+
+                                    $program_keys = explode(',', $program['program_keys']); 
+
+                                    foreach($unit->programs as $unit_program){
+                                        if(in_array($unit_program->program_key, $program_keys)){ 
+
+                                            $u = new UnitInspection([
+                                                'group' => $program['name'],
+                                                'group_id' => $group_id,
+                                                'unit_id' => $unit->id,
+                                                'unit_key' => $unit->unit_key,
+                                                'building_id' => $unit->building_id,
+                                                'building_key' => $unit->building_key,
+                                                'audit_id' => $audit->id,
+                                                'audit_key' => $audit->monitoring_key,
+                                                'project_id' => $project->id,
+                                                'project_key' => $project->project_key,
+                                                'program_key' => $unit_program->program_key,
+                                                'pm_organization_id' => $organization_id,
+                                                'has_overlap' => $has_overlap
+                                            ]);
+                                            $u->save();
+                                        }
+                                    }
+
+                                }
+                                $group_id = $group_id + 1;
                             }
                         }
                         
@@ -1034,51 +1087,7 @@ class AuditsEvent
         // combineOptimize returns an array [units, summary]
         $optimized_selection = $this->combineOptimize($selection);
 
-        //dd($optimized_selection);
-        // save all units selected in selection table
-        if($optimized_selection){
-            $group_id = 1;
-            foreach($optimized_selection['programs'] as $program){
-                $unit_keys = $program['units_after_optimization'];
-
-                $units = Unit::whereIn('unit_key', $unit_keys)->get();
-
-                foreach($units as $unit){
-
-                    if(in_array($unit->unit_key, $overlap)){
-                        $has_overlap = 1;
-                    }else{
-                        $has_overlap = 0;
-                    }
-
-                    $program_keys = explode(',', $program['program_keys']); 
-                    foreach($unit->programs as $unit_program){
-                        if(in_array($unit_program->program_key, $program_keys)){ 
-                            $u = new UnitInspection([
-                                'group' => $program['name'],
-                                'group_id' => $group_id,
-                                'unit_id' => $unit->id,
-                                'unit_key' => $unit->unit_key,
-                                'building_id' => $unit->building_id,
-                                'building_key' => $unit->building_key,
-                                'audit_id' => $audit->id,
-                                'audit_key' => $audit->monitoring_key,
-                                'project_id' => $project->id,
-                                'project_key' => $project->project_key,
-                                'program_key' => $unit_program->program_key,
-                                'pm_organization_id' => $organization_id,
-                                'has_overlap' => $has_overlap
-                            ]);
-                            $u->save();
-                        }
-                    }
-
-                }
-                $group_id = $group_id + 1;
-            }
-        }
-
-        return $optimized_selection;
+        return [$optimized_selection, $overlap, $project, $organization_id];
     }
 
     public function createNewCachedAudit(Audit $audit, $summary=null)
