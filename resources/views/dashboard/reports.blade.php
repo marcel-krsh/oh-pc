@@ -110,7 +110,7 @@
     <div uk-grid class="uk-margin-top uk-visible@m">
         <div class="uk-width-1-1">
             <div uk-grid>
-                <div class=" uk-width-1-1">
+                <div class=" uk-width-1-3 uk-center">
                 	<article class="uk-comment">
 					    <header class="uk-comment-header uk-grid-medium uk-flex-middle" uk-grid>
 					        <div class="uk-width-auto">
