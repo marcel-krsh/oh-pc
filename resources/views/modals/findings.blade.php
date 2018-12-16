@@ -222,7 +222,7 @@
  @if($type != 'all')
 <script>
 	function clickDefault(){
-		document.setTimeout(function() {
+		setTimeout(function() {
 			$('#{{$type}}-filter-button').trigger('click');
 			alert('filtered');
 		}, 10);
