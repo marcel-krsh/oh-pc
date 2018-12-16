@@ -22,6 +22,11 @@ class Building extends Model
      */
     public function units() : HasMany
     {
-        return $this->hasMany(\App\Models\Unit::class, 'building_key', 'building_key');
+        return $this->hasMany(\App\Models\Unit::class, 'building_id', 'building_id');
+    }
+
+    public function amenities() : HasMany
+    {
+        return $this->hasMany(\App\Models\BuildingAmenity::class, 'building_id', 'building_id');
     }
 }
