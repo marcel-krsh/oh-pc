@@ -37,6 +37,7 @@ class CachedBuilding extends Model
         'zip',
         'auditors_json',
         'amenities_json',
+        'findings_json',
         'created_at',
         'updated_at'
     ];
@@ -46,6 +47,10 @@ class CachedBuilding extends Model
     }
 
     public function getAuditorsJsonAttribute($value) {
+      return json_decode($value);
+    }
+
+    public function getFindingsJsonAttribute($value) {
       return json_decode($value);
     }
 }
