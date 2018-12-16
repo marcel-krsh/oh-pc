@@ -16,8 +16,7 @@ use DB;
 use DateTime;
 use Illuminate\Support\Facades\Hash;
 
-use App\Models\SyncAddress;
-use App\Models\Address;
+use Event;
 
 class CreateTestAuditJob implements ShouldQueue
 {
