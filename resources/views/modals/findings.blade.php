@@ -153,36 +153,31 @@
 			        </div>
 			        <div class="uk-inline uk-width-1-2">
 			        	<div uk-grid>
-			        		<div class="uk-width-1-5">
-			        			<button class="uk-button uk-button-default button-filter uk-active" uk-filter-control><i class="uk-icon-asterisk"></i></button>
-					        	<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
-									<a id="" class="sort-desc"></a>
+			        		<div class="uk-width-1-4">
+			        			<button data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter uk-active" uk-filter-control title="Show All Findings (Unfiltered)" onclick="$('#lt-findings-filter').slideUp();$('#nlt-findings-filter').slideUp();$('#file-findings-filter').slideUp();$('#all-findings-filter').slideDown();"><i class="uk-icon-asterisk"></i></button>
+					        	<span id="all-findings-filter"  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false" @if($type != 'all') style="display: none;" @endIf>
+									<a  class="sort-desc"></a>
 								</span>
 			        		</div>
-			        		<div class="uk-width-1-5">
-			        			<button class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='file'];"><i class="a-folder"></i></button>
-					        	<span style="display: none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
-									<a id="" class="sort-desc"></a>
+			        		<div class="uk-width-1-4">
+			        			<button data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='file'];" title="Show File Findings Only" onclick="$('#lt-findings-filter').slideUp();$('#nlt-findings-filter').slideUp();$('#file-findings-filter').slideDown();$('#all-findings-filter').slideUp();"><i class="a-folder"></i></button>
+					        	<span id="file-findings-filter" @if($type != 'file') style="display: none;" @endIf  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
+									<a  class="sort-desc"></a>
 								</span>
 			        		</div>
-			        		<div class="uk-width-1-5">
-			        			<button class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='nlt'];"><i class="a-booboo"></i></button>
-					        	<span style="display: none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
-									<a id="" class="sort-desc"></a>
+			        		<div class="uk-width-1-4">
+			        			<button data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='nlt'];" title="Show Non-life Threatning Findings Only" onclick="$('#lt-findings-filter').slideUp();$('#nlt-findings-filter').slideDown();$('#file-findings-filter').slideUp();$('#all-findings-filter').slideUp();"><i class="a-booboo"></i></button>
+					        	<span id="nlt-findings-filter" @if($type != 'nlt') style="display: none;" @endIf class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
+									<a  class="sort-desc"></a>
 								</span>
 			        		</div>
-			        		<div class="uk-width-1-5">
-			        			<button class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='lt'];"><i class="a-skull"></i></button>
-					        	<span style="display: none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
-									<a id="" class="sort-asc"></a>
+			        		<div class="uk-width-1-4">
+			        			<button data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='lt'];" title="Show Life Threatning Findings Only" onclick="$('#lt-findings-filter').slideDown();$('#nlt-findings-filter').slideUp();$('#file-findings-filter').slideUp();$('#all-findings-filter').slideUp();"><i class="a-skull"></i></button>
+					        	<span id="lt-findings-filter" @if($type != 'lt') style="display: none;" @endIf  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
+									<a  class="sort-asc"></a>
 								</span>
 			        		</div>
-			        		<div class="uk-width-1-5">
-			        			<button class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='sd'];"><i class="a-flames"></i></button>
-					        	<span style="display: none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
-									<a id="" class="sort-desc"></a>
-								</span>
-			        		</div>
+			        		
 			        	</div>
 			        </div>
 			    </div>

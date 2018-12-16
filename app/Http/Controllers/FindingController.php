@@ -42,7 +42,11 @@ class FindingController extends Controller
 
         //dd('type:'.$type.' auditid:'.$auditid.' buildingid:'.$buildingid.' unitid:'.$unitid.' amenityid:'.$amenityid);
 
-        
+        if(is_null($type)){
+            // default filter is all
+            $type = 'all';
+        }
+
     	$checkDoneAddingFindings = 1;
 
     	$data = collect([
@@ -231,7 +235,7 @@ class FindingController extends Controller
     			]
     		]
     	]);
-    	return view('modals.findings', compact('data', 'checkDoneAddingFindings'));
+    	return view('modals.findings', compact('data', 'checkDoneAddingFindings','type'));
     }
 
     function findingItems($findingid, $itemid = '') {
