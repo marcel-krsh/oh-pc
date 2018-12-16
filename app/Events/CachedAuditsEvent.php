@@ -21,6 +21,7 @@ use App\Models\BuildingInspection;
 use App\Models\ProjectContactRole;
 use App\Models\CachedAudit;
 use App\Models\CachedBuilding;
+use App\Models\AuditAuditor;
 use App\Models\Program;
 use App\Services\DevcoService;
 use App\Models\UnitProgram;
@@ -61,10 +62,50 @@ class CachedAuditsEvent
     	// get buildings from cached_audit
     	$buildings = BuildingInspection::where('audit_id','=',$cached_audit->audit_id)->get();
 
+    	// get the auditors' list from audit_auditors table
+		// [{"id": "1", "name": "Brian Greenwood", "color": "green", "status": "alert", "initials": "BG"}, {"id": "2", "name": "Brian Greenwood 2", "color": "blue", "status": "", "initials": "BF"}]
+		// 
+		// also save the lead auditor in the table
+		$audit = Audit::where('id', '=', $cached_audit->audit_id)->first();
+		if($audit->user_key){
+			$lead_key = $audit->user_key;
+			$lead_id = $audit->lead_user_id;
+		}else{
+			$lead_key = null;
+			$lead_id = null;
+		}
+
+		$auditors = AuditAuditor::where('monitoring_key','=',$cached_audit->audit_key)->with('user')->get();
+		$auditors_array = [];
+		if($auditors){
+			foreach($auditors as $auditor){
+				if($auditor->user){
+					$lead = $lead_user->id;
+					$words = explode(" ", $lead_user->name);
+					$initials = "";
+					foreach ($words as $w) {
+						$initials .= $w[0];
+					}
+					$initials = substr($initials, 0, 2); // keep the first two letters only
+
+					$auditors_array[] = [
+						'id' => $auditor->user->id,
+						'name' => $auditor->user->name,
+						'color' => $auditor->user->color,
+						'status' => '',
+						'initials' => $initials
+					];
+				}
+			}
+		}
+
     	// create cached buildings related to this audit
     	foreach($buildings as $building){
     		$count_units = UnitInspection::where('building_key', '=', $building->building_key)->count();
     		$finding_total = $building->nlt_count + $building->lt_count + $building->file_count;
+
+    		
+    		
 
     		$cached_building = new CachedBuilding([
                 'building_id' => $building->building_id,
@@ -73,6 +114,8 @@ class CachedAuditsEvent
                 'audit_key' => $cached_audit->audit_key,
                 'project_id' => $building->project_id,
                 'project_key' => $building->project_key,
+                'lead_id' => $building->project_id,
+                'lead_key' => $building->project_key,
                 'status' => '',
                 'type' => 'unit', 
                 'type_total' => $count_units,
@@ -91,7 +134,8 @@ class CachedAuditsEvent
                 'address' => $cached_audit->address,
 		        'city' => $cached_audit->city,
 		        'state' => $cached_audit->state,
-		        'zip' => $cached_audit->zip
+		        'zip' => $cached_audit->zip,
+		        'auditors_json' => json_encode($auditors_array)
             ]);
             $cached_building->save();	
     	}
