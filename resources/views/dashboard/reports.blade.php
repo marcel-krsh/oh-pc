@@ -125,7 +125,7 @@
 					        </div>
 					    </header>
 					    <div class="uk-comment-body">
-					        <p>Well, it appears there are no reports available at this time. @if(Auth::user()->isOhfa())You can try applying a filter though, and see if some come up that way. @endIf</p>
+					        <p>It appears there are no reports available at this time@if(Auth::user()->isOhfa()) that match your current filter. You can try applying a different filter, and see if some come up that way@endIf.</p>
 					    </div>
 					</article>
                 	
