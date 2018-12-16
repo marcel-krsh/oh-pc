@@ -258,6 +258,7 @@ class AuditsEvent
 
        for($i=0; $i < count($selection); $i++){
             $summary['programs'][$i]['name'] = $selection[$i]['program_name'];
+            $summary['programs'][$i]['group'] = $i + 1;
             $summary['programs'][$i]['pool'] = $selection[$i]['pool'];
             $summary['programs'][$i]['program_keys'] = $selection[$i]['program_ids'];
             $summary['programs'][$i]['totals_before_optimization'] = $selection[$i]['totals'];
@@ -266,12 +267,13 @@ class AuditsEvent
             $summary['programs'][$i]['comments'] = $selection[$i]['comments'];
 
             $tmp_selection = []; // used to store selection as we go through the priorities
+            $tmp_program_output = []; // used to store the units selected for this program set
 
             if($selection[$i]['use_limiter'] == 1){
 
                 $needed = $this->adjustedLimit(count($selection[$i]['units']));
 
-                foreach($priority as $p){
+                foreach($priority as $p => $val){
                     if(in_array($p, $selection[$i]['units']) && count($tmp_selection) < $needed){
                         $tmp_selection[] = $p;
                     }
@@ -286,14 +288,16 @@ class AuditsEvent
                     }
                 }
 
+                $tmp_program_output = $tmp_selection;
                 $output = array_merge($output, $tmp_selection);
 
             } else {
+                $tmp_program_output = $selection[$i]['units'];
                 $output = array_merge($output, $selection[$i]['units']);
             }         
 
-            $summary['programs'][$i]['totals_after_optimization'] = count($output);
-            $summary['programs'][$i]['units_after_optimization'] = $output;  
+            $summary['programs'][$i]['totals_after_optimization'] = count($tmp_program_output);
+            $summary['programs'][$i]['units_after_optimization'] = $tmp_program_output;  
         }
 
         //dd(array_unique($output), $output);
