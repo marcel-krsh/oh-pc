@@ -37,8 +37,8 @@ class CreateTestAuditJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(Audit $audit)
     {
-        Event::fire('audit.created', $this->audit);
+        Event::fire('audit.created', $audit);
     }
 }
