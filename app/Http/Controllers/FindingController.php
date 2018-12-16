@@ -40,7 +40,9 @@ class FindingController extends Controller
 		the program detail expansion of a building or unit, and they click the "Done Adding Findings" button or they change to a different building, unit or common area set checkDoneAddingFindings to 1 otherwise 0.
     	 */
 
-        dd('type:'.$type.' auditid:'.$auditid.' buildingid:'.$buildingid.' unitid:'.$unitid.' amenityid:'.$amenityid);
+        //dd('type:'.$type.' auditid:'.$auditid.' buildingid:'.$buildingid.' unitid:'.$unitid.' amenityid:'.$amenityid);
+
+        
     	$checkDoneAddingFindings = 1;
 
     	$data = collect([
