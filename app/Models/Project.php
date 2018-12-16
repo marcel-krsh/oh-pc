@@ -26,12 +26,9 @@ class Project extends Model
     }
 
     public function currentAudit() : CachedAudit {
-    	$audit = CachedAudit::where('project_ref', '=', $this->id)->orderBy('id', 'desc')->first();
-    	if($audit){
-    		return $audit;
-    	}else{
-    		return null;
-    	}
+    	$audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->first();
+    	return $audit;
+    	
     }
 
     public function address() : HasOne
@@ -51,15 +48,14 @@ class Project extends Model
         return $this->hasMany(\App\Models\Building::class, 'development_key', 'project_key');
     }
 
-    public function projectProgramCounts() {
+    public function projectProgramUnitCounts() {
 
         $programs = $this->programs;
         $programCounts = array();
         foreach ($programs as $program) {
-            $count = ProgramUnit::where('audit_id',$this->currentAudit->audit_id)->where('program_id',$program->id)->count();
-            if(!$count){
-                $count = "NA";
-            }
+            $count = UnitProgram::where('audit_id',$this->currentAudit()->audit_id)
+                                            ->where('program_id',$program->id)
+                                            ->count();
             $programCounts[] = [$program->name => $count];
         }
         if(count($programCounts)<1){
