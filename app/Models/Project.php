@@ -25,7 +25,7 @@ class Project extends Model
         return $this->hasMany(\App\Models\CachedAudit::class, 'project_id');
     }
 
-    public function currentAudit() : CachedAudit {
+    public function currentAudit() {
     	$audit = CachedAudit::where('project_ref', '=', $this->id)->orderBy('id', 'desc')->first();
     	if($audit){
     		return $audit;
