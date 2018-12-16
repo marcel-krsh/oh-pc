@@ -224,8 +224,8 @@
 	function clickDefault(){
 		setTimeout(function() {
 			$('#{{$type}}-filter-button').trigger('click');
-			alert('filtered');
-		}, 10);
+			//alert('filtered');
+		}, .5);
 		
 	}
 	window.onload(clickDefault());
