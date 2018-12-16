@@ -285,7 +285,7 @@ class DashboardController extends Controller
                 'ltAuditIconClass' => $audit['lt_audit_icon'],
 
                 'auditorStatusIconClass' => $audit['auditor_status_icon'], 
-                'messageStatusClass' => $audit['auditor_status'],
+                'auditorStatusClass' => $audit['auditor_status'],
                 'tooltipAuditorStatus' => 'title:'.$audit['auditor_status_text'].';',
                 'messageStatusIconClass' => $audit['message_status_icon'], 
                 'messageStatusClass' => $audit['message_status'],

@@ -179,6 +179,7 @@
 									<div id="building-{{$context}}-{{$target}}-c-5-{{$key}}" style="flex: 640px;" class="uk-margin-remove" uk-grid>
 										<div class="uk-width-1-1" id="inspection-{{$context}}-tools-switch-{{$key}}">
 											<div uk-grid class="area-status-list">
+												@if($building->building->amenities_json)
 												@foreach($building->building->amenities_json as $amenity)
 												@if($loop->iteration < 9)
 											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($amenity->status != '') area-status-{{$amenity->status}} @endif colored">
@@ -194,6 +195,7 @@
 												    @endif
 											    @endif
 											    @endforeach
+											    @endif
 											</div>
 										</div>
 										<div id="inspection-{{$context}}-tools-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">

@@ -1130,9 +1130,20 @@ class AuditsEvent
                 $pm_name = $pm_contact->organization->organization_name;
             }
         }
+        if($pm_name == ''){
+            if($pm_contact->person){
+                $pm_name = $pm_contact->person->first_name." ".$pm_contact->person->last_name;
+            }
+        }
 
-        // total items? from amenity inspection table
-        $total_items = 0; // TBD
+        // if no organization put contact name under the project name
+        // 
+        // 
+        // 
+        // 
+
+        // total items is the total number of units added during the selection process
+        $total_items = count($summary['grouped']); // TBD
 
         // save summary
         $audit->selection_summary = json_encode($summary);
@@ -1161,22 +1172,21 @@ class AuditsEvent
                 'audit_compliance_icon' => 'a-circle-checked',
                 'audit_compliance_status' => 'ok-actionable', 
                 'audit_compliance_status_text' => 'Audit Compliant',
-                'followup_status' => 'ok-actionable',
+                'followup_status' => '',
                 'followup_status_text' => 'No followups',
-                'followup_date' => '2018-12-10', // combine and use one date for both fields
                 'file_audit_icon' => 'a-folder',
-                'file_audit_status' => 'ok-actionable',
-                'file_audit_status_text' => '',
+                'file_audit_status' => '',
+                'file_audit_status_text' => 'Click to add a finding',
                 'nlt_audit_icon' => 'a-booboo',
-                'nlt_audit_status' => 'action-required',
-                'nlt_audit_status_text' => '',
+                'nlt_audit_status' => '',
+                'nlt_audit_status_text' => 'Click to add a finding',
                 'lt_audit_icon' => 'a-skull',
-                'lt_audit_status' => 'in-progress',
-                'lt_audit_status_text' => '',
+                'lt_audit_status' => '',
+                'lt_audit_status_text' => 'Click to add a finding',
                 'smoke_audit_icon' => 'a-flames',
-                'smoke_audit_status' => 'action-needed',
-                'smoke_audit_status_text' => '',
-                'auditor_status_icon' => 'a-avatar',
+                'smoke_audit_status' => '',
+                'smoke_audit_status_text' => 'Click to add a finding',
+                'auditor_status_icon' => 'a-avatar-fail',
                 'auditor_status' => 'action-required',
                 'auditor_status_text' => 'Auditors / schedule conflicts / unasigned items',
                 'message_status_icon' => 'a-envelope-4',
@@ -1188,9 +1198,9 @@ class AuditsEvent
                 'history_status_icon' => 'a-person-clock',
                 'history_status' => '',
                 'history_status_text' => 'NO/VIEW HISTORY',
-                'step_status_icon' => 'a-calendar-7',
+                'step_status_icon' => 'a-home-question',
                 'step_status' => 'no-action',
-                'step_status_text' => ''
+                'step_status_text' => 'Review and assign inspectable areas'
             ]);
             $cached_audit->save();
 
