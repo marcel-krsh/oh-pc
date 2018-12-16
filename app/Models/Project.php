@@ -40,7 +40,7 @@ class Project extends Model
 
     public function programs() : HasMany
     {
-        return $this->hasMany(\App\Models\ProjectProgram::class, 'project_key', 'project_key');
+        return $this->hasMany(\App\Models\ProjectProgram::class, 'project_key', 'project_key')->where('project_program_status_type_key',SystemSetting::get('active_program_status_type_key'));
     }
 
     public function buildings() : HasMany
