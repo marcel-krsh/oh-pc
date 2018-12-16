@@ -345,9 +345,26 @@ class AuditsEvent
 
         if($buildings){
             foreach($buildings as $building){
+                if($building->address){
+                    $address = $building->address->line_1;
+                    $city = $building->address->city;
+                    $state = $building->address->state;
+                    $zip = $building->address->zip;
+                }else{
+                    $address = '';
+                    $city = '';
+                    $state = '';
+                    $zip = '';
+                }
+
                 $b = new BuildingInspection([
                     'building_id' => $building->id,
                     'building_key' => $building->building_key,
+                    'building_name' => $building->building_name,
+                    'address' => $address,
+                    'city' => $city,
+                    'state' => $state,
+                    'zip' => $zip,
                     'audit_id' => $audit->id,
                     'audit_key' => $audit->monitoring_key,
                     'project_id' => $project->id,
@@ -1039,6 +1056,8 @@ class AuditsEvent
                             $u = new UnitInspection([
                                 'unit_id' => $unit->id,
                                 'unit_key' => $unit->unit_key,
+                                'building_id' => $unit->building_id,
+                                'building_key' => $unit->building_key,
                                 'audit_id' => $audit->id,
                                 'audit_key' => $audit->monitoring_key,
                                 'project_id' => $project->id,
@@ -1151,7 +1170,9 @@ class AuditsEvent
 
         $cached_audit = new CachedAudit([
                 'audit_id' => $audit->id,
+                'audit_key' => $audit->monitoring_key,
                 'project_id' => $project_id,
+                'project_key' => $audit->development_key,
                 'project_ref' => $project_ref, 
                 'status' => '',
                 'lead' => $lead, 

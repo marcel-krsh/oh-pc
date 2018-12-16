@@ -119,10 +119,10 @@
 	    props: ['audit','index'],
 	    methods: {
             openProject: function() {
-            	loadTab('/projects/'+this.audit.projectRef, '4', 1, 1, '', 1);
+            	loadTab('/projects/'+this.audit.projectKey, '4', 1, 1, '', 1);
             },
             openProjectDetails: function() {
-            	projectDetails(this.audit.id, this.index, this.audit.total_buildings);
+            	projectDetails(this.audit.auditId, this.index, this.audit.total_buildings);
             },
             scheduleAudit: function() {
                 loadTab('/projects/'+this.audit.projectRef, '4', 1, 1, '', 1);

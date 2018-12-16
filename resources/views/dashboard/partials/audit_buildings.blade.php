@@ -17,10 +17,12 @@
 												<div class="uk-width-1-1 uk-padding-remove">
 													<div uk-grid style="padding-top:10px;">
 														<div class="building-auditors uk-width-1-2">
+															@if($building->building->auditors_json)
 															<div uk-slideshow="animation: slide; min-height:90;">
 
 															    <div class="uk-position-relative uk-visible-toggle">
 
+															        
 															        <ul class="uk-slideshow-items">
 															            <li>
 															            	<div uk-grid>
@@ -43,12 +45,13 @@
 																			</div>
 															            </li>
 															        </ul>
-
+															        
 															    </div>
 
 															    <ul class="uk-slideshow-nav uk-dotnav uk-flex-center"></ul>
 
 															</div>
+															@endif
 														</div>
 														<div class="uk-width-1-2 uk-padding-remove">
 															<div class="building-type-icon " uk-tooltip="pos:top-left;title:Building ID {{$building->building->id}};">

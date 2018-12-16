@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Building extends Model
 {
@@ -28,5 +29,10 @@ class Building extends Model
     public function amenities() : HasMany
     {
         return $this->hasMany(\App\Models\BuildingAmenity::class, 'building_id', 'building_id');
+    }
+
+    public function address() : HasOne
+    {
+        return $this->hasOne(\App\Models\Address::class, 'address_key', 'physical_address_key');
     }
 }

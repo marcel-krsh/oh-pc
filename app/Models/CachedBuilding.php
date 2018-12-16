@@ -9,7 +9,11 @@ class CachedBuilding extends Model
 {
     protected $fillable = [
         'audit_id',
+        'audit_key',
+        'building_id',
+        'building_key',
         'project_id',
+        'project_key',
         'amenity_id',
         'status',
         'type',
