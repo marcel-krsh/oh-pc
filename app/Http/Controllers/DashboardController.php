@@ -9,9 +9,11 @@ use Auth;
 use Session;
 use App\Models\SystemSetting;
 use App\LogConverter;
+use App\Models\Audit;
 use App\Models\CachedAudit;
 use App\Models\Report;
 use Carbon;
+use Event;
 use App\Models\CommunicationRecipient;
 
 use Illuminate\Support\Facades\Redis;
@@ -22,8 +24,8 @@ class DashboardController extends Controller
     {
         // $this->middleware('allita.auth');
         if(env('APP_DEBUG_NO_DEVCO') == 'true'){
-            Auth::onceUsingId(1); // TEST BRIAN
-            //Auth::onceUsingId(286); // TEST BRIAN
+            //Auth::onceUsingId(1); // TEST BRIAN
+            Auth::onceUsingId(286); // TEST BRIAN
             
             // this is normally setup upon login
             $current_user = Auth::user();
@@ -91,6 +93,10 @@ class DashboardController extends Controller
     public function audits(Request $request, $page=0)
     {
         
+        // TEST EVENT
+        $testaudit = Audit::where('development_key','=', 247660)->where('monitoring_status_type_key', '=', 4)->orderBy('start_date','desc')->first();
+        Event::fire('audit.created', $testaudit);
+
         // $request will contain filters
         // $auditFilterMineOnly
         // $auditFilterMineOnly
@@ -223,10 +229,22 @@ class DashboardController extends Controller
             }
 
             $pm = strtoupper($audit['pm']);
-            $inspectionScheduleDate = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('m/d');
-            $inspectionScheduleDateYear = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('Y');
-            $followupDate = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('m/d');
-            $followupDateYear = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('Y');
+            if($audit['inspection_schedule_date']){
+                $inspectionScheduleDate = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('m/d');
+                $inspectionScheduleDateYear = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('Y');
+            }else{
+                $inspectionScheduleDate = null;
+                $inspectionScheduleDateYear = null;
+            }
+            
+            if($audit['followup_date']){
+                $followupDate = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('m/d');
+                $followupDateYear = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('Y');
+            }else{
+                $followupDate = null;
+                $followupDateYear = null;
+            }
+            
 
             $data[] = [    
                 'id' => $audit->id,

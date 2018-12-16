@@ -51,15 +51,4 @@ class Project extends Model
         return $this->hasMany(\App\Models\Building::class, 'development_key', 'project_key');
     }
 
-    // TBD needed for the unit selection process
-    public function isLeasePurchase()
-    {
-        
-        $leaseProgramKeys = SystemSetting::get('lease_purchase');
-        settype($leaseProgramKeys, 'array');
-        
-        if( in_array($this->program_key, $leaseProgramKeys) ){ return 1; }else{ return 0; }
-        
-    }
-
 }
