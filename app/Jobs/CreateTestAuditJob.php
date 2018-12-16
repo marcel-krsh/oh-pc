@@ -15,7 +15,7 @@ use App\Models\User;
 use DB;
 use DateTime;
 use Illuminate\Support\Facades\Hash;
-
+use App\Models\Audit;
 use Event;
 
 class CreateTestAuditJob implements ShouldQueue
@@ -27,9 +27,9 @@ class CreateTestAuditJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Audit $audit)
     {
-        //
+        $this->audit = $audit;
     }
     public $tries = 5;
     /**
@@ -37,8 +37,8 @@ class CreateTestAuditJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle($testaudit)
+    public function handle()
     {
-        Event::fire('audit.created', $testaudit);
+        Event::fire('audit.created', $this->audit);
     }
 }
