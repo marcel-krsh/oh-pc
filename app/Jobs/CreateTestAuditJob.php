@@ -44,7 +44,7 @@ class CreateTestAuditJob implements ShouldQueue
         try{
             Event::fire('audit.created', $audit);
         }catch(Exception $e){
-            Log::info('Unable to fire event '.$e)
+            Log::info('Unable to fire event '.$e);
         }
     }
 }
