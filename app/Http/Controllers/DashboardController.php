@@ -94,8 +94,8 @@ class DashboardController extends Controller
     {
         
         // TEST EVENT
-        // $testaudit = Audit::where('development_key','=', 247660)->where('monitoring_status_type_key', '=', 4)->orderBy('start_date','desc')->first();
-        // Event::fire('audit.created', $testaudit);
+        $testaudit = Audit::where('development_key','=', 247660)->where('monitoring_status_type_key', '=', 4)->orderBy('start_date','desc')->first();
+        Event::fire('audit.created', $testaudit);
 
         // $request will contain filters
         // $auditFilterMineOnly
@@ -248,6 +248,7 @@ class DashboardController extends Controller
 
             $data[] = [    
                 'id' => $audit->id,
+                'auditId' => $audit->audit_id,
                 'title' => $audit->title,
                 'notcritical' => $notcritical,
                 'display' => $display,
@@ -255,6 +256,7 @@ class DashboardController extends Controller
                 'userBadgeColor' => 'user-badge-'.$lead_color,
                 'initials' => $lead_initials,
                 'total_buildings' => $audit['total_buildings'],
+                'projectKey' => $audit['project_key'],
                 'projectRef' => $audit['project_ref'],
                 'pm' => $pm,
                 'address' => $audit['address'],
