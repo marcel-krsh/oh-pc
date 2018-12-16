@@ -55,7 +55,7 @@
                         <option value="all" selected="">
                             FILTER BY PROJECT 
                         </option>
-                        @if(!is_nulll($projects_array))
+                        @if(!is_null($projects_array))
 	                        @foreach ($projects_array as $owner)
 	                        <option value="staff-{{$owner['id']}}"><a class="uk-dropdown-close">{{$project['name']}}</a></option>    
 	                        @endforeach
@@ -68,7 +68,7 @@
                         <option value="all" selected="">
                             FILTER BY LEAD 
                             </option>
-                            @if(!is_nulll($hfa_users_array))
+                            @if(!is_null($hfa_users_array))
 	                            @foreach ($hfa_users_array as $user)
 	                            <option value="user-{{$user->id}}"><a  class="uk-dropdown-close">{{$user->person->first_name}} {{$user->person->last_name}}</a></option>    
 	                            @endforeach 
