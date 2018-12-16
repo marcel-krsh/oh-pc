@@ -83,7 +83,7 @@
 							            		@if($building->building->followup_date !== null)
 							            		<div class="alert-icon {{$building->building->status}}">
 								            		<?php $today = date('m/d/Y',time()); 
-								            			  $dueDate = $building->building->followup_date)->format('m/d/Y');
+								            			  $dueDate = \Carbon\Carbon::createFromFormat('Y-m-d',$building->building->followup_date)->format('m/d/Y');
 								            			?>
 								            		@if($dueDate < $today)
 								            		<i class="a-bell-ring" uk-tooltip="pos:top-left;title:PAST DUE<br />Followup: {{\Carbon\Carbon::createFromFormat('Y-m-d', $building->building->followup_date)->format('m/d/Y')}}: {{$building->building->followup_description}};"></i>
