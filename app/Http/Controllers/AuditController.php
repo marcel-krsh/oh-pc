@@ -74,7 +74,7 @@ class AuditController extends Controller
         }
         
         $buildings = OrderingBuilding::where('audit_id','=',$audit)->where('user_id','=',Auth::user()->id)->orderBy('order','asc')->with('building')->get(); 
-dd($buildings);
+
     	return view('dashboard.partials.audit_buildings', compact('audit', 'target', 'buildings', 'context'));
     }
 
