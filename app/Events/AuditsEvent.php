@@ -60,12 +60,8 @@ class AuditsEvent
         if($audit){
             if(in_array($audit->monitoring_status_type_key, [4,5,6])){ 
                 if(!CachedAudit::where('audit_id', '=', $audit->id)->count()){
-    //                if($this->fetchAuditUnits($audit)){             // first get units
-                    if(1){ 
-                        // $units = Unit::whereHas('programs', function ($query) use ($audit) {
-                        //             $query->where('audit_id', '=', $audit->id);
-                        //         })->get();
-                        // dd($units);
+                    if($this->fetchAuditUnits($audit)){             // first get units
+                    //if(1){ 
                         
                         // run the selection process 10 times and keep the best one
                         $best_run = null;
