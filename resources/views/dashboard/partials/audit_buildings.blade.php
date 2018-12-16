@@ -59,7 +59,8 @@
 																@endif
 															</div>
 															<div class="building-status">
-																<span class="uk-badge colored" uk-tooltip="pos:top-left;title:# finding icon;" title="@forEach($building->building->findings_json as $finding){{strtoupper($finding->finding_type)}}: {{$finding->finding_description}}<br/>@endForEach">{{$building->building->finding_total}}</span>
+																<span class="uk-badge colored" uk-tooltip="pos:top-left;title:# finding icon;" title="@if(!is_null($building->building->findings_json)
+																	@forEach($building->building->findings_json as $finding){{strtoupper($finding->finding_type)}}: {{$finding->finding_description}}<br/>@endForEach @else No Findings @endIf">{{$building->building->finding_total}}</span>
 															</div>
 														</div>
 													</div>
