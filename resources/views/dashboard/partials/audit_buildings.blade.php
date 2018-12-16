@@ -60,14 +60,14 @@
 															</div>
 															<div class="building-status">
 																
-																<span class="uk-badge colored" uk-tooltip="pos:top-left;title:# finding icon;" title="@if(!is_null($building->building->findings_json))
+																<span class="uk-badge colored" uk-tooltip="pos:top-left;" title="@if(!is_null($building->building->findings_json))
 																	<?php 
 																	foreach($building->building->findings_json as $finding){
-																		// echo strtoupper($finding->finding_type).':'.$finding->finding_description.'<br/>';
-																		echo 'hello';
+																		echo strtoupper($finding->finding_type).':'.$finding->finding_description.'<br/>';
+																		//echo 'hello';
 																	}
 																	?>@else No Findings @endIf">{{$building->building->finding_total}}</span>
-																}
+																
 															</div>
 														</div>
 													</div>
