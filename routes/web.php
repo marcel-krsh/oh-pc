@@ -14,6 +14,7 @@
 Route::group(['middleware' => 'web'], function () {
 
     Route::get('/sync', 'SyncController@sync');
+     Route::get('/brian_test', 'SyncController@brianTest');
 
     //Route::group(['middleware' => ['allita.auth']], function() {
         Route::get('unified_login', function (){
