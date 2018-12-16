@@ -118,14 +118,14 @@
 					            <h1><i class="a-file-fail"></i></h1>
 					        </div>
 					        <div class="uk-width-expand">
-					            <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="#">System</a></h4>
+					            <h4 class="uk-comment-title uk-margin-remove"><a class="uk-link-reset" href="#">SORRY!</a></h4>
 					            <ul class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top">
 					                <li><a href="#">No Reports Found</a></li>
 					            </ul>
 					        </div>
 					    </header>
 					    <div class="uk-comment-body">
-					        <p>SORRY - NO REPORTS ARE AVAILABLE AT THIS TIME @if(Auth::user()->isOhfa())PLEASE TRY APPLYING A FILTER @endIf</p>
+					        <p>Well, it appears there are no reports available at this time. @if(Auth::user()->isOhfa())You can try applying a filter though, and see if some come up that way. @endIf</p>
 					    </div>
 					</article>
                 	
