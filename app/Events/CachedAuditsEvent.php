@@ -21,12 +21,12 @@ use App\Models\BuildingInspection;
 use App\Models\ProjectContactRole;
 use App\Models\CachedAudit;
 use App\Models\CachedBuilding;
+use App\Models\AuditAuditor;
 use App\Models\Program;
 use App\Services\DevcoService;
 use App\Models\UnitProgram;
 use Illuminate\Support\Facades\Redis;
 use Auth;
-use Log;
 
 class CachedAuditsEvent
 {
@@ -57,52 +57,88 @@ class CachedAuditsEvent
 
     public function cachedAuditCreated(CachedAudit $cached_audit)
     {
-    	// create buildings, create units, create amenities cache tables
+        // create buildings, create units, create amenities cache tables
 
-    	// get buildings from cached_audit
-        try{
-        	$buildings = BuildingInspection::where('audit_id','=',$cached_audit->audit_id)->get();
+        // get buildings from cached_audit
+        $buildings = BuildingInspection::where('audit_id','=',$cached_audit->audit_id)->get();
 
-        	// create cached buildings related to this audit
-        	foreach($buildings as $building){
-                try{
-            		$count_units = UnitInspection::where('building_key', '=', $building->building_key)->count();
-            		$finding_total = $building->nlt_count + $building->lt_count + $building->file_count;
+        // get the auditors' list from audit_auditors table
+        // [{"id": "1", "name": "Brian Greenwood", "color": "green", "status": "alert", "initials": "BG"}, {"id": "2", "name": "Brian Greenwood 2", "color": "blue", "status": "", "initials": "BF"}]
+        // 
+        // also save the lead auditor in the table
+        $audit = Audit::where('id', '=', $cached_audit->audit_id)->first();
+        if($audit->user_key){
+            $lead_key = $audit->user_key;
+            $lead_id = $audit->lead_user_id;
+        }else{
+            $lead_key = null;
+            $lead_id = null;
+        }
 
-            		$cached_building = new CachedBuilding([
-                        'building_id' => $building->building_id,
-                        'building_key' => $building->building_key,
-                        'audit_id' => $cached_audit->audit_id,
-                        'audit_key' => $cached_audit->audit_key,
-                        'project_id' => $building->project_id,
-                        'project_key' => $building->project_key,
+        $auditors = AuditAuditor::where('monitoring_key','=',$cached_audit->audit_key)->with('user')->get();
+        $auditors_array = [];
+        if($auditors){
+            foreach($auditors as $auditor){
+                if($auditor->user){
+                    $lead = $lead_user->id;
+                    $words = explode(" ", $lead_user->name);
+                    $initials = "";
+                    foreach ($words as $w) {
+                        $initials .= $w[0];
+                    }
+                    $initials = substr($initials, 0, 2); // keep the first two letters only
+
+                    $auditors_array[] = [
+                        'id' => $auditor->user->id,
+                        'name' => $auditor->user->name,
+                        'color' => $auditor->user->color,
                         'status' => '',
-                        'type' => 'unit', 
-                        'type_total' => $count_units,
-                        'type_text' => 'UNIT',
-                        'type_text_plural' => 'UNITS',
-                        'finding_total' => $finding_total,
-                        'finding_file_status' => '',
-                        'finding_nlt_status' => '',
-                        'finding_lt_status' => '',
-                        'finding_file_total' => $building->file_count,
-                        'finding_file_completed' => 0,
-                        'finding_nlt_total' => $building->nlt_count,
-                        'finding_nlt_completed' => 0,
-                        'finding_lt_total' => $building->lt_count,
-                        'finding_lt_completed' => 0,
-                        'address' => $cached_audit->address,
-        		        'city' => $cached_audit->city,
-        		        'state' => $cached_audit->state,
-        		        'zip' => $cached_audit->zip
-                    ]);
-                    $cached_building->save();	
-        	   }catch(Exception $e){
-                    Log::info('Failed creating building cache record:'.$e);
-               }
+                        'initials' => $initials
+                    ];
+                }
             }
         }
-    } catch(Exception $e){ 
-        Log::info('Failed creating audit cache:'.$e);
+
+        // create cached buildings related to this audit
+        foreach($buildings as $building){
+            $count_units = UnitInspection::where('building_key', '=', $building->building_key)->count();
+            $finding_total = $building->nlt_count + $building->lt_count + $building->file_count;
+
+            
+            
+
+            $cached_building = new CachedBuilding([
+                'building_id' => $building->building_id,
+                'building_key' => $building->building_key,
+                'audit_id' => $cached_audit->audit_id,
+                'audit_key' => $cached_audit->audit_key,
+                'project_id' => $building->project_id,
+                'project_key' => $building->project_key,
+                'lead_id' => $building->project_id,
+                'lead_key' => $building->project_key,
+                'status' => '',
+                'type' => 'unit', 
+                'type_total' => $count_units,
+                'type_text' => 'UNIT',
+                'type_text_plural' => 'UNITS',
+                'finding_total' => $finding_total,
+                'finding_file_status' => '',
+                'finding_nlt_status' => '',
+                'finding_lt_status' => '',
+                'finding_file_total' => $building->file_count,
+                'finding_file_completed' => 0,
+                'finding_nlt_total' => $building->nlt_count,
+                'finding_nlt_completed' => 0,
+                'finding_lt_total' => $building->lt_count,
+                'finding_lt_completed' => 0,
+                'address' => $cached_audit->address,
+                'city' => $cached_audit->city,
+                'state' => $cached_audit->state,
+                'zip' => $cached_audit->zip,
+                'auditors_json' => json_encode($auditors_array)
+            ]);
+            $cached_building->save();   
+        }
+        
     }
 }
