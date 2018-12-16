@@ -56,7 +56,7 @@ class Project extends Model
             $count = UnitProgram::where('audit_id',$this->currentAudit()->audit_id)
                                             ->where('program_id',$program->id)
                                             ->count();
-            $programCounts[] = [$program->program->program_name => $count];
+            $programCounts[] = [$program->programs->program_name => $count];
         }
         if(count($programCounts)<1){
             $programCounts[] = ['No Programs Found' => 'NA'];
