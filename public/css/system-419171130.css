@@ -1872,46 +1872,46 @@ margin-top:10px;
     transform: inherit;
 }
 #auditstable .building-critical .building-auditors .uk-dotnav > * > *  {
-     border-color: #da328a;
+     border-color: #ab8b8b;
      background-color: transparent;
 }
 #auditstable .building-critical .building-auditors .uk-dotnav > .uk-active > * {
-    background-color: #da328a;
+    background-color: #ab8b8b;
 }
 #auditstable .building-in-progress .building-auditors .uk-dotnav > * > *  {
-     border-color: #49ade9;
+     border-color: #8a9baf;
      background-color: transparent;
 }
 #auditstable .building-in-progress .building-auditors .uk-dotnav > .uk-active > * {
-    background-color: #49ade9;
+    background-color: #8a9baf;
 }
 #auditstable .building-action-needed .building-auditors .uk-dotnav > * > *  {
-     border-color: #76338b;
+     border-color: #a48aaf;
      background-color: transparent;
 }
 #auditstable .building-action-needed .building-auditors .uk-dotnav > .uk-active > * {
-    background-color: #76338b;
+    background-color: #a48aaf;
 }
 #auditstable .building-action-required .building-auditors .uk-dotnav > * > *  {
-     border-color: #da328a;
+     border-color: #ab8b8b;
      background-color: transparent;
 }
 #auditstable .building-action-required .building-auditors .uk-dotnav > .uk-active > * {
-    background-color: #da328a;
+    background-color: #ab8b8b;
 }
 #auditstable .building-no-action .building-auditors .uk-dotnav > * > *  {
-     border-color: #939598;
+     border-color: #aaa8ab;
      background-color: transparent;
 }
 #auditstable .building-no-action .building-auditors .uk-dotnav > .uk-active > * {
-    background-color: #939598;
+    background-color: #aaa8ab;
 }
 #auditstable .building-ok-actionable .building-auditors .uk-dotnav > * > *  {
-     border-color: #56b285;
+     border-color: #9aaf9e;
      background-color: transparent;
 }
 #auditstable .building-ok-actionable .building-auditors .uk-dotnav > .uk-active > * {
-    background-color: #56b285;
+    background-color: #9aaf9e;
 }
 
 #auditstable .building .uk-sortable-handle > span > small { font-size: 11px; }
