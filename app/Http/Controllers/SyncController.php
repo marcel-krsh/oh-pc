@@ -11,9 +11,11 @@ use App\Models\AuthTracker;
 use App\Models\SystemSetting;
 //use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Console\Scheduling\Schedule;
 use Log;
-
+use Event;
 use App\Models\Audit;
+use App\Jobs\CreateTestAuditJob;
 
 
 
@@ -58,7 +60,11 @@ class SyncController extends Controller
 
     public function sync(Request $request) {
 
-        Audit::where('audit_id',$request->get('audit_id'))->update(['audit_status_id'=>4]);
+
+        //Audit::where('audit_id',$request->get('development_key'))->update(['audit_status_id'=>4]);
+        //TEST EVENT
+        $testaudit = Audit::where('development_key','=', $request->get('development_key'))->where('monitoring_status_type_key', '=', 4)->orderBy('start_date','desc')->first();
+        CreateTestAuditJob::dispatch($testaudit)->onQueue('cache');
         
     }
 }
