@@ -51,4 +51,22 @@ class Project extends Model
         return $this->hasMany(\App\Models\Building::class, 'development_key', 'project_key');
     }
 
+    public function projectProgramCounts() {
+
+        $programs = $this->programs;
+        $programCounts = array();
+        foreach ($programs as $program) {
+            $count = ProgramUnit::where('audit_id',$this->currentAudit->audit_id)->where('program_id',$program->id)->count();
+            if(!$count){
+                $count = "NA";
+            }
+            $programCounts[] = [$program->name => $count];
+        }
+        if(count($programCounts)<1){
+            $programCounts[] = ['No Programs Found' => 'NA'];
+        }
+        return $programCounts;
+
+    }
+
 }
