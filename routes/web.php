@@ -91,7 +91,7 @@ Route::group(['middleware' => 'web'], function () {
 
         Route::get('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummary');
         Route::post('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummaryFilterProgram');
-        Route::get('/modals/findings/{type}/audit/{auditid}/building/{buildingid}/unit/{unitid?}', 'FindingController@modalFindings');
+        Route::get('/modals/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}', 'FindingController@modalFindings');
 
         Route::get('/findings/{id}/items', 'FindingController@findingItems');
         Route::get('/modals/findings/{id}/items/{itemid}/photos/{photoid}', 'FindingController@findingItemPhoto');

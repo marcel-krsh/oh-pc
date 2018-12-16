@@ -792,8 +792,8 @@ function reorder(classname, childclassname) {
 	});
 }
 
-function openFindings(element, auditid, buildingid, unitid='', type){
-	dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid,1,0,1);
+function openFindings(element, auditid, buildingid, unitid='', type,amenity=''){
+	dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1);
 }
 
 function reorderBuildings(auditId, buildingId, endIndex) {

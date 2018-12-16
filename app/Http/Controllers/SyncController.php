@@ -9,15 +9,12 @@ use App\Services\AuthService;
 use App\Services\DevcoService;
 use App\Models\AuthTracker;
 use App\Models\SystemSetting;
-use App\Models\User;
+//use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Log;
 
-use App\Models\Project;
-use App\Models\Building;
-use App\Models\Program;
-use App\Models\UnitProgram;
 use App\Models\Audit;
+
 
 
 
@@ -25,64 +22,43 @@ use App\Models\Audit;
 class SyncController extends Controller
 {
     //
-    public function sync() {
-        //////////////////////////////////////////////////
-        /////// Get the project for audit
-        /////
-        ///// bring your own audit
-        $audit = Audit::where('development_key',247660)->orderBY('start_date','desc')->first();
+    public function associate($model,$lookUpModel,$associations){
+        foreach($associations as $associate){
+            $updates = $model::select($associate['look_up_reference'])
+                        ->whereNull($associate['null_field'])
+                        ->where($associate['look_up_reference'],$associate['condition_operator'],$associate['condition'])
+                        ->groupBy($associate['look_up_reference'])
+                        //->toSQL();
+                        ->get()->all();
+            //dd($updates);
+            foreach ($updates as $update) {
+                //lookup model
+                //dd($update,$update->{$associate['look_up_reference']});
+                $key = $lookUpModel::select($associate['look_up_foreign_key'])
+                ->where($associate['lookup_field'],$update->{$associate['look_up_reference']})
+                ->first();
+                if(!is_null($key)){
+                    $model::whereNull($associate['null_field'])
+                        ->where(
+                                $associate['look_up_reference'],
+                                $update->{$associate['look_up_reference']}
+                                )
+                        ->update([
+                                  $associate['null_field'] => $key->{$associate['look_up_foreign_key']}
+                                                                    ]);
+                } else {
+                    //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->{$associate['look_up_reference']}.' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the model.');
+                    echo date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->{$associate['look_up_reference']}.' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the model.<hr />';
 
-        // remove any current programs on units for this audit
-
-        UnitProgram::where('audit_id',$audit->id)->delete();
-        
-        $apiConnect = new DevcoService();
-        // paths to the info we need: dd($audit, $audit->project, $audit->project->buildings);
-
-        // Get all the units we need to get programs for:
-
-        $buildings = $audit->project->buildings;
-        if(!is_null($buildings)){
-        //Process each building
-            foreach ($buildings as $building) {
-                //Get the building's units
-                $buildingUnits = $building->units;
-
-                if(!is_null($buildingUnits)){
-                // Process each unit
-                    foreach ($buildingUnits as $unit) {
-                        // Get the unit's current program designation from DevCo
-                        try{
-                            $unitProgramData = $apiConnect->getUnitPrograms($unit->unit_key, 1,'admin@allita.org', 'Updating Unit Program Data', 1, 'Server');
-                            $unitProgramData = json_decode($unitProgramData, true);
-                            //dd($unitProgramData['data']);
-                            //dd($unitProgramData['data'][0]['attributes']['programKey']);
-                            foreach ($unitProgramData['data'] as $unitProgram) {
-                               //dd('Unit Program Id - '.$unitProgram['attributes']['programKey']);
-
-                                $program = Program::where('program_key',$unitProgram['attributes']['programKey'])->first();
-                                if(!is_null($program)){
-                                    UnitProgram::insert([
-                                        'unit_key'      =>  $unit->unit_key,
-                                        'unit_id'       =>  $unit->id,
-                                        'program_key'   =>  $program->program_key,
-                                        'program_id'    =>  $program->id,
-                                        'audit_id'      =>  $audit->id,
-                                        'monitoring_key'=>  $audit->monitoring_key,
-                                        'created_at'    =>  date("Y-m-d g:h:i", time()),
-                                        'updated_at'    =>  date("Y-m-d g:h:i", time())
-                                    ]);
-                                }else{
-                                   Log::info('Unable to find program with key of '.$unitProgram['attributes']['programKey'].' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key); 
-                                }
-                            }
-                        
-                        } catch(Exception $e){
-                            Log::info('Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key);
-                        }
-                    }
                 }
+
             }
         }
+    }
+
+    public function sync(Request $request) {
+
+        Audit::where('audit_id',$request->get('audit_id'))->update(['audit_status_id'=>4]);
+        
     }
 }

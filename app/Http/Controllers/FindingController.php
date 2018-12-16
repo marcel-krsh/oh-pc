@@ -19,9 +19,9 @@ class FindingController extends Controller
         }
     }
 
-    public function modalFindings($type, $auditid, $buildingid, $unitid='')
+    public function modalFindings($type, $auditid, $buildingid='', $unitid='',$amenityid='')
     {
-    	// get user's audits, projects, buildings, areas, units based on click
+    	// get user's audits, projects, buildings, areas, units, based on click
     	/*
     	
 		• Clicking on the finding icon from the audit list level will default to the project name - project common areas - and the first common area of that project.
@@ -39,6 +39,14 @@ class FindingController extends Controller
     	if the auditor did not open the add findings window from
 		the program detail expansion of a building or unit, and they click the "Done Adding Findings" button or they change to a different building, unit or common area set checkDoneAddingFindings to 1 otherwise 0.
     	 */
+
+        //dd('type:'.$type.' auditid:'.$auditid.' buildingid:'.$buildingid.' unitid:'.$unitid.' amenityid:'.$amenityid);
+
+        if(is_null($type)){
+            // default filter is all
+            $type = 'all';
+        }
+
     	$checkDoneAddingFindings = 1;
 
     	$data = collect([
@@ -227,7 +235,7 @@ class FindingController extends Controller
     			]
     		]
     	]);
-    	return view('modals.findings', compact('data', 'checkDoneAddingFindings'));
+    	return view('modals.findings', compact('data', 'checkDoneAddingFindings','type'));
     }
 
     function findingItems($findingid, $itemid = '') {
