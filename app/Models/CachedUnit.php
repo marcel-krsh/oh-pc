@@ -9,9 +9,12 @@ class CachedUnit extends Model
 {
     protected $fillable = [
         'audit_id',
+        'audit_key',
         'project_id',
+        'project_key',
         'amenity_id',
         'building_id',
+        'building_key',
         'status',
         'type',
         'type_total',

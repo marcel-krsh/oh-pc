@@ -15,6 +15,8 @@ class CachedBuilding extends Model
         'project_id',
         'project_key',
         'amenity_id',
+        'lead_id',
+        'lead_key',
         'status',
         'type',
         'type_total',

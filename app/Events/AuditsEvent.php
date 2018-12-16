@@ -60,12 +60,8 @@ class AuditsEvent
         if($audit){
             if(in_array($audit->monitoring_status_type_key, [4,5,6])){ 
                 if(!CachedAudit::where('audit_id', '=', $audit->id)->count()){
-    //                if($this->fetchAuditUnits($audit)){             // first get units
+                    //if($this->fetchAuditUnits($audit)){             // first get units
                     if(1){ 
-                        // $units = Unit::whereHas('programs', function ($query) use ($audit) {
-                        //             $query->where('audit_id', '=', $audit->id);
-                        //         })->get();
-                        // dd($units);
                         
                         // run the selection process 10 times and keep the best one
                         $best_run = null;
@@ -1037,6 +1033,7 @@ class AuditsEvent
         //dd($optimized_selection);
         // save all units selected in selection table
         if($optimized_selection){
+            $group_id = 1;
             foreach($optimized_selection['programs'] as $program){
                 $unit_keys = $program['units_after_optimization'];
 
@@ -1054,6 +1051,8 @@ class AuditsEvent
                     foreach($unit->programs as $unit_program){
                         if(in_array($unit_program->program_key, $program_keys)){ 
                             $u = new UnitInspection([
+                                'group' => $program['name'],
+                                'group_id' => $group_id,
                                 'unit_id' => $unit->id,
                                 'unit_key' => $unit->unit_key,
                                 'building_id' => $unit->building_id,
@@ -1071,6 +1070,7 @@ class AuditsEvent
                     }
 
                 }
+                $group_id = $group_id + 1;
             }
         }
 
@@ -1209,7 +1209,7 @@ class AuditsEvent
                 'smoke_audit_status_text' => 'Click to add a finding',
                 'auditor_status_icon' => 'a-avatar-fail',
                 'auditor_status' => 'action-required',
-                'auditor_status_text' => 'Auditors / schedule conflicts / unasigned items',
+                'auditor_status_text' => 'Auditors / schedule conflicts / unassigned items',
                 'message_status_icon' => 'a-envelope-4',
                 'message_status' => '',
                 'message_status_text' => '',

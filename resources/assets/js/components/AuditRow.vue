@@ -68,7 +68,7 @@
 		            	<div class="dateyear" v-html="audit.followupDateYear"></div>
             		</div>
             		<div v-else>
-            			<i class="a-calendar-pencil" uk-tooltip="title:New followup;"></i>
+            			<i class="a-calendar-pencil use-hand-cursor" uk-tooltip="title:New followup;"></i>
             		</div>
             	</div> 
             </div>
@@ -76,13 +76,13 @@
         <td class="hasdivider">
         	<div class="divider"></div>
         	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
-            	<div :class="{'uk-width-1-3':true, [audit.fileAuditStatusClass]:true}" :uk-tooltip="audit.tooltipFileAuditStatus">
+            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.fileAuditStatusClass]:true}" :uk-tooltip="audit.tooltipFileAuditStatus">
             		<i :class="{[audit.fileAuditIconClass]:true}"></i>
             	</div> 
-            	<div :class="{'uk-width-1-3':true, [audit.nltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipNltAuditStatus">
+            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.nltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipNltAuditStatus">
             		<i :class="{[audit.nltAuditIconClass]:true}"></i>
             	</div> 
-            	<div :class="{'uk-width-1-3':true, [audit.ltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipLtAuditStatus">
+            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.ltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipLtAuditStatus">
             		<i :class="{[audit.ltAuditIconClass]:true}"></i>
             	</div> 
             </div>
@@ -91,23 +91,23 @@
         	<div class="divider"></div>
         	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
             	<div class="uk-width-1-4">
-            		<i :class="{[audit.auditorStatusIconClass]:true, [audit.auditorStatusClass]:true}" :uk-tooltip="audit.tooltipAuditorStatus"></i>
+            		<i :class="{[audit.auditorStatusIconClass]:true, 'use-hand-cursor':true, [audit.auditorStatusClass]:true}" :uk-tooltip="audit.tooltipAuditorStatus"></i>
             	</div> 
             	<div class="uk-width-1-4">
-            		<i :class="{[audit.messageStatusIconClass]:true, [audit.messageStatusClass]:true,}" :uk-tooltip="audit.tooltipMessageStatus"></i>
+            		<i :class="{[audit.messageStatusIconClass]:true, 'use-hand-cursor':true, [audit.messageStatusClass]:true,}" :uk-tooltip="audit.tooltipMessageStatus"></i>
             	</div> 
             	<div class="uk-width-1-4">
-            		<i :class="{[audit.documentStatusIconClass]:true, [audit.documentStatusClass]:true,}" :uk-tooltip="audit.tooltipDocumentStatus"></i>
+            		<i :class="{[audit.documentStatusIconClass]:true, 'use-hand-cursor':true, [audit.documentStatusClass]:true,}" :uk-tooltip="audit.tooltipDocumentStatus"></i>
             	</div> 
             	<div class="uk-width-1-4">
-            		<i :class="{[audit.historyStatusIconClass]:true, [audit.historyStatusClass]:true,}" :uk-tooltip="audit.tooltipHistoryStatus"></i>
+            		<i :class="{[audit.historyStatusIconClass]:true, 'use-hand-cursor':true, [audit.historyStatusClass]:true,}" :uk-tooltip="audit.tooltipHistoryStatus"></i>
             	</div> 
             </div>
         </td>
         <td>
         	<div class="uk-margin-top" uk-grid>
         		<div class="uk-width-1-1  uk-padding-remove-top">
-            		<i :class="{[audit.stepStatusIconClass]:true, [audit.stepStatusClass]:true}" :uk-tooltip="audit.tooltipStepStatus"></i>
+            		<i :class="{[audit.stepStatusIconClass]:true, 'use-hand-cursor':true, [audit.stepStatusClass]:true}" :uk-tooltip="audit.tooltipStepStatus"></i>
 				</div>
         	</div>
         </td>
