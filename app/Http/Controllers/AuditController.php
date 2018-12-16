@@ -40,7 +40,7 @@ class AuditController extends Controller
         // 
 
         // count buildings & count ordering_buildings
-        
+  
         if(CachedBuilding::where('audit_id', '=', $audit)->count() != OrderingBuilding::where('audit_id', '=', $audit)->where('user_id','=',Auth::user()->id)->count() && CachedBuilding::where('audit_id', '=', $audit)->count() != 0){
 
             // this case shouldn't happen
@@ -73,7 +73,7 @@ class AuditController extends Controller
 
         }
         
-        $buildings = OrderingBuilding::where('audit_id','=',$audit)->where('user_id','=',Auth::user()->id)->orderBy('order','asc')->with('building')->get();
+        $buildings = OrderingBuilding::where('audit_id','=',$audit)->where('user_id','=',Auth::user()->id)->orderBy('order','asc')->with('building')->get(); 
 
     	return view('dashboard.partials.audit_buildings', compact('audit', 'target', 'buildings', 'context'));
     }

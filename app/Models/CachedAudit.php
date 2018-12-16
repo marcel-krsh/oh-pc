@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Carbon;
+use Event;
 
 class CachedAudit extends Model
 {
@@ -67,6 +68,23 @@ class CachedAudit extends Model
         'created_at',
         'updated_at'
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($cached_audit) {
+            Event::fire('cachedaudit.created', $cached_audit);
+        });
+
+        // static::updated(function ($audit) {
+        //     Event::fire('audit.updated', $audit);
+        // });
+
+        // static::deleted(function ($audit) {
+        //     Event::fire('audit.deleted', $audit);
+        // });
+    }
 
     public function getLeadJsonAttribute($value) {
       return json_decode($value);

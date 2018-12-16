@@ -39,12 +39,15 @@
         	<div class="uk-display-inline-block uk-margin-small-top uk-text-center fullwidth" uk-grid>
             	<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
             		<div class="uk-width-1-3">
-            			<i :class="{[audit.inspectionStatus]:true, 'a-mobile-repeat':true}" :uk-tooltip="audit.tooltipInspectionStatus"></i>
+            			<i :class="{[audit.inspectionStatus]:true, 'use-hand-cursor':true, 'a-mobile-repeat':true}" :uk-tooltip="audit.tooltipInspectionStatus"></i>
             		</div>
-            		<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top">
+            		<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top" v-if="audit.inspectionScheduleDateYear">
 	            		<h3 class="uk-link" :uk-tooltip="audit.tooltipInspectionSchedule" v-html="audit.inspectionScheduleDate"></h3>
 	            		<div class="dateyear" v-html="audit.inspectionScheduleDateYear"></div>
             		</div>
+                    <div class="uk-width-2-3" v-else>
+                        <i class="a-calendar-7 action-needed use-hand-cursor" uk-tooltip="Click to schedule audits"></i>
+                    </div>
             	</div> 
             	<div class="uk-width-1-6 uk-text-right uk-padding-remove" :uk-tooltip="audit.tooltipInspectableItems" v-html="audit.inspectableItems+' /'"></div> 
             	<div class="uk-width-1-6 uk-text-left uk-padding-remove" v-html="audit.totalItems"></div> 
@@ -120,6 +123,9 @@
             },
             openProjectDetails: function() {
             	projectDetails(this.audit.id, this.index, this.audit.total_buildings);
+            },
+            scheduleAudit: function() {
+                loadTab('/projects/'+this.audit.projectRef, '4', 1, 1, '', 1);
             }
         },
         computed: {

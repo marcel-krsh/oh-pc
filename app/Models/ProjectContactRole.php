@@ -23,6 +23,6 @@ class ProjectContactRole extends Model
 
     public function person() : HasOne
     {
-        return $this->hasOne(\App\Models\Person::class, 'person_key', 'person_key');
+        return $this->hasOne(\App\Models\People::class, 'person_key', 'person_key');
     }
 }
