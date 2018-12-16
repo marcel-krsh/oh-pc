@@ -56,7 +56,7 @@ class Project extends Model
         $programs = $this->programs;
         $programCounts = array();
         foreach ($programs as $program) {
-            $count = ProgramUnit::where('audit_id',$this->currentAudit->audit_id)->where('program_id',$program->id)->count();
+            $count = UnitProgram::where('audit_id',$this->currentAudit->audit_id)->where('program_id',$program->id)->count();
             if(!$count){
                 $count = "NA";
             }
