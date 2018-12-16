@@ -79,7 +79,7 @@ if(Auth::check()){
 	
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script> -->
 	<script src="{{ mix('js/app.js') }}"></script>
 
 	<script>
@@ -145,15 +145,27 @@ if(Auth::check()){
 				    <div class="uk-width-5-6">
 				    	<div id="top-tabs-container">
 					        <ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m">
-				    			<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
+				    			<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
 				    				<a href="">
-				    					<span class="list-tab-text"> <span class="uk-badge" v-if="statsAuditsTotal" v-cloak>@{{statsAuditsTotal}}</span> <i class="a-mobile-home"></i> AUDITS</span></a></li>
-								<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active')){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
-									<a href=""> <span class="list-tab-text"> <span class="uk-badge" v-if="statsCommunicationTotal" v-cloak v-html="statsCommunicationTotal"></span> <i class="a-envelope-attention"></i>COMMUNICATIONS</span></a></li>
-								<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-3').hasClass('uk-active')){loadTab('{{ route('dashboard.reports') }}', '3','','','',1);}">
+				    					<span class="list-tab-text">
+				    						<span class="uk-badge" v-if="statsAuditsTotal" v-cloak>@{{statsAuditsTotal}}
+				    						</span> 
+				    						<i class="a-mobile-home"></i> AUDITS
+				    					</span>
+				    				</a>
+				    			</li>
+								<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
+									<a href=""> 
+										<span class="list-tab-text">
+											<span class="uk-badge" v-if="statsCommunicationTotal" v-cloak v-html="statsCommunicationTotal"></span> 
+											 <i class="a-envelope-3"></i> COMMUNICATIONS
+										</span>
+									</a>
+								</li>
+								<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}', '3','','','',1);}">
 									<a href=""><span class="list-tab-text"><span class="uk-badge" v-if="statsReportsTotal" v-cloak>@{{statsReportsTotal}}</span></span> <i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
 								</li>
-								<li id="detail-tab-5" class="detail-tab-5" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-5').hasClass('uk-active')){loadTab('{{ route('dashboard.admin') }}', '5','','','',1);}">
+								<li id="detail-tab-5" class="detail-tab-5" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-5').hasClass('uk-active')  || window.adminLoaded != 1){loadTab('{{ route('dashboard.admin') }}', '5','','','',1);}">
 									<a href=""><span class="list-tab-text">ADMIN</span></a>
 								</li>
 							</ul>
@@ -348,12 +360,17 @@ if(Auth::check()){
 		setTimeout(function(){
 			$('#{{$tab}}').trigger("click");
 			},100);
+			window.currentSite='allita_pc';
 	</script>
 	@else
-	<script type="javascript">
+	<script >
 		setTimeout(function(){
 			$('#detail-tab-1').trigger("click");
 		},100);
+		window.currentSite='allita_pc';
+		function openUserPreferences(){
+			dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);
+		}
 	</script>
 	@endif
 

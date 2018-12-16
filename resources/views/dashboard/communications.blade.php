@@ -332,3 +332,6 @@ function filterByOwner(){
         });
 
     </script>
+    <script>
+        window.communicationsLoaded = 1;
+    </script>

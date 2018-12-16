@@ -116,6 +116,13 @@
                         });
                     </script>
                 </li>
+                <li id="users-content">
+                    <script type="text/javascript">
+                        $('#users-tab').on('click', function(){
+                            $('#users-content').load('/tabs/users');
+                        });
+                    </script>
+                </li>
             </ul>
 
         </div>
@@ -123,4 +130,8 @@
 </div>
 <script type="text/javascript">$('#organizations-tab-content').load('/tabs/organization');
                     </script>
-
+<?php // keep this script at the bottom of page to ensure the tabs behave appropriately ?>
+<script>
+    window.adminLoaded = 1;
+</script>
+<?php // end script keep ?>
