@@ -71,6 +71,6 @@ class SyncController extends Controller
     public function brianTest(Request $request){
         $test = \App\Models\Project::where('id',$request->get('project_id'))->first();;
 
-        dd('Project Model','projectProgramCounts:<br />',$test, $test->projectProgramCounts());
+        dd('Project Model','projectProgramUnitCounts:<br />',$test, $test->projectProgramUnitCounts());
     }
 }

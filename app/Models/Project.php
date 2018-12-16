@@ -26,7 +26,7 @@ class Project extends Model
     }
 
     public function currentAudit() : HasOne {
-    	$audit = CachedAudit::where('project_ref', '=', $this->id)->orderBy('id', 'desc')->first();
+    	$audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->first();
     	
     		return $audit;
     	
@@ -49,7 +49,7 @@ class Project extends Model
         return $this->hasMany(\App\Models\Building::class, 'development_key', 'project_key');
     }
 
-    public function projectProgramCounts() {
+    public function projectProgramUnitCounts() {
 
         $programs = $this->programs;
         $programCounts = array();
