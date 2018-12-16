@@ -74,7 +74,15 @@
 							            		<i class="@if($loop->last) a-home-marker @elseif($loop->first) a-home-marker @else a-marker-basic @endif colored"></i>
 							            		@if($building->building->followup_date !== null)
 							            		<div class="alert-icon {{$building->building->status}}">
-								            		<i class="a-bell-ring" uk-tooltip="pos:top-left;title:Followup: {{\Carbon\Carbon::createFromFormat('Y-m-d', $building->building->followup_date)->format('m/d/Y')}};"></i>
+								            		@if($building->building->followup_date <= date('m/d/Y',time()))
+								            		<i class="a-bell-ring" uk-tooltip="pos:top-left;title:PAST DUE<br />Followup: {{\Carbon\Carbon::createFromFormat('Y-m-d', $building->building->followup_date)->format('m/d/Y')}}: {{$building->building->followup_description}};"></i>
+								            		@else
+								            		<i class="a-bell" uk-tooltip="pos:top-left;title:Followup: {{\Carbon\Carbon::createFromFormat('Y-m-d', $building->building->followup_date)->format('m/d/Y')}}: {{$building->building->followup_description}};"></i>
+								            		@endIf
+												</div>
+												@else
+												<div >
+								            		<i class="a-bell" uk-tooltip="pos:top-left;title:No Incomplete Follow-ups;"></i>
 												</div>
 												@endif
 							            	</div> 
