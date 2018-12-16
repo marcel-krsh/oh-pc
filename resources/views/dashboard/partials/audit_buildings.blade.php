@@ -90,7 +90,7 @@
 								            		@elseIf($dueDate === $today)
 								            		<i class="a-bell-ring" uk-tooltip="pos:top-left;title:DUE TODAY<br />Followup: {{\Carbon\Carbon::createFromFormat('Y-m-d', $building->building->followup_date)->format('m/d/Y')}}: {{$building->building->followup_description}};"></i>
 								            		@else
-								            		<i class="a-bell" uk-tooltip="pos:top-left;title:Followup: {{\Carbon\Carbon::createFromFormat('Y-m-d', $building->building->followup_date)->format('m/d/Y')}}: {{$building->building->followup_description}};"></i>
+								            		<i class="a-bell-2" uk-tooltip="pos:top-left;title:Followup: {{\Carbon\Carbon::createFromFormat('Y-m-d', $building->building->followup_date)->format('m/d/Y')}}: {{$building->building->followup_description}};"></i>
 								            		@endIf
 												</div>
 												@else
