@@ -1,5 +1,5 @@
 		<td colspan="10">
-			<div class="rowinset-top">INSPECTION AREAS <span class="uk-link" style="color:#ffffff;" onclick="$('#audit-r-{{$target}}-buildings').remove();"><i class="a-circle-cross"></i></span></div>
+			<div class="rowinset-top">PROJECT LEVEL INSPECTION AREAS AND BUILDINGS <span class="uk-link" style="color:#ffffff;" onclick="$('#audit-r-{{$target}}-buildings').remove();"><i class="a-circle-cross"></i></span></div>
 			<div class="buildings uk-overflow-auto" style="">
 				<div class="sortablebuildings sortable" uk-sortable="handle: .uk-sortable-handle-{{$context}}">
 					@foreach($buildings as $key=>$building)
@@ -30,7 +30,7 @@
 																					{{$auditor->initials}}
 																				</div>
 																				@if($auditor->status != '')
-																				<div class="auditor-status"><span>!</span></div>
+																				<div class="auditor-status"><span></span></div>
 																				@endif
 																			</div>
 																		@if($loop->iteration % 6 == 0 && $loop->iteration < count($building->building->auditors_json) )
@@ -59,7 +59,7 @@
 																@endif
 															</div>
 															<div class="building-status">
-																<span class="uk-badge colored" uk-tooltip="pos:top-left;title:# finding icon;">{{$building->building->finding_total}}</span>
+																<span class="uk-badge colored" uk-tooltip="pos:top-left;title:# finding icon;" title="@forEach($building->building->findings_json as $finding){{strtoupper($finding->finding_type)}}: {{$finding->finding_description}}<br/>@endForEach">{{$building->building->finding_total}}</span>
 															</div>
 														</div>
 													</div>
@@ -151,7 +151,7 @@
 															</div>
 														</div>
 														<div class="uk-width-1-1 uk-margin-remove findings-action ok-actionable" style="margin-top: 0px;">
-															<button class="uk-button program-status uk-link" onclick="inspectionDetailsFromBuilding({{$building->building->id}}, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); "><i class="a-home-search"></i> INSPECT UNITS</button>
+															<button class="uk-button program-status uk-link" onclick="inspectionDetailsFromBuilding({{$building->building->id}}, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); "><i class="a-home-search"></i> INSPECT BUILDING</button>
 														</div>
 													</div>
 												</div>
