@@ -158,7 +158,7 @@ if(Auth::check()){
 									<a href=""> 
 										<span class="list-tab-text">
 											<span class="uk-badge" v-if="statsCommunicationTotal" v-cloak v-html="statsCommunicationTotal"></span> 
-											 <i class="a-envelope"></i> COMMUNICATIONS
+											 <i class="a-envelope-3"></i> COMMUNICATIONS
 										</span>
 									</a>
 								</li>
