@@ -86,7 +86,7 @@ class User extends Authenticatable
 
     public function initials() : string {
 
-        $person = $this->person();
+        $person = $this->person;
         dd($person);
         $initials = substr($person->first_name, 0,1);
         $initials .= substr($person->last_name, 0,1);
