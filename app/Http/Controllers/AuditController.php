@@ -159,7 +159,7 @@ class AuditController extends Controller
 
         // count buildings & count ordering_buildings
         if(OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id','=',Auth::user()->id)->count() == 0 && CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count() != 0){
-
+ 
             // if ordering_buildings is empty, create a default entry for the ordering
             $details = CachedUnit::where('audit_id','=',$audit)->where('building_id', '=', $building)->orderBy('id','desc')->get();
             
@@ -172,7 +172,7 @@ class AuditController extends Controller
                     'user_id' => Auth::user()->id,
                     'audit_id' => $audit,
                     'building_id' => $detail->building_id,
-                    'area_id' => $detail->id,
+                    'unit_id' => $detail->id,
                     'order' => $i
                 ]);
                 $ordering->save();
@@ -181,11 +181,12 @@ class AuditController extends Controller
             }   
 
         }elseif(CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count() != OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id','=',Auth::user()->id)->count() && CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count() != 0){
-
+  
             $details = null;
 
         }
-        
+
+
         $details = OrderingUnit::where('audit_id','=',$audit)->where('building_id', '=', $building)->where('user_id','=',Auth::user()->id)->orderBy('order','asc')->with('unit')->get();
 
 

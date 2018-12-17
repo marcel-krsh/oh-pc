@@ -18,7 +18,7 @@
 														<div uk-slideshow="animation: slide; min-height:90;">
 
 														    <div class="uk-position-relative uk-visible-toggle">
-
+														    	@if($detail->unit->auditors_json)
 														        <ul class="uk-slideshow-items">
 														            <li>
 														            	<div uk-grid>
@@ -41,7 +41,7 @@
 																		</div>
 														            </li>
 														        </ul>
-
+														        @endif
 														    </div>
 
 														    <ul class="uk-slideshow-nav uk-dotnav uk-flex-center"></ul>
@@ -156,6 +156,7 @@
 							<div class="uk-width-1-2 uk-flex">
 								<div id="building-{{$context}}-detail-{{$target}}-c-5-{{$key}}" style="flex: 640px;" class="uk-margin-remove" uk-grid>
 									<div class="uk-width-1-1" id="inspection-{{$context}}-detail-tools-switch-{{$key}}">
+										@if($detail->unit->amenities_json)
 										<div uk-grid class="area-status-list">
 										    @foreach($detail->unit->amenities_json as $amenity)
 												@if($loop->iteration < 9)
@@ -173,6 +174,7 @@
 											    @endif
 											@endforeach
 										</div>
+										@endif
 									</div>
 									<div id="inspection-{{$context}}-detail-tools-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
 										<div id="inspection-{{$context}}-detail-tools-{{$key}}"></div>

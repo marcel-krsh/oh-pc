@@ -52,7 +52,7 @@
 
 															</div>
 															@else
-															<i class="a-avatar-plus_1" uk-tooltip="pos:top-left;title:Assign auditor;"></i>
+															<i class="a-avatar-plus_1" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;"></i>
 															@endif
 														</div>
 														<div class="uk-width-1-2 uk-padding-remove">
@@ -71,7 +71,7 @@
 																		echo strtoupper($finding->finding_type).' : '.$finding->finding_description.'<br/>';
 																		//echo 'hello';
 																	}
-																	?>@else No Findings @endIf">{{$building->building->finding_total}}</span>
+																	?>@else NO FINDINGS @endIf">{{$building->building->finding_total}}</span>
 																
 															</div>
 														</div>
@@ -91,16 +91,16 @@
 								            			  $dueDate = \Carbon\Carbon::createFromFormat('Y-m-d',$building->building->followup_date)->format('m/d/Y');
 								            			?>
 								            		@if($dueDate < $today)
-								            		<i class="a-bell-ring" uk-tooltip="pos:top-left;title:PAST DUE<br />Followup: {{\Carbon\Carbon::createFromFormat('Y-m-d', $building->building->followup_date)->format('m/d/Y')}}: {{$building->building->followup_description}};"></i>
+								            		<i class="a-bell-ring" uk-tooltip="pos:top-left;title:PAST DUE<br />FOLLOWUP: {{\Carbon\Carbon::createFromFormat('Y-m-d', $building->building->followup_date)->format('m/d/Y')}}: {{$building->building->followup_description}};"></i>
 								            		@elseIf($dueDate === $today)
-								            		<i class="a-bell-ring" uk-tooltip="pos:top-left;title:DUE TODAY<br />Followup: {{\Carbon\Carbon::createFromFormat('Y-m-d', $building->building->followup_date)->format('m/d/Y')}}: {{$building->building->followup_description}};"></i>
+								            		<i class="a-bell-ring" uk-tooltip="pos:top-left;title:DUE TODAY<br />FOLLOWUP: {{\Carbon\Carbon::createFromFormat('Y-m-d', $building->building->followup_date)->format('m/d/Y')}}: {{$building->building->followup_description}};"></i>
 								            		@else
-								            		<i class="a-bell-2" uk-tooltip="pos:top-left;title:Followup: {{\Carbon\Carbon::createFromFormat('Y-m-d', $building->building->followup_date)->format('m/d/Y')}}: {{$building->building->followup_description}};"></i>
+								            		<i class="a-bell-2" uk-tooltip="pos:top-left;title:FOLLOWUP: {{\Carbon\Carbon::createFromFormat('Y-m-d', $building->building->followup_date)->format('m/d/Y')}}: {{$building->building->followup_description}};"></i>
 								            		@endIf
 												</div>
 												@else
 												<div >
-								            		<i class="a-bell" uk-tooltip="pos:top-left;title:No Incomplete Follow-ups;"></i>
+								            		<i class="a-bell" uk-tooltip="pos:top-left;title:NO INCOMPLETE FOLLOWUPS;"></i>
 												</div>
 												@endif
 							            	</div> 
@@ -129,7 +129,7 @@
 										            		
 											            	@if($building->building->type != "pool")
 											            	<br />
-											            	<small class="colored use-hand-cursor" onclick="buildingDetails(123,{{$audit}},{{$key}},{{$target}},10,'{{$context}}');" uk-tooltip="pos:top-left;title:Building details;" ><i class="a-menu colored uk-text-middle"></i> <span class="uk-text-middle uk-text-uppercase">{{$building->building->type_total}} @if($building->building->type_total > 1) {{$building->building->type_text_plural}} @else {{$building->building->type_text}} @endif</span></small>
+											            	<small class="colored use-hand-cursor" onclick="buildingDetails({{$building->building->building_id}},{{$audit}},{{$key}},{{$target}},10,'{{$context}}');" uk-tooltip="pos:top-left;title:Building details;" ><i class="a-menu colored uk-text-middle"></i> <span class="uk-text-middle uk-text-uppercase">{{$building->building->type_total}} @if($building->building->type_total > 1) {{$building->building->type_text_plural}} @else {{$building->building->type_text}} @endif</span></small>
 											            	@endif
 										            	</div>
 										            </div>
