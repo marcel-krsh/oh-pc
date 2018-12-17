@@ -67,7 +67,7 @@ class CachedAuditsEvent
         // [{"id": "1", "name": "Brian Greenwood", "color": "green", "status": "alert", "initials": "BG"}, {"id": "2", "name": "Brian Greenwood 2", "color": "blue", "status": "", "initials": "BF"}]
         // 
         // also save the lead auditor in the table
-        $audit = Audit::where('audit_id', '=', $cached_audit->audit_id)->first();
+        $audit = Audit::where('id', '=', $cached_audit->audit_id)->first();
         if($audit->user_key){
             $lead_key = $audit->user_key;
             $lead_id = $audit->lead_user_id;
