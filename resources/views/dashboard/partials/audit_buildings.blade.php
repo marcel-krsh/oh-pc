@@ -118,8 +118,15 @@
 												<div class="uk-width-3-5 uk-padding-remove">
 													<div class="building-address" uk-grid>
 										            	<div class="uk-width-1-1 uk-padding-remove">
+										            		@if($building->building->building_name)
+										            		<h3 class="uk-margin-bottom-remove colored">{{$building->building->building_name}}</h3>
+											            	<small class="colored">
+											            		{{$building->building->address}}, {{$building->building->city}}, {{$building->building->state}} {{$building->building->zip}}</small>
+										            		@else
 										            		<h3 class="uk-margin-bottom-remove colored">{{$building->building->address}}</h3>
 											            	<small class="colored">{{$building->building->city}}, {{$building->building->state}} {{$building->building->zip}}</small>
+										            		@endif
+										            		
 											            	@if($building->building->type != "pool")
 											            	<br />
 											            	<small class="colored use-hand-cursor" onclick="buildingDetails(123,{{$audit}},{{$key}},{{$target}},10,'{{$context}}');" uk-tooltip="pos:top-left;title:Building details;" ><i class="a-menu colored uk-text-middle"></i> <span class="uk-text-middle uk-text-uppercase">{{$building->building->type_total}} @if($building->building->type_total > 1) {{$building->building->type_text_plural}} @else {{$building->building->type_text}} @endif</span></small>
@@ -135,7 +142,7 @@
 																	<i class="a-folder"></i>
 																	<div class="findings-icon-status">
 																		@if($building->building->finding_file_completed == 0)
-																		<span class="uk-badge {{$building->building->finding_file_status}}" uk-tooltip="pos:top-left;title:Unit # finding;">{{$building->building->finding_file_total}}</span>
+																		<span class="uk-badge {{$building->building->finding_file_status}}" uk-tooltip="pos:top-left;title:Unit # finding;">{{($building->building->finding_file_total) ? $building->building->finding_file_total : 0}}</span>
 																		@else
 																		<i class="a-rotate-left {{$building->building->finding_file_status}}" uk-tooltip="pos:top-left;title:{{$building->building->finding_file_total - $building->building->finding_file_completed}} in progress<br />{{$building->building->finding_file_completed}} completed;"></i>
 																		@endif
