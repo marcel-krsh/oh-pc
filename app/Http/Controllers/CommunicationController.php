@@ -22,7 +22,7 @@ use App\Mail\EmailNotification;
 use App\Models\Communication;
 use App\Models\CommunicationRecipient;
 use App\Models\CommunicationDocument;
-use App\LogConverter;
+//use App\LogConverter;
 use App\Models\CachedAudit;
 
 class CommunicationController extends Controller
@@ -483,8 +483,8 @@ class CommunicationController extends Controller
                     'parent_id' => $originalMessageId,
                     'message' => $message_posted
                 ]);
-                $lc = new LogConverter('communication', 'create');
-                $lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
+                //$lc = new LogConverter('communication', 'create');
+                //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
             } else {
                 $subject = (string) $forminputs['subject'];
                 $message = new Communication([
@@ -493,8 +493,8 @@ class CommunicationController extends Controller
                     'message' => $message_posted,
                     'subject' => $subject
                 ]);
-                $lc = new LogConverter('communication', 'create');
-                $lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
+                //$lc = new LogConverter('communication', 'create');
+                //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
             }
             $message->save();
 
