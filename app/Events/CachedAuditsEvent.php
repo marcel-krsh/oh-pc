@@ -107,6 +107,7 @@ class CachedAuditsEvent
             
 
             $cached_building = new CachedBuilding([
+                'building_name' => $building->building_name,
                 'building_id' => $building->building_id,
                 'building_key' => $building->building_key,
                 'audit_id' => $cached_audit->audit_id,

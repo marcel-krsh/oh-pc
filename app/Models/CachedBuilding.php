@@ -11,6 +11,7 @@ class CachedBuilding extends Model
         'audit_id',
         'audit_key',
         'building_id',
+        'building_name',
         'building_key',
         'project_id',
         'project_key',
