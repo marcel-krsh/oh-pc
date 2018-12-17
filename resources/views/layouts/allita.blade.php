@@ -127,8 +127,10 @@ if(Auth::check()){
 	    var uid = "{{$current_user->id}}";
 	    var sid = "{{$current_user->socket_id}}";
 	</script>
+	<link rel="stylesheet" href="https://devco.ohiohome.org/AuthorityOnlineALT/unified/unified-header.css">
 </head>
 <body >
+	<div id="ohfa-universal-header"><div id="apcsv-ul-bar">  <div id="apcsv-logo"><img src="https://devco.ohiohome.org/AuthorityOnlineALT/Unified/devco_logo_reversed.png" alt="Site Logo"></div>  <div id="apcsv-list-left"></div>  <div id="apcsv-avatar" title="AmeliaAtchinson (OSM Test)" onclick="openUserPreferences();">{{Auth::user()->initials()}}</div>  <div id="apcsv-menu-icon" class="hvr-grow"><a id="apcsv-toggle" class="pcsv-toggle" onclick="return false;" href="#apcsv-menu-items">APPS</a>    <div id="apcsv-menu-items" class="hidden">      <div class="apcsv-menu-item"> <a href="https://devco.ohiohome.org/AuthorityOnlineALT/">DEV|CO Compliance</a></div>      <div class="apcsv-menu-item"> <a href="https://pcinspectdev.ohiohome.org/">DEV|CO Inspection</a></div>    </div>  </div>  <div id="apcsv-list-right"></div></div></div>
 	<a name="top"></a>
 	<!-- MAIN VIEW -->
 	<div id="pcapp" class="uk-container uk-align-center">
@@ -383,7 +385,7 @@ if(Auth::check()){
 	<script src="/js/pace.min.js">{{session('disablePacer')}}</script>
 	@endif
 
-	<script type="text/javascript" src="https://devco.ohiohome.org/AuthorityOnlineALT/Unified/UnifiedHeader.aspx"></script>
+	<!-- <script type="text/javascript" src="https://devco.ohiohome.org/AuthorityOnlineALT/Unified/UnifiedHeader.aspx"></script> -->
 	<script>		
 		new Vue({
 		  el: '#top-tabs',

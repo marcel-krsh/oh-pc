@@ -84,6 +84,19 @@ class User extends Authenticatable
         return $this->hasOne(People::class, 'person_id','id');
     }
 
+    public function initials() : string {
+
+        $initials = substr($this->person->first_name, 0,1);
+        $initials .= substr($this->person->last_name, 0,1);
+        return $initials;
+
+    }
+
+    public function full_name() : string {
+        $fullName = $this->person->first_name." ".$this->person->last_name;
+        return $fullName;
+
+    }
     /**
      * Is From Organization
      *
