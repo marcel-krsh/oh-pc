@@ -1180,7 +1180,7 @@ class AuditsEvent
         $audit->save();
 
         $cached_audit = new CachedAudit([
-                'audit_id' => $audit->audit_id,
+                'audit_id' => $audit->id,
                 'audit_key' => $audit->monitoring_key,
                 'project_id' => $project_id,
                 'project_key' => $audit->development_key,
