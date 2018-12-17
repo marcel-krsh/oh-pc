@@ -371,7 +371,7 @@ class DashboardController extends Controller
         }
         */
 
-        $projects = CachedAudit::select('street_address','city','zip','project_id','audit_id','pm','project_ref')->where(function ($q) use ($request) {
+        $projects = CachedAudit::select('address','city','zip','project_id','audit_id','pm','project_ref')->where(function ($q) use ($request) {
                             //$request = Request::input();
                             $q->where('project_ref', 'LIKE', '%'.$request->search.'%')
                             ->orWhere('project_key', 'like', '%'.$request->search.'%')
@@ -385,9 +385,9 @@ class DashboardController extends Controller
         $i = 0;
         $results = [];
         foreach ($projects as $data) {
-            $parcels[$i]->created_at_formatted = date('n/j/y \a\t g:h a', strtotime($data->created_at));
+            //$audits[$i]->created_at_formatted = date('n/j/y \a\t g:h a', strtotime($data->created_at));
             $results[] = [
-                        $data->street_address,
+                        $data->address,
                         $data->city,
                         $data->zip,
                         $data->project_id,
