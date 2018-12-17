@@ -16,6 +16,7 @@ use Carbon;
 use Event;
 use App\Models\CommunicationRecipient;
 
+
 use Illuminate\Support\Facades\Redis;
 
 class DashboardController extends Controller
@@ -370,59 +371,73 @@ class DashboardController extends Controller
         }
         */
 
+        $projects = CachedAudit::select('street_address','city','zip','project_id','audit_id','pm','project_ref')->where(function ($q) use ($request) {
+                            //$request = Request::input();
+                            $q->where('project_ref', 'LIKE', '%'.$request->search.'%')
+                            ->orWhere('project_key', 'like', '%'.$request->search.'%')
+                            ->orWhere('audit_id', 'like', '%'.$request->search.'%')
+                            ->orWhere('address', 'like', '%'.$request->search.'%')
+                            ->orWhere('title', 'like', '%'.$request->search.'%')
+                            ->orWhere('pm', 'like', '%'.$request->search.'%')
+                            ->orWhere('zip', 'like', '%'.$request->search.'%');
+                        })->take(20)->get()->all();
         //Project Id Audit id Main address Property Manager Name Project Name
+        $i = 0;
         $results = [];
-        // $results[] = [
-        //                 $data->street_address,
-        //                 $data->city,
-        //                 $data->state_acronym,
-        //                 $data->project_id,
-        //                 $data->audit_id,
-        //                 $data->manager_name,
-        //                 $data->project_name
-        //             ];
-        //             
+        foreach ($projects as $data) {
+            $parcels[$i]->created_at_formatted = date('n/j/y \a\t g:h a', strtotime($data->created_at));
+            $results[] = [
+                        $data->street_address,
+                        $data->city,
+                        $data->zip,
+                        $data->project_id,
+                        $data->audit_id,
+                        $data->pm,
+                        $data->project_ref
+                    ];
+                }
                     
-        // search for primary address (project), project #, audit#
-        $results[] = [
-                        '123 Street Name',
-                        'City Name',
-                        'OH',
-                        '123456',
-                        '654322',
-                        'Bob Manager',
-                        'Project Name'
-                    ];
+                    
+        // // search for primary address (project), project #, audit#
+        // $results[] = [
+        //                 '123 Street Name',
+        //                 'City Name',
+        //                 'OH',
+        //                 '123456',
+        //                 '654322',
+        //                 'Bob Manager',
+        //                 'Project Name'
+        //             ];
 
-        $results[] = [
-                        '456 Street Name',
-                        'City 2 Name',
-                        'OH',
-                        '789',
-                        '987',
-                        'John Manager',
-                        'Project Name 2'
-                    ];
+        // $results[] = [
+        //                 '456 Street Name',
+        //                 'City 2 Name',
+        //                 'OH',
+        //                 '789',
+        //                 '987',
+        //                 'John Manager',
+        //                 'Project Name 2'
+        //             ];
 
-        $results[] = [
-                        '456 Street Name',
-                        'City 2 Name',
-                        'OH',
-                        '789',
-                        '987',
-                        'John Manager',
-                        'Project Name 2'
-                    ];
+        // $results[] = [
+        //                 '456 Street Name',
+        //                 'City 2 Name',
+        //                 'OH',
+        //                 '789',
+        //                 '987',
+        //                 'John Manager',
+        //                 'Project Name 2'
+        //             ];
 
-        $results[] = [
-                        '456 Street Name',
-                        'City 2 Name',
-                        'OH',
-                        '789',
-                        '987',
-                        'John Manager',
-                        'Project Name 2'
-                    ];
+        // $results[] = [
+        //                 '456 Street Name',
+        //                 'City 2 Name',
+        //                 'OH',
+        //                 '789',
+        //                 '987',
+        //                 'John Manager',
+        //                 'Project Name 2'
+        //             ];
         
         $results = json_encode($results);
         return $results;
