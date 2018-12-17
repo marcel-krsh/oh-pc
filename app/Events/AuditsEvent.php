@@ -1135,7 +1135,7 @@ class AuditsEvent
             $project = Project::where('project_key', '=', $audit->development_key)->with('address')->first();
             if($project){
                 $project_id = $project->id;
-                $project_ref = $project->project_number;
+                $project_ref = $project->project_key;
                 $project_name = $project->project_name;
                 $total_buildings = $project->total_building_count;
 
@@ -1169,10 +1169,8 @@ class AuditsEvent
         }
 
         // if no organization put contact name under the project name
-        // 
-        // 
-        // 
-        // 
+
+        // build amenities array using amenity_inspections table 
 
         // total items is the total number of units added during the selection process
         $total_items = count($summary['grouped']); // TBD
@@ -1182,7 +1180,7 @@ class AuditsEvent
         $audit->save();
 
         $cached_audit = new CachedAudit([
-                'audit_id' => $audit->id,
+                'audit_id' => $audit->audit_id,
                 'audit_key' => $audit->monitoring_key,
                 'project_id' => $project_id,
                 'project_key' => $audit->development_key,
@@ -1199,42 +1197,43 @@ class AuditsEvent
                 'total_buildings' => $total_buildings,
                 'inspection_icon' => 'a-mobile-repeat',
                 'inspection_status' => 'action-needed', // no scheduled date in array yet, that's why
-                'inspection_status_text' => 'Audit needs scheduling',
-                'inspection_schedule_text' => 'Click to schedule audit',
+                'inspection_status_text' => 'AUDIT NEEDS SCHEDULING',
+                'inspection_schedule_text' => 'CLICK TO SCHEDULE AUDIT',
                 'inspectable_items' => 0,
                 'total_items' => $total_items,
                 'audit_compliance_icon' => 'a-circle-checked',
                 'audit_compliance_status' => 'ok-actionable', 
-                'audit_compliance_status_text' => 'Audit Compliant',
+                'audit_compliance_status_text' => 'AUDIT COMPLIANT',
                 'followup_status' => '',
-                'followup_status_text' => 'No followups',
+                'followup_status_text' => 'NO FOLLOWUPS',
                 'file_audit_icon' => 'a-folder',
                 'file_audit_status' => '',
-                'file_audit_status_text' => 'Click to add a finding',
+                'file_audit_status_text' => 'CLICK TO ADD A FINDING',
                 'nlt_audit_icon' => 'a-booboo',
                 'nlt_audit_status' => '',
-                'nlt_audit_status_text' => 'Click to add a finding',
+                'nlt_audit_status_text' => 'CLICK TO ADD A FINDING',
                 'lt_audit_icon' => 'a-skull',
                 'lt_audit_status' => '',
-                'lt_audit_status_text' => 'Click to add a finding',
+                'lt_audit_status_text' => 'CLICK TO ADD A FINDING',
                 'smoke_audit_icon' => 'a-flames',
                 'smoke_audit_status' => '',
-                'smoke_audit_status_text' => 'Click to add a finding',
+                'smoke_audit_status_text' => 'CLICK TO ADD A FINDING',
                 'auditor_status_icon' => 'a-avatar-fail',
                 'auditor_status' => 'action-required',
-                'auditor_status_text' => 'Assign auditors',
+                'auditor_status_text' => 'ASSIGN AUDITORS',
                 'message_status_icon' => 'a-envelope-4',
                 'message_status' => '',
                 'message_status_text' => '',
                 'document_status_icon' => 'a-files',
                 'document_status' => '',
-                'document_status_text' => 'Document status',
+                'document_status_text' => 'DOCUMENT STATUS',
                 'history_status_icon' => 'a-person-clock',
                 'history_status' => '',
                 'history_status_text' => 'NO/VIEW HISTORY',
                 'step_status_icon' => 'a-home-question',
                 'step_status' => 'no-action',
-                'step_status_text' => 'Review and assign inspectable areas'
+                'step_status_text' => 'REVIEW AND ASSIGN INSPECTABLE AREAS',
+                'amenities_json' => json_encode($amenities)
             ]);
             $cached_audit->save();
 
