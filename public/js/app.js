@@ -1094,9 +1094,9 @@ Vue.component('auditrow', __webpack_require__(42), {
   name: 'auditrow'
 });
 Vue.component('communication-row', __webpack_require__(45)); // connect sockets
+//var socket = io('https://pcinspectdev.ohiohome.org:443');
 
-var socket = io('https://pcinspectdev.ohiohome.org:443'); // var socket = io('https://192.168.100.100:443');
-// https://github.com/ElemeFE/vue-infinite-scroll
+var socket = io('http://192.168.100.100:3000'); // https://github.com/ElemeFE/vue-infinite-scroll
 
 var infiniteScroll = __webpack_require__(48);
 
@@ -43451,19 +43451,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['audit', 'index'],
   methods: {
     openProject: function openProject() {
-      loadTab('/projects/' + this.audit.projectRef, '4', 1, 1, '', 1);
+      loadTab('/projects/' + this.audit.projectKey, '4', 1, 1, '', 1);
     },
     openProjectDetails: function openProjectDetails() {
-      projectDetails(this.audit.id, this.index, this.audit.total_buildings);
+      projectDetails(this.audit.auditId, this.index, this.audit.total_buildings);
+    },
+    scheduleAudit: function scheduleAudit() {
+      loadTab('/projects/' + this.audit.projectRef, '4', 1, 1, '', 1);
+    },
+    openMapLink: function openMapLink() {
+      window.open(this.mapLink);
+    },
+    openAssignment: function openAssignment() {
+      dynamicModalLoad('projects/' + this.audit.projectKey + '/assignments/addauditor', 1, 0, 1);
     }
   },
   computed: {
     auditIndex: function auditIndex() {
       return this.index + 1;
+    },
+    mapLink: function mapLink() {
+      return "https://maps.google.com/maps?q=" + this.audit.address + "+" + this.audit.address2;
     }
   }
 });
@@ -43499,7 +43515,8 @@ var render = function() {
               "uk-tooltip": _vm.audit.tooltipLead,
               title: "",
               "aria-expanded": "false"
-            }
+            },
+            on: { click: _vm.openAssignment }
           },
           [_c("span", { domProps: { innerHTML: _vm._s(_vm.audit.initials) } })]
         ),
@@ -43609,7 +43626,20 @@ var render = function() {
     _c("td", { staticClass: "hasdivider audit-td-address" }, [
       _c("div", { staticClass: "divider" }),
       _vm._v(" "),
-      _vm._m(1),
+      _c(
+        "div",
+        {
+          staticClass:
+            "uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left"
+        },
+        [
+          _c("i", {
+            staticClass: "a-marker-basic uk-text-muted uk-link",
+            attrs: { "uk-tooltip": "title:View On Map;" },
+            on: { click: _vm.openMapLink }
+          })
+        ]
+      ),
       _vm._v(" "),
       _c(
         "div",
@@ -43651,49 +43681,79 @@ var render = function() {
             [
               _c("div", { staticClass: "uk-width-1-3" }, [
                 _c("i", {
-                  class: ((_obj$1 = { "a-mobile-repeat": true }),
+                  class: ((_obj$1 = {
+                    "use-hand-cursor": true,
+                    "a-mobile-repeat": true
+                  }),
                   (_obj$1[_vm.audit.inspectionStatus] = true),
                   _obj$1),
                   attrs: { "uk-tooltip": _vm.audit.tooltipInspectionStatus }
                 })
               ]),
               _vm._v(" "),
-              _c(
-                "div",
-                {
-                  staticClass:
-                    "uk-width-2-3 uk-padding-remove uk-margin-small-top"
-                },
-                [
-                  _c("h3", {
-                    staticClass: "uk-link",
-                    attrs: {
-                      "uk-tooltip": _vm.audit.tooltipInspectionSchedule
+              _vm.audit.inspectionScheduleDateYear
+                ? _c(
+                    "div",
+                    {
+                      staticClass:
+                        "uk-width-2-3 uk-padding-remove uk-margin-small-top"
                     },
-                    domProps: {
-                      innerHTML: _vm._s(_vm.audit.inspectionScheduleDate)
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c("div", {
-                    staticClass: "dateyear",
-                    domProps: {
-                      innerHTML: _vm._s(_vm.audit.inspectionScheduleDateYear)
-                    }
-                  })
-                ]
-              )
+                    [
+                      _c("h3", {
+                        staticClass: "uk-link",
+                        attrs: {
+                          "uk-tooltip": _vm.audit.tooltipInspectionSchedule
+                        },
+                        domProps: {
+                          innerHTML: _vm._s(_vm.audit.inspectionScheduleDate)
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("div", {
+                        staticClass: "dateyear",
+                        domProps: {
+                          innerHTML: _vm._s(
+                            _vm.audit.inspectionScheduleDateYear
+                          )
+                        }
+                      })
+                    ]
+                  )
+                : _c("div", { staticClass: "uk-width-2-3" }, [
+                    _c("i", {
+                      staticClass: "a-calendar-7 action-needed use-hand-cursor",
+                      attrs: { "uk-tooltip": "Click to schedule audits" }
+                    })
+                  ])
             ]
           ),
           _vm._v(" "),
-          _c("div", {
-            staticClass: "uk-width-1-6 uk-text-right uk-padding-remove",
-            attrs: { "uk-tooltip": _vm.audit.tooltipInspectableItems },
-            domProps: { innerHTML: _vm._s(_vm.audit.inspectableItems + " /") }
-          }),
+          _vm.audit.inspectableItems < 1
+            ? _c("div", {
+                staticClass: "uk-width-1-6 uk-text-right uk-padding-remove",
+                attrs: { "uk-tooltip": "0 units assigned to you" },
+                domProps: {
+                  innerHTML: _vm._s(_vm.audit.inspectableItems + " /")
+                }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.audit.inspectableItems > 0
+            ? _c("div", {
+                staticClass: "uk-width-1-6 uk-text-right uk-padding-remove",
+                attrs: { "uk-tooltip": _vm.audit.tooltipInspectableItems },
+                domProps: {
+                  innerHTML: _vm._s(_vm.audit.inspectableItems + " /")
+                }
+              })
+            : _vm._e(),
           _vm._v(" "),
           _c("div", {
             staticClass: "uk-width-1-6 uk-text-left uk-padding-remove",
+            attrs: {
+              "uk-tooltip":
+                _vm.audit.totalItems + "total units will be inspected"
+            },
             domProps: { innerHTML: _vm._s(_vm.audit.totalItems) }
           }),
           _vm._v(" "),
@@ -43755,7 +43815,7 @@ var render = function() {
                   ])
                 : _c("div", [
                     _c("i", {
-                      staticClass: "a-calendar-pencil",
+                      staticClass: "a-calendar-pencil use-hand-cursor",
                       attrs: { "uk-tooltip": "title:New followup;" }
                     })
                   ])
@@ -43779,7 +43839,10 @@ var render = function() {
           _c(
             "div",
             {
-              class: ((_obj$4 = { "uk-width-1-3": true }),
+              class: ((_obj$4 = {
+                "uk-width-1-3": true,
+                "use-hand-cursor": true
+              }),
               (_obj$4[_vm.audit.fileAuditStatusClass] = true),
               _obj$4),
               attrs: { "uk-tooltip": _vm.audit.tooltipFileAuditStatus }
@@ -43796,7 +43859,10 @@ var render = function() {
           _c(
             "div",
             {
-              class: ((_obj$6 = { "uk-width-1-3": true }),
+              class: ((_obj$6 = {
+                "uk-width-1-3": true,
+                "use-hand-cursor": true
+              }),
               (_obj$6[_vm.audit.nltAuditStatusClass] = true),
               _obj$6),
               attrs: { "uk-tooltip": _vm.audit.tooltipNltAuditStatus }
@@ -43813,7 +43879,10 @@ var render = function() {
           _c(
             "div",
             {
-              class: ((_obj$8 = { "uk-width-1-3": true }),
+              class: ((_obj$8 = {
+                "uk-width-1-3": true,
+                "use-hand-cursor": true
+              }),
               (_obj$8[_vm.audit.ltAuditStatusClass] = true),
               _obj$8),
               attrs: { "uk-tooltip": _vm.audit.tooltipLtAuditStatus }
@@ -43843,7 +43912,7 @@ var render = function() {
         [
           _c("div", { staticClass: "uk-width-1-4" }, [
             _c("i", {
-              class: ((_obj$10 = {}),
+              class: ((_obj$10 = { "use-hand-cursor": true }),
               (_obj$10[_vm.audit.auditorStatusIconClass] = true),
               (_obj$10[_vm.audit.auditorStatusClass] = true),
               _obj$10),
@@ -43853,7 +43922,7 @@ var render = function() {
           _vm._v(" "),
           _c("div", { staticClass: "uk-width-1-4" }, [
             _c("i", {
-              class: ((_obj$11 = {}),
+              class: ((_obj$11 = { "use-hand-cursor": true }),
               (_obj$11[_vm.audit.messageStatusIconClass] = true),
               (_obj$11[_vm.audit.messageStatusClass] = true),
               _obj$11),
@@ -43863,7 +43932,7 @@ var render = function() {
           _vm._v(" "),
           _c("div", { staticClass: "uk-width-1-4" }, [
             _c("i", {
-              class: ((_obj$12 = {}),
+              class: ((_obj$12 = { "use-hand-cursor": true }),
               (_obj$12[_vm.audit.documentStatusIconClass] = true),
               (_obj$12[_vm.audit.documentStatusClass] = true),
               _obj$12),
@@ -43873,7 +43942,7 @@ var render = function() {
           _vm._v(" "),
           _c("div", { staticClass: "uk-width-1-4" }, [
             _c("i", {
-              class: ((_obj$13 = {}),
+              class: ((_obj$13 = { "use-hand-cursor": true }),
               (_obj$13[_vm.audit.historyStatusIconClass] = true),
               (_obj$13[_vm.audit.historyStatusClass] = true),
               _obj$13),
@@ -43888,7 +43957,7 @@ var render = function() {
       _c("div", { staticClass: "uk-margin-top", attrs: { "uk-grid": "" } }, [
         _c("div", { staticClass: "uk-width-1-1  uk-padding-remove-top" }, [
           _c("i", {
-            class: ((_obj$14 = {}),
+            class: ((_obj$14 = { "use-hand-cursor": true }),
             (_obj$14[_vm.audit.stepStatusIconClass] = true),
             (_obj$14[_vm.audit.stepStatusClass] = true),
             _obj$14),
@@ -43929,24 +43998,6 @@ var staticRenderFns = [
         _c("i", {
           staticClass: "a-info-circle uk-text-muted uk-link",
           attrs: { "uk-tooltip": "title:View Contact Details;" }
-        })
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass:
-          "uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left"
-      },
-      [
-        _c("i", {
-          staticClass: "a-marker-basic uk-text-muted uk-link",
-          attrs: { "uk-tooltip": "title:View On Map;" }
         })
       ]
     )

@@ -136,7 +136,7 @@
 		<div class="uk-width-1-6 uk-margin-top " style="display:none">
 			<canvas id="chartjs-assignment-auditor" class="chartjs" style="display: block;"></canvas>
 		</div>
-		<div class="uk-width-1-2 uk-margin-top uk-padding-remove"  style="display:none">
+		<div class="uk-width-1-2 uk-margin-top uk-padding-remove" style="display:none">
 			<h4>
 				<div>It will take an <span class="underlined italic">ESTIMATED</span> <i class="a-pencil-2 use-hand-cursor" uk-tooltip="title:EDIT ESTIMATED HOURS;"></i>{{$data['summary']['estimated']}} to complete this audit.</div>
 				<div id="editEstimated" class="" uk-drop="mode: click">

@@ -1,7 +1,7 @@
 <template>
 	<tr>
 		<td :id="'audit-c-1-'+auditIndex" class="uk-text-center audit-td-lead">
-        	<span id="audit-avatar-badge-1" :uk-tooltip="audit.tooltipLead" title="" aria-expanded="false" :class="{[audit.userBadgeColor]:true, 'user-badge':true, 'no-float':true, 'uk-link': true }">
+        	<span id="audit-avatar-badge-1" v-on:click="openAssignment" :uk-tooltip="audit.tooltipLead" title="" aria-expanded="false" :class="{[audit.userBadgeColor]:true, 'user-badge':true, 'no-float':true, 'uk-link': true }">
 				<span v-html="audit.initials"></span>
 			</span>
 			<span :id="'audit-rid-'+auditIndex"><small>#<span v-html="auditIndex"></span></small></span>
@@ -130,6 +130,9 @@
             },
             openMapLink: function() {
                 window.open(this.mapLink);
+            },
+            openAssignment: function() {
+                dynamicModalLoad('projects/'+this.audit.projectKey+'/assignments/addauditor',1,0,1);
             }
         },
         computed: {

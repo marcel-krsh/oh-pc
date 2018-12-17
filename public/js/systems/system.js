@@ -351,7 +351,7 @@ function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight,inmod
 			// add class to modal so it opens full screen.
 			$(newmodalsize).addClass('uk-modal-dialog-blank');
 			$(newmodal).addClass('fullscreen');
-			$(newmodalcontent).addClass('uk-height-viewport');
+			//$(newmodalcontent).addClass('uk-height-viewport');
 			$(newmodalsize).removeClass('modal-fixed-height');
 				
 		} else {
@@ -364,7 +364,7 @@ function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight,inmod
 			}else{
 				// remove the class in case it is still there.
 				$(newmodalsize).removeClass('uk-modal-dialog-blank');
-				$(newmodalcontent).removeClass('uk-height-viewport');
+				// $(newmodalcontent).removeClass('uk-height-viewport');
 			}
 		}
 		
