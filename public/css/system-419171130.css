@@ -2396,6 +2396,8 @@ margin-top:10px;
     font-size: 12px;
     line-height: 10px;
     padding: 4px;
+    border-color: #3a3a3a;
+    color: #3a3a3a;
 }
 #auditstable .building .findings-icon-status.plus span{
     right: -2px;

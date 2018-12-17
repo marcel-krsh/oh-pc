@@ -142,7 +142,7 @@
 																	<i class="a-folder"></i>
 																	<div class="findings-icon-status">
 																		@if($building->building->finding_file_completed == 0)
-																		<span class="uk-badge {{$building->building->finding_file_status}}" uk-tooltip="pos:top-left;title:Unit # finding;">{{$building->building->finding_file_total}}</span>
+																		<span class="uk-badge {{$building->building->finding_file_status}}" uk-tooltip="pos:top-left;title:Unit # finding;">{{($building->building->finding_file_total) ? $building->building->finding_file_total : 0}}</span>
 																		@else
 																		<i class="a-rotate-left {{$building->building->finding_file_status}}" uk-tooltip="pos:top-left;title:{{$building->building->finding_file_total - $building->building->finding_file_completed}} in progress<br />{{$building->building->finding_file_completed}} completed;"></i>
 																		@endif
