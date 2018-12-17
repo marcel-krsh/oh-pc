@@ -1233,7 +1233,7 @@ class AuditsEvent
                 'step_status_icon' => 'a-home-question',
                 'step_status' => 'no-action',
                 'step_status_text' => 'REVIEW AND ASSIGN INSPECTABLE AREAS',
-                'amenities_json' => json_encode($amenities)
+                //'amenities_json' => json_encode($amenities)
             ]);
             $cached_audit->save();
 
