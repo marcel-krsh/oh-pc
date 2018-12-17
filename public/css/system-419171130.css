@@ -3917,7 +3917,7 @@ i.fa-square.chart-color-to-be-inspected { background-color:#e0e0df; }
 .modal-findings-left{
   width: 45%;
   position: absolute;
-  top: 30px;
+  top: 50px;
       border-right: 1px dotted #3a3a3a;
     padding-right: 25px;
     height: 95%;

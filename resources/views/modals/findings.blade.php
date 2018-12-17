@@ -1,4 +1,4 @@
-<div id="modal-findings" class="uk-margin-top" >
+<div id="modal-findings" class="uk-margin-top uk-height-viewport" >
 	<div class="modal-findings-right" uk-filter="target: .js-findings">
 		<div class="modal-findings-right-top">
 		    <div class="uk-width-1-1 filter-button-set-right" uk-grid>

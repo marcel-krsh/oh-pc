@@ -305,7 +305,7 @@ function reloadUnseenMessages(){
 }
 
 // DYNAMIC MODAL FUNCTION //
-function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight,inmodallevel) {
+function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight=0,inmodallevel) {
 	if(inmodallevel > 0){
 		// copy modal divs and rename ids if it doesn't alreay exist
 		if($('#dynamic-modal-'+inmodallevel).length){
