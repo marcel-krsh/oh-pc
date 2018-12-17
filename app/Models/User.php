@@ -86,14 +86,16 @@ class User extends Authenticatable
 
     public function initials() : string {
 
-        $initials = substr($this->person()->first_name, 0,1);
-        $initials .= substr($this->person()->last_name, 0,1);
+        $person = $this->person();
+
+        $initials = substr($person->first_name, 0,1);
+        $initials .= substr($person->last_name, 0,1);
         return $initials;
 
     }
 
     public function full_name() : string {
-        $fullName = $this->person->first_name." ".$this->person->last_name;
+        $fullName = $this->person()->first_name." ".$this->person->last_name;
         return $fullName;
 
     }
