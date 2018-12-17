@@ -8,16 +8,16 @@
         </td>
         <td :id="'audit-c-2-'+auditIndex" class="audit-td-project">
         	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-        		<span :id="'audit-i-project-detail-'+auditIndex" v-on:click="openProjectDetails" uk-tooltip="pos:top-left;title:View Buildings and Common Areas;" class="uk-link"><i class="a-menu uk-text-muted"></i></span>
+        		<span :id="'audit-i-project-detail-'+auditIndex" v-on:click="openProjectDetails" uk-tooltip="pos:top-left;title:VIEW BUILDINGS AND COMMON AREAS;" class="uk-link"><i class="a-menu uk-text-muted"></i></span>
         	</div>
         	<div class="uk-vertical-align-middle uk-display-inline-block">
-        		<h3 :id="'audit-project-name-'+auditIndex" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip="title:Open Audit Details in Tab;" v-on:click="openProject"><span v-html="audit.projectRef"></span></h3>
-            	<small :id="'audit-project-aid-'+auditIndex" class="uk-text-muted faded filter-search-project" uk-tooltip="title:View Project's Audit Details;">AUDIT <span v-html="audit.id"></span></small>
+        		<h3 :id="'audit-project-name-'+auditIndex" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip="title:OPEN AUDIT DETAILS IN TAB;" v-on:click="openProject"><span v-html="audit.projectKey"></span></h3>
+            	<small :id="'audit-project-aid-'+auditIndex" class="uk-text-muted faded filter-search-project" uk-tooltip="title:VIEW PROJECT AUDIT DETAILS;">AUDIT <span v-html="audit.auditId"></span></small>
             </div>
         </td>
         <td class="audit-td-name">
         	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-        		<i class="a-info-circle uk-text-muted uk-link" uk-tooltip="title:View Contact Details;"></i>
+        		<i class="a-info-circle uk-text-muted uk-link" uk-tooltip="title:VIEW CONTACT DETAILS;"></i>
         	</div> 
         	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
         		<h3 class="uk-margin-bottom-remove filter-search-pm" v-html="audit.title"></h3>
@@ -27,7 +27,7 @@
         <td class="hasdivider audit-td-address">
         	<div class="divider"></div>
         	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-        		<i class="a-marker-basic uk-text-muted uk-link" v-on:click="openMapLink" uk-tooltip="title:View On Map;"></i>
+        		<i class="a-marker-basic uk-text-muted uk-link" v-on:click="openMapLink" uk-tooltip="title:VIEW ON MAP;"></i>
         	</div> 
         	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
         		<h3 class="uk-margin-bottom-remove filter-search-address" v-html="audit.address"></h3>
@@ -49,9 +49,9 @@
                         <i class="a-calendar-7 action-needed use-hand-cursor" uk-tooltip="Click to schedule audits"></i>
                     </div>
             	</div> 
-            	<div class="uk-width-1-6 uk-text-right uk-padding-remove" uk-tooltip="0 units assigned to you" v-html="audit.inspectableItems+' /'" v-if="audit.inspectableItems < 1 "></div>
+            	<div class="uk-width-1-6 uk-text-right uk-padding-remove" uk-tooltip="0 UNITS ASSIGNED TO YOU" v-html="audit.inspectableItems+' /'" v-if="audit.inspectableItems < 1 "></div>
                 <div class="uk-width-1-6 uk-text-right uk-padding-remove" :uk-tooltip="audit.tooltipInspectableItems" v-html="audit.inspectableItems+' /'" v-if="audit.inspectableItems > 0"></div> 
-            	<div class="uk-width-1-6 uk-text-left uk-padding-remove" :uk-tooltip="audit.totalItems + 'total units will be inspected'" v-html="audit.totalItems"></div> 
+            	<div class="uk-width-1-6 uk-text-left uk-padding-remove" :uk-tooltip="audit.totalItems + ' TOTAL UNITS WILL BE INSPECTED'" v-html="audit.totalItems"></div> 
             	<div class="uk-width-1-6 uk-text-left">
             		<i :class="{[audit.complianceIconClass]:true, [audit.complianceStatusClass]:true}" :uk-tooltip="audit.tooltipComplianceStatus"></i>
             	</div>
@@ -65,11 +65,11 @@
             	</div> 
             	<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top">
             		<div v-if="audit.followupDate">
-	            		<h3 class="uk=link" uk-tooltip="title:Click to reschedule audits;" v-html="audit.followupDate"></h3>
+	            		<h3 class="uk=link" uk-tooltip="title:CLICK TO RESCHEDULE AUDITS;" v-html="audit.followupDate"></h3>
 		            	<div class="dateyear" v-html="audit.followupDateYear"></div>
             		</div>
             		<div v-else>
-            			<i class="a-calendar-pencil use-hand-cursor" uk-tooltip="title:New followup;"></i>
+            			<i class="a-calendar-pencil use-hand-cursor" uk-tooltip="title:NEW FOLLOWUP;"></i>
             		</div>
             	</div> 
             </div>
@@ -92,7 +92,7 @@
         	<div class="divider"></div>
         	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
             	<div class="uk-width-1-4">
-            		<i :class="{[audit.auditorStatusIconClass]:true, 'use-hand-cursor':true, [audit.auditorStatusClass]:true}" :uk-tooltip="audit.tooltipAuditorStatus"></i>
+            		<i  v-on:click="openAssignment" :class="{[audit.auditorStatusIconClass]:true, 'use-hand-cursor':true, [audit.auditorStatusClass]:true}" :uk-tooltip="audit.tooltipAuditorStatus"></i>
             	</div> 
             	<div class="uk-width-1-4">
             		<i :class="{[audit.messageStatusIconClass]:true, 'use-hand-cursor':true, [audit.messageStatusClass]:true,}" :uk-tooltip="audit.tooltipMessageStatus"></i>

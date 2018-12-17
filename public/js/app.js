@@ -43551,7 +43551,7 @@ var render = function() {
                 attrs: {
                   id: "audit-i-project-detail-" + _vm.auditIndex,
                   "uk-tooltip":
-                    "pos:top-left;title:View Buildings and Common Areas;"
+                    "pos:top-left;title:VIEW BUILDINGS AND COMMON AREAS;"
                 },
                 on: { click: _vm.openProjectDetails }
               },
@@ -43571,13 +43571,13 @@ var render = function() {
                   "uk-margin-bottom-remove uk-link filter-search-project",
                 attrs: {
                   id: "audit-project-name-" + _vm.auditIndex,
-                  "uk-tooltip": "title:Open Audit Details in Tab;"
+                  "uk-tooltip": "title:OPEN AUDIT DETAILS IN TAB;"
                 },
                 on: { click: _vm.openProject }
               },
               [
                 _c("span", {
-                  domProps: { innerHTML: _vm._s(_vm.audit.projectRef) }
+                  domProps: { innerHTML: _vm._s(_vm.audit.projectKey) }
                 })
               ]
             ),
@@ -43588,12 +43588,14 @@ var render = function() {
                 staticClass: "uk-text-muted faded filter-search-project",
                 attrs: {
                   id: "audit-project-aid-" + _vm.auditIndex,
-                  "uk-tooltip": "title:View Project's Audit Details;"
+                  "uk-tooltip": "title:VIEW PROJECT AUDIT DETAILS;"
                 }
               },
               [
                 _vm._v("AUDIT "),
-                _c("span", { domProps: { innerHTML: _vm._s(_vm.audit.id) } })
+                _c("span", {
+                  domProps: { innerHTML: _vm._s(_vm.audit.auditId) }
+                })
               ]
             )
           ]
@@ -43635,7 +43637,7 @@ var render = function() {
         [
           _c("i", {
             staticClass: "a-marker-basic uk-text-muted uk-link",
-            attrs: { "uk-tooltip": "title:View On Map;" },
+            attrs: { "uk-tooltip": "title:VIEW ON MAP;" },
             on: { click: _vm.openMapLink }
           })
         ]
@@ -43731,7 +43733,7 @@ var render = function() {
           _vm.audit.inspectableItems < 1
             ? _c("div", {
                 staticClass: "uk-width-1-6 uk-text-right uk-padding-remove",
-                attrs: { "uk-tooltip": "0 units assigned to you" },
+                attrs: { "uk-tooltip": "0 UNITS ASSIGNED TO YOU" },
                 domProps: {
                   innerHTML: _vm._s(_vm.audit.inspectableItems + " /")
                 }
@@ -43752,7 +43754,7 @@ var render = function() {
             staticClass: "uk-width-1-6 uk-text-left uk-padding-remove",
             attrs: {
               "uk-tooltip":
-                _vm.audit.totalItems + "total units will be inspected"
+                _vm.audit.totalItems + " TOTAL UNITS WILL BE INSPECTED"
             },
             domProps: { innerHTML: _vm._s(_vm.audit.totalItems) }
           }),
@@ -43801,7 +43803,7 @@ var render = function() {
                     _c("h3", {
                       staticClass: "uk=link",
                       attrs: {
-                        "uk-tooltip": "title:Click to reschedule audits;"
+                        "uk-tooltip": "title:CLICK TO RESCHEDULE AUDITS;"
                       },
                       domProps: { innerHTML: _vm._s(_vm.audit.followupDate) }
                     }),
@@ -43816,7 +43818,7 @@ var render = function() {
                 : _c("div", [
                     _c("i", {
                       staticClass: "a-calendar-pencil use-hand-cursor",
-                      attrs: { "uk-tooltip": "title:New followup;" }
+                      attrs: { "uk-tooltip": "title:NEW FOLLOWUP;" }
                     })
                   ])
             ]
@@ -43916,7 +43918,8 @@ var render = function() {
               (_obj$10[_vm.audit.auditorStatusIconClass] = true),
               (_obj$10[_vm.audit.auditorStatusClass] = true),
               _obj$10),
-              attrs: { "uk-tooltip": _vm.audit.tooltipAuditorStatus }
+              attrs: { "uk-tooltip": _vm.audit.tooltipAuditorStatus },
+              on: { click: _vm.openAssignment }
             })
           ]),
           _vm._v(" "),
@@ -43997,7 +44000,7 @@ var staticRenderFns = [
       [
         _c("i", {
           staticClass: "a-info-circle uk-text-muted uk-link",
-          attrs: { "uk-tooltip": "title:View Contact Details;" }
+          attrs: { "uk-tooltip": "title:VIEW CONTACT DETAILS;" }
         })
       ]
     )
