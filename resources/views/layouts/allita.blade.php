@@ -345,7 +345,8 @@ if(Auth::check()){
 			},
 		    onSelect: function(e, term, item){
 		    	e.preventDefault();
-		    	loadTab('/projects/'+item.getAttribute('data-item-id'), '4', 1, 1, '', 1);
+		    	alert('HI!');
+		    	//loadTab('/projects/'+item.getAttribute('data-item-id'), '4', 1, 1, '', 1);
 		    	//loadDetailTab('/parcel/',item.getAttribute('data-item-id'),'1',0,0);
 		    	$('#quick-lookup-box').val('');
 		    }
