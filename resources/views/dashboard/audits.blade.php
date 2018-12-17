@@ -502,7 +502,7 @@
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-link">
 			            		<i class="a-checklist"></i>
-			            		<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right;" style="top: 26px; left: 0px;">
+			            		<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px;">
 			            			<form>
 			            				<fieldset class="uk-fieldset">
 			            					<div class="uk-margin uk-child-width-auto uk-grid">
