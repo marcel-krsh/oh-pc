@@ -703,7 +703,12 @@ class AuditController extends Controller
     // }
 
     public function getProjectDocuments ( $project = null ) {
-        return view('projects.partials.documents');
+        if(!is_null($project)){
+            $documents = \App\Models\Document::where('project_id',$project->id);
+            return view('projects.partials.documents',compact($project));
+        } else {
+            return '<h2 class="uk-text-align-center uk-heading">Sorry.</h2><p align="center">No documents were found attached to this project.<hr> Approximately '.date('mMi').' documents have been found in docuware<br /> and we are assigning them all to their projects. <br /><br />Thanks for your patience!</p>';
+        }
     }
 
     public function getProjectNotes ( $project = null ) {
