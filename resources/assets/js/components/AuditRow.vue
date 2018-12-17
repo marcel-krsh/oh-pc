@@ -27,7 +27,7 @@
         <td class="hasdivider audit-td-address">
         	<div class="divider"></div>
         	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-        		<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;"></i>
+        		<i class="a-marker-basic uk-text-muted uk-link" v-on:click="openMapLink" uk-tooltip="title:View On Map;"></i>
         	</div> 
         	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
         		<h3 class="uk-margin-bottom-remove filter-search-address" v-html="audit.address"></h3>
@@ -49,8 +49,9 @@
                         <i class="a-calendar-7 action-needed use-hand-cursor" uk-tooltip="Click to schedule audits"></i>
                     </div>
             	</div> 
-            	<div class="uk-width-1-6 uk-text-right uk-padding-remove" :uk-tooltip="audit.tooltipInspectableItems" v-html="audit.inspectableItems+' /'"></div> 
-            	<div class="uk-width-1-6 uk-text-left uk-padding-remove" v-html="audit.totalItems"></div> 
+            	<div class="uk-width-1-6 uk-text-right uk-padding-remove" uk-tooltip="0 units assigned to you" v-html="audit.inspectableItems+' /'" v-if="audit.inspectableItems < 1 "></div>
+                <div class="uk-width-1-6 uk-text-right uk-padding-remove" :uk-tooltip="audit.tooltipInspectableItems" v-html="audit.inspectableItems+' /'" v-if="audit.inspectableItems > 0"></div> 
+            	<div class="uk-width-1-6 uk-text-left uk-padding-remove" :uk-tooltip="audit.totalItems + 'total units will be inspected'" v-html="audit.totalItems"></div> 
             	<div class="uk-width-1-6 uk-text-left">
             		<i :class="{[audit.complianceIconClass]:true, [audit.complianceStatusClass]:true}" :uk-tooltip="audit.tooltipComplianceStatus"></i>
             	</div>
@@ -126,12 +127,18 @@
             },
             scheduleAudit: function() {
                 loadTab('/projects/'+this.audit.projectRef, '4', 1, 1, '', 1);
+            },
+            openMapLink: function() {
+                window.open(this.mapLink);
             }
         },
         computed: {
         	auditIndex: function() {
         		return this.index + 1;
-        	}
+        	},
+            mapLink: function() {
+                return "https://maps.google.com/maps?q="+this.audit.address+"+"+this.audit.address2;
+            }
         }
     }
 </script>
