@@ -105,7 +105,6 @@ class CachedAuditsEvent
             $count_units = UnitInspection::where('building_key', '=', $building->building_key)->count();
             $finding_total = $building->nlt_count + $building->lt_count + $building->file_count;
             
-
             $cached_building = new CachedBuilding([
                 'building_name' => $building->building_name,
                 'building_id' => $building->building_id,
