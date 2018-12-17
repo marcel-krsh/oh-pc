@@ -64,6 +64,9 @@ if(Auth::check()){
 	@endif
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	<script>
+		function openUserPreferences(){
+			dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);
+		}
 	    window.Laravel = <?php echo json_encode([
 	        'csrfToken' => csrf_token(),
 	    ]); ?>
@@ -368,9 +371,7 @@ if(Auth::check()){
 			$('#detail-tab-1').trigger("click");
 		},100);
 		window.currentSite='allita_pc';
-		function openUserPreferences(){
-			dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);
-		}
+		
 	</script>
 	@endif
 
