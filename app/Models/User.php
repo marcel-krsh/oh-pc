@@ -81,7 +81,7 @@ class User extends Authenticatable
      */
     public function person() : HasOne
     {
-        return $this->hasOne(People::class, 'person_id','id');
+        return $this->hasOne(People::class, 'id','person_id');
     }
 
     public function initials() : string {
