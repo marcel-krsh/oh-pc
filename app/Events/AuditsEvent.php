@@ -1222,7 +1222,7 @@ class AuditsEvent
                 'smoke_audit_status_text' => 'Click to add a finding',
                 'auditor_status_icon' => 'a-avatar-fail',
                 'auditor_status' => 'action-required',
-                'auditor_status_text' => 'Auditors / schedule conflicts / unassigned items',
+                'auditor_status_text' => 'Assign auditors',
                 'message_status_icon' => 'a-envelope-4',
                 'message_status' => '',
                 'message_status_text' => '',
