@@ -588,7 +588,7 @@ class AuditsEvent
                         $comments[] = 'The project is not a multi building project.';
                         // group units by building, then proceed with the random selection
                         // create a new list of units based on building and project key
-                        $units_selected = array();
+                        $units_selected = [];
                         foreach ($buildings as $building) {
                             $new_building_selection = $this->randomSelection($building->units->pluck('unit_key')->toArray(), 20);
                             $units_selected = array_merge($units_selected, $new_building_selection);
@@ -709,10 +709,10 @@ class AuditsEvent
         $program_htc_overlap_names = Program::whereIn('program_key', $program_htc_overlap)->get()->pluck('program_name')->toArray();
         $program_htc_overlap_names = implode(',', $program_htc_overlap_names);
 
-        $units_selected = array();
-        $htc_units_subset_for_all = array();
-        $htc_units_subset = array();
-        $units_to_check_for_overlap = array();
+        $units_selected = [];
+        $htc_units_subset_for_all = [];
+        $htc_units_subset = [];
+        $units_to_check_for_overlap = [];
         
         $comments[] = 'Total units with HOME funding is '.$total_units;
         $comments[] = 'Total units in the project with a program is '.$total_units_with_program;

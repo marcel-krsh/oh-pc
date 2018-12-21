@@ -782,7 +782,7 @@ class CommunicationController extends Controller
 
         $owners_array = [];
 
-        $data = array();
+        $data = [];
         if ($messages) {
             foreach ($messages as $message) {
                 // create initials

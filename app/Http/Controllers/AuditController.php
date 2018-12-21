@@ -53,7 +53,7 @@ class AuditController extends Controller
             $buildings = CachedBuilding::where('audit_id', '=', $audit)->orderBy('id', 'desc')->get();
             
             $i = 1;
-            $new_ordering = array();
+            $new_ordering = [];
 
             foreach ($buildings as $building) {
                 $ordering = new OrderingBuilding([
@@ -80,12 +80,12 @@ class AuditController extends Controller
         // select all building orders except for the one we want to reorder
         $current_ordering = OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->where('building_id', '!=', $building)->orderBy('order', 'asc')->get()->toArray();
 
-        $inserted = array( [
+        $inserted = [ [
                     'user_id' => Auth::user()->id,
                     'audit_id' => $audit,
                     'building_id' => $building,
                     'order' => $index
-               ]);
+               ]];
 
         // insert the building ordering in the array
         $reordered_array = $current_ordering;
@@ -115,13 +115,13 @@ class AuditController extends Controller
         // select all building orders except for the one we want to reorder
         $current_ordering = OrderingUnit::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->where('building_id', '=', $building)->where('unit_id', '!=', $unit)->orderBy('order', 'asc')->get()->toArray();
 
-        $inserted = array( [
+        $inserted = [ [
                     'user_id' => Auth::user()->id,
                     'audit_id' => $audit,
                     'building_id' => $building,
                     'unit_id' => $unit,
                     'order' => $index
-               ]);
+               ]];
 
         // insert the building ordering in the array
         $reordered_array = $current_ordering;
@@ -158,7 +158,7 @@ class AuditController extends Controller
             $details = CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->orderBy('id', 'desc')->get();
             
             $i = 1;
-            $new_ordering = array();
+            $new_ordering = [];
 
             foreach ($details as $detail) {
                 $ordering = new OrderingUnit([
@@ -226,7 +226,7 @@ class AuditController extends Controller
                 $amenities = $amenities->orderBy('id', 'desc')->get();
             
             $i = 1;
-            $new_ordering = array();
+            $new_ordering = [];
 
             foreach ($amenities as $amenity) {
                 $ordering = new OrderingAmenity([
@@ -2803,14 +2803,14 @@ class AuditController extends Controller
         }
             $current_ordering = $current_ordering->orderBy('order', 'asc')->get()->toArray();
 
-        $inserted = array( [
+        $inserted = [ [
                     'user_id' => Auth::user()->id,
                     'audit_id' => $audit,
                     'building_id' => $building_id,
                     'unit_id' => $unit_id,
                     'amenity_id' => $amenity_id,
                     'order' => $index
-               ]);
+               ]];
 
         // insert the building ordering in the array
         $reordered_array = $current_ordering;

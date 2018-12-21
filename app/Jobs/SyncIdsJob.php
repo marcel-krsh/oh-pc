@@ -105,7 +105,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\Project;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'project_id',
             'look_up_reference' => 'project_key',
@@ -123,7 +123,7 @@ class SyncIdsJob implements ShouldQueue
 
 
         $lookUpModel = new \App\Models\ProjectProgram;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'project_program_id',
             'look_up_reference' => 'project_program_key',
@@ -140,7 +140,7 @@ class SyncIdsJob implements ShouldQueue
         }
 
         $lookUpModel = new \App\Models\ProgramDateType;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'program_date_type_id',
             'look_up_reference' => 'program_date_type_key',
@@ -168,7 +168,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\EmailAddressType;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'email_address_type_id',
             'look_up_reference' => 'email_address_type_key',
@@ -196,7 +196,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\Project;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'project_id',
             'look_up_reference' => 'project_key',
@@ -225,7 +225,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\Organization;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'organization_id',
             'look_up_reference' => 'organization_key',
@@ -243,7 +243,7 @@ class SyncIdsJob implements ShouldQueue
 
 
         $lookUpModel = new \App\Models\People;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'person_id',
             'look_up_reference' => 'person_key',
@@ -273,7 +273,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\Project;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'project_id',
             'look_up_reference' => 'development_key',
@@ -290,7 +290,7 @@ class SyncIdsJob implements ShouldQueue
         }
 
         $lookUpModel = new \App\Models\BuildingStatus;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'building_status_id',
             'look_up_reference' => 'building_status_key',
@@ -318,7 +318,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\Audit;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'audit_id',
             'look_up_reference' => 'monitoring_key',
@@ -335,7 +335,7 @@ class SyncIdsJob implements ShouldQueue
         }
 
         $lookUpModel = new \App\Models\User;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'user_id',
             'look_up_reference' => 'user_key',
@@ -364,7 +364,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\Project;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'project_id',
             'look_up_reference' => 'project_key',
@@ -381,7 +381,7 @@ class SyncIdsJob implements ShouldQueue
         }
 
         $lookUpModel = new \App\Models\Program;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'program_id',
             'look_up_reference' => 'program_key',
@@ -398,7 +398,7 @@ class SyncIdsJob implements ShouldQueue
         }
 
         $lookUpModel = new \App\Models\ProjectProgramStatusType;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'program_status_type_id',
             'look_up_reference' => 'project_program_status_type_key',
@@ -415,7 +415,7 @@ class SyncIdsJob implements ShouldQueue
         }
 
         $lookUpModel = new \App\Models\FederalSetAside;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'federal_minimum_set_aside_id',
             'look_up_reference' => 'federal_minimum_set_aside_key',
@@ -432,7 +432,7 @@ class SyncIdsJob implements ShouldQueue
         }
 
         $lookUpModel = new \App\Models\MultipleBuildingElectionType;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'multiple_building_election_id',
             'look_up_reference' => 'multiple_building_election_key',
@@ -462,7 +462,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\Project;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'project_id',
             'look_up_reference' => 'project_key',
@@ -479,7 +479,7 @@ class SyncIdsJob implements ShouldQueue
         }
 
         $lookUpModel = new \App\Models\ProjectProgram;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'project_program_id',
             'look_up_reference' => 'project_program_key',
@@ -497,7 +497,7 @@ class SyncIdsJob implements ShouldQueue
 
 
         $lookUpModel = new \App\Models\FinancialType;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'financial_type_id',
             'look_up_reference' => 'financial_type_key',
@@ -526,7 +526,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\Unit;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'unit_id',
             'look_up_reference' => 'unit_key',
@@ -543,7 +543,7 @@ class SyncIdsJob implements ShouldQueue
         }
 
         $lookUpModel = new \App\Models\Amenity;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'amenity_id',
             'look_up_reference' => 'amenity_type_key',
@@ -571,7 +571,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\Building;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'building_id',
             'look_up_reference' => 'building_key',
@@ -588,7 +588,7 @@ class SyncIdsJob implements ShouldQueue
         }
 
         $lookUpModel = new \App\Models\Amenity;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'amenity_id',
             'look_up_reference' => 'amenity_type_key',
@@ -617,7 +617,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\Project;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'project_id',
             'look_up_reference' => 'project_key',
@@ -634,7 +634,7 @@ class SyncIdsJob implements ShouldQueue
         }
 
         $lookUpModel = new \App\Models\ProjectProgram;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'project_program_id',
             'look_up_reference' => 'project_program_key',
@@ -651,7 +651,7 @@ class SyncIdsJob implements ShouldQueue
         }
 
         $lookUpModel = new \App\Models\Amenity;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'amenity_id',
             'look_up_reference' => 'amenity_type_key',
@@ -679,7 +679,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\UtilityAllowanceType;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'utility_allowance_type_id',
             'look_up_reference' => 'utility_allowance_type_key',
@@ -710,7 +710,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\SpecialNeed;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'special_needs_id',
             'look_up_reference' => 'special_needs_key',
@@ -728,7 +728,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\HouseholdSize;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'household_size_move_in_id',
             'look_up_reference' => 'household_size_move_in_key',
@@ -747,7 +747,7 @@ class SyncIdsJob implements ShouldQueue
 
 
         $lookUpModel = new \App\Models\HouseholdSize;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'household_size_id',
             'look_up_reference' => 'household_size_key',
@@ -765,7 +765,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\Unit;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'unit_id',
             'look_up_reference' => 'unit_key',
@@ -784,7 +784,7 @@ class SyncIdsJob implements ShouldQueue
 
         
         $lookUpModel = new \App\Models\Project;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'project_id',
             'look_up_reference' => 'development_key',
@@ -820,7 +820,7 @@ class SyncIdsJob implements ShouldQueue
         
         $model = new HouseholdEvent;
         $lookUpModel = new \App\Models\Unit;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'unit_id',
             'look_up_reference' => 'unit_key',
@@ -838,7 +838,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\OwnerCertificationYear;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'owner_certification_year_id',
             'look_up_reference' => 'owner_certification_year_key',
@@ -856,7 +856,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\Project;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'project_id',
             'look_up_reference' => 'project_key',
@@ -874,7 +874,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\Household;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'house_hold_id',
             'look_up_reference' => 'house_hold_key',
@@ -893,7 +893,7 @@ class SyncIdsJob implements ShouldQueue
 
 
         $lookUpModel = new \App\Models\EventType;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'event_type_id',
             'look_up_reference' => 'event_type_key',
@@ -912,7 +912,7 @@ class SyncIdsJob implements ShouldQueue
 
 
         $lookUpModel = new \App\Models\UnitStatus;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'unit_status_id',
             'look_up_reference' => 'unit_status_key',
@@ -930,7 +930,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\UtilityAllowance;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'utility_allowance_id',
             'look_up_reference' => 'utility_allowance_key',
@@ -948,7 +948,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\RentalAssistanceType;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'rental_assistance_type_id',
             'look_up_reference' => 'rental_assistance_type_key',
@@ -966,7 +966,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\RentalAssistanceSource;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'rental_assistance_source_id',
             'look_up_reference' => 'rental_assistance_source_key',
@@ -984,7 +984,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\UnitIdenty;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'unit_identity_id',
             'look_up_reference' => 'unit_identity_key',
@@ -1011,7 +1011,7 @@ class SyncIdsJob implements ShouldQueue
         
         $model = new Unit;
         $lookUpModel = new \App\Models\Building;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'building_id',
             'look_up_reference' => 'building_key',
@@ -1029,7 +1029,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\UnitBedroom;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'unit_bedroom_id',
             'look_up_reference' => 'unit_bedroom_key',
@@ -1047,7 +1047,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\UnitStatus;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'unit_status_id',
             'look_up_reference' => 'unit_status_key',
@@ -1065,7 +1065,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\Percentage;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'ami_percentage_id',
             'look_up_reference' => 'ami_percentage_key',
@@ -1083,7 +1083,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\UnitIdentity;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'unit_identity_id',
             'look_up_reference' => 'unit_identity_key',
@@ -1109,7 +1109,7 @@ class SyncIdsJob implements ShouldQueue
         
         $model = new Project;
         $lookUpModel = new \App\Models\Address;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'physical_address_id',
             'look_up_reference' => 'physical_address_key',
@@ -1127,7 +1127,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\PhoneNumber;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'default_phone_number_id',
             'look_up_reference' => 'default_phone_number_key',
@@ -1145,7 +1145,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\PhoneNumber;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'default_fax_number_id',
             'look_up_reference' => 'default_fax_number_key',
@@ -1172,7 +1172,7 @@ class SyncIdsJob implements ShouldQueue
         
         $model = new Organization;
         $lookUpModel = new \App\Models\Address;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'default_address_id',
             'look_up_reference' => 'default_address_key',
@@ -1190,7 +1190,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\PhoneNumber;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'default_phone_number_id',
             'look_up_reference' => 'default_phone_number_key',
@@ -1208,7 +1208,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\PhoneNumber;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'default_fax_number_id',
             'look_up_reference' => 'default_fax_number_key',
@@ -1226,7 +1226,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\People;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'default_contact_person_id',
             'look_up_reference' => 'default_contact_person_key',
@@ -1244,7 +1244,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\Organization;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'parent_organization_id',
             'look_up_reference' => 'parent_organization_key',
@@ -1273,7 +1273,7 @@ class SyncIdsJob implements ShouldQueue
         
         $model = new ProjectContactRole;
         $lookUpModel = new \App\Models\Organization;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'organization_id',
             'look_up_reference' => 'organization_key',
@@ -1291,7 +1291,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\ProjectProgram;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             //columns in this table
             'null_field' => 'project_program_id',
@@ -1312,7 +1312,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\Project;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             //columns in this table
             'null_field' => 'project_id',
@@ -1333,7 +1333,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\People;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             //columns in this table
             'null_field' => 'person_id',
@@ -1354,7 +1354,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\ProjectRole;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             //columns in this table
             'null_field' => 'project_role_id',
@@ -1386,7 +1386,7 @@ class SyncIdsJob implements ShouldQueue
         
         $model = new ProjectActivity;
         $lookUpModel = new \App\Models\Project;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'project_id',
             'look_up_reference' => 'project_key',
@@ -1404,7 +1404,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\ProjectProgram;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             //columns in this table
             'null_field' => 'project_program_id',
@@ -1425,7 +1425,7 @@ class SyncIdsJob implements ShouldQueue
         
 
         $lookUpModel = new \App\Models\ProjectActivityType;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'project_activity_type_id',
             'look_up_reference' => 'project_activity_type_key',
@@ -1458,7 +1458,7 @@ class SyncIdsJob implements ShouldQueue
         Address::where('city', 'Philadelphia')->where('state', '')->update(['state'=>'PA']);
         $model = new Address;
         $lookUpModel = new \App\Models\State;
-        $associate = array();
+        $associate = [];
         $associate[] = [
             'null_field' => 'state_id',
             'look_up_reference' => 'state',

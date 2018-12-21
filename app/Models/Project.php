@@ -52,7 +52,7 @@ class Project extends Model
     {
 
         $programs = $this->programs;
-        $programCounts = array();
+        $programCounts = [];
         foreach ($programs as $program) {
             $count = UnitProgram::where('audit_id', $this->currentAudit()->audit_id)
                                             ->where('program_id', $program->program_id)

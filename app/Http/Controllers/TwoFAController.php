@@ -329,7 +329,7 @@ class TwoFAController extends Controller
                        $phone, // to
                        $pdfurl,
                        //"https://www.twilio.com/docs/documents/25/justthefaxmaam.pdf", // mediaUrl
-                        array("from" => $fromNumber)
+                        ["from" => $fromNumber]
                    );
 
         return $fax->sid;
