@@ -53,7 +53,7 @@ class CachedComment extends Model
      */
     public function parent() : BelongsTo
     {
-        return $this->belongsTo('\App\Models\CachedComment', 'parent_id');
+        return $this->belongsTo(\App\Models\CachedComment::class, 'parent_id');
     }
 
     /**
@@ -63,7 +63,7 @@ class CachedComment extends Model
      */
     public function replies() : HasMany
     {
-        return $this->hasMany('\App\Models\CachedComment', 'parent_id');
+        return $this->hasMany(\App\Models\CachedComment::class, 'parent_id');
     }
 
     public function stats_replies_followup_count()
