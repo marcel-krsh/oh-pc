@@ -1,8 +1,7 @@
 {
     "name": "Greenwood360/allita_pcsv",
     "description": "Allita PCSV",
-    "keywords": [
-    ],
+    "keywords": [],
     "license": "Closed",
     "type": "project",
     "require": {
@@ -16,7 +15,7 @@
         "fideloper/proxy": "~4.0",
         "guzzlehttp/guzzle": "^6.3",
         "intervention/image": "^2.3",
-        "laravel/framework": "5.6.*",
+        "laravel/framework": "5.7.*",
         "laravel/tinker": "~1.0",
         "maatwebsite/excel": "^3.0",
         "phpoffice/phpexcel": "^1.8",
@@ -36,7 +35,8 @@
         "nunomaduro/collision": "~1.1",
         "phpunit/phpunit": "~6.0",
         "wnx/laravel-stats": "^1.7",
-        "aloha/twilio": "^4.0"
+        "aloha/twilio": "^4.0",
+        "beyondcode/laravel-dump-server": "~1.0"
     },
     "autoload": {
         "classmap": [
