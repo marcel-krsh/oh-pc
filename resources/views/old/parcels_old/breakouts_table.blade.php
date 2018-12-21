@@ -277,7 +277,7 @@ $i = 0;
 	 			@endif
 	 				<div class="request-amount-edit-{{$data->cost_item_id}}" @if(isset($data->requested_amount)) hidden @endif>
 						<div class="uk-inline">
-							<input type="text" id="request-amount-{{$data->cost_item_id}}" name="request-amount-{{$data->cost_item_id}}" class="uk-input uk-form-small uk-form-smaller uk-form-width-small" style="width:40px;" value="{{$data->requested_amount or $data->cost_amount}}" @if(!isset($data->requested_amount) && !isset($firstRequest)) <?php $firstRequest = "request-amount-$data->cost_item_id"; ?> @endif /> <button onclick="save_request_amount({{$data->cost_item_id}});" class="uk-button uk-button-default uk-button-small" >Save</button>
+							<input type="text" id="request-amount-{{$data->cost_item_id}}" name="request-amount-{{$data->cost_item_id}}" class="uk-input uk-form-small uk-form-smaller uk-form-width-small" style="width:40px;" value="{{$data->requested_amount ?? $data->cost_amount}}" @if(!isset($data->requested_amount) && !isset($firstRequest)) <?php $firstRequest = "request-amount-$data->cost_item_id"; ?> @endif /> <button onclick="save_request_amount({{$data->cost_item_id}});" class="uk-button uk-button-default uk-button-small" >Save</button>
 							@if(isset($data->requested_amount))
 							<button uk-toggle="target: .request-amount-edit-{{$data->cost_item_id}}" class="uk-button uk-button-default uk-button-small" >x</button>
 							@endif
@@ -300,7 +300,7 @@ $i = 0;
 	 				@if(isset($data->requested_item_id))
 	 				<div class="po-amount-edit-{{$data->requested_item_id}}" @if(isset($data->approved_amount)) hidden @endif>
 						<div class="uk-inline">
-							<input type="text" id="po-amount-{{$data->requested_item_id}}" name="po-amount-{{$data->requested_item_id}}" class="uk-input uk-form-small uk-form-smaller uk-form-width-small" style="width:40px;" value="{{$data->approved_amount or $data->requested_amount}}"/> <button onclick="save_approved_amount({{$data->requested_item_id}});" class="uk-button uk-button-default uk-button-small" >Save</button>
+							<input type="text" id="po-amount-{{$data->requested_item_id}}" name="po-amount-{{$data->requested_item_id}}" class="uk-input uk-form-small uk-form-smaller uk-form-width-small" style="width:40px;" value="{{$data->approved_amount ?? $data->requested_amount}}"/> <button onclick="save_approved_amount({{$data->requested_item_id}});" class="uk-button uk-button-default uk-button-small" >Save</button>
 							@if(isset($data->approved_amount))
 							<button uk-toggle="target: .po-amount-edit-{{$data->requested_item_id}}" class="uk-button uk-button-default uk-button-small" >x</button>
 							@endif
@@ -328,7 +328,7 @@ $i = 0;
 	 				@if(isset($data->approved_item_id))
 	 				<div class="invoice-amount-edit-{{$data->approved_item_id}}" @if(isset($data->invoice_amount)) hidden @endif>
 						<div class="uk-inline">
-							<input type="text" id="invoice-amount-{{$data->approved_item_id}}" name="invoice-amount-{{$data->approved_item_id}}" class="uk-input uk-form-small uk-form-smaller uk-form-width-small" style="width:40px;" value="{{$data->invoice_amount or $data->approved_amount}}" /> <button onclick="save_invoice_amount({{$data->approved_item_id}});" class="uk-button uk-button-default uk-button-small" >Save</button>
+							<input type="text" id="invoice-amount-{{$data->approved_item_id}}" name="invoice-amount-{{$data->approved_item_id}}" class="uk-input uk-form-small uk-form-smaller uk-form-width-small" style="width:40px;" value="{{$data->invoice_amount ?? $data->approved_amount}}" /> <button onclick="save_invoice_amount({{$data->approved_item_id}});" class="uk-button uk-button-default uk-button-small" >Save</button>
 							@if(isset($data->approved_amount))
 							<button uk-toggle="target: .invoice-amount-edit-{{$data->approved_item_id}}" class="uk-button uk-button-default uk-button-small" >x</button>
 							@endif

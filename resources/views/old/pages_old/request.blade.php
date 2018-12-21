@@ -85,17 +85,17 @@
 						<div class="uk-width-1-1 uk-margin-top uk-margin-bottom">
 							<div class="uk-panel uk-panel-box">
 							    <div class="uk-panel-badge uk-badge">
-							    	{{$stat['Total_Parcels'] or 'n/a'}}
+							    	{{$stat['Total_Parcels'] ?? 'n/a'}}
 							    </div>
 							    <h3 class="uk-panel-title">
-							    	{{$request->program->program_name or 'n/a'}}
+							    	{{$request->program->program_name ?? 'n/a'}}
 							    </h3>
 								<hr class="dashed-hr" class="uk-margin-bottom">
 								
 								<!-- This is the container of the content items -->
 								<ul class="uk-list">
 								    <li>
-								    	Account ID: {{$request->account->id or 'n/a'}}
+								    	Account ID: {{$request->account->id ?? 'n/a'}}
 								    	<ul>
 								    		<li>
 								    			<span class="parcel-district-format">

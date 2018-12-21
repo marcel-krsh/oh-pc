@@ -39,12 +39,12 @@
         <tbody>
         @foreach($vendors as $data)
             <tr @if($data->active == 0) class='inactiveVendor' style="display:none;" @endif>
-                <td><small>{{$data->created_at or 'NA'}}</small></td>
-                <td><small><a onclick="dynamicModalLoad('expense-categories-vendor-details/{{$data->id}}/')" class="uk-link-muted">{{$data->vendor_name or 'NA'}}</a></small></td>
-                <td><small>{{$data->vendor_email or 'NA'}}</small></td>
-                <td><small>{{$data->vendor_city or 'NA'}}</small></td>
-                <td><small>{{$data->state->state_name or 'NA'}}</small></td>
-                <td><small>{{$data->vendor_zip or 'NA'}}</small></td>
+                <td><small>{{$data->created_at ?? 'NA'}}</small></td>
+                <td><small><a onclick="dynamicModalLoad('expense-categories-vendor-details/{{$data->id}}/')" class="uk-link-muted">{{$data->vendor_name ?? 'NA'}}</a></small></td>
+                <td><small>{{$data->vendor_email ?? 'NA'}}</small></td>
+                <td><small>{{$data->vendor_city ?? 'NA'}}</small></td>
+                <td><small>{{$data->state->state_name ?? 'NA'}}</small></td>
+                <td><small>{{$data->vendor_zip ?? 'NA'}}</small></td>
                 <td><small>{{$data->vendor_notes}}</small></td>
                 <td>
                     <a title="Click to view vendor's stats" class="uk-hidden" onclick="">

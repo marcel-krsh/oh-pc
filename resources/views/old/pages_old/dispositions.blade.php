@@ -1,6 +1,6 @@
 @extends('layouts.simplerAllita')
 @section('head')
-<title>DISPOSITION {{$disposition->id or ''}}</title> 
+<title>DISPOSITION {{$disposition->id ?? ''}}</title> 
 @stop
 @section('content')
 <?php setlocale(LC_MONETARY, 'en_US'); ?>
