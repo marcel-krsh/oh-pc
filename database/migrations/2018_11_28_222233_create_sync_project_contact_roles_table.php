@@ -30,15 +30,8 @@ class CreateSyncProjectContactRolesTable extends Migration
                 $table->integer('organization_key')->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

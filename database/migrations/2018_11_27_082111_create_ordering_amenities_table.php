@@ -18,20 +18,17 @@ class CreateOrderingAmenitiesTable extends Migration
     public function up()
     {
         if (!Schema::hasTable('ordering_amenities')) {
-            
             Schema::create('ordering_amenities', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('user_id')->nullable();
                 $table->unsignedInteger('audit_id')->nullable();
                 $table->unsignedInteger('project_id')->nullable();
                 $table->unsignedInteger('building_id')->nullable();
-                $table->unsignedInteger('unit_id')->nullable(); 
-                $table->unsignedInteger('amenity_id')->nullable(); 
+                $table->unsignedInteger('unit_id')->nullable();
+                $table->unsignedInteger('amenity_id')->nullable();
                 $table->integer('order')->nullable();
             });
-
         }
-
     }
 
     /**

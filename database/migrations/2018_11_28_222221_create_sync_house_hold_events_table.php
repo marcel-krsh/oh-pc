@@ -47,15 +47,8 @@ class CreateSyncHouseHoldEventsTable extends Migration
                 $table->timestamp('certification_date')->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

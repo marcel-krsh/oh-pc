@@ -22,7 +22,7 @@ class SystemSettingsSeeder extends Seeder
             ]
         ];
 
-        foreach($data as $item) {
+        foreach ($data as $item) {
             SystemSetting::create($item);
         }
     }

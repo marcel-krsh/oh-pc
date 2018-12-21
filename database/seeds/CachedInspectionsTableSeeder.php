@@ -13,17 +13,17 @@ class CachedInspectionsTableSeeder extends Seeder
     {
         $inspectionsSeeder = [
             [
-                'id' => 1, 
+                'id' => 1,
                 'audit_id' => 123,
                 'project_id' => 122,
                 'building_id' => 123876,
                 'unit_id' => null,
 
                 'status' => 'critical',
-                'address' => '123457 Silvegwood Street', 
-                'city' => 'Columbus', 
-                'state' => 'OH', 
-                'zip' => '43219', 
+                'address' => '123457 Silvegwood Street',
+                'city' => 'Columbus',
+                'state' => 'OH',
+                'zip' => '43219',
 
                 'auditors_json' => '[
                     {"name":"Brian Greenwood",

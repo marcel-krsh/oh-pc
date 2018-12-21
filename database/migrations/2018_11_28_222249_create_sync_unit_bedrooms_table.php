@@ -27,15 +27,8 @@ class CreateSyncUnitBedroomsTable extends Migration
                 $table->integer('unit_bedroom_number')->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

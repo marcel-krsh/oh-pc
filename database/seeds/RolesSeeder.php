@@ -12,25 +12,25 @@ class RolesSeeder extends Seeder
     public function run()
     {
         $rolesData = [
-            [ 
+            [
                 'role_parent_id'=>0,
                 'role_name'=>'Property Manager',
                 'protected'=>1,
                 'active'=>1
             ],
-            [ 
+            [
                 'role_parent_id'=>0,
                 'role_name'=>'Auditor',
                 'protected'=>1,
                 'active'=>1
             ],
-            [ 
+            [
                 'role_parent_id'=>0,
                 'role_name'=>'Manager',
                 'protected'=>1,
                 'active'=>1
             ],
-            [ 
+            [
                 'role_parent_id'=>0,
                 'role_name'=>'System Admin',
                 'protected'=>1,

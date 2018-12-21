@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class FindingTypeBoilerplate extends Model
 {
-	protected $table = 'finding_type_boilerplate';
+    protected $table = 'finding_type_boilerplate';
 
     protected $fillable = [
         'finding_type_id',
@@ -39,7 +39,4 @@ class FindingTypeBoilerplate extends Model
     {
         return $this->hasOne(\App\Models\Boilerplate::class, 'id', 'boilerplate_id');
     }
-
 }
-    
-

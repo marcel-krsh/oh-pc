@@ -147,7 +147,7 @@ class AuthService
                 $result = json_decode($response->getBody()->getContents());
 
                 //$timestamp = intval((new Ticks($this->_getTokenExpiresValueInTicks($result->expires_in)))->timestamp());
-                $expiresAt = date('Y-m-d h:i:s', time()+$this->_pcapi_access_token_expires_in  );
+                $expiresAt = date('Y-m-d h:i:s', time()+$this->_pcapi_access_token_expires_in);
 
                 $this->_updateAccessToken($result->access_token);
                 $this->_updateAccessTokenExpires($expiresAt);
@@ -200,13 +200,6 @@ class AuthService
     {
         // https://www.oauth.com/oauth2-servers/access-tokens/access-token-response/
         $endpoint = "{$this->_base_directory}/root/refresh_token?token={$this->_pcapi_refresh_token}";
-
-
-
-
-
-
-
     }
 
     /**
@@ -249,7 +242,7 @@ class AuthService
     {
         return SystemSetting::updateOrCreate([
             'key' => 'pcapi_access_token'
-        ],[
+        ], [
             'value' => $token
         ]);
     }
@@ -265,7 +258,7 @@ class AuthService
     {
         return SystemSetting::updateOrCreate([
             'key' => 'pcapi_access_token_expires'
-        ],[
+        ], [
             'value' => $expires
         ]);
     }
@@ -281,7 +274,7 @@ class AuthService
     {
         return SystemSetting::updateOrCreate([
             'key' => 'pcapi_refresh_token'
-        ],[
+        ], [
             'value' => $token
         ]);
     }
@@ -302,7 +295,7 @@ class AuthService
      *
      * @return bool
      */
-    static public function deviceIsAuthorized($user_id, $device_id)
+    public static function deviceIsAuthorized($user_id, $device_id)
     {
         return true;
     }
@@ -315,7 +308,7 @@ class AuthService
      *
      * @return bool
      */
-    static public function attemptDeviceAuthorization($device_id, $verification_code)
+    public static function attemptDeviceAuthorization($device_id, $verification_code)
     {
         return true;
     }

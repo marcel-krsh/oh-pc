@@ -38,5 +38,4 @@ class UserAudit extends Model
     {
         return $this->hasOne(\App\Models\CachedAmenity::class, 'id', 'audit_id');
     }
-
 }

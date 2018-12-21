@@ -32,15 +32,8 @@ class CreateSyncBuildingsTable extends Migration
                 $table->timestamp('acquisition_date')->nullable();
                 $table->timestamp('building_built_date')->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

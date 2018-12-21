@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Unit extends Model
 {
     public $timestamps = true;
-	//protected $dateFormat = 'Y-m-d\TH:i:s.u';
+    //protected $dateFormat = 'Y-m-d\TH:i:s.u';
     //
     protected $guarded = ['id'];
 
@@ -20,12 +20,12 @@ class Unit extends Model
 
     public function household_events() : HasMany
     {
-    	return $this->hasMany(\App\Models\HouseholdEvent::class, 'unit_key', 'unit_key');
+        return $this->hasMany(\App\Models\HouseholdEvent::class, 'unit_key', 'unit_key');
     }
 
     public function isAssistedUnit() : bool
     {
-    	foreach ($this->household_events()->get() as $event) {
+        foreach ($this->household_events()->get() as $event) {
             if ($event->rental_assistance_amount > 0) {
                 return true;
             }
@@ -35,7 +35,6 @@ class Unit extends Model
 
     public function programs() : HasMany
     {
-    	return $this->hasMany(\App\Models\UnitProgram::class, 'unit_key', 'unit_key');
+        return $this->hasMany(\App\Models\UnitProgram::class, 'unit_key', 'unit_key');
     }
-    
 }

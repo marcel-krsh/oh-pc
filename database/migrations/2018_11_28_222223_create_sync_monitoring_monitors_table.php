@@ -26,15 +26,8 @@ class CreateSyncMonitoringMonitorsTable extends Migration
                 $table->integer('user_key')->nullable()->comment('assisting analyst');
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

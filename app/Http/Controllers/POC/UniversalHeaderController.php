@@ -11,5 +11,4 @@ class UniversalHeaderController extends Controller
     {
         return \view('poc.universal-header.index');
     }
-
 }

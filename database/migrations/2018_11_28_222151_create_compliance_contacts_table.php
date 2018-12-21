@@ -32,15 +32,8 @@ class CreateComplianceContactsTable extends Migration
                 $table->string('review_cycle', 255)->nullable();
                 $table->timestamp('next_inspection')->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

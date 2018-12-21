@@ -17,8 +17,7 @@ class CreateCachedUnitsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('cached_units'))
-        {
+        if (!Schema::hasTable('cached_units')) {
             Schema::create('cached_units', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('audit_id');
@@ -54,8 +53,6 @@ class CreateCachedUnitsTable extends Migration
                 $table->nullableTimestamps();
             });
         }
-        
-
     }
 
     /**

@@ -40,9 +40,9 @@ class CachedAuditsEvent
      */
     public function __construct()
     {
-        if(env('APP_DEBUG_NO_DEVCO') == 'true'){
+        if (env('APP_DEBUG_NO_DEVCO') == 'true') {
            // Auth::onceUsingId(1); // TEST BRIAN
-           Auth::onceUsingId(286); // TEST 
+            Auth::onceUsingId(286); // TEST
         }
     }
 
@@ -61,26 +61,26 @@ class CachedAuditsEvent
         // create buildings, create units, create amenities cache tables
 
         // get buildings from cached_audit
-        $buildings = BuildingInspection::where('audit_id','=',$cached_audit->audit_id)->get();
+        $buildings = BuildingInspection::where('audit_id', '=', $cached_audit->audit_id)->get();
 
         // get the auditors' list from audit_auditors table
         // [{"id": "1", "name": "Brian Greenwood", "color": "green", "status": "alert", "initials": "BG"}, {"id": "2", "name": "Brian Greenwood 2", "color": "blue", "status": "", "initials": "BF"}]
-        // 
+        //
         // also save the lead auditor in the table
         $audit = Audit::where('id', '=', $cached_audit->audit_id)->first();
-        if($audit->user_key){
+        if ($audit->user_key) {
             $lead_key = $audit->user_key;
             $lead_id = $audit->lead_user_id;
-        }else{
+        } else {
             $lead_key = null;
             $lead_id = null;
         }
 
-        $auditors = AuditAuditor::where('monitoring_key','=',$cached_audit->audit_key)->with('user')->get();
+        $auditors = AuditAuditor::where('monitoring_key', '=', $cached_audit->audit_key)->with('user')->get();
         $auditors_array = [];
-        if($auditors){
-            foreach($auditors as $auditor){
-                if($auditor->user){
+        if ($auditors) {
+            foreach ($auditors as $auditor) {
+                if ($auditor->user) {
                     $lead = $lead_user->id;
                     $words = explode(" ", $lead_user->name);
                     $initials = "";
@@ -101,7 +101,7 @@ class CachedAuditsEvent
         }
 
         // create cached buildings related to this audit
-        foreach($buildings as $building){
+        foreach ($buildings as $building) {
             $count_units = UnitInspection::where('building_key', '=', $building->building_key)->count();
             $finding_total = $building->nlt_count + $building->lt_count + $building->file_count;
             
@@ -116,7 +116,7 @@ class CachedAuditsEvent
                 'lead_id' => $building->project_id,
                 'lead_key' => $building->project_key,
                 'status' => '',
-                'type' => 'unit', 
+                'type' => 'unit',
                 'type_total' => $count_units,
                 'type_text' => 'UNIT',
                 'type_text_plural' => 'UNITS',
@@ -136,17 +136,16 @@ class CachedAuditsEvent
                 'zip' => $cached_audit->zip,
                 'auditors_json' => json_encode($auditors_array)
             ]);
-            $cached_building->save();   
+            $cached_building->save();
         }
 
         // create cached units
         $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->get();
 
-        foreach($units as $unit){
-
+        foreach ($units as $unit) {
             // get the unit type (bedroom type)
-            // 
-            // 
+            //
+            //
 
             $cached_unit = new CachedUnit([
                 'audit_id' => $cached_audit->audit_id,
@@ -183,8 +182,7 @@ class CachedAuditsEvent
                 'auditors_json' => null,
                 'amenities_json' => null,
             ]);
-            $cached_unit->save();   
+            $cached_unit->save();
         }
-        
     }
 }

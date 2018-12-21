@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class HudFindingType extends Model
 {
-	protected $table = 'hud_finding_type';
+    protected $table = 'hud_finding_type';
 
     protected $fillable = [
         'hud_inspectable_area_id',
@@ -39,7 +39,4 @@ class HudFindingType extends Model
     {
         return $this->hasOne(\App\Models\HudInspectableArea::class, 'id', 'hud_inspectable_area_id');
     }
-
 }
-    
-

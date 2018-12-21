@@ -14,5 +14,4 @@ class AuthLogoutController extends Controller
         \Request::session()->flush();
         \Cookie::forget();
     }
-
 }

@@ -17,8 +17,7 @@ class CreateCachedCommentsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('cached_comments'))
-        {
+        if (!Schema::hasTable('cached_comments')) {
             Schema::create('cached_comments', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('audit_id');
@@ -45,11 +44,8 @@ class CreateCachedCommentsTable extends Migration
                 $table->json('followup_actions_json')->nullable();
                 $table->json('actions_json')->nullable();
                 $table->nullableTimestamps();
-
             });
-
         }
-
     }
 
     /**

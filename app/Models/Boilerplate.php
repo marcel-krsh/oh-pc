@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class Boilerplate extends Model
 {
-	protected $table = 'boilerplates';
+    protected $table = 'boilerplates';
 
     protected $fillable = [
         'name',
@@ -31,7 +31,4 @@ class Boilerplate extends Model
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'creator_id');
     }
-
 }
-    
-

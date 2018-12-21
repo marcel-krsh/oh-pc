@@ -26,15 +26,8 @@ class CreateSyncOwnerCertificationYearsTable extends Migration
                 $table->timestamp('schedule_end_date')->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

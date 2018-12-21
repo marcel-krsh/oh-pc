@@ -30,15 +30,8 @@ class CreateDefaultFollowupsTable extends Migration
                 $table->tinyInteger('doc')->nullable();
                 $table->json('doc_categories')->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

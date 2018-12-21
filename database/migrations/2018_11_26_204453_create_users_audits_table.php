@@ -18,7 +18,6 @@ class CreateUsersAuditsTable extends Migration
     public function up()
     {
         if (!Schema::hasTable('users_audits')) {
-            
             Schema::create('users_audits', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('audit_id');
@@ -26,9 +25,7 @@ class CreateUsersAuditsTable extends Migration
                 $table->tinyInteger('is_lead')->nullable()->default(0);
                 $table->nullableTimestamps();
             });
-
         }
-
     }
 
     /**

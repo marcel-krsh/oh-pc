@@ -32,7 +32,7 @@ class CommunicationController extends Controller
         // $this->middleware('auth');
         //Auth::onceUsingId(2);
         //
-        if(env('APP_DEBUG_NO_DEVCO') == 'true'){
+        if (env('APP_DEBUG_NO_DEVCO') == 'true') {
             //Auth::onceUsingId(1); // TEST BRIAN
             Auth::onceUsingId(286); // TEST BRIAN
         }
@@ -678,12 +678,12 @@ class CommunicationController extends Controller
     //     return view('dashboard.communications', compact('owners_array', 'programs', 'messages', 'ohfa_id'));
     // }
 
-    public function communicationsFromProjectTab($project, $page=0) 
+    public function communicationsFromProjectTab($project, $page = 0)
     {
         return $this->communicationsTab($page, $project);
     }
 
-    public function communicationsTab($page=0, $project=0)
+    public function communicationsTab($page = 0, $project = 0)
     {
         $number_per_page = 10;
         $skip = $number_per_page * $page;
@@ -691,7 +691,7 @@ class CommunicationController extends Controller
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
 
         // TBD project_id in searches
-        if($project){
+        if ($project) {
             $project_audits = CachedAudit::where('project_ref', '=', $project)->pluck('id')->toArray();
         }
 
@@ -702,9 +702,8 @@ class CommunicationController extends Controller
                         $query->where('message', 'LIKE', '%'.$search.'%');
                         $query->orWhereHas('audit', function ($query) use ($search) {
                             $query->where('audit_id', 'LIKE', '%'.$search.'%');
-
                         });
-                    })
+            })
                     ->where(function ($query) use ($current_user) {
                         $query->where('owner_id', '=', $current_user->id);
                         $query->orWhereHas('recipients', function ($query) use ($current_user) {
@@ -712,7 +711,7 @@ class CommunicationController extends Controller
                         });
                     });
 
-            if($project){
+            if ($project) {
                 $search_messages = $search_messages->whereIn('audit_id', $project_audits);
             }
 
@@ -759,8 +758,7 @@ class CommunicationController extends Controller
                 $messages = null;
             }
         } else {
-
-            $messages = Communication::where(function ($query) use ($current_user){
+            $messages = Communication::where(function ($query) use ($current_user) {
                         $query->where(function ($query) use ($current_user) {
                             $query->where('owner_id', '=', $current_user->id);
                             $query->whereHas('replies');
@@ -768,10 +766,10 @@ class CommunicationController extends Controller
                         $query->orWhereHas('recipients', function ($query) use ($current_user) {
                             $query->where('user_id', '=', $current_user->id);
                         });
-                    })
+            })
                     ->where('parent_id', '=', null);
 
-            if($project){
+            if ($project) {
                 $messages = $messages->whereIn('audit_id', $project_audits);
             }
 
@@ -780,7 +778,6 @@ class CommunicationController extends Controller
                         ->skip($skip)->take($number_per_page)->get();
 
             $messages = $messages->reverse();
-            
         }
 
         $owners_array = [];
@@ -819,11 +816,11 @@ class CommunicationController extends Controller
                     $recipients_array[$recipient->id] = User::find($recipient->user_id);
                 }
 
-                if(count($message->recipient_details)){
-                    foreach ($recipients_array as $recipient){
-                        if($recipient != $current_user && $message->owner != $recipient && $recipient->name != ''){
+                if (count($message->recipient_details)) {
+                    foreach ($recipients_array as $recipient) {
+                        if ($recipient != $current_user && $message->owner != $recipient && $recipient->name != '') {
                             $recipients = $recipients. ", ".$recipient->name;
-                        }elseif($recipient == $current_user){
+                        } elseif ($recipient == $current_user) {
                             $recipients = $recipients. ", me";
                         }
                     }
@@ -857,10 +854,10 @@ class CommunicationController extends Controller
                     ->where('seen', 0)
                     ->count();
 
-                if($message->unseen){
+                if ($message->unseen) {
                     $unseen = $message->unseen;
                     $communication_unread_class = 'communication-unread';
-                }else{
+                } else {
                     $unseen = 0;
                     $communication_unread_class = '';
                 }
@@ -887,53 +884,53 @@ class CommunicationController extends Controller
                 $created = date("m/d/y", strtotime($message->created_at))." ". date('h:i a', strtotime($message->created_at));
                 $created_right = date("m/d/y", strtotime($message->created_at)) ."<br />".date('h:i a', strtotime($message->created_at));
 
-                if(count($message->documents)){
+                if (count($message->documents)) {
                     $hasattachment = 'attachment-true';
-                }else{
+                } else {
                     $hasattachment = 'attachment';
                 }
 
-                if(count($message->documents)){
+                if (count($message->documents)) {
                     $attachment_class = 'attachment-true';
-                }else{
+                } else {
                     $attachment_class = 'attachment';
                 }
 
-                if($message->audit){
-                    if(Auth::user()->isFromOrganization($ohfa_id)){
+                if ($message->audit) {
+                    if (Auth::user()->isFromOrganization($ohfa_id)) {
                         $organization_name = $message->audit->organization->organization_name;
-                    }else{
+                    } else {
                         $organization_name = '';
-                    } 
+                    }
      
-                    $organization_address = $message->audit->address.', '.$message->audit->city.', '; 
-                    if($message->audit->state){
+                    $organization_address = $message->audit->address.', '.$message->audit->city.', ';
+                    if ($message->audit->state) {
                         $organization_address = $organization_address.$message->audit->state;
-                    } 
+                    }
                     $organization_address = $organization_address.' '.$message->audit->zip;
                     
                     // if($message->audit->county){
-                    //     $organization_address = $organization_address. '<br />'.$message->audit->county->county_name; 
+                    //     $organization_address = $organization_address. '<br />'.$message->audit->county->county_name;
                     // }
-                }else{
+                } else {
                     $organization_address = '';
                     $organization_name = '';
                 }
 
                 $filenames = '';
-                if($message->all_docs && count($message->all_docs)){
-                    foreach($message->all_docs as $document){
+                if ($message->all_docs && count($message->all_docs)) {
+                    foreach ($message->all_docs as $document) {
                         $filenames = $filenames.$document->document->filename.' ';
                     }
                 }
 
-                if($message->audit){
+                if ($message->audit) {
                     $program_id = $message->audit->program_id;
-                }else{
+                } else {
                     $program_id = '';
                 }
 
-                $data[] = [                    
+                $data[] = [
                         'userId' => '',
                         'socketId' => '',
                         'id' => $message->id,
@@ -963,14 +960,14 @@ class CommunicationController extends Controller
         $owners_array = collect($owners_array)->sortBy('name')->toArray();
         $programs = Program::orderBy('program_name', 'ASC')->get();
 
-        if($page>0){
+        if ($page>0) {
             return response()->json($data);
-        }else{
-            if($project){
+        } else {
+            if ($project) {
                 // get latest audit
                 $audit = CachedAudit::where('project_ref', '=', $project)->orderBy('id', 'desc')->first();
                 return view('projects.partials.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'programs', 'ohfa_id', 'project', 'audit'));
-            }else{
+            } else {
                 return view('dashboard.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'programs', 'ohfa_id', 'project'));
             }
         }

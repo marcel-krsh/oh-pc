@@ -18,7 +18,6 @@ class CreateUsersAmenitiesTable extends Migration
     public function up()
     {
         if (!Schema::hasTable('users_amenities')) {
-            
             Schema::create('users_amenities', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('amenity_id');
@@ -26,9 +25,7 @@ class CreateUsersAmenitiesTable extends Migration
                 $table->tinyInteger('is_lead')->nullable()->default(0);
                 $table->nullableTimestamps();
             });
-
         }
-
     }
 
     /**

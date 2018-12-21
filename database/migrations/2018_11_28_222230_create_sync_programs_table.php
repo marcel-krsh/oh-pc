@@ -28,15 +28,8 @@ class CreateSyncProgramsTable extends Migration
                 $table->integer('funding_program_key')->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

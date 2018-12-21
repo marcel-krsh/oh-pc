@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class FindingType extends Model
 {
-	protected $table = 'finding_types';
+    protected $table = 'finding_types';
 
     protected $fillable = [
         'name',
@@ -54,7 +54,4 @@ class FindingType extends Model
     {
         return $this->hasMany(DefaultFollowup::class, 'finding_type_id', 'id');
     }
-
 }
-    
-

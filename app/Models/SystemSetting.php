@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class SystemSetting extends Model
 {
 
-	protected $table = 'system_settings';
+    protected $table = 'system_settings';
 
     protected $fillable = [
         'key',
@@ -16,20 +16,18 @@ class SystemSetting extends Model
 
     /**
      * Get value from key
-     * 
+     *
      * @param  string $key
-     * @return 
+     * @return
      */
     public static function get(string $key)
     {
         $found = self::where('key', '=', $key)->first();
 
-        if($found){
-        	return $found->value;
+        if ($found) {
+            return $found->value;
         }
 
         return null;
     }
-
-
 }

@@ -32,13 +32,8 @@ class CreateSyncProjectFinancialsTable extends Migration
                 $table->dateTime('updated_at')->nullable();
 
                 $table->primary('id');
-
-                
-
             });
-
         }
-
     }
 
     /**

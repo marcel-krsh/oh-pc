@@ -28,15 +28,8 @@ class CreateUtilityAllowancesTable extends Migration
                 $table->timestamp('effective_date2')->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

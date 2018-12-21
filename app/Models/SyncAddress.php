@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class SyncAddress extends Model
 {
-	public $timestamps = true;
-	//protected $dateFormat = 'Y-m-d G:i:s.u';
+    public $timestamps = true;
+    //protected $dateFormat = 'Y-m-d G:i:s.u';
 
-	
+    
 
     //
     protected $guarded = ['id'];

@@ -32,15 +32,8 @@ class CreateSyncProjectsTable extends Migration
                 $table->integer('sample_size')->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

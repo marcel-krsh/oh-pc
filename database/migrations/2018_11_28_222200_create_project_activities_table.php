@@ -26,15 +26,8 @@ class CreateProjectActivitiesTable extends Migration
                 $table->integer('project_activity_type_key')->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

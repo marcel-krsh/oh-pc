@@ -19,10 +19,5 @@ class AuthIndexController extends Controller
 
     public function store()
     {
-
-
-
-
     }
-
 }

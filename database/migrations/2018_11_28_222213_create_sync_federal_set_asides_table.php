@@ -26,15 +26,8 @@ class CreateSyncFederalSetAsidesTable extends Migration
                 $table->string('set_aside_description')->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

@@ -25,15 +25,8 @@ class CreateSyncUnitIdentitiesTable extends Migration
                 $table->string('unit_identity_description', 255)->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

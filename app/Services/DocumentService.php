@@ -31,9 +31,9 @@ class DocumentService extends PCAPIService
     
     /**
      * Search Documents
-     * 
-     * @param array $search 
-     * @param array $sort 
+     *
+     * @param array $search
+     * @param array $sort
      * @param int $user
      * @param string $user_email
      * @param string $user_name
@@ -41,7 +41,7 @@ class DocumentService extends PCAPIService
      * @param string $device_name
      * @param string $provider
      */
-    public function getDocuments(array $search=null, array $sort=null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null, string $provider = 'docuware')
+    public function getDocuments(array $search = null, array $sort = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null, string $provider = 'docuware')
     {
         // example call
         // /api/v1/docuware/documents/search?search=FIELD:criteria;FIELD1:fromcriteria,toCriteria;&page={{null/value}}&user={{user_id}}&user_email={{user_email}}&user_name={{user_full_name}}&device_id={{device_id}}&device_name={{device_name}}
@@ -69,17 +69,16 @@ class DocumentService extends PCAPIService
         //     'DOCUMENTDATE DESC'
         // ];
 
-        if($search !== null){
+        if ($search !== null) {
             (isset($search['isandoperation']) || array_key_exists('isandoperation', $search)) ? $isandoperation = $search['isandoperation'] : $isandoperation = ''; // true, false or nothing
 
-            if(isset($search['fields']) || array_key_exists('fields', $search)){
+            if (isset($search['fields']) || array_key_exists('fields', $search)) {
                 $search_fields = "search=";
-                foreach($search['fields'] as $field){
-                    if((isset($field['field']) || array_key_exists('field', $field)) && (isset($field['criteria']) || array_key_exists('criteria', $field))){
-
+                foreach ($search['fields'] as $field) {
+                    if ((isset($field['field']) || array_key_exists('field', $field)) && (isset($field['criteria']) || array_key_exists('criteria', $field))) {
                         $search_fields = $search_fields."{$field['field']}:{$field['criteria']}";
 
-                        if(((isset($field['criteria2']) || array_key_exists('criteria2', $field))){
+                        if (((isset($field['criteria2']) || array_key_exists('criteria2', $field))){
                             $search_fields = $search_fields.",{$field['criteria2']}";
                         }
 
@@ -87,20 +86,19 @@ class DocumentService extends PCAPIService
                     }
                 }
                 $search_params = "{$search_fields}&cabinet={$this->_cabinet_name}&cabinet_id={$this->_cabinet_id}&isandoperation={$isandoperation}";
-            }else{
+            } else {
                 $search_params = "cabinet={$this->_cabinet_name}&cabinet_id={$this->_cabinet_id}&isandoperation={$isandoperation}";
             }
-
-        }else{
+        } else {
             $search_params =  "cabinet={$this->_cabinet_name}&cabinet_id={$this->_cabinet_id}";
         }
 
-        if($sort != null){
+        if ($sort != null) {
             $order_fields = "sortorderfields=";
-            foreach($sort as $sortorderfield){
-                if($order_fields == "sortorderfields="){
+            foreach ($sort as $sortorderfield) {
+                if ($order_fields == "sortorderfields=") {
                     $order_fields = $order_fields."{$sortorderfield}";
-                }else{
+                } else {
                     $order_fields = $order_fields.",{$sortorderfield}";
                 }
             }
@@ -114,7 +112,7 @@ class DocumentService extends PCAPIService
 
     /**
      * Get Specific Document
-     * 
+     *
      * @param int $id
      * @param int $user
      * @param string $user_email
@@ -123,7 +121,7 @@ class DocumentService extends PCAPIService
      * @param string $device_name
      * @param string $provider
      */
-    public function getDocument(int $id, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null, string $provider = 'docuware') : string
+    public function getDocument(int $id, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null, string $provider = 'docuware') : string
     {
         // example call
         // /api/v1/docuware/document/{{document_id}}?user={{user_id}}&user_email={{user_email}}&user_name={{user_full_name}}&device_id={{device_id}}&device_name={{device_name}}
@@ -146,7 +144,7 @@ class DocumentService extends PCAPIService
      * @param string $device_name
      * @param string $provider
      */
-    public function getDocumentByProviderId(int $provider_id, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null, string $provider = 'docuware') : string
+    public function getDocumentByProviderId(int $provider_id, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null, string $provider = 'docuware') : string
     {
         $search = [
             'fields' => [
@@ -172,9 +170,9 @@ class DocumentService extends PCAPIService
      * @param string $device_name
      * @param string $provider
      */
-    public function getRecentDocuments(string $last_updated_at, array $sort=null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null, string $provider = 'docuware')
+    public function getRecentDocuments(string $last_updated_at, array $sort = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null, string $provider = 'docuware')
     {
-        if(!$last_updated_at) {
+        if (!$last_updated_at) {
             $last_updated_at = Carbon::now()->addMonth(-1);
         }
 
@@ -197,7 +195,7 @@ class DocumentService extends PCAPIService
      * Get Recent Documents by Project ID
      *
      * @param int $project_id
-     * @param array $sort 
+     * @param array $sort
      * @param $last_updated_at Carbon date
      * @param int $user
      * @param string $user_email
@@ -206,9 +204,9 @@ class DocumentService extends PCAPIService
      * @param string $device_name
      * @param string $provider
      */
-    public function getRecentDocumentsByProjectId(int $project_id, array $sort=null, string $last_updated_at , int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null, string $provider = 'docuware')
+    public function getRecentDocumentsByProjectId(int $project_id, array $sort = null, string $last_updated_at, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null, string $provider = 'docuware')
     {
-        if(!$last_updated_at) {
+        if (!$last_updated_at) {
             $last_updated_at = Carbon::now()->addMonth(-1);
         }
 
@@ -238,7 +236,7 @@ class DocumentService extends PCAPIService
      * Get Documents By Project ID
      *
      * @param int $project_id
-     * @param array $sort 
+     * @param array $sort
      * @param int $user
      * @param string $user_email
      * @param string $user_name
@@ -246,7 +244,7 @@ class DocumentService extends PCAPIService
      * @param string $device_name
      * @param string $provider
      */
-    public function getDocumentsByProjectId(int $project_id, array $sort=null, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null, string $provider = 'docuware')
+    public function getDocumentsByProjectId(int $project_id, array $sort = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null, string $provider = 'docuware')
     {
         $search = [
             'fields' => [
@@ -274,7 +272,7 @@ class DocumentService extends PCAPIService
      * @param string $provider
      * @return bool
      */
-    public function updateDocumentMetadata(int $id, array $metadata, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null, string $provider = 'docuware') : bool
+    public function updateDocumentMetadata(int $id, array $metadata, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null, string $provider = 'docuware') : bool
     {
         //  $metadata = [
         //     'field_name' => 'value',
@@ -288,9 +286,9 @@ class DocumentService extends PCAPIService
     }
 
     /**
-     * 
+     *
      * Delete Document by ID or by search query
-     * 
+     *
      * @param  int $id The id of the document to delete
      * @param  int $user
      * @param  string $user_email
@@ -300,7 +298,7 @@ class DocumentService extends PCAPIService
      * @param  string $provider The document provider's name
      * @return bool
      */
-    public function deleteDocument(int $id, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null, string $provider = 'docuware') : bool
+    public function deleteDocument(int $id, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null, string $provider = 'docuware') : bool
     {
         // example call
         // /api/v1/docuware/document/{{document_id}}?user={{user_id}}&user_email={{user_email}}&user_name={{user_full_name}}&device_id={{device_id}}&device_name={{device_name}}
@@ -320,10 +318,10 @@ class DocumentService extends PCAPIService
      * @param  int $device_id
      * @param  string $device_name
      * @param  string $provider The document provider's name
-     * 
+     *
      * @return bool
      */
-    public function chainOfCustodyDeleteFromDevice(int $id, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null, string $provider = 'docuware') : bool 
+    public function chainOfCustodyDeleteFromDevice(int $id, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null, string $provider = 'docuware') : bool
     {
         $log_params = [
             'user' => $user,
@@ -340,7 +338,7 @@ class DocumentService extends PCAPIService
 
     /**
      * Store Document
-     * 
+     *
      * @param  array $metadata Document's fields and values
      * @param  $user
      * @param  string $user_email
@@ -348,10 +346,11 @@ class DocumentService extends PCAPIService
      * @param  int $device_id
      * @param  string $device_name
      * @param  string $provider The document provider's name
-     * 
+     *
      * @return int Document ID
      */
-    public function storeDocument(array $metadata, int $user=null, string $user_email=null, string $user_name=null, int $device_id=null, string $device_name=null, string $provider = 'docuware') : int{
+    public function storeDocument(array $metadata, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null, string $provider = 'docuware') : int
+    {
 
         //  $metadata = [
         //     'field_name' => 'value',
@@ -367,9 +366,8 @@ class DocumentService extends PCAPIService
             'device_name' => $device_name,
         ];
 
-        $payload = array_merge($metadata,$log_params);
+        $payload = array_merge($metadata, $log_params);
 
         return $this->post("{$provider}/document", $payload);
     }
-
 }

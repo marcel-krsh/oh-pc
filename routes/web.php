@@ -11,13 +11,13 @@
 |
 */
 
-Route::group(['middleware' => 'web'], function () {
+    Route::group(['middleware' => 'web'], function () {
 
-    Route::get('/sync', 'SyncController@sync');
-     Route::get('/brian_test', 'SyncController@brianTest');
+        Route::get('/sync', 'SyncController@sync');
+         Route::get('/brian_test', 'SyncController@brianTest');
 
-    //Route::group(['middleware' => ['allita.auth']], function() {
-        Route::get('unified_login', function (){
+        //Route::group(['middleware' => ['allita.auth']], function() {
+        Route::get('unified_login', function () {
                 //session(['brian'=>'test']);
                 return redirect('/');
         });
@@ -42,18 +42,18 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('autocomplete/auditname', 'DashboardController@autocomplete');
         Route::get('autocomplete/auditaddress', 'DashboardController@autocomplete');
 
-        Route::get('/session/filters/{type}/{value?}', function ($type, $value=null) {
-            if($value !== null){
+        Route::get('/session/filters/{type}/{value?}', function ($type, $value = null) {
+            if ($value !== null) {
                 session([$type => $value]);
                 $new_filter = session($type);
                 return $new_filter;
-            }else{
-                if(!session()->has($type)){
+            } else {
+                if (!session()->has($type)) {
                     session([$type => 1]);
-                }else{
-                    if( session($type) == 0 || session($type) === null || session($type) == '') { 
-                        session([$type => 1]); 
-                    }else{
+                } else {
+                    if (session($type) == 0 || session($type) === null || session($type) == '') {
+                        session([$type => 1]);
+                    } else {
                         session()->forget($type);
                     }
                 }
@@ -166,9 +166,8 @@ Route::group(['middleware' => 'web'], function () {
             Route::post('amenity/store/{id?}', 'AdminToolController@amenityStore');
         });
 
-    // });
-
-});
+        // });
+    });
 /* Route::get('/', 'PagesController@dashboard');
 
 // Dashboard Routes
@@ -571,40 +570,39 @@ Route::get('/notices/all', 'NoticeController@allNotice');
 Route::get('/notices/images/{notice}', 'HomeController@NoticeImageTrack');
 */
 
-Route::group(['prefix'=>'poc','namespace'=>'POC'], function() {
+    Route::group(['prefix'=>'poc','namespace'=>'POC'], function () {
 
-    Route::get('auth', 'AuthIndexController@index');
-    Route::post('auth', 'AuthIndexController@store');
-    Route::get('auth/second-factor', 'AuthSecondFactorController@index');
-    Route::get('auth/second-factor/create', 'AuthSecondFactorController@create');
-    Route::post('auth/second-factor', 'AuthSecondFactorController@store');
-    Route::get('auth/logout', 'AuthLogoutController@destroy'); // @todo: CRUDify this
+        Route::get('auth', 'AuthIndexController@index');
+        Route::post('auth', 'AuthIndexController@store');
+        Route::get('auth/second-factor', 'AuthSecondFactorController@index');
+        Route::get('auth/second-factor/create', 'AuthSecondFactorController@create');
+        Route::post('auth/second-factor', 'AuthSecondFactorController@store');
+        Route::get('auth/logout', 'AuthLogoutController@destroy'); // @todo: CRUDify this
 
-    Route::get('api-test', 'ApiTestController@index');
+        Route::get('api-test', 'ApiTestController@index');
 
-    Route::get('universal-header', 'UniversalHeaderController@index');
-    Route::get('universal-header/hosted.js', function() {
-       app('debugbar')->disable();
-       return \view('poc.universal-header.hosted');
-    });
+        Route::get('universal-header', 'UniversalHeaderController@index');
+        Route::get('universal-header/hosted.js', function () {
+            app('debugbar')->disable();
+            return \view('poc.universal-header.hosted');
+        });
 
-    Route::get('devco-root-authenticate', function() {
-       $service = new \App\Services\AuthService;
-       return $service->rootAuthenticate();
-    });
+        Route::get('devco-root-authenticate', function () {
+            $service = new \App\Services\AuthService;
+            return $service->rootAuthenticate();
+        });
 
-    // POC routes for 2FA using Twilio SMS, voice and fax
-    Route::get('tfa/makecall', 'TwoFAController@makeVoiceCall');
+        // POC routes for 2FA using Twilio SMS, voice and fax
+        Route::get('tfa/makecall', 'TwoFAController@makeVoiceCall');
     
-    Route::post('tfa/getsms', 'TwoFAController@getsms')->name('device.receive.sms');
-    Route::post('tfa/getsms/failed', 'TwoFAController@getsmsfailed');
-    Route::post('tfa/getvoice', 'TwoFAController@getvoice')->name('device.receive.voice');
-    Route::post('tfa/getvoice/response', 'TwoFAController@getvoiceresponse')->name('device.voice.response');
-    Route::post('tfa/getvoice/failed', 'TwoFAController@getvoicefailed');
-    Route::get('tfa/faxpdf/{code}', 'TwoFAController@generateFaxPdf')->name('device.create.fax.pdf');
-    Route::get('tfa/{resend?}', 'TwoFAController@index')->name('device.code.check.form');
-    Route::post('tfa_post', 'TwoFAController@validateSMSCode')->name('device.code.check');
+        Route::post('tfa/getsms', 'TwoFAController@getsms')->name('device.receive.sms');
+        Route::post('tfa/getsms/failed', 'TwoFAController@getsmsfailed');
+        Route::post('tfa/getvoice', 'TwoFAController@getvoice')->name('device.receive.voice');
+        Route::post('tfa/getvoice/response', 'TwoFAController@getvoiceresponse')->name('device.voice.response');
+        Route::post('tfa/getvoice/failed', 'TwoFAController@getvoicefailed');
+        Route::get('tfa/faxpdf/{code}', 'TwoFAController@generateFaxPdf')->name('device.create.fax.pdf');
+        Route::get('tfa/{resend?}', 'TwoFAController@index')->name('device.code.check.form');
+        Route::post('tfa_post', 'TwoFAController@validateSMSCode')->name('device.code.check');
 
-    // POC routes for new UI
-    
-});
+        // POC routes for new UI
+    });

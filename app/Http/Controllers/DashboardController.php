@@ -24,13 +24,13 @@ class DashboardController extends Controller
     public function __construct()
     {
         // $this->middleware('allita.auth');
-        if(env('APP_DEBUG_NO_DEVCO') == 'true'){
+        if (env('APP_DEBUG_NO_DEVCO') == 'true') {
             //Auth::onceUsingId(1); // TEST BRIAN
             Auth::onceUsingId(286); // TEST BRIAN
             
             // this is normally setup upon login
             $current_user = Auth::user();
-            if($current_user->socket_id === null){
+            if ($current_user->socket_id === null) {
                 // create a socket id and store in user table
                 $token = str_random(10);
                 $current_user->socket_id = $token;
@@ -91,7 +91,7 @@ class DashboardController extends Controller
         }
     }
 
-    public function audits(Request $request, $page=0)
+    public function audits(Request $request, $page = 0)
     {
         
         // TEST EVENT
@@ -105,16 +105,16 @@ class DashboardController extends Controller
         $filter = $request->get('filter');
         $filter_id = $request->get('filterId');
 
-        if(session()->has('audit-sort-by')){
+        if (session()->has('audit-sort-by')) {
             $sort_by = session('audit-sort-by');
 
-            if(session()->has('audit-sort-order') && session('audit-sort-order') != 'undefined'){
+            if (session()->has('audit-sort-order') && session('audit-sort-order') != 'undefined') {
                 $sort_order = session('audit-sort-order');
-            }else{
+            } else {
                 session(['audit-sort-order', 0]);
                 $sort_order = 0;
             }
-        }else{
+        } else {
             session(['audit-sort-by', 'audit-sort-project']);
             $sort_by = 'audit-sort-project';
 
@@ -192,12 +192,12 @@ class DashboardController extends Controller
                 $sort_by_field = 'step_status';
                 break;
             default:
-               $sort_by_field = 'id';
+                $sort_by_field = 'id';
         }
 
-        if($sort_order){
+        if ($sort_order) {
             $sort_order_query = "asc";
-        }else{
+        } else {
             $sort_order_query = "desc";
         }
 
@@ -205,49 +205,48 @@ class DashboardController extends Controller
 
         $data = [];
 
-        foreach($audits as $audit){
-
-            if($audit['status'] != 'critical') {
+        foreach ($audits as $audit) {
+            if ($audit['status'] != 'critical') {
                 $notcritical = 'notcritical';
-            }else{
+            } else {
                 $notcritical = 'critical';
             }
 
-            if(session('audit-hidenoncritical') == 1 && $audit['status'] != 'critical'){
+            if (session('audit-hidenoncritical') == 1 && $audit['status'] != 'critical') {
                 $display = 'none';
-            }else{
+            } else {
                 $display = 'table-row';
             }
 
-            if($audit->lead_json){
+            if ($audit->lead_json) {
                 $lead_name = $audit->lead_json->name;
                 $lead_color = $audit->lead_json->color;
                 $lead_initials = $audit->lead_json->initials;
-            }else{
+            } else {
                 $lead_name = '';
                 $lead_color = '';
                 $lead_initials = '';
             }
 
             $pm = strtoupper($audit['pm']);
-            if($audit['inspection_schedule_date']){
+            if ($audit['inspection_schedule_date']) {
                 $inspectionScheduleDate = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('m/d');
                 $inspectionScheduleDateYear = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('Y');
-            }else{
+            } else {
                 $inspectionScheduleDate = null;
                 $inspectionScheduleDateYear = null;
             }
             
-            if($audit['followup_date']){
+            if ($audit['followup_date']) {
                 $followupDate = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('m/d');
                 $followupDateYear = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('Y');
-            }else{
+            } else {
                 $followupDate = null;
                 $followupDateYear = null;
             }
             
 
-            $data[] = [    
+            $data[] = [
                 'id' => $audit->id,
                 'auditId' => $audit->audit_id,
                 'title' => $audit->title,
@@ -287,36 +286,36 @@ class DashboardController extends Controller
                 'tooltipLtAuditStatus' => 'title:'.$audit['lt_audit_status_text'],
                 'ltAuditIconClass' => $audit['lt_audit_icon'],
 
-                'auditorStatusIconClass' => $audit['auditor_status_icon'], 
+                'auditorStatusIconClass' => $audit['auditor_status_icon'],
                 'auditorStatusClass' => $audit['auditor_status'],
                 'tooltipAuditorStatus' => 'title:'.$audit['auditor_status_text'].';',
-                'messageStatusIconClass' => $audit['message_status_icon'], 
+                'messageStatusIconClass' => $audit['message_status_icon'],
                 'messageStatusClass' => $audit['message_status'],
                 'tooltipMessageStatus' => 'title:'.$audit['message_status_text'].';',
-                'documentStatusIconClass' => $audit['document_status_icon'], 
+                'documentStatusIconClass' => $audit['document_status_icon'],
                 'documentStatusClass' => $audit['document_status'],
                 'tooltipDocumentStatus' => 'title:'.$audit['document_status_text'].';',
-                'historyStatusIconClass' => $audit['history_status_icon'], 
+                'historyStatusIconClass' => $audit['history_status_icon'],
                 'historyStatusClass' => $audit['history_status'],
                 'tooltipHistoryStatus' => 'title:'.$audit['history_status_text'].';',
                 'stepStatusIconClass' => $audit['step_status_icon'],
                 'stepStatusClass' => $audit['step_status'],
                 'tooltipStepStatus' => 'title:'.$audit['step_status_text'].';'
             ];
-        }   
+        }
 
-        if($page>0){
+        if ($page>0) {
             return response()->json($data);
-        }else{
+        } else {
             return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'audits', 'sort_by', 'sort_order'));
         }
     }
 
     public function reports(Request $request)
     {
-        $reports = NULL;
+        $reports = null;
         //return \view('dashboard.index'); //, compact('user')
-        return view('dashboard.reports',compact('reports'));
+        return view('dashboard.reports', compact('reports'));
     }
 
     public function autocomplete(Request $request)
@@ -371,7 +370,7 @@ class DashboardController extends Controller
         }
         */
 
-        $projects = CachedAudit::select('address','city','zip','project_id','audit_id','pm','project_ref')->where(function ($q) use ($request) {
+        $projects = CachedAudit::select('address', 'city', 'zip', 'project_id', 'audit_id', 'pm', 'project_ref')->where(function ($q) use ($request) {
                             //$request = Request::input();
                             $q->where('project_ref', 'LIKE', '%'.$request->search.'%')
                             ->orWhere('project_key', 'like', '%'.$request->search.'%')
@@ -380,7 +379,7 @@ class DashboardController extends Controller
                             ->orWhere('title', 'like', '%'.$request->search.'%')
                             ->orWhere('pm', 'like', '%'.$request->search.'%')
                             ->orWhere('zip', 'like', '%'.$request->search.'%');
-                        })->take(20)->get()->all();
+        })->take(20)->get()->all();
         //Project Id Audit id Main address Property Manager Name Project Name
         $i = 0;
         $results = [];
@@ -395,7 +394,7 @@ class DashboardController extends Controller
                         $data->pm,
                         $data->project_ref
                     ];
-                }
+        }
                     
                     
         // // search for primary address (project), project #, audit#
@@ -442,5 +441,4 @@ class DashboardController extends Controller
         $results = json_encode($results);
         return $results;
     }
-
 }

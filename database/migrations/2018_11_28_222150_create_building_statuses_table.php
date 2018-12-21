@@ -25,15 +25,8 @@ class CreateBuildingStatusesTable extends Migration
                 $table->string('building_status_name', 11)->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

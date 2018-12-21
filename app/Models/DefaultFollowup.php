@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class DefaultFollowup extends Model
 {
-	protected $table = 'default_followups';
+    protected $table = 'default_followups';
 
     protected $fillable = [
         'finding_type_id',
@@ -36,7 +36,4 @@ class DefaultFollowup extends Model
     {
         return $this->hasOne(\App\Models\FindingType::class, 'id', 'finding_type_id');
     }
-
 }
-    
-

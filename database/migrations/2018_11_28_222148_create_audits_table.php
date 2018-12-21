@@ -43,15 +43,8 @@ class CreateAuditsTable extends Migration
                 $table->string('status_results')->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

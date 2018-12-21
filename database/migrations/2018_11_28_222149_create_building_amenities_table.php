@@ -28,15 +28,8 @@ class CreateBuildingAmenitiesTable extends Migration
                 $table->string('comment', 255)->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

@@ -27,8 +27,6 @@ class CreateSyncMultipleBuildingElectionTypesTable extends Migration
                 $table->nullableTimestamps();
             });
         }
-        
-
     }
 
     /**

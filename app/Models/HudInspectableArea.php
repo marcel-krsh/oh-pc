@@ -13,9 +13,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class HudInspectableArea extends Model
 {
-	protected $table = 'hud_inspectable_areas';
+    protected $table = 'hud_inspectable_areas';
 
-	protected $fillable = [
+    protected $fillable = [
         'name'
     ];
 
@@ -38,7 +38,4 @@ class HudInspectableArea extends Model
     {
         return $this->hasMany(AmenityHud::class, 'hud_inspectable_area_id', 'id');
     }
-
 }
-    
-

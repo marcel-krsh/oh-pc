@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Organization extends Model
 {
     public $timestamps = true;
-	//protected $dateFormat = 'Y-m-d\TH:i:s.u';
+    //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
     protected $guarded = ['id'];
 

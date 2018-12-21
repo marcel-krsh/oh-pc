@@ -30,15 +30,8 @@ class CreateAmenitiesTable extends Migration
                 $table->float('time_to_complete')->nullable()->default(1);
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

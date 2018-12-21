@@ -36,16 +36,8 @@ class CreateUnitInspectionsTable extends Migration
                 $table->string('swap_reason', 255)->nullable();
                 $table->tinyInteger('complete')->nullable();
                 $table->dateTime('submitted_date_time')->nullable();
-
-                
-
-                
-
             });
         }
-
-        
-
     }
 
     /**

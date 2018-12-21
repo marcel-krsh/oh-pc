@@ -38,5 +38,4 @@ class UserAmenity extends Model
     {
         return $this->hasOne(\App\Models\CachedAmenity::class, 'id', 'amenity_id');
     }
-
 }

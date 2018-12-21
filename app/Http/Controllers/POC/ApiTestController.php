@@ -17,5 +17,4 @@ class ApiTestController extends Controller
 
         dd($documents);
     }
-
 }

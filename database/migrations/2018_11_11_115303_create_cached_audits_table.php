@@ -17,8 +17,7 @@ class CreateCachedAuditsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('cached_audits'))
-        {
+        if (!Schema::hasTable('cached_audits')) {
             Schema::create('cached_audits', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('project_id')->nullable();
@@ -73,15 +72,8 @@ class CreateCachedAuditsTable extends Migration
                 $table->string('step_status', 100)->nullable();
                 $table->string('step_status_text', 250)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

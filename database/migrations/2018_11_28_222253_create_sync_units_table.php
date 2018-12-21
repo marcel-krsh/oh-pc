@@ -32,15 +32,8 @@ class CreateSyncUnitsTable extends Migration
                 $table->tinyInteger('is_unit_handicap_accessible')->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

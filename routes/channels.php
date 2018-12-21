@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Communication;
+
 /*
 |--------------------------------------------------------------------------
 | Broadcast Channels

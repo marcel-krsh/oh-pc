@@ -13,7 +13,7 @@ class CachedBuildingsTableSeeder extends Seeder
     {
         $buildingsSeeder = [
             [
-                'id' => '123', 
+                'id' => '123',
                 'audit_id' => '123',
                 'status' => 'critical',
                 'amenity_id' => null,
@@ -74,7 +74,7 @@ class CachedBuildingsTableSeeder extends Seeder
 				]',
             ],
             [
-                'id' => '345', 
+                'id' => '345',
                 'audit_id' => '111',
                 'status' => 'action-needed',
                 'amenity_id' => 122,
@@ -119,7 +119,7 @@ class CachedBuildingsTableSeeder extends Seeder
                 'amenities_json' => '[]',
             ],
             [
-                'id' => '12333', 
+                'id' => '12333',
                 'audit_id' => '12344',
                 'status' => 'in-progress',
                 'amenity_id' => null,
@@ -180,7 +180,7 @@ class CachedBuildingsTableSeeder extends Seeder
 				]',
             ],
             [
-                'id' => '123876', 
+                'id' => '123876',
                 'audit_id' => '123',
                 'status' => 'ok-actionable',
                 'amenity_id' => null,
@@ -241,7 +241,7 @@ class CachedBuildingsTableSeeder extends Seeder
 				]',
             ],
             [
-                'id' => '12399', 
+                'id' => '12399',
                 'audit_id' => '123',
                 'status' => '',
                 'amenity_id' => null,
@@ -302,7 +302,7 @@ class CachedBuildingsTableSeeder extends Seeder
 				]',
             ],
             [
-                'id' => '999', 
+                'id' => '999',
                 'audit_id' => '123',
                 'status' => '',
                 'amenity_id' => 133,
@@ -347,7 +347,7 @@ class CachedBuildingsTableSeeder extends Seeder
                 'amenities_json' => '[]',
             ],
             [
-                'id' => '999888', 
+                'id' => '999888',
                 'audit_id' => '123',
                 'status' => '',
                 'is_amenity' => 1,
@@ -392,7 +392,7 @@ class CachedBuildingsTableSeeder extends Seeder
                 'amenities_json' => '',
             ],
             [
-                'id' => '123221', 
+                'id' => '123221',
                 'audit_id' => '123',
                 'status' => 'critical',
                 'type' => 'building',

@@ -33,7 +33,7 @@ class AdminToolController extends Controller
         // $this->middleware('auth');
         //Auth::onceUsingId(2);
         //
-        if(env('APP_DEBUG_NO_DEVCO') == 'true'){
+        if (env('APP_DEBUG_NO_DEVCO') == 'true') {
             //Auth::onceUsingId(1); // TEST BRIAN
             Auth::onceUsingId(286); // TEST BRIAN
         }
@@ -827,20 +827,19 @@ class AdminToolController extends Controller
         $finding_type = FindingType::where('id', $id)->first();
 
         if (!$finding_type) {
-
             $finding_type = null;
-            $boilerplates = Boilerplate::where('global','=',1)->orderBy('name', 'asc')->get();
+            $boilerplates = Boilerplate::where('global', '=', 1)->orderBy('name', 'asc')->get();
 
             // people who can be assigned to the follow ups
             // the audit lead, or the PM, or whoever is creating the finding (hardcoded)
 
-            $document_categories = DocumentCategory::where('active','=', 1)->get();
+            $document_categories = DocumentCategory::where('active', '=', 1)->get();
             $huds = HudInspectableArea::orderBy('name', 'asc')->get();
 
             return view('modals.finding-type-create', compact('finding_type', 'boilerplates', 'document_categories', 'huds'));
         } else {
-            $boilerplates = Boilerplate::where('global','=',1)->orderBy('name', 'asc')->get();
-            $document_categories = DocumentCategory::where('active','=', 1)->get();
+            $boilerplates = Boilerplate::where('global', '=', 1)->orderBy('name', 'asc')->get();
+            $document_categories = DocumentCategory::where('active', '=', 1)->get();
             $huds = HudInspectableArea::orderBy('name', 'asc')->get();
 
             return view('modals.finding-type-create', compact('finding_type', 'boilerplates', 'document_categories', 'huds'));
@@ -894,7 +893,6 @@ class AdminToolController extends Controller
 
             return view('modals.hud-area-create', compact('hud', 'amenities'));
         } else {
-
             $amenities = Amenity::orderBy('amenity_description', 'asc')->get();
 
             return view('modals.hud-area-create', compact('hud', 'amenities'));
@@ -928,7 +926,7 @@ class AdminToolController extends Controller
                                     })
                                     ->orderBy('organization_name', 'asc')
                                     ->paginate(40);
-        }else{
+        } else {
             $organizations = Organization::with(['address','person'])->orderBy('organization_name', 'asc')->paginate(40);
         }
         
@@ -978,11 +976,10 @@ class AdminToolController extends Controller
             $search = Session::get('findingtypes-search');
             $findingtypes = FindingType::where(function ($query) use ($search) {
                                         $query->where('name', 'LIKE', '%'.$search.'%');
-                                    })
+            })
                                     ->orderBy('name', 'asc')
                                     ->paginate(40);
-                                
-        }else{
+        } else {
             $findingtypes = FindingType::orderBy('name', 'asc')->paginate(40);
         }
         
@@ -1643,14 +1640,13 @@ class AdminToolController extends Controller
         $amenities = $amenities['items'];
 
         if (!$id) {
-
             $hud = HudInspectableArea::create([
                 'name' => $inputs['name']
             ]);
 
             // add boilerplates
-            if(count($amenities)){
-                foreach($amenities as $amenity){
+            if (count($amenities)) {
+                foreach ($amenities as $amenity) {
                     AmenityHud::create([
                         'hud_inspectable_area_id' => $hud->id,
                         'amenity_id' => $amenity['id']
@@ -1664,7 +1660,7 @@ class AdminToolController extends Controller
         } else {
             $hud = HudInspectableArea::where('id', '=', $id)->first();
             
-            if($hud){
+            if ($hud) {
                 $hud->update([
                     'name' => $inputs['name']
                 ]);
@@ -1673,8 +1669,8 @@ class AdminToolController extends Controller
                 AmenityHud::where('hud_inspectable_area_id', '=', $hud->id)->delete();
 
                 // add amenities
-                if(count($amenities)){
-                    foreach($amenities as $amenity){
+                if (count($amenities)) {
+                    foreach ($amenities as $amenity) {
                         AmenityHud::create([
                             'hud_inspectable_area_id' => $hud->id,
                             'amenity_id' => $amenity['id']
@@ -1683,7 +1679,7 @@ class AdminToolController extends Controller
                 }
 
                 return response('I updated your HUD area. That was fun! What else do you have for me?');
-            }else{
+            } else {
                 return response('I cannot find that record.');
             }
 
@@ -1691,7 +1687,6 @@ class AdminToolController extends Controller
             // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Updated Document Category ' . $d->document_category_name);
             // $lc->smartAddHistory($dold, $dnew);
             // $lc->save();
-            
         }
     }
 
@@ -1714,7 +1709,7 @@ class AdminToolController extends Controller
 
         $amenity = Amenity::where('id', '=', $id)->first();
        
-        if($amenity){
+        if ($amenity) {
             $amenity->update([
                 'amenity_description' => $inputs['amenity_description'],
                 'project' => $project,
@@ -1727,7 +1722,7 @@ class AdminToolController extends Controller
             ]);
 
             return response('I updated the amenity. That was fun! What else do you have for me?');
-        }else{
+        } else {
             return response('I cannot find that record.');
         }
 
@@ -1735,7 +1730,6 @@ class AdminToolController extends Controller
         // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Updated Document Category ' . $d->document_category_name);
         // $lc->smartAddHistory($dold, $dnew);
         // $lc->save();
-            
     }
 
     /**
@@ -1757,7 +1751,6 @@ class AdminToolController extends Controller
         $followups = $followups['items'];
 
         if (!$id) {
-
             $f = FindingType::create([
                 'name' => $inputs['name'],
                 'nominal_item_weight' => $inputs['nominal_item_weight'],
@@ -1769,8 +1762,8 @@ class AdminToolController extends Controller
             ]);
 
             // add boilerplates
-            if(count($boilerplates)){
-                foreach($boilerplates as $boilerplate){
+            if (count($boilerplates)) {
+                foreach ($boilerplates as $boilerplate) {
                     FindingTypeBoilerplate::create([
                         'finding_type_id' => $f->id,
                         'boilerplate_id' => $boilerplate['id']
@@ -1779,8 +1772,8 @@ class AdminToolController extends Controller
             }
 
             // add huds
-            if(count($huds)){
-                foreach($huds as $hud){
+            if (count($huds)) {
+                foreach ($huds as $hud) {
                     HudFindingType::create([
                         'finding_type_id' => $f->id,
                         'hud_inspectable_area_id' => $hud['id']
@@ -1789,8 +1782,8 @@ class AdminToolController extends Controller
             }
             
             // add followups
-            if(count($followups)){
-                foreach($followups as $followup){
+            if (count($followups)) {
+                foreach ($followups as $followup) {
                     DefaultFollowup::create([
                         'finding_type_id' => $f->id,
                         'description' => $followup['description'],
@@ -1811,7 +1804,7 @@ class AdminToolController extends Controller
         } else {
             $finding_type = FindingType::where('id', '=', $id)->first();
 
-            if($finding_type){
+            if ($finding_type) {
                 $finding_type->update([
                     'name' => $inputs['name'],
                     'nominal_item_weight' => $inputs['nominal_item_weight'],
@@ -1830,8 +1823,8 @@ class AdminToolController extends Controller
                 DefaultFollowup::where('finding_type_id', '=', $finding_type->id)->delete();
 
                 // add boilerplates
-                if(count($boilerplates)){
-                    foreach($boilerplates as $boilerplate){
+                if (count($boilerplates)) {
+                    foreach ($boilerplates as $boilerplate) {
                         FindingTypeBoilerplate::create([
                             'finding_type_id' => $finding_type->id,
                             'boilerplate_id' => $boilerplate['id']
@@ -1840,8 +1833,8 @@ class AdminToolController extends Controller
                 }
 
                 // add huds
-                if(count($huds)){
-                    foreach($huds as $hud){
+                if (count($huds)) {
+                    foreach ($huds as $hud) {
                         HudFindingType::create([
                             'finding_type_id' => $finding_type->id,
                             'hud_inspectable_area_id' => $hud['id']
@@ -1850,8 +1843,8 @@ class AdminToolController extends Controller
                 }
                 
                 // add followups
-                if(count($followups)){
-                    foreach($followups as $followup){
+                if (count($followups)) {
+                    foreach ($followups as $followup) {
                         DefaultFollowup::create([
                             'finding_type_id' => $finding_type->id,
                             'description' => $followup['description'],
@@ -1867,10 +1860,9 @@ class AdminToolController extends Controller
                 }
 
                 return response('I updated the finding type. I stored it. I love it.');
-            }else{
+            } else {
                 return response('I cannot find that record.');
             }
-           
         }
     }
 

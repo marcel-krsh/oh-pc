@@ -24,15 +24,8 @@ class CreateAmenitiesTable extends Migration
                 $table->string('amenity_description', 255)->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

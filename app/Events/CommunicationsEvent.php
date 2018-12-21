@@ -28,9 +28,9 @@ class CommunicationsEvent
      */
     public function __construct()
     {
-        if(env('APP_DEBUG_NO_DEVCO') == 'true'){
+        if (env('APP_DEBUG_NO_DEVCO') == 'true') {
            //Auth::onceUsingId(1); // TEST BRIAN
-           Auth::onceUsingId(286); // TEST 
+            Auth::onceUsingId(286); // TEST
         }
     }
 
@@ -54,11 +54,11 @@ class CommunicationsEvent
         //     ]
         // ];
 
-        // Redis::publish('communications', json_encode($data)); 
+        // Redis::publish('communications', json_encode($data));
     }
 
     public function communicationRecipientCreated(CommunicationRecipient $communication_recipient)
-    { 
+    {
         $current_user = Auth::user();
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
         // $id = $communication_recipient->id;
@@ -80,33 +80,32 @@ class CommunicationsEvent
             ]
         ];
 
-        Redis::publish('communications', json_encode($data)); 
+        Redis::publish('communications', json_encode($data));
 
         $new_communication = Communication::where('id', '=', $communication_recipient->communication_id)->first();
 
         $is_reply = 0;
-        if($new_communication->parent_id !== null){
+        if ($new_communication->parent_id !== null) {
             // this is a reply
             // get the parent existing row
             $communication = Communication::where('id', '=', $new_communication->parent_id)->first();
             $is_reply = 1;
-        }else{ 
+        } else {
             $communication = $new_communication;
         }
 
-        if($communication){
-            
+        if ($communication) {
             $recipients_array = [];
             $recipients = $communication->owner->name;
             foreach ($communication->recipients as $recipient) {
                 $recipients_array[$recipient->id] = User::find($recipient->user_id);
             }
 
-            if(count($recipients_array)){
-                foreach ($recipients_array as $recipient){
-                    if($recipient != $current_user && $communication->owner != $recipient && $recipient->name != ''){
+            if (count($recipients_array)) {
+                foreach ($recipients_array as $recipient) {
+                    if ($recipient != $current_user && $communication->owner != $recipient && $recipient->name != '') {
                         $recipients = $recipients. ", ".$recipient->name;
-                    }elseif($recipient == $current_user){
+                    } elseif ($recipient == $current_user) {
                         $recipients = $recipients. ", me";
                     }
                 }
@@ -117,37 +116,37 @@ class CommunicationsEvent
             $created = date("m/d/y", strtotime($communication->created_at))." ". date('h:i a', strtotime($communication->created_at));
             $created_right = date("m/d/y", strtotime($communication->created_at)) ."<br />".date('h:i a', strtotime($communication->created_at));
 
-            if(count($communication->documents)){
+            if (count($communication->documents)) {
                 $hasattachment = 'attachment-true';
-            }else{
+            } else {
                 $hasattachment = 'attachment';
             }
 
             $communication_unread_class = 'communication-unread';
 
-            if(count($communication->documents)){
+            if (count($communication->documents)) {
                 $attachment_class = 'attachment-true';
-            }else{
+            } else {
                 $attachment_class = 'attachment';
             }
 
-            if($communication->audit){
-                if(Auth::user()->isFromOrganization($ohfa_id)){
+            if ($communication->audit) {
+                if (Auth::user()->isFromOrganization($ohfa_id)) {
                     $organization_name = $communication->audit->organization->organization_name;
-                }else{
+                } else {
                     $organization_name = '';
-                } 
+                }
  
-                $organization_address = $communication->audit->address.', '.$communication->audit->city.', '; 
-                if($communication->audit->state){
+                $organization_address = $communication->audit->address.', '.$communication->audit->city.', ';
+                if ($communication->audit->state) {
                     $organization_address = $organization_address.$communication->audit->state;
-                } 
+                }
                 $organization_address = $organization_address.' '.$communication->audit->zip;
                 
                 // if($communication->audit->county){
-                //     $organization_address = $organization_address. '<br />'.$communication->audit->county->county_name; 
+                //     $organization_address = $organization_address. '<br />'.$communication->audit->county->county_name;
                 // }
-            }else{
+            } else {
                 $organization_address = '';
                 $organization_name = '';
             }
@@ -161,15 +160,15 @@ class CommunicationsEvent
                     ->count();
 
             $filenames = '';
-            if($communication->all_docs && count($communication->all_docs)){
-                foreach($communication->all_docs as $document){
+            if ($communication->all_docs && count($communication->all_docs)) {
+                foreach ($communication->all_docs as $document) {
                     $filenames = $filenames.$document->document->filename.' ';
                 }
             }
 
-            if($communication->audit){
+            if ($communication->audit) {
                 $program_id = $communication->audit->program_id;
-            }else{
+            } else {
                 $program_id = '';
             }
 
@@ -203,11 +202,7 @@ class CommunicationsEvent
                 ]
             ];
 
-            Redis::publish('communications', json_encode($data)); 
-            
+            Redis::publish('communications', json_encode($data));
         }
-        
-         
-        
     }
 }

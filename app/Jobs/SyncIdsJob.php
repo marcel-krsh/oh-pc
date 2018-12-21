@@ -36,7 +36,9 @@ use App\Models\Building; //
 use App\Models\User; //
 use App\Models\ComplianceContact; //
 use App\Models\EmailAddress; //
-use App\Models\ProjectDate; //
+use App\Models\ProjectDate;
+
+ //
 
 class SyncIdsJob implements ShouldQueue
 {
@@ -57,11 +59,12 @@ class SyncIdsJob implements ShouldQueue
      *
      * @return void
      */
-    public function associate($model,$lookUpModel,$associations){
-        foreach($associations as $associate){
+    public function associate($model, $lookUpModel, $associations)
+    {
+        foreach ($associations as $associate) {
             $updates = $model::select($associate['look_up_reference'])
                         ->whereNull($associate['null_field'])
-                        ->where($associate['look_up_reference'],$associate['condition_operator'],$associate['condition'])
+                        ->where($associate['look_up_reference'], $associate['condition_operator'], $associate['condition'])
                         ->groupBy($associate['look_up_reference'])
                         //->toSQL();
                         ->get()->all();
@@ -70,23 +73,21 @@ class SyncIdsJob implements ShouldQueue
                 //lookup model
                 //dd($update,$update->{$associate['look_up_reference']});
                 $key = $lookUpModel::select($associate['look_up_foreign_key'])
-                ->where($associate['lookup_field'],$update->{$associate['look_up_reference']})
+                ->where($associate['lookup_field'], $update->{$associate['look_up_reference']})
                 ->first();
-                if(!is_null($key)){
+                if (!is_null($key)) {
                     $model::whereNull($associate['null_field'])
                         ->where(
-                                $associate['look_up_reference'],
-                                $update->{$associate['look_up_reference']}
-                                )
+                            $associate['look_up_reference'],
+                            $update->{$associate['look_up_reference']}
+                        )
                         ->update([
                                   $associate['null_field'] => $key->{$associate['look_up_foreign_key']}
                                                                     ]);
                 } else {
                     //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->{$associate['look_up_reference']}.' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the model.');
-                    echo date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->{$associate['look_up_reference']}.' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the model.<hr />';
-
+                    echo date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->{$associate['look_up_reference']}.' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the model.<hr />';
                 }
-
             }
         }
     }
@@ -113,11 +114,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -131,11 +132,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\ProgramDateType;
@@ -148,11 +149,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -176,11 +177,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -204,11 +205,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -233,11 +234,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -251,11 +252,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -281,11 +282,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\BuildingStatus;
@@ -298,11 +299,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -326,11 +327,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\User;
@@ -343,11 +344,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -372,11 +373,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\Program;
@@ -389,11 +390,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\ProjectProgramStatusType;
@@ -406,11 +407,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\FederalSetAside;
@@ -423,11 +424,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\MultipleBuildingElectionType;
@@ -440,11 +441,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -470,11 +471,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\ProjectProgram;
@@ -487,11 +488,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -505,11 +506,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -534,11 +535,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\Amenity;
@@ -551,11 +552,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -579,11 +580,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\Amenity;
@@ -596,11 +597,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -625,11 +626,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\ProjectProgram;
@@ -642,11 +643,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
         $lookUpModel = new \App\Models\Amenity;
@@ -659,11 +660,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
 
@@ -687,11 +688,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -718,11 +719,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -736,11 +737,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '10000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -755,11 +756,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '100000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -773,11 +774,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -792,11 +793,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -828,11 +829,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -846,11 +847,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -864,11 +865,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -882,11 +883,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -901,11 +902,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -920,11 +921,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -938,11 +939,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -956,11 +957,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -974,11 +975,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -992,11 +993,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1019,11 +1020,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1037,11 +1038,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1055,11 +1056,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1073,11 +1074,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1091,11 +1092,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1117,11 +1118,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1135,11 +1136,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1153,11 +1154,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1180,11 +1181,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1198,11 +1199,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1216,11 +1217,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1234,11 +1235,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1252,11 +1253,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1281,11 +1282,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1302,11 +1303,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1323,11 +1324,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1344,11 +1345,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1365,11 +1366,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1394,11 +1395,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1415,11 +1416,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1433,11 +1434,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
         
 
@@ -1446,15 +1447,15 @@ class SyncIdsJob implements ShouldQueue
         /////
 
         // do clean ups:
-        Address::where('state','o')->update(['state'=>'OH']);
-        Address::where('state',' O')->update(['state'=>'OH']);
-        Address::where('city','Cincinnati')->where('state','')->update(['state'=>'OH']);
-        Address::where('city','Youngstown')->where('state','')->update(['state'=>'OH']);
-        Address::where('city','Cleveland')->where('state','')->update(['state'=>'OH']);
-        Address::where('city','Columbus')->where('state','')->update(['state'=>'OH']);
-        Address::where('city','Elyria')->where('state','')->update(['state'=>'OH']);
-        Address::where('city','Akron')->where('state','')->update(['state'=>'OH']);
-        Address::where('city','Philadelphia')->where('state','')->update(['state'=>'PA']);
+        Address::where('state', 'o')->update(['state'=>'OH']);
+        Address::where('state', ' O')->update(['state'=>'OH']);
+        Address::where('city', 'Cincinnati')->where('state', '')->update(['state'=>'OH']);
+        Address::where('city', 'Youngstown')->where('state', '')->update(['state'=>'OH']);
+        Address::where('city', 'Cleveland')->where('state', '')->update(['state'=>'OH']);
+        Address::where('city', 'Columbus')->where('state', '')->update(['state'=>'OH']);
+        Address::where('city', 'Elyria')->where('state', '')->update(['state'=>'OH']);
+        Address::where('city', 'Akron')->where('state', '')->update(['state'=>'OH']);
+        Address::where('city', 'Philadelphia')->where('state', '')->update(['state'=>'PA']);
         $model = new Address;
         $lookUpModel = new \App\Models\State;
         $associate = array();
@@ -1466,15 +1467,11 @@ class SyncIdsJob implements ShouldQueue
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
         ];
-        try{
-            $this->associate($model,$lookUpModel,$associate);
-        } catch(Exception $e){
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
             //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
-            echo '<strong>'.date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'</strong><hr>';
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
-
-        
-
-        
     }
 }

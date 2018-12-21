@@ -33,15 +33,8 @@ class CreateBuildingInspectionsTable extends Migration
                 $table->integer('followup_count')->nullable();
                 $table->tinyInteger('complete')->nullable();
                 $table->dateTime('submitted_date_time')->nullable();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

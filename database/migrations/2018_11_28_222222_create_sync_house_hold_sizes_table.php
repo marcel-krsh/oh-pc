@@ -25,15 +25,8 @@ class CreateSyncHouseHoldSizesTable extends Migration
                 $table->integer('house_hold_size')->nullable();
                 $table->string('house_hold_size_description')->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

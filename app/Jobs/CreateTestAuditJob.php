@@ -42,14 +42,14 @@ class CreateTestAuditJob implements ShouldQueue
      */
     public function handle()
     {
-        if(is_null($this->audit)){
+        if (is_null($this->audit)) {
              Log::info('Did not receive audit ');
-        }else{
+        } else {
             Log::info('Creating a test event for audit id'.$this->audit->id);
         }
-        try{
+        try {
             Event::fire('audit.created', $this->audit);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             Log::info('Unable to fire event '.$e);
         }
     }

@@ -17,8 +17,7 @@ class CreateCachedAmenitiesTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('cached_amenities'))
-        {
+        if (!Schema::hasTable('cached_amenities')) {
             Schema::create('cached_amenities', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('audit_id');
@@ -40,11 +39,8 @@ class CreateCachedAmenitiesTable extends Migration
                 $table->string('auditor_name', 100)->nullable();
                 $table->string('auditor_color', 100)->nullable();
                 $table->string('auditor_initials', 10)->nullable();
-
             });
-        }  
-        
-
+        }
     }
 
     /**

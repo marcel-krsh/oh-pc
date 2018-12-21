@@ -12,17 +12,18 @@ use Carbon;
 
 class UserController extends Controller
 {
-	public function __construct()
+    public function __construct()
     {
         // $this->middleware('auth');
-        if(env('APP_DEBUG_NO_DEVCO') == 'true'){
-    	   Auth::onceUsingId(286); // TEST BRIAN
+        if (env('APP_DEBUG_NO_DEVCO') == 'true') {
+            Auth::onceUsingId(286); // TEST BRIAN
         }
     }
 
-    public function preferences($id){
+    public function preferences($id)
+    {
 
-    	if ($id != Auth::user()->id) {
+        if ($id != Auth::user()->id) {
             $output['message'] = 'You can only edit your own preferences.';
             return $output;
         }
@@ -270,9 +271,9 @@ class UserController extends Controller
                     ]
                 ],
                 "footer" => [
-                    "previous" => "DECEMBER 14, 2018", 
+                    "previous" => "DECEMBER 14, 2018",
                     'ref-previous' => '20181214',
-                    "today" => "DECEMBER 21, 2018", 
+                    "today" => "DECEMBER 21, 2018",
                     "next" => "DECEMBER 28, 2018",
                     'ref-next' => '20181228'
                 ]
@@ -623,9 +624,9 @@ class UserController extends Controller
                     ]
                 ],
                 "footer" => [
-                    "previous" => "DECEMBER 07, 2018", 
+                    "previous" => "DECEMBER 07, 2018",
                     'ref-previous' => '20181207',
-                    "today" => "DECEMBER 14, 2018", 
+                    "today" => "DECEMBER 14, 2018",
                     "next" => "DECEMBER 21, 2018",
                     'ref-next' => '20181221'
                 ]
@@ -976,9 +977,9 @@ class UserController extends Controller
                     ]
                 ],
                 "footer" => [
-                    "previous" => "DECEMBER 21, 2018", 
+                    "previous" => "DECEMBER 21, 2018",
                     'ref-previous' => '20181221',
-                    "today" => "DECEMBER 28, 2018", 
+                    "today" => "DECEMBER 28, 2018",
                     "next" => "JANUARY 04, 2019",
                     'ref-next' => '20190104',
                 ]
@@ -987,19 +988,19 @@ class UserController extends Controller
 
 
         return view('modals.user-preferences', compact('data'));
-
     }
 
-    public function getUserAvailabilityCalendar($userid, $currentdate, $beforeafter) {
+    public function getUserAvailabilityCalendar($userid, $currentdate, $beforeafter)
+    {
 
-    	if ($userid != Auth::user()->id) {
+        if ($userid != Auth::user()->id) {
             $output['message'] = 'You can only edit your own preferences.';
             return $output;
         }
 
         // from the current date and beforeafter, calculate new target date
         $created = Carbon\Carbon::createFromFormat('Ymd', $currentdate);
-        if($beforeafter == "before"){
+        if ($beforeafter == "before") {
             $newdate = $created->subDays(9);
 
             $newdate_previous = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->subDays(18)->format('F d, Y');
@@ -1010,7 +1011,7 @@ class UserController extends Controller
             $newdateref = $newdate->format('Ymd');
             $newdateformatted = $newdate->format('F d, Y');
 
-            $header_dates = []; 
+            $header_dates = [];
             $header_dates[] = $newdate->subDays(4)->format('m/d');
             $header_dates[] = $newdate->addDays(1)->format('m/d');
             $header_dates[] = $newdate->addDays(1)->format('m/d');
@@ -1020,7 +1021,7 @@ class UserController extends Controller
             $header_dates[] = $newdate->addDays(1)->format('m/d');
             $header_dates[] = $newdate->addDays(1)->format('m/d');
             $header_dates[] = $newdate->addDays(1)->format('m/d');
-        }else{
+        } else {
             $newdate = $created->addDays(9);
 
             $newdate_previous = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->format('F d, Y');
@@ -1031,7 +1032,7 @@ class UserController extends Controller
             $newdateref = $newdate->format('Ymd');
             $newdateformatted = $newdate->format('F d, Y');
 
-            $header_dates = []; 
+            $header_dates = [];
             $header_dates[] = $newdate->subDays(4)->format('m/d');
             $header_dates[] = $newdate->addDays(1)->format('m/d');
             $header_dates[] = $newdate->addDays(1)->format('m/d');
@@ -1293,9 +1294,9 @@ class UserController extends Controller
                     ]
                 ],
                 "footer" => [
-                    "previous" => $newdate_previous, 
+                    "previous" => $newdate_previous,
                     'ref-previous' => $newdate_ref_previous,
-                    "today" => $newdateformatted, 
+                    "today" => $newdateformatted,
                     "next" => $newdate_next,
                     'ref-next' => $newdate_ref_next
                 ]
@@ -1304,5 +1305,4 @@ class UserController extends Controller
 
         return view('auditors.partials.auditor-availability-calendar', compact('data'));
     }
-
 }

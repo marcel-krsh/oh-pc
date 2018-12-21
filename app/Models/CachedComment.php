@@ -66,25 +66,29 @@ class CachedComment extends Model
         return $this->hasMany('\App\Models\CachedComment', 'parent_id');
     }
 
-    public function stats_replies_followup_count() {
+    public function stats_replies_followup_count()
+    {
         return $this->replies()
                     ->where('type', '=', 'followup')
                     ->count();
     }
 
-    public function stats_replies_comment_count() {
+    public function stats_replies_comment_count()
+    {
         return $this->replies()
                     ->where('type', '=', 'comment')
                     ->count();
     }
 
-    public function stats_replies_photo_count() {
+    public function stats_replies_photo_count()
+    {
         return $this->replies()
                     ->where('type', '=', 'photo')
                     ->count();
     }
 
-    public function stats_replies_document_count() {
+    public function stats_replies_document_count()
+    {
         return $this->replies()
                     ->where('type', '=', 'document')
                     ->count();
@@ -140,7 +144,7 @@ class CachedComment extends Model
         return $this->hasOne(\App\Models\Document::class, 'id', 'document_id');
     }
 
-    // breaks the jquery templating in audits.js 
+    // breaks the jquery templating in audits.js
     // public function getActionsJsonAttribute($value) {
     //   return json_decode($value);
     // }
@@ -149,15 +153,17 @@ class CachedComment extends Model
     //   return json_decode($value);
     // }
 
-    public function getUserJsonAttribute($value) {
-      return json_decode($value);
+    public function getUserJsonAttribute($value)
+    {
+        return json_decode($value);
     }
 
     // public function getDocumentJsonAttribute($value) {
     //   return json_decode($value);
     // }
 
-    public function getFollowupActionsJsonAttribute($value) {
-      return json_decode($value);
+    public function getFollowupActionsJsonAttribute($value)
+    {
+        return json_decode($value);
     }
 }

@@ -29,15 +29,8 @@ class CreateUnitProgramsTable extends Migration
                 $table->nullableTimestamps();
                 $table->integer('project_id')->nullable();
                 $table->integer('development_key')->nullable();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

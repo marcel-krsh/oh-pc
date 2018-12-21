@@ -27,15 +27,8 @@ class CreateAuditAuditorsTable extends Migration
                 $table->unsignedInteger('user_id')->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

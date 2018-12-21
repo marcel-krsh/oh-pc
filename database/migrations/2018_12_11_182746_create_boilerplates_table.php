@@ -25,15 +25,8 @@ class CreateBoilerplatesTable extends Migration
                 $table->unsignedInteger('creator_id')->nullable();
                 $table->integer('global')->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

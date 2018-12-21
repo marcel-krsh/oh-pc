@@ -13,7 +13,7 @@ class CachedCommentsTableSeeder extends Seeder
     {
         $commentsSeeder = [
             [
-                'id' => 1, 
+                'id' => 1,
                 'audit_id' => 123,
                 'project_id' => 123,
                 'finding_id' => 1,
@@ -50,7 +50,7 @@ class CachedCommentsTableSeeder extends Seeder
                 'created_at' => '2018-12-22 12:51:38'
             ],
             [
-                'id' => 2, 
+                'id' => 2,
                 'audit_id' => 123,
                 'project_id' => 123,
                 'finding_id' => 1,
@@ -87,7 +87,7 @@ class CachedCommentsTableSeeder extends Seeder
                 'created_at' => '2018-12-31 12:51:38'
             ],
             [
-                'id' => 3, 
+                'id' => 3,
                 'audit_id' => 123,
                 'project_id' => 123,
                 'finding_id' => 1,
@@ -124,7 +124,7 @@ class CachedCommentsTableSeeder extends Seeder
                 'created_at' => '2018-12-12 12:51:38'
             ],
             [
-                'id' => 4, 
+                'id' => 4,
                 'audit_id' => 123,
                 'project_id' => 123,
                 'finding_id' => 1,
@@ -168,7 +168,7 @@ class CachedCommentsTableSeeder extends Seeder
                 'created_at' => '2018-12-12 12:51:38'
             ],
             [
-                'id' => 5, 
+                'id' => 5,
                 'audit_id' => 123,
                 'project_id' => 123,
                 'finding_id' => 1,
@@ -219,7 +219,7 @@ class CachedCommentsTableSeeder extends Seeder
                 'created_at' => '2018-12-12 12:51:38'
             ],
             [
-                'id' => 6, 
+                'id' => 6,
                 'audit_id' => 123,
                 'project_id' => 123,
                 'finding_id' => 1,
@@ -255,7 +255,7 @@ class CachedCommentsTableSeeder extends Seeder
                 'created_at' => '2018-12-12 12:51:38'
             ],
             [
-                'id' => 7, 
+                'id' => 7,
                 'audit_id' => 123,
                 'project_id' => 123,
                 'finding_id' => 1,

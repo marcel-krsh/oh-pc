@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class AmenityHud extends Pivot
 {
-	protected $table = 'amenity_hud';
+    protected $table = 'amenity_hud';
 
     protected $fillable = [
         'amenity_id',
@@ -40,7 +40,4 @@ class AmenityHud extends Pivot
     {
         return $this->hasOne(\App\Models\HudInspectableArea::class, 'id', 'hud_inspectable_area_id');
     }
-
 }
-    
-

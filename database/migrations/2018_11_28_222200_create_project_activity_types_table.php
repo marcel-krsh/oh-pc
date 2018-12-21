@@ -24,15 +24,8 @@ class CreateProjectActivityTypesTable extends Migration
                 $table->string('activity_name', 255)->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

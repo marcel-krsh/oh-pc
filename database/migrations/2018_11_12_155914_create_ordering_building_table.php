@@ -17,8 +17,7 @@ class CreateOrderingBuildingTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('ordering_building'))
-        {
+        if (!Schema::hasTable('ordering_building')) {
             Schema::create('ordering_building', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('user_id')->nullable();
@@ -26,15 +25,8 @@ class CreateOrderingBuildingTable extends Migration
                 $table->unsignedInteger('project_id')->nullable();
                 $table->unsignedInteger('building_id')->nullable();
                 $table->integer('order')->nullable();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

@@ -18,7 +18,6 @@ class CreateOrganizationsTable extends Migration
     public function up()
     {
         if (!Schema::hasTable('organizations')) {
-            
             Schema::create('organizations', function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('organization_key')->nullable();
@@ -34,7 +33,6 @@ class CreateOrganizationsTable extends Migration
                 $table->nullableTimestamps();
             });
         }
-
     }
 
     /**

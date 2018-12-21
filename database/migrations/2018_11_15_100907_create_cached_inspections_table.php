@@ -17,8 +17,7 @@ class CreateCachedInspectionsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('cached_inspections'))
-        {
+        if (!Schema::hasTable('cached_inspections')) {
             Schema::create('cached_inspections', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('audit_id');
@@ -37,15 +36,8 @@ class CreateCachedInspectionsTable extends Migration
                 $table->string('type_text_plural', 100)->nullable();
                 $table->json('menu_json')->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

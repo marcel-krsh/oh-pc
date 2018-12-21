@@ -10,7 +10,7 @@ use App\Mail\EmailFailedLogin;
 class AuthTracker extends Model
 {
 
-	protected $table = 'auth_tracker';
+    protected $table = 'auth_tracker';
 
     protected $fillable = [
         'token',
@@ -56,8 +56,8 @@ class AuthTracker extends Model
         $this->tries = $this->tries + 1;
         $this->save();
 
-        if($this->tries >= 5){
-        	$this->block();
+        if ($this->tries >= 5) {
+            $this->block();
         }
 
         return $this->tries;
@@ -65,59 +65,59 @@ class AuthTracker extends Model
 
     /**
      * Check if an IP is already blocked
-     * 
+     *
      * @param  string $ip
-     * @return 
+     * @return
      */
     public static function is_blocked_by_ip(string $ip)
     {
-    	$ip_is_blocked = self::where('ip', '=', $ip)->where('blocked_until', '>', Carbon::now())->first();
-    	if($ip_is_blocked) return $ip_is_blocked;
+        $ip_is_blocked = self::where('ip', '=', $ip)->where('blocked_until', '>', Carbon::now())->first();
+        if ($ip_is_blocked) {
+            return $ip_is_blocked;
+        }
 
-    	return false;
+        return false;
     }
 
-	/**
-	 * Reset blocked date
-	 * 
- 	 * @return bool
- 	*/
+    /**
+     * Reset blocked date
+     *
+     * @return bool
+    */
     public function reset_block() : bool
     {
-    	$this->blocked_until = null;
-    	$this->save();
-    	return true;
+        $this->blocked_until = null;
+        $this->save();
+        return true;
     }
 
     /**
      * Block user after too many attempts
-     * 
-     * @return 
+     *
+     * @return
      */
     public function block()
     {
-    	// check how many attempts
-    	$attempts = $this->tries;
+        // check how many attempts
+        $attempts = $this->tries;
 
-    	if($attempts >= 5){
-    		// set unblock_date to now + 5min * (tries - 4)
-    		$minutes = 5 * ($attempts - 4);
-    		$unblock_date = Carbon::now()->addMinutes($minutes);
+        if ($attempts >= 5) {
+            // set unblock_date to now + 5min * (tries - 4)
+            $minutes = 5 * ($attempts - 4);
+            $unblock_date = Carbon::now()->addMinutes($minutes);
 
-    		$this->blocked_until = $unblock_date;
-    		$this->save();
+            $this->blocked_until = $unblock_date;
+            $this->save();
 
-    		// send email to matched user if applicable
-    		if($this->user_id !== null){
-    			$user = User::where('id','=',$this->user_id)->first();
-    			if($user){
-    				$emailNotification = new EmailFailedLogin($user->id);
+            // send email to matched user if applicable
+            if ($this->user_id !== null) {
+                $user = User::where('id', '=', $this->user_id)->first();
+                if ($user) {
+                    $emailNotification = new EmailFailedLogin($user->id);
                     \Mail::to('jotassin@gmail.com')->send($emailNotification);
                     // \Mail::to($user->email)->send($emailNotification);
-    			}
-    		}
-    	}
+                }
+            }
+        }
     }
-
-
 }

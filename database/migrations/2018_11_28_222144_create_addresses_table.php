@@ -18,7 +18,6 @@ class CreateAddressesTable extends Migration
     public function up()
     {
         if (!Schema::hasTable('addresses')) {
-            
             Schema::create('addresses', function (Blueprint $table) {
                 $table->increments('id');
                 $table->string('line_1', 255)->nullable();
@@ -33,15 +32,8 @@ class CreateAddressesTable extends Migration
                 $table->string('address_key', 255)->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

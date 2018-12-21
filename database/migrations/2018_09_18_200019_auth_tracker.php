@@ -20,7 +20,7 @@ class AuthTracker extends Migration
             $table->string('ip')->nullable();
             $table->string('user_agent')->nullable();
             $table->integer('user_id')->unsigned()->nullable();
-            $table->tinyInteger('tries')->default(1)->nullable(); // count the number of tries within 5 minutes of created_at 
+            $table->tinyInteger('tries')->default(1)->nullable(); // count the number of tries within 5 minutes of created_at
             $table->dateTime('blocked_until')->nullable(); // if not null, set the date and time user stops being blocked
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');

@@ -24,15 +24,8 @@ class CreateAuditStatusTypesTable extends Migration
                 $table->string('monitoring_status_description')->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

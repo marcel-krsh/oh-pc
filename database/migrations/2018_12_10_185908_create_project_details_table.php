@@ -54,15 +54,8 @@ class CreateProjectDetailsTable extends Migration
                 $table->string('manager_state', 20)->nullable();
                 $table->string('manager_zip', 20)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

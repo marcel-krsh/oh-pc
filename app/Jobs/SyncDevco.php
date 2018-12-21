@@ -50,7 +50,5 @@ class SyncDevco implements ShouldQueue
             // SystemSetting::get('pcapi_access_token');
             // $addresses = DevcoService::listAddresses(1, 'january 1,2010', 1,'brian@allita.org', 'Brian Greenwood', 1, 'Server');
             // Log::info($addresses);
-
-
     }
 }

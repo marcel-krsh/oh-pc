@@ -58,5 +58,4 @@ class OrderingBuilding extends Model
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
     }
-
 }

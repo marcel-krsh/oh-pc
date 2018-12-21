@@ -24,15 +24,8 @@ class CreateUtilityAllowanceTypesTable extends Migration
                 $table->string('utility_allowance_type_name', 255)->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

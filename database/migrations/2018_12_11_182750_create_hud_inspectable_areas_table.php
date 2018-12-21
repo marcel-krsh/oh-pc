@@ -23,15 +23,8 @@ class CreateHudInspectableAreasTable extends Migration
                 $table->unsignedInteger('key')->nullable();
                 $table->string('name', 255)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

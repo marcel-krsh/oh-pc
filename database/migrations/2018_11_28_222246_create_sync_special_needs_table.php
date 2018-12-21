@@ -26,15 +26,8 @@ class CreateSyncSpecialNeedsTable extends Migration
                 $table->string('special_needs_code', 11)->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

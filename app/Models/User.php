@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-
 /**
  * User Model
  *
@@ -81,23 +80,23 @@ class User extends Authenticatable
      */
     public function person() : HasOne
     {
-        return $this->hasOne(People::class, 'id','person_id');
+        return $this->hasOne(People::class, 'id', 'person_id');
     }
 
-    public function initials() : string {
+    public function initials() : string
+    {
 
         $person = $this->person;
         //dd($person, $this->id, $this->person_id);
-        $initials = substr($person->first_name, 0,1);
-        $initials .= substr($person->last_name, 0,1);
+        $initials = substr($person->first_name, 0, 1);
+        $initials .= substr($person->last_name, 0, 1);
         return $initials;
-
     }
 
-    public function full_name() : string {
+    public function full_name() : string
+    {
         $fullName = $this->person->first_name." ".$this->person->last_name;
         return $fullName;
-
     }
     /**
      * Is From Organization
@@ -114,7 +113,7 @@ class User extends Authenticatable
         return 0;
     }
 
-    public function isOhfa() : bool 
+    public function isOhfa() : bool
     {
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
         if ($ohfa_id == $this->organization_id) {

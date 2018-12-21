@@ -27,11 +27,13 @@ class CachedInspection extends Model
         'updated_at'
     ];
 
-    public function getMenuJsonAttribute($value) {
-      return json_decode($value);
+    public function getMenuJsonAttribute($value)
+    {
+        return json_decode($value);
     }
 
-    public function getAuditorsJsonAttribute($value) {
-      return json_decode($value);
+    public function getAuditorsJsonAttribute($value)
+    {
+        return json_decode($value);
     }
 }

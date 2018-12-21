@@ -25,15 +25,8 @@ class CreateSyncProjectRolesTable extends Migration
                 $table->string('role_name', 255)->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

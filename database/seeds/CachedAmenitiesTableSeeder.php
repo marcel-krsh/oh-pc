@@ -13,13 +13,13 @@ class CachedAmenitiesTableSeeder extends Seeder
     {
         $amenitiesSeeder = [
             [
-                'id' => 1, 
+                'id' => 1,
                 'audit_id' => 123,
                 'project_id' => 123,
                 'building_id' => 123221,
                 'unit_id' => 123,
                 'status' => 'action-needed',
-                'name' => 'Stair #1', 
+                'name' => 'Stair #1',
                 'auditor_id' => 1,  // add
                 'auditor_name' => 'Brian Greenwood',
                 'auditor_initials' => 'BG',
@@ -33,13 +33,13 @@ class CachedAmenitiesTableSeeder extends Seeder
                 'finding_trash_status' => ''
             ],
             [
-                'id' => 2, 
+                'id' => 2,
                 'audit_id' => 123,
                 'project_id' => 123,
                 'building_id' => 123221,
                 'unit_id' => 123,
                 'status' => 'critical',
-                'name' => 'Bedroom #1', 
+                'name' => 'Bedroom #1',
                 'auditor_id' => 1,  // add
                 'auditor_name' => 'Brian Greenwood',
                 'auditor_initials' => 'BG',
@@ -53,13 +53,13 @@ class CachedAmenitiesTableSeeder extends Seeder
                 'finding_trash_status' => ''
             ],
             [
-                'id' => 3, 
+                'id' => 3,
                 'audit_id' => 123,
                 'project_id' => 123,
                 'building_id' => 123221,
                 'unit_id' => 123,
                 'status' => 'in-progress',
-                'name' => 'Bedroom #2', 
+                'name' => 'Bedroom #2',
                 'auditor_id' => 1,  // add
                 'auditor_name' => 'Brian Greenwood',
                 'auditor_initials' => 'BG',
@@ -73,13 +73,13 @@ class CachedAmenitiesTableSeeder extends Seeder
                 'finding_trash_status' => ''
             ],
             [
-                'id' => 4, 
+                'id' => 4,
                 'audit_id' => 123,
                 'project_id' => 123,
                 'building_id' => 123221,
                 'unit_id' => 123,
                 'status' => 'in-progress',
-                'name' => 'Bedroom #3', 
+                'name' => 'Bedroom #3',
                 'auditor_id' => 1,  // add
                 'auditor_name' => 'Brian Greenwood',
                 'auditor_initials' => 'BG',

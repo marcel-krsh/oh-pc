@@ -26,15 +26,8 @@ class CreatePercentagesTable extends Migration
                 $table->string('percentage_description', 255)->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

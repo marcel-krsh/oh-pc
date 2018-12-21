@@ -41,15 +41,8 @@ class CreateSyncProjectProgramsTable extends Migration
                 $table->string('guide_l_year', 255)->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

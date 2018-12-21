@@ -30,15 +30,8 @@ class CreateSyncPeopleTable extends Migration
                 $table->tinyInteger('is_active')->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

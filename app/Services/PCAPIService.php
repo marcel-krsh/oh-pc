@@ -6,7 +6,8 @@ use App\Services\AuthService;
 use GuzzleHttp\Client;
 use App\Models\SystemSetting;
 
-class PCAPIService {
+class PCAPIService
+{
 
     private $_auth;
     private $_api_v;
@@ -18,7 +19,7 @@ class PCAPIService {
     }
 
 
-    public function get($url, $parameters=[])
+    public function get($url, $parameters = [])
     {
         // $this->_auth = new AuthService;
         
@@ -41,31 +42,13 @@ class PCAPIService {
 
     public function post($url, $payload)
     {
-
-
-
-
-
-
     }
 
     public function put($url, $payload)
     {
-
-
-
-
-
     }
 
     public function delete($url)
     {
-
-
-
-
-
-
     }
-
 }

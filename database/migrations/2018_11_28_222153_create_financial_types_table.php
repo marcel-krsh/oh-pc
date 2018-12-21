@@ -26,13 +26,8 @@ class CreateFinancialTypesTable extends Migration
                 $table->nullableTimestamps();
 
                 $table->primary('id');
-
-                
-
             });
         }
-        
-
     }
 
     /**

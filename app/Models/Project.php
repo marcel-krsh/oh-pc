@@ -11,7 +11,7 @@ use App\Models\SystemSetting;
 class Project extends Model
 {
     public $timestamps = true;
-	//protected $dateFormat = 'Y-m-d\TH:i:s.u';
+    //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
     protected $guarded = ['id'];
 
@@ -25,10 +25,10 @@ class Project extends Model
         return $this->hasMany(\App\Models\CachedAudit::class, 'project_id');
     }
 
-    public function currentAudit() : CachedAudit {
-    	$audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->first();
-    	return $audit;
-    	
+    public function currentAudit() : CachedAudit
+    {
+        $audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->first();
+        return $audit;
     }
 
     public function address() : HasOne
@@ -40,7 +40,7 @@ class Project extends Model
 
     public function programs() : HasMany
     {
-        return $this->hasMany(\App\Models\ProjectProgram::class, 'project_key', 'project_key')->where('project_program_status_type_key',SystemSetting::get('active_program_status_type_key'));
+        return $this->hasMany(\App\Models\ProjectProgram::class, 'project_key', 'project_key')->where('project_program_status_type_key', SystemSetting::get('active_program_status_type_key'));
     }
 
     public function buildings() : HasMany
@@ -48,21 +48,20 @@ class Project extends Model
         return $this->hasMany(\App\Models\Building::class, 'development_key', 'project_key');
     }
 
-    public function projectProgramUnitCounts() {
+    public function projectProgramUnitCounts()
+    {
 
         $programs = $this->programs;
         $programCounts = array();
         foreach ($programs as $program) {
-            $count = UnitProgram::where('audit_id',$this->currentAudit()->audit_id)
-                                            ->where('program_id',$program->program_id)
+            $count = UnitProgram::where('audit_id', $this->currentAudit()->audit_id)
+                                            ->where('program_id', $program->program_id)
                                             ->count();
             $programCounts[] = [$program->programs->program_name => $count,'program_id'=>$program->program_id];
         }
-        if(count($programCounts)<1){
+        if (count($programCounts)<1) {
             $programCounts[] = ['No Programs Found' => 'NA'];
         }
         return $programCounts;
-
     }
-
 }

@@ -17,8 +17,7 @@ class CreateCachedBuildingsTable extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('cached_buildings'))
-        {
+        if (!Schema::hasTable('cached_buildings')) {
             Schema::create('cached_buildings', function (Blueprint $table) {
                 $table->increments('id');
                 $table->unsignedInteger('audit_id');
@@ -51,16 +50,8 @@ class CreateCachedBuildingsTable extends Migration
                 $table->json('auditors_json')->nullable();
                 $table->json('amenities_json')->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-
-        
-
     }
 
     /**

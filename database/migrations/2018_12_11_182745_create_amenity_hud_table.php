@@ -23,15 +23,8 @@ class CreateAmenityHudTable extends Migration
                 $table->unsignedInteger('amenity_id')->nullable();
                 $table->unsignedInteger('hud_inspectable_area_id')->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

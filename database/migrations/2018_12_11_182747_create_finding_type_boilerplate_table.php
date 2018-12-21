@@ -23,15 +23,8 @@ class CreateFindingTypeBoilerplateTable extends Migration
                 $table->unsignedInteger('finding_type_id')->nullable();
                 $table->unsignedInteger('boilerplate_id')->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

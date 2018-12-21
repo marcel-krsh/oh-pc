@@ -50,15 +50,18 @@ class CachedBuilding extends Model
         'updated_at'
     ];
 
-    public function getAmenitiesJsonAttribute($value) {
-      return json_decode($value);
+    public function getAmenitiesJsonAttribute($value)
+    {
+        return json_decode($value);
     }
 
-    public function getAuditorsJsonAttribute($value) {
-      return json_decode($value);
+    public function getAuditorsJsonAttribute($value)
+    {
+        return json_decode($value);
     }
 
-    public function getFindingsJsonAttribute($value) {
-      return json_decode($value);
+    public function getFindingsJsonAttribute($value)
+    {
+        return json_decode($value);
     }
 }

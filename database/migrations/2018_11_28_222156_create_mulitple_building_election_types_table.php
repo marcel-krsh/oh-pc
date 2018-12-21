@@ -24,15 +24,8 @@ class CreateMulitpleBuildingElectionTypesTable extends Migration
                 $table->string('election_description', 255)->nullable();
                 $table->timestamp('last_edited')->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

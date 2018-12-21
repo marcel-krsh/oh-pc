@@ -28,15 +28,8 @@ class CreateFindingTypesTable extends Migration
                 $table->tinyInteger('three')->nullable();
                 $table->string('type', 20)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

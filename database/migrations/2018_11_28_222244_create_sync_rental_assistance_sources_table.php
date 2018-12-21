@@ -25,15 +25,8 @@ class CreateSyncRentalAssistanceSourcesTable extends Migration
                 $table->string('rental_assistance_source_name', 255)->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

@@ -24,15 +24,8 @@ class CreateUnitStatusesTable extends Migration
                 $table->string('unit_status', 255)->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

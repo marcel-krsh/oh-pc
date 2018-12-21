@@ -612,68 +612,68 @@ class PagesController extends Controller
             // }
             $showHowTo = 0;
 
-            if ($request->query('tab') >= 1) {
-                $tab = "dash-subtab-".intval($request->query('tab'));
-                $showHowTo = 2;
-            } else {
-                // default tab to load
-                $tab = "dash-subtab-10";
-            }
+        if ($request->query('tab') >= 1) {
+            $tab = "dash-subtab-".intval($request->query('tab'));
+            $showHowTo = 2;
+        } else {
+            // default tab to load
+            $tab = "dash-subtab-10";
+        }
             
-            if ($request->query('parcelsListFilter') > 0) {
-                session(['parcels_status_filter' => intval($request->query('parcelsListFilter'))]);
-                $showHowTo = 2;
-            } else {
-                $parcelsListFilter = 0;
-            }
-            if ($request->query('hfaParcelsListFilter') > 0) {
-                session(['hfa_parcels_status_filter' => intval($request->query('hfaParcelsListFilter'))]);
-                $showHowTo = 2;
-            } else {
-                $hfaParcelsListFilter = 0;
-            }
+        if ($request->query('parcelsListFilter') > 0) {
+            session(['parcels_status_filter' => intval($request->query('parcelsListFilter'))]);
+            $showHowTo = 2;
+        } else {
+            $parcelsListFilter = 0;
+        }
+        if ($request->query('hfaParcelsListFilter') > 0) {
+            session(['hfa_parcels_status_filter' => intval($request->query('hfaParcelsListFilter'))]);
+            $showHowTo = 2;
+        } else {
+            $hfaParcelsListFilter = 0;
+        }
 
-            if ($request->query('parcelsListFilter') == 7) {
-                // Give instruction on how to submit for reimbursement.
-                $showHowTo = 3;
-            }
-            if ($request->query('parcelsListFilter') == 6) {
-                // Give instruction on how to approve for reimbursement.
-                $showHowTo = 4;
-            }
-            if ($request->query('parcelsListFilter') == 9) {
-                // Give instruction on how to correct parcels for hfa.
-                $showHowTo = 5;
-            }
-            if ($request->query('parcelsListFilter') == 47) {
-                // Give instruction on how to correct parcels internally.
-                $showHowTo = 6;
-            }
-            if ($request->query('parcelsListFilter') == 10) {
-                // Give instruction on how to invoice parcels.
-                $showHowTo = 7;
-            }
-            if ($request->query('parcelsListFilter') == 11) {
-                // Give instruction on steps to take for a declined reimbursement.
-                $showHowTo = 8;
-            }
-            if ($request->query('posStatusFilter') == 2) {
-                // Give instruction on steps to take for a approved POs.
-                $showHowTo = 9;
-            }
-            if ($request->query('requestsStatusFilter') == 3) {
-                // Give instruction on steps to take for a declined Requests.
-                $showHowTo = 10;
-            }
+        if ($request->query('parcelsListFilter') == 7) {
+            // Give instruction on how to submit for reimbursement.
+            $showHowTo = 3;
+        }
+        if ($request->query('parcelsListFilter') == 6) {
+            // Give instruction on how to approve for reimbursement.
+            $showHowTo = 4;
+        }
+        if ($request->query('parcelsListFilter') == 9) {
+            // Give instruction on how to correct parcels for hfa.
+            $showHowTo = 5;
+        }
+        if ($request->query('parcelsListFilter') == 47) {
+            // Give instruction on how to correct parcels internally.
+            $showHowTo = 6;
+        }
+        if ($request->query('parcelsListFilter') == 10) {
+            // Give instruction on how to invoice parcels.
+            $showHowTo = 7;
+        }
+        if ($request->query('parcelsListFilter') == 11) {
+            // Give instruction on steps to take for a declined reimbursement.
+            $showHowTo = 8;
+        }
+        if ($request->query('posStatusFilter') == 2) {
+            // Give instruction on steps to take for a approved POs.
+            $showHowTo = 9;
+        }
+        if ($request->query('requestsStatusFilter') == 3) {
+            // Give instruction on steps to take for a declined Requests.
+            $showHowTo = 10;
+        }
 
             //// load the sitevisit tab instead
             $routed = \Route::getFacadeRoot()->current()->uri();
-            if ($routed == "site_visit_manager") {
-                // Give instruction on steps to take for a approved POs.
-                $loadDetailTab = 2;
-            } else {
-                $loadDetailTab = 1;
-            }
+        if ($routed == "site_visit_manager") {
+            // Give instruction on steps to take for a approved POs.
+            $loadDetailTab = 2;
+        } else {
+            $loadDetailTab = 1;
+        }
 
 
 
@@ -685,13 +685,13 @@ class PagesController extends Controller
                     ->with('communication.owner')
                     ->get();
 
-            if (count($unseen_communications)) {
-                foreach ($unseen_communications as $unseen_communication) {
-                    $unseen_communication->summary = strlen($unseen_communication->communication->message) > 400 ? substr($unseen_communication->communication->message, 0, 20)."..." : $unseen_communication->communication->message;
-                }
-            } else {
-                $unseen_communications = [];
+        if (count($unseen_communications)) {
+            foreach ($unseen_communications as $unseen_communication) {
+                $unseen_communication->summary = strlen($unseen_communication->communication->message) > 400 ? substr($unseen_communication->communication->message, 0, 20)."..." : $unseen_communication->communication->message;
             }
+        } else {
+            $unseen_communications = [];
+        }
 
             $filter['lbFilters'] = DB::table('property_status_options')->where('for', 'landbank')->where('active', '1')->orderBy('order', 'asc')->get();
             $filter['hfaFilters'] = DB::table('property_status_options')->where('for', 'hfa')->where('active', '1')->orderBy('order', 'asc')->get();

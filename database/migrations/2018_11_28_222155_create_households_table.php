@@ -36,15 +36,8 @@ class CreateHouseholdsTable extends Migration
                 $table->string('head_of_household_name', 255)->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**

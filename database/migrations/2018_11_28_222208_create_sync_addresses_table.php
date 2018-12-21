@@ -33,15 +33,8 @@ class CreateSyncAddressesTable extends Migration
                 $table->string('latitude', 255)->nullable();
                 $table->timestamp('last_edited', 3)->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
         }
-        
-
     }
 
     /**

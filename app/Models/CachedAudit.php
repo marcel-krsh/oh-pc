@@ -88,8 +88,9 @@ class CachedAudit extends Model
         // });
     }
 
-    public function getLeadJsonAttribute($value) {
-      return json_decode($value);
+    public function getLeadJsonAttribute($value)
+    {
+        return json_decode($value);
     }
 
     /**

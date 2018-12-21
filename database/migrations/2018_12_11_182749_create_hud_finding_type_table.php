@@ -23,15 +23,8 @@ class CreateHudFindingTypeTable extends Migration
                 $table->unsignedInteger('hud_inspectable_area_id')->nullable();
                 $table->unsignedInteger('finding_type_id')->nullable();
                 $table->nullableTimestamps();
-
-                
-
-                
-
             });
-
         }
-
     }
 
     /**
