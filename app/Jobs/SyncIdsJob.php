@@ -983,7 +983,7 @@ class SyncIdsJob implements ShouldQueue
         }
         
 
-        $lookUpModel = new \App\Models\UnitIdenty;
+        $lookUpModel = new \App\Models\UnitIdentity;
         $associate = [];
         $associate[] = [
             'null_field' => 'unit_identity_id',
