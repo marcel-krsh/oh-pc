@@ -1,3 +1,15 @@
+import Echo from "laravel-echo"
+
+window.Pusher = require('pusher-js');
+
+window.Echo = new Echo({
+  broadcaster: 'pusher',
+  key: '',
+  wsHost: window.location.hostname,
+  wsPort: 6001,
+  disableStats: true,
+});
+
 // good one from Helder Lucas (bottom of page):
 // https://stackoverflow.com/questions/41539961/vuejs-js-for-multiple-pages-not-for-a-single-page-application
 
@@ -21,17 +33,3 @@ Vue.use(infiniteScroll);
 
 // each page will be its own main Vue instance
 
-
-/**
- import Echo from "laravel-echo"
-
- window.Pusher = require('pusher-js');
-
- window.Echo = new Echo({
-    broadcaster: 'pusher',
-    key: 'your-pusher-key',
-    wsHost: window.location.hostname,
-    wsPort: 6001,
-    disableStats: true,
-});
- **/
