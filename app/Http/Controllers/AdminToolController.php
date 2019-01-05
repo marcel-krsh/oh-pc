@@ -978,9 +978,9 @@ class AdminToolController extends Controller
                                         $query->where('name', 'LIKE', '%'.$search.'%');
             })
                                     ->orderBy('name', 'asc')
-                                    ->paginate(40);
+                                    ->paginate(1000);
         } else {
-            $findingtypes = FindingType::orderBy('name', 'asc')->paginate(40);
+            $findingtypes = FindingType::orderBy('name', 'asc')->paginate(1000);
         }
         
         return view('admin_tabs.findingtypes', compact('findingtypes'));
