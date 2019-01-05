@@ -62,6 +62,13 @@
 
 </div>
 <script>
+    $(document).ready(function(){
+   // your on click function here
+   $('.page-link').click(function(){
+           $('#findingtype-tab-content').load($(this).attr('href'));
+           return false;
+       });
+    });
     
     function searchFindingtypes(){
         $.post('{{ URL::route("findingtypes.search") }}', {
