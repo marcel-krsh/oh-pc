@@ -31,6 +31,9 @@
                 <small>TYPE</small>
             </th>
             <th>
+                <small># OF HUD AREAS</small>
+            </th>
+            <th>
                 <small># OF BOILERPLATES</small>
             </th>
             <th>
@@ -47,6 +50,7 @@
                     <td><small>{{$data->two}}</small></td>
                     <td><small>{{$data->three}}</small></td>
                     <td><small>{{$data->type}}</small></td>
+                    <td><small>@if($data->hud){{count($data->hud)}}@endif</small></td>
                     <td><small>@if($data->boilerplates){{count($data->boilerplates)}}@endif</small></td>
                     <td><small>@if($data->default_followups){{count($data->default_followups)}}@endif</small></td>
                 </tr>
