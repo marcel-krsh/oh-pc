@@ -40,7 +40,7 @@
         <tbody>
             @foreach($findingtypes as $data)
                 <tr>
-                    <td><a onclick="dynamicModalLoad('admin/finding_type/create/{{$data->id}}')" class="uk-link-muted"><small >{{$data->name}}: <em>HUD INSPECTABLE AREAS:: @forEach($data->huds as $hud) {{$hud->hud->name}},  @endForEach</em></small></a></td>
+                    <td><a onclick="dynamicModalLoad('admin/finding_type/create/{{$data->id}}')" class="uk-link-muted"><small >{{$data->name}}: <em>HUD INSPECTABLE AREAS:: <ul> @forEach($data->huds as $hud) <li>{{$hud->hud->name}}</li>  @endForEach</ul></em></small></a></td>
                     <td><small>@if($data->nominal_item_weight){{$data->nominal_item_weight}}% @else 0% @endif</small></td>
                     <td><small>{{$data->criticality}}</small></td>
                     <td><small>{{$data->one}}</small></td>
