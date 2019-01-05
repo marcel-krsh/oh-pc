@@ -7,7 +7,7 @@
         </div>
     </div>
     <hr>
-    <table class="uk-table uk-table-hover uk-table-striped uk-table-condensed small-table-text">
+    <table class="uk-table uk-table-condensed small-table-text">
         <thead>
             <th>
                 <small>FINDING TYPE NAME</small>
