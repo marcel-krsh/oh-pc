@@ -421,7 +421,7 @@ if(Auth::check()){
 		    }
 		}
 
-		openWebsocket("ws://pcinspectdev.ohiohome.org:6001");
+		openWebsocket("wss://pcinspectdev.ohiohome.org:6001");
 	</script>
 </body>
 </html>
