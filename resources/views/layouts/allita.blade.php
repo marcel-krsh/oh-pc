@@ -491,8 +491,25 @@ if(Auth::check()){
 
         </div>
     </div>  
+    <script>
+    	function openWebsocket(url){
+		    try {
+		        socket = new WebSocket(url);
+		        socket.onopen = function(){
+		            console.log('Socket is now open.');
+		        };
+		        socket.onerror = function (error) {
+		            console.error('There was an un-identified Web Socket error');
+		        };
+		        socket.onmessage = function (message) {
+		            console.info("Message: %o", message.data);
+		        };
+		    } catch (e) {
+		        console.error('Sorry, the web socket at "%s" is un-available', url);
+		    }
+		}
+
+		openWebsocket("ws://pcinspectdev.ohiohome.org:6001");
+	</script>
 </body>
 </html>
-<?php  
-Auth::logout();
-}  ?>
