@@ -270,10 +270,7 @@ if(Auth::check()){
 
 	@if(Auth::check())
 	@if(Auth::user()->entity_type == 'hfa' && env('APP_DEBUG_NO_DEVCO') != 'true')
-			var $zoho=$zoho || {};$zoho.salesiq = $zoho.salesiq || 
-			{widgetcode:"676622b8482bc91a831d0cd4ca9043e6c19fad1e199256fac50d2b5354d1e743a84f59a27361c238a1b1d868cfdeb375", values:{},ready:function(){}};
-			var d=document;s=d.createElement("script");s.type="text/javascript";s.id="zsiqscript";s.defer=true;
-			s.src="https://salesiq.zoho.com/widget";t=d.getElementsByTagName("script")[0];t.parentNode.insertBefore(s,t);d.write("<div id='zsiqwidget'></div>");
+			
 
 	@endIf
 	@endIf
@@ -406,6 +403,26 @@ if(Auth::check()){
 		    }
 		});
 	</script>
+	<script>
+    	function openWebsocket(url){
+		    try {
+		        socket = new WebSocket(url);
+		        socket.onopen = function(){
+		            console.log('Socket is now open.');
+		        };
+		        socket.onerror = function (error) {
+		            console.error('There was an un-identified Web Socket error');
+		        };
+		        socket.onmessage = function (message) {
+		            console.info("Message: %o", message.data);
+		        };
+		    } catch (e) {
+		        console.error('Sorry, the web socket at "%s" is un-available', url);
+		    }
+		}
+
+		openWebsocket("ws://pcinspectdev.ohiohome.org:6001");
+	</script>
 </body>
 </html>
 
@@ -491,25 +508,8 @@ if(Auth::check()){
 
         </div>
     </div>  
-    <script>
-    	function openWebsocket(url){
-		    try {
-		        socket = new WebSocket(url);
-		        socket.onopen = function(){
-		            console.log('Socket is now open.');
-		        };
-		        socket.onerror = function (error) {
-		            console.error('There was an un-identified Web Socket error');
-		        };
-		        socket.onmessage = function (message) {
-		            console.info("Message: %o", message.data);
-		        };
-		    } catch (e) {
-		        console.error('Sorry, the web socket at "%s" is un-available', url);
-		    }
-		}
-
-		openWebsocket("ws://pcinspectdev.ohiohome.org:6001");
-	</script>
 </body>
 </html>
+<?php  
+Auth::logout();
+}  ?>
