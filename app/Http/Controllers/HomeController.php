@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Notice;
 use Image;
+use App\Models\User;
 
 class HomeController extends Controller
 {
@@ -26,7 +27,11 @@ class HomeController extends Controller
     {
         return view('home');
     }
-
+    // Table Views
+    public function usersTable(){
+      $users = User::get()->all();
+      return view('tables.users');
+    }
     public function imageGen($image)
     {
         $img = Image::canvas(800, 400, '#ccc');
