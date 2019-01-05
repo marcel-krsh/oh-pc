@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Notice;
 use Image;
 use App\Models\User;
+use Datatables;
 
 class HomeController extends Controller
 {
@@ -29,8 +30,10 @@ class HomeController extends Controller
     }
     // Table Views
     public function usersTable(){
-      $users = User::get()->all();
       return view('tables.users');
+    }
+    public function usersTableAjax(){
+      return Datatables::of(User::query())->make(true);
     }
     public function imageGen($image)
     {
