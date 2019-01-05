@@ -2,20 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
 use Illuminate\Http\Request;
-use Gate;
 use Auth;
 use Session;
-use App\Models\User;
-use File;
-use Storage;
-use DB;
-use App\Models\Programs;
-use App\Models\Entity;
-use App\Models\Parcel;
+use App\Models\Project;
 use App\Models\Note;
 
 class NoteController extends Controller
@@ -26,19 +16,19 @@ class NoteController extends Controller
     }
 
     /**
-     * Show the note list for a specific parcel.
+     * Show the note list for a specific project.
      *
-     * @param  int  $parcel_id
+     * @param  int  $project_id
      * @return Response
      */
-    public function showTabFromParcelId(Parcel $parcel)
+    public function showTabFromProjectId(Project $project)
     {
         // Search (in session)
         if (Session::has('notes-search') && Session::get('notes-search') != '') {
             $search = Session::get('notes-search');
-            $notes = Note::where('parcel_id', $parcel->id)->where('note', 'LIKE', '%'.$search.'%')->with('owner')->orderBy('created_at', 'desc')->get();
+            $notes = Note::where('project_id', $project->id)->where('note', 'LIKE', '%'.$search.'%')->with('owner')->orderBy('created_at', 'desc')->get();
         } else {
-            $notes = Note::where('parcel_id', $parcel->id)->with('owner')->orderBy('created_at', 'desc')->get();
+            $notes = Note::where('project_id', $project->id)->with('owner')->orderBy('created_at', 'desc')->get();
         }
 
         
@@ -63,15 +53,15 @@ class NoteController extends Controller
             }
         }
 
-        return view('parcels.parcel_notes', compact('parcel', 'notes', 'owners_array', 'attachment'));
+        return view('projects.project_notes', compact('project', 'notes', 'owners_array', 'attachment'));
     }
 
-    public function newNoteEntry(Parcel $parcel)
+    public function newNoteEntry(Project $project)
     {
-        return view('modals.new-note-entry', compact('parcel'));
+        return view('modals.new-note-entry', compact('project'));
     }
 
-    public function searchNotes(Parcel $parcel, Request $request)
+    public function searchNotes(Project $project, Request $request)
     {
         if ($request->has('notes-search')) {
             Session::put('notes-search', $request->get('notes-search'));
@@ -83,9 +73,9 @@ class NoteController extends Controller
 
     public function create(Request $request)
     {
-        if ($request->get('parcel') && $request->get('file-note')) {
+        if ($request->get('project') && $request->get('file-note')) {
             try {
-                $parcel = Parcel::where('id', $request->get('parcel'))->first();
+                $project = Project::where('id', $request->get('project'))->first();
             } catch (\Illuminate\Database\QueryException $ex) {
                 dd($ex->getMessage());
             }
@@ -94,12 +84,12 @@ class NoteController extends Controller
 
             $note = new Note([
                 'owner_id' => $user->id,
-                'parcel_id' => $parcel->id,
+                'project_id' => $project->id,
                 'note' => $request->get('file-note')
             ]);
             $note->save();
-            $lc = new LogConverter('parcel', 'addnote');
-            $lc->setFrom($user)->setTo($parcel)->setDesc($user->email.' added note to parcel')->save();
+            // $lc = new LogConverter('project', 'addnote');
+            // $lc->setFrom($user)->setTo($project)->setDesc($user->email.' added note to project')->save();
 
             return 1;
         } else {
@@ -107,17 +97,17 @@ class NoteController extends Controller
         }
     }
 
-    public function notesFromParcelIdJson(Parcel $parcel)
+    public function notesFromProjectIdJson(Project $project)
     {
         // not being used at this time.
-        $notes = Note::where('parcel_id', $parcel->id)->get();
+        $notes = Note::where('project_id', $project->id)->get();
 
         return $notes->toJSON();
     }
 
-    public function printNotes(Parcel $parcel)
+    public function printNotes(Project $project)
     {
-        $notes = Note::where('parcel_id', $parcel->id)->with('owner')->orderBy('created_at', 'desc')->get();
+        $notes = Note::where('project_id', $project->id)->with('owner')->orderBy('created_at', 'desc')->get();
 
         $owners_array = [];
         foreach ($notes as $note) {
@@ -138,6 +128,6 @@ class NoteController extends Controller
             }
         }
 
-        return view('parcels.print_notes', compact('parcel', 'notes', 'owners_array'));
+        return view('projects.print_notes', compact('project', 'notes', 'owners_array'));
     }
 }
