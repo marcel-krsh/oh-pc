@@ -56,7 +56,13 @@
 
 </div>
 <script>
-    
+    $(document).ready(function(){
+   // your on click function here
+   $('.page-link').click(function(){
+           $('#organizations-tab-content').load($(this).attr('href'));
+           return false;
+       });
+    });
     function searchOrganizations(){
         $.post('{{ URL::route("organizations.search") }}', {
                 'organizations-search' : $("#organizations-search").val(),
