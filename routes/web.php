@@ -13,10 +13,8 @@
 
     Route::group(['middleware' => 'web'], function () {
         //view tables
-        Route::controller('tables/users', 'HomeController', [
-            'usersTableAjax'  => 'usersTable.data',
-            'users' => 'usersTable',
-        ]);
+        Route::get('tables/users', 'HomeController@usersTable')->name('tables.user');
+        
 
         Route::get('/sync', 'SyncController@sync');
          Route::get('/brian_test', 'SyncController@brianTest');
