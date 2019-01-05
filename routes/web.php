@@ -14,6 +14,7 @@
     Route::group(['middleware' => 'web'], function () {
         //view tables
         Route::get('tables/users', 'HomeController@usersTable')->name('tables.users');
+        Route::get('tables/usersdata', 'HomeController@usersTableAjax')->name('tables.usersdata');
 
 
         Route::get('/sync', 'SyncController@sync');
