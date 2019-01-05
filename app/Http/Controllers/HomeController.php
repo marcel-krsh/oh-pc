@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Notice;
 use Image;
 use App\Models\User;
-use Datatables;
+use Yajra\Datatables\Datatables;;
 
 class HomeController extends Controller
 {
