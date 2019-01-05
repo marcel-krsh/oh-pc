@@ -40,7 +40,7 @@
         <tbody>
             @foreach($findingtypes as $data)
                 <tr>
-                    <td><a onclick="dynamicModalLoad('admin/finding_type/create/{{$data->id}}')" class="uk-link-muted"><small data-uk-tooltip title="@forEach($data->huds as $hud) {{$hud->name}}<br /> @endForEach">{{$data->name}} </small></a></td>
+                    <td><a onclick="dynamicModalLoad('admin/finding_type/create/{{$data->id}}')" class="uk-link-muted"><small data-uk-tooltip title="">{{$data->name}}: @forEach($data->huds as $hud) {{$hud->name}}<br /> @endForEach</small></a></td>
                     <td><small>@if($data->nominal_item_weight){{$data->nominal_item_weight}}% @else 0% @endif</small></td>
                     <td><small>{{$data->criticality}}</small></td>
                     <td><small>{{$data->one}}</small></td>

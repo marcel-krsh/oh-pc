@@ -42,7 +42,7 @@ class FindingType extends Model
      */
     public function huds() : HasMany
     {
-        return $this->hasMany(HudFindingType::class, 'finding_type_id', 'id', 'name');
+        return $this->hasMany(HudFindingType::class, 'finding_type_id', 'id');
     }
 
     /**
