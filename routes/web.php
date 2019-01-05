@@ -13,7 +13,7 @@
 
     Route::group(['middleware' => 'web'], function () {
         //view tables
-        Rout::get('/tables/users', 'HomeController@usersTable')->name('tables.users');
+        Route::get('/tables/users', 'HomeController@usersTable')->name('tables.users');
         Route::get('/sync', 'SyncController@sync');
          Route::get('/brian_test', 'SyncController@brianTest');
 
