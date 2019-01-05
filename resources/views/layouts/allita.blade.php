@@ -35,7 +35,6 @@ if(Auth::check()){
 
 	<meta name="theme-color" content="#ffffff">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-	<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
 
 	@if (Auth::guest())
@@ -426,11 +425,9 @@ if(Auth::check()){
 
 		openWebsocket("wss://pcinspectdev.ohiohome.org:6001");
 	</script>
-	
+
         <!-- DataTables -->
         <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
-        <!-- Bootstrap JavaScript -->
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 </body>
 </html>
 
