@@ -116,6 +116,7 @@
         Route::get('/modals/communication/{audit_id}/replies/{message}', 'CommunicationController@viewReplies');
         Route::post('/communications/audit/{audit?}', 'CommunicationController@searchCommunications')->name('communications.search');
         Route::get('/communications/unseen', 'CommunicationController@getUnseenMessages');
+        Route::get('/view_message/{message}', 'CommunicationController@goToMessage');
 
 
         Route::post('/documents/audit/{audit}/upload', 'DocumentController@upload')->name('documents.upload');
@@ -165,6 +166,12 @@
             Route::post('hud_area/store/{id?}', 'AdminToolController@hudAreaStore');
             Route::post('amenity/store/{id?}', 'AdminToolController@amenityStore');
         });
+
+        //Project
+        Route::get('/notes/project/{project}', 'NoteController@showTabFromProjectId')->name('notes.list');
+        Route::get('/notes/project/{project}.json', 'NoteController@notesFromProjectIdJson')->name('notes.loadjson');
+        Route::get('/external-window/print-notes-{project}.html', 'NoteController@printNotes')->name('notes.print');
+
 
         // });
     });
@@ -279,10 +286,6 @@ Route::get('/modals/new-note-entry/{parcel}', 'NoteController@newNoteEntry');
 
 
 
-// Notes Routes - line 234
-Route::get('/notes/parcel/{parcel}', 'NoteController@showTabFromParcelId')->name('notes.list');
-Route::get('/notes/parcel/{parcel}.json', 'NoteController@notesFromParcelIdJson')->name('notes.loadjson');
-Route::get('/external-window/print-notes-{parcel}.html', 'NoteController@printNotes')->name('notes.print');
 
 //Admin store
 
@@ -315,7 +318,7 @@ Route::get('/modals/communication/{parcel_id}/replies/{message}', 'Communication
 
 // Emails
 Route::get('/preview/send/communication', 'CommunicationController@previewEmail');
-Route::get('/view_message/{message}', 'CommunicationController@goToMessage');
+
 //Sessions
 Route::get('/session/dynamicModalLoad', function () {
     $dynamicModalLoadid = session('dynamicModalLoad');
