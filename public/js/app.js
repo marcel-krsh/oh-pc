@@ -55197,13 +55197,13 @@ var app = new Vue({
     fetchMessages: function fetchMessages() {
       var _this2 = this;
 
-      axios.get('/messages').then(function (response) {
+      axios.get('/chat/messages').then(function (response) {
         _this2.messages = response.data;
       });
     },
     addMessage: function addMessage(message) {
       this.messages.push(message);
-      axios.post('/messages', message).then(function (response) {
+      axios.post('/chat/messages', message).then(function (response) {
         console.log(response.data);
       });
     }

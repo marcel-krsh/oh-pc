@@ -45,7 +45,7 @@ const app = new Vue({
 
     methods: {
         fetchMessages() {
-            axios.get('/messages').then(response => {
+            axios.get('/chat/messages').then(response => {
                 this.messages = response.data;
             });
         },
@@ -53,7 +53,7 @@ const app = new Vue({
         addMessage(message) {
             this.messages.push(message);
 
-            axios.post('/messages', message).then(response => {
+            axios.post('/chat/messages', message).then(response => {
               console.log(response.data);
             });
         }
