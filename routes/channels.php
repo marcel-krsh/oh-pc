@@ -22,5 +22,5 @@ Broadcast::channel('message.{messageId}', function ($user, $messageId) {
 });
 
 Broadcast::channel('chat', function ($user) {
-  return Auth::check();
+  //return Auth::check();
 });
