@@ -3,6 +3,7 @@
 namespace App\Events;
 use App\Models\User;
 use App\Models\Message;
+use Auth;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -34,9 +35,9 @@ class MessageSent implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(User $user, Message $message)
     {
-        $this->user = $user;
+        $this->user = $user; 
         $this->message = $message;
     }
 

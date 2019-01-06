@@ -14,13 +14,13 @@ use App\Models\Communication;
 */
 
 Broadcast::channel('App.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+    return true; // return (int) $user->id === (int) $id;
 });
 
 Broadcast::channel('message.{messageId}', function ($user, $messageId) {
-    return $user->id === Communication::findOrNew($messageId)->owner_id;
+    return true; // return $user->id === Communication::findOrNew($messageId)->owner_id;
 });
 
 Broadcast::channel('chat', function ($user) {
-  //return Auth::check();
+  return true; // return Auth::check();
 });
