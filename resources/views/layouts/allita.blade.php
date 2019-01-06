@@ -83,7 +83,7 @@ if(Auth::check()){
 	
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script> 
+<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>  -->
 	<script src="{{ mix('js/app.js') }}"></script>
 
 	<script>
@@ -118,8 +118,8 @@ if(Auth::check()){
 
 	<script>
 		//var socket = io('http://192.168.100.100:3000');
-		// var socket = io('{{ env("APP_URL") }}:3000'); 
-		var socket = io('https://pcinspectdev.ohiohome.org:6001');
+		//var socket = io('http://192.168.10.10:6001'); 
+		//var socket = io('https://pcinspectdev.ohiohome.org:6001');
 
 		// initial values
 	    var statsAuditsTotal = "{{$stats_audits_total}}";
@@ -135,6 +135,7 @@ if(Auth::check()){
 	<div id="ohfa-universal-header"><div id="apcsv-ul-bar">  <div id="apcsv-logo"><img src="https://devco.ohiohome.org/AuthorityOnlineALT/Unified/devco_logo_reversed.png" alt="Site Logo"></div>  <div id="apcsv-list-left"></div>  <div id="apcsv-avatar" title="AmeliaAtchinson (OSM Test)" onclick="openUserPreferences();">{{Auth::user()->initials()}}</div>  <div id="apcsv-menu-icon" class="hvr-grow"><a id="apcsv-toggle" class="pcsv-toggle" onclick="return false;" href="#apcsv-menu-items">APPS</a>    <div id="apcsv-menu-items" class="hidden">      <div class="apcsv-menu-item"> <a href="https://devco.ohiohome.org/AuthorityOnlineALT/">DEV|CO Compliance</a></div>      <div class="apcsv-menu-item"> <a href="https://pcinspectdev.ohiohome.org/">DEV|CO Inspection</a></div>    </div>  </div>  <div id="apcsv-list-right"></div></div></div>
 	<a name="top"></a>
 	<!-- MAIN VIEW -->
+
 	<div id="pcapp" class="uk-container uk-align-center">
 
 		<div uk-grid class="uk-grid-collapse">
@@ -392,19 +393,31 @@ if(Auth::check()){
 		    statsAuditsTotal: statsAuditsTotal,
 		    statsCommunicationTotal: statsCommunicationTotal,
 		    statsReportsTotal: statsReportsTotal
-		  },
+		  	},
 
 		    mounted: function() {
-		    	console.log("Component working");
-		        socket.on('communications.'+uid+'.'+sid+':NewRecipient', function(data){
-		            // console.log("user " + data.userId + " is getting a message because a new message has been sent.");
+		    	console.log("Tabs Working");
+		    	Echo.join('communications.'+uid+'.'+sid);
+		    	Echo.channel('communications.'+uid+'.'+sid)
+				    .listen('NewRecipient', (e) => {
+				        console.log("new total "+e.communicationTotal);
+				        this.statsCommunicationTotal = e.communicationTotal;
+			    });
+		    	
 		            // console.log("new total "+data.communicationTotal);
-		            this.statsCommunicationTotal = data.communicationTotal;
-		        }.bind(this));
-		    }
-		});
+		            
+
+		        // socket.on('communications.'+uid+'.'+sid+':NewRecipient', function(data){
+		        //     // console.log("user " + data.userId + " is getting a message because a new message has been sent.");
+		        //     // console.log("new total "+data.communicationTotal);
+		        //     this.statsCommunicationTotal = data.communicationTotal;
+		        
+			
+		    
+		}
+	});
 	</script>
-	<script>
+	<!-- <script>
     	function openWebsocket(url){
 		    try {
 		        socket = new WebSocket(url);
@@ -422,8 +435,8 @@ if(Auth::check()){
 		    }
 		}
 
-		openWebsocket("wss://pcinspectdev.ohiohome.org:6001");
-	</script>
+		openWebsocket("http://192.168.10.10:6001");
+	</script> -->
 
        
 </body>

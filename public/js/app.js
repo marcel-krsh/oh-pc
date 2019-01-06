@@ -54930,7 +54930,7 @@ __webpack_require__.r(__webpack_exports__);
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
-  key: '1234',
+  key: 'myKey',
   wsHost: window.location.hostname,
   wsPort: 6001,
   disableStats: true
@@ -54946,8 +54946,8 @@ Vue.component('auditrow', __webpack_require__(/*! ./components/AuditRow.vue */ "
   name: 'auditrow'
 });
 Vue.component('communication-row', __webpack_require__(/*! ./components/CommunicationRow.vue */ "./resources/js/components/CommunicationRow.vue")); // connect sockets
-
-var socket = io('https://pcinspectdev.ohiohome.org:6001'); //var socket = io('http://192.168.100.100:3000');
+// var socket = io('192.168.10.10:6001');
+//var socket = io('http://192.168.100.100:3000');
 // https://github.com/ElemeFE/vue-infinite-scroll
 
 var infiniteScroll = __webpack_require__(/*! vue-infinite-scroll */ "./node_modules/vue-infinite-scroll/vue-infinite-scroll.js");
