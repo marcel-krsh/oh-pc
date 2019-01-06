@@ -55170,13 +55170,13 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); // load all components
 
 
-Vue.component('example', __webpack_require__(/*! ./components/Example.vue */ "./resources/js/components/Example.vue"));
-Vue.component('auditrow', __webpack_require__(/*! ./components/AuditRow.vue */ "./resources/js/components/AuditRow.vue"), {
+Vue.component('example', __webpack_require__(/*! ./components/Example.vue */ "./resources/js/components/Example.vue").default);
+Vue.component('auditrow', __webpack_require__(/*! ./components/AuditRow.vue */ "./resources/js/components/AuditRow.vue").default, {
   name: 'auditrow'
 });
-Vue.component('communication-row', __webpack_require__(/*! ./components/CommunicationRow.vue */ "./resources/js/components/CommunicationRow.vue"));
-Vue.component('chat-messages', __webpack_require__(/*! ./components/ChatMessages.vue */ "./resources/js/components/ChatMessages.vue"));
-Vue.component('chat-form', __webpack_require__(/*! ./components/ChatForm.vue */ "./resources/js/components/ChatForm.vue"));
+Vue.component('communication-row', __webpack_require__(/*! ./components/CommunicationRow.vue */ "./resources/js/components/CommunicationRow.vue").default);
+Vue.component('chat-messages', __webpack_require__(/*! ./components/ChatMessages.vue */ "./resources/js/components/ChatMessages.vue").default);
+Vue.component('chat-form', __webpack_require__(/*! ./components/ChatForm.vue */ "./resources/js/components/ChatForm.vue").default);
 var app = new Vue({
   el: '#app',
   data: {

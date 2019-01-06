@@ -17,13 +17,13 @@ window.Echo = new Echo({
 require('./bootstrap');
 
 // load all components
-Vue.component('example', require('./components/Example.vue'));
-Vue.component('auditrow', require('./components/AuditRow.vue'), {
+Vue.component('example', require('./components/Example.vue').default);
+Vue.component('auditrow', require('./components/AuditRow.vue').default, {
     name: 'auditrow'
 });
-Vue.component('communication-row', require('./components/CommunicationRow.vue'));
-Vue.component('chat-messages', require('./components/ChatMessages.vue'));
-Vue.component('chat-form', require('./components/ChatForm.vue'));
+Vue.component('communication-row', require('./components/CommunicationRow.vue').default);
+Vue.component('chat-messages', require('./components/ChatMessages.vue').default);
+Vue.component('chat-form', require('./components/ChatForm.vue').default);
 
 const app = new Vue({
     el: '#app',
