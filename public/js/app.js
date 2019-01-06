@@ -55186,7 +55186,7 @@ var app = new Vue({
     var _this = this;
 
     this.fetchMessages();
-    laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"].private('chat').listen('MessageSent', function (e) {
+    window.Echo.private('chat').listen('MessageSent', function (e) {
       _this.messages.push({
         message: e.message.message,
         user: e.user
