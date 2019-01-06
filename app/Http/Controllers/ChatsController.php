@@ -12,7 +12,11 @@ class ChatsController extends Controller
     //
     public function __construct()
 	{
-	  $this->middleware('web');
+	  if (env('APP_DEBUG_NO_DEVCO') == 'true') {
+            Auth::onceUsingId(286); // TEST BRIAN
+      }else{
+      	$this->middleware('web');
+      }
 	}
 
 	/**
@@ -48,7 +52,8 @@ class ChatsController extends Controller
 	  $message = $user->messages()->create([
 	    'message' => $request->input('message')
 	  ]);
-	  broadcast(new MessageSent($user, $message))->toOthers();
+	  // broadcast(new MessageSent($user, $message))->toOthers();
+	  broadcast(new MessageSent($user, $message));
 
 
 	  return ['status' => 'Message Sent!'];
