@@ -27,19 +27,19 @@
         "yajra/laravel-datatables": "^1.0"
     },
     "require-dev": {
+        "aloha/twilio": "^4.0",
         "barryvdh/laravel-debugbar": "^3.1",
+        "beyondcode/laravel-dump-server": "~1.0",
         "codedungeon/phpunit-result-printer": "^0.8",
         "doctrine/dbal": "v2.5.4",
         "filp/whoops": "~2.0",
         "fzaninotto/faker": "~1.4",
         "laravel/browser-kit-testing": "^2.0",
-        "laravel/homestead": "^7.14",
+        "laravel/homestead": "^7.20",
         "mockery/mockery": "0.9.*",
         "nunomaduro/collision": "~1.1",
         "phpunit/phpunit": "~6.0",
-        "wnx/laravel-stats": "^1.7",
-        "aloha/twilio": "^4.0",
-        "beyondcode/laravel-dump-server": "~1.0"
+        "wnx/laravel-stats": "^1.7"
     },
     "autoload": {
         "classmap": [
