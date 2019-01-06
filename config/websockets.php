@@ -14,7 +14,7 @@ return [
     'apps' => [
         [
             'id' => env('PUSHER_APP_ID'),
-            'name' => env('APP_NAME'),
+            'name' => env('APP_NAME','Allita PC'),
             'key' => env('PUSHER_APP_KEY'),
             'secret' => env('PUSHER_APP_SECRET'),
             'enable_client_messages' => false,
