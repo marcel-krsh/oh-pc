@@ -21,6 +21,7 @@
         "maatwebsite/excel": "^3.0",
         "phpoffice/phpexcel": "^1.8",
         "predis/predis": "^1.1",
+        "pusher/pusher-php-server": "~3.0",
         "spatie/laravel-activitylog": "^2.7",
         "tremby/laravel-git-version": "^1.1",
         "yajra/laravel-datatables": "^1.0"
