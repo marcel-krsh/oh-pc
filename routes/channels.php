@@ -20,3 +20,7 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
 Broadcast::channel('message.{messageId}', function ($user, $messageId) {
     return $user->id === Communication::findOrNew($messageId)->owner_id;
 });
+
+Broadcast::channel('chat', function ($user) {
+  return Auth::check();
+});

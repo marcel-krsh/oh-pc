@@ -4,9 +4,9 @@ window.Pusher = require('pusher-js');
 
 window.Echo = new Echo({
   broadcaster: 'pusher',
-  key: 'myKey',
-  wsHost: window.location.hostname,
-  wsPort: 6001,
+  key: '6e69117f494c249535b6',
+  // wsHost: window.location.hostname,
+  // wsPort: 443,
   disableStats: true,
 });
 
@@ -22,7 +22,43 @@ Vue.component('auditrow', require('./components/AuditRow.vue'), {
     name: 'auditrow'
 });
 Vue.component('communication-row', require('./components/CommunicationRow.vue'));
+Vue.component('chat-messages', require('./components/ChatMessages.vue'));
+Vue.component('chat-form', require('./components/ChatForm.vue'));
 
+const app = new Vue({
+    el: '#app',
+
+    data: {
+        messages: []
+    },
+
+    created() {
+        this.fetchMessages();
+        Echo.private('chat')
+		  .listen('MessageSent', (e) => {
+		    this.messages.push({
+		      message: e.message.message,
+		      user: e.user
+		    });
+		  });
+    },
+
+    methods: {
+        fetchMessages() {
+            axios.get('/messages').then(response => {
+                this.messages = response.data;
+            });
+        },
+
+        addMessage(message) {
+            this.messages.push(message);
+
+            axios.post('/messages', message).then(response => {
+              console.log(response.data);
+            });
+        }
+    }
+});
 // connect sockets
 // var socket = io('192.168.10.10:6001');
  //var socket = io('http://192.168.100.100:3000');

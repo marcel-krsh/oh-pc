@@ -12,6 +12,11 @@
 */
 
     Route::group(['middleware' => 'web'], function () {
+        //chat routes
+        Route::get('/chat', 'ChatsController@index');
+        Route::get('/chat/messages', 'ChatsController@fetchMessages');
+        Route::post('/chat/messages', 'ChatsController@sendMessage');
+
         //view tables
         Route::get('tables/users', 'HomeController@usersTable')->name('tables.users');
         Route::get('tables/usersdata', 'HomeController@usersTableAjax')->name('tables.usersdata');

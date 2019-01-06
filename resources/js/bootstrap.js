@@ -50,9 +50,11 @@ window.Pusher = require('pusher-js');
 
 window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: 'myKey',
-    wsHost: window.location.hostname,
-    wsPort: 6001,
+    key: '6e69117f494c249535b6',
+    cluster: 'us2',
+    encrypted:true,
+    // wsHost: window.location.hostname,
+    // wsPort: 6001,
     disableStats: true,
 });
 
