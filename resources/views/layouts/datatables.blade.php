@@ -6,7 +6,22 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Laravel DataTables Tutorial</title>
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    
+        <script src="https://js.pusher.com/4.3/pusher.min.js"></script>
+          <script>
+
+            // Enable pusher logging - don't include this in production
+            Pusher.logToConsole = true;
+
+            var pusher = new Pusher('6e69117f494c249535b6', {
+              cluster: 'us2',
+              forceTLS: true
+            });
+
+            var channel = pusher.subscribe('my-channel');
+            channel.bind('my-event', function(data) {
+              alert(JSON.stringify(data));
+            });
+          </script>
         <!-- Bootstrap CSS -->
         <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
@@ -24,9 +39,11 @@
         </style>
     </head>
     <body>
-        <div class="uk-margin-top uk-margin-bottom">
-             <example></example>
-        </div>
+        <h1>Pusher Test</h1>
+          <p>
+            Try publishing an event to channel <code>my-channel</code>
+            with event name <code>my-event</code>.
+          </p>
         <div class="container">
             @yield('content')
         </div>
