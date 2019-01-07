@@ -404,7 +404,7 @@ class SyncController extends Controller
         switch (strtolower($crud)) {
             case 'update':
                     // update devco using key
-                    $metadata = $model->to_array();
+                    $metadata = $model->toArray();
                     $this.getApiRoute($originalModel,strtolower($crud),$user,$userEmail,$userName,$deviceId=1,$deviceName,$metadata);
                     // update the sync table key
                 break;
