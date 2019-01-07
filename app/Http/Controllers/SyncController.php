@@ -401,7 +401,7 @@ class SyncController extends Controller
             case 'update':
                     // update devco using key
                     $metadata = $model->toArray();
-                    $this->getApiRoute($originalModel,strtolower($crud),$user,$userEmail,$userName,$deviceId=1,$deviceName,$metadata);
+                    $this->getApiRoute($originalModel,strtolower($crud),$user,$userEmail,$userName,$deviceId,$deviceName,$metadata);
                     // update the sync table key
                 break;
 
