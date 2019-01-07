@@ -66,7 +66,7 @@ class SyncController extends Controller
     }
 
     public function getApiRoute($model,$crud,$user='system',$userEmail='admin@allita.org',$userName='AllitaPC',$deviceId=1,$deviceName='AllitaPCServer',$metadata=array()) {
-
+        $NOTAVARIABLE = 'REPLACE THIS VARIABLE IN THE CODE WITH REAL STUFF';
         /// create the connection 
         $apiConnect = new DevcoService();
         if (!is_null($apiConnect)) {
