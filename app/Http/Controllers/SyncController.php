@@ -133,7 +133,7 @@ class SyncController extends Controller
                             $apiMethod = 'updateAmenity';
                             // api reference:
                             //int $amenities_id, array $metadata, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null
-                            $syncData = $apiConnect->$apiMethod($metadata->amenity_type_key, $metadata, $user, $userEmail, $userName, $deviceId, $deviceName);
+                            $syncData = $apiConnect->$apiMethod($metadata['amenity_type_key'], $metadata, $user, $userEmail, $userName, $deviceId, $deviceName);
                             $syncData = json_decode($syncData, true);
                             dd($syncData);
                             if($syncData['meta']['...value..']){
