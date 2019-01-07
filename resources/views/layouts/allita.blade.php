@@ -117,10 +117,6 @@ if(Auth::check()){
 	</style>
 
 	<script>
-		//var socket = io('http://192.168.100.100:3000');
-		//var socket = io('http://192.168.10.10:6001'); 
-		//var socket = io('https://pcinspectdev.ohiohome.org:6001');
-
 		// initial values
 	    var statsAuditsTotal = "{{$stats_audits_total}}";
 	    var statsCommunicationTotal = "{{$stats_communication_total}}";
@@ -136,7 +132,7 @@ if(Auth::check()){
 	<a name="top"></a>
 	<!-- MAIN VIEW -->
 
-	<div id="pcapp" class="uk-container uk-align-center">
+	<div id="app" class="uk-container uk-align-center">
 
 		<div uk-grid class="uk-grid-collapse">
 			<div id="main-window" class=" uk-margin-large-bottom" uk-scrollspy="cls:uk-animation-fade; delay: 900">
@@ -397,6 +393,18 @@ if(Auth::check()){
 
 		    mounted: function() {
 		    	console.log("Tabs Working");
+
+		    	// Echo.join('chat');
+		     //    Echo.channel('chat')
+		    	// 	  .listen('MessageSent', (e) => {
+		    	// 	    this.messages.push({
+		    	// 	      message: e.message.message,
+		    	// 	      user: e.user
+		    	// 	    });
+		     //        console.log("receiving message");
+		     //        console.log(e.user);
+		    	// 	  });
+
 		    	Echo.join('communications.'+uid+'.'+sid);
 		    	Echo.channel('communications.'+uid+'.'+sid)
 				    .listen('NewRecipient', (e) => {

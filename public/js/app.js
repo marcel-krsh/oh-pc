@@ -55174,43 +55174,7 @@ Vue.component('auditrow', __webpack_require__(/*! ./components/AuditRow.vue */ "
 });
 Vue.component('communication-row', __webpack_require__(/*! ./components/CommunicationRow.vue */ "./resources/js/components/CommunicationRow.vue").default);
 Vue.component('chat-messages', __webpack_require__(/*! ./components/ChatMessages.vue */ "./resources/js/components/ChatMessages.vue").default);
-Vue.component('chat-form', __webpack_require__(/*! ./components/ChatForm.vue */ "./resources/js/components/ChatForm.vue").default);
-var app = new Vue({
-  el: '#app',
-  data: {
-    messages: []
-  },
-  created: function created() {
-    var _this = this;
-
-    this.fetchMessages();
-    Echo.join('chat');
-    Echo.channel('chat').listen('MessageSent', function (e) {
-      _this.messages.push({
-        message: e.message.message,
-        user: e.user
-      });
-
-      console.log("receiving message");
-      console.log(e.user);
-    });
-  },
-  methods: {
-    fetchMessages: function fetchMessages() {
-      var _this2 = this;
-
-      axios.get('/chat/messages').then(function (response) {
-        _this2.messages = response.data;
-      });
-    },
-    addMessage: function addMessage(message) {
-      this.messages.push(message);
-      axios.post('/chat/messages', message).then(function (response) {
-        console.log(response.data);
-      });
-    }
-  }
-}); // connect sockets
+Vue.component('chat-form', __webpack_require__(/*! ./components/ChatForm.vue */ "./resources/js/components/ChatForm.vue").default); // connect sockets
 // var socket = io('192.168.10.10:6001');
 //var socket = io('http://192.168.100.100:3000');
 // https://github.com/ElemeFE/vue-infinite-scroll
