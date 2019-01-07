@@ -116,183 +116,184 @@ class SyncController extends Controller
                     break;
 
                 case 'update':
-                    
-                    case 'Address':
-                        $apiMethod = 'updateAddress';
-                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
-                        $syncData = json_decode($syncData, true);
-                        if($syncData['meta']['...value..']){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
+                    switch ($model){
+                        case 'Address':
+                            $apiMethod = 'updateAddress';
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
+                            $syncData = json_decode($syncData, true);
+                            if($syncData['meta']['...value..']){
+                                return true;
+                            } else {
+                                return false;
+                            }
+                            break;
 
-                    case 'Amenity':
-                        dd($model,$user,$userEmail,$userName,$deviceId,$deviceName,$metadata);
-                        $apiMethod = 'updateAmenity';
-                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
-                        $syncData = json_decode($syncData, true);
-                        if($syncData['meta']['...value..']){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
+                        case 'Amenity':
+                            dd($model,$user,$userEmail,$userName,$deviceId,$deviceName,$metadata);
+                            $apiMethod = 'updateAmenity';
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
+                            $syncData = json_decode($syncData, true);
+                            if($syncData['meta']['...value..']){
+                                return true;
+                            } else {
+                                return false;
+                            }
+                            break;
 
-                    case 'Building':
-                        $apiMethod = 'updateBuilding';
-                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
-                        $syncData = json_decode($syncData, true);
-                        if($syncData['meta']['...value..']){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
+                        case 'Building':
+                            $apiMethod = 'updateBuilding';
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
+                            $syncData = json_decode($syncData, true);
+                            if($syncData['meta']['...value..']){
+                                return true;
+                            } else {
+                                return false;
+                            }
+                            break;
 
-                    case 'BuildingStatus':
-                        $apiMethod = 'updateBuildingStatus';
-                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
-                        $syncData = json_decode($syncData, true);
-                        if($syncData['meta']['...value..']){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
+                        case 'BuildingStatus':
+                            $apiMethod = 'updateBuildingStatus';
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
+                            $syncData = json_decode($syncData, true);
+                            if($syncData['meta']['...value..']){
+                                return true;
+                            } else {
+                                return false;
+                            }
+                            break;
 
-                    case 'ComplianceContact':
-                        $apiMethod = 'updateComplianceContact';
-                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
-                        $syncData = json_decode($syncData, true);
-                        if($syncData['meta']['...value..']){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
+                        case 'ComplianceContact':
+                            $apiMethod = 'updateComplianceContact';
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
+                            $syncData = json_decode($syncData, true);
+                            if($syncData['meta']['...value..']){
+                                return true;
+                            } else {
+                                return false;
+                            }
+                            break;
 
-                    case 'Project':
-                        $apiMethod = 'updateDevelopment';
-                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
-                        $syncData = json_decode($syncData, true);
-                        if($syncData['meta']['...value..']){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
+                        case 'Project':
+                            $apiMethod = 'updateDevelopment';
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
+                            $syncData = json_decode($syncData, true);
+                            if($syncData['meta']['...value..']){
+                                return true;
+                            } else {
+                                return false;
+                            }
+                            break;
 
-                    case 'ProjectAmenity':
-                        $apiMethod = 'updateDevelopmentAmenity';
-                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
-                        $syncData = json_decode($syncData, true);
-                        if($syncData['meta']['...value..']){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
+                        case 'ProjectAmenity':
+                            $apiMethod = 'updateDevelopmentAmenity';
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
+                            $syncData = json_decode($syncData, true);
+                            if($syncData['meta']['...value..']){
+                                return true;
+                            } else {
+                                return false;
+                            }
+                            break;
 
-                    case 'ProjectDate':
-                        $apiMethod = 'updateDevelopmentDate';
-                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
-                        $syncData = json_decode($syncData, true);
-                        if($syncData['meta']['...value..']){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
+                        case 'ProjectDate':
+                            $apiMethod = 'updateDevelopmentDate';
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
+                            $syncData = json_decode($syncData, true);
+                            if($syncData['meta']['...value..']){
+                                return true;
+                            } else {
+                                return false;
+                            }
+                            break;
 
-                    case 'ProjectProgram':
-                        $apiMethod = 'updateDevelopmentProgram';
-                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
-                        $syncData = json_decode($syncData, true);
-                        if($syncData['meta']['...value..']){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
+                        case 'ProjectProgram':
+                            $apiMethod = 'updateDevelopmentProgram';
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
+                            $syncData = json_decode($syncData, true);
+                            if($syncData['meta']['...value..']){
+                                return true;
+                            } else {
+                                return false;
+                            }
+                            break;
 
-                    case 'Audit':
-                        $apiMethod = 'updateAudit';
-                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
-                        $syncData = json_decode($syncData, true);
-                        if($syncData['meta']['...value..']){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
+                        case 'Audit':
+                            $apiMethod = 'updateAudit';
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
+                            $syncData = json_decode($syncData, true);
+                            if($syncData['meta']['...value..']){
+                                return true;
+                            } else {
+                                return false;
+                            }
+                            break;
 
-                    case 'Organization':
-                        $apiMethod = 'updateOrganization';
-                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
-                        $syncData = json_decode($syncData, true);
-                        if($syncData['meta']['...value..']){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
+                        case 'Organization':
+                            $apiMethod = 'updateOrganization';
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
+                            $syncData = json_decode($syncData, true);
+                            if($syncData['meta']['...value..']){
+                                return true;
+                            } else {
+                                return false;
+                            }
+                            break;
 
-                    case 'People':
-                        $apiMethod = 'updatePerson';
-                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
-                        $syncData = json_decode($syncData, true);
-                        if($syncData['meta']['...value..']){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
+                        case 'People':
+                            $apiMethod = 'updatePerson';
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
+                            $syncData = json_decode($syncData, true);
+                            if($syncData['meta']['...value..']){
+                                return true;
+                            } else {
+                                return false;
+                            }
+                            break;
 
-                    case 'Unit':
-                        $apiMethod = 'updateUnit';
-                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
-                        $syncData = json_decode($syncData, true);
-                        if($syncData['meta']['...value..']){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
+                        case 'Unit':
+                            $apiMethod = 'updateUnit';
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
+                            $syncData = json_decode($syncData, true);
+                            if($syncData['meta']['...value..']){
+                                return true;
+                            } else {
+                                return false;
+                            }
+                            break;
 
-                    case 'UnitStatus':
-                        $apiMethod = 'updateUnitStatus';
-                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
-                        $syncData = json_decode($syncData, true);
-                        if($syncData['meta']['...value..']){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
+                        case 'UnitStatus':
+                            $apiMethod = 'updateUnitStatus';
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
+                            $syncData = json_decode($syncData, true);
+                            if($syncData['meta']['...value..']){
+                                return true;
+                            } else {
+                                return false;
+                            }
+                            break;
 
-                    case 'UnitAmenity':
-                        $apiMethod = 'updateUnitAmenity';
-                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
-                        $syncData = json_decode($syncData, true);
-                        if($syncData['meta']['...value..']){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
+                        case 'UnitAmenity':
+                            $apiMethod = 'updateUnitAmenity';
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
+                            $syncData = json_decode($syncData, true);
+                            if($syncData['meta']['...value..']){
+                                return true;
+                            } else {
+                                return false;
+                            }
+                            break;
 
-                    case 'BuildingAmenity':
-                        $apiMethod = 'updateBuildingAmenity';
-                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
-                        $syncData = json_decode($syncData, true);
-                        if($syncData['meta']['...value..']){
-                            return true;
-                        } else {
-                            return false;
-                        }
-                        break;
+                        case 'BuildingAmenity':
+                            $apiMethod = 'updateBuildingAmenity';
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
+                            $syncData = json_decode($syncData, true);
+                            if($syncData['meta']['...value..']){
+                                return true;
+                            } else {
+                                return false;
+                            }
+                            break;
+                    }
 
                 case 'delete':
                     case 'Amenity':
