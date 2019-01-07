@@ -368,8 +368,8 @@ class SyncController extends Controller
         //dd($model,$referenceId,$crud);
 
         // CR U D
-        if(!is_null($model) && strtoupper($model) !== NULL){
-            dd('model is not null - it is '.$model);
+        if(!is_null($model) && strtoupper($model) !== 'NULL'){
+            dd('model is not null - it is '.strtoupper($model));
         } else {
             dd('model is null!');
         }
