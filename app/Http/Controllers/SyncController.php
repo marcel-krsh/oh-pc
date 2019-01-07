@@ -395,38 +395,38 @@ class SyncController extends Controller
                 break;
         }
 
-        $lastModifiedDate = SyncProjectAmenity::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"), 'last_edited', 'id')->orderBy('last_edited', 'desc')->first();
-        // if the value is null set a default start date to start the sync.
-        if (is_null($lastModifiedDate)) {
-            $modified = '10/1/1900';
-        } else {
-            // format date stored to the format we are looking for...
-            // we resync the last second of the data to be sure we get any records that happened to be recorded at the same second.
-            $currentModifiedDateTimeStamp = strtotime($lastModifiedDate->last_edited_convert);
-            settype($currentModifiedDateTimeStamp, 'float');
-            $currentModifiedDateTimeStamp = $currentModifiedDateTimeStamp - .001;
-            $modified = date('m/d/Y G:i:s.u', $currentModifiedDateTimeStamp);
-            //dd($lastModifiedDate, $modified);
-        }
-        $apiConnect = new DevcoService();
-        if (!is_null($apiConnect)) {
-            $syncData = $apiConnect->listProjectAmenities(1, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
-            $syncData = json_decode($syncData, true);
-            $syncPage = 1;
+        // $lastModifiedDate = SyncProjectAmenity::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"), 'last_edited', 'id')->orderBy('last_edited', 'desc')->first();
+        // // if the value is null set a default start date to start the sync.
+        // if (is_null($lastModifiedDate)) {
+        //     $modified = '10/1/1900';
+        // } else {
+        //     // format date stored to the format we are looking for...
+        //     // we resync the last second of the data to be sure we get any records that happened to be recorded at the same second.
+        //     $currentModifiedDateTimeStamp = strtotime($lastModifiedDate->last_edited_convert);
+        //     settype($currentModifiedDateTimeStamp, 'float');
+        //     $currentModifiedDateTimeStamp = $currentModifiedDateTimeStamp - .001;
+        //     $modified = date('m/d/Y G:i:s.u', $currentModifiedDateTimeStamp);
+        //     //dd($lastModifiedDate, $modified);
+        // }
+        // $apiConnect = new DevcoService();
+        // if (!is_null($apiConnect)) {
+        //     $syncData = $apiConnect->listProjectAmenities(1, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
+        //     $syncData = json_decode($syncData, true);
+        //     $syncPage = 1;
             //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
-            if ($syncData['meta']['totalPageCount'] > 0) {
-                do {
-                    if ($syncPage > 1) {
-                        //Get Next Page
-                        $syncData = $apiConnect->listProjectAmenities($syncPage, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
-                        $syncData = json_decode($syncData, true);
-                        //dd('Page Count is Higher',$syncData,$syncData['meta']['totalPageCount'],$syncPage);
-                    }
-                    //dd('Page Count is Higher',$syncData,$modified,$syncData,$syncData['meta']['totalPageCount'],$syncPage);
-                    foreach ($syncData['data'] as $i => $v) {
-                            // check if record exists
-                            $updateRecord = SyncProjectAmenity::select('id', 'allita_id', 'last_edited', 'updated_at')->where('project_amenity_key', $v['attributes']['developmentAmenityKey'])->first();
+            // if ($syncData['meta']['totalPageCount'] > 0) {
+            //     do {
+            //         if ($syncPage > 1) {
+            //             //Get Next Page
+            //             $syncData = $apiConnect->listProjectAmenities($syncPage, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
+            //             $syncData = json_decode($syncData, true);
+            //             //dd('Page Count is Higher',$syncData,$syncData['meta']['totalPageCount'],$syncPage);
+            //         }
+            //         //dd('Page Count is Higher',$syncData,$modified,$syncData,$syncData['meta']['totalPageCount'],$syncPage);
+            //         foreach ($syncData['data'] as $i => $v) {
+            //                 // check if record exists
+            //                 $updateRecord = SyncProjectAmenity::select('id', 'allita_id', 'last_edited', 'updated_at')->where('project_amenity_key', $v['attributes']['developmentAmenityKey'])->first();
     }
 
     public function brianTest(Request $request)
