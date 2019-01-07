@@ -12,6 +12,8 @@
 */
 
     Route::group(['middleware' => 'web'], function () {
+        // Update Devco Test Routes
+        Rout::get('/update_devco','SyncController@crudDevco');
         //chat routes
         Route::get('/chat', 'ChatsController@index');
         Route::get('/chat/messages', 'ChatsController@fetchMessages');
