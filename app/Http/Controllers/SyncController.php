@@ -390,11 +390,11 @@ class SyncController extends Controller
 
             $deviceName = session('deviceName');
             if(is_null($deviceName)){
-                $deviceName = '';
+                $deviceName = 'UserTriggeredEventOnServer';
             }
             $deviceId = session('deviceId');
             if(is_null($deviceId)){
-                $deviceId='';
+                $deviceId='1';
             }
         } else {
             $user = NULL;
