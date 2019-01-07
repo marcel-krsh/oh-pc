@@ -365,7 +365,7 @@ class SyncController extends Controller
         /////
         // 
 
-        dd($crud,$referenceId,$crud);
+        dd($model,$referenceId,$crud);
 
         // CR U D
 
