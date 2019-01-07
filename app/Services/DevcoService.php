@@ -159,7 +159,7 @@ class DevcoService extends PCAPIService
      * @param  string|null $device_name
      * @return object
      */
-    public function updateAmenity(int $amenities_id, array $metadata, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : object
+    public function updateAmenity(int $amenities_id, array $metadata, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : string
     {
         // example call
         // /api/v1/devco/addresses/{{address_key}}
@@ -625,7 +625,7 @@ class DevcoService extends PCAPIService
      * @param  string|null $device_name
      * @return object
      */
-    public function updateDevelopmentActivity(int $development_activity_key, array $metadata, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : object
+    public function updateDevelopmentAmenity(int $development_amenity_key, array $metadata, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : object
     {
         //  $metadata = [
         //     'field_name' => 'value'
@@ -678,7 +678,7 @@ class DevcoService extends PCAPIService
      *
      * @return object
      */
-    public function addContact(array $metadata, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : object
+    public function addContactRole(array $metadata, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : object
     {
         //  $metadata = [
         //     'field_name' => 'value'
