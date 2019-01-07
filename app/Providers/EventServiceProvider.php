@@ -34,6 +34,9 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\MessageSent' => [
             'App\Listeners\SendChatMessage',
         ],
+        'App\Events\ChatEvent' => [
+            'App\Listeners\ChatListener',
+        ],
     ];
 
     /**
