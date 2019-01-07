@@ -21,7 +21,7 @@ class ChatController extends Controller
 
     public function chat()
     {
-    	return view('chat');
+    	return view('layouts.chat');
     }
 
     public function send(request $request)
