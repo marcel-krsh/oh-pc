@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Console\Scheduling\Schedule;
 use Log;
 use Event;
+use Auth;
 use App\Models\Audit;
 use App\Jobs\CreateTestAuditJob;
 
