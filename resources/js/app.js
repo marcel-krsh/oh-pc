@@ -128,8 +128,6 @@ Vue.component('auditrow', require('./components/AuditRow.vue').default, {
     name: 'auditrow'
 });
 Vue.component('communication-row', require('./components/CommunicationRow.vue').default);
-Vue.component('chat-messages', require('./components/ChatMessages.vue').default);
-Vue.component('chat-form', require('./components/ChatForm.vue').default);
 
 // https://github.com/ElemeFE/vue-infinite-scroll
 var infiniteScroll =  require('vue-infinite-scroll');
