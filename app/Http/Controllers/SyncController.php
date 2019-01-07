@@ -387,8 +387,15 @@ class SyncController extends Controller
             $user = Auth::user()->devco_key;
             $userEmail = Auth::user()->email;
             $userName = Auth::user()->name;
+
             $deviceName = session('deviceName');
+            if(is_null($devicName)){
+                $deviceName = '';
+            }
             $deviceId = session('deviceId');
+            if(is_null($deviceId)){
+                $deviceId='';
+            }
         } else {
             $user = NULL;
             $userEmail = NULL;
