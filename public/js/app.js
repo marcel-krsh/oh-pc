@@ -55155,17 +55155,7 @@ module.exports = function(module) {
 // good one from Helder Lucas (bottom of page):
 // https://stackoverflow.com/questions/41539961/vuejs-js-for-multiple-pages-not-for-a-single-page-application
 // insert JS dependencies
-__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); // import Echo from "laravel-echo"
-// window.Pusher = require('pusher-js');
-// window.Echo = new Echo({
-//   broadcaster: 'pusher',
-//   key: '6e69117f494c249535b6',
-//   cluster: 'us2',
-//   // wsHost: window.location.hostname,
-//   // wsPort: 443,
-//   disableStats: true,
-// });
-// load all components
+__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); // load all components
 
 
 Vue.component('example', __webpack_require__(/*! ./components/Example.vue */ "./resources/js/components/Example.vue").default);
@@ -55174,10 +55164,7 @@ Vue.component('auditrow', __webpack_require__(/*! ./components/AuditRow.vue */ "
 });
 Vue.component('communication-row', __webpack_require__(/*! ./components/CommunicationRow.vue */ "./resources/js/components/CommunicationRow.vue").default);
 Vue.component('chat-messages', __webpack_require__(/*! ./components/ChatMessages.vue */ "./resources/js/components/ChatMessages.vue").default);
-Vue.component('chat-form', __webpack_require__(/*! ./components/ChatForm.vue */ "./resources/js/components/ChatForm.vue").default); // connect sockets
-// var socket = io('192.168.10.10:6001');
-//var socket = io('http://192.168.100.100:3000');
-// https://github.com/ElemeFE/vue-infinite-scroll
+Vue.component('chat-form', __webpack_require__(/*! ./components/ChatForm.vue */ "./resources/js/components/ChatForm.vue").default); // https://github.com/ElemeFE/vue-infinite-scroll
 
 var infiniteScroll = __webpack_require__(/*! vue-infinite-scroll */ "./node_modules/vue-infinite-scroll/vue-infinite-scroll.js");
 

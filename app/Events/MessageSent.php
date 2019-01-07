@@ -48,7 +48,11 @@ class MessageSent implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        //return new PrivateChannel('chat');
-        return new Channel('chat');
+        // return new PrivateChannel('chat');
+        
+        $uid = $this->user->id;
+        $sid = $this->user->socket_id;
+
+        return new Channel('chat.'.$uid.'.'.$sid);
     }
 }

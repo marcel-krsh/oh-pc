@@ -394,18 +394,7 @@ if(Auth::check()){
 		    mounted: function() {
 		    	console.log("Tabs Working");
 
-		    	// Echo.join('chat');
-		     //    Echo.channel('chat')
-		    	// 	  .listen('MessageSent', (e) => {
-		    	// 	    this.messages.push({
-		    	// 	      message: e.message.message,
-		    	// 	      user: e.user
-		    	// 	    });
-		     //        console.log("receiving message");
-		     //        console.log(e.user);
-		    	// 	  });
-
-		    	Echo.join('communications.'+uid+'.'+sid);
+		    	//Echo.join('communications.'+uid+'.'+sid);
 		    	Echo.channel('communications.'+uid+'.'+sid)
 				    .listen('NewRecipient', (e) => {
 				        console.log("new total "+e.communicationTotal);

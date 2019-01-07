@@ -3,7 +3,12 @@
 @extends('layouts.app')
 
 @section('content')
-
+<script>
+        // initial values
+   
+    var uid = "{{Auth::user()->id}}";
+    var sid = "{{Auth::user()->socket_id}}";
+</script>
 <div class="container" id="chatapp">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -36,8 +41,8 @@ new Vue({
 
         this.fetchMessages();
 
-        Echo.join('chat');
-        Echo.channel('chat')
+        // Echo.join('chat');
+        Echo.channel('chat.'+uid+'.'+sid)
               .listen('MessageSent', (e) => {
                 this.messages.push({
                   message: e.message.message,
