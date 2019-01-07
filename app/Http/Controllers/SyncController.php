@@ -373,11 +373,11 @@ class SyncController extends Controller
                 $model = 'App\Models\'.$model::find($referenceId);
                 dd($model);  
             } else {
-                return 'Sync Devco: No reference id specified.';
+                return "Sync Devco: No reference id specified.";
             }
             
         } else {
-            return 'Sync Devco: No reference model specified.';
+            return "Sync Devco: No reference model specified.";
             
         }
         switch ($crud) {
