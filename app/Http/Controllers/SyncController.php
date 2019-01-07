@@ -378,7 +378,7 @@ class SyncController extends Controller
             
         } else {
             return 'Sync Devco: No reference model specified.';
-            break;
+            
         }
         switch ($crud) {
             case 'update':
