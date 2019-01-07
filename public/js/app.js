@@ -55149,25 +55149,23 @@ module.exports = function(module) {
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
   \*****************************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var laravel_echo__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! laravel-echo */ "./node_modules/laravel-echo/dist/echo.js");
-
-window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
-window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
-  broadcaster: 'pusher',
-  key: '6e69117f494c249535b6',
-  // wsHost: window.location.hostname,
-  // wsPort: 443,
-  disableStats: true
-}); // good one from Helder Lucas (bottom of page):
+// good one from Helder Lucas (bottom of page):
 // https://stackoverflow.com/questions/41539961/vuejs-js-for-multiple-pages-not-for-a-single-page-application
 // insert JS dependencies
-
-__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); // load all components
+__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); // import Echo from "laravel-echo"
+// window.Pusher = require('pusher-js');
+// window.Echo = new Echo({
+//   broadcaster: 'pusher',
+//   key: '6e69117f494c249535b6',
+//   cluster: 'us2',
+//   // wsHost: window.location.hostname,
+//   // wsPort: 443,
+//   disableStats: true,
+// });
+// load all components
 
 
 Vue.component('example', __webpack_require__(/*! ./components/Example.vue */ "./resources/js/components/Example.vue").default);
@@ -55186,11 +55184,15 @@ var app = new Vue({
     var _this = this;
 
     this.fetchMessages();
-    window.Echo.private('chat').listen('MessageSent', function (e) {
+    Echo.join('chat');
+    Echo.channel('chat').listen('MessageSent', function (e) {
       _this.messages.push({
         message: e.message.message,
         user: e.user
       });
+
+      console.log("receiving message");
+      console.log(e.user);
     });
   },
   methods: {
