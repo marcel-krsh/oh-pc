@@ -385,7 +385,7 @@ class SyncController extends Controller
             return "Sync Devco: No reference model specified.";
             
         }
-        switch ($crud) {
+        switch (strtolower($crud)) {
             case 'update':
                     // update devco using key
                     dd('update triggered');
@@ -394,7 +394,7 @@ class SyncController extends Controller
 
             case 'create':
                     // add to devco
-
+                    dd('create triggered');
                     // get key
 
                     // add to sync table
@@ -402,12 +402,13 @@ class SyncController extends Controller
             
             case 'delete':
                     // delete from devco
-
+                    dd('delete triggered');
                     // delete from sync table
                 break;
 
             default:
                 # code...
+                dd('CRUD NOT AVAILABLE');
                 break;
         }
 
