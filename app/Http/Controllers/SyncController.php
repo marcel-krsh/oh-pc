@@ -128,6 +128,7 @@ class SyncController extends Controller
                         break;
 
                     case 'Amenity':
+                        dd($model,$user,$userEmail,$userName,$deviceId,$deviceName,$metadata);
                         $apiMethod = 'updateAmenity';
                         $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
@@ -385,10 +386,25 @@ class SyncController extends Controller
             return "Sync Devco: No reference model specified.";
             
         }
+        if(Auth::check()){
+            $user = Auth::user()->devco_key;
+            $userEmail = Auth::user()->email;
+            $userName = Auth::user()->name;
+            $deviceName = session('deviceName');
+            $deviceId = session('deviceId');
+        } else {
+            $user = NULL;
+            $userEmail = NULL;
+            $userName = NULL;
+            $deviceName = NULL;
+            $deviceId = NULL;
+        }
+
         switch (strtolower($crud)) {
             case 'update':
                     // update devco using key
-                    dd('update triggered');
+                    $metadata = $model->to_array();
+                    $this.getApiRoute($originalModel,strtolower($crud),$user,$userEmail,$userName,$deviceId=1,$deviceName,$metadata);
                     // update the sync table key
                 break;
 
