@@ -389,7 +389,7 @@ class SyncController extends Controller
             $userName = Auth::user()->name;
 
             $deviceName = session('deviceName');
-            if(is_null($devicName)){
+            if(is_null($deviceName)){
                 $deviceName = '';
             }
             $deviceId = session('deviceId');
