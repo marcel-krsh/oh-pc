@@ -82,28 +82,28 @@ class SyncController extends Controller
 
                         case 'AuditAuditors':
                             $apiMethod = 'addMonitoringMonitor';
-                            $syncData = $apiConnect->$apiMethod(params..);
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
                             return $syncData['meta']['...Key'];
                             break;
 
                         case 'ProjectAmenity':
                             $apiMethod = 'addProjectAmenity';
-                            $syncData = $apiConnect->$apiMethod(params..);
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
                             return $syncData['meta']['...Key'];
                             break;
 
                         case 'UnitAmenity':
                             $apiMethod = 'addUnitAmenity';
-                            $syncData = $apiConnect->$apiMethod(params..);
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
                             return $syncData['meta']['...Key'];
                             break;
 
                         case 'BuildingAmenity':
                             $apiMethod = 'addBuildingAmenity';
-                            $syncData = $apiConnect->$apiMethod(params..);
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
                             return $syncData['meta']['...Key'];
                             break;
@@ -118,7 +118,7 @@ class SyncController extends Controller
                     
                     case 'Address':
                         $apiMethod = 'updateAddress';
-                        $syncData = $apiConnect->$apiMethod(params..);
+                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
                         if($syncData['meta']['...value..']){
                             return true;
@@ -129,7 +129,7 @@ class SyncController extends Controller
 
                     case 'Amenity':
                         $apiMethod = 'updateAmenity';
-                        $syncData = $apiConnect->$apiMethod(params..);
+                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
                         if($syncData['meta']['...value..']){
                             return true;
@@ -140,7 +140,7 @@ class SyncController extends Controller
 
                     case 'Building':
                         $apiMethod = 'updateBuilding';
-                        $syncData = $apiConnect->$apiMethod(params..);
+                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
                         if($syncData['meta']['...value..']){
                             return true;
@@ -151,7 +151,7 @@ class SyncController extends Controller
 
                     case 'BuildingStatus':
                         $apiMethod = 'updateBuildingStatus';
-                        $syncData = $apiConnect->$apiMethod(params..);
+                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
                         if($syncData['meta']['...value..']){
                             return true;
@@ -162,7 +162,7 @@ class SyncController extends Controller
 
                     case 'ComplianceContact':
                         $apiMethod = 'updateComplianceContact';
-                        $syncData = $apiConnect->$apiMethod(params..);
+                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
                         if($syncData['meta']['...value..']){
                             return true;
@@ -173,7 +173,7 @@ class SyncController extends Controller
 
                     case 'Project':
                         $apiMethod = 'updateDevelopment';
-                        $syncData = $apiConnect->$apiMethod(params..);
+                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
                         if($syncData['meta']['...value..']){
                             return true;
@@ -184,7 +184,7 @@ class SyncController extends Controller
 
                     case 'ProjectAmenity':
                         $apiMethod = 'updateDevelopmentAmenity';
-                        $syncData = $apiConnect->$apiMethod(params..);
+                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
                         if($syncData['meta']['...value..']){
                             return true;
@@ -195,7 +195,7 @@ class SyncController extends Controller
 
                     case 'ProjectDate':
                         $apiMethod = 'updateDevelopmentDate';
-                        $syncData = $apiConnect->$apiMethod(params..);
+                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
                         if($syncData['meta']['...value..']){
                             return true;
@@ -206,7 +206,7 @@ class SyncController extends Controller
 
                     case 'ProjectProgram':
                         $apiMethod = 'updateDevelopmentProgram';
-                        $syncData = $apiConnect->$apiMethod(params..);
+                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
                         if($syncData['meta']['...value..']){
                             return true;
@@ -217,7 +217,7 @@ class SyncController extends Controller
 
                     case 'Audit':
                         $apiMethod = 'updateAudit';
-                        $syncData = $apiConnect->$apiMethod(params..);
+                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
                         if($syncData['meta']['...value..']){
                             return true;
@@ -228,7 +228,7 @@ class SyncController extends Controller
 
                     case 'Organization':
                         $apiMethod = 'updateOrganization';
-                        $syncData = $apiConnect->$apiMethod(params..);
+                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
                         if($syncData['meta']['...value..']){
                             return true;
@@ -239,7 +239,7 @@ class SyncController extends Controller
 
                     case 'People':
                         $apiMethod = 'updatePerson';
-                        $syncData = $apiConnect->$apiMethod(params..);
+                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
                         if($syncData['meta']['...value..']){
                             return true;
@@ -250,7 +250,7 @@ class SyncController extends Controller
 
                     case 'Unit':
                         $apiMethod = 'updateUnit';
-                        $syncData = $apiConnect->$apiMethod(params..);
+                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
                         if($syncData['meta']['...value..']){
                             return true;
@@ -261,7 +261,7 @@ class SyncController extends Controller
 
                     case 'UnitStatus':
                         $apiMethod = 'updateUnitStatus';
-                        $syncData = $apiConnect->$apiMethod(params..);
+                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
                         if($syncData['meta']['...value..']){
                             return true;
@@ -272,7 +272,7 @@ class SyncController extends Controller
 
                     case 'UnitAmenity':
                         $apiMethod = 'updateUnitAmenity';
-                        $syncData = $apiConnect->$apiMethod(params..);
+                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
                         if($syncData['meta']['...value..']){
                             return true;
@@ -283,7 +283,7 @@ class SyncController extends Controller
 
                     case 'BuildingAmenity':
                         $apiMethod = 'updateBuildingAmenity';
-                        $syncData = $apiConnect->$apiMethod(params..);
+                        $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                         $syncData = json_decode($syncData, true);
                         if($syncData['meta']['...value..']){
                             return true;
@@ -295,7 +295,7 @@ class SyncController extends Controller
                 case 'delete':
                     case 'Amenity':
                             $apiMethod = 'addAmenity';
-                            $syncData = $apiConnect->$apiMethod(params..);
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
                             if($syncData['meta']['...value..']){
                                 return true;
@@ -306,7 +306,7 @@ class SyncController extends Controller
 
                         case 'AuditAuditors':
                             $apiMethod = 'addMonitoringMonitor';
-                            $syncData = $apiConnect->$apiMethod(params..);
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
                             if($syncData['meta']['...value..']){
                                 return true;
@@ -317,7 +317,7 @@ class SyncController extends Controller
 
                         case 'ProjectAmenity':
                             $apiMethod = 'addProjectAmenity';
-                            $syncData = $apiConnect->$apiMethod(params..);
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
                             if($syncData['meta']['...value..']){
                                 return true;
@@ -328,7 +328,7 @@ class SyncController extends Controller
 
                         case 'UnitAmenity':
                             $apiMethod = 'addUnitAmenity';
-                            $syncData = $apiConnect->$apiMethod(params..);
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
                             if($syncData['meta']['...value..']){
                                 return true;
@@ -339,7 +339,7 @@ class SyncController extends Controller
 
                         case 'BuildingAmenity':
                             $apiMethod = 'addBuildingAmenity';
-                            $syncData = $apiConnect->$apiMethod(params..);
+                            $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
                             if($syncData['meta']['...value..']){
                                 return true;
