@@ -365,14 +365,18 @@ class SyncController extends Controller
         /////
         // 
 
-        dd($model,$referenceId,$crud);
+        //dd($model,$referenceId,$crud);
 
         // CR U D
-
+        if(!is_null($model)){
+            dd('model is not null - it is '.$model);
+        } else {
+            dd('model is null!');
+        }
         switch ($crud) {
             case 'update':
                     // update devco using key
-
+                    dd('update triggered');
                     // update the sync table key
                 break;
 
