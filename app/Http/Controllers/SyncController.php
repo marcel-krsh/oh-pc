@@ -369,9 +369,16 @@ class SyncController extends Controller
 
         // CR U D
         if(!is_null($model) && strtoupper($model) !== 'NULL'){
-            dd('model is not null - it is '.strtoupper($model));
+            if(!is_null($referenceId) && strtoupper($referenceId) !== 'NULL'){
+                $model = $model::find($referenceId);
+                dd($model);  
+            } else {
+                return 'Sync Devco: No reference id specified.'
+            }
+            
         } else {
-            dd('model is null!');
+            return 'Sync Devco: No reference model specified.';
+            break;
         }
         switch ($crud) {
             case 'update':
