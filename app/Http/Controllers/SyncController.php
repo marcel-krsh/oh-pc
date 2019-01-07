@@ -370,7 +370,7 @@ class SyncController extends Controller
         // CR U D
         if(!is_null($model) && strtoupper($model) !== 'NULL'){
             if(!is_null($referenceId) && strtoupper($referenceId) !== 'NULL'){
-                $model = "App\\Models\\".$model::find($referenceId);
+                $model = App\Models\$model::find($referenceId);
                 dd($model);  
             } else {
                 return "Sync Devco: No reference id specified.";
