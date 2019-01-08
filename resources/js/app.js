@@ -43,22 +43,25 @@ const app = new Vue({
     	send(){
   			var self = this;
     		if (this.message.length != 0) {
-    			self.chat.message.push(self.message);
-    			self.chat.message.push('YO!');
-    			self.chat.color.push('success');
-    			self.chat.user.push('Me');
-    			self.chat.time.push(self.getTime());
-    			axios.post('/send', {
-    				message : self.message,
-                    chat:self.chat
-    			  })
-    			  .then(response => {
-    			    console.log(response);
-    			    self.message = ''
-    			  })
-    			  .catch(error => {
-    			    console.log(error);
-    			  });
+    			console.log(self.message);
+    			console.log(self.chat.message);
+
+    			// self.chat.message.push(self.message);
+    			// self.chat.message.push('YO!');
+    			// self.chat.color.push('success');
+    			// self.chat.user.push('Me');
+    			// self.chat.time.push(self.getTime());
+    			// axios.post('/send', {
+    			// 	message : self.message,
+       //              chat:self.chat
+    			//   })
+    			//   .then(response => {
+    			//     console.log(response);
+    			//     self.message = ''
+    			//   })
+    			//   .catch(error => {
+    			//     console.log(error);
+    			//   });
     		}
     	},
     	getTime(){
