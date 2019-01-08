@@ -1,5 +1,5 @@
 <?php
-
+use App\Models\User;
 use App\Models\Communication;
 
 /*
@@ -22,6 +22,11 @@ use App\Models\Communication;
 // });
 
 Broadcast::channel('communications', function ($user) {
+	//dd($user,$uid,$sid);
+  	return ['name'=>$user->name];
+});
+
+Broadcast::channel('communications.'.$user->id, function ($user) {
 	//dd($user,$uid,$sid);
   	return ['name'=>$user->name];
 });

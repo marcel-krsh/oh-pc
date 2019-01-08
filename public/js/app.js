@@ -55966,24 +55966,23 @@ if (token) {
 
 
 
-window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js"); // window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: '6e69117f494c249535b6',
-//     cluster: 'us2',
-//     encrypted:true
-// });
-
+window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
   key: '6e69117f494c249535b6',
   cluster: 'us2',
-  encrypted: true,
-  auth: {
-    headers: {
-      Authorization: 'Bearer ' + YourTokenLogin
-    }
-  }
-});
+  encrypted: true
+}); // window.Echo = new Echo({
+//     broadcaster: 'pusher',
+//     key: '6e69117f494c249535b6',
+//     cluster: 'us2',
+//     encrypted: true,
+//     auth: {
+//         headers: {
+//             Authorization: 'Bearer ' + YourTokenLogin
+//         },
+//     },
+// });
 
 /***/ }),
 

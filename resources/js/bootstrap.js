@@ -48,23 +48,23 @@ import Echo from 'laravel-echo'
 
 window.Pusher = require('pusher-js');
 
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: '6e69117f494c249535b6',
-//     cluster: 'us2',
-//     encrypted:true
-// });
-
 window.Echo = new Echo({
     broadcaster: 'pusher',
     key: '6e69117f494c249535b6',
     cluster: 'us2',
-    encrypted: true,
-    auth: {
-        headers: {
-            Authorization: 'Bearer ' + YourTokenLogin
-        },
-    },
+    encrypted:true
 });
+
+// window.Echo = new Echo({
+//     broadcaster: 'pusher',
+//     key: '6e69117f494c249535b6',
+//     cluster: 'us2',
+//     encrypted: true,
+//     auth: {
+//         headers: {
+//             Authorization: 'Bearer ' + YourTokenLogin
+//         },
+//     },
+// });
 
 
