@@ -23,7 +23,7 @@ const app = new Vue({
     data:{
     	message:'',
     	chat:{
-    		message:['hello'],
+    		message:[],
     		user:[],
     		color:[],
     		time:[]
@@ -46,24 +46,23 @@ const app = new Vue({
     			console.log(this.message);
     			console.log(this.chat.message);
 
-    			// this.chat.message.push(this.message);
-    			// this.chat.message.push('YO!');
-    			// this.chat.color.push('success');
-    			// this.chat.user.push('Me');
-    			// this.chat.time.push(this.getTime());
+    			this.chat.message.push(this.message);
+    			this.chat.color.push('success');
+    			this.chat.user.push('Me');
+    			this.chat.time.push(this.getTime());
 
     			
-    			// axios.post('/send', {
-    			// 	message : this.message,
-       //              chat:this.chat
-    			//   })
-    			//   .then(response => {
-    			//     console.log(response);
-    			//     this.message = ''
-    			//   })
-    			//   .catch(error => {
-    			//     console.log(error);
-    			//   });
+    			axios.post('/send', {
+    				message : this.message,
+                    chat:this.chat
+    			  })
+    			  .then(response => {
+    			    console.log(response);
+    			    this.message = ''
+    			  })
+    			  .catch(error => {
+    			    console.log(error);
+    			  });
     		}
     	},
     	getTime(){
