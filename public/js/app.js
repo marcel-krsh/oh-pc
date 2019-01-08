@@ -55857,20 +55857,20 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   },
   methods: {
     send: function send() {
-      var _this = this;
+      var self = this;
 
       if (this.message.length != 0) {
-        this.chat.message.push(this.message);
-        this.chat.message.push('YO!');
-        this.chat.color.push('success');
-        this.chat.user.push('Me');
-        this.chat.time.push(this.getTime());
+        self.chat.message.push(self.message);
+        self.chat.message.push('YO!');
+        self.chat.color.push('success');
+        self.chat.user.push('Me');
+        self.chat.time.push(self.getTime());
         axios.post('/send', {
-          message: this.message,
-          chat: this.chat
+          message: self.message,
+          chat: self.chat
         }).then(function (response) {
           console.log(response);
-          _this.message = '';
+          self.message = '';
         }).catch(function (error) {
           console.log(error);
         });
@@ -55881,61 +55881,61 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
       return time.getHours() + ':' + time.getMinutes();
     },
     getOldMessages: function getOldMessages() {
-      var _this2 = this;
+      var _this = this;
 
       axios.post('/getOldMessage').then(function (response) {
         console.log(response);
 
         if (response.data != '') {
-          _this2.chat = response.data;
+          _this.chat = response.data;
         }
       }).catch(function (error) {
         console.log(error);
       });
     },
     deleteSession: function deleteSession() {
-      var _this3 = this;
+      var _this2 = this;
 
       axios.post('/deleteSession').then(function (response) {
-        return _this3.$toaster.success('I deleted your chat history.');
+        return _this2.$toaster.success('I deleted your chat history.');
       });
     }
   },
   mounted: function mounted() {
-    var _this4 = this;
+    var _this3 = this;
 
     this.getOldMessages();
     Echo.private('chat').listen('ChatEvent', function (e) {
-      _this4.chat.message.push(e.message);
+      _this3.chat.message.push(e.message);
 
-      _this4.chat.user.push(e.user);
+      _this3.chat.user.push(e.user);
 
-      _this4.chat.color.push('warning');
+      _this3.chat.color.push('warning');
 
-      _this4.chat.time.push(_this4.getTime());
+      _this3.chat.time.push(_this3.getTime());
 
       axios.post('/saveToSession', {
-        chat: _this4.chat
+        chat: _this3.chat
       }).then(function (response) {}).catch(function (error) {
         console.log(error);
       }); // console.log(e);
     }).listenForWhisper('typing', function (e) {
       if (e.name != '') {
-        _this4.typing = e.name + ' is typing...';
+        _this3.typing = e.name + ' is typing...';
       } else {
-        _this4.typing = '';
+        _this3.typing = '';
       }
     });
     Echo.join("chat").here(function (users) {
-      _this4.numberOfUsers = users.length;
+      _this3.numberOfUsers = users.length;
     }).joining(function (user) {
-      _this4.numberOfUsers += 1; // console.log(user);
+      _this3.numberOfUsers += 1; // console.log(user);
 
-      _this4.$toaster.success(user.name + ' has joined the chat room');
+      _this3.$toaster.success(user.name + ' has joined the chat room');
     }).leaving(function (user) {
-      _this4.numberOfUsers -= 1;
+      _this3.numberOfUsers -= 1;
 
-      _this4.$toaster.warning(user.name + ' has left the chat room');
+      _this3.$toaster.warning(user.name + ' has left the chat room');
     });
   }
 }); // load all components

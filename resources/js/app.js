@@ -41,19 +41,20 @@ const app = new Vue({
     },
     methods:{
     	send(){
+  			var self = this;
     		if (this.message.length != 0) {
-    			this.chat.message.push(this.message);
-    			this.chat.message.push('YO!');
-    			this.chat.color.push('success');
-    			this.chat.user.push('Me');
-    			this.chat.time.push(this.getTime());
+    			self.chat.message.push(self.message);
+    			self.chat.message.push('YO!');
+    			self.chat.color.push('success');
+    			self.chat.user.push('Me');
+    			self.chat.time.push(self.getTime());
     			axios.post('/send', {
-    				message : this.message,
-                    chat:this.chat
+    				message : self.message,
+                    chat:self.chat
     			  })
     			  .then(response => {
     			    console.log(response);
-    			    this.message = ''
+    			    self.message = ''
     			  })
     			  .catch(error => {
     			    console.log(error);
