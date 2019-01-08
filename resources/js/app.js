@@ -16,7 +16,7 @@ import 'v-toaster/dist/v-toaster.css'
 Vue.use(Toaster, {timeout: 5000})
 
 //chat
-Vue.component('message', require('./components/message.vue'));
+Vue.component('message', require('./components/message.vue').default);
 
 const app = new Vue({
     el: '#app',
