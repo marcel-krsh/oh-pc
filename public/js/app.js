@@ -55854,7 +55854,7 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
 
       if (this.message.length != 0) {
         console.log(this.message);
-        console.log(this.chat);
+        console.log(this.chat.message[0]);
 
         if (this.chat.message === 'undefined') {
           this.chat;
