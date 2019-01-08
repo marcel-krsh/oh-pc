@@ -26,7 +26,7 @@ const app = new Vue({
     		message:[0]['Welcome to the chat!'],
     		user:[0]['Allita'],
     		color:[0]['success'],
-    		time:[0][getTime()]
+    		time:[0][this.getTime()]
     	},
     	typing:'',
     	numberOfUsers:0
