@@ -1,7 +1,6 @@
 <?php
 use App\Models\User;
 use App\Models\Communication;
-use Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,10 +26,6 @@ Broadcast::channel('communications', function ($user) {
   	return ['name'=>$user->name];
 });
 
-Broadcast::channel('communications.'.Auth::user()->id, function ($user) {
-	//dd($user,$uid,$sid);
-  	return ['name'=>$user->name];
-});
 
 Broadcast::channel('audits', function ($user) {
 	//dd($user,$uid,$sid);
