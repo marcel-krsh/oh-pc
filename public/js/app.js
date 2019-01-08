@@ -55833,10 +55833,10 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   data: {
     message: 'Type your message here.',
     chat: {
-      message: [],
-      user: [],
-      color: [],
-      time: []
+      message: [''],
+      user: [''],
+      color: [''],
+      time: ['']
     },
     typing: '',
     numberOfUsers: 0
@@ -55854,8 +55854,13 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
 
       if (this.message.length != 0) {
         console.log(this.message);
-        console.log(this.chat); //this.chat.message.push(this.message);
+        console.log(this.chat);
 
+        if (this.chat.message === 'undefined') {
+          this.chat;
+        }
+
+        this.chat.message.push(this.message);
         this.chat.color.push('success');
         this.chat.user.push('Me');
         this.chat.time.push(this.getTime());
