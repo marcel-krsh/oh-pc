@@ -55831,11 +55831,13 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('message', __webpack_requir
 var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   data: {
-    message: 'Type your message here.',
-    messages: [0]['Welcome to the chat!'],
-    users: [0]['Allita'],
-    colors: [0]['success'],
-    times: [0][''],
+    message: '',
+    chat: {
+      message: [],
+      user: [],
+      color: [],
+      time: []
+    },
     typing: '',
     numberOfUsers: 0
   },
@@ -55851,12 +55853,10 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
       var _this = this;
 
       if (this.message.length != 0) {
-        console.log(this.message);
-        console.log(this.messages[0]);
-        this.messages.push(this.message);
-        this.colors.push('success');
-        this.users.push('Me');
-        this.times.push(this.getTime());
+        this.chat.message.push(this.message);
+        this.chat.color.push('success');
+        this.chat.user.push('you');
+        this.chat.time.push(this.getTime());
         axios.post('/send', {
           message: this.message,
           chat: this.chat
@@ -55913,7 +55913,7 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
       }); // console.log(e);
     }).listenForWhisper('typing', function (e) {
       if (e.name != '') {
-        _this4.typing = e.name + ' is typing...';
+        _this4.typing = 'typing...';
       } else {
         _this4.typing = '';
       }

@@ -21,13 +21,15 @@ Vue.component('message', require('./components/message.vue'));
 const app = new Vue({
     el: '#app',
     data:{
-    	message:'Type your message here.',
-    	messages:[0]['Welcome to the chat!'],
-    	users:[0]['Allita'],
-    	colors:[0]['success'],
-    	times:[0][''],
+    	message:'',
+    	chat:{
+    		message:[],
+    		user:[],
+    		color:[],
+    		time:[]
+    	},
     	typing:'',
-    	numberOfUsers:0,
+    	numberOfUsers:0
     },
     watch:{
     	message(){
@@ -39,18 +41,11 @@ const app = new Vue({
     },
     methods:{
     	send(){
-  			
     		if (this.message.length != 0) {
-    			console.log(this.message);
-    			console.log(this.messages[0]);
-    			
-
-    			this.messages.push(this.message);
-    			this.colors.push('success');
-    			this.users.push('Me');
-    			this.times.push(this.getTime());
-
-    			
+    			this.chat.message.push(this.message);
+    			this.chat.color.push('success');
+    			this.chat.user.push('you');
+    			this.chat.time.push(this.getTime());
     			axios.post('/send', {
     				message : this.message,
                     chat:this.chat
@@ -105,7 +100,7 @@ const app = new Vue({
     	    })
     	    .listenForWhisper('typing', (e) => {
     	    	if (e.name != '') {
-    	        	this.typing = e.name+' is typing...'
+    	        	this.typing = 'typing...'
     	    	}else{
     	    		this.typing = ''
     	    	}
