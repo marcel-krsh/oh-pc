@@ -23,7 +23,7 @@ const app = new Vue({
     data:{
     	message:'',
     	chat:{
-    		message:[],
+    		message:['Hi','Sorry'],
     		user:[],
     		color:[],
     		time:[]
@@ -42,7 +42,7 @@ const app = new Vue({
     methods:{
     	send(){
     		if (this.message.length != 0) {
-    			//this.chat.message.push(this.message);
+    			this.chat.message.push(this.message);
     			this.chat.message.push('YO!');
     			this.chat.color.push('success');
     			this.chat.user.push('Me');
