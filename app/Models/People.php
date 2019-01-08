@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class People extends Model
 {
@@ -28,8 +29,8 @@ class People extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    // public function phone() : HasOne
-    // {
-    //     return $this->hasOne(\App\Models\Phone::class, 'phone_key', 'default_phone_number_key');
-    // }
+    public function phone() : HasOne
+    {
+        return $this->hasOne(\App\Models\PhoneNumber::class, 'phone_number_key', 'default_phone_number_key');
+    }
 }
