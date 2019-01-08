@@ -280,7 +280,7 @@ function filterByOwner(){
                 console.log("Communications Mounted");
                 Echo.private('communications')
                 .listen('App\Events\CommunicationsBroadcastEvent', (data) => {
-                    console.log('Listening for a new message');
+                    console.log('You have been notified.');
                     // if(data.is_reply){
                     //     console.log("user " + data.userId + " received a new reply for message "+data.id);
                     //     var updateddata = [{
