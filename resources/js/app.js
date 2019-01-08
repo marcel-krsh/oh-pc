@@ -21,7 +21,7 @@ Vue.component('message', require('./components/message.vue').default);
 const app = new Vue({
     el: '#app',
     data:{
-    	message:'Type your message here.',
+    	message:'',
     	chat:{
     		message:[0]['Welcome to the chat!'],
     		user:[0]['Allita'],
@@ -76,6 +76,7 @@ const app = new Vue({
                     console.log(response);
                     if (response.data != '' && response.data != '    ') {
                         this.chat = response.data;
+                        console.log('Loaded old chats');
                     }
                   })
                   .catch(error => {

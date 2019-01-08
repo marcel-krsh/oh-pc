@@ -55831,7 +55831,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('message', __webpack_requir
 var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   data: {
-    message: 'Type your message here.',
+    message: '',
     chat: {
       message: [0]['Welcome to the chat!'],
       user: [0]['Allita'],
@@ -55882,6 +55882,7 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
 
         if (response.data != '' && response.data != '    ') {
           _this2.chat = response.data;
+          console.log('Loaded old chats');
         }
       }).catch(function (error) {
         console.log(error);
