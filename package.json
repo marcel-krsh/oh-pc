@@ -22,7 +22,7 @@
         "resolve-url-loader": "2.3.1",
         "sass": "^1.15.3",
         "sass-loader": "7.*",
-        "vue-template-compiler": "^2.1.10",
+        "vue-template-compiler": "^2.5.21",
         "webpack-dev-server": "^3.1.14"
     },
     "dependencies": {
@@ -34,7 +34,7 @@
         "socket.io": "^2.2.0",
         "socket.io-client": "^2.2.0",
         "v-toaster": "^1.0.2",
-        "vue": "^2.1.10",
+        "vue": "^2.5.21",
         "vue-chat-scroll": "^1.2.0",
         "vue-infinite-loading": "^2.0.3",
         "vue-infinite-scroll": "^2.0.2",

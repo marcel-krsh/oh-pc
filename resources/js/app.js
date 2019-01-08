@@ -46,10 +46,10 @@ const app = new Vue({
     			console.log(this.message);
     			console.log(this.chat.message);
 
-    			this.chat.message.push(this.message);
-    			this.chat.color.push('success');
-    			this.chat.user.push('Me');
-    			this.chat.time.push(this.getTime());
+    			this.chat.message[this.message];
+    			this.chat.color['success'];
+    			this.chat.user['Me'];
+    			this.chat.time[this.getTime()];
 
     			
     			axios.post('/send', {
