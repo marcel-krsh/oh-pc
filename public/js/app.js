@@ -55833,10 +55833,10 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   data: {
     message: 'Type your message here.',
     chat: {
-      message: [''],
-      user: [''],
-      color: [''],
-      time: ['']
+      message: [0]['Welcome to the chat!'],
+      user: [0]['Allita'],
+      color: [0]['success'],
+      time: [0][getTime()]
     },
     typing: '',
     numberOfUsers: 0

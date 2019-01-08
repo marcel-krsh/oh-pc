@@ -23,10 +23,10 @@ const app = new Vue({
     data:{
     	message:'Type your message here.',
     	chat:{
-    		message:[''],
-    		user:[''],
-    		color:[''],
-    		time:['']
+    		message:[0]['Welcome to the chat!'],
+    		user:[0]['Allita'],
+    		color:[0]['success'],
+    		time:[0][getTime()]
     	},
     	typing:'',
     	numberOfUsers:0
