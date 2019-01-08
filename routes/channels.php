@@ -30,6 +30,6 @@ Broadcast::channel('communications.{uid}.{sid}', function ($user, $uid, $sid) {
 //   return true; // return Auth::check();
 // });
 
-Broadcast::channel('chat', function () {
+Broadcast::channel('chat.{uid}.{sid}', function () {
   return true; // return Auth::check();
 });
