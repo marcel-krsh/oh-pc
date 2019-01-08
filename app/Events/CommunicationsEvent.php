@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Events\CommunicationsBroadcastEvent;
+use App\Events\CommunicationBroadcastEvent;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -68,7 +68,7 @@ class CommunicationsEvent
             ]
         ];
 
-        event(new CommunicationsBroadcastEvent($user,$data));
+        event(new CommunicationBroadcastEvent($user,$data));
 
         // $new_communication = Communication::where('id', '=', $communication_recipient->communication_id)->first();
 
