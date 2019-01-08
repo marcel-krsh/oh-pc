@@ -67,8 +67,11 @@ const app = new Vue({
             axios.post('/getOldMessage')
                   .then(response => {
                     console.log(response);
-                    if (response.data != '') {
+                    if (response.data != '' && response.data != '    ') {
                         this.chat = response.data;
+                        console.log('Loaded old chats');
+                    } else {
+                    	console.log('No old chats to load.');
                     }
                   })
                   .catch(error => {

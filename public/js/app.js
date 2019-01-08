@@ -55878,8 +55878,11 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
       axios.post('/getOldMessage').then(function (response) {
         console.log(response);
 
-        if (response.data != '') {
+        if (response.data != '' && response.data != '    ') {
           _this2.chat = response.data;
+          console.log('Loaded old chats');
+        } else {
+          console.log('No old chats to load.');
         }
       }).catch(function (error) {
         console.log(error);
