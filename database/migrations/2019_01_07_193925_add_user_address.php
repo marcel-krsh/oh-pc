@@ -14,7 +14,7 @@ class AddUserAddress extends Migration
     public function up()
     {
         Schema::table('addresses', function (Blueprint $table) {
-            if (!Schema::hasColumn('user_id')){
+            if (!Schema::hasColumn('addresses', 'user_id')){
                 $table->unsignedInteger('user_id')->nullable();
             }
         });
