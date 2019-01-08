@@ -55854,11 +55854,11 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
 
       if (this.message.length != 0) {
         console.log(this.message);
-        console.log(this.chat.message);
-        this.chat.message[this.message];
-        this.chat.color['success'];
-        this.chat.user['Me'];
-        this.chat.time[this.getTime()];
+        console.log(this.chat.message); //this.chat.message.push(this.message);
+
+        this.chat.color.push('success');
+        this.chat.user.push('Me');
+        this.chat.time.push(this.getTime());
         axios.post('/send', {
           message: this.message,
           chat: this.chat
