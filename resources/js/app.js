@@ -21,12 +21,12 @@ Vue.component('message', require('./components/message.vue'));
 const app = new Vue({
     el: '#app',
     data:{
-    	message:'',
+    	message:'Type your message here.',
     	chat:{
-    		message:[],
-    		user:[],
-    		color:[],
-    		time:[]
+    		message:[0]['Welcome to the chat!'],
+    		user:[0]['Allita'],
+    		color:[0]['success'],
+    		time:[0]['welcome!']
     	},
     	typing:'',
     	numberOfUsers:0
@@ -41,11 +41,18 @@ const app = new Vue({
     },
     methods:{
     	send(){
+  			
     		if (this.message.length != 0) {
+    			console.log(this.message);
+    			//console.log(this.chat);
+    			
+
     			this.chat.message.push(this.message);
     			this.chat.color.push('success');
-    			this.chat.user.push('you');
+    			this.chat.user.push('Me');
     			this.chat.time.push(this.getTime());
+
+    			
     			axios.post('/send', {
     				message : this.message,
                     chat:this.chat
@@ -69,9 +76,6 @@ const app = new Vue({
                     console.log(response);
                     if (response.data != '' && response.data != '    ') {
                         this.chat = response.data;
-                        console.log('Loaded old chats');
-                    } else {
-                    	console.log('No old chats to load.');
                     }
                   })
                   .catch(error => {
@@ -103,7 +107,7 @@ const app = new Vue({
     	    })
     	    .listenForWhisper('typing', (e) => {
     	    	if (e.name != '') {
-    	        	this.typing = 'typing...'
+    	        	this.typing = 'thinking...'
     	    	}else{
     	    		this.typing = ''
     	    	}

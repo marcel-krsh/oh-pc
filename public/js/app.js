@@ -55831,12 +55831,12 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('message', __webpack_requir
 var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   data: {
-    message: '',
+    message: 'Type your message here.',
     chat: {
-      message: [],
-      user: [],
-      color: [],
-      time: []
+      message: [0]['Welcome to the chat!'],
+      user: [0]['Allita'],
+      color: [0]['success'],
+      time: [0]['welcome!']
     },
     typing: '',
     numberOfUsers: 0
@@ -55853,9 +55853,11 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
       var _this = this;
 
       if (this.message.length != 0) {
+        console.log(this.message); //console.log(this.chat);
+
         this.chat.message.push(this.message);
         this.chat.color.push('success');
-        this.chat.user.push('you');
+        this.chat.user.push('Me');
         this.chat.time.push(this.getTime());
         axios.post('/send', {
           message: this.message,
@@ -55880,9 +55882,6 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
 
         if (response.data != '' && response.data != '    ') {
           _this2.chat = response.data;
-          console.log('Loaded old chats');
-        } else {
-          console.log('No old chats to load.');
         }
       }).catch(function (error) {
         console.log(error);
@@ -55916,7 +55915,7 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
       }); // console.log(e);
     }).listenForWhisper('typing', function (e) {
       if (e.name != '') {
-        _this4.typing = 'typing...';
+        _this4.typing = 'thinking...';
       } else {
         _this4.typing = '';
       }
