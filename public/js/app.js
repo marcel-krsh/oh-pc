@@ -55840,7 +55840,7 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   data: {
     message: '',
     chat: {
-      message: [],
+      message: ['hello'],
       user: [],
       color: [],
       time: []
@@ -55857,22 +55857,20 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   },
   methods: {
     send: function send() {
-      var self = this;
-
       if (this.message.length != 0) {
-        console.log(self.message);
-        console.log(self.chat.message); // self.chat.message.push(self.message);
-        // self.chat.message.push('YO!');
-        // self.chat.color.push('success');
-        // self.chat.user.push('Me');
-        // self.chat.time.push(self.getTime());
+        console.log(this.message);
+        console.log(this.chat.message); // this.chat.message.push(this.message);
+        // this.chat.message.push('YO!');
+        // this.chat.color.push('success');
+        // this.chat.user.push('Me');
+        // this.chat.time.push(this.getTime());
         // axios.post('/send', {
-        // 	message : self.message,
-        //              chat:self.chat
+        // 	message : this.message,
+        //              chat:this.chat
         //   })
         //   .then(response => {
         //     console.log(response);
-        //     self.message = ''
+        //     this.message = ''
         //   })
         //   .catch(error => {
         //     console.log(error);
