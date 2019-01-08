@@ -44,7 +44,10 @@ class User extends Authenticatable
         'user_status_id',
         'organization_id',
         'organization_key',
-        'organization'
+        'organization',
+        'availability_max_hours',
+        'availability_lunch',
+        'availability_max_driving'
     ];
 
     protected static $logAttributes = [
