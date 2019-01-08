@@ -568,11 +568,8 @@
                 $('#auditor-add-address').hide();
             }
         } );
-
-
 	}
 
- 	
  </script>
 
  <script>

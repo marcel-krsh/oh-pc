@@ -1935,8 +1935,6 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.post('/auditoraddresses/' + this.address.address_id + '/delete').then(function (response) {
-        console.log(response.data);
-
         _this.$emit('address-remove', _this.index);
       });
     }
