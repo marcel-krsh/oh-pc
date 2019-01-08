@@ -23,7 +23,7 @@ use App\Models\Communication;
 
 Broadcast::channel('communications', function ($user) {
 	//dd($user,$uid,$sid);
-  	return ['name'=>$user->name];
+  	return ['id'=>$user->id];
 });
 
 
