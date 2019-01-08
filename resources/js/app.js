@@ -44,7 +44,7 @@ const app = new Vue({
   			
     		if (this.message.length != 0) {
     			console.log(this.message);
-    			console.log(this.chat.message[0]);
+    			console.log(this.chat);
 
     			//this.chat.message.push(this.message);
     			this.chat.color.push('success');
