@@ -281,6 +281,7 @@ function filterByOwner(){
                 Echo.private('communications.{{Auth::user()->id}}')
                 .listen('CommunicationBroadcastEvent', (data) => {
                     console.log('You have been notified.');
+                    console.log(data);
                     // if(data.is_reply){
                     //     console.log("user " + data.userId + " received a new reply for message "+data.id);
                     //     var updateddata = [{

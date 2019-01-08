@@ -55966,12 +55966,23 @@ if (token) {
 
 
 
-window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
+window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js"); // window.Echo = new Echo({
+//     broadcaster: 'pusher',
+//     key: '6e69117f494c249535b6',
+//     cluster: 'us2',
+//     encrypted:true
+// });
+
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
   key: '6e69117f494c249535b6',
   cluster: 'us2',
-  encrypted: true
+  encrypted: true,
+  auth: {
+    headers: {
+      Authorization: 'Bearer ' + YourTokenLogin
+    }
+  }
 });
 
 /***/ }),
@@ -56357,8 +56368,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/flip/Documents/Work/Allita/allita-pcsv/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/flip/Documents/Work/Allita/allita-pcsv/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/briangreenwood/allita_pcsv/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/briangreenwood/allita_pcsv/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
