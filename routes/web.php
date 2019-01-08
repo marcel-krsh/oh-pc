@@ -13,6 +13,8 @@
     Auth::routes();
 
     Route::group(['middleware' => 'web'], function () {
+       
+
         // Update Devco Test Routes
         Route::get('/update_devco/{model}/{referenceId}/{crud}','SyncController@crudDevco');
 

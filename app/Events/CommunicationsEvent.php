@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Events\CommunicationsBroadcastEvent;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -17,7 +18,7 @@ use App\Models\CommunicationRecipient;
 use Illuminate\Support\Facades\Redis;
 use Auth;
 
-class CommunicationsEvent implements ShouldBroadcastNow
+class CommunicationsEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -44,173 +45,168 @@ class CommunicationsEvent implements ShouldBroadcastNow
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn()
-    {
-        // $uid = $this->user->id;
-        // $sid = $this->user->socket_id;
+    
 
-        return new PrivateChannel('communications');
+    public function communicationCreated(Communication $communication,User $user)
+    {
+        
+        $data = [
+            'data' => [
+                'event' => 'CommunicationCreated',
+                'stats_communication_total' => $stats_communication_total
+            ]
+        ];
+
+        event(new CommunicationsBroadcastEvent($user,$data));
     }
 
-    // public function communicationCreated(Communication $communication)
-    // {
-        
-    //     // $data = [
-    //     //     'event' => 'NewMessage',
-    //     //     'data' => [
-    //     //         'stats_communication_total' => $stats_communication_total
-    //     //     ]
-    //     // ];
+    public function communicationRecipientCreated(CommunicationRecipient $communication_recipient)
+    {
+        $current_user = Auth::user();
+        $ohfa_id = SystemSetting::get('ohfa_organization_id');
+        // $id = $communication_recipient->id;
+        // $communication_recipient = CommunicationRecipient::where('id', '=', $id)
+        //         ->with('user')
+        //         ->first();
 
-    //     // Redis::publish('communications', json_encode($data));
-    // }
+        $communicationTotal = CommunicationRecipient::where('user_id', '=', $communication_recipient->user_id)
+                ->where('seen', '=', 0)
+                ->count();
 
-    // public function communicationRecipientCreated(CommunicationRecipient $communication_recipient)
-    // {
-    //     $current_user = Auth::user();
-    //     $ohfa_id = SystemSetting::get('ohfa_organization_id');
-    //     // $id = $communication_recipient->id;
-    //     // $communication_recipient = CommunicationRecipient::where('id', '=', $id)
-    //     //         ->with('user')
-    //     //         ->first();
+        // update total unread
+        $data = [
+            
+            'data' => [
+                'event' => 'NewRecipient',
+                'userId' => $communication_recipient->user_id,
+                'socketId' => $communication_recipient->user->socket_id,
+                'communicationTotal' => $communicationTotal
+            ]
+        ];
 
-    //     $communicationTotal = CommunicationRecipient::where('user_id', '=', $communication_recipient->user_id)
-    //             ->where('seen', '=', 0)
-    //             ->count();
+        event(new CommunicationsBroadcastEvent($user,$data));
 
-    //     // update total unread
-    //     $data = [
-    //         'event' => 'NewRecipient',
-    //         'data' => [
-    //             'userId' => $communication_recipient->user_id,
-    //             'socketId' => $communication_recipient->user->socket_id,
-    //             'communicationTotal' => $communicationTotal
-    //         ]
-    //     ];
+        // $new_communication = Communication::where('id', '=', $communication_recipient->communication_id)->first();
 
-    //     Redis::publish('communications', json_encode($data));
+        // $is_reply = 0;
+        // if ($new_communication->parent_id !== null) {
+        //     // this is a reply
+        //     // get the parent existing row
+        //     $communication = Communication::where('id', '=', $new_communication->parent_id)->first();
+        //     $is_reply = 1;
+        // } else {
+        //     $communication = $new_communication;
+        // }
 
-    //     // $new_communication = Communication::where('id', '=', $communication_recipient->communication_id)->first();
+        // if ($communication) {
+        //     $recipients_array = [];
+        //     $recipients = $communication->owner->name;
+        //     foreach ($communication->recipients as $recipient) {
+        //         $recipients_array[$recipient->id] = User::find($recipient->user_id);
+        //     }
 
-    //     // $is_reply = 0;
-    //     // if ($new_communication->parent_id !== null) {
-    //     //     // this is a reply
-    //     //     // get the parent existing row
-    //     //     $communication = Communication::where('id', '=', $new_communication->parent_id)->first();
-    //     //     $is_reply = 1;
-    //     // } else {
-    //     //     $communication = $new_communication;
-    //     // }
+        //     if (count($recipients_array)) {
+        //         foreach ($recipients_array as $recipient) {
+        //             if ($recipient != $current_user && $communication->owner != $recipient && $recipient->name != '') {
+        //                 $recipients = $recipients. ", ".$recipient->name;
+        //             } elseif ($recipient == $current_user) {
+        //                 $recipients = $recipients. ", me";
+        //             }
+        //         }
+        //     }
 
-    //     // if ($communication) {
-    //     //     $recipients_array = [];
-    //     //     $recipients = $communication->owner->name;
-    //     //     foreach ($communication->recipients as $recipient) {
-    //     //         $recipients_array[$recipient->id] = User::find($recipient->user_id);
-    //     //     }
+        //     $summary = strlen($communication->message) > 200 ? substr($communication->message, 0, 200)."..." : $communication->message;
 
-    //     //     if (count($recipients_array)) {
-    //     //         foreach ($recipients_array as $recipient) {
-    //     //             if ($recipient != $current_user && $communication->owner != $recipient && $recipient->name != '') {
-    //     //                 $recipients = $recipients. ", ".$recipient->name;
-    //     //             } elseif ($recipient == $current_user) {
-    //     //                 $recipients = $recipients. ", me";
-    //     //             }
-    //     //         }
-    //     //     }
+        //     $created = date("m/d/y", strtotime($communication->created_at))." ". date('h:i a', strtotime($communication->created_at));
+        //     $created_right = date("m/d/y", strtotime($communication->created_at)) ."<br />".date('h:i a', strtotime($communication->created_at));
 
-    //     //     $summary = strlen($communication->message) > 200 ? substr($communication->message, 0, 200)."..." : $communication->message;
+        //     if (count($communication->documents)) {
+        //         $hasattachment = 'attachment-true';
+        //     } else {
+        //         $hasattachment = 'attachment';
+        //     }
 
-    //     //     $created = date("m/d/y", strtotime($communication->created_at))." ". date('h:i a', strtotime($communication->created_at));
-    //     //     $created_right = date("m/d/y", strtotime($communication->created_at)) ."<br />".date('h:i a', strtotime($communication->created_at));
+        //     $communication_unread_class = 'communication-unread';
 
-    //     //     if (count($communication->documents)) {
-    //     //         $hasattachment = 'attachment-true';
-    //     //     } else {
-    //     //         $hasattachment = 'attachment';
-    //     //     }
+        //     if (count($communication->documents)) {
+        //         $attachment_class = 'attachment-true';
+        //     } else {
+        //         $attachment_class = 'attachment';
+        //     }
 
-    //     //     $communication_unread_class = 'communication-unread';
-
-    //     //     if (count($communication->documents)) {
-    //     //         $attachment_class = 'attachment-true';
-    //     //     } else {
-    //     //         $attachment_class = 'attachment';
-    //     //     }
-
-    //     //     if ($communication->audit) {
-    //     //         if (Auth::user()->isFromOrganization($ohfa_id)) {
-    //     //             $organization_name = $communication->audit->organization->organization_name;
-    //     //         } else {
-    //     //             $organization_name = '';
-    //     //         }
+        //     if ($communication->audit) {
+        //         if (Auth::user()->isFromOrganization($ohfa_id)) {
+        //             $organization_name = $communication->audit->organization->organization_name;
+        //         } else {
+        //             $organization_name = '';
+        //         }
  
-    //     //         $organization_address = $communication->audit->address.', '.$communication->audit->city.', ';
-    //     //         if ($communication->audit->state) {
-    //     //             $organization_address = $organization_address.$communication->audit->state;
-    //     //         }
-    //     //         $organization_address = $organization_address.' '.$communication->audit->zip;
+        //         $organization_address = $communication->audit->address.', '.$communication->audit->city.', ';
+        //         if ($communication->audit->state) {
+        //             $organization_address = $organization_address.$communication->audit->state;
+        //         }
+        //         $organization_address = $organization_address.' '.$communication->audit->zip;
                 
-    //     //         // if($communication->audit->county){
-    //     //         //     $organization_address = $organization_address. '<br />'.$communication->audit->county->county_name;
-    //     //         // }
-    //     //     } else {
-    //     //         $organization_address = '';
-    //     //         $organization_name = '';
-    //     //     }
+        //         // if($communication->audit->county){
+        //         //     $organization_address = $organization_address. '<br />'.$communication->audit->county->county_name;
+        //         // }
+        //     } else {
+        //         $organization_address = '';
+        //         $organization_name = '';
+        //     }
 
-    //     //     $message_id_array = Communication::where('id', $communication->id)
-    //     //                 ->orWhere('parent_id', $communication->id)
-    //     //                 ->pluck('id')->toArray();
-    //     //     $unseen = CommunicationRecipient::whereIn('communication_id', $message_id_array)
-    //     //             ->where('user_id', $current_user->id)
-    //     //             ->where('seen', 0)
-    //     //             ->count();
+        //     $message_id_array = Communication::where('id', $communication->id)
+        //                 ->orWhere('parent_id', $communication->id)
+        //                 ->pluck('id')->toArray();
+        //     $unseen = CommunicationRecipient::whereIn('communication_id', $message_id_array)
+        //             ->where('user_id', $current_user->id)
+        //             ->where('seen', 0)
+        //             ->count();
 
-    //     //     $filenames = '';
-    //     //     if ($communication->all_docs && count($communication->all_docs)) {
-    //     //         foreach ($communication->all_docs as $document) {
-    //     //             $filenames = $filenames.$document->document->filename.' ';
-    //     //         }
-    //     //     }
+        //     $filenames = '';
+        //     if ($communication->all_docs && count($communication->all_docs)) {
+        //         foreach ($communication->all_docs as $document) {
+        //             $filenames = $filenames.$document->document->filename.' ';
+        //         }
+        //     }
 
-    //     //     if ($communication->audit) {
-    //     //         $program_id = $communication->audit->program_id;
-    //     //     } else {
-    //     //         $program_id = '';
-    //     //     }
+        //     if ($communication->audit) {
+        //         $program_id = $communication->audit->program_id;
+        //     } else {
+        //         $program_id = '';
+        //     }
 
-    //     //     // this is a new message
-    //     //     // add a new row on top
-    //     //     $data = [
-    //     //         'event' => 'NewMessage',
-    //     //         'data' => [
-    //     //             'userId' => $communication_recipient->user->id,
-    //     //             'socketId' => $communication_recipient->user->socket_id,
-    //     //             'id' => $communication->id,
-    //     //             'is_reply' => $is_reply,
-    //     //             'parent_id' => $communication->parent_id,
-    //     //             'staff_class' => 'staff-'.$communication->owner->id,
-    //     //             'program_class' => 'program-'.$program_id,
-    //     //             'attachment_class' => $attachment_class,
-    //     //             'communication_id' => 'communication-'.$communication->id,
-    //     //             'communication_unread_class' => $communication_unread_class,
-    //     //             'created' => $created,
-    //     //             'created_right' => $created_right,
-    //     //             'recipients' => $recipients,
-    //     //             'user_badge_color' => 'user-badge-'.Auth::user()->badge_color,
-    //     //             'tooltip' => 'pos:top-left;title:'.$unseen.' unread messages',
-    //     //             'unseen' => $unseen,
-    //     //             'audit_id' => $communication->audit_id,
-    //     //             'tooltip_organization' => 'pos:left;title:'.$organization_name,
-    //     //             'organization_address' => $organization_address,
-    //     //             'tooltip_filenames' => 'pos:top-left;title:'.$filenames,
-    //     //             'subject' => $communication->subject,
-    //     //             'summary' => $summary
-    //     //         ]
-    //     //     ];
+        //     // this is a new message
+        //     // add a new row on top
+        //     $data = [
+        //         'event' => 'NewMessage',
+        //         'data' => [
+        //             'userId' => $communication_recipient->user->id,
+        //             'socketId' => $communication_recipient->user->socket_id,
+        //             'id' => $communication->id,
+        //             'is_reply' => $is_reply,
+        //             'parent_id' => $communication->parent_id,
+        //             'staff_class' => 'staff-'.$communication->owner->id,
+        //             'program_class' => 'program-'.$program_id,
+        //             'attachment_class' => $attachment_class,
+        //             'communication_id' => 'communication-'.$communication->id,
+        //             'communication_unread_class' => $communication_unread_class,
+        //             'created' => $created,
+        //             'created_right' => $created_right,
+        //             'recipients' => $recipients,
+        //             'user_badge_color' => 'user-badge-'.Auth::user()->badge_color,
+        //             'tooltip' => 'pos:top-left;title:'.$unseen.' unread messages',
+        //             'unseen' => $unseen,
+        //             'audit_id' => $communication->audit_id,
+        //             'tooltip_organization' => 'pos:left;title:'.$organization_name,
+        //             'organization_address' => $organization_address,
+        //             'tooltip_filenames' => 'pos:top-left;title:'.$filenames,
+        //             'subject' => $communication->subject,
+        //             'summary' => $summary
+        //         ]
+        //     ];
 
-    //     //     Redis::publish('communications', json_encode($data));
-    //     // }
-    // }
+        //     Redis::publish('communications', json_encode($data));
+        // }
+    }
 }
