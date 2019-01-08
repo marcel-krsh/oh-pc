@@ -777,11 +777,10 @@ The following div is defined in this particular tab and pushed to the main layou
         },
 
         mounted: function() {
-            console.log("initializing vue at the audits-list element");
-            Echo.join('audits.'+uid+'.'+sid);
-            Echo.channel('audits.'+uid+'.'+sid)
-				    .listen('UpdatedAudit', (data) => {
-				        console.log('got an audit update');
+            console.log("Audits Mounted");
+            Echo.private('audits')
+            .listen('UpdatedAudit', (data) => {
+				        console.log('Listening to audits');
                 // if(data.is_reply){
                 //     console.log("user " + data.userId + " received a new reply for message "+data.id);
                 //     var updateddata = [{
@@ -831,57 +830,7 @@ The following div is defined in this particular tab and pushed to the main layou
                 //     });
                 // }
 			    });
-            // socket.on('audits.'+uid+'.'+sid+':UpdatedAudit', function(data){
-            // 	console.log('got an audit update');
-            //     // if(data.is_reply){
-            //     //     console.log("user " + data.userId + " received a new reply for message "+data.id);
-            //     //     var updateddata = [{
-            //     //         id: data.id,
-            //     //         parentId: data.parent_id,
-            //     //         staffId: data.staff_class,
-            //     //         programId: data.program_class,
-            //     //         hasAttachment: data.attachment_class,
-            //     //         communicationId: data.communication_id,
-            //     //         communicationUnread: data.communication_unread_class,
-            //     //         createdDate: data.created,
-            //     //         createdDateRight: data.created_right,
-            //     //         recipients: data.recipients,
-            //     //         userBadgeColor: data.user_badge_color,
-            //     //         tooltip: data.tooltip,
-            //     //         unseen: data.unseen,
-            //     //         auditId: data.audit_id,
-            //     //         tooltipOrganization: data.tooltip_organization,
-            //     //         organizationAddress: data.organization_address,
-            //     //         tooltipFilenames: data.tooltip_filenames,
-            //     //         subject: data.subject,
-            //     //         summary: data.summary
-            //     //     }];
-            //     //     this.messages = this.messages.map(obj => updateddata.find(o => o.id === obj.id) || obj);
-            //     // }else{
-            //     //     console.log("audit " + data.id + " has been updated.");
-            //     //     this.messages.push({
-            //     //         id: data.id,
-            //     //         parentId: data.parent_id,
-            //     //         staffId: data.staff_class,
-            //     //         programId: data.program_class,
-            //     //         hasAttachment: data.attachment_class,
-            //     //         communicationId: data.communication_id,
-            //     //         communicationUnread: data.communication_unread_class,
-            //     //         createdDate: data.created,
-            //     //         createdDateRight: data.created_right,
-            //     //         recipients: data.recipients,
-            //     //         userBadgeColor: data.user_badge_color,
-            //     //         tooltip: data.tooltip,
-            //     //         unseen: data.unseen,
-            //     //         auditId: data.audit_id,
-            //     //         tooltipOrganization: data.tooltip_organization,
-            //     //         organizationAddress: data.organization_address,
-            //     //         tooltipFilenames: data.tooltip_filenames,
-            //     //         subject: data.subject,
-            //     //         summary: data.summary
-            //     //     });
-            //     // }
-            // }.bind(this));
+            
         }
     });
 

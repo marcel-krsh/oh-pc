@@ -31,12 +31,12 @@ class CommunicationsEvent implements ShouldBroadcastNow
      */
     public function __construct(User $user, $data)
     {
+        $this->user = $user;
         if (env('APP_DEBUG_NO_DEVCO') == 'true') {
-           //Auth::onceUsingId(1); // TEST BRIAN
+           // Auth::onceUsingId(1); // TEST BRIAN
             Auth::onceUsingId(286); // TEST
+            $this->user = Auth::user();
         }
-
-        $this->user = Auth::user();
     }
 
     /**

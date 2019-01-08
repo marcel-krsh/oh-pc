@@ -277,7 +277,7 @@ function filterByOwner(){
             },
 
             mounted: function() {
-                console.log("initializing vue at the communication-list element");
+                console.log("Communications Mounted");
                 Echo.private('communications')
                 .listen('NewMessage', (data) => {
                     console.log('Listening for a new message');

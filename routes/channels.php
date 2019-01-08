@@ -26,6 +26,11 @@ Broadcast::channel('communications', function ($user) {
   	return ['name'=>$user->name];
 });
 
+Broadcast::channel('audits', function ($user) {
+	//dd($user,$uid,$sid);
+  	return ['name'=>$user->name];
+});
+
 Broadcast::channel('chat',function($user){
 	return ['name'=>$user->name];
 });
