@@ -2054,7 +2054,7 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    console.log('Chat Message Component mounted.');
   }
 });
 
@@ -55862,7 +55862,7 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
       if (this.message.length != 0) {
         this.chat.message.push(this.message);
         this.chat.color.push('success');
-        this.chat.user.push('you');
+        this.chat.user.push('Me');
         this.chat.time.push(this.getTime());
         axios.post('/send', {
           message: this.message,
