@@ -278,107 +278,59 @@ function filterByOwner(){
 
             mounted: function() {
                 console.log("initializing vue at the communication-list element");
-                Echo.join('communications.'+uid+'.'+sid);
-                Echo.channel('communications.'+uid+'.'+sid).listen('NewMessage', (data) => {
-                    if(data.is_reply){
-                        console.log("user " + data.userId + " received a new reply for message "+data.id);
-                        var updateddata = [{
-                            id: data.id,
-                            parentId: data.parent_id,
-                            staffId: data.staff_class,
-                            programId: data.program_class,
-                            hasAttachment: data.attachment_class,
-                            communicationId: data.communication_id,
-                            communicationUnread: data.communication_unread_class,
-                            createdDate: data.created,
-                            createdDateRight: data.created_right,
-                            recipients: data.recipients,
-                            userBadgeColor: data.user_badge_color,
-                            tooltip: data.tooltip,
-                            unseen: data.unseen,
-                            auditId: data.audit_id,
-                            tooltipOrganization: data.tooltip_organization,
-                            organizationAddress: data.organization_address,
-                            tooltipFilenames: data.tooltip_filenames,
-                            subject: data.subject,
-                            summary: data.summary
-                        }];
-                        this.messages = this.messages.map(obj => updateddata.find(o => o.id === obj.id) || obj);
-                    }else{
-                        console.log("user " + data.userId + " received a new message.");
-                        this.messages.push({
-                            id: data.id,
-                            parentId: data.parent_id,
-                            staffId: data.staff_class,
-                            programId: data.program_class,
-                            hasAttachment: data.attachment_class,
-                            communicationId: data.communication_id,
-                            communicationUnread: data.communication_unread_class,
-                            createdDate: data.created,
-                            createdDateRight: data.created_right,
-                            recipients: data.recipients,
-                            userBadgeColor: data.user_badge_color,
-                            tooltip: data.tooltip,
-                            unseen: data.unseen,
-                            auditId: data.audit_id,
-                            tooltipOrganization: data.tooltip_organization,
-                            organizationAddress: data.organization_address,
-                            tooltipFilenames: data.tooltip_filenames,
-                            subject: data.subject,
-                            summary: data.summary
-                        });
-                    }
+                Echo.private('communications')
+                .listen('NewMessage', (data) => {
+                    console.log('Listening for a new message');
+                    // if(data.is_reply){
+                    //     console.log("user " + data.userId + " received a new reply for message "+data.id);
+                    //     var updateddata = [{
+                    //         id: data.id,
+                    //         parentId: data.parent_id,
+                    //         staffId: data.staff_class,
+                    //         programId: data.program_class,
+                    //         hasAttachment: data.attachment_class,
+                    //         communicationId: data.communication_id,
+                    //         communicationUnread: data.communication_unread_class,
+                    //         createdDate: data.created,
+                    //         createdDateRight: data.created_right,
+                    //         recipients: data.recipients,
+                    //         userBadgeColor: data.user_badge_color,
+                    //         tooltip: data.tooltip,
+                    //         unseen: data.unseen,
+                    //         auditId: data.audit_id,
+                    //         tooltipOrganization: data.tooltip_organization,
+                    //         organizationAddress: data.organization_address,
+                    //         tooltipFilenames: data.tooltip_filenames,
+                    //         subject: data.subject,
+                    //         summary: data.summary
+                    //     }];
+                    //     this.messages = this.messages.map(obj => updateddata.find(o => o.id === obj.id) || obj);
+                    // }else{
+                    //     console.log("user " + data.userId + " received a new message.");
+                    //     this.messages.push({
+                    //         id: data.id,
+                    //         parentId: data.parent_id,
+                    //         staffId: data.staff_class,
+                    //         programId: data.program_class,
+                    //         hasAttachment: data.attachment_class,
+                    //         communicationId: data.communication_id,
+                    //         communicationUnread: data.communication_unread_class,
+                    //         createdDate: data.created,
+                    //         createdDateRight: data.created_right,
+                    //         recipients: data.recipients,
+                    //         userBadgeColor: data.user_badge_color,
+                    //         tooltip: data.tooltip,
+                    //         unseen: data.unseen,
+                    //         auditId: data.audit_id,
+                    //         tooltipOrganization: data.tooltip_organization,
+                    //         organizationAddress: data.organization_address,
+                    //         tooltipFilenames: data.tooltip_filenames,
+                    //         subject: data.subject,
+                    //         summary: data.summary
+                    //     });
+                    // }
                 });
-                // socket.on('communications.'+uid+'.'+sid+':NewMessage', function(data){
-                //     if(data.is_reply){
-                //         console.log("user " + data.userId + " received a new reply for message "+data.id);
-                //         var updateddata = [{
-                //             id: data.id,
-                //             parentId: data.parent_id,
-                //             staffId: data.staff_class,
-                //             programId: data.program_class,
-                //             hasAttachment: data.attachment_class,
-                //             communicationId: data.communication_id,
-                //             communicationUnread: data.communication_unread_class,
-                //             createdDate: data.created,
-                //             createdDateRight: data.created_right,
-                //             recipients: data.recipients,
-                //             userBadgeColor: data.user_badge_color,
-                //             tooltip: data.tooltip,
-                //             unseen: data.unseen,
-                //             auditId: data.audit_id,
-                //             tooltipOrganization: data.tooltip_organization,
-                //             organizationAddress: data.organization_address,
-                //             tooltipFilenames: data.tooltip_filenames,
-                //             subject: data.subject,
-                //             summary: data.summary
-                //         }];
-                //         this.messages = this.messages.map(obj => updateddata.find(o => o.id === obj.id) || obj);
-                //     }else{
-                //         console.log("user " + data.userId + " received a new message.");
-                //         this.messages.push({
-                //             id: data.id,
-                //             parentId: data.parent_id,
-                //             staffId: data.staff_class,
-                //             programId: data.program_class,
-                //             hasAttachment: data.attachment_class,
-                //             communicationId: data.communication_id,
-                //             communicationUnread: data.communication_unread_class,
-                //             createdDate: data.created,
-                //             createdDateRight: data.created_right,
-                //             recipients: data.recipients,
-                //             userBadgeColor: data.user_badge_color,
-                //             tooltip: data.tooltip,
-                //             unseen: data.unseen,
-                //             auditId: data.audit_id,
-                //             tooltipOrganization: data.tooltip_organization,
-                //             organizationAddress: data.organization_address,
-                //             tooltipFilenames: data.tooltip_filenames,
-                //             subject: data.subject,
-                //             summary: data.summary
-                //         });
-                //     }
-                // }.bind(this));
+               
             }
         });
 
