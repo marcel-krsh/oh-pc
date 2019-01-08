@@ -23,7 +23,7 @@ const app = new Vue({
     data:{
     	message:'',
     	chat:{
-    		message:['Hi','Sorry'],
+    		message:[],
     		user:[],
     		color:[],
     		time:[]
