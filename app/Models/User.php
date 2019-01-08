@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -86,11 +87,26 @@ class User extends Authenticatable
     /**
      * Person
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function person() : HasOne
     {
         return $this->hasOne(People::class, 'id', 'person_id');
+    }
+
+    /**
+     * Organization
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function organization_details() : HasOne
+    {
+        return $this->hasOne(Organization::class, 'id', 'organization_id');
+    }
+
+    public function auditor_addresses() : HasMany
+    {
+        return $this->HasMany(Address::class, 'user_id', 'id');
     }
 
     public function initials() : string

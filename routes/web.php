@@ -113,6 +113,8 @@
         Route::get('projects/{id}/assignments/addauditor/{auditorid}/loadcal/{currentdate}/{beforeafter}', 'AuditController@getAssignmentAuditorCalendar')->name('project.assignment.getauditorcalendar');
 
         Route::get('/modals/auditors/{id}/preferences', 'UserController@preferences')->name('auditor.preferences');
+        Route::post('/auditors/{id}/addresses/create', 'UserController@saveAuditorAddress')->name('auditor.address.create');
+        Route::post('/auditoraddresses/{address_id}/delete', 'UserController@deleteAuditorAddress')->name('auditor.address.delete');
 
         Route::get('/modals/amenities/add/{type}/{id}', 'AuditController@addAmenity')->name('amenities.add');
         Route::post('/modals/amenities/save', 'AuditController@saveAmenity')->name('amenities.save');
@@ -183,6 +185,8 @@
         Route::get('/notes/project/{project}.json', 'NoteController@notesFromProjectIdJson')->name('notes.loadjson');
         Route::get('/external-window/print-notes-{project}.html', 'NoteController@printNotes')->name('notes.print');
 
+        // Auditor
+        
 
         // });
     });

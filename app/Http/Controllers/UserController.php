@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Address;
 use Auth;
 use Session;
 use App\LogConverter;
 use Carbon;
+use App\Events\AuditorAddressEvent;
 
 class UserController extends Controller
 {
@@ -20,6 +22,44 @@ class UserController extends Controller
         }
     }
 
+    public function saveAuditorAddress(Request $request, $user){
+        $forminputs = $request->get('inputs');
+        parse_str($forminputs, $forminputs);
+
+        $address = new Address([
+                'line_1' => $forminputs['address1'],
+                'line_2' => $forminputs['address2'],
+                'city' => $forminputs['city'],
+                'state' => $forminputs['state'],
+                'zip' => $forminputs['zip'],
+                'user_id' => $user
+            ]);
+        $address->save();
+
+        $formatted_address = $forminputs['address1'];
+        if($forminputs['address2']){ $formatted_address = $formatted_address.", ".$forminputs['address2']; }
+        if($forminputs['city']){ $formatted_address = $formatted_address.", ".$forminputs['city']; }
+        if($forminputs['state']){ $formatted_address = $formatted_address.", ".$forminputs['state']; }
+        if($forminputs['zip']){ $formatted_address = $formatted_address." ".$forminputs['zip']; }
+
+        broadcast(new AuditorAddressEvent(Auth::user(), $address->id, $formatted_address));
+
+        return 1;
+    }
+
+    public function deleteAuditorAddress(Request $request, $address_id){
+        // check if current user can delete this record and if the record exists.
+        
+        $address = Address::where('id', '=', $address_id)->first();
+
+        if($address && $address->user_id == Auth::user()->id){
+            $address->delete();
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
     public function preferences($id)
     {
 
@@ -28,12 +68,78 @@ class UserController extends Controller
             return $output;
         }
 
+        $user = Auth::user();
+
+        $phone_number = '';
+        if($user->person){
+            if($user->person->phone){
+                if($user->person->phone->number()){
+                    $phone_number = $user->person->phone->number();
+                }
+            }
+        }
+
+        //dd($user->organization_details->address->line_1);
+
+
+        $org_name = $user->organization;
+        $org_address1 = '';
+        $org_address2 = '';
+        $org_city = '';
+        $org_state = '';
+        $org_zip = '';
+        if($user->organization_details){
+            if($user->organization_details->address){
+                $org_address1 = $user->organization_details->address->line_1;
+                $org_address2 = $user->organization_details->address->line_2;
+                $org_city = $user->organization_details->address->city;
+                $org_state = $user->organization_details->address->state;
+                $org_zip = $user->organization_details->address->zip;
+            }
+        }
+
+        $addresses = [];
+        foreach($user->auditor_addresses as $address){
+
+            $formatted_address = $address->line_1;
+            if($address->line_2){
+                $formatted_address = $formatted_address.", ".$address->line_2;
+            }
+            if($address->city){
+                $formatted_address = $formatted_address.", ".$address->city;
+            }
+            if($address->state){
+                $formatted_address = $formatted_address.", ".$address->state;
+            }
+            if($address->zip){
+                $formatted_address = $formatted_address." ".$address->zip;
+            }
+
+            $addresses[] = [
+                'address_id' => $address->id,
+                'address' => $formatted_address
+            ];
+        }
+
         $data = collect([
             "summary" => [
                 "id" => $id,
-                "name" => "Jane Doe",
-                'initials' => 'JD',
-                'color' => 'blue',
+                "name" => $user->name,
+                'initials' => $user->initials(),
+                'active' => $user->active,
+                'email' => $user->email,
+                'phone' => $user->initials(),
+                'color' => $user->badge_color,
+                'phone' => $phone_number,
+                'organization' => [
+                    "name" => $org_name,
+                    "address1" => $org_address1,
+                    "address2" => $org_address2,
+                    "city" => $org_city,
+                    "state" => $org_state,
+                    "zip" => $org_zip,
+                ],
+                'addresses' => $addresses,
                 'date' => 'DECEMBER 21, 2018',
                 'ref' => '20181221',
                 'date-previous' => 'DECEMBER 14, 2018',

@@ -4,50 +4,10 @@
 	  		<div class="user-preference-col-1  uk-padding-remove uk-margin-small-top">
 	  			<div uk-grid> 
 	  				<div class="uk-width-1-1 uk-padding-remove-left">
-			  			<h3><span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:Brian Greenwood;" class="user-badge user-badge-green user-badge-bigger no-float uk-link">
-										BG
-									</span> Brian Greenwood <i class="a-pencil-2" onclick=""></i></h3>
-			  			<form id="modal-user-contact" class="uk-margin-small-top">
-							<fieldset class="uk-fieldset">
-								<div class="uk-margin-small-top uk-grid">
-						            <input type="text" class="uk-input" value="brian@greenwood360.com"  placeholder="Email"/>
-						        </div>
-								<div class="uk-margin-small-top uk-grid">
-						            <input type="text" class="uk-input" value="(888) 888-8888"  placeholder="Phone"/>
-						        </div>
-								<div class="uk-margin-small-top uk-grid">
-						            <input type="text" class="uk-input" value=""  placeholder=""/>
-						        </div>
-								<div class="uk-margin uk-grid uk-grid-small uk-margin-small-top" style="margin-left:0;">
-									<div class="uk-width-1-2 uk-padding-remove">
-							            <select class="uk-select">
-							                <option selected>ACTIVE</option>
-							                <option>NOT ACTIVE</option>
-							            </select>
-							        </div>
-									<div class="uk-width-1-2">
-						            	<input type="text" class="uk-input" value=""  placeholder=""/>
-						            </div>
-						        </div>
-							</fieldset>
-						</form>
+			  			<h3><span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$data['summary']['name']}};" class="user-badge user-badge-{{$data['summary']['color']}} user-badge-bigger no-float uk-link">
+										{{$data['summary']['initials']}}
+									</span> {{$data['summary']['name']}} <br /><small>{{$data['summary']['email']}} | {{$data['summary']['phone']}}</small></h3>
 					</div>
-	  				<div class="uk-width-1-1 uk-margin-remove uk-padding-remove-left">
-	  					<hr />
-	  					<h3 class="uk-margin-small-top">Addresses <i class="a-circle-plus use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="auditorAddAddress();"></i></h3>
-	  					<div class="uk-grid-small uk-margin-remove" uk-grid>
-	  						<div class="uk-width-1-2 uk-padding-remove">
-	  							<div class="address">
-									<i class="a-mailbox"></i> 12333 Sesame Street<br>Suite 12345<br>City2 State2, 22222
-								</div>
-	  						</div>
-	  						<div class="uk-width-1-2">
-	  							<div class="address">
-									<i class="a-mailbox"></i> 12333 Sesame Street<br>Suite 12345<br>City2 State2, 22222
-								</div>
-	  						</div>
-	  					</div>
-	  				</div>
 
 	  				<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
 	  					<hr />
@@ -70,19 +30,43 @@
 
 	  				<div class="uk-width-1-1 uk-margin-remove uk-padding-remove-left">
 	  					<hr />
-	  					<h3 class="uk-margin-small-top">Companies <i class="a-circle-plus use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="auditorAddCompany();"></i></h3>
+	  					<h3 class="uk-margin-small-top">Addresses <i class="a-circle-plus use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="auditorAddAddress();"></i></h3>
 	  					<div class="uk-grid-small uk-margin-remove" uk-grid>
-	  						<div class="uk-width-1-2 uk-padding-remove">
+	  						<form id="auditor-add-address" method="post" class="uk-width-1-1 uk-margin-bottom" style="display:none;">
+	  							<div class="uk-grid-small" uk-grid>
+	  								<div class="uk-width-1-1 uk-padding-remove">
+	  									<label class="uk-text-small">Add a new address below</label>
+			  							<input id="address1" name="address1" type="text" class="uk-input" value=""  placeholder="Address line 1"/>
+			  						</div>
+			  						<div class="uk-width-1-1 uk-padding-remove uk-margin-small-top">
+			  							<input id="address2" name="address2" type="text" class="uk-input" value=""  placeholder="Address line 2"/>
+			  						</div>
+			  						<div class="uk-width-1-3 uk-padding-remove-left uk-margin-small-top">
+			  							<input id="city" name="city" type="text" class="uk-input" value=""  placeholder="City"/>
+			  						</div>
+			  						<div class="uk-width-1-6 uk-margin-small-top">
+			  							<input id="state" name="state" type="text" class="uk-input" value=""  placeholder="State"/>
+			  						</div>
+			  						<div class="uk-width-1-3 uk-margin-small-top">
+			  							<input id="zip" name="zip" type="text" class="uk-input" value=""  placeholder="Zip"/>	
+			  						</div>
+			  						<div class="uk-width-1-6 uk-margin-small-top">
+			  							<button class="uk-button uk-button-primary" style="height: 100%; width: 100%;" onclick="submitAuditorAddAddress(event);">SAVE</button>	
+			  						</div>
+			  					</div>
+		  					</form>
+	  						@if($data['summary']['organization']['address1'])
+	  						<div class="uk-width-1-1">
 	  							<div class="address">
-	  								<h4>OHFA</h4>
-									<i class="a-mailbox"></i> 12333 Sesame Street<br>Suite 12345<br>City2 State2, 22222
+									<i class="a-mailbox"></i> 
+									{{$data['summary']['organization']['name']}}<br />{{$data['summary']['organization']['address1']}}, @if($data['summary']['organization']['address2']){{$data['summary']['organization']['address2']}}@endif
+									@if($data['summary']['organization']['city']) {{$data['summary']['organization']['city']}}, {{$data['summary']['organization']['state']}} {{$data['summary']['organization']['zip']}}
+									@endif
 								</div>
 	  						</div>
-	  						<div class="uk-width-1-2">
-	  							<div class="address">
-	  								<h4>COMPANY NAME</h4>
-									<i class="a-mailbox"></i> 12333 Sesame Street<br>Suite 12345<br>City2 State2, 22222
-								</div>
+	  						@endif
+	  						<div class="uk-width-1-1 uk-margin-remove-top" id="addresses_list">
+	  							<address-row v-if="addresses" v-for="address, index in addresses" :key="address.id" :address="address" :index="index" v-on:address-remove="removeAddress"></address-row>
 	  						</div>
 	  					</div>
 	  				</div>
@@ -565,11 +549,61 @@
 	});
 
 	function auditorAddAddress(){
-		console.log("adding address");
+		$('#auditor-add-address').toggle();
+	}
+
+	function submitAuditorAddAddress(e){
+		e.preventDefault();
+		var form = $('#auditor-add-address');
+
+		$.post("/auditors/{{$data['summary']['id']}}/addresses/create", {
+            'inputs' : form.serialize(),
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            if(data!=1){ 
+                UIkit.modal.alert(data,{stack: true});
+            } else {
+                UIkit.modal.alert('The address has been saved.',{stack: true});
+                form.get(0).reset();
+                $('#auditor-add-address').hide();
+            }
+        } );
+
+
 	}
 
  	
  </script>
+
+ <script>
+
+        new Vue({
+            el: '#addresses_list',
+            
+            data: function() {
+                 return {
+                    addresses: {!! json_encode($data['summary']['addresses']) !!}
+                }
+            },
+            methods: {
+                 removeAddress: function(index) {
+                 	this.$delete(this.addresses, index)
+                 }
+            },
+
+            created() {
+		        Echo.channel('auditors.'+uid+'.'+sid)
+		              .listen('AuditorAddressEvent', (e) => {
+		                this.addresses.push({
+		                  address_id: e.address_id,	
+		                  address: e.address
+		                });
+		            // console.log("receiving address");
+		        });
+		    }
+        });
+
+    </script>
  <style>
  .user-preference-col-1{
  	width:100%;
