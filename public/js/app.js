@@ -55831,7 +55831,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('message', __webpack_requir
 var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   data: {
-    message: '',
+    message: 'Type your message here.',
     chat: {
       message: [],
       user: [],
@@ -55854,7 +55854,7 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
 
       if (this.message.length != 0) {
         console.log(this.message);
-        console.log(this.chat.message); //this.chat.message.push(this.message);
+        console.log(this.chat.message[0]); //this.chat.message.push(this.message);
 
         this.chat.color.push('success');
         this.chat.user.push('Me');
