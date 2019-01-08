@@ -21,11 +21,16 @@ use App\Models\Communication;
 //     return true; // return $user->id === Communication::findOrNew($messageId)->owner_id;
 // });
 
-Broadcast::channel('communications.{uid}.{sid}', function ($user, $uid, $sid) {
+Broadcast::channel('communications', function ($user) {
 	//dd($user,$uid,$sid);
-  return true; // return Auth::check();
+  	return ['name'=>$user->name];
 });
 
-Broadcast::channel('chat.{uid}.{sid}', function ($user, $uid, $sid) {
-  return true; // return Auth::check();
+Broadcast::channel('audits', function ($user) {
+	//dd($user,$uid,$sid);
+  	return ['name'=>$user->name];
+});
+
+Broadcast::channel('chat',function($user){
+	return ['name'=>$user->name];
 });

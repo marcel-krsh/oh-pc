@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Listeners;
-use App\Events\MessageSent;
+
+use App\Events\ChatEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendChatMessage
+class ChatListener
 {
     /**
      * Create the event listener.
@@ -16,13 +17,14 @@ class SendChatMessage
     {
         //
     }
+
     /**
      * Handle the event.
      *
-     * @param  MessageSent  $event
+     * @param  ChatEvent  $event
      * @return void
      */
-    public function handle(MessageSent $event)
+    public function handle(ChatEvent $event)
     {
         //
     }

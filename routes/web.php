@@ -10,14 +10,21 @@
 | to using a Closure or controller method. Build something great!
 |
 */
+    Auth::routes();
 
     Route::group(['middleware' => 'web'], function () {
         // Update Devco Test Routes
         Route::get('/update_devco/{model}/{referenceId}/{crud}','SyncController@crudDevco');
+
         //chat routes
-        Route::get('/chat', 'ChatsController@index');
-        Route::get('/chat/messages', 'ChatsController@fetchMessages');
-        Route::post('/chat/messages', 'ChatsController@sendMessage');
+        Route::get('/chat','ChatController@chat');
+        Route::post('/send','ChatController@send');
+        Route::post('/saveToSession','ChatController@saveToSession');
+        Route::post('/deleteSession','ChatController@deleteSession');
+        Route::post('/getOldMessage','ChatController@getOldMessage');
+        Route::get('/check',function(){
+            return session('chat');
+        });
 
         //view tables
         Route::get('tables/users', 'HomeController@usersTable')->name('tables.users');
