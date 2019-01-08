@@ -55860,7 +55860,8 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
       var _this = this;
 
       if (this.message.length != 0) {
-        this.chat.message.push(this.message);
+        //this.chat.message.push(this.message);
+        this.chat.message.push('YO!');
         this.chat.color.push('success');
         this.chat.user.push('Me');
         this.chat.time.push(this.getTime());
