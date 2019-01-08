@@ -36,6 +36,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\AuditorAddressEvent' => [
             'App\Listeners\AddAuditorAddress',
+        ],
         'App\Events\ChatEvent' => [
             'App\Listeners\ChatListener',
         ],
