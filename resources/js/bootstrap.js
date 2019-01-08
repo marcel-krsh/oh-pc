@@ -57,7 +57,7 @@ window.Echo = new Echo({
 
 // window.Echo = new Echo({
 //     broadcaster: 'pusher',
-//     key: '6e69117f494c249535b6',
+//     key: 'my-key',
 //     cluster: 'us2',
 //     encrypted: true,
 //     auth: {

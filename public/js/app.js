@@ -55974,7 +55974,7 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   encrypted: true
 }); // window.Echo = new Echo({
 //     broadcaster: 'pusher',
-//     key: '6e69117f494c249535b6',
+//     key: 'my-key',
 //     cluster: 'us2',
 //     encrypted: true,
 //     auth: {
