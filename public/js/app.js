@@ -55836,7 +55836,7 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
       message: [0]['Welcome to the chat!'],
       user: [0]['Allita'],
       color: [0]['success'],
-      time: [0][undefined.getTime()]
+      time: [0]['']
     },
     typing: '',
     numberOfUsers: 0
