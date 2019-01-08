@@ -30,7 +30,7 @@ class CommunicationsEvent
      *
      * @return void
      */
-    public function __construct(User $user, $data)
+    public function __construct(User $user, $data=NULL)
     {
         $this->user = $user;
         if (env('APP_DEBUG_NO_DEVCO') == 'true') {
