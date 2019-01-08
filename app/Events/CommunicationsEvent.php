@@ -30,14 +30,9 @@ class CommunicationsEvent
      *
      * @return void
      */
-    public function __construct(User $user, $data=NULL)
+    public function __construct()
     {
-        $this->user = $user;
-        if (env('APP_DEBUG_NO_DEVCO') == 'true') {
-           // Auth::onceUsingId(1); // TEST BRIAN
-            Auth::onceUsingId(286); // TEST
-            $this->user = Auth::user();
-        }
+        
     }
 
     /**
@@ -47,18 +42,7 @@ class CommunicationsEvent
      */
     
 
-    public function communicationCreated(Communication $communication,User $user)
-    {
-        
-        $data = [
-            'data' => [
-                'event' => 'CommunicationCreated',
-                'stats_communication_total' => $stats_communication_total
-            ]
-        ];
 
-        event(new CommunicationsBroadcastEvent($user,$data));
-    }
 
     public function communicationRecipientCreated(CommunicationRecipient $communication_recipient)
     {
@@ -74,12 +58,12 @@ class CommunicationsEvent
                 ->count();
 
         // update total unread
+        $user = User::find($communication_recipient->user_id);
         $data = [
             
             'data' => [
                 'event' => 'NewRecipient',
                 'userId' => $communication_recipient->user_id,
-                'socketId' => $communication_recipient->user->socket_id,
                 'communicationTotal' => $communicationTotal
             ]
         ];

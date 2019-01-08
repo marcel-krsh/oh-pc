@@ -31,9 +31,9 @@ class Communication extends Model
 
         /* @todo: move to observer class */
 
-        static::created(function ($communication) {
-            Event::fire('communications.created', $communication);
-        });
+        // static::created(function ($communication) {
+        //     Event::fire('communications.created', $communication);
+        // });
 
         // static::updated(function ($transaction) {
         //     Event::fire('transactions.updated', $transaction);
