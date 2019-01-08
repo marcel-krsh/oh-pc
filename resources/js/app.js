@@ -22,14 +22,12 @@ const app = new Vue({
     el: '#app',
     data:{
     	message:'Type your message here.',
-    	chat:{
-    		message:[0]['Welcome to the chat!'],
-    		user:[0]['Allita'],
-    		color:[0]['success'],
-    		time:[0]['']
-    	},
+    	messages:[0]['Welcome to the chat!'],
+    	users:[0]['Allita'],
+    	colors:[0]['success'],
+    	times:[0][''],
     	typing:'',
-    	numberOfUsers:0
+    	numberOfUsers:0,
     },
     watch:{
     	message(){
@@ -44,15 +42,13 @@ const app = new Vue({
   			
     		if (this.message.length != 0) {
     			console.log(this.message);
-    			console.log(this.chat.message[0]);
-    			if(this.chat.message === 'undefined'){
-    				this.chat
-    			}
+    			console.log(this.messages[0]);
+    			
 
-    			this.chat.message.push(this.message);
-    			this.chat.color.push('success');
-    			this.chat.user.push('Me');
-    			this.chat.time.push(this.getTime());
+    			this.messages.push(this.message);
+    			this.colors.push('success');
+    			this.users.push('Me');
+    			this.times.push(this.getTime());
 
     			
     			axios.post('/send', {

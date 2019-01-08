@@ -55832,12 +55832,10 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   data: {
     message: 'Type your message here.',
-    chat: {
-      message: [0]['Welcome to the chat!'],
-      user: [0]['Allita'],
-      color: [0]['success'],
-      time: [0]['']
-    },
+    messages: [0]['Welcome to the chat!'],
+    users: [0]['Allita'],
+    colors: [0]['success'],
+    times: [0][''],
     typing: '',
     numberOfUsers: 0
   },
@@ -55854,16 +55852,11 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
 
       if (this.message.length != 0) {
         console.log(this.message);
-        console.log(this.chat.message[0]);
-
-        if (this.chat.message === 'undefined') {
-          this.chat;
-        }
-
-        this.chat.message.push(this.message);
-        this.chat.color.push('success');
-        this.chat.user.push('Me');
-        this.chat.time.push(this.getTime());
+        console.log(this.messages[0]);
+        this.messages.push(this.message);
+        this.colors.push('success');
+        this.users.push('Me');
+        this.times.push(this.getTime());
         axios.post('/send', {
           message: this.message,
           chat: this.chat
