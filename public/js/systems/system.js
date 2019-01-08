@@ -1,6 +1,22 @@
 //disable ajax cache it solves that the Ajax content doesn't load properly when back button is clicked
 $.ajaxSetup({ cache: false });
 
+// selector = "#max_hours", data="01:15:15", ref="auditor.availability.lunch"
+function autosave(selector, ref) {
+	var data = $(selector).val();
+	$.post("/autosave", {
+        'data' : data,
+        'ref' : ref,
+        '_token' : $('meta[name="csrf-token"]').attr('content')
+    }, function(data) {
+        if(data!=1){ 
+            UIkit.modal.alert(data,{stack: true});
+        } else {
+            UIkit.notification('<span uk-icon="icon: check"></span> Saved', {pos:'top-right', timeout:1000, status:'success'});
+        }
+    });
+}
+
 function loadListTab(listURI,quickLookupURI,overrideSaveCheck,sortBy,refreshOnly) {
 	// check if changes need to be saved.
 	var continueToLoad = 1;

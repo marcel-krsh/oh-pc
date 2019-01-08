@@ -114,6 +114,7 @@ if(Auth::check()){
 	  [v-cloak] {
 	    display: none;
 	  }
+	  .uk-notification {z-index: 1060;}
 	</style>
 
 	<script>

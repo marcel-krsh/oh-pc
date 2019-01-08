@@ -400,8 +400,8 @@ class FindingController extends Controller
         return view('modals.photo', compact('photo'));
     }
 
-    function autosave(Request $request)
-    {
-        return "done";
-    }
+    // function autosave(Request $request)
+    // {
+    //     return "done";
+    // }
 }

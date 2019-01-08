@@ -128,7 +128,7 @@
         Route::get('/modals/amenities/add/{type}/{id}', 'AuditController@addAmenity')->name('amenities.add');
         Route::post('/modals/amenities/save', 'AuditController@saveAmenity')->name('amenities.save');
 
-        Route::post('/autosave', 'FindingController@autosave');
+        Route::post('/autosave', 'DataController@autosave');
 
 
         // communications
