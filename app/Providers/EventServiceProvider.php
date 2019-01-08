@@ -31,9 +31,6 @@ class EventServiceProvider extends ServiceProvider
         'cachedaudit.created' => [
             'App\Events\CachedAuditsEvent@cachedAuditCreated'
         ],
-        'App\Events\MessageSent' => [
-            'App\Listeners\SendChatMessage',
-        ],
         'App\Events\AuditorAddressEvent' => [
             'App\Listeners\AddAuditorAddress',
         ],
