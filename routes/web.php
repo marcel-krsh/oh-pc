@@ -11,18 +11,18 @@
 |
 */
     Auth::routes();
-    
+
     Route::group(['middleware' => 'web'], function () {
         // Update Devco Test Routes
         Route::get('/update_devco/{model}/{referenceId}/{crud}','SyncController@crudDevco');
 
         //chat routes
         Route::get('/chat','ChatController@chat');
-        Route::post('send','ChatController@send');
-        Route::post('saveToSession','ChatController@saveToSession');
-        Route::post('deleteSession','ChatController@deleteSession');
-        Route::post('getOldMessage','ChatController@getOldMessage');
-        Route::get('check',function(){
+        Route::post('/send','ChatController@send');
+        Route::post('/saveToSession','ChatController@saveToSession');
+        Route::post('/deleteSession','ChatController@deleteSession');
+        Route::post('/getOldMessage','ChatController@getOldMessage');
+        Route::get('/check',function(){
             return session('chat');
         });
 
