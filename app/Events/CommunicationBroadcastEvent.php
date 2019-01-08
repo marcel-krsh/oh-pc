@@ -39,6 +39,6 @@ class CommunicationBroadcastEvent implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('communications');
+        return new PrivateChannel('communications.'.$this->user->id);
     }
 }
