@@ -55920,7 +55920,7 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
       }); // console.log(e);
     }).listenForWhisper('typing', function (e) {
       if (e.name != '') {
-        _this4.typing = 'typing...';
+        _this4.typing = e.name + ' is typing...';
       } else {
         _this4.typing = '';
       }

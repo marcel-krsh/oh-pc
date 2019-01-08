@@ -22,7 +22,7 @@
             }
         },
         mounted() {
-            console.log('Chat Message Component mounted.')
+            console.log('Chat Message Component mounted.')  
         }
     }
 </script>

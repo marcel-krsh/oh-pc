@@ -100,7 +100,7 @@ const app = new Vue({
     	    })
     	    .listenForWhisper('typing', (e) => {
     	    	if (e.name != '') {
-    	        	this.typing = 'typing...'
+    	        	this.typing = e.name+' is typing...'
     	    	}else{
     	    		this.typing = ''
     	    	}
