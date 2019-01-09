@@ -401,9 +401,12 @@ if(Auth::check()){
 				    .listen('UpdateEvent', (data) => {
 				    	console.log('Update received with:');
 				    	console.log(data);
+				    	console.log(data.event);
+				    	console.log(data.data.event);
+
 				    	if(data.event == 'tab'){
 					        console.log("Tab event received.");
-					        this.statsCommunicationTotal = e.data.communicationTotal;
+					        this.statsCommunicationTotal = data.communicationTotal;
 					    }
 			    });
 		    	
