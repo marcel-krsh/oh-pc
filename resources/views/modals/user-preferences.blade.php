@@ -557,7 +557,7 @@
 
 
 	  				<div class="uk-width-1-1 uk-margin-top">
-	  					<h3 class="uk-margin-small-top">Add Availability</h3>
+	  					<h3 class="uk-margin-top">Add Availability</h3>
 	  					<form name="newavailabilityform" id="newavailabilityform" method="post">
 		  					<div uk-grid>
 		  						<div class="uk-width-1-2 uk-padding-remove">
@@ -569,43 +569,159 @@
 		  						<div class="uk-width-1-4">
 		  							<label class="uk-form-label" for="starttime">START TIME</label>
 							        <div class="uk-form-controls">
-							            <input type="text" id="starttime" name="starttime" value="" class="uk-input flatpickr flatpickrtime flatpickr-input active"/>
+							            <select class="uk-select" id="starttime" name="starttime">
+							                <option value="06:00:00">6:00 AM</option>
+							                <option value="06:15:00">6:15 AM</option>
+							                <option value="06:30:00">6:30 AM</option>
+							                <option value="06:45:00">6:45 AM</option>
+							                <option value="07:00:00">7:00 AM</option>
+							                <option value="07:15:00">7:15 AM</option>
+							                <option value="07:30:00">7:30 AM</option>
+							                <option value="07:45:00">7:45 AM</option>
+							                <option value="08:00:00">8:00 AM</option>
+							                <option value="08:15:00">8:15 AM</option>
+							                <option value="08:30:00">8:30 AM</option>
+							                <option value="08:45:00">8:45 AM</option>
+							                <option value="09:00:00">9:00 AM</option>
+							                <option value="09:15:00">9:15 AM</option>
+							                <option value="09:30:00">9:30 AM</option>
+							                <option value="09:45:00">9:45 AM</option>
+							                <option value="10:00:00">10:00 AM</option>
+							                <option value="10:15:00">10:15 AM</option>
+							                <option value="10:30:00">10:30 AM</option>
+							                <option value="10:45:00">10:45 AM</option>
+							                <option value="11:00:00">11:00 AM</option>
+							                <option value="11:15:00">11:15 AM</option>
+							                <option value="11:30:00">11:30 AM</option>
+							                <option value="11:45:00">11:45 AM</option>
+							                <option value="12:00:00">12:00 PM</option>
+							                <option value="12:15:00">12:15 PM</option>
+							                <option value="12:30:00">12:30 PM</option>
+							                <option value="12:45:00">12:45 PM</option>
+							                <option value="13:00:00">1:00 PM</option>
+							                <option value="13:15:00">1:15 PM</option>
+							                <option value="13:30:00">1:30 PM</option>
+							                <option value="13:45:00">1:45 PM</option>
+							                <option value="14:00:00">2:00 PM</option>
+							                <option value="14:15:00">2:15 PM</option>
+							                <option value="14:30:00">2:30 PM</option>
+							                <option value="14:45:00">2:45 PM</option>
+							                <option value="15:00:00">3:00 PM</option>
+							                <option value="15:15:00">3:15 PM</option>
+							                <option value="15:30:00">3:30 PM</option>
+							                <option value="15:45:00">3:45 PM</option>
+							                <option value="16:00:00">4:00 PM</option>
+							                <option value="16:15:00">4:15 PM</option>
+							                <option value="16:30:00">4:30 PM</option>
+							                <option value="16:45:00">4:45 PM</option>
+							                <option value="17:00:00">5:00 PM</option>
+							                <option value="17:15:00">5:15 PM</option>
+							                <option value="17:30:00">5:30 PM</option>
+							                <option value="17:45:00">5:45 PM</option>
+							                <option value="18:00:00">6:00 PM</option>
+							                <option value="18:15:00">6:15 PM</option>
+							                <option value="18:30:00">6:30 PM</option>
+							                <option value="18:45:00">6:45 PM</option>
+							                <option value="19:00:00">7:00 PM</option>
+							                <option value="19:15:00">7:15 PM</option>
+							                <option value="19:30:00">7:30 PM</option>
+							                <option value="19:45:00">7:45 PM</option>
+							                <option value="20:00:00">8:00 PM</option>
+							            </select>
 							        </div>
 		  						</div>
 		  						<div class="uk-width-1-4">
 		  							<label class="uk-form-label" for="endtime">END TIME</label>
 							        <div class="uk-form-controls">
-							            <input type="text" id="endtime" name="endtime" value="" class="uk-input flatpickr flatpickrtime flatpickr-input active"/>
+							            <select class="uk-select" id="endtime" name="endtime">
+							                <option value="06:00:00">6:00 AM</option>
+							                <option value="06:15:00">6:15 AM</option>
+							                <option value="06:30:00">6:30 AM</option>
+							                <option value="06:45:00">6:45 AM</option>
+							                <option value="07:00:00">7:00 AM</option>
+							                <option value="07:15:00">7:15 AM</option>
+							                <option value="07:30:00">7:30 AM</option>
+							                <option value="07:45:00">7:45 AM</option>
+							                <option value="08:00:00">8:00 AM</option>
+							                <option value="08:15:00">8:15 AM</option>
+							                <option value="08:30:00">8:30 AM</option>
+							                <option value="08:45:00">8:45 AM</option>
+							                <option value="09:00:00">9:00 AM</option>
+							                <option value="09:15:00">9:15 AM</option>
+							                <option value="09:30:00">9:30 AM</option>
+							                <option value="09:45:00">9:45 AM</option>
+							                <option value="10:00:00">10:00 AM</option>
+							                <option value="10:15:00">10:15 AM</option>
+							                <option value="10:30:00">10:30 AM</option>
+							                <option value="10:45:00">10:45 AM</option>
+							                <option value="11:00:00">11:00 AM</option>
+							                <option value="11:15:00">11:15 AM</option>
+							                <option value="11:30:00">11:30 AM</option>
+							                <option value="11:45:00">11:45 AM</option>
+							                <option value="12:00:00">12:00 PM</option>
+							                <option value="12:15:00">12:15 PM</option>
+							                <option value="12:30:00">12:30 PM</option>
+							                <option value="12:45:00">12:45 PM</option>
+							                <option value="13:00:00">1:00 PM</option>
+							                <option value="13:15:00">1:15 PM</option>
+							                <option value="13:30:00">1:30 PM</option>
+							                <option value="13:45:00">1:45 PM</option>
+							                <option value="14:00:00">2:00 PM</option>
+							                <option value="14:15:00">2:15 PM</option>
+							                <option value="14:30:00">2:30 PM</option>
+							                <option value="14:45:00">2:45 PM</option>
+							                <option value="15:00:00">3:00 PM</option>
+							                <option value="15:15:00">3:15 PM</option>
+							                <option value="15:30:00">3:30 PM</option>
+							                <option value="15:45:00">3:45 PM</option>
+							                <option value="16:00:00">4:00 PM</option>
+							                <option value="16:15:00">4:15 PM</option>
+							                <option value="16:30:00">4:30 PM</option>
+							                <option value="16:45:00">4:45 PM</option>
+							                <option value="17:00:00">5:00 PM</option>
+							                <option value="17:15:00">5:15 PM</option>
+							                <option value="17:30:00">5:30 PM</option>
+							                <option value="17:45:00">5:45 PM</option>
+							                <option value="18:00:00">6:00 PM</option>
+							                <option value="18:15:00">6:15 PM</option>
+							                <option value="18:30:00">6:30 PM</option>
+							                <option value="18:45:00">6:45 PM</option>
+							                <option value="19:00:00">7:00 PM</option>
+							                <option value="19:15:00">7:15 PM</option>
+							                <option value="19:30:00">7:30 PM</option>
+							                <option value="19:45:00">7:45 PM</option>
+							                <option value="20:00:00">8:00 PM</option>
+							            </select>
 							        </div>
 		  						</div>
-		  						<div class="uk-width-1-2 uk-margin-small-top uk-padding-remove">
-		  							<label class="uk-form-label" for="endtime">REPEAT ON</label>
+		  						<div class="uk-width-1-2 uk-margin-top uk-padding-remove">
+		  							<label class="uk-form-label" for="endtime">ON DAYS</label>
 							        <div class="uk-form-controls">
-							        	<span class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'monday');">M</span>
-							        	<span class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'tuesday');">T</span>
-							        	<span class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'wednesday');">W</span>
-							        	<span class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'thursday');">T</span>
-							        	<span class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'friday');">F</span>
-							        	<span class="uk-badge dayselector outline use-hand-cursor" onclick="selectday(this,'saturday');">S</span>
-							        	<span class="uk-badge dayselector outline use-hand-cursor" onclick="selectday(this,'sunday');">S</span>
-							            <input class="uk-checkbox" name="monday" type="checkbox" checked hidden>
-							            <input class="uk-checkbox" name="tuesday" type="checkbox" checked hidden>
-							            <input class="uk-checkbox" name="wednesday" type="checkbox" checked hidden>
-							            <input class="uk-checkbox" name="thursday" type="checkbox" checked hidden>
-							            <input class="uk-checkbox" name="friday" type="checkbox" checked hidden>
-							            <input class="uk-checkbox" name="saturday" type="checkbox" hidden>
-							            <input class="uk-checkbox" name="sunday" type="checkbox" hidden>
+							        	<span class="uk-badge dayselector use-hand-cursor" uk-tooltip title="MONDAYS" onclick="selectday(this,'monday');">M</span>
+							        	<span  uk-tooltip title="TUESDAYS" class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'tuesday');">T</span>
+							        	<span  uk-tooltip title="WEDNESDAYS" class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'wednesday');">W</span>
+							        	<span  uk-tooltip title="THURSDAYS" class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'thursday');">T</span>
+							        	<span  uk-tooltip title="FRIDAYS" class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'friday');">F</span>
+							        	<span  uk-tooltip title="SATURDAYS" class="uk-badge dayselector outline use-hand-cursor" onclick="selectday(this,'saturday');">S</span>
+							        	<span  uk-tooltip title="SUNDAYS" class="uk-badge dayselector outline use-hand-cursor" onclick="selectday(this,'sunday');">S</span>
+							            <input class="uk-checkbox dayselectorcheckbox" name="monday" type="checkbox" checked hidden>
+							            <input class="uk-checkbox dayselectorcheckbox" name="tuesday" type="checkbox" checked hidden>
+							            <input class="uk-checkbox dayselectorcheckbox" name="wednesday" type="checkbox" checked hidden>
+							            <input class="uk-checkbox dayselectorcheckbox" name="thursday" type="checkbox" checked hidden>
+							            <input class="uk-checkbox dayselectorcheckbox" name="friday" type="checkbox" checked hidden>
+							            <input class="uk-checkbox dayselectorcheckbox" name="saturday" type="checkbox" hidden>
+							            <input class="uk-checkbox dayselectorcheckbox" name="sunday" type="checkbox" hidden>
 							        </div>
 		  						</div>
-		  						<div class="uk-width-1-4 uk-margin-small-top">
+		  						<div class="uk-width-1-4 uk-margin-top">
 							        <div class="uk-form-controls">
-							            <span class="uk-badge availselect use-hand-cursor" onclick="toggleAvailability('available');">AVAILABLE</span><span class="uk-badge availselect use-hand-cursor outline" onclick="toggleAvailability('notavailable');">NOT AVAILABLE</span>
+							            <span  uk-tooltip title="ADDS AVAILABILITY" class="uk-badge availselect use-hand-cursor uk-width-1-1" onclick="toggleAvailability('available');">AVAILABLE</span><span uk-tooltip title="REMOVES AVAILABILITY"  class="uk-badge availselect use-hand-cursor outline uk-width-1-1" onclick="toggleAvailability('notavailable');" style="margin-top:2px;">NOT AVAILABLE</span>
 							            <input name="availability" type="hidden" value="available">
 							        </div>
 		  						</div>
 		  						<div class="uk-width-1-4 uk-margin-small-top">
 							        <div class="uk-form-controls">
-							            <button class="uk-button uk-button-primary" style="margin-top: 8px;height: 100%; width: 100%;" onclick="saveAvailability(event);">SAVE</button>
+							            <button class="uk-button uk-button-success" style="margin-top: 8px;height: 47px; width: 100%;" onclick="saveAvailability(event);">SAVE</button>
 							        </div>
 		  						</div>
 		  					</div>
@@ -621,7 +737,8 @@
 		text-shadow: none;
 	}
 	
-	.uk-badge.dayselector.outline{
+	.uk-badge.dayselector.outline,
+	.uk-badge.availselect.outline{
 	    background-color: transparent;
 	    border-color: #005186;
 	    color: #005186;
@@ -639,6 +756,11 @@
  			$("input[name='"+day+"']:checkbox").prop('checked',false);
  		}else{
  			$("input[name='"+day+"']:checkbox").prop('checked',true);
+ 		}
+
+ 		// at least one day should be selected
+ 		if(!$(".dayselectorcheckbox").is(':checked')){
+ 			selectday(".dayselector:first", 'monday');
  		}
  	}
 
@@ -705,6 +827,25 @@
 		e.preventDefault();
 		var form = $('#newavailabilityform');
 
+		// check if date is not empty
+		if($("#daterange").val().length === 0) {
+		    $("#daterange").addClass('uk-form-danger');
+		        return false;
+		}else{
+			$("#daterange").removeClass('uk-form-danger');
+		}
+
+		// check if end time is later than start time
+		var starttime = $("#starttime").val();
+		var endtime = $("#endtime").val();
+
+		if(starttime > endtime || starttime == endtime) {
+		    $("#endtime").addClass('uk-form-danger');
+		        return false;
+		}else{
+			$("#endtime").removeClass('uk-form-danger');
+		}
+
 		$.post("/auditors/{{$data['summary']['id']}}/availability/create", {
             'inputs' : form.serialize(),
             '_token' : '{{ csrf_token() }}'
@@ -760,25 +901,6 @@
 		    dateFormat: "F j, Y",
 		});
 
-		flatpickr("#starttime", {
-		    enableTime: true,
-		    noCalendar: true,
-		    altFormat: "h:i K",
-		    dateFormat: "h:i K",
-		    time_24hr: false,
-		    minDate: "06:00",
-    		maxDate: "20:00",
-		});
-
-		flatpickr("#endtime", {
-		    enableTime: true,
-		    noCalendar: true,
-		    altFormat: "h:i K",
-		    dateFormat: "h:i K",
-		    time_24hr: false,
-		    minDate: "06:00",
-    		maxDate: "20:00"
-		});
 	</script>
  <style>
  .user-preference-col-1{
