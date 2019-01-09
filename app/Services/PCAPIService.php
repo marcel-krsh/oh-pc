@@ -54,7 +54,7 @@ class PCAPIService
             'verify' => false,
         ]);
 
-        $response = $client->request('POST', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'),['form_params'=>[$payload]);
+        $response = $client->request('POST', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'),['form_params'=>[$payload]]);
 
         return $response->getBody();
     }
@@ -73,7 +73,7 @@ class PCAPIService
             'verify' => false,
         ]);
 
-        $response = $client->request('PUT', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'),['form_params'=>[$payload]);
+        $response = $client->request('PUT', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'),['form_params'=>[$payload]]);
 
         return $response->getBody();
 
