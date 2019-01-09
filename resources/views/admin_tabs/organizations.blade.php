@@ -54,7 +54,7 @@
 
         </tbody>
     </table>
-        {{ $organizations->links() }} <a href="#organizationtop" id="organization-scroll-to-top" uk-scroll class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-up"></i> BACK TO TOP OF LIST</a> <a href="#organizationtop" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-up"></i> BACK TO TOP OF LIST NOT SMOOTH</a>
+        {{ $organizations->links() }} <a href="#organizationtop" id="organization-scroll-to-top" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-up"></i> BACK TO TOP OF LIST</a>
     
 
 </div>
@@ -64,7 +64,7 @@
    $('.page-link').click(function(){
            $('#organizations-tab-content').load($(this).attr('href'));
            $('#organization-scroll-to-top').trigger("click");
-           //alert('Did I go to the top?');
+           alert('Did I go to the top?');
            return false;
        });
     });
