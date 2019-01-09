@@ -18,9 +18,9 @@ class BroadcastServiceProvider extends ServiceProvider
         //Broadcast::routes();
         Broadcast::routes(['middleware' => ['auth']]);
 
-        if (env('APP_DEBUG_NO_DEVCO') == 'true') {
-            Auth::onceUsingId(286); // TEST BRIAN
-        }
+        // if (env('APP_DEBUG_NO_DEVCO') == 'true') {
+        //     Auth::onceUsingId(286); // TEST BRIAN
+        // }
 
         //Broadcast::routes(['middleware' => ['auth:api']]);
 
