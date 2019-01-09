@@ -51,11 +51,7 @@ class CachedAuditsEvent
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
-    }
-
+    
     public function cachedAuditCreated(CachedAudit $cached_audit)
     {
         // create buildings, create units, create amenities cache tables
