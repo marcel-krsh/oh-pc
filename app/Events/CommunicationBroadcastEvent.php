@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -21,7 +22,7 @@ class CommunicationBroadcastEvent implements ShouldBroadcastNow
      *
      * @return void
      */
-    public function __construct($user, $data)
+    public function __construct(User $user, $data)
     {
         //
         $this->user = $user;
@@ -40,6 +41,6 @@ class CommunicationBroadcastEvent implements ShouldBroadcastNow
     public function broadcastOn()
     {
         //return new PrivateChannel('communications.'.$this->user->id);
-        return new PrivateChannel('communications');
+        return new PrivateChannel('communications.'.$this->user->id);
     }
 }

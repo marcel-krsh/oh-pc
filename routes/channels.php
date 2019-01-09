@@ -21,9 +21,10 @@ use App\Models\Communication;
 //     return true; // return $user->id === Communication::findOrNew($messageId)->owner_id;
 // });
 
-Broadcast::channel('communications', function ($user) {
+Broadcast::channel('communications.{id}', function ($user, $id) {
 	//dd($user,$uid,$sid);
-  	return ['id'=>$user->id];
+  	//return ['id'=>$user->id];
+  	return (int) $user->id === (int) $id;
 });
 
 

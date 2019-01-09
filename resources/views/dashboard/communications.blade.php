@@ -279,7 +279,7 @@ function filterByOwner(){
             mounted: function() {
                 console.log("Communications Mounted");
                 //Echo.private('communications.{{Auth::user()->id}}')
-                Echo.private('communications')
+                Echo.private('communications.{{Auth::user()->id}}')
                 .listen('CommunicationBroadcastEvent', (data) => {
                     console.log('You have been notified.');
                     console.log(data);
