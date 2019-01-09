@@ -16,7 +16,7 @@ class CommunicationBroadcastEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $user;
+    public $user_id;
     public $data;
     /**
      * Create a new event instance.
@@ -26,8 +26,8 @@ class CommunicationBroadcastEvent implements ShouldBroadcastNow
     public function __construct(User $user, $data)
     {
         //
-        $this->user = $user;
-        
+        $this->user_id = $user->id;
+        $this->data = $data;
     }
 
     /**
@@ -38,6 +38,6 @@ class CommunicationBroadcastEvent implements ShouldBroadcastNow
     public function broadcastOn()
     {
         //return new PrivateChannel('communications.'.$this->user->id);
-        return new PrivateChannel('communications.'.$this->user->id);
+        return new PrivateChannel('communications.'.$this->user_id);
     }
 }
