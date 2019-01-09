@@ -61,7 +61,7 @@ class CommunicationsEvent
         // update total unread
         $user = User::find($communication_recipient->user_id);
         $data = [
-            'event' =>'tab'
+            'event' =>'tab',
             'userId' => $communication_recipient->user_id,
             'communicationTotal' => $communicationTotal
         ];
