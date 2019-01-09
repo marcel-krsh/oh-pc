@@ -42,13 +42,59 @@ class PCAPIService
 
     public function post($url, $payload)
     {
+        if ($this->_auth->accessTokenNeedsRefresh()) {
+            //$this->_auth->rootRefreshToken();
+            $this->_auth->rootAuthenticate();
+        }
+
+
+        $client = new Client([
+            'base_uri' => $this->_auth->getUrl(),
+            'timeout'  => 5.0,
+            'verify' => false,
+        ]);
+
+        $response = $client->request('POST', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'),['form_params'=>[$payload]);
+
+        return $response->getBody();
     }
 
     public function put($url, $payload)
     {
+        if ($this->_auth->accessTokenNeedsRefresh()) {
+            //$this->_auth->rootRefreshToken();
+            $this->_auth->rootAuthenticate();
+        }
+
+
+        $client = new Client([
+            'base_uri' => $this->_auth->getUrl(),
+            'timeout'  => 5.0,
+            'verify' => false,
+        ]);
+
+        $response = $client->request('PUT', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'),['form_params'=>[$payload]);
+
+        return $response->getBody();
+
     }
 
-    public function delete($url)
+    public function delete($url, $parameters = [])
     {
+        if ($this->_auth->accessTokenNeedsRefresh()) {
+            //$this->_auth->rootRefreshToken();
+            $this->_auth->rootAuthenticate();
+        }
+
+
+        $client = new Client([
+            'base_uri' => $this->_auth->getUrl(),
+            'timeout'  => 5.0,
+            'verify' => false,
+        ]);
+
+        $response = $client->request('DELETE', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'));
+
+        return $response->getBody();
     }
 }

@@ -68,7 +68,7 @@ class CommunicationsEvent
             ]
         ];
 
-        event(new CommunicationBroadcastEvent($user,$data));
+        event(new UpdateEvent($user,$data));
 
         // $new_communication = Communication::where('id', '=', $communication_recipient->communication_id)->first();
 

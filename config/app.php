@@ -153,7 +153,6 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         //Spatie\Activitylog\ActivitylogServiceProvider::class,
         App\Providers\AutoLoadProvider::class,
-        'Maatwebsite\Excel\ExcelServiceProvider',
         'Aloha\Twilio\Support\Laravel\ServiceProvider',
         'Chumper\Zipper\ZipperServiceProvider',
         Barryvdh\DomPDF\ServiceProvider::class,
@@ -217,7 +216,6 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
-        'Excel' => 'Maatwebsite\Excel\Facades\Excel',
         'Image' => Intervention\Image\Facades\Image::class,
         'GeoData' => App\Helpers\GeoData::class,
         'Zipper' => 'Chumper\Zipper\Zipper',
