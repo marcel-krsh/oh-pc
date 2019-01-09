@@ -54,7 +54,7 @@
 
         </tbody>
     </table>
-        {{ $organizations->links() }} <a href="#organizationtop" id="organization-scroll-to-top" uk-scroll="{offset: 10}" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-up"></i> BACK TO TOP OF LIST</a>
+        {{ $organizations->links() }} <a href="#organizationtop" id="organization-scroll-to-top" uk-scroll class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-up"></i> BACK TO TOP OF LIST</a> <a href="#organizationtop" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-up"></i> BACK TO TOP OF LIST NOT SMOOTH</a>
     
 
 </div>
