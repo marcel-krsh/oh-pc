@@ -61,7 +61,7 @@
         </tbody>
     </table>
     <a name="findingsbottom"></a> 
-    {{ $findingtypes->links() }}  <a href="#findingstop" id="organization-scroll-to-top" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-down"></i> BOTTOM OF LIST</a>
+    {{ $findingtypes->links() }}  <a href="#findingstop" id="organization-scroll-to-top" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-up"></i> BACK TO TOP OF LIST</a>
 
 </div>
 <script>
