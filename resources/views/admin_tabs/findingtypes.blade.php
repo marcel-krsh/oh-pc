@@ -79,6 +79,7 @@
                     UIkit.modal.alert(data);
                 } else {
                     $('#findingtype-tab-content').load('/tabs/findingtype');
+                    $('#top').trigger('click');
                 }
         } );
     }

@@ -72,6 +72,7 @@
                     UIkit.modal.alert(data);
                 } else {
                     $('#organizations-tab-content').load('/tabs/organization');
+                    $('#top').trigger('click');
                 }
         } );
     }
