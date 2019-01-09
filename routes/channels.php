@@ -23,6 +23,7 @@ use App\Models\Communication;
 
 Broadcast::channel('updates.{id}', function ($user, $id) {
   	return (int) $user->id === (int) $id;
+
 });
 
 

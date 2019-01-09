@@ -124,6 +124,7 @@
         Route::get('/modals/auditors/{id}/preferences', 'UserController@preferences')->name('auditor.preferences');
         Route::post('/auditors/{id}/addresses/create', 'UserController@saveAuditorAddress')->name('auditor.address.create');
         Route::post('/auditoraddresses/{address_id}/delete', 'UserController@deleteAuditorAddress')->name('auditor.address.delete');
+        Route::post('/auditors/{id}/availability/create', 'UserController@saveAuditorAvailability')->name('auditor.availability.create');
 
         Route::get('/modals/amenities/add/{type}/{id}', 'AuditController@addAmenity')->name('amenities.add');
         Route::post('/modals/amenities/save', 'AuditController@saveAmenity')->name('amenities.save');

@@ -47,6 +47,25 @@ class UserController extends Controller
         return 1;
     }
 
+    public function saveAuditorAvailability(Request $request, $user) {
+        $forminputs = $request->get('inputs');
+        parse_str($forminputs, $forminputs);
+
+        $daterange = $forminputs['daterange'];
+        $starttime = $forminputs['starttime'];
+        $endtime = $forminputs['endtime'];
+        $availability = $forminputs['availability'];
+        $monday = (array_key_exists('monday', $forminputs) && $forminputs['monday'] == "on")? 1 : 0;
+        $tuesday = (array_key_exists('tuesday', $forminputs) && $forminputs['tuesday'] == "on")? 1 : 0;
+        $wednesday = (array_key_exists('wednesday', $forminputs) && $forminputs['wednesday'] == "on")? 1 : 0;
+        $thursday = (array_key_exists('thursday', $forminputs) && $forminputs['thursday'] == "on")? 1 : 0;
+        $friday = (array_key_exists('friday', $forminputs) && $forminputs['friday'] == "on")? 1 : 0;
+        $saturday = (array_key_exists('saturday', $forminputs) && $forminputs['saturday'] == "on")? 1 : 0;
+        $sunday = (array_key_exists('sunday', $forminputs) && $forminputs['sunday'] == "on")? 1 : 0;
+
+        
+    }
+
     public function deleteAuditorAddress(Request $request, $address_id){
         // check if current user can delete this record and if the record exists.
         

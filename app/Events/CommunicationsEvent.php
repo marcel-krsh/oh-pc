@@ -60,12 +60,8 @@ class CommunicationsEvent
         // update total unread
         $user = User::find($communication_recipient->user_id);
         $data = [
-            
-            'data' => [
-                'event' => 'NewRecipient',
-                'userId' => $communication_recipient->user_id,
-                'communicationTotal' => $communicationTotal
-            ]
+            'userId' => $communication_recipient->user_id,
+            'communicationTotal' => $communicationTotal
         ];
 
         event(new UpdateEvent($user,$data));
