@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Event;
@@ -29,6 +31,7 @@ class CommunicationRecipient extends Model
 
         static::created(function ($communication_recipient) {
             Event::fire('communication.recipient.created', $communication_recipient);
+            Log::info('Fired event?');
         });
 
         // static::updated(function ($transaction) {

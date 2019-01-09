@@ -66,7 +66,7 @@ class CommunicationsEvent
             'communicationTotal' => $communicationTotal
         ];
 
-        $update = event(new UpdateEvent($user,$data));
+        event(new UpdateEvent($user,$data));
         Log::info('Update Event fired.');
         Log::info($update);
 
