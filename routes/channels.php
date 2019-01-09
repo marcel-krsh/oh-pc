@@ -21,19 +21,20 @@ use App\Models\Communication;
 //     return true; // return $user->id === Communication::findOrNew($messageId)->owner_id;
 // });
 
-Broadcast::channel('communications.{id}', function ($user, $id) {
-	//dd($user,$uid,$sid);
-  	//return ['id'=>$user->id];
+Broadcast::channel('updates.{id}', function ($user, $id) {
   	return (int) $user->id === (int) $id;
 
 });
 
 
-Broadcast::channel('audits', function ($user) {
-	//dd($user,$uid,$sid);
-  	return ['name'=>$user->name];
-});
+// Broadcast::channel('audits.{id}', function ($user, $id) {
+//   	return (int) $user->id === (int) $id;
+// });
 
-Broadcast::channel('chat',function($user){
-	return ['name'=>$user->name];
-});
+// Broadcast::channel('chat.{id}', function ($user, $id) {
+//   	return (int) $user->id === (int) $id;
+// });
+
+// Broadcast::channel('chat.{id}', function ($user, $id) {
+//   	return (int) $user->id === (int) $id;
+// });

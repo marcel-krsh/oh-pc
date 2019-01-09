@@ -397,10 +397,12 @@ if(Auth::check()){
 		    	console.log("Tabs Working");
 
 		    	//Echo.join('communications.'+uid+'.'+sid);
-		    	Echo.private('communications.{{Auth::user()->id}}')
-				    .listen('CommunicationBroadcastEvent', (e) => {
-				        console.log("new total "+e.data.communicationTotal);
-				        this.statsCommunicationTotal = e.data.communicationTotal;
+		    	Echo.private('updates.{{Auth::user()->id}}')
+				    .listen('UpdateEvent', (data) => {
+				    	if(data.event == 'tab'){
+					        console.log("Tab event received.");
+					        this.statsCommunicationTotal = e.data.communicationTotal;
+					    }
 			    });
 		    	
 		            // console.log("new total "+data.communicationTotal);

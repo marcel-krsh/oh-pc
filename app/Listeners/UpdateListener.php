@@ -2,11 +2,11 @@
 
 namespace App\Listeners;
 
-use App\Events\ReportBroadcastEvent;
+use App\Events\UpdateEvent;
 use Illuminate\Queue\InteractsWithQueue;
 //use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ReportBroadcastListener
+class UpdateListener
 {
     /**
      * Create the event listener.
@@ -21,10 +21,10 @@ class ReportBroadcastListener
     /**
      * Handle the event.
      *
-     * @param  ReportBroadcastEvent  $event
+     * @param  CommunicationBroadcastEvent  $event
      * @return void
      */
-    public function handle(ReportBroadcastEvent $event)
+    public function handle(UpdateEvent $event)
     {
         //
     }

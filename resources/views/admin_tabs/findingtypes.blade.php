@@ -1,3 +1,4 @@
+<a name="findingstop"></a>
 <div class="uk-overflow-container uk-margin-top">
     
     <div uk-grid class="uk-margin-remove">
@@ -7,6 +8,7 @@
         </div>
     </div>
     <hr>
+    {{ $findingtypes->links() }} <a href="#findingsbottom" id="organization-scroll-to-top" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-down"></i> BOTTOM OF LIST</a>
     <table class="uk-table uk-table-condensed small-table-text">
         <thead>
             <th>
@@ -58,7 +60,8 @@
 
         </tbody>
     </table>
-    {{ $findingtypes->links() }}
+    <a name="findingsbottom"></a> 
+    {{ $findingtypes->links() }}  <a href="#findingstop" id="organization-scroll-to-top" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-up"></i> BACK TO TOP OF LIST</a>
 
 </div>
 <script>
@@ -79,6 +82,7 @@
                     UIkit.modal.alert(data);
                 } else {
                     $('#findingtype-tab-content').load('/tabs/findingtype');
+                    $('#top').trigger('click');
                 }
         } );
     }
