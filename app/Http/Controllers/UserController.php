@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Address;
+use App\Models\Availability;
 use Auth;
 use Session;
 use App\LogConverter;
@@ -51,6 +52,7 @@ class UserController extends Controller
         $forminputs = $request->get('inputs');
         parse_str($forminputs, $forminputs);
 
+        $current_user = Auth::user();
         $daterange = $forminputs['daterange'];
         $starttime = $forminputs['starttime'];
         $endtime = $forminputs['endtime'];
@@ -63,7 +65,172 @@ class UserController extends Controller
         $saturday = (array_key_exists('saturday', $forminputs) && $forminputs['saturday'] == "on")? 1 : 0;
         $sunday = (array_key_exists('sunday', $forminputs) && $forminputs['sunday'] == "on")? 1 : 0;
 
+        $date_array = explode(" to ", $daterange);
+        if(count($date_array) != 2){
+            return "A date range is needed.";
+        }
+        $startdate = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+        $enddate = Carbon\Carbon::createFromFormat('F j, Y', $date_array[1]);
+
+        $days = [];
+
+        // go through each day of the week
+        if($monday){
+            $tmp_start = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+            for ($date = $tmp_start->next(Carbon\Carbon::MONDAY); $date->lte($enddate); $date->addWeek()) {
+                $days[] = $date->format('Y-m-d');
+            }
+        }
+        if($tuesday){
+            $tmp_start = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+            for ($date = $tmp_start->next(Carbon\Carbon::TUESDAY); $date->lte($enddate); $date->addWeek()) {
+                $days[] = $date->format('Y-m-d');
+            }
+        }
+        if($wednesday){
+            $tmp_start = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+            for ($date = $tmp_start->next(Carbon\Carbon::WEDNESDAY); $date->lte($enddate); $date->addWeek()) {
+                $days[] = $date->format('Y-m-d');
+            }
+        }
+        if($thursday){
+            $tmp_start = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+            for ($date = $tmp_start->next(Carbon\Carbon::THURSDAY); $date->lte($enddate); $date->addWeek()) {
+                $days[] = $date->format('Y-m-d');
+            }
+        }
+        if($friday){
+            $tmp_start = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+            for ($date = $tmp_start->next(Carbon\Carbon::FRIDAY); $date->lte($enddate); $date->addWeek()) {
+                $days[] = $date->format('Y-m-d');
+            }
+        }
+        if($saturday){
+            $tmp_start = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+            for ($date = $tmp_start->next(Carbon\Carbon::SATURDAY); $date->lte($enddate); $date->addWeek()) {
+                $days[] = $date->format('Y-m-d');
+            }
+        }
+        if($sunday){
+            $tmp_start = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+            for ($date = $tmp_start->next(Carbon\Carbon::SUNDAY); $date->lte($enddate); $date->addWeek()) {
+                $days[] = $date->format('Y-m-d');
+            }
+        }
+
+        usort($days,"strcmp");
         
+        if(Carbon\Carbon::createFromFormat('H:i:s', $starttime)->gt(Carbon\Carbon::createFromFormat('H:i:s', $endtime))){
+            return "The end time must be later than the start time.";
+        }
+
+        // convert time in slot position and span
+        // slot 1 is 6am, then one slot every 15 min
+        $hour_1 =  Carbon\Carbon::createFromFormat('H:i:s', $starttime)->format('H');
+        $min_1 =  Carbon\Carbon::createFromFormat('H:i:s', $starttime)->format('i');
+        $hour_2 =  Carbon\Carbon::createFromFormat('H:i:s', $endtime)->format('H');
+        $min_2 =  Carbon\Carbon::createFromFormat('H:i:s', $endtime)->format('i');
+
+        $slot_start = ($hour_1 - 6)*4 + 1 + $min_1 / 15;
+        $slot_end = ($hour_2 - 6)*4 + 1 + $min_2 / 15;
+        $slot_span = $slot_end - $slot_start;
+
+        // for each day
+        // look through database
+        // if there is a record in the day, compare times
+        
+
+        foreach($days as $day){
+            $avail_records = Availability::where('user_id','=',$current_user->id)->where('date','=',$day)->get();
+            $create_new_record = 0;
+            if(count($avail_records)){
+                foreach($avail_records as $avail_record){
+                    // if times overlap, combine and update existing record, otherwise create a new record
+                    if(     ($slot_start < $avail_record->start_slot && 
+                            $slot_start + $slot_span <= $avail_record->start_slot) || 
+                            $slot_start >= $avail_record->start_slot + $avail_record->span
+                    ){
+                        // no overlap
+                        $create_new_record = 1;
+
+                            // return "no overlap";
+                    }else{
+                        if($slot_start >= $avail_record->start_slot && $slot_start + $slot_span <= $avail_record->start_slot + $avail_record->span){
+                            // full overlap, nothing to do
+                            // return "nothing to do";
+                        }else{
+                            // combine and update record
+                            if($slot_start < $avail_record->start_slot){
+                                // return "overlap and starting before";
+                                $updated_slot_start = $slot_start;
+                                $updated_start_time = $starttime;
+                                
+                                if($slot_start + $slot_span > $avail_record->start_slot + $avail_record->span){
+
+                                    $updated_span = $slot_span;
+                                    $updated_end_time = $endtime;
+                                }else{
+
+                                    $tmp_hour_1 =  Carbon\Carbon::createFromFormat('H:i:s', $starttime)->format('H');
+                                    $tmp_min_1 =  Carbon\Carbon::createFromFormat('H:i:s', $starttime)->format('i');
+                                    $tmp_hour_2 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->end_time)->format('H');
+                                    $tmp_min_2 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->end_time)->format('i');
+
+                                    $tmp_slot_start = ($tmp_hour_1 - 6)*4 + 1 + $tmp_min_1 / 15;
+                                    $tmp_slot_end = ($tmp_hour_2 - 6)*4 + 1 + $tmp_min_2 / 15;
+                                    
+                                    $updated_span = $tmp_slot_end - $tmp_slot_start;
+                                    $updated_end_time = $avail_record->end_time;
+                                }
+                            }else{
+
+                                // return "overlap and starting after";
+                                $updated_slot_start = $avail_record->start_slot;
+                                $updated_start_time = $avail_record->start_time;
+
+                                $tmp_hour_1 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->start_time)->format('H');
+                                $tmp_min_1 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->start_time)->format('i');
+                                $tmp_hour_2 =  Carbon\Carbon::createFromFormat('H:i:s', $endtime)->format('H');
+                                $tmp_min_2 =  Carbon\Carbon::createFromFormat('H:i:s', $endtime)->format('i');
+
+                                $tmp_slot_start = ($tmp_hour_1 - 6)*4 + 1 + $tmp_min_1 / 15;
+                                $tmp_slot_end = ($tmp_hour_2 - 6)*4 + 1 + $tmp_min_2 / 15;
+                                
+                                $updated_span = $tmp_slot_end - $tmp_slot_start;
+                                $updated_end_time = $endtime;
+                            }
+
+                            // update record
+                            $avail_record->update([
+                                "start_time" => $updated_start_time,
+                                "end_time" => $updated_end_time,
+                                "start_slot" => $updated_slot_start,
+                                "span" => $updated_span
+                            ]);
+
+                            // return "overlap: ".$updated_slot_start." ".$updated_start_time." ".$updated_span." ".$updated_end_time;
+                        }
+                    }
+                }
+            }else{
+                // create new record
+                $create_new_record = 1;
+            }
+
+            if($create_new_record){
+                $new_avail = new Availability([
+                        'user_id' => $current_user->id,
+                        'date' => $day,
+                        'start_time' => $starttime,
+                        'end_time' => $endtime,
+                        'start_slot' => $slot_start,
+                        'span' => $slot_span
+                    ]);
+                $new_avail->save();
+            }
+        }
+
+        dd($days);
     }
 
     public function deleteAuditorAddress(Request $request, $address_id){
