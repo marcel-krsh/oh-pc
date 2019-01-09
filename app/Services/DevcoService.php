@@ -159,7 +159,7 @@ class DevcoService extends PCAPIService
      * @param  string|null $device_name
      * @return object
      */
-    public function updateAmenity(int $amenities_id, array $metadata, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : string
+    public function updateAmenity(int $amenity_type_id, array $metadata, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : string
     {
         // example call
         // /api/v1/devco/addresses/{{address_key}}
@@ -172,7 +172,7 @@ class DevcoService extends PCAPIService
 
         $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
-        return $this->put("devco/amenities/{$amenities_id}?{$log_params}", $metadata);
+        return $this->put("devco/amenity-types/{$amenity_type_id}?{$log_params}", $metadata);
     }
 
     /**
