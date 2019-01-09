@@ -399,6 +399,7 @@ if(Auth::check()){
 		    	//Echo.join('communications.'+uid+'.'+sid);
 		    	Echo.private('updates.{{Auth::user()->id}}')
 				    .listen('UpdateEvent', (data) => {
+				    	console.log('Update received with:'.data);
 				    	if(data.event == 'tab'){
 					        console.log("Tab event received.");
 					        this.statsCommunicationTotal = e.data.communicationTotal;
