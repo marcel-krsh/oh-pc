@@ -1,6 +1,5 @@
 <div class="uk-overflow-container uk-margin-top">
     <a name="organization-top"></a>
-    <a href="#organization-top" id="organization-scroll-to-top" uk-scroll="{offset: 10}" ></a>
     <div uk-grid class="uk-margin-remove">
         <h4 class="uk-text-left uk-width-2-3" style="padding-top: 8px;">{{number_format($organizations->total(), 0)}} TOTAL ORGANIZATIONS</h4> 
         <div class="uk-width-1-3 uk-text-right">
@@ -54,7 +53,8 @@
 
         </tbody>
     </table>
-        {{ $organizations->links() }}
+        {{ $organizations->links() }} <a href="#organization-top" id="organization-scroll-to-top" uk-scroll="{offset: 10}" class="uk-badge uk-badge-success"><i class="a-circle-up"></i> BACK TO TOP OF LIST</a>
+    
 
 </div>
 <script>
