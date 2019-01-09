@@ -68,7 +68,6 @@ class CommunicationsEvent
 
         event(new UpdateEvent($user,$data));
         Log::info('Update Event fired.');
-        Log::info($update);
 
         // $new_communication = Communication::where('id', '=', $communication_recipient->communication_id)->first();
 
