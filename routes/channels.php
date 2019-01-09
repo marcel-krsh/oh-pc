@@ -24,7 +24,8 @@ use App\Models\Communication;
 Broadcast::channel('communications.{id}', function ($user, $id) {
 	//dd($user,$uid,$sid);
   	//return ['id'=>$user->id];
-  	return (int) $user->id === (int) $id;
+  	//return (int) $user->id === (int) $id;
+	return true;
 });
 
 

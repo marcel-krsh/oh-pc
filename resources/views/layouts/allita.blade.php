@@ -63,6 +63,7 @@ if(Auth::check()){
 	</style>
 	<?php /* session(['disablePacer'=>0]); */ ?>
 	@endif
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	<script>
 		function openUserPreferences(){

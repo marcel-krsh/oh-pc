@@ -14,7 +14,7 @@
 	  					<h3 class="uk-margin-small-top">Set Availability <i class="a-calendar-pencil use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="expandModal(this);"></i></h3>
 	  					<div class="uk-grid-small uk-margin-remove" uk-grid>
 	  						<div class="uk-width-1-3 uk-padding-remove">
-	  							<label class="uk-text-small">Max Hours/Day</label>
+	  							<label class="uk-text-small">Max Hours per Day</label>
 						        <select class="uk-select" id="max_hours" name="max_hours" onchange="autosave(this, 'auditor.availability_max_hours')">
 					                <option value="01:00:00" @if($data['summary']['availability_max_hours'] == '01:00:00') selected @endif>1:00</option>
 					                <option value="01:15:00" @if($data['summary']['availability_max_hours'] == '01:15:00') selected @endif>1:15</option>
@@ -64,7 +64,7 @@
 					            </select>
 	  						</div>
 	  						<div class="uk-width-1-3">
-	  							<label class="uk-text-small">Lunch/Breaks</label>
+	  							<label class="uk-text-small">Max Hours for Breaks per Day</label>
 						        <select class="uk-select" id="lunch" name="lunch" onchange="autosave(this, 'auditor.availability_lunch')">
 					                <option value="00:00:00" @if($data['summary']['availability_lunch'] == '00:00:00') selected @endif>0:00</option>
 					                <option value="00:15:00" @if($data['summary']['availability_lunch'] == '00:15:00') selected @endif>0:15</option>
@@ -76,7 +76,7 @@
 					            </select>
 	  						</div>
 	  						<div class="uk-width-1-3">
-	  							<label class="uk-text-small">Max Driving/Day</label>
+	  							<label class="uk-text-small">Max Hours for Driving per Day</label>
 						        <select class="uk-select" id="max_driving" name="max_driving" onchange="autosave(this, 'auditor.availability_max_driving')">
 					                <option value="01:00:00" @if($data['summary']['availability_max_driving'] == '01:00:00') selected @endif>1:00</option>
 					                <option value="01:15:00" @if($data['summary']['availability_max_driving'] == '01:15:00') selected @endif>1:15</option>
@@ -174,44 +174,6 @@
 	  		</div>
 	  		<div class="user-preference-col-2 uk-padding-remove uk-margin-small-top" style="display:none">
 	  			<div uk-grid>
-	  				<div class="uk-width-1-1 uk-padding-remove">
-	  					<div uk-grid>
-	  						<div class="uk-width-1-3">
-	  							<label>PRESET</label><br />
-	  							<label>S<br /><input class="uk-checkbox" type="checkbox" checked></label>
-	  							<label>M<br /><input class="uk-checkbox" type="checkbox" checked></label>
-	  							<label>T<br /><input class="uk-checkbox" type="checkbox" checked></label>
-	  							<label>W<br /><input class="uk-checkbox" type="checkbox" checked></label>
-	  							<label>T<br /><input class="uk-checkbox" type="checkbox" checked></label>
-	  							<label>F<br /><input class="uk-checkbox" type="checkbox" checked></label>
-	  							<label>S<br /><input class="uk-checkbox" type="checkbox" checked></label>
-	  						</div>
-	  						<div class="uk-width-1-6">
-	  							<label class="uk-form-label" for="form-stacked-text">START</label>
-						        <div class="uk-form-controls">
-						            <input class="uk-input uk-form-small" id="form-stacked-text" type="text" placeholder="">
-						        </div>
-	  						</div>
-	  						<div class="uk-width-1-6">
-	  							<label class="uk-form-label" for="form-stacked-text">END</label>
-						        <div class="uk-form-controls">
-						            <input class="uk-input uk-form-small" id="form-stacked-text" type="text" placeholder="">
-						        </div>
-	  						</div>
-	  						<div class="uk-width-1-6">
-	  							<label class="uk-form-label" for="form-stacked-text">FROM</label>
-						        <div class="uk-form-controls">
-						            <input class="uk-input uk-form-small" id="form-stacked-text" type="text" placeholder="">
-						        </div>
-	  						</div>
-	  						<div class="uk-width-1-6">
-	  							<label class="uk-form-label" for="form-stacked-text">TO</label>
-						        <div class="uk-form-controls">
-						            <input class="uk-input uk-form-small" id="form-stacked-text" type="text" placeholder="">
-						        </div>
-	  						</div>
-	  					</div>
-	  				</div>
 	  				<div class="uk-width-1-1 uk-margin-top">
 						<div id="auditor-availability-calendar" class="uk-padding-remove uk-margin-top" >
 							<div>
@@ -592,37 +554,106 @@
 							</div>
 						</div>
 	  				</div>
+
+
 	  				<div class="uk-width-1-1 uk-margin-top">
-	  					<h4>Exclude:</h4>
-	  					<div class="uk-child-width-1-4" uk-grid>
-	  						<div class="uk-margin-top"><input class="uk-checkbox" type="checkbox" checked> <label>Saturdays</label></div>
-	  						<div class="uk-margin-top"><input class="uk-checkbox" type="checkbox" checked> <label>Sundays</label></div>
-	  						<div class="uk-margin-top"><input class="uk-checkbox" type="checkbox" checked> <label>Holidays</label></div>
-	  						<div class="uk-margin-top"><input class="uk-checkbox" type="checkbox" checked> <label>...</label></div>
-	  						<div class="uk-margin-top"><input class="uk-checkbox" type="checkbox" checked> <label>...</label></div>
-	  						<div class="uk-margin-top"><input class="uk-checkbox" type="checkbox" checked> <label>...</label></div>
-	  						<div class="uk-margin-top"><input class="uk-checkbox" type="checkbox" checked> <label>...</label></div>
-	  						<div class="uk-margin-top"><input class="uk-checkbox" type="checkbox" checked> <label>...</label></div>
-	  					</div>
+	  					<h3 class="uk-margin-small-top">Add Availability</h3>
+	  					<form name="newavailabilityform" id="newavailabilityform" method="post">
+		  					<div uk-grid>
+		  						<div class="uk-width-1-2 uk-padding-remove">
+		  							<label class="uk-form-label" for="daterange">DATE RANGE</label>
+		  							<div class="uk-form-controls">
+		  								<input type="text" id="daterange" name="daterange" value="" class="uk-input flatpickr flatpickr-input active"/>
+		  							</div>
+		  						</div>
+		  						<div class="uk-width-1-4">
+		  							<label class="uk-form-label" for="starttime">START TIME</label>
+							        <div class="uk-form-controls">
+							            <input type="text" id="starttime" name="starttime" value="" class="uk-input flatpickr flatpickrtime flatpickr-input active"/>
+							        </div>
+		  						</div>
+		  						<div class="uk-width-1-4">
+		  							<label class="uk-form-label" for="endtime">END TIME</label>
+							        <div class="uk-form-controls">
+							            <input type="text" id="endtime" name="endtime" value="" class="uk-input flatpickr flatpickrtime flatpickr-input active"/>
+							        </div>
+		  						</div>
+		  						<div class="uk-width-1-2 uk-margin-small-top uk-padding-remove">
+		  							<label class="uk-form-label" for="endtime">REPEAT ON</label>
+							        <div class="uk-form-controls">
+							        	<span class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'monday');">M</span>
+							        	<span class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'tuesday');">T</span>
+							        	<span class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'wednesday');">W</span>
+							        	<span class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'thursday');">T</span>
+							        	<span class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'friday');">F</span>
+							        	<span class="uk-badge dayselector outline use-hand-cursor" onclick="selectday(this,'saturday');">S</span>
+							        	<span class="uk-badge dayselector outline use-hand-cursor" onclick="selectday(this,'sunday');">S</span>
+							            <input class="uk-checkbox" name="monday" type="checkbox" checked hidden>
+							            <input class="uk-checkbox" name="tuesday" type="checkbox" checked hidden>
+							            <input class="uk-checkbox" name="wednesday" type="checkbox" checked hidden>
+							            <input class="uk-checkbox" name="thursday" type="checkbox" checked hidden>
+							            <input class="uk-checkbox" name="friday" type="checkbox" checked hidden>
+							            <input class="uk-checkbox" name="saturday" type="checkbox" hidden>
+							            <input class="uk-checkbox" name="sunday" type="checkbox" hidden>
+							        </div>
+		  						</div>
+		  						<div class="uk-width-1-4 uk-margin-small-top">
+							        <div class="uk-form-controls">
+							            <span class="uk-badge availselect use-hand-cursor" onclick="toggleAvailability('available');">AVAILABLE</span><span class="uk-badge availselect use-hand-cursor outline" onclick="toggleAvailability('notavailable');">NOT AVAILABLE</span>
+							            <input name="availability" type="hidden" value="available">
+							        </div>
+		  						</div>
+		  						<div class="uk-width-1-4 uk-margin-small-top">
+							        <div class="uk-form-controls">
+							            <button class="uk-button uk-button-primary" style="margin-top: 8px;height: 100%; width: 100%;" onclick="saveAvailability(event);">SAVE</button>
+							        </div>
+		  						</div>
+		  					</div>
+		  				</form>
 	  				</div>
 	  			</div>
 	  		</div>
 	    </div>
 	</div>
 </div>
-
+<style>
+	.uk-badge.dayselector, .uk-badge.availselect {
+		text-shadow: none;
+	}
+	
+	.uk-badge.dayselector.outline{
+	    background-color: transparent;
+	    border-color: #005186;
+	    color: #005186;
+	}
+	
+</style>
  <script>
  	$( document ).ready(function() {
 		fillSpacers();
 	});
 
+ 	function selectday(element, day) {
+ 		$(element).toggleClass("outline");
+ 		if($("input[name='"+day+"']:checkbox").prop('checked')){
+ 			$("input[name='"+day+"']:checkbox").prop('checked',false);
+ 		}else{
+ 			$("input[name='"+day+"']:checkbox").prop('checked',true);
+ 		}
+ 	}
+
+ 	function toggleAvailability(availability) {
+ 		$(".availselect").toggleClass("outline");
+ 		$("input[name='availability']:hidden").val(availability);
+ 	}
+
  	function expandModal(element) {
- 		if($(element).closest('.uk-modal-body')[0].style.width != '50%') {
+ 		if($(element).closest('.uk-modal-body')[0].style.width != '70%') {
  			$('.user-preference-col-2').fadeOut("slow", function(){
 	 			$('.user-preference-col-1').animate({ width: "100%" }, 1000, function(){
 	 				
 	 			});
-	 			$(element).closest('.uk-modal-body').animate({ width: "50%" });
+	 			$(element).closest('.uk-modal-body').animate({ width: "70%" });
 	 			$(element).closest('.uk-modal-body').toggleClass("modal-wide");
 	 		});
 	 		
@@ -641,7 +672,7 @@
  	}
 
  	$('.uk-modal-body').animate({
- 			width: "50%"
+ 			width: "70%"
  	});
 
  	$(document).on('beforehide', '.uk-modal-body', function (item) {
@@ -666,6 +697,24 @@
                 UIkit.modal.alert('The address has been saved.',{stack: true});
                 form.get(0).reset();
                 $('#auditor-add-address').hide();
+            }
+        } );
+	}
+
+	function saveAvailability(e){
+		e.preventDefault();
+		var form = $('#newavailabilityform');
+
+		$.post("/auditors/{{$data['summary']['id']}}/availability/create", {
+            'inputs' : form.serialize(),
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            if(data!=1){ 
+                UIkit.modal.alert(data,{stack: true});
+            } else {
+                UIkit.notification('<span uk-icon="icon: check"></span> Availability Saved', {pos:'top-right', timeout:1000, status:'success'});
+                form.get(0).reset();
+                //reload graph
             }
         } );
 	}
@@ -701,6 +750,36 @@
         });
 
     </script>
+    <script>
+		flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
+
+		flatpickr("#daterange", {
+		    mode: "range",
+		    minDate: "today",
+		    altFormat: "F j, Y",
+		    dateFormat: "F j, Y",
+		});
+
+		flatpickr("#starttime", {
+		    enableTime: true,
+		    noCalendar: true,
+		    altFormat: "h:i K",
+		    dateFormat: "h:i K",
+		    time_24hr: false,
+		    minDate: "06:00",
+    		maxDate: "20:00",
+		});
+
+		flatpickr("#endtime", {
+		    enableTime: true,
+		    noCalendar: true,
+		    altFormat: "h:i K",
+		    dateFormat: "h:i K",
+		    time_24hr: false,
+		    minDate: "06:00",
+    		maxDate: "20:00"
+		});
+	</script>
  <style>
  .user-preference-col-1{
  	width:100%;

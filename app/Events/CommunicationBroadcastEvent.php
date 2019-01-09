@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\User;
+use Auth;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -26,11 +27,7 @@ class CommunicationBroadcastEvent implements ShouldBroadcastNow
     {
         //
         $this->user = $user;
-        if (env('APP_DEBUG_NO_DEVCO') == 'true') {
-           // Auth::onceUsingId(1); // TEST BRIAN
-            Auth::onceUsingId(286); // TEST
-            $this->user = Auth::user();
-        }
+        
     }
 
     /**
