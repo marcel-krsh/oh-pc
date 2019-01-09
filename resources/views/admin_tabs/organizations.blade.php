@@ -8,7 +8,7 @@
         </div>
     </div>
     <hr>
-    {{ $organizations->links() }} <a href="#organizationbottom" id="organization-scroll-to-top" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-up"></i> BOTTOM OF LIST</a>
+    {{ $organizations->links() }} <a href="#organizationbottom" id="organization-scroll-to-top" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-down"></i> BOTTOM OF LIST</a>
     <table class="uk-table uk-table-hover uk-table-striped uk-table-condensed small-table-text">
         <thead>
         
