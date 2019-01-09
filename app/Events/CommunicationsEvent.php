@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Events\CommunicationBroadcastEvent;
+use App\Events\UpdateEvent;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
