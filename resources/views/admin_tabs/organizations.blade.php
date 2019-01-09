@@ -1,5 +1,6 @@
-<div class="uk-overflow-container uk-margin-top">
-    <a name="organization-top"></a>
+ <a name="organizationtop"></a>
+ <div class="uk-overflow-container uk-margin-top">
+   
     <div uk-grid class="uk-margin-remove">
         <h4 class="uk-text-left uk-width-2-3" style="padding-top: 8px;">{{number_format($organizations->total(), 0)}} TOTAL ORGANIZATIONS</h4> 
         <div class="uk-width-1-3 uk-text-right">
@@ -53,7 +54,7 @@
 
         </tbody>
     </table>
-        {{ $organizations->links() }} <a href="#organization-top" id="organization-scroll-to-top" uk-scroll="{offset: 420}" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-up"></i> BACK TO TOP OF LIST</a>
+        {{ $organizations->links() }} <a href="#organizationtop" id="organization-scroll-to-top" uk-scroll="{offset: 10}" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-up"></i> BACK TO TOP OF LIST</a>
     
 
 </div>
@@ -75,7 +76,7 @@
                 if(data!=1){ 
                     UIkit.modal.alert(data);
                 } else {
-                    $('#organization-top').trigger("click");
+                    $('#organizationtop').trigger("click");
                     $('#organizations-tab-content').load('/tabs/organization');
                     
                 }
