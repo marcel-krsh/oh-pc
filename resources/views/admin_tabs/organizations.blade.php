@@ -62,9 +62,8 @@
     $(document).ready(function(){
    // your on click function here
    $('.page-link').click(function(){
-           $('#organizations-tab-content').load($(this).attr('href'));
-           $('#organization-scroll-to-top').trigger("click");
-           alert('Did I go to the top?');
+            $('#organizations-tab-content').load($(this).attr('href'));
+            $(document).scrollTop( $("#organizationtop").offset().top ); 
            return false;
        });
     });
