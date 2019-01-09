@@ -398,15 +398,15 @@ if(Auth::check()){
 
 		    	//Echo.join('communications.'+uid+'.'+sid);
 		    	Echo.private('updates.{{Auth::user()->id}}')
-				    .listen('UpdateEvent', (data) => {
-				    	console.log('Update received with:');
-				    	console.log(data);
-				    	console.log(data.event);
-				    	console.log(data.data.event);
+				    .listen('UpdateEvent', (payload) => {
+				    	@if(env('APP_DEBUG'))
+					    	console.log('Update received with:');
+					    	console.log(payload);
+				    	@endIf
 
-				    	if(data.event == 'tab'){
+				    	if(payload.data.event == 'tab'){
 					        console.log("Tab event received.");
-					        this.statsCommunicationTotal = data.communicationTotal;
+					        this.statsCommunicationTotal = payload.data.communicationTotal;
 					    }
 			    });
 		    	

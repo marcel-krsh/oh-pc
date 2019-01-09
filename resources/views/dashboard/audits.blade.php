@@ -779,8 +779,8 @@ The following div is defined in this particular tab and pushed to the main layou
         mounted: function() {
             console.log("Audits Mounted");
             Echo.private('updates.{{Auth::user()->id}}')
-            .listen('UpdateEvent', (data) => {
-            			if(data.event == 'audit'){
+            .listen('UpdateEvent', (payload) => {
+            			if(payload.data.event == 'audit'){
 				        console.log('Audit event received.');
 			                // if(data.is_reply){
 			                //     console.log("user " + data.userId + " received a new reply for message "+data.id);
