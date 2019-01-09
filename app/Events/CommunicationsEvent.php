@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Events\UpdateEvent;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
