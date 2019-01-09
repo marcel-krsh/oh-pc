@@ -3,6 +3,8 @@
 namespace App\Events;
 use Auth;
 use App\Models\User;
+
+use Illuminate\Support\Facades\Log;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
