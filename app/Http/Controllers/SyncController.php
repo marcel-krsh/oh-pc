@@ -134,7 +134,7 @@ class SyncController extends Controller
                             // api reference:
                             //int $amenities_id, array $metadata, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null
                             // Amenity can update the description Only
-                            $passingData['AmenityDescription']=$metadata->amenity_description;
+                            $passingData['AmenityDescription']=$metadata['amenity_description'];
                             //
                             $syncData = $apiConnect->$apiMethod($metadata['amenity_type_key'], $passingData, $user, $userEmail, $userName, $deviceId, $deviceName);
                             $syncData = json_decode($syncData, true);
