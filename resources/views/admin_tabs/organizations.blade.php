@@ -8,6 +8,7 @@
         </div>
     </div>
     <hr>
+    {{ $organizations->links() }} <a href="#organizationbottom" id="organization-scroll-to-top" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-up"></i> BOTTOM OF LIST</a>
     <table class="uk-table uk-table-hover uk-table-striped uk-table-condensed small-table-text">
         <thead>
         
@@ -54,6 +55,7 @@
 
         </tbody>
     </table>
+    <a name="organizationbottom"></a>
         {{ $organizations->links() }} <a href="#organizationtop" id="organization-scroll-to-top" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-up"></i> BACK TO TOP OF LIST</a>
     
 
@@ -63,7 +65,6 @@
    // your on click function here
    $('.page-link').click(function(){
             $('#organizations-tab-content').load($(this).attr('href'));
-            $(document).scrollTop( $("#organizationtop").offset().top ); 
            return false;
        });
     });
