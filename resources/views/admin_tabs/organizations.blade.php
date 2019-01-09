@@ -1,4 +1,6 @@
 <div class="uk-overflow-container uk-margin-top">
+    <a name="organization-top"></a>
+    <a href="#organization-top" id="smoothscrollLink" uk-scroll="{offset: 90}" ></a>
     <div uk-grid class="uk-margin-remove">
         <h4 class="uk-text-left uk-width-2-3" style="padding-top: 8px;">{{number_format($organizations->total(), 0)}} TOTAL ORGANIZATIONS</h4> 
         <div class="uk-width-1-3 uk-text-right">
@@ -71,8 +73,9 @@
                 if(data!=1){ 
                     UIkit.modal.alert(data);
                 } else {
+                    $('#organization-top').trigger("click");
                     $('#organizations-tab-content').load('/tabs/organization');
-                    $('#top').trigger('click');
+                    
                 }
         } );
     }
