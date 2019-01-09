@@ -1,6 +1,6 @@
 <div class="uk-overflow-container uk-margin-top">
     <a name="organization-top"></a>
-    <a href="#organization-top" id="smoothscrollLink" uk-scroll="{offset: 90}" ></a>
+    <a href="#organization-top" id="organization-scroll-to-top" uk-scroll="{offset: 10}" ></a>
     <div uk-grid class="uk-margin-remove">
         <h4 class="uk-text-left uk-width-2-3" style="padding-top: 8px;">{{number_format($organizations->total(), 0)}} TOTAL ORGANIZATIONS</h4> 
         <div class="uk-width-1-3 uk-text-right">
@@ -62,7 +62,8 @@
    // your on click function here
    $('.page-link').click(function(){
            $('#organizations-tab-content').load($(this).attr('href'));
-           $('#organization-top').trigger("click");
+           $('#organization-scroll-to-top').trigger("click");
+           //alert('Did I go to the top?');
            return false;
        });
     });
