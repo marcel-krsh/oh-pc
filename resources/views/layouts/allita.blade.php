@@ -104,13 +104,7 @@ if(Auth::check()){
 	<link rel="stylesheet" href="/css/system-419171130.css">
 
 	@yield('head')
-	@if(env('APP_DEBUG_NO_DEVCO') == 'true')
-    <style>
-    ul#tabs {
-	    margin-top: 60px;
-	}
-	</style>
-    @endif
+	
     <style>
 	  [v-cloak] {
 	    display: none;
