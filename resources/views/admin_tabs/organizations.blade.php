@@ -62,6 +62,7 @@
    // your on click function here
    $('.page-link').click(function(){
            $('#organizations-tab-content').load($(this).attr('href'));
+           $('#organization-top').trigger("click");
            return false;
        });
     });
