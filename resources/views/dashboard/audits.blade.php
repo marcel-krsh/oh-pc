@@ -778,7 +778,7 @@ The following div is defined in this particular tab and pushed to the main layou
 
         mounted: function() {
             console.log("Audits Mounted");
-            Echo.private('updates.'{{Auth::user()->id}})
+            Echo.private('updates.{{Auth::user()->id}}')
             .listen('UpdateEvent', (data) => {
 				        console.log('Listening to audits');
                 // if(data.is_reply){
