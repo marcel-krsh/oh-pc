@@ -1,12 +1,12 @@
-			<li id="auditor-calendar-{{$data['summary']['ref']}}" class="grid-schedule" style="display:none">
-				<div class="auditor-calendar-header grid-schedule-header">
+			<li id="auditor-calendar-{{$data['summary']['ref']}}" class="grid-schedule-availability" style="display:none">
+				<div class="auditor-calendar-header grid-schedule-availability-header">
 					<div class="week-spacer"></div>
 					@foreach($data['calendar']['header'] as $header_date)
-					<div class="week-day @if($loop->iteration == 5) selected @endif">{{$header_date}}</div>
+					<div class="week-day ">{{$header_date}}</div>
 					<div class="week-spacer"></div>
 					@endforeach
 				</div>
-				<div class="grid-schedule-sidebar">
+				<div class="grid-schedule-availability-sidebar">
 					<div>6a</div><div></div><div></div><div></div>
 					<div></div><div></div><div></div><div></div>
 					<div>8a</div><div></div><div></div><div></div>
@@ -23,16 +23,16 @@
 					<div></div><div></div><div></div><div></div>
 					<div>8p</div><div></div><div></div><div></div>
 				</div>
-				<div class="auditor-calendar-content grid-schedule-content">
+				<div class="auditor-calendar-content grid-schedule-availability-content">
 					<div class="day-spacer"></div>
 					@foreach($data['calendar']['content'] as $day)
-					<div class="day @if($day['no_availability']) no-availability @endif @if($loop->iteration == 5) selected @endif">
+					<div class="day @if($day['no_availability']) no-availability @endif">
 						@if($day['no_availability'])
 						<div class="event">
 							<i class="a-circle-cross"></i>
 						</div>
 						@else
-						<div class="event beforetime" data-start="{{$day['before_time_start']}}" data-span="{{$day['before_time_span']}}"></div>
+						
 						@foreach($day['events'] as $event)
 						<div class="event {{$event['status']}} {{$event['class']}} @if(Auth::user()->id == $event['lead']) isLead @endif" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
 							@if($event['icon'] != '')<i class="{{$event['icon']}}"></i>@endif
@@ -108,13 +108,13 @@
 							@endif
 						</div>
 						@endforeach
-						<div class="event aftertime" data-start="{{$day['after_time_start']}}" data-span="{{$day['after_time_span']}}"></div>
+						
 						@endif
 					</div>
 					<div class="day-spacer"></div>
 					@endforeach		
 				</div>
-				<div class="grid-schedule-footer">
+				<div class="grid-schedule-availability-footer">
 					<div uk-grid>
 						<div class="uk-width-1-3 uk-padding-remove use-hand-cursor auditor-calendar-nav" onclick="fetchCalendar(this);" data-target="{{$data['calendar']['footer']['ref-previous']}}"><i class="a-arrow-left-2"></i> {{$data['calendar']['footer']['previous']}}</div>
 						<div class="uk-width-1-3 uk-text-center"><i class="a-calendar-pencil"></i> {{$data['calendar']['footer']['today']}}</div>

@@ -56,7 +56,7 @@ class UserController extends Controller
         $daterange = $forminputs['daterange'];
         $starttime = $forminputs['starttime'];
         $endtime = $forminputs['endtime'];
-        $availability = $forminputs['availability'];
+        $availability = $forminputs['availability']; //available or notavailable
         $monday = (array_key_exists('monday', $forminputs) && $forminputs['monday'] == "on")? 1 : 0;
         $tuesday = (array_key_exists('tuesday', $forminputs) && $forminputs['tuesday'] == "on")? 1 : 0;
         $wednesday = (array_key_exists('wednesday', $forminputs) && $forminputs['wednesday'] == "on")? 1 : 0;
@@ -77,42 +77,63 @@ class UserController extends Controller
         // go through each day of the week
         if($monday){
             $tmp_start = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+            if($tmp_start->isMonday()){
+                $days[] = $tmp_start->format('Y-m-d');
+            }
             for ($date = $tmp_start->next(Carbon\Carbon::MONDAY); $date->lte($enddate); $date->addWeek()) {
                 $days[] = $date->format('Y-m-d');
             }
         }
         if($tuesday){
             $tmp_start = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+            if($tmp_start->isTuesday()){
+                $days[] = $tmp_start->format('Y-m-d');
+            }
             for ($date = $tmp_start->next(Carbon\Carbon::TUESDAY); $date->lte($enddate); $date->addWeek()) {
                 $days[] = $date->format('Y-m-d');
             }
         }
         if($wednesday){
             $tmp_start = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+            if($tmp_start->isWednesday()){
+                $days[] = $tmp_start->format('Y-m-d');
+            }
             for ($date = $tmp_start->next(Carbon\Carbon::WEDNESDAY); $date->lte($enddate); $date->addWeek()) {
                 $days[] = $date->format('Y-m-d');
             }
         }
         if($thursday){
             $tmp_start = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+            if($tmp_start->isTuesday()){
+                $days[] = $tmp_start->format('Y-m-d');
+            }
             for ($date = $tmp_start->next(Carbon\Carbon::THURSDAY); $date->lte($enddate); $date->addWeek()) {
                 $days[] = $date->format('Y-m-d');
             }
         }
         if($friday){
             $tmp_start = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+            if($tmp_start->isFriday()){
+                $days[] = $tmp_start->format('Y-m-d');
+            }
             for ($date = $tmp_start->next(Carbon\Carbon::FRIDAY); $date->lte($enddate); $date->addWeek()) {
                 $days[] = $date->format('Y-m-d');
             }
         }
         if($saturday){
             $tmp_start = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+            if($tmp_start->isSaturday()){
+                $days[] = $tmp_start->format('Y-m-d');
+            }
             for ($date = $tmp_start->next(Carbon\Carbon::SATURDAY); $date->lte($enddate); $date->addWeek()) {
                 $days[] = $date->format('Y-m-d');
             }
         }
         if($sunday){
             $tmp_start = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+            if($tmp_start->isSunday()){
+                $days[] = $tmp_start->format('Y-m-d');
+            }
             for ($date = $tmp_start->next(Carbon\Carbon::SUNDAY); $date->lte($enddate); $date->addWeek()) {
                 $days[] = $date->format('Y-m-d');
             }
@@ -138,41 +159,139 @@ class UserController extends Controller
         // for each day
         // look through database
         // if there is a record in the day, compare times
-        
 
-        foreach($days as $day){
-            $avail_records = Availability::where('user_id','=',$current_user->id)->where('date','=',$day)->get();
-            $create_new_record = 0;
-            if(count($avail_records)){
-                foreach($avail_records as $avail_record){
-                    // if times overlap, combine and update existing record, otherwise create a new record
-                    if(     ($slot_start < $avail_record->start_slot && 
-                            $slot_start + $slot_span <= $avail_record->start_slot) || 
-                            $slot_start >= $avail_record->start_slot + $avail_record->span
-                    ){
-                        // no overlap
-                        $create_new_record = 1;
+        if($availability == "available"){
+            foreach($days as $day){
+                $avail_records = Availability::where('user_id','=',$current_user->id)->where('date','=',$day)->get();
+                
+                $records_to_delete = array(); // stores the records to delete
+                $create_new_record = 1;
 
-                            // return "no overlap";
-                    }else{
-                        if($slot_start >= $avail_record->start_slot && $slot_start + $slot_span <= $avail_record->start_slot + $avail_record->span){
-                            // full overlap, nothing to do
-                            // return "nothing to do";
+                if(count($avail_records)){
+                    foreach($avail_records as $avail_record){
+
+                        // if no overlap, ignore and prepare to insert unless another match is found on the next record
+                        
+                        // if there is an overlap, combine and override the new availability with the new values, prepare to delete the overlaping record
+                        
+                        // in all cases, we will insert one or more records at the end unless the overlap is full.
+                        
+                        if( ($slot_start < $avail_record->start_slot && $slot_start + $slot_span < $avail_record->start_slot) || $slot_start > $avail_record->start_slot + $avail_record->span ){
+                            // no overlap
+                            
                         }else{
-                            // combine and update record
-                            if($slot_start < $avail_record->start_slot){
-                                // return "overlap and starting before";
-                                $updated_slot_start = $slot_start;
-                                $updated_start_time = $starttime;
-                                
-                                if($slot_start + $slot_span > $avail_record->start_slot + $avail_record->span){
+                            if($slot_start >= $avail_record->start_slot && $slot_start + $slot_span <= $avail_record->start_slot + $avail_record->span){
+                                // full overlap, nothing to do
+                                 //return "nothing to do";
+                                 $create_new_record = 0;
+                            }else{
+                                // combine and update record
+                                if($slot_start < $avail_record->start_slot){
+                                    // return "overlap and starting before";
+                                    $updated_slot_start = $slot_start;
+                                    $updated_start_time = $starttime;
+                                    
+                                    if($slot_start + $slot_span > $avail_record->start_slot + $avail_record->span){
 
-                                    $updated_span = $slot_span;
-                                    $updated_end_time = $endtime;
+                                        $updated_span = $slot_span;
+                                        $updated_end_time = $endtime;
+                                    }else{
+
+                                        $tmp_hour_1 =  Carbon\Carbon::createFromFormat('H:i:s', $starttime)->format('H');
+                                        $tmp_min_1 =  Carbon\Carbon::createFromFormat('H:i:s', $starttime)->format('i');
+                                        $tmp_hour_2 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->end_time)->format('H');
+                                        $tmp_min_2 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->end_time)->format('i');
+
+                                        $tmp_slot_start = ($tmp_hour_1 - 6)*4 + 1 + $tmp_min_1 / 15;
+                                        $tmp_slot_end = ($tmp_hour_2 - 6)*4 + 1 + $tmp_min_2 / 15;
+                                        
+                                        $updated_span = $tmp_slot_end - $tmp_slot_start;
+                                        $updated_end_time = $avail_record->end_time;
+                                    }
+
+                                    // save current record for deletion
+                                    $records_to_delete[] = $avail_record;
+
+                                    // reset the new availability values with the new ones
+                                    $slot_start = $updated_slot_start;
+                                    $starttime = $updated_start_time;
+                                    $slot_span = $updated_span;
+                                    $endtime = $updated_end_time;
                                 }else{
+                                    // return "overlap and starting after";
+                                    $updated_slot_start = $avail_record->start_slot;
+                                    $updated_start_time = $avail_record->start_time;
 
-                                    $tmp_hour_1 =  Carbon\Carbon::createFromFormat('H:i:s', $starttime)->format('H');
-                                    $tmp_min_1 =  Carbon\Carbon::createFromFormat('H:i:s', $starttime)->format('i');
+                                    $tmp_hour_1 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->start_time)->format('H');
+                                    $tmp_min_1 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->start_time)->format('i');
+                                    $tmp_hour_2 =  Carbon\Carbon::createFromFormat('H:i:s', $endtime)->format('H');
+                                    $tmp_min_2 =  Carbon\Carbon::createFromFormat('H:i:s', $endtime)->format('i');
+
+                                    $tmp_slot_start = ($tmp_hour_1 - 6)*4 + 1 + $tmp_min_1 / 15;
+                                    $tmp_slot_end = ($tmp_hour_2 - 6)*4 + 1 + $tmp_min_2 / 15;
+                                    
+                                    $updated_span = $tmp_slot_end - $tmp_slot_start;
+                                    $updated_end_time = $endtime;
+
+                                    // save current record for deletion
+                                    $records_to_delete[] = $avail_record;
+
+                                    // reset the new availability values with the new ones
+                                    $slot_start = $updated_slot_start;
+                                    $starttime = $updated_start_time;
+                                    $slot_span = $updated_span;
+                                    $endtime = $updated_end_time;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if($create_new_record){
+                    foreach($records_to_delete as $record_to_delete){
+                        $record_to_delete->delete();
+                    }
+                    $new_avail = new Availability([
+                            'user_id' => $current_user->id,
+                            'date' => $day,
+                            'start_time' => $starttime,
+                            'end_time' => $endtime,
+                            'start_slot' => $slot_start,
+                            'span' => $slot_span
+                        ]);
+                    $new_avail->save();
+                }
+            }
+        }else{
+            foreach($days as $day){
+                $avail_records = Availability::where('user_id','=',$current_user->id)->where('date','=',$day)->get();
+                
+                if(count($avail_records)){
+                    foreach($avail_records as $avail_record){
+                        
+                        // if times overlap, remove and update existing record
+                        if(     ($slot_start < $avail_record->start_slot && 
+                                $slot_start + $slot_span < $avail_record->start_slot) || 
+                                $slot_start > $avail_record->start_slot + $avail_record->span
+                        ){
+                            // no overlap, nothing to do
+                            //return "no overlap";
+                        }else{
+                            if($slot_start <= $avail_record->start_slot && $slot_start + $slot_span >= $avail_record->start_slot + $avail_record->span){
+                                //return "full overlap, deleto";
+                                // full overlap, remove record
+                                $avail_record->delete();
+                            }else{
+                                // remove and update record
+                                if($slot_start <= $avail_record->start_slot){
+                                    // return "overlap and starting before";
+                                    // update record, keep only whatever is after the end of the span
+                                    
+                                    $updated_slot_start = $slot_end;
+                                    $updated_start_time = $endtime;
+
+                                    $tmp_hour_1 =  Carbon\Carbon::createFromFormat('H:i:s', $endtime)->format('H');
+                                    $tmp_min_1 =  Carbon\Carbon::createFromFormat('H:i:s', $endtime)->format('i');
                                     $tmp_hour_2 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->end_time)->format('H');
                                     $tmp_min_2 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->end_time)->format('i');
 
@@ -181,56 +300,112 @@ class UserController extends Controller
                                     
                                     $updated_span = $tmp_slot_end - $tmp_slot_start;
                                     $updated_end_time = $avail_record->end_time;
-                                }
-                            }else{
+                                    
+                                    // update record
+                                    $avail_record->update([
+                                        "start_time" => $updated_start_time,
+                                        "end_time" => $updated_end_time,
+                                        "start_slot" => $updated_slot_start,
+                                        "span" => $updated_span
+                                    ]);
 
-                                // return "overlap and starting after";
-                                $updated_slot_start = $avail_record->start_slot;
-                                $updated_start_time = $avail_record->start_time;
+                                    // return "overlap: ".$updated_slot_start." ".$updated_start_time." ".$updated_span." ".$updated_end_time;
+                                }elseif($slot_start > $avail_record->start_slot && $slot_end >= $avail_record->start_slot + $avail_record->span){
+                                    // overlap, removing the end, keeping record up to starttime
+                                    $updated_slot_start = $avail_record->start_slot;
+                                    $updated_start_time = $avail_record->start_time;
+                                    $tmp_hour_1 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->start_time)->format('H');
+                                    $tmp_min_1 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->start_time)->format('i');
+                                    $tmp_hour_2 =  Carbon\Carbon::createFromFormat('H:i:s', $starttime)->format('H');
+                                    $tmp_min_2 =  Carbon\Carbon::createFromFormat('H:i:s', $starttime)->format('i');
 
-                                $tmp_hour_1 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->start_time)->format('H');
-                                $tmp_min_1 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->start_time)->format('i');
-                                $tmp_hour_2 =  Carbon\Carbon::createFromFormat('H:i:s', $endtime)->format('H');
-                                $tmp_min_2 =  Carbon\Carbon::createFromFormat('H:i:s', $endtime)->format('i');
+                                    $tmp_slot_start = ($tmp_hour_1 - 6)*4 + 1 + $tmp_min_1 / 15;
+                                    $tmp_slot_end = ($tmp_hour_2 - 6)*4 + 1 + $tmp_min_2 / 15;
+                                    
+                                    $updated_span = $tmp_slot_end - $tmp_slot_start;
+                                    $updated_end_time = $starttime;
 
-                                $tmp_slot_start = ($tmp_hour_1 - 6)*4 + 1 + $tmp_min_1 / 15;
-                                $tmp_slot_end = ($tmp_hour_2 - 6)*4 + 1 + $tmp_min_2 / 15;
+                                    // update record
+                                    $avail_record->update([
+                                        "start_time" => $updated_start_time,
+                                        "end_time" => $updated_end_time,
+                                        "start_slot" => $updated_slot_start,
+                                        "span" => $updated_span
+                                    ]);
+
+                                    // return "overlap: ".$updated_slot_start." ".$updated_start_time." ".$updated_span." ".$updated_end_time;
+                                }else{
+                                    // return "bloabla";
+                                    // splitting into two records:
+                                    // the one before starttime and the one after starttime+span
+
+                                    // return "overlap and starting after";
+                                    $updated_slot_start = $avail_record->start_slot;
+                                    $updated_start_time = $avail_record->start_time;
+
+                                    $tmp_hour_1 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->start_time)->format('H');
+                                    $tmp_min_1 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->start_time)->format('i');
+                                    $tmp_hour_2 =  Carbon\Carbon::createFromFormat('H:i:s', $starttime)->format('H');
+                                    $tmp_min_2 =  Carbon\Carbon::createFromFormat('H:i:s', $starttime)->format('i');
+
+                                    $tmp_slot_start = ($tmp_hour_1 - 6)*4 + 1 + $tmp_min_1 / 15;
+                                    $tmp_slot_end = ($tmp_hour_2 - 6)*4 + 1 + $tmp_min_2 / 15;
+                                    
+                                    $updated_span = $tmp_slot_end - $tmp_slot_start;
+                                    $updated_end_time = $starttime;
+
+                                    $updated_slot_start2 = $slot_start+$slot_span+1;
+                                    $updated_start_time2 = $endtime;
+
+                                    $tmp_hour_1 =  Carbon\Carbon::createFromFormat('H:i:s', $endtime)->format('H');
+                                    $tmp_min_1 =  Carbon\Carbon::createFromFormat('H:i:s', $endtime)->format('i');
+                                    $tmp_hour_2 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->end_time)->format('H');
+                                    $tmp_min_2 =  Carbon\Carbon::createFromFormat('H:i:s', $avail_record->end_time)->format('i');
+
+                                    $tmp_slot_start = ($tmp_hour_1 - 6)*4 + 1 + $tmp_min_1 / 15;
+                                    $tmp_slot_end = ($tmp_hour_2 - 6)*4 + 1 + $tmp_min_2 / 15;
+                                    
+                                    $updated_span2 = $tmp_slot_end - $tmp_slot_start;
+                                    $updated_end_time2 = $avail_record->end_time;
+
+                                    //return "overlap: ".$updated_slot_start2." ".$updated_start_time2." ".$updated_span2." ".$updated_end_time2;
+
+                                    // delete current record, add split records
+                                    $avail_record->delete();
+
+                                    $new_avail = new Availability([
+                                            'user_id' => $current_user->id,
+                                            'date' => $day,
+                                            'start_time' => $updated_start_time,
+                                            'end_time' => $updated_end_time,
+                                            'start_slot' => $updated_slot_start,
+                                            'span' => $updated_span
+                                        ]);
+                                    $new_avail->save();
+
+                                    $new_avail = new Availability([
+                                            'user_id' => $current_user->id,
+                                            'date' => $day,
+                                            'start_time' => $updated_start_time2,
+                                            'end_time' => $updated_end_time2,
+                                            'start_slot' => $updated_slot_start2,
+                                            'span' => $updated_span2
+                                        ]);
+                                    $new_avail->save();
                                 
-                                $updated_span = $tmp_slot_end - $tmp_slot_start;
-                                $updated_end_time = $endtime;
+                                }
+
+                                
+
+                                // return "overlap: ".$updated_slot_start." ".$updated_start_time." ".$updated_span." ".$updated_end_time;
                             }
-
-                            // update record
-                            $avail_record->update([
-                                "start_time" => $updated_start_time,
-                                "end_time" => $updated_end_time,
-                                "start_slot" => $updated_slot_start,
-                                "span" => $updated_span
-                            ]);
-
-                            // return "overlap: ".$updated_slot_start." ".$updated_start_time." ".$updated_span." ".$updated_end_time;
                         }
                     }
                 }
-            }else{
-                // create new record
-                $create_new_record = 1;
-            }
-
-            if($create_new_record){
-                $new_avail = new Availability([
-                        'user_id' => $current_user->id,
-                        'date' => $day,
-                        'start_time' => $starttime,
-                        'end_time' => $endtime,
-                        'start_slot' => $slot_start,
-                        'span' => $slot_span
-                    ]);
-                $new_avail->save();
             }
         }
 
-        dd($days);
+        return 1;
     }
 
     public function deleteAuditorAddress(Request $request, $address_id){
@@ -307,6 +482,17 @@ class UserController extends Controller
             ];
         }
 
+        // build calendar
+        if (Session::has('availability.currentdate') && Session::get('availability.currentdate') != '') {
+            $d = Session::get('availability.currentdate');
+        }else{
+            $d = Carbon\Carbon::now()->startOfWeek();
+            session(['availability.currentdate' => $d]);
+            //$calendar_current_date = Session::get('availability.currentdate');
+        }
+
+        $calendar = $this->getCalendar($d); //dd($calendar);
+    
         $data = collect([
             "summary" => [
                 "id" => $id,
@@ -329,1273 +515,151 @@ class UserController extends Controller
                 'availability_lunch' => $user->availability_lunch,
                 'availability_max_driving' => $user->availability_max_driving,
                 'addresses' => $addresses,
-                'date' => 'DECEMBER 21, 2018',
-                'ref' => '20181221',
-                'date-previous' => 'DECEMBER 14, 2018',
-                'ref-previous' => '20181214',
-                'date-next' => 'DECEMBER 28, 2018',
-                'ref-next' => '20181228'
+                'date' => $d->copy()->subDays(0)->format('F j, Y'),
+                'ref' => $d->copy()->subDays(0)->format('Ymd'),
+                'date-previous' => $d->copy()->subDays(7)->format('F j, Y'),
+                'ref-previous' => $d->copy()->subDays(7)->format('Ymd'),
+                'date-next' => strtoupper($d->copy()->addDays(7)->format('F j, Y')),
+                'ref-next' => $d->copy()->addDays(7)->format('Ymd')
             ],
-            "calendar" => [
-                "header" => ["12/18", "12/19", "12/20", "12/21", "12/22", "12/23", "12/24"],
-                "content" => [
-                    [
-                        "id" => 111,
-                        "date" => "12/18",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "action-required",
-                                "start" => "9",
-                                "span" =>  "24",
-                                "icon" => "a-mobile-not",
-                                "lead" => 2,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "33",
-                                "span" =>  "2",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 114,
-                                "status" => "",
-                                "start" => "35",
-                                "span" =>  "11",
-                                "icon" => "a-mobile-checked",
-                                "lead" => 1,
-                                "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 112,
-                        "date" => "12/19",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "",
-                                "start" => "9",
-                                "span" =>  "12",
-                                "icon" => "a-mobile-not",
-                                "lead" => 2,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "21",
-                                "span" =>  "1",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 114,
-                                "status" => "",
-                                "start" => "22",
-                                "span" =>  "24",
-                                "icon" => "a-circle-plus",
-                                "lead" => 1,
-                                "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 113,
-                        "date" => "12/20",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "action-required",
-                                "start" => "9",
-                                "span" =>  "12",
-                                "icon" => "a-mobile-not",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "21",
-                                "span" =>  "4",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 114,
-                                "status" => "",
-                                "start" => "25",
-                                "span" =>  "21",
-                                "icon" => "a-circle-plus",
-                                "lead" => 1,
-                                "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 115,
-                        "date" => "12/21",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "",
-                                "start" => "9",
-                                "span" =>  "16",
-                                "icon" => "a-circle-plus",
-                                "lead" => 1,
-                                "class" => "available no-border-top",
-                                "modal_type" => "choose-filing"
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "30",
-                                "span" =>  "16",
-                                "icon" => "a-circle-plus",
-                                "lead" => 1,
-                                "class" => "available no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 116,
-                        "date" => "12/22",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "in-progress",
-                                "start" => "9",
-                                "span" =>  "16",
-                                "icon" => "a-mobile-checked",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => "change-date"
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "25",
-                                "span" =>  "1",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "26",
-                                "span" =>  "12",
-                                "icon" => "a-folder",
-                                "lead" => 2,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "38",
-                                "span" =>  "8",
-                                "icon" => "a-folder",
-                                "lead" => 1,
-                                "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 114,
-                        "date" => "12/23",
-                        "no_availability" => 1
-                    ],
-                    [
-                        "id" => 115,
-                        "date" => "12/24",
-                        "no_availability" => 1
-                    ]
-                ],
-                "footer" => [
-                    "previous" => "DECEMBER 14, 2018",
-                    'ref-previous' => '20181214',
-                    "today" => "DECEMBER 21, 2018",
-                    "next" => "DECEMBER 28, 2018",
-                    'ref-next' => '20181228'
-                ]
-            ],
-            "calendar-previous" => [
-                "header" => ["12/11", "12/12", "12/13", "12/14", "12/15", "12/16", "12/17"],
-                "content" => [
-                    [
-                        "id" => 113,
-                        "date" => "12/11",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "action-required",
-                                "start" => "9",
-                                "span" =>  "12",
-                                "icon" => "a-mobile-not",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "21",
-                                "span" =>  "4",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 114,
-                                "status" => "",
-                                "start" => "25",
-                                "span" =>  "21",
-                                "icon" => "a-circle-plus",
-                                "lead" => 1,
-                                "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 115,
-                        "date" => "12/12",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "",
-                                "start" => "9",
-                                "span" =>  "16",
-                                "icon" => "a-circle-plus",
-                                "lead" => 1,
-                                "class" => "available no-border-top",
-                                "modal_type" => "choose-filing"
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "30",
-                                "span" =>  "16",
-                                "icon" => "a-circle-plus",
-                                "lead" => 1,
-                                "class" => "available no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 116,
-                        "date" => "12/13",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "in-progress",
-                                "start" => "9",
-                                "span" =>  "16",
-                                "icon" => "a-mobile-checked",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => "change-date"
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "25",
-                                "span" =>  "1",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "26",
-                                "span" =>  "12",
-                                "icon" => "a-folder",
-                                "lead" => 2,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "38",
-                                "span" =>  "8",
-                                "icon" => "a-folder",
-                                "lead" => 1,
-                                "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 116,
-                        "date" => "12/14",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "in-progress",
-                                "start" => "9",
-                                "span" =>  "16",
-                                "icon" => "a-mobile-checked",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => "change-date"
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "25",
-                                "span" =>  "1",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "26",
-                                "span" =>  "12",
-                                "icon" => "a-folder",
-                                "lead" => 2,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "38",
-                                "span" =>  "8",
-                                "icon" => "a-folder",
-                                "lead" => 1,
-                                "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 116,
-                        "date" => "12/15",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "in-progress",
-                                "start" => "9",
-                                "span" =>  "16",
-                                "icon" => "a-mobile-checked",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => "change-date"
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "25",
-                                "span" =>  "1",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "26",
-                                "span" =>  "12",
-                                "icon" => "a-folder",
-                                "lead" => 2,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "38",
-                                "span" =>  "8",
-                                "icon" => "a-folder",
-                                "lead" => 1,
-                                "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 116,
-                        "date" => "12/16",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "in-progress",
-                                "start" => "9",
-                                "span" =>  "16",
-                                "icon" => "a-mobile-checked",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => "change-date"
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "25",
-                                "span" =>  "1",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "26",
-                                "span" =>  "12",
-                                "icon" => "a-folder",
-                                "lead" => 2,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "38",
-                                "span" =>  "8",
-                                "icon" => "a-folder",
-                                "lead" => 1,
-                                "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 116,
-                        "date" => "12/17",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "in-progress",
-                                "start" => "9",
-                                "span" =>  "16",
-                                "icon" => "a-mobile-checked",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => "change-date"
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "25",
-                                "span" =>  "1",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "26",
-                                "span" =>  "12",
-                                "icon" => "a-folder",
-                                "lead" => 2,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "38",
-                                "span" =>  "8",
-                                "icon" => "a-folder",
-                                "lead" => 1,
-                                "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
-                    ]
-                ],
-                "footer" => [
-                    "previous" => "DECEMBER 07, 2018",
-                    'ref-previous' => '20181207',
-                    "today" => "DECEMBER 14, 2018",
-                    "next" => "DECEMBER 21, 2018",
-                    'ref-next' => '20181221'
-                ]
-            ],
-            "calendar-next" => [
-                "header" => ["12/25", "12/26", "12/27", "12/28", "12/29", "12/30", "12/31"],
-                "content" => [
-                    [
-                        "id" => 113,
-                        "date" => "12/11",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "action-required",
-                                "start" => "9",
-                                "span" =>  "12",
-                                "icon" => "a-mobile-not",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "21",
-                                "span" =>  "4",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 114,
-                                "status" => "",
-                                "start" => "25",
-                                "span" =>  "21",
-                                "icon" => "a-circle-plus",
-                                "lead" => 1,
-                                "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 115,
-                        "date" => "12/12",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "",
-                                "start" => "9",
-                                "span" =>  "16",
-                                "icon" => "a-circle-plus",
-                                "lead" => 1,
-                                "class" => "available no-border-top",
-                                "modal_type" => "choose-filing"
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "30",
-                                "span" =>  "16",
-                                "icon" => "a-circle-plus",
-                                "lead" => 1,
-                                "class" => "available no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 116,
-                        "date" => "12/13",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "in-progress",
-                                "start" => "9",
-                                "span" =>  "16",
-                                "icon" => "a-mobile-checked",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => "change-date"
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "25",
-                                "span" =>  "1",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "26",
-                                "span" =>  "12",
-                                "icon" => "a-folder",
-                                "lead" => 2,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "38",
-                                "span" =>  "8",
-                                "icon" => "a-folder",
-                                "lead" => 1,
-                                "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 116,
-                        "date" => "12/14",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "in-progress",
-                                "start" => "9",
-                                "span" =>  "16",
-                                "icon" => "a-mobile-checked",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => "change-date"
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "25",
-                                "span" =>  "1",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "26",
-                                "span" =>  "12",
-                                "icon" => "a-folder",
-                                "lead" => 2,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "38",
-                                "span" =>  "8",
-                                "icon" => "a-folder",
-                                "lead" => 1,
-                                "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 116,
-                        "date" => "12/15/18",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "in-progress",
-                                "start" => "9",
-                                "span" =>  "16",
-                                "icon" => "a-mobile-checked",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => "change-date"
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "25",
-                                "span" =>  "1",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "26",
-                                "span" =>  "12",
-                                "icon" => "a-folder",
-                                "lead" => 2,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "38",
-                                "span" =>  "8",
-                                "icon" => "a-folder",
-                                "lead" => 1,
-                                "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 116,
-                        "date" => "12/16",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "in-progress",
-                                "start" => "9",
-                                "span" =>  "16",
-                                "icon" => "a-mobile-checked",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => "change-date"
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "25",
-                                "span" =>  "1",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "26",
-                                "span" =>  "12",
-                                "icon" => "a-folder",
-                                "lead" => 2,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "38",
-                                "span" =>  "8",
-                                "icon" => "a-folder",
-                                "lead" => 1,
-                                "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 116,
-                        "date" => "12/17",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "in-progress",
-                                "start" => "9",
-                                "span" =>  "16",
-                                "icon" => "a-mobile-checked",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => "change-date"
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "25",
-                                "span" =>  "1",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "26",
-                                "span" =>  "12",
-                                "icon" => "a-folder",
-                                "lead" => 2,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "38",
-                                "span" =>  "8",
-                                "icon" => "a-folder",
-                                "lead" => 1,
-                                "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
-                    ]
-                ],
-                "footer" => [
-                    "previous" => "DECEMBER 21, 2018",
-                    'ref-previous' => '20181221',
-                    "today" => "DECEMBER 28, 2018",
-                    "next" => "JANUARY 04, 2019",
-                    'ref-next' => '20190104',
-                ]
-            ]
+            "calendar" => $calendar['now'],
+            "calendar-previous" => $calendar['previous'],
+            "calendar-next" => $calendar['next']
         ]);
 
 
         return view('modals.user-preferences', compact('data'));
     }
 
-    public function getUserAvailabilityCalendar($userid, $currentdate, $beforeafter)
-    {
+    public function getCalendar($d) {
+        
+        $first_day_of_the_week = $d->copy()->format('Y-m-d');
+        $last_day_of_the_week = $d->copy()->addDays(6)->format('Y-m-d');
 
-        if ($userid != Auth::user()->id) {
+        $availabilities = Availability::where('user_id', '=', Auth::user()->id)
+                            ->whereBetween('date', [$first_day_of_the_week, $last_day_of_the_week])
+                            ->orderBy('date', 'asc')
+                            ->get();
+
+        // create the content for the selected week and one week before/after
+        $tmp_day = $d->copy()->subDays(7);
+        $days = array();
+        $events = array();
+
+        foreach($availabilities as $a){
+            $events[$a->date][] = [
+                    "id" => $a->id,
+                    "status" => "",
+                    "start" => $a->start_slot,
+                    "span" =>  $a->span,
+                    "icon" => "a-circle-minus",
+                    "lead" => 0,
+                    "class" => "available no-border-top no-border-bottom",
+                    "modal_type" => ""
+                ];
+        }
+
+        for($i=0; $i<21; $i++){
+            $header[] = $tmp_day->copy()->addDays($i)->format('m/d');
+
+            if(array_key_exists($tmp_day->copy()->addDays($i)->format('Y-m-d'), $events)){
+                $events_array = $events[$tmp_day->copy()->addDays($i)->format('Y-m-d')];
+
+                // figure out the before and after areas on the schedule
+                $start_slot = 1;
+                $end_slot = 60;
+                foreach($events_array as $e){
+                    if($e['start'] > $start_slot) $start_slot = $e['start'];
+                    if($e['start'] + $e['span'] < $end_slot) $end_slot = $e['start'] + $e['span'];
+                }
+
+                $before_time_start = 1;
+                $before_time_span = $start_slot - 1;
+                $after_time_start = $end_slot;
+                $after_time_span = 61-$end_slot;
+            }else{
+                $events_array = [];
+                $before_time_start = 1;
+                $before_time_span = 0;
+                $after_time_start = 60;
+                $after_time_span = 1;
+            }
+
+            $days[$d->copy()->addDays($i)->format('Y-m-d')] = [ 
+                "date" => $d->copy()->format('m/d'), 
+                "no_availability" => 0,
+                "start_time" => "",
+                "end_time" => "",
+                "before_time_start" => $before_time_start,
+                "before_time_span" => $before_time_span,
+                "after_time_start" => $after_time_start,
+                "after_time_span" => $after_time_span,
+                "events" => $events_array
+            ];
+        }
+
+        $calendar['now'] = [
+                "header" => array_slice($header, 7, 7),
+                "content" => array_slice($days, 7, 7),
+                "footer" => [
+                    "previous" => strtoupper($d->copy()->subDays(7)->format('F j, Y')),
+                    'ref-previous' => $d->copy()->subDays(7)->format('Ymd'),
+                    "today" => strtoupper($d->copy()->subDays(0)->format('F j, Y')),
+                    "next" => strtoupper($d->copy()->addDays(7)->format('F j, Y')),
+                    'ref-next' => $d->copy()->addDays(7)->format('Ymd')
+                ]
+            ];
+        $calendar['previous'] = [
+                "header" => array_slice($header, 0, 7),
+                "content" => array_slice($days, 0, 7),
+                "footer" => [
+                    "previous" => strtoupper($d->copy()->subDays(14)->format('F j, Y')),
+                    'ref-previous' => $d->copy()->subDays(14)->format('Ymd'),
+                    "today" => strtoupper($d->copy()->subDays(7)->format('F j, Y')),
+                    "next" => strtoupper($d->copy()->addDays(0)->format('F j, Y')),
+                    'ref-next' => $d->copy()->addDays(0)->format('Ymd')
+                ]
+            ];
+         $calendar['next'] = [
+                "header" => array_slice($header, 14, 7),
+                "content" => array_slice($days, 14, 7),
+                "footer" => [
+                    "previous" => strtoupper($d->copy()->subDays(0)->format('F j, Y')),
+                    'ref-previous' => $d->copy()->subDays(0)->format('Ymd'),
+                    "today" => strtoupper($d->copy()->addDays(7)->format('F j, Y')),
+                    "next" => strtoupper($d->copy()->addDays(14)->format('F j, Y')),
+                    'ref-next' => $d->copy()->addDays(14)->format('Ymd')
+                ]
+            ];
+
+         return $calendar;
+    }
+
+    public function getAvailabilityCalendar($id, $currentdate, $beforeafter)
+    {
+        if ($id != Auth::user()->id) {
             $output['message'] = 'You can only edit your own preferences.';
             return $output;
         }
 
-        // from the current date and beforeafter, calculate new target date
-        $created = Carbon\Carbon::createFromFormat('Ymd', $currentdate);
+        $d = Carbon\Carbon::createFromFormat('Ymd', $currentdate);
         if ($beforeafter == "before") {
-            $newdate = $created->subDays(9);
-
-            $newdate_previous = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->subDays(18)->format('F d, Y');
-            $newdate_ref_previous = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->subDays(18)->format('Ymd');
-            $newdate_next = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->format('F d, Y');
-            $newdate_ref_next = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->format('Ymd');
-
-            $newdateref = $newdate->format('Ymd');
-            $newdateformatted = $newdate->format('F d, Y');
-
-            $header_dates = [];
-            $header_dates[] = $newdate->subDays(4)->format('m/d');
-            $header_dates[] = $newdate->addDays(1)->format('m/d');
-            $header_dates[] = $newdate->addDays(1)->format('m/d');
-            $header_dates[] = $newdate->addDays(1)->format('m/d');
-            $header_dates[] = $newdate->addDays(1)->format('m/d');
-            $header_dates[] = $newdate->addDays(1)->format('m/d');
-            $header_dates[] = $newdate->addDays(1)->format('m/d');
-            $header_dates[] = $newdate->addDays(1)->format('m/d');
-            $header_dates[] = $newdate->addDays(1)->format('m/d');
-        } else {
-            $newdate = $created->addDays(9);
-
-            $newdate_previous = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->format('F d, Y');
-            $newdate_ref_previous = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->format('Ymd');
-            $newdate_next = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->addDays(18)->format('F d, Y');
-            $newdate_ref_next = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->addDays(18)->format('Ymd');
-
-            $newdateref = $newdate->format('Ymd');
-            $newdateformatted = $newdate->format('F d, Y');
-
-            $header_dates = [];
-            $header_dates[] = $newdate->subDays(4)->format('m/d');
-            $header_dates[] = $newdate->addDays(1)->format('m/d');
-            $header_dates[] = $newdate->addDays(1)->format('m/d');
-            $header_dates[] = $newdate->addDays(1)->format('m/d');
-            $header_dates[] = $newdate->addDays(1)->format('m/d');
-            $header_dates[] = $newdate->addDays(1)->format('m/d');
-            $header_dates[] = $newdate->addDays(1)->format('m/d');
-            $header_dates[] = $newdate->addDays(1)->format('m/d');
-            $header_dates[] = $newdate->addDays(1)->format('m/d');
+            $newdate = $d->subDays(7);
+        }else{
+            $newdate = $d->addDays(7);
         }
-        // dd($header_dates);
-        // dd($currentdate." - ".$created." - ".$newdate." - ".$newdateformatted." - ".$newdateref);
+        $calendar = $this->getCalendar($newdate);
+
         $data = collect([
             "summary" => [
-                "id" => $userid,
+                "id" => $id,
                 "name" => "Jane Doe",
                 'initials' => 'JD',
                 'color' => 'blue',
-                'date' => $newdateformatted,
-                'ref' => $newdateref
+                'date' => $d->copy()->subDays(0)->format('F j, Y'),
+                'ref' => $d->copy()->subDays(0)->format('Ymd')
             ],
-            "calendar" => [
-                "header" => $header_dates,
-                "content" => [
-                    [
-                        "id" => 111,
-                        "date" => "12/18",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "action-required",
-                                "start" => "9",
-                                "span" =>  "24",
-                                "icon" => "a-mobile-not",
-                                "lead" => 2,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "33",
-                                "span" =>  "2",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 114,
-                                "status" => "",
-                                "start" => "35",
-                                "span" =>  "11",
-                                "icon" => "a-mobile-checked",
-                                "lead" => 1,
-                                "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 112,
-                        "date" => "12/19",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "",
-                                "start" => "9",
-                                "span" =>  "12",
-                                "icon" => "a-mobile-not",
-                                "lead" => 2,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "21",
-                                "span" =>  "1",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 114,
-                                "status" => "",
-                                "start" => "22",
-                                "span" =>  "24",
-                                "icon" => "a-circle-plus",
-                                "lead" => 1,
-                                "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 113,
-                        "date" => "12/20",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "action-required",
-                                "start" => "9",
-                                "span" =>  "12",
-                                "icon" => "a-mobile-not",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "21",
-                                "span" =>  "4",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 114,
-                                "status" => "",
-                                "start" => "25",
-                                "span" =>  "21",
-                                "icon" => "a-circle-plus",
-                                "lead" => 1,
-                                "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 115,
-                        "date" => "12/21",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "",
-                                "start" => "9",
-                                "span" =>  "16",
-                                "icon" => "a-circle-plus",
-                                "lead" => 1,
-                                "class" => "available no-border-top",
-                                "modal_type" => "choose-filing"
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "30",
-                                "span" =>  "16",
-                                "icon" => "a-circle-plus",
-                                "lead" => 1,
-                                "class" => "available no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 116,
-                        "date" => "12/22",
-                        "no_availability" => 0,
-                        "start_time" => "08:00 AM",
-                        "end_time" => "05:30 PM",
-                        "before_time_start" => "1",
-                        "before_time_span" => "8",
-                        "after_time_start" => "46",
-                        "after_time_span" => "15",
-                        "events" => [
-                            [
-                                "id" => 112,
-                                "status" => "in-progress",
-                                "start" => "9",
-                                "span" =>  "16",
-                                "icon" => "a-mobile-checked",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => "change-date"
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "breaktime",
-                                "start" => "25",
-                                "span" =>  "1",
-                                "icon" => "",
-                                "lead" => 1,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "26",
-                                "span" =>  "12",
-                                "icon" => "a-folder",
-                                "lead" => 2,
-                                "class" => "",
-                                "modal_type" => ""
-                            ],
-                            [
-                                "id" => 113,
-                                "status" => "",
-                                "start" => "38",
-                                "span" =>  "8",
-                                "icon" => "a-folder",
-                                "lead" => 1,
-                                "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
-                    ],
-                    [
-                        "id" => 114,
-                        "date" => "12/23",
-                        "no_availability" => 1
-                    ],
-                    [
-                        "id" => 114,
-                        "date" => "12/24",
-                        "no_availability" => 1
-                    ],
-                    [
-                        "id" => 114,
-                        "date" => "12/25",
-                        "no_availability" => 1
-                    ],
-                    [
-                        "id" => 114,
-                        "date" => "12/26",
-                        "no_availability" => 1
-                    ]
-                ],
-                "footer" => [
-                    "previous" => $newdate_previous,
-                    'ref-previous' => $newdate_ref_previous,
-                    "today" => $newdateformatted,
-                    "next" => $newdate_next,
-                    'ref-next' => $newdate_ref_next
-                ]
-            ]
+            "calendar" => $calendar['now']
         ]);
 
         return view('auditors.partials.auditor-availability-calendar', compact('data'));

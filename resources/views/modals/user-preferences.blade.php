@@ -179,10 +179,10 @@
 							<div>
 								<ul id="auditor-calendar" class="uk-child-width-1-1 uk-grid">
 									<li id="auditor-calendar-{{$data['summary']['ref-previous']}}" class="grid-schedule-availability" style="display:none;">
-										<div class="auditor-calendar-header grid-schedule-header">
+										<div class="auditor-calendar-header grid-schedule-availability-header">
 											<div class="week-spacer"></div>
 											@foreach($data['calendar-previous']['header'] as $header_date)
-											<div class="week-day @if($loop->iteration == 4) selected @endif">{{$header_date}}</div>
+											<div class="week-day">{{$header_date}}</div>
 											<div class="week-spacer"></div>
 											@endforeach
 										</div>
@@ -203,92 +203,23 @@
 											<div></div><div></div><div></div><div></div>
 											<div>8p</div><div></div><div></div><div></div>
 										</div>
-										<div class="auditor-calendar-content grid-schedule-content">
+										<div class="auditor-calendar-content grid-schedule-availability-content">
 											<div class="day-spacer"></div>
 											@foreach($data['calendar-previous']['content'] as $day)
-											<div class="day @if($day['no_availability']) no-availability @endif @if($loop->iteration == 4) selected @endif">
+											<div class="day @if($day['no_availability']) no-availability @endif ">
 												@if($day['no_availability'])
 												<div class="event">
 													<i class="a-circle-cross"></i>
 												</div>
 												@else
-												<div class="event beforetime" data-start="{{$day['before_time_start']}}" data-span="{{$day['before_time_span']}}"></div>
+												
 												@foreach($day['events'] as $event)
 												<div class="event {{$event['status']}} {{$event['class']}} @if(Auth::user()->id == $event['lead']) isLead @endif" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
-													@if($event['icon'] != '')<i class="{{$event['icon']}}"></i>@endif
-													@if(Auth::user()->id == $event['lead'] && $event['icon'] != '') 
-													<div class="" uk-drop="mode: click">
-													    <div class="uk-card uk-card-body uk-card-rounded">
-													    	@if($event['modal_type'] == 'choose-filing')
-													        <ul class="uk-list">
-									                        	<li onclick=""><i class="a-folder"></i> File Audit Only</li>	
-									                        	<li onclick=""><i class="a-mobile-home"></i> Site Visit Only</li>	
-									                        	<li onclick=""><i class="a-mobile-home"></i><i class="a-folder"></i> Both</li>	
-										                    </ul>
-										                    @elseif($event['modal_type'] == 'change-date')
-										                    <ul class="uk-list no-hover uk-form-horizontal ">
-									                        	<li onclick="">
-															        <label class="uk-form-label">START:</label>
-															        <div class="uk-form-controls">
-															            <select class="uk-select">
-															                <option>8:00 AM</option>
-															                <option>8:15 AM</option>
-															                <option>8:30 AM</option>
-															                <option>8:45 AM</option>
-															                <option>9:00 AM</option>
-															                <option>9:15 AM</option>
-															                <option>9:30 AM</option>
-															                <option>9:45 AM</option>
-															                <option>10:00 AM</option>
-															                <option>10:15 AM</option>
-															                <option>10:30 AM</option>
-															                <option>10:45 AM</option>
-															                <option>11:00 AM</option>
-															                <option>11:15 AM</option>
-															                <option>11:30 AM</option>
-															                <option>11:45 AM</option>
-															                <option>12:00 PM</option>
-															                <option>12:15 PM</option>
-															                <option>12:30 PM</option>
-															                <option>12:45 PM</option>
-															                <option>1:00 PM</option>
-															                <option>1:15 PM</option>
-															                <option>1:30 PM</option>
-															                <option>1:45 PM</option>
-															                <option>2:00 PM</option>
-															                <option>2:15 PM</option>
-															                <option>2:30 PM</option>
-															                <option>2:45 PM</option>
-															                <option>3:00 PM</option>
-															                <option>3:15 PM</option>
-															                <option>3:30 PM</option>
-															                <option>3:45 PM</option>
-															            </select>
-															        </div>
-									                        	</li>	
-									                        	<li onclick="">
-															        <label class="uk-form-label">END:</label>
-															        <div class="uk-form-controls">
-															            <select class="uk-select">
-															                <option>8:30 AM</option>
-															                <option>8:45 AM</option>
-															                <option>9:00 AM</option>
-															                <option>9:15 AM</option>
-															                <option>9:30 AM</option>
-															                <option>9:45 AM</option>
-															                <option>10:00 AM</option>
-															                <option>10:15 AM</option>
-															            </select>
-															        </div>
-									                        	</li>	
-										                    </ul>
-										                    @endif
-													    </div>
-													</div>
+													@if($event['icon'] != '')<i class="{{$event['icon']}}" onclick="deleteAvailability({{$event['id']}})"></i>
 													@endif
 												</div>
 												@endforeach
-												<div class="event aftertime" data-start="{{$day['after_time_start']}}" data-span="{{$day['after_time_span']}}"></div>
+												
 												@endif
 											</div>
 											<div class="day-spacer"></div>
@@ -306,7 +237,7 @@
 										<div class="auditor-calendar-header grid-schedule-availability-header">
 											<div class="week-spacer"></div>
 											@foreach($data['calendar']['header'] as $header_date)
-											<div class="week-day @if($loop->iteration == 4) selected @endif">{{$header_date}}</div>
+											<div class="week-day">{{$header_date}}</div>
 											<div class="week-spacer"></div>
 											@endforeach
 										</div>
@@ -330,89 +261,20 @@
 										<div class="auditor-calendar-content grid-schedule-availability-content">
 											<div class="day-spacer"></div>
 											@foreach($data['calendar']['content'] as $day)
-											<div class="day @if($day['no_availability']) no-availability @endif @if($loop->iteration == 4) selected @endif">
+											<div class="day @if($day['no_availability']) no-availability @endif">
 												@if($day['no_availability'])
 												<div class="event">
-													<i class="a-circle-cross"></i>
+													<i class="a-circle-plus"></i>
 												</div>
 												@else
-												<div class="event beforetime" data-start="{{$day['before_time_start']}}" data-span="{{$day['before_time_span']}}"></div>
+												
 												@foreach($day['events'] as $event)
 												<div class="event {{$event['status']}} {{$event['class']}} @if(Auth::user()->id == $event['lead']) isLead @endif" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
-													@if($event['icon'] != '')<i class="{{$event['icon']}}"></i>@endif
-													@if(Auth::user()->id == $event['lead'] && $event['icon'] != '') 
-													<div class="" uk-drop="mode: click">
-													    <div class="uk-card uk-card-body uk-card-rounded">
-													    	@if($event['modal_type'] == 'choose-filing')
-													        <ul class="uk-list">
-									                        	<li onclick=""><i class="a-folder"></i> File Audit Only</li>	
-									                        	<li onclick=""><i class="a-mobile-home"></i> Site Visit Only</li>	
-									                        	<li onclick=""><i class="a-mobile-home"></i><i class="a-folder"></i> Both</li>	
-										                    </ul>
-										                    @elseif($event['modal_type'] == 'change-date')
-										                    <ul class="uk-list no-hover uk-form-horizontal ">
-									                        	<li onclick="">
-															        <label class="uk-form-label">START:</label>
-															        <div class="uk-form-controls">
-															            <select class="uk-select">
-															                <option>8:00 AM</option>
-															                <option>8:15 AM</option>
-															                <option>8:30 AM</option>
-															                <option>8:45 AM</option>
-															                <option>9:00 AM</option>
-															                <option>9:15 AM</option>
-															                <option>9:30 AM</option>
-															                <option>9:45 AM</option>
-															                <option>10:00 AM</option>
-															                <option>10:15 AM</option>
-															                <option>10:30 AM</option>
-															                <option>10:45 AM</option>
-															                <option>11:00 AM</option>
-															                <option>11:15 AM</option>
-															                <option>11:30 AM</option>
-															                <option>11:45 AM</option>
-															                <option>12:00 PM</option>
-															                <option>12:15 PM</option>
-															                <option>12:30 PM</option>
-															                <option>12:45 PM</option>
-															                <option>1:00 PM</option>
-															                <option>1:15 PM</option>
-															                <option>1:30 PM</option>
-															                <option>1:45 PM</option>
-															                <option>2:00 PM</option>
-															                <option>2:15 PM</option>
-															                <option>2:30 PM</option>
-															                <option>2:45 PM</option>
-															                <option>3:00 PM</option>
-															                <option>3:15 PM</option>
-															                <option>3:30 PM</option>
-															                <option>3:45 PM</option>
-															            </select>
-															        </div>
-									                        	</li>	
-									                        	<li onclick="">
-															        <label class="uk-form-label">END:</label>
-															        <div class="uk-form-controls">
-															            <select class="uk-select">
-															                <option>8:30 AM</option>
-															                <option>8:45 AM</option>
-															                <option>9:00 AM</option>
-															                <option>9:15 AM</option>
-															                <option>9:30 AM</option>
-															                <option>9:45 AM</option>
-															                <option>10:00 AM</option>
-															                <option>10:15 AM</option>
-															            </select>
-															        </div>
-									                        	</li>	
-										                    </ul>
-										                    @endif
-													    </div>
-													</div>
+													@if($event['icon'] != '')<i class="{{$event['icon']}}" onclick="deleteAvailability({{$event['id']}})"></i>
 													@endif
 												</div>
 												@endforeach
-												<div class="event aftertime" data-start="{{$day['after_time_start']}}" data-span="{{$day['after_time_span']}}"></div>
+												
 												@endif
 											</div>
 											<div class="day-spacer"></div>
@@ -427,10 +289,10 @@
 										</div>
 									</li>
 									<li id="auditor-calendar-{{$data['summary']['ref-next']}}" class="grid-schedule-availability" style="display:none;">
-										<div class="auditor-calendar-header grid-schedule-header">
+										<div class="auditor-calendar-header grid-schedule-availability-header">
 											<div class="week-spacer"></div>
 											@foreach($data['calendar-next']['header'] as $header_date)
-											<div class="week-day @if($loop->iteration == 4) selected @endif">{{$header_date}}</div>
+											<div class="week-day ">{{$header_date}}</div>
 											<div class="week-spacer"></div>
 											@endforeach
 										</div>
@@ -451,92 +313,23 @@
 											<div></div><div></div><div></div><div></div>
 											<div>8p</div><div></div><div></div><div></div>
 										</div>
-										<div class="auditor-calendar-content grid-schedule-content">
+										<div class="auditor-calendar-content grid-schedule-availability-content">
 											<div class="day-spacer"></div>
 											@foreach($data['calendar-next']['content'] as $day)
-											<div class="day @if($day['no_availability']) no-availability @endif @if($loop->iteration == 4) selected @endif">
+											<div class="day @if($day['no_availability']) no-availability @endif ">
 												@if($day['no_availability'])
 												<div class="event">
 													<i class="a-circle-cross"></i>
 												</div>
 												@else
-												<div class="event beforetime" data-start="{{$day['before_time_start']}}" data-span="{{$day['before_time_span']}}"></div>
+												
 												@foreach($day['events'] as $event)
 												<div class="event {{$event['status']}} {{$event['class']}} @if(Auth::user()->id == $event['lead']) isLead @endif" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
-													@if($event['icon'] != '')<i class="{{$event['icon']}}"></i>@endif
-													@if(Auth::user()->id == $event['lead'] && $event['icon'] != '') 
-													<div class="" uk-drop="mode: click">
-													    <div class="uk-card uk-card-body uk-card-rounded">
-													    	@if($event['modal_type'] == 'choose-filing')
-													        <ul class="uk-list">
-									                        	<li onclick=""><i class="a-folder"></i> File Audit Only</li>	
-									                        	<li onclick=""><i class="a-mobile-home"></i> Site Visit Only</li>	
-									                        	<li onclick=""><i class="a-mobile-home"></i><i class="a-folder"></i> Both</li>	
-										                    </ul>
-										                    @elseif($event['modal_type'] == 'change-date')
-										                    <ul class="uk-list no-hover uk-form-horizontal ">
-									                        	<li onclick="">
-															        <label class="uk-form-label">START:</label>
-															        <div class="uk-form-controls">
-															            <select class="uk-select">
-															                <option>8:00 AM</option>
-															                <option>8:15 AM</option>
-															                <option>8:30 AM</option>
-															                <option>8:45 AM</option>
-															                <option>9:00 AM</option>
-															                <option>9:15 AM</option>
-															                <option>9:30 AM</option>
-															                <option>9:45 AM</option>
-															                <option>10:00 AM</option>
-															                <option>10:15 AM</option>
-															                <option>10:30 AM</option>
-															                <option>10:45 AM</option>
-															                <option>11:00 AM</option>
-															                <option>11:15 AM</option>
-															                <option>11:30 AM</option>
-															                <option>11:45 AM</option>
-															                <option>12:00 PM</option>
-															                <option>12:15 PM</option>
-															                <option>12:30 PM</option>
-															                <option>12:45 PM</option>
-															                <option>1:00 PM</option>
-															                <option>1:15 PM</option>
-															                <option>1:30 PM</option>
-															                <option>1:45 PM</option>
-															                <option>2:00 PM</option>
-															                <option>2:15 PM</option>
-															                <option>2:30 PM</option>
-															                <option>2:45 PM</option>
-															                <option>3:00 PM</option>
-															                <option>3:15 PM</option>
-															                <option>3:30 PM</option>
-															                <option>3:45 PM</option>
-															            </select>
-															        </div>
-									                        	</li>	
-									                        	<li onclick="">
-															        <label class="uk-form-label">END:</label>
-															        <div class="uk-form-controls">
-															            <select class="uk-select">
-															                <option>8:30 AM</option>
-															                <option>8:45 AM</option>
-															                <option>9:00 AM</option>
-															                <option>9:15 AM</option>
-															                <option>9:30 AM</option>
-															                <option>9:45 AM</option>
-															                <option>10:00 AM</option>
-															                <option>10:15 AM</option>
-															            </select>
-															        </div>
-									                        	</li>	
-										                    </ul>
-										                    @endif
-													    </div>
-													</div>
+													@if($event['icon'] != '')<i class="{{$event['icon']}}" onclick="deleteAvailability({{$event['id']}})"></i>
 													@endif
 												</div>
 												@endforeach
-												<div class="event aftertime" data-start="{{$day['after_time_start']}}" data-span="{{$day['after_time_span']}}"></div>
+												
 												@endif
 											</div>
 											<div class="day-spacer"></div>
@@ -750,6 +543,62 @@
 		fillSpacers();
 	});
 
+ 	function deleteAvailability(id){
+ 		console.log("trying to delete "+id);
+ 		UIkit.modal.confirm("Are you sure you want to delete this available time?", {center: true,  keyboard:false,  stack:true}).then(function() {
+    		console.log("trying harder");
+			return false;
+		}, function () {
+		    console.log('Rejected.')
+		});
+		return false;
+ 	}
+
+	function fetchCalendar(element){
+	    
+	    var target = $(element).attr('data-target');console.log('#auditor-calendar-'+target);
+	    // hide all 
+	    $(element).closest('.grid-schedule-availability').fadeOut("slow", function() {
+	    	// fade in new calendar
+	    	$('#auditor-calendar-'+target).fadeIn("slow");
+	    });
+
+	    // next or previous dates are already loaded, load the next set
+		if($('#auditor-calendar-'+target).prev().length){
+
+			console.log("there is another calendar available before");
+
+		}else{
+
+			console.log("we need to load a calendar before");
+
+			var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target+'/before';
+		    $.get(url, {}, function(data) {
+	            if(data=='0'){ 
+	                UIkit.modal.alert("There was a problem getting the calendar.");
+	            } else {
+					$('#auditor-calendar-'+target).before(data);
+					fillSpacers();
+	        	}
+	        });
+		}
+
+		if($('#auditor-calendar-'+target).next().length){
+			console.log("there is another calendar available after");
+		}else{
+			console.log("we need to load a calendar after");
+			var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target+'/after';
+		    $.get(url, {}, function(data) {
+	            if(data=='0'){ 
+	                UIkit.modal.alert("There was a problem getting the calendar.");
+	            } else {
+					$('#auditor-calendar-'+target).after(data);
+					fillSpacers();
+	        	}
+	        });
+		}
+	}
+
  	function selectday(element, day) {
  		$(element).toggleClass("outline");
  		if($("input[name='"+day+"']:checkbox").prop('checked')){
@@ -835,6 +684,12 @@
 			$("#daterange").removeClass('uk-form-danger');
 		}
 
+		// at least one day should be selected
+ 		if(!$(".dayselectorcheckbox").is(':checked')){
+ 			selectday(".dayselector:first", 'monday');
+ 			return false;
+ 		}
+
 		// check if end time is later than start time
 		var starttime = $("#starttime").val();
 		var endtime = $("#endtime").val();
@@ -854,7 +709,6 @@
                 UIkit.modal.alert(data,{stack: true});
             } else {
                 UIkit.notification('<span uk-icon="icon: check"></span> Availability Saved', {pos:'top-right', timeout:1000, status:'success'});
-                form.get(0).reset();
                 //reload graph
             }
         } );
