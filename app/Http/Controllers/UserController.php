@@ -567,6 +567,8 @@ class UserController extends Controller
             $events[$a->date][] = [
                     "id" => $a->id,
                     "status" => "",
+                    "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a->start_time)->format('h:i A')),
+                    "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a->end_time)->format('h:i A')),
                     "start" => $a->start_slot,
                     "span" =>  $a->span,
                     "icon" => "a-circle-minus",
@@ -608,8 +610,6 @@ class UserController extends Controller
                 "date_formatted" => $tmp_day->copy()->addDays($i)->format('F j, Y'), 
                 "date_formatted_name" => strtolower($tmp_day->copy()->addDays($i)->englishDayOfWeek), 
                 "no_availability" => 0,
-                "start_time" => "",
-                "end_time" => "",
                 "before_time_start" => $before_time_start,
                 "before_time_span" => $before_time_span,
                 "after_time_start" => $after_time_start,

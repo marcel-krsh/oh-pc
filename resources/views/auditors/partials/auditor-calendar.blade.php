@@ -38,7 +38,7 @@
 						@else
 						
 						@foreach($day['events'] as $event)
-						<div class="event {{$event['status']}} {{$event['class']}} @if(Auth::user()->id == $event['lead']) isLead @endif" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
+						<div class="event {{$event['status']}} {{$event['class']}} @if(Auth::user()->id == $event['lead']) isLead @endif" data-start="{{$event['start']}}" data-span="{{$event['span']}}" uk-tooltip="title: {{$event['start_time']}} - {{$event['end_time']}}">
 							@if($event['icon'] != '')<i class="{{$event['icon']}}" onclick="deleteAvailability({{$event['id']}})"></i>
 							@endif
 						</div>
@@ -94,7 +94,7 @@
 						@else
 						
 						@foreach($day['events'] as $event)
-						<div class="event {{$event['status']}} {{$event['class']}} @if(Auth::user()->id == $event['lead']) isLead @endif" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
+						<div class="event {{$event['status']}} {{$event['class']}} @if(Auth::user()->id == $event['lead']) isLead @endif" data-start="{{$event['start']}}" data-span="{{$event['span']}}" uk-tooltip="title: {{$event['start_time']}} - {{$event['end_time']}}">
 							@if($event['icon'] != '')<i class="{{$event['icon']}}" onclick="deleteAvailability({{$event['id']}})"></i>
 							@endif
 						</div>
@@ -150,7 +150,7 @@
 						@else
 						
 						@foreach($day['events'] as $event)
-						<div class="event {{$event['status']}} {{$event['class']}} @if(Auth::user()->id == $event['lead']) isLead @endif" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
+						<div class="event {{$event['status']}} {{$event['class']}} @if(Auth::user()->id == $event['lead']) isLead @endif" data-start="{{$event['start']}}" data-span="{{$event['span']}}" uk-tooltip="title: {{$event['start_time']}} - {{$event['end_time']}}">
 							@if($event['icon'] != '')<i class="{{$event['icon']}}" onclick="deleteAvailability({{$event['id']}})"></i>
 							@endif
 						</div>
