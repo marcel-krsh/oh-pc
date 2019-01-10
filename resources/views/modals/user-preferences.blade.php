@@ -174,183 +174,8 @@
 	  		</div>
 	  		<div class="user-preference-col-2 uk-padding-remove uk-margin-small-top" style="display:none">
 	  			<div uk-grid>
-	  				<div class="uk-width-1-1 uk-margin-top">
-						<div id="auditor-availability-calendar" class="uk-padding-remove uk-margin-top" >
-							<div>
-								<ul id="auditor-calendar" class="uk-child-width-1-1 uk-grid">
-									<li id="auditor-calendar-{{$data['summary']['ref-previous']}}" class="grid-schedule-availability" style="display:none;">
-										<div class="auditor-calendar-header grid-schedule-availability-header">
-											<div class="week-spacer"></div>
-											@foreach($data['calendar-previous']['header'] as $header_date)
-											<div class="week-day">{{$header_date}}</div>
-											<div class="week-spacer"></div>
-											@endforeach
-										</div>
-										<div class="grid-schedule-availability-sidebar">
-											<div>6a</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>8a</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>10a</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>12p</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>2p</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>4p</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>6p</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>8p</div><div></div><div></div><div></div>
-										</div>
-										<div class="auditor-calendar-content grid-schedule-availability-content">
-											<div class="day-spacer"></div>
-											@foreach($data['calendar-previous']['content'] as $day)
-											<div class="day @if($day['no_availability']) no-availability @endif ">
-												@if($day['no_availability'])
-												<div class="event">
-													<i class="a-circle-cross"></i>
-												</div>
-												@else
-												
-												@foreach($day['events'] as $event)
-												<div class="event {{$event['status']}} {{$event['class']}} @if(Auth::user()->id == $event['lead']) isLead @endif" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
-													@if($event['icon'] != '')<i class="{{$event['icon']}}" onclick="deleteAvailability({{$event['id']}})"></i>
-													@endif
-												</div>
-												@endforeach
-												
-												@endif
-											</div>
-											<div class="day-spacer"></div>
-											@endforeach		
-										</div>
-										<div class="grid-schedule-availability-footer">
-											<div uk-grid>
-												<div class="uk-width-1-3 uk-padding-remove use-hand-cursor auditor-calendar-nav" onclick="fetchCalendar(this);" data-target="{{$data['calendar-previous']['footer']['ref-previous']}}"><i class="a-arrow-left-2"></i> {{$data['calendar-previous']['footer']['previous']}}</div>
-												<div class="uk-width-1-3 uk-text-center"><i class="a-calendar-pencil"></i> {{$data['calendar-previous']['footer']['today']}}</div>
-												<div class="uk-width-1-3 uk-text-right use-hand-cursor auditor-calendar-nav" onclick="fetchCalendar(this);" data-target="{{$data['calendar-previous']['footer']['ref-next']}}">{{$data['calendar-previous']['footer']['next']}} <i class="a-arrow-right-2_1"></i></div>
-											</div>
-										</div>
-									</li>
-									<li id="auditor-calendar-{{$data['summary']['ref']}}" class="grid-schedule-availability">
-										<div class="auditor-calendar-header grid-schedule-availability-header">
-											<div class="week-spacer"></div>
-											@foreach($data['calendar']['header'] as $header_date)
-											<div class="week-day">{{$header_date}}</div>
-											<div class="week-spacer"></div>
-											@endforeach
-										</div>
-										<div class="grid-schedule-availability-sidebar">
-											<div>6a</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>8a</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>10a</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>12p</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>2p</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>4p</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>6p</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>8p</div><div></div><div></div><div></div>
-										</div>
-										<div class="auditor-calendar-content grid-schedule-availability-content">
-											<div class="day-spacer"></div>
-											@foreach($data['calendar']['content'] as $day)
-											<div class="day @if($day['no_availability']) no-availability @endif">
-												@if($day['no_availability'])
-												<div class="event">
-													<i class="a-circle-plus"></i>
-												</div>
-												@else
-												
-												@foreach($day['events'] as $event)
-												<div class="event {{$event['status']}} {{$event['class']}} @if(Auth::user()->id == $event['lead']) isLead @endif" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
-													@if($event['icon'] != '')<i class="{{$event['icon']}}" onclick="deleteAvailability({{$event['id']}})"></i>
-													@endif
-												</div>
-												@endforeach
-												
-												@endif
-											</div>
-											<div class="day-spacer"></div>
-											@endforeach		
-										</div>
-										<div class="grid-schedule-availability-footer">
-											<div uk-grid>
-												<div class="uk-width-1-3 uk-padding-remove use-hand-cursor auditor-calendar-nav" onclick="fetchCalendar(this);" data-target="{{$data['calendar']['footer']['ref-previous']}}"><i class="a-arrow-left-2"></i> {{$data['calendar']['footer']['previous']}}</div>
-												<div class="uk-width-1-3 uk-text-center"><i class="a-calendar-pencil"></i> {{$data['calendar']['footer']['today']}}</div>
-												<div class="uk-width-1-3 uk-text-right use-hand-cursor auditor-calendar-nav" onclick="fetchCalendar(this);" data-target="{{$data['calendar']['footer']['ref-next']}}">{{$data['calendar']['footer']['next']}} <i class="a-arrow-right-2_1"></i></div>
-											</div>
-										</div>
-									</li>
-									<li id="auditor-calendar-{{$data['summary']['ref-next']}}" class="grid-schedule-availability" style="display:none;">
-										<div class="auditor-calendar-header grid-schedule-availability-header">
-											<div class="week-spacer"></div>
-											@foreach($data['calendar-next']['header'] as $header_date)
-											<div class="week-day ">{{$header_date}}</div>
-											<div class="week-spacer"></div>
-											@endforeach
-										</div>
-										<div class="grid-schedule-availability-sidebar">
-											<div>6a</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>8a</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>10a</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>12p</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>2p</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>4p</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>6p</div><div></div><div></div><div></div>
-											<div></div><div></div><div></div><div></div>
-											<div>8p</div><div></div><div></div><div></div>
-										</div>
-										<div class="auditor-calendar-content grid-schedule-availability-content">
-											<div class="day-spacer"></div>
-											@foreach($data['calendar-next']['content'] as $day)
-											<div class="day @if($day['no_availability']) no-availability @endif ">
-												@if($day['no_availability'])
-												<div class="event">
-													<i class="a-circle-cross"></i>
-												</div>
-												@else
-												
-												@foreach($day['events'] as $event)
-												<div class="event {{$event['status']}} {{$event['class']}} @if(Auth::user()->id == $event['lead']) isLead @endif" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
-													@if($event['icon'] != '')<i class="{{$event['icon']}}" onclick="deleteAvailability({{$event['id']}})"></i>
-													@endif
-												</div>
-												@endforeach
-												
-												@endif
-											</div>
-											<div class="day-spacer"></div>
-											@endforeach		
-										</div>
-										<div class="grid-schedule-availability-footer">
-											<div uk-grid>
-												<div class="uk-width-1-3 uk-padding-remove use-hand-cursor auditor-calendar-nav" onclick="fetchCalendar(this);" data-target="{{$data['calendar-next']['footer']['ref-previous']}}"><i class="a-arrow-left-2"></i> {{$data['calendar-next']['footer']['previous']}}</div>
-												<div class="uk-width-1-3 uk-text-center"><i class="a-calendar-pencil"></i> {{$data['calendar-next']['footer']['today']}}</div>
-												<div class="uk-width-1-3 uk-text-right use-hand-cursor auditor-calendar-nav" onclick="fetchCalendar(this);" data-target="{{$data['calendar-next']['footer']['ref-next']}}">{{$data['calendar-next']['footer']['next']}} <i class="a-arrow-right-2_1"></i></div>
-											</div>
-										</div>
-									</li>
-								</ul>
-							</div>
-						</div>
-	  				</div>
-
-
-	  				<div class="uk-width-1-1 uk-margin-top">
-	  					<h3 class="uk-margin-top">Add Availability</h3>
+	  				<div class="uk-width-1-1">
+	  					<h3>Add Availability</h3>
 	  					<form name="newavailabilityform" id="newavailabilityform" method="post">
 		  					<div uk-grid>
 		  						<div class="uk-width-1-2 uk-padding-remove">
@@ -519,6 +344,12 @@
 		  						</div>
 		  					</div>
 		  				</form>
+		  				<hr style="margin-top: 40px;"/>
+	  				</div>
+	  				<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove">
+						<div id="auditor-availability-calendar" class="uk-padding-remove uk-margin-top" >
+							<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>	
+						</div>
 	  				</div>
 	  			</div>
 	  		</div>
@@ -540,63 +371,104 @@
 </style>
  <script>
  	$( document ).ready(function() {
+ 		loadCalendar();
 		fillSpacers();
 	});
 
+ 	function loadCalendar(target=null) {
+ 		if(target == null){
+ 			var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/';
+		    $.get(url, {}, function(data) {
+	            if(data=='0'){ 
+	                UIkit.modal.alert("There was a problem getting the calendar.");
+	            } else {
+	            	$('#auditor-availability-calendar').html(data);
+					fillSpacers();
+	        	}
+	        });
+ 		}else{
+ 			var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target;
+ 			$('#auditor-availability-calendar').fadeOut("fast", function() {
+ 				$('#auditor-availability-calendar').html('<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>');
+ 				$('#auditor-availability-calendar').fadeIn("fast");
+		    	$.get(url, {}, function(data) {
+		            if(data=='0'){ 
+		                UIkit.modal.alert("There was a problem getting the calendar.");
+		            } else {
+		            	loadCalendar();
+		        	}
+		        });
+		    });
+ 		}
+ 	}
+
  	function deleteAvailability(id){
- 		console.log("trying to delete "+id);
  		UIkit.modal.confirm("Are you sure you want to delete this available time?", {center: true,  keyboard:false,  stack:true}).then(function() {
-    		console.log("trying harder");
-			return false;
+
+	        $.post("/auditors/{{Auth::user()->id}}/availability/"+id+"/delete", {
+	            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+	            if(data!=1){ 
+	                UIkit.modal.alert(data,{stack: true});
+	            } else {
+	            	UIkit.notification('<span uk-icon="icon: check"></span> Availability Deleted', {pos:'top-right', timeout:1000, status:'success'});
+	                loadCalendar();
+	            }
+	        } );
+			
 		}, function () {
-		    console.log('Rejected.')
+		    return false;
 		});
-		return false;
  	}
 
 	function fetchCalendar(element){
 	    
-	    var target = $(element).attr('data-target');console.log('#auditor-calendar-'+target);
+	    var target = $(element).attr('data-target');
 	    // hide all 
-	    $(element).closest('.grid-schedule-availability').fadeOut("slow", function() {
-	    	// fade in new calendar
-	    	$('#auditor-calendar-'+target).fadeIn("slow");
-	    });
+	    
+	    // check if the element is there first
+	    if($('#auditor-calendar-'+target).length){
+	    	$(element).closest('.grid-schedule-availability').fadeOut("fast", function() {
+		    	// fade in new calendar
+		    	$('#auditor-calendar-'+target).fadeIn("fast");
+		    });
 
-	    // next or previous dates are already loaded, load the next set
-		if($('#auditor-calendar-'+target).prev().length){
+		    // next or previous dates are already loaded, load the next set
+			if($('#auditor-calendar-'+target).prev().length){
 
-			console.log("there is another calendar available before");
+				//console.log("there is another calendar available before");
 
-		}else{
+			}else{
 
-			console.log("we need to load a calendar before");
+				//console.log("we need to load a calendar before");
 
-			var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target+'/before';
-		    $.get(url, {}, function(data) {
-	            if(data=='0'){ 
-	                UIkit.modal.alert("There was a problem getting the calendar.");
-	            } else {
-					$('#auditor-calendar-'+target).before(data);
-					fillSpacers();
-	        	}
-	        });
-		}
+				var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target+'/before';
+			    $.get(url, {}, function(data) {
+		            if(data=='0'){ 
+		                UIkit.modal.alert("There was a problem getting the calendar.");
+		            } else {
+						$('#auditor-calendar-'+target).before(data);
+						fillSpacers();
+		        	}
+		        });
+			}
 
-		if($('#auditor-calendar-'+target).next().length){
-			console.log("there is another calendar available after");
-		}else{
-			console.log("we need to load a calendar after");
-			var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target+'/after';
-		    $.get(url, {}, function(data) {
-	            if(data=='0'){ 
-	                UIkit.modal.alert("There was a problem getting the calendar.");
-	            } else {
-					$('#auditor-calendar-'+target).after(data);
-					fillSpacers();
-	        	}
-	        });
-		}
+			if($('#auditor-calendar-'+target).next().length){
+				//console.log("there is another calendar available after");
+			}else{
+				//console.log("we need to load a calendar after");
+				var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target+'/after';
+			    $.get(url, {}, function(data) {
+		            if(data=='0'){ 
+		                UIkit.modal.alert("There was a problem getting the calendar.");
+		            } else {
+						$('#auditor-calendar-'+target).after(data);
+						fillSpacers();
+		        	}
+		        });
+			}
+	    }
+	    
 	}
 
  	function selectday(element, day) {
@@ -710,6 +582,7 @@
             } else {
                 UIkit.notification('<span uk-icon="icon: check"></span> Availability Saved', {pos:'top-right', timeout:1000, status:'success'});
                 //reload graph
+                loadCalendar();
             }
         } );
 	}

@@ -48,6 +48,21 @@ class UserController extends Controller
         return 1;
     }
 
+    public function deleteAvailability(Request $request, $userid, $id) {
+        $user = Auth::user();
+
+        // check if the availability is owned by the user
+        $availability = Availability::where('id','=',$id)->first();
+
+        if($availability){
+            if($availability->user_id == $user->id){
+                $availability->delete();
+                return 1;
+            }
+        }
+        return 0;
+    }
+
     public function saveAuditorAvailability(Request $request, $user) {
         $forminputs = $request->get('inputs');
         parse_str($forminputs, $forminputs);
@@ -65,13 +80,16 @@ class UserController extends Controller
         $saturday = (array_key_exists('saturday', $forminputs) && $forminputs['saturday'] == "on")? 1 : 0;
         $sunday = (array_key_exists('sunday', $forminputs) && $forminputs['sunday'] == "on")? 1 : 0;
 
-        $date_array = explode(" to ", $daterange);
+        $date_array = explode(" to ", $daterange); 
         if(count($date_array) != 2){
-            return "A date range is needed.";
+            // make it work for a single day
+            $date_array[0] = $daterange;
+            $date_array[1] = $date_array[0];
         }
+
         $startdate = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
         $enddate = Carbon\Carbon::createFromFormat('F j, Y', $date_array[1]);
-
+     
         $days = [];
 
         // go through each day of the week
@@ -104,7 +122,7 @@ class UserController extends Controller
         }
         if($thursday){
             $tmp_start = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
-            if($tmp_start->isTuesday()){
+            if($tmp_start->isThursday()){
                 $days[] = $tmp_start->format('Y-m-d');
             }
             for ($date = $tmp_start->next(Carbon\Carbon::THURSDAY); $date->lte($enddate); $date->addWeek()) {
@@ -488,7 +506,6 @@ class UserController extends Controller
         }else{
             $d = Carbon\Carbon::now()->startOfWeek();
             session(['availability.currentdate' => $d]);
-            //$calendar_current_date = Session::get('availability.currentdate');
         }
 
         $calendar = $this->getCalendar($d); //dd($calendar);
@@ -532,19 +549,19 @@ class UserController extends Controller
     }
 
     public function getCalendar($d) {
-        
-        $first_day_of_the_week = $d->copy()->format('Y-m-d');
-        $last_day_of_the_week = $d->copy()->addDays(6)->format('Y-m-d');
-
-        $availabilities = Availability::where('user_id', '=', Auth::user()->id)
-                            ->whereBetween('date', [$first_day_of_the_week, $last_day_of_the_week])
-                            ->orderBy('date', 'asc')
-                            ->get();
-
+  
         // create the content for the selected week and one week before/after
         $tmp_day = $d->copy()->subDays(7);
         $days = array();
         $events = array();
+
+        $first_day = $tmp_day->copy()->format('Y-m-d');
+        $last_day = $tmp_day->copy()->addDays(20)->format('Y-m-d');
+
+        $availabilities = Availability::where('user_id', '=', Auth::user()->id)
+                            ->whereBetween('date', [$first_day, $last_day])
+                            ->orderBy('date', 'asc')
+                            ->get();
 
         foreach($availabilities as $a){
             $events[$a->date][] = [
@@ -585,8 +602,9 @@ class UserController extends Controller
                 $after_time_span = 1;
             }
 
-            $days[$d->copy()->addDays($i)->format('Y-m-d')] = [ 
-                "date" => $d->copy()->format('m/d'), 
+            $index_date = $tmp_day->copy()->addDays($i)->format('Y-m-d');
+            $days[$index_date] = [ 
+                "date" => $tmp_day->copy()->addDays($i)->format('m/d'), 
                 "no_availability" => 0,
                 "start_time" => "",
                 "end_time" => "",
@@ -635,33 +653,56 @@ class UserController extends Controller
          return $calendar;
     }
 
-    public function getAvailabilityCalendar($id, $currentdate, $beforeafter)
+    public function getAvailabilityCalendar($id, $currentdate = null, $beforeafter = null)
     {
         if ($id != Auth::user()->id) {
             $output['message'] = 'You can only edit your own preferences.';
             return $output;
         }
 
-        $d = Carbon\Carbon::createFromFormat('Ymd', $currentdate);
+        if($currentdate === null){
+            if (Session::has('availability.currentdate') && Session::get('availability.currentdate') != '') {
+                $d = Session::get('availability.currentdate');
+            }else{
+                $d = Carbon\Carbon::now()->startOfWeek();
+                session(['availability.currentdate' => $d]);
+                //$calendar_current_date = Session::get('availability.currentdate');
+            }
+        }else{
+            $d = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->startOfWeek();
+            session(['availability.currentdate' => $d]);
+        }
+
         if ($beforeafter == "before") {
             $newdate = $d->subDays(7);
-        }else{
+            session(['availability.currentdate' => $d->copy()->addDays(7)]);
+        }elseif($beforeafter == "after"){
             $newdate = $d->addDays(7);
+            session(['availability.currentdate' => $d->copy()->subDays(7)]);
+        }else{
+            $newdate = $d;
         }
+
         $calendar = $this->getCalendar($newdate);
 
         $data = collect([
             "summary" => [
                 "id" => $id,
-                "name" => "Jane Doe",
-                'initials' => 'JD',
-                'color' => 'blue',
+                "name" => "",
+                'initials' => '',
+                'color' => '',
                 'date' => $d->copy()->subDays(0)->format('F j, Y'),
-                'ref' => $d->copy()->subDays(0)->format('Ymd')
+                'ref' => $d->copy()->subDays(0)->format('Ymd'),
+                'date-previous' => $d->copy()->subDays(7)->format('F j, Y'),
+                'ref-previous' => $d->copy()->subDays(7)->format('Ymd'),
+                'date-next' => strtoupper($d->copy()->addDays(7)->format('F j, Y')),
+                'ref-next' => $d->copy()->addDays(7)->format('Ymd')
             ],
-            "calendar" => $calendar['now']
+            "calendar" => $calendar['now'],
+            "calendar-previous" => $calendar['previous'],
+            "calendar-next" => $calendar['next']
         ]);
 
-        return view('auditors.partials.auditor-availability-calendar', compact('data'));
+        return view('auditors.partials.auditor-calendar', compact('data', 'beforeafter'));
     }
 }
