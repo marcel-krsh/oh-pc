@@ -315,13 +315,13 @@
 		  						<div class="uk-width-1-2 uk-margin-top uk-padding-remove">
 		  							<label class="uk-form-label" for="endtime">ON DAYS</label>
 							        <div class="uk-form-controls">
-							        	<span class="uk-badge dayselector use-hand-cursor" uk-tooltip title="MONDAYS" onclick="selectday(this,'monday');">M</span>
-							        	<span  uk-tooltip title="TUESDAYS" class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'tuesday');">T</span>
-							        	<span  uk-tooltip title="WEDNESDAYS" class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'wednesday');">W</span>
-							        	<span  uk-tooltip title="THURSDAYS" class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'thursday');">T</span>
-							        	<span  uk-tooltip title="FRIDAYS" class="uk-badge dayselector use-hand-cursor" onclick="selectday(this,'friday');">F</span>
-							        	<span  uk-tooltip title="SATURDAYS" class="uk-badge dayselector outline use-hand-cursor" onclick="selectday(this,'saturday');">S</span>
-							        	<span  uk-tooltip title="SUNDAYS" class="uk-badge dayselector outline use-hand-cursor" onclick="selectday(this,'sunday');">S</span>
+							        	<span class="uk-badge dayselector dayselector-monday use-hand-cursor" uk-tooltip title="MONDAYS" onclick="selectday(this,'monday');">M</span>
+							        	<span  uk-tooltip title="TUESDAYS" class="uk-badge dayselector  dayselector-tuesday use-hand-cursor" onclick="selectday(this,'tuesday');">T</span>
+							        	<span  uk-tooltip title="WEDNESDAYS" class="uk-badge dayselector  dayselector-wednesday use-hand-cursor" onclick="selectday(this,'wednesday');">W</span>
+							        	<span  uk-tooltip title="THURSDAYS" class="uk-badge dayselector  dayselector-thursday use-hand-cursor" onclick="selectday(this,'thursday');">T</span>
+							        	<span  uk-tooltip title="FRIDAYS" class="uk-badge dayselector  dayselector-friday use-hand-cursor" onclick="selectday(this,'friday');">F</span>
+							        	<span  uk-tooltip title="SATURDAYS" class="uk-badge dayselector  dayselector-saturday outline use-hand-cursor" onclick="selectday(this,'saturday');">S</span>
+							        	<span  uk-tooltip title="SUNDAYS" class="uk-badge dayselector  dayselector-sunday outline use-hand-cursor" onclick="selectday(this,'sunday');">S</span>
 							            <input class="uk-checkbox dayselectorcheckbox" name="monday" type="checkbox" checked hidden>
 							            <input class="uk-checkbox dayselectorcheckbox" name="tuesday" type="checkbox" checked hidden>
 							            <input class="uk-checkbox dayselectorcheckbox" name="wednesday" type="checkbox" checked hidden>
@@ -587,12 +587,12 @@
         } );
 	}
 
-	$('.flatpickr.selectday').change(function(){
-		loadCalendar($(this).val());
-	});
-
-	function setDate(date){
+	function setDate(date, name){ 
 		$('#daterange').val(date);
+		// also make sure the day of the week is selected
+		if(!$("input[name='"+name+"']:checkbox").is(':checked')){
+ 			selectday(".dayselector-"+name, name);
+ 		}
 	}
 
  </script>

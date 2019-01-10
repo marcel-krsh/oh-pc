@@ -30,7 +30,7 @@
 				<div class="auditor-calendar-content grid-schedule-availability-content">
 					<div class="day-spacer"></div>
 					@foreach($data['calendar-previous']['content'] as $day)
-					<div class="day @if($day['no_availability']) no-availability @endif  use-hand-cursor" onclick="setDate('{{$day['date_formatted']}}');">
+					<div class="day @if($day['no_availability']) no-availability @endif  use-hand-cursor" onclick="setDate('{{$day['date_formatted']}}', '{{$day['date_formatted_name']}}');">
 						@if($day['no_availability'])
 						<div class="event">
 							<i class="a-circle-cross"></i>
@@ -86,7 +86,7 @@
 				<div class="auditor-calendar-content grid-schedule-availability-content">
 					<div class="day-spacer"></div>
 					@foreach($data['calendar']['content'] as $day)
-					<div class="day @if($day['no_availability']) no-availability @endif use-hand-cursor" onclick="setDate('{{$day['date_formatted']}}');">
+					<div class="day @if($day['no_availability']) no-availability @endif use-hand-cursor" onclick="setDate('{{$day['date_formatted']}}', '{{$day['date_formatted_name']}}');">
 						@if($day['no_availability'])
 						<div class="event">
 							<i class="a-circle-plus"></i>
@@ -142,7 +142,7 @@
 				<div class="auditor-calendar-content grid-schedule-availability-content">
 					<div class="day-spacer"></div>
 					@foreach($data['calendar-next']['content'] as $day)
-					<div class="day @if($day['no_availability']) no-availability @endif  use-hand-cursor" onclick="setDate('{{$day['date_formatted']}}');">
+					<div class="day @if($day['no_availability']) no-availability @endif  use-hand-cursor" onclick="setDate('{{$day['date_formatted']}}', '{{$day['date_formatted_name']}}');">
 						@if($day['no_availability'])
 						<div class="event">
 							<i class="a-circle-cross"></i>
@@ -179,5 +179,8 @@
 		    defaultDate:"today",
 		    altFormat: "F j, Y",
 		    dateFormat: "Ymd",
+		});
+		$('.flatpickr.selectday').change(function(){
+			loadCalendar($(this).val());
 		});
 	</script>

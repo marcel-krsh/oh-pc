@@ -606,6 +606,7 @@ class UserController extends Controller
             $days[$index_date] = [ 
                 "date" => $tmp_day->copy()->addDays($i)->format('m/d'), 
                 "date_formatted" => $tmp_day->copy()->addDays($i)->format('F j, Y'), 
+                "date_formatted_name" => strtolower($tmp_day->copy()->addDays($i)->englishDayOfWeek), 
                 "no_availability" => 0,
                 "start_time" => "",
                 "end_time" => "",
