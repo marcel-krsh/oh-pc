@@ -592,7 +592,6 @@
 	});
 
 	function setDate(date){
-		console.log("date "+date);
 		$('#daterange').val(date);
 	}
 
