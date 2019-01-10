@@ -104,13 +104,7 @@ if(Auth::check()){
 	<link rel="stylesheet" href="/css/system-419171130.css">
 
 	@yield('head')
-	@if(env('APP_DEBUG_NO_DEVCO') == 'true')
-    <style>
-    ul#tabs {
-	    margin-top: 60px;
-	}
-	</style>
-    @endif
+	
     <style>
 	  [v-cloak] {
 	    display: none;
@@ -398,10 +392,15 @@ if(Auth::check()){
 
 		    	//Echo.join('communications.'+uid+'.'+sid);
 		    	Echo.private('updates.{{Auth::user()->id}}')
-				    .listen('UpdateEvent', (data) => {
-				    	if(data.event == 'tab'){
+				    .listen('UpdateEvent', (payload) => {
+				    	@if(env('APP_DEBUG'))
+					    	console.log('Update received with:');
+					    	console.log(payload);
+				    	@endIf
+
+				    	if(payload.data.event == 'tab'){
 					        console.log("Tab event received.");
-					        this.statsCommunicationTotal = e.data.communicationTotal;
+					        this.statsCommunicationTotal = payload.data.communicationTotal;
 					    }
 			    });
 		    	

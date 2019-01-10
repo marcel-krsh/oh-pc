@@ -280,10 +280,9 @@ function filterByOwner(){
                 console.log("Communications Mounted");
                 //Echo.private('communications.{{Auth::user()->id}}')
                 Echo.private('updates.{{Auth::user()->id}}')
-                .listen('UpdateEvent', (data) => {
-                    if(data.event == 'communication'){
+                .listen('UpdateEvent', (payload) => {
+                    if(payload.data.event == 'communication'){
                         console.log('Communication Event Received.');
-                        console.log(data);
                         // if(data.is_reply){
                         //     console.log("user " + data.userId + " received a new reply for message "+data.id);
                         //     var updateddata = [{

@@ -16,6 +16,29 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\SomeEvent::class => [
             \App\Listeners\EventListener::class,
         ],
+                'communications.created' => [
+            'App\Events\CommunicationsEvent@communicationCreated'
+        ],
+        'communication.recipient.created' => [
+            'App\Events\CommunicationsEvent@communicationRecipientCreated'
+        ],
+        'audit.created' => [
+            'App\Events\AuditsEvent@auditCreated'
+        ],
+        'audit.updated' => [
+            'App\Events\AuditsEvent@auditUpdated'
+        ],
+        'cachedaudit.created' => [
+            'App\Events\CachedAuditsEvent@cachedAuditCreated'
+        ],
+        'App\Events\AuditorAddressEvent' => [
+            'App\Listeners\AddAuditorAddress',
+        ],
+        'App\Events\ChatEvent' => [
+            'App\Listeners\ChatListener',
+        ],
+        
+
         'App\Events\UpdateEvent' => [
             'App\Listeners\UpdateListener',
         ],

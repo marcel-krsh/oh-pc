@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Events\UpdateEvent;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -60,14 +61,13 @@ class CommunicationsEvent
         // update total unread
         $user = User::find($communication_recipient->user_id);
         $data = [
-            'event' =>'tab'
+            'event' =>'tab',
             'userId' => $communication_recipient->user_id,
             'communicationTotal' => $communicationTotal
         ];
 
-        $update = event(new UpdateEvent($user,$data));
-        Log::info('Update Event fired.');
-        Log::info($update);
+        event(new UpdateEvent($user,$data));
+    Log::info('Update Event fired.');
 
         // $new_communication = Communication::where('id', '=', $communication_recipient->communication_id)->first();
 

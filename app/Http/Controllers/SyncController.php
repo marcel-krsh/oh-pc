@@ -129,11 +129,14 @@ class SyncController extends Controller
                             break;
 
                         case 'Amenity':
-                            dd($model,$user,$userEmail,$userName,$deviceId,$deviceName,$metadata);
+                            //dd($model,$user,$userEmail,$userName,$deviceId,$deviceName,$metadata);
                             $apiMethod = 'updateAmenity';
                             // api reference:
                             //int $amenities_id, array $metadata, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null
-                            $syncData = $apiConnect->$apiMethod($metadata['amenity_type_key'], $metadata, $user, $userEmail, $userName, $deviceId, $deviceName);
+                            // Amenity can update the description Only
+                            $passingData['AmenityDescription']=$metadata['amenity_description'];
+                            //
+                            $syncData = $apiConnect->$apiMethod($metadata['amenity_type_key'], $passingData, $user, $userEmail, $userName, $deviceId, $deviceName);
                             $syncData = json_decode($syncData, true);
                             dd($syncData);
                             if($syncData['meta']['...value..']){
