@@ -587,6 +587,15 @@
         } );
 	}
 
+	$('.flatpickr.selectday').change(function(){
+		loadCalendar($(this).val());
+	});
+
+	function setDate(date){
+		console.log("date "+date);
+		$('#daterange').val(date);
+	}
+
  </script>
 
  <script>
