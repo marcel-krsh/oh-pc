@@ -26,6 +26,9 @@
                 <small>UNIT</small>
             </th>
             <th>
+                <small>FILE</small>
+            </th>
+            <th>
                 <small>INSPECTABLE</small>
             </th>
             <th>
@@ -57,10 +60,12 @@
                 <td><small>@if($data->building_exterior) <i uk-tooltip title="Building Exterior" class="a-circle-checked"></i> @else - @endif</small></td>
                 <td><small>@if($data->common_area) <i uk-tooltip title="Common Area" class="a-circle-checked"></i> @else - @endif</small></td>
                 <td><small>@if($data->unit) <i uk-tooltip title="Unit" class="a-circle-checked"></i> @else - @endif</small></td>
+                <td><small>@if($data->file) <i uk-tooltip title="File" class="a-circle-checked"></i> @else - @endif</small></td>
                 <td><small>@if($data->inspectable) <i uk-tooltip title="Inspectable" class="a-circle-checked"></i> @else - @endif</small></td>
                 <td><small>@if($data->project_default) <i uk-tooltip title="Project Default" class="a-circle-checked"></i> @else - @endif</small></td>
                 <td><small>@if($data->building_default) <i uk-tooltip title="Building Default" class="a-circle-checked"></i> @else - @endif</small></td>
                 <td><small>@if($data->unit_default) <i uk-tooltip title="Unit Default" class="a-circle-checked"></i> @else - @endif</small></td>
+
                 <td><small>{{$data->policy}}</small></td>
                 <td><small>{{($data->time_to_complete) ? $data->time_to_complete : 0}} min</small></td>
                 <td><i class="{{$data->icon}}" style="font-size: 20px;"></i></td>
