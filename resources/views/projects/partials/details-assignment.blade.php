@@ -2,19 +2,53 @@
 	<div class="uk-width-1-1">	
 		<div class=" uk-margin-left uk-margin-right ">
 			<hr>
-			<span style="font-style: italic;">{{$data['summary']['required_unit_selected']}} ALL REQUIRED UNIT COUNTS FOR EACH PROGRAM HAVE BEEN SELECTED. {{$data['summary']['inspectable_areas_assignment_needed']}} INSPECTABLE AREAS NEED ASSIGNMENT. {{$data['summary']['required_units_selection']}} REQUIRED UNITS NEED TO BE SELECTED. {{$data['summary']['file_audits_needed']}} FILE AUDITS NEED TO BE COMPLETED. {{$data['summary']['physical_audits_needed']}} PHYSICAL AUDITS NEED TO BE COMPLETED. {{$data['summary']['schedule_conflicts']}} SCHEDULE CONFLICTS NEED TO BE RESOLVED.</span>
 		</div>
-		<div class="project-details-info-assignment-summary uk-margin-top uk-margin-left uk-margin-right" uk-grid>
-			<div class="uk-width-1-5">
+		<div class="project-details-info-assignment-summary uk-margin-left uk-margin-right uk-margin-large-top" uk-grid>
+			<div class="uk-width-1-6">
 				<canvas id="chartjs-assignment" class="chartjs" style="display: block;"></canvas>
 			</div>
-			<div class="uk-width-4-5">
-				<h3>
-					It will take an <span class="underlined italic">ESTIMATED</span> <i class="a-pencil-2 use-hand-cursor" onclick="editEstimatedHours();" uk-tooltip="title:EDIT ESTIMATED HOURS;"></i>{{$data['summary']['estimated']}} to complete this audit.<br />
-					{{$data['summary']['needed']}} Need Assigned
+			<div class="uk-width-1-2">
+				<h3 class="estHour">
+					It will take an <span class="underlined italic">ESTIMATED</span> <i class="a-pencil-2 use-hand-cursor" onclick=" $('.estHour').toggle();" uk-tooltip="title:EDIT ESTIMATED HOURS;"></i><span id="estimated_hours_field">{{$data['summary']['estimated']}}</span> to complete this audit.<br />
+					<span id="estimated_hours_needed">{{$data['summary']['needed']}}</span> Need Assigned
+				</h3>
+				<h3 class="estHour estHourForm" style="display:none">
+					<form id="estimated_hours_form" method="post" class="uk-width-1-1 uk-margin-bottom">
+						<div class="uk-grid-small" uk-grid>
+							<div class="uk-width-1-4">
+								<label class="uk-text-small">Hours</label>
+	  							<input class="uk-input" type="number" name="estimated_hours" id="estimated_hours" value="{{$data['summary']['estimated_hours']}}" min="1" max="999"/>
+	  						</div>
+	  						<div class="uk-width-1-4">
+								<label class="uk-text-small">Minutes</label>
+								<select id="estimated_minutes" name="estimated_minutes" class="uk-select">
+									<option value="00" @if($data['summary']['estimated_minutes'] == '00') @endif>00</option>
+									<option value="15" @if($data['summary']['estimated_minutes'] == '15') @endif>15</option>
+									<option value="30" @if($data['summary']['estimated_minutes'] == '30') @endif>30</option>
+									<option value="45" @if($data['summary']['estimated_minutes'] == '45') @endif>45</option>
+								</select>
+							</div>
+	  						<div class="uk-width-1-4">
+								<button class="uk-button uk-button-primary" style=" width: 100%;margin-top: 26px;" onclick="saveEstimatedHours(event);">SAVE</button>	
+							</div>
+	  						<div class="uk-width-1-4">
+								<button class="uk-button uk-button-default" style=" width: 100%;margin-top: 26px;" type="cancel" onclick=" $('.estHour').toggle();return false;">CANCEL</button>	
+							</div>
+					</form>
 				</h3>
 			</div>
-			<div id="project-details-assignment-buttons" class="uk-width-1-1 project-details-buttons uk-margin-small">
+			<div class="uk-width-1-3">
+				<ul class="uk-list">
+					<li>{{$data['summary']['required_unit_selected']}} ALL REQUIRED UNIT COUNTS FOR EACH PROGRAM HAVE BEEN SELECTED.</li>
+					<li>{{$data['summary']['inspectable_areas_assignment_needed']}} INSPECTABLE AREAS NEED ASSIGNMENT.</li>
+					<li>{{$data['summary']['required_units_selection']}} REQUIRED UNITS NEED TO BE SELECTED.</li>
+					<li>{{$data['summary']['file_audits_needed']}} FILE AUDITS NEED TO BE COMPLETED.</li>
+					<li>{{$data['summary']['physical_audits_needed']}} PHYSICAL AUDITS NEED TO BE COMPLETED.</li>
+					<li>{{$data['summary']['schedule_conflicts']}} SCHEDULE CONFLICTS NEED TO BE RESOLVED.</li>
+				</ul>	
+			</div>
+
+			<div id="project-details-assignment-buttons" class="uk-width-1-1 uk-margin-large-top project-details-buttons ">
 				@foreach($data['days'] as $day)
 				<div class="project-details-button-container">
 					<button class="uk-button uk-link {{$day['status']}} active" onclick="assignmentDay({{$data['project']['id']}}, {{$day['id']}}, this);" type="button" ><i class="{{$day['icon']}}"></i> {{$day['date']}}</button>
@@ -292,6 +326,25 @@
 <script>
 	function addAssignmentAuditor(projectid){
 		dynamicModalLoad('projects/'+projectid+'/assignments/addauditor',1,0,1);
+	}
+
+	function saveEstimatedHours(e){
+		e.preventDefault();
+		var form = $('#estimated_hours_form');
+
+		$.post("/audit/{{$data['project']['audit_id']}}/estimated/save", {
+            'inputs' : form.serialize(),
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            if(data.status!=1){ 
+                UIkit.modal.alert(data,{stack: true});
+            } else {
+                UIkit.notification('<span uk-icon="icon: check"></span> Estimated Hours Saved', {pos:'top-right', timeout:1000, status:'success'});
+                $('#estimated_hours_field').html(data.hours);
+                $('#estimated_hours_needed').html(data.needed);
+                $('.estHour').toggle();
+            }
+        } );
 	}
 	
 </script>

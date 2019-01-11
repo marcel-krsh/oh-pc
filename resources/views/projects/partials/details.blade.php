@@ -1,55 +1,3 @@
-<div id="project-details" uk-grid>
-	<div id="project-details-general" class="uk-width-1-1">
-		<div uk-grid>
-			<div class="uk-width-2-3">
-				<h3>{{$details['project_name']}}</h3>
-				Project #: {{$details['project_id']}}
-			</div>
-			<div class="uk-width-1-3">
-				Last Audit Completed: {{$details['last_audit_completed']}}<br />
-				Next Audit Due By: {{$details['next_audit_due']}}<br />
-				Current Project Score : {{$details['score_percentage']}} / {{$details['score']}}
-			</div>
-		</div>
-	</div>
-	<div id="project-details-stats" class="uk-width-1-1" style="margin-top:20px;">
-		<div uk-grid>
-			<div class="uk-width-1-3">
-				<ul class="leaders" style="margin-right:30px;">
-					<li><span>Total Buildings</span> <span>{{$details['total_building']}}</span></li>
-					<li><span class="indented">Total Building Common Areas</span> <span>{{$details['total_building_common_areas']}}</span></li>
-					<li><span>Total Project Common Areas</span> <span>{{$details['total_project_common_areas']}}</span></li>
-					<li><span>Total Units</span> <span>{{$details['total_units']}}</span></li>
-					<li><span class="indented">• Market Rate</span> <span>{{$details['market_rate']}}</span></li>
-					<li><span class="indented">• Subsidized</span> <span>{{$details['subsidized']}}</span></li>
-					<li><span>Total Programs</span> <span>{{count($details['programs'])}}</span></li>
-					@foreach($details['programs'] as $program) 
-					<li><span class="indented">• {{$program['name']}}</span> <span>{{$program['units']}}</span></li>
-					@endforeach
-				</ul>
-			</div>
-			<div class="uk-width-1-3">
-				<h5 class="uk-margin-remove"><strong>OWNER: {{$details['name']}}</strong></h5>
-				<div class="address">
-					<i class="a-avatar"></i> {{$details['poc']}}<br />
-					<i class="a-phone-5"></i> {{$details['phone']}} <i class="a-fax-2" style="margin-left:10px"></i> {{$details['fax']}} <br />
-					<i class="a-mail-send"></i> {{$details['email']}}<br />
-					<i class="a-mailbox"></i> {{$details['address']}}<br />{{$details['address2']}}<br />{{$details['city']}} {{$details['state']}} {{$details['zip']}}
-				</div>
-			</div>
-			<div class="uk-width-1-3">
-				<h5 class="uk-margin-remove"><strong>Managed By: {{$details['name']}}</strong></h5>
-				<div class="address">
-					<i class="a-avatar"></i> {{$details['poc']}}<br />
-					<i class="a-phone-5"></i> {{$details['phone']}} <i class="a-fax-2" style="margin-left:10px"></i> {{$details['fax']}} <br />
-					<i class="a-mail-send"></i> {{$details['email']}}<br />
-					<i class="a-mailbox"></i> {{$details['address']}}<br />{{$details['address2']}}<br />{{$details['city']}} {{$details['state']}}, {{$details['zip']}}
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
 <div id="project-details-main" class="uk-overflow-auto" uk-grid>
 	<div class="uk-width-1-1 uk-padding-remove">
 		<div id="project-details-main-row" class="ok-actionable">
@@ -177,6 +125,60 @@
 		</div>
 	</div>
 </div>
+
+<div id="project-details" uk-grid>
+	<div id="project-details-general" class="uk-width-1-1">
+		<div uk-grid>
+			<div class="uk-width-2-3">
+				<h3>{{$details['project_name']}}</h3>
+				Project #: {{$details['project_id']}}
+			</div>
+			<div class="uk-width-1-3">
+				Last Audit Completed: {{$details['last_audit_completed']}}<br />
+				Next Audit Due By: {{$details['next_audit_due']}}<br />
+				Current Project Score : {{$details['score_percentage']}} / {{$details['score']}}
+			</div>
+		</div>
+	</div>
+	<div id="project-details-stats" class="uk-width-1-1" style="margin-top:20px;">
+		<div uk-grid>
+			<div class="uk-width-1-3">
+				<ul class="leaders" style="margin-right:30px;">
+					<li><span>Total Buildings</span> <span>{{$details['total_building']}}</span></li>
+					<li><span class="indented">Total Building Common Areas</span> <span>{{$details['total_building_common_areas']}}</span></li>
+					<li><span>Total Project Common Areas</span> <span>{{$details['total_project_common_areas']}}</span></li>
+					<li><span>Total Units</span> <span>{{$details['total_units']}}</span></li>
+					<li><span class="indented">• Market Rate</span> <span>{{$details['market_rate']}}</span></li>
+					<li><span class="indented">• Subsidized</span> <span>{{$details['subsidized']}}</span></li>
+					<li><span>Total Programs</span> <span>{{count($details['programs'])}}</span></li>
+					@foreach($details['programs'] as $program) 
+					<li><span class="indented">• {{$program['name']}}</span> <span>{{$program['units']}}</span></li>
+					@endforeach
+				</ul>
+			</div>
+			<div class="uk-width-1-3">
+				<h5 class="uk-margin-remove"><strong>OWNER: {{$details['name']}}</strong></h5>
+				<div class="address">
+					<i class="a-avatar"></i> {{$details['poc']}}<br />
+					<i class="a-phone-5"></i> {{$details['phone']}} <i class="a-fax-2" style="margin-left:10px"></i> {{$details['fax']}} <br />
+					<i class="a-mail-send"></i> {{$details['email']}}<br />
+					<i class="a-mailbox"></i> {{$details['address']}}<br />{{$details['address2']}}<br />{{$details['city']}} {{$details['state']}} {{$details['zip']}}
+				</div>
+			</div>
+			<div class="uk-width-1-3">
+				<h5 class="uk-margin-remove"><strong>Managed By: {{$details['name']}}</strong></h5>
+				<div class="address">
+					<i class="a-avatar"></i> {{$details['poc']}}<br />
+					<i class="a-phone-5"></i> {{$details['phone']}} <i class="a-fax-2" style="margin-left:10px"></i> {{$details['fax']}} <br />
+					<i class="a-mail-send"></i> {{$details['email']}}<br />
+					<i class="a-mailbox"></i> {{$details['address']}}<br />{{$details['address2']}}<br />{{$details['city']}} {{$details['state']}}, {{$details['zip']}}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
 <div id="project-details-buttons" class="project-details-buttons" uk-grid>
 	<div class="uk-width-1-1">
 		<div uk-grid>

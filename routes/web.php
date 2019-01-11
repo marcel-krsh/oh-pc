@@ -197,8 +197,8 @@
         Route::get('/notes/project/{project}.json', 'NoteController@notesFromProjectIdJson')->name('notes.loadjson');
         Route::get('/external-window/print-notes-{project}.html', 'NoteController@printNotes')->name('notes.print');
 
-        // Auditor
-        
+        // Audit
+        Route::post('/audit/{id}/estimated/save', 'AuditController@saveEstimatedHours')->name('audit.estimated_hours.save');
 
         // });
     });

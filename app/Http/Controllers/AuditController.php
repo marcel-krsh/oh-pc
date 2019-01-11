@@ -460,7 +460,8 @@ class AuditController extends Controller
             case 'assignment':
                 $data = collect([
                     "project" => [
-                        'id' => 1
+                        'id' => 1,
+                        'audit_id' => 123
                     ],
                     "summary" => [
                         'required_unit_selected' => 0,
@@ -470,6 +471,8 @@ class AuditController extends Controller
                         'physical_audits_needed' => 15,
                         'schedule_conflicts' => 16,
                         'estimated' => '107:00',
+                        'estimated_hours' => '107',
+                        'estimated_minutes' => '00',
                         'needed' => '27:00',
                     ],
                     'auditors' => [
@@ -580,6 +583,32 @@ class AuditController extends Controller
         }
 
         return view('projects.partials.details-'.$type, compact('data'));
+    }
+
+    public function saveEstimatedHours(Request $request, $id){
+        // audit id
+        $forminputs = $request->get('inputs');
+        parse_str($forminputs, $forminputs);
+
+        $hours = (int) $forminputs['estimated_hours'];
+        $minutes = (int) $forminputs['estimated_minutes'];
+
+        $audit = CachedAudit::where('id','=',$id)->where('lead','=',Auth::user()->id)->first();
+
+        $new_estimate = $hours.":".$minutes.":00";
+
+        if($audit){
+            $audit->update([
+                'estimated_time' => $new_estimate
+            ]);
+        }
+
+        // get new needed time
+        $audit->fresh();
+
+        $needed = $audit->hours_still_needed();
+
+        return ['status'=>1, 'hours'=> $hours.":".$minutes, 'needed'=>$needed];
     }
 
     public function getProjectDetailsAssignmentSchedule($project, $dateid)
