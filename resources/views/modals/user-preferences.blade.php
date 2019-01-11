@@ -426,6 +426,7 @@
 	    var target = $(element).attr('data-target');
 	    // hide all 
 	    
+
 	    // check if the element is there first
 	    if($('#auditor-calendar-'+target).length){
 	    	$(element).closest('.grid-schedule-availability').fadeOut("fast", function() {
@@ -436,11 +437,11 @@
 		    // next or previous dates are already loaded, load the next set
 			if($('#auditor-calendar-'+target).prev().length){
 
-				//console.log("there is another calendar available before");
+				console.log("there is another calendar available before");
 
 			}else{
 
-				//console.log("we need to load a calendar before");
+				console.log("we need to load a calendar before");
 
 				var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target+'/before';
 			    $.get(url, {}, function(data) {
@@ -454,9 +455,9 @@
 			}
 
 			if($('#auditor-calendar-'+target).next().length){
-				//console.log("there is another calendar available after");
+				console.log("there is another calendar available after");
 			}else{
-				//console.log("we need to load a calendar after");
+				console.log("we need to load a calendar after");
 				var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target+'/after';
 			    $.get(url, {}, function(data) {
 		            if(data=='0'){ 
@@ -467,6 +468,8 @@
 		        	}
 		        });
 			}
+	    }else{
+	    	//loadCalendar(target);
 	    }
 	    
 	}
