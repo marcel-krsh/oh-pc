@@ -16,7 +16,13 @@ class HudInspectableArea extends Model
     protected $table = 'hud_inspectable_areas';
 
     protected $fillable = [
-        'name'
+        'name',
+        'site',
+        'building_system',
+        'building_exterior',
+        'common_area',
+        'unit',
+        'file'
     ];
 
     /**
