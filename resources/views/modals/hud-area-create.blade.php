@@ -8,6 +8,9 @@
                             $('.Amenity-Building-Exterior').show();
                             $('.Amenity-Common-Area').show();
                             $('.Amenity-Unit').show();
+                            $('.Amenity-File').show();
+                            $('.Amenity-Unselected').show();
+                            $('.Amenity-Selected').show();
                             break;
                             console.log('all');
                     case 'Selected':
@@ -16,7 +19,8 @@
                             $('.Amenity-Building-Exterior').hide();
                             $('.Amenity-Common-Area').hide();
                             $('.Amenity-Unit').hide();
-
+                            $('.Amenity-File').hide();
+                            $('.Amenity-Unselected').hide();
                             $('.Amenity-Selected').show();
                             break;
                             console.log('Selected');
@@ -26,7 +30,8 @@
                             $('.Amenity-Building-Exterior').hide();
                             $('.Amenity-Common-Area').hide();
                             $('.Amenity-Unit').hide();
-
+                            $('.Amenity-File').hide();
+                            $('.Amenity-Selected').hide();
                             $('.Amenity-Unselected').show();
                             break;
                             console.log('all');
@@ -35,7 +40,9 @@
                             $('.Amenity-Building-Exterior').hide();
                             $('.Amenity-Common-Area').hide();
                             $('.Amenity-Unit').hide();
-
+                            $('.Amenity-File').hide();
+                            $('.Amenity-Unselected').hide();
+                            $('.Amenity-Selected').hide();
                             $('.Amenity-Project').show();
                              console.log('project');
                             break;
@@ -44,7 +51,9 @@
                             $('.Amenity-Building-Exterior').hide();
                             $('.Amenity-Common-Area').hide();
                             $('.Amenity-Unit').hide();
-
+                            $('.Amenity-File').hide();
+                            $('.Amenity-Unselected').hide();
+                            $('.Amenity-Selected').hide();
                             $('.Amenity-Building-System').show();
                              console.log('bs');
                             break;
@@ -53,7 +62,9 @@
                             $('.Amenity-Building-System').hide();
                             $('.Amenity-Common-Area').hide();
                             $('.Amenity-Unit').hide();
-
+                            $('.Amenity-File').hide();
+                            $('.Amenity-Unselected').hide();
+                            $('.Amenity-Selected').hide();
                             $('.Amenity-Building-Exterior').show();
                              console.log('be');
                             break;
@@ -62,7 +73,9 @@
                             $('.Amenity-Building-System').hide();
                             $('.Amenity-Building-Exterior').hide();
                             $('.Amenity-Unit').hide();
-
+                            $('.Amenity-File').hide();
+                            $('.Amenity-Unselected').hide();
+                            $('.Amenity-Selected').hide();
                             $('.Amenity-Common-Area').show();
                              console.log('ca');
                             break;
@@ -72,9 +85,22 @@
                             $('.Amenity-Building-System').hide();
                             $('.Amenity-Building-Exterior').hide();
                             $('.Amenity-Common-Area').hide();
-
+                            $('.Amenity-File').hide();
+                            $('.Amenity-Unselected').hide();
+                            $('.Amenity-Selected').hide();
                             $('.Amenity-Unit').show();
                              console.log('unit');
+                            break;
+                    case 'File':
+                            $('.Amenity-Project').hide();
+                            $('.Amenity-Building-System').hide();
+                            $('.Amenity-Building-Exterior').hide();
+                            $('.Amenity-Common-Area').hide();
+                            $('.Amenity-Unit').hide();
+                            $('.Amenity-Unselected').hide();
+                            $('.Amenity-Selected').hide();
+                            $('.Amenity-File').show();
+                             console.log('file');
                             break;
                     default:
                         console.log('called but nothing happened to '.amenity);
@@ -85,7 +111,7 @@
             }
 
             function hideFinding(finding){
-                console.log(finding);
+                console.log('hide finding called '+finding);
                 switch(finding){
                     case 'all':
                             $('.Finding-Site').show();
@@ -93,63 +119,79 @@
                             $('.Finding-Building-Exterior').show();
                             $('.Finding-Common-Area').show();
                             $('.Finding-Unit').show();
+                            $('.Finding-File').show();
+                            $('.Finding-Unselected').show();
+                            $('.Finding-Selected').show();
+                            console.log('Finding All');
                             break;
-                            console.log('all');
+                            
                     case 'Selected':
                             $('.Finding-Site').hide();
                             $('.Finding-Building-System').hide();
                             $('.Finding-Building-Exterior').hide();
                             $('.Finding-Common-Area').hide();
                             $('.Finding-Unit').hide();
-
+                            $('.Finding-File').hide();
+                            $('.Finding-Unselected').hide();
                             $('.Finding-Selected').show();
+                            console.log('Finding Selected');
                             break;
-                            console.log('Selected');
+                            
                     case 'Unselected':
                             $('.Finding-Site').hide();
                             $('.Finding-Building-System').hide();
                             $('.Finding-Building-Exterior').hide();
                             $('.Finding-Common-Area').hide();
                             $('.Finding-Unit').hide();
-
+                            $('.Finding-File').hide();
+                            $('.Finding-Selected').hide();
                             $('.Finding-Unselected').show();
+                            console.log('Finding Unselected');
                             break;
-                            console.log('all');
+                            
                     case 'Site':
                             $('.Finding-Building-System').hide();
                             $('.Finding-Building-Exterior').hide();
                             $('.Finding-Common-Area').hide();
                             $('.Finding-Unit').hide();
-
+                            $('.Finding-File').hide();
+                            $('.Finding-Unselected').hide();
+                            $('.Finding-Selected').hide();
                             $('.Finding-Site').show();
-                             console.log('project');
+                             console.log('Finding Site');
                             break;
                     case 'Building System':
                             $('.Finding-Site').hide();
                             $('.Finding-Building-Exterior').hide();
                             $('.Finding-Common-Area').hide();
                             $('.Finding-Unit').hide();
-
+                            $('.Finding-File').hide();
+                            $('.Finding-Unselected').hide();
+                            $('.Finding-Selected').hide();
                             $('.Finding-Building-System').show();
-                             console.log('bs');
+                             console.log('Finding BS');
                             break;
                     case 'Building Exterior':
                             $('.Finding-Site').hide();
                             $('.Finding-Building-System').hide();
                             $('.Finding-Common-Area').hide();
                             $('.Finding-Unit').hide();
-
+                            $('.Finding-File').hide();
+                            $('.Finding-Unselected').hide();
+                            $('.Finding-Selected').hide();
                             $('.Finding-Building-Exterior').show();
-                             console.log('be');
+                             console.log('Finding BE');
                             break;
                     case 'Common Area':
                             $('.Finding-Site').hide();
                             $('.Finding-Building-System').hide();
                             $('.Finding-Building-Exterior').hide();
                             $('.Finding-Unit').hide();
-
+                            $('.Finding-File').hide();
+                            $('.Finding-Unselected').hide();
+                            $('.Finding-Selected').hide();
                             $('.Finding-Common-Area').show();
-                             console.log('ca');
+                             console.log('Finding CA');
                             break;
 
                     case 'Unit':
@@ -157,9 +199,22 @@
                             $('.Finding-Building-System').hide();
                             $('.Finding-Building-Exterior').hide();
                             $('.Finding-Common-Area').hide();
-
+                            $('.Finding-File').hide();
+                            $('.Finding-Unselected').hide();
+                            $('.Finding-Selected').hide();
                             $('.Finding-Unit').show();
-                             console.log('unit');
+                             console.log('Finding Unit');
+                            break;
+                    case 'File':
+                            $('.Finding-Site').hide();
+                            $('.Finding-Building-System').hide();
+                            $('.Finding-Building-Exterior').hide();
+                            $('.Finding-Common-Area').hide();
+                            $('.Finding-Unit').hide();
+                            $('.Finding-Unselected').hide();
+                            $('.Finding-Selected').hide();
+                            $('.Finding-File').show();
+                             console.log('Finding File');
                             break;
                     default:
                         $('.Finding-Site').hide();
@@ -168,6 +223,7 @@
                         $('.Finding-Common-Area').hide();
                         $('.Finding-Unit').hide();
                         console.log('called but nothing happened to '.finding);
+                        break
                 }
                 
                 
@@ -207,18 +263,20 @@
                                     <option value="Building Exterior">BUILDING EXTERIOR ONLY</option>
                                     <option value="Common Area">COMMON AREA ONLY</option>
                                     <option value="Unit">UNIT ONLY</option>
+                                    <option value="File">FILE ONLY</option>
                                 </select>
 
                             </small>
                             <ul class="uk-list uk-scrollable-box">
                                 @foreach($amenities as $amenity)
-                                <li class="@if($amenity->project) Amenity-Project @endIf @if($amenity->building_exterior) Amenity-Building-Exterior @endif @if($amenity->building_system) Amenity-Building-System @endif  @if($amenity->common_area) Amenity-Common-Area @endIf  @if($amenity->unit) Amenity-Unit @endIf @if($hud) @if($hud->amenities) @if(in_array($amenity->id, $hud->amenities->pluck('amenity_id')->toArray())) Amenity-Selected @else Amenity-Unselected @endif @endif @endif"><label><input class="uk-checkbox" type="checkbox" name="amenities[]" value="{{$amenity->id}}" @if($hud) @if($hud->amenities) @if(in_array($amenity->id, $hud->amenities->pluck('amenity_id')->toArray())) checked @endif @endif @endif> {{$amenity->amenity_description}}</label><br />
+                                <li class="@if($amenity->project) Amenity-Project @endIf @if($amenity->building_exterior) Amenity-Building-Exterior @endif @if($amenity->building_system) Amenity-Building-System @endif  @if($amenity->common_area) Amenity-Common-Area @endIf  @if($amenity->unit) Amenity-Unit @endIf @if($amenity->file) Amenity-File @endIf @if($hud) @if($hud->amenities) @if(in_array($amenity->id, $hud->amenities->pluck('amenity_id')->toArray())) Amenity-Selected @else Amenity-Unselected @endif @endif @endif"><label><input class="uk-checkbox" type="checkbox" name="amenities[]" value="{{$amenity->id}}" @if($hud) @if($hud->amenities) @if(in_array($amenity->id, $hud->amenities->pluck('amenity_id')->toArray())) checked @endif @endif @endif> {{$amenity->amenity_description}}</label><br />
                                     <span class="gray-text uk-margin-large-left">
                                     @if($amenity->project)• Project @endIf 
                                     @if($amenity->building_exterior)• Building Exterior @endif
                                     @if($amenity->building_system)• Building System @endif 
                                     @if($amenity->common_area)• Common Area @endIf 
                                     @if($amenity->unit)• Unit @endIf
+                                    @if($amenity->file)• File @endIf</span>
 
                                 </li>
                                 @endforeach
@@ -247,12 +305,13 @@
                                     <option value="Building Exterior">BUILDING EXTERIOR ONLY</option>
                                     <option value="Common Area">COMMON AREA ONLY</option>
                                     <option value="Unit">UNIT ONLY</option>
+                                    <option value="File">FILE ONLY</option>
                                 </select>
 
                             </small>
                         <ul class="uk-list uk-scrollable-box">
                             @foreach($findingTypes as $findingType)
-                                <li class="@if($findingType->site) Finding-Site @endIf @if($findingType->building_exterior) Finding-Building-Exterior @endif @if($findingType->building_system) Finding-Building-System @endif  @if($findingType->common_area) Finding-Common-Area @endIf  @if($findingType->unit) Finding-Unit @endIf @if($hud) @if($hud->finding_types) @if(in_array($findingType->id, $hud->finding_types->pluck('amenity_id')->toArray())) Amenity-Selected @else Amenity-Unselected @endif @endif @endif"><label><input class="uk-checkbox" type="checkbox" name="hudFindingTypes[]" value="{{$findingType->id}}" @if($hud) @if($hud->finding_types) @if(in_array($findingType->id, $hud->finding_types->pluck('finding_type_id')->toArray())) checked @endif @endif @endif>
+                                <li class="@if($findingType->site) Finding-Site @endIf @if($findingType->building_exterior) Finding-Building-Exterior @endif @if($findingType->building_system) Finding-Building-System @endif  @if($findingType->common_area) Finding-Common-Area @endIf  @if($findingType->unit) Finding-Unit @endIf @if($findingType->file) Finding-File @endIf @if($hud) @if($hud->finding_types) @if(in_array($findingType->id, $hud->finding_types->pluck('finding_type_id')->toArray())) Finding-Selected @else Finding-Unselected @endif @endif @endif"><label><input class="uk-checkbox" type="checkbox" name="hudFindingTypes[]" value="{{$findingType->id}}" @if($hud) @if($hud->finding_types) @if(in_array($findingType->id, $hud->finding_types->pluck('finding_type_id')->toArray())) checked @endif @endif @endif>
 
                                     {{$findingType->name}}<br />
                                     <span class="gray-text uk-margin-large-left">
@@ -261,6 +320,7 @@
                                     @if($findingType->building_system)• Building System @endif 
                                     @if($findingType->common_area)• Common Area @endIf 
                                     @if($findingType->unit)• Unit @endIf
+                                    @if($findingType->file)• File @endIf
                                     </span>
                                 </label></li>
                             @endforeach
@@ -272,7 +332,10 @@
 
                 <div class="uk-form-row">
                     <div class="uk-grid">
-                        <input type="submit" id="submit" class="uk-button uk-button-default uk-align-right" style="margin: auto;" name="submit" value="@if($hud)UPDATE @else CREATE @endIf HUD AREA">
+                        <div class="uk-width-1-3"></div>
+                        <div class="uk-width-2-3">
+                            <input type="submit" id="submit" class="uk-button uk-button-success uk-align-right uk-width-1-1" style="margin: auto;" name="submit" value="@if($hud)UPDATE @else CREATE @endIf HUD AREA">
+                        </div>
                     </div>
                 </div>
             </form>

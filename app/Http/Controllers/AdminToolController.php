@@ -808,12 +808,13 @@ class AdminToolController extends Controller
     {
         
         $amenity = Amenity::where('id', '=', $id)->first();
+        $huds = HudInspectableArea::orderBy('name')->get()->all();
 
         if (!$amenity) {
             $amenity = null;
-            return view('modals.amenity-admin-edit', compact('amenity'));
+            return view('modals.amenity-admin-edit', compact('amenity','huds'));
         } else {
-            return view('modals.amenity-admin-edit', compact('amenity'));
+            return view('modals.amenity-admin-edit', compact('amenity','huds'));
         }
     }
 
@@ -1299,260 +1300,7 @@ class AdminToolController extends Controller
     //     ]);
     // }
 
-    /**
-     * Rule Store
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param null                     $id
-     *
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
-     */
-    // public function ruleStore(Request $request, $id = null)
-    // {
-    //     if (app('env') == 'local') {
-    //         app('debugbar')->disable();
-    //     }
-    //     // validate
-    //     $this->rulesValidation($request);
-    //     $amountList = [
-    //             2 => Input::get('acquisition_amount'),
-    //             3 => Input::get('pre_demo_amount'),
-    //             4 => Input::get('demolition_amount'),
-    //             5 => Input::get('greening_amount'),
-    //             6 => Input::get('maintenance_amount'),
-    //             7 => Input::get('administration_amount'),
-    //             8 => Input::get('other_amount'),
-    //             9 => Input::get('nip_amount'),
-    //             10 => '0',
-    //         ];
-    //     $documentList = [
-    //             2 => Input::get('acquisition_documents'),
-    //             3 => Input::get('pre_demo_documents'),
-    //             4 =>  Input::get('demolition_documents'),
-    //             5 => Input::get('greening_documents'),
-    //             6 => Input::get('maintenance_documents'),
-    //             7 => Input::get('administration_documents'),
-    //             8 => Input::get('other_documents'),
-    //             9 =>Input::get('nip_documents'),
-    //         ];
-
-    //     $documentList[999] = Input::get('required_documents');
-
-    //     $acquisition_advance = Input::get('acquisition_advance')?1:0;
-    //     $pre_demolition_advance = Input::get('pre_demolition_advance')?1:0;
-    //     $demolition_advance = Input::get('demolition_advance')?1:0;
-    //     $greening_advance = Input::get('greening_advance')?1:0;
-    //     $maintenance_advance = Input::get('maintenance_advance')?1:0;
-    //     $administration_advance = Input::get('administration_advance')?1:0;
-    //     $other_advance = Input::get('other_advance')?1:0;
-    //     $nip_loan_payoff_advance = Input::get('nip_loan_payoff_advance')?1:0;
-
-    //     if (!$id) {
-    //         DB::beginTransaction();
-    //         $rule = ProgramRule::create([
-    //                 'rules_name'=>Input::get('rule_name'),
-    //                 'maintenance_recap_pro_rate'=>Input::get('maintenance_recap_pro_rate'),
-    //                 'imputed_cost_per_parcel'=>Input::get('imputed_cost_parcel'),
-    //                 'acquisition_advance'=>$acquisition_advance,
-    //                 'pre_demo_advance'=>$pre_demolition_advance,
-    //                 'demolition_advance'=>$demolition_advance,
-    //                 'greening_advance'=>$greening_advance,
-    //                 'maintenance_advance'=>$maintenance_advance,
-    //                 'administration_advance'=>$administration_advance,
-    //                 'other_advance'=>$other_advance,
-    //                 'nip_loan_payoff_advance'=>$nip_loan_payoff_advance,
-    //                 'acquisition_max_advance'=>Input::get('acquisition_max_advance'),
-    //                 'pre_demo_max_advance'=>Input::get('pre_demolition_max_advance'),
-    //                 'demolition_max_advance'=>Input::get('demolition_max_advance'),
-    //                 'greening_max_advance'=>Input::get('greening_max_advance'),
-    //                 'maintenance_max_advance'=>Input::get('maintenance_max_advance'),
-    //                 'administration_max_advance'=>Input::get('administration_max_advance'),
-    //                 'other_max_advance'=>Input::get('other_max_advance'),
-    //                 'nip_loan_payoff_max_advance'=>Input::get('nip_loan_payoff_max_advance'),
-    //                 'acquisition_max'=>Input::get('acquisition_max'),
-    //                 'pre_demo_max'=>Input::get('pre_demolition_max'),
-    //                 'demolition_max'=>Input::get('demolition_max'),
-    //                 'greening_max'=>Input::get('greening_max'),
-    //                 'maintenance_max'=>Input::get('maintenance_max'),
-    //                 'admin_max_percent'=>Input::get('administration_max_percent'),
-    //                 'other_max'=>Input::get('other_max'),
-    //                 'nip_loan_payoff_max'=>Input::get('nip_loan_payoff_max'),
-    //                 'acquisition_min'=>Input::get('acquisition_min'),
-    //                 'pre_demo_min'=>Input::get('pre_demolition_min'),
-    //                 'demolition_min'=>Input::get('demolition_min'),
-    //                 'greening_min'=>Input::get('greening_min'),
-    //                 'maintenance_min'=>Input::get('maintenance_min'),
-    //                 'admin_min'=>Input::get('administration_min_percent'),
-    //                 'other_min'=>Input::get('other_min'),
-    //                 'nip_loan_payoff_min'=>Input::get('nip_loan_payoff_min'),
-    //             ]);
-
-    //         for ($i=2; $i<=10; $i++) {
-    //             if ($amountList[$i]) {
-    //                 $documentRule = DocumentRule::create([
-    //                         'amount'=>$amountList[$i],
-    //                         'program_rules_id'=>$rule->id,
-    //                         'expense_category_id'=>$i
-    //                     ]);
-    //                 foreach ($documentList[$i] as $docId) {
-    //                     DocumentRuleEntry::create([
-    //                             'document_category_id'=>$docId,
-    //                             'document_rule_id'=>$documentRule->id
-    //                         ]);
-    //                 }
-    //             }
-    //         }
-    //         for ($i=0; $i<count(Input::get('max_reimbursement')); $i++) {
-    //             if (!empty(Input::get('min_units')[$i])) {
-    //                 ReimbursementRule::create([
-    //                    'minimum_units' => Input::get('min_units')[$i],
-    //                    'maximum_units' => Input::get('max_units')[$i],
-    //                    'maximum_reimbursement' => Input::get('max_reimbursement')[$i],
-    //                    'program_rules_id' => $rule->id,
-
-    //                 ]);
-    //             }
-    //         }
-    //         DB::commit();
-    //         return response('The program rule has been made. Now you just need to assign it to a program (so any new parcels added to that program will use this rule), or you can open a single parcel and have it use this rule specifically. Nifty right?');
-    //     } else {
-    //         DB::beginTransaction();
-    //         $rule = ProgramRule::where('id', $id)->update([
-    //                 'rules_name'=>Input::get('rule_name'),
-    //                 'maintenance_recap_pro_rate'=>Input::get('maintenance_recap_pro_rate'),
-    //                 'imputed_cost_per_parcel'=>Input::get('imputed_cost_parcel'),
-    //                 'acquisition_advance'=>Input::get('acquisition_advance'),
-    //                 'pre_demo_advance'=>Input::get('pre_demolition_advance'),
-    //                 'demolition_advance'=>Input::get('demolition_advance'),
-    //                 'greening_advance'=>Input::get('greening_advance'),
-    //                 'maintenance_advance'=>Input::get('maintenance_advance'),
-    //                 'administration_advance'=>Input::get('administration_advance'),
-    //                 'other_advance'=>Input::get('other_advance'),
-    //                 'nip_loan_payoff_advance'=>Input::get('nip_loan_payoff_advance'),
-    //                 'acquisition_max_advance'=>Input::get('acquisition_max_advance'),
-    //                 'pre_demo_max_advance'=>Input::get('pre_demolition_max_advance'),
-    //                 'demolition_max_advance'=>Input::get('demolition_max_advance'),
-    //                 'greening_max_advance'=>Input::get('greening_max_advance'),
-    //                 'maintenance_max_advance'=>Input::get('maintenance_max_advance'),
-    //                 'administration_max_advance'=>Input::get('administration_max_advance'),
-    //                 'other_max_advance'=>Input::get('other_max_advance'),
-    //                 'nip_loan_payoff_max_advance'=>Input::get('nip_loan_payoff_max_advance'),
-    //                 'acquisition_max'=>Input::get('acquisition_max'),
-    //                 'pre_demo_max'=>Input::get('pre_demolition_max'),
-    //                 'demolition_max'=>Input::get('demolition_max'),
-    //                 'greening_max'=>Input::get('greening_max'),
-    //                 'maintenance_max'=>Input::get('maintenance_max'),
-    //                 'admin_max_percent'=>Input::get('administration_max_percent'),
-    //                 'other_max'=>Input::get('other_max'),
-    //                 'nip_loan_payoff_max'=>Input::get('nip_loan_payoff_max'),
-    //                 'acquisition_min'=>Input::get('acquisition_min'),
-    //                 'pre_demo_min'=>Input::get('pre_demolition_min'),
-    //                 'demolition_min'=>Input::get('demolition_min'),
-    //                 'greening_min'=>Input::get('greening_min'),
-    //                 'maintenance_min'=>Input::get('maintenance_min'),
-    //                 'admin_min'=>Input::get('administration_min_percent'),
-    //                 'other_min'=>Input::get('other_min'),
-    //                 'nip_loan_payoff_min'=>Input::get('nip_loan_payoff_min'),
-    //             ]);
-    //         for ($i=2; $i<=9; $i++) {
-    //             if ($amountList[$i]) {
-    //                 $documentRule = DocumentRule::where('program_rules_id', $id)->update([
-    //                         'amount'=>$amountList[$i],
-    //                         'program_rules_id'=>$id,
-    //                         'expense_category_id'=>$i
-    //                     ]);
-    //                 foreach ($documentList[$i] as $docId) {
-    //                     DocumentRuleEntry::create([
-    //                             'document_category_id'=>$docId,
-    //                             'document_rule_id'=>$documentRule->id
-    //                         ]);
-    //                 }
-    //             }
-    //         }
-
-    //         if ($documentList[999] !== null) {
-    //             $documentRuleReq = DocumentRule::where('program_rules_id', $id)->update([
-    //                     'program_rules_id'=>$id,
-    //                     'expense_category_id'=>999,
-    //                 ]);
-
-    //             foreach ($documentList[999] as $docId) {
-    //                 DocumentRuleEntry::create([
-    //                         'document_category_id'=>$docId,
-    //                         'document_rule_id'=>$documentRuleReq->id
-    //                     ]);
-    //             }
-    //         }
-
-    //         for ($i=0; $i<count(Input::get('max_reimbursement')); $i++) {
-    //             if (Input::get('min_units')[$i]) {
-    //                 // if no entry, create one, otherwise update
-    //                 if (!count(ReimbursementRule::where('program_rules_id', $id)->get())) {
-    //                     ReimbursementRule::create([
-    //                        'minimum_units' => Input::get('min_units')[$i],
-    //                        'maximum_units' => Input::get('max_units')[$i],
-    //                        'maximum_reimbursement' => Input::get('max_reimbursement')[$i],
-    //                        'program_rules_id' => $id,
-    //                     ]);
-    //                 } else {
-    //                     ReimbursementRule::where('program_rules_id', $id)->update([
-    //                         'minimum_units'=>Input::get('min_units')[$i],
-    //                         'maximum_units'=>Input::get('max_units')[$i],
-    //                         'maximum_reimbursement'=>Input::get('max_reimbursement')[$i],
-    //                         'program_rules_id'=>$id,
-    //                     ]);
-    //                 }
-    //             }
-    //         }
-    //         DB::commit();
-    //         return response('I updated the rule so everything associated with that rule now reflects that rule. How many times can you say rule in a sentence?');
-    //     }
-    // }
-
-    /**
-     * Account Store
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param null                     $id
-     *
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
-     */
-    // public function accountStore(Request $request, $id = null)
-    // {
-    //     $ownerIds = Program::pluck('id')->toArray();
-    //     $this->validate($request, [
-    //         'account_name' => 'string|required',
-    //         'owner_id'=>'in:'.implode(',', $ownerIds),
-    //     ]);
-    //     if (!$id) {
-    //         $program = \App\Models\Program::find(Input::get('owner_id'));
-    //         $a = Account::create([
-    //             'owner_type'=>'program',
-    //             'account_name' => Input::get('account_name'),
-    //             'owner_id' => Input::get('owner_id'),
-    //             'entity_id' => $program->entity_id,
-    //         ]);
-    //         $lc = new LogConverter('account', 'create');
-    //         $lc->setFrom(Auth::user())->setTo($a)->setDesc(Auth::user()->email . ' Created account ' . $a->account_name)->save();
-    //         return response('I created the account. The more the merrier!');
-    //     } else {
-    //         $aold = Account::find($id)->toArray();
-    //         $program = \App\Models\Program::find(Input::get('owner_id'));
-    //         Account::where('id', $id)->update([
-    //             'owner_type'=>'program',
-    //             'account_name' => Input::get('account_name'),
-    //             'owner_id' => Input::get('owner_id'),
-    //             'entity_id' => $program->entity_id,
-    //         ]);
-    //         $a = Account::find($id);
-    //         $anew = $a->toArray();
-    //         $lc = new LogConverter('account', 'update');
-    //         $lc->setFrom(Auth::user())->setTo($a)->setDesc(Auth::user()->email . ' Updated account ' . $a->account_name);
-    //         $lc->smartAddHistory($aold, $anew);
-    //         $lc->save();
-    //         return response('The account was successfully updated. I love things associated with numbers... ');
-    //     }
-    // }
+    
 
     /**
      * Document Category Store
@@ -1617,7 +1365,7 @@ class AdminToolController extends Controller
             Boilerplate::where('id', $id)->update([
                 'name' => Input::get('name'),
                 'boilerplate' => Input::get('boilerplate'),
-                'global' => Input::get('global')
+                'global' => (array_key_exists('global', $inputs)) ? 1 : 0,
             ]);
             $d = Boilerplate::find($id);
             $dnew = $d->toArray();
@@ -1746,9 +1494,11 @@ class AdminToolController extends Controller
             $buildingDefault = (array_key_exists('building_default', $inputs)) ? 1 : 0;
             $projectDefault = (array_key_exists('project_default', $inputs)) ? 1 : 0;
             $inspectable = (array_key_exists('inspectable', $inputs)) ? 1 : 0;
+            $huds = json_decode($request->get('huds'), true);
+            $huds = $huds['items'];
 
         if (!$id) {
-            Amenity::create([
+            $amenity = Amenity::create([
                     'amenity_description' => $inputs['amenity_description'],
                     'project' => $project,
                     'building_exterior' => $buildingExterior,
@@ -1764,6 +1514,16 @@ class AdminToolController extends Controller
                     'time_to_complete' => $inputs['time'],
                     'icon' => $inputs['icon']
                 ]);
+
+                // add huds
+                if (count($huds)) {
+                    foreach ($huds as $hud) {
+                        AmenityHud::create([
+                            'amenity_id' => $amenity->id,
+                            'hud_inspectable_area_id' => $hud['id']
+                        ]);
+                    }
+                }
 
                 return response('<h2>Success!</h2><p>I created the amenity.</p>');
              
@@ -1788,6 +1548,19 @@ class AdminToolController extends Controller
                     'time_to_complete' => $inputs['time'],
                     'icon' => $inputs['icon']
                 ]);
+                // remove huds
+                AmenityHud::where('amenity_id', '=', $amenity->id)->delete();
+
+                // add huds
+                if (count($huds)) {
+                    foreach ($huds as $hud) {
+                        //dd($hud,$amenity->id);
+                        AmenityHud::create([
+                            'amenity_id' => $amenity->id,
+                            'hud_inspectable_area_id' => $hud['id']
+                        ]);
+                    }
+                }
 
                 return response('I updated the amenity. That was fun! What else do you have for me?');
             } else {
