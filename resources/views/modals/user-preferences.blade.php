@@ -469,7 +469,7 @@
 		        });
 			}
 	    }else{
-	    	//loadCalendar(target);
+	    	loadCalendar(target);
 	    }
 	    
 	}
