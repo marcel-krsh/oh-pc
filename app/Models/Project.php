@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\CachedAudit;
 use App\Models\SystemSetting;
+use App\Models\Building;
 
 class Project extends Model
 {
@@ -25,6 +27,11 @@ class Project extends Model
         return $this->hasMany(\App\Models\CachedAudit::class, 'project_id');
     }
 
+    public function amenities() : HasMany
+    {
+        return $this->hasMany('\App\Models\ProjectAmenity');
+    }
+
     public function currentAudit() : CachedAudit
     {
         $audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->first();
@@ -33,19 +40,23 @@ class Project extends Model
 
     public function address() : HasOne
     {
-        return $this->hasOne(\App\Models\Address::class, 'address_key', 'physical_address_key');
+        return $this->hasOne(\App\Models\Address::class, 'address_id', 'physical_address_id');
     }
 
     
 
     public function programs() : HasMany
     {
-        return $this->hasMany(\App\Models\ProjectProgram::class, 'project_key', 'project_key')->where('project_program_status_type_key', SystemSetting::get('active_program_status_type_key'));
+        return $this->hasMany(\App\Models\ProjectProgram::class, 'project_id', 'project_id')->where('project_program_status_type_id', SystemSetting::get('active_program_status_type_id'));
     }
 
     public function buildings() : HasMany
     {
-        return $this->hasMany(\App\Models\Building::class, 'development_key', 'project_key');
+        return $this->hasMany('\App\Models\Building');
+    }
+
+    public function units() : HasManyThrough {
+        return $this->hasManyThrough('App\Models\Unit', 'App\Models\Building');
     }
 
     public function projectProgramUnitCounts()

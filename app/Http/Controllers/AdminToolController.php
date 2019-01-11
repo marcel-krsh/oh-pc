@@ -804,12 +804,14 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|string
      */
-    public function amenityCreate($id)
+    public function amenityCreate($id = null)
     {
+        
         $amenity = Amenity::where('id', '=', $id)->first();
 
         if (!$amenity) {
-            return '<h2>No amenity was provided? Weird!</h2><p>Try closing and refreshing to come back and try again.</p>';
+            $amenity = null;
+            return view('modals.amenity-admin-edit', compact('amenity'));
         } else {
             return view('modals.amenity-admin-edit', compact('amenity'));
         }
@@ -860,16 +862,16 @@ class AdminToolController extends Controller
 
         if (!$id) {
             $formRows['tag'] = $form->formBuilder("/admin/boilerplate/store", "post", "application/x-www-form-urlencoded", "Create New Boilerplate", "plus-circle");
-            $formRows['rows']['ele1']= $form->text(['Name','name','','Enter boilerplate name','required']);
+            $formRows['rows']['ele1']= $form->text(['Title','name','','Enter boilerplate title','required']);
             $formRows['rows']['ele2']= $form->textArea(['Boilerplate','boilerplate','','','']);
-            $formRows['rows']['ele3']= $form->checkbox(['Global','global','1','','true','required']);
+            $formRows['rows']['ele3']= $form->checkbox(['Global','global','','','true','required']);
             $formRows['rows']['ele4'] = $form->submit(['Create Boilerplate']);
             return view('formtemplate', ['formRows'=>$formRows]);
         } else {
             $formRows['tag'] = $form->formBuilder("/admin/boilerplate/store/".$boilerplate->id, "post", "application/x-www-form-urlencoded", "Edit Boilerplate", "edit");
-            $formRows['rows']['ele1']= $form->text(['Boilerplate Name','name',$boilerplate->name,'','required']);
-            $formRows['rows']['ele2']= $form->text(['Boilerplate','boilerplate',$boilerplate->boilerplate,'','required']);
-            $formRows['rows']['ele3']= $form->checkbox(['Global','global','1',$boilerplate->global,'true','required']);
+            $formRows['rows']['ele1']= $form->text(['Title','name',$boilerplate->name,'Enter boilerplate title','required']);
+            $formRows['rows']['ele2']= $form->textArea(['Boilerplate','boilerplate',$boilerplate->boilerplate,'','required']);
+            $formRows['rows']['ele3']= $form->checkbox(['Global','global',$boilerplate->global,'','true','required']);
             $formRows['rows']['ele4'] = $form->submit(['Update Boilerplate Information']);
             return view('formtemplate', ['formRows'=>$formRows]);
         }
@@ -890,12 +892,14 @@ class AdminToolController extends Controller
         if (!$hud) {
             $hud = null;
             $amenities = Amenity::orderBy('amenity_description', 'asc')->get();
+            $findingTypes = FindingType::orderBy('name', 'asc')->get();
 
-            return view('modals.hud-area-create', compact('hud', 'amenities'));
+            return view('modals.hud-area-create', compact('hud', 'amenities','findingTypes'));
         } else {
             $amenities = Amenity::orderBy('amenity_description', 'asc')->get();
+            $findingTypes = FindingType::orderBy('name', 'asc')->get();
 
-            return view('modals.hud-area-create', compact('hud', 'amenities'));
+            return view('modals.hud-area-create', compact('hud', 'amenities', 'findingTypes'));
         }
     }
 
@@ -1567,8 +1571,8 @@ class AdminToolController extends Controller
             $d = DocumentCategory::create([
                 'document_category_name' => Input::get('document_category_name')
             ]);
-            $lc = new LogConverter('documentcategory', 'create');
-            $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Created Document Category ' . $d->document_category_name)->save();
+            // $lc = new LogConverter('documentcategory', 'create');
+            // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Created Document Category ' . $d->document_category_name)->save();
             return response('I created the document category. I stored it. I love it.');
         } else {
             $dold = DocumentCategory::find($id)->toArray();
@@ -1577,10 +1581,10 @@ class AdminToolController extends Controller
             ]);
             $d = DocumentCategory::find($id);
             $dnew = $d->toArray();
-            $lc = new LogConverter('documentcategory', 'update');
-            $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Updated Document Category ' . $d->document_category_name);
-            $lc->smartAddHistory($dold, $dnew);
-            $lc->save();
+            // $lc = new LogConverter('documentcategory', 'update');
+            // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Updated Document Category ' . $d->document_category_name);
+            // $lc->smartAddHistory($dold, $dnew);
+            // $lc->save();
             return response('I updated your document category. That was fun! What else do you have for me?');
         }
     }
@@ -1602,12 +1606,12 @@ class AdminToolController extends Controller
             $d = Boilerplate::create([
                 'name' => Input::get('name'),
                 'boilerplate' => Input::get('boilerplate'),
-                'global' => Input::get('global'),
+                'global' => (array_key_exists('global', $inputs)) ? 1 : 0,
                 'creator_id' => Auth::user()->id
             ]);
             // $lc = new LogConverter('documentcategory', 'create');
             // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Created Document Category ' . $d->document_category_name)->save();
-            return response('I created the boilerplate. I stored it. I love it.');
+            return response('<h2>Success</h2><p>I created the boilerplate.</p>');
         } else {
             $dold = Boilerplate::find($id)->toArray();
             Boilerplate::where('id', $id)->update([
@@ -1637,15 +1641,21 @@ class AdminToolController extends Controller
     {
         $inputs = $request->get('inputs');
         $amenities = json_decode($request->get('amenities'), true);
+        $findingTypes = json_decode($request->get('findingTypes'), true);
+        //dd($findingTypes,$amenities);
         $amenities = $amenities['items'];
+        $findingTypes = $findingTypes['items'];
+
+
 
         if (!$id) {
             $hud = HudInspectableArea::create([
                 'name' => $inputs['name']
             ]);
 
-            // add boilerplates
+            // add amenities
             if (count($amenities)) {
+                //add in the update
                 foreach ($amenities as $amenity) {
                     AmenityHud::create([
                         'hud_inspectable_area_id' => $hud->id,
@@ -1654,9 +1664,19 @@ class AdminToolController extends Controller
                 }
             }
 
+            // add finding types
+            if (count($findingTypes)) {
+                foreach ($findingTypes as $findingType) {
+                    HudFindingType::create([
+                        'hud_inspectable_area_id' => $hud->id,
+                        'finding_type_id' => $findingType['id']
+                    ]);
+                }
+            }
+
             // $lc = new LogConverter('documentcategory', 'create');
             // $lc->setFrom(Auth::user())->setTo($d)->setDesc(Auth::user()->email . ' Created Document Category ' . $d->document_category_name)->save();
-            return response('I created the HUD area. I stored it. I love it.');
+            return response('<h2>Success!</h2><p>I created the HUD area.</p>');
         } else {
             $hud = HudInspectableArea::where('id', '=', $id)->first();
             
@@ -1664,6 +1684,7 @@ class AdminToolController extends Controller
                 $hud->update([
                     'name' => $inputs['name']
                 ]);
+                $hud->touch(); // ensure timestamps are updated
 
                 // remove amenities
                 AmenityHud::where('hud_inspectable_area_id', '=', $hud->id)->delete();
@@ -1678,9 +1699,22 @@ class AdminToolController extends Controller
                     }
                 }
 
-                return response('I updated your HUD area. That was fun! What else do you have for me?');
+                // remove finding types
+                HudFindingType::where('hud_inspectable_area_id', '=', $hud->id)->delete();
+
+                // add finding types
+                if (count($findingTypes)) {
+                    foreach ($findingTypes as $findingType) {
+                        HudFindingType::create([
+                            'hud_inspectable_area_id' => $hud->id,
+                            'finding_type_id' => $findingType['id']
+                        ]);
+                    }
+                }
+
+                return response('<h2>Success!</h2><p>I updated your HUD area.</p>');
             } else {
-                return response('I cannot find that record.');
+                return response('<h2>Problem...</h2><p>I cannot find that record.</p>');
             }
 
             // $lc = new LogConverter('documentcategory', 'update');
@@ -1698,32 +1732,67 @@ class AdminToolController extends Controller
      *
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function amenityStore(Request $request, $id)
+    public function amenityStore(Request $request, $id=null)
     {
-        $inputs = $request->get('inputs');
+            $inputs = $request->get('inputs');
 
-        $project = (array_key_exists('project', $inputs)) ? 1 : 0;
-        $building = (array_key_exists('building', $inputs)) ? 1 : 0;
-        $unit = (array_key_exists('unit', $inputs)) ? 1 : 0;
-        $inspectable = (array_key_exists('inspectable', $inputs)) ? 1 : 0;
+            $project = (array_key_exists('project', $inputs)) ? 1 : 0;
+            $buildingExterior = (array_key_exists('building_exterior', $inputs)) ? 1 : 0;
+            $buildingSystem = (array_key_exists('building_system', $inputs)) ? 1 : 0;
+            $commonArea = (array_key_exists('common_area', $inputs)) ? 1 : 0;
+            $file = (array_key_exists('file', $inputs)) ? 1 : 0;
+            $unit = (array_key_exists('unit', $inputs)) ? 1 : 0;
+            $unitDefault = (array_key_exists('unit_default', $inputs)) ? 1 : 0;
+            $buildingDefault = (array_key_exists('building_default', $inputs)) ? 1 : 0;
+            $projectDefault = (array_key_exists('project_default', $inputs)) ? 1 : 0;
+            $inspectable = (array_key_exists('inspectable', $inputs)) ? 1 : 0;
 
-        $amenity = Amenity::where('id', '=', $id)->first();
-       
-        if ($amenity) {
-            $amenity->update([
-                'amenity_description' => $inputs['amenity_description'],
-                'project' => $project,
-                'building' => $building,
-                'unit' => $unit,
-                'inspectable' => $inspectable,
-                'policy' => $inputs['policy'],
-                'time_to_complete' => $inputs['time'],
-                'icon' => $inputs['icon']
-            ]);
+        if (!$id) {
+            Amenity::create([
+                    'amenity_description' => $inputs['amenity_description'],
+                    'project' => $project,
+                    'building_exterior' => $buildingExterior,
+                    'building_system' => $buildingSystem,
+                    'common_area' => $commonArea,
+                    'file' => $file,
+                    'unit' => $unit,
+                    'unit_default' => $unitDefault,
+                    'building_default' => $buildingDefault,
+                    'project_default' => $projectDefault,
+                    'inspectable' => $inspectable,
+                    'policy' => $inputs['policy'],
+                    'time_to_complete' => $inputs['time'],
+                    'icon' => $inputs['icon']
+                ]);
 
-            return response('I updated the amenity. That was fun! What else do you have for me?');
-        } else {
-            return response('I cannot find that record.');
+                return response('<h2>Success!</h2><p>I created the amenity.</p>');
+             
+
+        }else{
+            $amenity = Amenity::where('id', '=', $id)->first();
+           
+            if ($amenity) {
+                $amenity->update([
+                    'amenity_description' => $inputs['amenity_description'],
+                    'project' => $project,
+                    'building_exterior' => $buildingExterior,
+                    'building_system' => $buildingSystem,
+                    'common_area' => $commonArea,
+                    'file' => $file,
+                    'unit' => $unit,
+                    'unit_default' => $unitDefault,
+                    'building_default' => $buildingDefault,
+                    'project_default' => $projectDefault,
+                    'inspectable' => $inspectable,
+                    'policy' => $inputs['policy'],
+                    'time_to_complete' => $inputs['time'],
+                    'icon' => $inputs['icon']
+                ]);
+
+                return response('I updated the amenity. That was fun! What else do you have for me?');
+            } else {
+                return response('I cannot find that record.');
+            }
         }
 
         // $lc = new LogConverter('documentcategory', 'update');
@@ -1758,7 +1827,13 @@ class AdminToolController extends Controller
                 'one' => (array_key_exists('one', $inputs)) ? 1 : 0,
                 'two' => (array_key_exists('two', $inputs)) ? 1 : 0,
                 'three' => (array_key_exists('three', $inputs)) ? 1 : 0,
-                'type' => $inputs['type']
+                'type' => $inputs['type'],
+                'building_exterior' => (array_key_exists('building_exterior', $inputs)) ? 1 : 0,
+                'building_system' => (array_key_exists('building_system', $inputs)) ? 1 : 0,
+                'site' => (array_key_exists('site', $inputs)) ? 1 : 0,
+                'common_area' => (array_key_exists('common_area', $inputs)) ? 1 : 0,
+                'unit' => (array_key_exists('unit', $inputs)) ? 1 : 0,
+                'file' => (array_key_exists('file', $inputs)) ? 1 : 0
             ]);
 
             // add boilerplates
@@ -1812,7 +1887,13 @@ class AdminToolController extends Controller
                     'one' => (array_key_exists('one', $inputs)) ? 1 : 0,
                     'two' => (array_key_exists('two', $inputs)) ? 1 : 0,
                     'three' => (array_key_exists('three', $inputs)) ? 1 : 0,
-                    'type' => $inputs['type']
+                    'type' => $inputs['type'],
+                    'building_exterior' => (array_key_exists('building_exterior', $inputs)) ? 1 : 0,
+                    'building_system' => (array_key_exists('building_system', $inputs)) ? 1 : 0,
+                    'site' => (array_key_exists('site', $inputs)) ? 1 : 0,
+                    'common_area' => (array_key_exists('common_area', $inputs)) ? 1 : 0,
+                    'unit' => (array_key_exists('unit', $inputs)) ? 1 : 0,
+                    'file' => (array_key_exists('file', $inputs)) ? 1 : 0
                 ]);
 
                 // remove boilerplates
@@ -1859,9 +1940,9 @@ class AdminToolController extends Controller
                     }
                 }
 
-                return response('I updated the finding type. I stored it. I love it.');
+                return response('<h2>Success!</h2><p>I updated the finding type.</p>');
             } else {
-                return response('I cannot find that record.');
+                return response('<h2>Problem...</h2><p>I am sorry, but I cannot find that record.</p>');
             }
         }
     }

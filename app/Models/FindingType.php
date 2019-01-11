@@ -22,7 +22,12 @@ class FindingType extends Model
         'one',
         'two',
         'three',
-        'type'
+        'type',
+        'site',
+        'building_exterior',
+        'building_system',
+        'common_area',
+        'unit'
     ];
 
     /**

@@ -1,14 +1,25 @@
 <a name="findingstop"></a>
 <div class="uk-overflow-container uk-margin-top">
     
-    <div uk-grid class="uk-margin-remove">
-        <h4 class="uk-text-left uk-width-2-3" style="padding-top: 8px;">{{number_format($findingtypes->total(), 0)}} TOTAL FINDING TYPES</h4> 
-        <div class="uk-width-1-3 uk-text-right">
-            <input id="findingtypes-search" name="findingtypes-search" type="text" value="{{ Session::get('findingtypes-search') }}" class=" uk-input" placeholder="Search by finding types name (press enter)"> 
-        </div>
+    
+    <div class="uk-grid">
+        <h4 class="uk-text-left uk-width-3-5">{{number_format($findingtypes->total(), 0)}} TOTAL FINDING TYPES</h4>
+        <span class="uk-width-2-5"><a onclick="dynamicModalLoad('admin/boilerplate/create')" class="uk-button uk-button-success uk-button-small uk-align-right" style="padding-top:1px;"><i class="a-circle-plus" style="    position: relative;
+    top: 1px; margin-right:3px"></i> CREATE A BOILERPLATE</a><a onclick="dynamicModalLoad('admin/finding_type/create')" class="uk-button uk-button-success uk-button-small uk-align-right" style="padding-top:1px;"><i class="a-circle-plus" style="    position: relative;
+    top: 1px; margin-right:3px"></i> CREATE A FINDING TYPE</a></span>
     </div>
     <hr>
-    {{ $findingtypes->links() }} <a href="#findingsbottom" id="organization-scroll-to-top" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-down"></i> BOTTOM OF LIST</a>
+    <div class="uk-grid">
+    <div class="uk-width-1-3 uk-text-right">
+            <input id="findingtypes-search" name="findingtypes-search" type="text" value="{{ Session::get('findingtypes-search') }}" class=" uk-input" placeholder="Search by finding types name (press enter)"> 
+        </div>
+    <div class="uk-width-1-2 " style="padding-top:4px;"> 
+    {{ $findingtypes->links() }}
+    </div>
+    <div class="uk-width-1-6 "> <a href="#findingsbottom" id="organization-scroll-to-top" class="uk-button uk-button-small uk-button-default uk-margin-small-top uk-margin-bottom uk-align-right" style=""><i class="a-circle-down"></i> BOTTOM OF LIST</a>
+    </div>
+    </div>
+    <hr class="dashed-hr">
     <table class="uk-table uk-table-condensed small-table-text">
         <thead>
             <th>
@@ -30,16 +41,22 @@
                 <small>3</small>
             </th>
             <th>
-                <small>TYPE</small>
+                <small>ALLITA TYPE</small>
             </th>
             <th>
-                <small># OF HUD AREAS</small>
+                <small>HUD TYPE #</small>
             </th>
             <th>
-                <small># OF BOILERPLATES</small>
+                <small>HUD AREA #</small>
             </th>
             <th>
-                <small># OF FOLLOW UPS</small>
+                <small>BOILERPLATE #</small>
+            </th>
+            <th>
+                <small>FOLLOW-UP #</small>
+            </th>
+            <th>
+                <small>USE IN SCORING</small>
             </th>
         </thead>
         <tbody>
@@ -48,13 +65,21 @@
                     <td><a onclick="dynamicModalLoad('admin/finding_type/create/{{$data->id}}')" class="uk-link-muted"><small >{{$data->name}}: <br /><em style="color:gray">HUD INSPECTABLE AREAS WITH THIS FINDING:: <ul> @forEach($data->huds as $hud) <li>{{$hud->hud->name}}</li>  @endForEach</ul></em></small></a></td>
                     <td><small>@if($data->nominal_item_weight){{$data->nominal_item_weight}}% @else 0% @endif</small></td>
                     <td><small>{{$data->criticality}}</small></td>
-                    <td><small>{{$data->one}}</small></td>
-                    <td><small>{{$data->two}}</small></td>
-                    <td><small>{{$data->three}}</small></td>
-                    <td><small>{{$data->type}}</small></td>
+                    <td><small>@if($data->one) <i uk-tooltip title="Level 1" class="a-circle-checked"></i> @else - @endif</small></td>
+                    <td><small>@if($data->two) <i uk-tooltip title="Level 2" class="a-circle-checked"></i> @else - @endif</small></td>
+                    <td><small>@if($data->three) <i uk-tooltip title="Level 3" class="a-circle-checked"></i> @else - @endif</small></td>
+                    <td><small>{{strtoupper($data->type)}}</small></td>
+                    <td><small>@if($data->site)SITE<br/>@endIf
+                                @if($data->building_exterior)• BUILDING EXTERIOR<br/>@endIf
+                                @if($data->building_system)• BUILDING SYSTEM<br/>@endIf
+                                @if($data->common_area)• COMMON AREA<br/>@endIf
+                                @if($data->unit)• UNIT<br/>@endIf
+                                @if($data->file)• FILE<br/>@endIf
+                    </small></td>
                     <td><small>@if($data->huds){{count($data->huds)}}@endif</small></td>
                     <td><small>@if($data->boilerplates){{count($data->boilerplates)}}@endif</small></td>
                     <td><small>@if($data->default_followups){{count($data->default_followups)}}@endif</small></td>
+                    <td><small>@if($data->one) <i uk-tooltip title="Level 1" class="a-circle-checked"></i> @else - @endif</small></td>
                 </tr>
             @endforeach
 

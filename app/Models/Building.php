@@ -33,6 +33,10 @@ class Building extends Model
 
     public function address() : HasOne
     {
-        return $this->hasOne(\App\Models\Address::class, 'address_key', 'physical_address_key');
+        return $this->hasOne(\App\Models\Address::class, 'address_id', 'physical_address_key');
+    }
+    public function project() : HasOne
+    {
+        return $this->hasOne(\App\Models\Project::class, 'project_id', 'physical_address_key');
     }
 }
