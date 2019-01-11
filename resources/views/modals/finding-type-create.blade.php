@@ -331,10 +331,12 @@
                     '_token' : '{{ csrf_token() }}'
                 },
                 success: function(response){
-                    form.remove();
-                    $('h2#post-response').hide().html("<span class='uk-text-success'><span uk-icon='check'></span> "+response+"</span><br /><br /><a onclick=\"dynamicModalLoad('admin/finding_type/create')\" class=\"uk-button uk-button-default uk-width-2-5@m\">CREATE ANOTHER FINDING TYPE</a>").fadeIn();
-                    console.log(action);
+                    // form.remove();
+                    // $('h2#post-response').hide().html("<span class='uk-text-success'><span uk-icon='check'></span> "+response+"</span><br /><br /><a onclick=\"dynamicModalLoad('admin/finding_type/create')\" class=\"uk-button uk-button-default uk-width-2-5@m\">CREATE ANOTHER FINDING TYPE</a>").fadeIn();
+                    // console.log(action);
+                    
                     $('#findingtype-tab').trigger('click');
+                    UIkit.modal.alert(response);
 
                 },
                 error: function(resp){

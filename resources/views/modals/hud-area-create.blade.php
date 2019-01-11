@@ -242,7 +242,20 @@
                         <input id="name" type="text" name="name" value="@if($hud){{$hud->name}}@endif" placeholder="Enter the HUD area name" class="uk-input uk-width-1-1 uk-width-2-3@m" required>
                     </div>
                 </div>
-
+                <hr class="dashed-hr uk-margin-bottom" />
+                <div class="uk-form-row">
+                    <div class="uk-grid">
+                        <label for="name" class="uk-width-1-1 uk-width-1-3@m">Type: </label>
+                        <div class="uk-width-1-1 uk-width-2-3@m">
+                            <input class="uk-checkbox" id="site" type="checkbox" name="site" value='1' @if($hud)@if($hud->site) checked @endif @endif class="uk-checkbox"> Site 
+                            <input class="uk-checkbox uk-margin-left" id="site" type="checkbox" name="building_system" value='1' @if($hud)@if($hud->building_system) checked @endif @endif class="uk-checkbox"> Building System 
+                            <input class="uk-checkbox uk-margin-left" id="building_exterior" type="checkbox" name="building_exterior" value='1' @if($hud)@if($hud->building_exterior) checked @endif @endif class="uk-checkbox"> Building Exterior 
+                            <input class="uk-checkbox uk-margin-left" id="common_area" type="checkbox" name="common_area" value='1' @if($hud)@if($hud->common_area) checked @endif @endif class="uk-checkbox"> Common Area 
+                            <input class="uk-checkbox uk-margin-left" id="unit" type="checkbox" name="unit" value='1' @if($hud)@if($hud->unit) checked @endif @endif class="uk-checkbox"> Unit
+                        </div>
+                    </div>
+                </div>
+                <hr class="dashed-hr uk-margin-bottom" />
                 <div class="uk-form-row">
                     <div class="uk-grid">
                         <label for="type" class="uk-width-1-1 uk-width-1-3@m">Associated Amenities: <br>
@@ -253,8 +266,8 @@
                         <div class="uk-width-1-1 uk-width-2-3@m ">
                             <small>
                                 <select onchange="hideAmenity(this.value)" class="uk-select filter-drops " style="height: 30px;
-    padding: 1px;
-    margin-top: 5px;">
+                                padding: 1px;
+                                margin-top: 5px;">
                                     <option value="all">SELECT FROM ALL AMENITIES</option>
                                     <option value="Selected">SELECTED ONLY</option>
                                     <option value="Unselected">ONLY THOSE NOT SELECTED</option>
@@ -285,7 +298,7 @@
                         @endif
                     </div>
                 </div>
-
+                <hr class="dashed-hr uk-margin-bottom">
                 <div class="uk-form-row">
                     <div class="uk-grid">
                     <label for="type" class="uk-width-1-1 uk-width-1-3@m">Possible Findings: <br />
@@ -394,9 +407,10 @@
                 },
                 success: function(response){
                     form.remove();
-                    $('h2#post-response').hide().html("<span class='uk-text-success'><span uk-icon='check'></span> "+response+"</span><br /><br /><a onclick=\"dynamicModalLoad('admin/hud_area/create')\" class=\"uk-button uk-button-default uk-width-2-5@m\">CREATE ANOTHER HUD AREA</a>").fadeIn();
-                    console.log(action);
+                    // $('h2#post-response').hide().html("<span class='uk-text-success'><span uk-icon='check'></span> "+response+"</span><br /><br /><a onclick=\"dynamicModalLoad('admin/hud_area/create')\" class=\"uk-button uk-button-default uk-width-2-5@m\">CREATE ANOTHER HUD AREA</a>").fadeIn();
+                    // console.log(action);
                     $('#hud-tab').trigger('click');
+                    UIkit.modal.alert(response);
 
                 },
                 error: function(resp){

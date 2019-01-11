@@ -469,10 +469,11 @@
                     '_token' : '{{ csrf_token() }}'
                 },
                 success: function(response){
-                    form.remove();
-                    $('h2#post-response').hide().html("<span class='uk-text-success'><span uk-icon='check'></span> "+response+"</span>").fadeIn();
-                    console.log(action);
+                    // form.remove();
+                    // $('h2#post-response').hide().html("<span class='uk-text-success'><span uk-icon='check'></span> "+response+"</span>").fadeIn();
+                    // console.log(action);
                     $('#amenities-tab').trigger('click');
+                    UIkit.modal.alert(response);
 
                 },
                 error: function(resp){
