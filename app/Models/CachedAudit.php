@@ -67,6 +67,7 @@ class CachedAudit extends Model
         'step_status_icon',
         'step_status',
         'step_status_text',
+        'estimated_time',
         'created_at',
         'updated_at'
     ];
@@ -86,6 +87,29 @@ class CachedAudit extends Model
         // static::deleted(function ($audit) {
         //     Event::fire('audit.deleted', $audit);
         // });
+    }
+
+    public function estimated_hours() 
+    {
+        if($this->estimated_time){
+            return explode(':', $this->estimated_time)[0];
+        }else{
+            return null;
+        }
+    }
+
+    public function estimated_minutes() 
+    {
+        if($this->estimated_time){
+            return explode(':', $this->estimated_time)[1];
+        }else{
+            return null;
+        }
+    }
+
+    public function hours_still_needed() 
+    {
+        return "[tbd in cachedaudit model]";
     }
 
     public function getLeadJsonAttribute($value)
