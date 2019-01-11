@@ -15,12 +15,32 @@ class Unit extends Model
 
     public function household() : HasOne
     {
-        return $this->hasOne(\App\Models\Household::class, 'unit_key', 'unit_key');
+        return $this->hasOne(\App\Models\Household::class, 'unit_id', 'unit_id');
+    }
+
+    public function unitBedroom() : HasOne
+    {
+        return $this->hasOne(\App\Models\UnitBedroom::class, 'id', 'unit_bedroom_id');
+    }
+
+    public function bedroomCount() : int
+    {
+        return $this->unitBedroom->unit_bedroom_number;
+    }
+
+    public function building() : HasOne
+    {
+        return $this->hasOne('\App\Models\Building');
+    }
+
+    public function project_id() : int
+    {
+        return $this->building->project_id;
     }
 
     public function household_events() : HasMany
     {
-        return $this->hasMany(\App\Models\HouseholdEvent::class, 'unit_key', 'unit_key');
+        return $this->hasMany(\App\Models\HouseholdEvent::class, 'unit_id', 'unit_id');
     }
 
     public function isAssistedUnit() : bool
@@ -35,6 +55,6 @@ class Unit extends Model
 
     public function programs() : HasMany
     {
-        return $this->hasMany(\App\Models\UnitProgram::class, 'unit_key', 'unit_key');
+        return $this->hasMany(\App\Models\UnitProgram::class, 'unit_id', 'unit_id');
     }
 }

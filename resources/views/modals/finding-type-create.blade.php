@@ -1,7 +1,14 @@
 <template class="uk-hidden" id="form-finding-type-followup-template">
-    <div class="form-default-followup" uk-grid>
+    <div class="form-default-followup uk-margin-top" uk-grid>
+        
         <div class="uk-width-1-6 uk-margin-small-top uk-margin-small-bottom">
-            <input type="number" min="1" max="31" value="1" class="uk-form-small followup-number" style="height: 20px;">
+            
+                <label>DUE IN: 
+           
+        
+            
+                <input type="number" min="1" max="31" value="1" class="uk-form-small followup-number " style="height: 20px; width:36%; border-width: 1px; border-style: solid; border-color: rgb(229, 229, 229);"></label>
+           
         </div>
         <div class="uk-width-1-6 uk-margin-small-top uk-margin-small-bottom">
             <select class="uk-select uk-form-small followup-duration">
@@ -13,34 +20,44 @@
         </div>
         <div class="uk-width-1-6 uk-margin-small-top uk-margin-small-bottom">
             <select class="uk-select uk-form-small followup-assignment">
+                <option>Select Assignee</option>
                 <option value="lead">Lead Auditor</option>
                 <option value="pm">Property Manager</option>
                 <option value="user">User Creating Finding</option>
             </select>
         </div>
         <div class="uk-width-1-2  uk-margin-small-top uk-margin-small-bottom">
-            <input type="text" value="" placeholder="Description" class="uk-input uk-form-small followup-description">
+            <input type="text" value="" placeholder="Follow-up Description" class="uk-input uk-form-small followup-description">
+        </div>
+        
+        <div class="uk-width-1-2  uk-margin-top">Actions Required</div>
+        <div class="uk-width-1-2  uk-margin-top"><span class="doc-cats" >Document Categories</span></div>
+        <div class="uk-width-1-6  uk-margin-small-top">
+            <label><input class="uk-checkbox followup-reply" type="checkbox" value="1" > Comment</label><br /><br />
+            
         </div>
         <div class="uk-width-1-6  uk-margin-small-top">
-            <label><input class="uk-checkbox followup-reply" type="checkbox" value="1" > Reply</label><br /><br />
-            <button class="uk-button uk-button-default uk-button-small" onclick="removeFollowUp(this);return false;"><span uk-icon="minus-circle" class="form-title-icon uk-icon"></span> Remove</button>
+            <label><input class="uk-checkbox followup-photo" type="checkbox" value="1" > Upload Photo</label>
         </div>
         <div class="uk-width-1-6  uk-margin-small-top">
-            <label><input class="uk-checkbox followup-photo" type="checkbox" value="1" > Add a photo</label>
+            <label><input class="uk-checkbox followup-doc" type="checkbox" value="1" > Upload a Doc</label>
         </div>
-        <div class="uk-width-1-6  uk-margin-small-top">
-            <label><input class="uk-checkbox followup-doc" type="checkbox" value="1" > Upload a doc</label>
-        </div>
-        <div class="uk-width-1-2  uk-margin-small-top">
+        <div class="uk-width-1-2  uk-margin-small-top doc-cats">
             @if(count($document_categories))
             <div class="uk-width-1-1 uk-width-2-3@m uk-scrollable-box" style="width:100%; height:100px;">
                 <ul class="uk-list">
                     @foreach($document_categories as $cat)
-                    <li><label><input class="uk-checkbox followup-cat" type="checkbox" name="categories[]" value="{{$cat->id}}"> {{$cat->document_category_name}}</label></li>
+                    <li><label><input class="uk-checkbox followup-cat" type="checkbox" name="categories[]" value="{{$cat->id}}"> {{ucwords($cat->document_category_name)}}</label></li>
                     @endforeach
                 </ul>
             </div>
             @endif
+        </div>
+        
+        <div class="uk-width-1-1">
+
+            <button class="uk-button uk-button-default uk-button-small" onclick="removeFollowUp(this);return false;">[—] Remove This Follow-up</button>
+            <hr class="uk-width-1-1" style="border-style: dashed;">
         </div>
     </div>
 </template>
@@ -53,40 +70,82 @@
                 
                 <div class="uk-form-row">
                     <div class="uk-grid">
-                        <label for="name" class="uk-width-1-1 uk-width-1-2@m">Name: </label>
-                        <input id="name" type="text" name="name" value="@if($finding_type){{$finding_type->name}}@endif" placeholder="Enter the finding type name" class="uk-input uk-width-1-1 uk-width-1-2@m" required>
+                        <label for="name" class="uk-width-1-3 uk-width-1-3@m">Name: </label>
+                        <input id="name" type="text" name="name" value="@if($finding_type){{$finding_type->name}}@endif" placeholder="Enter the finding type name" class="uk-input uk-width-2-3 uk-width-2-3@m" required>
                     </div>
                 </div>
-
-                <div class="uk-form-row">
+                <hr style="border-style: dashed;"/>
+                <div class="uk-form-row uk-margin-top-large">
                     <div class="uk-grid">
-                        <label for="type" class="uk-width-1-1 uk-width-1-2@m">Type: </label>
-                        <div class="uk-width-1-2">
-                            <label><input class="uk-radio" type="radio" name="type" value="nlt" @if($finding_type) @if($finding_type->type == 'nlt') checked @endif @else checked @endif> NLT</label>
-                            <label><input class="uk-radio" type="radio" name="type" value="lt" @if($finding_type) @if($finding_type->type == 'lt') checked @endif @endif> LT</label>
-                            <label><input class="uk-radio" type="radio" name="type" value="file" @if($finding_type) @if($finding_type->type == 'file') checked @endif @endif> FILE</label>
+                        <label for="type" class="uk-width-1-3 uk-width-1-3@m">HUD Type: </label>
+                        <div class="uk-width-2-3">
+                            <label class="uk-margin-right"><input class="uk-checkbox" type="checkbox" name="site" value="1" @if($finding_type) @if($finding_type->site) checked @endif @else checked @endif> Site</label> 
+                            <label  class="uk-margin-right"><input class="uk-checkbox" type="checkbox" name="building_exterior" value="1" @if($finding_type) @if($finding_type->building_exterior) checked @endif @endif> Building Exterior</label>
+                            <label class="uk-margin-right"><input class="uk-checkbox" type="checkbox" name="building_system" value="1" @if($finding_type) @if($finding_type->building_system) checked @endif @endif> Building System</label>
+                            <label class="uk-margin-right"><input class="uk-checkbox" type="checkbox" name="common_area" value="1" @if($finding_type) @if($finding_type->common_area) checked @endif @endif> Common Area</label>
+                            <label class="uk-margin-right"><input class="uk-checkbox" type="checkbox" name="unit" value="1" @if($finding_type) @if($finding_type->unit) checked @endif @endif> Unit</label>
+                            <label class="uk-margin-right"><input class="uk-checkbox" type="checkbox" name="file" value="1" @if($finding_type) @if($finding_type->file) checked @endif @endif> File</label>
                         </div>
                     </div>
                 </div>
 
-                <hr />
+                <hr style="border-style: dashed;"/>
+                <div class="uk-form-row">
+                    <div class="uk-grid">
+                        <label for="type" class="uk-width-1-3 uk-width-1-3@m">Allita Type: </label>
+                        <div class="uk-width-2-3">
+                            <label class="uk-margin-right"><input class="uk-radio" type="radio" name="type" value="nlt" @if($finding_type) @if($finding_type->type == 'nlt') checked @endif @else checked @endif> NLT</label> 
+                            <label  class="uk-margin-right"><input class="uk-radio" type="radio" name="type" value="lt" @if($finding_type) @if($finding_type->type == 'lt') checked @endif @endif> LT</label>
+                            <label class="uk-margin-right"><input class="uk-radio" type="radio" name="type" value="file" @if($finding_type) @if($finding_type->type == 'file') checked @endif @endif> FILE</label>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                
+
+                <hr style="border-style: dashed;"/>
+
+                <div class="uk-form-row">
+                    <div class="uk-grid">
+                        <label for="nominal" class="uk-width-1-1 uk-width-1-6@m ">Nominal Weight %: </label>
+                        <input id="nominal_item_weight" type="text" name="nominal_item_weight" value="@if($finding_type){{$finding_type->nominal_item_weight}}@endif" placeholder="Enter the nominal item weight %" class="uk-input uk-width-1-1 uk-width-1-6@m">
+                    
+                        <label for="criticality" class="uk-width-1-1 uk-width-1-6@m uk-text-right">Criticality: </label>
+                        <select id="form-stacked-select" name="criticality" class="uk-select uk-width-1-1 uk-width-1-6@m">
+                            <option value="1" @if($finding_type) @if($finding_type->criticality == 1) selected @endif @endif>1</option>
+                            <option value="2" @if($finding_type) @if($finding_type->criticality == 2) selected @endif @endif>2</option>
+                            <option value="3" @if($finding_type) @if($finding_type->criticality == 3) selected @endif @endif>3</option>
+                            <option value="4" @if($finding_type) @if($finding_type->criticality == 4) selected @endif @endif>4</option>
+                            <option value="5" @if($finding_type) @if($finding_type->criticality == 5) selected @endif @endif>5</option>
+                        </select>
+                    
+                        <label for="one" class="uk-width-1-1 uk-width-1-6@m uk-text-right">Levels: </label>
+                        <label><input class="uk-checkbox" type="checkbox" name="one" value="1" @if($finding_type) @if($finding_type->one) checked @endif @endif> 1</label>
+                        <label><input class="uk-checkbox" type="checkbox" name="two" value="1" @if($finding_type) @if($finding_type->two) checked @endif @endif> 2</label>
+                        <label><input class="uk-checkbox" type="checkbox" name="three" value="1" @if($finding_type) @if($finding_type->three) checked @endif @endif> 3</label>
+                    </div>
+                </div>
+
+                <hr class="uk-margin-top-large " style="border-style: dashed;" />
 
                 <div class="uk-form-row">
                     <div class="uk-grid">
                         <div class="uk-width-1-2">
-                            <label for="type" class="uk-width-1-1">Default Boilerplates: </label>
+                            <label for="type" class="uk-width-1-1">Use These Boilerplates as Defaults: </label>
                             @if(count($boilerplates))
                             <div class="uk-width-1-1 uk-scrollable-box">
                                 <ul class="uk-list">
                                     @foreach($boilerplates as $boilerplate)
-                                    <li><label><input class="uk-checkbox" type="checkbox" name="boilerplates[]" value="{{$boilerplate->id}}" @if($finding_type) @if($finding_type->boilerplates) @if(in_array($boilerplate->id, $finding_type->boilerplates->pluck('boilerplate_id')->toArray())) checked @endif @endif @endif> {{$boilerplate->name}}</label></li>
+                                    <li><label><input class="uk-checkbox" type="checkbox" name="boilerplates[]" value="{{$boilerplate->id}}" @if($finding_type) @if($finding_type->boilerplates) @if(in_array($boilerplate->id, $finding_type->boilerplates->pluck('boilerplate_id')->toArray())) checked @endif @endif @endif> @if($boilerplate->global)GLOBAL: @else {{$boilerplate->user->name}}'s: @endif {{$boilerplate->name}}</label></li>
                                     @endforeach
                                 </ul>
                             </div>
                             @endif
                         </div>
                         <div class="uk-width-1-2">
-                            <label for="type" class="uk-width-1-1">HUD Inspectable Areas: </label>
+                            <label for="type" class="uk-width-1-1">Apply to These HUD Inspectable Areas: </label>
                             @if(count($huds))
                             <div class="uk-width-1-1 uk-scrollable-box">
                                 <ul class="uk-list">
@@ -100,45 +159,15 @@
                     </div>
                 </div>
 
-                <hr />
+                
 
                 <div class="uk-form-row">
-                    <div class="uk-grid">
-                        <label for="nominal" class="uk-width-1-1 uk-width-1-2@m">Nominal Item Weight %: </label>
-                        <input id="nominal_item_weight" type="text" name="nominal_item_weight" value="@if($finding_type){{$finding_type->nominal_item_weight}}@endif" placeholder="Enter the nominal item weight %" class="uk-input uk-width-1-1 uk-width-1-2@m">
-                    </div>
-                </div>
-
-                <div class="uk-form-row">
-                    <div uk-grid>
-                        <label for="criticality" class="uk-width-1-1 uk-width-1-2@m">Criticality: </label>
-                        <select id="form-stacked-select" name="criticality" class="uk-select uk-width-1-1 uk-width-1-2@m">
-                            <option value="1" @if($finding_type) @if($finding_type->criticality == 1) selected @endif @endif>1</option>
-                            <option value="2" @if($finding_type) @if($finding_type->criticality == 2) selected @endif @endif>2</option>
-                            <option value="3" @if($finding_type) @if($finding_type->criticality == 3) selected @endif @endif>3</option>
-                            <option value="4" @if($finding_type) @if($finding_type->criticality == 4) selected @endif @endif>4</option>
-                            <option value="5" @if($finding_type) @if($finding_type->criticality == 5) selected @endif @endif>5</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="uk-form-row">
-                    <div uk-grid>
-                        <label for="one" class="uk-width-1-1 uk-width-1-2@m">Levels: </label>
-                        <label><input class="uk-checkbox" type="checkbox" name="one" value="1" @if($finding_type) @if($finding_type->one) checked @endif @endif> 1</label>
-                        <label><input class="uk-checkbox" type="checkbox" name="two" value="1" @if($finding_type) @if($finding_type->two) checked @endif @endif> 2</label>
-                        <label><input class="uk-checkbox" type="checkbox" name="three" value="1" @if($finding_type) @if($finding_type->three) checked @endif @endif> 3</label>
-                    </div>
-                </div>
-
-                <hr />
-
-                <div class="uk-form-row">
-                    <div class="uk-grid">
-                        <label class="uk-width-2-3">Follow Ups:</label>
+                    <div class="uk-grid"><hr class="uk-width-1-1 uk-margin-bottom" style="border-style: dashed;"/>
+                        <label class="uk-width-2-3">Follow-ups:</label>
                         <div class="uk-width-1-3 uk-text-right  uk-margin-small-top">
-                            <button class="uk-button uk-button-default uk-button-small" onclick="addDefaultFollowup(this);return false;"><span uk-icon="plus-circle" class="form-title-icon"></span> Add follow-up</button>
+                            <button class="uk-button uk-button-default uk-button-small" onclick="addDefaultFollowup(this);return false;">[+] Add a Follow-up</button>
                         </div>
+                        <hr class="uk-width-1-1 uk-margin-top" style="border-style: dashed;"/>
                         <div class="uk-width-1-1 form-default-followups">
                             @if($finding_type)
                             @if($finding_type->default_followups)
@@ -194,11 +223,11 @@
                     </div>
                 </div>
 
-                <hr />
+                
 
                 <div class="uk-form-row">
                     <div class="uk-grid">
-                        <input type="submit" id="submit" class="uk-button uk-button-default" style="margin: auto;" name="submit" value="Create Finding Type">
+                        <input type="submit" id="submit" class="uk-button uk-button-default" style="margin: auto;" name="submit" value="@if($finding_type)UPDATE @else CREATE @endif FINDING TYPE">
                     </div>
                 </div>
             </form>

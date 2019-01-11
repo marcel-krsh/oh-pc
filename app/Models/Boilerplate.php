@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * AmenityHud Model
@@ -30,5 +31,9 @@ class Boilerplate extends Model
     public function user() : HasOne
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'creator_id');
+    }
+    public function findings() : HasMany
+    {
+        return $this->hasMany(\App\Models\FindingTypeBoilerPlate::class, 'boilerplate_id', 'id');
     }
 }

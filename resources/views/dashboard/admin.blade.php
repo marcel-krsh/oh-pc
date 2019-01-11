@@ -1,36 +1,8 @@
-<div uk-grid>
-    <div class="uk-width-1-1 uk-width-1-2@s uk-width-3-5@m uk-push-1-5 uk-margin-top uk-margin-large-bottom">
-        <div class="uk-panel uk-panel-box">
-            <h3 class="uk-panel-title">
-                ADMIN TOOLS
-            </h3>
-            <hr class="dashed-hr" class="uk-margin-bottom">
-            <br/>
-            <ul style="list-style-type: none; padding:0">
-                <li>
-                <a onclick="dynamicModalLoad('admin/document_category/create')" class="uk-button uk-button-default uk-width-2-5@m">CREATE NEW DOCUMENT CATEGORY</a>
-                <a onclick="dynamicModalLoad('admin/boilerplate/create')" class="uk-button uk-button-default uk-width-2-5@m uk-float-right">CREATE NEW BOILERPLATE</a>
-                <hr class="dashed-hr uk-margin-bottom">
-                </li>
-                <li>
-                <a onclick="dynamicModalLoad('admin/finding_type/create')" class="uk-button uk-button-default uk-width-2-5@m">CREATE FINDING TYPE</a>
-                <a onclick="dynamicModalLoad('admin/hud_area/create')" class="uk-button uk-button-default uk-width-2-5@m  uk-float-right">CREATE HUD AREA</a>
-                <hr class="dashed-hr uk-margin-bottom">
-                </li>
-                <li>
-                <a onclick="dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);" class="uk-button uk-button-default uk-width-2-5@m uk-float-right">EDIT PREFERENCES</a>
-                <hr class="dashed-hr uk-margin-bottom">
-                </li>
-            </ul>
+<div uk-grid class="uk-margin-top">
+    
 
-
-
-
-        </div>
-    </div>
-
-    <div class="uk-grid">
-        <div class="uk-width-1-1 ">
+    <div class="uk-grid uk-align-center">
+        <div class="uk-width-1-1">
             <ul class="uk-subnav uk-subnav-pill" uk-switcher="animation: uk-animation-fade">
                 <li id="organizations-tab" class="uk-active"><a>Organizations</a></li>
                 <li id="amenities-tab"><a>Amenities</a></li>

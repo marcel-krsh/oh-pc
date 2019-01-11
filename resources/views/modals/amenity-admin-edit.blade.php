@@ -1,5 +1,5 @@
         <div>
-            <h2 id="post-response" class="uk-margin-top">@if(!$amenity)<span uk-icon="plus-circle" class="form-title-icon"></span> Create Amenity @else<span class="uk-icon-edit" ></span> Update Amenity @endif</h2>
+            <h2 id="post-response" class="uk-margin-top">@if(is_null($amenity))<span uk-icon="plus-circle" class="form-title-icon"></span> Create Amenity @else<span class="uk-icon-edit" ></span> Update Amenity @endif</h2>
             <hr />
             <form @if($amenity) action="/admin/amenity/store/{{$amenity->id}}" @else action="/admin/amenity/store" @endif method="post" target="_blank">
                 {{ csrf_field() }}
@@ -10,11 +10,11 @@
                         <input id="amenity_description" type="text" name="amenity_description" value="@if($amenity){{$amenity->amenity_description}}@endif" placeholder="Enter the amenity name" class="uk-input uk-width-1-1 uk-width-2-3@m" required>
                     </div>
                 </div>
-
+                <hr class="dashed-hr uk-margin-bottom" />
                 <div class="uk-form-row">
                     <div class="uk-grid">
                     	<div class="uk-width-1-1 uk-width-1-3@m">
-                    		<label>Options: </label>
+                    		<label>Allita Inspection Type Options: </label>
                     	</div>
                     	<div class="uk-width-1-1 uk-width-2-3@m">
                     		<div uk-grid>
@@ -22,11 +22,20 @@
 		                			<label><input class="uk-checkbox" name="project" type="checkbox" value="1" @if($amenity) @if($amenity->project) checked @endif @endif> Project</label>
 		                		</div>
 		                		<div class="uk-width-1-4">
-		                			<label><input class="uk-checkbox" name="building" type="checkbox" value="1"  @if($amenity) @if($amenity->building) checked @endif @endif> Building</label>
+		                			<label><input class="uk-checkbox" name="building_system" type="checkbox" value="1"  @if($amenity) @if($amenity->building_system) checked @endif @endif> Building System</label>
 		                		</div>
+                                <div class="uk-width-1-4">
+                                    <label><input class="uk-checkbox" name="building_exterior" type="checkbox" value="1"  @if($amenity) @if($amenity->building_exterior) checked @endif @endif> Building Exterior</label>
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <label><input class="uk-checkbox" name="common_area" type="checkbox" value="1"  @if($amenity) @if($amenity->common_area) checked @endif @endif> Common Area</label>
+                                </div>
 		                		<div class="uk-width-1-4">
 		                			<label><input class="uk-checkbox" name="unit" type="checkbox" value="1"  @if($amenity) @if($amenity->unit) checked @endif @endif> Unit</label>
 		                		</div>
+                                <div class="uk-width-1-4">
+                                    <label><input class="uk-checkbox" name="file" type="checkbox" value="1"  @if($amenity) @if($amenity->file) checked @endif @endif> File</label>
+                                </div>
 		                		<div class="uk-width-1-4">
 			                		<label><input class="uk-checkbox" name="inspectable" type="checkbox" value="1"  @if($amenity) @if($amenity->inspectable) checked @endif @endif> Inspectable</label>
 			                	</div>
@@ -34,45 +43,235 @@
 	                	</div>
                 	</div>
                 </div>
-
+                <hr class="dashed-hr uk-margin-bottom" />
+                <div class="uk-form-row">
+                    <div class="uk-grid">
+                        <div class="uk-width-1-1 uk-width-1-3@m">
+                            <label uk-tooltip title="Auditors can 'Apply Defaults' in the project detail tab to save time adding basic amenities to projects, buildings, and units.">Use as a Default Amenity for: </label>
+                        </div>
+                        <div class="uk-width-1-1 uk-width-2-3@m">
+                            <div uk-grid>
+                                <div class="uk-width-1-4">
+                                    <label><input class="uk-checkbox" name="project_default" type="checkbox" value="1" @if($amenity) @if($amenity->project_default) checked @endif @endif> Projects</label>
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <label><input class="uk-checkbox" name="building_default" type="checkbox" value="1"  @if($amenity) @if($amenity->building_default) checked @endif @endif> Buildings</label>
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <label><input class="uk-checkbox" name="unit_default" type="checkbox" value="1"  @if($amenity) @if($amenity->unit_default) checked @endif @endif> Units</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="dashed-hr uk-margin-bottom" />
                 <div class="uk-form-row">
                     <div class="uk-grid">
                         <label for="policy" class="uk-width-1-1 uk-width-1-3@m">Policy: </label>
                         <input id="policy" type="text" name="policy" value="@if($amenity){{$amenity->policy}}@endif" placeholder="Enter the amenity policy" class="uk-input uk-width-1-1 uk-width-2-3@m">
                     </div>
                 </div>
-
+                <hr class="dashed-hr uk-margin-bottom" />
                 <div class="uk-form-row">
                     <div class="uk-grid">
                         <label for="time" class="uk-width-1-1 uk-width-1-3@m">Time to complete (minutes): </label>
                         <input type="number" name="time" min="1" max="180" value="@if($amenity){{$amenity->time_to_complete}}@endif" class="uk-form-small" style="height: 20px;">
                     </div>
                 </div>
-
+                <hr class="dashed-hr uk-margin-bottom" />
                 <div class="uk-form-row">
                     <div class="uk-grid">
                     	<div class="uk-width-1-1 uk-width-1-3@m">
-                    		<label>Icon: </label>
+                    		<label>Icon Used When at Project Level: </label>
                     	</div>
-                    	<div class="uk-width-1-1 uk-width-2-3@m">
+                    	<div class="uk-width-1-1 uk-width-2-3@m uk-scrollable-box">
                     		<div uk-grid>
-                    			<div class="uk-width-1-4">
+                    			<div class="uk-width-1-6">
 		                			<label><input class="uk-radio" name="icon" type="radio" value="a-buildings" @if($amenity) @if($amenity->icon == 'a-buildings' || $amenity->icon == null) checked @endif @endif> <i class="a-buildings" style="font-size: 40px;"></i></label>
 		                		</div>
-		                		<div class="uk-width-1-4">
+		                		<div class="uk-width-1-6">
 		                			<label><input class="uk-radio" name="icon" type="radio" value="a-buildings-2" @if($amenity) @if($amenity->icon == 'a-buildings-2') checked @endif @endif> <i class="a-buildings-2" style="font-size: 40px;"></i></label>
 		                		</div>
-		                		<div class="uk-width-1-4">
+		                		<div class="uk-width-1-6">
 		                			<label><input class="uk-radio" name="icon" type="radio" value="a-pool" @if($amenity) @if($amenity->icon == 'a-pool') checked @endif @endif> <i class="a-pool" style="font-size: 40px;"></i></label>
 		                		</div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-lightbulb-2" @if($amenity) @if($amenity->icon == 'a-lightbulb-2') checked @endif @endif> <i class="a-lightbulb-2" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-tools" @if($amenity) @if($amenity->icon == 'a-tools') checked @endif @endif> <i class="a-tools" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-washer" @if($amenity) @if($amenity->icon == 'a-washer') checked @endif @endif> <i class="a-washer" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-fridge" @if($amenity) @if($amenity->icon == 'a-fridge') checked @endif @endif> <i class="a-fridge" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-teapot" @if($amenity) @if($amenity->icon == 'a-teapot') checked @endif @endif> <i class="a-teapot" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-tv" @if($amenity) @if($amenity->icon == 'a-tv') checked @endif @endif> <i class="a-tv" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-toaster" @if($amenity) @if($amenity->icon == 'a-toaster') checked @endif @endif> <i class="a-toaster" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-coffee-machine" @if($amenity) @if($amenity->icon == 'a-coffee-machine') checked @endif @endif> <i class="a-coffee-machine" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-bus" @if($amenity) @if($amenity->icon == 'a-bus') checked @endif @endif> <i class="a-bus" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-bus" @if($amenity) @if($amenity->icon == 'a-bus') checked @endif @endif> <i class="a-bus" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-books" @if($amenity) @if($amenity->icon == 'a-books') checked @endif @endif> <i class="a-books" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-rulers" @if($amenity) @if($amenity->icon == 'a-rulers') checked @endif @endif> <i class="a-rulers" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-weights" @if($amenity) @if($amenity->icon == 'a-weights') checked @endif @endif> <i class="a-weights" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-bicycle" @if($amenity) @if($amenity->icon == 'a-bicycle') checked @endif @endif> <i class="a-bicycle" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-ambulance" @if($amenity) @if($amenity->icon == 'a-ambulance') checked @endif @endif> <i class="a-ambulance" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-syringe" @if($amenity) @if($amenity->icon == 'a-syringe') checked @endif @endif> <i class="a-syringe" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-scale" @if($amenity) @if($amenity->icon == 'a-scale') checked @endif @endif> <i class="a-scale" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-oven" @if($amenity) @if($amenity->icon == 'a-oven') checked @endif @endif> <i class="a-oven" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-scale" @if($amenity) @if($amenity->icon == 'a-scale') checked @endif @endif> <i class="a-scale" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-stovetop" @if($amenity) @if($amenity->icon == 'a-stovetop') checked @endif @endif> <i class="a-stovetop" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-microwave" @if($amenity) @if($amenity->icon == 'a-microwave') checked @endif @endif> <i class="a-microwave" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-truck-2" @if($amenity) @if($amenity->icon == 'a-truck-2') checked @endif @endif> <i class="a-truck-2" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-package" @if($amenity) @if($amenity->icon == 'a-package') checked @endif @endif> <i class="a-package" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-man-4" @if($amenity) @if($amenity->icon == 'a-man-4') checked @endif @endif> <i class="a-man-4" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-basketball" @if($amenity) @if($amenity->icon == 'a-basketball') checked @endif @endif> <i class="a-basketball" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-piano" @if($amenity) @if($amenity->icon == 'a-piano') checked @endif @endif> <i class="a-piano" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-swimmer" @if($amenity) @if($amenity->icon == 'a-swimmer') checked @endif @endif> <i class="a-swimmer" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-bottle" @if($amenity) @if($amenity->icon == 'a-bottle') checked @endif @endif> <i class="a-bottle" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-pingpong" @if($amenity) @if($amenity->icon == 'a-pingpong') checked @endif @endif> <i class="a-pingpong" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-nurse" @if($amenity) @if($amenity->icon == 'a-nurse') checked @endif @endif> <i class="a-nurse" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-stetoscope" @if($amenity) @if($amenity->icon == 'a-stetoscope') checked @endif @endif> <i class="a-stetoscope" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-water" @if($amenity) @if($amenity->icon == 'a-water') checked @endif @endif> <i class="a-water" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-night" @if($amenity) @if($amenity->icon == 'a-night') checked @endif @endif> <i class="a-night" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-sun" @if($amenity) @if($amenity->icon == 'a-sun') checked @endif @endif> <i class="a-sun" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-sailboat" @if($amenity) @if($amenity->icon == 'a-sailboat') checked @endif @endif> <i class="a-sailboat" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-recycle" @if($amenity) @if($amenity->icon == 'a-recycle') checked @endif @endif> <i class="a-recycle" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-beer" @if($amenity) @if($amenity->icon == 'a-beer') checked @endif @endif> <i class="a-beer" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-trash-recycle" @if($amenity) @if($amenity->icon == 'a-trash-recycle') checked @endif @endif> <i class="a-trash-recycle" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-poolchair" @if($amenity) @if($amenity->icon == 'a-poolchair') checked @endif @endif> <i class="a-poolchair" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-electric-car" @if($amenity) @if($amenity->icon == 'a-electric-car') checked @endif @endif> <i class="a-electric-car" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-tramway" @if($amenity) @if($amenity->icon == 'a-tramway') checked @endif @endif> <i class="a-tramway" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-factory-leaf" @if($amenity) @if($amenity->icon == 'a-factory-leaf') checked @endif @endif> <i class="a-factory-leaf" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-tree" @if($amenity) @if($amenity->icon == 'a-tree') checked @endif @endif> <i class="a-tree" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-lightning" @if($amenity) @if($amenity->icon == 'a-lightning') checked @endif @endif> <i class="a-lightning" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-windturbine" @if($amenity) @if($amenity->icon == 'a-windturbine') checked @endif @endif> <i class="a-windturbine" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-spade" @if($amenity) @if($amenity->icon == 'a-spade') checked @endif @endif> <i class="a-spade" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-floorplan" @if($amenity) @if($amenity->icon == 'a-floorplan') checked @endif @endif> <i class="a-floorplan" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-electrical-warning" @if($amenity) @if($amenity->icon == 'a-electrical-warning') checked @endif @endif> <i class="a-electrical-warning" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-saw" @if($amenity) @if($amenity->icon == 'a-saw') checked @endif @endif> <i class="a-saw" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-fence" @if($amenity) @if($amenity->icon == 'a-fence') checked @endif @endif> <i class="a-fence" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-phone-3" @if($amenity) @if($amenity->icon == 'a-phone-3') checked @endif @endif> <i class="a-phone-3" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-gear-2" @if($amenity) @if($amenity->icon == 'a-gear-2') checked @endif @endif> <i class="a-gear-2" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-tools-2" @if($amenity) @if($amenity->icon == 'a-tools-2') checked @endif @endif> <i class="a-tools-2" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-faces-left" @if($amenity) @if($amenity->icon == 'a-faces-left') checked @endif @endif> <i class="a-faces-left" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-chess-tower" @if($amenity) @if($amenity->icon == 'a-chess-tower') checked @endif @endif> <i class="a-chess-tower" style="font-size: 40px;"></i></label>
+                                </div>
+                                <div class="uk-width-1-6">
+                                    <label><input class="uk-radio" name="icon" type="radio" value="a-circle-keyhole" @if($amenity) @if($amenity->icon == 'a-circle-keyhole') checked @endif @endif> <i class="a-circle-keyhole" style="font-size: 40px;"></i></label>
+                                </div>
 		                	</div>
 	                	</div>
                 	</div>
                 </div>
-
+                <hr class="uk-margin-bottom">
                 <div class="uk-form-row">
-                    <div class="uk-grid">
-                        <input type="submit" id="submit" class="uk-button uk-button-default" style="margin: auto;" name="submit" value="Update Amenity">
+                    <div class="uk-grid uk-text-right">
+                        <div class="uk-width-1-3"></div>
+                        <input type="submit" id="submit" class="uk-button uk-button-success  uk-width-2-3" style="margin: auto;" name="submit" value="@if(is_null($amenity))CREATE @else Update @endif AMENITY">
                     </div>
                 </div>
             </form>
