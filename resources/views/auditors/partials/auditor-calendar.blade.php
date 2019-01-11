@@ -112,6 +112,17 @@
 						<div class="uk-width-1-3 uk-text-right use-hand-cursor auditor-calendar-nav" onclick="fetchCalendar(this);" data-target="{{$data['calendar']['footer']['ref-next']}}">{{$data['calendar']['footer']['next']}} <i class="a-arrow-right-2_1"></i></div>
 					</div>
 				</div>
+				<script>
+					flatpickr(".selectday", {
+					    weekNumbers: true,
+					    defaultDate:"today",
+					    altFormat: "F j, Y",
+					    dateFormat: "Ymd",
+					});
+					$('.flatpickr.selectday').change(function(){
+						loadCalendar($(this).val());
+					});
+				</script>
 			</li>
 	@if($beforeafter != 'before' && $beforeafter != 'after')
 			<li id="auditor-calendar-{{$data['summary']['ref-next']}}" class="grid-schedule-availability" style="display:none;">
@@ -173,14 +184,3 @@
 		</ul>
 	</div>
 	@endif
-	<script>
-		flatpickr(".selectday", {
-		    weekNumbers: true,
-		    defaultDate:"today",
-		    altFormat: "F j, Y",
-		    dateFormat: "Ymd",
-		});
-		$('.flatpickr.selectday').change(function(){
-			loadCalendar($(this).val());
-		});
-	</script>
