@@ -1398,7 +1398,15 @@ class AdminToolController extends Controller
 
         if (!$id) {
             $hud = HudInspectableArea::create([
-                'name' => $inputs['name']
+                'name' => $inputs['name'],
+                'site' => (array_key_exists('site', $inputs)) ? 1 : 0,
+                'building_system' => (array_key_exists('building_system', $inputs)) ? 1 : 0,
+                'building_exterior' => (array_key_exists('global', $inputs)) ? 1 : 0,
+                'common_area' => (array_key_exists('global', $inputs)) ? 1 : 0,
+                'unit' =>(array_key_exists('global', $inputs)) ? 1 : 0,
+                'file' =>(array_key_exists('global', $inputs)) ? 1 : 0
+
+
             ]);
 
             // add amenities

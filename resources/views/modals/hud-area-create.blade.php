@@ -252,6 +252,7 @@
                             <input class="uk-checkbox uk-margin-left" id="building_exterior" type="checkbox" name="building_exterior" value='1' @if($hud)@if($hud->building_exterior) checked @endif @endif class="uk-checkbox"> Building Exterior 
                             <input class="uk-checkbox uk-margin-left" id="common_area" type="checkbox" name="common_area" value='1' @if($hud)@if($hud->common_area) checked @endif @endif class="uk-checkbox"> Common Area 
                             <input class="uk-checkbox uk-margin-left" id="unit" type="checkbox" name="unit" value='1' @if($hud)@if($hud->unit) checked @endif @endif class="uk-checkbox"> Unit
+                            <input class="uk-checkbox uk-margin-left" id="file" type="checkbox" name="file" value='1' @if($hud)@if($hud->file) checked @endif @endif class="uk-checkbox"> File
                         </div>
                     </div>
                 </div>
