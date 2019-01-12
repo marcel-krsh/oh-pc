@@ -145,7 +145,7 @@ class Project extends Model
 
     public function buildings() : HasMany
     {
-        return $this->hasMany('\App\Models\Building');
+        return $this->hasMany('\App\Models\Building')->where('building_status_id','=',1);
     }
 
     public function units() : HasManyThrough {
@@ -189,7 +189,7 @@ class Project extends Model
                                             ->where('program_id', '=', $program->program_id)
                                             ->count(); 
 
-            $program_units[] = ["name" => $program->program->program_name, "units" => $count, "program_id" => $program->program_id]; 
+            $program_units[] = ["name" => $program->program->program_name." ".$program->program_id." ".$this->currentAudit()->audit_id, "units" => $count, "program_id" => $program->program_id]; 
         }
 
         

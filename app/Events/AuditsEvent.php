@@ -1177,7 +1177,7 @@ class AuditsEvent
             $project = Project::where('project_key', '=', $audit->development_key)->with('address')->first();
             if ($project) {
                 $project_id = $project->id;
-                $project_ref = $project->project_key;
+                $project_ref = $project->project_number;
                 $project_name = $project->project_name;
                 $total_buildings = $project->total_building_count;
 
@@ -1230,7 +1230,7 @@ class AuditsEvent
                 'audit_key' => $audit->monitoring_key,
                 'project_id' => $project->id,
                 'project_key' => $audit->development_key,
-                'project_ref' => $project->project_number,
+                'project_ref' => $project_ref,
                 'status' => '',
                 'lead' => $lead,
                 'lead_json' => $lead_json,

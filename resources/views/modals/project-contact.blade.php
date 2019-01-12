@@ -9,6 +9,8 @@
 			<ul class="leaders" style="margin-right:30px;">
 				<li><span>Total Buildings</span> <span>{{$project->stats_total_buildings()}}</span></li>
 				<li><span class="indented">Total Building Common Areas</span> <span></span></li>
+				<li><span class="indented">Total Building Systems</span> <span></span></li>
+				<li><span class="indented">Total Building Exteriors</span> <span></span></li>
 				<li><span>Total Project Common Areas</span> <span></span></li>
 				<li><span>Total Units</span> <span>{{$project->stats_total_units()}}</span></li>
 				<li><span class="indented">• Market Rate</span> <span></span></li>

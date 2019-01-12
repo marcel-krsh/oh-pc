@@ -85,11 +85,11 @@
 
         Route::post('/communications/parcel/{parcel?}', 'CommunicationController@searchCommunications')->name('communications.search');
 
-        Route::get('/projects/{project}', 'AuditController@getProject')->name('project');
-        Route::get('/projects/{project}/title', 'AuditController@getProjectTitle')->name('project.title');
-        Route::get('/projects/{project}/details', 'AuditController@getProjectDetails')->name('project.details');
+        Route::get('/projects/{id}', 'AuditController@getProject')->name('project');
+        Route::get('/projects/{id}/title', 'AuditController@getProjectTitle')->name('project.title');
+        Route::get('/projects/{id}/details', 'AuditController@getProjectDetails')->name('project.details');
         // Route::get('/projects/{project}/details/title', 'AuditController@getProjectDetailsTitle')->name('project.details.title');
-         Route::get('/projects/{project}/details/{type}', 'AuditController@getProjectDetailsInfo')->name('project.details.info');
+         Route::get('/projects/{id}/details/{type}', 'AuditController@getProjectDetailsInfo')->name('project.details.info');
          Route::get('/projects/{project}/details/assignment/date/{dateid}', 'AuditController@getProjectDetailsAssignmentSchedule')->name('project.details.assignment.schedule');
 
         Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');

@@ -43732,9 +43732,7 @@ var render = function() {
               },
               [
                 _vm._v("AUDIT "),
-                _c("span", {
-                  domProps: { innerHTML: _vm._s(_vm.audit.auditId) }
-                })
+                _c("span", { domProps: { innerHTML: _vm._s(_vm.audit.id) } })
               ]
             )
           ]

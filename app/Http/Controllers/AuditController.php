@@ -289,11 +289,13 @@ class AuditController extends Controller
         //return view('dashboard.partials.audit_building_inspection', compact('audit_id', 'target', 'detail_id', 'building_id', 'detail', 'inspection', 'areas', 'rowid'));
     }
 
-    public function getProject($project = null)
+    public function getProject($id = null)
     {
-
-        $projectId = '19200114';
-
+        $project = Project::where('project_key','=',$id)->first();
+        $projectId = $project->id;
+        
+        //dd($id, $projectId);
+        
         $projectTabs = collect([
                 ['title' => 'Details', 'icon' => 'a-clipboard', 'status' => '', 'badge' => '', 'action' => 'project.details'],
                 ['title' => 'Communications', 'icon' => 'a-envelope-incoming', 'status' => '', 'badge' => '', 'action' => 'project.communications'],
@@ -311,29 +313,33 @@ class AuditController extends Controller
         return view('projects.project', compact('tab', 'projectTabs', 'projectId'));
     }
 
-    public function getProjectTitle($project = null)
+    public function getProjectTitle($id = null)
     {
 
-        $audit = CachedAudit::where('project_ref', '=', $project)->orderBy('id', 'desc')->first();
+        $project_number = Project::where('project_key','=',$id)->first()->project_number;
+
+        $audit = CachedAudit::where('project_key', '=', $id)->orderBy('id', 'desc')->first();
 
         // TBD add step to title
-        $step = ''; //  :: CREATED DYNAMICALLY FROM CONTROLLER
+        $step = $audit->step_status_text; //  :: CREATED DYNAMICALLY FROM CONTROLLER
+        $step_icon = $audit->step_status_icon;
 
-        return '<i class="a-mobile-repeat"></i><i class="a-home-question"></i> <span class="list-tab-text"> PROJECT '.$project.$step.'</span>';
+        return '<i class="a-mobile-repeat"></i><i class="'.$step_icon.'"></i> <span class="list-tab-text"> PROJECT '. $project_number." ".$step.'</span>';
     }
 
-    public function getProjectDetails($project = null)
+    public function getProjectDetails($id = null)
     {
+        $project = Project::where('id','=',$id)->first();
 
-        $latest_audit = CachedAudit::where('project_ref', '=', $project)->orderBy('id', 'desc')->first();
+        $latest_audit = CachedAudit::where('project_id', '=', $project->id)->orderBy('id', 'desc')->first();
 
         if (!$latest_audit) {
             // no audit for this project yet, use default project default
-            $details = ProjectDetail::where('project_id', '=', $project)
+            $details = ProjectDetail::where('project_id', '=', $project->id)
                     ->orderBy('id', 'desc')
                     ->first();
         } else {
-            $details = ProjectDetail::where('project_id', '=', $project)
+            $details = ProjectDetail::where('project_id', '=', $project->id)
                     ->where('audit_id', '=', $latest_audit)
                     ->orderBy('id', 'desc')
                     ->first();
@@ -433,10 +439,10 @@ class AuditController extends Controller
         //         "state" => "State2",
         //         "zip" => "22222",
         //     ]);
-        return view('projects.partials.details', compact('details'));
+        return view('projects.partials.details', compact('details', 'project'));
     }
 
-    public function getProjectDetailsInfo($project, $type)
+    public function getProjectDetailsInfo($id, $type)
     {
         // types: compliance, assignment, findings, followups, reports, documents, comments, photos
         // project: project_id?

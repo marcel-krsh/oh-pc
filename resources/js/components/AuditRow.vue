@@ -12,7 +12,7 @@
         	</div>
         	<div class="uk-vertical-align-middle uk-display-inline-block">
         		<h3 :id="'audit-project-name-'+auditIndex" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip="title:OPEN AUDIT DETAILS IN TAB;" v-on:click="openProject"><span v-html="audit.projectRef"></span></h3>
-            	<small :id="'audit-project-aid-'+auditIndex" class="uk-text-muted faded filter-search-project" uk-tooltip="title:VIEW PROJECT AUDIT DETAILS;">AUDIT <span v-html="audit.auditId"></span></small>
+            	<small :id="'audit-project-aid-'+auditIndex" class="uk-text-muted faded filter-search-project" uk-tooltip="title:VIEW PROJECT AUDIT DETAILS;">AUDIT <span v-html="audit.id"></span></small>
             </div>
         </td>
         <td class="audit-td-name">
