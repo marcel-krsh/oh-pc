@@ -1,3 +1,112 @@
+        <script>
+            function hideHud(hud){
+                console.log(hud);
+                switch(hud){
+                    case 'all':
+                            $('.Hud-Site').show();
+                            $('.Hud-Building-System').show();
+                            $('.Hud-Building-Exterior').show();
+                            $('.Hud-Common-Area').show();
+                            $('.Hud-Unit').show();
+                            $('.Hud-File').show();
+                            $('.Hud-Unselected').show();
+                            $('.Hud-Selected').show();
+                            break;
+                            console.log('all');
+                    case 'Selected':
+                            $('.Hud-Site').hide();
+                            $('.Hud-Building-System').hide();
+                            $('.Hud-Building-Exterior').hide();
+                            $('.Hud-Common-Area').hide();
+                            $('.Hud-Unit').hide();
+                            $('.Hud-File').hide();
+                            $('.Hud-Unselected').hide();
+                            $('.Hud-Selected').show();
+                            break;
+                            console.log('Selected');
+                    case 'Unselected':
+                            $('.Hud-Site').hide();
+                            $('.Hud-Building-System').hide();
+                            $('.Hud-Building-Exterior').hide();
+                            $('.Hud-Common-Area').hide();
+                            $('.Hud-Unit').hide();
+                            $('.Hud-File').hide();
+                            $('.Hud-Selected').hide();
+                            $('.Hud-Unselected').show();
+                            break;
+                            console.log('all');
+                    case 'Site':
+                            $('.Hud-Building-System').hide();
+                            $('.Hud-Building-Exterior').hide();
+                            $('.Hud-Common-Area').hide();
+                            $('.Hud-Unit').hide();
+                            $('.Hud-File').hide();
+                            $('.Hud-Unselected').hide();
+                            $('.Hud-Selected').hide();
+                            $('.Hud-Site').show();
+                             console.log('project');
+                            break;
+                    case 'Building System':
+                            $('.Hud-Site').hide();
+                            $('.Hud-Building-Exterior').hide();
+                            $('.Hud-Common-Area').hide();
+                            $('.Hud-Unit').hide();
+                            $('.Hud-File').hide();
+                            $('.Hud-Unselected').hide();
+                            $('.Hud-Selected').hide();
+                            $('.Hud-Building-System').show();
+                             console.log('bs');
+                            break;
+                    case 'Building Exterior':
+                            $('.Hud-Site').hide();
+                            $('.Hud-Building-System').hide();
+                            $('.Hud-Common-Area').hide();
+                            $('.Hud-Unit').hide();
+                            $('.Hud-File').hide();
+                            $('.Hud-Unselected').hide();
+                            $('.Hud-Selected').hide();
+                            $('.Hud-Building-Exterior').show();
+                             console.log('be');
+                            break;
+                    case 'Common Area':
+                            $('.Hud-Site').hide();
+                            $('.Hud-Building-System').hide();
+                            $('.Hud-Building-Exterior').hide();
+                            $('.Hud-Unit').hide();
+                            $('.Hud-File').hide();
+                            $('.Hud-Unselected').hide();
+                            $('.Hud-Selected').hide();
+                            $('.Hud-Common-Area').show();
+                             console.log('ca');
+                            break;
+
+                    case 'Unit':
+                            $('.Hud-Site').hide();
+                            $('.Hud-Building-System').hide();
+                            $('.Hud-Building-Exterior').hide();
+                            $('.Hud-Common-Area').hide();
+                            $('.Hud-File').hide();
+                            $('.Hud-Unselected').hide();
+                            $('.Hud-Selected').hide();
+                            $('.Hud-Unit').show();
+                             console.log('unit');
+                            break;
+                    case 'File':
+                            $('.Hud-Site').hide();
+                            $('.Hud-Building-System').hide();
+                            $('.Hud-Building-Exterior').hide();
+                            $('.Hud-Common-Area').hide();
+                            $('.Hud-Unit').hide();
+                            $('.Hud-Unselected').hide();
+                            $('.Hud-Selected').hide();
+                            $('.Hud-File').show();
+                             console.log('unit');
+                            break;
+                    default:
+                        console.log('called but nothing happened to '.amenity);
+                }
+            }
+        </script>
         <div>
             <h2 id="post-response" class="uk-margin-top">@if(is_null($amenity))<span uk-icon="plus-circle" class="form-title-icon"></span> Create Amenity @else<span class="uk-icon-edit" ></span> Update Amenity @endif</h2>
             <hr />
@@ -79,6 +188,49 @@
                     </div>
                 </div>
                 <hr class="dashed-hr uk-margin-bottom" />
+                <div class="uk-form-row">
+                    <div class="uk-grid">
+                        <div class="uk-width-1-1 uk-width-1-3@m">
+                            <label>IS A GROUP FOR THESE HUD AREAS</label>
+                        </div>
+                        
+
+                        @if(count($huds))
+                        <div class="uk-width-1-1 uk-width-2-3@m ">
+                            <small>
+                                <select onchange="hideHud(this.value)" class="uk-select filter-drops " style="height: 30px;
+    padding: 1px;
+    margin-top: 5px;">
+                                    <option value="all">SELECT FROM ALL HUD AREAS</option>
+                                    @if($amenity)
+                                    <option value="Selected">SELECTED ONLY</option>
+                                    <option value="Unselected">ONLY THOSE NOT SELECTED</option>
+                                    @endif
+                                    <option value="Site">SITE ONLY</option>
+                                    <option value="Building System">BUILDING SYSTEM ONLY</option>
+                                    <option value="Building Exterior">BUILDING EXTERIOR ONLY</option>
+                                    <option value="Common Area">COMMON AREA ONLY</option>
+                                    <option value="Unit">UNIT ONLY</option>
+                                    <option value="File">FILE ONLY</option>
+                                </select>
+
+                            </small>
+                            <ul class="uk-list uk-scrollable-box">
+                                @foreach($huds as $hud)
+                                <li class="@if($hud->site) Hud-Site @endIf @if($hud->building_exterior) Hud-Building-Exterior @endif @if($hud->building_system) Hud-Building-System @endif  @if($hud->common_area) Hud-Common-Area @endIf  @if($hud->unit) Hud-Unit @endIf @if($amenity) @if($amenity->huds) @if(in_array($hud->id, $amenity->huds->pluck('hud_inspectable_area_id')->toArray())) Hud-Selected @else Hud-Unselected @endif @endif @endif"><label><input class="uk-checkbox" type="checkbox" name="huds[]" value="{{$hud->id}}" @if($amenity) @if($amenity->huds) @if(in_array($hud->id, $amenity->huds->pluck('hud_inspectable_area_id')->toArray())) checked @endif @endif @endif> {{$hud->name}}<br />
+                                    <span class="gray-text uk-margin-large-left">
+                                    @if($hud->site)• Site @endIf 
+                                    @if($hud->building_exterior)• Building Exterior @endif
+                                    @if($hud->building_system)• Building System @endif 
+                                    @if($hud->common_area)• Common Area @endIf 
+                                    @if($hud->unit)• Unit @endIf</span></label></li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
+                        
+                    </div>
+                </div>
                 <div class="uk-form-row">
                     <div class="uk-grid">
                     	<div class="uk-width-1-1 uk-width-1-3@m">
@@ -297,19 +449,31 @@
             e.preventDefault();
             let form= $(this);
             let action = $(this).attr('action'); 
+            var huds = {items: []};
+
+            $.each($('input[name^="huds"]'), function(index, element) {
+                if($(element).is(':checked')){
+                    huds.items.push({
+                        id: $(element).val()
+                    });
+                    //alert('Amenity Added');
+                }
+            });
 
             $.ajax({
                 url: action, 
                 method: 'POST',
                 data: {
                     'inputs': getFormData(form),
+                    'huds': JSON.stringify(huds),
                     '_token' : '{{ csrf_token() }}'
                 },
                 success: function(response){
-                    form.remove();
-                    $('h2#post-response').hide().html("<span class='uk-text-success'><span uk-icon='check'></span> "+response+"</span>").fadeIn();
-                    console.log(action);
+                    // form.remove();
+                    // $('h2#post-response').hide().html("<span class='uk-text-success'><span uk-icon='check'></span> "+response+"</span>").fadeIn();
+                    // console.log(action);
                     $('#amenities-tab').trigger('click');
+                    UIkit.modal.alert(response);
 
                 },
                 error: function(resp){

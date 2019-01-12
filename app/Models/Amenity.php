@@ -19,12 +19,10 @@ class Amenity extends Model
      /**
      * hud
      */
-    public function huds() : HasManyThrough
-    {
-        return $this->belongsToMany('App\Models\HudInspectionArea', 'amenity_hud', 'amenity_id', 'hud_inspection_area_id')->withPivot([
-                            'created_by',
-                            'updated_by'
-                        ]);
+    
+    public function huds() : HasMany {
+        return $this->hasMany('App\Models\AmenityHud');
+        
     }
 
     /**

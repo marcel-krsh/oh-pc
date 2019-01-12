@@ -4,27 +4,22 @@
     <div class="uk-grid uk-align-center">
         <div class="uk-width-1-1">
             <ul class="uk-subnav uk-subnav-pill" uk-switcher="animation: uk-animation-fade">
-                <li id="organizations-tab" class="uk-active"><a>Organizations</a></li>
-                <li id="amenities-tab"><a>Amenities</a></li>
+                
+                <li id="amenities-tab" class="uk-active"><a>Amenities</a></li>
                 <li id="hud-tab"><a>HUD Areas</a></li>
                 <li id="findingtype-tab"><a>Finding Types</a></li>
                 <li id="default-followups-tab"><a>Follow Ups</a></li>
                 <li id="boilerplates-tab"><a>Boilerplates</a></li>
-                <li id="programs-tab"><a>Programs</a></li>
+                <li id="organizations-tab" ><a>Organizations</a></li>
+                <!-- <li id="programs-tab"><a>Programs</a></li>
                 <li id="document-categories-tab"><a>Doc Categories</a></li>
-                <li id="counties-tab"><a>Counties</a></li>
+                <li id="counties-tab"><a>Counties</a></li> -->
                 <li id="emails-tab"><a>Email History</a></li>
             </ul>
 
             <ul class="uk-switcher uk-margin">
-                <li class="uk-active" id="organizations-tab-content">
-                    <script type="text/javascript">
-                         $('#organizations-tab').on('click',function(){
-                            $('#organizations-tab-content').load('/tabs/organization');
-                        });
-                    </script>
-                </li>
-                <li id="amenities-tab-content">
+                
+                <li id="amenities-tab-content" class="uk-active">
                     <script type="text/javascript">
                         $('#amenities-tab').on('click',function(){
                             $('#amenities-tab-content').load('/tabs/amenity');
@@ -59,7 +54,7 @@
                         });
                     </script>
                 </li>
-                <li id="programs-tab-content">
+                <!-- <li id="programs-tab-content">
                     <script type="text/javascript">
                         $('#programs-tab').on('click',function(){
                             $('#programs-tab-content').load('/tabs/program');
@@ -78,6 +73,13 @@
                     <script type="text/javascript">
                         $('#counties-tab').on('click', function(){
                             $('#counties-content').load('/tabs/county');
+                        });
+                    </script>
+                </li> -->
+                <li  id="organizations-tab-content">
+                    <script type="text/javascript">
+                         $('#organizations-tab').on('click',function(){
+                            $('#organizations-tab-content').load('/tabs/organization');
                         });
                     </script>
                 </li>
@@ -100,7 +102,7 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">$('#organizations-tab-content').load('/tabs/organization');
+<script type="text/javascript">$('#amenities-tab-content').load('/tabs/amenity');
                     </script>
 <?php // keep this script at the bottom of page to ensure the tabs behave appropriately ?>
 <script>
