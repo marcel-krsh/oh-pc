@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Audit;
+use App\Models\Project;
 use App\Models\CachedAudit;
 use App\Models\CachedBuilding;
 use App\Models\CachedUnit;
@@ -16,6 +18,7 @@ use App\Models\CachedInspection;
 use App\Models\CachedAmenity;
 use App\Models\CachedComment;
 use App\Models\ProjectDetail;
+use App\Models\UnitProgram;
 use Auth;
 use Session;
 use App\LogConverter;
@@ -141,6 +144,11 @@ class AuditController extends Controller
             ]);
             $new_ordering->save();
         }
+    }
+
+    public function getProjectContact(Project $project) {
+        
+        return view('modals.project-contact', compact('project'));
     }
 
     public function detailsFromBuilding($audit, $building, Request $request)
@@ -281,11 +289,13 @@ class AuditController extends Controller
         //return view('dashboard.partials.audit_building_inspection', compact('audit_id', 'target', 'detail_id', 'building_id', 'detail', 'inspection', 'areas', 'rowid'));
     }
 
-    public function getProject($project = null)
+    public function getProject($id = null)
     {
-
-        $projectId = '19200114';
-
+        $project = Project::where('project_key','=',$id)->first();
+        $projectId = $project->id;
+        
+        // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
+        
         $projectTabs = collect([
                 ['title' => 'Details', 'icon' => 'a-clipboard', 'status' => '', 'badge' => '', 'action' => 'project.details'],
                 ['title' => 'Communications', 'icon' => 'a-envelope-incoming', 'status' => '', 'badge' => '', 'action' => 'project.communications'],
@@ -303,132 +313,66 @@ class AuditController extends Controller
         return view('projects.project', compact('tab', 'projectTabs', 'projectId'));
     }
 
-    public function getProjectTitle($project = null)
+    public function getProjectTitle($id = null)
     {
 
-        $audit = CachedAudit::where('project_ref', '=', $project)->orderBy('id', 'desc')->first();
+        $project_number = Project::where('project_key','=',$id)->first()->project_number;
+
+        $audit = CachedAudit::where('project_key', '=', $id)->orderBy('id', 'desc')->first();
 
         // TBD add step to title
-        $step = ''; //  :: CREATED DYNAMICALLY FROM CONTROLLER
+        $step = $audit->step_status_text; //  :: CREATED DYNAMICALLY FROM CONTROLLER
+        $step_icon = $audit->step_status_icon;
 
-        return '<i class="a-mobile-repeat"></i><i class="a-home-question"></i> <span class="list-tab-text"> PROJECT '.$project.$step.'</span>';
+        return '<i class="a-mobile-repeat"></i><i class="'.$step_icon.'"></i> <span class="list-tab-text"> PROJECT '. $project_number." ".$step.'</span>';
     }
 
-    public function getProjectDetails($project = null)
+    public function getProjectDetails($id = null)
     {
+        // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
+          
+        $project = Project::where('id','=',$id)->first();
+//dd($project);
+        // which audit is selected (latest if no selection)
+        $selected_audit = $project->selected_audit();
+//dd($selected_audit);
+        // get that audit's stats and contact info from the project_details table
+        $project_details = $project->details();
 
-        $latest_audit = CachedAudit::where('project_ref', '=', $project)->orderBy('id', 'desc')->first();
-
-        if (!$latest_audit) {
+        dd($project_details);
+        
+        if (!$selected_audit) {
             // no audit for this project yet, use default project default
-            $details = ProjectDetail::where('project_id', '=', $project)
+            $details = ProjectDetail::where('project_id', '=', $project->id)
                     ->orderBy('id', 'desc')
                     ->first();
         } else {
-            $details = ProjectDetail::where('project_id', '=', $project)
-                    ->where('audit_id', '=', $latest_audit)
+            $details = ProjectDetail::where('project_id', '=', $project->id)
+                    ->where('audit_id', '=', $selected_audit->id)
                     ->orderBy('id', 'desc')
                     ->first();
         }
 
         if (!$details) {
+
+
+
+
+
+
+
+
+
+
             // TBD get initial data from project information?
         }
 
 
-        // test only
-        $details = collect([
-                "project_id" => "1920114",
-                "project_name" => "The Garden Oaks",
-                "last_audit_completed" => "December 12, 2017",
-                "next_audit_due" => "December 31, 2018",
-                "score_percentage" => "88%",
-                "score" => "B-",
-                "total_building" => "99",
-                "total_building_common_areas" => "99",
-                "total_project_common_areas" => "10",
-                "total_units" => "9,999",
-                "market_rate" => "8,999",
-                "subsidized" => "1,000",
-                "programs" => [
-                    ["name" => "Program Name 1", "units" => "250"],
-                    ["name" => "Program Name 2", "units" => "250"],
-                    ["name" => "Program Name 3", "units" => "50"],
-                    ["name" => "Program Name 4", "units" => "550"],
-                    ["name" => "Program Name 5", "units" => "1000"],
-                ],
-                "name" => "Jane Doe Properties",
-                "poc" => "Jane Doe",
-                "phone" => "(123) 344-4444",
-                "fax" => "(123) 448-8888",
-                "email" => "bob@bob.com",
-                "address" => "123 Sesame Street",
-                "address2" => "Suite 123",
-                "city" => "City",
-                "state" => "State",
-                "zip" => "12345",
-                "name" => "The Really Long Named Property Manager Name",
-                "poc" => "Bob Doe",
-                "phone" => "(123) 344-3333",
-                "fax" => "(123) 448-3333",
-                "email" => "bob3@bob.com",
-                "address" => "12333 Sesame Street",
-                "address2" => "Suite 12345",
-                "city" => "City2",
-                "state" => "State2",
-                "zip" => "22222"
-            ]);
        
-        
-        // $stats = collect([
-        //         "project_id" => "1920114",
-        //         "project_name" => "The Garden Oaks",
-        //         "last_audit_completed" => "December 12, 2017",
-        //         "next_audit_due" => "December 31, 2018",
-        //         "score_percentage" => "88%",
-        //         "score" => "B-",
-        //         "total_building" => "99",
-        //         "total_building_common_areas" => "99",
-        //         "total_project_common_areas" => "10",
-        //         "total_units" => "9,999",
-        //         "market_rate" => "8,999",
-        //         "subsidized" => "1,000",
-        //         "programs" => [
-        //             ["name" => "Program Name 1", "units" => "250"],
-        //             ["name" => "Program Name 2", "units" => "250"],
-        //             ["name" => "Program Name 3", "units" => "50"],
-        //             ["name" => "Program Name 4", "units" => "550"],
-        //             ["name" => "Program Name 5", "units" => "1000"],
-        //         ]
-        //     ]);
-        // $owner = collect([
-        //         "name" => "Jane Doe Properties",
-        //         "poc" => "Jane Doe",
-        //         "phone" => "(123) 344-4444",
-        //         "fax" => "(123) 448-8888",
-        //         "email" => "bob@bob.com",
-        //         "address" => "123 Sesame Street",
-        //         "address2" => "Suite 123",
-        //         "city" => "City",
-        //         "state" => "State",
-        //         "zip" => "12345",
-        //     ]);
-        // $manager = collect([
-        //         "name" => "The Really Long Named Property Manager Name",
-        //         "poc" => "Bob Doe",
-        //         "phone" => "(123) 344-3333",
-        //         "fax" => "(123) 448-3333",
-        //         "email" => "bob3@bob.com",
-        //         "address" => "12333 Sesame Street",
-        //         "address2" => "Suite 12345",
-        //         "city" => "City2",
-        //         "state" => "State2",
-        //         "zip" => "22222",
-        //     ]);
-        return view('projects.partials.details', compact('details'));
+        return view('projects.partials.details', compact('details', 'project', 'selected_audit'));
     }
 
-    public function getProjectDetailsInfo($project, $type)
+    public function getProjectDetailsInfo($id, $type)
     {
         // types: compliance, assignment, findings, followups, reports, documents, comments, photos
         // project: project_id?
@@ -593,7 +537,7 @@ class AuditController extends Controller
         $hours = (int) $forminputs['estimated_hours'];
         $minutes = (int) $forminputs['estimated_minutes'];
 
-        $audit = CachedAudit::where('id','=',$id)->where('lead','=',Auth::user()->id)->first();
+        $audit = Audit::where('id','=',$id)->where('lead_user_id','=',Auth::user()->id)->first();
 
         $new_estimate = $hours.":".$minutes.":00";
 
@@ -601,14 +545,18 @@ class AuditController extends Controller
             $audit->update([
                 'estimated_time' => $new_estimate
             ]);
+
+            // get new needed time
+            $audit->fresh();
+
+            $needed = $audit->hours_still_needed();
+
+            return ['status'=>1, 'hours'=> $hours.":".$minutes, 'needed'=>$needed];
+        }else{
+            return ['status'=>0, 'message'=>'Sorry, this audit reference cannot be found.'];
         }
 
-        // get new needed time
-        $audit->fresh();
-
-        $needed = $audit->hours_still_needed();
-
-        return ['status'=>1, 'hours'=> $hours.":".$minutes, 'needed'=>$needed];
+        
     }
 
     public function getProjectDetailsAssignmentSchedule($project, $dateid)

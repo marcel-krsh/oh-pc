@@ -1883,6 +1883,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['audit', 'index'],
   methods: {
+    openContactInfo: function openContactInfo() {
+      dynamicModalLoad('projects/' + this.audit.projectId + '/contact', 0, 0, 0);
+    },
     openProject: function openProject() {
       loadTab('/projects/' + this.audit.projectKey, '4', 1, 1, '', 1);
     },
@@ -43713,7 +43716,7 @@ var render = function() {
               },
               [
                 _c("span", {
-                  domProps: { innerHTML: _vm._s(_vm.audit.projectKey) }
+                  domProps: { innerHTML: _vm._s(_vm.audit.projectRef) }
                 })
               ]
             ),
@@ -43729,9 +43732,7 @@ var render = function() {
               },
               [
                 _vm._v("AUDIT "),
-                _c("span", {
-                  domProps: { innerHTML: _vm._s(_vm.audit.auditId) }
-                })
+                _c("span", { domProps: { innerHTML: _vm._s(_vm.audit.id) } })
               ]
             )
           ]
@@ -43740,7 +43741,20 @@ var render = function() {
     ),
     _vm._v(" "),
     _c("td", { staticClass: "audit-td-name" }, [
-      _vm._m(0),
+      _c(
+        "div",
+        {
+          staticClass:
+            "uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left"
+        },
+        [
+          _c("i", {
+            staticClass: "a-info-circle uk-text-muted uk-link",
+            attrs: { "uk-tooltip": "title:VIEW CONTACT DETAILS;" },
+            on: { click: _vm.openContactInfo }
+          })
+        ]
+      ),
       _vm._v(" "),
       _c(
         "div",
@@ -44122,26 +44136,7 @@ var render = function() {
   var _obj$13
   var _obj$14
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass:
-          "uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left"
-      },
-      [
-        _c("i", {
-          staticClass: "a-info-circle uk-text-muted uk-link",
-          attrs: { "uk-tooltip": "title:VIEW CONTACT DETAILS;" }
-        })
-      ]
-    )
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

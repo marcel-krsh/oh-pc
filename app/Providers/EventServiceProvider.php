@@ -28,6 +28,9 @@ class EventServiceProvider extends ServiceProvider
         'audit.updated' => [
             'App\Events\AuditsEvent@auditUpdated'
         ],
+        'audit.cache' => [
+            'App\Events\AuditsEvent@createNewCachedAudit'
+        ],
         'cachedaudit.created' => [
             'App\Events\CachedAuditsEvent@cachedAuditCreated'
         ],

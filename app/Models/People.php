@@ -33,4 +33,14 @@ class People extends Model
     {
         return $this->hasOne(\App\Models\PhoneNumber::class, 'phone_number_key', 'default_phone_number_key');
     }
+
+    public function fax() : HasOne
+    {
+        return $this->hasOne(\App\Models\PhoneNumber::class, 'phone_number_key', 'default_fax_number_key');
+    }
+
+    public function email() : HasOne
+    {
+        return $this->hasOne(\App\Models\EmailAddress::class, 'email_address_key', 'default_email_address_key');
+    }
 }

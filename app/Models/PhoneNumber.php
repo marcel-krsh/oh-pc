@@ -21,6 +21,10 @@ class PhoneNumber extends Model
 
         $phone = '';
 
+        if($area_code == '000'){
+            return '';
+        }
+
         if($area_code){
         	$phone = "(".$area_code.")";
         }

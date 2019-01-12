@@ -11,13 +11,13 @@
         		<span :id="'audit-i-project-detail-'+auditIndex" v-on:click="openProjectDetails" uk-tooltip="pos:top-left;title:VIEW BUILDINGS AND COMMON AREAS;" class="uk-link"><i class="a-menu uk-text-muted"></i></span>
         	</div>
         	<div class="uk-vertical-align-middle uk-display-inline-block">
-        		<h3 :id="'audit-project-name-'+auditIndex" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip="title:OPEN AUDIT DETAILS IN TAB;" v-on:click="openProject"><span v-html="audit.projectKey"></span></h3>
-            	<small :id="'audit-project-aid-'+auditIndex" class="uk-text-muted faded filter-search-project" uk-tooltip="title:VIEW PROJECT AUDIT DETAILS;">AUDIT <span v-html="audit.auditId"></span></small>
+        		<h3 :id="'audit-project-name-'+auditIndex" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip="title:OPEN AUDIT DETAILS IN TAB;" v-on:click="openProject"><span v-html="audit.projectRef"></span></h3>
+            	<small :id="'audit-project-aid-'+auditIndex" class="uk-text-muted faded filter-search-project" uk-tooltip="title:VIEW PROJECT AUDIT DETAILS;">AUDIT <span v-html="audit.id"></span></small>
             </div>
         </td>
         <td class="audit-td-name">
         	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-        		<i class="a-info-circle uk-text-muted uk-link" uk-tooltip="title:VIEW CONTACT DETAILS;"></i>
+        		<i class="a-info-circle uk-text-muted uk-link" v-on:click="openContactInfo" uk-tooltip="title:VIEW CONTACT DETAILS;"></i>
         	</div> 
         	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
         		<h3 class="uk-margin-bottom-remove filter-search-pm" v-html="audit.title"></h3>
@@ -119,6 +119,9 @@
     export default {
 	    props: ['audit','index'],
 	    methods: {
+            openContactInfo: function() {
+                dynamicModalLoad('projects/'+this.audit.projectId+'/contact',0,0,0);
+            },
             openProject: function() {
             	loadTab('/projects/'+this.audit.projectKey, '4', 1, 1, '', 1);
             },
