@@ -17,6 +17,8 @@ class ProjectDetail extends Model
         'score',
         'total_building',
         'total_building_common_areas',
+        'total_building_systems',
+        'total_building_exteriors',
         'total_project_common_areas',
         'total_units',
         'market_rate',

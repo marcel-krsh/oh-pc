@@ -10,6 +10,7 @@ use App\Models\CachedAudit;
 use App\Models\SystemSetting;
 use App\Models\Building;
 use Carbon;
+use Session;
 
 class Project extends Model
 {
@@ -52,11 +53,21 @@ class Project extends Model
 
         $pm_organization = '';
         $pm_address = '';
+        $pm_line_1 = '';
+        $pm_line_2 = '';
+        $pm_city = '';
+        $pm_state = '';
+        $pm_zip = '';
 
         if ($pm_contact) { 
             if ($pm_contact->organization) {
                 $pm_organization = $pm_contact->organization->organization_name;
-                $pm_address = $pm_contact->organization->address->formatter_address;
+                $pm_address = $pm_contact->organization->address->formatted_address();
+                $pm_line_1 = $pm_contact->organization->address->line_1;
+                $pm_line_2 = $pm_contact->organization->address->line_2;
+                $pm_city = $pm_contact->organization->address->city;
+                $pm_state = $pm_contact->organization->address->state;
+                $pm_zip = $pm_contact->organization->address->zip;
             }
             if ($pm_contact->person) {
                 $pm_name = $pm_contact->person->first_name." ".$pm_contact->person->last_name;
@@ -67,7 +78,7 @@ class Project extends Model
             
         }
 
-        return ['organization'=> $pm_organization, 'name'=>$pm_name, 'email'=>$pm_email, 'phone'=>$pm_phone, 'fax'=>$pm_fax, 'address'=>$pm_address ];
+        return ['organization'=> $pm_organization, 'name'=>$pm_name, 'email'=>$pm_email, 'phone'=>$pm_phone, 'fax'=>$pm_fax, 'address'=>$pm_address, 'line_1'=>$pm_line_1, 'line_2'=>$pm_line_2, 'city'=>$pm_city, 'state'=>$pm_state, 'zip'=>$pm_zip ];
     }
 
     public function owner()
@@ -78,11 +89,21 @@ class Project extends Model
 
         $owner_organization = '';
         $owner_address = '';
+        $owner_line_1 = '';
+        $owner_line_2 = '';
+        $owner_city = '';
+        $owner_state = '';
+        $owner_zip = '';
 
         if ($owner_contact) { 
             if ($owner_contact->organization) {
                 $owner_organization = $owner_contact->organization->organization_name;
-                $owner_address = $owner_contact->organization->address->formatter_address;
+                $owner_address = $owner_contact->organization->address->formatted_address();
+                $owner_line_1 = $owner_contact->organization->address->line_1;
+                $owner_line_2 = $owner_contact->organization->address->line_2;
+                $owner_city = $owner_contact->organization->address->city;
+                $owner_state = $owner_contact->organization->address->state;
+                $owner_zip = $owner_contact->organization->address->zip;
             }
             if ($owner_contact->person) {
                 $owner_name = $owner_contact->person->first_name." ".$owner_contact->person->last_name;
@@ -93,7 +114,7 @@ class Project extends Model
             
         }
 
-        return ['organization'=> $owner_organization, 'name'=>$owner_name, 'email'=>$owner_email, 'phone'=>$owner_phone, 'fax'=>$owner_fax, 'address'=>$owner_address ];
+        return ['organization'=> $owner_organization, 'name'=>$owner_name, 'email'=>$owner_email, 'phone'=>$owner_phone, 'fax'=>$owner_fax, 'address'=>$owner_address, 'line_1'=>$owner_line_1, 'line_2'=>$owner_line_2, 'city'=>$owner_city, 'state'=>$owner_state, 'zip'=>$owner_zip ];
     }
 
     public function complianceContacts() : HasOne
@@ -110,6 +131,97 @@ class Project extends Model
         }else{
             return Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $next_inspection)->format('F j, Y');
         }
+    }
+
+    public function selected_audit()
+    {
+        if (Session::has('project.selectedaudit') && Session::get('project.selectedaudit') != '') {
+            $selected_audit = Session::get('project.selectedaudit');
+        }else{
+            $selected_audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->first();
+            session(['project.selectedaudit' => $selected_audit]);
+        }
+
+        return $selected_audit;
+    }
+
+    public function details()
+    {
+        $selected_audit = $this->selected_audit();
+
+        if (!$selected_audit) {
+            // no audit for this project yet, use default project default
+            // first check if there are default values and add them if not
+            $details = ProjectDetail::where('project_id', '=', $this->id)
+                    ->orderBy('id', 'desc')
+                    ->first();            
+        } else {
+            $details = ProjectDetail::where('project_id', '=', $this->id)
+                    ->where('audit_id', '=', $selected_audit->id)
+                    ->orderBy('id', 'desc')
+                    ->first();
+        }
+
+        if(!$details){
+            // create a default record
+            $details = $this->set_project_defaults();
+        }
+
+        return $details;
+    }
+
+    public function set_project_defaults()
+    {
+        // create a record in project_details table with the current stats, contact info
+        
+        //$programs = $this->programs->get(['program_id','total_unit_count'])->toJson();
+        dd($this->programs->select('program_id','total_unit_count')->get());
+        $last_audit = $this->lastAudit();
+
+        $selected_audit = $this->selected_audit();
+
+        $next_inspection = $this->complianceContacts()->first()->next_inspection;
+
+        $details = new ProjectDetail([
+                'project_id' => $this->id,
+                'audit_id' => $selected_audit->id,
+                'last_audit_completed' => $last_audit->completed_date,
+                'next_audit_due' => $next_inspection,
+                'score_percentage' => null,
+                'score' => 'N/A',
+                'total_building' => $this->total_building_count,
+                'total_building_common_areas' => null,
+                'total_building_systems' => null,
+                'total_building_exteriors' => null,
+                'total_project_common_areas' => null,
+                'total_units' => $this->total_unit_count,
+                'market_rate' => null,
+                'subsidized' => null,
+                'programs' => $programs,
+                'owner_name' => $this->owner()['organization'],
+                'owner_poc' => $this->owner()['name'],
+                'owner_phone' => $this->owner()['phone'],
+                'owner_fax' => $this->owner()['fax'],
+                'owner_email' => $this->owner()['email'],
+                'owner_address' => $this->owner()['line_1'],
+                'owner_address2' => $this->owner()['line_2'],
+                'owner_city' => $this->owner()['city'],
+                'owner_state' => $this->owner()['state'],
+                'owner_zip' => $this->owner()['zip'],
+                'manager_name' => $this->pm()['organization'],
+                'manager_poc' => $this->pm()['name'],
+                'manager_phone' => $this->pm()['phone'],
+                'manager_fax' => $this->pm()['fax'],
+                'manager_email' => $this->pm()['email'],
+                'manager_address' => $this->pm()['line_1'],
+                'manager_address2' => $this->pm()['line_2'],
+                'manager_city' => $this->pm()['city'],
+                'manager_state' => $this->pm()['state'],
+                'manager_zip' => $this->pm()['zip']
+            ]);
+        $details->save();
+
+        return $details;
     }
 
     public function lastAudit()
@@ -154,7 +266,6 @@ class Project extends Model
 
     public function projectProgramUnitCounts()
     {
-
         $programs = $this->programs;
         $programCounts = [];
         foreach ($programs as $program) {
@@ -185,9 +296,11 @@ class Project extends Model
         $programs = $this->programs; 
         $program_units = [];
         foreach ($programs as $program) { 
-            $count = UnitProgram::where('audit_id', $this->currentAudit()->audit_id)
-                                            ->where('program_id', '=', $program->program_id)
-                                            ->count(); 
+            // $count = UnitProgram::where('audit_id', $this->currentAudit()->audit_id)
+            //                                 ->where('program_id', '=', $program->program_id)
+            //                                 ->count(); 
+            
+            $count = $program->total_unit_count;
 
             $program_units[] = ["name" => $program->program->program_name." ".$program->program_id." ".$this->currentAudit()->audit_id, "units" => $count, "program_id" => $program->program_id]; 
         }

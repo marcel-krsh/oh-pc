@@ -1,5 +1,6 @@
 <div id="project-details-main" class="uk-overflow-auto" uk-grid>
 	<div class="uk-width-1-1 uk-padding-remove">
+		Selected Audit: {{$selected_audit}}
 		<div id="project-details-main-row" class="ok-actionable">
 			<div class="uk-grid-match" uk-grid>
 				<div class="uk-width-1-2 uk-padding-remove">
@@ -184,10 +185,10 @@
 			<div class="uk-width-1-2 uk-padding-remove">
 				<div uk-grid>
 					<div class="uk-width-1-2">
-						<button id="project-details-button-1" class="uk-button uk-link ok-actionable active" onclick="projectDetailsInfo({{$details['project_id']}}, 'compliance', this);" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
+						<button id="project-details-button-1" class="uk-button uk-link ok-actionable active" onclick="projectDetailsInfo({{$project->id}}, 'compliance', this);" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
 					</div>
 					<div class="uk-width-1-2">
-						<button id="project-details-button-2" class="uk-button uk-link critical" onclick="projectDetailsInfo({{$details['project_id']}}, 'assignment', this);" type="button"><i class="a-avatar-fail"></i> ASSIGNMENT</button>
+						<button id="project-details-button-2" class="uk-button uk-link critical" onclick="projectDetailsInfo({{$project->id}}, 'assignment', this);" type="button"><i class="a-avatar-fail"></i> ASSIGNMENT</button>
 					</div>
 				</div>
 			</div>
@@ -272,7 +273,7 @@ $( document ).ready(function() {
 	if($('#project-details-info-container').html() == ''){
 		$('#project-details-button-1').trigger("click");
 	}	
-	loadProjectDetailsBuildings( {{ $details['project_id'] }}, {{ $details['project_id'] }} ) ;
+	loadProjectDetailsBuildings( {{$project->id}}, {{$project->id}} ) ;
 });
 </script>
 	    

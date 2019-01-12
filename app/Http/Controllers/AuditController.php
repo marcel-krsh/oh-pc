@@ -294,7 +294,7 @@ class AuditController extends Controller
         $project = Project::where('project_key','=',$id)->first();
         $projectId = $project->id;
         
-        //dd($id, $projectId);
+        // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
         
         $projectTabs = collect([
                 ['title' => 'Details', 'icon' => 'a-clipboard', 'status' => '', 'badge' => '', 'action' => 'project.details'],
@@ -329,117 +329,47 @@ class AuditController extends Controller
 
     public function getProjectDetails($id = null)
     {
+        // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
+          
         $project = Project::where('id','=',$id)->first();
+//dd($project);
+        // which audit is selected (latest if no selection)
+        $selected_audit = $project->selected_audit();
+//dd($selected_audit);
+        // get that audit's stats and contact info from the project_details table
+        $project_details = $project->details();
 
-        $latest_audit = CachedAudit::where('project_id', '=', $project->id)->orderBy('id', 'desc')->first();
-
-        if (!$latest_audit) {
+        dd($project_details);
+        
+        if (!$selected_audit) {
             // no audit for this project yet, use default project default
             $details = ProjectDetail::where('project_id', '=', $project->id)
                     ->orderBy('id', 'desc')
                     ->first();
         } else {
             $details = ProjectDetail::where('project_id', '=', $project->id)
-                    ->where('audit_id', '=', $latest_audit)
+                    ->where('audit_id', '=', $selected_audit->id)
                     ->orderBy('id', 'desc')
                     ->first();
         }
 
         if (!$details) {
+
+
+
+
+
+
+
+
+
+
             // TBD get initial data from project information?
         }
 
 
-        // test only
-        $details = collect([
-                "project_id" => "1920114",
-                "project_name" => "The Garden Oaks",
-                "last_audit_completed" => "December 12, 2017",
-                "next_audit_due" => "December 31, 2018",
-                "score_percentage" => "88%",
-                "score" => "B-",
-                "total_building" => "99",
-                "total_building_common_areas" => "99",
-                "total_project_common_areas" => "10",
-                "total_units" => "9,999",
-                "market_rate" => "8,999",
-                "subsidized" => "1,000",
-                "programs" => [
-                    ["name" => "Program Name 1", "units" => "250"],
-                    ["name" => "Program Name 2", "units" => "250"],
-                    ["name" => "Program Name 3", "units" => "50"],
-                    ["name" => "Program Name 4", "units" => "550"],
-                    ["name" => "Program Name 5", "units" => "1000"],
-                ],
-                "name" => "Jane Doe Properties",
-                "poc" => "Jane Doe",
-                "phone" => "(123) 344-4444",
-                "fax" => "(123) 448-8888",
-                "email" => "bob@bob.com",
-                "address" => "123 Sesame Street",
-                "address2" => "Suite 123",
-                "city" => "City",
-                "state" => "State",
-                "zip" => "12345",
-                "name" => "The Really Long Named Property Manager Name",
-                "poc" => "Bob Doe",
-                "phone" => "(123) 344-3333",
-                "fax" => "(123) 448-3333",
-                "email" => "bob3@bob.com",
-                "address" => "12333 Sesame Street",
-                "address2" => "Suite 12345",
-                "city" => "City2",
-                "state" => "State2",
-                "zip" => "22222"
-            ]);
        
-        
-        // $stats = collect([
-        //         "project_id" => "1920114",
-        //         "project_name" => "The Garden Oaks",
-        //         "last_audit_completed" => "December 12, 2017",
-        //         "next_audit_due" => "December 31, 2018",
-        //         "score_percentage" => "88%",
-        //         "score" => "B-",
-        //         "total_building" => "99",
-        //         "total_building_common_areas" => "99",
-        //         "total_project_common_areas" => "10",
-        //         "total_units" => "9,999",
-        //         "market_rate" => "8,999",
-        //         "subsidized" => "1,000",
-        //         "programs" => [
-        //             ["name" => "Program Name 1", "units" => "250"],
-        //             ["name" => "Program Name 2", "units" => "250"],
-        //             ["name" => "Program Name 3", "units" => "50"],
-        //             ["name" => "Program Name 4", "units" => "550"],
-        //             ["name" => "Program Name 5", "units" => "1000"],
-        //         ]
-        //     ]);
-        // $owner = collect([
-        //         "name" => "Jane Doe Properties",
-        //         "poc" => "Jane Doe",
-        //         "phone" => "(123) 344-4444",
-        //         "fax" => "(123) 448-8888",
-        //         "email" => "bob@bob.com",
-        //         "address" => "123 Sesame Street",
-        //         "address2" => "Suite 123",
-        //         "city" => "City",
-        //         "state" => "State",
-        //         "zip" => "12345",
-        //     ]);
-        // $manager = collect([
-        //         "name" => "The Really Long Named Property Manager Name",
-        //         "poc" => "Bob Doe",
-        //         "phone" => "(123) 344-3333",
-        //         "fax" => "(123) 448-3333",
-        //         "email" => "bob3@bob.com",
-        //         "address" => "12333 Sesame Street",
-        //         "address2" => "Suite 12345",
-        //         "city" => "City2",
-        //         "state" => "State2",
-        //         "zip" => "22222",
-        //     ]);
-        return view('projects.partials.details', compact('details', 'project'));
+        return view('projects.partials.details', compact('details', 'project', 'selected_audit'));
     }
 
     public function getProjectDetailsInfo($id, $type)
