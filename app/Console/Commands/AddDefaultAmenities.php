@@ -117,7 +117,7 @@ class AddDefaultAmenities extends Command
                 foreach($project->buildings as $b){
                     $bas = $defaultBuildingAmenities;
                     foreach ($bas as $ba) {
-                        $check = BuildingAmenity::where('building_id',$project->id)->where('amenity_id',$pa->id)->count();
+                        $check = BuildingAmenity::where('building_id',$b->id)->where('amenity_id',$ba->id)->count();
                         if($check < 1){
                             BuildingAmenity::create([
                                 'building_id'=>$b->id,
