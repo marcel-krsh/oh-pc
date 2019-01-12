@@ -35,4 +35,16 @@ class Audit extends Model
     {
         return $this->hasOne(\App\Models\Project::class, 'project_key', 'development_key');
     }
+    public function nlts() : HasMany
+    {
+        return $this->hasMany('\App\Models\Findings')->where('allita_type','nlt');
+    }
+    public function lts() : HasMany
+    {
+        return $this->hasMany('\App\Models\Findings')->where('allita_type','lt');
+    }
+    public function files() : HasMany
+    {
+        return $this->hasMany('\App\Models\Findings')->where('allita_type','file');
+    }
 }
