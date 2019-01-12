@@ -256,6 +256,7 @@ class DashboardController extends Controller
                 'userBadgeColor' => 'user-badge-'.$lead_color,
                 'initials' => $lead_initials,
                 'total_buildings' => $audit['total_buildings'],
+                'projectId' => $audit['project_id'],
                 'projectKey' => $audit['project_key'],
                 'projectRef' => $audit['project_ref'],
                 'pm' => $pm,

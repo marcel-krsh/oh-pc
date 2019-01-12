@@ -282,7 +282,7 @@
                 label: function(tooltipItem, data) {
                     var label = data.labels[tooltipItem.index];
                     var datasetLabel = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                    return label + ': ' + addCommas(datasetLabel) + ':00' ;
+                    return label + ': ' + addCommas(datasetLabel) ;
                 }
             }
         }
@@ -294,7 +294,8 @@
         nStr += '';
         x = nStr.split('.');
         x1 = x[0];
-        x2 = x.length > 1 ? '.' + x[1] : '';
+        x2 = x.length > 1 ? ':' + x[1] : '';
+        if(x2.length == 2) x2 = x2+'0';
         var rgx = /(\d+)(\d{3})/;
         while (rgx.test(x1)) {
             x1 = x1.replace(rgx, '$1' + ',' + '$2');
@@ -311,7 +312,7 @@
 			"datasets":[
 				{
 					"label":"Program 1",
-					"data":[27,107],
+					"data":[27.15,107.30],
 					"backgroundColor":[
 						chartColors.needed,
 						chartColors.estimated
@@ -337,7 +338,7 @@
             '_token' : '{{ csrf_token() }}'
         }, function(data) {
             if(data.status!=1){ 
-                UIkit.modal.alert(data,{stack: true});
+                UIkit.modal.alert(data.message,{stack: true});
             } else {
                 UIkit.notification('<span uk-icon="icon: check"></span> Estimated Hours Saved', {pos:'top-right', timeout:1000, status:'success'});
                 $('#estimated_hours_field').html(data.hours);

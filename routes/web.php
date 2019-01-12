@@ -109,6 +109,7 @@
         Route::get('/projects/{project}/reports', 'AuditController@getProjectReports')->name('project.reports');
         Route::get('/projects/{project}/reports/title', 'AuditController@getProjectReportsTitle')->name('project.reports.title');
         Route::get('/projects/{project}/stream', 'AuditController@getProjectStream')->name('project.stream');
+        Route::get('/modals/projects/{project}/contact', 'AuditController@getProjectContact')->name('project.contact');
 
         Route::get('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummary');
         Route::post('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummaryFilterProgram');

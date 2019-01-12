@@ -68,6 +68,7 @@ class CachedAudit extends Model
         'step_status',
         'step_status_text',
         'estimated_time',
+        'estimated_time_needed',
         'created_at',
         'updated_at'
     ];
@@ -109,7 +110,12 @@ class CachedAudit extends Model
 
     public function hours_still_needed() 
     {
-        return "[tbd in cachedaudit model]";
+        if($this->estimated_time_needed){
+            $time = explode(':', $this->estimated_time_needed);
+            return $time[0].":".$time[1];
+        }else{
+            return null;
+        }
     }
 
     public function getLeadJsonAttribute($value)

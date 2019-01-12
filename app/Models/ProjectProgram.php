@@ -12,7 +12,7 @@ class ProjectProgram extends Model
 
     protected $guarded = ['id'];
 
-    public function programs() : HasOne
+    public function program() : HasOne
     {
         return $this->hasOne(\App\Models\Program::class, 'program_key', 'program_key');
     }

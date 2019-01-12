@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Audit;
+use App\Models\Project;
 use App\Models\CachedAudit;
 use App\Models\CachedBuilding;
 use App\Models\CachedUnit;
@@ -16,6 +18,7 @@ use App\Models\CachedInspection;
 use App\Models\CachedAmenity;
 use App\Models\CachedComment;
 use App\Models\ProjectDetail;
+use App\Models\UnitProgram;
 use Auth;
 use Session;
 use App\LogConverter;
@@ -141,6 +144,11 @@ class AuditController extends Controller
             ]);
             $new_ordering->save();
         }
+    }
+
+    public function getProjectContact(Project $project) {
+        
+        return view('modals.project-contact', compact('project'));
     }
 
     public function detailsFromBuilding($audit, $building, Request $request)
@@ -593,7 +601,7 @@ class AuditController extends Controller
         $hours = (int) $forminputs['estimated_hours'];
         $minutes = (int) $forminputs['estimated_minutes'];
 
-        $audit = CachedAudit::where('id','=',$id)->where('lead','=',Auth::user()->id)->first();
+        $audit = Audit::where('id','=',$id)->where('lead_user_id','=',Auth::user()->id)->first();
 
         $new_estimate = $hours.":".$minutes.":00";
 
@@ -601,14 +609,18 @@ class AuditController extends Controller
             $audit->update([
                 'estimated_time' => $new_estimate
             ]);
+
+            // get new needed time
+            $audit->fresh();
+
+            $needed = $audit->hours_still_needed();
+
+            return ['status'=>1, 'hours'=> $hours.":".$minutes, 'needed'=>$needed];
+        }else{
+            return ['status'=>0, 'message'=>'Sorry, this audit reference cannot be found.'];
         }
 
-        // get new needed time
-        $audit->fresh();
-
-        $needed = $audit->hours_still_needed();
-
-        return ['status'=>1, 'hours'=> $hours.":".$minutes, 'needed'=>$needed];
+        
     }
 
     public function getProjectDetailsAssignmentSchedule($project, $dateid)

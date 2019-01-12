@@ -5,7 +5,7 @@
 				<canvas id="chartjs-modal-summary" class="chartjs" style="display: block;"></canvas>
 			</div>
 			<div class="uk-width-1-1 uk-padding-remove uk-text-center">
-				<h3  uk-tooltip="title: Hello World">{{$data['project']['name']}}<br /><small>Project # | Audit #</small></h3>
+				<h3  uk-tooltip="title:">{{$data['project']['name']}}<br /><small>Project # | Audit #</small></h3>
 				<table class="uk-table uk-table-small uk-text-left noline small-padding">
 					<tbody>
 						<tr>

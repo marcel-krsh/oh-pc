@@ -119,7 +119,7 @@ class User extends Authenticatable
         //dd($person, $this->id, $this->person_id);
         $initials = substr($person->first_name, 0, 1);
         $initials .= substr($person->last_name, 0, 1);
-        return $initials;
+        return strtoupper($initials);
     }
 
     public function full_name() : string
