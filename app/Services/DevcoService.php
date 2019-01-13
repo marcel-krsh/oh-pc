@@ -1944,7 +1944,7 @@ class DevcoService extends PCAPIService
         $cabinetNumber = $cabinet->value;
 
         $date = \App\Models\SyncDocuware::orderBy('synced_at','desc');
-        if(!is_null($date)){$date="1/1/1986,2/1/2018";}
+        if(!is_null($date)){$date="1/1/2018,2/1/2018";}
         
             $search = "DOCUMENTDATE:{$date};";
         
