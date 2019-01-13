@@ -1923,6 +1923,8 @@ class DevcoService extends PCAPIService
      */
     public function getProjectDocuments(string $projectNumber = '1', string $searchString = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : string
     {
+        $cabinet = \App\Models\SystemSetting::where('key','docuware_cabinet')->first();
+        $cabinetNumber = $cabinet->value;
         if(!is_null($searchString)){
             $search = "PROJECTNUMBER:{$projectNumber};DocuWareFulltext:{$searchString}";
         } else {
@@ -1930,7 +1932,7 @@ class DevcoService extends PCAPIService
         }
 
 
-        $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+        $log_params = "cabinet={$cabinetNumber}&user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
         return $this->get("docuware/documents/search?{$log_params}&search={$search}");
     }
@@ -1956,7 +1958,7 @@ class DevcoService extends PCAPIService
 
             $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
-            return $this->get("devco/docuware/document/{$documentId}?{$log_params}");
+            return $this->get("docuware/document/{$documentId}?{$log_params}");
         }
 
 
