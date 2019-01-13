@@ -1921,7 +1921,7 @@ class DevcoService extends PCAPIService
      * @param  string|null $device_name
      * @return object
      */
-    public function getProjectDocuments(string $projectNumber = '1', string $searchString = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : string
+    public function getProjectDocuments(string $projectNumber = '1', string $searchString = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : object
     {
         $cabinet = \App\Models\SystemSetting::where('key','docuware_cabinet')->first();
         $cabinetNumber = $cabinet->value;
