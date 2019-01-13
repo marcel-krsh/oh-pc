@@ -77,7 +77,7 @@ class FixAmenities extends Command
                         
                         //$this->info('Add to Units'.PHP_EOL);
                     }
-                    if($pa->amenity->building){
+                    if($pa->amenity->building_system || $pa->amenity->building_exterior){
                         //$this->info('Add to Buildings'.PHP_EOL);
                         foreach ($project->buildings as $building) {
                             BuildingAmenity::create([
