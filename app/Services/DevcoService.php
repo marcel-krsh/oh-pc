@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use Illuminate\Support\Carbon;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class DevcoService extends PCAPIService
 {
@@ -1975,14 +1977,15 @@ class DevcoService extends PCAPIService
             $headers = [
               'Content-Type' => 'application/pdf',
            ];
-           if (!($stream = fopen($this->get("docuware/documents/{$cabinetNumber}/{$documentId}?{$log_params}"), 'r'))) {
-                throw new \Exception('Could not open stream for reading file: ['.$documentId.']');
-            }
-            // Check if the stream has more data to read
-            while (!feof($stream)) {
-                // Read 1024 bytes from the stream
-                echo fread($stream, 1024);
-            }
+           $response = New Repsonse($this->get("docuware/documents/{$cabinetNumber}/{$documentId}?{$log_params}"));
+
+           $disposition = $response->headers->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                'foo.pdf'
+            );
+
+
+            return $response->headers->set('Content-Disposition', $disposition);
            // $file = 
            
            // return response()->download($file, 'filename.pdf', $headers);
