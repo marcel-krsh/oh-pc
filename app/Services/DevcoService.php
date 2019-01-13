@@ -1938,6 +1938,23 @@ class DevcoService extends PCAPIService
         return $this->getContents("docuware/documents/search?{$log_params}&search={$search}");
     }
 
+    public function getDocuments(int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
+    {
+        $cabinet = \App\Models\SystemSetting::where('key','docuware_cabinet')->first();
+        $cabinetNumber = $cabinet->value;
+
+        $date = \App\Models\SyncDocuware::orderBy('synced_at','desc');
+        if(!is_null($date)){$date="1/1/1986 9:30:38 AM";}
+        
+            $search = "DWMODDATETIME:{$date};";
+        
+
+
+        $log_params = "cabinet={$cabinetNumber}&user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+        return $this->getContents("docuware/documents/search?{$log_params}&search={$search}");
+    }
+
     /**
      * Get Doc
      *
