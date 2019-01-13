@@ -33,6 +33,18 @@ class SyncController extends Controller
         $apiConnect = new DevcoService();
         $document = $apiConnect->getDocument($documentId, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
         //dd($document);
+        $filetype = 'application/pdf';
+        $filename = 'foo.pdf';
+        return response()->stream(
+                function() use($document) {
+                    while(ob_get_level() > 0) ob_end_flush();
+                    fpassthru($document);
+                },
+                200,
+                [
+                    'Content-Type' => $filetype,
+                    'Content-disposition' => 'attachment; filename="'.$filename.'"',
+                ]);
 
     }
 
