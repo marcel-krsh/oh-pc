@@ -25,7 +25,7 @@ class SyncController extends Controller
     public function getDocs(string $projectNumber, string $searchString = null, int $deviceId=0 , string $deviceName='System'){
         $apiConnect = new DevcoService();
         $documentList = $apiConnect->getProjectDocuments($projectNumber, $searchString, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
-        dd($documentList,'First doc id:'.$documentList->included[0]->id,'Page count:'.$documentList->meta->totalPageCount);
+        dd($documentList,'Third doc id:'.$documentList->included[2]->id,'Page count:'.$documentList->meta->totalPageCount,'File type of third doc:'.$documentList->included[2]->attributes->doc-type,'Document Class/Category:'.$documentList->included[2]->attributes->fields->DOCUMENTCLASS);
 
     }
 
