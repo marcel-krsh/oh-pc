@@ -1968,11 +1968,12 @@ class DevcoService extends PCAPIService
      */
     public function getDocument(int $documentId = 1,  int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
         {
-            
+            $cabinet = \App\Models\SystemSetting::where('key','docuware_cabinet')->first();
+            $cabinetNumber = $cabinet->value;
 
             $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
-            return $this->get("docuware/document/{$documentId}?{$log_params}");
+            return $this->get("docuware/documents/{$cabinetNumber}/{$documentId}?{$log_params}");
         }
 
 
