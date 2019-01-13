@@ -1975,7 +1975,7 @@ class DevcoService extends PCAPIService
            
            $filetype = 'application/pdf';
            $filename = 'foo.pdf';
-           $stream = $this->getFile("docuware/documents/{$cabinetNumber}/{$documentId}?{$log_params}"));
+           $stream = $this->getFile("docuware/documents/{$cabinetNumber}/{$documentId}?{$log_params}");
             
 
             
