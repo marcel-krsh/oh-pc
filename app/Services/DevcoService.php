@@ -1924,9 +1924,9 @@ class DevcoService extends PCAPIService
     public function getProjectDocuments(string $projectNumber = '1', string $searchString = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : string
     {
         if(!is_null($searchString)){
-            $search = "PROJECTNUMBER:{$unitId};DocuWareFulltext:{$searchString}";
+            $search = "PROJECTNUMBER:{$projectNumber};DocuWareFulltext:{$searchString}";
         } else {
-            $search = "PROJECTNUMBER:{$unitId};";
+            $search = "PROJECTNUMBER:{$projectNumber};";
         }
 
 
