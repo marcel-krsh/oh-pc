@@ -3331,7 +3331,7 @@ span.indented, div.indented {
     border: 1px solid #333;
 }
 #project-details-main-row {
-  min-width:1480px;
+  /*min-width:1480px;*/
   padding: 10px 10px;
   color: #3a3a3a;
 }

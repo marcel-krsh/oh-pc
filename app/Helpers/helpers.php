@@ -4,6 +4,12 @@
 use App\Mail\EmailSystemAdmin;
 use App\DocumentCategory;
 
+
+function formatDate($date, $format="F d, Y", $from_format="Y-m-d H:i:s")
+{
+    return Carbon\Carbon::createFromFormat($from_format , $date)->format($format);
+}
+
 /**
  * Format Size Units
  *

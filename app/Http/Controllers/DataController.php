@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\CachedAudit;
 use Auth;
 use Session;
 use App\LogConverter;
@@ -43,6 +44,18 @@ class DataController extends Controller
 
             default:
                return "There was a problem with your request.";
+        }
+    }
+
+    public function setSession(Request $request, $name, $value){
+
+        if($name == "project.selectedaudit"){
+            $audit = CachedAudit::where('id', '=', $value)->first();
+            Session::put($name, $audit);
+            return Session::get($name);
+        }else{
+            Session::put($name, $audit);
+            return Session::get($name);
         }
     }
 

@@ -3,47 +3,37 @@
 		Selected Audit: {{$selected_audit}}
 		<div id="project-details-main-row" class="ok-actionable">
 			<div class="uk-grid-match" uk-grid>
-				<div class="uk-width-1-2 uk-padding-remove">
+				<div class="uk-width-1-4 uk-padding-remove">
 					<div uk-grid>
-						<div class="uk-width-1-5 uk-padding-remove">
-							<div uk-grid>
-								<div class="uk-width-1-5 uk-padding-remove" style="margin-top: 10px;">
-									<i class="a-square-right-2"></i>
-								</div>
-								<div class="uk-width-1-5 uk-padding-remove" style="margin-top: 7px;">
-									<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:Brian Greenwood;" title="" aria-expanded="false" class="user-badge user-badge-blue no-float uk-link">
-										BG
-									</span>
-								</div>
-								<div class="uk-width-3-5" style="padding-right:0">
-									<h3 id="audit-project-name-1" class="uk-margin-bottom-remove uk-link" uk-tooltip="title:Open Audit Details in Tab;">19200114</h3>
-					            	<small class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;" style="font-size: 0.7em;">AUDIT 2015697</small>
-								</div>
+						<div class="uk-width-1-5 uk-padding-remove" style="margin-top: 10px;">
+							<a href="#modal-select-audit" uk-toggle><i class="a-square-right-2"></i></a>
+							<div id="modal-select-audit" uk-modal>
+							    <div class="uk-modal-dialog uk-modal-body">
+							        <h2 class="uk-modal-title">Select another audit</h2>
+							        <select name="audit-selection" id="audit-selection">
+							        	@foreach($audits as $audit)
+							        	<option value="{{$audit->id}}" @if($audit->id == $selected_audit->id) selected @endif>Audit {{$audit->id}} @if($audit->completed_date) | Completed on {{formatDate($audit->completed_date)}}@endif</option>
+							        	@endforeach
+							        </select>
+							        <p class="uk-text-right">
+							            <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+							            <button class="uk-button uk-button-primary" onclick="changeAudit();" type="button">Select</button>
+							        </p>
+							    </div>
 							</div>
 						</div>
-						<div class="uk-width-4-5">
-							<div uk-grid>
-								<div class="uk-width-1-2 uk-padding-remove">
-									<div class="uk-vertical-align-top uk-display-inline-block fadetext">
-					            		<h3 class="uk-margin-bottom-remove">Great American Apartments</h3>
-						            	<small class="uk-text-muted">THE NOT SO LONG PROPERTY MANAGER NAME</small>
-					            	</div>
-								</div>
-								<div class="uk-width-1-2 uk-padding-remove">
-					            	<div class="divider"></div>
-									<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-					            		<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;"></i>
-					            	</div> 
-					            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad hasdivider fadetext">
-					            		<h3 class="uk-margin-bottom-remove">3045 Cumberland Woods Street, Suite 202</h3>
-						            	<small class="uk-text-muted">COLUMBUS, OH 43219</small>
-					            	</div>
-								</div>
-							</div>
+						<div class="uk-width-1-5 uk-padding-remove" style="margin-top: 7px;">
+							<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$selected_audit->lead_json->name}};" title="" aria-expanded="false" class="user-badge user-badge-{{$selected_audit->lead_json->color}} no-float uk-link">
+								{{$selected_audit->lead_json->initials}}
+							</span>
+						</div>
+						<div class="uk-width-3-5" style="padding-right:0">
+							<h3 id="audit-project-name-1" class="uk-margin-bottom-remove uk-link" uk-tooltip="title:Open Audit Details in Tab;">{{$project->project_number}}</h3>
+			            	<small class="uk-text-muted" uk-tooltip="title:View Project's Audit Details;" style="font-size: 0.7em;">AUDIT {{$selected_audit->id}}</small>
 						</div>
 					</div>
 				</div>
-				<div class="uk-width-1-2 uk-padding-remove">
+				<div class="uk-width-3-4 uk-padding-remove">
 					<div uk-grid>
 						<div class="uk-width-1-2 uk-padding-remove">
 							<div uk-grid>
@@ -144,34 +134,34 @@
 		<div uk-grid>
 			<div class="uk-width-2-3">
 				<ul class="leaders" style="margin-right:30px;">
-					<li><span>Total Buildings</span> <span>{{$project->stats_total_buildings()}}</span></li>
-					<li><span class="indented">Total Building Common Areas</span> <span></span></li>
-					<li><span class="indented">Total Building Systems</span> <span></span></li>
-					<li><span class="indented">Total Building Exteriors</span> <span></span></li>
+					<li><span>Total Buildings</span> <span>{{$details->total_building}}</span></li>
+					<li><span class="indented">Total Building Common Areas</span> <span>{{$details->total_building_common_areas}}</span></li>
+					<li><span class="indented">Total Building Systems</span> <span>{{$details->total_building_systems}}</span></li>
+					<li><span class="indented">Total Building Exteriors</span> <span>{{$details->total_building_exteriors}}</span></li>
 					<li><span>Total Project Common Areas</span> <span></span></li>
-					<li><span>Total Units</span> <span>{{$project->stats_total_units()}}</span></li>
-					<li><span class="indented">• Market Rate</span> <span></span></li>
-					<li><span class="indented">• Subsidized</span> <span></span></li>
+					<li><span>Total Units</span> <span>{{$details->total_units}}</span></li>
+					<li><span class="indented">• Market Rate</span> <span>{{$details->market_rate}}</span></li>
+					<li><span class="indented">• Subsidized</span> <span>{{$details->subsidized}}</span></li>
 					<li><span>Total Programs</span> <span></span></li>
-					@foreach($project->stat_program_units() as $program_units)
-					<li><span class="indented">• {{$program_units['name']}}</span> <span>{{$program_units['units']}}</span></li>
+					@foreach(json_decode($details->programs, true) as $program)
+					<li><span class="indented">• {{$program['name']}}</span> <span>{{$program['units']}}</span></li>
 					@endforeach
 				</ul>
 			</div>
 			<div class="uk-width-1-3">
-				<h5 class="uk-margin-remove"><strong>OWNER: {{$project->owner()['organization']}}</strong></h5>
+				<h5 class="uk-margin-remove"><strong>OWNER: {{$details->owner_name}}</strong></h5>
 				<div class="address" style="margin-bottom:20px;">
-					<i class="a-avatar"></i> {{$project->owner()['name']}}<br />
-					<i class="a-phone-5"></i> {{$project->owner()['phone']}} @if($project->owner()['fax'] != '')<i class="a-fax-2" style="margin-left:10px"></i> {{$project->owner()['fax']}} @endif<br />
-					<i class="a-mail-send"></i> {{$project->owner()['email']}}<br />
-					@if($project->owner()['address'])<i class="a-mailbox"></i> {{$project->owner()['address']}} @endif
+					<i class="a-avatar"></i> {{$details->owner_poc}}<br />
+					<i class="a-phone-5"></i> {{$details->owner_phone}} @if($details->owner_fax != '')<i class="a-fax-2" style="margin-left:10px"></i> {{$details->owner_fax}} @endif<br />
+					<i class="a-mail-send"></i> {{$details->owner_email}}<br />
+					@if($details->owner_address)<i class="a-mailbox"></i> {{$details->owner_address}} @endif
 				</div>
-				<h5 class="uk-margin-remove"><strong>Managed By: {{$project->pm()['organization']}}</strong></h5>
+				<h5 class="uk-margin-remove"><strong>Managed By: {{$details->manager_name}}</strong></h5>
 				<div class="address">
-					<i class="a-avatar"></i> {{$project->pm()['name']}}<br />
-					<i class="a-phone-5"></i> {{$project->pm()['phone']}} @if($project->pm()['fax'] != '')<i class="a-fax-2" style="margin-left:10px"></i> {{$project->pm()['fax']}} @endif<br />
-					<i class="a-mail-send"></i> {{$project->pm()['email']}}<br />
-					@if($project->pm()['address'])<i class="a-mailbox"></i> {{$project->pm()['address']}} @endif
+					<i class="a-avatar"></i> {{$details->manager_poc}}<br />
+					<i class="a-phone-5"></i> {{$details->manager_phone}} @if($details->manager_fax != '')<i class="a-fax-2" style="margin-left:10px"></i> {{$details->manager_fax}} @endif<br />
+					<i class="a-mail-send"></i> {{$details->manager_email}}<br />
+					@if($details->manager_address)<i class="a-mailbox"></i> {{$details->manager_address}} @endif
 				</div>
 			</div>
 		</div>
@@ -262,6 +252,26 @@
             x1 = x1.replace(rgx, '$1' + ',' + '$2');
         }
         return x1 + x2;
+    }
+
+    function changeAudit(){
+    	console.log("changing audit");
+
+    	var nextAudit = $('#audit-selection').val();
+
+    	var tempdiv = '<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% auto;"></div></div>';
+		$('#project-detail-tab-1-content').html(tempdiv);
+		
+    	UIkit.modal('#modal-select-audit').hide();
+
+    	$.post("/session/project.selectedaudit/"+nextAudit, {
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            loadTab('{{ route('project.details', $project->id) }}', '1', 0, 0, 'project-',1);
+    		
+        } );
+
+    	
     }
 </script>
 

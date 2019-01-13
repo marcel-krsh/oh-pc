@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\Audit;
 use App\Models\CachedAudit;
 use App\Models\SystemSetting;
 use App\Models\Building;
@@ -26,7 +27,7 @@ class Project extends Model
      */
     public function audits() : HasMany
     {
-        return $this->hasMany(\App\Models\CachedAudit::class, 'project_id');
+        return $this->hasMany(\App\Models\CachedAudit::class, 'project_key', 'project_key')->orderBy('id', 'desc');
     }
 
     public function contactRoles() : HasMany
@@ -139,7 +140,7 @@ class Project extends Model
             $selected_audit = Session::get('project.selectedaudit');
         }else{
             $selected_audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->first();
-            session(['project.selectedaudit' => $selected_audit]);
+            Session::put('project.selectedaudit', $selected_audit);
         }
 
         return $selected_audit;
@@ -175,7 +176,12 @@ class Project extends Model
         // create a record in project_details table with the current stats, contact info
         
         //$programs = $this->programs->get(['program_id','total_unit_count'])->toJson();
-        dd($this->programs->select('program_id','total_unit_count')->get());
+        $programs = array();
+        foreach($this->programs as $program){
+            $count = $program->total_unit_count;
+            $programs[] = ["name" => $program->program->program_name." ".$program->program_id." ".$this->currentAudit()->audit_id, "units" => $count, "program_id" => $program->program_id];
+        }
+
         $last_audit = $this->lastAudit();
 
         $selected_audit = $this->selected_audit();
@@ -197,7 +203,7 @@ class Project extends Model
                 'total_units' => $this->total_unit_count,
                 'market_rate' => null,
                 'subsidized' => null,
-                'programs' => $programs,
+                'programs' => json_encode($programs),
                 'owner_name' => $this->owner()['organization'],
                 'owner_poc' => $this->owner()['name'],
                 'owner_phone' => $this->owner()['phone'],
