@@ -1975,10 +1975,17 @@ class DevcoService extends PCAPIService
             $headers = [
               'Content-Type' => 'application/pdf',
            ];
-
-           $file = $this->getFile("docuware/documents/{$cabinetNumber}/{$documentId}?{$log_params}");
+           if (!($stream = fopen($this->get("docuware/documents/{$cabinetNumber}/{$documentId}?{$log_params}"), 'r'))) {
+                throw new \Exception('Could not open stream for reading file: ['.$documentId.']');
+            }
+            // Check if the stream has more data to read
+            while (!feof($stream)) {
+                // Read 1024 bytes from the stream
+                echo fread($stream, 1024);
+            }
+           // $file = 
            
-           return response()->download($file, 'filename.pdf', $headers);
+           // return response()->download($file, 'filename.pdf', $headers);
 
             
         }
