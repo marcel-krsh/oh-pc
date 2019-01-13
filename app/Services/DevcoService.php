@@ -1946,7 +1946,7 @@ class DevcoService extends PCAPIService
      * @param  string|null $device_name
      * @return object
      */
-    public function getDocument(string $documentId = 1,  int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
+    public function getDocument(string $documentId = '1',  int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
         {
             if(!is_null($searchString)){
                 $search = "PROJECTNUMBER:{$unitId};DocuWareFulltext:{$searchString}";
