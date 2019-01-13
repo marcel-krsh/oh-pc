@@ -332,44 +332,17 @@ class AuditController extends Controller
         // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
           
         $project = Project::where('id','=',$id)->first();
-//dd($project);
+
         // which audit is selected (latest if no selection)
         $selected_audit = $project->selected_audit();
-//dd($selected_audit);
+
         // get that audit's stats and contact info from the project_details table
-        $project_details = $project->details();
+        $details = $project->details();
 
-        dd($project_details);
-        
-        if (!$selected_audit) {
-            // no audit for this project yet, use default project default
-            $details = ProjectDetail::where('project_id', '=', $project->id)
-                    ->orderBy('id', 'desc')
-                    ->first();
-        } else {
-            $details = ProjectDetail::where('project_id', '=', $project->id)
-                    ->where('audit_id', '=', $selected_audit->id)
-                    ->orderBy('id', 'desc')
-                    ->first();
-        }
-
-        if (!$details) {
-
-
-
-
-
-
-
-
-
-
-            // TBD get initial data from project information?
-        }
-
-
+        // get the list of all audits for this project
+        $audits = $project->audits;
        
-        return view('projects.partials.details', compact('details', 'project', 'selected_audit'));
+        return view('projects.partials.details', compact('details', 'audits', 'project', 'selected_audit'));
     }
 
     public function getProjectDetailsInfo($id, $type)

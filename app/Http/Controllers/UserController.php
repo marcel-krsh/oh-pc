@@ -505,7 +505,7 @@ class UserController extends Controller
             $d = Session::get('availability.currentdate');
         }else{
             $d = Carbon\Carbon::now()->startOfWeek();
-            session(['availability.currentdate' => $d]);
+            Session::put('availability.currentdate', $d);
         }
 
         $calendar = $this->getCalendar($d); //dd($calendar);
