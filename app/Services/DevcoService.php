@@ -1971,9 +1971,16 @@ class DevcoService extends PCAPIService
             $cabinet = \App\Models\SystemSetting::where('key','docuware_cabinet')->first();
             $cabinetNumber = $cabinet->value;
 
-            $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+           $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+            $headers = [
+              'Content-Type' => 'application/pdf',
+           ];
 
-            return $this->getFile("docuware/documents/{$cabinetNumber}/{$documentId}?{$log_params}");
+           $file = $this->getFile("docuware/documents/{$cabinetNumber}/{$documentId}?{$log_params}");
+           
+           return response()->download($file, 'filename.pdf', $headers);
+
+            
         }
 
 
