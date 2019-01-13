@@ -1910,4 +1910,54 @@ class DevcoService extends PCAPIService
 
         return $this->get("devco/unit_programs/{$unitId}?{$log_params}");
     }
+    /**
+     * Get Project Docs
+     *
+     * @param  string $projectNumber
+     * @param  int|null $user
+     * @param  string|null $user_email
+     * @param  string|null $user_name
+     * @param  int|null $device_id
+     * @param  string|null $device_name
+     * @return object
+     */
+    public function getProjectDocuments(string $projectNumber = 1, string $searchString = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : string
+    {
+        if(!is_null($searchString)){
+            $search = "PROJECTNUMBER:{$unitId};DocuWareFulltext:{$searchString}";
+        } else {
+            $search = "PROJECTNUMBER:{$unitId};";
+        }
+
+
+        $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+        return $this->get("devco/docuware/search?{$log_params}&search={$search}");
+    }
+
+    /**
+     * Get Doc
+     *
+     * @param  int $projectNumber
+     * @param  int|null $user
+     * @param  string|null $user_email
+     * @param  string|null $user_name
+     * @param  int|null $device_id
+     * @param  string|null $device_name
+     * @return object
+     */
+    public function getDocument(string $documentId = 1,  int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
+        {
+            if(!is_null($searchString)){
+                $search = "PROJECTNUMBER:{$unitId};DocuWareFulltext:{$searchString}";
+            } else {
+                $search = "PROJECTNUMBER:{$unitId};";
+            }
+
+            $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+            return $this->get("devco/docuware/document/{$documentId}?{$log_params}");
+        }
+
+
 }
