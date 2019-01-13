@@ -58,7 +58,7 @@ class PCAPIService
 
         $response = $client->request('GET', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'));
 
-        return $response->json_decode(getBody()->getContents()->getContents());
+        return json_decode($response->getBody()->getContents()->getContents());
     }
 
     public function post($url, $payload)
