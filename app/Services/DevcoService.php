@@ -1933,7 +1933,8 @@ class DevcoService extends PCAPIService
         }
 
 
-        $log_params = "cabinet={$cabinetNumber}&user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+        $log_params = "cabinet={$cabinetNumber}";
+        //&user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
         return $this->get("docuware/documents/search?{$log_params}&search={$search}");
     }
