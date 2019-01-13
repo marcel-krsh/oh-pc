@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Services;
 
 use Illuminate\Support\Carbon;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class DevcoService extends PCAPIService
 {
@@ -1974,21 +1972,25 @@ class DevcoService extends PCAPIService
             $cabinetNumber = $cabinet->value;
 
            $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
-            $headers = [
-              'Content-Type' => 'application/pdf',
-           ];
-           $response = New Repsonse($this->get("docuware/documents/{$cabinetNumber}/{$documentId}?{$log_params}"));
-
-           $disposition = $response->headers->makeDisposition(
-                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                'foo.pdf'
-            );
-
-
-            return $response->headers->set('Content-Disposition', $disposition);
-           // $file = 
            
-           // return response()->download($file, 'filename.pdf', $headers);
+           $filetype = 'application/pdf';
+           $filename = 'foo.pdf';
+           $stream = $this->getFile("docuware/documents/{$cabinetNumber}/{$documentId}?{$log_params}"));
+            
+
+            
+            return response()->stream(
+                function() use($stream) {
+                    while(ob_get_level() > 0) ob_end_flush();
+                    fpassthru($stream);
+                },
+                200,
+                [
+                    'Content-Type' => $filetype,
+                    'Content-disposition' => 'attachment; filename="'.$filename.'"',
+                ]);
+           
+           //return response()->download($file, 'filename.pdf', $headers);
 
             
         }
