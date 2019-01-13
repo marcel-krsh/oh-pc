@@ -24,7 +24,7 @@ class SyncController extends Controller
     //
     public function getDocs(string $projectNumber, string $searchString = null, int $deviceId=0 , string $deviceName='System'){
         $apiConnect = new DevcoService();
-        $documentList = $apiConnect->getDocuments(Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
+        $documentList = $apiConnect->getProjectDocuments($projectNumber, $searchString, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
         dd($documentList);
 
     }
