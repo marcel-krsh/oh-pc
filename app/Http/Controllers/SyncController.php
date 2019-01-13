@@ -32,7 +32,7 @@ class SyncController extends Controller
     public function getDoc(int $documentId, int $deviceId=0 , string $deviceName='System'){
         $apiConnect = new DevcoService();
         $document = $apiConnect->getDocument($documentId, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
-        //dd($document);
+        dd($document);
         $filetype = 'application/pdf';
         $filename = 'foo.pdf';
         return response()->stream(
