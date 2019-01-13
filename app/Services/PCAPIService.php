@@ -37,7 +37,28 @@ class PCAPIService
 
         $response = $client->request('GET', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'));
 
-        return $response->getBody()->getContents();
+        return $response->getBody();
+    }
+
+    public function getContents($url, $parameters = [])
+    {
+        // $this->_auth = new AuthService;
+        
+        if ($this->_auth->accessTokenNeedsRefresh()) {
+            //$this->_auth->rootRefreshToken();
+            $this->_auth->rootAuthenticate();
+        }
+
+
+        $client = new Client([
+            'base_uri' => $this->_auth->getUrl(),
+            'timeout'  => 5.0,
+            'verify' => false,
+        ]);
+
+        $response = $client->request('GET', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'));
+
+        return $response->json_decode(getBody()->getContents()->getContents());
     }
 
     public function post($url, $payload)
