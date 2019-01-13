@@ -1926,15 +1926,14 @@ class DevcoService extends PCAPIService
         $cabinet = \App\Models\SystemSetting::where('key','docuware_cabinet')->first();
         $cabinetNumber = $cabinet->value;
         if(!is_null($searchString)){
-            $search = "DOCUMENTDATE:1/1/2018,2/1/2018;";
-            //PROJECTNUMBER:{$projectNumber};DocuWareFulltext:{$searchString}";
+            //$search = "DOCUMENTDATE:1/1/2018,2/1/2018;";
+            $search = "PROJECTNUMBER:{$projectNumber};DocuWareFulltext:{$searchString}";
         } else {
             $search = "PROJECTNUMBER:{$projectNumber};";
         }
 
 
-        $log_params = "cabinet={$cabinetNumber}";
-        //&user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+        $log_params = "cabinet={$cabinetNumber}&user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
         return $this->getContents("docuware/documents/search?{$log_params}&search={$search}");
     }
