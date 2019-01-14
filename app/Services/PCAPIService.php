@@ -21,7 +21,7 @@ class PCAPIService
 
     public function get($url, $parameters = [])
     {
-        // $this->_auth = new AuthService;
+        $this->_auth = new AuthService;
         
         if ($this->_auth->accessTokenNeedsRefresh()) {
             //$this->_auth->rootRefreshToken();
