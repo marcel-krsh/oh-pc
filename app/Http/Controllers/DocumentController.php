@@ -70,29 +70,29 @@ class DocumentController extends Controller
                         if(strtotime($checkAD) < strtotime($cd->attributes->fields->DWMODDATETIME)){
                             // update the record - this one is older
                             $doc = SyncDocuware::where('id',$checkAD->id)->update([
-                            'docuware_doc_id'=>$cd->attributes->docId,
-                            'type'=>$cd->attributes->docType,
-                            'cabinet_name'=>$cd->attributes->cabinetName,
-                            'cabinet_id'=>$cd->attributes->cabinetId,
-                            'project_number'=>$cd->attributes->fields->PROJECTNUMBER,
-                            'document_class'=>$cd->attributes->fields->DOCUMENTCLASS,
-                            'document_description'=>$cd->attributes->fields->DOCUMENTDESCRIPTION,
-                            'document_date'=>date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DOCUMENTDATE)),
-                            'notes'=>$cd->attributes->fields->NOTES,
-                            'email_to'=>$cd->attributes->fields->EMAILTO,
-                            'email_from'=>$cd->attributes->fields->EMAILFROM,
-                            'email_subject'=>$cd->attributes->fields->EMAILSUBJECT,
-                            'image_file_name'=>$cd->attributes->fields->IMAGEFILENAME,
-                            'retention_sched_code'=>$cd->attributes->fields->RETENTIONSCHEDCODE,
-                            'dw_page_count'=>$cd->attributes->fields->DWPAGECOUNT,
-                            'dw_stored_date_time'=>date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DWSTOREDATETIME)),
-                            'dw_mod_date_time'=>date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DWMODDATETIME)),
-                            'dw_extension'=>$cd->attributes->fields->DWEXTENSION,
-                            'dw_flags'=>$cd->attributes->fields->DWFLAGS,
-                            'dw_doc_size'=>$cd->attributes->fields->DWDOCSIZE,
-                            'dw_flag_sex'=>$cd->attributes->fields->DWFLAGSEX,
-                            'project_id'=>$project->id
-                                ]);
+                                'docuware_doc_id'=>$cd->attributes->docId,
+                                'type'=>$cd->attributes->docType,
+                                'cabinet_name'=>$cd->attributes->cabinetName,
+                                'cabinet_id'=>$cd->attributes->cabinetId,
+                                'project_number'=>$cd->attributes->fields->PROJECTNUMBER,
+                                'document_class'=>$cd->attributes->fields->DOCUMENTCLASS,
+                                'document_description'=>$cd->attributes->fields->DOCUMENTDESCRIPTION,
+                                'document_date'=>date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DOCUMENTDATE)),
+                                'notes'=>$cd->attributes->fields->NOTES,
+                                'email_to'=>$cd->attributes->fields->EMAILTO,
+                                'email_from'=>$cd->attributes->fields->EMAILFROM,
+                                'email_subject'=>$cd->attributes->fields->EMAILSUBJECT,
+                                'image_file_name'=>$cd->attributes->fields->IMAGEFILENAME,
+                                'retention_sched_code'=>$cd->attributes->fields->RETENTIONSCHEDCODE,
+                                'dw_page_count'=>$cd->attributes->fields->DWPAGECOUNT,
+                                'dw_stored_date_time'=>date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DWSTOREDATETIME)),
+                                'dw_mod_date_time'=>date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DWMODDATETIME)),
+                                'dw_extension'=>$cd->attributes->fields->DWEXTENSION,
+                                'dw_flags'=>$cd->attributes->fields->DWFLAGS,
+                                'dw_doc_size'=>$cd->attributes->fields->DWDOCSIZE,
+                                'dw_flag_sex'=>$cd->attributes->fields->DWFLAGSEX,
+                                'project_id'=>$project->id
+                                    ]);
                                 //dd($doc,$doc->id);
                                 if(!is_null($cd->attributes->fields->DOCUMENTCLASS)){
                                     //check if the categories are in the database
@@ -134,10 +134,7 @@ class DocumentController extends Controller
                                     ]);
                                 }
                                 
-                            }
-
-
-                        }
+                           
 
 
 
