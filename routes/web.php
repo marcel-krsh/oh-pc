@@ -24,10 +24,10 @@
             // Look for existence of file on the provider location (ie. Docuware)
             // @todo: Add the log entry for the access request
             $doc_service = new \App\Services\DocumentService;
-            //$document_contents = $doc_service->getDocument($documentId);
+            $document_contents = $doc_service->getDocument($documentId);
 
             // Faking in a local test document
-            $document_contents = \Illuminate\Support\Facades\Storage::get('/home/forge/pcinspectdev.ohiohome.org/public/TestFile.pdf');
+            //$document_contents = \Illuminate\Support\Facades\Storage::get('/home/forge/pcinspectdev.ohiohome.org/public/TestFile.pdf');
 
             // Respond Back
             $response = response()->make($document_contents, 200);
