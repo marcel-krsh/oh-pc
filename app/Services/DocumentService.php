@@ -77,12 +77,12 @@ class DocumentService extends PCAPIService
                 foreach ($search['fields'] as $field) {
                     if ((isset($field['field']) || array_key_exists('field', $field)) && (isset($field['criteria']) || array_key_exists('criteria', $field))) {
                         $search_fields = $search_fields."{$field['field']}:{$field['criteria']}";
-
-                        if (((isset($field['criteria2']) || array_key_exists('criteria2', $field))){
-                            $search_fields = $search_fields.",{$field['criteria2']}";
+                        
+                        if ((isset($field['criteria2']) || array_key_exists('criteria2', $field))) {
+                            $search_fields = "{$search_fields},{$field['criteria2']}";
                         }
 
-                        $search_fields = $search_fields.";";
+                        $search_fields = "{$search_fields};";
                     }
                 }
                 $search_params = "{$search_fields}&cabinet={$this->_cabinet_name}&cabinet_id={$this->_cabinet_id}&isandoperation={$isandoperation}";
