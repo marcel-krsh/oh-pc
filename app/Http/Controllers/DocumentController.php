@@ -94,7 +94,7 @@ class DocumentController extends Controller
                         //dd($doc,$doc->id);
                         if(!is_null($cd->attributes->fields->DOCUMENTCLASS)){
                             //check if the categories are in the database
-                            $primaryCat = DocumentCategory::where('document_category_name',$cd->attributes->fields->DOCUMENTCLASS)->whereNull('parent_id')->first();
+                            $primaryCat = DocumentCategory::where('document_category_name',$cd->attributes->fields->DOCUMENTCLASS)->where('parent_id',0)->first();
                             if(is_null($primaryCat)){
                                 //needs category entered
                                 $primaryCat = DocumentCategory::create([
