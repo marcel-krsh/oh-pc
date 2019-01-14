@@ -34,17 +34,33 @@ class SyncController extends Controller
 
     public function getDoc(int $documentId, int $deviceId=0 , string $deviceName='System'){
         $apiConnect = new DevcoService();
-        $stream = $apiConnect->getDocument($documentId, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
-        dd($stream);
+        $file = $apiConnect->getDocument($documentId, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
+        //dd($stream);
+
+        // Create filepath
+        $folderpath = 'temp/'. $document_id . '.pdf';
+
         Storage::put($filepath, File::get($file));
-        $filetype = 'application/pdf';
-        $filename = 'foo.pdf';
-        return response()->stream(function ($stream) {
-              //Can add logic to chunk the file here if you want but the point is to stream data
-              readfile($stream);
-         },200, [ "Content-Type" => "application/pdf",  
-                   "Content-Disposition" => "attachment; filename=\"filename.pdf\"" 
-        ]);
+        $file = Storage::get($filepath);
+            
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename='.$document->filename);
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+            header('Pragma: public');
+            header('Content-Length: '. Storage::size($filepath));
+            
+            Storage::delete($filepath);
+            return $file;
+
+        // return response()->stream(function ($stream) {
+        //       //Can add logic to chunk the file here if you want but the point is to stream data
+        //       readfile($stream);
+        //  },200, [ "Content-Type" => "application/pdf",  
+        //            "Content-Disposition" => "attachment; filename=\"filename.pdf\"" 
+        // ]);
 
     }
 
