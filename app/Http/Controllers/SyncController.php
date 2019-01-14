@@ -38,22 +38,22 @@ class SyncController extends Controller
         //dd($stream);
 
         // Create filepath
-        $filepath = 'temp/'. $documentId . '.pdf';
+        // $filepath = 'temp/'. $documentId . '.pdf';
 
-        Storage::put($filepath, File::get($file));
-        $file = Storage::get($filepath);
+        // Storage::put($filepath, File::get($file));
+        // $file = Storage::get($filepath);
             
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.$document->filename);
-            header('Content-Transfer-Encoding: binary');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-            header('Pragma: public');
-            header('Content-Length: '. Storage::size($filepath));
+        //     header('Content-Description: File Transfer');
+        //     header('Content-Type: application/octet-stream');
+        //     header('Content-Disposition: attachment; filename='.$document->filename);
+        //     header('Content-Transfer-Encoding: binary');
+        //     header('Expires: 0');
+        //     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        //     header('Pragma: public');
+        //     header('Content-Length: '. Storage::size($filepath));
             
-            Storage::delete($filepath);
-            return $file;
+        //     Storage::delete($filepath);
+        //     return $file;
 
         // return response()->stream(function ($stream) {
         //       //Can add logic to chunk the file here if you want but the point is to stream data
