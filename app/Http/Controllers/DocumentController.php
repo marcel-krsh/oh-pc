@@ -84,7 +84,7 @@ class DocumentController extends Controller
                             'retention_sched_code'=>$cd->attributes->fields->RETENTIONSCHEDCODE,
                             'dw_page_count'=>$cd->attributes->fields->DWPAGECOUNT,
                             'dw_stored_date_time'=>$cd->attributes->fields->DWSTOREDATETIME,
-                            'dw_mode_date_time'=>$cd->attributes->fields->DWMODDATETIME,
+                            'dw_mod_date_time'=>$cd->attributes->fields->DWMODDATETIME,
                             'dw_extension'=>$cd->attributes->fields->DWEXTENSION,
                             'dw_flags'=>$cd->attributes->fields->DWFLAGS,
                             'dw_doc_size'=>$cd->attributes->fields->DWDOCSIZE,
