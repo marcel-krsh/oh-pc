@@ -19,6 +19,9 @@ use Auth;
 use App\Models\Audit;
 use App\Jobs\CreateTestAuditJob;
 
+use File;
+use Storage;
+
 class SyncController extends Controller
 {
     //
@@ -33,9 +36,10 @@ class SyncController extends Controller
         $apiConnect = new DevcoService();
         $stream = $apiConnect->getDocument($documentId, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
         dd($stream);
+        Storage::put($filepath, File::get($file));
         $filetype = 'application/pdf';
         $filename = 'foo.pdf';
-        return response()->stream(function () {
+        return response()->stream(function ($stream) {
               //Can add logic to chunk the file here if you want but the point is to stream data
               readfile($stream);
          },200, [ "Content-Type" => "application/pdf",  
