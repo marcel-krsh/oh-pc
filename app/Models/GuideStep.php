@@ -20,6 +20,10 @@ class GuideStep extends Model
         'parent_id',
         'guide_step_type_id',
         'name',
+        'session_name',
+        'icon',
+        'step_help',
+        'name_completed',
         'hfa'
     ];
 

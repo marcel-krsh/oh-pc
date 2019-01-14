@@ -501,60 +501,34 @@
 		            <th >
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-link">
-			            		<i class="a-checklist"></i>
+			            		<i class="a-checklist" id="checklist-button"></i>
 			            		<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px;">
-			            			<form>
+			            			<form id="audit_steps_selection" method="post">
 			            				<fieldset class="uk-fieldset">
 			            					<div class="uk-margin uk-child-width-auto uk-grid">
 			            					@if(session('step-all') == 0)
-									            <input id="filter-step-all" type="checkbox" />
-												<label for="filter-step-all">ALL STEPS (CLICK TO SELECT ALL)</label>
+									            <input id="step-all" type="checkbox" />
+												<label for="step-all">ALL STEPS (CLICK TO SELECT ALL)</label>
 											@else
-									            <input id="filter-step-all" type="checkbox" checked/>
-												<label for="filter-step-all">ALL STEPS (CLICK TO DESELECT ALL)</label>
+									            <input id="step-all" type="checkbox" checked/>
+												<label for="step-all">ALL STEPS (CLICK TO DESELECT ALL)</label>
 											@endif
-											@if(session('step-review-area') == 0)
-												<input id="filter-step-review-area" type="checkbox" />
-												<label for="filter-step-review-area"><i class="a-home-question"></i> Review and Assign Inspectable Areas</label>
-											@else	
-												<input id="filter-step-review-area" type="checkbox" checked/>
-												<label for="filter-step-review-area"><i class="a-home-question"></i> Review and Assign Inspectable Areas</label>
-											@endif
-												<input id="filter-step-schedule" type="checkbox" />
-												<label for="filter-step-schedule"><i class="a-calendar-7"></i> Schedule Audit</label>
-												<input id="filter-step-audit-pending" type="checkbox" />
-												<label for="filter-step-audit-pending"><i class="a-stopwatch-3"></i> Audit Pending</label>
-												<input id="filter-step-audit-progress" type="checkbox" />
-												<label for="filter-step-audit-progress"><i class="a-rotate-left"></i> Audit In-Progress</label>
-												<input id="filter-step-lead-approval" type="checkbox" />
-												<label for="filter-step-lead-approval"><i class="a-file-pen"></i> Lead Approval</label>
-												<input id="filter-step-lead-requested" type="checkbox" />
-												<label for="filter-step-lead-requested" style="padding-left:40px;"><i class="a-avatar-refresh"></i> Lead Requested Edits</label>
-												<input id="filter-step-report-generate" type="checkbox" />
-												<label for="filter-step-report-generate"><i class="a-file-chart-3"></i> Generate Report</label>
-												<input id="filter-step-report-review" type="checkbox" />
-												<label for="filter-step-report-review"><i class="a-magnify-chart-up"></i> Review Report</label>
-												<input id="filter-step-report-comment" type="checkbox" />
-												<label for="filter-step-report-comment"><i class="a-comment-chart-up"></i> See Report Comments</label>
-												<input id="filter-step-report-send" type="checkbox" />
-												<label for="filter-step-report-send"><i class="a-mail-chart-up"></i> Send Report</label>
-												<input id="filter-step-followup-pending" type="checkbox" />
-												<label for="filter-step-followup-pending"><i class="a-avatar-chat-up"></i> Pending Follow-Up</label>
-												<input id="filter-step-audit-archive" type="checkbox" />
-												<label for="filter-step-audit-archive"><i class="a-folder-box"></i> Archive Audit</label>
-												<input id="filter-step-audit-score" type="checkbox" />
-												<label for="filter-step-audit-score">00% Audit Score</label>
+											@foreach($steps as $step)
+												<input id="{{$step->session_name}}" class="stepselector" type="checkbox" @if(session($step->session_name) == 1) checked @endif/>
+												<label for="{{$step->session_name}}"><i class="{{$step->icon}}"></i> {{$step->name}}</label>
+											@endforeach
 									        </div>
 									        <div class="uk-margin-remove" uk-grid>
 			                            		<div class="uk-width-1-2">
-			                            			<button class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+			                            			<button onclick="updateAuditStepSelection(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
 			                            		</div>
 			                            		<div class="uk-width-1-2">
-			                            			<button class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+			                            			<button onclick="$('#checklist-button').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
 			                            		</div>
 			                            	</div>
 			            				</fieldset>
-			            			</form>
+			                        </form>
+			            			
 			                    </div>
 			            	</div>
 			            	<span data-uk-tooltip="{pos:'bottom'}" title="SORT BY NEXT TASK" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top">
@@ -735,7 +709,49 @@ The following div is defined in this particular tab and pushed to the main layou
 				$(this).keyup();
 			}
 		});
+
+		$('#step-all').click(function() {
+			if($('#step-all').prop('checked')){
+				$('input.stepselector').prop('checked', false);
+			}
+	    });
+
+	    $('.stepselector').click(function() { 
+	    	if($(this).prop('checked') && $('#step-all').prop('checked')){ 
+		    	$('#step-all').prop('checked', false);
+			}
+	    });
     });
+
+
+
+    function updateAuditStepSelection(e){
+		e.preventDefault();
+		var form = $('#audit_steps_selection');
+
+		var alloptions = [];
+		$('#audit_steps_selection input').each(function() {
+		    alloptions.push([$(this).attr('id'), 0]);
+		});
+
+		var selected = [];
+		$('#audit_steps_selection input:checked').each(function() {
+		    selected.push([$(this).attr('id'), 1]);
+		});
+
+		$.post("/session/", {
+            'data' : alloptions,
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            $.post("/session/", {
+	            'data' : selected,
+	            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+	            $('#checklist-button').trigger( 'click' );
+	            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+	        } );
+        } );
+	}
 </script>
 <script>
 
