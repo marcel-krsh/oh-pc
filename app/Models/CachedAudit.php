@@ -104,7 +104,7 @@ class CachedAudit extends Model
 
     public function current_step()
     {
-        return $this->progress()->get(0);
+        return $this->progress()->first();
     }
 
     public function checkStatus($type = null)
