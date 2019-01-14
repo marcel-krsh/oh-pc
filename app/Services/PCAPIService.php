@@ -71,8 +71,8 @@ class PCAPIService
         //$document = $document_service->getDocument($url);
 
         // storage_path('app/' . $file->file_path)
-
-        return public_path('TestFile.pdf');
+        return '/TestFile.pdf';
+        //return public_path('TestFile.pdf');
         //return response()->download(public_path('TestFile.pdf'));
     }
 

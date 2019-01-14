@@ -13,7 +13,7 @@ use File;
 use Storage;
 use DB;
 use App\Models\Programs;
-use App\Models\Document;
+use App\Models\SyncDocuware;
 use App\Models\DocumentCategory;
 use App\Models\DocumentRule;
 use App\Models\DocumentRuleEntry;
@@ -36,6 +36,29 @@ class DocumentController extends Controller
      * @param  int  $parcel_id
      * @return Response
      */
+
+    public function getDocs(string $projectNumber, string $searchString = null, int $deviceId=0 , string $deviceName='System'){
+        $apiConnect = new DevcoService();
+        $documentList = $apiConnect->getProjectDocuments($projectNumber, $searchString, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
+
+
+        //dd($documentList,'Third doc id:'.$documentList->included[2]->id,'Page count:'.$documentList->meta->totalPageCount,'File type of third doc:'.$documentList->included[2]->attributes->fields->DWEXTENSION,'Document Class/Category:'.$documentList->included[2]->attributes->fields->DOCUMENTCLASS,'Userid passed:'. Auth::user()->id,'User email passed:'.Auth::user()->email,'Username Passed:'.Auth::user()->name,'Device id and Device name:'.$deviceId.','.$deviceName);
+
+        // compare the list to what is in the sync table:
+        if(count($documentList->included) > 0){
+            $currentDocuwareProjectDocs = $documentList->included;
+            
+            foreach ($currentDocuwareProjectDocs as $cd) {
+                //check if the document is in our database:
+                dd($cd);
+                $checkAD = SyncDocuware::where('document_id',$cd->id);
+
+            }
+            
+            }
+        }
+
+    }
     public function showTabFromParcelId(Parcel $parcel, Request $request)
     {
 
