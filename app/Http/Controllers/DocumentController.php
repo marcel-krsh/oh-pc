@@ -69,7 +69,8 @@ class DocumentController extends Controller
                         // compare mod date:
                         if(strtotime($checkAD) < strtotime($cd->attributes->fields->DWMODDATETIME)){
                             // update the record - this one is older
-                            $doc = SyncDocuware::where('id',$checkAD->id)->update([
+                            dd('OLDER! - '.strtotime($checkAD).'< '.$cd->attributes->fields->DWMODDATETIME);
+                            SyncDocuware::where('id',$checkAD->id)->update([
                                 'docuware_doc_id'=>$cd->attributes->docId,
                                 'type'=>$cd->attributes->docType,
                                 'cabinet_name'=>$cd->attributes->cabinetName,
@@ -107,9 +108,9 @@ class DocumentController extends Controller
                                             'active'=>1
                                         ]);
                                     }
-                                    DocumentDocumentCategory::where('sync_docuware_id',$doc->id)->where('docuware_document_class',1)->delete();
+                                    DocumentDocumentCategory::where('sync_docuware_id',$checkAD->id)->where('docuware_document_class',1)->delete();
                                     DocumentDocumentCategory::create([
-                                        'sync_docuware_id'=>$doc->id,
+                                        'sync_docuware_id'=>$checkAD->id,
                                         'document_category_id'=>$primaryCat->id,
                                         'docuware_document_class'=>1
                                     ]);
