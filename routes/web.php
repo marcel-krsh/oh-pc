@@ -24,7 +24,7 @@
             // Look for existence of file on the provider location (ie. Docuware)
             // @todo: Add the log entry for the access request
             $doc_service = new \App\Services\DocumentService;
-            //$document_contents = $doc_service->getDocument($documentId);
+            $document_contents = $doc_service->getDocument($documentId);
 
             // Faking in a local test document
             $document_contents = \Illuminate\Support\Facades\Storage::disk('base')->get('public/TestFile.pdf');
@@ -34,7 +34,6 @@
             $response->header('Content-Type', 'application/pdf'); // change this to the download content type.
 
             return $response;
-            //return public_path('TestFile.pdf');
         });
 
 
