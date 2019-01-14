@@ -35,15 +35,12 @@ class SyncController extends Controller
         //dd($document);
         $filetype = 'application/pdf';
         $filename = 'foo.pdf';
-        return response()->stream(
-                function() use($stream) {
-                    fpassthru($stream);
-                },
-                200,
-                [
-                    'Content-Type' => $filetype,
-                    'Content-disposition' => 'attachment; filename="'.$filename.'"',
-                ]);
+        return response()->stream(function () {
+              //Can add logic to chunk the file here if you want but the point is to stream data
+              readfile($stream);
+         },200, [ "Content-Type" => "application/pdf",  
+                   "Content-Disposition" => "attachment; filename=\"filename.pdf\"" 
+        ]);
 
     }
 
