@@ -130,8 +130,9 @@ class DocumentService extends PCAPIService
         // /api/v1/docuware/document/{{document_id}}?user={{user_id}}&user_email={{user_email}}&user_name={{user_full_name}}&device_id={{device_id}}&device_name={{device_name}}
         
         $log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
-        
-        return $this->get("{$provider}/{$cabinetNumber}/document/{$id}?{$log_params}");
+
+
+        return $this->getFile("docuware/documents/{$cabinetNumber}/{$id}?{$log_params}");
     }
 
     /**

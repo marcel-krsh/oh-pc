@@ -26,12 +26,15 @@
             $doc_service = new \App\Services\DocumentService;
             $document_contents = $doc_service->getDocument($documentId);
 
+            //\Illuminate\Support\Facades\Storage::put('test.pdf', $document_contents);
+
+
             // Faking in a local test document
-            //$document_contents = \Illuminate\Support\Facades\Storage::get('/home/forge/pcinspectdev.ohiohome.org/public/TestFile.pdf');
+            //$document_contents = \Illuminate\Support\Facades\Storage::disk('base')->get('public/TestFile.pdf');
 
             // Respond Back
             $response = response()->make($document_contents, 200);
-            $response->header('Content-Type', 'application/pdf'); // change this to the download content type.
+            //$response->header('Content-Type', 'application/pdf'); // change this to the download content type.
 
             return $response;
             //return public_path('TestFile.pdf');
