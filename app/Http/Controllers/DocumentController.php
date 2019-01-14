@@ -101,7 +101,7 @@ class DocumentController extends Controller
                                     'document_category_name'=>$cd->attributes->fields->DOCUMENTCLASS,
                                     'from_docuware'=>1,
                                     'active'=>1
-                                ])->id;
+                                ]);
                             }
                             DocumentDocumentCategory::where('sync_docuware_id',$doc->id)->where('docuware_document_class',1)->delete();
                             DocumentDocumentCategory::create([
@@ -118,7 +118,7 @@ class DocumentController extends Controller
                                     'document_category_name'=>$cd->attributes->fields->DOCUMENTDESCRIPTION,
                                     'from_docuware'=>1,
                                     'active'=>1
-                                ])->id;
+                                ]);
                             }
 
                             DocumentDocumentCategory::where('sync_docuware_id',$doc->id)->where('docuware_document_description',1)->delete();
