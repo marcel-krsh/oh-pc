@@ -55,7 +55,7 @@ class DocumentController extends Controller
                     //dd($cd, $cd->attributes->docId);
                     $checkAD = SyncDocuware::where('docuware_doc_id',$cd->attributes->docId)->first();
                     
-                    if(count($checkAD)>0){
+                    if(!is_null($checkAD) && count($checkAD)>0){
                         // there is a record - check to make sure it hasn't changed
 
 
@@ -94,7 +94,7 @@ class DocumentController extends Controller
                         if(!is_null($cd->attributes->fields->DOCUMENTCLASS)){
                             //check if the categories are in the database
                             $primaryCat = DocumentCategory::where('document_category_name',$cd->attributes->fields->DOCUMENTCLASS)->first();
-                            if(count($primaryCat)<1){
+                            if(!is_null($primaryCat) && count($primaryCat)<1){
                                 //needs category entered
                                 $primaryCat = DocumentCategory::create([
                                     'document_category_name'=>$cd->attributes->fields->DOCUMENTCLASS,
@@ -111,7 +111,7 @@ class DocumentController extends Controller
                         }
                         if(!is_null($cd->attributes->fields->DOCUMENTDESCRIPTON)){
                             $secondaryCat = DocumentCategory::where('document_category_name',$cd->attributes->fields->DOCUMENTDESCRIPTION)->first();
-                            if(count($secondaryCat)<1){
+                            if(!is_null($secondaryCat) && count($secondaryCat)<1){
                                 //needs category entered
                                 $secondaryCat = DocumentCategory::create([
                                     'document_category_name'=>$cd->attributes->fields->DOCUMENTDESCRIPTION,
