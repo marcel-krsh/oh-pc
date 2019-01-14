@@ -119,6 +119,7 @@ class DocumentController extends Controller
                                 $secondaryCat = DocumentCategory::create([
                                     'document_category_name'=>$cd->attributes->fields->DOCUMENTDESCRIPTION,
                                     'from_docuware'=>1,
+                                    'parent_id'=>$primaryCat->id,
                                     'active'=>1
                                 ]);
                             }
