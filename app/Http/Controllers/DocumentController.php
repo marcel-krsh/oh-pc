@@ -12,16 +12,15 @@ use App\Models\User;
 use File;
 use Storage;
 use DB;
-use App\Models\Programs;
 use App\Models\SyncDocuware;
 use App\Models\DocumentCategory;
 use App\Models\DocumentRule;
 use App\Models\DocumentRuleEntry;
-use App\Models\Entity;
-use App\Models\Parcel;
-use App\Models\CostItem;
-use App\LogConverter;
-use App\Models\Retainage;
+use App\Models\Project;
+use App\Models\Audit;
+
+use App\Services\AuthService;
+use App\Services\DevcoService;
 
 class DocumentController extends Controller
 {
@@ -37,7 +36,8 @@ class DocumentController extends Controller
      * @return Response
      */
 
-    public function getDocs(string $projectNumber, string $searchString = null, int $deviceId=0 , string $deviceName='System'){
+    public function getProjectDocuments(string $projectNumber, string $searchString = null, int $deviceId=0 , string $deviceName='System'){
+
         $apiConnect = new DevcoService();
         $documentList = $apiConnect->getProjectDocuments($projectNumber, $searchString, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
 
@@ -45,15 +45,15 @@ class DocumentController extends Controller
         //dd($documentList,'Third doc id:'.$documentList->included[2]->id,'Page count:'.$documentList->meta->totalPageCount,'File type of third doc:'.$documentList->included[2]->attributes->fields->DWEXTENSION,'Document Class/Category:'.$documentList->included[2]->attributes->fields->DOCUMENTCLASS,'Userid passed:'. Auth::user()->id,'User email passed:'.Auth::user()->email,'Username Passed:'.Auth::user()->name,'Device id and Device name:'.$deviceId.','.$deviceName);
 
         // compare the list to what is in the sync table:
-        if(count($documentList->included) > 0){
-            $currentDocuwareProjectDocs = $documentList->included;
-            
-            foreach ($currentDocuwareProjectDocs as $cd) {
-                //check if the document is in our database:
-                dd($cd);
-                $checkAD = SyncDocuware::where('document_id',$cd->id);
+            if(count($documentList->included) > 0){
+                $currentDocuwareProjectDocs = $documentList->included;
+                
+                foreach ($currentDocuwareProjectDocs as $cd) {
+                    //check if the document is in our database:
+                    dd($cd);
+                    $checkAD = SyncDocuware::where('document_id',$cd->id);
 
-            }
+                }
             
             }
         }
@@ -203,9 +203,7 @@ class DocumentController extends Controller
                     "categories" => $categories_json
                 ]);
 
-                $lc=new LogConverter('document', 'edit');
-                $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' edited document ' .$document->filename. ' - ' . $document->id)->save();
-            
+                
                 if ($is_retainage) {
                     // if only one retainage in database, then no need to display the modal with the select form
                     if ($parcel->retainages) {
@@ -314,8 +312,7 @@ class DocumentController extends Controller
                 $document->update([
                     'file_path' => $filepath,
                 ]);
-                $lc=new LogConverter('document', 'create');
-                $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' created document ' . $filepath)->save();
+                
                 // store original file
                 Storage::put($filepath, File::get($file));
 
@@ -406,8 +403,7 @@ class DocumentController extends Controller
                 $document->update([
                     'comment' => $comment,
                 ]);
-                $lc = new LogConverter('document', 'comment');
-                $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' added comment to document ')->save();
+                
             }
             return 1;
         } else {
@@ -462,8 +458,7 @@ class DocumentController extends Controller
 
         // remove files
         Storage::delete($document->file_path);
-        $lc = new LogConverter('document', 'delete');
-        $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' deleted document ' . $document->filename)->save();
+        
 
 
         // remove database record
@@ -496,8 +491,7 @@ class DocumentController extends Controller
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
             header('Pragma: public');
             header('Content-Length: '. Storage::size($filepath));
-            $lc = new LogConverter('document', 'download');
-            $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' downloaded document ' . $document->filename)->save();
+            
             return $file;
         } else {
             // Error

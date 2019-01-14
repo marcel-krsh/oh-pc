@@ -99,7 +99,7 @@
 
         Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');
         Route::get('/projects/{project}/communications/title', 'AuditController@getProjectCommunicationsTitle')->name('project.communications.title');
-        Route::get('/projects/{project}/documents', 'AuditController@getProjectDocuments')->name('project.documents');
+        Route::get('/projects/{project}/documents', 'DocumentController@getProjectDocuments')->name('project.documents');
         Route::get('/projects/{project}/documents/title', 'AuditController@getProjectDocumentsTitle')->name('project.documents.title');
         Route::get('/projects/{project}/notes', 'AuditController@getProjectNotes')->name('project.notes');
         Route::get('/projects/{project}/notes/title', 'AuditController@getProjectNotesTitle')->name('project.notes.title');
