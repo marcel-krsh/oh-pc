@@ -21,7 +21,7 @@
         Route::get('/document/{documentId}', function($documentId) {
             // Do Devco Auth here?
             $deviceId=11;
-            $deviceName='TestingSystem'
+            $deviceName='TestingSystem';
             // Look for existence of file on the provider location (ie. Docuware)
             // @todo: Add the log entry for the access request
             $doc_service = new \App\Services\DocumentService;
