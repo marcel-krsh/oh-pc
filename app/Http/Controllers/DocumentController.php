@@ -40,22 +40,22 @@ class DocumentController extends Controller
 
         $apiConnect = new DevcoService();
         $documentList = $apiConnect->getProjectDocuments($projectNumber, $searchString, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
-
+        dd($documentList);
 
         //dd($documentList,'Third doc id:'.$documentList->included[2]->id,'Page count:'.$documentList->meta->totalPageCount,'File type of third doc:'.$documentList->included[2]->attributes->fields->DWEXTENSION,'Document Class/Category:'.$documentList->included[2]->attributes->fields->DOCUMENTCLASS,'Userid passed:'. Auth::user()->id,'User email passed:'.Auth::user()->email,'Username Passed:'.Auth::user()->name,'Device id and Device name:'.$deviceId.','.$deviceName);
 
         // compare the list to what is in the sync table:
-            if(count($documentList->included) > 0){
-                $currentDocuwareProjectDocs = $documentList->included;
+            // if(count($documentList->included) > 0){
+            //     $currentDocuwareProjectDocs = $documentList->included;
                 
-                foreach ($currentDocuwareProjectDocs as $cd) {
-                    //check if the document is in our database:
-                    dd($cd);
-                    $checkAD = SyncDocuware::where('document_id',$cd->id);
+            //     foreach ($currentDocuwareProjectDocs as $cd) {
+            //         //check if the document is in our database:
+            //         dd($cd);
+            //         $checkAD = SyncDocuware::where('document_id',$cd->id);
 
-                }
+            //     }
             
-            }
+            // }
         
 
     }
