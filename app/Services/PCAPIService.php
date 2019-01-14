@@ -77,7 +77,7 @@ class PCAPIService
             'verify' => false,
         ]);
 
-        $response = $client->request('GET', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'),['sink' => '/storage/app/temp/foo.pdf']);
+        $response = $client->request('GET', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'),['sink' => '~/pcinspectdev.ohiohome.org/storage/app/temp/foo.pdf']);
 
         //return $response->setResponseBody('thisfile.pdf')->send();
     }
