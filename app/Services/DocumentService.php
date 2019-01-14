@@ -114,19 +114,20 @@ class DocumentService extends PCAPIService
      * Get Specific Document
      *
      * @param int $id
-     * @param int $user
-     * @param string $user_email
-     * @param string $user_name
-     * @param int $device_id
-     * @param string $device_name
+     * @param int|null $user_id
+     * @param string|null $user_email
+     * @param string|null $user_name
+     * @param int|null $device_id
+     * @param string|null $device_name
      * @param string $provider
+     * @return mixed
      */
-    public function getDocument(int $id, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null, string $provider = 'docuware') : string
+    public function getDocument(int $id, int $user_id = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null, string $provider = 'docuware')
     {
         // example call
         // /api/v1/docuware/document/{{document_id}}?user={{user_id}}&user_email={{user_email}}&user_name={{user_full_name}}&device_id={{device_id}}&device_name={{device_name}}
         
-        $log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_full_name}&device_id={$device_id}&device_name={$device_name}";
+        $log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
         
         return $this->get("{$provider}/document/{$id}?{$log_params}");
     }

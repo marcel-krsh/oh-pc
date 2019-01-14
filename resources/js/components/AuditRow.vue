@@ -108,7 +108,25 @@
         <td>
         	<div class="uk-margin-top" uk-grid>
         		<div class="uk-width-1-1  uk-padding-remove-top">
-            		<i :class="{[audit.stepStatusIconClass]:true, 'use-hand-cursor':true, [audit.stepStatusClass]:true}" :uk-tooltip="audit.tooltipStepStatus"></i>
+            		<i :class="{[audit.stepStatusIconClass]:true, 'use-hand-cursor':true, [audit.stepStatusClass]:true}" :uk-tooltip="audit.tooltipStepStatus" v-on:click="updateStep"></i>
+                    <div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px;">
+                        <form class="update-step" method="post">
+                            <fieldset class="uk-fieldset">
+                                <div class="uk-margin uk-child-width-auto uk-grid">
+                                yo
+                                </div>
+                                <div class="uk-margin-remove" uk-grid>
+                                    <div class="uk-width-1-2">
+                                        <button onclick="updateAuditStepSelection(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+                                    </div>
+                                    <div class="uk-width-1-2">
+                                        <button onclick="$('.update-step').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                        
+                    </div>
 				</div>
         	</div>
         </td>
