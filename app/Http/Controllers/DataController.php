@@ -62,8 +62,11 @@ class DataController extends Controller
                 return 0;
             }
         }else{
-            if($name == "project.selectedaudit"){
-                $audit = CachedAudit::where('id', '=', $value)->first();
+            // check if it is a project audit selection project.id.selectedaudit
+            $name_check = explode('.', $name);
+            if($name_check[0] == "project" && $name_check[2] == "selectedaudit"){
+                $project_id = $name_check[1];
+                $audit = CachedAudit::where('id', '=', $value)->where('project_id','=',$project_id)->first();
                 Session::put($name, $audit);
                 return Session::get($name);
             }else{

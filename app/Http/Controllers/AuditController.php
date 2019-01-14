@@ -353,6 +353,8 @@ class AuditController extends Controller
         // types: compliance, assignment, findings, followups, reports, documents, comments, photos
         // project: project_id?
 
+        //$project = Project::where('')
+
         switch ($type) {
             case 'compliance':
                 $data = collect([
@@ -378,6 +380,10 @@ class AuditController extends Controller
                 ]);
                 break;
             case 'assignment':
+                // get dynamic data!
+                
+                dd($id);
+
                 $data = collect([
                     "project" => [
                         'id' => 1,
@@ -505,7 +511,7 @@ class AuditController extends Controller
         return view('projects.partials.details-'.$type, compact('data'));
     }
 
-    public function saveEstimatedHours(Request $request, $id){
+    public function saveEstimatedHours(Request $request, $id){ dd($id);
         // audit id
         $forminputs = $request->get('inputs');
         parse_str($forminputs, $forminputs);

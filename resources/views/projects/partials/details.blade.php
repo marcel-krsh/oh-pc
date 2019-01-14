@@ -254,7 +254,7 @@
 
     	UIkit.modal('#modal-select-audit').hide();
 
-    	$.post("/session/project.selectedaudit/"+nextAudit, {
+    	$.post("/session/project.{{$project->id}}.selectedaudit/"+nextAudit, {
             '_token' : '{{ csrf_token() }}'
         }, function(data) {
             loadTab('{{ route('project.details', $project->id) }}', '1', 0, 0, 'project-',1);

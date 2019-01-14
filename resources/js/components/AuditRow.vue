@@ -41,11 +41,11 @@
             		<div class="uk-width-1-3">
             			<i :class="{[audit.inspectionStatus]:true, 'use-hand-cursor':true, 'a-mobile-repeat':true}" :uk-tooltip="audit.tooltipInspectionStatus"></i>
             		</div>
-            		<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top" v-if="audit.inspectionScheduleDateYear">
+            		<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top" v-if="audit.inspectionScheduleDateYear" v-on:click="openAssignment">
 	            		<h3 class="uk-link" :uk-tooltip="audit.tooltipInspectionSchedule" v-html="audit.inspectionScheduleDate"></h3>
 	            		<div class="dateyear" v-html="audit.inspectionScheduleDateYear"></div>
             		</div>
-                    <div class="uk-width-2-3" v-else>
+                    <div class="uk-width-2-3" v-on:click="openAssignment" v-else>
                         <i class="a-calendar-7 action-needed use-hand-cursor" uk-tooltip="Click to schedule audits"></i>
                     </div>
             	</div> 
@@ -138,7 +138,8 @@
                 window.open(this.mapLink);
             },
             openAssignment: function() {
-                dynamicModalLoad('projects/'+this.audit.projectKey+'/assignments/addauditor',1,0,1);
+                loadTab('/projects/'+this.audit.projectKey, '4', 1, 1, '', 1);
+                // dynamicModalLoad('projects/'+this.audit.projectKey+'/assignments/addauditor',1,0,1);
             }
         },
         computed: {

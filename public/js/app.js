@@ -1902,7 +1902,7 @@ __webpack_require__.r(__webpack_exports__);
       window.open(this.mapLink);
     },
     openAssignment: function openAssignment() {
-      dynamicModalLoad('projects/' + this.audit.projectKey + '/assignments/addauditor', 1, 0, 1);
+      loadTab('/projects/' + this.audit.projectKey, '4', 1, 1, '', 1); // dynamicModalLoad('projects/'+this.audit.projectKey+'/assignments/addauditor',1,0,1);
     }
   },
   computed: {
@@ -43851,7 +43851,8 @@ var render = function() {
                     "div",
                     {
                       staticClass:
-                        "uk-width-2-3 uk-padding-remove uk-margin-small-top"
+                        "uk-width-2-3 uk-padding-remove uk-margin-small-top",
+                      on: { click: _vm.openAssignment }
                     },
                     [
                       _c("h3", {
@@ -43874,12 +43875,20 @@ var render = function() {
                       })
                     ]
                   )
-                : _c("div", { staticClass: "uk-width-2-3" }, [
-                    _c("i", {
-                      staticClass: "a-calendar-7 action-needed use-hand-cursor",
-                      attrs: { "uk-tooltip": "Click to schedule audits" }
-                    })
-                  ])
+                : _c(
+                    "div",
+                    {
+                      staticClass: "uk-width-2-3",
+                      on: { click: _vm.openAssignment }
+                    },
+                    [
+                      _c("i", {
+                        staticClass:
+                          "a-calendar-7 action-needed use-hand-cursor",
+                        attrs: { "uk-tooltip": "Click to schedule audits" }
+                      })
+                    ]
+                  )
             ]
           ),
           _vm._v(" "),
