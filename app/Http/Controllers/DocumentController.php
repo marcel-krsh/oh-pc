@@ -91,7 +91,7 @@ class DocumentController extends Controller
                             'dw_flag_sex'=>$cd->attributes->fields->DWFLAGSEX,
                             'project_id'=>$project->id
                         ]);
-                        dd($doc);
+                        dd($doc,$doc->id);
                         if(!is_null($cd->attributes->fields->DOCUMENTCLASS)){
                             //check if the categories are in the database
                             $primaryCat = DocumentCategory::where('document_category_name',$cd->attributes->fields->DOCUMENTCLASS)->first();
