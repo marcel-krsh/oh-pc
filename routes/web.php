@@ -17,7 +17,25 @@
 
         // Document Test Route
         Route::get('/document/list/{projectNumber}','SyncController@getDocs');
-        Route::get('/document/{documentId}','SyncController@getDoc');
+        //Route::get('/document/{documentId}','SyncController@getDoc');
+        Route::get('/document/{documentId}', function($documentId) {
+            // Do Devco Auth here?
+
+            // Look for existence of file on the provider location (ie. Docuware)
+            // @todo: Add the log entry for the access request
+            $doc_service = new \App\Services\DocumentService;
+            $document_contents = $doc_service->getDocument($documentId);
+
+            // Respond Back
+            $response = response()->make($document_contents, 200);
+            $response->header('Content-Type', 'application/pdf'); // change this to the download content type.
+
+            return $response;
+            //return public_path('TestFile.pdf');
+        });
+
+
+
 
         // Update Devco Test Routes
         Route::get('/update_devco/{model}/{referenceId}/{crud}','SyncController@crudDevco');
