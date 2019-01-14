@@ -54,7 +54,7 @@ class DocumentController extends Controller
                     //check if the document is in our database:
                     //dd($cd, $cd->attributes->docId);
                     $checkAD = SyncDocuware::where('docuware_doc_id',$cd->attributes->docId)->first();
-                    dd($checkAD);
+                    //dd($checkAD);
                     if(!is_null($checkAD) && count($checkAD)>0){
                         // there is a record - check to make sure it hasn't changed
 
