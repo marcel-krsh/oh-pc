@@ -83,7 +83,7 @@ class DocumentController extends Controller
                             'image_file_name'=>$cd->attributes->fields->IMAGEFILENAME,
                             'retention_sched_code'=>$cd->attributes->fields->RETENTIONSCHEDCODE,
                             'dw_page_count'=>$cd->attributes->fields->DWPAGECOUNT,
-                            'dw_stored_date_time'=>$cd->attributes->fields->DWSTOREDDATETIME,
+                            'dw_stored_date_time'=>$cd->attributes->fields->DWSTOREDATETIME,
                             'dw_mode_date_time'=>$cd->attributes->fields->DWMODDATETIME,
                             'dw_extension'=>$cd->attributes->fields->DWEXTENSION,
                             'dw_flags'=>$cd->attributes->fields->DWFLAGS,
