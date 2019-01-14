@@ -38,7 +38,7 @@ class SyncController extends Controller
         //dd($stream);
 
         // Create filepath
-        $folderpath = 'temp/'. $document_id . '.pdf';
+        $folderpath = 'temp/'. $documentId . '.pdf';
 
         Storage::put($filepath, File::get($file));
         $file = Storage::get($filepath);
