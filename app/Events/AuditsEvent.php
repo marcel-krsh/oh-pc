@@ -1190,6 +1190,13 @@ class AuditsEvent
             }
         }
 
+        // inspection status and schedule date set to default when creating a new audit
+        $inspection_status_text = 'AUDIT NEEDS SCHEDULING'; 
+        $inspection_schedule_date = null; // Y-m-d H:i:s
+        $inspection_schedule_text = 'CLICK TO SCHEDULE THAT AUDIT'; 
+        $inspection_status = 'action-needed'; 
+        $inspection_icon = 'a-mobile-repeat'; 
+
         // in project_roles
         // primary owner: project_role_key = 20, id = 98
         // primary manager: project_role_key = 21, id = 161
@@ -1210,12 +1217,11 @@ class AuditsEvent
             }
         }
 
+        // inspection_schedule_json needs to be populated TBD
+
         // if no organization put contact name under the project name
 
         // build amenities array using amenity_inspections table
-
-        // total items is the total number of units added during the selection process
-        $total_items = count($summary['grouped']); // TBD
 
         // save summary
         $audit->selection_summary = json_encode($summary);
@@ -1224,14 +1230,34 @@ class AuditsEvent
         // create or update
         $cached_audit = CachedAudit::where('audit_id','=',$audit->id)->first();
 
+        // total items is the total number of units added during the selection process
+        $total_items = $cached_audit->total_items(); 
+
         if($cached_audit){
+            // when updating a cachedaudit, run the status test
+
+            $inspection_schedule_checks = $audit->checkStatus('schedules');
+            $inspection_status_text = $inspection_schedule_checks['inspection_status_text']; 
+            $inspection_schedule_date = $inspection_schedule_checks['inspection_schedule_date'];
+            $inspection_schedule_text = $inspection_schedule_checks['inspection_schedule_text'];
+            $inspection_status = $inspection_schedule_checks['inspection_status']; 
+            $inspection_icon = $inspection_schedule_checks['inspection_icon'];
+            if($inspection_schedule_checks['status'] == 'critical'){
+                $status = 'critical'; // TBD critical/other
+            }else{
+                $status = ''; // TBD critical/other
+            }
+            
+            // current step
+            $step = $cached_audit->current_step();
+
             $cached_audit->update([
                 'audit_id' => $audit->id,
                 'audit_key' => $audit->monitoring_key,
                 'project_id' => $project->id,
                 'project_key' => $audit->development_key,
                 'project_ref' => $project_ref,
-                'status' => '',
+                'status' => $status,
                 'lead' => $lead,
                 'lead_json' => $lead_json,
                 'title' => $project_name,
@@ -1241,10 +1267,12 @@ class AuditsEvent
                 'state' => $state,
                 'zip' => $zip,
                 'total_buildings' => $total_buildings,
-                'inspection_icon' => 'a-mobile-repeat',
-                'inspection_status' => 'action-needed', // no scheduled date in array yet, that's why
-                'inspection_status_text' => 'AUDIT NEEDS SCHEDULING',
-                'inspection_schedule_text' => 'CLICK TO SCHEDULE AUDIT',
+                'inspection_icon' => $inspection_icon,
+                'inspection_status' => $inspection_status, 
+                'inspection_status_text' => $inspection_status_text,
+                'inspection_schedule_text' => $inspection_schedule_text,
+                'inspection_schedule_date' => $inspection_schedule_date,
+                'inspection_schedule_json' => null, // TBD
                 'inspectable_items' => 0,
                 'total_items' => $total_items,
                 'audit_compliance_icon' => 'a-circle-checked',
@@ -1276,9 +1304,10 @@ class AuditsEvent
                 'history_status_icon' => 'a-person-clock',
                 'history_status' => '',
                 'history_status_text' => 'NO/VIEW HISTORY',
-                'step_status_icon' => 'a-home-question',
+                'step_id' => $step->id,
+                'step_status_icon' => $step->icon,
                 'step_status' => 'no-action',
-                'step_status_text' => 'REVIEW AND ASSIGN INSPECTABLE AREAS',
+                'step_status_text' => $step->step_help,
                 'estimated_time' => $estimated_time,
                 'estimated_time_needed' => $estimated_time_needed,
                 //'amenities_json' => json_encode($amenities)
@@ -1300,10 +1329,12 @@ class AuditsEvent
                 'state' => $state,
                 'zip' => $zip,
                 'total_buildings' => $total_buildings,
-                'inspection_icon' => 'a-mobile-repeat',
-                'inspection_status' => 'action-needed', // no scheduled date in array yet, that's why
-                'inspection_status_text' => 'AUDIT NEEDS SCHEDULING',
-                'inspection_schedule_text' => 'CLICK TO SCHEDULE AUDIT',
+                'inspection_icon' => $inspection_icon,
+                'inspection_status' => $inspection_status, 
+                'inspection_status_text' => $inspection_status_text,
+                'inspection_schedule_text' => $inspection_schedule_text,
+                'inspection_schedule_date' => $inspection_schedule_date,
+                'inspection_schedule_json' => null, // TBD
                 'inspectable_items' => 0,
                 'total_items' => $total_items,
                 'audit_compliance_icon' => 'a-circle-checked',
@@ -1335,9 +1366,10 @@ class AuditsEvent
                 'history_status_icon' => 'a-person-clock',
                 'history_status' => '',
                 'history_status_text' => 'NO/VIEW HISTORY',
+                'step_id' => 1,
                 'step_status_icon' => 'a-home-question',
                 'step_status' => 'no-action',
-                'step_status_text' => 'REVIEW AND ASSIGN INSPECTABLE AREAS',
+                'step_status_text' => 'REVIEW INSPECTABLE AREAS',
                 'estimated_time' => $estimated_time,
                 'estimated_time_needed' => $estimated_time_needed,
                 //'amenities_json' => json_encode($amenities)

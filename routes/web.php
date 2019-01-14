@@ -42,7 +42,7 @@
                 return redirect('/');
         });
 
-        Route::post('/session/{name}/{value}', 'DataController@setSession');
+        Route::post('/session/{name?}/{value?}', 'DataController@setSession');
 
         Route::get('/', 'DashboardController@index');
         //Route::get('/', function(){dd(\Auth::user(),session('brian'));});

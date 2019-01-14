@@ -137,7 +137,8 @@ class Project extends Model
     public function selected_audit()
     {
         if (Session::has('project.selectedaudit') && Session::get('project.selectedaudit') != '') {
-            $selected_audit = Session::get('project.selectedaudit');
+            $audit = Session::get('project.selectedaudit');
+            $selected_audit = CachedAudit::where('id', '=', $audit->id)->first();
         }else{
             $selected_audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->first();
             Session::put('project.selectedaudit', $selected_audit);

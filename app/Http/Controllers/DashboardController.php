@@ -12,6 +12,7 @@ use App\LogConverter;
 use App\Models\Audit;
 use App\Models\CachedAudit;
 use App\Models\Report;
+use App\Models\GuideStep;
 use Carbon;
 use Event;
 use App\Models\CommunicationRecipient;
@@ -201,7 +202,19 @@ class DashboardController extends Controller
             $sort_order_query = "desc";
         }
 
-        $audits = CachedAudit::orderBy($sort_by_field, $sort_order_query)->get();
+        
+        $audits = CachedAudit::with('auditors');
+
+        // load to list steps filtering and check for session variables
+        $steps = GuideStep::where('guide_step_type_id','=',1)->orderBy('order','asc')->get();
+
+        foreach($steps as $step){
+            // for each step, check for filter in session variable
+            if(session()->has($step->session_name) && session($step->session_name) == 1){
+                $audits = $audits->orWhere('step_id','=',$step->id);
+            }
+        }
+        $audits = $audits->orderBy($sort_by_field, $sort_order_query)->get();
 
         $data = [];
 
@@ -308,7 +321,7 @@ class DashboardController extends Controller
         if ($page>0) {
             return response()->json($data);
         } else {
-            return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'audits', 'sort_by', 'sort_order'));
+            return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'audits', 'sort_by', 'sort_order', 'steps'));
         }
     }
 

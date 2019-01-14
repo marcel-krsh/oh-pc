@@ -341,6 +341,7 @@ class AuditController extends Controller
 
         // get the list of all audits for this project
         $audits = $project->audits;
+        dd($selected_audit->checkStatus('schedules'));
        
         return view('projects.partials.details', compact('details', 'audits', 'project', 'selected_audit'));
     }

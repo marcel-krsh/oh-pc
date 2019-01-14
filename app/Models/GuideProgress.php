@@ -17,6 +17,9 @@ class GuideProgress extends Model
     protected $fillable = [
         'guide_step_id',
         'type_id',
+        'project_id',
+        'audit_id',
+        'user_id',
         'started',
         'completed'
     ];
