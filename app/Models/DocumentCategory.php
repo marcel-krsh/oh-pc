@@ -12,7 +12,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class DocumentCategory extends Model
 {
-    protected $fillable = [
-        'document_category_name'
-    ];
+    public $timestamps = true;
+    //protected $dateFormat = 'Y-m-d G:i:s.u';
+    
+    protected $guarded = ['id'];
 }
