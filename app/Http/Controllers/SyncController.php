@@ -19,9 +19,51 @@ use Auth;
 use App\Models\Audit;
 use App\Jobs\CreateTestAuditJob;
 
+use File;
+use Storage;
+
 class SyncController extends Controller
 {
     //
+    public function getDocs(string $projectNumber, string $searchString = null, int $deviceId=0 , string $deviceName='System'){
+        $apiConnect = new DevcoService();
+        $documentList = $apiConnect->getProjectDocuments($projectNumber, $searchString, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
+        dd($documentList,'Third doc id:'.$documentList->included[2]->id,'Page count:'.$documentList->meta->totalPageCount,'File type of third doc:'.$documentList->included[2]->attributes->fields->DWEXTENSION,'Document Class/Category:'.$documentList->included[2]->attributes->fields->DOCUMENTCLASS,'Userid passed:'. Auth::user()->id,'User email passed:'.Auth::user()->email,'Username Passed:'.Auth::user()->name,'Device id and Device name:'.$deviceId.','.$deviceName);
+
+    }
+
+    public function getDoc(int $documentId, int $deviceId=0 , string $deviceName='System'){
+        $apiConnect = new DevcoService();
+        $file = $apiConnect->getDocument($documentId, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
+        //dd($stream);
+
+        // Create filepath
+        // $filepath = 'temp/'. $documentId . '.pdf';
+
+        // Storage::put($filepath, File::get($file));
+        // $file = Storage::get($filepath);
+            
+        //     header('Content-Description: File Transfer');
+        //     header('Content-Type: application/octet-stream');
+        //     header('Content-Disposition: attachment; filename='.$document->filename);
+        //     header('Content-Transfer-Encoding: binary');
+        //     header('Expires: 0');
+        //     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        //     header('Pragma: public');
+        //     header('Content-Length: '. Storage::size($filepath));
+            
+        //     Storage::delete($filepath);
+        //     return $file;
+
+        // return response()->stream(function ($stream) {
+        //       //Can add logic to chunk the file here if you want but the point is to stream data
+        //       readfile($stream);
+        //  },200, [ "Content-Type" => "application/pdf",  
+        //            "Content-Disposition" => "attachment; filename=\"filename.pdf\"" 
+        // ]);
+
+    }
+
     public function associate($model, $lookUpModel, $associations)
     {
         foreach ($associations as $associate) {

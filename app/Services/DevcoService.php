@@ -1910,4 +1910,80 @@ class DevcoService extends PCAPIService
 
         return $this->get("devco/unit_programs/{$unitId}?{$log_params}");
     }
+    /**
+     * Get Project Docs
+     *
+     * @param  string $projectNumber
+     * @param  int|null $user
+     * @param  string|null $user_email
+     * @param  string|null $user_name
+     * @param  int|null $device_id
+     * @param  string|null $device_name
+     * @return object
+     */
+    public function getProjectDocuments(string $projectNumber = '1', string $searchString = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
+    {
+        $cabinet = \App\Models\SystemSetting::where('key','docuware_cabinet')->first();
+        $cabinetNumber = $cabinet->value;
+        if(!is_null($searchString)){
+            //$search = "DOCUMENTDATE:1/1/2018,2/1/2018;";
+            $search = "PROJECTNUMBER:{$projectNumber};DocuWareFulltext:{$searchString}";
+        } else {
+            $search = "PROJECTNUMBER:{$projectNumber};";
+        }
+
+
+        $log_params = "cabinet={$cabinetNumber}&user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+        return $this->getContents("docuware/documents/search?{$log_params}&search={$search}");
+    }
+
+    public function getDocuments(int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
+    {
+        $cabinet = \App\Models\SystemSetting::where('key','docuware_cabinet')->first();
+        $cabinetNumber = $cabinet->value;
+
+        $date = \App\Models\SyncDocuware::orderBy('synced_at','desc');
+        if(!is_null($date)){$date="1/1/2018,2/1/2018";}
+        
+            $search = "DOCUMENTDATE:{$date};";
+        
+
+
+        $log_params = "cabinet={$cabinetNumber}&user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+
+        return $this->getContents("docuware/documents/search?{$log_params}&search={$search}");
+    }
+
+    /**
+     * Get Doc
+     *
+     * @param  int $projectNumber
+     * @param  int|null $user
+     * @param  string|null $user_email
+     * @param  string|null $user_name
+     * @param  int|null $device_id
+     * @param  string|null $device_name
+     * @return object
+     */
+    public function getDocument(int $documentId = 1,  int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
+        {
+            $cabinet = \App\Models\SystemSetting::where('key','docuware_cabinet')->first();
+            $cabinetNumber = $cabinet->value;
+
+           $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+           
+           
+           return $this->getFile("docuware/documents/{$cabinetNumber}/{$documentId}?{$log_params}");
+            
+
+            
+            
+           
+           //return response()->download($file, 'filename.pdf', $headers);
+
+            
+        }
+
+
 }

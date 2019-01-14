@@ -15,6 +15,10 @@
     Route::group(['middleware' => 'web'], function () {
        
 
+        // Document Test Route
+        Route::get('/document/list/{projectNumber}','SyncController@getDocs');
+        Route::get('/document/{documentId}','SyncController@getDoc');
+
         // Update Devco Test Routes
         Route::get('/update_devco/{model}/{referenceId}/{crud}','SyncController@crudDevco');
 

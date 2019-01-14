@@ -40,6 +40,42 @@ class PCAPIService
         return $response->getBody();
     }
 
+    public function getContents($url, $parameters = [])
+    {
+        // $this->_auth = new AuthService;
+        
+        if ($this->_auth->accessTokenNeedsRefresh()) {
+            //$this->_auth->rootRefreshToken();
+            $this->_auth->rootAuthenticate();
+        }
+
+
+        $client = new Client([
+            'base_uri' => $this->_auth->getUrl(),
+            'timeout'  => 5.0,
+            'verify' => false,
+        ]);
+
+        $response = $client->request('GET', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'));
+
+        return json_decode($response->getBody()->getContents());
+    }
+
+    public function getFile($url, $parameters = [])
+    {
+        if ($this->_auth->accessTokenNeedsRefresh()) {
+            $this->_auth->rootAuthenticate();
+        }
+
+        $document_service = new DocumentService;
+        //$document = $document_service->getDocument($url);
+
+        // storage_path('app/' . $file->file_path)
+
+        return public_path('TestFile.pdf');
+        //return response()->download(public_path('TestFile.pdf'));
+    }
+
     public function post($url, $payload)
     {
         if ($this->_auth->accessTokenNeedsRefresh()) {
