@@ -8,11 +8,18 @@
 				<canvas id="chartjs-assignment" class="chartjs" style="display: block;"></canvas>
 			</div>
 			<div class="uk-width-1-2">
+				@if($data['summary']['estimated'] != ':' || !$data['summary']['estimated'])
 				<h3 class="estHour">
-					It will take an <span class="underlined italic">ESTIMATED</span> <i class="a-pencil-2 use-hand-cursor" onclick=" $('.estHour').toggle();" uk-tooltip="title:EDIT ESTIMATED HOURS;"></i><span id="estimated_hours_field">{{$data['summary']['estimated']}}</span> to complete this audit.<br />
-					<span id="estimated_hours_needed">{{$data['summary']['needed']}}</span> Need Assigned
+					It will take an <span class="underlined italic">ESTIMATED</span> <i class="a-pencil-2 use-hand-cursor" onclick=" $('.estHour').toggle();" uk-tooltip="title:EDIT ESTIMATED HOURS;"></i><span id="estimated_hours_field">{{$data['summary']['estimated']}}</span> to complete this audit.
+					@if($data['summary']['needed'])<br />
+					<span id="estimated_hours_needed">{{$data['summary']['needed']}}</span> Need Assigned @endif
 				</h3>
-				<h3 class="estHour estHourForm" style="display:none">
+				@else
+				<h3 class="estHour">
+					Enter an estimated number of hours for this audit.
+				</h3>
+				@endif
+				<h3 class="estHour estHourForm" @if($data['summary']['estimated'] != ':' || !$data['summary']['estimated']) style="display:none" @else style="margin-top: 0;" @endif>
 					<form id="estimated_hours_form" method="post" class="uk-width-1-1 uk-margin-bottom">
 						<div class="uk-grid-small" uk-grid>
 							<div class="uk-width-1-4">
@@ -22,18 +29,20 @@
 	  						<div class="uk-width-1-4">
 								<label class="uk-text-small">Minutes</label>
 								<select id="estimated_minutes" name="estimated_minutes" class="uk-select">
-									<option value="00" @if($data['summary']['estimated_minutes'] == '00') @endif>00</option>
-									<option value="15" @if($data['summary']['estimated_minutes'] == '15') @endif>15</option>
-									<option value="30" @if($data['summary']['estimated_minutes'] == '30') @endif>30</option>
-									<option value="45" @if($data['summary']['estimated_minutes'] == '45') @endif>45</option>
+									<option value="00" @if($data['summary']['estimated_minutes'] == '00') selected @endif>00</option>
+									<option value="15" @if($data['summary']['estimated_minutes'] == '15') selected @endif>15</option>
+									<option value="30" @if($data['summary']['estimated_minutes'] == '30') selected @endif>30</option>
+									<option value="45" @if($data['summary']['estimated_minutes'] == '45') selected @endif>45</option>
 								</select>
 							</div>
 	  						<div class="uk-width-1-4">
 								<button class="uk-button uk-button-primary" style=" width: 100%;margin-top: 26px;" onclick="saveEstimatedHours(event);">SAVE</button>	
 							</div>
+							@if(!$data['summary']['estimated'])
 	  						<div class="uk-width-1-4">
 								<button class="uk-button uk-button-default" style=" width: 100%;margin-top: 26px;" type="cancel" onclick=" $('.estHour').toggle();return false;">CANCEL</button>	
 							</div>
+							@endif
 					</form>
 				</h3>
 			</div>
@@ -312,7 +321,7 @@
 			"datasets":[
 				{
 					"label":"Program 1",
-					"data":[27.15,107.30],
+					"data":{{$data['summary']['chart_data']}},
 					"backgroundColor":[
 						chartColors.needed,
 						chartColors.estimated
@@ -344,6 +353,8 @@
                 $('#estimated_hours_field').html(data.hours);
                 $('#estimated_hours_needed').html(data.needed);
                 $('.estHour').toggle();
+
+                $('#project-details-button-2').trigger( 'click' );
             }
         } );
 	}

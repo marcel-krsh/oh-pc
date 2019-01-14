@@ -241,6 +241,26 @@ class CachedAudit extends Model
         }
     }
 
+    public function estimated_chart_data()
+    {
+        // used to display the chart on the assignment page
+        $estimated = 0;
+        $needed = 0;
+        if($this->estimated_time){
+            $estimated_time = explode(':', $this->estimated_time);
+            //$minutes = 100 * $estimated_time[1] / 60;
+            //$estimated = $estimated_time[0].'.'.$minutes;
+            $estimated = ltrim($estimated_time[0], '0').'.'.$estimated_time[1]; // not accurate, but it will display correctly
+        }
+        if($this->estimated_time_needed){
+            $estimated_time_needed = explode(':', $this->estimated_time_needed);
+            //$minutes = 100 * $estimated_time_needed[1] / 60;
+            $needed = ltrim($estimated_time_needed[0], '0').'.'.$estimated_time_needed[1];
+        }
+
+        return '['.$needed.','.$estimated.']';
+    }
+
     public function getLeadJsonAttribute($value)
     {
         return json_decode($value);

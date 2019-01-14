@@ -31,6 +31,6 @@ class AuditAuditor extends Model
      */
     public function user() : HasOne
     {
-        return $this->hasOne(\App\Models\User::class, 'person_key', 'user_key');
+        return $this->hasOne(\App\Models\User::class);
     }
 }

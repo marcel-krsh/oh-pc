@@ -353,13 +353,14 @@ class AuditController extends Controller
         // types: compliance, assignment, findings, followups, reports, documents, comments, photos
         // project: project_id?
 
-        //$project = Project::where('')
+        $project = Project::where('id','=',$id)->first();
+        //dd($project->selected_audit());
 
         switch ($type) {
             case 'compliance':
                 $data = collect([
                     "project" => [
-                        'id' => 1
+                        'id' => $project->id
                     ],
                     "summary" => [
                         'required_unit_selected' => 0,
@@ -380,53 +381,37 @@ class AuditController extends Controller
                 ]);
                 break;
             case 'assignment':
-                // get dynamic data!
-                
-                dd($id);
+
+                $auditors = $project->selected_audit()->auditors();
+                $auditors_array = array();
+                foreach($auditors as $auditor){
+                    $auditors_array[] = [
+                        'id' => $auditor->id,
+                        'name' => $auditor->user()->full_name,
+                        'initials' => $auditor->user()->initials,
+                        'color' => $auditor->user()->color
+                    ];
+                }
 
                 $data = collect([
                     "project" => [
-                        'id' => 1,
-                        'audit_id' => 123
+                        'id' => $project->id,
+                        'audit_id' => $project->selected_audit()->id
                     ],
                     "summary" => [
                         'required_unit_selected' => 0,
-                        'inspectable_areas_assignment_needed' => 12,
-                        'required_units_selection' => 13,
-                        'file_audits_needed' => 14,
-                        'physical_audits_needed' => 15,
-                        'schedule_conflicts' => 16,
-                        'estimated' => '107:00',
-                        'estimated_hours' => '107',
-                        'estimated_minutes' => '00',
-                        'needed' => '27:00',
+                        'inspectable_areas_assignment_needed' => 0,
+                        'required_units_selection' => 0,
+                        'file_audits_needed' => 0,
+                        'physical_audits_needed' => 0,
+                        'schedule_conflicts' => 0,
+                        'estimated' => $project->selected_audit()->estimated_hours().':'.$project->selected_audit()->estimated_minutes(),
+                        'estimated_hours' => $project->selected_audit()->estimated_hours(),
+                        'estimated_minutes' => $project->selected_audit()->estimated_minutes(),
+                        'needed' => $project->selected_audit()->hours_still_needed(),
+                        'chart_data' => $project->selected_audit()->estimated_chart_data()
                     ],
-                    'auditors' => [
-                        [
-                            'id' => 1,
-                            'name' => 'Brian Greenwood',
-                            'initials' => 'BG',
-                            'color' => 'pink'
-                        ],
-                        [
-                            'id' => 2,
-                            'name' => 'Brianna Bluewood',
-                            'initials' => 'BB',
-                            'color' => 'blue'
-                        ],
-                        [
-                            'id' => 3,
-                            'name' => 'John Smith',
-                            'initials' => 'JS',
-                            'color' => 'black'
-                        ],
-                        [
-                            'id' => 4,
-                            'name' => 'Sarah Connor',
-                            'initials' => 'SC',
-                            'color' => 'red'
-                        ]
-                    ],
+                    'auditors' => $auditors_array,
                     "days" => [
                         [
                             'id' => 6,
@@ -492,6 +477,7 @@ class AuditController extends Controller
                         ]
                     ]
                 ]);
+
                 break;
             case 'findings':
                 break;
@@ -511,7 +497,7 @@ class AuditController extends Controller
         return view('projects.partials.details-'.$type, compact('data'));
     }
 
-    public function saveEstimatedHours(Request $request, $id){ dd($id);
+    public function saveEstimatedHours(Request $request, $id){ 
         // audit id
         $forminputs = $request->get('inputs');
         parse_str($forminputs, $forminputs);
@@ -519,8 +505,8 @@ class AuditController extends Controller
         $hours = (int) $forminputs['estimated_hours'];
         $minutes = (int) $forminputs['estimated_minutes'];
 
-        $audit = Audit::where('id','=',$id)->where('lead_user_id','=',Auth::user()->id)->first();
-
+        $audit = CachedAudit::where('id','=',$id)->where('lead','=',Auth::user()->id)->first();
+//dd($audit, $hours, $minutes, $id);
         $new_estimate = $hours.":".$minutes.":00";
 
         if($audit){
@@ -556,6 +542,7 @@ class AuditController extends Controller
                 'physical_audits_needed' => 15,
                 'schedule_conflicts' => 16,
                 'estimated' => '107:00',
+                'estimated_minutes' => '',
                 'needed' => '27:00',
             ],
             'auditors' => [
