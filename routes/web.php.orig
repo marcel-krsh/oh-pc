@@ -20,25 +20,29 @@
         //Route::get('/document/{documentId}','SyncController@getDoc');
         Route::get('/document/{documentId}', function($documentId) {
             // Do Devco Auth here?
-            $deviceId=11;
-            $deviceName='TestingSystem';
+
             // Look for existence of file on the provider location (ie. Docuware)
             // @todo: Add the log entry for the access request
             $doc_service = new \App\Services\DocumentService;
-            $document_contents = $doc_service->getDocument($documentId,Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
+            $document_contents = $doc_service->getDocument($documentId);
+<<<<<<< HEAD
+
+            // Faking in a local test document
+            //$document_contents = \Illuminate\Support\Facades\Storage::get('/home/forge/pcinspectdev.ohiohome.org/public/TestFile.pdf');
+=======
 
             //\Illuminate\Support\Facades\Storage::put('test.pdf', $document_contents);
 
 
             // Faking in a local test document
             //$document_contents = \Illuminate\Support\Facades\Storage::disk('base')->get('public/TestFile.pdf');
+>>>>>>> 68c2f5a03b1940fdb99ea6e29b913afc144eee33
 
             // Respond Back
             $response = response()->make($document_contents, 200);
             //$response->header('Content-Type', 'application/pdf'); // change this to the download content type.
 
             return $response;
-            //return public_path('TestFile.pdf');
         });
 
 
@@ -114,9 +118,6 @@
         })->name('session.setfilter');
 
         Route::post('/communications/parcel/{parcel?}', 'CommunicationController@searchCommunications')->name('communications.search');
-
-        Route::get('/modals/audits/{id}/updateStep', 'AuditController@updateStep')->name('audits.updatestep');
-        Route::post('audits/{id}/saveStep', 'AuditController@saveStep')->name('audits.savestep');
 
         Route::get('/projects/{id}', 'AuditController@getProject')->name('project');
         Route::get('/projects/{id}/title', 'AuditController@getProjectTitle')->name('project.title');

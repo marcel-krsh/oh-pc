@@ -127,12 +127,18 @@ class DocumentService extends PCAPIService
         $cabinet = \App\Models\SystemSetting::where('key','docuware_cabinet')->first();
         $cabinetNumber = $cabinet->value;
         // example call
-        // /api/v1/docuware/document/{{document_id}}?user={{user_id}}&user_email={{user_email}}&user_name={{user_full_name}}&device_id={{device_id}}&device_name={{device_name}}
-        
+        $cabinet = \App\Models\SystemSetting::where('key','docuware_cabinet')->first();
+        $cabinetNumber = $cabinet->value;
+
         $log_params = "user={$user_id}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+<<<<<<< HEAD
+        
+        return $this->get("{$provider}/{$cabinetNumber}/document/{$id}?{$log_params}");
+=======
 
 
-        return $this->get("api/v1/docuware/documents/{$cabinetNumber}/{$id}?{$log_params}");
+        return $this->getFile("docuware/documents/{$cabinetNumber}/{$id}?{$log_params}");
+>>>>>>> 68c2f5a03b1940fdb99ea6e29b913afc144eee33
     }
 
     /**
