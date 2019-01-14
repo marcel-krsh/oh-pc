@@ -35,6 +35,14 @@ class DocumentController extends Controller
      * @return Response
      */
 
+    public function compare($value1,$value2){
+        if($value1 != $value2){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public function getProjectDocuments(Project $project,Request $request){
         //dd($project);
         $apiConnect = new DevcoService();
@@ -58,7 +66,76 @@ class DocumentController extends Controller
                     if(!is_null($checkAD)){
                         // there is a record - check to make sure it hasn't changed
 
-                        dd('NEED TO PUT IN COMPARRISON CODE');
+                        // compare mod date:
+                        if(strtotime($checkAD->dw_mod_date_time) < strtotime($cd->attributes->fields->DWMODDATETIME)){
+                            // update the record - this one is older
+                            
+                            SyncDocuware::where('id',$checkAD->id)->update([
+                                'docuware_doc_id'=>$cd->attributes->docId,
+                                'type'=>$cd->attributes->docType,
+                                'cabinet_name'=>$cd->attributes->cabinetName,
+                                'cabinet_id'=>$cd->attributes->cabinetId,
+                                'project_number'=>$cd->attributes->fields->PROJECTNUMBER,
+                                'document_class'=>$cd->attributes->fields->DOCUMENTCLASS,
+                                'document_description'=>$cd->attributes->fields->DOCUMENTDESCRIPTION,
+                                'document_date'=>date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DOCUMENTDATE)),
+                                'notes'=>$cd->attributes->fields->NOTES,
+                                'email_to'=>$cd->attributes->fields->EMAILTO,
+                                'email_from'=>$cd->attributes->fields->EMAILFROM,
+                                'email_subject'=>$cd->attributes->fields->EMAILSUBJECT,
+                                'image_file_name'=>$cd->attributes->fields->IMAGEFILENAME,
+                                'retention_sched_code'=>$cd->attributes->fields->RETENTIONSCHEDCODE,
+                                'dw_page_count'=>$cd->attributes->fields->DWPAGECOUNT,
+                                'dw_stored_date_time'=>date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DWSTOREDATETIME)),
+                                'dw_mod_date_time'=>date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DWMODDATETIME)),
+                                'dw_extension'=>$cd->attributes->fields->DWEXTENSION,
+                                'dw_flags'=>$cd->attributes->fields->DWFLAGS,
+                                'dw_doc_size'=>$cd->attributes->fields->DWDOCSIZE,
+                                'dw_flag_sex'=>$cd->attributes->fields->DWFLAGSEX,
+                                'project_id'=>$project->id
+                                    ]);
+                                //dd($doc,$doc->id);
+                                if(!is_null($cd->attributes->fields->DOCUMENTCLASS)){
+                                    //check if the categories are in the database
+                                    $primaryCat = DocumentCategory::where('document_category_name',$cd->attributes->fields->DOCUMENTCLASS)->where('parent_id',0)->first();
+                                    if(is_null($primaryCat)){
+                                        //needs category entered
+                                        $primaryCat = DocumentCategory::create([
+                                            'document_category_name'=>$cd->attributes->fields->DOCUMENTCLASS,
+                                            'from_docuware'=>1,
+                                            'from_allita'=>0,
+                                            'parent_id'=>0,
+                                            'active'=>1
+                                        ]);
+                                    }
+                                    DocumentDocumentCategory::where('sync_docuware_id',$checkAD->id)->where('docuware_document_class',1)->delete();
+                                    DocumentDocumentCategory::create([
+                                        'sync_docuware_id'=>$checkAD->id,
+                                        'document_category_id'=>$primaryCat->id,
+                                        'docuware_document_class'=>1
+                                    ]);
+                                }
+                                if(!is_null($cd->attributes->fields->DOCUMENTDESCRIPTION)){
+                                    $secondaryCat = DocumentCategory::where('document_category_name',$cd->attributes->fields->DOCUMENTDESCRIPTION)->where('parent_id',$primaryCat->id)->first();
+                                    if(is_null($secondaryCat)){
+                                        //needs category entered
+                                        $secondaryCat = DocumentCategory::create([
+                                            'document_category_name'=>$cd->attributes->fields->DOCUMENTDESCRIPTION,
+                                            'from_docuware'=>1,
+                                            'parent_id'=>$primaryCat->id,
+                                            'active'=>1
+                                        ]);
+                                    }
+
+                                    DocumentDocumentCategory::where('sync_docuware_id',$checkAD->id)->where('docuware_document_description',1)->delete();
+                                    DocumentDocumentCategory::create([
+                                        'sync_docuware_id'=>$checkAD->id,
+                                        'document_category_id'=>$secondaryCat->id,
+                                        'docuware_document_class'=>1
+                                    ]);
+                                }
+                                
+                        }
 
 
 
@@ -94,7 +171,7 @@ class DocumentController extends Controller
                         //dd($doc,$doc->id);
                         if(!is_null($cd->attributes->fields->DOCUMENTCLASS)){
                             //check if the categories are in the database
-                            $primaryCat = DocumentCategory::where('document_category_name',$cd->attributes->fields->DOCUMENTCLASS)->whereNull('parent_id')->first();
+                            $primaryCat = DocumentCategory::where('document_category_name',$cd->attributes->fields->DOCUMENTCLASS)->where('parent_id',0)->first();
                             if(is_null($primaryCat)){
                                 //needs category entered
                                 $primaryCat = DocumentCategory::create([
@@ -119,6 +196,7 @@ class DocumentController extends Controller
                                 $secondaryCat = DocumentCategory::create([
                                     'document_category_name'=>$cd->attributes->fields->DOCUMENTDESCRIPTION,
                                     'from_docuware'=>1,
+                                    'parent_id'=>$primaryCat->id,
                                     'active'=>1
                                 ]);
                             }
@@ -135,7 +213,7 @@ class DocumentController extends Controller
 
                 }
 
-                $documents = SyncDocuware::where('project_id',$project->id)->get()->all();
+                $documents = SyncDocuware::where('project_id',$project->id)->orderBy('document_class')->orderby('document_description')->get()->all();
             
             } else {
                 $documents = null;
