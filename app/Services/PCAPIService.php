@@ -77,9 +77,9 @@ class PCAPIService
             'verify' => false,
         ]);
 
-        $response = $client->request('GET', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'));
+        $response = $client->request('GET', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'),['sink' => '/storage/app/temp/foo.pdf']);
 
-        return $response->getBody()->getContents();
+        //return $response->setResponseBody('thisfile.pdf')->send();
     }
 
     public function post($url, $payload)
