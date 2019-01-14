@@ -36,8 +36,8 @@ class DocumentController extends Controller
      * @return Response
      */
 
-    public function getProjectDocuments(Project $projectNumber, string $searchString = null, int $deviceId=0 , string $deviceName='System'){
-
+    public function getProjectDocuments(Project $project,Request $request){
+        dd($project);
         $apiConnect = new DevcoService();
         $documentList = $apiConnect->getProjectDocuments($projectNumber->project_number, $searchString, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
         dd($documentList);
