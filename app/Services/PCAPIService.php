@@ -78,7 +78,7 @@ class PCAPIService
         $response = $client->request(
             'GET',
             $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'),
-            ['sink' => '/storage/app/foo.pdf']
+            ['sink' => storage_path('foo.pdf')]
         );
 
         return $response;
