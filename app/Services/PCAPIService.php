@@ -63,28 +63,16 @@ class PCAPIService
 
     public function getFile($url, $parameters = [])
     {
-        // $this->_auth = new AuthService;
-        
         if ($this->_auth->accessTokenNeedsRefresh()) {
-            //$this->_auth->rootRefreshToken();
             $this->_auth->rootAuthenticate();
         }
 
-        $client = new Client([
-            //'base_uri' => $this->_auth->getUrl(),
-            'timeout'  => 10.0,
-            'verify' => false,
-        ]);
+        $document_service = new DocumentService;
+        //$document = $document_service->getDocument($url);
 
-        $response = $client->request(
-                'GET',
-                $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'),
-                [
-                    'sync' => storage_path('temp/foo.pdf')
-                ]
-            );
+        // storage_path('app/' . $file->file_path)
 
-        //return $response->setResponseBody('thisfile.pdf')->send();
+        return response()->download(public_path('TestFile.pdf'));
     }
 
     public function post($url, $payload)
