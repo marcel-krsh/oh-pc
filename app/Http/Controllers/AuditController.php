@@ -19,6 +19,8 @@ use App\Models\CachedAmenity;
 use App\Models\CachedComment;
 use App\Models\ProjectDetail;
 use App\Models\UnitProgram;
+use App\Models\GuideStep;
+use App\Models\GuideProgress;
 use Auth;
 use Session;
 use App\LogConverter;
@@ -2554,7 +2556,7 @@ class AuditController extends Controller
         return view('projects.partials.details-assignment-auditor-calendar', compact('data'));
     }
 
-    function addAmenity($type, $id)
+    public function addAmenity($type, $id)
     {
 
         switch ($type) {
@@ -2612,7 +2614,7 @@ class AuditController extends Controller
         return view('modals.amenity-add', compact('data', 'auditors'));
     }
 
-    function saveAmenity(Request $request)
+    public function saveAmenity(Request $request)
     {
         // TBD
         //
@@ -2789,5 +2791,41 @@ class AuditController extends Controller
             ]);
             $new_ordering->save();
         }
+    }
+
+    public function updateStep($id){
+        // can this user have the right to change step?? TBD
+        // 
+        $audit = CachedAudit::where('audit_id','=',$id)->first();
+        $steps = GuideStep::where('guide_step_type_id','=',1)->orderBy('order','asc')->get();
+
+        return view('modals.audit-update-step', compact('steps', 'audit'));
+    }
+
+    public function saveStep(Request $request, $id){
+        $step_id = $request->get('step');
+        $step = GuideStep::where('id','=',$step_id)->first();
+        $audit = CachedAudit::where('id','=',$id)->first();
+
+        // check if user has the right to save step using roles TBD
+        
+        // add new guide_progress entry
+        $progress = new GuideProgress([
+            'user_id' => Auth::user()->id,
+            'audit_id' => $audit->id,
+            'project_id' => $audit->project_id,
+            'guide_step_id' => $step_id,
+            'type_id' => 1
+        ]);
+        $progress->save();
+
+        // update CachedAudit table with new step info
+        $audit->update([
+            'step_id' => $step->id,
+            'step_status_icon' => $step->icon,
+            'step_status_text' => $step->step_help,
+        ]);
+
+        return 1;
     }
 }

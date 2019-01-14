@@ -113,6 +113,9 @@
 
         Route::post('/communications/parcel/{parcel?}', 'CommunicationController@searchCommunications')->name('communications.search');
 
+        Route::get('/modals/audits/{id}/updateStep', 'AuditController@updateStep')->name('audits.updatestep');
+        Route::post('audits/{id}/saveStep', 'AuditController@saveStep')->name('audits.savestep');
+
         Route::get('/projects/{id}', 'AuditController@getProject')->name('project');
         Route::get('/projects/{id}/title', 'AuditController@getProjectTitle')->name('project.title');
         Route::get('/projects/{id}/details', 'AuditController@getProjectDetails')->name('project.details');

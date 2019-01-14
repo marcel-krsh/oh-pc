@@ -1880,27 +1880,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['audit', 'index'],
   methods: {
+    updateStep: function updateStep() {
+      dynamicModalLoad('audits/' + this.audit.auditId + '/updateStep', 0, 0, 0);
+    },
     openContactInfo: function openContactInfo() {
       dynamicModalLoad('projects/' + this.audit.projectId + '/contact', 0, 0, 0);
     },
@@ -44132,10 +44117,9 @@ var render = function() {
             (_obj$14[_vm.audit.stepStatusIconClass] = true),
             (_obj$14[_vm.audit.stepStatusClass] = true),
             _obj$14),
-            attrs: { "uk-tooltip": _vm.audit.tooltipStepStatus }
-          }),
-          _vm._v(" "),
-          _vm._m(0)
+            attrs: { "uk-tooltip": _vm.audit.tooltipStepStatus },
+            on: { click: _vm.updateStep }
+          })
         ])
       ])
     ])
@@ -44156,73 +44140,7 @@ var render = function() {
   var _obj$13
   var _obj$14
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "uk-dropdown uk-dropdown-bottom filter-dropdown",
-        staticStyle: { top: "26px", left: "0px" },
-        attrs: { "uk-dropdown": "flip: false; pos: bottom-right; mode: click;" }
-      },
-      [
-        _c("form", { staticClass: "update-step", attrs: { method: "post" } }, [
-          _c("fieldset", { staticClass: "uk-fieldset" }, [
-            _c(
-              "div",
-              { staticClass: "uk-margin uk-child-width-auto uk-grid" },
-              [
-                _vm._v(
-                  "\n                                yo\n                                "
-                )
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "uk-margin-remove", attrs: { "uk-grid": "" } },
-              [
-                _c("div", { staticClass: "uk-width-1-2" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "uk-button uk-button-primary uk-width-1-1",
-                      attrs: { onclick: "updateAuditStepSelection(event);" }
-                    },
-                    [
-                      _c("i", { staticClass: "fas fa-filter" }),
-                      _vm._v(" APPLY FILTER")
-                    ]
-                  )
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "uk-width-1-2" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "uk-button uk-button-secondary uk-width-1-1",
-                      attrs: {
-                        onclick:
-                          "$('.update-step').trigger( 'click' );return false;"
-                      }
-                    },
-                    [
-                      _c("i", { staticClass: "a-circle-cross" }),
-                      _vm._v(" CANCEL")
-                    ]
-                  )
-                ])
-              ]
-            )
-          ])
-        ])
-      ]
-    )
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
