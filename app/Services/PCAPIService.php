@@ -70,14 +70,19 @@ class PCAPIService
             $this->_auth->rootAuthenticate();
         }
 
-
         $client = new Client([
-            'base_uri' => $this->_auth->getUrl(),
-            'timeout'  => 5.0,
+            //'base_uri' => $this->_auth->getUrl(),
+            'timeout'  => 10.0,
             'verify' => false,
         ]);
 
-        $response = $client->request('GET', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'),['sink' => '~/pcinspectdev.ohiohome.org/storage/app/temp/foo.pdf']);
+        $response = $client->request(
+                'GET',
+                $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'),
+                [
+                    'sync' => storage_path('temp/foo.pdf')
+                ]
+            );
 
         //return $response->setResponseBody('thisfile.pdf')->send();
     }
