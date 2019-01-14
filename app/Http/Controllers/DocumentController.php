@@ -37,9 +37,12 @@ class DocumentController extends Controller
      */
 
     public function getProjectDocuments(Project $project,Request $request){
-        dd($project);
+        //dd($project);
         $apiConnect = new DevcoService();
-        $documentList = $apiConnect->getProjectDocuments($projectNumber->project_number, $searchString, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
+        $searchString = null;
+        $deviceId = null;
+        $deviceName = null;
+        $documentList = $apiConnect->getProjectDocuments($project->project_number, $searchString, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
         dd($documentList);
 
         //dd($documentList,'Third doc id:'.$documentList->included[2]->id,'Page count:'.$documentList->meta->totalPageCount,'File type of third doc:'.$documentList->included[2]->attributes->fields->DWEXTENSION,'Document Class/Category:'.$documentList->included[2]->attributes->fields->DOCUMENTCLASS,'Userid passed:'. Auth::user()->id,'User email passed:'.Auth::user()->email,'Username Passed:'.Auth::user()->name,'Device id and Device name:'.$deviceId.','.$deviceName);
