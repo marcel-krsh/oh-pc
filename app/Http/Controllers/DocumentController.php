@@ -55,8 +55,15 @@ class DocumentController extends Controller
                     //dd($cd, $cd->attributes->docId);
                     $checkAD = SyncDocuware::where('docuware_doc_id',$cd->attributes->docId)->first();
                     
-                    if(count($checkAd)>0){
+                    if(count($checkAD)>0){
                         // there is a record - check to make sure it hasn't changed
+
+
+
+
+
+
+                        /// MISSSING CODE
 
                     } else {
                         // there is not a record - add it to the document list.
