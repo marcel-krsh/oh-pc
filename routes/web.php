@@ -34,7 +34,7 @@
             //$document_contents = \Illuminate\Support\Facades\Storage::disk('base')->get('public/TestFile.pdf');
 
             // Respond Back
-            $response = response()->make($document_contents, 200);
+            $response = response()->make($document_contents, 200)->download();
             //$response->header('Content-Type', 'application/pdf'); // change this to the download content type.
 
             return $response;
