@@ -27,7 +27,7 @@
             //$document_contents = $doc_service->getDocument($documentId);
 
             // Faking in a local test document
-            $document_contents = \Illuminate\Support\Facades\Storage::get(base_path('public/TestFile.pdf'));
+            $document_contents = \Illuminate\Support\Facades\Storage::get('/home/forge/pcinspectdev.ohiohome.org/public/TestFile.pdf');
 
             // Respond Back
             $response = response()->make($document_contents, 200);
