@@ -82,7 +82,7 @@ class DocumentController extends Controller
                             'dw_flags'=>$cd->attributes->fields->DWFLAGS,
                             'dw_doc_size'=>$cd->attributes->fields->DWDOCSIZE,
                             'dw_flag_sex'=>$cd->attributes->fields->DWFLAGSEX,
-                            'project_id'=>$project->id;
+                            'project_id'=>$project->id
                         ])->id;
                         if(!is_null($cd->attributes->fields->DOCUMENTCLASS)){
                             //check if the categories are in the database
