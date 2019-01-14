@@ -94,12 +94,14 @@ class DocumentController extends Controller
                         //dd($doc,$doc->id);
                         if(!is_null($cd->attributes->fields->DOCUMENTCLASS)){
                             //check if the categories are in the database
-                            $primaryCat = DocumentCategory::where('document_category_name',$cd->attributes->fields->DOCUMENTCLASS)->first();
+                            $primaryCat = DocumentCategory::where('document_category_name',$cd->attributes->fields->DOCUMENTCLASS)->whereNull('parent_id')->first();
                             if(is_null($primaryCat)){
                                 //needs category entered
                                 $primaryCat = DocumentCategory::create([
                                     'document_category_name'=>$cd->attributes->fields->DOCUMENTCLASS,
                                     'from_docuware'=>1,
+                                    'from_allita'=>0,
+                                    'parent_id'=>0,
                                     'active'=>1
                                 ]);
                             }
@@ -110,8 +112,8 @@ class DocumentController extends Controller
                                 'docuware_document_class'=>1
                             ]);
                         }
-                        if(!is_null($cd->attributes->fields->DOCUMENTDESCRIPTON)){
-                            $secondaryCat = DocumentCategory::where('document_category_name',$cd->attributes->fields->DOCUMENTDESCRIPTION)->first();
+                        if(!is_null($cd->attributes->fields->DOCUMENTDESCRIPTION)){
+                            $secondaryCat = DocumentCategory::where('document_category_name',$cd->attributes->fields->DOCUMENTDESCRIPTION)->where('parent_id',$primaryCat->id)->first();
                             if(is_null($secondaryCat)){
                                 //needs category entered
                                 $secondaryCat = DocumentCategory::create([
