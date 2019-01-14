@@ -128,7 +128,7 @@ class DocumentController extends Controller
                 $documents = SyncDocuware::where('project_id',$project->id)->get()->all();
             
             } else {
-                $documents = NULL
+                $documents = null;
             }
             dd($documents);
         
