@@ -56,7 +56,7 @@ class DocumentController extends Controller
                 }
             
             }
-        }
+        
 
     }
     public function showTabFromParcelId(Parcel $parcel, Request $request)
