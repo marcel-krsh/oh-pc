@@ -72,7 +72,8 @@ class PCAPIService
 
         // storage_path('app/' . $file->file_path)
 
-        return response()->download(public_path('TestFile.pdf'));
+        return public_path('TestFile.pdf');
+        //return response()->download(public_path('TestFile.pdf'));
     }
 
     public function post($url, $payload)
