@@ -67,9 +67,9 @@ class DocumentController extends Controller
                         // there is a record - check to make sure it hasn't changed
 
                         // compare mod date:
-                        if(strtotime($checkAD) < strtotime($cd->attributes->fields->DWMODDATETIME)){
+                        if(strtotime($checkAD->dw_mod_date_time) < strtotime($cd->attributes->fields->DWMODDATETIME)){
                             // update the record - this one is older
-                            dd('OLDER! - '.strtotime($checkAD).'< '.$cd->attributes->fields->DWMODDATETIME);
+                            dd('OLDER! - '.strtotime($checkAD->dw_mod_date_time).'< '.strtotime($cd->attributes->fields->DWMODDATETIME));
                             SyncDocuware::where('id',$checkAD->id)->update([
                                 'docuware_doc_id'=>$cd->attributes->docId,
                                 'type'=>$cd->attributes->docType,
