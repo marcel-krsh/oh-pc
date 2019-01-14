@@ -20,11 +20,12 @@
         //Route::get('/document/{documentId}','SyncController@getDoc');
         Route::get('/document/{documentId}', function($documentId) {
             // Do Devco Auth here?
-
+            $deviceId=11;
+            $deviceName='TestingSystem'
             // Look for existence of file on the provider location (ie. Docuware)
             // @todo: Add the log entry for the access request
             $doc_service = new \App\Services\DocumentService;
-            $document_contents = $doc_service->getDocument($documentId);
+            $document_contents = $doc_service->getDocument($documentId,Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
 
             //\Illuminate\Support\Facades\Storage::put('test.pdf', $document_contents);
 
