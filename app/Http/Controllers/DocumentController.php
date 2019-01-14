@@ -53,7 +53,7 @@ class DocumentController extends Controller
                 
                 foreach ($currentDocuwareProjectDocs as $cd) {
                     //check if the document is in our database:
-                    dd($cd);
+                    dd($cd, $cd->attributes->docId);
                     $checkAD = SyncDocuware::where('document_id',$cd->id);
 
                 }
