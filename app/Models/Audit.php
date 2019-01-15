@@ -37,19 +37,19 @@ class Audit extends Model
     }
     public function nlts() : HasMany
     {
-        return $this->hasMany('\App\Models\Findings')->where('allita_type','nlt');
+        return $this->hasMany('\App\Models\Finding')->where('allita_type','nlt');
     }
     public function lts() : HasMany
     {
-        return $this->hasMany('\App\Models\Findings')->where('allita_type','lt');
+        return $this->hasMany('\App\Models\Finding')->where('allita_type','lt');
     }
     public function files() : HasMany
     {
-        return $this->hasMany('\App\Models\Findings')->where('allita_type','file');
+        return $this->hasMany('\App\Models\Finding')->where('allita_type','file');
     }
     public function findings() : HasMany
     {
-        return $this->hasMany('\App\Models\Findings');
+        return $this->hasMany('\App\Models\Finding');
     }
     public function ranCompliance(){
         $this->update(['compliance_run'=>1,'rerun_compliance'=>null]);
