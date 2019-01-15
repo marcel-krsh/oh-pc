@@ -15,7 +15,7 @@ class Unit extends Model
 
     public function household() : HasOne
     {
-        return $this->hasOne(\App\Models\Household::class, 'unit_id', 'unit_id');
+        return $this->hasOne(\App\Models\Household::class, 'unit_id', 'id');
     }
 
     public function unitBedroom() : HasOne
@@ -40,7 +40,7 @@ class Unit extends Model
 
     public function household_events() : HasMany
     {
-        return $this->hasMany(\App\Models\HouseholdEvent::class, 'unit_id', 'unit_id');
+        return $this->hasMany(\App\Models\HouseholdEvent::class, 'unit_id', 'id');
     }
 
     public function isAssistedUnit() : bool
@@ -55,6 +55,6 @@ class Unit extends Model
 
     public function programs() : HasMany
     {
-        return $this->hasMany(\App\Models\UnitProgram::class, 'unit_id', 'unit_id');
+        return $this->hasMany(\App\Models\UnitProgram::class, 'unit_id', 'id');
     }
 }
