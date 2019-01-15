@@ -210,7 +210,7 @@
     <select class="uk-width-1-2" onchange="filterClasses(this.value)">
         <option value="all">ALL CLASSES</option>
         @php $currentParent = ''; @endphp
-        @php $documentClasses = $documentReset; @endPHP
+        @php $documentClasses = $documentReset; @endphp
         @foreach($documentClasses as $category)
             @if($currentParent != $document->document_class)
                 <option value="{{strtolower(str_replace(' ','-',$document->document_class))}}">{{ucwords(strtolower($document->document_class))}}</option> 
@@ -221,7 +221,7 @@
     <select class="uk-width-1-2" onchange="filterDescriptions(this.value)">
         <option  value="all" >ALL DESCRIPTIONS</option>
         @php $currentParent = ''; @endphp
-        @php $documentDescriptions = $documentReset; @endPHP
+        @php $documentDescriptions = $documentReset; @endphp
         @foreach($documentDescriptions as $category)
             @if($currentParent != $document->document_description)
                 <option value="{{strtolower(str_replace(' ','-',$document->document_description))}}">{{ucwords(strtolower($document->document_description))}}</option> 
