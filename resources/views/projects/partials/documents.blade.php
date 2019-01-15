@@ -57,10 +57,10 @@
         <tr>
             
             <td>
-                {{$document->dw_document_class}}
+                {{$document->document_class}}
             </td>
             <td>
-                {{$document->dw_document_description}}
+                {{$document->document_description}}
             </td>
             <td>{{ date('F d, Y g:h a', strtotime($document->dw_stored_date_time)) }}</td>
             <td>{{ date('F d, Y g:h a', strtotime($document->dw_mod_date_time)) }}</td>
@@ -91,10 +91,10 @@
 <div class="uk-width-2-5@m uk-width-1-1">
     <div class="uk-grid-collapse" uk-grid>
         <div class="uk-width-1-1">
-            <p class="blue-text">Click on the <span class="a-higher"></span> icon in the document listed to the left to automatically select categories for that document.</p>
+            
             <div uk-grid id="category-list"> 
                 <div class="uk-width-1-1 uk-margin-small-bottom">
-                    <ul class="uk-list document-category-menu">
+                    <ul class="uk-list document-category-menu uk-scrollable-box">
                         @php $currentParent = ''; @endphp
                         @foreach ($document_categories as $category)
                         @if($currentParent != $category->parent_id)

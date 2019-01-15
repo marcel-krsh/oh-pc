@@ -25,4 +25,6 @@ class DocumentCategory extends Model
     	}
     	
     }
+
+    
 }
