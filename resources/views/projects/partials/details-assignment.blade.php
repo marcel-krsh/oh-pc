@@ -78,21 +78,16 @@
 								<h3 style="margin-top:5px;text-align: left;"> {{formatDate($day->date, 'l F d, Y')}} <small><i class="a-trash-4 use-hand-cursor" onclick="deleteDay({{$day->id}});"></i></small></h3>
 							</div>
 							<div class="divTableCell">
-								<span uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($project->selected_audit()->lead_auditor()->full_name())}};" title="" aria-expanded="false" class="user-badge user-badge-{{$project->selected_audit()->lead_auditor()->color}} no-float uk-link" >{{$project->selected_audit()->lead_auditor()->initials()}}</span>
+								<span uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($project->selected_audit()->lead_auditor->full_name())}};" title="" aria-expanded="false" class="user-badge user-badge-{{$project->selected_audit()->lead_auditor->badge_color}} no-float uk-link" >{{$project->selected_audit()->lead_auditor->initials()}}</span>
 							</div>
 							@foreach($project->selected_audit()->auditors as $auditor)
-							@if($auditor->user_id != $project->selected_audit()->lead_auditor()->id)
+							@if($auditor->user_id != $project->selected_audit()->lead_auditor->id)
 							<div class="divTableCell">
-								<span uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($auditor->user->full_name())}};" title="" aria-expanded="false" class="user-badge user-badge-{{$auditor->user->color}} no-float uk-link" >{{$auditor->user->initials()}}</span>
+								<span uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($auditor->user->full_name())}};" title="" aria-expanded="false" class="user-badge user-badge-{{$auditor->user->badge_color}} no-float uk-link" >{{$auditor->user->initials()}}</span>
 							</div>
 							@endif
 							@endforeach
 
-							@foreach($data['auditors'] as $auditor)
-							<div class="divTableCell">
-								<span uk-tooltip="title:VIEW AUDITOR STATS & DETAILED SCHEDULE;" title="" aria-expanded="false" class="user-badge user-badge-{{$auditor['color']}} no-float uk-link" >{{$auditor['initials']}}</span>
-							</div>
-							@endforeach
 							<div class="divTableCell">
 								<i class="a-circle-plus" onclick="addAssignmentAuditor({{$data['project']['id']}});" uk-tooltip="title:CLICK TO ADD AUDITORS;"></i>
 							</div>
@@ -136,11 +131,7 @@
 					<div class="divTableBody">
 						<div class="divTableRow divTableHeader">
 							<div class="divTableCell">&nbsp;</div>
-							@foreach($data['auditors'] as $auditor)
-							<div class="divTableCell">
-								<span uk-tooltip="title:VIEW AUDITOR STATS & DETAILED SCHEDULE;" title="" aria-expanded="false" class="user-badge user-badge-{{$auditor['color']}} no-float uk-link" >{{$auditor['initials']}}</span>
-							</div>
-							@endforeach
+							
 							<div class="divTableCell">
 								<i class="a-circle-plus" onclick="addAssignmentAuditor({{$data['project']['id']}});" uk-tooltip="title:CLICK TO ADD AUDITORS;"></i>
 							</div>
