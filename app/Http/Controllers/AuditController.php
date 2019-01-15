@@ -39,6 +39,13 @@ class AuditController extends Controller
         }
     }
 
+    public function rerunCompliance(Audit $audit){
+        if($audit->findings->count() < 1){
+            $audit->rerun_compliance = 1;
+            $audit->save();
+            return 'No findings! Good to go!';
+        }
+    }
     public function buildingsFromAudit($audit, Request $request)
     {
         $target = $request->get('target');
