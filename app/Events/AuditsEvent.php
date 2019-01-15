@@ -26,7 +26,6 @@ use App\Models\UnitProgram;
 use Illuminate\Support\Facades\Redis;
 use Auth;
 
-use Illuminate\Support\Facades\Log;
 use App\Jobs\ComplianceSelectionJob;
 
 class AuditsEvent 
