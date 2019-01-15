@@ -75,7 +75,7 @@
                 @if($document->notes)&nbsp;&nbsp;| &nbsp;&nbsp;<a class="uk-link-muted " uk-tooltip="{{ $document->notes }}">
                     <span class="a-file-info"></span>
                 </a>
-                 @endif
+                 @endif 
                 
             </td>
         </tr>
