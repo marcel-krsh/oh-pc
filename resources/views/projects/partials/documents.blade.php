@@ -61,8 +61,8 @@
             <td>
                 {{ucwords(strtolower($document->document_description))}}
             </td>
-            <td>{{ date('F d, Y g:h a', strtotime($document->dw_stored_date_time)) }}</td>
-            <td>{{ date('F d, Y g:h a', strtotime($document->dw_mod_date_time)) }}</td>
+            <td>{{ date('m/d/Y g:h a', strtotime($document->dw_stored_date_time)) }}</td>
+            <td>{{ date('m/d/Y g:h a', strtotime($document->dw_mod_date_time)) }}</td>
             <td>
                 @if($document->notes)<a class="uk-link-muted " uk-tooltip="{{ $document->notes }}">
                     <span class="a-file-info"></span>
