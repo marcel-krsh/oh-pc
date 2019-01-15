@@ -23,6 +23,10 @@
             <td>
                 {{ucwords(strtolower($document->document_description))}}
             </td>
+            <td>
+                <!-- FROM -->
+                NA
+            </td>
             <td><span uk-tooltip title="{{ date('g:h a', strtotime($document->dw_stored_date_time)) }}">{{ date('m/d/Y', strtotime($document->dw_stored_date_time)) }}</span></td>
             <td><span uk-tooltip title="{{ date('g:h a', strtotime($document->dw_mod_date_time)) }}">{{ date('m/d/Y', strtotime($document->dw_mod_date_time)) }}</td>
             <td>
