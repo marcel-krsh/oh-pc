@@ -98,13 +98,22 @@ class CachedAudit extends Model
         return $this->hasMany(\App\Models\AuditAuditor::class, 'audit_id');
     }
 
+    public function days() : HasMany
+    {
+        return $this->hasMany(\App\Models\ScheduleDay::class, 'audit_id');
+    }
+
     public function progress() : HasMany{
         return $this->hasMany(\App\Models\GuideProgress::class, 'audit_id')->orderBy('id','desc');
     }
 
     public function current_step()
     {
-        return $this->progress()->first();
+        if($this->has('progress')){
+            return $this->progress()->first();
+        }else{
+            return 0;
+        }
     }
 
     public function checkStatus($type = null)
@@ -282,13 +291,13 @@ class CachedAudit extends Model
     }
 
     /**
-     * audits
+     * audit
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function communications() : HasMany
+    public function audit() : HasOne
     {
-        return $this->hasMany(\App\Models\Communication::class, 'audit_id');
+        return $this->hasOne(\App\Models\Audit::class, 'id', 'audit_id');
     }
 
     // amenity_inspections table is where we store all the amenities that need to be inspected

@@ -1236,7 +1236,7 @@ class AuditsEvent
         if($cached_audit){
             // when updating a cachedaudit, run the status test
 
-            $inspection_schedule_checks = $audit->checkStatus('schedules');
+            $inspection_schedule_checks = $cached_audit->checkStatus('schedules');
             $inspection_status_text = $inspection_schedule_checks['inspection_status_text']; 
             $inspection_schedule_date = $inspection_schedule_checks['inspection_schedule_date'];
             $inspection_schedule_text = $inspection_schedule_checks['inspection_schedule_text'];
@@ -1250,6 +1250,15 @@ class AuditsEvent
             
             // current step
             $step = $cached_audit->current_step();
+            if(!$step){
+                $step_id = 1;
+                $step_icon = 'a-home-question';
+                $step_status_text = 'REVIEW INSPECTABLE AREAS';
+            }else{
+                $step_id = $step->id;
+                $step_icon = $step->icon;
+                $step_status_text = $step->step_help;
+            }
 
             $cached_audit->update([
                 'audit_id' => $audit->id,
@@ -1304,10 +1313,10 @@ class AuditsEvent
                 'history_status_icon' => 'a-person-clock',
                 'history_status' => '',
                 'history_status_text' => 'NO/VIEW HISTORY',
-                'step_id' => $step->id,
-                'step_status_icon' => $step->icon,
+                'step_id' => $step_id,
+                'step_status_icon' => $step_icon,
                 'step_status' => 'no-action',
-                'step_status_text' => $step->step_help,
+                'step_status_text' => $step_status_text,
                 'estimated_time' => $estimated_time,
                 'estimated_time_needed' => $estimated_time_needed,
                 //'amenities_json' => json_encode($amenities)

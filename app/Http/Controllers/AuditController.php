@@ -21,10 +21,13 @@ use App\Models\ProjectDetail;
 use App\Models\UnitProgram;
 use App\Models\GuideStep;
 use App\Models\GuideProgress;
+use App\Models\ScheduleDay;
+use App\Models\ScheduleTime;
 use Auth;
 use Session;
 use App\LogConverter;
 use Carbon;
+use Event;
 
 class AuditController extends Controller
 {
@@ -393,6 +396,18 @@ class AuditController extends Controller
                     ];
                 }
 
+                $days = array();
+                foreach($project->selected_audit()->days as $day){
+                    // TBD get status and icon for each day
+                    // 
+                    $days[] = [
+                        'id' => $day->id,
+                        'date' => formatDate($day->date, 'l F d, Y'),
+                        'status' => 'action-required',
+                        'icon' => 'a-avatar-fail'
+                    ];
+                }
+
                 $data = collect([
                     "project" => [
                         'id' => $project->id,
@@ -412,20 +427,7 @@ class AuditController extends Controller
                         'chart_data' => $project->selected_audit()->estimated_chart_data()
                     ],
                     'auditors' => $auditors_array,
-                    "days" => [
-                        [
-                            'id' => 6,
-                            'date' => '12/22/2018',
-                            'status' => 'action-required',
-                            'icon' => 'a-avatar-fail'
-                        ],
-                        [
-                            'id' => 7,
-                            'date' => '12/23/2018',
-                            'status' => 'ok-actionable',
-                            'icon' => 'a-avatar-approve'
-                        ]
-                    ],
+                    "days" => $days,
                     'projects' => [
                         [
                             'id' => '19200114',
@@ -494,7 +496,39 @@ class AuditController extends Controller
             default:
         }
 
-        return view('projects.partials.details-'.$type, compact('data'));
+        return view('projects.partials.details-'.$type, compact('data', 'project'));
+    }
+
+    public function addADay(Request $request, $id){
+        // TBD only authorized users can add days (lead/managers)
+        
+        $audit = CachedAudit::where('id','=',$id)->first();
+        $date = formatDate($request->get('date'), "Y-m-d H:i:s", "F d, Y");
+
+        $day = new ScheduleDay([
+            'audit_id' => $id,
+            'date' => $date
+        ]);
+        $day->save();
+
+        return 1;
+    }
+
+    public function deleteDay(Request $request, $id, $day_id){
+        // TBD only authorized users can add days (lead/managers)
+         
+        // 1. delete schedules
+        // 2. delete day
+        // 3. update estimated needed time and checks by rebuilding CachedAudit 
+
+        $audit = CachedAudit::where('id','=',$id)->first();
+        $schedules = ScheduleTime::where('day_id','=',$day_id)->where('audit_id','=',$id)->delete();
+        $day = ScheduleDay::where('id','=',$day_id)->where('audit_id','=',$id)->delete();
+ 
+        Event::fire('audit.cache', $audit->audit);
+
+        $output = ['data' => 1];
+        return $output;
     }
 
     public function saveEstimatedHours(Request $request, $id){ 
