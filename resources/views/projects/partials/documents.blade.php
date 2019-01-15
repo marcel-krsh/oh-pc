@@ -48,7 +48,6 @@
                 <th>CLASS</th>
                 <th>DESCRIPTION</th><th>STORED</th>
                 <th>MODIFIED</th>
-                <th>FROM</th>
                 <th>ACTIONS</th>
             </tr>
         </thead>
@@ -65,10 +64,10 @@
             <td>{{ date('F d, Y g:h a', strtotime($document->dw_stored_date_time)) }}</td>
             <td>{{ date('F d, Y g:h a', strtotime($document->dw_mod_date_time)) }}</td>
             <td>
-                <a class="uk-link-muted " uk-tooltip="@if($document->notes){{ $document->notes }}@else NA @endif">
-                    <span class="a-info-circle"></span>
+                @if($document->notes)<a class="uk-link-muted " uk-tooltip="{{ $document->notes }}">
+                    <span class="a-note"></span>
                 </a>
-                &nbsp;&nbsp;| &nbsp;&nbsp;
+                &nbsp;&nbsp;| &nbsp;&nbsp; @endif
                 <a class="uk-link-muted " onclick="deleteFile({{ $document->id }});" uk-tooltip="Delete this file">
                     <span class="a-trash-4"></span>
                 </a>
