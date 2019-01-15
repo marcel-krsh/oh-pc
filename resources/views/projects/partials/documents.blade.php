@@ -207,25 +207,25 @@
 </div>
 <div class=""uk-width-3-5@m uk-width-1-1">
     <div class="uk-grid">
-    <select class="uk-width-1-2" class="uk-select filter-drops " style="style="height: 30px; padding: 1px; margin-top: 5px;" onchange="filterClasses(this.value)">
+    <select class="uk-width-1-2 uk-select filter-drops " style="style="height: 30px; padding: 1px; margin-top: 5px;" onchange="filterClasses(this.value)">
         <option value="all">ALL CLASSES</option>
         @php $currentParent = ''; @endphp
         @php $documentClasses = $documentReset; @endphp
         @foreach($documentClasses as $category)
-            @if($currentParent != $document->document_class)
-                <option value="{{strtolower(str_replace(' ','-',$document->document_class))}}">{{ucwords(strtolower($document->document_class))}}</option> 
-               @php $currentParent = $document->document_class; @endphp 
+            @if($currentParent != $category->document_class)
+                <option value="{{strtolower(str_replace(' ','-',$category->document_class))}}">{{ucwords(strtolower($category->document_class))}}</option> 
+               @php $currentParent = $category->document_class; @endphp 
             @endif
         @endforeach
     </select>
-    <select class="uk-width-1-2" class="uk-select filter-drops " style="style="height: 30px; padding: 1px; margin-top: 5px;" onchange="filterDescriptions(this.value)">
+    <select class="uk-width-1-2 uk-select filter-drops " style="style="height: 30px; padding: 1px; margin-top: 5px;" onchange="filterDescriptions(this.value)">
         <option  value="all" >ALL DESCRIPTIONS</option>
         @php $currentParent = ''; @endphp
         @php $documentDescriptions = $documentReset; @endphp
         @foreach($documentDescriptions as $category)
-            @if($currentParent != $document->document_description)
-                <option value="{{strtolower(str_replace(' ','-',$document->document_description))}}">{{ucwords(strtolower($document->document_description))}}</option> 
-               @php $currentParent = $document->document_description; @endphp 
+            @if($currentParent != $category->document_description)
+                <option value="{{strtolower(str_replace(' ','-',$category->document_description))}}">{{ucwords(strtolower($category->document_description))}}</option> 
+               @php $currentParent = $category->document_description; @endphp 
             @endif
         @endforeach
     </select>
