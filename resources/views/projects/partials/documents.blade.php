@@ -1,44 +1,4 @@
 
-<template class="uk-hidden" id="category-list-template">
-    <div class="uk-width-1-1 uk-margin-small-bottom">
-        <input name="category-id-x-y" id="category-id-x-y" type="checkbox">
-        <label for="category-id-x">
-            Category Name
-        </label>
-    </div>
-</template>
-<template class="uk-hidden" id="sent-document-list-template">
-    <tr>
-        <td>10/10/10</td>
-        <td><ul class="uk-subnav document-category-menu">Categories</ul></td>
-        <td><a class="uk-link-muted" onclick="newEmailRequest('2');"><span class="a-checkbox"></span>&nbsp;&nbsp;|&nbsp;&nbsp;</a><a onclick="resetDocTabCategoryListVars();selectCategory('2')" uk-tooltip="Select all categories listed for this document group that was uploaded."><span class="a-higher"></span></a></td>
-    </tr>
-</template>
-
-<template id="document-list-template" class="uk-hidden">
-    <tr class="">
-        <td>Upload date</td>
-        <td>type</td>
-        <td>Staff name</td>
-        <td>Categories</td>
-        <td><a class="uk-link-muted " onclick="deleteDocument(123)"><span class="a-trash-4"></span></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#" target="_blank"><span class="a-lower"></span></a></td>
-    </tr>
-</template>
-
-<script>
-    $('#main-option-text').html('Project: {{$project->project_number}}');
-    $('#main-option-icon').attr('uk-icon','arrow-circle-o-left');
-
-    // var subTabType = window.subTabType;
-    // if(subTabType == 'documents'){
-    //     delete window.subTabType;
-        
-    //     $('#parcel-subtab-1').attr("aria-expaned", "false");
-    //     $('#parcel-subtab-1').removeClass("uk-active");
-    //     $('#parcel-subtab-2').attr("aria-expaned", "true");
-    //     $('#parcel-subtab-2').addClass("uk-active");
-    // }
-</script>
     <div class="uk-grid uk-margin-top uk-animation-fade">
         <div class="uk-width-3-5@m uk-width-1-1 uk-scrollable-box" style="height:400px;">
 
@@ -52,6 +12,7 @@
             </tr>
         </thead>
         <tbody id="sent-document-list">
+            @php $documentReset = $documents; @endPHP
             @foreach ($documents as $document)
         <tr class="{{strtolower(str_replace(' ','-',$document->document_class))}} {{str_replace(' ','-',strtolower($document->document_description))}}">
             
@@ -248,7 +209,8 @@
     <select class="uk-width-1-2" onchange="filterClasses(this.value)">
         <option value="all">ALL CLASSES</option>
         @php $currentParent = ''; @endphp
-        @foreach($documents as $category)
+        @php $documentClasses = $documentReset; @endPHP
+        @foreach($documentClasses as $category)
             @if($currentParent != $document->document_class)
                 <option value="{{strtolower(str_replace(' ','-',$document->document_class))}}">{{ucwords(strtolower($document->document_class))}}</option> 
                @php $currentParent = $document->document_class; @endphp 
@@ -258,7 +220,8 @@
     <select class="uk-width-1-2" onchange="filterDescriptions(this.value)">
         <option  value="all" >ALL DESCRIPTIONS</option>
         @php $currentParent = ''; @endphp
-        @foreach($documents as $category)
+        @php $documentDescriptions = $documentReset; @endPHP
+        @foreach($documentDescriptions as $category)
             @if($currentParent != $document->document_description)
                 <option value="{{strtolower(str_replace(' ','-',$document->document_description))}}">{{ucwords(strtolower($document->document_description))}}</option> 
                @php $currentParent = $document->document_description; @endphp 
