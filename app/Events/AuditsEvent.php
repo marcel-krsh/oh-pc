@@ -1400,8 +1400,8 @@ class AuditsEvent
                 'step_status_icon' => $step_icon,
                 'step_status' => 'no-action',
                 'step_status_text' => $step_status_text,
-                'estimated_time' => $estimated_time,
-                'estimated_time_needed' => $estimated_time_needed,
+                'estimated_time' => $cached_audit->estimated_time,
+                'estimated_time_needed' => $cached_audit->estimated_time_needed,
                 //'amenities_json' => json_encode($amenities)
             ]);
         }else{
