@@ -9,7 +9,7 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-
+use Log;
 use App\Models\User;
 use App\Models\SystemSetting;
 use App\Models\Audit;
@@ -162,6 +162,7 @@ class AuditsEvent
 
                         for ($i=0; $i<10; $i++) {
                             $summary = $this->selectionProcess($audit);
+                            Log::info('audit '.$i.' run;');
                             if (count($summary[0]['grouped']) < $best_total || $best_run == null) {
                                 $best_run = $summary[0];
                                 $overlap = $summary[1];
@@ -174,7 +175,7 @@ class AuditsEvent
                         // save all units selected in selection table
                         if ($best_run) {
                             $group_id = 1;
-
+                            Log::info('best run is '.$best_run);
                             foreach ($best_run['programs'] as $program) {
                                 $unit_keys = $program['units_after_optimization'];
 
@@ -213,6 +214,7 @@ class AuditsEvent
                                 $group_id = $group_id + 1;
                             }
                         }
+                        LOG::info('unit inspections should be there.');
                         
                         $this->createNewCachedAudit($audit, $best_run);    // finally create the audit
                         $audit->compliance_run = 1;
@@ -504,25 +506,27 @@ class AuditsEvent
 
         $total_buildings = $project->total_building_count;
         $total_units = $project->total_unit_count;
-
+        Log::info('509:: total buildings and units '.$total_buildings.', '.$total_units.' respectively.');
         $pm_contact = ProjectContactRole::where('project_key', '=', $audit->development_key)
                                 ->where('project_role_key', '=', 21)
                                 ->with('organization')
                                 ->first();
-
+        Log::info('514:: pm contact found');
         $organization_id = null;
         if ($pm_contact) {
             if ($pm_contact->organization) {
                 $organization_id = $pm_contact->organization->id;
+                Log::info('519:: pm organization identified');
             }
         }
+
         
         // save all buildings in building_inspection table
         $buildings = $project->buildings;
-
+        Log::info('526:: buildings saved.')
         // remove any data
         BuildingInspection::where('audit_id', '=', $audit->id)->delete();
-
+        Log::info('529:: building inspections deleted');
         if ($buildings) {
             foreach ($buildings as $building) {
                 if ($building->address) {
@@ -558,6 +562,7 @@ class AuditsEvent
                     'submitted_date_time' => null
                 ]);
                 $b->save();
+                Log::info('565:: '.$b->id.' building inspection added');
             }
         }
 
