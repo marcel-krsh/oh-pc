@@ -48,7 +48,7 @@
                 <th>CLASS</th>
                 <th>DESCRIPTION</th><th>STORED</th>
                 <th>MODIFIED</th>
-                <th width="80">ACTIONS</th>
+                <th width="120">ACTIONS</th>
             </tr>
         </thead>
         <tbody id="sent-document-list">
