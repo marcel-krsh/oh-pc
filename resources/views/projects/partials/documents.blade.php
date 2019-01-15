@@ -57,10 +57,10 @@
         <tr>
             
             <td>
-                {{$document->document_class}}
+                {{ucwords($document->document_class)}}
             </td>
             <td>
-                {{$document->document_description}}
+                {{ucwords($document->document_description)}}
             </td>
             <td>{{ date('F d, Y g:h a', strtotime($document->dw_stored_date_time)) }}</td>
             <td>{{ date('F d, Y g:h a', strtotime($document->dw_mod_date_time)) }}</td>
@@ -98,7 +98,7 @@
                         @php $currentParent = ''; @endphp
                         @foreach ($document_categories as $category)
                         @if($currentParent != $category->parent_id)
-                        <li><strong>{{$category->parent->document_category_name}}</strong></li>
+                        <li><strong>{{ucwords($category->parent->document_category_name)}}</strong><br /><hr class="dashed-hr" /></li>
                         @php $currentParent = $category->parent_id; @endphp
                         @endIf
                         <li>
