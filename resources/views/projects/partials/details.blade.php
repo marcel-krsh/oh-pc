@@ -130,8 +130,8 @@
 					<li><span class="indented">Total Building Exteriors</span> <span>{{$details->total_building_exteriors}}</span></li>
 					<li><span>Total Project Common Areas</span> <span></span></li>
 					<li><span>Total Units</span> <span>{{$details->total_units}}</span></li>
-					<li><span class="indented">• Market Rate</span> <span>{{$details->market_rate}}</span></li>
-					<li><span class="indented">• Subsidized</span> <span>{{$details->subsidized}}</span></li>
+					<li><span class="indented">• Market Rate Units</span> <span>{{$details->market_rate}}</span></li>
+					<li><span class="indented">• Program Units</span> <span>{{$details->subsidized}}</span></li>
 					<li><span>Total Programs</span> <span></span></li>
 					@foreach(json_decode($details->programs, true) as $program)
 					<li><span class="indented">• {{$program['name']}}</span> <span>{{$program['units']}}</span></li>

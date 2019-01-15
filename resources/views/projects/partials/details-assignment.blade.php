@@ -58,22 +58,69 @@
 			</div>
 
 			<div id="project-details-assignment-buttons" class="uk-width-1-1 uk-margin-large-top project-details-buttons ">
-				@foreach($data['days'] as $day)
-				<div class="project-details-button-container">
-					<button class="uk-button uk-link {{$day['status']}} active" onclick="assignmentDay({{$data['project']['id']}}, {{$day['id']}}, this);" type="button" ><i class="{{$day['icon']}}"></i> {{$day['date']}}</button>
+				<div class="project-details-button-container flatpickr" id="addadaybutton">
+					<input type="text" id="addaday" name="addaday" class="flatpickr-input"  data-input style="display:none">
+					<button class="uk-button uk-link addadaybutton" type="button" data-toggle><i class="far fa-calendar-plus"></i> ADD A DAY</button>
 				</div>
-				@endforeach
-				<div class="project-details-button-container">
-					<button class="uk-button uk-link" onclick="assignmentDay('', this);" type="button"><i class="far fa-calendar-plus"></i> ADD A DAY</button>
-				</div>
+				
 			</div>
 		</div>
+
 		<div class="project-details-info-assignment-schedule uk-position-relative uk-visible-toggle uk-margin-right uk-margin-left">
+			<div class="uk-overflow-auto">
+				@foreach($data['days'] as $day)
+				<div class="divTable divTableFixed">
+					<div class="divTableBody">
+						
+						<div class="divTableRow divTableHeader">
+							<div class="divTableCell">
+								<h3 style="margin-top:5px;text-align: left;"> {{$day['date']}} <small><i class="a-trash-4 use-hand-cursor" onclick="deleteDay({{$day['id']}});"></i></small></h3>
+							</div>
+							@foreach($data['auditors'] as $auditor)
+							<div class="divTableCell">
+								<span uk-tooltip="title:VIEW AUDITOR STATS & DETAILED SCHEDULE;" title="" aria-expanded="false" class="user-badge user-badge-{{$auditor['color']}} no-float uk-link" >{{$auditor['initials']}}</span>
+							</div>
+							@endforeach
+							<div class="divTableCell">
+								<i class="a-circle-plus" onclick="addAssignmentAuditor({{$data['project']['id']}});" uk-tooltip="title:CLICK TO ADD AUDITORS;"></i>
+							</div>
+							<div class="divTableCell">&nbsp;</div>
+						</div>
+						@foreach($data['audits'] as $audit)
+						<div class="divTableRow @if(Auth::user()->id == $audit['lead']) isLead @endif">
+							<div class="divTableCell">
+								<div uk-grid>
+									<div class="uk-width-1-3">
+										<strong>{{$audit['ref']}}</strong><br />
+										<strong>{{$audit['date']}}</strong>
+									</div>
+									<div class="uk-width-2-3">
+										<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;" title="" aria-expanded="false"></i> <strong>{{$audit['name']}}</strong>
+									</div>
+								</div>
+							</div>
+							@foreach($audit['schedules'] as $schedule)
+							<div class="divTableCell {{$schedule['status']}} @if($schedule['is_lead']) isLead @endif">
+								@if($schedule['is_lead']) <i class="a-star-3 corner"></i> @endif
+								<i class="{{$schedule['icon']}}" uk-tooltip="title:{{$schedule['tooltip']}};"></i>
+							</div>
+							@endforeach
+							<div class="divTableCell">&nbsp;</div>
+							<div class="divTableCell">&nbsp;</div>
+						</div>
+						@endforeach
+					</div>
+				</div>
+				@endforeach
+			</div>
+		</div>
+
+
+		<div class="project-details-info-assignment-schedule uk-position-relative uk-visible-toggle uk-margin-right uk-margin-left" hidden>
 			<div class="uk-overflow-auto">
 				<div class="divTable divTableFixed">
 					<div class="divTableBody">
 						<div class="divTableRow divTableHeader">
-							<div class="divTableCell">&nbsp;</div>
 							<div class="divTableCell">&nbsp;</div>
 							@foreach($data['auditors'] as $auditor)
 							<div class="divTableCell">
@@ -85,16 +132,15 @@
 							</div>
 							<div class="divTableCell">&nbsp;</div>
 						</div>
-						@foreach($data['projects'] as $project)
-						<div class="divTableRow @if(Auth::user()->id == $project['lead']) isLead @endif">
+						@foreach($data['audits'] as $audit)
+						<div class="divTableRow @if(Auth::user()->id == $audit['lead']) isLead @endif">
 							<div class="divTableCell">
-								<strong>{{$project['id']}}</strong><br />
-								<strong>{{$project['date']}}</strong>
+								<strong>{{$audit['id']}}</strong><br />
+								<strong>{{$audit['date']}}</strong>
+							
+								<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;" title="" aria-expanded="false"></i> <strong>{{$audit['name']}}</strong><br />
 							</div>
-							<div class="divTableCell">
-								<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;" title="" aria-expanded="false"></i> <strong>{{$project['name']}}</strong><br />
-							</div>
-							@foreach($project['schedules'] as $schedule)
+							@foreach($audit['schedules'] as $schedule)
 							<div class="divTableCell {{$schedule['status']}} @if($schedule['is_lead']) isLead @endif">
 								@if($schedule['is_lead']) <i class="a-star-3 corner"></i> @endif
 								<i class="{{$schedule['icon']}}" uk-tooltip="title:{{$schedule['tooltip']}};"></i>
@@ -148,7 +194,7 @@
 				}
 				.divTableHeader .divTableCell {
 					text-align:center;
-					padding: 13px 0;
+					/*padding: 13px 0;*/
     				height: 32px;
 				}
 				.divTableHeader .divTableCell span.user-badge{
@@ -167,19 +213,23 @@
 				.divTableRow {
 					
 				}
+				.divTableRow .divTableCell h3 i {
+					font-size: 14px;
+    				margin-top: -5px;
+    				float: right;
+				}
 				.divTableRow:first-child .divTableCell {
 				  border-top: 0;
 				  border-right: 0;
 				}
 				.divTableRow .divTableCell:first-child {
 				  border-left: 0;
-				  width: 80px;
+				  width: 300px;
 				  vertical-align: top;
     			  padding-top: 13px;
 				}
-				.divTableRow .divTableCell:nth-child(2) {
+				.divTableRow .divTableCell:nth-child(1) {
 				  border-left: 0;
-				  width: 240px;
 				  vertical-align: top;
     			  padding-top: 13px;
 				}
@@ -202,13 +252,14 @@
 				.divTableBody {
 					display: table-row-group;
 				}
-				.divTableCell:nth-child(n+3) {
+				.divTableCell:nth-child(n+2) {
 					text-align: center;
 					padding-top: 14px;
     				padding-bottom: 14px;
     				height: auto;
+    				width:50px;
 				}
-				.divTableCell:nth-child(n+3) i {
+				.divTableCell:nth-child(n+2) i {
 					font-size: 34px;
 				}
 				.isLead {
@@ -317,13 +368,18 @@
 		"options": assignmentOptions,
 		
 		"data":{
-			"labels": ["Needed","Estimated"],
+			"labels": ["Needed","Day 1","Day 2","Day 3","Day 5","Day 6"],
 			"datasets":[
 				{
 					"label":"Program 1",
-					"data":{{$data['summary']['chart_data']}},
+					//"data":{{$data['summary']['chart_data']}},
+					"data":[2,3,4,5,6],
 					"backgroundColor":[
 						chartColors.needed,
+						chartColors.estimated,
+						chartColors.estimated,
+						chartColors.estimated,
+						chartColors.estimated,
 						chartColors.estimated
 					],
 					"borderWidth": 1
@@ -336,6 +392,22 @@
 <script>
 	function addAssignmentAuditor(projectid){
 		dynamicModalLoad('projects/'+projectid+'/assignments/addauditor',1,0,1);
+	}
+
+	function deleteDay(id){
+
+		UIkit.modal.confirm("Are you sure you want to delete this date? It will also delete all scheduled time for that day.").then(function(){
+            $.post("/audit/{{$data['project']['audit_id']}}/scheduling/days/"+id+"/delete", {
+                    '_token' : '{{ csrf_token() }}'
+                    }, function(data) {
+                        if(data.data!=1){ 
+                            UIkit.modal.alert(data.data,{stack: true});
+                        } else {
+                            UIkit.notification('<span uk-icon="icon: check"></span> Day Deleted', {pos:'top-right', timeout:1000, status:'success'});   
+                            $('#project-details-button-2').trigger( 'click' );       
+                        }
+            });
+        });
 	}
 
 	function saveEstimatedHours(e){
@@ -358,5 +430,28 @@
             }
         } );
 	}
-	
+
+	$( document ).ready(function() {
+	});
+
+	flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
+
+	flatpickr("#addadaybutton", {
+	    minDate: "today",
+	    altFormat: "F j, Y",
+	    dateFormat: "F j, Y",
+	     wrap: true,
+	     positionElement: $('.addadaybutton')[0],
+	    onChange: function(selectedDates, dateStr, instance) {
+	        console.log("yo "+selectedDates+" ---- "+dateStr);
+
+	        $.post("/audit/{{$data['project']['audit_id']}}/scheduling/addaday", {
+	            'date' : dateStr,
+	            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+		        $('#project-details-button-2').trigger( 'click' );
+			});
+	    }
+	});
+
 </script>

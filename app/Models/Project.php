@@ -149,6 +149,8 @@ class Project extends Model
 
     public function details()
     {
+        //TBD (check when/how to update)
+        
         $selected_audit = $this->selected_audit();
 
         if (!$selected_audit) {
@@ -165,7 +167,7 @@ class Project extends Model
         }
 
         if(!$details){
-            // create a default record
+            // create a default record 
             $details = $this->set_project_defaults();
         }
 
@@ -189,6 +191,12 @@ class Project extends Model
 
         $next_inspection = $this->complianceContacts()->first()->next_inspection;
 
+        // number of units with unit_identity_key == 6
+        $market_rate = $this->market_rate_units()->count();
+
+        // subsidized units are units with programs
+        $subsidized = $this->program_units()->count();
+
         $details = new ProjectDetail([
                 'project_id' => $this->id,
                 'audit_id' => $selected_audit->id,
@@ -202,8 +210,8 @@ class Project extends Model
                 'total_building_exteriors' => null,
                 'total_project_common_areas' => null,
                 'total_units' => $this->total_unit_count,
-                'market_rate' => null,
-                'subsidized' => null,
+                'market_rate' => $market_rate,
+                'subsidized' => $subsidized,
                 'programs' => json_encode($programs),
                 'owner_name' => $this->owner()['organization'],
                 'owner_poc' => $this->owner()['name'],
@@ -269,6 +277,15 @@ class Project extends Model
 
     public function units() : HasManyThrough {
         return $this->hasManyThrough('App\Models\Unit', 'App\Models\Building');
+    }
+
+    public function market_rate_units() : HasManyThrough {
+        return $this->hasManyThrough('App\Models\Unit', 'App\Models\Building')->where('unit_identity_id','=',6);
+    }
+
+    public function program_units() : HasMany
+    {
+        return $this->hasMany('\App\Models\UnitProgram', 'development_key', 'project_key');
     }
 
     public function projectProgramUnitCounts()

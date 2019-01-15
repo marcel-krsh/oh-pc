@@ -233,6 +233,8 @@
 
         // Audit
         Route::post('/audit/{id}/estimated/save', 'AuditController@saveEstimatedHours')->name('audit.estimated_hours.save');
+        Route::post('/audit/{id}/scheduling/addaday', 'AuditController@addADay')->name('audit.scheduling.addaday');
+        Route::post('/audit/{id}/scheduling/days/{day_id}/delete', 'AuditController@deleteDay')->name('audit.scheduling.deleteday');
 
         // });
     });

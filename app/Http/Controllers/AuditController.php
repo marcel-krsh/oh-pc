@@ -21,10 +21,13 @@ use App\Models\ProjectDetail;
 use App\Models\UnitProgram;
 use App\Models\GuideStep;
 use App\Models\GuideProgress;
+use App\Models\ScheduleDay;
+use App\Models\ScheduleTime;
 use Auth;
 use Session;
 use App\LogConverter;
 use Carbon;
+use Event;
 
 class AuditController extends Controller
 {
@@ -393,9 +396,25 @@ class AuditController extends Controller
                     ];
                 }
 
+                $days = array();
+                foreach($project->selected_audit()->days as $day){
+                    // TBD get status and icon for each day
+                    // 
+                    $days[] = [
+                        'id' => $day->id,
+                        'date' => formatDate($day->date, 'l F d, Y'),
+                        'status' => 'action-required',
+                        'icon' => 'a-avatar-fail'
+                    ];
+                }
+
+                // list current audit and all audits assigned to auditors
+                
+
                 $data = collect([
                     "project" => [
                         'id' => $project->id,
+                        'ref' => $project->project_number,
                         'audit_id' => $project->selected_audit()->id
                     ],
                     "summary" => [
@@ -412,23 +431,11 @@ class AuditController extends Controller
                         'chart_data' => $project->selected_audit()->estimated_chart_data()
                     ],
                     'auditors' => $auditors_array,
-                    "days" => [
-                        [
-                            'id' => 6,
-                            'date' => '12/22/2018',
-                            'status' => 'action-required',
-                            'icon' => 'a-avatar-fail'
-                        ],
-                        [
-                            'id' => 7,
-                            'date' => '12/23/2018',
-                            'status' => 'ok-actionable',
-                            'icon' => 'a-avatar-approve'
-                        ]
-                    ],
-                    'projects' => [
+                    "days" => $days,
+                    'audits' => [
                         [
                             'id' => '19200114',
+                            'ref' => '111111',
                             'date' => '12/22/2018',
                             'name' => 'The Garden Oaks',
                             'street' => '123466 Silvegwood Street',
@@ -437,42 +444,10 @@ class AuditController extends Controller
                             'zip' => '43219',
                             'lead' => 2, // user_id
                             'schedules' => [
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT']
-                            ]
-                        ],
-                        [
-                            'id' => '19200115',
-                            'date' => '12/22/2018',
-                            'name' => 'The Garden Oaks 2',
-                            'street' => '123466 Silvegwood Street',
-                            'city' => 'Columbus',
-                            'state' => 'OH',
-                            'zip' => '43219',
-                            'lead' => 1, // user_id
-                            'schedules' => [
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT']
-                            ]
-                        ],
-                        [
-                            'id' => '19200116',
-                            'date' => '12/22/2018',
-                            'name' => 'The Garden Oaks 3',
-                            'street' => '123466 Silvegwood Street',
-                            'city' => 'Columbus',
-                            'state' => 'OH',
-                            'zip' => '43219',
-                            'lead' => 2, // user_id
-                            'schedules' => [
-                                ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' =>'APPROVE SCHEDULE CONFLICT']
+                                ['icon' => 'a-circle', 'status' => '', 'is_lead' => 1, 'tooltip' =>''],
+                                ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>''],
+                                ['icon' => 'a-circle', 'status' => '', 'is_lead' => 0, 'tooltip' =>''],
+                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'']
                             ]
                         ]
                     ]
@@ -494,7 +469,39 @@ class AuditController extends Controller
             default:
         }
 
-        return view('projects.partials.details-'.$type, compact('data'));
+        return view('projects.partials.details-'.$type, compact('data', 'project'));
+    }
+
+    public function addADay(Request $request, $id){
+        // TBD only authorized users can add days (lead/managers)
+        
+        $audit = CachedAudit::where('id','=',$id)->first();
+        $date = formatDate($request->get('date'), "Y-m-d H:i:s", "F d, Y");
+
+        $day = new ScheduleDay([
+            'audit_id' => $id,
+            'date' => $date
+        ]);
+        $day->save();
+
+        return 1;
+    }
+
+    public function deleteDay(Request $request, $id, $day_id){
+        // TBD only authorized users can add days (lead/managers)
+         
+        // 1. delete schedules
+        // 2. delete day
+        // 3. update estimated needed time and checks by rebuilding CachedAudit 
+
+        $audit = CachedAudit::where('id','=',$id)->first();
+        $schedules = ScheduleTime::where('day_id','=',$day_id)->where('audit_id','=',$id)->delete();
+        $day = ScheduleDay::where('id','=',$day_id)->where('audit_id','=',$id)->delete();
+ 
+        Event::fire('audit.cache', $audit->audit);
+
+        $output = ['data' => 1];
+        return $output;
     }
 
     public function saveEstimatedHours(Request $request, $id){ 
@@ -506,7 +513,7 @@ class AuditController extends Controller
         $minutes = (int) $forminputs['estimated_minutes'];
 
         $audit = CachedAudit::where('id','=',$id)->where('lead','=',Auth::user()->id)->first();
-//dd($audit, $hours, $minutes, $id);
+
         $new_estimate = $hours.":".$minutes.":00";
 
         if($audit){
