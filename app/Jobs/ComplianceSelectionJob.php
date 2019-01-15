@@ -1099,7 +1099,7 @@ class ComplianceSelectionJob implements ShouldQueue
         // inspection status and schedule date set to default when creating a new audit
         $inspection_status_text = 'AUDIT NEEDS SCHEDULING'; 
         $inspection_schedule_date = null; // Y-m-d H:i:s
-        $inspection_schedule_text = 'CLICK TO SCHEDULE THAT AUDIT'; 
+        $inspection_schedule_text = 'CLICK TO SCHEDULE AUDIT'; 
         $inspection_status = 'action-needed'; 
         $inspection_icon = 'a-mobile-repeat'; 
 
@@ -1137,11 +1137,11 @@ class ComplianceSelectionJob implements ShouldQueue
         $cached_audit = CachedAudit::where('audit_id','=',$audit->id)->first();
 
         // total items is the total number of units added during the selection process
-        $total_items = $cached_audit->total_items(); 
+        
 
         if($cached_audit){
             // when updating a cachedaudit, run the status test
-
+            $total_items = $cached_audit->total_items(); 
             $inspection_schedule_checks = $cached_audit->checkStatus('schedules');
             $inspection_status_text = $inspection_schedule_checks['inspection_status_text']; 
             $inspection_schedule_date = $inspection_schedule_checks['inspection_schedule_date'];
