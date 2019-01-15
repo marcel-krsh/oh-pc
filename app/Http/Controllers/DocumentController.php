@@ -215,7 +215,7 @@ class DocumentController extends Controller
             } else {
                 $documents = null;
             }
-            $document_categories = DocumentCategory::where('parent_id','<>',0)->orderBy('parent_id')->orderBy('document_category_name')->get()-all();
+            $document_categories = DocumentCategory::where('parent_id','<>',0)->orderBy('parent_id')->orderBy('document_category_name')->get()->all();
             $document_requests = DocumentRequest::where('project_id',$project->id)->get()->all();
 
             return view('projects.partials.documents', compact('project', 'documents', 'document_categories', 'document_requests'));
