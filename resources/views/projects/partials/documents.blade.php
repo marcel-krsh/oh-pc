@@ -75,7 +75,6 @@
                 <a href="{{ URL::route('documents.downloadDocument', [$project->id, $document->id]) }}" target="_blank"  uk-tooltip="Download file.">
                     <span class="a-lower"></span>
                 </a>
-                &nbsp;&nbsp;|&nbsp;&nbsp;
                 
             </td>
         </tr>
