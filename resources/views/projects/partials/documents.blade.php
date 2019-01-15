@@ -29,7 +29,7 @@
                     <span class="a-trash-4"></span>
                 </a>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                <a href="/document/{{ $document->doc_id]}}" target="_blank"  uk-tooltip="Download file.">
+                <a href="/document/{{$document->doc_id}}" target="_blank"  uk-tooltip="Download file.">
                     <span class="a-lower"></span>
                 </a>
                 @if($document->notes)&nbsp;&nbsp;| &nbsp;&nbsp;<a class="uk-link-muted " uk-tooltip="{{ $document->notes }}">
