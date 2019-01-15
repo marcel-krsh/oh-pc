@@ -396,18 +396,6 @@ class AuditController extends Controller
                     ];
                 }
 
-                $days = array();
-                foreach($project->selected_audit()->days as $day){
-                    // TBD get status and icon for each day
-                    // 
-                    $days[] = [
-                        'id' => $day->id,
-                        'date' => formatDate($day->date, 'l F d, Y'),
-                        'status' => 'action-required',
-                        'icon' => 'a-avatar-fail'
-                    ];
-                }
-
                 // list current audit and all audits assigned to auditors
                 
 
@@ -431,7 +419,6 @@ class AuditController extends Controller
                         'chart_data' => $project->selected_audit()->estimated_chart_data()
                     ],
                     'auditors' => $auditors_array,
-                    "days" => $days,
                     'audits' => [
                         [
                             'id' => '19200114',
