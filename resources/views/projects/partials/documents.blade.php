@@ -12,7 +12,7 @@
             </tr>
         </thead>
         <tbody id="sent-document-list">
-            @php $documentReset = $documents; @endPHP
+            @php $documentReset = $documents; @endphp
             @foreach ($documents as $document)
         <tr class="{{strtolower(str_replace(' ','-',$document->document_class))}} {{str_replace(' ','-',strtolower($document->document_description))}}">
             
