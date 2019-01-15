@@ -5,7 +5,7 @@
 				<div class="uk-navbar-left" style="overflow-x: auto; overflow-y: hidden; width:100%;">
 					<ul id="project-top-tabs" class="uk-navbar-nav" uk-switcher="connect: #project-main">
 						@foreach($projectTabs as $projectTab)
-						<li id="project-detail-tab-{{$loop->iteration}}" class="project-detail-tab-{{$loop->iteration}} uk-margin-small-left {{$projectTab['status']}}" onclick="loadTab('{{ route($projectTab['action'], $projectId) }}', '{{$loop->iteration}}', 0, 0, 'project-');" aria-expanded="false"><a><i class="{{$projectTab['icon']}}"></i> <span>{{$projectTab['title']}}</span></a></li>
+						<li id="project-detail-tab-{{$loop->iteration}}" class="project-detail-tab-{{$loop->iteration}} uk-margin-small-left {{$projectTab['status']}}" onclick="if($('#project-detail-tab-{{$loop->iteration}}').hasClass('uk-active') || window.tab_{{$loop->iteration}} != '1'){loadTab('{{ route($projectTab['action'], $projectId) }}', '{{$loop->iteration}}', 0, 0, 'project-',1);window.tab_{{$loop->iteration}}=1;}" aria-expanded="false"><a><i class="{{$projectTab['icon']}}"></i> <span>{{$projectTab['title']}}</span></a></li>
 						@endforeach		
 					</ul>
 				</div>
