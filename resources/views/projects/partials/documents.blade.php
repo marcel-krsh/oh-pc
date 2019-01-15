@@ -26,7 +26,7 @@
 </template>
 
 <script>
-    $('#main-option-text').html('Project: {{project->project_number}}');
+    $('#main-option-text').html('Project: {{$project->project_number}}');
     $('#main-option-icon').attr('uk-icon','arrow-circle-o-left');
 
     // var subTabType = window.subTabType;
@@ -73,7 +73,7 @@
                     <span class="a-trash-4"></span>
                 </a>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                <a href="{{ URL::route('documents.downloadDocument', [project->id, $document->id]) }}" target="_blank"  uk-tooltip="Download file.">
+                <a href="{{ URL::route('documents.downloadDocument', [$project->id, $document->id]) }}" target="_blank"  uk-tooltip="Download file.">
                     <span class="a-lower"></span>
                 </a>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
@@ -132,7 +132,7 @@
 
                         settings    = {
 
-                            url: '{{ URL::route("documents.upload", project->id) }}',
+                            url: '{{ URL::route("documents.upload", $project->id) }}',
                             multiple: true,
                             allow : '*.(jpg|gif|png|pdf|doc|docx|xls|xlsx)',
 
