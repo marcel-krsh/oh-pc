@@ -86,15 +86,20 @@
 							</div>
 							<div class="divTableCell">&nbsp;</div>
 						</div>
-						@foreach($data['projects'] as $project)
-						<div class="divTableRow @if(Auth::user()->id == $project['lead']) isLead @endif">
+						@foreach($data['audits'] as $audit)
+						<div class="divTableRow @if(Auth::user()->id == $audit['lead']) isLead @endif">
 							<div class="divTableCell">
-								<strong>{{$project['id']}}</strong><br />
-								<strong>{{$project['date']}}</strong>
-							
-								<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;" title="" aria-expanded="false"></i> <strong>{{$project['name']}}</strong><br />
+								<div uk-grid>
+									<div class="uk-width-1-3">
+										<strong>{{$audit['ref']}}</strong><br />
+										<strong>{{$audit['date']}}</strong>
+									</div>
+									<div class="uk-width-2-3">
+										<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;" title="" aria-expanded="false"></i> <strong>{{$audit['name']}}</strong>
+									</div>
+								</div>
 							</div>
-							@foreach($project['schedules'] as $schedule)
+							@foreach($audit['schedules'] as $schedule)
 							<div class="divTableCell {{$schedule['status']}} @if($schedule['is_lead']) isLead @endif">
 								@if($schedule['is_lead']) <i class="a-star-3 corner"></i> @endif
 								<i class="{{$schedule['icon']}}" uk-tooltip="title:{{$schedule['tooltip']}};"></i>
@@ -127,15 +132,15 @@
 							</div>
 							<div class="divTableCell">&nbsp;</div>
 						</div>
-						@foreach($data['projects'] as $project)
-						<div class="divTableRow @if(Auth::user()->id == $project['lead']) isLead @endif">
+						@foreach($data['audits'] as $audit)
+						<div class="divTableRow @if(Auth::user()->id == $audit['lead']) isLead @endif">
 							<div class="divTableCell">
-								<strong>{{$project['id']}}</strong><br />
-								<strong>{{$project['date']}}</strong>
+								<strong>{{$audit['id']}}</strong><br />
+								<strong>{{$audit['date']}}</strong>
 							
-								<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;" title="" aria-expanded="false"></i> <strong>{{$project['name']}}</strong><br />
+								<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;" title="" aria-expanded="false"></i> <strong>{{$audit['name']}}</strong><br />
 							</div>
-							@foreach($project['schedules'] as $schedule)
+							@foreach($audit['schedules'] as $schedule)
 							<div class="divTableCell {{$schedule['status']}} @if($schedule['is_lead']) isLead @endif">
 								@if($schedule['is_lead']) <i class="a-star-3 corner"></i> @endif
 								<i class="{{$schedule['icon']}}" uk-tooltip="title:{{$schedule['tooltip']}};"></i>
@@ -390,7 +395,7 @@
 	}
 
 	function deleteDay(id){
-		
+
 		UIkit.modal.confirm("Are you sure you want to delete this date? It will also delete all scheduled time for that day.").then(function(){
             $.post("/audit/{{$data['project']['audit_id']}}/scheduling/days/"+id+"/delete", {
                     '_token' : '{{ csrf_token() }}'

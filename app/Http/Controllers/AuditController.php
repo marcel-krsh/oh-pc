@@ -408,9 +408,13 @@ class AuditController extends Controller
                     ];
                 }
 
+                // list current audit and all audits assigned to auditors
+                
+
                 $data = collect([
                     "project" => [
                         'id' => $project->id,
+                        'ref' => $project->project_number,
                         'audit_id' => $project->selected_audit()->id
                     ],
                     "summary" => [
@@ -428,9 +432,10 @@ class AuditController extends Controller
                     ],
                     'auditors' => $auditors_array,
                     "days" => $days,
-                    'projects' => [
+                    'audits' => [
                         [
                             'id' => '19200114',
+                            'ref' => '111111',
                             'date' => '12/22/2018',
                             'name' => 'The Garden Oaks',
                             'street' => '123466 Silvegwood Street',
@@ -439,42 +444,10 @@ class AuditController extends Controller
                             'zip' => '43219',
                             'lead' => 2, // user_id
                             'schedules' => [
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT']
-                            ]
-                        ],
-                        [
-                            'id' => '19200115',
-                            'date' => '12/22/2018',
-                            'name' => 'The Garden Oaks 2',
-                            'street' => '123466 Silvegwood Street',
-                            'city' => 'Columbus',
-                            'state' => 'OH',
-                            'zip' => '43219',
-                            'lead' => 1, // user_id
-                            'schedules' => [
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT']
-                            ]
-                        ],
-                        [
-                            'id' => '19200116',
-                            'date' => '12/22/2018',
-                            'name' => 'The Garden Oaks 3',
-                            'street' => '123466 Silvegwood Street',
-                            'city' => 'Columbus',
-                            'state' => 'OH',
-                            'zip' => '43219',
-                            'lead' => 2, // user_id
-                            'schedules' => [
-                                ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                                ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' =>'APPROVE SCHEDULE CONFLICT']
+                                ['icon' => 'a-circle', 'status' => '', 'is_lead' => 1, 'tooltip' =>''],
+                                ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>''],
+                                ['icon' => 'a-circle', 'status' => '', 'is_lead' => 0, 'tooltip' =>''],
+                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'']
                             ]
                         ]
                     ]
@@ -540,7 +513,7 @@ class AuditController extends Controller
         $minutes = (int) $forminputs['estimated_minutes'];
 
         $audit = CachedAudit::where('id','=',$id)->where('lead','=',Auth::user()->id)->first();
-//dd($audit, $hours, $minutes, $id);
+
         $new_estimate = $hours.":".$minutes.":00";
 
         if($audit){
