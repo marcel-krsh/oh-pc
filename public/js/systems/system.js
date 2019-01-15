@@ -126,6 +126,7 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='', forceRe
 
 		//load the selected detail tab content
 		$('#'+prefix+'detail-tab-'+tabNumber+'-content').load(route, function(response, status, xhr) {
+			console.log('loadTab() Loading into tab '+prefix+'detail-tab-'+tabNumber+'-content');
 			if (status == "error") {
 			  	if(xhr.status == "401") {
 			  		var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";

@@ -6,8 +6,9 @@
           <thead >
               <tr class="uk-text-small" style="color:#fff;background-color:#555;">
                 <th>CLASS</th>
-                <th>DESCRIPTION</th><th>STORED</th>
+                <th>DESCRIPTION</th><th>FROM</th><th>STORED</th>
                 <th>MODIFIED</th>
+
                 <th width="110">ACTIONS</th>
             </tr>
         </thead>
@@ -71,6 +72,10 @@
                     </ul>
                 </div>
 
+            </div>
+            <div class="uk-align-center uk-margin-top">
+                <label for="notes">NOTES:</label>
+                <textarea class="uk-textarea uk-width-1-1" placeholder="Enter a breif note about this document."></textarea>
             </div>
             <div class="uk-align-center uk-margin-top">
                 <div id="list-item-upload-step-2">
@@ -205,6 +210,7 @@
     </div><!--6-10-->
 
 </div>
+<?php /*
 <div class="uk-width-3-5@m uk-width-1-1">
     <div class="uk-grid">
     <select class="uk-width-1-2 uk-select filter-drops " style="style="height: 30px; padding: 1px; margin-top: 5px;" onchange="filterClasses(this.value)">
@@ -231,6 +237,7 @@
     </select>
 </div>
 </div>
+*/ ?>
 <script type="text/javascript">
 function markApproved(id,catid){
     UIkit.modal.confirm("Are you sure you want to approve this file?").then(function() {
