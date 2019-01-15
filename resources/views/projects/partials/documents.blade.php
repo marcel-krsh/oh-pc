@@ -65,7 +65,7 @@
             <td>{{ date('F d, Y g:h a', strtotime($document->dw_mod_date_time)) }}</td>
             <td>
                 @if($document->notes)<a class="uk-link-muted " uk-tooltip="{{ $document->notes }}">
-                    <span class="a-note"></span>
+                    <span class="a-file-info"></span>
                 </a>
                 &nbsp;&nbsp;| &nbsp;&nbsp; @endif
                 <a class="uk-link-muted " onclick="deleteFile({{ $document->id }});" uk-tooltip="Delete this file">
