@@ -130,14 +130,97 @@ class AuditsEvent
 
     public function auditUpdated(Audit $audit)
     {
-        // check the monitoring_status_type_key for 4,5 or 6
-        // check if audit already exists in cachedaudits if not create it
-        // createNewCachedAudit($audit);
-        // 
-        // 
-        // project->project_number as the project reference
-        // 
-        // 
+        if ($audit) {
+            if (((in_array($audit->monitoring_status_type_key, [4,5,6]) && $audit->compliance_run == null) || $audit->rerun_compliance == 1)) && $audit->findings->count() < 1) {
+                if (!CachedAudit::where('audit_id', '=', $audit->id)->count()) {
+                    //LOG HERE if it is a brand new audit run
+
+                    //LOG HERE if it is a rerun audit and who asked for it
+
+                    //Remove any existing units associated with this audit:
+                    \App\Models\UnitProgram::where('audit_id',$audit->id)->delete();
+
+                    //Remove all associated amenity inspections
+                    \App\Models\AmenityInspection::where('audit_id',$audit->id)->delete();
+
+                    //Remove Unit Inspections
+                    \App\Models\UnitInspection::where('audit_id',$audit->id)->delete();
+
+
+
+
+                    if (1) {
+                        // run the selection process 10 times and keep the best one
+                        $best_run = null;
+                        $best_total = null;
+                        $overlap = null;
+                        $project = null;
+                        $organization_id = null;
+
+                        for ($i=0; $i<10; $i++) {
+                            $summary = $this->selectionProcess($audit);
+                            if (count($summary[0]['grouped']) < $best_total || $best_run == null) {
+                                $best_run = $summary[0];
+                                $overlap = $summary[1];
+                                $project = $summary[2];
+                                $organization_id = $summary[3];
+                                $best_total = count($summary[0]['grouped']);
+                            }
+                        }
+
+                        // save all units selected in selection table
+                        if ($best_run) {
+                            $group_id = 1;
+
+                            foreach ($best_run['programs'] as $program) {
+                                $unit_keys = $program['units_after_optimization'];
+
+                                $units = Unit::whereIn('unit_key', $unit_keys)->get();
+
+                                foreach ($units as $unit) {
+                                    if (in_array($unit->unit_key, $overlap)) {
+                                        $has_overlap = 1;
+                                    } else {
+                                        $has_overlap = 0;
+                                    }
+
+                                    $program_keys = explode(',', $program['program_keys']);
+
+                                    foreach ($unit->programs as $unit_program) {
+                                        if (in_array($unit_program->program_key, $program_keys)) {
+                                            $u = new UnitInspection([
+                                                'group' => $program['name'],
+                                                'group_id' => $group_id,
+                                                'unit_id' => $unit->id,
+                                                'unit_key' => $unit->unit_key,
+                                                'building_id' => $unit->building_id,
+                                                'building_key' => $unit->building_key,
+                                                'audit_id' => $audit->id,
+                                                'audit_key' => $audit->monitoring_key,
+                                                'project_id' => $project->id,
+                                                'project_key' => $project->project_key,
+                                                'program_key' => $unit_program->program_key,
+                                                'pm_organization_id' => $organization_id,
+                                                'has_overlap' => $has_overlap
+                                            ]);
+                                            $u->save();
+                                        }
+                                    }
+                                }
+                                $group_id = $group_id + 1;
+                            }
+                        }
+                        
+                        $this->createNewCachedAudit($audit, $best_run);    // finally create the audit
+                        $audit->compliance_run = 1;
+                        $audit->rerun_compliance = null;
+                        $audit->save();
+                        // LOG SUCCESS HERE
+                    }
+                }
+            }
+        }
+         
     }
 
     public function fetchAuditUnits(Audit $audit)

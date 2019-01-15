@@ -47,4 +47,11 @@ class Audit extends Model
     {
         return $this->hasMany('\App\Models\Findings')->where('allita_type','file');
     }
+    public function findings() : HasMany
+    {
+        return $this->hasMany('\App\Models\Findings');
+    }
+    public function ranCompliance(){
+        $this->update(['compliance_run'=>1,'rerun_compliance'=>null]);
+    }
 }
