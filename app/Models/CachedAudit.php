@@ -100,7 +100,7 @@ class CachedAudit extends Model
 
     public function days() : HasMany
     {
-        return $this->hasMany(\App\Models\ScheduleDay::class, 'audit_id');
+        return $this->hasMany(\App\Models\ScheduleDay::class, 'audit_id')->orderBy('date','asc');
     }
 
     public function progress() : HasMany{
