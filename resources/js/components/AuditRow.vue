@@ -120,7 +120,6 @@
 	    props: ['audit','index'],
 	    methods: {
             rerunCompliance: function() {
-                
                 rerunCompliance(this.audit.auditId); 
             },
             updateStep: function() {

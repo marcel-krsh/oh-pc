@@ -285,16 +285,14 @@ class Project extends Model
 
     public function program_units_total()
     {
-        $programs = $this->programs; 
         $total = 0;
-        
-        foreach ($programs as $program) {
-            $count = UnitProgram::where('audit_id', $this->currentAudit()->audit_id)
-                                            ->where('program_id', $program->program_id)
-                                            ->count(); 
 
-            $total = $total + $count;
-        }
+        $units = UnitProgram::select('unit_id')
+                            ->where('audit_id', $this->currentAudit()->audit_id)
+                            ->groupBy('unit_id')
+                            ->get(); 
+
+        $total = $total + count($units);
 
         return $total;
     }

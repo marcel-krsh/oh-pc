@@ -1894,6 +1894,7 @@ __webpack_require__.r(__webpack_exports__);
 
       return rerunCompliance;
     }(function () {
+      console.log("test");
       rerunCompliance(this.audit.auditId);
     }),
     updateStep: function updateStep() {
