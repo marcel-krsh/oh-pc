@@ -29,7 +29,7 @@
                     <span class="a-trash-4"></span>
                 </a>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                <a href="/document/{{$document->doc_id}}" target="_blank"  uk-tooltip="Download file.">
+                <a href="/document/{{$document->docuware_doc_id}}" target="_blank"  uk-tooltip="Download file.">
                     <span class="a-lower"></span>
                 </a>
                 @if($document->notes)&nbsp;&nbsp;| &nbsp;&nbsp;<a class="uk-link-muted " uk-tooltip="{{ $document->notes }}">
@@ -205,7 +205,7 @@
     </div><!--6-10-->
 
 </div>
-<div class=""uk-width-3-5@m uk-width-1-1">
+<div class="uk-width-3-5@m uk-width-1-1">
     <div class="uk-grid">
     <select class="uk-width-1-2 uk-select filter-drops " style="style="height: 30px; padding: 1px; margin-top: 5px;" onchange="filterClasses(this.value)">
         <option value="all">ALL CLASSES</option>
