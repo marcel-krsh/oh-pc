@@ -139,9 +139,6 @@ class DocumentController extends Controller
 
 
 
-
-                        /// MISSSING CODE
-
                     } else {
                         // there is not a record - add it to the document list.
                         $doc = SyncDocuware::create([
@@ -218,7 +215,10 @@ class DocumentController extends Controller
             } else {
                 $documents = null;
             }
-            dd($documents);
+            $document_categories = DocumentCategory::where('parent_id','<>',0)->orderBy('parent_id')->orderBy('document_category_name')->get()-all();
+            $document_requests = DocumentRequest::where('project_id',$project->id)->get()->all();
+
+            return view('projects.partials.documents', compact('project', 'documents', 'document_categories', 'document_requests'));
         
 
     }

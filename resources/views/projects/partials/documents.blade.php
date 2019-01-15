@@ -26,19 +26,18 @@
 </template>
 
 <script>
-    $('.detail-tab-1-text').html('<span class="a-home-2"></span> PARCEL: {{project->parcel_id}} :: Documents ');
-    $('#main-option-text').html('Project: {{project->parcel_id}}');
+    $('#main-option-text').html('Project: {{project->project_number}}');
     $('#main-option-icon').attr('uk-icon','arrow-circle-o-left');
 
-    var subTabType = window.subTabType;
-    if(subTabType == 'documents'){
-        delete window.subTabType;
+    // var subTabType = window.subTabType;
+    // if(subTabType == 'documents'){
+    //     delete window.subTabType;
         
-        $('#parcel-subtab-1').attr("aria-expaned", "false");
-        $('#parcel-subtab-1').removeClass("uk-active");
-        $('#parcel-subtab-2').attr("aria-expaned", "true");
-        $('#parcel-subtab-2').addClass("uk-active");
-    }
+    //     $('#parcel-subtab-1').attr("aria-expaned", "false");
+    //     $('#parcel-subtab-1').removeClass("uk-active");
+    //     $('#parcel-subtab-2').attr("aria-expaned", "true");
+    //     $('#parcel-subtab-2').addClass("uk-active");
+    // }
 </script>
     <div class="uk-grid uk-margin-top uk-animation-fade">
         <div class="uk-width-3-5@m uk-width-1-1 ">
@@ -46,129 +45,43 @@
          <table class="uk-table uk-table-striped uk-table-condensed uk-table-hover gray-link-table" id="">
           <thead>
               <tr class="uk-text-small" style="color:#fff;background-color:#555;">
-                <th>UPLOADED</th>
-                <th>CATEGORIES</th>
-                <th></th>
+                <th>CLASS</th>
+                <th>DESCRIPTION</th><th>STORED</th>
+                <th>MODIFIED</th>
+                <th>FROM</th>
+                <th>ACTIONS</th>
             </tr>
         </thead>
         <tbody id="sent-document-list">
             @foreach ($documents as $document)
-            <?php
-            if($document->categories){
-             $listcats = implode(",", json_decode($document->categories, true));
-         }else{
-            $listcats = '';
-        }
-        ?>
         <tr>
-            <td>{{ date('F d, Y', strtotime($document->created_at)) }}</td>
+            
             <td>
-                <ul class="uk-list document-category-menu">
-                    @foreach ($document->categoriesarray as $documentcategory_id => $documentcategory_name)
-                    <li>
-                        <a id="sent-id-{{ $document->id }}-category-id-{{ $documentcategory_id }}" class="">
-                            <span id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ in_array($documentcategory_id, $document->approved_array) ? "received-yes" : "check-received-no received-no" }}"></span> 
-                            <span id="sent-id-{{ $document->id }}category-id-1-not-received-icon" class="{{ in_array($documentcategory_id, $document->notapproved_array) ? "a-checkbox-minus" : "a-checkbox" }} {{ in_array($documentcategory_id, $document->approved_array) ? " minus-received-yes received-yes" : "received-no" }}"></span> 
-
-                            {{ $documentcategory_name }}
-
-                        </a>
-                        @if(Auth::user()->entity_type == "hfa")
-                        <div uk-dropdown="toggle: #sent-id-{{ $document->id }}-category-id-{{ $documentcategory_id }}">
-                            <ul class="uk-nav uk-nav-dropdown">
-                                <li>
-                                    <a onclick="resetDocTabCategoryListVars();selectCategory('{{ $documentcategory_id }}');">
-                                        Select this category on right
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onclick="markApproved({{ $document->id }},{{ $documentcategory_id }});">
-                                        Mark as approved
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onclick="markNotApproved({{ $document->id }},{{ $documentcategory_id }});">
-                                        Mark as declined
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        @endif
-                    </li>
-                    @endforeach
-                </ul>
+                {{$document->dw_document_class}}
             </td>
             <td>
-                <a class="uk-link-muted " uk-tooltip="{{ $document->filename }} @if($document->comment)<br />{{ $document->comment }}@endif @if(count($document->retainages)) <br />Retainages:@foreach($document->retainages as $document_retainage) <br />@if($document_retainage->cost_item){{$document_retainage->cost_item->description}}@endif @endforeach @endif @if(count($document->advances)) <br />Retainages:@foreach($document->advances as $document_advance) <br />{{$document_advance->description}} @endforeach @endif">
+                {{$document->dw_document_description}}
+            </td>
+            <td>{{ date('F d, Y g:h a', strtotime($document->dw_stored_date_time)) }}</td>
+            <td>{{ date('F d, Y g:h a', strtotime($document->dw_mod_date_time)) }}</td>
+            <td>
+                <a class="uk-link-muted " uk-tooltip="@if($document->notes){{ $document->notes }}@else NA @endif">
                     <span class="a-info-circle"></span>
                 </a>
-                &nbsp;&nbsp;|&nbsp;&nbsp;
-                <a class="uk-link-muted " onclick="dynamicModalLoad('edit-document/{{$document->id}}')" uk-tooltip="Edit this file">
-                    <span class="a-pencil-2"></span>
-                </a>
-                &nbsp;&nbsp;|&nbsp;&nbsp;
+                &nbsp;&nbsp;| &nbsp;&nbsp;
                 <a class="uk-link-muted " onclick="deleteFile({{ $document->id }});" uk-tooltip="Delete this file">
                     <span class="a-trash-4"></span>
                 </a>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                <a href="{{ URL::route('documents.downloadDocument', [project->id, $document->id]) }}" target="_blank"  uk-tooltip="Download file {{ $document->filename }}">
+                <a href="{{ URL::route('documents.downloadDocument', [project->id, $document->id]) }}" target="_blank"  uk-tooltip="Download file.">
                     <span class="a-lower"></span>
                 </a>
-                <!-- &nbsp;&nbsp;|&nbsp;&nbsp;
-                <a class="uk-link-muted" onclick="newEmailRequest('');" uk-tooltip="Email request">
-                    <i class="uk-icon-share-square-o "></i>
-                </a> -->
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                <a onclick="resetDocTabCategoryListVars();selectCategory('{{ $listcats }}')" uk-tooltip="Select all categories listed for this document group that was sent via EMAIL.">
-                    <span class="a-higher"></span>
-                </a>
+                
             </td>
         </tr>
         @endforeach
-        @if ($pending_categories_list != '')
-        <tr>
-
-            <td>PENDING</td>
-            <td>
-                @if(count($pending_categories)>0)
-                <ul class="uk-subnav document-category-menu">
-                    @foreach ($pending_categories as $pending_category)
-
-                    <li data-uk-dropdown=""  class="">
-                        <a id="sent-id-1-category-id-4" class="">
-                            <span id="sent-id-1-category-id-4-recieved-icon" class="a-checkbox-checked received-no"></span> <span id="sent-id-1-category-id-4-not-received-icon" class=" received-no a-checkbox-minus"></span> 
-                            {{ $document_categories_key[$pending_category] }}
-                        </a>
-                        <div class="uk-dropdown  uk-dropdown-bottom" style="top: 22px; left: 0px;">
-                            <ul class="uk-nav uk-nav-dropdown">
-                                <li>
-                                    <a onclick="resetDocTabCategoryListVars();selectCategory('{{ $pending_category }}');">
-                                        Select this category on right
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    @endforeach
-
-                </ul>
-                @else
-                @endIf
-            </td>
-            <td>
-             <span class="a-info-circle" class=" uk-text-extramuted"></span>
-             &nbsp;&nbsp;|&nbsp;&nbsp;
-             <span class="a-trash-4" class=" uk-text-extramuted"></span>
-             &nbsp;&nbsp;|&nbsp;&nbsp;
-             <span class="a-lower" class=" uk-text-extramuted"></span>
-             <!-- &nbsp;&nbsp;|&nbsp;&nbsp;
-             <a class="uk-link-muted" onclick="newEmailRequest('{{ $pending_categories_list }}');">
-                <i class="uk-icon-share-square-o "></i> -->
-                &nbsp;&nbsp;|&nbsp;&nbsp;
-            </a>
-            <a onclick="resetDocTabCategoryListVars();selectCategory('{{ $pending_categories_list }}')" uk-tooltip="Select all categories listed for this document group that was sent via PENDING."><span class="a-higher"></span></a></td>
-        </tr>
-        @endif
+        
 
     </tbody>
 </table>
@@ -182,28 +95,19 @@
             <div uk-grid id="category-list"> 
                 <div class="uk-width-1-1 uk-margin-small-bottom">
                     <ul class="uk-list document-category-menu">
+                        @php $currentParent = ''; @endPhp
                         @foreach ($document_categories as $category)
+                        @if($currentParent != $category->parent_id)
+                        <li><strong>{{$category->parent->document_category_name}}</strong></li>
+                        @php $currentParent = $category->parent_id; @endphp
+                        @endIf
                         <li>
-                            <input name="category-id-checkbox" class="uk-checkbox" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="checkbox">
+                            <input name="category-id-checkbox" class="uk-radio" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="radio">
                             <label for="category-id-{{ $category->id }}">
                                 {{ $category->document_category_name }}
                             </label>
                         </li>
                         @endforeach
-                    </ul>
-
-                    <div>
-                        <small>OTHER CATEGORIES THAT ARE PROBABLY NOT NEEDED</small>
-                        <hr class="uk-margin-bottom" />
-                    </div>
-
-                    <ul class="uk-list document-category-menu">
-                        <li>
-                            <input name="category-id-checkbox" class="uk-checkbox" id="category-id-0" value="0" type="checkbox">
-                            <label for="category-id-0">
-                                Category TBD
-                            </label>
-                        </li>
                     </ul>
                 </div>
 
@@ -250,16 +154,9 @@
                                 if(categoryArray.length > 0){
                                     console.log('Categories selected: '+categoryArray);
                                     
-                                    if($.inArray('47', categoryArray) > -1 && categoryArray.length > 1){
-                                        UIkit.modal.alert('You must only select one category when uploading an Advance Payment Document.');
-                                        return false;
-                                    }
-                                    if($.inArray('9', categoryArray) > -1 && categoryArray.length > 1){
-                                        UIkit.modal.alert('You must only select one category when uploading an Retainage Payment Document.'+categoryArray.length+' '+categoryArray);
-                                        return false;
-                                    }
+                                    
                                 }else{
-                                    UIkit.modal.alert('You must select at least one category.');
+                                    UIkit.modal.alert('You must select at least a category.');
                                     return false;
                                 }
                             },
