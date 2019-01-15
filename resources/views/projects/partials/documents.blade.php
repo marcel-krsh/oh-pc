@@ -95,7 +95,7 @@
             <div uk-grid id="category-list"> 
                 <div class="uk-width-1-1 uk-margin-small-bottom">
                     <ul class="uk-list document-category-menu">
-                        @php $currentParent = ''; @endPhp
+                        @php $currentParent = ''; @endphp
                         @foreach ($document_categories as $category)
                         @if($currentParent != $category->parent_id)
                         <li><strong>{{$category->parent->document_category_name}}</strong></li>
