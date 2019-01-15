@@ -1883,6 +1883,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['audit', 'index'],
   methods: {
+    rerunCompliance: function (_rerunCompliance) {
+      function rerunCompliance() {
+        return _rerunCompliance.apply(this, arguments);
+      }
+
+      rerunCompliance.toString = function () {
+        return _rerunCompliance.toString();
+      };
+
+      return rerunCompliance;
+    }(function () {
+      rerunCompliance(this.audit.auditId);
+    }),
     updateStep: function updateStep() {
       dynamicModalLoad('audits/' + this.audit.auditId + '/updateStep', 0, 0, 0);
     },
@@ -43927,7 +43940,8 @@ var render = function() {
               (_obj$2[_vm.audit.complianceIconClass] = true),
               (_obj$2[_vm.audit.complianceStatusClass] = true),
               _obj$2),
-              attrs: { "uk-tooltip": _vm.audit.tooltipComplianceStatus }
+              attrs: { "uk-tooltip": _vm.audit.tooltipComplianceStatus },
+              on: { click: _vm.rerunCompliance }
             })
           ])
         ]
@@ -56375,8 +56389,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/flip/Documents/Work/Allita/allita-pcsv/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/flip/Documents/Work/Allita/allita-pcsv/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /home/vagrant/code/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /home/vagrant/code/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

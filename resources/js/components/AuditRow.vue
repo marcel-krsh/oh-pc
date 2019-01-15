@@ -53,7 +53,7 @@
                 <div class="uk-width-1-6 uk-text-right uk-padding-remove" :uk-tooltip="audit.tooltipInspectableItems" v-html="audit.inspectableItems+' /'" v-if="audit.inspectableItems > 0"></div> 
             	<div class="uk-width-1-6 uk-text-left uk-padding-remove" :uk-tooltip="audit.totalItems + ' TOTAL UNITS WILL BE INSPECTED'" v-html="audit.totalItems"></div> 
             	<div class="uk-width-1-6 uk-text-left">
-            		<i :class="{[audit.complianceIconClass]:true, [audit.complianceStatusClass]:true}" :uk-tooltip="audit.tooltipComplianceStatus"></i>
+            		<i :class="{[audit.complianceIconClass]:true, [audit.complianceStatusClass]:true}" :uk-tooltip="audit.tooltipComplianceStatus" v-on:click="rerunCompliance"></i>
             	</div>
             </div>
         </td>
@@ -119,6 +119,9 @@
     export default {
 	    props: ['audit','index'],
 	    methods: {
+            rerunCompliance: function() {
+                rerunCompliance(this.audit.auditId); 
+            },
             updateStep: function() {
                 dynamicModalLoad('audits/'+this.audit.auditId+'/updateStep',0,0,0);
             },
