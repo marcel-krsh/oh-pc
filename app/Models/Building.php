@@ -23,20 +23,20 @@ class Building extends Model
      */
     public function units() : HasMany
     {
-        return $this->hasMany(\App\Models\Unit::class, 'building_id', 'building_id');
+        return $this->hasMany(\App\Models\Unit::class, 'building_id', 'id');
     }
 
     public function amenities() : HasMany
     {
-        return $this->hasMany(\App\Models\BuildingAmenity::class, 'building_id', 'building_id');
+        return $this->hasMany(\App\Models\BuildingAmenity::class, 'building_id', 'id');
     }
 
     public function address() : HasOne
     {
-        return $this->hasOne(\App\Models\Address::class, 'address_id', 'physical_address_key');
+        return $this->hasOne(\App\Models\Address::class, 'id', 'physical_address_id');
     }
     public function project() : HasOne
     {
-        return $this->hasOne(\App\Models\Project::class, 'project_id', 'physical_address_key');
+        return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
     }
 }
