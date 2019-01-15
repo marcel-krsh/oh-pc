@@ -524,7 +524,7 @@ class AuditsEvent
         
         // save all buildings in building_inspection table
         $buildings = $project->buildings;
-        Log::info('526:: buildings saved.')
+        Log::info('526:: buildings saved.');
         // remove any data
         BuildingInspection::where('audit_id', '=', $audit->id)->delete();
         Log::info('529:: building inspections deleted');
