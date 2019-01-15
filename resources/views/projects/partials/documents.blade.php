@@ -53,7 +53,7 @@
         </thead>
         <tbody id="sent-document-list">
             @foreach ($documents as $document)
-        <tr>
+        <tr class="{{strtolower(strreplace(' ','-',$document->document_class))}} {{strreplace(' ','-',strtolower($document->document_description))}}">
             
             <td>
                 {{ucwords(strtolower($document->document_class))}}
