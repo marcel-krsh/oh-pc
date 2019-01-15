@@ -131,7 +131,7 @@ class AuditsEvent
     public function auditUpdated(Audit $audit)
     {
         if ($audit) {
-            dd($audit);
+            //dd($audit);
             if (( ( in_array($audit->monitoring_status_type_key, [4,5,6]) && $audit->compliance_run == null) || $audit->rerun_compliance == 1) && $audit->findings->count() < 1) {
                 
                     //LOG HERE if it is a brand new audit run
