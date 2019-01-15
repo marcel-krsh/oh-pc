@@ -40,10 +40,10 @@
     // }
 </script>
     <div class="uk-grid uk-margin-top uk-animation-fade">
-        <div class="uk-width-3-5@m uk-width-1-1 uk-scrollable-box">
+        <div class="uk-width-3-5@m uk-width-1-1 uk-scrollable-box" style="height:600px;">
 
          <table class="uk-table uk-table-striped uk-table-condensed uk-table-hover gray-link-table" id="">
-          <thead>
+          <thead >
               <tr class="uk-text-small" style="color:#fff;background-color:#555;">
                 <th>CLASS</th>
                 <th>DESCRIPTION</th><th>STORED</th>
@@ -83,6 +83,26 @@
 
     </tbody>
 </table>
+<select class="uk-width-1-2" onclick="filterClasses(this.value)">
+    <option value="all">ALL CLASSES</option>
+    @php $currentParent = ''; @endphp
+    @foreach($documents as $category)
+        @if($currentParent != $document->document_class)
+            <option value="{{strtolower(str_replace(' ','-',$document->document_class))}}">{{ucwords(strtolower($document->document_class))}}</option> 
+           @php $currentParent = $document->document_class; @endphp 
+        @endif
+    @endforeach
+</select>
+<select>
+    <option class="uk-width-1-2" value="all" onclick="filterDescriptions(this.value)">ALL DESCRIPTIONS</option>
+    @php $currentParent = ''; @endphp
+    @foreach($documents as $category)
+        @if($currentParent != $document->document_description)
+            <option value="{{strtolower(str_replace(' ','-',$document->document_description))}}">{{ucwords(strtolower($document->document_description))}}</option> 
+           @php $currentParent = $document->document_description; @endphp 
+        @endif
+    @endforeach
+</select>
 
 </div><!--4-10-->
 
