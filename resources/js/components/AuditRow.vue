@@ -120,7 +120,7 @@
 	    props: ['audit','index'],
 	    methods: {
             rerunCompliance: function() {
-                rerunCompliance(this.audit.auditId);
+                rerunCompliance(this.audit.auditId); 
             },
             updateStep: function() {
                 dynamicModalLoad('audits/'+this.audit.auditId+'/updateStep',0,0,0);
