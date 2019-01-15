@@ -195,7 +195,7 @@ class Project extends Model
         $market_rate = $this->market_rate_units()->count();
 
         // subsidized units are units with programs
-        $subsidized = $this->program_units()->count();
+        $subsidized = $this->program_units_total();
 
         $details = new ProjectDetail([
                 'project_id' => $this->id,
@@ -283,9 +283,20 @@ class Project extends Model
         return $this->hasManyThrough('App\Models\Unit', 'App\Models\Building')->where('unit_identity_id','=',6);
     }
 
-    public function program_units() : HasMany
+    public function program_units_total()
     {
-        return $this->hasMany('\App\Models\UnitProgram', 'development_key', 'project_key');
+        $programs = $this->programs; 
+        $total = 0;
+        
+        foreach ($programs as $program) {
+            $count = UnitProgram::where('audit_id', $this->currentAudit()->audit_id)
+                                            ->where('program_id', $program->program_id)
+                                            ->count(); 
+
+            $total = $total + $count;
+        }
+
+        return $total;
     }
 
     public function projectProgramUnitCounts()
