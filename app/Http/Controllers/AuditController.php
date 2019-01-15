@@ -23,6 +23,7 @@ use App\Models\GuideStep;
 use App\Models\GuideProgress;
 use App\Models\ScheduleDay;
 use App\Models\ScheduleTime;
+use App\Models\AuditAuditor;
 use Auth;
 use Session;
 use App\LogConverter;
@@ -392,19 +393,24 @@ class AuditController extends Controller
                 break;
             case 'assignment':
 
+                // check if the lead is listed as an auditor and add it if needed
                 $auditors = $project->selected_audit()->auditors();
-                $auditors_array = array();
+                $is_lead_an_auditor = 0;
                 foreach($auditors as $auditor){
-                    $auditors_array[] = [
-                        'id' => $auditor->id,
-                        'name' => $auditor->user()->full_name,
-                        'initials' => $auditor->user()->initials,
-                        'color' => $auditor->user()->color
-                    ];
+                    if($project->selected_audit()->lead_auditor->id == $auditor->id){
+                        $is_lead_an_auditor = 1;
+                    }
                 }
-
-                // list current audit and all audits assigned to auditors
-                
+                if($is_lead_an_auditor == 0){
+                    // add to audit_auditors
+                    $new_auditor = new AuditAuditor([
+                        'user_id' => $project->selected_audit()->lead_auditor->id,
+                        'user_key' => $project->selected_audit()->lead_auditor->devco_key,
+                        'monitoring_key' => $project->selected_audit()->audit_key,
+                        'audit_id' => $project->selected_audit()->audit_id
+                    ]);
+                    $new_auditor->save();
+                }
 
                 $data = collect([
                     "project" => [
@@ -425,7 +431,6 @@ class AuditController extends Controller
                         'needed' => $project->selected_audit()->hours_still_needed(),
                         'chart_data' => $project->selected_audit()->estimated_chart_data()
                     ],
-                    'auditors' => $auditors_array,
                     'audits' => [
                         [
                             'id' => '19200114',
