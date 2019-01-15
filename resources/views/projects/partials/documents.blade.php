@@ -40,7 +40,7 @@
     // }
 </script>
     <div class="uk-grid uk-margin-top uk-animation-fade">
-        <div class="uk-width-3-5@m uk-width-1-1 uk-scrollable-box" style="height:600px;">
+        <div class="uk-width-3-5@m uk-width-1-1 uk-scrollable-box" style="height:400px;">
 
          <table class="uk-table uk-table-striped uk-table-condensed uk-table-hover gray-link-table" id="">
           <thead >
@@ -83,26 +83,7 @@
 
     </tbody>
 </table>
-<select class="uk-width-1-2" onclick="filterClasses(this.value)">
-    <option value="all">ALL CLASSES</option>
-    @php $currentParent = ''; @endphp
-    @foreach($documents as $category)
-        @if($currentParent != $document->document_class)
-            <option value="{{strtolower(str_replace(' ','-',$document->document_class))}}">{{ucwords(strtolower($document->document_class))}}</option> 
-           @php $currentParent = $document->document_class; @endphp 
-        @endif
-    @endforeach
-</select>
-<select>
-    <option class="uk-width-1-2" value="all" onclick="filterDescriptions(this.value)">ALL DESCRIPTIONS</option>
-    @php $currentParent = ''; @endphp
-    @foreach($documents as $category)
-        @if($currentParent != $document->document_description)
-            <option value="{{strtolower(str_replace(' ','-',$document->document_description))}}">{{ucwords(strtolower($document->document_description))}}</option> 
-           @php $currentParent = $document->document_description; @endphp 
-        @endif
-    @endforeach
-</select>
+
 
 </div><!--4-10-->
 
@@ -262,6 +243,28 @@
         </div>
     </div><!--6-10-->
 
+</div>
+<div class=""uk-width-3-5@m uk-width-1-1">
+    <select class="uk-width-1-2" onchange="filterClasses(this.value)">
+        <option value="all">ALL CLASSES</option>
+        @php $currentParent = ''; @endphp
+        @foreach($documents as $category)
+            @if($currentParent != $document->document_class)
+                <option value="{{strtolower(str_replace(' ','-',$document->document_class))}}">{{ucwords(strtolower($document->document_class))}}</option> 
+               @php $currentParent = $document->document_class; @endphp 
+            @endif
+        @endforeach
+    </select>
+    <select class="uk-width-1-2" onchange="filterDescriptions(this.value)">
+        <option  value="all" >ALL DESCRIPTIONS</option>
+        @php $currentParent = ''; @endphp
+        @foreach($documents as $category)
+            @if($currentParent != $document->document_description)
+                <option value="{{strtolower(str_replace(' ','-',$document->document_description))}}">{{ucwords(strtolower($document->document_description))}}</option> 
+               @php $currentParent = $document->document_description; @endphp 
+            @endif
+        @endforeach
+    </select>
 </div>
 <script type="text/javascript">
 function markApproved(id,catid){
