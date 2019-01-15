@@ -206,7 +206,7 @@
                                 // Submit form and make sure it responds back with 1 - otherwise it will output the response to a browser alert box.
                                 if(is_retainage == 0 && is_advance == 0){
                                     UIkit.modal.prompt("I uploaded and categorized the document(s) accordingly. Please add your comment for the history record.",'').then(function(val){
-                                        $.post('{{ URL::route("documents.uploadComment", project->id) }}', {
+                                        $.post('{{ URL::route("documents.uploadComment", $project->id) }}', {
                                             'postvars' : documentids,
                                             'comment' : val,
                                             '_token' : '{{ csrf_token() }}'
@@ -215,18 +215,18 @@
                                                 UIkit.modal.alert(data);
                                             } else {
                                                 UIkit.modal.alert('Your comment has been saved.');
-                                                loadProjectSubTab('documents',{{project->id}});
+                                                loadProjectSubTab('documents',{{$project->id}});
                                             }
                                         });
                                     });
                                 }else if(is_retainage == 1){
-                                    dynamicModalLoad('document-retainage-form/{{project->id}}/'+documentids);
+                                    dynamicModalLoad('document-retainage-form/{{$project->id}}/'+documentids);
                                     
                                 }else if(is_advance == 1){
-                                    dynamicModalLoad('document-advance-form/{{project->id}}/'+documentids);
+                                    dynamicModalLoad('document-advance-form/{{$project->id}}/'+documentids);
                                 }
                                 
-                                loadProjectSubTab('documents',{{project->id}});
+                                loadProjectSubTab('documents',{{$project->id}});
                             }
 
                         };
@@ -248,7 +248,7 @@
 <script type="text/javascript">
 function markApproved(id,catid){
     UIkit.modal.confirm("Are you sure you want to approve this file?").then(function() {
-        $.post('{{ URL::route("documents.approve", project->id) }}', {
+        $.post('{{ URL::route("documents.approve", $project->id) }}', {
             'id' : id,
             'catid' : catid,
             '_token' : '{{ csrf_token() }}'
@@ -258,7 +258,7 @@ function markApproved(id,catid){
                 } else {
                     // UIkit.modal.alert('The document is approved.');                                                                           
                 }
-                loadProjectSubTab('documents',{{project->id}});
+                loadProjectSubTab('documents',{{$project->id}});
             }
         );
     });
@@ -266,7 +266,7 @@ function markApproved(id,catid){
 
 function markNotApproved(id,catid){
     UIkit.modal.confirm("Are you sure you want to decline this file?").then(function() {
-        $.post('{{ URL::route("documents.notapprove", project->id) }}', {
+        $.post('{{ URL::route("documents.notapprove", $project->id) }}', {
             'id' : id,
             'catid' : catid,
             '_token' : '{{ csrf_token() }}'
@@ -276,14 +276,14 @@ function markNotApproved(id,catid){
             } else {
                 UIkit.modal.alert('The document is not approved.');                                                                           
             }
-            loadProjectSubTab('documents',{{project->id}});
+            loadProjectSubTab('documents',{{$project->id}});
         });
     });
 }
 
 function deleteFile(id){
     UIkit.modal.confirm("Are you sure you want to delete this file? This is permanent.").then(function() {
-        $.post('{{ URL::route("documents.deleteDocument", project->id) }}', {
+        $.post('{{ URL::route("documents.deleteDocument", $project->id) }}', {
             'id' : id,
             '_token' : '{{ csrf_token() }}'
         }, function(data) {
@@ -292,7 +292,7 @@ function deleteFile(id){
             } else {
                 //UIkit.modal.alert('The document has been deleted.');                                                                           
             }
-            loadProjectSubTab('documents', {{project->id}} );
+            loadProjectSubTab('documents', {{$project->id}} );
         });
     });
 }
