@@ -206,6 +206,7 @@
 
 </div>
 <div class=""uk-width-3-5@m uk-width-1-1">
+    <div class="uk-grid">
     <select class="uk-width-1-2" onchange="filterClasses(this.value)">
         <option value="all">ALL CLASSES</option>
         @php $currentParent = ''; @endphp
@@ -228,6 +229,7 @@
             @endif
         @endforeach
     </select>
+</div>
 </div>
 <script type="text/javascript">
 function markApproved(id,catid){
