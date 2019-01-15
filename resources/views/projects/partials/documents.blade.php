@@ -40,7 +40,7 @@
     // }
 </script>
     <div class="uk-grid uk-margin-top uk-animation-fade">
-        <div class="uk-width-3-5@m uk-width-1-1 ">
+        <div class="uk-width-3-5@m uk-width-1-1 uk-scrollable-box">
 
          <table class="uk-table uk-table-striped uk-table-condensed uk-table-hover gray-link-table" id="">
           <thead>
@@ -48,7 +48,7 @@
                 <th>CLASS</th>
                 <th>DESCRIPTION</th><th>STORED</th>
                 <th>MODIFIED</th>
-                <th width="120">ACTIONS</th>
+                <th width="110">ACTIONS</th>
             </tr>
         </thead>
         <tbody id="sent-document-list">
@@ -64,10 +64,7 @@
             <td>{{ date('m/d/Y g:h a', strtotime($document->dw_stored_date_time)) }}</td>
             <td>{{ date('m/d/Y g:h a', strtotime($document->dw_mod_date_time)) }}</td>
             <td>
-                @if($document->notes)<a class="uk-link-muted " uk-tooltip="{{ $document->notes }}">
-                    <span class="a-file-info"></span>
-                </a>
-                &nbsp;&nbsp;| &nbsp;&nbsp; @endif
+                
                 <a class="uk-link-muted " onclick="deleteFile({{ $document->id }});" uk-tooltip="Delete this file">
                     <span class="a-trash-4"></span>
                 </a>
@@ -75,6 +72,10 @@
                 <a href="{{ URL::route('documents.downloadDocument', [$project->id, $document->id]) }}" target="_blank"  uk-tooltip="Download file.">
                     <span class="a-lower"></span>
                 </a>
+                @if($document->notes)&nbsp;&nbsp;| &nbsp;&nbsp;<a class="uk-link-muted " uk-tooltip="{{ $document->notes }}">
+                    <span class="a-file-info"></span>
+                </a>
+                 @endif
                 
             </td>
         </tr>
