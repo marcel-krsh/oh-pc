@@ -725,7 +725,7 @@ The following div is defined in this particular tab and pushed to the main layou
 
     function rerunCompliance(audit){
 
-    	UIkit.modal.confirm('Are you sure you want to rerun the compliance selection?<br /><br /><em>WARNING!::</em> This will remove all assignments on your audit. IT WILL NOT RUN ON AUDITS WITH FINDINGS.').then(function() {
+    	UIkit.modal.confirm('<h1>RERUN COMPLIANCE SELECTION?</h2><p>Are you sure you want to rerun the compliance selection?</p><em>WARNING!::</em> This will remove all assignments on your audit.<br /><hr class="dashed-hr uk-margin-bottom">THIS WILL NOT RUN ON AUDITS WITH FINDINGS.').then(function() {
 		    console.log('Call the rerun.')
 		}, function () {
 		    console.log('Rejected.')
