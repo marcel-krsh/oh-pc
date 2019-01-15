@@ -29,7 +29,7 @@
                     <span class="a-trash-4"></span>
                 </a>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                <a href="{{ URL::route('documents.downloadDocument', [$project->id, $document->id]) }}" target="_blank"  uk-tooltip="Download file.">
+                <a href="/document/{{ $document->doc_id]}}" target="_blank"  uk-tooltip="Download file.">
                     <span class="a-lower"></span>
                 </a>
                 @if($document->notes)&nbsp;&nbsp;| &nbsp;&nbsp;<a class="uk-link-muted " uk-tooltip="{{ $document->notes }}">
@@ -207,7 +207,7 @@
 </div>
 <div class=""uk-width-3-5@m uk-width-1-1">
     <div class="uk-grid">
-    <select class="uk-width-1-2" onchange="filterClasses(this.value)">
+    <select class="uk-width-1-2" class="uk-select filter-drops " style="style="height: 30px; padding: 1px; margin-top: 5px;" onchange="filterClasses(this.value)">
         <option value="all">ALL CLASSES</option>
         @php $currentParent = ''; @endphp
         @php $documentClasses = $documentReset; @endphp
@@ -218,7 +218,7 @@
             @endif
         @endforeach
     </select>
-    <select class="uk-width-1-2" onchange="filterDescriptions(this.value)">
+    <select class="uk-width-1-2" class="uk-select filter-drops " style="style="height: 30px; padding: 1px; margin-top: 5px;" onchange="filterDescriptions(this.value)">
         <option  value="all" >ALL DESCRIPTIONS</option>
         @php $currentParent = ''; @endphp
         @php $documentDescriptions = $documentReset; @endphp
