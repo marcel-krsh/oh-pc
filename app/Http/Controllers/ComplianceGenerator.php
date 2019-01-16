@@ -41,7 +41,7 @@ class ComplianceGenerator extends Controller
            ]);
         }
         foreach ($audit->project->buildings as $b) {
-        	foreach($b->amenities as $ba)
+        	foreach($b->amenities as $ba){
 	           AmenityInspection::insert([
 	                'audit_id'=>$audit->id,
                 	'monitoring_key'=>$audit->monitoring_key,
