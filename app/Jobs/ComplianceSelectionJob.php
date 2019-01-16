@@ -406,7 +406,7 @@ class ComplianceSelectionJob implements ShouldQueue
         return $summary;
     }
 
-    public function selectionProcess($audit)
+    public function selectionProcess(Audit $audit)
     {
         $audit->comment = $audit->comment.' | Select Process Started';
             $audit->save();
