@@ -1414,8 +1414,8 @@ class ComplianceSelectionJob implements ShouldQueue
             $lead_json = json_encode($data);
         }
 
-        if ($audit->development_key) {
-            $project = Project::where('project_key', '=', $audit->development_key)->with('address')->first();
+        if ($audit->project_id) {
+            $project = Project::where('id', '=', $audit->project_id)->with('address')->first();
             if ($project) {
                 $project_id = $project->id;
                 $project_ref = $project->project_number;
@@ -1433,11 +1433,11 @@ class ComplianceSelectionJob implements ShouldQueue
         
 
         // inspection status and schedule date set to default when creating a new audit
-        $inspection_status_text = 'AUDIT NEEDS SCHEDULING'; 
+        $inspection_status_text = 'AUDIT NEEDS SCHEDULED'; 
         $inspection_schedule_date = null; // Y-m-d H:i:s
         $inspection_schedule_text = 'CLICK TO SCHEDULE AUDIT'; 
         $inspection_status = 'action-needed'; 
-        $inspection_icon = 'a-mobile-repeat'; 
+        $inspection_icon = 'a-mobile-clock'; 
 
         // in project_roles
         // primary owner: project_role_key = 20, id = 98
@@ -1477,7 +1477,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
         if($cached_audit){
             // when updating a cachedaudit, run the status test
-            $total_items = $cached_audit->total_items(); 
+            $total_items = $audit->total_items(); 
             $inspection_schedule_checks = $cached_audit->checkStatus('schedules');
             $inspection_status_text = $inspection_schedule_checks['inspection_status_text']; 
             $inspection_schedule_date = $inspection_schedule_checks['inspection_schedule_date'];
