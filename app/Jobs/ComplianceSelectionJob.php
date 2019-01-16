@@ -1030,6 +1030,7 @@ class ComplianceSelectionJob implements ShouldQueue
         return [$optimized_selection, $overlap, $project, $organization_id];
     }
     public function createNewProjectDetails(Audit $audit){
+        $project = \App\Project::find($audit->project_id);
         $audit->project->set_project_defaults($audit->id);
     }
     public function createNewCachedAudit(Audit $audit, $summary = null)
@@ -1328,6 +1329,9 @@ class ComplianceSelectionJob implements ShouldQueue
 
         //Remove Unit Inspections
         \App\Models\UnitInspection::where('audit_id',$audit->id)->delete();
+
+        //Remove Project Details for this Audit
+        \App\Models\ProjectDetail::where('audit_id',$audit->id)->delete();
 
         //Remove the Cached Audit
         CachedAudit::where('audit_id', '=', $audit->id)->delete();
