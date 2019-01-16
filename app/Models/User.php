@@ -97,7 +97,11 @@ class User extends Authenticatable
             }else{
                 $output = $output.', '.$role->role->name;
             }
+
             
+        }
+        if($output == ''){
+            $output = 'NO ACCESS';
         }
         return $output;
     }
