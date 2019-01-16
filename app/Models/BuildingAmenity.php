@@ -11,4 +11,10 @@ class BuildingAmenity extends Model
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
     //
     protected $guarded = ['id'];
+    use SoftDeletes;
+
+    public function amenity() : HasOne
+    {
+        return $this->hasOne(\App\Models\Amenity::class, 'id', 'amenity_id');
+    }
 }

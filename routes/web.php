@@ -17,6 +17,8 @@
         // rerun compliance run
         Route::get('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
 
+        Route::get('/audit/{audit}/details', 'ComplianceGenerator@details');
+
         // Document Test Route
         Route::get('/document/list/{projectNumber}','SyncController@getDocs');
         //Route::get('/document/{documentId}','SyncController@getDoc');

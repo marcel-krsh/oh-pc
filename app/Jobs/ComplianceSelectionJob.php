@@ -24,6 +24,7 @@ use App\Models\Program;
 use App\Services\DevcoService;
 use App\Models\UnitProgram;
 use Illuminate\Support\Facades\Redis;
+use App\Models\AmenityInspection;
 use Auth;
 
 class ComplianceSelectionJob implements ShouldQueue
@@ -1364,6 +1365,51 @@ class ComplianceSelectionJob implements ShouldQueue
         $project = \App\Models\Project::find($audit->project_id);
         $audit->project->set_project_defaults($audit->id);
     }
+    public function addAmenityInpsections(Audit $audit){
+        //Project
+        AmenityInspection::where('audit_id',$audit->id)->delete();
+        foreach ($audit->project->amenities as $pa) {
+           AmenityInspection::insert([
+                'audit_id'=>$audit->id,
+                'monitoring_key'=>$audit->monitoring_key,
+                'project_id'=>$audit->project_id,
+                'development_key'=>$audit->development_key,
+                'amenity_id'=>$pa->amenity_id,
+                'amenity_key'=>$pa->amenity_key,
+
+           ]);
+        }
+        foreach ($audit->project->buildings as $b) {
+            foreach($b->amenities as $ba){
+               AmenityInspection::insert([
+                    'audit_id'=>$audit->id,
+                    'monitoring_key'=>$audit->monitoring_key,
+                    'building_key'=>$b->building_key,
+                    'building_id'=>$b->id,
+                    'amenity_id'=>$ba->amenity_id,
+                    'amenity_key'=>$ba->amenity_key,
+
+               ]);
+            }
+        }
+        foreach ($audit->unique_unit_inspections as $u) {
+            foreach($u->amenities as $ua){
+               AmenityInspection::insert([
+                    'audit_id'=>$audit->id,
+                    'monitoring_key'=>$audit->monitoring_key,
+                    'unit_key'=>$ua->unit_key,
+                    'unit_id'=>$ua->unit_id,
+                    'amenity_id'=>$ua->amenity_id,
+                    'amenity_key'=>$ua->amenity_key,
+
+               ]);
+            }
+        }
+
+        //Building
+
+        //Unit
+    }
     public function createNewCachedAudit(Audit $audit, $summary = null)
     {
         // create cached audit
@@ -1414,8 +1460,8 @@ class ComplianceSelectionJob implements ShouldQueue
             $lead_json = json_encode($data);
         }
 
-        if ($audit->development_key) {
-            $project = Project::where('project_key', '=', $audit->development_key)->with('address')->first();
+        if ($audit->project_id) {
+            $project = Project::where('id', '=', $audit->project_id)->with('address')->first();
             if ($project) {
                 $project_id = $project->id;
                 $project_ref = $project->project_number;
@@ -1433,11 +1479,11 @@ class ComplianceSelectionJob implements ShouldQueue
         
 
         // inspection status and schedule date set to default when creating a new audit
-        $inspection_status_text = 'AUDIT NEEDS SCHEDULING'; 
+        $inspection_status_text = 'AUDIT NEEDS SCHEDULED'; 
         $inspection_schedule_date = null; // Y-m-d H:i:s
         $inspection_schedule_text = 'CLICK TO SCHEDULE AUDIT'; 
         $inspection_status = 'action-needed'; 
-        $inspection_icon = 'a-mobile-repeat'; 
+        $inspection_icon = 'a-mobile-clock'; 
 
         // in project_roles
         // primary owner: project_role_key = 20, id = 98
@@ -1477,7 +1523,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
         if($cached_audit){
             // when updating a cachedaudit, run the status test
-            $total_items = $cached_audit->total_items(); 
+            $total_items = $audit->total_items(); 
             $inspection_schedule_checks = $cached_audit->checkStatus('schedules');
             $inspection_status_text = $inspection_schedule_checks['inspection_status_text']; 
             $inspection_schedule_date = $inspection_schedule_checks['inspection_schedule_date'];
@@ -1753,7 +1799,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 }
             }
             //LOG::info('unit inspections should be there.');
-            
+            $this->addAmenityInpsections($audit);
             $this->createNewCachedAudit($audit, $best_run);    // finally create the audit
             $this->createNewProjectDetails($audit); // create the project details
             
