@@ -309,20 +309,22 @@ class ComplianceSelectionJob implements ShouldQueue
     public function selectionProcess(Audit $audit)
     {
         // is the project processing all the buildings together? or do we have a combination of grouped buildings and single buildings?
-        if ($audit->development_key) {
-            $project = Project::where('project_key', '=', $audit->development_key)->with('programs')->first();
+        if ($audit->audit_id) {
+            $project = Project::where('id', '=', $audit->project_id)->with('programs')->first();
         } else {
             return "Error, this audit isn't associated with a project somehow...";
+            Log::error('Audit '.$audit->id.' does not have a project somehow...');
         }
 
         if (!$project->programs) {
             return "Error, this project doesn't have a program.";
+            Log::error('Error, the project does not have a program.');
         }
 
         $total_buildings = $project->total_building_count;
         $total_units = $project->total_unit_count;
         //Log::info('509:: total buildings and units '.$total_buildings.', '.$total_units.' respectively.');
-        $pm_contact = ProjectContactRole::where('project_key', '=', $audit->development_key)
+        $pm_contact = ProjectContactRole::where('project_id', '=', $audit->project_id)
                                 ->where('project_role_key', '=', 21)
                                 ->with('organization')
                                 ->first();
@@ -1336,6 +1338,9 @@ class ComplianceSelectionJob implements ShouldQueue
         //Remove the Cached Audit
         CachedAudit::where('audit_id', '=', $audit->id)->delete();
 
+        //get the current audit units:
+        $this->fetchAuditUnits($audit);
+
 
 
 
@@ -1401,7 +1406,7 @@ class ComplianceSelectionJob implements ShouldQueue
                     $group_id = $group_id + 1;
                 }
             }
-            LOG::info('unit inspections should be there.');
+            //LOG::info('unit inspections should be there.');
             
             $this->createNewCachedAudit($audit, $best_run);    // finally create the audit
             $this->createNewProjectDetails($audit); // create the project details
