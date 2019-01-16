@@ -1040,6 +1040,7 @@ class ComplianceSelectionJob implements ShouldQueue
         $project_name = null;
         $total_buildings = 0;
         $lead = null;
+        $total_items = null;
         $lead_json = '{ "id": null, "name": "", "initials": "", "color": "", "status": "" }';
 
         // project address
@@ -1095,6 +1096,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 }
             }
         }
+        
 
         // inspection status and schedule date set to default when creating a new audit
         $inspection_status_text = 'AUDIT NEEDS SCHEDULING'; 
@@ -1228,6 +1230,8 @@ class ComplianceSelectionJob implements ShouldQueue
                 //'amenities_json' => json_encode($amenities)
             ]);
         }else{
+            
+
             $cached_audit = new CachedAudit([
                 'audit_id' => $audit->id,
                 'audit_key' => $audit->monitoring_key,
@@ -1250,8 +1254,8 @@ class ComplianceSelectionJob implements ShouldQueue
                 'inspection_schedule_text' => $inspection_schedule_text,
                 'inspection_schedule_date' => $inspection_schedule_date,
                 'inspection_schedule_json' => null, // TBD
-                'inspectable_items' => 0,
-                'total_items' => $total_items,
+                'inspectable_items' => $audit->total_inspectible_items(),
+                'total_items' => $audit->total_items(),
                 'audit_compliance_icon' => 'a-circle-checked',
                 'audit_compliance_status' => 'ok-actionable',
                 'audit_compliance_status_text' => 'AUDIT COMPLIANT',
