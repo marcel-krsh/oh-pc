@@ -62,7 +62,7 @@ class Audit extends Model
     public function unit_inspections() : HasMany {
        return $this->hasMany('\App\Models\UnitInspection');
     }
-    public function unique_unit_inspections() : int {
+    public function unique_unit_inspections() : HasMany {
         return $this->hasMany('\App\Models\UnitInspection')->select('unit_id')->groupBy('unit_id');
     
        return $total;
