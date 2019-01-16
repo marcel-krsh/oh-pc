@@ -334,8 +334,12 @@
                     // form.remove();
                     // $('h2#post-response').hide().html("<span class='uk-text-success'><span uk-icon='check'></span> "+response+"</span><br /><br /><a onclick=\"dynamicModalLoad('admin/finding_type/create')\" class=\"uk-button uk-button-default uk-width-2-5@m\">CREATE ANOTHER FINDING TYPE</a>").fadeIn();
                     // console.log(action);
+                    if(window.current_finding_type_page != 'undefined'){
+                        $('#findingtype-tab-content').load(window.current_finding_type_page);
+                    }else{
+                        $('#findingtype-tab').trigger('click');
+                    }
                     
-                    $('#findingtype-tab').trigger('click');
                     UIkit.modal.alert(response);
 
                 },
