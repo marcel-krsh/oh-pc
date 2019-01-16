@@ -1672,7 +1672,7 @@ class ComplianceGenerator extends Controller
         // //get the current audit units:
         $audit->comment = $audit->comment.' | Running Fetch Audit Units';
                                     $audit->save();
-        $this->fetchAuditUnits($audit);
+        //$this->fetchAuditUnits($audit);
         $audit->comment = $audit->comment.' | Finished Fetch Units';
                                     $audit->save();
         $check = \App\Models\UnitProgram::where('audit_id',$audit->id)->count();
