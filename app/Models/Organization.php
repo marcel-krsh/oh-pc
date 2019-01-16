@@ -31,10 +31,20 @@ class Organization extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    // public function phone() : HasOne
-    // {
-    //     return $this->hasOne(\App\Models\Phone::class, 'address_key', 'default_address_key');
-    // }
+    public function phone() : HasOne
+    {
+        return $this->hasOne(\App\Models\Phone::class, 'phone_number_key', 'default_phone_number_key');
+    }
+
+    /**
+     * Phone
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function fax() : HasOne
+    {
+        return $this->hasOne(\App\Models\Phone::class, 'phone_number_key', 'default_fax_number_key');
+    }
 
     /**
      * Person
