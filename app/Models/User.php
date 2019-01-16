@@ -129,6 +129,14 @@ class User extends Authenticatable
             return true;
         }
     }
+    public function has_address() : int
+    {
+        if(is_null($this->organization_id) || is_null($this->organization_details->address)){
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     public function organization_details() : HasOne
     {
