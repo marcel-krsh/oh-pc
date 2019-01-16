@@ -94,34 +94,40 @@
 							<div class="divTableCell">&nbsp;</div>
 						</div>
 
-						@foreach($data['audits'] as $audit)
-						<div class="divTableRow @if(Auth::user()->id == $audit['lead']) isLead @endif">
+						@foreach($daily_schedules[$day->id] as $daily_schedule) 
+						<div class="divTableRow @if(Auth::user()->id == $daily_schedule['audit']->lead) isLead @endif">
 							<div class="divTableCell">
 								<div uk-grid>
 									<div class="uk-width-1-3">
-										<strong>{{$audit['ref']}}</strong><br />
-										<strong>{{$audit['date']}}</strong>
+										<strong>{{$daily_schedule['audit']->project_ref}}</strong>
 									</div>
 									<div class="uk-width-2-3">
-										<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;" title="" aria-expanded="false"></i> <strong>{{$audit['name']}}</strong>
+										<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;" title="" aria-expanded="false"></i> <strong>{{$daily_schedule['audit']->title}}</strong>
 									</div>
 								</div>
 							</div>
-							@foreach($audit['schedules'] as $schedule)
-							<div class="divTableCell {{$schedule['status']}} @if($schedule['is_lead']) isLead @endif">
-								@if($schedule['is_lead']) <i class="a-star-3 corner"></i> @endif
-								<i class="{{$schedule['icon']}}" uk-tooltip="title:{{$schedule['tooltip']}};"></i>
+							@foreach($auditors_key as $auditor_id)
+							<div class="divTableCell @if($auditor_id == $daily_schedule['audit']->lead) isLead @endif">
+								@if($auditor_id == $daily_schedule['audit']->lead) <i class="a-star-3 corner"></i> @endif
+								@if($daily_schedule['auditors'][$auditor_id] == 'notscheduled')
+								<i class="a-circle"></i>
+								@elseif($daily_schedule['auditors'][$auditor_id] == 'scheduled')
+								<i class="a-circle-checked"></i>
+								@endif
 							</div>
 							@endforeach
 							<div class="divTableCell">&nbsp;</div>
 							<div class="divTableCell">&nbsp;</div>
 						</div>
 						@endforeach
+
 					</div>
 				</div>
 
 				@endforeach
 			</div>
+			<hr />
+			<span class="italic">NOTE: YOU CAN ONLY APPROVE SCHEDULE CONFLICTS FOR AUDITS THAT YOU ARE THE LEAD. IF YOU ARE NOT THE LEAD, YOU CAN REQUEST APPROVAL FOR THE CONFLICT BY THE LEAD OF THAT AUDIT.</span>
 		</div>
 
 
@@ -159,8 +165,7 @@
 					</div>
 				</div>
 			</div>
-			<hr />
-			<span class="italic">NOTE: YOU CAN ONLY APPROVE SCHEDULE CONFLICTS FOR AUDITS THAT YOU ARE THE LEAD. IF YOU ARE NOT THE LEAD, YOU CAN REQUEST APPROVAL FOR THE CONFLICT BY THE LEAD OF THAT AUDIT.</span>
+			
 			
 		</div>
 	</div>
@@ -372,20 +377,12 @@
 		"options": assignmentOptions,
 		
 		"data":{
-			"labels": ["Needed","Day 1","Day 2","Day 3","Day 5","Day 6"],
+			"labels": {!!$chart_data['labels']!!},
 			"datasets":[
 				{
 					"label":"Program 1",
-					//"data":{{$data['summary']['chart_data']}},
-					"data":[2,3,4,5,6],
-					"backgroundColor":[
-						chartColors.needed,
-						chartColors.estimated,
-						chartColors.estimated,
-						chartColors.estimated,
-						chartColors.estimated,
-						chartColors.estimated
-					],
+					"data":{{$chart_data['data']}},
+					"backgroundColor":{{$chart_data['backgroundColor']}},
 					"borderWidth": 1
 				}
 			]

@@ -178,8 +178,6 @@
 
 <div id="project-details-info-container"></div>
 
-<div id="project-details-buildings-container"></div>
-
 <script>
 	var chartColors = {
 		  required: '#191818',

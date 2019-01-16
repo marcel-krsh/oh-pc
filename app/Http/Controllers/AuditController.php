@@ -394,11 +394,16 @@ class AuditController extends Controller
             case 'assignment':
 
                 // check if the lead is listed as an auditor and add it if needed
-                $auditors = $project->selected_audit()->auditors();
+                $auditors = $project->selected_audit()->auditors;
                 $is_lead_an_auditor = 0;
+                $auditors_key = array(); // used to store in which order the auditors will be displayed
+                $auditors_key[] = $project->selected_audit()->lead_auditor->id;
+
                 foreach($auditors as $auditor){
-                    if($project->selected_audit()->lead_auditor->id == $auditor->id){
+                    if($project->selected_audit()->lead_auditor->id == $auditor->user_id){
                         $is_lead_an_auditor = 1;
+                    }else{
+                        $auditors_key[] = $auditor->user_id;
                     }
                 }
                 if($is_lead_an_auditor == 0){
@@ -410,6 +415,55 @@ class AuditController extends Controller
                         'audit_id' => $project->selected_audit()->audit_id
                     ]);
                     $new_auditor->save();
+                }
+
+                $chart_data = $project->selected_audit()->estimated_chart_data(); 
+
+                // list all the audits that have any of the auditors assigned
+                // foreach day
+                $potential_conflict_audits_ids = array();
+                foreach($project->selected_audit()->days as $day){
+                    $potential_conflict_audits = ScheduleTime::select('audit_id')->whereIn('auditor_id', $auditors_key)->where('day_id','=',$day->id)->groupBy('audit_id')->pluck('audit_id')->toArray();
+
+                    $potential_conflict_audits_ids = array_unique(array_merge($potential_conflict_audits_ids,$potential_conflict_audits), SORT_REGULAR);
+                }
+
+                // for each audit, and using the auditors key as the order, check if auditor is scheduled, not scheduled or not at all involved with the audit
+                // also get the audits information for display (date, project name, etc)
+                $potential_conflict_audits = CachedAudit::whereIn('audit_id', $potential_conflict_audits_ids)->orderBy('project_ref','asc')->get();
+                
+                $daily_schedules = array();
+                foreach($project->selected_audit()->days as $day){
+                    // set current audit $project->selected_audit()
+                    foreach($auditors_key as $auditor_id){
+                        // auditors are in the audit for sure
+                        // check if they are scheduled on not
+                        if(ScheduleTime::where('audit_id','=',$project->selected_audit()->audit_id)->where('auditor_id','=',$auditor_id)->where('day_id','=',$day->id)->count()){
+                            $daily_schedules[$day->id][$project->selected_audit()->audit_id]['auditors'][$auditor_id] = 'scheduled'; // scheduled
+                        }else{
+                            $daily_schedules[$day->id][$project->selected_audit()->audit_id]['auditors'][$auditor_id] = 'notscheduled'; // not scheduled
+                        }
+                        $daily_schedules[$day->id][$project->selected_audit()->audit_id]['audit'] = $project->selected_audit();
+                    }
+
+                    // set all other audits
+                    foreach($potential_conflict_audits as $potential_conflict_audit){
+                        if($potential_conflict_audit->audit_id != $project->selected_audit()->audit_id){
+                            foreach($auditors_key as $auditor_id){
+                                // is auditor in the audit?
+                                if(AuditAuditor::where('audit_id','=',$potential_conflict_audit->audit_id)->where('user_id','=',$auditor_id)->count()){
+                                    if(ScheduleTime::where('audit_id','=',$potential_conflict_audit->audit_id)->where('auditor_id','=',$auditor_id)->where('day_id','=',$day->id)->count()){
+                                        $daily_schedules[$day->id][$potential_conflict_audit->audit_id]['auditors'][$auditor_id] = 'scheduled'; // scheduled
+                                    }else{
+                                        $daily_schedules[$day->id][$potential_conflict_audit->audit_id]['auditors'][$auditor_id] = 'notscheduled'; // not scheduled
+                                    }
+                                }else{
+                                    $daily_schedules[$day->id][$potential_conflict_audit->audit_id]['auditors'][$auditor_id] = 'notinaudit';
+                                }
+                                $daily_schedules[$day->id][$potential_conflict_audit->audit_id]['audit'] = $potential_conflict_audit;
+                            }
+                        }
+                    }
                 }
 
                 $data = collect([
@@ -428,8 +482,7 @@ class AuditController extends Controller
                         'estimated' => $project->selected_audit()->estimated_hours().':'.$project->selected_audit()->estimated_minutes(),
                         'estimated_hours' => $project->selected_audit()->estimated_hours(),
                         'estimated_minutes' => $project->selected_audit()->estimated_minutes(),
-                        'needed' => $project->selected_audit()->hours_still_needed(),
-                        'chart_data' => $project->selected_audit()->estimated_chart_data()
+                        'needed' => $project->selected_audit()->hours_still_needed()
                     ],
                     'audits' => [
                         [
@@ -451,6 +504,8 @@ class AuditController extends Controller
                         ]
                     ]
                 ]);
+
+                return view('projects.partials.details-assignment', compact('data', 'project', 'chart_data', 'auditors_key', 'daily_schedules'));
 
                 break;
             case 'findings':
