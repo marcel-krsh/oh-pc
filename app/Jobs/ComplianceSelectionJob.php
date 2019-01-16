@@ -30,11 +30,6 @@ class ComplianceSelectionJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
     public $audit;
 
     public function __construct(Audit $audit)
@@ -411,25 +406,28 @@ class ComplianceSelectionJob implements ShouldQueue
         $audit->comment = $audit->comment.' | Select Process Started';
             $audit->save();
         // is the project processing all the buildings together? or do we have a combination of grouped buildings and single buildings?
-        if ($audit->audit_id) {
+        if ($audit->id) {
+            //dd($audit);
             $project = Project::where('id', '=', $audit->project_id)->with('programs')->first();
             $audit->comment = $audit->comment.' | project selected in select process';
             $audit->save();
         } else {
-            return "Error, this audit isn't associated with a project somehow...";
             Log::error('Audit '.$audit->id.' does not have a project somehow...');
             $audit->comment = $audit->comment.' | Error, this audit isn\'t associated with a project somehow...';
             $audit->save();
+            return "Error, this audit isn't associated with a project somehow...";
+            
 
         }
         $audit->comment = $audit->comment.' | Select Process Has Selected Project ID '.$audit->project_id;
             $audit->save();
 
         if (!$project->programs) {
-            return "Error, this project doesn't have a program.";
             Log::error('Error, the project does not have a program.');
             $audit->comment = $audit->comment.' | Error, the project does not have a program.';
             $audit->save();
+            return "Error, this project doesn't have a program.";
+            
         }
 
         $audit->comment = $audit->comment.' | Select Process Checked the Programs and that there are Programs';
@@ -1031,11 +1029,11 @@ class ComplianceSelectionJob implements ShouldQueue
         $total_units = count($units);
 
         $comments[] = 'Total units with NHTF funding is '.$total_units;
-        $comments[] = 's_with_program;Total units in the project with a program is '.$total_unit;
+        $comments[] = 'Total units in the project with a program is '.$total_units_with_program;
 
         $audit->comment = $audit->comment.' | Select Process Total units with NHTF funding is '.$total_units;
         $audit->save();
-        $audit->comment = $audit->comment.' | Select Process Total units in the project with a program is '.$total_unit;
+        $audit->comment = $audit->comment.' | Select Process Total units in the project with a program is '.$total_units_with_program;
         $audit->save();
 
 
@@ -1677,7 +1675,7 @@ class ComplianceSelectionJob implements ShouldQueue
         // //get the current audit units:
         $audit->comment = $audit->comment.' | Running Fetch Audit Units';
                                     $audit->save();
-        $this->fetchAuditUnits($audit);
+        //$this->fetchAuditUnits($audit);
         $audit->comment = $audit->comment.' | Finished Fetch Units';
                                     $audit->save();
         $check = \App\Models\UnitProgram::where('audit_id',$audit->id)->count();
@@ -1698,6 +1696,8 @@ class ComplianceSelectionJob implements ShouldQueue
                                     $audit->save();
                 $summary = $this->selectionProcess($audit);
                 //Log::info('audit '.$i.' run;');
+
+                
                 $audit->comment = $audit->comment.' | Finished Selection Process for the '.$i.'time';
                                     $audit->save();
 
@@ -1770,4 +1770,6 @@ class ComplianceSelectionJob implements ShouldQueue
         
              
     }
+
+    
 }
