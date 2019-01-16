@@ -1328,8 +1328,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
         //LOG HERE if it is a rerun audit and who asked for it
 
-        //Remove any existing units associated with this audit:
-        \App\Models\UnitProgram::where('audit_id',$audit->id)->delete();
+        
 
         //Remove all associated amenity inspections
         \App\Models\AmenityInspection::where('audit_id',$audit->id)->delete();
