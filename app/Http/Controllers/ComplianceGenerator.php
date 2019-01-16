@@ -1694,7 +1694,7 @@ class ComplianceGenerator extends Controller
                 $summary = $this->selectionProcess($audit);
                 //Log::info('audit '.$i.' run;');
 
-                dd($summary);
+                
                 $audit->comment = $audit->comment.' | Finished Selection Process for the '.$i.'time';
                                     $audit->save();
 
