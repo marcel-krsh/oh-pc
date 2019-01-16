@@ -327,6 +327,8 @@ class ComplianceSelectionJob implements ShouldQueue
 
     public function selectionProcess(Audit $audit)
     {
+        $audit->comment = $audit->comment.' | Select Process Started';
+            $audit->save();
         // is the project processing all the buildings together? or do we have a combination of grouped buildings and single buildings?
         if ($audit->audit_id) {
             $project = Project::where('id', '=', $audit->project_id)->with('programs')->first();
@@ -339,6 +341,8 @@ class ComplianceSelectionJob implements ShouldQueue
             $audit->save();
 
         }
+        $audit->comment = $audit->comment.' | Select Process Has Selected Project ID '.$audit->project_id;
+            $audit->save();
 
         if (!$project->programs) {
             return "Error, this project doesn't have a program.";
@@ -347,19 +351,32 @@ class ComplianceSelectionJob implements ShouldQueue
             $audit->save();
         }
 
+        $audit->comment = $audit->comment.' | Select Process Checked the Programs and that there are Programs';
+            $audit->save();
+
         $total_buildings = $project->total_building_count;
         $total_units = $project->total_unit_count;
+
+        $audit->comment = $audit->comment.' | Select Process Found '.$total_buildings.' Total Buildings and '.$total_units.' Total Units';
+            $audit->save();
         //Log::info('509:: total buildings and units '.$total_buildings.', '.$total_units.' respectively.');
         $pm_contact = ProjectContactRole::where('project_id', '=', $audit->project_id)
                                 ->where('project_role_key', '=', 21)
                                 ->with('organization')
                                 ->first();
         //Log::info('514:: pm contact found');
+
+        $audit->comment = $audit->comment.' | Select Process Selected the PM Contact';
+            $audit->save();
         $organization_id = null;
         if ($pm_contact) {
+            $audit->comment = $audit->comment.' | Select Process Confirmed PM Contact';
+            $audit->save();
             if ($pm_contact->organization) {
                 $organization_id = $pm_contact->organization->id;
                 //Log::info('519:: pm organization identified');
+                $audit->comment = $audit->comment.' | Select Process Updated the Organization ID';
+                $audit->save();
             }
         }
 
@@ -370,8 +387,12 @@ class ComplianceSelectionJob implements ShouldQueue
         // remove any data
         BuildingInspection::where('audit_id', '=', $audit->id)->delete();
         //Log::info('529:: building inspections deleted');
+        $audit->comment = $audit->comment.' | Select Process Deleted all the current building cache for this audit id.';
+            $audit->save();
+            $buildingCount = 0;
         if ($buildings) {
             foreach ($buildings as $building) {
+                $buildingCount++;
                 if ($building->address) {
                     $address = $building->address->line_1;
                     $city = $building->address->city;
@@ -407,6 +428,8 @@ class ComplianceSelectionJob implements ShouldQueue
                 $b->save();
                 //Log::info('565:: '.$b->id.' building inspection added');
             }
+            $audit->comment = $audit->comment.' | Select Process Put in '.$buildingCount.' Buildings';
+            $audit->save();
         }
 
         $selection = [];
@@ -431,13 +454,13 @@ class ComplianceSelectionJob implements ShouldQueue
             $audit->save();
         
         $units = Unit::whereHas('programs', function ($query) use ($audit, $program_bundle_ids) {
-                            $query->where('audit_id', '=', $audit->id);
+                            $query->where('monitoring_key', '=', $audit->monitoring_key);
                             $query->whereIn('program_key', $program_bundle_ids);
         })->get();
 
         $total = count($units);
         $comments[] = 'Total units in the pool is '.count($units);
-        $audit->comment = $audit->comment. ' | Total units in the pool is '.count($units);
+        $audit->comment = $audit->comment. ' | Total units in the pool is '.$total;
             $audit->save();
         $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
         $program_htc_names = Program::whereIn('program_key', $program_htc_ids)->get()->pluck('program_name')->toArray();
@@ -451,8 +474,10 @@ class ComplianceSelectionJob implements ShouldQueue
             $audit->save();
 
         $has_htc_funding = 0;
+        $unitProcessCount = 0;
         foreach ($units as $unit) {
             foreach ($unit->programs as $unit_program) {
+                $unitProcessCount++;
                 if (in_array($unit_program->program_key, $program_htc_overlap)) {
                     $has_htc_funding = 1;
                     $comments[] = 'The unit key '.$unit->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
@@ -461,6 +486,8 @@ class ComplianceSelectionJob implements ShouldQueue
                 }
             }
         }
+        $audit->comment = $audit->comment.' | Select Process Made '.$unitProcessCount.' Units for HTC';
+            $audit->save();
 
         if (!$has_htc_funding) {
             $comments[] = 'By checking each unit and associated programs with HTC funding, we determined that no HTC funding exists for this pool';
@@ -1437,7 +1464,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 //Log::info('audit '.$i.' run;');
                 $audit->comment = $audit->comment.' | Finished Selection Process for the '.$i.'time';
                                     $audit->save();
-                
+
                 if ($summary && (count($summary[0]['grouped']) < $best_total || $best_run == null)) {
                     $best_run = $summary[0];
                     $overlap = $summary[1];
