@@ -45,6 +45,8 @@ class ComplianceSelectionJob implements ShouldQueue
 
     public function fetchAuditUnits(Audit $audit)
     {
+        $audit->comment = $audit->comment.' | Deleting units in UnitProgram model.';
+                                    $audit->save();
         UnitProgram::where('audit_id', $audit->id)->delete();
         
         $apiConnect = new DevcoService();
@@ -97,13 +99,16 @@ class ComplianceSelectionJob implements ShouldQueue
                                     $audit->save();
                         }
                     }
+                    $audit->comment = $audit->comment.' | Finished Loop of Units';
+                                    $audit->save();
                 } else {
                     //dd('Could not get building units');
                     $audit->comment = $audit->comment.' | Could not get building units';
                                     $audit->save();
                 }
             }
-
+            $audit->comment = $audit->comment.' | Returning 1 from Fetch Units';
+                                    $audit->save();
             return 1;
         } else {
             //dd('NO BUILDINGS FOUND TO GET DATA');
@@ -1387,26 +1392,37 @@ class ComplianceSelectionJob implements ShouldQueue
         //LOG HERE if it is a rerun audit and who asked for it
 
         
-
+        $audit->comment = '';
+        $audit->save();
         //Remove all associated amenity inspections
         \App\Models\AmenityInspection::where('audit_id',$audit->id)->delete();
-
+        $audit->comment = $audit->comment.' | Deleted AmenityInspections';
+                                    $audit->save();
         //Remove Unit Inspections
         \App\Models\UnitInspection::where('audit_id',$audit->id)->delete();
-
+        $audit->comment = $audit->comment.' | Deleted Unit Inspections';
+                                    $audit->save();
         //Remove Project Details for this Audit
         \App\Models\ProjectDetail::where('audit_id',$audit->id)->delete();
-
+        $audit->comment = $audit->comment.' | Deleted Project Details';
+                                    $audit->save();
         //Remove the Cached Audit
         CachedAudit::where('audit_id', '=', $audit->id)->delete();
+        $audit->comment = $audit->comment.' | Removed the CachedAudit';
+                                    $audit->save();
 
         // //get the current audit units:
+        $audit->comment = $audit->comment.' | Running Fetch Audit Units';
+                                    $audit->save();
         $this->fetchAuditUnits($audit);
-
+        $audit->comment = $audit->comment.' | Finished Fetch Units';
+                                    $audit->save();
         $check = \App\Models\UnitProgram::where('audit_id',$audit->id)->count();
         //$check = 1;
 
         if ($check > 0) {
+            $audit->comment = $audit->comment.' | Check passed with a count of '.$check;
+                                    $audit->save();
             // run the selection process 10 times and keep the best one
             $best_run = null;
             $best_total = null;
@@ -1415,9 +1431,13 @@ class ComplianceSelectionJob implements ShouldQueue
             $organization_id = null;
 
             for ($i=0; $i<10; $i++) {
+                $audit->comment = $audit->comment.' | Running the selectionProcess for the '.$i.'time';
+                                    $audit->save();
                 $summary = $this->selectionProcess($audit);
                 //Log::info('audit '.$i.' run;');
-
+                $audit->comment = $audit->comment.' | Finished Selection Process for the '.$i.'time';
+                                    $audit->save();
+                
                 if ($summary && (count($summary[0]['grouped']) < $best_total || $best_run == null)) {
                     $best_run = $summary[0];
                     $overlap = $summary[1];
