@@ -235,6 +235,16 @@ class AdminToolController extends Controller
         return view('admin_tabs.organizations', compact('organizations'));
     }
 
+    public function searchUsers(Request $request)
+    {
+        if ($request->has('users-search')) {
+            Session::put('users-search', $request->get('users-search'));
+        } else {
+            Session::forget('users-search');
+        }
+        return 1;
+    }
+
     /**
      * Users Index
      *

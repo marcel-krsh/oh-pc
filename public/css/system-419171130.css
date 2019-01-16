@@ -3723,7 +3723,7 @@ span.indented, div.indented {
   margin-top: 20px;
 }
 #project-assignment-add-auditor-table > div.uk-overflow-auto {
-  max-height: 250px;
+  max-height: 450px;
 }
 #project-assignment-add-auditor-table > div.uk-overflow-auto.noscroll {
   overflow: hidden;
