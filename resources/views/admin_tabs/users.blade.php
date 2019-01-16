@@ -41,7 +41,7 @@
                     <td><small>@if($user->has_organization())
                         {{$user->organization_details->organization_name}}@else NA @endif</small></td>
                     <td><small>@if($user->has_address())<a target="_blank" href="https://www.google.com/maps?q={{$user->organization_details->address->formatted_address()}}" class="uk-text-muted"><i class="a-marker-basic uk-text-muted uk-link"></i></a> {!!$user->organization_details->address->formatted_address()!!}@else NA @endif</small></td>
-                    <td><small>@if($user->has_organization()){{$user->organization->phone->number()}}@endif/small></td>
+                    <td><small>@if($user->has_organization()) {{$user->organization->phone->number()}} @endif</small></td>
                     <td><small><a href="mailto:{{$user->person->email->email_address}}">{{$user->person->email->email_address}}</a></small></td>
                     <td class="use-hand-cursor" uk-tooltip="title:CLICK TO SET ROLES" onclick="setRoles({{$user->id}})"><small>@if($user->roles_list() != ''){{$user->roles_list()}}@else <i class="a-circle-plus"></i>@endif</small></td>
             
