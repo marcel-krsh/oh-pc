@@ -140,7 +140,7 @@ class AuditsEvent
                 $check = \DB::table('jobs')->where('payload','LIKE',"%".$audit->id."%")->where('queue','compliance')->count();
 
                 if($check<1){
-                    ComplianceSelectionJob::dispatch($audit)->onQueue('compliance');
+                   // ComplianceSelectionJob::dispatch($audit)->onQueue('compliance');
                 }
                        
             }

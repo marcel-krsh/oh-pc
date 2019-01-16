@@ -15,7 +15,7 @@
     Route::group(['middleware' => 'web'], function () {
        
         // rerun compliance run
-        Route::get('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
+        Route::get('/audit/{audit}/rerun', 'ComplianceGenerator@runCompliance');
 
         // Document Test Route
         Route::get('/document/list/{projectNumber}','SyncController@getDocs');
