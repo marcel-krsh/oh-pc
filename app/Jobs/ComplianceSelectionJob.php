@@ -1342,8 +1342,8 @@ class ComplianceSelectionJob implements ShouldQueue
         //Remove the Cached Audit
         CachedAudit::where('audit_id', '=', $audit->id)->delete();
 
-        //get the current audit units:
-        $this->fetchAuditUnits($audit);
+        // //get the current audit units:
+        // $this->fetchAuditUnits($audit);
 
         $check = \App\Models\UnitProgram::where('project_id',$audit->project_id)->count();
 
