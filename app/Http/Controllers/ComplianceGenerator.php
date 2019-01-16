@@ -46,7 +46,7 @@ class ComplianceGenerator extends Controller
 	                'audit_id'=>$audit->id,
                 	'monitoring_key'=>$audit->monitoring_key,
 	                'building_key'=>$b->building_key,
-	                'building_id'=>$b->b_id,
+	                'building_id'=>$b->building_id,
 	                'amenity_id'=>$ba->amenity_id,
 	                'amenity_key'=>$ba->amenity_key,
 
