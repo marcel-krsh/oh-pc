@@ -84,17 +84,22 @@ class ComplianceSelectionJob implements ShouldQueue
                                         'updated_at'    =>  date("Y-m-d g:h:i", time())
                                     ]);
                                 } else {
+                                    dd('Could not find program by program key!');
                                     //Log::info('Unable to find program with key of '.$unitProgram['attributes']['programKey'].' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key);
                                 }
                             }
                         } catch (Exception $e) {
-                            //Log::info('Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key);
+                            dd('Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key);
                         }
                     }
+                } else {
+                    dd('Could not get building units');
                 }
             }
 
             return 1;
+        } else {
+            dd('NO BUILDINGS FOUND TO GET DATA');
         }
     }
 
@@ -1341,10 +1346,10 @@ class ComplianceSelectionJob implements ShouldQueue
         //get the current audit units:
         $this->fetchAuditUnits($audit);
 
+        $check = \App\Models\UnitProgram::where('project_id',$audit->project_id)->count();
 
 
-
-        if (1) {
+        if ($check > 1) {
             // run the selection process 10 times and keep the best one
             $best_run = null;
             $best_total = null;
@@ -1410,11 +1415,18 @@ class ComplianceSelectionJob implements ShouldQueue
             
             $this->createNewCachedAudit($audit, $best_run);    // finally create the audit
             $this->createNewProjectDetails($audit); // create the project details
+            
+            // LOG SUCCESS HERE
             $audit->compliance_run = 1;
             $audit->rerun_compliance = 0;
             $audit->save();
-            // LOG SUCCESS HERE
+        } else {
+            $audit->comment = "Unable to get program units from devco. Cannot run compliance run and generate the audit.";
+            $audit->compliance_run = 0;
+            $audit->rerun_compliance = 0;
+            $audit->save();
         }
+        
              
     }
 }
