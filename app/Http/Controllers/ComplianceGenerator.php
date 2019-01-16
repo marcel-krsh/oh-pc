@@ -28,7 +28,17 @@ class ComplianceGenerator extends Controller
      * @return void
      */
     public function details(Audit $audit){
-    	\App\Models\AmenityInspection::createMany([$audit->project->amenities]);
+    	foreach ($audit->project->amenities as $pa) {
+           AmenityInspection::insert([
+                'audit_id'=>$audit->id,
+                'monitoring_key'=>$audit->monitoring_key,
+                'project_id'=>$audit->project_id,
+                'development_key'=>$audit->development_key,
+                'amenity_id'=>$pa->amenity_id,
+                'amenity_key'=>$pa->amenity_key,
+
+           ]);
+        }
     	echo $audit->total_items();
     }
 }

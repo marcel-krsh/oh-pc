@@ -1364,6 +1364,24 @@ class ComplianceSelectionJob implements ShouldQueue
         $project = \App\Models\Project::find($audit->project_id);
         $audit->project->set_project_defaults($audit->id);
     }
+    public function addAmenityInpsections(Audit $audit){
+        //Project
+        foreach ($audit->project->amenities as $pa) {
+           AmenityInspection::insert([
+                'audit_id'=>$audit->id,
+                'monitoring_key'=>$audit->monitoring_key,
+                'project_id'=>$audit->project_id,
+                'development_key'=>$audit->development_key,
+                'amenity_id'=>$pa->amenity_id,
+                'amenity_key'=>$pa->amenity_key,
+
+           ]); 
+        }
+
+        //Building
+
+        //Unit
+    }
     public function createNewCachedAudit(Audit $audit, $summary = null)
     {
         // create cached audit
