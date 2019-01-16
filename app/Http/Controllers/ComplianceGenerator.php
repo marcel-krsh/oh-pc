@@ -18,6 +18,7 @@ use App\Models\CachedAudit;
 use App\Models\Program;
 use App\Services\DevcoService;
 use App\Models\UnitProgram;
+use App\Models\AmenityInspection;
 use Auth;
 
 class ComplianceGenerator extends Controller
