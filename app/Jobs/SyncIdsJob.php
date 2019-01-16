@@ -1278,7 +1278,7 @@ class SyncIdsJob implements ShouldQueue
             'null_field' => 'project_id',
             'look_up_reference' => 'development_key',
             //columns in the foreign table
-            'lookup_field' => 'development_key',
+            'lookup_field' => 'project_key',
             'look_up_foreign_key' => 'id',
             //condition against the lookup field - if one is needed.
             'condition_operator' => '!=',
