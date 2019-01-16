@@ -10,6 +10,10 @@ class UnitInspection extends Model
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
     
+    public function amenities()
+    {
+        return $this->hasMany(\App\Models\UnitAmenity::class, 'unit_id', 'unit_id');
+    }
 
     //
     protected $guarded = ['id'];

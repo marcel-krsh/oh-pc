@@ -28,6 +28,7 @@ class ComplianceGenerator extends Controller
      * @return void
      */
     public function details(Audit $audit){
+    	\App\Models\AmenityInspection::createMany([$audit->project->amenities]);
     	echo $audit->total_items();
     }
 }
