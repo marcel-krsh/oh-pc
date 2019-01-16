@@ -11,6 +11,7 @@ class ProjectAmenity extends Model
 {
     public $timestamps = true;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 
