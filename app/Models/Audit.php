@@ -32,10 +32,10 @@ class Audit extends Model
     }
     public function total_items() : int {
         // this is the total of project amenities, plus buildings, plus units
-        $total = $this->project->total_building +$this->amenity_inspections->whereNull('building_id')->whreNull('unit_id')->count() + $this->amenity_inspections->whereNotNull('unit_id')->groupBy('unit_id')->count();
+        $total = $this->project->total_building_count +$this->amenity_inspections->whereNull('building_id')->whreNull('unit_id')->count() + $this->amenity_inspections->whereNotNull('unit_id')->groupBy('unit_id')->count();
         return  $total;
     }
-    
+
     public function total_inspection_units(){
         return \App\UnitInspection::where('audit_id',$this->id)->groupBy('unit_id')->count();
     }
