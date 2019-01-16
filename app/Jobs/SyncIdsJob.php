@@ -1356,7 +1356,7 @@ class SyncIdsJob implements ShouldQueue
         $associate[] = [
             //columns in this table
             'null_field' => 'project_program_id',
-            'look_up_reference' => 'project_program_key',
+            'look_up_reference' => 'development_program_key',
             //columns in the foreign table
             'lookup_field' => 'project_program_key',
             'look_up_foreign_key' => 'id',
