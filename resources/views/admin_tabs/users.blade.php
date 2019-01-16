@@ -38,7 +38,7 @@
                     
                     <td><small>{{$user->full_name()}}</small></td>
                     
-                    <td><small>@if($user->organization_details)
+                    <td><small>@if($user->has_organization())
                         {{$user->organization_details->organization_name}}@else NA @endif</small></td>
                     <td><small><a target="_blank" href="https://www.google.com/maps?q={{$user->organization_details->address->formatted_address()}}" class="uk-text-muted"><i class="a-marker-basic uk-text-muted uk-link"></i></a> {!!$user->organization_details->address->formatted_address()!!}</small></td>
                     <td><small>{{$user->person->phone->number()}}</small></td>

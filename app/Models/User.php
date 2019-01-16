@@ -121,6 +121,15 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
+    public function has_organization() : int
+    {
+        if(is_null($this->organization_id)){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public function organization_details() : HasOne
     {
         return $this->hasOne(Organization::class, 'id', 'organization_id');
