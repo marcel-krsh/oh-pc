@@ -271,7 +271,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 $needed = $min;
             }
 
-            $audit->comment = $audit->comment.' | Random selection adjusted totals based on '.$percentage.'%: total '.$total.', min '.$min.' and '$needed.' needed.';
+            $audit->comment = $audit->comment.' | Random selection adjusted totals based on '.$percentage.'%: total '.$total.', min '.$min.' and '.$needed.' needed.';
                 $audit->save();
             $output = [];
 
