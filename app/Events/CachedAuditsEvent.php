@@ -64,7 +64,7 @@ class CachedAuditsEvent
         //
         // also save the lead auditor in the table
         $audit = Audit::where('id', '=', $cached_audit->audit_id)->first();
-        if ($audit->user_key) {
+        if ($audit->user_id) {
             $lead_key = $audit->user_key;
             $lead_id = $audit->lead_user_id;
         } else {
@@ -77,7 +77,7 @@ class CachedAuditsEvent
         if ($auditors) {
             foreach ($auditors as $auditor) {
                 if ($auditor->user) {
-                    $lead = $lead_user->id;
+                    $lead = $lead_id;
                     $words = explode(" ", $lead_user->name);
                     $initials = "";
                     foreach ($words as $w) {
