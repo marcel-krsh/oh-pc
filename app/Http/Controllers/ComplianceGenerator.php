@@ -403,25 +403,28 @@ class ComplianceGenerator extends Controller
         $audit->comment = $audit->comment.' | Select Process Started';
             $audit->save();
         // is the project processing all the buildings together? or do we have a combination of grouped buildings and single buildings?
-        if ($audit->audit_id) {
+        if ($audit->id) {
+        	//dd($audit);
             $project = Project::where('id', '=', $audit->project_id)->with('programs')->first();
             $audit->comment = $audit->comment.' | project selected in select process';
             $audit->save();
         } else {
-            return "Error, this audit isn't associated with a project somehow...";
             Log::error('Audit '.$audit->id.' does not have a project somehow...');
             $audit->comment = $audit->comment.' | Error, this audit isn\'t associated with a project somehow...';
             $audit->save();
+            return "Error, this audit isn't associated with a project somehow...";
+            
 
         }
         $audit->comment = $audit->comment.' | Select Process Has Selected Project ID '.$audit->project_id;
             $audit->save();
 
         if (!$project->programs) {
-            return "Error, this project doesn't have a program.";
             Log::error('Error, the project does not have a program.');
             $audit->comment = $audit->comment.' | Error, the project does not have a program.';
             $audit->save();
+            return "Error, this project doesn't have a program.";
+            
         }
 
         $audit->comment = $audit->comment.' | Select Process Checked the Programs and that there are Programs';
