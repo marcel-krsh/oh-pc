@@ -35,7 +35,7 @@ class Audit extends Model
         // $total = 0;
         $total = $this->project->total_building_count;
         $total = $total + $this->project_amenity_inspections->count(); 
-        $total = $total + $this->unique_unit_inspections->count();
+        $total = $total + $this->total_unique_unit_inspections->count();
         return  $total;
     }
 
@@ -60,8 +60,9 @@ class Audit extends Model
     public function unit_inspections() : HasMany {
        return $this->hasMany('\App\Models\UnitInspection');
     }
-    public function unique_unit_inspections() : HasMany {
-       return $this->hasMany('\App\Models\UnitInspection')->groupBy('unit_id');
+    public function total_unique_unit_inspections() : int {
+       $total = \App\Models\UnitInspection::where('audit_id',$this->id)->select('unit_id')->groupBy('unit_id')->count();
+       return $total;
     }
     public function nlts() : HasMany
     {
