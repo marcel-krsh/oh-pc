@@ -34,8 +34,8 @@ class Audit extends Model
         // this is the total of project amenities, plus buildings, plus units
         // $total = 0;
         $total = $this->project->total_building_count;
-        $total = $total + $this->amenity_inspections->whereNull('building_id')->whreNull('unit_id')->count(); 
-        $total = $total + $this->amenity_inspections->whereNotNull('unit_id')->groupBy('unit_id')->count();
+        $total = $total + $this->project_amenity_inspections->count(); 
+        $total = $total + $this->unique_unit_inspections->count();
         return  $total;
     }
 
@@ -53,6 +53,15 @@ class Audit extends Model
     }
     public function amenity_inspections() : HasMany {
        return $this->hasMany('\App\Models\AmenityInspection');
+    }
+    public function project_amenity_inspections() : HasMany {
+       return $this->hasMany('\App\Models\AmenityInspection')->whereNull('building_id')->whereNull('unit_id');
+    }
+    public function unit_inspections() : HasMany {
+       return $this->hasMany('\App\Models\UnitInspection');
+    }
+    public function unique_unit_inspections() : HasMany {
+       return $this->hasMany('\App\Models\UnitInspection')->groupBy('unit_id');
     }
     public function nlts() : HasMany
     {
