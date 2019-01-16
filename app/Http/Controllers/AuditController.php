@@ -892,12 +892,28 @@ class AuditController extends Controller
         return view('modals.project-summary', compact('data'));
     }
 
-    public function addAssignmentAuditor($id, $orderby = null)
+    public function addAssignmentAuditor($audit_id, $day_id, $auditorid=null)
     {
+        $audit = CachedAudit::where('id','=',$audit_id)->first();
 
+        // make sure the logged in user is a manager or the lead on the audit TBD
+        $current_user = Auth::user();
+        // is user manager? TBD
+        // if($audit->lead != $current_user->id){
+        //     dd("You must be the lead.");
+        // }
+
+        $day = ScheduleDay::where('id','=',$day_id)->where('audit_id','=',$audit_id)->first();
+
+        $auditor = User::where('id','=',$auditorid)->first();
+        // dd($audit_id, $audit, $day, $auditorid, $auditor);
+        
+        // get auditors from user roles
+        $auditors = null;
+        
         $data = collect([
             "project" => [
-                "id" => $id,
+                "id" => $audit_id,
                 "name" => "Project Name"
             ],
             "summary" => [
@@ -1020,7 +1036,7 @@ class AuditController extends Controller
                 ]
             ]
         ]);
-        return view('modals.project-assignment-add-auditor', compact('data'));
+        return view('modals.project-assignment-add-auditor', compact('data', 'day', 'auditor', 'audit', 'auditors'));
     }
 
     public function addAssignmentAuditorStats($id, $auditorid)

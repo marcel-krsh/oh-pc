@@ -83,13 +83,13 @@
 							@foreach($project->selected_audit()->auditors as $auditor)
 							@if($auditor->user_id != $project->selected_audit()->lead_auditor->id)
 							<div class="divTableCell">
-								<span uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($auditor->user->full_name())}};" title="" aria-expanded="false" class="user-badge user-badge-{{$auditor->user->badge_color}} no-float uk-link" >{{$auditor->user->initials()}}</span>
+								<span uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($auditor->user->full_name())}};" title="" onclick="addAssignmentAuditor({{$day->id}},{{$auditor->user_id}});" aria-expanded="false" class="user-badge user-badge-{{$auditor->user->badge_color}} no-float uk-link" >{{$auditor->user->initials()}}</span>
 							</div>
 							@endif
 							@endforeach
 
 							<div class="divTableCell">
-								<i class="a-circle-plus" onclick="addAssignmentAuditor({{$data['project']['id']}});" uk-tooltip="title:CLICK TO ADD AUDITORS;"></i>
+								<i class="a-circle-plus" onclick="addAssignmentAuditor({{$day->id}});" uk-tooltip="title:CLICK TO ADD AUDITORS;"></i>
 							</div>
 							<div class="divTableCell">&nbsp;</div>
 						</div>
@@ -139,7 +139,7 @@
 							<div class="divTableCell">&nbsp;</div>
 							
 							<div class="divTableCell">
-								<i class="a-circle-plus" onclick="addAssignmentAuditor({{$data['project']['id']}});" uk-tooltip="title:CLICK TO ADD AUDITORS;"></i>
+								<i class="a-circle-plus" class="use-hand-cursor" onclick="addAssignmentAuditor({{$day->id}});" uk-tooltip="title:CLICK TO ADD AUDITORS;"></i>
 							</div>
 							<div class="divTableCell">&nbsp;</div>
 						</div>
@@ -391,8 +391,8 @@
 </script>
 
 <script>
-	function addAssignmentAuditor(projectid){
-		dynamicModalLoad('projects/'+projectid+'/assignments/addauditor',1,0,1);
+	function addAssignmentAuditor(dayid, auditorid=''){
+		dynamicModalLoad('audit/{{$data['project']['audit_id']}}/scheduling/days/'+dayid+'/auditors/'+auditorid,1,0,1);
 	}
 
 	function deleteDay(id){
