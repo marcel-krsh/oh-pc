@@ -137,7 +137,7 @@ class AuditsEvent
             if (( ( in_array($audit->monitoring_status_type_key, [4,5,6]) && $audit->compliance_run == null) || $audit->rerun_compliance == 1) && $audit->findings->count() < 1) {
                 
                 // fire event
-                $check = \DB::table('jobs')->where('payload','LIKE',"%s:2:\"id\";i:{$audit->id}%")->where('queue','compliance')->count();
+                $check = \DB::table('jobs')->where('payload','LIKE',"%".$audit->id."%")->where('queue','compliance')->count();
 
                 if($check<1){
                     ComplianceSelectionJob::dispatch($audit)->onQueue('compliance');
