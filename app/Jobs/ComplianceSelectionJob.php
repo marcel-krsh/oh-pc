@@ -24,6 +24,7 @@ use App\Models\Program;
 use App\Services\DevcoService;
 use App\Models\UnitProgram;
 use Illuminate\Support\Facades\Redis;
+use App\Models\AmenityInspection;
 use Auth;
 
 class ComplianceSelectionJob implements ShouldQueue
@@ -1366,6 +1367,7 @@ class ComplianceSelectionJob implements ShouldQueue
     }
     public function addAmenityInpsections(Audit $audit){
         //Project
+        AmenityInspection::where('audit_id',$audit->id)->delete();
         foreach ($audit->project->amenities as $pa) {
            AmenityInspection::insert([
                 'audit_id'=>$audit->id,
@@ -1375,7 +1377,33 @@ class ComplianceSelectionJob implements ShouldQueue
                 'amenity_id'=>$pa->amenity_id,
                 'amenity_key'=>$pa->amenity_key,
 
-           ]); 
+           ]);
+        }
+        foreach ($audit->project->buildings as $b) {
+            foreach($b->amenities as $ba){
+               AmenityInspection::insert([
+                    'audit_id'=>$audit->id,
+                    'monitoring_key'=>$audit->monitoring_key,
+                    'building_key'=>$b->building_key,
+                    'building_id'=>$b->id,
+                    'amenity_id'=>$ba->amenity_id,
+                    'amenity_key'=>$ba->amenity_key,
+
+               ]);
+            }
+        }
+        foreach ($audit->unique_unit_inspections as $u) {
+            foreach($u->amenities as $ua){
+               AmenityInspection::insert([
+                    'audit_id'=>$audit->id,
+                    'monitoring_key'=>$audit->monitoring_key,
+                    'unit_key'=>$ua->unit_key,
+                    'unit_id'=>$ua->unit_id,
+                    'amenity_id'=>$ua->amenity_id,
+                    'amenity_key'=>$ua->amenity_key,
+
+               ]);
+            }
         }
 
         //Building
@@ -1771,7 +1799,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 }
             }
             //LOG::info('unit inspections should be there.');
-            
+            $this->addAmenityInpsections($audit);
             $this->createNewCachedAudit($audit, $best_run);    // finally create the audit
             $this->createNewProjectDetails($audit); // create the project details
             
