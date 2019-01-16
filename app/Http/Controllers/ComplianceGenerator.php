@@ -53,6 +53,19 @@ class ComplianceGenerator extends Controller
 	           ]);
 	   		}
         }
+        foreach ($audit->unique_unit_inspections as $u) {
+        	foreach($u->amenities as $ua){
+	           AmenityInspection::insert([
+	                'audit_id'=>$audit->id,
+                	'monitoring_key'=>$audit->monitoring_key,
+	                'unit_key'=>$ua->unit_key,
+	                'unit_id'=>$ua->unit_id,
+	                'amenity_id'=>$ua->amenity_id,
+	                'amenity_key'=>$ua->amenity_key,
+
+	           ]);
+	   		}
+        }
     	echo $audit->total_items();
     }
 }
