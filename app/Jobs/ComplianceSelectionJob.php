@@ -1029,7 +1029,10 @@ class ComplianceSelectionJob implements ShouldQueue
 
         return [$optimized_selection, $overlap, $project, $organization_id];
     }
-
+    public function createNewProjectDetails(Audit $audit){
+        $project = \App\Models\Project::find($audit->project_id);
+        $audit->project->set_project_defaults($audit->id);
+    }
     public function createNewCachedAudit(Audit $audit, $summary = null)
     {
         // create cached audit
@@ -1254,7 +1257,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 'inspection_schedule_text' => $inspection_schedule_text,
                 'inspection_schedule_date' => $inspection_schedule_date,
                 'inspection_schedule_json' => null, // TBD
-                'inspectable_items' => $audit->total_inspectible_items(),
+                'inspectable_items' => $audit->amenity_inspections->count(),
                 'total_items' => $audit->total_items(),
                 'audit_compliance_icon' => 'a-circle-checked',
                 'audit_compliance_status' => 'ok-actionable',
@@ -1327,6 +1330,9 @@ class ComplianceSelectionJob implements ShouldQueue
         //Remove Unit Inspections
         \App\Models\UnitInspection::where('audit_id',$audit->id)->delete();
 
+        //Remove Project Details for this Audit
+        \App\Models\ProjectDetail::where('audit_id',$audit->id)->delete();
+
         //Remove the Cached Audit
         CachedAudit::where('audit_id', '=', $audit->id)->delete();
 
@@ -1398,8 +1404,9 @@ class ComplianceSelectionJob implements ShouldQueue
             LOG::info('unit inspections should be there.');
             
             $this->createNewCachedAudit($audit, $best_run);    // finally create the audit
+            $this->createNewProjectDetails($audit); // create the project details
             $audit->compliance_run = 1;
-            $audit->rerun_compliance = null;
+            $audit->rerun_compliance = 0;
             $audit->save();
             // LOG SUCCESS HERE
         }

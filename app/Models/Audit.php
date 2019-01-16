@@ -30,18 +30,24 @@ class Audit extends Model
         //     Event::fire('audit.deleted', $audit);
         // });
     }
-    public function total_items(){
+    public function total_items() : int {
         // this is the total of project amenities, plus buildings, plus units
-        $total = $this->project->total_building +$this->amenity_inspections->whereNull('building_id')->whreNull('unit_id')->count() + $this->amenity_inspections->whereNotNull('unit_id')->groupBy('unit_id')->count();
+        $total = 0;
+        //$this->project->total_building_count +$this->amenity_inspections->whereNull('building_id')->whreNull('unit_id')->count() + $this->amenity_inspections->whereNotNull('unit_id')->groupBy('unit_id')->count();
         return  $total;
     }
+
     public function total_inspection_units(){
         return \App\UnitInspection::where('audit_id',$this->id)->groupBy('unit_id')->count();
     }
 
-    public function project() : HasOne
+    public function project_details() : HasOne
     {
         return $this->hasOne(\App\Models\ProjectDetails::class, 'project_id', 'project_id')->where('audit_id',$this->id);
+    }
+    public function project(): HasOne
+    {
+        return $this->hasOne(\App\Models\Project::class, 'id','project_id');
     }
     public function amenity_inspections() : HasMany {
        return $this->hasMany('\App\Models\AmenityInspection');

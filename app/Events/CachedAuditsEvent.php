@@ -63,38 +63,38 @@ class CachedAuditsEvent
         // [{"id": "1", "name": "Brian Greenwood", "color": "green", "status": "alert", "initials": "BG"}, {"id": "2", "name": "Brian Greenwood 2", "color": "blue", "status": "", "initials": "BF"}]
         //
         // also save the lead auditor in the table
-        $audit = Audit::where('id', '=', $cached_audit->audit_id)->first();
-        if ($audit->user_key) {
-            $lead_key = $audit->user_key;
-            $lead_id = $audit->lead_user_id;
-        } else {
-            $lead_key = null;
-            $lead_id = null;
-        }
+        // $audit = Audit::where('id', '=', $cached_audit->audit_id)->first();
+        // if ($audit->user_id) {
+        //     $lead_key = $audit->user_key;
+        //     $lead_id = $audit->lead_user_id;
+        // } else {
+        //     $lead_key = null;
+        //     $lead_id = null;
+        // }
 
-        $auditors = AuditAuditor::where('monitoring_key', '=', $cached_audit->audit_key)->with('user')->get();
+        $auditors = AuditAuditor::where('audit_id', '=', $cached_audit->audit_id)->with('user')->get();
         $auditors_array = [];
-        if ($auditors) {
-            foreach ($auditors as $auditor) {
-                if ($auditor->user) {
-                    $lead = $lead_user->id;
-                    $words = explode(" ", $lead_user->name);
-                    $initials = "";
-                    foreach ($words as $w) {
-                        $initials .= $w[0];
-                    }
-                    $initials = substr($initials, 0, 2); // keep the first two letters only
+        // if ($auditors) {
+        //     foreach ($auditors as $auditor) {
+        //         if ($auditor->user) {
+        //             $lead = $auditor->user;
+        //             $words = explode(" ", $lead->name);
+        //             $initials = "";
+        //             foreach ($words as $w) {
+        //                 $initials .= $w[0];
+        //             }
+        //             $initials = substr($initials, 0, 2); // keep the first two letters only
 
-                    $auditors_array[] = [
-                        'id' => $auditor->user->id,
-                        'name' => $auditor->user->name,
-                        'color' => $auditor->user->color,
-                        'status' => '',
-                        'initials' => $initials
-                    ];
-                }
-            }
-        }
+        //             $auditors_array[] = [
+        //                 'id' => $auditor->user->id,
+        //                 'name' => $auditor->user->name,
+        //                 'color' => $auditor->user->color,
+        //                 'status' => '',
+        //                 'initials' => $initials
+        //             ];
+        //         }
+        //     }
+        // }
 
         // create cached buildings related to this audit
         foreach ($buildings as $building) {

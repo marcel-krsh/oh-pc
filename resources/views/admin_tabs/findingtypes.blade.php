@@ -94,6 +94,7 @@
    // your on click function here
    $('.page-link').click(function(){
            $('#findingtype-tab-content').load($(this).attr('href'));
+           window.current_finding_type_page = $('#findingtype-tab-content').load($(this).attr('href'));
            return false;
        });
     });

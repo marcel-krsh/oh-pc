@@ -149,7 +149,8 @@ class Project extends Model
 
     public function details()
     {
-        //TBD (check when/how to update)
+        // details is a cache of the project's information at the time of the audit.
+        // details is updated whenever the respective sources are changed, as long as the most current audit is not archived
         
         $selected_audit = $this->selected_audit();
 
@@ -174,7 +175,7 @@ class Project extends Model
         return $details;
     }
 
-    public function set_project_defaults()
+    public function set_project_defaults($audit_id=null)
     {
         // create a record in project_details table with the current stats, contact info
         
@@ -186,8 +187,9 @@ class Project extends Model
         }
 
         $last_audit = $this->lastAudit();
-
-        $selected_audit = $this->selected_audit();
+        if(is_null($audit_id)){
+            $audit_id = $this->selected_audit()->id;
+        }
 
         $next_inspection = $this->complianceContacts()->first()->next_inspection;
 
@@ -199,7 +201,7 @@ class Project extends Model
 
         $details = new ProjectDetail([
                 'project_id' => $this->id,
-                'audit_id' => $selected_audit->id,
+                'audit_id' => $audit_id,
                 'last_audit_completed' => $last_audit->completed_date,
                 'next_audit_due' => $next_inspection,
                 'score_percentage' => null,
