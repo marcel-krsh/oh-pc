@@ -1,15 +1,10 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Http\Controllers;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Log;
-use App\Jobs\ComplianceSelectionJob;
 use App\Models\User;
 use App\Models\SystemSetting;
 use App\Models\Audit;
@@ -23,13 +18,15 @@ use App\Models\CachedAudit;
 use App\Models\Program;
 use App\Services\DevcoService;
 use App\Models\UnitProgram;
-use Illuminate\Support\Facades\Redis;
 use Auth;
 
-class ComplianceSelectionJob implements ShouldQueue
+class ComplianceGenerator extends Controller
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
+    /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
     public $audit;
 
     public function __construct(Audit $audit)
@@ -407,7 +404,7 @@ class ComplianceSelectionJob implements ShouldQueue
             $audit->save();
         // is the project processing all the buildings together? or do we have a combination of grouped buildings and single buildings?
         if ($audit->id) {
-            //dd($audit);
+        	//dd($audit);
             $project = Project::where('id', '=', $audit->project_id)->with('programs')->first();
             $audit->comment = $audit->comment.' | project selected in select process';
             $audit->save();
@@ -1645,9 +1642,9 @@ class ComplianceSelectionJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function runCompliance(Audit $audit)
     {
-        $audit = $this->audit;
+        
         //LOG HERE if it is a brand new audit run
 
         //LOG HERE if it is a rerun audit and who asked for it
@@ -1675,7 +1672,7 @@ class ComplianceSelectionJob implements ShouldQueue
         // //get the current audit units:
         $audit->comment = $audit->comment.' | Running Fetch Audit Units';
                                     $audit->save();
-        $this->fetchAuditUnits($audit);
+        //$this->fetchAuditUnits($audit);
         $audit->comment = $audit->comment.' | Finished Fetch Units';
                                     $audit->save();
         $check = \App\Models\UnitProgram::where('audit_id',$audit->id)->count();
@@ -1691,7 +1688,7 @@ class ComplianceSelectionJob implements ShouldQueue
             $project = null;
             $organization_id = null;
 
-            for ($i=0; $i<10; $i++) {
+            for ($i=0; $i<1; $i++) {
                 $audit->comment = $audit->comment.' | Running the selectionProcess for the '.$i.'time';
                                     $audit->save();
                 $summary = $this->selectionProcess($audit);
@@ -1770,6 +1767,4 @@ class ComplianceSelectionJob implements ShouldQueue
         
              
     }
-
-    
 }

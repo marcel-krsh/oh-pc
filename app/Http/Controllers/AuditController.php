@@ -46,6 +46,7 @@ class AuditController extends Controller
             $audit->save();
             return 'No findings! Good to go!';
         }
+        
     }
     public function buildingsFromAudit($audit, Request $request)
     {
