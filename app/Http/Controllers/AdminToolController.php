@@ -15,14 +15,16 @@ use App\Models\DocumentCategory;
 use App\Models\Program;
 use App\Models\State;
 use App\Models\County;
-use Illuminate\Foundation\Auth\User;
+use App\Models\UserRole;
+use App\Models\Role;
+//use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\FormsController as Form;
 use Illuminate\Support\Facades\Input;
 use App\LogConverter;
 use \Auth;
 use Session;
-use App\Models\User as UserModel;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class AdminToolController extends Controller
@@ -231,6 +233,28 @@ class AdminToolController extends Controller
         }
         
         return view('admin_tabs.organizations', compact('organizations'));
+    }
+
+    /**
+     * Users Index
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function usersIndex()
+    {
+        if (Session::has('users-search') && Session::get('users-search') != '') {
+            $search = Session::get('users-search');
+            $users = User::with(['roles','person','organization_details'])
+                                    ->where(function ($query) use ($search) {
+                                        $query->where('name', 'LIKE', '%'.$search.'%');
+                                    })
+                                    ->orderBy('name', 'asc')
+                                    ->paginate(40);
+        } else {
+            $users = User::with(['roles','person','organization_details'])->orderBy('name', 'asc')->paginate(40);
+        }
+        
+        return view('admin_tabs.users', compact('users'));
     }
 
     /**
@@ -842,6 +866,43 @@ class AdminToolController extends Controller
                 return response('<h2>Problem...</h2><p>I am sorry, but I cannot find that record.</p>');
             }
         }
+    }
+
+    public function userManageRoles($id){
+        $user = User::where('id','=',$id)->first();
+
+        $current_user = Auth::user();
+        // current user's highest roles
+        $current_user_highest_role = UserRole::where('user_id','=',$current_user->id)->orderBy('role_id','desc')->first();
+
+        if($current_user_highest_role){
+            $roles = Role::where('id','<',$current_user_highest_role->role_id)->get();
+        }else{
+            $roles = null;
+        }
+
+        return view('modals.user-roles-edit', compact('user','roles'));
+    }
+
+    public function userSaveRoles(Request $request, $id){
+        $user = User::where('id','=',$id)->first();
+
+        $inputs = $request->input('inputs');
+        parse_str($inputs, $inputs);
+
+        // delete all roles for this user first
+        UserRole::where('user_id','=',$user->id)->delete();
+
+        // add the selected roles
+        foreach($inputs['roles'] as $role){
+            $new_role = new UserRole([
+                'user_id' => $user->id,
+                'role_id' => $role
+            ]);
+            $new_role->save();
+        }
+     
+        return 1;
     }
 
     /**

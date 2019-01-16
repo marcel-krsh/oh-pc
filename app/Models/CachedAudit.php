@@ -360,4 +360,6 @@ class CachedAudit extends Model
         // count all the amenity_inspections items belonging to the current user
         return $this->inspection_items()->where('auditor_id','=',Auth::user()->id)->count();
     }
+
+    
 }

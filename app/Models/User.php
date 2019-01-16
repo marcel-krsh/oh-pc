@@ -82,9 +82,24 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function roles() : BelongsToMany
+    public function roles() : HasMany
     {
-        return $this->belongsToMany(Role::class, 'users_roles');
+        return $this->hasMany(UserRole::class);
+    }
+
+    public function roles_list()
+    {
+        $roles = $this->roles()->get();
+        $output = '';
+        foreach($roles as $role){
+            if($output == ''){
+                $output = $output.$role->role->name;
+            }else{
+                $output = $output.', '.$role->role->name;
+            }
+            
+        }
+        return $output;
     }
 
     /**
@@ -108,6 +123,11 @@ class User extends Authenticatable
     }
 
     public function auditor_addresses() : HasMany
+    {
+        return $this->HasMany(Address::class, 'user_id', 'id');
+    }
+
+    public function addresses() : HasMany
     {
         return $this->HasMany(Address::class, 'user_id', 'id');
     }
@@ -151,6 +171,15 @@ class User extends Authenticatable
         return 0;
     }
 
+    public function hasRole($role_id) : bool
+    {
+        foreach ($this->roles()->get() as $role) {
+            if ($role->role_id == $role_id) {
+                return true;
+            }
+        }
+        return false;
+    }
     
     /**
      * Has PM level access
@@ -298,5 +327,14 @@ class User extends Authenticatable
     {
         //proxy return value
         return $this->active;
+    }
+
+    public function isScheduled($audit_id, $day_id) : int
+    {
+        if(count(ScheduleTime::where('auditor_id','=',$this->id)->where('audit_id','=',$audit_id)->where('day_id','=',$day_id)->get())){
+            return 1;
+        }else{
+            return 0;
+        }
     }
 }

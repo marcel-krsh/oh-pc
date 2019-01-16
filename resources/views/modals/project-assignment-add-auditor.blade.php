@@ -1,5 +1,5 @@
 <div id="modal-project-assignment-add-auditor" class="uk-padding-remove uk-margin-bottom uk-overflow-auto">
-	<h2>Please Add Auditors for the Selected Date: <small class="use-hand-cursor" style="padding-left: 30px; font-size: 0.7em;"  uk-tooltip="title:CLICK TO CHANGE SELECTED DATE;" onclick=""><i class="a-calendar-pencil" style=" font-size: 18px; vertical-align: text-top;"></i> {{$data['summary']['date']}}</small></h2>
+	<h2>Schedule Auditors for {{formatDate($day->date)}}</h2>
 
 	<div id="project-assignment-add-auditor-table">
 		<div id="project-assignment-add-auditor-table-header" uk-grid>
@@ -78,6 +78,49 @@
 			</div>
 		</div>
 		<div id="auditorListScroller" class="uk-overflow-auto">
+			@foreach($audit->auditors as $auditor)
+			<div class="project-assignment-add-auditor-row" uk-grid>
+				<div class="uk-width-3-5 uk-padding-remove">
+					<div uk-grid>
+						<div class="uk-width-1-6 uk-padding-remove uk-text-center">
+							<div uk-grid>
+								<div class="uk-width-1-1 uk-padding-remove">
+									<i class="@if($auditor->isScheduled($audit->id, $day->id)) a-circle-checked @else a-circle-plus @endif large use-hand-cursor" onclick="$('#auditorListScroller').toggleClass('noscroll');" uk-tooltip="title:@if($auditor->isScheduled($audit->id, $day->id)) CLICK TO REMOVE AUDITOR @else CLICK TO ADD AUDITOR @endif;"></i>
+					            </div>
+							</div>
+						</div>
+						<div class="uk-width-5-6 uk-padding-remove">
+							<div uk-grid>
+								<div class="uk-width-1-2 uk-padding-remove">
+									<div class="leaders uk-width-1-1">
+					    				<div>
+					    					<span><i class="a-person-chart-bar large use-hand-cursor" style="padding-right: 8px;" onclick="addAssignmentAuditorStats({{$audit->id}}, {{$auditor->user_id}});" uk-tooltip="title:CLICK TO VIEW AUDITOR'S SCHEDULE & STATS;"></i> {{$auditor->user->full_name()}}</span>
+					    				</div>
+					    			</div>
+								</div>
+								<div class="uk-width-1-2">
+									{{$auditor['availability']}}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="uk-width-2-5 uk-padding-remove">
+					<div uk-grid>
+						<div class="uk-width-1-4 uk-text-center">
+							<span uk-tooltip="title:{{$auditor['open_tooltip']}};">{{$auditor['open']}}</span>
+						</div>
+						<div class="uk-width-1-4 uk-text-center">
+							<span uk-tooltip="title:{{$auditor['starting_tooltip']}};">{{$auditor['starting']}}</span>
+						</div>
+						<div class="uk-width-1-2 uk-text-center">
+							{{$auditor['distance_time']}} | {{$auditor['distance']}} Miles | <i class="{{$auditor['distance_icon']}}" uk-tooltip="title:{{$auditor['distance_tooltip']}};"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+			@endforeach
+
 			@foreach($data['auditors'] as $auditor)
 			<div class="project-assignment-add-auditor-row @if($auditor['status'] == 'action-required') {{$auditor['status']}} @endif" uk-grid>
 				<div class="uk-width-3-5 uk-padding-remove">
@@ -133,176 +176,11 @@
 	</div>
 
 	<div class="project-details-info-assignment-summary uk-margin-top uk-flex-middle" uk-grid>
-		<div class="uk-width-1-6 uk-margin-top " style="display:none">
-			<canvas id="chartjs-assignment-auditor" class="chartjs" style="display: block;"></canvas>
-		</div>
-		<div class="uk-width-1-2 uk-margin-top uk-padding-remove"  style="display:none">
-			<h4>
-				<div>It will take an <span class="underlined italic">ESTIMATED</span> <i class="a-pencil-2 use-hand-cursor" uk-tooltip="title:EDIT ESTIMATED HOURS;"></i>{{$data['summary']['estimated']}} to complete this audit.</div>
-				<div id="editEstimated" class="" uk-drop="mode: click">
-				    <div class="uk-card uk-card-body uk-card-rounded">
-				        <ul class="uk-list no-hover uk-form-horizontal ">
-	                    	<li onclick="">
-						        <label class="uk-form-label">HOURS:</label>
-						        <div class="uk-form-controls">
-						            <input class="uk-input" type="text" value="{{$data['summary']['estimated']}}">
-						        </div>
-	                    	</li>	
-	                    	<li onclick="">
-						        <label class="uk-form-label">MINUTES:</label>
-						        <div class="uk-form-controls">
-						            <select class="uk-select">
-						                <option>00</option>
-						                <option>01</option>
-						                <option>02</option>
-						                <option>03</option>
-						                <option>04</option>
-						                <option>05</option>
-						                <option>06</option>
-						                <option>07</option>
-						                <option>08</option>
-						                <option>09</option>
-						                <option>10</option>
-						                <option>11</option>
-						                <option>12</option>
-						                <option>13</option>
-						                <option>14</option>
-						                <option>15</option>
-						                <option>16</option>
-						                <option>17</option>
-						                <option>18</option>
-						                <option>19</option>
-						                <option>20</option>
-						                <option>21</option>
-						                <option>22</option>
-						                <option>23</option>
-						                <option>24</option>
-						                <option>25</option>
-						                <option>26</option>
-						                <option>27</option>
-						                <option>28</option>
-						                <option>29</option>
-						                <option>30</option>
-						                <option>31</option>
-						                <option>32</option>
-						                <option>33</option>
-						                <option>34</option>
-						                <option>35</option>
-						                <option>36</option>
-						                <option>37</option>
-						                <option>38</option>
-						                <option>39</option>
-						                <option>40</option>
-						                <option>41</option>
-						                <option>42</option>
-						                <option>43</option>
-						                <option>44</option>
-						                <option>45</option>
-						                <option>46</option>
-						                <option>47</option>
-						                <option>48</option>
-						                <option>49</option>
-						                <option>50</option>
-						                <option>51</option>
-						                <option>52</option>
-						                <option>53</option>
-						                <option>54</option>
-						                <option>55</option>
-						                <option>56</option>
-						                <option>57</option>
-						                <option>58</option>
-						                <option>59</option>
-						            </select>
-						        </div>
-	                    	</li>	
-	                    </ul>
-				    </div>
-				</div>
-				<div>{{$data['summary']['needed']}} Need Assigned</div>
-				<div id="editEstimated" class="" uk-drop="mode: click">
-				    <div class="uk-card uk-card-body uk-card-rounded">
-				        <ul class="uk-list no-hover uk-form-horizontal ">
-	                    	<li onclick="">
-						        <label class="uk-form-label">HOURS:</label>
-						        <div class="uk-form-controls">
-						            <input class="uk-input" type="text" value="{{$data['summary']['estimated']}}">
-						        </div>
-	                    	</li>	
-	                    	<li onclick="">
-						        <label class="uk-form-label">MINUTES:</label>
-						        <div class="uk-form-controls">
-						            <select class="uk-select">
-						                <option>00</option>
-						                <option>01</option>
-						                <option>02</option>
-						                <option>03</option>
-						                <option>04</option>
-						                <option>05</option>
-						                <option>06</option>
-						                <option>07</option>
-						                <option>08</option>
-						                <option>09</option>
-						                <option>10</option>
-						                <option>11</option>
-						                <option>12</option>
-						                <option>13</option>
-						                <option>14</option>
-						                <option>15</option>
-						                <option>16</option>
-						                <option>17</option>
-						                <option>18</option>
-						                <option>19</option>
-						                <option>20</option>
-						                <option>21</option>
-						                <option>22</option>
-						                <option>23</option>
-						                <option>24</option>
-						                <option>25</option>
-						                <option>26</option>
-						                <option>27</option>
-						                <option>28</option>
-						                <option>29</option>
-						                <option>30</option>
-						                <option>31</option>
-						                <option>32</option>
-						                <option>33</option>
-						                <option>34</option>
-						                <option>35</option>
-						                <option>36</option>
-						                <option>37</option>
-						                <option>38</option>
-						                <option>39</option>
-						                <option>40</option>
-						                <option>41</option>
-						                <option>42</option>
-						                <option>43</option>
-						                <option>44</option>
-						                <option>45</option>
-						                <option>46</option>
-						                <option>47</option>
-						                <option>48</option>
-						                <option>49</option>
-						                <option>50</option>
-						                <option>51</option>
-						                <option>52</option>
-						                <option>53</option>
-						                <option>54</option>
-						                <option>55</option>
-						                <option>56</option>
-						                <option>57</option>
-						                <option>58</option>
-						                <option>59</option>
-						            </select>
-						        </div>
-	                    	</li>	
-	                    </ul>
-				    </div>
-				</div>
-			</h4>
-			
-		</div>
 		<div class="uk-width-1-3 uk-padding-remove">
-			<button class="uk-button uk-button-border uk-link" onclick="" type="button"><i class="far fa-calendar-check"></i> DONE SCHEDULING</button>
+			<button class="uk-button uk-button-border uk-link" onclick="" type="button"><i class="far fa-window-close"></i> CLOSE WINDOW</button>
+		</div>
+		<div class="uk-width-1-3">
+			<button class="uk-button uk-button-border uk-link" onclick="" type="button"><i class="far fa-calendar-check"></i> ALL AUDITORS ARE SCHEDULE</button>
 		</div>
 	</div>
 

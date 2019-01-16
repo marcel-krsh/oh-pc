@@ -155,7 +155,7 @@
         Route::get('/findings/{id}/items', 'FindingController@findingItems');
         Route::get('/modals/findings/{id}/items/{itemid}/photos/{photoid}', 'FindingController@findingItemPhoto');
 
-        Route::get('/modals/projects/{id}/assignments/addauditor', 'AuditController@addAssignmentAuditor')->name('project.assignment.addauditor');
+        Route::get('/modals/audit/{audit_id}/scheduling/days/{day_id}/auditors/{auditorid?}', 'AuditController@addAssignmentAuditor')->name('project.assignment.addauditor');
         Route::get('projects/{id}/assignments/addauditor/{auditorid}/stats', 'AuditController@addAssignmentAuditorStats')->name('project.assignment.addauditorstats');
         Route::get('projects/{id}/assignments/addauditor/{auditorid}/loadcal/{currentdate}/{beforeafter}', 'AuditController@getAssignmentAuditorCalendar')->name('project.assignment.getauditorcalendar');
 
@@ -201,6 +201,7 @@
             Route::get('finding_type/create/{id?}', 'AdminToolController@findingtypeCreate');
             Route::get('hud_area/create/{id?}', 'AdminToolController@hudAreaCreate');
             Route::get('amenity/create/{id?}', 'AdminToolController@amenityCreate');
+            Route::get('users/{id}/manageroles', 'AdminToolController@userManageRoles');
         });
 
         // Admin tabs
@@ -214,6 +215,8 @@
             Route::get('defaultfollowup', 'AdminToolController@defaultfollowupIndex');
             Route::get('boilerplate', 'AdminToolController@boilerplateIndex');
             Route::get('program', 'AdminToolController@programIndex');
+            Route::get('users', 'AdminToolController@usersIndex');
+            Route::post('users', 'AdminToolController@searchUsers')->name('users.search');
             Route::get('document_category', 'AdminToolController@documentIndex');
             Route::get('county', 'AdminToolController@countyIndex');
             Route::get('emails', 'PagesController@emailsTab');
@@ -228,6 +231,7 @@
             Route::post('county/store/{id?}', 'AdminToolController@countyStore');
             Route::post('hud_area/store/{id?}', 'AdminToolController@hudAreaStore');
             Route::post('amenity/store/{id?}', 'AdminToolController@amenityStore');
+            Route::post('users/{id}/saveroles', 'AdminToolController@userSaveRoles');
         });
 
         //Project

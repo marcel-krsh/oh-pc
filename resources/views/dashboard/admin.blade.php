@@ -11,6 +11,7 @@
                 <li id="default-followups-tab"><a>Follow Ups</a></li>
                 <li id="boilerplates-tab"><a>Boilerplates</a></li>
                 <li id="organizations-tab" ><a>Organizations</a></li>
+                <li id="users-tab" ><a>Users</a></li>
                 <!-- <li id="programs-tab"><a>Programs</a></li>
                 <li id="document-categories-tab"><a>Doc Categories</a></li>
                 <li id="counties-tab"><a>Counties</a></li> -->
@@ -83,17 +84,17 @@
                         });
                     </script>
                 </li>
-                <li id="emails-content">
-                    <script type="text/javascript">
-                        $('#emails-tab').on('click', function(){
-                            $('#emails-content').load('/tabs/emails');
-                        });
-                    </script>
-                </li>
                 <li id="users-content">
                     <script type="text/javascript">
                         $('#users-tab').on('click', function(){
                             $('#users-content').load('/tabs/users');
+                        });
+                    </script>
+                </li>
+                <li id="emails-content">
+                    <script type="text/javascript">
+                        $('#emails-tab').on('click', function(){
+                            $('#emails-content').load('/tabs/emails');
                         });
                     </script>
                 </li>
