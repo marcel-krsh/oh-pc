@@ -15,9 +15,7 @@
         <th>
             <small>NAME</small>
         </th>
-        <th>
-            <small>ROLES</small>
-        </th>
+        
         <th>
             <small>ORGANIZATION</small>
         </th>
@@ -39,12 +37,12 @@
                 <tr>
                     
                     <td><small>{{$user->full_name()}}</small></td>
-                    <td class="use-hand-cursor" uk-tooltip="title:CLICK TO SET ROLES" onclick="setRoles({{$user->id}})"><small>@if($user->roles_list() != ''){{$user->roles_list()}}@else <i class="a-circle-plus"></i>@endif</small></td>
+                    
                     <td><small>{{$user->organization_details->organization_name}}</small></td>
                     <td><small>{!!$user->organization_details->address->formatted_address()!!}</small></td>
                     <td><small>{{$user->person->phone->number()}}</small></td>
                     <td><small>{{$user->person->email->email_address}}</small></td>
-                    <td><small>{{$user->roles_list()}}</small></td>
+                    <td class="use-hand-cursor" uk-tooltip="title:CLICK TO SET ROLES" onclick="setRoles({{$user->id}})"><small>@if($user->roles_list() != ''){{$user->roles_list()}}@else <i class="a-circle-plus"></i>@endif</small></td>
             
                 </tr>
             @endforeach
