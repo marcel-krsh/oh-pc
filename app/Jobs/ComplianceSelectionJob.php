@@ -86,22 +86,29 @@ class ComplianceSelectionJob implements ShouldQueue
                                         'updated_at'    =>  date("Y-m-d g:h:i", time())
                                     ]);
                                 } else {
-                                    dd('Could not find program by program key!');
+                                    $audit->comment = $audit->comment.' | Unable to find program with key '.$unitProgram['attributes']['programKey'].' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key;
+                                    $audit->save();
                                     //Log::info('Unable to find program with key of '.$unitProgram['attributes']['programKey'].' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key);
                                 }
                             }
                         } catch (Exception $e) {
-                            dd('Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key);
+                            //dd('Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key);
+                            $audit->comment = $audit->comment.' | Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key;
+                                    $audit->save();
                         }
                     }
                 } else {
-                    dd('Could not get building units');
+                    //dd('Could not get building units');
+                    $audit->comment = $audit->comment.' | Could not get building units';
+                                    $audit->save();
                 }
             }
 
             return 1;
         } else {
-            dd('NO BUILDINGS FOUND TO GET DATA');
+            //dd('NO BUILDINGS FOUND TO GET DATA');
+            $audit->comment = $audit->comment.' | NO BUILDINGS FOUND TO GET DATA';
+                                    $audit->save();
         }
     }
 
