@@ -1345,10 +1345,10 @@ class ComplianceSelectionJob implements ShouldQueue
         CachedAudit::where('audit_id', '=', $audit->id)->delete();
 
         // //get the current audit units:
-        // $this->fetchAuditUnits($audit);
+        $this->fetchAuditUnits($audit);
 
-        //$check = \App\Models\UnitProgram::where('audit_id',$audit->id)->count();
-        $check = 1;
+        $check = \App\Models\UnitProgram::where('audit_id',$audit->id)->count();
+        //$check = 1;
 
         if ($check > 0) {
             // run the selection process 10 times and keep the best one
@@ -1361,7 +1361,8 @@ class ComplianceSelectionJob implements ShouldQueue
             for ($i=0; $i<10; $i++) {
                 $summary = $this->selectionProcess($audit);
                 //Log::info('audit '.$i.' run;');
-                if (count($summary[0]['grouped']) < $best_total || $best_run == null) {
+
+                if ($summary && (count($summary[0]['grouped']) < $best_total || $best_run == null)) {
                     $best_run = $summary[0];
                     $overlap = $summary[1];
                     $project = $summary[2];
