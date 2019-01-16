@@ -63,7 +63,7 @@ class Audit extends Model
        return $this->hasMany('\App\Models\UnitInspection');
     }
     public function total_unique_unit_inspections() : int {
-       $total = \App\Models\UnitInspection::where('audit_id',$this->id)->select('unit_id')->groupBy('unit_id')->all()->count();
+       $total = \App\Models\UnitInspection::where('audit_id',$this->id)->select('unit_id')->groupBy('unit_id')->get()->all()->count();
        return $total;
     }
     public function nlts() : HasMany
