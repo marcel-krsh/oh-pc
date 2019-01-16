@@ -1026,11 +1026,11 @@ class ComplianceGenerator extends Controller
         $total_units = count($units);
 
         $comments[] = 'Total units with NHTF funding is '.$total_units;
-        $comments[] = 's_with_program;Total units in the project with a program is '.$total_unit;
+        $comments[] = 'Total units in the project with a program is '.$total_units_with_program;
 
         $audit->comment = $audit->comment.' | Select Process Total units with NHTF funding is '.$total_units;
         $audit->save();
-        $audit->comment = $audit->comment.' | Select Process Total units in the project with a program is '.$total_unit;
+        $audit->comment = $audit->comment.' | Select Process Total units in the project with a program is '.$total_units_with_program;
         $audit->save();
 
 
