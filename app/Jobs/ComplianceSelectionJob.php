@@ -1347,10 +1347,10 @@ class ComplianceSelectionJob implements ShouldQueue
         // //get the current audit units:
         // $this->fetchAuditUnits($audit);
 
-        $check = \App\Models\UnitProgram::where('audit_id',$audit->audit_id)->count();
+        //$check = \App\Models\UnitProgram::where('audit_id',$audit->id)->count();
+        $check = 1;
 
-
-        if ($check > 1) {
+        if ($check > 0) {
             // run the selection process 10 times and keep the best one
             $best_run = null;
             $best_total = null;
