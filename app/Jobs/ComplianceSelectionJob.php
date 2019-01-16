@@ -318,14 +318,21 @@ class ComplianceSelectionJob implements ShouldQueue
         // is the project processing all the buildings together? or do we have a combination of grouped buildings and single buildings?
         if ($audit->audit_id) {
             $project = Project::where('id', '=', $audit->project_id)->with('programs')->first();
+            $audit->comment = $audit->comment.' | project selected in select process';
+            $audit->save();
         } else {
             return "Error, this audit isn't associated with a project somehow...";
             Log::error('Audit '.$audit->id.' does not have a project somehow...');
+            $audit->comment = $audit->comment.' | Error, this audit isn\'t associated with a project somehow...';
+            $audit->save();
+
         }
 
         if (!$project->programs) {
             return "Error, this project doesn't have a program.";
             Log::error('Error, the project does not have a program.');
+            $audit->comment = $audit->comment.' | Error, the project does not have a program.';
+            $audit->save();
         }
 
         $total_buildings = $project->total_building_count;
@@ -408,6 +415,8 @@ class ComplianceSelectionJob implements ShouldQueue
         $program_bundle_names = implode(',', $program_bundle_names);
 
         $comments[] = 'Pool of units chosen using audit id '.$audit->id.' and a list of programs: '.$program_bundle_names;
+        $audit->comment = $audit->comment.' | Pool of units chosen using audit id '.$audit->id.' and a list of programs: '.$program_bundle_names;
+            $audit->save();
         
         $units = Unit::whereHas('programs', function ($query) use ($audit, $program_bundle_ids) {
                             $query->where('audit_id', '=', $audit->id);
@@ -416,7 +425,8 @@ class ComplianceSelectionJob implements ShouldQueue
 
         $total = count($units);
         $comments[] = 'Total units in the pool is '.count($units);
-
+        $audit->comment = $audit->comment. ' | Total units in the pool is '.count($units);
+            $audit->save();
         $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
         $program_htc_names = Program::whereIn('program_key', $program_htc_ids)->get()->pluck('program_name')->toArray();
         $program_htc_names = implode(',', $program_htc_names);
@@ -425,6 +435,8 @@ class ComplianceSelectionJob implements ShouldQueue
         $program_htc_overlap_names = Program::whereIn('program_key', $program_htc_overlap)->get()->pluck('program_name')->toArray(); // 30001,30043
         $program_htc_overlap_names = implode(',', $program_htc_overlap_names);
         $comments[] = 'Identified the program keys that have HTC funding: '.$program_htc_overlap_names;
+        $audit->comment = $audit->comment.' | Identified the program keys that have HTC funding: '.$program_htc_overlap_names;
+            $audit->save();
 
         $has_htc_funding = 0;
         foreach ($units as $unit) {
@@ -432,16 +444,24 @@ class ComplianceSelectionJob implements ShouldQueue
                 if (in_array($unit_program->program_key, $program_htc_overlap)) {
                     $has_htc_funding = 1;
                     $comments[] = 'The unit key '.$unit->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
+                    $audit->comment = $audit->comment.' | The unit key '.$unit->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
+            $audit->save();
                 }
             }
         }
 
         if (!$has_htc_funding) {
             $comments[] = 'By checking each unit and associated programs with HTC funding, we determined that no HTC funding exists for this pool';
+            $audit->comment = $audit->comment.' | By checking each unit and associated programs with HTC funding, we determined that no HTC funding exists for this pool';
             $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 20);
             $comments[] = '20% of the pool is randomly selected. Total selected: '.count($units_selected);
+             $audit->comment = $audit->comment.' | 20% of the pool is randomly selected. Total selected: '.count($units_selected);
+            $audit->save();
+
         } else {
             $comments[] = 'By checking each unit and associated programs with HTC funding, we determined that there is HTC funding for this pool';
+            $audit->comment = $audit->comment.' | By checking each unit and associated programs with HTC funding, we determined that there is HTC funding for this pool';
+            $audit->save();
 
             // check in project_program->first_year_award_claimed date for the 15 year test
         
@@ -449,11 +469,15 @@ class ComplianceSelectionJob implements ShouldQueue
 
             // look at HTC programs, get the most recent year for the check
             $comments[] = 'Going through the HTC programs, we look for the most recent year in the first_year_award_claimed field.';
+            $audit->comment = $audit->comment.' | Going through the HTC programs, we look for the most recent year in the first_year_award_claimed field.';
+            $audit->save();
             foreach ($project->programs as $program) {
                 if (in_array($program->program_key, $program_htc_overlap)) {
                     if ($first_year == null || $first_year < $program->first_year_award_claimed) {
                         $first_year = $program->first_year_award_claimed;
                         $comments[] = 'Program key '.$program->program_key.' has the year '.$program->first_year_award_claimed.'.';
+                        $audit->comment = $audit->comment.' | Program key '.$program->program_key.' has the year '.$program->first_year_award_claimed.'.';
+            $audit->save();
                     }
                 }
             }
@@ -461,19 +485,29 @@ class ComplianceSelectionJob implements ShouldQueue
             if (idate("Y")-15 > $first_year && $first_year != null) {
                 $first_fifteen_years = 0;
                 $comments[] = 'Based on the year, we determined that the program is not within the first 15 years.';
+                $audit->comment = $audit->comment.' | Based on the year, we determined that the program is not within the first 15 years.';
+            $audit->save();
+
             } else {
                 $first_fifteen_years = 1;
-                $comments[] = 'Based on the year, we determined that the program is within the first 15 years.';
+                $comments[] = 'Based on the year,'.$first_year.' we determined that the program is within the first 15 years.';
+                $audit->comment = $audit->comment.' | Based on the year '.$first_year.', we determined that the program is within the first 15 years.';
+            $audit->save();
             }
             
             if ($first_fifteen_years) {
                 // check project for least purchase
                 $leaseProgramKeys = explode(',', SystemSetting::get('lease_purchase'));
                 $comments[] = 'Check if the programs associated with the project correspond to lease purchase using program keys: '.SystemSetting::get('lease_purchase').'.';
+                $audit->comment = $audit->comment.' | Check if the programs associated with the project correspond to lease purchase using program keys: '.SystemSetting::get('lease_purchase').'.';
+            $audit->save();
                 foreach ($project->programs as $program) {
                     if (in_array($program->program_key, $leaseProgramKeys)) {
                         $isLeasePurchase = 1;
                         $comments[] = 'A program key '.$program->program_key.' confirms that this is a lease purchase.';
+                        $audit->comment = $audit->comment.' | A program key '.$program->program_key.' confirms that this is a lease purchase.';
+                        $audit->save();
+
                     } else {
                         $isLeasePurchase = 0;
                     }
@@ -483,6 +517,8 @@ class ComplianceSelectionJob implements ShouldQueue
                 if ($isLeasePurchase) {
                     $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 20);
                     $comments[] = '20% of the pool is randomly selected. Total selected: '.count($units_selected);
+                    $audit->comment = $audit->comment.' | 20% of the pool is randomly selected. Total selected: '.count($units_selected);
+                        $audit->save();
                 } else {
                     $is_multi_building_project = 0;
 
@@ -490,11 +526,16 @@ class ComplianceSelectionJob implements ShouldQueue
 
                     // for each of the current programs+project, check if multiple_building_election_key is 2 for multi building project
                     $comments[] = 'Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
+                    $audit->comment = $audit->comment.' | Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
+                        $audit->save();
+
                     foreach ($project->programs as $program) {
                         if (in_array($program->program_key, $program_bundle_ids)) {
                             if ($program->multiple_building_election_key == 2) {
                                 $is_multi_building_project = 1;
                                 $comments[] = 'Program key '.$program->program_key.' showed that the project is a multi building project.';
+                                $audit->comment = $audit->comment.' | Program key '.$program->program_key.' showed that the project is a multi building project.';
+                                $audit->save();
                             }
                         }
                     }
@@ -502,8 +543,12 @@ class ComplianceSelectionJob implements ShouldQueue
                     if ($is_multi_building_project) {
                         $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 20);
                         $comments[] = '20% of the pool is randomly selected. Total selected: '.count($units_selected);
+                        $audit->comment = $audit->comment.' | 20% of the pool is randomly selected. Total selected: '.count($units_selected);
+                                $audit->save();
                     } else {
                         $comments[] = 'The project is not a multi building project.';
+                        $audit->comment = $audit->comment.' | The project is not a multi building project.';
+                                $audit->save();
                         // group units by building, then proceed with the random selection
                         // create a new list of units based on building and project key
                         $units_selected = [];
@@ -511,12 +556,16 @@ class ComplianceSelectionJob implements ShouldQueue
                             $new_building_selection = $this->randomSelection($building->units->pluck('unit_key')->toArray(), 20);
                             $units_selected = array_merge($units_selected, $new_building_selection);
                             $comments[] = '20% of building key '.$building->building_key.' is randomly selected. Total selected: '.count($new_building_selection).'.';
+                            $audit->comment = $audit->comment.' | 20% of building key '.$building->building_key.' is randomly selected. Total selected: '.count($new_building_selection).'.';
+                                $audit->save();
                         }
                     }
                 }
             } else {
                 $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 20);
                 $comments[] = '20% of the pool is randomly selected. Total selected: '.count($units_selected);
+                $audit->comment = $audit->comment.' | 20% of the pool is randomly selected. Total selected: '.count($units_selected);
+                                $audit->save();
             }
         }
         
