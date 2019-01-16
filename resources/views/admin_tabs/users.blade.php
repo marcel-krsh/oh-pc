@@ -44,7 +44,7 @@
                     <td><small>{!!$user->organization_details->address->formatted_address()!!}</small></td>
                     <td><small>{{$user->person->phone->number()}}</small></td>
                     <td><small>{{$user->person->email->email_address}}</small></td>
-                    <td><small>{{$user->role_list()}}</small></td>
+                    <td><small>{{$user->roles_list()}}</small></td>
             
                 </tr>
             @endforeach
