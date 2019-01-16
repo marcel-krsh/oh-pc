@@ -35,7 +35,7 @@ class Audit extends Model
         // $total = 0;
         $total = $this->project->total_building_count;
         $total = $total + $this->project_amenity_inspections->count(); 
-        $total = $total + $this->total_unique_unit_inspections->count();
+        $total = $total + $this->total_unique_unit_inspections();
         return  $total;
     }
 
