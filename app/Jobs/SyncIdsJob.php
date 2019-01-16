@@ -1264,7 +1264,7 @@ class SyncIdsJob implements ShouldQueue
 
 
         //////////////////////////////////////////////////
-        /////// Audit Project ID updates
+        /////// Audit  ID updates
         /////
 
         // Do clean ups:
@@ -1279,6 +1279,86 @@ class SyncIdsJob implements ShouldQueue
             'look_up_reference' => 'development_key',
             //columns in the foreign table
             'lookup_field' => 'development_key',
+            'look_up_foreign_key' => 'id',
+            //condition against the lookup field - if one is needed.
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\User;
+        $associate = [];
+        $associate[] = [
+            //columns in this table
+            'null_field' => 'lead_user_id',
+            'look_up_reference' => 'user_key',
+            //columns in the foreign table
+            'lookup_field' => 'devco_key',
+            'look_up_foreign_key' => 'id',
+            //condition against the lookup field - if one is needed.
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\People;
+        $associate = [];
+        $associate[] = [
+            //columns in this table
+            'null_field' => 'person_id',
+            'look_up_reference' => 'contact_person_key',
+            //columns in the foreign table
+            'lookup_field' => 'person_key',
+            'look_up_foreign_key' => 'id',
+            //condition against the lookup field - if one is needed.
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\User;
+        $associate = [];
+        $associate[] = [
+            //columns in this table
+            'null_field' => 'entered_by_user_id',
+            'look_up_reference' => 'entered_by_user_key',
+            //columns in the foreign table
+            'lookup_field' => 'devco_key',
+            'look_up_foreign_key' => 'id',
+            //condition against the lookup field - if one is needed.
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        $lookUpModel = new \App\Models\ProjectProgram;
+        $associate = [];
+        $associate[] = [
+            //columns in this table
+            'null_field' => 'project_program_id',
+            'look_up_reference' => 'project_program_key',
+            //columns in the foreign table
+            'lookup_field' => 'project_program_key',
             'look_up_foreign_key' => 'id',
             //condition against the lookup field - if one is needed.
             'condition_operator' => '!=',
