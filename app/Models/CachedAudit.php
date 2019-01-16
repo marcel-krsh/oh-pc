@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use \App\Models\ScheduleTime;
 use Carbon;
 use Event;
 use Auth;
@@ -258,21 +259,59 @@ class CachedAudit extends Model
     public function estimated_chart_data()
     {
         // used to display the chart on the assignment page
-        $estimated = 0;
-        $needed = 0;
+        // chart data depends on the number of days
+        // backgroundColor
+        // labels
+        // data
+
+        // ----------------------------------------------------------------
+        // put this in the AuditEvent when updating the cachedaudit!
+        // calculate needed time
         if($this->estimated_time){
             $estimated_time = explode(':', $this->estimated_time);
-            //$minutes = 100 * $estimated_time[1] / 60;
-            //$estimated = $estimated_time[0].'.'.$minutes;
-            $estimated = ltrim($estimated_time[0], '0').'.'.$estimated_time[1]; // not accurate, but it will display correctly
+            $estimated_time_in_minutes = $estimated_time[0]*60 + $estimated_time[1];
         }
+        $time_scheduled = 0;
+        foreach($this->days as $day){
+            $time_scheduled = $time_scheduled + ScheduleTime::where('audit_id','=',$this->audit_id)->where('day_id','=',$day->id)->sum('span') * 15;
+        }
+
+        $needed_time_in_hours = floor(($estimated_time_in_minutes - $time_scheduled) / 60);
+        $needed_time_in_minutes = ($estimated_time_in_minutes - $time_scheduled) % 60;
+        
+        $needed_time = $needed_time_in_hours.':'.$needed_time_in_minutes.':00';
+        if($needed_time != $this->estimated_time_needed){
+            // update the cachedaudit record with the new needed time
+            $this->update(['estimated_time_needed' => $needed_time]);
+            $this->fresh();
+        }
+        // ----------------------------------------------------------------
+
+
+        $needed = 0;
         if($this->estimated_time_needed){
             $estimated_time_needed = explode(':', $this->estimated_time_needed);
             //$minutes = 100 * $estimated_time_needed[1] / 60;
             $needed = ltrim($estimated_time_needed[0], '0').'.'.$estimated_time_needed[1];
         }
 
-        return '['.$needed.','.$estimated.']';
+        $output['data'] = '['.$needed;
+        $output['labels'] = '[\'Needed\'';
+        $output['backgroundColor'] = '[chartColors.needed';
+
+        foreach($this->days as $day){
+            $output['backgroundColor'] = $output['backgroundColor'].',chartColors.estimated';
+            $output['labels'] = $output['labels'].',"'.formatDate($day->date, 'F d, Y').'"';
+
+            $schedules_total = ScheduleTime::where('audit_id','=',$this->audit_id)->where('day_id','=',$day->id)->sum('span') * 15 / 60;
+            $output['data'] = $output['data'].','.$schedules_total;
+        }
+
+        $output['data'] = $output['data'].']';
+        $output['labels'] = $output['labels'].']';
+        $output['backgroundColor'] = $output['backgroundColor'].']';
+
+        return $output;
     }
 
     public function getLeadJsonAttribute($value)
