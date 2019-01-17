@@ -238,7 +238,7 @@ class ComplianceGenerator extends Controller
         
 
         // create cached units
-        $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->with('unit','unit.address')->get();
+        $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->with('unit','unit.building.address')->get();
         
         CachedUnit::where('audit_id',$cached_audit->audit_id)->delete();
         
