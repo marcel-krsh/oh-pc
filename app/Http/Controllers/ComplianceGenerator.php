@@ -126,7 +126,7 @@ class ComplianceGenerator extends Controller
             $count_units = UnitInspection::where('building_key', '=', $building->building_key)->count();
             $finding_total = $building->nlt_count + $building->lt_count + $building->file_count;
             $building_amenities = AmenityInspection::where('building_id',$building->id)->with('amenity')->get();
-            dd($building_amenities);
+            dd($building_amenities,$building);
             //build amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
             //
