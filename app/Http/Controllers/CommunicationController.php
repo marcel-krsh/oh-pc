@@ -47,6 +47,7 @@ class CommunicationController extends Controller
      */
     public function showTabFromProjectId(Project $project)
     {
+        dd($project);
         //Search (in session)
         if (Session::has('communications-search') && Session::get('communications-search') != '') {
             $search = Session::get('communications-search');
