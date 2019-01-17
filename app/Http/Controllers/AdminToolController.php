@@ -255,11 +255,11 @@ class AdminToolController extends Controller
         if (Session::has('users-search') && Session::get('users-search') != '') {
             $search =   Session::get('users-search');
             $users  =    User::join('people', 'users.person_id', '=', 'people.id')->
-                                rightJoin('users_roles','users.id','=','users_roles.user_id')->
-                                rightJoin('roles','users_roles.role_id','=','roles.id')->
-                                rightJoin('organizations','users.organization_id','organizations.id')->
-                                rightJoin('phone_numbers','organizations.default_phone_number_id','phone_numbers.id')->
-                                rightJoin('addresses','organizations.default_address_id','addresses.id')->
+                                leftJoin('users_roles','users.id','=','users_roles.user_id')->
+                                leftJoin('roles','users_roles.role_id','=','roles.id')->
+                                leftJoin('organizations','users.organization_id','organizations.id')->
+                                leftJoin('phone_numbers','organizations.default_phone_number_id','phone_numbers.id')->
+                                leftJoin('addresses','organizations.default_address_id','addresses.id')->
                                 select('users.*','line_1','line_2','city','state','zip','organization_name','role_name','area_code','phone_number','extension','last_name','first_name')->
                                 where('first_name','LIKE','%'.$search.'%')->
                                 orWhere('last_name','LIKE','%'.$search.'%')->
@@ -269,11 +269,11 @@ class AdminToolController extends Controller
         } else {
             $users  =    User::
                             join('people', 'users.person_id', '=', 'people.id')->
-                            rightJoin('users_roles','users.id','=','users_roles.user_id')->
-                            rightJoin('roles','users_roles.role_id','=','roles.id')->
-                            rightJoin('organizations','users.organization_id','organizations.id')->
-                            rightJoin('addresses','organizations.default_address_id','addresses.id')->
-                            rightJoin('phone_numbers','organizations.default_phone_number_id','phone_numbers.id')->
+                            leftJoin('users_roles','users.id','=','users_roles.user_id')->
+                            leftJoin('roles','users_roles.role_id','=','roles.id')->
+                            leftJoin('organizations','users.organization_id','organizations.id')->
+                            leftJoin('addresses','organizations.default_address_id','addresses.id')->
+                            leftJoin('phone_numbers','organizations.default_phone_number_id','phone_numbers.id')->
                             select('users.*','line_1','line_2','city','state','zip','organization_name','role_name','area_code','phone_number','extension','last_name','first_name')->
                             orderBy('last_name', 'asc')->
                             paginate(25);
