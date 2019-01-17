@@ -1,4 +1,5 @@
 @if($user)
+@php dd($user,$user->person,$user->roles,$roles); @endphp
 <div class="modal-user-roles">
     <div class="">
 	    <div uk-grid> 
