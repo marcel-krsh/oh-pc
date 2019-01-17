@@ -122,7 +122,7 @@ class ComplianceGenerator extends Controller
         // 
         CachedBuilding::where('audit_id',$cached_audit->audit_id)->delete();
         foreach ($buildings as $building) {
-            dd($building->building);
+            //dd($building->building);
             $count_units = UnitInspection::where('building_key', '=', $building->building_key)->count();
             $finding_total = $building->nlt_count + $building->lt_count + $building->file_count;
             $building_amenities = AmenityInspection::where('building_id',$building->id)->get();
@@ -227,7 +227,7 @@ class ComplianceGenerator extends Controller
         
 
         // create cached units
-        $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->get();
+        $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->with('unit','unit.address')->get();
         
         CachedUnit::where('audit_id',$cached_audit->audit_id)->delete();
         
