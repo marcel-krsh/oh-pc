@@ -99,7 +99,7 @@
 								<h3 style="margin-top:5px;text-align: left;"> {{formatDate($day->date, 'l F d, Y')}} <small><i class="a-trash-4 use-hand-cursor" onclick="deleteDay({{$day->id}});"></i></small></h3>
 							</div>
 							@foreach($auditors_key as $auditor_id)
-							<div class="divTableCell isLead>
+							<div class="divTableCell isLead">
 								@if($auditor_id == $project->selected_audit()->lead) <i class="a-star-3 corner"></i> @endif
 								<i class="a-circle"></i>
 							</div>
@@ -177,7 +177,7 @@
 	}
 	.divTableRow .divTableCell h3 i {
 		font-size: 14px;
-		margin-top: -5px;
+		margin-top: 5px;
 		float: right;
 	}
 	.divTableRow:first-child .divTableCell {

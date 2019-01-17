@@ -398,16 +398,22 @@ class AuditController extends Controller
                 $auditors = $project->selected_audit()->auditors;
                 $is_lead_an_auditor = 0;
                 $auditors_key = array(); // used to store in which order the auditors will be displayed
-                $auditors_key[] = $project->selected_audit()->lead_auditor->id;
+                if($project->selected_audit()->lead_auditor){
+                    $auditors_key[] = $project->selected_audit()->lead_auditor->id;
+                }
 
                 foreach($auditors as $auditor){
-                    if($project->selected_audit()->lead_auditor->id == $auditor->user_id){
-                        $is_lead_an_auditor = 1;
+                    if($project->selected_audit()->lead_auditor){
+                        if($project->selected_audit()->lead_auditor->id == $auditor->user_id){
+                            $is_lead_an_auditor = 1;
+                        }else{
+                            $auditors_key[] = $auditor->user_id;
+                        }
                     }else{
                         $auditors_key[] = $auditor->user_id;
                     }
                 }
-                if($is_lead_an_auditor == 0){
+                if($is_lead_an_auditor == 0 && $project->selected_audit()->lead_auditor){
                     // add to audit_auditors
                     $new_auditor = new AuditAuditor([
                         'user_id' => $project->selected_audit()->lead_auditor->id,
@@ -567,7 +573,7 @@ class AuditController extends Controller
         $hours = (int) $forminputs['estimated_hours'];
         $minutes = (int) $forminputs['estimated_minutes'];
 
-        $audit = CachedAudit::where('id','=',$id)->where('lead','=',Auth::user()->id)->first();
+        $audit = CachedAudit::where('audit_id','=',$id)->where('lead','=',Auth::user()->id)->first();
 
         $new_estimate = $hours.":".$minutes.":00";
 
@@ -583,7 +589,7 @@ class AuditController extends Controller
 
             return ['status'=>1, 'hours'=> $hours.":".$minutes, 'needed'=>$needed];
         }else{
-            return ['status'=>0, 'message'=>'Sorry, this audit reference cannot be found.'];
+            return ['status'=>0, 'message'=>'Sorry, this audit reference cannot be found or no lead has been set yet.'];
         }
 
         
