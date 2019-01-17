@@ -18,13 +18,13 @@
 					<h4>Select recipients</h4>
 					<div class="communication-selector">
 			            <ul class="uk-list document-menu">
-			            	<li><strong>OHFA STAFF</strong></li>
+			            	<li class="ohfa"><strong>OHFA STAFF</strong></li>
                             <hr class="dashed-hr uk-margin-bottom">
                             @foreach ($recipients_from_hfa as $recipient_from_hfa)
-                            <li>
+                            <li class="ohfa {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
                                 <input name="recipients[]" id="recipient-id-{{ $recipient_from_hfa->id }}" value="{{ $recipient_from_hfa->id }}" type="checkbox" class="uk-checkbox">
                                 <label for="recipient-id-{{ $recipient_from_hfa->id }}">
-                                    {{ $recipient_from_hfa->first_name }} {{ $recipient_from_hfa->last_name }} (HFA)
+                                    {{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }}
                                 </label>
                             </li>
                             @endforeach
@@ -32,15 +32,15 @@
                             @php $currentOrg = ''; @endphp
                             @foreach ($recipients as $recipient)
                                 @if($currentOrg != $recipient->organization_name)
-                                <li><strong>$recipient->organization_name</strong></li>
+                                <li class="{{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}}"><strong>{{$recipient->organization_name}}</strong></li>
                                 <hr class="dashed-hr uk-margin-bottom">
                                 @php $currentOrg = $recipient->organization_name; @endphp
                                 @endIf
 
-                            <li>
+                            <li class="{{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
                                 <input name="recipients[]" id="recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox">
                                 <label for="recipient-id-{{ $recipient->id }}">
-                                    {{ $recipient->first_name }} {{ $recipient->last_name }}
+                                    {{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
                                 </label>
                             </li>
                             @endforeach
