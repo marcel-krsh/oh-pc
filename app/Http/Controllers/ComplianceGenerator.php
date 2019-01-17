@@ -23,6 +23,8 @@ use App\Models\CachedUnit;
 use App\Models\AuditAuditor;
 use Auth;
 
+use App\Models\CachedBuilding;
+
 class ComplianceGenerator extends Controller
 {
     /**
