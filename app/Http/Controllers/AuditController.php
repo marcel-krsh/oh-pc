@@ -471,7 +471,7 @@ class AuditController extends Controller
                     "project" => [
                         'id' => $project->id,
                         'ref' => $project->project_number,
-                        'audit_id' => $project->selected_audit()->audit_id
+                        'audit_id' => $project->selected_audit()->id
                     ],
                     "summary" => [
                         'required_unit_selected' => 0,
