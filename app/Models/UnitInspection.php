@@ -15,6 +15,11 @@ class UnitInspection extends Model
         return $this->hasMany(\App\Models\UnitAmenity::class, 'unit_id', 'unit_id');
     }
 
+    public function unit()
+    {
+        return $this->hasOne(\App\Models\Unit::class, 'id', 'unit_id');
+    }
+
     //
     protected $guarded = ['id'];
 }

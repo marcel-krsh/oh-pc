@@ -159,10 +159,10 @@ class ComplianceGenerator extends Controller
                 'finding_nlt_completed' => 0,
                 'finding_lt_total' => $building->lt_count,
                 'finding_lt_completed' => 0,
-                'address' => $cached_audit->address,
-                'city' => $cached_audit->city,
-                'state' => $cached_audit->state,
-                'zip' => $cached_audit->zip,
+                'address' => $building->address->line_1,
+                'city' => $building->address->city,
+                'state' => $building->address->state,
+                'zip' => $building->address->zip,
                 'auditors_json' => json_encode($auditors_array),
                 'amenities_json' => $baJson
             ]);
@@ -202,11 +202,11 @@ class ComplianceGenerator extends Controller
                         'finding_file_status' => '',
                         'finding_nlt_status' => '',
                         'finding_lt_status' => '',
-                        'finding_file_total' => $building->file_count,
+                        'finding_file_total' => 0,
                         'finding_file_completed' => 0,
-                        'finding_nlt_total' => $building->nlt_count,
+                        'finding_nlt_total' => 0,
                         'finding_nlt_completed' => 0,
-                        'finding_lt_total' => $building->lt_count,
+                        'finding_lt_total' => 0,
                         'finding_lt_completed' => 0,
                         'address' => $cached_audit->address,
                         'city' => $cached_audit->city,
@@ -226,7 +226,7 @@ class ComplianceGenerator extends Controller
         $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->get();
         
         CachedUnit::where('audit_id',$cached_audit->audit_id)->delete();
-        $uaJson = '[';
+        
         foreach ($units as $unit) {
             // get the unit type (bedroom type)
             //
@@ -235,7 +235,7 @@ class ComplianceGenerator extends Controller
 
             //Unit amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
-            $uaJson = '['.
+            $uaJson = '[';
             forEach($building_amenities as $ua){
                 if($ua->amenity->inspectable){
                     $uaJson .= '{"id": "'.$ua->amenity_id.'", "qty": "0", "type": "'.addslashes($ua->amenity->amenity_description).'","status":"","common_area":"'.$ua->common_area.'","project":"'.$ua->project.'","building_system":"'.$ua->building_system.'","building_exterior":"'.$ua->building_exterior.'","unit":"'.$ua->unit.'","file":"'.$ua->file.'"},';
@@ -272,10 +272,10 @@ class ComplianceGenerator extends Controller
                 'finding_lt_completed' => '0',
                 'finding_sd_completed' => '0',
               //  'followup_date' => '',
-                'address' => '',
-                'city' => '',
-                'state' => '',
-                'zip' => '',
+                'address' => $unit->unit->building->address->line_1,
+                'city' => $unit->unit->building->address->city,
+                'state' => $unit->unit->building->address->state,
+                'zip' => $unit->unit->building->address->zip,
                 'auditors_json' => null,
                 'amenities_json' => $uaJson,
             ]);
