@@ -263,11 +263,13 @@ class AdminToolController extends Controller
                             ->orderBy('last_name', 'asc')
                             ->paginate(25);
         } else {
-            $users  =    User::with(['roles','person','organization_details'])
-                            ->join('people', 'users.person_id', '=', 'this_person_id')
-                            ->select('people.id as this_person_id','people.last_name','people.first_name')
-                            ->orderBy('last_name', 'asc')
-                            ->paginate(25);
+            $users  =    User::
+                            with(['organization_details'])->
+                            join('people', 'users.person_id', '=', 'people.id')->
+                            join('roles','users.id','=','roles.user_id')->
+                            select('people.id as this_person_id','people.last_name','people.first_name')->
+                            orderBy('last_name', 'asc')->
+                            paginate(25);
         }
         dd($users);
         
