@@ -14,7 +14,7 @@
 			</div>
             <hr class="uk-width-1-1 dashed-hr uk-margin-large-bottom">
 			<div uk-grid class="uk-grid-collapse">
-                <div class="uk-width-1-6 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="user"></i></div> &nbsp;FROM:</div>
+                <div class="uk-width-1-6 " style="padding:18px;"><div style="width:25px; display: inline-block;"><i uk-icon="user"></i></div> &nbsp;FROM:</div>
                 <div class="uk-width-5-6 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{Auth::user()->full_name()}}</div>
                 <div class="uk-width-1-6 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
                 <div class="uk-width-5-6 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
