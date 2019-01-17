@@ -933,7 +933,7 @@ class AdminToolController extends Controller
                 ]);
                 $new_role->save();
             }
-        }
+        
      
         return 1;
     }
