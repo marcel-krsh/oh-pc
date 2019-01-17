@@ -250,10 +250,8 @@
                 	</div>
 		        </div> 
                 @endif
-			</div>
-
-            <div uk-grid>
-                <div class="uk-width-1-1">
+			
+                <div class="uk-width-2-3">
                     <h4>Message subject</h4>
                     <fieldset class="uk-fieldset">
                         <div uk-grid class="uk-grid-collapse">
@@ -263,10 +261,20 @@
                         </div>
                     </fieldset>
                 </div>
+                <div class="uk-width-1-3">
+                <div id="applicant-info-update">
+                    <div uk-grid class="uk-margin">
+                        <div class="uk-width-1-3 uk-push-1-3">
+                            <a class="uk-button uk-button-primary blue-button uk-width-1-1" onclick="dynamicModalClose();"> <span  uk-icon="close" class="uk-margin-left"></span> CANCEL</a>
+                        </div>
+                        <div class="uk-width-1-3  uk-push-1-3">
+                            <a class="uk-button uk-button-primary blue-button uk-width-1-1" onclick="submitNewCommunication()"> <span uk-icon="mail" class="uk-margin-left"></span> SEND &nbsp;</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-			<div uk-grid>
-				<div class="uk-width-1-1">
+            
+				<div class="uk-width-2-3">
                     <h4>Message body</h4>
 					<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
 						<div uk-grid class="uk-grid-collapse">
@@ -278,21 +286,10 @@
 				</div>
 			</div>
 		</div> 
-		<hr>
-		<div uk-grid>
-			<div class="uk-width-1-1">
-				<div id="applicant-info-update">
-					<div uk-grid class="uk-margin">
-						<div class="uk-width-1-3 uk-push-1-3">
-							<a class="uk-button uk-button-primary blue-button uk-width-1-1" onclick="dynamicModalClose();"> <span  uk-icon="close" class="uk-margin-left"></span> CANCEL</a>
-						</div>
-						<div class="uk-width-1-3  uk-push-1-3">
-							<a class="uk-button uk-button-primary blue-button uk-width-1-1" onclick="submitNewCommunication()"> <span uk-icon="mail" class="uk-margin-left"></span> SEND &nbsp;</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+		
+		
+			
+		
 	</form>
 	<script type="text/javascript">
 	function submitNewCommunication() {
