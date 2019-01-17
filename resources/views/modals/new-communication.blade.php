@@ -12,7 +12,7 @@
                     @endif
 				</div>
 			</div>
-            <hr class="uk-width-1-1 dashed-hr uk-margin-large-bottom">
+            <hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
 			<div uk-grid class="uk-grid-collapse">
                 <div class="uk-width-1-6 " style="padding:18px;"><div style="width:25px; display: inline-block;"><i uk-icon="user"></i></div> &nbsp;FROM:</div>
                 <div class="uk-width-5-6 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{Auth::user()->full_name()}}</div>
@@ -47,7 +47,7 @@
                         </div>
                     </fieldset>
                 </div>
-                <hr class="dashed-hr uk-width-1-1 uk-margin-large-bottom">
+                <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top">
                 <div class="uk-width-1-3">&nbsp;</div>
                 <div class="uk-width-1-3"><a class="uk-width-5-6 uk-button uk-align-right "><i class="a-circle-cross"></i> CANCEL</a></div>
                 <div class="uk-width-1-3"><a class="uk-width-5-6 uk-align-right uk-button uk-button-success"><i class="a-paper-plane"></i> SEND</a></div>
