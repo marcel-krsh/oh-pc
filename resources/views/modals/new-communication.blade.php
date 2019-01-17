@@ -46,6 +46,9 @@
                             @endforeach
                         </ul>
                     </div>
+                    <div class="uk-form-row">
+                        <input type="text" class="uk-input uk-width-1-1" placeholder="Filter Recipients">
+                    </div>
 				</div>
                 @if($project)
 				<div class="uk-width-1-3@m uk-width-1-1@s">
@@ -53,10 +56,10 @@
 					<div class="communication-selector">
 			            <ul class="uk-list document-menu" id="existing-documents">
                             @foreach ($documents as $document)
-                            <li>
+                            <li class="uk-margin-large-bottom">
                                 <input name="documents[]" id="document-id-{{ $document->id }}" value="{{ $document->id }}" type="checkbox"  class="uk-checkbox">
                                 <label for="document-id-{{ $document->id }}">
-                                    {{ $document->filename }}
+                                    {{ $document->document_class }} {{ $document->document_description }}
                                 </label>
                                 <br />
                                 <ul class="document-category-menu">
@@ -70,7 +73,11 @@
                             @endforeach
                         </ul>
                     </div>
+                    <div class="uk-form-row">
+                        <input type="text" class="uk-input uk-width-1-1" placeholder="Filter Documents">
+                    </div>
 				</div>
+
 				<div class="uk-width-1-3@m uk-width-1-1@s">
 					<h4>Upload new documents</h4>
 					<div class="communication-selector" style="height: 150px;">
@@ -85,6 +92,9 @@
 	                        @endforeach
                         </ul>
 					</div>
+                    <div class="uk-form-row">
+                        <input class="uk-input uk-width-1-1" type="text" name="notes" placeholder="Enter a brief note about this document">
+                    </div>
 					<div class="uk-form-row" id="list-item-upload-box">
                         <div class="js-upload uk-placeholder uk-text-center">
                             <span class="a-higher"></span>
