@@ -24,6 +24,7 @@ use App\Models\GuideProgress;
 use App\Models\ScheduleDay;
 use App\Models\ScheduleTime;
 use App\Models\AuditAuditor;
+use App\Models\Availability;
 use Auth;
 use Session;
 use App\LogConverter;
@@ -426,52 +427,62 @@ class AuditController extends Controller
 
                 $chart_data = $project->selected_audit()->estimated_chart_data(); 
 
+
+                //foreach auditor and for each day, fetch calendar combining availability and schedules
+                $daily_schedules = array();
+                foreach($project->selected_audit()->days as $day){
+                    $date = Carbon\Carbon::createFromFormat('Y-m-d H:i:s' , $day->date);
+                    foreach($auditors_key as $auditor_id){
+                        $daily_schedules[$day->id][] = $this->getAuditorDailyCalendar($date, $auditor_id);
+                    }
+                }
+
                 // list all the audits that have any of the auditors assigned
                 // foreach day
-                $potential_conflict_audits_ids = array();
-                foreach($project->selected_audit()->days as $day){
-                    $potential_conflict_audits = ScheduleTime::select('audit_id')->whereIn('auditor_id', $auditors_key)->where('day_id','=',$day->id)->groupBy('audit_id')->pluck('audit_id')->toArray();
+                // $potential_conflict_audits_ids = array();
+                // foreach($project->selected_audit()->days as $day){
+                //     $potential_conflict_audits = ScheduleTime::select('audit_id')->whereIn('auditor_id', $auditors_key)->where('day_id','=',$day->id)->groupBy('audit_id')->pluck('audit_id')->toArray();
 
-                    $potential_conflict_audits_ids = array_unique(array_merge($potential_conflict_audits_ids,$potential_conflict_audits), SORT_REGULAR);
-                }
+                //     $potential_conflict_audits_ids = array_unique(array_merge($potential_conflict_audits_ids,$potential_conflict_audits), SORT_REGULAR);
+                // }              
 
                 // for each audit, and using the auditors key as the order, check if auditor is scheduled, not scheduled or not at all involved with the audit
                 // also get the audits information for display (date, project name, etc)
-                $potential_conflict_audits = CachedAudit::whereIn('audit_id', $potential_conflict_audits_ids)->orderBy('project_ref','asc')->get();
+                // $potential_conflict_audits = CachedAudit::whereIn('audit_id', $potential_conflict_audits_ids)->orderBy('project_ref','asc')->get();
                 
-                $daily_schedules = array();
-                foreach($project->selected_audit()->days as $day){
-                    // set current audit $project->selected_audit()
-                    foreach($auditors_key as $auditor_id){
-                        // auditors are in the audit for sure
-                        // check if they are scheduled on not
-                        if(ScheduleTime::where('audit_id','=',$project->selected_audit()->audit_id)->where('auditor_id','=',$auditor_id)->where('day_id','=',$day->id)->count()){
-                            $daily_schedules[$day->id][$project->selected_audit()->audit_id]['auditors'][$auditor_id] = 'scheduled'; // scheduled
-                        }else{
-                            $daily_schedules[$day->id][$project->selected_audit()->audit_id]['auditors'][$auditor_id] = 'notscheduled'; // not scheduled
-                        }
-                        $daily_schedules[$day->id][$project->selected_audit()->audit_id]['audit'] = $project->selected_audit();
-                    }
+                // $daily_schedules = array();
+                // foreach($project->selected_audit()->days as $day){
+                //     // set current audit $project->selected_audit()
+                //     foreach($auditors_key as $auditor_id){
+                //         // auditors are in the audit for sure
+                //         // check if they are scheduled on not
+                //         if(ScheduleTime::where('audit_id','=',$project->selected_audit()->audit_id)->where('auditor_id','=',$auditor_id)->where('day_id','=',$day->id)->count()){
+                //             $daily_schedules[$day->id][$project->selected_audit()->audit_id]['auditors'][$auditor_id] = 'scheduled'; // scheduled
+                //         }else{
+                //             $daily_schedules[$day->id][$project->selected_audit()->audit_id]['auditors'][$auditor_id] = 'notscheduled'; // not scheduled
+                //         }
+                //         $daily_schedules[$day->id][$project->selected_audit()->audit_id]['audit'] = $project->selected_audit();
+                //     }
 
-                    // set all other audits
-                    foreach($potential_conflict_audits as $potential_conflict_audit){
-                        if($potential_conflict_audit->audit_id != $project->selected_audit()->audit_id){
-                            foreach($auditors_key as $auditor_id){
-                                // is auditor in the audit?
-                                if(AuditAuditor::where('audit_id','=',$potential_conflict_audit->audit_id)->where('user_id','=',$auditor_id)->count()){
-                                    if(ScheduleTime::where('audit_id','=',$potential_conflict_audit->audit_id)->where('auditor_id','=',$auditor_id)->where('day_id','=',$day->id)->count()){
-                                        $daily_schedules[$day->id][$potential_conflict_audit->audit_id]['auditors'][$auditor_id] = 'scheduled'; // scheduled
-                                    }else{
-                                        $daily_schedules[$day->id][$potential_conflict_audit->audit_id]['auditors'][$auditor_id] = 'notscheduled'; // not scheduled
-                                    }
-                                }else{
-                                    $daily_schedules[$day->id][$potential_conflict_audit->audit_id]['auditors'][$auditor_id] = 'notinaudit';
-                                }
-                                $daily_schedules[$day->id][$potential_conflict_audit->audit_id]['audit'] = $potential_conflict_audit;
-                            }
-                        }
-                    }
-                }
+                //     // set all other audits
+                //     foreach($potential_conflict_audits as $potential_conflict_audit){
+                //         if($potential_conflict_audit->audit_id != $project->selected_audit()->audit_id){
+                //             foreach($auditors_key as $auditor_id){
+                //                 // is auditor in the audit?
+                //                 if(AuditAuditor::where('audit_id','=',$potential_conflict_audit->audit_id)->where('user_id','=',$auditor_id)->count()){
+                //                     if(ScheduleTime::where('audit_id','=',$potential_conflict_audit->audit_id)->where('auditor_id','=',$auditor_id)->where('day_id','=',$day->id)->count()){
+                //                         $daily_schedules[$day->id][$potential_conflict_audit->audit_id]['auditors'][$auditor_id] = 'scheduled'; // scheduled
+                //                     }else{
+                //                         $daily_schedules[$day->id][$potential_conflict_audit->audit_id]['auditors'][$auditor_id] = 'notscheduled'; // not scheduled
+                //                     }
+                //                 }else{
+                //                     $daily_schedules[$day->id][$potential_conflict_audit->audit_id]['auditors'][$auditor_id] = 'notinaudit';
+                //                 }
+                //                 $daily_schedules[$day->id][$potential_conflict_audit->audit_id]['audit'] = $potential_conflict_audit;
+                //             }
+                //         }
+                //     }
+                // }
 
                 $data = collect([
                     "project" => [
@@ -531,6 +542,76 @@ class AuditController extends Controller
         }
 
         return view('projects.partials.details-'.$type, compact('data', 'project'));
+    }
+
+    public function getAuditorDailyCalendar($date, $auditor_id) {
+
+        $events_array = array();
+        $availabilities = Availability::where('user_id', '=', $auditor_id)
+                            ->where('date', '=', $date->format('Y-m-d'))
+                            ->orderBy('start_slot', 'asc')
+                            ->get();
+
+        foreach($availabilities as $a){
+            $events_array[] = [
+                    "id" => $a->id,
+                    "status" => "",
+                    "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a->start_time)->format('h:i A')),
+                    "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a->end_time)->format('h:i A')),
+                    "start" => $a->start_slot,
+                    "span" =>  $a->span,
+                    "icon" => "a-circle-plus",
+                    "lead" => 0,
+                    "class" => "available no-border-top no-border-bottom",
+                    "modal_type" => ""
+                ];
+        }
+            
+        $header[] = $date->copy()->format('m/d');
+
+        if(count($events_array)){
+            
+            // figure out the before and after areas on the schedule
+            $start_slot = 1;
+            $end_slot = 60;
+            foreach($events_array as $e){
+                if($e['start'] > $start_slot) $start_slot = $e['start'];
+                if($e['start'] + $e['span'] < $end_slot) $end_slot = $e['start'] + $e['span'];
+            }
+
+            $before_time_start = 1;
+            $before_time_span = $start_slot - 1;
+            $after_time_start = $end_slot;
+            $after_time_span = 61-$end_slot;
+            $no_availability = 0;
+        }else{
+            $events_array = [];
+            $before_time_start = 1;
+            $before_time_span = 0;
+            $after_time_start = 60;
+            $after_time_span = 1;
+            $no_availability = 1;
+        }
+
+        $days = [ 
+            "date" => $date->copy()->format('m/d'), 
+            "date_formatted" => $date->copy()->format('F j, Y'), 
+            "date_formatted_name" => strtolower($date->copy()->englishDayOfWeek), 
+            "no_availability" => $no_availability,
+            "before_time_start" => $before_time_start,
+            "before_time_span" => $before_time_span,
+            "after_time_start" => $after_time_start,
+            "after_time_span" => $after_time_span,
+            "events" => $events_array
+        ];
+
+
+        $calendar = [
+            "header" => $header,
+            "content" => $days
+        ];
+
+         return $calendar;
     }
 
     public function addADay(Request $request, $id){
@@ -2823,4 +2904,5 @@ class AuditController extends Controller
 
         return 1;
     }
+
 }
