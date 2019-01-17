@@ -241,7 +241,7 @@ class ComplianceGenerator extends Controller
             // get the unit type (bedroom type)
             //
             //
-            $unit_amenities = AmenityInspection::where('unit_id',$unit->id)->with('amenity')->get();
+            $unit_amenities = AmenityInspection::where('unit_id',$unit->unit_id)->with('amenity')->get();
 
             //Unit amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
