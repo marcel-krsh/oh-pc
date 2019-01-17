@@ -247,12 +247,13 @@ class ComplianceGenerator extends Controller
             //
             //
             $unit_amenities = AmenityInspection::where('unit_id',$unit->unit_id)->with('amenity')->get();
-
+            $uaCount = 0;
             //Unit amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
             $uaJson = '[';
-            forEach($building_amenities as $ua){
+            forEach($unit_amenities as $ua){
                 if($ua->amenity->inspectable){
+                    $uaCount++;
                     if($jsonRun == 1){
                         $uaJson .= ' , ';
                         //insert comma between groups
@@ -276,8 +277,8 @@ class ComplianceGenerator extends Controller
                 'building_id' => $unit->building_id,
                 'building_key' => $unit->building_key,
                 'status' => null,
-                'type' => null,
-                'type_total' => 0,
+                'type' => 'amenity',
+                'type_total' => $uaCount,
                 'type_text' => 'AMENITY',
                 'type_text_plural' => 'AMENITIES',
                 'program_total' => null,
