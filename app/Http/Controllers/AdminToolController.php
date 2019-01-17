@@ -261,7 +261,7 @@ class AdminToolController extends Controller
                                     ->orderBy('persons.last_name', 'asc')
                                     ->paginate(40);
         } else {
-            $users = User::with(['roles','person','organization_details'])->orderBy('name', 'asc')->paginate(40);
+            $users = User::with(['roles','person','organization_details'])->orderBy('persons.last_name', 'asc')->paginate(40);
         }
         
         return view('admin_tabs.users', compact('users'));
