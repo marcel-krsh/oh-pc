@@ -1,7 +1,6 @@
-@php dd($selected_audit); @endphp
 <div id="project-details-main" class="uk-overflow-auto" uk-grid>
 	<div class="uk-width-1-1 uk-padding-remove">
-		<div id="project-details-main-row" class="{{$selected_audit->cached_audit->status}}">
+		<div id="project-details-main-row" class="{{$selected_audit->status}}">
 			<div class="uk-grid-match" uk-grid>
 				<div class="uk-width-1-4 uk-padding-remove">
 					<div uk-grid>

@@ -344,7 +344,7 @@ class AuditController extends Controller
     public function getProjectDetails($id = null)
     {
         // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
-         
+          
         $project = Project::where('id','=',$id)->first();
 
         // which audit is selected (latest if no selection)
@@ -471,7 +471,7 @@ class AuditController extends Controller
                     "project" => [
                         'id' => $project->id,
                         'ref' => $project->project_number,
-                        'audit_id' => $project->selected_audit()->id
+                        'audit_id' => $project->selected_audit()->audit_id
                     ],
                     "summary" => [
                         'required_unit_selected' => 0,
@@ -505,7 +505,6 @@ class AuditController extends Controller
                         ]
                     ]
                 ]);
-
 
                 return view('projects.partials.details-assignment', compact('data', 'project', 'chart_data', 'auditors_key', 'daily_schedules'));
 

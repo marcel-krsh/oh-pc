@@ -138,10 +138,9 @@ class Project extends Model
     {
         if (Session::has('project.'.$this->id.'.selectedaudit') && Session::get('project.'.$this->id.'.selectedaudit') != '') {
             $audit = Session::get('project.'.$this->id.'.selectedaudit');
-            //Philippe - I think line 142 was causing the wrong audit id -- should be getting the actual audit not CachedAudit
-            $selected_audit = Audit::where('id', '=', $audit->id)->first();
+            $selected_audit = CachedAudit::where('id', '=', $audit->id)->first();
         }else{
-            $selected_audit = Audit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->first();
+            $selected_audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->first();
             Session::put('project.'.$this->id.'.selectedaudit', $selected_audit);
         }
 
