@@ -18,7 +18,7 @@
 					<h4>Select recipients</h4>
 					<div class="communication-selector">
 			            <ul class="uk-list document-menu">
-			            	<li class="ohfa"><strong>OHFA STAFF</strong></li>
+			            	<li class="ohfa "><strong>OHFA STAFF</strong></li>
                             <hr class="dashed-hr uk-margin-bottom">
                             @foreach ($recipients_from_hfa as $recipient_from_hfa)
                             <li class="ohfa {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient_from_hfa->organization_name)))))}} {{ strtolower($recipient_from_hfa->first_name) }} {{ strtolower($recipient_from_hfa->last_name) }}">
@@ -32,7 +32,7 @@
                             @php $currentOrg = ''; @endphp
                             @foreach ($recipients as $recipient)
                                 @if($currentOrg != $recipient->organization_name)
-                                <li class="{{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}}"><strong>{{$recipient->organization_name}}</strong></li>
+                                <li class="uk-margin-top-large {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}}"><strong>{{$recipient->organization_name}}</strong></li>
                                 <hr class="dashed-hr uk-margin-bottom">
                                 @php $currentOrg = $recipient->organization_name; @endphp
                                 @endIf
