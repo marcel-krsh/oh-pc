@@ -30,7 +30,7 @@
                     <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
                         <div uk-grid class="uk-grid-collapse">
                             <div class="uk-width-1-1">
-                                <input type="text" name="subject" class="uk-width-1-1 uk-margin-top uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications.">
+                                <input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications.">
                             </div>
                         </div>
                     </fieldset>
