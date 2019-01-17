@@ -79,6 +79,7 @@ class ComplianceGenerator extends Controller
 
         // get buildings from cached_audit
         $buildings = BuildingInspection::where('audit_id', '=', $cached_audit->audit_id)->with('building')->get();
+        dd($buildings);
 
         // get the auditors' list from audit_auditors table
         // [{"id": "1", "name": "Brian Greenwood", "color": "green", "status": "alert", "initials": "BG"}, {"id": "2", "name": "Brian Greenwood 2", "color": "blue", "status": "", "initials": "BF"}]
