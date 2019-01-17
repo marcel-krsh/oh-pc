@@ -36,8 +36,18 @@ class Organization extends Model
         return $this->hasOne(\App\Models\Phone::class, 'phone_number_key', 'default_phone_number_key');
     }
 
+    public function phone_number_formatted() : string
+    {
+        $endNumber = substr($this->phone->phone_number, 0,2). '-'.substr($this->phone->phone_number, 3,6);
+        $number = '('.$this->phone->area_code.') '.$endNumber;
+        if(!is_null($this->phone->extension) && $this->phone->extension !=''){
+            $number .= ' ext:'.$this->phone->extension;
+        }
+        return $number;
+    }
+
     /**
-     * Phone
+     * Fax
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
