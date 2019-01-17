@@ -129,14 +129,14 @@ class ComplianceGenerator extends Controller
 
             //build amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
-            $baJson = '[';
+            //$baJson = '[';
             forEach($building_amenities as $ba){
 
                 if($ba->amenity->inspectable){
                     $baJson .= '{"id": "'.$ba->amenity_id.'", "qty": "0", "type": "'.addslashes($ba->amenity->amenity_description).'","status":"","common_area":"'.$ba->common_area.'","project":"'.$ba->project.'","building_system":"'.$ba->building_system.'","building_exterior":"'.$ba->building_exterior.'","unit":"'.$ba->unit.'","file":"'.$ba->file.'"},';
                 }
             }
-            $baJson .= ']';
+            //$baJson .= ']';
             
             $cached_building = new CachedBuilding([
                 'building_name' => $building->building_name,
