@@ -53,7 +53,7 @@
                 @if($project)
 				<div class="uk-width-1-3@m uk-width-1-1@s">
 					<h4>Select exising documents</h4>
-					<div class="communication-selector">
+					<div class="communication-selector  uk-scrollable-box">
 			            <ul class="uk-list document-menu" id="existing-documents">
                             @foreach ($documents as $document)
                             <li class="uk-margin-large-bottom">
