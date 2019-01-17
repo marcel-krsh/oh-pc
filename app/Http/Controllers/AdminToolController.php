@@ -926,12 +926,10 @@ class AdminToolController extends Controller
         // delete all roles for this user first
         UserRole::where('user_id','=',$user->id)->delete();
 
-        // add the selected roles
-        if(array_key_exists('roles',$inputs)){
-            foreach($inputs['roles'] as $role){
+            if($inputs['roles'] > 0){
                 $new_role = new UserRole([
                     'user_id' => $user->id,
-                    'role_id' => $role
+                    'role_id' => $inputs['roles']
                 ]);
                 $new_role->save();
             }
