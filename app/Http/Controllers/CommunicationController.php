@@ -958,7 +958,7 @@ class CommunicationController extends Controller
         }
 
         $owners_array = collect($owners_array)->sortBy('name')->toArray();
-        $programs = Program::orderBy('program_name', 'ASC')->get();
+        
 
         if ($page>0) {
             return response()->json($data);
@@ -966,9 +966,9 @@ class CommunicationController extends Controller
             if ($project) {
                 // get latest audit
                 $audit = CachedAudit::where('project_ref', '=', $project)->orderBy('id', 'desc')->first();
-                return view('projects.partials.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'programs', 'ohfa_id', 'project', 'audit'));
+                return view('projects.partials.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project', 'audit'));
             } else {
-                return view('dashboard.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'programs', 'ohfa_id', 'project'));
+                return view('dashboard.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project'));
             }
         }
     }
