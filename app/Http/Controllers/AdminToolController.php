@@ -258,7 +258,7 @@ class AdminToolController extends Controller
                                     ->where(function ($query) use ($search) {
                                         $query->where('name', 'LIKE', '%'.$search.'%');
                                     })
-                                    ->orderBy('name', 'asc')
+                                    ->orderBy('persons.last_name', 'asc')
                                     ->paginate(40);
         } else {
             $users = User::with(['roles','person','organization_details'])->orderBy('name', 'asc')->paginate(40);
