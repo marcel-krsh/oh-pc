@@ -22,7 +22,7 @@
                             <li>
                                 <input name="recipients[]" id="recipient-id-{{ $recipient_from_hfa->id }}" value="{{ $recipient_from_hfa->id }}" type="checkbox" class="uk-checkbox">
                                 <label for="recipient-id-{{ $recipient_from_hfa->id }}">
-                                    {{ $recipient_from_hfa->name }} (HFA)
+                                    {{ $recipient_from_hfa->first_name }} {{ $recipient_from_hfa->last_name }} (HFA)
                                 </label>
                             </li>
                             @endforeach
@@ -30,7 +30,7 @@
                             <li>
                                 <input name="recipients[]" id="recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox">
                                 <label for="recipient-id-{{ $recipient->id }}">
-                                    {{ $recipient->name }}
+                                    {{ $recipient->first_name }} {{ $recipient->last_name }}
                                 </label>
                             </li>
                             @endforeach
