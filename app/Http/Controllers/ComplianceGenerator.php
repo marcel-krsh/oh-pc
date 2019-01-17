@@ -247,6 +247,7 @@ class ComplianceGenerator extends Controller
             //
             //
             $unit_amenities = AmenityInspection::where('unit_id',$unit->unit_id)->with('amenity')->get();
+            dd($unit_amenities);
             $uaCount = 0;
             //Unit amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
