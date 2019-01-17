@@ -341,7 +341,7 @@ class Audit extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function cachedAudit() : HasOne
+    public function cached_audit() : HasOne
     {
         return $this->hasOne(\App\Models\CachedAudit::class, 'id', 'audit_id');
     }

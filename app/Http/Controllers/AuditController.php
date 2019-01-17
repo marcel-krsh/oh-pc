@@ -506,7 +506,6 @@ class AuditController extends Controller
                     ]
                 ]);
 
-                dd($data);
 
                 return view('projects.partials.details-assignment', compact('data', 'project', 'chart_data', 'auditors_key', 'daily_schedules'));
 
