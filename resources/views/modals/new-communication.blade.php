@@ -32,7 +32,7 @@
                             @php $currentOrg = ''; @endphp
                             @foreach ($recipients as $recipient)
                                 @if($currentOrg != $recipient->organization_name)
-                                <li class="uk-margin-top-large {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}}"><strong>{{$recipient->organization_name}}</strong></li>
+                                <li class="uk-margin-large-top {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}}"><strong>{{$recipient->organization_name}}</strong></li>
                                 <hr class="dashed-hr uk-margin-bottom">
                                 @php $currentOrg = $recipient->organization_name; @endphp
                                 @endIf
