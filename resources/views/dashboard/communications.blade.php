@@ -48,18 +48,7 @@
                     </select>
                     
                 </div>
-                @if(Auth::user()->isFromOrganization($ohfa_id))
-                <div class="uk-width-1-1@s uk-width-1-5@m" style="vertical-align: top;">
-                    <select id="filter-by-program" class="uk-select filter-drops uk-width-1-1" onchange="filterByProgram();">
-                        <option value="all" selected="">
-                            FILTER BY PROGRAM 
-                            </option>
-                            @foreach ($programs as $program)
-                            <option value="program-{{$program->id}}"><a  class="uk-dropdown-close">{{$program->program_name}}</a></option>    
-                            @endforeach       
-                        </select>
-                </div>
-                @endif
+                
                 <div class="uk-width-1-1@s uk-width-1-5@m" style="vertical-align:top">
                     <a class="uk-button uk-button-success green-button uk-width-1-1" onclick="dynamicModalLoad('new-outbound-email-entry/')">
                         <span class="a-envelope-4"></span> 
@@ -183,20 +172,8 @@ The following div is defined in this particular tab and pushed to the main layou
         });
 
 
-@if(Auth::user()->isOhfa())
-    function filterByProgram(){
-        var myGrid = UIkit.grid($('#communication-list'), {
-            controls: '#message-filters',
-            animation: false
-        });
-        var textinput = $("#filter-by-program").val();
-
-        $('#filter-by-owner').prop('selectedIndex',0);
-
-        // filter grid items
-        //myGrid.filter(textinput);
-        filterElement(textinput, '.filter_element');
-    }  
+@if(Auth::user()->auditor_access())
+    
 @endif 
 
 function filterElement(filterVal, filter_element){
