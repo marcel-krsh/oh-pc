@@ -33,7 +33,7 @@ class Organization extends Model
      */
     public function phone() : HasOne
     {
-        return $this->hasOne(\App\Models\Phone::class, 'phone_number_key', 'default_phone_number_key');
+        return $this->hasOne(\App\Models\PhoneNumber::class, 'phone_number_key', 'default_phone_number_key');
     }
 
     public function phone_number_formatted() : string
