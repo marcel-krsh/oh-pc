@@ -707,4 +707,5 @@ class UserController extends Controller
 
         return view('auditors.partials.auditor-calendar', compact('data', 'beforeafter'));
     }
+
 }

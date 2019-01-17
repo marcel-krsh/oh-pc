@@ -2885,10 +2885,7 @@ margin-top:10px;
     display: grid;
     grid-gap: 0px;
     grid-template-columns: 45px 9fr;
-      grid-template-areas: 
-        "header header "
-        "sidebar content "
-        "footer footer";
+      grid-template-areas: "content";
   }
 .grid-schedule-availability {
   display: grid;
@@ -2932,7 +2929,7 @@ margin-top:10px;
     grid-area: content;
     display: grid;
       /*grid-template-columns: repeat(9, 1fr);*/
-      grid-template-columns: repeat(9, 2% 1fr) 2%;
+      grid-template-columns: 1fr;
       grid-auto-flow: dense;
       grid-gap: 0;
   }
@@ -2992,6 +2989,9 @@ margin-top:10px;
   .day {
       border: 2px solid #ccc;
   }
+  .grid-schedule-content .day {
+    border: 0px;
+  }
   .day-spacer div:nth-child(2n+1) {
       border-top: 2px solid #eee;
   }
@@ -3049,13 +3049,13 @@ margin-top:10px;
     justify-content: center;
   }
   .event {
-      background-color: #888;
+      background-color: #eee;
       font-size: 16px;
       align-items: center;
       display: flex;
       justify-content: center;
       border-bottom: 2px solid #fff;
-      color:#fff;
+      color:#bbb;
       cursor: pointer;
   }
 
