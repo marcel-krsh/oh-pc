@@ -192,4 +192,175 @@ class Audit extends Model
         return $checks;
     }
 
+        public function auditors() : HasMany
+    {
+        return $this->hasMany(\App\Models\AuditAuditor::class, 'audit_id', 'audit_id');
+    }
+
+    public function lead_auditor() : HasOne
+    {
+        return $this->hasOne(\App\Models\User::class, 'id', 'lead');
+    }
+
+    public function days() : HasMany
+    {
+        return $this->hasMany(\App\Models\ScheduleDay::class, 'audit_id', 'audit_id')->orderBy('date','asc');
+    }
+
+    public function progress() : HasMany{
+        return $this->hasMany(\App\Models\GuideProgress::class, 'audit_id')->orderBy('id','desc');
+    }
+
+    public function current_step()
+    {
+        if($this->has('progress')){
+            return $this->progress()->first();
+        }else{
+            return 0;
+        }
+    }
+
+    // public function checkStatus($type = null)
+    // {
+    //     return 'This is access through the audit relationship';
+    // }
+
+    public function estimated_hours() 
+    {
+        if($this->estimated_time){
+            return explode(':', $this->estimated_time)[0];
+        }else{
+            return null;
+        }
+    }
+
+    public function estimated_minutes() 
+    {
+        if($this->estimated_time){
+            return explode(':', $this->estimated_time)[1];
+        }else{
+            return null;
+        }
+    }
+
+    public function hours_still_needed() 
+    {
+        if($this->estimated_time_needed){
+            $time = explode(':', $this->estimated_time_needed);
+            return $time[0].":".$time[1];
+        }else{
+            return null;
+        }
+    }
+
+    public function estimated_chart_data()
+    {
+        // used to display the chart on the assignment page
+        // chart data depends on the number of days
+        // backgroundColor
+        // labels
+        // data
+
+        // ----------------------------------------------------------------
+        // put this in the AuditEvent when updating the cachedaudit!
+        // calculate needed time
+        if($this->estimated_time){
+            $estimated_time = explode(':', $this->estimated_time);
+            $estimated_time_in_minutes = $estimated_time[0]*60 + $estimated_time[1];
+        }else{
+            $output['data'] = '[]';
+            $output['labels'] = '[]';
+            $output['backgroundColor'] ='[]';
+            return $output;
+        }
+        $time_scheduled = 0;
+        foreach($this->days as $day){
+            $time_scheduled = $time_scheduled + ScheduleTime::where('audit_id','=',$this->audit_id)->where('day_id','=',$day->id)->sum('span') * 15;
+        }
+
+        $needed_time_in_hours = floor(($estimated_time_in_minutes - $time_scheduled) / 60);
+        $needed_time_in_minutes = ($estimated_time_in_minutes - $time_scheduled) % 60;
+        
+        $needed_time = $needed_time_in_hours.':'.$needed_time_in_minutes.':00';
+        if($needed_time != $this->estimated_time_needed){
+            // update the cachedaudit record with the new needed time
+            $this->update(['estimated_time_needed' => $needed_time]);
+            $this->fresh();
+        }
+        // ----------------------------------------------------------------
+
+
+        $needed = 0;
+        if($this->estimated_time_needed){
+            $estimated_time_needed = explode(':', $this->estimated_time_needed);
+            //$minutes = 100 * $estimated_time_needed[1] / 60;
+            $needed = ltrim($estimated_time_needed[0], '0').'.'.$estimated_time_needed[1];
+        }
+
+        $output['data'] = '['.$needed;
+        $output['labels'] = '[\'Needed\'';
+        $output['backgroundColor'] = '[chartColors.needed';
+
+        foreach($this->days as $day){
+            $output['backgroundColor'] = $output['backgroundColor'].',chartColors.estimated';
+            $output['labels'] = $output['labels'].',"'.formatDate($day->date, 'F d, Y').'"';
+
+            $schedules_total = ScheduleTime::where('audit_id','=',$this->audit_id)->where('day_id','=',$day->id)->sum('span') * 15 / 60;
+            $output['data'] = $output['data'].','.$schedules_total;
+        }
+
+        $output['data'] = $output['data'].']';
+        $output['labels'] = $output['labels'].']';
+        $output['backgroundColor'] = $output['backgroundColor'].']';
+
+        return $output;
+    }
+
+    public function getLeadJsonAttribute($value)
+    {
+        return json_decode($value);
+    }
+
+    public function getInspectionScheduleJsonAttribute($value)
+    {
+        return json_decode($value);
+    }
+
+    /**
+     * Project
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    // public function project() : HasOne
+    // {
+    //     return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
+    // }
+
+    /**
+     * audit
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function cachedAudit() : HasOne
+    {
+        return $this->hasOne(\App\Models\CachedAudit::class, 'id', 'audit_id');
+    }
+
+    // amenity_inspections table is where we store all the amenities that need to be inspected
+    public function inspection_items() : HasMany
+    {
+        return $this->hasMany(\App\Models\AmenityInspection::class, 'audit_id');
+    }
+
+    // public function total_items()
+    // {
+    //     return $this->inspection_items()->count();
+    // }
+
+    public function auditor_items()
+    {
+        // count all the amenity_inspections items belonging to the current user
+        return $this->inspection_items()->where('auditor_id','=',Auth::user()->id)->count();
+    }
+
 }
