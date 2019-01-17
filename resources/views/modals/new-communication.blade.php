@@ -12,7 +12,7 @@
                     @endif
 				</div>
 			</div>
-            <hr class="dashed-hr uk-margin-large-bottom">
+            <hr class="uk-width-1-1 dashed-hr uk-margin-large-bottom">
 			<div uk-grid>
                 <div class="uk-width-1-6 uk-padding-small"><i uk-icon="user"></i> FROM:</div>
                 <div class="uk-width-5-6 uk-padding-small" style="border-bottom:1px #111 dashed;">{{Auth::user()->full_name()}}</div>
