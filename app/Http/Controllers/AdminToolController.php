@@ -253,14 +253,21 @@ class AdminToolController extends Controller
     public function usersIndex()
     {
         if (Session::has('users-search') && Session::get('users-search') != '') {
-            $search = Session::get('users-search');
-            $users = User::select('users.*','people.last_name','people.first_name')->with(['roles','person','organization_details'])->join('people', 'users.person_id', '=', 'people.id')->where(function ($query) use ($search) {
+            $search =   Session::get('users-search');
+            $users  =    User::select('users.*','people.last_name','people.first_name')
+                            //->with(['roles','person','organization_details'])
+                            ->join('people', 'users.person_id', '=', 'people.id')
+                            ->where(function ($query) use ($search) {
                                         $query->where('name', 'LIKE', '%'.$search.'%');
                                     })
-                                    ->orderBy('last_name', 'asc')
-                                    ->paginate(40);
+                            ->orderBy('last_name', 'asc')
+                            ->paginate(25);
         } else {
-            $users = User::select('users.*','people.last_name','people.first_name')->with(['roles','person','organization_details'])->join('people', 'users.person_id', '=', 'people.id')->orderBy('last_name', 'asc')->paginate(40);
+            $users  =    User::select('users.*','people.last_name','people.first_name')
+                            //->with(['roles','person','organization_details'])
+                            ->join('people', 'users.person_id', '=', 'people.id')
+                            ->orderBy('last_name', 'asc')
+                            ->paginate(25);
         }
         
         return view('admin_tabs.users', compact('users'));
