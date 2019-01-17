@@ -14,18 +14,18 @@
 			</div>
             <hr class="uk-width-1-1 dashed-hr uk-margin-large-bottom">
 			<div uk-grid class="uk-grid-collapse">
-                <div class="uk-width-1-6 " styl="padding:12px;"><i uk-icon="user"></i> FROM:</div>
-                <div class="uk-width-5-6 " styl="padding:12px;" style="border-bottom:1px #111 dashed;">{{Auth::user()->full_name()}}</div>
-                <div class="uk-width-1-6 " styl="padding:12px;"><i uk-icon="users"></i> TO: </div>
-                <div class="uk-width-5-6 " styl="padding:12px;" id="recipients-box" style="border-bottom:1px #111 dashed;">
+                <div class="uk-width-1-6 " style="padding:12px;"><i uk-icon="user"></i> FROM:</div>
+                <div class="uk-width-5-6 " style="padding:12px;" style="border-bottom:1px #111 dashed;">{{Auth::user()->full_name()}}</div>
+                <div class="uk-width-1-6 " style="padding:12px;"><i uk-icon="users"></i> TO: </div>
+                <div class="uk-width-5-6 " style="padding:12px;" id="recipients-box" style="border-bottom:1px #111 dashed;">
                     <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: .7"></i> ADD RECIPIENT</div>
                 </div>
-                <div class="uk-width-1-6 " styl="padding:12px;"><i class="a-paperclip-2"></i></div>
-                <div class="uk-width-5-6 " styl="padding:12px;" id="attachments-box" style="border-bottom:1px #111 dashed;">
+                <div class="uk-width-1-6 " style="padding:12px;"><i class="a-paperclip-2"></i></div>
+                <div class="uk-width-5-6 " style="padding:12px;" id="attachments-box" style="border-bottom:1px #111 dashed;">
                     <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: .7"></i> ADD ATTACHMENT</div>
                 </div>
 
-                <div class="uk-width-1-6 " styl="padding:12px;">SUBJECT:</div>
+                <div class="uk-width-1-6 " style="padding:12px;">SUBJECT:</div>
                 <div class="uk-width-5-6">
                     <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
                         <div uk-grid class="uk-grid-collapse">
@@ -37,8 +37,8 @@
                 </div>
                 
 
-                 <div class="uk-width-1-6 " styl="padding:12px;">MESSAGE:</div> 
-                 <div class="uk-width-5-6 " styl="padding:12px;">
+                 <div class="uk-width-1-6 " style="padding:12px;">MESSAGE:</div> 
+                 <div class="uk-width-5-6 " style="padding:12px;">
                     <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
                         <div uk-grid class="uk-grid-collapse">
                             <div class="uk-width-1-1">
