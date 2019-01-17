@@ -1,12 +1,12 @@
 <div id="dynamic-modal-content">
 
 	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
-		@if($audit)<input type="hidden" name="audit" value="{{$audit->id}}">@endif
+		@if($project)<input type="hidden" name="project" value="{{$project->id}}">@endif
 		<div class="uk-container uk-container-center"> <!-- start form container -->
 			<div uk-grid class="uk-grid-small">
 				<div class="uk-width-1-1">
-                    @if($audit)
-					Message for Audit: <span id="current-file-id-dynamic-modal">{{$audit->id}}</span>
+                    @if($project)
+					Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}}</span>
                     @else
                     New Message
                     @endif
@@ -37,7 +37,7 @@
                         </ul>
                     </div>
 				</div>
-                @if($audit)
+                @if($project)
 				<div class="uk-width-1-3@m uk-width-1-1@s">
 					<h4>Select exising documents</h4>
 					<div class="communication-selector">
@@ -93,7 +93,7 @@
 
                         settings    = {
 
-                            url: '{{ URL::route("documents.upload", $audit->id) }}',
+                            url: '{{ URL::route("documents.upload", $project->id) }}',
                             multiple: true,
                             allow : '*.(jpg|gif|png|pdf|doc|docx|xls|xlsx)',
 
@@ -166,7 +166,7 @@
 
                                 // Submit form and make sure it responds back with 1 - otherwise it will output the response to a browser alert box.
                                 UIkit.modal.prompt("I uploaded and categorized the document(s) accordingly. Please add your comment for the history record.",'',{stack: true},function(val){
-                                    $.post('{{ URL::route("documents.uploadComment", $audit->id) }}', {
+                                    $.post('{{ URL::route("documents.uploadComment", $project->id) }}', {
                                             'postvars' : documentids,
                                             'comment' : val,
                                             '_token' : '{{ csrf_token() }}'
@@ -182,7 +182,7 @@
                                 //update existing doc list
                                 // get document filename and categories
                                 var document_info_array = [];
-                                $.post('{{ URL::route("documents.documentInfo", $audit->id) }}', {
+                                $.post('{{ URL::route("documents.documentInfo", $project->id) }}', {
                                             'postvars' : documentids,
                                             'categories' : categories,
                                             '_token' : '{{ csrf_token() }}'
@@ -302,8 +302,8 @@
                 }
             } );
 
-            @if($audit)
-            var id = {{$audit->id}};
+            @if($project)
+            var id = {{$project->id}};
             //loadParcelSubTab('communications',id);
             @else
             //loadDashBoardSubTab('dashboard','communications');
