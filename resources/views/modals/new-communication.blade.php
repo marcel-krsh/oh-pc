@@ -6,7 +6,7 @@
 			<div uk-grid class="uk-grid-small ">
 				<div class="uk-width-1-1 uk-padding-small">
                     @if($project)
-					<h2><span  class="uk-icon-button uk-margin-small-right uk-disabled uk-button-succes" uk-icon="mail"></span>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}}</span></h2>
+					<h2><span  class="uk-icon-button uk-margin-right uk-margin-left uk-disabled uk-button-succes" uk-icon="mail"></span>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}}</span></h2>
                     @else
                     <h3>New Message</h3>
                     @endif
