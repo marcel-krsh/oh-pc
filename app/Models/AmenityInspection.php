@@ -13,4 +13,9 @@ class AmenityInspection extends Model
 
     //
     protected $guarded = ['id'];
+
+    public function amenity() : HasOne
+    {
+    	return $this->hasOne(\App\Models\Amenity::class, 'id', 'amenity_id');
+    }
 }
