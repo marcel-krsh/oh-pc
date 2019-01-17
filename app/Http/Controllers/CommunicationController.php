@@ -185,8 +185,11 @@ class CommunicationController extends Controller
             }
 
             $recipients_from_hfa = User::where('organization_id', '=', $ohfa_id)
+                    ->leftJoin('people','people.id','users.person_id')
+                    ->leftJoin('organizations','organizations.id','users.organization_id')
+                    ->select('users.*','last_name','first_name','organization_name')
                     ->where('active', 1)
-                    ->orderBy('name', 'asc')
+                    ->orderBy('last_name', 'asc')
                     ->get();
 
             if (Auth::user()->pm_access()) {
