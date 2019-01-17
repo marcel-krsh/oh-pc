@@ -15,7 +15,7 @@
             <hr class="dashed-hr">
 			<div uk-grid>
                 <div class="uk-width-1-6"><i uk-icon="user"></i> FROM:</div>
-                <div class="uk-width-5-6" style="border-bottom:1px #111 dashed;">{{Auth::user->full_name()}}</div>
+                <div class="uk-width-5-6" style="border-bottom:1px #111 dashed;">{{Auth::user()->full_name()}}</div>
                 <div class="uk-width-1-6"><i uk-icon="users"></i> TO: </div>
                 <div class="uk-width-4-6" id="recipients-box" style="border:1px #333 solid">
                     <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: 1"></i> ADD RECIPIENT</div>
