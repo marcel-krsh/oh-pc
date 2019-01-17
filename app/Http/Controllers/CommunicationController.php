@@ -140,14 +140,14 @@ class CommunicationController extends Controller
 
 
 
-    public function newCommunicationEntry($audit_id = null)
+    public function newCommunicationEntry($project_id = null)
     {
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
 
-        if ($audit_id !== null) {
-            $audit = CachedAudit::where('id', '=', $audit_id)->first();
+        if ($project_id !== null) {
+            $project = Project::where('id', '=', $project_id)->first();
 
-            $documents = Document::where('audit_id', $audit->id)
+            $documents = Document::where('project_id', $project->id)
                 ->orderBy('created_at', 'desc')
                 ->get();
 
@@ -189,19 +189,26 @@ class CommunicationController extends Controller
                     ->orderBy('name', 'asc')
                     ->get();
 
-            if (Auth::user()->organization_id != $ohfa_id) {
-                $recipients = User::where('organization_id', Auth::user()->organization_id)
+            if (Auth::user()->pm_access()) {
+                $recipients = User::where('organization_id', '=', Auth::user()->organization_id)
+                    ->join('people','id','users.person_id')
+                    ->join('organizations','id','users.organization_id')
+                    ->select('users.*','last_name','first_name','organization_name')
                     ->where('active', 1)
-                    ->orderBy('name', 'asc')
+                    ->orderBy('last_name', 'asc')
                     ->get();
             } else {
-                $recipients = User::where('organization_id', '!=', 1)
+                $recipients = User::where('organization_id', '!=', $ohfa_id)
+                    ->join('people','id','users.person_id')
+                    ->join('organizations','id','users.organization_id')
+                    ->select('users.*','last_name','first_name','organization_name')
                     ->where('active', 1)
-                    ->orderBy('name', 'asc')
+                    ->orderBy('organization_name','asc')
+                    ->orderBy('last_name', 'asc')
                     ->get();
             }
 
-            return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id'));
+            return view('modals.new-communication', compact('project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id'));
         } else {
             $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
 
@@ -221,15 +228,22 @@ class CommunicationController extends Controller
             //     ->where('active', 1)
             //     ->orderBy('name', 'asc')->get();
 
-            if (Auth::user()->organization_id != $ohfa_id) {
+            if (Auth::user()->pm_access()) {
                 $recipients = User::where('organization_id', '=', Auth::user()->organization_id)
+                    ->join('people','id','users.person_id')
+                    ->join('organizations','id','users.organization_id')
+                    ->select('users.*','last_name','first_name','organization_name')
                     ->where('active', 1)
-                    ->orderBy('name', 'asc')
+                    ->orderBy('last_name', 'asc')
                     ->get();
             } else {
                 $recipients = User::where('organization_id', '!=', $ohfa_id)
+                    ->join('people','id','users.person_id')
+                    ->join('organizations','id','users.organization_id')
+                    ->select('users.*','last_name','first_name','organization_name')
                     ->where('active', 1)
-                    ->orderBy('name', 'asc')
+                    ->orderBy('organization_name','asc')
+                    ->orderBy('last_name', 'asc')
                     ->get();
             }
 
