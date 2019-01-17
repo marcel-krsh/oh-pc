@@ -11,7 +11,7 @@
 							        <h2 class="uk-modal-title">Select another audit</h2>
 							        <select name="audit-selection" id="audit-selection">
 							        	@foreach($audits as $audit)
-							        	<option value="{{$audit->id}}" @if($audit->id == $selected_audit->id) selected @endif>Audit {{$audit->id}} @if($audit->completed_date) | Completed on {{formatDate($audit->completed_date)}}@endif</option>
+							        	<option value="{{$audit->audit_id}}" @if($audit->audit_id == $selected_audit->audit_id) selected @endif>Audit {{$audit->audit_id}} @if($audit->completed_date) | Completed on {{formatDate($audit->completed_date)}}@endif</option>
 							        	@endforeach
 							        </select>
 							        <p class="uk-text-right">
@@ -28,7 +28,7 @@
 						</div>
 						<div class="uk-width-3-5" style="padding-right:0">
 							<h3 id="audit-project-name-1" class="uk-margin-bottom-remove">{{$project->project_number}}</h3>
-			            	<small class="uk-text-muted" style="font-size: 0.7em;">AUDIT {{$selected_audit->id}}</small>
+			            	<small class="uk-text-muted" style="font-size: 0.7em;">AUDIT {{$selected_audit->audit_id}}</small>
 						</div>
 					</div>
 				</div>
@@ -111,7 +111,7 @@
 	<div id="project-details-general" class="uk-width-1-1">
 		<div uk-grid>
 			<div class="uk-width-2-3">
-				<h3>{{$project->project_name}}<br /><small>Project {{$project->project_number}} @if($project->currentAudit())| Current Audit {{$project->currentAudit()->id}}@endif</small></h3>
+				<h3>{{$project->project_name}}<br /><small>Project {{$project->project_number}} @if($project->currentAudit())| Current Audit {{$project->currentAudit()->audit_id}}@endif</small></h3>
 			</div>
 			<div class="uk-width-1-3">
 				Last Audit Completed: {{$project->lastAuditCompleted()}}<br />
