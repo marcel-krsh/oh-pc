@@ -1,3 +1,4 @@
+@if($user)
 <div class="modal-user-roles">
     <div class="">
 	    <div uk-grid> 
@@ -55,4 +56,7 @@
 	}
 
  </script>
+ @else
+ <h2>No User Loaded..</h2>
+ @endif
 
