@@ -220,7 +220,7 @@ class ComplianceGenerator extends Controller
                 }
             }
 
-        }
+        
 
         // create cached units
         $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->get();
