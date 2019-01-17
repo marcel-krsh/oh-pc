@@ -158,8 +158,8 @@ class User extends Authenticatable
 
         $person = $this->person;
         //dd($person, $this->id, $this->person_id);
-        $initials = substr($person->first_name, 0, 1);
-        $initials .= substr($person->last_name, 0, 1);
+        $initials = substr($this->person->first_name, 0, 1);
+        $initials .= substr($this->person->last_name, 0, 1);
         return strtoupper($initials);
     }
 
