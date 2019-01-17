@@ -41,12 +41,13 @@
                     <td><small>@if($user->has_organization())
                         {{$user->organization_details->organization_name}}@else NA @endif</small></td>
                     <td><small>@if($user->has_address())
-                        <div class="uk-align-left">
-                                {!!$user->organization_details->address->formatted_address()!!}
-                        </div>
                         <a target="_blank" href="https://www.google.com/maps?q={{$user->organization_details->address->formatted_address()}}" class="uk-text-muted uk-align-left">
                             <i class="a-marker-basic uk-text-muted uk-link"></i>
                         </a> 
+                        <div class="uk-align-left">
+                                {!!$user->organization_details->address->formatted_address()!!}
+                        </div>
+                        
                         @else NA @endif
                     </small></td>
                     <td><small>@if($user->has_organization()) {{$user->organization_details->phone_number_formatted()}} @endif</small></td>
