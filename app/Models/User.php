@@ -166,7 +166,7 @@ class User extends Authenticatable
     public function full_name() : string
     {
         $fullName = "NA";
-        @if($this->person){
+        if($this->person){
             $fullName = $this->person->first_name." ".$this->person->last_name;
         }
         return $fullName;
