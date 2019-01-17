@@ -4,15 +4,15 @@
 		@if($project)<input type="hidden" name="project" value="{{$project->id}}">@endif
 		<div class="uk-container uk-container-center"> <!-- start form container -->
 			<div uk-grid class="uk-grid-small">
-				<div class="uk-width-1-1">
+				<div class="uk-width-1-1 uk-padding-small">
                     @if($project)
-					<h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}}</span></h3>
+					<h2>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}}</span></h2>
                     @else
                     <h3>New Message</h3>
                     @endif
 				</div>
 			</div>
-            <hr class="dashed-hr uk-margin-larg-bottom">
+            <hr class="dashed-hr uk-margin-large-bottom">
 			<div uk-grid>
                 <div class="uk-width-1-6 uk-padding-small"><i uk-icon="user"></i> FROM:</div>
                 <div class="uk-width-5-6 uk-padding-small" style="border-bottom:1px #111 dashed;">{{Auth::user()->full_name()}}</div>
@@ -48,9 +48,9 @@
                     </fieldset>
                 </div>
                 <hr class="dashed-hr">
-                <div class="uk-width-2-6">&nbsp;</div>
-                <div class="uk-width-2-6"><a class="uk-width-2-6 uk-button uk-button-primary"><i class="a-circle-cross"></i> CANCEL</a></div>
-                <div class="uk-width-2-6"><a class="uk-width-2-6 uk-button uk-button-success"><i class="a-paper-plane"></i> SEND</a></div>
+                <div class="uk-width-1-3">&nbsp;</div>
+                <div class="uk-width-1-3"><a class="uk-width-2-6 uk-button uk-button-primary"><i class="a-circle-cross"></i> CANCEL</a></div>
+                <div class="uk-width-1-3"><a class="uk-width-2-6 uk-button uk-button-success"><i class="a-paper-plane"></i> SEND</a></div>
             </div>
         </div>
     </form>
