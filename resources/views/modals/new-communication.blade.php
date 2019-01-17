@@ -14,276 +14,284 @@
 			</div>
 
 			<div uk-grid>
-				<div class="uk-width-1-3@m uk-width-1-1@s">
-					<h4>Select recipients</h4>
-					<div class="communication-selector uk-scrollable-box">
-			            <ul class="uk-list document-menu">
-			            	<li class="ohfa "><strong>OHFA STAFF</strong></li>
-                            <hr class="dashed-hr uk-margin-bottom">
-                            @foreach ($recipients_from_hfa as $recipient_from_hfa)
-                            <li class="ohfa {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient_from_hfa->organization_name)))))}} {{ strtolower($recipient_from_hfa->first_name) }} {{ strtolower($recipient_from_hfa->last_name) }}">
-                                <input name="recipients[]" id="recipient-id-{{ $recipient_from_hfa->id }}" value="{{ $recipient_from_hfa->id }}" type="checkbox" class="uk-checkbox">
-                                <label for="recipient-id-{{ $recipient_from_hfa->id }}">
-                                    {{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }}
-                                </label>
-                            </li>
-                            @endforeach
-                            
-                            @php $currentOrg = ''; @endphp
-                            @foreach ($recipients as $recipient)
-                                @if($currentOrg != $recipient->organization_name)
-                                <li class="uk-margin-large-top {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}}"><strong>{{$recipient->organization_name}}</strong></li>
-                                <hr class="dashed-hr uk-margin-bottom">
-                                @php $currentOrg = $recipient->organization_name; @endphp
-                                @endIf
+                <div class="uk-width-6-8">
+                    <div uk-grid>
+        				<div class="uk-width-1-1@m uk-width-1-1@s">
+        					<h4>Select Recipients</h4>
+        					<div class="communication-selector uk-scrollable-box">
+        			            <ul class="uk-list document-menu">
+        			            	<li class="ohfa "><strong>OHFA STAFF</strong></li>
+                                    <hr class="dashed-hr uk-margin-bottom">
+                                    @foreach ($recipients_from_hfa as $recipient_from_hfa)
+                                    <li class="ohfa {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient_from_hfa->organization_name)))))}} {{ strtolower($recipient_from_hfa->first_name) }} {{ strtolower($recipient_from_hfa->last_name) }}">
+                                        <input name="recipients[]" id="recipient-id-{{ $recipient_from_hfa->id }}" value="{{ $recipient_from_hfa->id }}" type="checkbox" class="uk-checkbox">
+                                        <label for="recipient-id-{{ $recipient_from_hfa->id }}">
+                                            {{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }}
+                                        </label>
+                                    </li>
+                                    @endforeach
+                                    
+                                    @php $currentOrg = ''; @endphp
+                                    @foreach ($recipients as $recipient)
+                                        @if($currentOrg != $recipient->organization_name)
+                                        <li class="uk-margin-large-top {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}}"><strong>{{$recipient->organization_name}}</strong></li>
+                                        <hr class="dashed-hr uk-margin-bottom">
+                                        @php $currentOrg = $recipient->organization_name; @endphp
+                                        @endIf
 
-                            <li class="{{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
-                                <input name="recipients[]" id="recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox">
-                                <label for="recipient-id-{{ $recipient->id }}">
-                                    {{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
-                                </label>
-                            </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    <div class="uk-form-row">
-                        <input type="text" class="uk-input uk-width-1-1" placeholder="Filter Recipients">
-                    </div>
-				</div>
-                @if($project)
-				<div class="uk-width-1-3@m uk-width-1-1@s">
-					<h4>Select exising documents</h4>
-					<div class="communication-selector  uk-scrollable-box">
-			            <ul class="uk-list document-menu" id="existing-documents">
-                            @foreach ($documents as $document)
-                            <li class="uk-margin-large-bottom">
-                                <input name="documents[]" id="document-id-{{ $document->id }}" value="{{ $document->id }}" type="checkbox"  class="uk-checkbox">
-                                <label for="document-id-{{ $document->id }}">
-                                    {{ $document->document_class }} {{ $document->document_description }}
-                                </label>
-                                <br />
-                                <ul class="document-category-menu">
-		                            @foreach ($document->categoriesarray as $documentcategory_id => $documentcategory_name)
-		                            <li>
-										{{ $documentcategory_name }}
-		                            </li>
-		                            @endforeach
-		                        </ul>
-                            </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    <div class="uk-form-row">
-                        <input type="text" class="uk-input uk-width-1-1" placeholder="Filter Documents">
-                    </div>
-				</div>
+                                    <li class="{{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
+                                        <input name="recipients[]" id="recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox">
+                                        <label for="recipient-id-{{ $recipient->id }}">
+                                            {{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
+                                        </label>
+                                    </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            <div class="uk-form-row">
+                                <input type="text" class="uk-input uk-width-1-1" placeholder="Filter Recipients">
+                            </div>
+        				</div>
+                        @if($project)
+        				<div class="uk-width-1-1@m uk-width-1-1@s">
+        					<h4>Select exising documents</h4>
+        					<div class="communication-selector  uk-scrollable-box">
+        			            <ul class="uk-list document-menu" id="existing-documents">
+                                    @foreach ($documents as $document)
+                                    <li class="uk-margin-large-bottom">
+                                        <input name="documents[]" id="document-id-{{ $document->id }}" value="{{ $document->id }}" type="checkbox"  class="uk-checkbox">
+                                        <label for="document-id-{{ $document->id }}">
+                                            {{ $document->document_class }} {{ $document->document_description }}
+                                        </label>
+                                        <br />
+                                        <ul class="document-category-menu">
+        		                            @foreach ($document->categoriesarray as $documentcategory_id => $documentcategory_name)
+        		                            <li>
+        										{{ $documentcategory_name }}
+        		                            </li>
+        		                            @endforeach
+        		                        </ul>
+                                    </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            <div class="uk-form-row">
+                                <input type="text" class="uk-input uk-width-1-1" placeholder="Filter Documents">
+                            </div>
+        				</div>
 
-				<div class="uk-width-1-3@m uk-width-1-1@s">
-					<h4>Upload new documents</h4>
-					<div class="communication-selector" style="height: 150px;">
-						<ul class="uk-list document-category-menu">
-                            @foreach ($document_categories as $category)
-	                        <li>
-	                            <input name="category-id-checkbox" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="checkbox"  class="uk-checkbox">
-	                            <label for="category-id-{{ $category->id }}">
-	                                {{ $category->document_category_name }}
-	                            </label>
-	                        </li>
-	                        @endforeach
-                        </ul>
-					</div>
-                    <div class="uk-form-row">
-                        <input class="uk-input uk-width-1-1" type="text" name="notes" placeholder="Enter a brief note about this document">
-                    </div>
-					<div class="uk-form-row" id="list-item-upload-box">
-                        <div class="js-upload uk-placeholder uk-text-center">
-                            <span class="a-higher"></span>
-                            <span class="uk-text-middle"> Please upload your document by dropping it here or</span>
-                            <div uk-form-custom>
-                                <input type="file" multiple>
-                                <span class="uk-link">by browsing and selecting it here.</span>
+        				<div class="uk-width-1-1@m uk-width-1-1@s">
+        					<h4>Upload new documents</h4>
+        					<div class="communication-selector" style="height: 150px;">
+        						<ul class="uk-list document-category-menu">
+                                    @foreach ($document_categories as $category)
+        	                        <li>
+        	                            <input name="category-id-checkbox" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="checkbox"  class="uk-checkbox">
+        	                            <label for="category-id-{{ $category->id }}">
+        	                                {{ $category->document_category_name }}
+        	                            </label>
+        	                        </li>
+        	                        @endforeach
+                                </ul>
+        					</div>
+                            <div class="uk-form-row">
+                                <input class="uk-input uk-width-1-1" type="text" name="notes" placeholder="Enter a brief note about this document">
+                            </div>
+        					<div class="uk-form-row" id="list-item-upload-box">
+                                <div class="js-upload uk-placeholder uk-text-center">
+                                    <span class="a-higher"></span>
+                                    <span class="uk-text-middle"> Please upload your document by dropping it here or</span>
+                                    <div uk-form-custom>
+                                        <input type="file" multiple>
+                                        <span class="uk-link">by browsing and selecting it here.</span>
+                                    </div>
+                                </div>
+
+                                <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
+
+                                <script>
+                            $(function(){
+                                var bar = document.getElementById('js-progressbar');
+
+                                settings    = {
+
+                                    url: '{{ URL::route("documents.upload", $project->id) }}',
+                                    multiple: true,
+                                    allow : '*.(jpg|gif|png|pdf|doc|docx|xls|xlsx)',
+
+                                    headers : {
+                                        'enctype' : 'multipart/form-data'
+                                    },
+
+                                    beforeSend: function () {
+                                        // console.log('beforeSend', arguments);
+                                    },
+                                    beforeAll: function (settings) {
+                                        // console.log('beforeAll', arguments);
+                                        var categoryArray = [];
+                                        $("input:checkbox[name=category-id-checkbox]:checked").each(function(){
+                                                categoryArray.push($(this).val());
+                                            });
+                                        settings.params.categories = categoryArray;
+                                        settings.params._token = '{{ csrf_token() }}';
+                                        categories = categoryArray;
+                                        if(categoryArray.length > 0){
+                                            console.log('Categories selected: '+categoryArray);
+                                        }else{
+                                            UIkit.modal.alert('You must select at least one category.',{
+                                                            stack: true});
+                                            return false;
+                                        }
+                                    },
+                                    load: function () {
+                                        // console.log('load', arguments);
+                                    },
+                                    error: function () {
+                                        // console.log('error', arguments);
+                                    },
+                                    complete: function () {
+                                        // console.log('complete', arguments);
+                                    },
+
+                                    loadStart: function (e) {
+                                        // console.log('loadStart', arguments);
+
+                                        bar.removeAttribute('hidden');
+                                        bar.max = e.total;
+                                        bar.value = e.loaded;
+                                    },
+
+                                    progress: function (e) {
+                                        // console.log('progress', arguments);
+
+                                        bar.max = e.total;
+                                        bar.value = e.loaded;
+                                    },
+
+                                    loadEnd: function (e) {
+                                        // console.log('loadEnd', arguments);
+
+                                        bar.max = e.total;
+                                        bar.value = e.loaded;
+                                    },
+
+                                    completeAll: function (response) {
+                                        var data = jQuery.parseJSON(response.response);
+                                        
+                                        var documentids = data['document_ids'];
+                                        var is_retainage = data['is_retainage'];
+                                        var is_advance = data['is_advance'];
+
+                                        setTimeout(function () {
+                                            bar.setAttribute('hidden', 'hidden');
+                                        }, 250);
+
+                                        // Submit form and make sure it responds back with 1 - otherwise it will output the response to a browser alert box.
+                                        UIkit.modal.prompt("I uploaded and categorized the document(s) accordingly. Please add your comment for the history record.",'',{stack: true},function(val){
+                                            $.post('{{ URL::route("documents.uploadComment", $project->id) }}', {
+                                                    'postvars' : documentids,
+                                                    'comment' : val,
+                                                    '_token' : '{{ csrf_token() }}'
+                                                    }, function(data) {
+                                                        if(data!='1'){ 
+                                                            UIkit.modal.alert(data,{stack: true});
+                                                        } else {
+                                                            UIkit.modal.alert('Your comment has been saved.',{stack: true});          
+                                                        }
+                                            });
+                                        });
+                                        
+                                        //update existing doc list
+                                        // get document filename and categories
+                                        var document_info_array = [];
+                                        $.post('{{ URL::route("documents.documentInfo", $project->id) }}', {
+                                                    'postvars' : documentids,
+                                                    'categories' : categories,
+                                                    '_token' : '{{ csrf_token() }}'
+                                                    }, function(data) {
+                                                        if(data=='0'){ 
+                                                            UIkit.modal.alert("There was a problem getting the documents' information.",{stack: true});
+                                                        } else {
+
+                                                            document_info_array = data; 
+                                                            documentids = documentids + '';
+                                                            var documentid_array = documentids.split(',');
+                                                            for (var i = 0; i < documentid_array.length; i++) {
+                                                                did = documentid_array[i];
+
+                                                                newinput = '<li>'+
+                                                                    '<input name="documents[]" id="document-id-'+did+'" value="'+did+'" type="checkbox" checked  class="uk-checkbox">'+
+                                                                    '<label for="document-id-'+did+'">'+
+                                                                    '    '+document_info_array[did]['filename']+
+                                                                    '</label>'+
+                                                                    '<br />'+
+                                                                    '<ul class="document-category-menu">';
+                                                                for(var j = 0; j < document_info_array[did]['categories'].length; j++){
+                                                                    newinput = newinput + 
+                                                                    '    <li>'+
+                                                                    '       '+document_info_array[did]['categories'][j]+
+                                                                    '    </li>';
+                                                                }
+                                                                    
+
+                                                                newinput = newinput +   
+                                                                    '</ul>'+
+                                                                    '</li>';
+                                                                $("#existing-documents").append(newinput); 
+                                                            } 
+                                                        }
+                                            });
+                                    }
+
+                                };
+
+                                var select = UIkit.upload('.js-upload', settings);
+                                
+                            });
+                            </script>
+                        	</div>
+        		        </div> 
+                        @endif
+        			
+                        <div class="uk-width-1-1">
+                            <h4>Message subject</h4>
+                            <fieldset class="uk-fieldset">
+                                <div uk-grid class="uk-grid-collapse">
+                                    <div class="uk-width-1-1">
+                                        <input id="subject" name="subject" class="uk-input" value=""></input>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="uk-width-1-1">
+                        <div id="applicant-info-update">
+                            <div uk-grid class="uk-margin">
+                                <div class="uk-width-1-3 uk-push-1-3">
+                                    <a class="uk-button uk-button-primary blue-button uk-width-1-1" onclick="dynamicModalClose();"> <span  uk-icon="close" class="uk-margin-left"></span> CANCEL</a>
+                                </div>
+                                <div class="uk-width-1-3  uk-push-1-3">
+                                    <a class="uk-button uk-button-primary blue-button uk-width-1-1" onclick="submitNewCommunication()"> <span uk-icon="mail" class="uk-margin-left"></span> SEND &nbsp;</a>
+                                </div>
                             </div>
                         </div>
-
-                        <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
-
-                        <script>
-                    $(function(){
-                        var bar = document.getElementById('js-progressbar');
-
-                        settings    = {
-
-                            url: '{{ URL::route("documents.upload", $project->id) }}',
-                            multiple: true,
-                            allow : '*.(jpg|gif|png|pdf|doc|docx|xls|xlsx)',
-
-                            headers : {
-                                'enctype' : 'multipart/form-data'
-                            },
-
-                            beforeSend: function () {
-                                // console.log('beforeSend', arguments);
-                            },
-                            beforeAll: function (settings) {
-                                // console.log('beforeAll', arguments);
-                                var categoryArray = [];
-                                $("input:checkbox[name=category-id-checkbox]:checked").each(function(){
-                                        categoryArray.push($(this).val());
-                                    });
-                                settings.params.categories = categoryArray;
-                                settings.params._token = '{{ csrf_token() }}';
-                                categories = categoryArray;
-                                if(categoryArray.length > 0){
-                                    console.log('Categories selected: '+categoryArray);
-                                }else{
-                                    UIkit.modal.alert('You must select at least one category.',{
-                                                    stack: true});
-                                    return false;
-                                }
-                            },
-                            load: function () {
-                                // console.log('load', arguments);
-                            },
-                            error: function () {
-                                // console.log('error', arguments);
-                            },
-                            complete: function () {
-                                // console.log('complete', arguments);
-                            },
-
-                            loadStart: function (e) {
-                                // console.log('loadStart', arguments);
-
-                                bar.removeAttribute('hidden');
-                                bar.max = e.total;
-                                bar.value = e.loaded;
-                            },
-
-                            progress: function (e) {
-                                // console.log('progress', arguments);
-
-                                bar.max = e.total;
-                                bar.value = e.loaded;
-                            },
-
-                            loadEnd: function (e) {
-                                // console.log('loadEnd', arguments);
-
-                                bar.max = e.total;
-                                bar.value = e.loaded;
-                            },
-
-                            completeAll: function (response) {
-                                var data = jQuery.parseJSON(response.response);
-                                
-                                var documentids = data['document_ids'];
-                                var is_retainage = data['is_retainage'];
-                                var is_advance = data['is_advance'];
-
-                                setTimeout(function () {
-                                    bar.setAttribute('hidden', 'hidden');
-                                }, 250);
-
-                                // Submit form and make sure it responds back with 1 - otherwise it will output the response to a browser alert box.
-                                UIkit.modal.prompt("I uploaded and categorized the document(s) accordingly. Please add your comment for the history record.",'',{stack: true},function(val){
-                                    $.post('{{ URL::route("documents.uploadComment", $project->id) }}', {
-                                            'postvars' : documentids,
-                                            'comment' : val,
-                                            '_token' : '{{ csrf_token() }}'
-                                            }, function(data) {
-                                                if(data!='1'){ 
-                                                    UIkit.modal.alert(data,{stack: true});
-                                                } else {
-                                                    UIkit.modal.alert('Your comment has been saved.',{stack: true});          
-                                                }
-                                    });
-                                });
-                                
-                                //update existing doc list
-                                // get document filename and categories
-                                var document_info_array = [];
-                                $.post('{{ URL::route("documents.documentInfo", $project->id) }}', {
-                                            'postvars' : documentids,
-                                            'categories' : categories,
-                                            '_token' : '{{ csrf_token() }}'
-                                            }, function(data) {
-                                                if(data=='0'){ 
-                                                    UIkit.modal.alert("There was a problem getting the documents' information.",{stack: true});
-                                                } else {
-
-                                                    document_info_array = data; 
-                                                    documentids = documentids + '';
-                                                    var documentid_array = documentids.split(',');
-                                                    for (var i = 0; i < documentid_array.length; i++) {
-                                                        did = documentid_array[i];
-
-                                                        newinput = '<li>'+
-                                                            '<input name="documents[]" id="document-id-'+did+'" value="'+did+'" type="checkbox" checked  class="uk-checkbox">'+
-                                                            '<label for="document-id-'+did+'">'+
-                                                            '    '+document_info_array[did]['filename']+
-                                                            '</label>'+
-                                                            '<br />'+
-                                                            '<ul class="document-category-menu">';
-                                                        for(var j = 0; j < document_info_array[did]['categories'].length; j++){
-                                                            newinput = newinput + 
-                                                            '    <li>'+
-                                                            '       '+document_info_array[did]['categories'][j]+
-                                                            '    </li>';
-                                                        }
-                                                            
-
-                                                        newinput = newinput +   
-                                                            '</ul>'+
-                                                            '</li>';
-                                                        $("#existing-documents").append(newinput); 
-                                                    } 
-                                                }
-                                    });
-                            }
-
-                        };
-
-                        var select = UIkit.upload('.js-upload', settings);
-                        
-                    });
-                    </script>
-                	</div>
-		        </div> 
-                @endif
-			
-                <div class="uk-width-2-3">
-                    <h4>Message subject</h4>
-                    <fieldset class="uk-fieldset">
+                    <div class="uk-width-2-3">
+                    <h4>Message body</h4>
+                    <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
                         <div uk-grid class="uk-grid-collapse">
                             <div class="uk-width-1-1">
-                                <input id="subject" name="subject" class="uk-input" value=""></input>
+                                <textarea id="message-body" style="min-height: 100px;" rows="11" class="uk-input" name="messageBody" value=""></textarea>
                             </div>
                         </div>
                     </fieldset>
+                </div></div>                
                 </div>
-                <div class="uk-width-1-3">
-                <div id="applicant-info-update">
-                    <div uk-grid class="uk-margin">
-                        <div class="uk-width-1-3 uk-push-1-3">
-                            <a class="uk-button uk-button-primary blue-button uk-width-1-1" onclick="dynamicModalClose();"> <span  uk-icon="close" class="uk-margin-left"></span> CANCEL</a>
-                        </div>
-                        <div class="uk-width-1-3  uk-push-1-3">
-                            <a class="uk-button uk-button-primary blue-button uk-width-1-1" onclick="submitNewCommunication()"> <span uk-icon="mail" class="uk-margin-left"></span> SEND &nbsp;</a>
-                        </div>
-                    </div>
-                </div>
+                
+            </div>
+            <div class="uk-width-1-1">
+                buttons
             </div>
             
-				<div class="uk-width-2-3">
-                    <h4>Message body</h4>
-					<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
-						<div uk-grid class="uk-grid-collapse">
-                            <div class="uk-width-1-1">
-								<textarea id="message-body" style="min-height: 100px;" rows="11" class="uk-input" name="messageBody" value=""></textarea>
-							</div>
-						</div>
-					</fieldset>
-				</div>
+				
 			</div>
 		</div> 
 		
