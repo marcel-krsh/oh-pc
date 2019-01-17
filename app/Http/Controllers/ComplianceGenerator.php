@@ -75,8 +75,8 @@ class ComplianceGenerator extends Controller
 
     public function createCaches(CachedAudit $cached_audit)
     {
-        // create buildings, create units, create amenities cache tables
-
+        
+        $jsonRun = 0;
         // get buildings from cached_audit
         $buildings = BuildingInspection::where('audit_id', '=', $cached_audit->audit_id)->with('building','building.address')->get();
         //dd($buildings);
