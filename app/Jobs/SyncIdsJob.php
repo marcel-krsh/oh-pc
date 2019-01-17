@@ -312,7 +312,7 @@ class SyncIdsJob implements ShouldQueue
         $associate[] = [
             'null_field' => 'physical_address_id',
             'look_up_reference' => 'physical_address_key',
-            'lookup_field' => 'physical_address_key',
+            'lookup_field' => 'address_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
