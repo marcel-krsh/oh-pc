@@ -264,6 +264,7 @@ class AdminToolController extends Controller
                                 where('first_name','LIKE','%'.$search.'%')->
                                 orWhere('last_name','LIKE','%'.$search.'%')->
                                 orWhere('organization_name','LIKE','%'.$search.'%')->
+                                orWhere('role_name','LIKE','%'.$search.'%')->
                                 orderBy('last_name', 'asc')->
                                 paginate(25);
         } else {

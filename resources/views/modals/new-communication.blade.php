@@ -3,18 +3,61 @@
 	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
 		@if($project)<input type="hidden" name="project" value="{{$project->id}}">@endif
 		<div class="uk-container uk-container-center"> <!-- start form container -->
-			<div uk-grid class="uk-grid-small">
-				<div class="uk-width-1-1">
+			<div uk-grid class="uk-grid-small ">
+				<div class="uk-width-1-1 uk-padding-small">
                     @if($project)
-					Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}}</span>
+					<h2><span  class="uk-icon-button uk-margin-right uk-margin-left uk-disabled uk-button-succes" uk-icon="mail"></span>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}}</span></h2>
                     @else
-                    New Message
+                    <h3>New Message</h3>
                     @endif
 				</div>
 			</div>
+            <hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
+			<div uk-grid class="uk-grid-collapse">
+                <div class="uk-width-1-6 " style="padding:18px;"><div style="width:25px; display: inline-block;"><i uk-icon="user"></i></div> &nbsp;FROM:</div>
+                <div class="uk-width-5-6 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{Auth::user()->full_name()}}</div>
+                <div class="uk-width-1-6 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
+                <div class="uk-width-5-6 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
+                    <div class="uk-button uk-button-small" style="padding-top: 2px;"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div>
+                </div>
+                <div class="uk-width-1-6 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i class="a-paperclip-2 "></i></div> &nbsp;DOCUMENTS</div>
+                <div class="uk-width-5-6 "  id="attachments-box" style="border-bottom:1px #111 dashed; padding:18px; padding-left:25px;">
+                    <div class="uk-button uk-button-small" style="padding-top: 2px;"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD DOCUMENT</div>
+                </div>
 
-			<div uk-grid>
-                <div class="uk-width-6-8">
+                <div class="uk-width-1-6 " style="padding:18px;padding-top:27px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;SUBJECT:</div>
+                <div class="uk-width-5-6"  style="padding:18px; border-bottom:1px #111 dashed;">
+                    <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
+                        <div uk-grid class="uk-grid-collapse">
+                            <div class="uk-width-1-1">
+                                <input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications.">
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                
+
+                 <div class="uk-width-1-6 " style="padding:18px; padding-top:40px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;MESSAGE:</div> 
+                 <div class="uk-width-5-6 " style="padding:18px;">
+                    <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
+                        <div uk-grid class="uk-grid-collapse">
+                            <div class="uk-width-1-1">
+                                <textarea id="message-body" style="min-height: 100px;padding-left: 10px; border:none;" rows="11" class="uk-width-1-1 uk-form-large uk-input uk-form-blank uk-resize-vertical" name="messageBody" value="" placeholder="Recipients will have to log-in to view your message."></textarea>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top">
+                <div class="uk-width-1-3">&nbsp;</div>
+                <div class="uk-width-1-3"><a class="uk-width-5-6 uk-button uk-align-right "><i class="a-circle-cross"></i> CANCEL</a></div>
+                <div class="uk-width-1-3"><a class="uk-width-5-6 uk-align-right uk-button uk-button-success"><i class="a-paper-plane"></i> SEND</a></div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="uk-hidden">
+OLD STUFF
                     <div uk-grid>
         				<div class="uk-width-1-1@m uk-width-1-1@s">
         					<h4>Select Recipients</h4>
@@ -276,29 +319,19 @@
                         </div>
                     <div class="uk-width-2-3">
                     <h4>Message body</h4>
-                    <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
-                        <div uk-grid class="uk-grid-collapse">
-                            <div class="uk-width-1-1">
-                                <textarea id="message-body" style="min-height: 100px;" rows="11" class="uk-input" name="messageBody" value=""></textarea>
-                            </div>
-                        </div>
-                    </fieldset>
-                </div></div>                
-                </div>
+                    
+               
                 
-            </div>
-            <div class="uk-width-1-1">
-                buttons
-            </div>
+            </div></div></div></div>
             
 				
-			</div>
-		</div> 
+		
+	
 		
 		
 			
 		
-	</form>
+
 	<script type="text/javascript">
 	function submitNewCommunication() {
 
