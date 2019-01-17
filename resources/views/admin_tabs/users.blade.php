@@ -52,7 +52,7 @@
                     </small></td>
                     <td><small>@if($user->has_organization()) {{$user->organization_details->phone_number_formatted()}} @endif</small></td>
                     <td><small><a href="mailto:{{$user->person->email->email_address}}">{{$user->person->email->email_address}}</a></small></td>
-                    <td class="use-hand-cursor" uk-tooltip="title:CLICK TO SET ROLES" onclick="setRoles({{$user->id}})"><small>@if($user->roles_list() != ''){{$user->roles_list()}}@else <i class="a-circle-plus"></i>@endif</small></td>
+                    <td class="use-hand-cursor" uk-tooltip="title:CLICK TO SET ROLES" onclick="setRoles({{$user->user_id}})"><small>@if($user->roles_list() != ''){{$user->roles_list()}}@else <i class="a-circle-plus"></i>@endif</small></td>
             
                 </tr>
             @endforeach
