@@ -12,20 +12,32 @@
                     @endif
 				</div>
 			</div>
-            <hr class="dashed-hr">
+            <hr class="dashed-hr uk-margin-larg-bottom">
 			<div uk-grid>
-                <div class="uk-width-1-6"><i uk-icon="user"></i> FROM:</div>
-                <div class="uk-width-5-6" style="border-bottom:1px #111 dashed;">{{Auth::user()->full_name()}}</div>
-                <div class="uk-width-1-6"><i uk-icon="users"></i> TO: </div>
-                <div class="uk-width-4-6" id="recipients-box" style="border:1px #333 solid">
-                    <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: 1"></i> ADD RECIPIENT</div>
+                <div class="uk-width-1-6 uk-padding-small"><i uk-icon="user"></i> FROM:</div>
+                <div class="uk-width-5-6 uk-padding-small" style="border-bottom:1px #111 dashed;">{{Auth::user()->full_name()}}</div>
+                <div class="uk-width-1-6 uk-padding-small"><i uk-icon="users"></i> TO: </div>
+                <div class="uk-width-5-6uk-padding-small" id="recipients-box" style="border-bottom:1px #111 dashed;">
+                    <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: .7"></i> ADD RECIPIENT</div>
                 </div>
-                <div class="uk-width-1-6"><i class="a-paperclip-2"></i></div>
+                <div class="uk-width-1-6 uk-padding-small"><i class="a-paperclip-2"></i></div>
+                <div class="uk-width-5-6 uk-padding-small" id="recipients-box" style="border-bottom:1px #111 dashed;">
+                    <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: .7"></i> ADD ATTACHMENT</div>
+                </div>
 
-                <div class="uk-width-1-6">SUBJECT:</div>
-                <input type="text" name="subject" class="uk-width-5-6 uk-margin-top uk-input uk-form-large">
+                <div class="uk-width-1-6 uk-padding-small">SUBJECT:</div>
+                <div class="uk-width-5-6">
+                    <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
+                        <div uk-grid class="uk-grid-collapse">
+                            <div class="uk-width-1-1">
+                                <input type="text" name="subject" class="uk-width-1-1 uk-margin-top uk-input uk-form-large" placeholder="Recipients will see your subject in their notifications.">
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                
 
-                 <div class="uk-width-1-6">Message:</div> 
+                 <div class="uk-width-1-6 uk-padding-small">Message:</div> 
                  <div class="uk-width-5-6">
                     <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
                         <div uk-grid class="uk-grid-collapse">
