@@ -903,7 +903,7 @@ class AdminToolController extends Controller
         // current user's highest roles
         $current_user_highest_role = UserRole::where('user_id','=',$current_user->id)->orderBy('role_id','desc')->first();
 
-        if($current_user_highest_role &){
+        if($current_user_highest_role ){
             if($user->id !== $current_user->id){
                 $roles = Role::where('id','<',$current_user_highest_role->role_id)->get();
             }else{
