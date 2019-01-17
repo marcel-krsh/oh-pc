@@ -37,7 +37,7 @@
                 </div>
                 
 
-                 <div class="uk-width-1-6 " style="padding:18px;padding-top:27px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;MESSAGE:</div> 
+                 <div class="uk-width-1-6 " style="padding:18px;padding-top:40px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;MESSAGE:</div> 
                  <div class="uk-width-5-6 " style="padding:18px;">
                     <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
                         <div uk-grid class="uk-grid-collapse">
