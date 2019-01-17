@@ -37,12 +37,12 @@
                 </div>
                 
 
-                 <div class="uk-width-1-6 " style="padding:18px;padding-top:40px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;MESSAGE:</div> 
+                 <div class="uk-width-1-6 " style="padding:18px; padding-top:40px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;MESSAGE:</div> 
                  <div class="uk-width-5-6 " style="padding:18px;">
                     <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
                         <div uk-grid class="uk-grid-collapse">
                             <div class="uk-width-1-1">
-                                <textarea id="message-body" style="min-height: 100px;padding-left: 14px; border:none;" rows="11" class="uk-width-1-1 uk-form-large uk-input uk-form-blank" name="messageBody" value="" placeholder="Recipients will have to log-in to view your message."></textarea>
+                                <textarea id="message-body" style="min-height: 100px;padding-left: 14px; border:none;" rows="11" class="uk-width-1-1 uk-form-large uk-input uk-form-blank uk-resize-vertical" name="messageBody" value="" placeholder="Recipients will have to log-in to view your message."></textarea>
                             </div>
                         </div>
                     </fieldset>
