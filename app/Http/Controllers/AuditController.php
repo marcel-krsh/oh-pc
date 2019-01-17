@@ -471,7 +471,7 @@ class AuditController extends Controller
                     "project" => [
                         'id' => $project->id,
                         'ref' => $project->project_number,
-                        'audit_id' => $project->selected_audit()->id
+                        'audit_id' => $project->selected_audit()->audit_id
                     ],
                     "summary" => [
                         'required_unit_selected' => 0,
@@ -530,7 +530,7 @@ class AuditController extends Controller
     public function addADay(Request $request, $id){
         // TBD only authorized users can add days (lead/managers)
         
-        $audit = CachedAudit::where('id','=',$id)->first();
+        $audit = Audit::where('id','=',$id)->first();
         $date = formatDate($request->get('date'), "Y-m-d H:i:s", "F d, Y");
 
         $day = new ScheduleDay([
@@ -549,7 +549,7 @@ class AuditController extends Controller
         // 2. delete day
         // 3. update estimated needed time and checks by rebuilding CachedAudit 
 
-        $audit = CachedAudit::where('id','=',$id)->first();
+        $audit = Audit::where('id','=',$id)->first();
         $schedules = ScheduleTime::where('day_id','=',$day_id)->where('audit_id','=',$id)->delete();
         $day = ScheduleDay::where('id','=',$day_id)->where('audit_id','=',$id)->delete();
  
@@ -895,7 +895,7 @@ class AuditController extends Controller
 
     public function addAssignmentAuditor($audit_id, $day_id, $auditorid=null)
     {
-        $audit = CachedAudit::where('id','=',$audit_id)->first();
+        $audit = CachedAudit::where('audit_id','=',$audit_id)->first();
 
         // make sure the logged in user is a manager or the lead on the audit TBD
         $current_user = Auth::user();
@@ -910,134 +910,52 @@ class AuditController extends Controller
         // dd($audit_id, $audit, $day, $auditorid, $auditor);
         
         // get auditors from user roles
-        $auditors = null;
+        $auditors = User::whereHas('roles', function($query){
+            $query->where('role_id', '=', 2);
+        })->get();
+
+        return view('modals.project-assignment-add-auditor', compact('day', 'auditor', 'audit', 'auditors'));
+    }
+
+    public function addAuditorToAudit(Request $request, $userid, $auditid)
+    {
+        // TBD user should be a manager or a lead or an auditor?
+
+        // dd($userid, $auditid, $request->get('dayid'));
+        // 6301 6410 4
+        $day = ScheduleDay::where('audit_id','=',$auditid)->where('id','=',$request->get('dayid'))->first();
         
-        $data = collect([
-            "project" => [
-                "id" => $audit_id,
-                "name" => "Project Name"
-            ],
-            "summary" => [
-                'date' => 'DECEMBER 22, 2018',
-                'estimated' => '107:00',
-                'needed' => '27:00'
-            ],
-            "auditors" => [
-                [
-                    "id" => 1,
-                    "name" => "Jane Doe",
-                    "status" => "ok-actionable",
-                    "icon" => "a-circle-checked",
-                    "icon_tooltip" => "CLICK TO REMOVE AUDITOR",
-                    "availability" => "Available 8:30 AM - 6:00 PM",
-                    "open" => "08:00",
-                    "open_tooltip" => "8 HOURS ARE OPEN FOR SCHEDULING",
-                    "starting" => "08:30",
-                    "starting_tooltip" => "JILL DOE CAN START ON THIS AUDIT AT APPROXIMATELY 8:30 AM",
-                    "distance_time" => "01:15",
-                    "distance" => "54",
-                    "distance_icon" => "a-home-marker",
-                    "distance_tooltip" => "The Other Place<br />123 Sesame Street, City, OH 12345"
-                ],
-                [
-                    "id" => 2,
-                    "name" => "Jane Doe 2",
-                    "status" => "",
-                    "icon" => "a-circle-plus",
-                    "icon_tooltip" => "CLICK TO ADD AUDITOR",
-                    "availability" => "Available 8:30 AM - 6:00 PM",
-                    "open" => "08:00",
-                    "open_tooltip" => "8 HOURS ARE OPEN FOR SCHEDULING",
-                    "starting" => "08:30",
-                    "starting_tooltip" => "JILL DOE CAN START ON THIS AUDIT AT APPROXIMATELY 8:30 AM",
-                    "distance_time" => "01:15",
-                    "distance" => "54",
-                    "distance_icon" => "a-home-marker",
-                    "distance_tooltip" => "The Other Place<br />123 Sesame Street, City, OH 12345"
-                ],
-                [
-                    "id" => 3,
-                    "name" => "Jane Doe 3",
-                    "status" => "action-required",
-                    "icon" => "a-circle-plus",
-                    "icon_tooltip" => "THIS AUDITOR WILL REQUIRE CONFLICT APPROVAL BY LEAD",
-                    "availability" => "Available 8:30 AM - 6:00 PM",
-                    "open" => "08:00",
-                    "open_tooltip" => "8 HOURS ARE OPEN FOR SCHEDULING",
-                    "starting" => "08:30",
-                    "starting_tooltip" => "JILL DOE CAN START ON THIS AUDIT AT APPROXIMATELY 8:30 AM",
-                    "distance_time" => "01:15",
-                    "distance" => "54",
-                    "distance_icon" => "a-marker-basic",
-                    "distance_tooltip" => "The Other Place<br />123 Sesame Street, City, OH 12345"
-                ],
-                [
-                    "id" => 4,
-                    "name" => "Jane Doe 4",
-                    "status" => "action-required",
-                    "icon" => "a-circle-plus",
-                    "icon_tooltip" => "THIS AUDITOR WILL REQUIRE CONFLICT APPROVAL BY LEAD",
-                    "availability" => "Available 8:30 AM - 6:00 PM",
-                    "open" => "08:00",
-                    "open_tooltip" => "8 HOURS ARE OPEN FOR SCHEDULING",
-                    "starting" => "08:30",
-                    "starting_tooltip" => "JILL DOE CAN START ON THIS AUDIT AT APPROXIMATELY 8:30 AM",
-                    "distance_time" => "01:15",
-                    "distance" => "54",
-                    "distance_icon" => "a-marker-basic",
-                    "distance_tooltip" => "The Other Place<br />123 Sesame Street, City, OH 12345"
-                ],
-                [
-                    "id" => 5,
-                    "name" => "Jane Doe 5",
-                    "status" => "action-required",
-                    "icon" => "a-circle-plus",
-                    "icon_tooltip" => "THIS AUDITOR WILL REQUIRE CONFLICT APPROVAL BY LEAD",
-                    "availability" => "Available 8:30 AM - 6:00 PM",
-                    "open" => "08:00",
-                    "open_tooltip" => "8 HOURS ARE OPEN FOR SCHEDULING",
-                    "starting" => "08:30",
-                    "starting_tooltip" => "JILL DOE CAN START ON THIS AUDIT AT APPROXIMATELY 8:30 AM",
-                    "distance_time" => "01:15",
-                    "distance" => "54",
-                    "distance_icon" => "a-marker-basic",
-                    "distance_tooltip" => "The Other Place<br />123 Sesame Street, City, OH 12345"
-                ],
-                [
-                    "id" => 6,
-                    "name" => "Jane Doe 6",
-                    "status" => "action-required",
-                    "icon" => "a-circle-plus",
-                    "icon_tooltip" => "THIS AUDITOR WILL REQUIRE CONFLICT APPROVAL BY LEAD",
-                    "availability" => "Available 8:30 AM - 6:00 PM",
-                    "open" => "08:00",
-                    "open_tooltip" => "8 HOURS ARE OPEN FOR SCHEDULING",
-                    "starting" => "08:30",
-                    "starting_tooltip" => "JILL DOE CAN START ON THIS AUDIT AT APPROXIMATELY 8:30 AM",
-                    "distance_time" => "01:15",
-                    "distance" => "54",
-                    "distance_icon" => "a-marker-basic",
-                    "distance_tooltip" => "The Other Place<br />123 Sesame Street, City, OH 12345"
-                ],
-                [
-                    "id" => 7,
-                    "name" => "Jane Doe 7",
-                    "status" => "action-required",
-                    "icon" => "a-circle-plus",
-                    "icon_tooltip" => "THIS AUDITOR WILL REQUIRE CONFLICT APPROVAL BY LEAD",
-                    "availability" => "Available 8:30 AM - 6:00 PM",
-                    "open" => "08:00",
-                    "open_tooltip" => "8 HOURS ARE OPEN FOR SCHEDULING",
-                    "starting" => "08:30",
-                    "starting_tooltip" => "JILL DOE CAN START ON THIS AUDIT AT APPROXIMATELY 8:30 AM",
-                    "distance_time" => "01:15",
-                    "distance" => "54",
-                    "distance_icon" => "a-marker-basic",
-                    "distance_tooltip" => "The Other Place<br />123 Sesame Street, City, OH 12345"
-                ]
-            ]
-        ]);
-        return view('modals.project-assignment-add-auditor', compact('data', 'day', 'auditor', 'audit', 'auditors'));
+        $audit = Audit::where('id','=',$auditid)->first();
+
+        $user = User::where('id','=',$userid)->first();
+
+        if($day && $audit && $user){
+            $new_auditor = new AuditAuditor([
+                'audit_id' => $auditid,
+                'monitoring_key' => $audit->monitoring_key,
+                'user_id' => $userid,
+                'user_key' => $user->devco_key
+            ]);
+            $new_auditor->save();
+            return 1;
+        }
+
+        return 0;
+    }
+
+    public function removeAuditorFromAudit(Request $request, $userid, $auditid)
+    {
+
+        $audit = Audit::where('id','=',$auditid)->first();
+
+        $user = User::where('id','=',$userid)->first();
+
+        if( $audit && $user){
+            AuditAuditor::where('user_id','=',$user->id)->where('audit_id','=',$auditid)->first()->delete();
+            return 1;
+        }
+
+        return 0;
     }
 
     public function addAssignmentAuditorStats($id, $auditorid)

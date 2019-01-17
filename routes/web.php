@@ -165,6 +165,8 @@
         Route::post('/auditors/{id}/availability/create', 'UserController@saveAuditorAvailability')->name('auditor.availability.create');
         Route::get('auditors/{id}/availability/loadcal/{currentdate?}/{beforeafter?}', 'UserController@getAvailabilityCalendar')->name('auditor.availability.loadcal');
         Route::post('auditors/{userid}/availability/{id}/delete', 'UserController@deleteAvailability')->name('auditor.availability.delete');
+        Route::post('auditors/{userid}/addtoaudit/{auditid}', 'AuditController@addAuditorToAudit')->name('auditor.addtoaudit');
+        Route::post('auditors/{userid}/removefromaudit/{auditid}', 'AuditController@removeAuditorFromAudit')->name('auditor.removefromaudit');
 
         Route::get('/modals/amenities/add/{type}/{id}', 'AuditController@addAmenity')->name('amenities.add');
         Route::post('/modals/amenities/save', 'AuditController@saveAmenity')->name('amenities.save');
