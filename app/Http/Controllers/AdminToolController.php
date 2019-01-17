@@ -253,16 +253,32 @@ class AdminToolController extends Controller
     public function usersIndex()
     {
         if (Session::has('users-search') && Session::get('users-search') != '') {
-            $search = Session::get('users-search');
-            $users = User::with(['roles','person','organization_details'])
-                                    ->where(function ($query) use ($search) {
-                                        $query->where('name', 'LIKE', '%'.$search.'%');
-                                    })
-                                    ->orderBy('name', 'asc')
-                                    ->paginate(40);
+            $search =   Session::get('users-search');
+            $users  =    User::join('people', 'users.person_id', '=', 'people.id')->
+                                leftJoin('users_roles','users.id','=','users_roles.user_id')->
+                                leftJoin('roles','users_roles.role_id','=','roles.id')->
+                                leftJoin('organizations','users.organization_id','organizations.id')->
+                                leftJoin('phone_numbers','organizations.default_phone_number_id','phone_numbers.id')->
+                                leftJoin('addresses','organizations.default_address_id','addresses.id')->
+                                select('users.*','line_1','line_2','city','state','zip','organization_name','role_name','area_code','phone_number','extension','last_name','first_name')->
+                                where('first_name','LIKE','%'.$search.'%')->
+                                orWhere('last_name','LIKE','%'.$search.'%')->
+                                orWhere('organization_name','LIKE','%'.$search.'%')->
+                                orderBy('last_name', 'asc')->
+                                paginate(25);
         } else {
-            $users = User::with(['roles','person','organization_details'])->orderBy('name', 'asc')->paginate(40);
+            $users  =    User::
+                            join('people', 'users.person_id', '=', 'people.id')->
+                            leftJoin('users_roles','users.id','=','users_roles.user_id')->
+                            leftJoin('roles','users_roles.role_id','=','roles.id')->
+                            leftJoin('organizations','users.organization_id','organizations.id')->
+                            leftJoin('addresses','organizations.default_address_id','addresses.id')->
+                            leftJoin('phone_numbers','organizations.default_phone_number_id','phone_numbers.id')->
+                            select('users.*','line_1','line_2','city','state','zip','organization_name','role_name','area_code','phone_number','extension','last_name','first_name')->
+                            orderBy('last_name', 'asc')->
+                            paginate(25);
         }
+        //dd($users);
         
         return view('admin_tabs.users', compact('users'));
     }
@@ -878,8 +894,10 @@ class AdminToolController extends Controller
         }
     }
 
-    public function userManageRoles($id){
-        $user = User::where('id','=',$id)->first();
+    public function userManageRoles(User $id){
+        //$user = User::where('id','=',$id)->first();
+        $user = $id;
+        //dd($user);
 
         $current_user = Auth::user();
         // current user's highest roles

@@ -15,9 +15,7 @@
         <th>
             <small>NAME</small>
         </th>
-        <th>
-            <small>ROLES</small>
-        </th>
+        
         <th>
             <small>ORGANIZATION</small>
         </th>
@@ -30,17 +28,35 @@
         <th>
             <small>EMAIL</small>
         </th>
+        <th>
+            <small>ROLE</small>
+        </th>
         </thead>
         <tbody>
             @foreach($users as $user)
                 <tr>
                     
-                    <td><small>{{$user->full_name()}}</small></td>
-                    <td class="use-hand-cursor" uk-tooltip="title:CLICK TO SET ROLES" onclick="setRoles({{$user->id}})"><small>@if($user->roles_list() != ''){{$user->roles_list()}}@else <i class="a-circle-plus"></i>@endif</small></td>
-                    <td><small>{{$user->organization_details->organization_name}}</small></td>
-                    <td><small>{!!$user->organization_details->address->formatted_address()!!}</small></td>
-                    <td><small>{{$user->person->phone->number()}}</small></td>
-                    <td><small>{{$user->person->email->email_address}}</small></td>
+                    <td><small>{{$user->first_name}} {{$user->last_name}}</small></td>
+                    
+                    <td><small>@if($user->organization_name)
+                        {{$user->organization_details->organization_name}}@else NA @endif</small></td>
+                    <td><small>@if($user->has_address())
+                        <a target="_blank" href="https://www.google.com/maps?q={{$user->organization_details->address->formatted_address()}}" class="uk-text-muted uk-align-left">
+                            <i class="a-marker-basic uk-text-muted uk-link"></i>
+                        </a> 
+                        <div class="uk-align-left">
+                                {!!$user->organization_details->address->formatted_address()!!}
+                        </div>
+                        
+                        @else <i class="a-marker-basic uk-link uk-align-left"></i><div class="uk-text-muted uk-align-left">NA</div> @endif
+                    </small></td>
+                    <td><small>@if($user->has_organization()) 
+                            @if($user->area_code && $user->phone_number)
+                                {{$user->organization_details->phone_number_formatted()}} 
+                            @endif
+                        @endif</small></td>
+                    <td><small><a href="mailto:{{$user->email}}">{{$user->email}}</a></small></td>
+                    <td class="use-hand-cursor" uk-tooltip="title:CLICK TO SET ROLES" onclick="setRoles({{$user->id}})"><small>@if($user->role_name){{$user->role_name}}@else <i class="a-circle-plus"></i>@endif</small></td>
             
                 </tr>
             @endforeach

@@ -97,7 +97,11 @@ class User extends Authenticatable
             }else{
                 $output = $output.', '.$role->role->name;
             }
+
             
+        }
+        if($output == ''){
+            $output = 'NO ACCESS';
         }
         return $output;
     }
@@ -127,6 +131,23 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
+    public function has_organization() : int
+    {
+        if(is_null($this->organization_id)){
+            return false;
+        } else {
+            return true;
+        }
+    }
+    public function has_address() : int
+    {
+        if(is_null($this->organization_id) || is_null($this->organization_details->address)){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public function organization_details() : HasOne
     {
         return $this->hasOne(Organization::class, 'id', 'organization_id');
@@ -154,7 +175,10 @@ class User extends Authenticatable
 
     public function full_name() : string
     {
-        $fullName = $this->person->first_name." ".$this->person->last_name;
+        $fullName = "NA";
+        if($this->person){
+            $fullName = $this->person->first_name." ".$this->person->last_name;
+        }
         return $fullName;
     }
     /**
