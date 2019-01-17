@@ -25,7 +25,7 @@
                     <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD DOCUMENT</div>
                 </div>
 
-                <div class="uk-width-1-6 " style="padding:18px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;SUBJECT:</div>
+                <div class="uk-width-1-6 " style="padding:18px;padding-top:27px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;SUBJECT:</div>
                 <div class="uk-width-5-6"  style="padding:18px; border-bottom:1px #111 dashed;">
                     <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
                         <div uk-grid class="uk-grid-collapse">
