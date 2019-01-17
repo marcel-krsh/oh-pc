@@ -113,7 +113,7 @@ class User extends Authenticatable
      */
     public function person() : HasOne
     {
-        return $this->hasOne(People::class, 'person_key', 'person_key');
+        return $this->hasOne(People::class, 'id', 'person_id');
     }
 
     /**
