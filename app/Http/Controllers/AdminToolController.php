@@ -896,7 +896,7 @@ class AdminToolController extends Controller
 
     public function userManageRoles(User $user){
         //$user = User::where('id','=',$id)->first();
-        //dd($user);
+        dd($user);
 
         $current_user = Auth::user();
         // current user's highest roles
