@@ -32,7 +32,7 @@
                             @php $currentOrg = ''; @endphp
                             @foreach ($recipients as $recipient)
                                 @if($currentOrg != $recipient->organization_name)
-                                <li><strong>OHFA STAFF</strong></li>
+                                <li><strong>$recipient->organization_name</strong></li>
                                 <hr class="dashed-hr uk-margin-bottom">
                                 @php $currentOrg = $recipient->organization_name; @endphp
                                 @endIf
