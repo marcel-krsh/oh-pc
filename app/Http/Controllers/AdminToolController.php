@@ -903,8 +903,13 @@ class AdminToolController extends Controller
         // current user's highest roles
         $current_user_highest_role = UserRole::where('user_id','=',$current_user->id)->orderBy('role_id','desc')->first();
 
-        if($current_user_highest_role){
-            $roles = Role::where('id','<',$current_user_highest_role->role_id)->get();
+        if($current_user_highest_role &){
+            if($user->id !== $current_user->id){
+                $roles = Role::where('id','<',$current_user_highest_role->role_id)->get();
+            }else{
+              $maxRoleForSelf =  $current_user_highest_role->role_id + 1;
+                $roles = Role::where('id','<',$maxRoleForSelf)->get();
+            }
         }else{
             $roles = null;
         }
@@ -922,12 +927,14 @@ class AdminToolController extends Controller
         UserRole::where('user_id','=',$user->id)->delete();
 
         // add the selected roles
-        foreach($inputs['roles'] as $role){
-            $new_role = new UserRole([
-                'user_id' => $user->id,
-                'role_id' => $role
-            ]);
-            $new_role->save();
+        if(array_key_exists('roles',$inputs)){
+            foreach($inputs['roles'] as $role){
+                $new_role = new UserRole([
+                    'user_id' => $user->id,
+                    'role_id' => $role
+                ]);
+                $new_role->save();
+            }
         }
      
         return 1;
