@@ -47,7 +47,7 @@ class CommunicationController extends Controller
      */
     public function showTabFromProjectId(Project $project)
     {
-        dd($project);
+        //dd($project);
         //Search (in session)
         if (Session::has('communications-search') && Session::get('communications-search') != '') {
             $search = Session::get('communications-search');
@@ -679,7 +679,7 @@ class CommunicationController extends Controller
     //     return view('dashboard.communications', compact('owners_array', 'programs', 'messages', 'ohfa_id'));
     // }
 
-    public function communicationsFromProjectTab($project, $page = 0)
+    public function communicationsFromProjectTab(Project $project, $page = 0)
     {
         return $this->communicationsTab($page, $project);
     }
