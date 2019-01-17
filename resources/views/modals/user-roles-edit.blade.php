@@ -15,10 +15,13 @@
 	  						<form id="user-roles-form" method="post" class="uk-width-1-1 uk-margin-bottom">
 	  							<div class="uk-grid-small" uk-grid>
 	  								<div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+	  									
 	  									@if($roles)
+	  									@php $checked=0; @endphp
 	  									@foreach($roles as $role)
-							            <label><input class="uk-checkbox" type="checkbox" name="roles[]" value="{{$role->id}}" @if($user->hasRole($role->id)) checked @endif> {{$role->role_name}}</label>
+							            <label><input class="uk-radio" type="radio" name="roles" value="{{$role->id}}" @if($user->hasRole($role->id)) @php $checked = 1; @endphp checked @endif> {{$role->role_name}}</label>
 							            @endforeach
+							            <label><input class="uk-radio" type="radio" name="roles" value="0" @if($checked != 1) checked @endif> No Access</label>
 							            @endif
 							        </div>
 			  						<div class="uk-width-1-1 uk-margin-small-top">
