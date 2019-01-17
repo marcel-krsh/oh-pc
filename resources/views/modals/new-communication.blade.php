@@ -14,15 +14,15 @@
 			</div>
             <hr class="uk-width-1-1 dashed-hr uk-margin-large-bottom">
 			<div uk-grid class="uk-grid-collapse">
-                <div class="uk-width-1-6 " style="padding:18px;"><i uk-icon="user"></i> &nbsp;FROM:</div>
+                <div class="uk-width-1-6 " style="padding:18px;"><div style="width:42px;display: inline-block;"><i uk-icon="user"></i></div> &nbsp;FROM:</div>
                 <div class="uk-width-5-6 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{Auth::user()->full_name()}}</div>
-                <div class="uk-width-1-6 " style="padding:18px;"><i uk-icon="users" class=""></i> &nbsp;TO: </div>
+                <div class="uk-width-1-6 " style="padding:18px;"><div style="width:42px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
                 <div class="uk-width-5-6 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
                     <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div>
                 </div>
-                <div class="uk-width-1-6 " style="padding:18px;"><i class="a-paperclip-2 "></i> &nbsp;DOCUMENTS</div>
+                <div class="uk-width-1-6 " style="padding:18px;"><div style="width:42px;display: inline-block;"><i class="a-paperclip-2 "></i></div> &nbsp;DOCUMENTS</div>
                 <div class="uk-width-5-6 "  id="attachments-box" style="border-bottom:1px #111 dashed; padding:18px; padding-left:25px;">
-                    <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: .7"></i> ADD DOCUMENT</div>
+                    <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD DOCUMENT</div>
                 </div>
 
                 <div class="uk-width-1-6 " style="padding:18px;">SUBJECT:</div>
