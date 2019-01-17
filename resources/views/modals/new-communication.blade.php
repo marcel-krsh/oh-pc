@@ -26,11 +26,11 @@
                 </div>
 
                 <div class="uk-width-1-6 " style="padding:18px;">SUBJECT:</div>
-                <div class="uk-width-5-6">
+                <div class="uk-width-5-6"  style="padding:18px; border-bottom:1px #111 dashed;">
                     <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
                         <div uk-grid class="uk-grid-collapse">
                             <div class="uk-width-1-1">
-                                <input type="text" name="subject" class="uk-width-1-1 uk-margin-top uk-input uk-form-large" placeholder="Recipients will see your subject in their notifications.">
+                                <input type="text" name="subject" class="uk-width-1-1 uk-margin-top uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications.">
                             </div>
                         </div>
                     </fieldset>
