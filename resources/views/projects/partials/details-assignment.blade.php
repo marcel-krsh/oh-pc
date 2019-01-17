@@ -117,44 +117,6 @@
 			<span class="italic">NOTE: YOU CAN ONLY APPROVE SCHEDULE CONFLICTS FOR AUDITS THAT YOU ARE THE LEAD. IF YOU ARE NOT THE LEAD, YOU CAN REQUEST APPROVAL FOR THE CONFLICT BY THE LEAD OF THAT AUDIT.</span>
 		</div>
 
-
-		<div class="project-details-info-assignment-schedule uk-position-relative uk-visible-toggle uk-margin-right uk-margin-left" hidden>
-			<div class="uk-overflow-auto">
-				<div class="divTable divTableFixed">
-					<div class="divTableBody">
-						<div class="divTableRow divTableHeader">
-							<div class="divTableCell">&nbsp;</div>
-							
-							<div class="divTableCell">
-								<i class="a-circle-plus" class="use-hand-cursor" onclick="addAssignmentAuditor({{$day->id}});" uk-tooltip="title:CLICK TO ADD AUDITORS;"></i>
-							</div>
-							<div class="divTableCell">&nbsp;</div>
-						</div>
-						@foreach($data['audits'] as $audit)
-						<div class="divTableRow @if(Auth::user()->id == $audit['lead']) isLead @endif">
-							<div class="divTableCell">
-								<strong>{{$audit['id']}}</strong><br />
-								<strong>{{$audit['date']}}</strong>
-							
-								<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;" title="" aria-expanded="false"></i> <strong>{{$audit['name']}}</strong><br />
-							</div>
-							@foreach($audit['schedules'] as $schedule)
-							<div class="divTableCell {{$schedule['status']}} @if($schedule['is_lead']) isLead @endif">
-								@if($schedule['is_lead']) <i class="a-star-3 corner"></i> @endif
-								<i class="{{$schedule['icon']}}" uk-tooltip="title:{{$schedule['tooltip']}};"></i>
-							</div>
-							@endforeach
-							<div class="divTableCell">&nbsp;</div>
-							<div class="divTableCell">&nbsp;</div>
-						</div>
-						@endforeach
-						
-					</div>
-				</div>
-			</div>
-			
-			
-		</div>
 	</div>
 </div>
 <style>
