@@ -3,7 +3,7 @@
 	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
 		@if($project)<input type="hidden" name="project" value="{{$project->id}}">@endif
 		<div class="uk-container uk-container-center"> <!-- start form container -->
-			<div uk-grid class="uk-grid-small">
+			<div uk-grid class="uk-grid-small ">
 				<div class="uk-width-1-1 uk-padding-small">
                     @if($project)
 					<h2>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}}</span></h2>
@@ -13,19 +13,19 @@
 				</div>
 			</div>
             <hr class="uk-width-1-1 dashed-hr uk-margin-large-bottom">
-			<div uk-grid>
-                <div class="uk-width-1-6 uk-padding-small"><i uk-icon="user"></i> FROM:</div>
-                <div class="uk-width-5-6 uk-padding-small" style="border-bottom:1px #111 dashed;">{{Auth::user()->full_name()}}</div>
-                <div class="uk-width-1-6 uk-padding-small"><i uk-icon="users"></i> TO: </div>
-                <div class="uk-width-5-6 uk-padding-small" id="recipients-box" style="border-bottom:1px #111 dashed;">
+			<div uk-grid class="uk-grid-collapse">
+                <div class="uk-width-1-6 uk-padding"><i uk-icon="user"></i> FROM:</div>
+                <div class="uk-width-5-6 uk-padding" style="border-bottom:1px #111 dashed;">{{Auth::user()->full_name()}}</div>
+                <div class="uk-width-1-6 uk-padding"><i uk-icon="users"></i> TO: </div>
+                <div class="uk-width-5-6 uk-padding" id="recipients-box" style="border-bottom:1px #111 dashed;">
                     <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: .7"></i> ADD RECIPIENT</div>
                 </div>
-                <div class="uk-width-1-6 uk-padding-small"><i class="a-paperclip-2"></i></div>
-                <div class="uk-width-5-6 uk-padding-small" id="attachments-box" style="border-bottom:1px #111 dashed;">
+                <div class="uk-width-1-6 uk-padding"><i class="a-paperclip-2"></i></div>
+                <div class="uk-width-5-6 uk-padding" id="attachments-box" style="border-bottom:1px #111 dashed;">
                     <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: .7"></i> ADD ATTACHMENT</div>
                 </div>
 
-                <div class="uk-width-1-6 uk-padding-small">SUBJECT:</div>
+                <div class="uk-width-1-6 uk-padding">SUBJECT:</div>
                 <div class="uk-width-5-6">
                     <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
                         <div uk-grid class="uk-grid-collapse">
@@ -37,8 +37,8 @@
                 </div>
                 
 
-                 <div class="uk-width-1-6 uk-padding-small">MESSAGE:</div> 
-                 <div class="uk-width-5-6 uk-padding-small">
+                 <div class="uk-width-1-6 uk-padding">MESSAGE:</div> 
+                 <div class="uk-width-5-6 uk-padding">
                     <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
                         <div uk-grid class="uk-grid-collapse">
                             <div class="uk-width-1-1">
