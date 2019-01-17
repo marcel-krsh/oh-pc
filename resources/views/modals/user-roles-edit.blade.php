@@ -21,7 +21,7 @@
 	  									@foreach($roles as $role)
 							            <label><input class="uk-radio" type="radio" name="roles" value="{{$role->id}}" @if($user->hasRole($role->id)) @php $checked = 1; @endphp checked @endif> {{$role->role_name}}</label>
 							            @endforeach
-							            <label><input class="uk-radio" type="radio" name="roles" value="0" @if($checked == 1) checked @endif> No Access</label>
+							            <label><input class="uk-radio" type="radio" name="roles" value="0" @if($checked != 1) checked @endif> No Access</label>
 							            @endif
 							        </div>
 			  						<div class="uk-width-1-1 uk-margin-small-top">
