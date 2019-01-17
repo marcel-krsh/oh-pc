@@ -1,12 +1,11 @@
 @if($user)
-@php dd($user,$user->person,$user->roles,$roles); @endphp
 <div class="modal-user-roles">
     <div class="">
 	    <div uk-grid> 
 	  		<div class="uk-padding-remove uk-margin-small-top">
 	  			<div uk-grid> 
 	  				<div class="uk-width-1-1 uk-padding-remove-left">
-			  			<h3>{{$user->person->first_name}} {{$user->person->last_name}}</h3>
+			  			<h3>{{$user->full_name()}</h3>
 					</div>
 
 	  				<div class="uk-width-1-1 uk-margin-remove uk-padding-remove-left">
