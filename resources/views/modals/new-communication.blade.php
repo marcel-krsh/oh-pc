@@ -55,6 +55,8 @@
         </div>
     </form>
 </div>
+
+<div class="uk-hidden">
 OLD STUFF
                     <div uk-grid>
         				<div class="uk-width-1-1@m uk-width-1-1@s">
@@ -318,22 +320,18 @@ OLD STUFF
                     <div class="uk-width-2-3">
                     <h4>Message body</h4>
                     
-                </div></div>                
-                </div>
+               
                 
-            </div>
-            <div class="uk-width-1-1">
-                buttons
-            </div>
+            </div></div></div></div>
             
 				
-			</div>
-		</div> 
+		
+	
 		
 		
 			
 		
-	</form>
+
 	<script type="text/javascript">
 	function submitNewCommunication() {
 
