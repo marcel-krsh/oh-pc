@@ -18,7 +18,9 @@
 					<h4>Select recipients</h4>
 					<div class="communication-selector">
 			            <ul class="uk-list document-menu">
-			            	@foreach ($recipients_from_hfa as $recipient_from_hfa)
+			            	<li><strong>OHFA STAFF</strong></li>
+                            <hr class="dashed-hr uk-margin-bottom">
+                            @foreach ($recipients_from_hfa as $recipient_from_hfa)
                             <li>
                                 <input name="recipients[]" id="recipient-id-{{ $recipient_from_hfa->id }}" value="{{ $recipient_from_hfa->id }}" type="checkbox" class="uk-checkbox">
                                 <label for="recipient-id-{{ $recipient_from_hfa->id }}">
@@ -26,7 +28,15 @@
                                 </label>
                             </li>
                             @endforeach
+                            
+                            @php $currentOrg = ''; @endphp
                             @foreach ($recipients as $recipient)
+                                @if($currentOrg != $recipient->organization_name)
+                                <li><strong>OHFA STAFF</strong></li>
+                                <hr class="dashed-hr uk-margin-bottom">
+                                @php $currentOrg = $recipient->organization_name; @endphp
+                                @endIf
+
                             <li>
                                 <input name="recipients[]" id="recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox">
                                 <label for="recipient-id-{{ $recipient->id }}">

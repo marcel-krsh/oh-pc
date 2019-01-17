@@ -220,7 +220,11 @@ class CommunicationController extends Controller
 
             $recipients_from_hfa = User::where('organization_id', '=', $ohfa_id)
                     ->where('active', 1)
-                    ->orderBy('name', 'asc')
+                    ->join('people','people.id','users.person_id')
+                    ->join('organizations','orgnaizations.id','users.organization_id')
+                    ->select('users.*','last_name','first_name','organization_name')
+                    ->where('active', 1)
+                    ->orderBy('last_name', 'asc')
                     ->get();
            
             // $recipients = User::where('organization_id', '!=', $ohfa_id)
