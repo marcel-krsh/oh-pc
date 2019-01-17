@@ -47,10 +47,10 @@
                         </div>
                     </fieldset>
                 </div>
-                <hr class="dashed-hr">
+                <hr class="dashed-hr uk-width-1-1 uk-margin-bottom-large">
                 <div class="uk-width-1-3">&nbsp;</div>
-                <div class="uk-width-1-3"><a class="uk-width-2-6 uk-button uk-button-primary"><i class="a-circle-cross"></i> CANCEL</a></div>
-                <div class="uk-width-1-3"><a class="uk-width-2-6 uk-button uk-button-success"><i class="a-paper-plane"></i> SEND</a></div>
+                <div class="uk-width-1-3"><a class="uk-width-5-6 uk-button uk-align-right "><i class="a-circle-cross"></i> CANCEL</a></div>
+                <div class="uk-width-1-3"><a class="uk-width-5-6 uk-align-right uk-button uk-button-success"><i class="a-paper-plane"></i> SEND</a></div>
             </div>
         </div>
     </form>
