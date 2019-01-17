@@ -254,24 +254,31 @@ class AdminToolController extends Controller
     {
         if (Session::has('users-search') && Session::get('users-search') != '') {
             $search =   Session::get('users-search');
-            $users  =    User::with(['roles','person','organization_details'])
-                            ->join('people', 'users.person_id', '=', 'people.id')
-                            ->select('people.id as this_person_id','people.last_name','people.first_name')
-                            ->where(function ($query) use ($search) {
-                                        $query->where('name', 'LIKE', '%'.$search.'%');
-                                    })
-                            ->orderBy('last_name', 'asc')
-                            ->paginate(25);
+            $users  =    User::join('people', 'users.person_id', '=', 'people.id')->
+                                join('users_roles','users.id','=','users_roles.user_id')->
+                                join('roles','users_roles.role_id','=','roles.id')->
+                                join('organizations','people.organization_id','organizations.id')->
+                                join('phone_numbers','organizations.default_phone_number_id','phone_numbers.id')->
+                                join('addresses','organizations.default_address_id','addresses.id')->
+                                select('users.*','line_1','line_2','city','state','zip','organization_name','role_name','area_code','phone_number','extension','last_name','first_name')->
+                                where('first_name','LIKE','%'.$search.'%')->
+                                orWhere('last_name','LIKE','%'.$search.'%')->
+                                orWhere('organization_name','LIKE','%'.$search.'%')->
+                                orderBy('last_name', 'asc')->
+                                paginate(25);
         } else {
             $users  =    User::
-                            with(['organization_details'])->
                             join('people', 'users.person_id', '=', 'people.id')->
-                            join('roles','users.id','=','roles.user_id')->
-                            select('people.id as this_person_id','people.last_name','people.first_name')->
+                            join('users_roles','users.id','=','users_roles.user_id')->
+                            join('roles','users_roles.role_id','=','roles.id')->
+                            join('organizations','people.organization_id','organizations.id')->
+                            join('addresses','organizations.default_address_id','addresses.id')->
+                            join('phone_numbers','organizations.default_phone_number_id','phone_numbers.id')->
+                            select('users.*','line_1','line_2','city','state','zip','organization_name','role_name','area_code','phone_number','extension','last_name','first_name')->
                             orderBy('last_name', 'asc')->
                             paginate(25);
         }
-        //dd($users);
+        dd($users);
         
         return view('admin_tabs.users', compact('users'));
     }
