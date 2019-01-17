@@ -16,7 +16,7 @@
 			<div uk-grid>
 				<div class="uk-width-1-3@m uk-width-1-1@s">
 					<h4>Select recipients</h4>
-					<div class="communication-selector">
+					<div class="communication-selector uk-scrollable-box">
 			            <ul class="uk-list document-menu">
 			            	<li class="ohfa "><strong>OHFA STAFF</strong></li>
                             <hr class="dashed-hr uk-margin-bottom">
