@@ -15,7 +15,6 @@ use App\Models\SystemSetting;
 use File;
 use Storage;
 use DB;
-use App\Models\Program;
 use App\Models\Document;
 use App\Models\DocumentCategory;
 use App\Mail\EmailNotification;
@@ -24,6 +23,7 @@ use App\Models\CommunicationRecipient;
 use App\Models\CommunicationDocument;
 //use App\LogConverter;
 use App\Models\CachedAudit;
+use App\Models\Project;
 
 class CommunicationController extends Controller
 {
@@ -42,15 +42,15 @@ class CommunicationController extends Controller
     /**
      * Show the communication list for a specific parcel.
      *
-     * @param  int  $parcel_id
+     * @param  int  $project_id
      * @return Response
      */
-    public function showTabFromParcelId(Parcel $parcel)
+    public function showTabFromProjectId(Project $project)
     {
         //Search (in session)
         if (Session::has('communications-search') && Session::get('communications-search') != '') {
             $search = Session::get('communications-search');
-            $search_messages = Communication::where('parcel_id', $parcel->id)
+            $search_messages = Communication::where('parcel_id', $project->id)
                     ->where('message', 'LIKE', '%'.$search.'%')
                     ->with('owner')
                     ->with('recipients')
@@ -66,7 +66,7 @@ class CommunicationController extends Controller
                     ->orderBy('created_at', 'desc')
                     ->get();
         } else {
-            $messages = Communication::where('parcel_id', $parcel->id)
+            $messages = Communication::where('parcel_id', $project->id)
                     ->where('parent_id', null)
                     ->with('owner')
                     ->orderBy('created_at', 'desc')
@@ -113,7 +113,7 @@ class CommunicationController extends Controller
                 ->orWhere('id', $message->parent_id)
                 ->count();
 
-                $message_id_array = Communication::where('parcel_id', $parcel->id)
+                $message_id_array = Communication::where('parcel_id', $project->id)
                     ->where('id', $message->parent_id)
                     ->orWhere('parent_id', $message->parent_id)
                     ->pluck('id')->toArray();
@@ -122,7 +122,7 @@ class CommunicationController extends Controller
                 ->orWhere('id', $message->id)
                 ->count();
                 
-                $message_id_array = Communication::where('parcel_id', $parcel->id)
+                $message_id_array = Communication::where('parcel_id', $project->id)
                     ->where('id', $message->id)
                     ->orWhere('parent_id', $message->id)
                     ->pluck('id')->toArray();
@@ -134,7 +134,7 @@ class CommunicationController extends Controller
                 ->count();
         }
 
-        return view('parcels.parcel_communications', compact('parcel', 'messages', 'owners', 'owners_array'));
+        return view('parcels.parcel_communications', compact('project', 'messages', 'owners', 'owners_array'));
     }
 
 
@@ -262,7 +262,7 @@ class CommunicationController extends Controller
     /**
      * View Replies
      *
-     * @param null $parcel_id
+     * @param null $project_id
      * @param      $message_id
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -284,7 +284,7 @@ class CommunicationController extends Controller
             $audit = CachedAudit::find((int) $audit_id);
         }
 
-        // if(!$parcel) {
+        // if(!$project) {
         //     throw new \Exception('Parcel not found.');
         // }
 
