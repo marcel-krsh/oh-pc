@@ -41,7 +41,7 @@
                     <td><small>@if($user->organization_name)
                         {{$user->organization_details->organization_name}}@else NA @endif</small></td>
                     <td><small>@if($user->has_address())
-                        <a target="_blank" href="https://www.google.com/maps?q={{$user->organization_details->address->formatted_address()}}" class="uk-text-muted uk-align-left">
+                        <a target="_blank" href="https://www.google.com/maps?q={{urlencode(str_replace('<br />',' ',$user->organization_details->address->formatted_address()))}}" class="uk-text-muted uk-align-left">
                             <i class="a-marker-basic uk-text-muted uk-link"></i>
                         </a> 
                         <div class="uk-align-left">
