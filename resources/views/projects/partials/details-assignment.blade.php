@@ -75,51 +75,38 @@
 						
 						<div class="divTableRow divTableHeader">
 							<div class="divTableCell">
-								<h3 style="margin-top:5px;text-align: left;"> {{formatDate($day->date, 'l F d, Y')}} <small><i class="a-trash-4 use-hand-cursor" onclick="deleteDay({{$day->id}});"></i></small></h3>
+								
 							</div>
 							<div class="divTableCell">
-								<span uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($project->selected_audit()->lead_auditor->full_name())}};" title="" aria-expanded="false" class="user-badge user-badge-{{$project->selected_audit()->lead_auditor->badge_color}} no-float uk-link" >{{$project->selected_audit()->lead_auditor->initials()}}</span>
+								<span uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($project->selected_audit()->lead_auditor->full_name())}} {{$project->selected_audit()->lead}};" title="" aria-expanded="false" class="user-badge user-badge-{{$project->selected_audit()->lead_auditor->badge_color}} no-float uk-link" >{{$project->selected_audit()->lead_auditor->initials()}}</span>
 							</div>
 							@foreach($project->selected_audit()->auditors as $auditor)
 							@if($auditor->user_id != $project->selected_audit()->lead_auditor->id)
 							<div class="divTableCell">
-								<span uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($auditor->user->full_name())}};" title="" onclick="addAssignmentAuditor({{$day->id}},{{$auditor->user_id}});" aria-expanded="false" class="user-badge user-badge-{{$auditor->user->badge_color}} no-float uk-link" >{{$auditor->user->initials()}}</span>
+								<span uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($auditor->user->full_name())}} {{$auditor->user_id}};" title="" onclick="removeAuditorFromAudit({{$auditor->user_id}});" aria-expanded="false" class="user-badge user-badge-{{$auditor->user->badge_color}} no-float uk-link" >{{$auditor->user->initials()}}</span>
 							</div>
 							@endif
 							@endforeach
 
 							<div class="divTableCell">
-								<i class="a-circle-plus" onclick="addAssignmentAuditor({{$day->id}});" uk-tooltip="title:CLICK TO ADD AUDITORS;"></i>
+								<i class="a-circle-plus use-hand-cursor" onclick="addAssignmentAuditor({{$day->id}});" uk-tooltip="title:CLICK TO ADD AUDITORS;"></i>
 							</div>
 							<div class="divTableCell">&nbsp;</div>
 						</div>
 
-						@foreach($daily_schedules[$day->id] as $daily_schedule) 
-						<div class="divTableRow @if(Auth::user()->id == $daily_schedule['audit']->lead) isLead @endif">
+						<div class="divTableRow isLead">
 							<div class="divTableCell">
-								<div uk-grid>
-									<div class="uk-width-1-3">
-										<strong>{{$daily_schedule['audit']->project_ref}}</strong>
-									</div>
-									<div class="uk-width-2-3">
-										<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;" title="" aria-expanded="false"></i> <strong>{{$daily_schedule['audit']->title}}</strong>
-									</div>
-								</div>
+								<h3 style="margin-top:5px;text-align: left;"> {{formatDate($day->date, 'l F d, Y')}} <small><i class="a-trash-4 use-hand-cursor" onclick="deleteDay({{$day->id}});"></i></small></h3>
 							</div>
 							@foreach($auditors_key as $auditor_id)
-							<div class="divTableCell @if($auditor_id == $daily_schedule['audit']->lead) isLead @endif">
-								@if($auditor_id == $daily_schedule['audit']->lead) <i class="a-star-3 corner"></i> @endif
-								@if($daily_schedule['auditors'][$auditor_id] == 'notscheduled')
+							<div class="divTableCell isLead>
+								@if($auditor_id == $project->selected_audit()->lead) <i class="a-star-3 corner"></i> @endif
 								<i class="a-circle"></i>
-								@elseif($daily_schedule['auditors'][$auditor_id] == 'scheduled')
-								<i class="a-circle-checked"></i>
-								@endif
 							</div>
 							@endforeach
 							<div class="divTableCell">&nbsp;</div>
 							<div class="divTableCell">&nbsp;</div>
 						</div>
-						@endforeach
 
 					</div>
 				</div>
@@ -395,6 +382,21 @@
 		dynamicModalLoad('audit/{{$data['project']['audit_id']}}/scheduling/days/'+dayid+'/auditors/'+auditorid,1,0,1);
 	}
 
+	function removeAuditorFromAudit(auditorid){
+		UIkit.modal.confirm("Are you sure you want remove this auditor from this audit? It will also remove all the scheduled times associated with that auditor.").then(function(){
+            $.post("auditors/"+auditorid+"/removefromaudit/{{$data['project']['audit_id']}}", {
+                    '_token' : '{{ csrf_token() }}'
+                    }, function(data) {
+                        if(data!=1){ 
+                            UIkit.modal.alert(data,{stack: true});
+                        } else {
+                            UIkit.notification('<span uk-icon="icon: check"></span> Auditor Removed', {pos:'top-right', timeout:1000, status:'success'});   
+                            $('#project-details-button-2').trigger( 'click' );       
+                        }
+            });
+        });
+	}
+
 	function deleteDay(id){
 
 		UIkit.modal.confirm("Are you sure you want to delete this date? It will also delete all scheduled time for that day.").then(function(){
@@ -444,7 +446,6 @@
 	     wrap: true,
 	     positionElement: $('.addadaybutton')[0],
 	    onChange: function(selectedDates, dateStr, instance) {
-	        console.log("yo "+selectedDates+" ---- "+dateStr);
 
 	        $.post("/audit/{{$data['project']['audit_id']}}/scheduling/addaday", {
 	            'date' : dateStr,

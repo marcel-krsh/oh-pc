@@ -51,7 +51,7 @@ class Audit extends Model
     }
     public function project(): HasOne
     {
-        return $this->hasOne(\App\Models\Project::class, 'id','project_id');
+        return $this->hasOne(\App\Models\Project::class, 'project_key','development_key');
     }
     public function amenity_inspections() : HasMany {
        return $this->hasMany('\App\Models\AmenityInspection');

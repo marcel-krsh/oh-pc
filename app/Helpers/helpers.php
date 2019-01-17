@@ -10,6 +10,25 @@ function formatDate($date, $format="F d, Y", $from_format="Y-m-d H:i:s")
     return Carbon\Carbon::createFromFormat($from_format , $date)->format($format);
 }
 
+function formatTime($time, $format="g:i A", $from_format="H:i:s")
+{
+    return Carbon\Carbon::createFromFormat($from_format , $time)->format($format);
+}
+
+function timeToSlot($time) 
+{
+    $hour =  \Carbon\Carbon::createFromFormat('H:i:s', $time)->format('H');
+    $min =  \Carbon\Carbon::createFromFormat('H:i:s', $time)->format('i');
+    return ($hour - 6)*4 + 1 + $min / 15;
+}
+
+function slotToTime($slot) 
+{
+    $hours = sprintf("%02d",  floor(($slot - 1) * 15 / 60) + 6);
+    $minutes = sprintf("%02d", ($slot - 1) * 15 % 60);
+    return formatTime($hours.':'.$minutes.':00');
+}
+
 /**
  * Format Size Units
  *

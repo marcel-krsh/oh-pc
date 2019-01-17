@@ -117,6 +117,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Availabilities
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function availabilities() : HasMany
+    {
+        return $this->hasMany(Availability::class, 'user_id', $this->id);
+    }
+
+    /**
      * Organization
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -355,10 +365,123 @@ class User extends Authenticatable
 
     public function isScheduled($audit_id, $day_id) : int
     {
+        // audit_id is the id of Audit, not CachedAudit
         if(count(ScheduleTime::where('auditor_id','=',$this->id)->where('audit_id','=',$audit_id)->where('day_id','=',$day_id)->get())){
             return 1;
         }else{
             return 0;
         }
+    }
+
+    public function isAuditorOnAudit($audit_id) : int
+    {
+        // audit_id is the id of Audit, not CachedAudit
+        if(count(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id', '=', $this->id)->get())){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    // returns the times and slots of earliest and latest availability
+    public function availabilityOnDay($day_id)
+    {
+        // availability without taking into account scheduled time
+        $day = ScheduleDay::where('id','=',$day_id)->first();
+        $date = formatDate($day->date, 'Y-m-d', 'Y-m-d H:i:s');
+        $availabilities = Availability::where('user_id','=',$this->id)->where('date','=',$date)->get();
+
+        if(count($availabilities)){
+            // $start_slot = null; // 1 06:00
+            // $end = null; // 58 20:00
+            $start_slot = null;
+            $end_slot = null;
+            foreach($availabilities as $a){
+                $a_start_slot = timeToSlot($a->start_time);
+                $a_end_slot = timeToSlot($a->end_time);
+
+                // initial values
+                if(!$start_slot) $start_slot = $a_start_slot;
+                if(!$end_slot) $start_slot = $a_start_slot;
+
+                // compare and save the earliest and latest times
+                if($a_start_slot < $start_slot) $start_slot = $a_start_slot;
+                if($a_end_slot > $end_slot) $end_slot = $a_end_slot;
+            }
+            return [slotToTime($start_slot), slotToTime($end_slot), $start_slot, $end_slot];
+        }
+
+        return null;
+    }
+
+    public function scheduledOnDay($day_id, $audit_id)
+    {
+        // scheduled times
+        $schedules = ScheduleTime::where('day_id','=',$day_id)->where('audit_id','=',$audit_id)->where('user_id','=',$this->id)->get();
+
+
+    }
+
+    public function timeAvailableOnDay($day_id)
+    {
+        // availability after taking into account the schedules
+        $availabilityOnDay = $this->availabilityOnDay($day_id); 
+        if($availabilityOnDay){
+            $span = $availabilityOnDay[3] - $availabilityOnDay[2];
+
+            $hours = sprintf("%02d",  floor(($span) * 15 / 60));
+            $minutes = sprintf("%02d", ($span) * 15 % 60);
+
+            return $hours.':'.$minutes;
+        }else{
+            return null;
+        }
+        
+    }
+
+    public function default_address()
+    {
+        // if there is a default address, pick it, otherwise choose the organization address
+        $address = $this->addresses()->where('default','=',1)->orderBy('id','desc')->first();
+        if($address){
+            return $address->formatted_address();
+        }else{
+            if($this->organization_details){
+                return $this->organization_details->address->formatted_address();
+            }else{
+                return '';
+            }
+        }
+    }
+
+    public function distanceAndTime($audit_id)
+    {
+        $address = $this->default_address();
+        if($address != ''){
+            $audit = Audit::where('id','=',$audit_id)->first();
+            $project_address = $audit->project->address->formatted_address();
+//dd("https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$address."&destinations=".$project_address."&key=AIzaSyCL8rFkhcyFrEV-sA8EXs5TOpw8tD7Dsvg");
+
+            $address = urlencode($address);
+            $project_address = urlencode($project_address);
+            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=".$address."&destinations=".$project_address."&key=AIzaSyCL8rFkhcyFrEV-sA8EXs5TOpw8tD7Dsvg";
+            $ch      = curl_init();
+            $timeout = 0;
+            curl_setopt( $ch, CURLOPT_URL, $url );
+            curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
+            curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+            curl_setopt( $ch, CURLOPT_HEADER, 0 );
+            curl_setopt( $ch, CURLOPT_CONNECTTIMEOUT, $timeout );
+            $data = curl_exec( $ch );
+            // send request and wait for response
+            $response = json_decode( $data, true );
+            curl_close( $ch );
+            
+            return [$response['rows'][0]['elements'][0]['distance']['text'], $response['rows'][0]['elements'][0]['duration']['text']];
+            
+        }else{
+            return null;
+        }
+        
     }
 }

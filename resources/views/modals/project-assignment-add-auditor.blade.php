@@ -1,7 +1,8 @@
 <div id="modal-project-assignment-add-auditor" class="uk-padding-remove uk-margin-bottom uk-overflow-auto">
-	<h2>Schedule Auditors for {{formatDate($day->date)}}</h2>
+	<h2>Schedule Auditors for {{formatDate($day->date, 'l F d, Y')}}</h2>
 
-	<div id="project-assignment-add-auditor-table">
+	<div id="project-assignment-add-auditor-table" class="uk-margin-large-top uk-margin-large-bottom">
+		@if($auditors)
 		<div id="project-assignment-add-auditor-table-header" uk-grid>
 			<div class="uk-width-3-5 uk-padding-remove">
 				<div uk-grid>
@@ -16,23 +17,15 @@
 							<div class="uk-width-1-2 uk-padding-remove">
 								<div uk-grid>
 									<div class="uk-width-1-1 uk-padding-remove-left">
-										STATS AUDITOR NAME
+										AUDITOR NAME<hr />
 									</div>
-									<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-left uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" uk-tooltip="title:SORT BY NAME;" aria-expanded="false">
-										<a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'sort-by-name',1);"></a>
-									</span> 
-									<div class="uk-dropdown" aria-expanded="false"></div>
 								</div>
 							</div>
 							<div class="uk-width-1-2 uk-padding-remove">
 								<div uk-grid>
 					            	<div class="uk-width-1-1">
-										TIME AVAILABLE THIS DAY
+										TIME AVAILABLE THIS DAY<hr />
 									</div>
-									<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column"  uk-tooltip="title:SORT BY AVAILABILITY;" aria-expanded="false">
-										<a id="" class="sort-asc" onclick="loadListTab(1,null,null,'sort-by-availability',1);"></a>
-									</span> 
-									<div class="uk-dropdown" aria-expanded="false"></div>
 								</div>
 							</div>
 						</div>
@@ -44,48 +37,36 @@
 					<div class="uk-width-1-4 uk-padding-remove">
 						<div uk-grid>
 			            	<div class="uk-width-1-1 uk-text-center">
-								OPEN
+								OPEN<hr />
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column"  uk-tooltip="title:SORT BY OPEN TIME;" aria-expanded="false">
-								<a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'sort-by-open',1);"></a>
-							</span> 
-							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 					</div>
 					<div class="uk-width-1-4 uk-padding-remove">
 						<div uk-grid>
 			            	<div class="uk-width-1-1 uk-text-center">
-								STARTING
+								STARTING<hr />
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column"  uk-tooltip="title:SORT BY START TIME;" aria-expanded="false">
-								<a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'sort-by-starting',1);"></a>
-							</span> 
-							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 					</div>
 					<div class="uk-width-1-2 uk-padding-remove">
 						<div uk-grid>
 			            	<div class="uk-width-1-1 uk-text-center">
-								DISTANCE TO PROJECT
+								DISTANCE TO PROJECT<hr />
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column"  uk-tooltip="title:SORT BY DISTANCE;" aria-expanded="false">
-								<a id="" class="sort-neutral" onclick="loadListTab(1,null,null,'sort-by-distance',1);"></a>
-							</span> 
-							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div id="auditorListScroller" class="uk-overflow-auto">
-			@foreach($audit->auditors as $auditor)
+		<div id="auditorListScroller" class="uk-overflow-auto uk-margin-top">
+			@foreach($auditors as $auditor)
 			<div class="project-assignment-add-auditor-row" uk-grid>
 				<div class="uk-width-3-5 uk-padding-remove">
 					<div uk-grid>
 						<div class="uk-width-1-6 uk-padding-remove uk-text-center">
 							<div uk-grid>
 								<div class="uk-width-1-1 uk-padding-remove">
-									<i class="@if($auditor->isScheduled($audit->id, $day->id)) a-circle-checked @else a-circle-plus @endif large use-hand-cursor" onclick="$('#auditorListScroller').toggleClass('noscroll');" uk-tooltip="title:@if($auditor->isScheduled($audit->id, $day->id)) CLICK TO REMOVE AUDITOR @else CLICK TO ADD AUDITOR @endif;"></i>
+									<i id="auditor-{{$auditor->id}}" class="@if($auditor->isAuditorOnAudit($audit->audit_id)) a-circle-checked @else a-circle-plus @endif large use-hand-cursor @if($auditor->isScheduled($audit->audit_id, $day->id)) ok-actionable @endif" onclick="addAuditorToAudit({{$auditor->id}});" uk-tooltip="title:@if($auditor->isScheduled($audit->audit_id, $day->id)) CLICK TO REMOVE AUDITOR @else CLICK TO ADD AUDITOR @endif;"></i>
 					            </div>
 							</div>
 						</div>
@@ -94,96 +75,59 @@
 								<div class="uk-width-1-2 uk-padding-remove">
 									<div class="leaders uk-width-1-1">
 					    				<div>
-					    					<span><i class="a-person-chart-bar large use-hand-cursor" style="padding-right: 8px;" onclick="addAssignmentAuditorStats({{$audit->id}}, {{$auditor->user_id}});" uk-tooltip="title:CLICK TO VIEW AUDITOR'S SCHEDULE & STATS;"></i> {{$auditor->user->full_name()}}</span>
+					    					<span>{{$auditor->full_name()}}</span>
 					    				</div>
 					    			</div>
 								</div>
 								<div class="uk-width-1-2">
-									{{$auditor['availability']}}
+									@if(!$auditor->availabilityOnDay($day->id))
+									No availability 
+									@else
+									Available {{$auditor->availabilityOnDay($day->id)[0]}} - {{$auditor->availabilityOnDay($day->id)[1]}}
+									@endif
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="uk-width-2-5 uk-padding-remove">
+					@if($auditor->availabilityOnDay($day->id))
 					<div uk-grid>
 						<div class="uk-width-1-4 uk-text-center">
-							<span uk-tooltip="title:{{$auditor['open_tooltip']}};">{{$auditor['open']}}</span>
+							<span uk-tooltip="title:8 HOURS ARE OPEN FOR SCHEDULING;">
+								@if($auditor->timeAvailableOnDay($day->id))
+								{{$auditor->timeAvailableOnDay($day->id)}}
+								@endif
+							</span>
 						</div>
 						<div class="uk-width-1-4 uk-text-center">
-							<span uk-tooltip="title:{{$auditor['starting_tooltip']}};">{{$auditor['starting']}}</span>
+							<span uk-tooltip="title:{{$auditor['starting_tooltip']}};">
+								@if($auditor->availabilityOnDay($day->id))
+								{{$auditor->availabilityOnDay($day->id)[0]}}
+								@endif
+							</span>
 						</div>
-						<div class="uk-width-1-2 uk-text-center">
-							{{$auditor['distance_time']}} | {{$auditor['distance']}} Miles | <i class="{{$auditor['distance_icon']}}" uk-tooltip="title:{{$auditor['distance_tooltip']}};"></i>
-						</div>
-					</div>
-				</div>
-			</div>
-			@endforeach
-
-			@foreach($data['auditors'] as $auditor)
-			<div class="project-assignment-add-auditor-row @if($auditor['status'] == 'action-required') {{$auditor['status']}} @endif" uk-grid>
-				<div class="uk-width-3-5 uk-padding-remove">
-					<div uk-grid>
-						<div class="uk-width-1-6 uk-padding-remove uk-text-center">
-							<div uk-grid>
-								<div class="uk-width-1-1 uk-padding-remove {{$auditor['status']}}">
-									<i class="{{$auditor['icon']}} large use-hand-cursor" onclick="$('#auditorListScroller').toggleClass('noscroll');" uk-tooltip="title:{{$auditor['icon_tooltip']}};"></i>
-									<div class="" uk-drop="mode: click">
-									    <div class="uk-card uk-card-body uk-card-rounded">
-									        <ul class="uk-list">
-					                        	<li onclick=""><i class="a-folder"></i> File Audit Only</li>	
-					                        	<li onclick=""><i class="a-mobile-home"></i> Site Visit Only</li>	
-					                        	<li onclick=""><i class="a-mobile-home"></i><i class="a-folder"></i> Both</li>	
-						                    </ul>
-									    </div>
-									</div>
-					            </div>
-							</div>
-						</div>
-						<div class="uk-width-5-6 uk-padding-remove">
-							<div uk-grid>
-								<div class="uk-width-1-2 uk-padding-remove">
-									<div class="leaders uk-width-1-1">
-					    				<div>
-					    					<span><i class="a-person-chart-bar large use-hand-cursor" style="padding-right: 8px;" onclick="addAssignmentAuditorStats({{$data['project']['id']}}, {{$auditor['id']}});" uk-tooltip="title:CLICK TO VIEW AUDITOR'S SCHEDULE & STATS;"></i> {{$auditor['name']}}</span>
-					    				</div>
-					    			</div>
-								</div>
-								<div class="uk-width-1-2">
-									{{$auditor['availability']}}
-								</div>
-							</div>
+						<div class="uk-width-1-2 uk-text-center" >
+							{{$auditor->distanceAndTime($audit->audit_id)[1]}} | {{$auditor->distanceAndTime($audit->audit_id)[0]}} | <i class="a-home-marker" uk-tooltip="title: {!!$auditor->default_address()!!} ;"></i>
 						</div>
 					</div>
-				</div>
-				<div class="uk-width-2-5 uk-padding-remove">
-					<div uk-grid>
-						<div class="uk-width-1-4 uk-text-center">
-							<span uk-tooltip="title:{{$auditor['open_tooltip']}};">{{$auditor['open']}}</span>
-						</div>
-						<div class="uk-width-1-4 uk-text-center">
-							<span uk-tooltip="title:{{$auditor['starting_tooltip']}};">{{$auditor['starting']}}</span>
-						</div>
-						<div class="uk-width-1-2 uk-text-center">
-							{{$auditor['distance_time']}} | {{$auditor['distance']}} Miles | <i class="{{$auditor['distance_icon']}}" uk-tooltip="title:{{$auditor['distance_tooltip']}};"></i>
-						</div>
-					</div>
+					@endif
 				</div>
 			</div>
 			@endforeach
 		</div>
+		@else
+		There are no auditors in the system yet.
+		@endif
 	</div>
 
 	<div class="project-details-info-assignment-summary uk-margin-top uk-flex-middle" uk-grid>
-		<div class="uk-width-1-3 uk-padding-remove">
-			<button class="uk-button uk-button-border uk-link" onclick="" type="button"><i class="far fa-window-close"></i> CLOSE WINDOW</button>
-		</div>
-		<div class="uk-width-1-3">
-			<button class="uk-button uk-button-border uk-link" onclick="" type="button"><i class="far fa-calendar-check"></i> ALL AUDITORS ARE SCHEDULE</button>
+		<div class="uk-width-1-1 uk-padding-remove uk-text-right">
+			<button class="uk-button uk-button-primary" onclick="dynamicModalClose();" type="button">CLOSE WINDOW</button>
 		</div>
 	</div>
 
+	@if($auditors)
 	<div id="project-details-info-assignment-stats" class="uk-margin-top uk-flex-middle" uk-grid>
 		<div class="uk-width-2-3" uk-padding-remove>
 			<div class="uk-card uk-card-info uk-card-body">
@@ -192,8 +136,7 @@
 		                <i class="a-info-circle"></i>
 		            </div>
 		            <div class="uk-width-5-6">
-			            <p>Clicking the <i class="a-circle-plus"></i> icon will add the auditor to your audit and automatically assign either all their open hours, or the number of hours needed (whichever is less) to your audit.</p> 
-			            <p>Pink/Grayed out lines indicate auditors who have assignments that same day, and will require approval by the lead of the other assignments if selected.</p> 
+			            <p>Clicking the <i class="a-circle-plus"></i> icon will add the auditor to your audit.</p> 			            
 			            <p>"Time Available This Day" is the time period the auditor stated they are available to be scheduled for audits on the selected day.</p>
 			            <p>"Open" is the number of hours that the auditor has left on the selected day that can be scheduled for this audit.</p> 
 			            <p>"Starting" is the approximate time they would be available to start their travel to this audit.</p>
@@ -203,105 +146,25 @@
 	        </div>
 		</div>
 	</div>
+	@endif
 </div>
 <script>
-	var chartColors = {
-		  estimated: '#0099d5',
-		  needed: '#d31373'
-		};
-	Chart.defaults.global.legend.display = false;
-    Chart.defaults.global.tooltips.enabled = true;
-
-    // THIS SCRIPT MUST BE UPDATED WITH NEW VALUES AFTER A NEW FUNDING SUBMISSION HAS BEEN MADE  - to make this simple - this tab is reloaded on form submission of new payment/ payment edits //
-    var assignmentOptions = {
-        //Boolean - Whether we should show a stroke on each segment
-        segmentShowStroke : false,
-        legendPosition : 'bottom',
-
-        rotation: (1.5 * Math.PI),
-
-        "cutoutPercentage":70,
-			"legend" : {
-				"display" : false
-			},
-			"responsive" : true,
-			"maintainAspectRatio" : false,
-
-        //String - The colour of each segment stroke
-        segmentStrokeColor : "#fff",
-
-        //Number - The width of each segment stroke
-        segmentStrokeWidth : 0,
-
-        //The percentage of the chart that we cut out of the middle.
-        // cutoutPercentage : 67,
-
-        easing: "linear",
-
-        duration: 100000,
-
-        tooltips: {
-            enabled: true,
-            mode: 'single',
-            callbacks: {
-                label: function(tooltipItem, data) {
-                    var label = data.labels[tooltipItem.index];
-                    var datasetLabel = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                    return label + ': ' + addCommas(datasetLabel) + ':00' ;
-                }
+	function addAuditorToAudit(auditorid){
+		$.post("auditors/"+auditorid+"/addtoaudit/{{$audit->audit_id}}", {
+            'dayid' : {{$day->id}},
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            if(data!=1){ 
+                UIkit.modal.alert(data,{stack: true});
+            } else {
+            	if($('#auditor-'+auditorid).hasClass('a-circle-plus')){
+            		$('#auditor-'+auditorid).removeClass('a-circle-plus')
+            		$('#auditor-'+auditorid).addClass('a-circle-checked');
+            	}
+                UIkit.notification('<span uk-icon="icon: check"></span> Auditor Added', {pos:'top-right', timeout:1000, status:'success'});
+                $('#project-details-button-2').trigger( "click" );
             }
-        }
-
-
-    }
-    function addCommas(nStr)
-    {
-        nStr += '';
-        x = nStr.split('.');
-        x1 = x[0];
-        x2 = x.length > 1 ? '.' + x[1] : '';
-        var rgx = /(\d+)(\d{3})/;
-        while (rgx.test(x1)) {
-            x1 = x1.replace(rgx, '$1' + ',' + '$2');
-        }
-        return x1 + x2;
-    }
-
-    var mainAssignmentChart = new Chart(document.getElementById("chartjs-assignment-auditor"),{
-		"type":"doughnut",
-		"options": assignmentOptions,
-		
-		"data":{
-			"labels": ["Needed","Estimated"],
-			"datasets":[
-				{
-					"label":"Program 1",
-					"data":[27,107],
-					"backgroundColor":[
-						chartColors.needed,
-						chartColors.estimated
-					],
-					"borderWidth": 1
-				}
-			]
-		}
-	});
-
-	function addAssignmentAuditorStats(projectid, auditorid){
-		$('#project-details-info-assignment-stats').html("updating...");
-
-		var tempdiv = '<div style="height:100px;text-align:center;width:100%;"><div uk-spinner style="margin: 20px 0;"></div></div>';
-		$('#project-details-info-assignment-stats').html(tempdiv);
-
-		var url = 'projects/'+projectid+'/assignments/addauditor/'+auditorid+'/stats';
-	    $.get(url, {
-	        }, function(data) {
-	            if(data=='0'){ 
-	                UIkit.modal.alert("There was a problem getting the assignment information.");
-	            } else {
-	            	
-					$('#project-details-info-assignment-stats').html(data);
-	        	}
-	    });
+        } );
 	}
+
 </script>
