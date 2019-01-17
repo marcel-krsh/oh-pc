@@ -21,7 +21,7 @@
 			            	<li class="ohfa"><strong>OHFA STAFF</strong></li>
                             <hr class="dashed-hr uk-margin-bottom">
                             @foreach ($recipients_from_hfa as $recipient_from_hfa)
-                            <li class="ohfa {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$$recipient_from_hfa->organization_name)))))}} {{ strtolower($recipient_from_hfa->first_name) }} {{ strtolower($recipient_from_hfa->last_name) }}">
+                            <li class="ohfa {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient_from_hfa->organization_name)))))}} {{ strtolower($recipient_from_hfa->first_name) }} {{ strtolower($recipient_from_hfa->last_name) }}">
                                 <input name="recipients[]" id="recipient-id-{{ $recipient_from_hfa->id }}" value="{{ $recipient_from_hfa->id }}" type="checkbox" class="uk-checkbox">
                                 <label for="recipient-id-{{ $recipient_from_hfa->id }}">
                                     {{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }}
