@@ -36,9 +36,9 @@
             @foreach($users as $user)
                 <tr>
                     
-                    <td><small>{{$user->full_name()}}</small></td>
+                    <td><small>{{$user->first_name}} {{$user->last_name}}</small></td>
                     
-                    <td><small>@if($user->has_organization())
+                    <td><small>@if($user->organization_name)
                         {{$user->organization_details->organization_name}}@else NA @endif</small></td>
                     <td><small>@if($user->has_address())
                         <a target="_blank" href="https://www.google.com/maps?q={{$user->organization_details->address->formatted_address()}}" class="uk-text-muted uk-align-left">
