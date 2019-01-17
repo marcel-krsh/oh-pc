@@ -136,7 +136,7 @@ class ComplianceGenerator extends Controller
 
                 if($ba->amenity->inspectable == 1){
                     if($jsonRun == 1){
-                        $uaJson .= ' , ';
+                        $baJson .= ' , ';
                         //insert comma between groups
                     }
                     $jsonRun = 1;
