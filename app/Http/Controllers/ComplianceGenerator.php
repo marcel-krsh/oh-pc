@@ -161,10 +161,10 @@ class ComplianceGenerator extends Controller
                 'finding_nlt_completed' => 0,
                 'finding_lt_total' => $building->lt_count,
                 'finding_lt_completed' => 0,
-                'address' => $building->address->line_1,
-                'city' => $building->address->city,
-                'state' => $building->address->state,
-                'zip' => $building->address->zip,
+                'address' => $building->building->address->line_1,
+                'city' => $building->building->address->city,
+                'state' => $building->building->address->state,
+                'zip' => $building->building->address->zip,
                 'auditors_json' => json_encode($auditors_array),
                 'amenities_json' => $baJson
             ]);

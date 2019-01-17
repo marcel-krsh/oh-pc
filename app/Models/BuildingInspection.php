@@ -14,6 +14,11 @@ class BuildingInspection extends Model
         return $this->hasMany(\App\Models\BuildingAmenity::class, 'building_id', 'building_id');
     }
 
+    public function building()
+    {
+    	return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
+    }
+
     //
     protected $guarded = ['id'];
 }
