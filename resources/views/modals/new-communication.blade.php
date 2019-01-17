@@ -17,11 +17,11 @@
                 <div class="uk-width-1-6 uk-padding-small"><i uk-icon="user"></i> FROM:</div>
                 <div class="uk-width-5-6 uk-padding-small" style="border-bottom:1px #111 dashed;">{{Auth::user()->full_name()}}</div>
                 <div class="uk-width-1-6 uk-padding-small"><i uk-icon="users"></i> TO: </div>
-                <div class="uk-width-5-6uk-padding-small" id="recipients-box" style="border-bottom:1px #111 dashed;">
+                <div class="uk-width-5-6 uk-padding-small" id="recipients-box" style="border-bottom:1px #111 dashed;">
                     <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: .7"></i> ADD RECIPIENT</div>
                 </div>
                 <div class="uk-width-1-6 uk-padding-small"><i class="a-paperclip-2"></i></div>
-                <div class="uk-width-5-6 uk-padding-small" id="recipients-box" style="border-bottom:1px #111 dashed;">
+                <div class="uk-width-5-6 uk-padding-small" id="attachments-box" style="border-bottom:1px #111 dashed;">
                     <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: .7"></i> ADD ATTACHMENT</div>
                 </div>
 
@@ -37,8 +37,8 @@
                 </div>
                 
 
-                 <div class="uk-width-1-6 uk-padding-small">Message:</div> 
-                 <div class="uk-width-5-6">
+                 <div class="uk-width-1-6 uk-padding-small">MESSAGE:</div> 
+                 <div class="uk-width-5-6 uk-padding-small">
                     <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
                         <div uk-grid class="uk-grid-collapse">
                             <div class="uk-width-1-1">
@@ -49,8 +49,8 @@
                 </div>
                 <hr class="dashed-hr">
                 <div class="uk-width-2-6">&nbsp;</div>
-                <a class="uk-width-2-6 uk-button uk-button-primary"><i class="a-circle-cross"></i> CANCEL</a>
-                <a class="uk-width-2-6 uk-button uk-button-success"><i class="a-paper-plane"></i> SEND</a>
+                <div class="uk-width-2-6"><a class="uk-width-2-6 uk-button uk-button-primary"><i class="a-circle-cross"></i> CANCEL</a></div>
+                <div class="uk-width-2-6"><a class="uk-width-2-6 uk-button uk-button-success"><i class="a-paper-plane"></i> SEND</a></div>
             </div>
         </div>
     </form>
