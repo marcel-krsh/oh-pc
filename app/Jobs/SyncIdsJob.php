@@ -307,6 +307,23 @@ class SyncIdsJob implements ShouldQueue
             echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
+        $lookUpModel = new \App\Models\Address;
+        $associate = [];
+        $associate[] = [
+            'null_field' => 'physical_address_id',
+            'look_up_reference' => 'physical_address_key',
+            'lookup_field' => 'physical_address_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
+            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
 
         //////////////////////////////////////////////////
         /////// Audit Auditors ID updates
