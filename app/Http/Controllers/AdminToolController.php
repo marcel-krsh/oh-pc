@@ -894,8 +894,9 @@ class AdminToolController extends Controller
         }
     }
 
-    public function userManageRoles(User $user){
+    public function userManageRoles(User $id){
         //$user = User::where('id','=',$id)->first();
+        $user = $id;
         dd($user);
 
         $current_user = Auth::user();
