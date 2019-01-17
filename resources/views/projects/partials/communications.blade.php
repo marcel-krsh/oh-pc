@@ -43,7 +43,7 @@
 	        </div>
 	       
 	        <div class="uk-width-1-1@s uk-width-1-5@m" style="vertical-align:top">
-	            <a class="uk-button uk-button-success green-button uk-width-1-1" onclick="dynamicModalLoad('new-outbound-email-entry/{{$audit->id}}')">
+	            <a class="uk-button uk-button-success green-button uk-width-1-1" onclick="dynamicModalLoad('new-outbound-email-entry/{{$project->id}}')">
 	                <span class="a-envelope-4"></span> 
 	                <span>NEW MESSAGE</span>
 	            </a>    
