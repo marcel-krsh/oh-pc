@@ -15,7 +15,7 @@ use App\Models\SystemSetting;
 use File;
 use Storage;
 use DB;
-use App\Models\Document;
+use App\Models\SyncDocuware;
 use App\Models\DocumentCategory;
 use App\Mail\EmailNotification;
 use App\Models\Communication;
@@ -147,7 +147,7 @@ class CommunicationController extends Controller
         if ($project_id !== null) {
             $project = Project::where('id', '=', $project_id)->first();
 
-            $documents = Document::where('project_id', $project->id)
+            $documents = SyncDocuware::where('project_id', $project->id)
                 ->orderBy('created_at', 'desc')
                 ->get();
 
