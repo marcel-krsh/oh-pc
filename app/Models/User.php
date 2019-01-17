@@ -113,7 +113,7 @@ class User extends Authenticatable
      */
     public function person() : HasOne
     {
-        return $this->hasOne(People::class, 'id', 'person_id');
+        return $this->hasOne(People::class, 'person_key', 'person_key');
     }
 
     /**
@@ -158,14 +158,17 @@ class User extends Authenticatable
 
         $person = $this->person;
         //dd($person, $this->id, $this->person_id);
-        $initials = substr($this->person->first_name, 0, 1);
-        $initials .= substr($this->person->last_name, 0, 1);
+        $initials = substr($person->first_name, 0, 1);
+        $initials .= substr($person->last_name, 0, 1);
         return strtoupper($initials);
     }
 
     public function full_name() : string
     {
-        $fullName = $this->person->first_name." ".$this->person->last_name;
+        $fullName = "NA";
+        @if($this->person){
+            $fullName = $this->person->first_name." ".$this->person->last_name;
+        }
         return $fullName;
     }
     /**
