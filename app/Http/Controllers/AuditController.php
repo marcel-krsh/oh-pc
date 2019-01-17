@@ -344,7 +344,7 @@ class AuditController extends Controller
     public function getProjectDetails($id = null)
     {
         // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
-          
+         
         $project = Project::where('id','=',$id)->first();
 
         // which audit is selected (latest if no selection)

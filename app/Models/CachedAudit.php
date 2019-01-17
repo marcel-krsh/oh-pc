@@ -169,6 +169,11 @@ class CachedAudit extends Model
         if($this->estimated_time){
             $estimated_time = explode(':', $this->estimated_time);
             $estimated_time_in_minutes = $estimated_time[0]*60 + $estimated_time[1];
+        }else{
+            $output['data'] = '[]';
+            $output['labels'] = '[]';
+            $output['backgroundColor'] ='[]';
+            return $output;
         }
         $time_scheduled = 0;
         foreach($this->days as $day){
