@@ -254,7 +254,7 @@ class AdminToolController extends Controller
     {
         if (Session::has('users-search') && Session::get('users-search') != '') {
             $search = Session::get('users-search');
-            $users = User::with(['roles','person','organization_details'])->join('people', 'users.person_id', '=', 'people.id')->where(function ($query) use ($search) {
+            $users = User::select('users.*, people.last_name, people.first_name')->with(['roles','person','organization_details'])->join('people', 'users.person_id', '=', 'people.id')->where(function ($query) use ($search) {
                                         $query->where('name', 'LIKE', '%'.$search.'%');
                                     })
                                     ->orderBy('last_name', 'asc')
@@ -880,6 +880,7 @@ class AdminToolController extends Controller
     public function userManageRoles(User $user){
         //$user = User::where('id','=',$id)->first();
         //dd($user);
+
         $current_user = Auth::user();
         // current user's highest roles
         $current_user_highest_role = UserRole::where('user_id','=',$current_user->id)->orderBy('role_id','desc')->first();
