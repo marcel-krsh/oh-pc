@@ -1894,7 +1894,6 @@ __webpack_require__.r(__webpack_exports__);
 
       return rerunCompliance;
     }(function () {
-      console.log("test");
       rerunCompliance(this.audit.auditId);
     }),
     updateStep: function updateStep() {
@@ -43749,7 +43748,9 @@ var render = function() {
               },
               [
                 _vm._v("AUDIT "),
-                _c("span", { domProps: { innerHTML: _vm._s(_vm.audit.id) } })
+                _c("span", {
+                  domProps: { innerHTML: _vm._s(_vm.audit.auditId) }
+                })
               ]
             )
           ]

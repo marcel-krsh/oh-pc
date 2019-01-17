@@ -573,7 +573,7 @@ class AuditController extends Controller
         $hours = (int) $forminputs['estimated_hours'];
         $minutes = (int) $forminputs['estimated_minutes'];
 
-        $audit = CachedAudit::where('id','=',$id)->where('lead','=',Auth::user()->id)->first();
+        $audit = CachedAudit::where('audit_id','=',$id)->where('lead','=',Auth::user()->id)->first();
 
         $new_estimate = $hours.":".$minutes.":00";
 
@@ -589,7 +589,7 @@ class AuditController extends Controller
 
             return ['status'=>1, 'hours'=> $hours.":".$minutes, 'needed'=>$needed];
         }else{
-            return ['status'=>0, 'message'=>'Sorry, this audit reference cannot be found.'];
+            return ['status'=>0, 'message'=>'Sorry, this audit reference cannot be found or no lead has been set yet.'];
         }
 
         
