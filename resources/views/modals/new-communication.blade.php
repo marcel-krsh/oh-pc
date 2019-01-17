@@ -6,15 +6,44 @@
 			<div uk-grid class="uk-grid-small">
 				<div class="uk-width-1-1">
                     @if($project)
-					Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}}</span>
+					<h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}}</span></h3>
                     @else
-                    New Message
+                    <h3>New Message</h3>
                     @endif
 				</div>
 			</div>
-
+            <hr class="dashed-hr">
 			<div uk-grid>
-                <div class="uk-width-6-8">
+                <div class="uk-width-1-6"><i uk-icon="user"></i> FROM:</div>
+                <div class="uk-width-5-6" style="border-bottom:1px #111 dashed;">{{Auth::user->full_name()}}</div>
+                <div class="uk-width-1-6"><i uk-icon="users"></i> TO: </div>
+                <div class="uk-width-4-6" id="recipients-box" style="border:1px #333 solid">
+                    <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: 1"></i> ADD RECIPIENT</div>
+                </div>
+                <div class="uk-width-1-6"><i class="a-paperclip-2"></i></div>
+
+                <div class="uk-width-1-6">SUBJECT:</div>
+                <input type="text" name="subject" class="uk-width-5-6 uk-margin-top uk-input uk-form-large">
+
+                 <div class="uk-width-1-6">Message:</div> 
+                 <div class="uk-width-5-6">
+                    <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
+                        <div uk-grid class="uk-grid-collapse">
+                            <div class="uk-width-1-1">
+                                <textarea id="message-body" style="min-height: 100px;" rows="11" class="uk-input" name="messageBody" value=""></textarea>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <hr class="dashed-hr">
+                <div class="uk-width-2-6">&nbsp;</div>
+                <a class="uk-width-2-6 uk-button uk-button-primary"><i class="a-circle-cross"></i> CANCEL</a>
+                <a class="uk-width-2-6 uk-button uk-button-success"><i class="a-paper-plane"></i> SEND</a>
+            </div>
+        </div>
+    </form>
+</div>
+OLD STUFF
                     <div uk-grid>
         				<div class="uk-width-1-1@m uk-width-1-1@s">
         					<h4>Select Recipients</h4>
@@ -276,13 +305,7 @@
                         </div>
                     <div class="uk-width-2-3">
                     <h4>Message body</h4>
-                    <fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
-                        <div uk-grid class="uk-grid-collapse">
-                            <div class="uk-width-1-1">
-                                <textarea id="message-body" style="min-height: 100px;" rows="11" class="uk-input" name="messageBody" value=""></textarea>
-                            </div>
-                        </div>
-                    </fieldset>
+                    
                 </div></div>                
                 </div>
                 
