@@ -269,6 +269,7 @@ class AdminToolController extends Controller
                             ->orderBy('last_name', 'asc')
                             ->paginate(25);
         }
+        dd($users);
         
         return view('admin_tabs.users', compact('users'));
     }
