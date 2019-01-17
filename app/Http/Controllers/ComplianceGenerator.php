@@ -125,7 +125,7 @@ class ComplianceGenerator extends Controller
             //dd($building->building);
             $count_units = UnitInspection::where('building_key', '=', $building->building_key)->count();
             $finding_total = $building->nlt_count + $building->lt_count + $building->file_count;
-            $building_amenities = AmenityInspection::where('building_id',$building->id)->get();
+            $building_amenities = AmenityInspection::where('building_id',$building->id)->with('amenity')->get();
 
             //build amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
@@ -175,7 +175,7 @@ class ComplianceGenerator extends Controller
         }
 
             // create project level amenities
-            $project_amenities = AmenityInspection::where('project_id',$cached_audit->project_id)->get();
+            $project_amenities = AmenityInspection::where('project_id',$cached_audit->project_id)->with('amenity')->get();
 
             //build amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
@@ -235,7 +235,7 @@ class ComplianceGenerator extends Controller
             // get the unit type (bedroom type)
             //
             //
-            $unit_amenities = AmenityInspection::where('unit_id',$unit->id)->get();
+            $unit_amenities = AmenityInspection::where('unit_id',$unit->id)->with('amenity')->get();
 
             //Unit amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
