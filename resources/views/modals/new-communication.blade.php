@@ -15,13 +15,13 @@
             <hr class="uk-width-1-1 dashed-hr uk-margin-large-bottom">
 			<div uk-grid class="uk-grid-collapse">
                 <div class="uk-width-1-6 " style="padding:18px;"><i uk-icon="user"></i> FROM:</div>
-                <div class="uk-width-5-6 " style="border-bottom:1px #111 dashed;padding:18px;">{{Auth::user()->full_name()}}</div>
+                <div class="uk-width-5-6 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{Auth::user()->full_name()}}</div>
                 <div class="uk-width-1-6 " style="padding:18px;"><i uk-icon="users"></i> TO: </div>
-                <div class="uk-width-5-6 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px;">
+                <div class="uk-width-5-6 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
                     <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: .7"></i> ADD RECIPIENT</div>
                 </div>
                 <div class="uk-width-1-6 " style="padding:18px;"><i class="a-paperclip-2"></i></div>
-                <div class="uk-width-5-6 "  id="attachments-box" style="border-bottom:1px #111 dashed; padding:18px;">
+                <div class="uk-width-5-6 "  id="attachments-box" style="border-bottom:1px #111 dashed; padding:18px; padding-left:25px;">
                     <div class="uk-button uk-button-small"><i uk-icon="icon: plus-circle; ratio: .7"></i> ADD ATTACHMENT</div>
                 </div>
 
