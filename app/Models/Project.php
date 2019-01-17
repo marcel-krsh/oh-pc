@@ -89,6 +89,10 @@ class Project extends Model
                                 ->first();
 
         $owner_organization = '';
+        $owner_name = '';
+        $owner_phone = '';
+        $owner_fax = '';
+        $owner_email = '';
         $owner_address = '';
         $owner_line_1 = '';
         $owner_line_2 = '';
@@ -126,6 +130,9 @@ class Project extends Model
     public function nextDueDate()
     {
         $compliance_contacts = $this->complianceContacts()->first();
+        if(!$compliance_contacts){
+            return 'N/A';
+        }
         $next_inspection = $compliance_contacts->next_inspection;
         if($next_inspection == null){ 
             return 'N/A';
@@ -191,7 +198,11 @@ class Project extends Model
             $audit_id = $this->selected_audit()->id;
         }
 
-        $next_inspection = $this->complianceContacts()->first()->next_inspection;
+        if($this->complianceContacts()->first()){
+            $next_inspection = $this->complianceContacts()->first()->next_inspection;
+        }else{
+            $next_inspection = null;
+        }
 
         // number of units with unit_identity_key == 6
         $market_rate = $this->market_rate_units()->count();
