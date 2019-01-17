@@ -191,16 +191,16 @@ class CommunicationController extends Controller
 
             if (Auth::user()->pm_access()) {
                 $recipients = User::where('organization_id', '=', Auth::user()->organization_id)
-                    ->join('people','id','users.person_id')
-                    ->join('organizations','id','users.organization_id')
+                    ->leftJoin('people','people.id','users.person_id')
+                    ->leftJoin('organizations','organizations.id','users.organization_id')
                     ->select('users.*','last_name','first_name','organization_name')
                     ->where('active', 1)
                     ->orderBy('last_name', 'asc')
                     ->get();
             } else {
                 $recipients = User::where('organization_id', '!=', $ohfa_id)
-                    ->join('people','id','users.person_id')
-                    ->join('organizations','id','users.organization_id')
+                    ->leftJoin('people','people.id','users.person_id')
+                    ->leftJoin('organizations','organizations.id','users.organization_id')
                     ->select('users.*','last_name','first_name','organization_name')
                     ->where('active', 1)
                     ->orderBy('organization_name','asc')
@@ -230,16 +230,16 @@ class CommunicationController extends Controller
 
             if (Auth::user()->pm_access()) {
                 $recipients = User::where('organization_id', '=', Auth::user()->organization_id)
-                    ->join('people','id','users.person_id')
-                    ->join('organizations','id','users.organization_id')
+                    ->join('people','people.id','users.person_id')
+                    ->join('organizations','orgnaizations.id','users.organization_id')
                     ->select('users.*','last_name','first_name','organization_name')
                     ->where('active', 1)
                     ->orderBy('last_name', 'asc')
                     ->get();
             } else {
                 $recipients = User::where('organization_id', '!=', $ohfa_id)
-                    ->join('people','id','users.person_id')
-                    ->join('organizations','id','users.organization_id')
+                    ->join('people','people.id','users.person_id')
+                    ->join('organizations','organizations.id','users.organization_id')
                     ->select('users.*','last_name','first_name','organization_name')
                     ->where('active', 1)
                     ->orderBy('organization_name','asc')
