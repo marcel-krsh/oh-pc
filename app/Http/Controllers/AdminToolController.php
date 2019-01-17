@@ -254,14 +254,13 @@ class AdminToolController extends Controller
     {
         if (Session::has('users-search') && Session::get('users-search') != '') {
             $search = Session::get('users-search');
-            $users = User::with(['roles','person','organization_details'])
-                                    ->where(function ($query) use ($search) {
+            $users = User::with(['roles','person','organization_details'])->join('people', 'users.person_id', '=', 'people.id')->where(function ($query) use ($search) {
                                         $query->where('name', 'LIKE', '%'.$search.'%');
                                     })
                                     ->orderBy('last_name', 'asc')
                                     ->paginate(40);
         } else {
-            $users = User::with(['roles','person','organization_details'])->orderBy('last_name', 'asc')->paginate(40);
+            $users = User::with(['roles','person','organization_details'])->join('people', 'users.person_id', '=', 'people.id')->orderBy('last_name', 'asc')->paginate(40);
         }
         
         return view('admin_tabs.users', compact('users'));
