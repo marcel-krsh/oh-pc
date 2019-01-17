@@ -125,7 +125,7 @@ class ComplianceGenerator extends Controller
 
             //build amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
-            $baJson = '['.
+            $baJson = '[';
             forEach($building_amenities as $ba){
 
                 if($ba->amenity->inspectable){
@@ -226,6 +226,7 @@ class ComplianceGenerator extends Controller
         $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->get();
         
         CachedUnit::where('audit_id',$cached_audit->audit_id)->delete();
+        $uaJson = '[';
         foreach ($units as $unit) {
             // get the unit type (bedroom type)
             //
