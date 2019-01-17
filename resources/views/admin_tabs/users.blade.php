@@ -50,7 +50,10 @@
                         
                         @else <i class="a-marker-basic uk-link uk-align-left"></i><div class="uk-text-muted uk-align-left">NA</div> @endif
                     </small></td>
-                    <td><small>@if($user->has_organization()) {{$user->organization_details->phone_number_formatted()}} @endif</small></td>
+                    <td><small>@if($user->has_organization()) 
+                        @if($user->area_code)
+                            {{$user->organization_details->phone_number_formatted()}} 
+                        @endif</small></td>
                     <td><small><a href="mailto:{{$user->email}}">{{$user->email}}</a></small></td>
                     <td class="use-hand-cursor" uk-tooltip="title:CLICK TO SET ROLES" onclick="setRoles({{$user->id}})"><small>@if($user->role_name){{$user->role_name}}@else <i class="a-circle-plus"></i>@endif</small></td>
             
