@@ -257,7 +257,7 @@ class AdminToolController extends Controller
             $users  =    User::join('people', 'users.person_id', '=', 'people.id')->
                                 join('users_roles','users.id','=','users_roles.user_id')->
                                 join('roles','users_roles.role_id','=','roles.id')->
-                                join('organizations','people.organization_id','organizations.id')->
+                                join('organizations','user.organization_id','organizations.id')->
                                 join('phone_numbers','organizations.default_phone_number_id','phone_numbers.id')->
                                 join('addresses','organizations.default_address_id','addresses.id')->
                                 select('users.*','line_1','line_2','city','state','zip','organization_name','role_name','area_code','phone_number','extension','last_name','first_name')->
@@ -271,7 +271,7 @@ class AdminToolController extends Controller
                             join('people', 'users.person_id', '=', 'people.id')->
                             join('users_roles','users.id','=','users_roles.user_id')->
                             join('roles','users_roles.role_id','=','roles.id')->
-                            join('organizations','people.organization_id','organizations.id')->
+                            join('organizations','user.organization_id','organizations.id')->
                             join('addresses','organizations.default_address_id','addresses.id')->
                             join('phone_numbers','organizations.default_phone_number_id','phone_numbers.id')->
                             select('users.*','line_1','line_2','city','state','zip','organization_name','role_name','area_code','phone_number','extension','last_name','first_name')->
