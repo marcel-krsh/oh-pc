@@ -13,6 +13,7 @@ class SyncDocuware extends Model
 
     //
     protected $guarded = ['id'];
+   
 
     
 }
