@@ -288,6 +288,8 @@ class CachedAuditsEvent
                 'zip' => $unit->unit->building->address->zip,
                 'auditors_json' => null,
                 'amenities_json' => $uaJson,
+                'unit_id'=>10, //$unit->unit->id,
+                'unit_key'=>10 //$unit->unit->unit_key
             ]);
             $cached_unit->save();
         }
