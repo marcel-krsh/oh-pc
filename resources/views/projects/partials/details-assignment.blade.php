@@ -89,7 +89,7 @@
 							@endforeach
 
 							<div class="divTableCell">
-								<i class="a-circle-plus use-hand-cursor" onclick="addAssignmentAuditor({{$day->id}});" uk-tooltip="title:CLICK TO ADD AUDITORS;"></i>
+								<i class="a-circle-plus use-hand-cursor" style="font-size:34px;" onclick="addAssignmentAuditor({{$day->id}});" uk-tooltip="title:CLICK TO ADD AUDITORS;"></i>
 							</div>
 							<div class="divTableCell">&nbsp;</div>
 						</div>
@@ -101,7 +101,7 @@
 							@foreach($auditors_key as $auditor_id)
 							<div class="divTableCell isLead" style="padding-top:14px">
 								@if($auditor_id == $project->selected_audit()->lead) <i class="a-star-3 corner"></i> @endif
-								<i class="a-circle"></i>
+								<i class="a-circle" style="font-size:34px;"></i>
 							</div>
 							@endforeach
 							<div class="divTableCell">&nbsp;</div>
@@ -142,60 +142,70 @@
 										@else
 										<div class="event beforetime" data-start="{{$daily_schedule['content']['before_time_start']}}" data-span="{{$daily_schedule['content']['before_time_span']}}"></div>
 										@foreach($daily_schedule['content']['events'] as $event)
-										<div class="event {{$event['status']}} {{$event['class']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
-											@if($event['icon'] != '')<i class="{{$event['icon']}}"  uk-tooltip="title:{{$event['start_time']}} - {{$event['end_time']}}"></i>@endif
+										<div class="event {{$event['status']}} {{$event['class']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}" uk-tooltip="title:{{$event['start_time']}} - {{$event['end_time']}}" uk-toggle="target: #eventmodal-{{$event['id']}}">
+											@if($event['icon'] != '')
+											@if($event['span'] < 3)
+											<i class="{{$event['icon']}}" style="font-size:10px;"></i>
+											@else
+											<i class="{{$event['icon']}}"></i>
+											@endif
+											@endif
 											@if(Auth::user()->id == $project->selected_audit()->lead && $event['icon'] != '') 
-											<div class="" uk-drop="mode: click">
-											    <div class="uk-card uk-card-body uk-card-rounded">
-											    	<ul class="uk-list no-hover uk-form-horizontal">
-							                        	<li onclick="">
-													        <label class="uk-form-label">TRAVEL TIME:</label>
-													        <div class="uk-form-controls">
-													            <select class="uk-select travel-select" id="travel-{{$event['id']}}" data-eventid="{{$event['id']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
-													            @php
-													            for ($i = 0; $i < $event['span']; $i++){
-													            	$hours = sprintf("%02d", intval($i * 15 / 60));
-																	$minutes = sprintf("%02d",$i * 15 - ($hours * 60));
-													                echo "<option value='".$i."'>".$hours.":".$minutes."</option>";
-													            }
-													            @endphp
-													            </select>
-													        </div>
-							                        	</li>	
-							                        	<li onclick="">
-													        <label class="uk-form-label">START:</label>
-													        <div class="uk-form-controls">
-													            <select class="uk-select start-select" id="start-{{$event['id']}}" data-eventid="{{$event['id']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
-													            @php
-													            for ($i = $event['start']; $i <= $event['start']; $i++){
-													            	$hours = sprintf("%02d", intval(($i-1) * 15 / 60) + 6);
-																	$minutes = sprintf("%02d",($i-1) * 15 - (($hours - 6) * 60));
-													                echo "<option value='".$i."'>".$hours.":".$minutes."</option>";
-													            }
-													            @endphp	
-													            </select>
-													        </div>
-							                        	</li>	
-							                        	<li onclick="">
-													        <label class="uk-form-label">DURATION:</label>
-													        <div class="uk-form-controls">
-													            <select class="uk-select duration-select" id="duration-{{$event['id']}}" data-eventid="{{$event['id']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
-													            @php
-													            for ($i = $event['span']; $i > 0; $i--){
-													            	$hours = sprintf("%02d", intval($i * 15 / 60));
-																	$minutes = sprintf("%02d",$i * 15 - ($hours * 60));
-													                echo "<option value='".$i."'>".$hours.":".$minutes."</option>";
-													            }
-													            @endphp
-													            </select>
-													        </div>
-							                        	</li>	
-							                        	<li onclick="">
-													        <div class="uk-form-controls">
-													        	<button class="uk-button uk-button-primary" onclick="scheduleTime({{$event['id']}}, {{$day->id}}, {{$event['auditor_id']}});">Schedule</button>
-													        </div>
-													    </li>
-								                    </ul>
+											<div id="eventmodal-{{$event['id']}}" uk-modal>
+											    <div class="uk-modal-dialog uk-modal-body">
+											        <a class="uk-modal-close-default" uk-close></a>
+											        <h2 class="uk-modal-title">Schedule</h2>
+											        <div class="">
+												    	<ul class="uk-list no-hover uk-form-horizontal">
+								                        	<li onclick="">
+														        <label class="uk-form-label">TRAVEL TIME:</label>
+														        <div class="uk-form-controls">
+														            <select class="uk-select travel-select" id="travel-{{$event['id']}}" data-eventid="{{$event['id']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
+														            @php
+														            for ($i = 0; $i < $event['span']; $i++){
+														            	$hours = sprintf("%02d", intval($i * 15 / 60));
+																		$minutes = sprintf("%02d",$i * 15 - ($hours * 60));
+														                echo "<option value='".$i."'>".$hours.":".$minutes."</option>";
+														            }
+														            @endphp
+														            </select>
+														        </div>
+								                        	</li>	
+								                        	<li onclick="">
+														        <label class="uk-form-label">ARRIVAL TIME:</label>
+														        <div class="uk-form-controls">
+														            <select class="uk-select start-select" id="start-{{$event['id']}}" data-eventid="{{$event['id']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
+														            @php
+														            for ($i = $event['start']; $i <= $event['start']; $i++){
+														            	$hours = sprintf("%02d", intval(($i-1) * 15 / 60) + 6);
+																		$minutes = sprintf("%02d",($i-1) * 15 - (($hours - 6) * 60));
+														                echo "<option value='".$i."'>".$hours.":".$minutes."</option>";
+														            }
+														            @endphp	
+														            </select>
+														        </div>
+								                        	</li>	
+								                        	<li onclick="">
+														        <label class="uk-form-label">DURATION:</label>
+														        <div class="uk-form-controls">
+														            <select class="uk-select duration-select" id="duration-{{$event['id']}}" data-eventid="{{$event['id']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
+														            @php
+														            for ($i = $event['span']; $i > 0; $i--){
+														            	$hours = sprintf("%02d", intval($i * 15 / 60));
+																		$minutes = sprintf("%02d",$i * 15 - ($hours * 60));
+														                echo "<option value='".$i."'>".$hours.":".$minutes."</option>";
+														            }
+														            @endphp
+														            </select>
+														        </div>
+								                        	</li>	
+								                        	<li onclick="">
+														        <div class="uk-form-controls">
+														        	<button class="uk-button uk-button-primary" onclick="scheduleTime('{{$event['id']}}', '{{$day->id}}', '{{$event['auditor_id']}}');">Schedule</button>
+														        </div>
+														    </li>
+									                    </ul>
+													</div>
 											    </div>
 											</div>
 											@endif
@@ -329,7 +339,7 @@
 		vertical-align: top;
 	}
 	.divTableCell:nth-child(n+2) i {
-		font-size: 34px;
+		font-size: 20px;
 	}
 	.isLead {
 	    position: relative;
@@ -339,6 +349,17 @@
 	    top: 4px;
 	    right: 4px;
 	    font-size: 16px;
+	}
+
+	.divTableCell .event.schedule {
+	    background-color: #a7a9ac;
+	    color: #eee;
+	    border-top: 2px solid #fff;
+	}
+
+	.divTableCell .event.schedule.thisaudit {
+	    background-color: #00aeef;
+	    color: #fff;
 	}
 
 	#project-details-info-container .divTable .no-action,
@@ -451,7 +472,7 @@
 		var travel = parseInt($('#travel-'+eventid).val(), 10);
 		var start = parseInt($('#start-'+eventid).val(), 10);
 		var duration = parseInt($('#duration-'+eventid).val(), 10);
-		console.log(eventid +" - "+ auditorid+"-"+travel+"-"+start+"-"+duration);
+		// console.log(eventid +" - "+ auditorid+"-"+travel+"-"+start+"-"+duration);
 
 		$.post("audit/{{$data['project']['audit_id']}}/scheduling/days/"+dayid+"/auditors/"+auditorid, {
                 'travel' : travel,
@@ -462,6 +483,7 @@
                     if(data!=1){ 
                         UIkit.modal.alert(data,{stack: true});
                     } else {
+                    	UIkit.modal('#eventmodal-'+eventid).hide();
                         UIkit.notification('<span uk-icon="icon: check"></span> Auditor Scheduled', {pos:'top-right', timeout:1000, status:'success'});   
                         $('#project-details-button-2').trigger( 'click' );       
                     }

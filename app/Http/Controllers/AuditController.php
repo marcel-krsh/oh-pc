@@ -563,188 +563,303 @@ class AuditController extends Controller
 
         $s_array = $schedules->toArray();
 
-        //dd($a_array, $s_array);
+       // dd($a_array, $s_array);
 
         // for each availability, check if there is an overlapping schedule
         // if full overlap, just save the schedule in event
         // if partial overlap: check if at the beginning, middle or end of availability
         // then create new availability events as needed
         
-        foreach($a_array as $a){
-            // check if overlap
-            $overlap = 0;
-            foreach($s_array as $s){
-                if($s['start_slot'] >= $a['start_slot'] && $s['start_slot'] + $s['span'] <= $a['start_slot'] + $a['span']){
-                    // there is a schedule on that availability
-                    if($s['span'] == $a['span']){
-                        // exact overlap, save scheduled as is
-                        $events_array[] = [
-                            "id" => $s->id,
-                            "auditor_id" => $auditor_id,
-                            "audit_id" => $audit_id,
-                            "status" => "",
-                            "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['start_time'])->format('h:i A')),
-                            "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['end_time'])->format('h:i A')),
-                            "start" => $s['start_slot'],
-                            "span" =>  $s['span'],
-                            "travel_span" =>  $s['travel_span'],
-                            "icon" => "a-circle-plus",
-                            "class" => "available no-border-top no-border-bottom",
-                            "modal_type" => ""
-                        ];
+        foreach($a_array as $av){
+            
+            // when we display a schedule smaller than the availability, we end up with 1 or 2 smaller availabilities around that schedule. Those need to be split again when another schedule overlaps. We need to add those new entries in an array.
+            
+            $added_availability = array();
+
+            if(count($s_array)){
+                foreach($s_array as $s){
+
+                    if($audit_id == $s['audit_id']){
+                        $scheduleclass="schedule thisaudit";
                     }else{
-                        if($s['start_slot'] == $a['start_slot']){
-                            // save schedule, add portion of availability afterwards
-                            $events_array[] = [
-                                "id" => $s['id'],
-                                "auditor_id" => $auditor_id,
-                                "audit_id" => $audit_id,
-                                "status" => "",
-                                "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['start_time'])->format('h:i A')),
-                                "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['end_time'])->format('h:i A')),
-                                "start" => $s['start_slot'],
-                                "span" =>  $s['span'],
-                                "travel_span" =>  $s['travel_span'],
-                                "icon" => "a-circle-minus",
-                                "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => ""
-                            ];
+                        $scheduleclass="schedule";
+                    }
 
-                            $start_time = $s['start_slot'] + $s['span'];
-                            $hours = sprintf("%02d",  floor(($start_time - 1) * 15 / 60) + 6);
-                            $minutes = sprintf("%02d", ($start_time - 1) * 15 % 60);
-                            $start_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+                    $avail_working_array = array();
+                    if(count($added_availability)){
+                        $split_avail = 0;
+                        $avail_working_array = $added_availability;
+                    }else{
+                        $split_avail = 1;
+                        $avail_working_array[] = [
+                            'start_slot' => $av['start_slot'],
+                            'span' => $av['span'],
+                            'start_time' => $av['start_time'],
+                            'end_time' => $av['end_time']
+                        ]; 
+                    }
 
-                            $events_array[] = [
-                                "id" => null,
-                                "auditor_id" => $auditor_id,
-                                "audit_id" => $audit_id,
-                                "status" => "",
-                                "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$start_time)->format('h:i A')),
-                                "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a['end_time'])->format('h:i A')),
-                                "start" => $s['start_slot'] + $s['span'],
-                                "span" =>  $a['span'] - $s['span'],
-                                "travel_span" =>  null,
-                                "icon" => "a-circle-plus",
-                                "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => ""
-                            ];
+                    // go throught the checks for the availability OR for the split availabilities
+                    foreach($avail_working_array as $a){
+                        if($s['start_slot'] >= $a['start_slot'] && $s['start_slot'] + $s['span'] <= $a['start_slot'] + $a['span']){
 
-                        }elseif($s['start_slot'] + $s['span'] == $a['start_slot'] + $a['span']){
-                            // save availability then the schedule
-                            
-                            $end_time = $s['start_slot'] - 1;
-                            $hours = sprintf("%02d",  floor(($end_time - 1) * 15 / 60) + 6);
-                            $minutes = sprintf("%02d", ($end_time - 1) * 15 % 60);
-                            $end_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+                            // there is a schedule on that availability
+                            if($s['span'] == $a['span']){
+                                // exact overlap, save scheduled as is
+                                $events_array[] = [
+                                    "id" => $s->id,
+                                    "auditor_id" => $auditor_id,
+                                    "audit_id" => $audit_id,
+                                    "status" => "",
+                                    "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['start_time'])->format('h:i A')),
+                                    "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['end_time'])->format('h:i A')),
+                                    "start" => $s['start_slot'],
+                                    "span" =>  $s['span'],
+                                    "travel_span" =>  $s['travel_span'],
+                                    "icon" => "a-circle-plus",
+                                    "class" => $scheduleclass,
+                                    "modal_type" => ""
+                                ];
+                            }else{
+                                if($s['start_slot'] == $a['start_slot']){
+                                    // save schedule, add portion of availability afterwards
+                                    $events_array[] = [
+                                        "id" => $s['id'],
+                                        "auditor_id" => $auditor_id,
+                                        "audit_id" => $audit_id,
+                                        "status" => "",
+                                        "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['start_time'])->format('h:i A')),
+                                        "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['end_time'])->format('h:i A')),
+                                        "start" => $s['start_slot'],
+                                        "span" =>  $s['span'],
+                                        "travel_span" =>  $s['travel_span'],
+                                        "icon" => "a-mobile-checked",
+                                        "class" => $scheduleclass,
+                                        "modal_type" => ""
+                                    ];
 
-                            $events_array[] = [
-                                "id" => null,
-                                "auditor_id" => $auditor_id,
-                                "audit_id" => $audit_id,
-                                "status" => "",
-                                "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a['start_time'])->format('h:i A')),
-                                "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$end_time)->format('h:i A')),
-                                "start" => $a['start_slot'],
-                                "span" =>  $s['start_slot'] - 1,
-                                "travel_span" =>  null,
-                                "icon" => "a-circle-plus",
-                                "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => ""
-                            ];
+                                    $start_time = $s['start_slot'] + $s['span'];
+                                    $hours = sprintf("%02d",  floor(($start_time - 1) * 15 / 60) + 6);
+                                    $minutes = sprintf("%02d", ($start_time - 1) * 15 % 60);
+                                    $start_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
 
-                            $events_array[] = [
-                                "id" => $s['id'],
-                                "auditor_id" => $auditor_id,
-                                "audit_id" => $audit_id,
-                                "status" => "",
-                                "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['start_time'])->format('h:i A')),
-                                "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['end_time'])->format('h:i A')),
-                                "start" => $s['start_slot'],
-                                "span" =>  $s['span'],
-                                "travel_span" =>  $s['travel_span'],
-                                "icon" => "a-circle-minus",
-                                "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => ""
-                            ];
+                                    // $events_array[] = [
+                                    //     "id" => uniqid(),
+                                    //     "auditor_id" => $auditor_id,
+                                    //     "audit_id" => $audit_id,
+                                    //     "status" => "",
+                                    //     "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$start_time)->format('h:i A')),
+                                    //     "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a['end_time'])->format('h:i A')),
+                                    //     "start" => $s['start_slot'] + $s['span'],
+                                    //     "span" =>  $a['span'] - $s['span'],
+                                    //     "travel_span" =>  null,
+                                    //     "icon" => "a-circle-plus",
+                                    //     "class" => "available no-border-top no-border-bottom",
+                                    //     "modal_type" => ""
+                                    // ];
 
+                                    $added_availability[] = [
+                                        'start_slot' => $s['start_slot'] + $s['span'],
+                                        'span' => $a['span'] - $s['span'],
+                                        'start_time' => $start_time,
+                                        'end_time' => $a['end_time']
+                                    ];
+                                    $split_avail = 1;
+
+                                }elseif($s['start_slot'] + $s['span'] == $a['start_slot'] + $a['span']){
+                                    // save availability then the schedule
+                                    
+                                    $end_time = $s['start_slot'] - 1;
+                                    $hours = sprintf("%02d",  floor(($end_time - 1) * 15 / 60) + 6);
+                                    $minutes = sprintf("%02d", ($end_time - 1) * 15 % 60);
+                                    $end_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+
+                                    // $events_array[] = [
+                                    //     "id" => uniqid(),
+                                    //     "auditor_id" => $auditor_id,
+                                    //     "audit_id" => $audit_id,
+                                    //     "status" => "",
+                                    //     "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a['start_time'])->format('h:i A')),
+                                    //     "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$end_time)->format('h:i A')),
+                                    //     "start" => $a['start_slot'],
+                                    //     "span" =>  $s['start_slot'] - 1,
+                                    //     "travel_span" =>  null,
+                                    //     "icon" => "a-circle-plus",
+                                    //     "class" => "available no-border-top no-border-bottom",
+                                    //     "modal_type" => ""
+                                    // ];
+
+                                    $added_availability[] = [
+                                        'start_slot' => $a['start_slot'],
+                                        'span' => $s['start_slot'] - 1,
+                                        'start_time' => $a['start_time'],
+                                        'end_time' => $end_time
+                                    ];
+                                    $split_avail = 1;
+
+                                    $events_array[] = [
+                                        "id" => $s['id'],
+                                        "auditor_id" => $auditor_id,
+                                        "audit_id" => $audit_id,
+                                        "status" => "",
+                                        "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['start_time'])->format('h:i A')),
+                                        "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['end_time'])->format('h:i A')),
+                                        "start" => $s['start_slot'],
+                                        "span" =>  $s['span'],
+                                        "travel_span" =>  $s['travel_span'],
+                                        "icon" => "a-mobile-checked",
+                                        "class" => $scheduleclass,
+                                        "modal_type" => ""
+                                    ];
+
+                                }else{
+                                    // save avail, save schedule, save avail.
+                                    $end_time = $s['start_slot'];
+                                    $hours = sprintf("%02d",  floor(($end_time - 1) * 15 / 60) + 6);
+                                    $minutes = sprintf("%02d", ($end_time - 1) * 15 % 60);
+                                    $end_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+
+                                    // $events_array[] = [
+                                    //     "id" => uniqid(),
+                                    //     "auditor_id" => $auditor_id,
+                                    //     "audit_id" => $audit_id,
+                                    //     "status" => "",
+                                    //     "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a['start_time'])->format('h:i A')),
+                                    //     "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$end_time)->format('h:i A')),
+                                    //     "start" => $a['start_slot'],
+                                    //     "span" =>  $s['start_slot']-$a['start_slot'],
+                                    //     "travel_span" =>  null,
+                                    //     "icon" => "a-circle-plus",
+                                    //     "class" => "available no-border-top no-border-bottom",
+                                    //     "modal_type" => ""
+                                    // ];
+
+                                    $added_availability[] = [
+                                        'start_slot' => $a['start_slot'],
+                                        'span' => $s['start_slot']-$a['start_slot'],
+                                        'start_time' => $a['start_time'],
+                                        'end_time' => $end_time
+                                    ];
+                                    $split_avail = 1;
+
+                                    $events_array[] = [
+                                        "id" => $s['id'],
+                                        "auditor_id" => $auditor_id,
+                                        "audit_id" => $audit_id,
+                                        "status" => "",
+                                        "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['start_time'])->format('h:i A')),
+                                        "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['end_time'])->format('h:i A')),
+                                        "start" => $s['start_slot'],
+                                        "span" =>  $s['span'],
+                                        "travel_span" =>  $s['travel_span'],
+                                        "icon" => "a-mobile-checked",
+                                        "class" => $scheduleclass,
+                                        "modal_type" => ""
+                                    ];
+
+                                    $start_time = $s['start_slot'] + $s['span'];
+                                    $hours = sprintf("%02d",  floor(($start_time - 1) * 15 / 60) + 6);
+                                    $minutes = sprintf("%02d", ($start_time - 1) * 15 % 60);
+                                    $start_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+
+                                    // $events_array[] = [
+                                    //     "id" => uniqid(),
+                                    //     "auditor_id" => $auditor_id,
+                                    //     "audit_id" => $audit_id,
+                                    //     "status" => "",
+                                    //     "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$start_time)->format('h:i A')),
+                                    //     "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a['end_time'])->format('h:i A')),
+                                    //     "start" => $s['start_slot'] + $s['span'],
+                                    //     "span" =>  $a['span'] - ($s['start_slot']-$a['start_slot']) - $s['span'],
+                                    //     "travel_span" =>  null,
+                                    //     "icon" => "a-circle-plus",
+                                    //     "class" => "available no-border-top no-border-bottom",
+                                    //     "modal_type" => ""
+                                    // ];
+
+                                    $added_availability[] = [
+                                        'start_slot' => $s['start_slot'] + $s['span'],
+                                        'span' => $a['span'] - ($s['start_slot']-$a['start_slot']) - $s['span'],
+                                        'start_time' => $start_time,
+                                        'end_time' => $a['end_time']
+                                    ];
+
+                                }
+                            }
                         }else{
-                            // save avail, save schedule, save avail.
-                            $end_time = $s['start_slot'];
-                            $hours = sprintf("%02d",  floor(($end_time - 1) * 15 / 60) + 6);
-                            $minutes = sprintf("%02d", ($end_time - 1) * 15 % 60);
-                            $end_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+                            // no schedule on that availability
+                            // display the whole availability
+                            // if($already_added != 1){
+                            //     $events_array[] = [
+                            //         "id" => uniqid(),
+                            //         "auditor_id" => $auditor_id,
+                            //         "audit_id" => $audit_id,
+                            //         "status" => "",
+                            //         "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a['start_time'])->format('h:i A')),
+                            //         "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a['end_time'])->format('h:i A')),
+                            //         "start" => $a['start_slot'],
+                            //         "span" =>  $a['span'],
+                            //         "travel_span" =>  null,
+                            //         "icon" => "a-circle-plus",
+                            //         "class" => "available no-border-top no-border-bottom",
+                            //         "modal_type" => ""
+                            //     ];
+                            //     $already_added = 1;
+                            // }
+                        }    
+                    }
+                    
+                }
 
+                // add all the split avail back
+                if(count($added_availability) > 1){
+                    //$added_availability = array_shift($added_availability);
+                    $first = 1;
+                    foreach($added_availability as $a){
+                        if(!$first){
                             $events_array[] = [
-                                "id" => null,
+                                "id" => uniqid(),
                                 "auditor_id" => $auditor_id,
                                 "audit_id" => $audit_id,
                                 "status" => "",
                                 "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a['start_time'])->format('h:i A')),
-                                "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$end_time)->format('h:i A')),
-                                "start" => $a['start_slot'],
-                                "span" =>  $s['start_slot']-$a['start_slot'],
-                                "travel_span" =>  null,
-                                "icon" => "a-circle-plus",
-                                "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => ""
-                            ];
-
-                            $events_array[] = [
-                                "id" => $s['id'],
-                                "auditor_id" => $auditor_id,
-                                "audit_id" => $audit_id,
-                                "status" => "",
-                                "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['start_time'])->format('h:i A')),
-                                "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['end_time'])->format('h:i A')),
-                                "start" => $s['start_slot'],
-                                "span" =>  $s['span'],
-                                "travel_span" =>  $s['travel_span'],
-                                "icon" => "a-circle-minus",
-                                "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => ""
-                            ];
-
-                            $start_time = $s['start_slot'] + $s['span'];
-                            $hours = sprintf("%02d",  floor(($start_time - 1) * 15 / 60) + 6);
-                            $minutes = sprintf("%02d", ($start_time - 1) * 15 % 60);
-                            $start_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
-
-                            $events_array[] = [
-                                "id" => null,
-                                "auditor_id" => $auditor_id,
-                                "audit_id" => $audit_id,
-                                "status" => "",
-                                "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$start_time)->format('h:i A')),
                                 "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a['end_time'])->format('h:i A')),
-                                "start" => $s['start_slot'] + $s['span'],
-                                "span" =>  $a['span'] - ($s['start_slot']-$a['start_slot']) - $s['span'],
+                                "start" => $a['start_slot'],
+                                "span" =>  $a['span'],
                                 "travel_span" =>  null,
                                 "icon" => "a-circle-plus",
                                 "class" => "available no-border-top no-border-bottom",
                                 "modal_type" => ""
                             ];
-
+                        }else{
+                            
+                            $first=0;
                         }
                     }
                 }
+
+            }else{
+                $events_array[] = [
+                    "id" => uniqid(),
+                    "auditor_id" => $auditor_id,
+                    "audit_id" => $audit_id,
+                    "status" => "",
+                    "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a['start_time'])->format('h:i A')),
+                    "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a['end_time'])->format('h:i A')),
+                    "start" => $a['start_slot'],
+                    "span" =>  $a['span'],
+                    "travel_span" =>  null,
+                    "icon" => "a-circle-plus",
+                    "class" => "available no-border-top no-border-bottom",
+                    "modal_type" => ""
+                ];
             }
         }
 
-        // foreach($availabilities as $a){
-        //     $events_array[] = [
-        //             "id" => $a->id,
-        //             "auditor_id" => $auditor_id,
-        //             "status" => "",
-        //             "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a->start_time)->format('h:i A')),
-        //             "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a->end_time)->format('h:i A')),
-        //             "start" => $a->start_slot,
-        //             "span" =>  $a->span,
-        //             "icon" => "a-circle-plus",
-        //             "class" => "available no-border-top no-border-bottom",
-        //             "modal_type" => ""
-        //         ];
-        // }
+if($day_id == 6){
+    //dd($availabilities, $events_array);
+}
+
         
         // if($date->format('Y-m-d') == "2019-01-17"){
         //     dd($events_array, $date->format('Y-m-d'), $availabilities);
@@ -853,7 +968,7 @@ class AuditController extends Controller
         $schedules = ScheduleTime::where('day_id','=',$day_id)->where('audit_id','=',$id)->delete();
         $day = ScheduleDay::where('id','=',$day_id)->where('audit_id','=',$id)->delete();
  
-        Event::fire('audit.cache', $audit->audit);
+        // Event::fire('audit.cache', $audit->audit);
 
         $output = ['data' => 1];
         return $output;
