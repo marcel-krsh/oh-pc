@@ -955,29 +955,35 @@ class ComplianceSelectionJob implements ShouldQueue
         }
 
         foreach ($units_selected as $unit_selected) {
-            $has_htc_funding = 0;
+            if($unit_selected){
+                $has_htc_funding = 0;
 
-            $comments[] = 'Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs: '.$program_htc_overlap_names;
+                $comments[] = 'Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs: '.$program_htc_overlap_names;
 
-            $audit->comment = $audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs: '.$program_htc_overlap_names;
-                $audit->save();
-
-            // if units have HTC funding add to subset
-            foreach ($unit_selected->programs as $unit_program) {
-                if (in_array($unit_program->program_key, $program_htc_overlap)) {
-                    $has_htc_funding = 1;
-                    $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
-                    $audit->comment = $audit->comment.' | Select Process The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
-
+                $audit->comment = $audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs: '.$program_htc_overlap_names;
                     $audit->save();
+
+                // if units have HTC funding add to subset
+                foreach ($unit_selected->programs as $unit_program) {
+                    if (in_array($unit_program->program_key, $program_htc_overlap)) {
+                        $has_htc_funding = 1;
+                        $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
+                        $audit->comment = $audit->comment.' | Select Process The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
+
+                        $audit->save();
+                    }
                 }
-            }
-            if ($has_htc_funding) {
-                $htc_units_subset = array_merge($htc_units_subset, $unit_selected);
-                $comments[] = 'We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
-                $audit->comment = $audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
-                    
-                    $audit->save();
+                if ($has_htc_funding) {
+                    $htc_units_subset = array_merge($htc_units_subset, $unit_selected);
+                    $comments[] = 'We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
+                    $audit->comment = $audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
+                        
+                        $audit->save();
+                }
+            } else {
+                $audit->comment = $audit->comment.' | Select Process A unit came up null in its values. We recommend checking the completeness of the data in Devco for your units, update any that may be missing data, and then re-run the selection.';
+                        
+                        $audit->save();
             }
         }
 

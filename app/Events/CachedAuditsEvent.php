@@ -127,7 +127,7 @@ class CachedAuditsEvent
                     $jsonRun = 1;
                     $baJson .= '{"id": "'.$ba->amenity_id.'", "qty": "0", "type": "'.addslashes($ba->amenity->amenity_description).'","status":"","common_area":"'.$ba->common_area.'","project":"'.$ba->project.'","building_system":"'.$ba->building_system.'","building_exterior":"'.$ba->building_exterior.'","unit":"'.$ba->unit.'","file":"'.$ba->file.'"}';
                 } else {
-                    dd($ba,$ba->amenity->inspectable);
+                    //dd($ba,$ba->amenity->inspectable);
                 }
             }
             $baJson .= ']';
@@ -232,7 +232,7 @@ class CachedAuditsEvent
             //
             //
             $unit_amenities = AmenityInspection::where('unit_id',$unit->unit_id)->with('amenity')->get();
-            dd($unit_amenities);
+            //dd($unit_amenities);
             $uaCount = 0;
             //Unit amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
