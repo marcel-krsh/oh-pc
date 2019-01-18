@@ -190,6 +190,11 @@
 													            </select>
 													        </div>
 							                        	</li>	
+							                        	<li onclick="">
+													        <div class="uk-form-controls">
+													        	<button class="uk-button uk-button-primary" onclick="scheduleTime({{$event['id']}}, {{$day->id}}, {{$event['auditor_id']}});">Schedule</button>
+													        </div>
+													    </li>
 								                    </ul>
 											    </div>
 											</div>
@@ -442,6 +447,27 @@
 </script>
 
 <script>
+	function scheduleTime(eventid, dayid, auditorid){
+		var travel = parseInt($('#travel-'+eventid).val(), 10);
+		var start = parseInt($('#start-'+eventid).val(), 10);
+		var duration = parseInt($('#duration-'+eventid).val(), 10);
+		console.log(eventid +" - "+ auditorid+"-"+travel+"-"+start+"-"+duration);
+
+		$.post("audit/{{$data['project']['audit_id']}}/scheduling/days/"+dayid+"/auditors/"+auditorid, {
+                'travel' : travel,
+                'start' : start,
+                'duration' : duration,
+                '_token' : '{{ csrf_token() }}'
+                }, function(data) {
+                    if(data!=1){ 
+                        UIkit.modal.alert(data,{stack: true});
+                    } else {
+                        UIkit.notification('<span uk-icon="icon: check"></span> Auditor Scheduled', {pos:'top-right', timeout:1000, status:'success'});   
+                        $('#project-details-button-2').trigger( 'click' );       
+                    }
+        });
+	}
+
 	function pad(num, size) {
 	    var s = num+"";
 	    while (s.length < size) s = "0" + s;
@@ -494,8 +520,6 @@
 
 			// reload duration
 			$('#duration-'+eventid).empty();
-			console.log(eventspan+" - "+eventstart+" - "+start+" - "+ travel);
-			// 4 - 17 - 18 - 2
 
 			for (i = slots; i > 0; i--){
 

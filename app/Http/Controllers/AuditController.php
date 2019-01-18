@@ -433,7 +433,7 @@ class AuditController extends Controller
                 foreach($project->selected_audit()->days as $day){
                     $date = Carbon\Carbon::createFromFormat('Y-m-d H:i:s' , $day->date);
                     foreach($auditors_key as $auditor_id){
-                        $daily_schedules[$day->id][] = $this->getAuditorDailyCalendar($date, $auditor_id);
+                        $daily_schedules[$day->id][] = $this->getAuditorDailyCalendar($date, $day->id, $project->selected_audit()->audit_id, $auditor_id);
                     }
                 }
 
@@ -544,7 +544,7 @@ class AuditController extends Controller
         return view('projects.partials.details-'.$type, compact('data', 'project'));
     }
 
-    public function getAuditorDailyCalendar($date, $auditor_id) {
+    public function getAuditorDailyCalendar($date, $day_id, $audit_id, $auditor_id) {
 
         $events_array = array();
         $availabilities = Availability::where('user_id', '=', $auditor_id)
@@ -552,19 +552,199 @@ class AuditController extends Controller
                             ->orderBy('start_slot', 'asc')
                             ->get();
 
-        foreach($availabilities as $a){
-            $events_array[] = [
-                    "id" => $a->id,
-                    "status" => "",
-                    "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a->start_time)->format('h:i A')),
-                    "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a->end_time)->format('h:i A')),
-                    "start" => $a->start_slot,
-                    "span" =>  $a->span,
-                    "icon" => "a-circle-plus",
-                    "class" => "available no-border-top no-border-bottom",
-                    "modal_type" => ""
-                ];
+        $a_array = $availabilities->toArray();
+
+        // $day = ScheduleDay::where('id','=',$day_id)->first();
+
+        $schedules = ScheduleTime::where('auditor_id', '=', $auditor_id)
+                            ->where('day_id', '=', $day_id)
+                            ->orderBy('start_slot', 'asc')
+                            ->get();
+
+        $s_array = $schedules->toArray();
+
+        //dd($a_array, $s_array);
+
+        // for each availability, check if there is an overlapping schedule
+        // if full overlap, just save the schedule in event
+        // if partial overlap: check if at the beginning, middle or end of availability
+        // then create new availability events as needed
+        
+        foreach($a_array as $a){
+            // check if overlap
+            $overlap = 0;
+            foreach($s_array as $s){
+                if($s['start_slot'] >= $a['start_slot'] && $s['start_slot'] + $s['span'] <= $a['start_slot'] + $a['span']){
+                    // there is a schedule on that availability
+                    if($s['span'] == $a['span']){
+                        // exact overlap, save scheduled as is
+                        $events_array[] = [
+                            "id" => $s->id,
+                            "auditor_id" => $auditor_id,
+                            "audit_id" => $audit_id,
+                            "status" => "",
+                            "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['start_time'])->format('h:i A')),
+                            "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['end_time'])->format('h:i A')),
+                            "start" => $s['start_slot'],
+                            "span" =>  $s['span'],
+                            "travel_span" =>  $s['travel_span'],
+                            "icon" => "a-circle-plus",
+                            "class" => "available no-border-top no-border-bottom",
+                            "modal_type" => ""
+                        ];
+                    }else{
+                        if($s['start_slot'] == $a['start_slot']){
+                            // save schedule, add portion of availability afterwards
+                            $events_array[] = [
+                                "id" => $s['id'],
+                                "auditor_id" => $auditor_id,
+                                "audit_id" => $audit_id,
+                                "status" => "",
+                                "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['start_time'])->format('h:i A')),
+                                "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['end_time'])->format('h:i A')),
+                                "start" => $s['start_slot'],
+                                "span" =>  $s['span'],
+                                "travel_span" =>  $s['travel_span'],
+                                "icon" => "a-circle-minus",
+                                "class" => "available no-border-top no-border-bottom",
+                                "modal_type" => ""
+                            ];
+
+                            $start_time = $s['start_slot'] + $s['span'];
+                            $hours = sprintf("%02d",  floor(($start_time - 1) * 15 / 60) + 6);
+                            $minutes = sprintf("%02d", ($start_time - 1) * 15 % 60);
+                            $start_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+
+                            $events_array[] = [
+                                "id" => null,
+                                "auditor_id" => $auditor_id,
+                                "audit_id" => $audit_id,
+                                "status" => "",
+                                "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$start_time)->format('h:i A')),
+                                "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a['end_time'])->format('h:i A')),
+                                "start" => $s['start_slot'] + $s['span'],
+                                "span" =>  $a['span'] - $s['span'],
+                                "travel_span" =>  null,
+                                "icon" => "a-circle-plus",
+                                "class" => "available no-border-top no-border-bottom",
+                                "modal_type" => ""
+                            ];
+
+                        }elseif($s['start_slot'] + $s['span'] == $a['start_slot'] + $a['span']){
+                            // save availability then the schedule
+                            
+                            $end_time = $s['start_slot'] - 1;
+                            $hours = sprintf("%02d",  floor(($end_time - 1) * 15 / 60) + 6);
+                            $minutes = sprintf("%02d", ($end_time - 1) * 15 % 60);
+                            $end_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+
+                            $events_array[] = [
+                                "id" => null,
+                                "auditor_id" => $auditor_id,
+                                "audit_id" => $audit_id,
+                                "status" => "",
+                                "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a['start_time'])->format('h:i A')),
+                                "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$end_time)->format('h:i A')),
+                                "start" => $a['start_slot'],
+                                "span" =>  $s['start_slot'] - 1,
+                                "travel_span" =>  null,
+                                "icon" => "a-circle-plus",
+                                "class" => "available no-border-top no-border-bottom",
+                                "modal_type" => ""
+                            ];
+
+                            $events_array[] = [
+                                "id" => $s['id'],
+                                "auditor_id" => $auditor_id,
+                                "audit_id" => $audit_id,
+                                "status" => "",
+                                "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['start_time'])->format('h:i A')),
+                                "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['end_time'])->format('h:i A')),
+                                "start" => $s['start_slot'],
+                                "span" =>  $s['span'],
+                                "travel_span" =>  $s['travel_span'],
+                                "icon" => "a-circle-minus",
+                                "class" => "available no-border-top no-border-bottom",
+                                "modal_type" => ""
+                            ];
+
+                        }else{
+                            // save avail, save schedule, save avail.
+                            $end_time = $s['start_slot'];
+                            $hours = sprintf("%02d",  floor(($end_time - 1) * 15 / 60) + 6);
+                            $minutes = sprintf("%02d", ($end_time - 1) * 15 % 60);
+                            $end_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+
+                            $events_array[] = [
+                                "id" => null,
+                                "auditor_id" => $auditor_id,
+                                "audit_id" => $audit_id,
+                                "status" => "",
+                                "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a['start_time'])->format('h:i A')),
+                                "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$end_time)->format('h:i A')),
+                                "start" => $a['start_slot'],
+                                "span" =>  $s['start_slot']-$a['start_slot'],
+                                "travel_span" =>  null,
+                                "icon" => "a-circle-plus",
+                                "class" => "available no-border-top no-border-bottom",
+                                "modal_type" => ""
+                            ];
+
+                            $events_array[] = [
+                                "id" => $s['id'],
+                                "auditor_id" => $auditor_id,
+                                "audit_id" => $audit_id,
+                                "status" => "",
+                                "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['start_time'])->format('h:i A')),
+                                "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['end_time'])->format('h:i A')),
+                                "start" => $s['start_slot'],
+                                "span" =>  $s['span'],
+                                "travel_span" =>  $s['travel_span'],
+                                "icon" => "a-circle-minus",
+                                "class" => "available no-border-top no-border-bottom",
+                                "modal_type" => ""
+                            ];
+
+                            $start_time = $s['start_slot'] + $s['span'];
+                            $hours = sprintf("%02d",  floor(($start_time - 1) * 15 / 60) + 6);
+                            $minutes = sprintf("%02d", ($start_time - 1) * 15 % 60);
+                            $start_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+
+                            $events_array[] = [
+                                "id" => null,
+                                "auditor_id" => $auditor_id,
+                                "audit_id" => $audit_id,
+                                "status" => "",
+                                "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$start_time)->format('h:i A')),
+                                "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a['end_time'])->format('h:i A')),
+                                "start" => $s['start_slot'] + $s['span'],
+                                "span" =>  $a['span'] - ($s['start_slot']-$a['start_slot']) - $s['span'],
+                                "travel_span" =>  null,
+                                "icon" => "a-circle-plus",
+                                "class" => "available no-border-top no-border-bottom",
+                                "modal_type" => ""
+                            ];
+
+                        }
+                    }
+                }
+            }
         }
+
+        // foreach($availabilities as $a){
+        //     $events_array[] = [
+        //             "id" => $a->id,
+        //             "auditor_id" => $auditor_id,
+        //             "status" => "",
+        //             "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a->start_time)->format('h:i A')),
+        //             "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$a->end_time)->format('h:i A')),
+        //             "start" => $a->start_slot,
+        //             "span" =>  $a->span,
+        //             "icon" => "a-circle-plus",
+        //             "class" => "available no-border-top no-border-bottom",
+        //             "modal_type" => ""
+        //         ];
+        // }
         
         // if($date->format('Y-m-d') == "2019-01-17"){
         //     dd($events_array, $date->format('Y-m-d'), $availabilities);
@@ -615,6 +795,36 @@ class AuditController extends Controller
         ];
 
          return $calendar;
+    }
+
+    public function scheduleAuditor(Request $request, $audit_id, $day_id, $auditor_id){
+        // TBD user check
+        
+        $start = $request->get('start');
+        $duration = $request->get('duration');
+        $travel = $request->get('travel');
+
+        $hours = sprintf("%02d",  floor(($start - 1) * 15 / 60) + 6);
+        $minutes = sprintf("%02d", ($start - 1) * 15 % 60);
+        $start_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+
+        $hours = sprintf("%02d",  floor(($start + $duration - 1) * 15 / 60) + 6);
+        $minutes = sprintf("%02d", ($start + $duration - 1) * 15 % 60);
+        $end_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+
+        $new_schedule = new ScheduleTime([
+            'audit_id' => $audit_id,
+            'day_id' => $day_id,
+            'auditor_id' => $auditor_id,
+            'start_time' => $start_time,
+            'end_time' => $end_time,
+            'start_slot' => $start,
+            'span' => $duration,
+            'travel_span' => $travel
+        ]);
+        $new_schedule->save();
+
+        return 1;
     }
 
     public function addADay(Request $request, $id){
