@@ -30,7 +30,7 @@ class Unit extends Model
 
     public function building() : HasOne
     {
-        return $this->hasOne('\App\Models\Building');
+        return $this->hasOne(\App\Models\Building::class, 'id','building_id');
     }
 
     public function project_id() : int

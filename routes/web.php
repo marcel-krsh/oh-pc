@@ -17,6 +17,8 @@
         // rerun compliance run
         Route::get('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
 
+        Route::get('/cached_audit/{cached_audit}/caches','ComplianceGenerator@createCaches');
+
         Route::get('/audit/{audit}/details', 'ComplianceGenerator@details');
 
         // Document Test Route
