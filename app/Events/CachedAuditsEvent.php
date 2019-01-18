@@ -23,15 +23,12 @@ use App\Models\UnitInspection;
 use App\Models\Organization;
 use App\Models\BuildingInspection;
 use App\Models\ProjectContactRole;
-use App\Models\CachedAudit;
 use App\Models\Program;
 use App\Services\DevcoService;
 use App\Models\UnitProgram;
 use App\Models\AmenityInspection;
 use App\Models\CachedUnit;
-use App\Models\AuditAuditor;
 use Auth;
-use App\Models\CachedBuilding;
 
 
 
@@ -288,6 +285,8 @@ class CachedAuditsEvent
                 'zip' => $unit->unit->building->address->zip,
                 'auditors_json' => null,
                 'amenities_json' => $uaJson,
+                'unit_id'=>$unit->unit->id,
+                'unit_key'=>$unit->unit->unit_key
             ]);
             $cached_unit->save();
         }

@@ -8,6 +8,18 @@ use App\Models\User;
 use Auth;
 use Session;
 use App\LogConverter;
+use App\Models\CachedBuilding;
+use App\Models\CachedUnit;
+use App\Models\CachedAudit;
+use App\Models\Audit;
+use App\Models\Building;
+use App\Models\Project;
+use App\Models\AmenityInspection;
+use App\Models\UnitInspection;
+use App\Models\BuildingInspection;
+use App\Models\Amenity;
+use App\Models\Findings;
+
 
 class FindingController extends Controller
 {
@@ -42,6 +54,49 @@ class FindingController extends Controller
 
         //dd('type:'.$type.' auditid:'.$auditid.' buildingid:'.$buildingid.' unitid:'.$unitid.' amenityid:'.$amenityid);
 
+        // the selected one that opened this modal
+        $audit = null;
+        $building = null;
+        $unit = null;
+        $amenity = null;
+
+        $buildings = null;
+        $units = null;
+        $amenities = null;
+
+        if($auditid){
+            $audit = CachedAudit::where('audit_id',$auditid)->get();
+        }
+        if($buildingid){
+            // always use the audit id as a selector to ensure you get the correct one
+            $building = CachedBuilding::where('audit_id',$auditid)->where('building_id',$buildingid)->get();
+        }
+        if($unitid){
+            // always use the audit id as a selector to ensure you get the correct one
+            $unit = CachedUnit::where('audit_id',$auditid)->where('unit_id',$unitid)->get();
+        }
+        if($amenityid){
+            // always use the audit id as a selector to ensure you get the correct one
+            $amenity = AmenityInspection::where('audit_id',$auditid)->where('unit_id',$unitid)->get();
+        }
+        if(is_null($audit)){
+            return "alert('No audit found for ID:".$auditid."');";
+        }
+
+        /// All of them for switching
+            $audits = CachedBuilding::where('project_id',$audit->project_id)->get()->all();
+
+            // always use the audit id as a selector to ensure you get the correct one
+            $buildings = CachedBuilding::where('audit_id',$auditid)->get()->all();
+       
+            // always use the audit id as a selector to ensure you get the correct one
+            $units = CachedUnit::where('audit_id',$auditid)->where('unit_id',$unitid)->get()->all();
+        
+            // always use the audit id as a selector to ensure you get the correct one
+            $amenities = AmenityInspection::where('audit_id',$auditid)->where('unit_id',$unitid)->get()->all();
+      
+
+
         if (is_null($type)) {
             // default filter is all
             $type = 'all';
@@ -51,7 +106,7 @@ class FindingController extends Controller
 
         $data = collect([
             'selected-audit' => [
-                'id' => 123,
+                'id' => $auditid,
                 'ref' => "1234567",
                 'address' => '12345 Bob Street, City, State 22233',
                 'selected-location' => [

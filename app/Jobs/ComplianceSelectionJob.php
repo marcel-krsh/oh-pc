@@ -2031,7 +2031,10 @@ class ComplianceSelectionJob implements ShouldQueue
             $organization_id = null;
             $this->processes++;
 
-            for ($i=0; $i<10; $i++) {
+            $timesToRun = SystemSetting::where('key','times_to_run_compliance_selection')->first();
+            $timesToRun = $timesToRun->value;
+
+            for ($i=0; $i<$timesToRun; $i++) {
                 $audit->comment = $audit->comment.' | Running the selectionProcess for the '.$i.'time';
                                     $audit->save();
                 $summary = $this->selectionProcess($audit);
