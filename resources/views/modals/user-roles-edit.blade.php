@@ -5,7 +5,7 @@
 	  		<div class="uk-padding-remove uk-margin-small-top">
 	  			<div uk-grid> 
 	  				<div class="uk-width-1-1 uk-padding-remove-left">
-			  			<h3>{{$user->full_name()}}</h3>
+			  			<h3 uk-tooltip title="DEV|CO KEY: {{$user->devco_key}}<br />ALLITA ID: {{$user->id}}<br />PERSON ID:{{$user->person_id}}<br />API TOKEN: {{$user->api_token}}">{{$user->full_name()}}</h3>
 					</div>
 
 	  				<div class="uk-width-1-1 uk-margin-remove uk-padding-remove-left">
