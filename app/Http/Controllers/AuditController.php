@@ -561,22 +561,25 @@ class AuditController extends Controller
                     "start" => $a->start_slot,
                     "span" =>  $a->span,
                     "icon" => "a-circle-plus",
-                    "lead" => 0,
                     "class" => "available no-border-top no-border-bottom",
                     "modal_type" => ""
                 ];
         }
-            
+        
+        // if($date->format('Y-m-d') == "2019-01-17"){
+        //     dd($events_array, $date->format('Y-m-d'), $availabilities);
+        // }
+
         $header[] = $date->copy()->format('m/d');
 
         if(count($events_array)){
             
             // figure out the before and after areas on the schedule
-            $start_slot = 1;
-            $end_slot = 60;
+            $start_slot = 60;
+            $end_slot = 1;
             foreach($events_array as $e){
-                if($e['start'] > $start_slot) $start_slot = $e['start'];
-                if($e['start'] + $e['span'] < $end_slot) $end_slot = $e['start'] + $e['span'];
+                if($e['start'] <= $start_slot) $start_slot = $e['start'];
+                if($e['start'] + $e['span'] >= $end_slot) $end_slot = $e['start'] + $e['span'];
             }
 
             $before_time_start = 1;
