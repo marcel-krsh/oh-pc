@@ -44,7 +44,7 @@ class CachedUnit extends Model
         'created_at',
         'updated_at',
         'unit_id',
-        'unit_key'
+        'unit_key',
     ];
 
     public function getAmenitiesJsonAttribute($value)
