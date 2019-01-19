@@ -652,7 +652,7 @@ class AuditController extends Controller
 
                     // save schedule
                     $events_array[] = [
-                        "id" => uniqid(),
+                        "id" => $s['id'],
                         "auditor_id" => $auditor_id,
                         "audit_id" => $audit_id,
                         "status" => "",
@@ -771,6 +771,22 @@ class AuditController extends Controller
         ];
 
          return $calendar;
+    }
+
+    public function deleteSchedule(Request $request, $event_id){
+        // TBD check users
+        $current_user = Auth::user();
+
+        $event = ScheduleTime::where('id','=',$event_id)->first();
+
+        // user needs to be the lead
+        // TBD add manager/roles
+        if($event && $event->cached_audit->lead == $current_user->id){
+            $event->delete();
+            return 1;
+        }
+
+        return 0;
     }
 
     public function scheduleAuditor(Request $request, $audit_id, $day_id, $auditor_id){

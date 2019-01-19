@@ -159,6 +159,7 @@
 
         Route::get('/modals/audit/{audit_id}/scheduling/days/{day_id}/auditors/{auditorid?}', 'AuditController@addAssignmentAuditor')->name('project.assignment.addauditor');
         Route::post('/audit/{audit_id}/scheduling/days/{day_id}/auditors/{auditor_id}', 'AuditController@scheduleAuditor')->name('schedule.auditor');
+        Route::post('scheduling/event/{event_id}/delete', 'AuditController@deleteSchedule')->name('schedule.delete');
 
         Route::get('projects/{id}/assignments/addauditor/{auditorid}/stats', 'AuditController@addAssignmentAuditorStats')->name('project.assignment.addauditorstats');
         Route::get('projects/{id}/assignments/addauditor/{auditorid}/loadcal/{currentdate}/{beforeafter}', 'AuditController@getAssignmentAuditorCalendar')->name('project.assignment.getauditorcalendar');

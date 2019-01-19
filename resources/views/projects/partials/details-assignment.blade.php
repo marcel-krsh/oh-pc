@@ -142,7 +142,7 @@
 										@else
 										<div class="event beforetime" data-start="{{$daily_schedule['content']['before_time_start']}}" data-span="{{$daily_schedule['content']['before_time_span']}}"></div>
 										@foreach($daily_schedule['content']['events'] as $event)
-										<div class="event {{$event['status']}} {{$event['class']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}" uk-tooltip="title:{{$event['tooltip']}}" uk-toggle="target: #eventmodal-{{$event['id']}}">
+										<div class="event {{$event['status']}} {{$event['class']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}" uk-tooltip="title:{{$event['tooltip']}}" @if($event['modal_type'] != '' && $event['modal_type'] != "removeschedule") uk-toggle="target: #eventmodal-{{$event['id']}}" @endif @if($event['modal_type'] == "removeschedule") onclick="removeSchedule('{{$event['id']}}');" @endif>
 											@if($event['icon'] != '')
 											@if($event['span'] < 3)
 											<i class="{{$event['icon']}}" style="font-size:10px;"></i>
@@ -150,7 +150,8 @@
 											<i class="{{$event['icon']}}"></i>
 											@endif
 											@endif
-											@if(Auth::user()->id == $project->selected_audit()->lead && $event['icon'] != '') 
+											@if(Auth::user()->id == $project->selected_audit()->lead && $event['icon'] != '' && $event['modal_type'] != '') 
+											@if($event['modal_type'] == 'addschedule')
 											<div id="eventmodal-{{$event['id']}}" uk-modal>
 											    <div class="uk-modal-dialog uk-modal-body">
 											        <a class="uk-modal-close-default" uk-close></a>
@@ -209,6 +210,7 @@
 													</div>
 											    </div>
 											</div>
+											@endif
 											@endif
 										</div>
 										@endforeach
@@ -644,6 +646,23 @@
 
 	function addAssignmentAuditor(dayid, auditorid=''){
 		dynamicModalLoad('audit/{{$data['project']['audit_id']}}/scheduling/days/'+dayid+'/auditors/'+auditorid,1,0,1);
+	}
+
+	function removeSchedule(eventid){
+		UIkit.modal.confirm("Are you sure you want delete this scheduled time?").then(function(){
+            $.post("scheduling/event/"+eventid+"/delete", {
+	                '_token' : '{{ csrf_token() }}'
+	                }, function(data) {
+	                    if(data!=1){ 
+	                        UIkit.modal.alert(data,{stack: true});
+	                    } else {
+	                    	UIkit.notification('<span uk-icon="icon: check"></span> Scheduled Time Removed', {pos:'top-right', timeout:1000, status:'success'});   
+	                        $('#project-details-button-2').trigger( 'click' );       
+	                    }
+	        });
+        }, function () {
+		    return false;
+		});
 	}
 
 	function removeAuditorFromAudit(auditorid){
