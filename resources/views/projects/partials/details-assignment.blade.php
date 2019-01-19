@@ -142,7 +142,7 @@
 										@else
 										<div class="event beforetime" data-start="{{$daily_schedule['content']['before_time_start']}}" data-span="{{$daily_schedule['content']['before_time_span']}}"></div>
 										@foreach($daily_schedule['content']['events'] as $event)
-										<div class="event {{$event['status']}} {{$event['class']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}" uk-tooltip="title:{{$event['start_time']}} - {{$event['end_time']}}" uk-toggle="target: #eventmodal-{{$event['id']}}">
+										<div class="event {{$event['status']}} {{$event['class']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}" uk-tooltip="title:{{$event['tooltip']}}" uk-toggle="target: #eventmodal-{{$event['id']}}">
 											@if($event['icon'] != '')
 											@if($event['span'] < 3)
 											<i class="{{$event['icon']}}" style="font-size:10px;"></i>
@@ -158,7 +158,7 @@
 											        <div class="">
 												    	<ul class="uk-list no-hover uk-form-horizontal">
 								                        	<li onclick="">
-														        <label class="uk-form-label">TRAVEL TIME:</label>
+														        <label class="uk-form-label" style="margin-top: 10px;"><div style="display:inline-block;width:30px;float:left;"><i class="a-marker-directions"></i></div> TRAVEL TIME:</label>
 														        <div class="uk-form-controls">
 														            <select class="uk-select travel-select" id="travel-{{$event['id']}}" data-eventid="{{$event['id']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
 														            @php
@@ -172,7 +172,8 @@
 														        </div>
 								                        	</li>	
 								                        	<li onclick="">
-														        <label class="uk-form-label">ARRIVAL TIME:</label>
+														        <label class="uk-form-label" style="margin-top: 10px;">
+														        	<div style="display:inline-block;width:30px;float:left;"><i class="a-clock-3"></i></div> ARRIVAL TIME:</label>
 														        <div class="uk-form-controls">
 														            <select class="uk-select start-select" id="start-{{$event['id']}}" data-eventid="{{$event['id']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
 														            @php
@@ -186,7 +187,7 @@
 														        </div>
 								                        	</li>	
 								                        	<li onclick="">
-														        <label class="uk-form-label">DURATION:</label>
+														        <label class="uk-form-label" style="margin-top: 10px;"><div style="display:inline-block;width:30px;float:left;"><i class="a-clock-arrow-right"></i></div> DURATION:</label>
 														        <div class="uk-form-controls">
 														            <select class="uk-select duration-select" id="duration-{{$event['id']}}" data-eventid="{{$event['id']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
 														            @php
@@ -359,6 +360,10 @@
 
 	.divTableCell .event.schedule.thisaudit {
 	    background-color: #00aeef;
+	    color: #fff;
+	}
+	.divTableCell .event.travel.thisaudit {
+	    background-color: #75c1de;
 	    color: #fff;
 	}
 
