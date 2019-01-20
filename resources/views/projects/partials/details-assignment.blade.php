@@ -166,7 +166,12 @@
 														            for ($i = 0; $i < $event['span']; $i++){
 														            	$hours = sprintf("%02d", intval($i * 15 / 60));
 																		$minutes = sprintf("%02d",$i * 15 - ($hours * 60));
-														                echo "<option value='".$i."'>".$hours.":".$minutes."</option>";
+																		if($event['travel_time'] == $i){
+																			echo "<option value='".$i."' selected>".$hours.":".$minutes."</option>";
+																		}else{
+																			echo "<option value='".$i."'>".$hours.":".$minutes."</option>";
+																		}
+														                
 														            }
 														            @endphp
 														            </select>

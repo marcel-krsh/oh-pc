@@ -60,6 +60,7 @@
 		</div>
 		<div id="auditorListScroller" class="uk-overflow-auto uk-margin-top">
 			@foreach($auditors as $auditor)
+			@if(!$auditor->isAuditorOnAudit($audit->audit_id))
 			<div class="project-assignment-add-auditor-row" uk-grid>
 				<div class="uk-width-3-5 uk-padding-remove">
 					<div uk-grid>
@@ -114,6 +115,7 @@
 					@endif
 				</div>
 			</div>
+			@endif
 			@endforeach
 		</div>
 		@else
