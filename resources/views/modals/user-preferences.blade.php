@@ -169,6 +169,16 @@
 	  							<address-row v-if="addresses" v-for="address, index in addresses" :key="address.id" :address="address" :index="index" v-on:address-remove="removeAddress"></address-row>
 	  						</div>
 	  					</div>
+	  					<div class="uk-grid-small" style="margin-top:30px;" uk-grid>
+	  						<label>Default address</label>
+	  						<select id="default_address" class="uk-select" style="margin-left: 10px;">
+	  							<option value="{{$data['summary']['organization']['id']}}" @if($user->default_address_id == $data['summary']['organization']['id']) selected @endif>{{$data['summary']['organization']['address1']}}, @if($data['summary']['organization']['address2']){{$data['summary']['organization']['address2']}}@endif
+									@if($data['summary']['organization']['city']) {{$data['summary']['organization']['city']}}, {{$data['summary']['organization']['state']}} {{$data['summary']['organization']['zip']}} @endif</option>
+	  							@foreach($data['summary']['addresses'] as $address)
+	  							<option value="{{$address['address_id']}}" @if($user->default_address_id == $address['address_id']) selected @endif>{{$address['address']}}</option>
+	  							@endforeach
+	  						</select>
+	  					</div>
 	  				</div>
 	  			</div>
 	  		</div>
@@ -373,6 +383,21 @@
  	$( document ).ready(function() {
  		loadCalendar();
 		fillSpacers();
+
+		$( "#default_address" ).change(function() {
+			var id = parseInt($(this).val(), 10);
+			console.log("default address "+id);
+
+			$.post("/auditors/{{$data['summary']['id']}}/addresses/"+id+"/default", {
+	            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+	            if(data!=1){ 
+	                UIkit.modal.alert(data,{stack: true});
+	            } else {
+	                UIkit.notification('<span uk-icon="icon: check"></span> Default Address Saved', {pos:'top-right', timeout:1000, status:'success'});
+	            }
+	        } );
+		});	
 	});
 
  	function loadCalendar(target=null) {

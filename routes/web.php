@@ -167,6 +167,7 @@
         Route::get('/modals/auditors/{id}/preferences', 'UserController@preferences')->name('auditor.preferences');
         Route::post('/auditors/{id}/addresses/create', 'UserController@saveAuditorAddress')->name('auditor.address.create');
         Route::post('/auditoraddresses/{address_id}/delete', 'UserController@deleteAuditorAddress')->name('auditor.address.delete');
+        Route::post('/auditors/{auditor_id}/addresses/{address_id}/default', 'UserController@setDefaultAddress')->name('auditor.address.default');
         Route::post('/auditors/{id}/availability/create', 'UserController@saveAuditorAvailability')->name('auditor.availability.create');
         Route::get('auditors/{id}/availability/loadcal/{currentdate?}/{beforeafter?}', 'UserController@getAvailabilityCalendar')->name('auditor.availability.loadcal');
         Route::post('auditors/{userid}/availability/{id}/delete', 'UserController@deleteAvailability')->name('auditor.availability.delete');

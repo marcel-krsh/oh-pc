@@ -469,6 +469,7 @@ class UserController extends Controller
         $org_zip = '';
         if($user->organization_details){
             if($user->organization_details->address){
+                $org_id = $user->organization_details->address->id;
                 $org_address1 = $user->organization_details->address->line_1;
                 $org_address2 = $user->organization_details->address->line_2;
                 $org_city = $user->organization_details->address->city;
@@ -521,6 +522,7 @@ class UserController extends Controller
                 'color' => $user->badge_color,
                 'phone' => $phone_number,
                 'organization' => [
+                    "id" => $org_id,
                     "name" => $org_name,
                     "address1" => $org_address1,
                     "address2" => $org_address2,
@@ -545,7 +547,21 @@ class UserController extends Controller
         ]);
 
 
-        return view('modals.user-preferences', compact('data'));
+        return view('modals.user-preferences', compact('data', 'user'));
+    }
+
+    public function setDefaultAddress(Request $request, $auditor_id, $address_id) {
+        // TBD user check
+        if($auditor_id == Auth::user()->id){
+            $current_user = User::where('id','=',$auditor_id)->first();
+            $current_user->update([
+                'default_address_id' => $address_id
+            ]);
+            return 1;
+        }
+
+        return 0;
+
     }
 
     public function getCalendar($d) {
