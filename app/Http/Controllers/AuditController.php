@@ -574,6 +574,18 @@ class AuditController extends Controller
         $check_avail_start = null;
         $check_avail_span = null;
 
+        // get user default address and compare with project's address for estimated driving times
+        $auditor = User::where('id','=',$auditor_id)->first();
+        $default_address = $auditor->default_address();
+        $distanceAndTime = $auditor->distanceAndTime($audit_id);
+        if($distanceAndTime){
+            // round up to the next 15 minute slot
+            $minutes = intval($distanceAndTime[2] / 60, 10);
+            $travel_time = ($minutes - ($minutes % 15) + 15) / 15; // time in 15 min slots
+        }else{
+            $travel_time = null;
+        }
+
         while($slot <= 60){
             $skip = 0;
 
@@ -605,7 +617,7 @@ class AuditController extends Controller
                             "auditor_id" => $auditor_id,
                             "audit_id" => $audit_id,
                             "status" => "",
-                            "travel_time" => "",
+                            "travel_time" => $travel_time,
                             "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$start_time)->format('h:i A')),
                             "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$end_time)->format('h:i A')),
                             "start" => $check_avail_start,
@@ -709,7 +721,7 @@ class AuditController extends Controller
                         "auditor_id" => $auditor_id,
                         "audit_id" => $audit_id,
                         "status" => "",
-                        "travel_time" => "",
+                        "travel_time" => $travel_time,
                         "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$start_time)->format('h:i A')),
                         "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$end_time)->format('h:i A')),
                         "start" => $check_avail_start,

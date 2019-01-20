@@ -443,7 +443,9 @@ class User extends Authenticatable
     public function default_address()
     {
         // if there is a default address, pick it, otherwise choose the organization address
-        $address = $this->addresses()->where('default','=',1)->orderBy('id','desc')->first();
+        $default_address_id = $this->default_address_id;
+
+        $address = Address::where('id','=',$default_address_id)->first();
         if($address){
             return $address->formatted_address();
         }else{
@@ -478,7 +480,7 @@ class User extends Authenticatable
             $response = json_decode( $data, true );
             curl_close( $ch );
             
-            return [$response['rows'][0]['elements'][0]['distance']['text'], $response['rows'][0]['elements'][0]['duration']['text']];
+            return [$response['rows'][0]['elements'][0]['distance']['text'], $response['rows'][0]['elements'][0]['duration']['text'], $response['rows'][0]['elements'][0]['duration']['value']]; // array with 10 miles, 10 hours 36 mins, and the value in seconds
             
         }else{
             return null;
