@@ -1225,7 +1225,7 @@ class AuditController extends Controller
 
         $user = User::where('id','=',$userid)->first();
 
-        if($day && $audit && $user){
+        if($day && $audit && $user && count(AuditAuditor::where('audit_id','=',$auditid)->where('user_id','=',$userid)->get()) == 0){
             $new_auditor = new AuditAuditor([
                 'audit_id' => $auditid,
                 'monitoring_key' => $audit->monitoring_key,
