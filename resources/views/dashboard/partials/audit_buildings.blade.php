@@ -182,7 +182,7 @@
 															</div>
 														</div>
 														<div class="uk-width-1-1 uk-margin-remove findings-action ok-actionable" style="margin-top: 0px;">
-															<button class="uk-button program-status uk-link" onclick="inspectionDetailsFromBuilding({{$building->building->id}}, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); "><i class="a-home-search"></i> INSPECTION</button>
+															<button class="uk-button program-status uk-link" onclick="inspectionDetailsFromBuilding({{$building->building->building_id}}, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); "><i class="a-home-search"></i> INSPECTION</button>
 														</div>
 													</div>
 												</div>

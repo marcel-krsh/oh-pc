@@ -25,6 +25,7 @@ use App\Models\ScheduleDay;
 use App\Models\ScheduleTime;
 use App\Models\AuditAuditor;
 use App\Models\Availability;
+use App\Models\AmenityInspection;
 use Auth;
 use Session;
 use App\LogConverter;
@@ -54,7 +55,7 @@ class AuditController extends Controller
         $target = $request->get('target');
         $context = $request->get('context');
 
-        // check if user can see that audit
+        // check if user can see that audit TBD
         //
 
         // count buildings & count ordering_buildings
@@ -168,6 +169,7 @@ class AuditController extends Controller
 
     public function detailsFromBuilding($audit, $building, Request $request)
     {
+        //dd(OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->count(), CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count(), CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count());
         $target = $request->get('target');
         $targetaudit = $request->get('targetaudit');
         $context = $request->get('context');
@@ -195,13 +197,15 @@ class AuditController extends Controller
                 $i++;
             }
         } elseif (CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count() != OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->count() && CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count() != 0) {
-            $details = null;
+            $details = null; 
         }
 
 
         $details = OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->with('unit')->get();
 
-
+foreach($details as $detail){
+    dd($detail);
+}
         return view('dashboard.partials.audit_building_details', compact('audit', 'target', 'building', 'details', 'targetaudit', 'context'));
     }
 
@@ -211,7 +215,10 @@ class AuditController extends Controller
         $rowid = $request->get('rowid');
         $context = $request->get('context');
         $inspection = "test";
+
+        $audit = Audit::where('id','=',$audit_id)->first();
         
+        // we may not user CachedInspection...
         if(CachedInspection::first()){
             $data['detail'] = CachedInspection::first();
             $data['menu'] = $data['detail']->menu_json;
@@ -223,16 +230,14 @@ class AuditController extends Controller
         // forget cachedinspection, populate without
         // details: unit_id, building_id, project_id
         $data['detail'] = collect([
-            'unit_id' => '',
-            'building_id' => '',
-            'project_id' => ''
+            'unit_id' => null,
+            'building_id' => $building_id,
+            'project_id' => $audit->project_id
         ]);
 
         $data['menu'] = collect([
             ['name' => 'SITE AUDIT', 'icon' => 'a-mobile-home', 'status' => 'critical active', 'style' => '', 'action' => 'site_audit'],
             ['name' => 'FILE AUDIT', 'icon' => 'a-folder', 'status' => 'action-required', 'style' => '', 'action' => 'file_audit'],
-            ['name' => 'MESSAGES', 'icon' => 'a-envelope-incoming', 'status' => 'action-needed', 'style' => '', 'action' => 'messages'],
-            ['name' => 'FOLLOW UPS', 'icon' => 'a-bell-2', 'status' => 'no-action', 'style' => '', 'action' => 'followups'],
             ['name' => 'SUBMIT', 'icon' => 'a-avatar-star', 'status' => 'in-progress', 'style' => 'margin-top:30px;', 'action' => 'submit']
         ]);
 
@@ -244,7 +249,8 @@ class AuditController extends Controller
         }
             $ordered_amenities_count = $ordered_amenities_count->count();
 
-        $amenities_count = CachedAmenity::where('audit_id', '=', $audit_id);
+        // $amenities_count = CachedAmenity::where('audit_id', '=', $audit_id);
+        $amenities_count = AmenityInspection::where('audit_id', '=', $audit_id);
         if ($building_id) {
             $amenities_count = $amenities_count->where('building_id', '=', $building_id);
         }
@@ -253,7 +259,8 @@ class AuditController extends Controller
         if ($amenities_count != $ordered_amenities_count && $amenities_count != 0) {
             // this shouldn't happen
             // reset ordering
-            $amenities_to_reset = CachedAmenity::where('audit_id', '=', $audit_id);
+            // $amenities_to_reset = CachedAmenity::where('audit_id', '=', $audit_id);
+            $amenities_to_reset = AmenityInspection::where('audit_id', '=', $audit_id);
             if ($building_id) {
                 $amenities_to_reset = $amenities_to_reset->where('building_id', '=', $building_id);
             }
@@ -262,7 +269,8 @@ class AuditController extends Controller
 
         if ($ordered_amenities_count == 0 && $amenities_count != 0) {
             // if ordering_amenities is empty, create a default entry for the ordering
-            $amenities = CachedAmenity::where('audit_id', '=', $audit_id);
+            // $amenities = CachedAmenity::where('audit_id', '=', $audit_id);
+            $amenities = AmenityInspection::where('audit_id', '=', $audit_id);
             if ($building_id) {
                 $amenities = $amenities->where('building_id', '=', $building_id);
             }
