@@ -10,11 +10,11 @@
 			<div class="uk-width-1-2">
 				@if($data['summary']['estimated'] != ':' || !$data['summary']['estimated'])
 				<h3 class="estHour">
-					It will take an <span class="underlined italic">ESTIMATED {{Auth::user()->id}} : {{$project->selected_audit()->lead_auditor->id}} </span> @if(Auth::user()->id == $project->selected_audit()->lead_user_id) <i class="a-pencil-2 use-hand-cursor"  onclick=" $('.estHour').toggle();" uk-tooltip="title:EDIT ESTIMATED HOURS;"></i>@endIf <span id="estimated_hours_field">{{$data['summary']['estimated']}}</span> to complete this audit.
+					It will take an <span class=" italic">ESTIMATED </span> @if(Auth::user()->id == $project->selected_audit()->lead_auditor->id) <i class="a-pencil-2 use-hand-cursor"  onclick=" $('.estHour').toggle();" uk-tooltip="title:EDIT ESTIMATED HOURS;"></i>@endIf <span id="estimated_hours_field">{{$data['summary']['estimated']}}</span> to complete this audit.
 					@if($data['summary']['needed'])<br />
 					<span id="estimated_hours_needed">{{$data['summary']['needed']}}</span> Need Assigned @endif
 				</h3>
-				@elseif(Auth::user()->id == $project->selected_audit()->lead_user_id)
+				@elseif(Auth::user()->id == $project->selected_audit()->lead_auditor->id)
 				<h3 class="estHour">
 					Enter an estimated number of hours for this audit.
 				</h3>
@@ -25,7 +25,7 @@
 				
 				@endif
 
-				@if(Auth::user()->id == $project->selected_audit()->lead_user_id)
+				@if(Auth::user()->id == $project->selected_audit()->lead_auditor->id)
 				<h3 class="estHour estHourForm" @if($data['summary']['estimated'] != ':' || !$data['summary']['estimated']) style="display:none" @else style="margin-top: 0;" @endif>
 					<form id="estimated_hours_form" method="post" class="uk-width-1-1 uk-margin-bottom">
 						<div class="uk-grid-small" uk-grid>
@@ -65,7 +65,7 @@
 				</ul>	
 			</div>
 
-			@if(Auth::user()->id == $project->selected_audit()->lead_user_id)
+			@if(Auth::user()->id == $project->selected_audit()->lead_auditor->id)
 				<div id="project-details-assignment-buttons" class="uk-width-1-1 uk-margin-large-top project-details-buttons ">
 					<div class="project-details-button-container flatpickr" id="addadaybutton">
 						<input type="text" id="addaday" name="addaday" class="flatpickr-input"  data-input style="display:none">
