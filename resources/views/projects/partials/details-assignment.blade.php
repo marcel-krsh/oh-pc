@@ -10,7 +10,7 @@
 			<div class="uk-width-1-2">
 				@if($data['summary']['estimated'] != ':' || !$data['summary']['estimated'])
 				<h3 class="estHour">
-					It will take an <span class="underlined italic">ESTIMATED</span> @if(Auth::user()->id == $project->selected_audit()->lead_user_id) <i class="a-pencil-2 use-hand-cursor"  onclick=" $('.estHour').toggle();" uk-tooltip="title:EDIT ESTIMATED HOURS;"></i>@endIf <span id="estimated_hours_field">{{$data['summary']['estimated']}}</span> to complete this audit.
+					It will take an <span class="underlined italic">ESTIMATED {{Auth::user()->id}} : {{$project->selected_audit()->lead_user_id}} </span> @if(Auth::user()->id == $project->selected_audit()->lead_user_id) <i class="a-pencil-2 use-hand-cursor"  onclick=" $('.estHour').toggle();" uk-tooltip="title:EDIT ESTIMATED HOURS;"></i>@endIf <span id="estimated_hours_field">{{$data['summary']['estimated']}}</span> to complete this audit.
 					@if($data['summary']['needed'])<br />
 					<span id="estimated_hours_needed">{{$data['summary']['needed']}}</span> Need Assigned @endif
 				</h3>
