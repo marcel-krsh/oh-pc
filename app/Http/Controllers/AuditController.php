@@ -212,9 +212,29 @@ class AuditController extends Controller
         $context = $request->get('context');
         $inspection = "test";
         
-        $data['detail'] = CachedInspection::first();
+        if(CachedInspection::first()){
+            $data['detail'] = CachedInspection::first();
+            $data['menu'] = $data['detail']->menu_json;
+        }else{
+            $data['detail'] = null;
+            $data['menu'] = null;
+        }
 
-        $data['menu'] = $data['detail']->menu_json;
+        // forget cachedinspection, populate without
+        // details: unit_id, building_id, project_id
+        $data['detail'] = collect([
+            'unit_id' => '',
+            'building_id' => '',
+            'project_id' => ''
+        ]);
+
+        $data['menu'] = collect([
+            ['name' => 'SITE AUDIT', 'icon' => 'a-mobile-home', 'status' => 'critical active', 'style' => '', 'action' => 'site_audit'],
+            ['name' => 'FILE AUDIT', 'icon' => 'a-folder', 'status' => 'action-required', 'style' => '', 'action' => 'file_audit'],
+            ['name' => 'MESSAGES', 'icon' => 'a-envelope-incoming', 'status' => 'action-needed', 'style' => '', 'action' => 'messages'],
+            ['name' => 'FOLLOW UPS', 'icon' => 'a-bell-2', 'status' => 'no-action', 'style' => '', 'action' => 'followups'],
+            ['name' => 'SUBMIT', 'icon' => 'a-avatar-star', 'status' => 'in-progress', 'style' => 'margin-top:30px;', 'action' => 'submit']
+        ]);
 
         // $data['amenities'] = CachedAmenity::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->get();
         // count amenities & count ordering_amenities
@@ -273,6 +293,8 @@ class AuditController extends Controller
         $data['amenities'] = $amenities;
 
         $data['comments'] = CachedComment::where('parent_id', '=', null)->with('replies')->get();
+
+        //dd("new approach");
 
         return response()->json($data);
         //return view('dashboard.partials.audit_building_inspection', compact('audit_id', 'target', 'detail_id', 'building_id', 'detail', 'inspection', 'areas', 'rowid'));

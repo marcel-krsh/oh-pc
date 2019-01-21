@@ -129,7 +129,13 @@
 										            		
 											            	@if($building->building->type != "pool")
 											            	<br />
-											            	<small class="colored use-hand-cursor" onclick="buildingDetails({{$building->building->building_id}},{{$audit}},{{$key}},{{$target}},10,'{{$context}}');" uk-tooltip="pos:top-left;title:Building details;" ><i class="a-menu colored uk-text-middle"></i> <span class="uk-text-middle uk-text-uppercase">{{$building->building->type_total}} @if($building->building->type_total > 1) {{$building->building->type_text_plural}} @else {{$building->building->type_text}} @endif</span></small>
+											            	@if($building->building->building_id != '')
+											            	<small class="colored use-hand-cursor" onclick="buildingDetails({{$building->building->building_id}},{{$audit}},{{$key}},{{$target}},10,'{{$context}}');" uk-tooltip="pos:top-left;title:Building details;" ><i class="a-menu colored uk-text-middle"></i> 
+											            		@if($building->building->type_total > 0)
+											            		<span class="uk-text-middle uk-text-uppercase">{{$building->building->type_total}} @if($building->building->type_total > 1) {{$building->building->type_text_plural}} @else {{$building->building->type_text}} @endif</span>
+											            		@endif
+											            	</small>
+											            	@endif
 											            	@endif
 										            	</div>
 										            </div>
@@ -176,7 +182,7 @@
 															</div>
 														</div>
 														<div class="uk-width-1-1 uk-margin-remove findings-action ok-actionable" style="margin-top: 0px;">
-															<button class="uk-button program-status uk-link" onclick="inspectionDetailsFromBuilding({{$building->building->id}}, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); "><i class="a-home-search"></i> INSPECT BUILDING</button>
+															<button class="uk-button program-status uk-link" onclick="inspectionDetailsFromBuilding({{$building->building->id}}, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); "><i class="a-home-search"></i> INSPECTION</button>
 														</div>
 													</div>
 												</div>

@@ -231,14 +231,6 @@ function loadInspectionMenu(data, id, context='audits', level='') {
 	$('#inspection-'+context+'-'+level+'menus-'+id+'-container').fadeIn( "slow", function() {
 	    // Animation complete
 	  });
-
-
-
-
-	// $('#inspection-menus-'+id).html(inspectionLeftTemplate);
-	// $('#inspection-menus-'+id).fadeIn( "slow", function() {
-	//     // Animation complete
-	//   });
 }
 
 function loadInspectionTools(data, id, context='audits', level = '') {
@@ -550,7 +542,12 @@ function inspectionDetailsFromBuilding(buildingid, auditid, target, targetaudit,
 					loadInspectionMenu(data.menu, target, context);
 					loadInspectionMain(data.amenities, target, context);
 					loadInspectionTools(data, target, context);
-					//loadInspectionComments(data.comments, target, context);
+					// 
+					// //loadInspectionComments(data.comments, target, context);
+					
+					
+
+
 				}
 	    });
 	}
