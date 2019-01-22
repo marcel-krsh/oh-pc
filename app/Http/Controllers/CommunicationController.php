@@ -215,6 +215,7 @@ class CommunicationController extends Controller
 
             return view('modals.new-communication', compact('project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id'));
         } else {
+            $project = null;
             $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
 
             // build a list of all categories used for uploaded documents in this parcel
@@ -261,7 +262,7 @@ class CommunicationController extends Controller
 
             $audit = null;
 
-            return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id'));
+            return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id','project'));
         }
     }
 
