@@ -169,7 +169,7 @@ class Project extends Model
                     ->first();            
         } else {
             $details = ProjectDetail::where('project_id', '=', $this->id)
-                    ->where('audit_id', '=', $selected_audit->id)
+                    ->where('audit_id', '=', $selected_audit->audit_id)
                     ->orderBy('id', 'desc')
                     ->first();
         }
