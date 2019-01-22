@@ -30,35 +30,35 @@
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-required"></i> Required Units</div>
 							</td>
 							<td class="uk-text-center border-right">{{$data['summary']['required_units']}}</td>
-							<td class="uk-text-center">{{$data['summary']['required_units']}}</td>
+							<td class="uk-text-center">{{$data['summary']['required_units_file']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Selected Units</div>
 							</td>
 							<td class="uk-text-center border-right">{{$data['summary']['selected_units']}}</td>
-							<td class="uk-text-center">{{$data['summary']['selected_units']}}</td>
+							<td class="uk-text-center">{{$data['summary']['selected_units_file']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-needed"></i> Needed Units</div>
 							</td>
 							<td class="uk-text-center border-right">{{$data['summary']['needed_units']}}</td>
-							<td class="uk-text-center">{{$data['summary']['needed_units']}}</td>
+							<td class="uk-text-center">{{$data['summary']['needed_units_file']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-inspected"></i> Inspected Units</div>
 							</td>
 							<td class="uk-text-center border-right">{{$data['summary']['inspected_units']}}</td>
-							<td class="uk-text-center">{{$data['summary']['inspected_units']}}</td>
+							<td class="uk-text-center">{{$data['summary']['inspected_units_file']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-to-be-inspected"></i> To Be Inspected Units</div>
 							</td>
 							<td class="uk-text-center border-right">{{$data['summary']['to_be_inspected_units']}}</td>
-							<td class="uk-text-center">{{$data['summary']['to_be_inspected_units']}}</td>
+							<td class="uk-text-center">{{$data['summary']['to_be_inspected_units_file']}}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -83,21 +83,21 @@
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Optimized Sample Size</div>
 							</td>
 							<td class="uk-text-center border-right">{{$data['summary']['optimized_sample_size']}}</td>
-							<td class="uk-text-center"></td>
+							<td class="uk-text-center">{{$data['summary']['optimized_sample_size_file']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-inspected"></i> Optimized Inspections Completed</div>
 							</td>
 							<td class="uk-text-center border-right">{{$data['summary']['optimized_completed_inspections']}}</td>
-							<td class="uk-text-center"></td>
+							<td class="uk-text-center">{{$data['summary']['optimized_completed_inspections_file']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-to-be-inspected"></i> Optimized Remaining Inspections</div>
 							</td>
 							<td class="uk-text-center border-right">{{$data['summary']['optimized_remaining_inspections']}}</td>
-							<td class="uk-text-center"></td>
+							<td class="uk-text-center">{{$data['summary']['optimized_remaining_inspections_file']}}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -126,35 +126,35 @@
 											<div class="indented" uk-leader><i class="fas fa-square chart-color-required"></i> Required Units</div>
 										</td>
 										<td class="uk-text-center border-right">{{$program['required_units']}}</td>
-										<td class="uk-text-center">{{$program['required_units']}}</td>
+										<td class="uk-text-center">{{$program['required_units_file']}}</td>
 									</tr>
 									<tr>
 										<td>
 											<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Selected Units</div>
 										</td>
 										<td class="uk-text-center border-right">{{$program['selected_units']}}</td>
-										<td class="uk-text-center">{{$program['selected_units']}}</td>
+										<td class="uk-text-center">{{$program['selected_units_file']}}</td>
 									</tr>
 									<tr>
 										<td>
 											<div class="indented" uk-leader><i class="fas fa-square chart-color-needed"></i> Needed Units</div>
 										</td>
 										<td class="uk-text-center border-right">{{$program['needed_units']}}</td>
-										<td class="uk-text-center">{{$program['needed_units']}}</td>
+										<td class="uk-text-center">{{$program['needed_units_file']}}</td>
 									</tr>
 									<tr>
 										<td>
 											<div class="indented" uk-leader><i class="fas fa-square chart-color-inspected"></i> Inspected Units</div>
 										</td>
 										<td class="uk-text-center border-right">{{$program['inspected_units']}}</td>
-										<td class="uk-text-center">{{$program['inspected_units']}}</td>
+										<td class="uk-text-center">{{$program['inspected_units_file']}}</td>
 									</tr>
 									<tr>
 										<td>
 											<div class="indented" uk-leader><i class="fas fa-square chart-color-to-be-inspected"></i> To Be Inspected Units</div>
 										</td>
 										<td class="uk-text-center border-right">{{$program['to_be_inspected_units']}}</td>
-										<td class="uk-text-center">{{$program['to_be_inspected_units']}}</td>
+										<td class="uk-text-center">{{$program['to_be_inspected_units_file']}}</td>
 									</tr>
 								</tbody>
 							</table>
@@ -168,8 +168,8 @@
 								"labels": ["Required","Selected","Needed","Inspected", "To Be Inspected"],
 								"datasets":[
 									{
-										"label":"Program 1",
-										"data":[0,0,0,30,70],
+										"label":"Inspected",
+										"data":[0,0,0,{{$program['inspected_units_file'] + $program['inspected_units']}},{{$program['to_be_inspected_units_file'] + $program['to_be_inspected_units']}}],
 										"backgroundColor":[
 											chartColors.required,
 											chartColors.selected,
@@ -180,8 +180,8 @@
 										"borderWidth": 1
 									},
 									{
-										"label":"Program 3",
-										"data":[0,30,50,0,0],
+										"label":"Selected/Needed",
+										"data":[0,{{$program['selected_units_file'] + $program['selected_units']}},{{$program['needed_units_file'] + $program['needed_units']}},0,0],
 										"backgroundColor":[
 											chartColors.required,
 											chartColors.selected,
@@ -192,8 +192,8 @@
 										"borderWidth": 1
 									},
 									{
-										"label":"Program 2",
-										"data":[100,0,0,0,0],
+										"label":"Required",
+										"data":[{{$program['required_units_file'] + $program['required_units']}},0,0,0,0],
 										"backgroundColor":[
 											chartColors.required,
 											chartColors.selected,
@@ -314,7 +314,7 @@
 			"datasets":[
 				{
 					"label":"Program 1",
-					"data":[0,0,0,30,70],
+					"data":[0,0,0,{{$data['summary']['inspected_units_file'] + $data['summary']['inspected_units']}},{{$data['summary']['to_be_inspected_units_file'] + $data['summary']['to_be_inspected_units']}}],
 					"backgroundColor":[
 						chartColors.required,
 						chartColors.selected,
@@ -326,7 +326,7 @@
 				},
 				{
 					"label":"Program 3",
-					"data":[0,30,50,0,0],
+					"data":[0,{{$data['summary']['selected_units_file'] + $data['summary']['selected_units']}},{{$data['summary']['needed_units_file'] + $data['summary']['needed_units']}},0,0],
 					"backgroundColor":[
 						chartColors.required,
 						chartColors.selected,
@@ -338,7 +338,7 @@
 				},
 				{
 					"label":"Program 2",
-					"data":[100,0,0,0,0],
+					"data":[{{$data['summary']['required_units_file'] + $data['summary']['required_units']}},0,0,0,0],
 					"backgroundColor":[
 						chartColors.required,
 						chartColors.selected,
