@@ -9,7 +9,7 @@
 							<div id="modal-select-audit" uk-modal>
 							    <div class="uk-modal-dialog uk-modal-body">
 							        <h2 class="uk-modal-title">Select another audit</h2>
-							        <select name="audit-selection" id="audit-selection">
+							        <select name="audit-selection" id="audit-selection" class="uk-select">
 							        	@foreach($audits as $audit)
 							        	<option value="{{$audit->audit_id}}" @if($audit->audit_id == $selected_audit->audit_id) selected @endif>Audit {{$audit->audit_id}} @if($audit->completed_date) | Completed on {{formatDate($audit->completed_date)}}@endif</option>
 							        	@endforeach
