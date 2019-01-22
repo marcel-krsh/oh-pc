@@ -332,7 +332,7 @@ class CommunicationController extends Controller
 
         if ($audit) {
             // fetch documents and categories
-            $documents = Document::where('audit_id', $audit->id)
+            $documents = SyncDocuware::where('project_id', $project->id)
                 ->orderBy('created_at', 'desc')
                 ->get();
             $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
