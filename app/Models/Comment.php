@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Comment Model
@@ -13,14 +16,57 @@ use Illuminate\Database\Eloquent\Model;
 class Comment extends Model
 {
     protected $table = 'comments';
+    //
+    public $timestamps = true;
+    //protected $dateFormat = 'Y-m-d\TH:i:s.u';
+
 
     protected $fillable = [
         'uid',
-        'parcel_id',
         'user_id',
+        'project_id',
+        'audit_id',
+        'finding_id',
+        'photo_id',
+        'followup_id',
+        'document_id',
+        'comment_id',
         'recorded_date',
         'site_visit_id',
         'comment',
+        'latitude',
+        'longitude',
         'deleted'
     ];
+
+    public function comments() : HasMany 
+    {
+        return $this->hasMany(App\Models\Comment::class, 'comment_id', 'id');
+    }
+
+    public function comment() : HasOne 
+    {
+        return $this->hasOne(App\Models\Comment::class, 'id', 'comment_id');
+    }
+
+    public function photo() : HasOne 
+    {
+        return $this->hasOne(App\Models\Photo::class, 'id', 'photo_id');
+    }
+
+    public function document() : HasOne 
+    {
+        return $this->hasOne(App\Models\SyncDocuware::class, 'id', 'document_id');
+    }
+
+    public function finding() : HasOne 
+    {
+        return $this->hasOne(App\Models\Finding::class, 'id', 'finding_id');
+    }
+
+    public function followup() : HasOne 
+    {
+        return $this->hasOne(App\Models\Followup::class, 'id', 'followup_id');
+    }
+
 }
