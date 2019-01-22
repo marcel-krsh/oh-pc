@@ -65,26 +65,26 @@ class FindingController extends Controller
         $amenities = null;
 
         if($auditid){
-            $audit = CachedAudit::where('audit_id',$auditid)->get();
+            $audit = CachedAudit::where('audit_id',$auditid)->first();
         }
         if($buildingid){
             // always use the audit id as a selector to ensure you get the correct one
-            $building = CachedBuilding::where('audit_id',$auditid)->where('building_id',$buildingid)->get();
+            $building = CachedBuilding::where('audit_id',$auditid)->where('building_id',$buildingid)->first();
         }
         if($unitid){
             // always use the audit id as a selector to ensure you get the correct one
-            $unit = CachedUnit::where('audit_id',$auditid)->where('unit_id',$unitid)->get();
+            $unit = CachedUnit::where('audit_id',$auditid)->where('unit_id',$unitid)->first();
         }
         if($amenityid){
             // always use the audit id as a selector to ensure you get the correct one
-            $amenity = AmenityInspection::where('audit_id',$auditid)->where('unit_id',$unitid)->get();
+            $amenity = AmenityInspection::where('audit_id',$auditid)->where('unit_id',$unitid)->first();
         }
         if(is_null($audit)){
             return "alert('No audit found for ID:".$auditid."');";
         }
-
+        //dd($audit);
         /// All of them for switching
-            $audits = CachedBuilding::where('project_id',$audit->project_id)->get()->all();
+            $audits = CachedAudit::where('project_id',$audit->project_id)->get()->all();
 
             // always use the audit id as a selector to ensure you get the correct one
             $buildings = CachedBuilding::where('audit_id',$auditid)->get()->all();
@@ -93,7 +93,80 @@ class FindingController extends Controller
             $units = CachedUnit::where('audit_id',$auditid)->where('unit_id',$unitid)->get()->all();
         
             // always use the audit id as a selector to ensure you get the correct one
-            $amenities = AmenityInspection::where('audit_id',$auditid)->where('unit_id',$unitid)->get()->all();
+            $amenities = AmenityInspection::where('audit_id',$auditid)->where('unit_id',$unitid)->get()->all(); 
+
+            $findings = Findings::where('project_id',$audit->project_id)
+                ->with('comments')
+                ->with('comments.comments')
+                ->with('photos')
+                ->with('photos.comments')
+                ->with('photos.comments.comments')
+                ->with('followups')
+                ->with('followups.comments')
+                ->with('followups.comments.comments')
+                ->with('followups.documents')
+                ->with('followups.documents.comments')
+                ->with('followups.documents.comments.comments')
+                ->with('followups.photos')
+                ->with('followups.photos.comments')
+                ->with('followups.photos.comments.comments')
+                ->with('documents')
+                ->with('documents.comments')
+                ->orderBy('updated_at','desc')
+                ->get()->all();
+
+            $followups = Followup::where('project_id',$audit->project_id)
+                ->with('comments')
+                ->with('comments.comments')
+                ->with('photos')
+                ->with('photos.comments')
+                ->with('photos.comments.comments')
+                ->with('documents')
+                ->with('documents.comments')
+                ->with('documents.comments.comments')
+                ->orderBy('updated_at','desc')
+                ->get()->all();
+                
+            //get comments that are only on the root of the project
+            $comments = Comments::where('project_id',$audit->project_id)
+                ->with('comments')
+                ->whereNull('finding_id')
+                ->whereNull('document_id')
+                ->whereNull('photo_id')
+                ->whereNull('follow_up_id')
+                ->whereNull('comment_id')
+                ->orderBy('updated_at','desc')
+                ->get()
+                ->all();
+
+            //get documents that are only on the root of the project or attached to a communication - this is only for auditors to see and above.
+            $documents = SyncDocuware::where('project_id',$audit->project_id)
+                ->with('comments')
+                ->with('comments.comments')
+                ->whereNull('finding_id')
+                ->whereNull('document_id')
+                ->whereNull('photo_id')
+                ->whereNull('follow_up_id')
+                ->orderBy('updated_at','desc')
+                ->get()
+                ->all();
+
+            //get documents that are only on the root of the project or attached to a communication - this is only for auditors to see and above.
+            $photos = Photo::where('project_id',$audit->project_id)
+                ->with('comments')
+                ->with('comments.comments')
+                ->with('photos')
+                ->with('photos.comments')
+                ->with('photos.comments.comments')
+                ->whereNull('finding_id')
+                ->whereNull('document_id')
+                ->whereNull('photo_id')
+                ->whereNull('follow_up_id')
+                ->orderBy('updated_at','desc')
+                ->get()
+                ->all();
+
+
       
 
 

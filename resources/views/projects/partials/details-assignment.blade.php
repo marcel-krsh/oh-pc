@@ -10,15 +10,22 @@
 			<div class="uk-width-1-2">
 				@if($data['summary']['estimated'] != ':' || !$data['summary']['estimated'])
 				<h3 class="estHour">
-					It will take an <span class="underlined italic">ESTIMATED</span> <i class="a-pencil-2 use-hand-cursor" onclick=" $('.estHour').toggle();" uk-tooltip="title:EDIT ESTIMATED HOURS;"></i><span id="estimated_hours_field">{{$data['summary']['estimated']}}</span> to complete this audit.
+					It will take an <span class=" italic">ESTIMATED </span> @if(Auth::user()->id == $project->selected_audit()->lead_auditor->id) <i class="a-pencil-2 use-hand-cursor"  onclick=" $('.estHour').toggle();" uk-tooltip="title:EDIT ESTIMATED HOURS;"></i>@endIf <span id="estimated_hours_field">{{$data['summary']['estimated']}}</span> to complete this audit.
 					@if($data['summary']['needed'])<br />
 					<span id="estimated_hours_needed">{{$data['summary']['needed']}}</span> Need Assigned @endif
 				</h3>
-				@else
+				@elseif(Auth::user()->id == $project->selected_audit()->lead_auditor->id)
 				<h3 class="estHour">
 					Enter an estimated number of hours for this audit.
 				</h3>
+				@else
+				<h3 class="estHour">
+					Sorry, no assignments have been made available yet. {{$project->selected_audit()->lead_auditor->full_name()}} needs to enter the estimated time for this audit, and then assign auditors to each day of the inspection.
+				</h3>
+				
 				@endif
+
+				@if(Auth::user()->id == $project->selected_audit()->lead_auditor->id)
 				<h3 class="estHour estHourForm" @if($data['summary']['estimated'] != ':' || !$data['summary']['estimated']) style="display:none" @else style="margin-top: 0;" @endif>
 					<form id="estimated_hours_form" method="post" class="uk-width-1-1 uk-margin-bottom">
 						<div class="uk-grid-small" uk-grid>
@@ -45,6 +52,7 @@
 							@endif
 					</form>
 				</h3>
+				@endIf
 			</div>
 			<div class="uk-width-1-3">
 				<ul class="uk-list">
@@ -57,13 +65,15 @@
 				</ul>	
 			</div>
 
-			<div id="project-details-assignment-buttons" class="uk-width-1-1 uk-margin-large-top project-details-buttons ">
-				<div class="project-details-button-container flatpickr" id="addadaybutton">
-					<input type="text" id="addaday" name="addaday" class="flatpickr-input"  data-input style="display:none">
-					<button class="uk-button uk-link addadaybutton" type="button" data-toggle><i class="far fa-calendar-plus"></i> ADD A DAY</button>
-				</div>
+			@if(Auth::user()->id == $project->selected_audit()->lead_auditor->id)
+				<div id="project-details-assignment-buttons" class="uk-width-1-1 uk-margin-large-top project-details-buttons ">
+					<div class="project-details-button-container flatpickr" id="addadaybutton">
+						<input type="text" id="addaday" name="addaday" class="flatpickr-input"  data-input style="display:none">
+						<button class="uk-button uk-link addadaybutton" type="button" data-toggle><i class="far fa-calendar-plus"></i> ADD A DAY</button>
+					</div>
 				
-			</div>
+				</div>
+				@endIf
 		</div>
 
 		<div class="project-details-info-assignment-schedule uk-position-relative uk-visible-toggle uk-margin-right uk-margin-left">
@@ -236,7 +246,7 @@
 				@endforeach
 			</div>
 			<hr />
-			<span class="italic">NOTE: YOU CAN ONLY APPROVE SCHEDULE CONFLICTS FOR AUDITS THAT YOU ARE THE LEAD. IF YOU ARE NOT THE LEAD, YOU CAN REQUEST APPROVAL FOR THE CONFLICT BY THE LEAD OF THAT AUDIT.</span>
+			<span class="italic">NOTE: Only lead auditors can change a shedule. If you have any questions about your schedule please contact {{$project->selected_audit()->lead_auditor->full_name()}}.</span>
 		</div>
 
 	</div>

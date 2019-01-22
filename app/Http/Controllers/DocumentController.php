@@ -15,7 +15,6 @@ use DB;
 use App\Models\SyncDocuware;
 use App\Models\DocumentCategory;
 use App\Models\DocumentDocumentCategory;
-use App\Models\DocumentRequest;
 use App\Models\Project;
 use App\Models\Audit;
 
@@ -217,9 +216,9 @@ class DocumentController extends Controller
                 $documents = null;
             }
             $document_categories = DocumentCategory::where('parent_id','<>',0)->orderBy('parent_id')->orderBy('document_category_name')->get()->all();
-            $document_requests = DocumentRequest::where('project_id',$project->id)->get()->all();
+            
 
-            return view('projects.partials.documents', compact('project', 'documents', 'document_categories', 'document_requests'));
+            return view('projects.partials.documents', compact('project', 'documents', 'document_categories'));
         
 
     }
