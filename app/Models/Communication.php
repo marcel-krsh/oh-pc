@@ -27,6 +27,12 @@ class Communication extends Model
         'subject'
     ];
 
+    use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
+
+    protected $casts = [
+        'communication_id' => 'json',
+    ];
+
     public static function boot()
     {
         parent::boot();
@@ -93,7 +99,7 @@ class Communication extends Model
      */
     public function documents() : HasMany
     {
-        return $this->hasMany(\App\Models\CommunicationDocument::class);
+        return $this->hasMany(\App\Models\DocuwareSync::class, 'communication_id->communication_id');
     }
 
     /**

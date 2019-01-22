@@ -226,7 +226,7 @@ class CommunicationController extends Controller
             $recipients_from_hfa = User::where('organization_id', '=', $ohfa_id)
                     ->where('active', 1)
                     ->leftJoin('people','people.id','users.person_id')
-                    ->leftJoin('organizations','orgnaizations.id','users.organization_id')
+                    ->leftJoin('organizations','organizations.id','users.organization_id')
                     ->join('users_roles','users_roles.user_id','users.id')
                     ->select('users.*','last_name','first_name','organization_name')
                     ->where('active', 1)
@@ -241,7 +241,7 @@ class CommunicationController extends Controller
             if (Auth::user()->pm_access()) {
                 $recipients = User::where('organization_id', '=', Auth::user()->organization_id)
                     ->leftJoin('people','people.id','users.person_id')
-                    ->leftJoin('organizations','orgnaizations.id','users.organization_id')
+                    ->leftJoin('organizations','organizations.id','users.organization_id')
                     ->join('users_roles','users_roles.user_id','users.id')
                     ->select('users.*','last_name','first_name','organization_name')
                     ->where('active', 1)
