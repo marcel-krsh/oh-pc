@@ -80,23 +80,23 @@
 						</tr>
 						<tr>
 							<td>
-								<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Actual Sample Size</div>
+								<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Optimized Sample Size</div>
 							</td>
-							<td class="uk-text-center border-right"></td>
+							<td class="uk-text-center border-right">{{$data['summary']['optimized_sample_size']}}</td>
 							<td class="uk-text-center"></td>
 						</tr>
 						<tr>
 							<td>
-								<div class="indented" uk-leader><i class="fas fa-square chart-color-inspected"></i> Actual Inspections Completed</div>
+								<div class="indented" uk-leader><i class="fas fa-square chart-color-inspected"></i> Optimized Inspections Completed</div>
 							</td>
-							<td class="uk-text-center border-right"></td>
+							<td class="uk-text-center border-right">{{$data['summary']['optimized_completed_inspections']}}</td>
 							<td class="uk-text-center"></td>
 						</tr>
 						<tr>
 							<td>
-								<div class="indented" uk-leader><i class="fas fa-square chart-color-to-be-inspected"></i> Actual Remaining Inspections</div>
+								<div class="indented" uk-leader><i class="fas fa-square chart-color-to-be-inspected"></i> Optimized Remaining Inspections</div>
 							</td>
-							<td class="uk-text-center border-right"></td>
+							<td class="uk-text-center border-right">{{$data['summary']['optimized_remaining_inspections']}}</td>
 							<td class="uk-text-center"></td>
 						</tr>
 					</tbody>
@@ -107,6 +107,7 @@
 		<div class="project-details-info-compliance-programs uk-position-relative uk-visible-toggle uk-margin-top"  uk-slider="finite: true">
     		<ul class="uk-slider-items uk-child-width-1-2 uk-margin-top">
         		@foreach($data['programs'] as $program)
+        		@if($program['required_units'] != 0)
 		        <li>
 					<div class="project-details-info-compliance-program uk-panel uk-grid-match" style="height:180px" uk-grid>
 						<div class="uk-width-1-3 uk-padding-remove">
@@ -207,6 +208,7 @@
 						});
 					</script>
 				</li>
+				@endif
 		        @endforeach
     		</ul>
 		    <a class="uk-position-center-left uk-position-small uk-hidden-hover" style="width:20px" href="#" uk-slidenav-previous uk-slider-item="previous"></a>

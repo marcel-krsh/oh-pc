@@ -428,6 +428,9 @@ foreach($details as $detail){
                 $summary_needed = 0;
                 $summary_inspected = 0;
                 $summary_to_be_inspected = 0;
+                $summary_optimized_remaining_inspections = 0;
+                $summary_optimized_sample_size = 0;
+                $summary_optimized_completed_inspections = 0;
 
                 // create stats for each program
                 foreach($selection_summary['programs'] as $program){
@@ -445,9 +448,10 @@ foreach($details as $detail){
                     $unit_keys = $program['units_after_optimization']; 
                     $inspected_units = UnitInspection::whereIn('unit_key', $unit_keys)
                                 ->where('group_id', '=', $program['group'])
-                                ->whereHas('amenity_inspections', function($query) {
-                                    $query->where('completed_date_time', '!=', null);
-                                })
+                                // ->whereHas('amenity_inspections', function($query) {
+                                //     $query->where('completed_date_time', '!=', null);
+                                // })
+                                ->where('complete', '!=', null)
                                 ->count();
 
                     $to_be_inspected_units = $program['totals_after_optimization'] - $inspected_units;
@@ -469,11 +473,15 @@ foreach($details as $detail){
                         'to_be_inspected_units' => $to_be_inspected_units
                     ];
 
-                    $summary_required = $summary_required + $program['totals_after_optimization'];
+                    $summary_required = $summary_required + $program['totals_before_optimization'];
                     $summary_selected = $summary_selected + $selected_units;
                     $summary_needed = $summary_needed + $needed_units;
                     $summary_inspected = $summary_inspected + $inspected_units;
                     $summary_to_be_inspected = $summary_to_be_inspected + $to_be_inspected_units;
+
+                    $summary_optimized_sample_size = $summary_optimized_sample_size + $program['totals_after_optimization'];
+                    $summary_optimized_completed_inspections = $summary_optimized_completed_inspections + $inspected_units;
+                    $summary_optimized_remaining_inspections = $summary_optimized_sample_size - $summary_optimized_completed_inspections = $summary_optimized_completed_inspections + $inspected_units;
                 }
 
                 $data['summary'] = [
@@ -487,7 +495,10 @@ foreach($details as $detail){
                         'selected_units' => $summary_selected,
                         'needed_units' => $summary_needed,
                         'inspected_units' => $summary_inspected,
-                        'to_be_inspected_units' => $summary_to_be_inspected
+                        'to_be_inspected_units' => $summary_to_be_inspected,
+                        'optimized_sample_size' => $summary_optimized_sample_size,
+                        'optimized_completed_inspections' => $summary_optimized_completed_inspections,
+                        'optimized_remaining_inspections' => $summary_optimized_remaining_inspections
                 ];
 
                 // 
