@@ -190,7 +190,7 @@ class Project extends Model
         $programs = array();
         foreach($this->programs as $program){
             $count = $program->total_unit_count;
-            $programs[] = ["name" => $program->program->program_name." ".$program->program_id." ".$this->currentAudit()->audit_id, "units" => $count, "program_id" => $program->program_id];
+            $programs[] = ["name" => $program->program->program_name, "units" => $count, "program_id" => $program->program_id];
         }
 
         $last_audit = $this->lastAudit();
