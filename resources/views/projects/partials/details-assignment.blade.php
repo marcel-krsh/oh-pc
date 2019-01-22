@@ -93,20 +93,23 @@
 							@foreach($project->selected_audit()->auditors as $auditor)
 							@if($auditor->user_id != $project->selected_audit()->lead_auditor->id)
 							<div class="divTableCell">
-								<span uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($auditor->user->full_name())}} {{$auditor->user_id}};" title="" onclick="removeAuditorFromAudit({{$auditor->user_id}});" aria-expanded="false" class="user-badge user-badge-{{$auditor->user->badge_color}} no-float uk-link" >{{$auditor->user->initials()}}</span>
+								<span @if(Auth::user()->id == $project->selected_audit()->lead_auditor->id)
+								 uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($auditor->user->full_name())}} {{$auditor->user_id}};" title="" onclick="removeAuditorFromAudit({{$auditor->user_id}});" aria-expanded="false" class="user-badge user-badge-{{$auditor->user->badge_color}} no-float uk-link" @else uk-tooltip title="{{strtoupper($auditor->user->full_name())}}" @endIf >{{$auditor->user->initials()}}</span>
 							</div>
 							@endif
 							@endforeach
 
 							<div class="divTableCell">
+								@if(Auth::user()->id == $project->selected_audit()->lead_auditor->id)
 								<i class="a-circle-plus use-hand-cursor" style="font-size:34px;" onclick="addAssignmentAuditor({{$day->id}});" uk-tooltip="title:CLICK TO ADD AUDITORS;"></i>
+								@endIf
 							</div>
 							<div class="divTableCell">&nbsp;</div>
 						</div>
 
 						<div class="divTableRow isLead">
 							<div class="divTableCell">
-								<h3 style="margin-top:5px;text-align: left;"> {{formatDate($day->date, 'l F d, Y')}} <small><i class="a-trash-4 use-hand-cursor" onclick="deleteDay({{$day->id}});"></i></small></h3>
+								<h3 style="margin-top:5px;text-align: left;"> {{formatDate($day->date, 'l F d, Y')}} <small>@if(Auth::user()->id == $project->selected_audit()->lead_auditor->id) <i class="a-trash-4 use-hand-cursor" onclick="deleteDay({{$day->id}});"></i>@endIf</small></h3>
 							</div>
 							@foreach($auditors_key as $auditor_id)
 							<div class="divTableCell isLead" style="padding-top:14px">
@@ -154,7 +157,7 @@
 										<div class="event beforetime" data-start="{{$daily_schedule['content']['before_time_start']}}" data-span="{{$daily_schedule['content']['before_time_span']}}"></div>
 										@endif
 										@foreach($daily_schedule['content']['events'] as $event)
-										<div class="event {{$event['status']}} {{$event['class']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}" uk-tooltip="title:{{$event['tooltip']}}" @if($event['modal_type'] != '' && $event['modal_type'] != "removeschedule") uk-toggle="target: #eventmodal-{{$event['id']}}" @endif @if($event['modal_type'] == "removeschedule") onclick="removeSchedule('{{$event['id']}}');" @endif>
+										<div class="event {{$event['status']}} {{$event['class']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}" uk-tooltip="title:{{$event['tooltip']}}" @if(Auth::user()->id == $project->selected_audit()->lead_auditor->id) @if($event['modal_type'] != '' && $event['modal_type'] != "removeschedule") uk-toggle="target: #eventmodal-{{$event['id']}}" @endif @if($event['modal_type'] == "removeschedule") onclick="removeSchedule('{{$event['id']}}');" @endif @endif>
 											@if($event['icon'] != '')
 											@if($event['span'] < 3)
 											<i class="{{$event['icon']}}" style="font-size:10px;"></i>
