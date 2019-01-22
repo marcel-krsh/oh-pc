@@ -150,7 +150,9 @@
 											<i class="a-circle-cross" uk-tooltip="title:No availability"></i>
 										</div>
 										@else
+										@if($daily_schedule['content']['before_time_start'] != 1 && $daily_schedule['content']['before_time_span'] != 0)
 										<div class="event beforetime" data-start="{{$daily_schedule['content']['before_time_start']}}" data-span="{{$daily_schedule['content']['before_time_span']}}"></div>
+										@endif
 										@foreach($daily_schedule['content']['events'] as $event)
 										<div class="event {{$event['status']}} {{$event['class']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}" uk-tooltip="title:{{$event['tooltip']}}" @if($event['modal_type'] != '' && $event['modal_type'] != "removeschedule") uk-toggle="target: #eventmodal-{{$event['id']}}" @endif @if($event['modal_type'] == "removeschedule") onclick="removeSchedule('{{$event['id']}}');" @endif>
 											@if($event['icon'] != '')
