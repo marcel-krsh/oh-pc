@@ -498,7 +498,7 @@ foreach($details as $detail){
                     $summary_inspected = $summary_inspected + $inspected_units_site;
                     $summary_to_be_inspected = $summary_to_be_inspected + $to_be_inspected_units_site;
 
-                    $summary_optimized_sample_size = $summary_optimized_sample_size + $program['totals_before_optimization'];
+                    $summary_optimized_sample_size = $summary_optimized_sample_size + $program['totals_after_optimization'];
                     $summary_optimized_completed_inspections = $summary_optimized_completed_inspections + $inspected_units_site;
                     $summary_optimized_remaining_inspections = $summary_optimized_sample_size - $summary_optimized_completed_inspections;
 
@@ -1168,7 +1168,10 @@ foreach($details as $detail){
 
     public function getProjectNotes($project = null)
     {
-        return view('projects.partials.notes');
+        
+
+
+        return view('projects.partials.notes', compact($project));
     }
 
     // public function getProjectComments ( $project = null ) {
