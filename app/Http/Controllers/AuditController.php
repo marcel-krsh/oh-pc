@@ -26,6 +26,7 @@ use App\Models\ScheduleTime;
 use App\Models\AuditAuditor;
 use App\Models\Availability;
 use App\Models\AmenityInspection;
+use App\Models\UnitInspection;
 use Auth;
 use Session;
 use App\LogConverter;
@@ -401,27 +402,96 @@ foreach($details as $detail){
 
         switch ($type) {
             case 'compliance':
-                $data = collect([
+                // get the compliance summary for this audit
+                // 
+                $audit = $project->selected_audit()->audit; 
+                $selection_summary = json_decode($audit->selection_summary, 1); //dd($selection_summary);
+
+                $data = [
                     "project" => [
                         'id' => $project->id
-                    ],
-                    "summary" => [
+                    ]
+                ];
+
+                /*
+                    the output of the compliance process should produce the "required units" count. Then the selected should be the same unless they changed some units. That would increase the value of needed units.
+
+                    Inspected units are counted when the inspection is completed for that unit. 
+                    To be inspected units is the balance.
+
+                    A unit is complete once all of its amenities have been marked complete - it has a completed date on it
+
+                 */
+
+                $summary_required = 0;
+                $summary_selected = 0;
+                $summary_needed = 0;
+                $summary_inspected = 0;
+                $summary_to_be_inspected = 0;
+
+                // create stats for each program
+                foreach($selection_summary['programs'] as $program){
+
+                    // count selected units using the list of program ids
+                    $program_keys = explode(',', $program['program_keys']); 
+                    $selected_units = UnitInspection::whereIn('program_key', $program_keys)->where('group_id', '=', $program['group'])->count();
+
+                    if($program['group'] == 7){
+                        //dd( UnitInspection::whereIn('program_key', $program_keys)->where('group_id', '=', $program['group'])->get());
+                    }
+
+                    $needed_units = $program['totals_after_optimization'] - $selected_units;
+
+                    $unit_keys = $program['units_after_optimization']; 
+                    $inspected_units = UnitInspection::whereIn('unit_key', $unit_keys)
+                                ->where('group_id', '=', $program['group'])
+                                ->whereHas('amenity_inspections', function($query) {
+                                    $query->where('completed_date_time', '!=', null);
+                                })
+                                ->count();
+
+                    $to_be_inspected_units = $program['totals_after_optimization'] - $inspected_units;
+
+
+                    $data['programs'][] = [
+                        'id' => $program['group'],
+                        'name' => $program['name'],
+                        'pool' => $program['pool'],
+                        'comments' => $program['comments'],
+                        'user_limiter' => $program['use_limiter'],
+                        'totals_after_optimization' => $program['totals_after_optimization'],
+                        'units_before_optimization' => $program['units_before_optimization'],
+                        'totals_before_optimization' => $program['totals_before_optimization'],
+                        'required_units' => $program['totals_after_optimization'],
+                        'selected_units' => $selected_units,
+                        'needed_units' => $needed_units,
+                        'inspected_units' => $inspected_units,
+                        'to_be_inspected_units' => $to_be_inspected_units
+                    ];
+
+                    $summary_required = $summary_required + $program['totals_after_optimization'];
+                    $summary_selected = $summary_selected + $selected_units;
+                    $summary_needed = $summary_needed + $needed_units;
+                    $summary_inspected = $summary_inspected + $inspected_units;
+                    $summary_to_be_inspected = $summary_to_be_inspected + $to_be_inspected_units;
+                }
+
+                $data['summary'] = [
                         'required_unit_selected' => 0,
                         'inspectable_areas_assignment_needed' => 12,
                         'required_units_selection' => 13,
                         'file_audits_needed' => 14,
                         'physical_audits_needed' => 15,
-                        'schedule_conflicts' => 16
-                    ],
-                    "programs" => [
-                        ['id' => 1, 'name' => 'Program Name A'],
-                        ['id' => 2, 'name' => 'Program Name B'],
-                        ['id' => 3, 'name' => 'Program Name C'],
-                        ['id' => 4, 'name' => 'Program Name D'],
-                        ['id' => 5, 'name' => 'Program Name E'],
-                        ['id' => 6, 'name' => 'Program Name F']
-                    ]
-                ]);
+                        'schedule_conflicts' => 16,
+                        'required_units' => $summary_required,
+                        'selected_units' => $summary_selected,
+                        'needed_units' => $summary_needed,
+                        'inspected_units' => $summary_inspected,
+                        'to_be_inspected_units' => $summary_to_be_inspected
+                ];
+
+                // 
+                
                 break;
             case 'assignment':
 

@@ -22,43 +22,43 @@
 							<td>
 								<div uk-leader><strong>Compliance Requirements (with overlap)</strong></div>
 							</td>
-							<td class="uk-text-center border-right">2,000</td>
-							<td class="uk-text-center">2,000</td>
+							<td class="uk-text-center border-right"></td>
+							<td class="uk-text-center"></td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-required"></i> Required Units</div>
 							</td>
-							<td class="uk-text-center border-right">500</td>
-							<td class="uk-text-center">500</td>
+							<td class="uk-text-center border-right">{{$data['summary']['required_units']}}</td>
+							<td class="uk-text-center">{{$data['summary']['required_units']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Selected Units</div>
 							</td>
-							<td class="uk-text-center border-right">375</td>
-							<td class="uk-text-center">375</td>
+							<td class="uk-text-center border-right">{{$data['summary']['selected_units']}}</td>
+							<td class="uk-text-center">{{$data['summary']['selected_units']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-needed"></i> Needed Units</div>
 							</td>
-							<td class="uk-text-center border-right">125</td>
-							<td class="uk-text-center">125</td>
+							<td class="uk-text-center border-right">{{$data['summary']['needed_units']}}</td>
+							<td class="uk-text-center">{{$data['summary']['needed_units']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-inspected"></i> Inspected Units</div>
 							</td>
-							<td class="uk-text-center border-right">125</td>
-							<td class="uk-text-center">250</td>
+							<td class="uk-text-center border-right">{{$data['summary']['inspected_units']}}</td>
+							<td class="uk-text-center">{{$data['summary']['inspected_units']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-to-be-inspected"></i> To Be Inspected Units</div>
 							</td>
-							<td class="uk-text-center border-right">250</td>
-							<td class="uk-text-center">125</td>
+							<td class="uk-text-center border-right">{{$data['summary']['to_be_inspected_units']}}</td>
+							<td class="uk-text-center">{{$data['summary']['to_be_inspected_units']}}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -75,29 +75,29 @@
 							<td>
 								<div uk-leader><strong>Inspections Required to Meet Compliance</strong></div>
 							</td>
-							<td class="uk-text-center border-right">188</td>
-							<td class="uk-text-center">188</td>
+							<td class="uk-text-center border-right"></td>
+							<td class="uk-text-center"></td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Actual Sample Size</div>
 							</td>
-							<td class="uk-text-center border-right">188</td>
-							<td class="uk-text-center">188</td>
+							<td class="uk-text-center border-right"></td>
+							<td class="uk-text-center"></td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-inspected"></i> Actual Inspections Completed</div>
 							</td>
-							<td class="uk-text-center border-right">47</td>
-							<td class="uk-text-center">94</td>
+							<td class="uk-text-center border-right"></td>
+							<td class="uk-text-center"></td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-to-be-inspected"></i> Actual Remaining Inspections</div>
 							</td>
-							<td class="uk-text-center border-right">141</td>
-							<td class="uk-text-center">94</td>
+							<td class="uk-text-center border-right"></td>
+							<td class="uk-text-center"></td>
 						</tr>
 					</tbody>
 				</table>
@@ -124,36 +124,36 @@
 										<td>
 											<div class="indented" uk-leader><i class="fas fa-square chart-color-required"></i> Required Units</div>
 										</td>
-										<td class="uk-text-center border-right">500</td>
-										<td class="uk-text-center">500</td>
+										<td class="uk-text-center border-right">{{$program['required_units']}}</td>
+										<td class="uk-text-center">{{$program['required_units']}}</td>
 									</tr>
 									<tr>
 										<td>
 											<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Selected Units</div>
 										</td>
-										<td class="uk-text-center border-right">375</td>
-										<td class="uk-text-center">375</td>
+										<td class="uk-text-center border-right">{{$program['selected_units']}}</td>
+										<td class="uk-text-center">{{$program['selected_units']}}</td>
 									</tr>
 									<tr>
 										<td>
 											<div class="indented" uk-leader><i class="fas fa-square chart-color-needed"></i> Needed Units</div>
 										</td>
-										<td class="uk-text-center border-right">125</td>
-										<td class="uk-text-center">125</td>
+										<td class="uk-text-center border-right">{{$program['needed_units']}}</td>
+										<td class="uk-text-center">{{$program['needed_units']}}</td>
 									</tr>
 									<tr>
 										<td>
 											<div class="indented" uk-leader><i class="fas fa-square chart-color-inspected"></i> Inspected Units</div>
 										</td>
-										<td class="uk-text-center border-right">125</td>
-										<td class="uk-text-center">250</td>
+										<td class="uk-text-center border-right">{{$program['inspected_units']}}</td>
+										<td class="uk-text-center">{{$program['inspected_units']}}</td>
 									</tr>
 									<tr>
 										<td>
 											<div class="indented" uk-leader><i class="fas fa-square chart-color-to-be-inspected"></i> To Be Inspected Units</div>
 										</td>
-										<td class="uk-text-center border-right">250</td>
-										<td class="uk-text-center">125</td>
+										<td class="uk-text-center border-right">{{$program['to_be_inspected_units']}}</td>
+										<td class="uk-text-center">{{$program['to_be_inspected_units']}}</td>
 									</tr>
 								</tbody>
 							</table>
