@@ -19,6 +19,11 @@ class UnitInspection extends Model
         return $this->hasMany(\App\Models\UnitAmenity::class, 'unit_id', 'unit_id');
     }
 
+    public function amenity_inspections() : HasMany
+    {
+        return $this->hasMany(\App\Models\AmenityInspection::class, 'unit_id', 'unit_id');
+    }
+
     public function unit() : HasOne
     {
         return $this->hasOne(\App\Models\Unit::class, 'id', 'unit_id');
