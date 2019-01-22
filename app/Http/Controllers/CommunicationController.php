@@ -20,7 +20,6 @@ use App\Models\DocumentCategory;
 use App\Mail\EmailNotification;
 use App\Models\Communication;
 use App\Models\CommunicationRecipient;
-use App\Models\CommunicationDocument;
 //use App\LogConverter;
 use App\Models\CachedAudit;
 use App\Models\Project;
@@ -570,15 +569,16 @@ class CommunicationController extends Controller
             }
             
             // save documents
-            if (isset($forminputs['documents'])) {
-                foreach ($forminputs['documents'] as $document_id) {
-                    $document = new CommunicationDocument([
-                        'communication_id' => $message->id,
-                        'document_id' => (int) $document_id
-                    ]);
-                    $document->save();
-                }
-            }
+            // UPDATE TO USE DOCUWARE
+            // if (isset($forminputs['documents'])) {
+            //     foreach ($forminputs['documents'] as $document_id) {
+            //         $document = new CommunicationDocument([
+            //             'communication_id' => $message->id,
+            //             'document_id' => (int) $document_id
+            //         ]);
+            //         $document->save();
+            //     }
+            // }
 
             // send emails
             try {
