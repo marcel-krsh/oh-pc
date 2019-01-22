@@ -4,7 +4,7 @@
 	<div class="uk-width-1-1">		
 		<div class=" uk-margin-left uk-margin-right ">
 			<hr>
-			<span style="font-style: italic;">{{$data['summary']['required_unit_selected']}} ALL REQUIRED UNIT COUNTS FOR EACH PROGRAM HAVE BEEN SELECTED. {{$data['summary']['inspectable_areas_assignment_needed']}} INSPECTABLE AREAS NEED ASSIGNMENT. {{$data['summary']['required_units_selection']}} REQUIRED UNITS NEED TO BE SELECTED. {{$data['summary']['file_audits_needed']}} FILE AUDITS NEED TO BE COMPLETED. {{$data['summary']['physical_audits_needed']}} PHYSICAL AUDITS NEED TO BE COMPLETED. {{$data['summary']['schedule_conflicts']}} SCHEDULE CONFLICTS NEED TO BE RESOLVED.</span>
+			
 		</div>
 		<div class="project-details-info-compliance-summary uk-margin-top uk-margin-left uk-margin-right uk-grid-match" uk-grid>
 			<div class="uk-width-1-5">

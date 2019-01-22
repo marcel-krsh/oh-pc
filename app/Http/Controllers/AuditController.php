@@ -513,12 +513,6 @@ foreach($details as $detail){
                 }
 
                 $data['summary'] = [
-                        'required_unit_selected' => 0,
-                        'inspectable_areas_assignment_needed' => 12,
-                        'required_units_selection' => 13,
-                        'file_audits_needed' => 14,
-                        'physical_audits_needed' => 15,
-                        'schedule_conflicts' => 16,
                         'required_units' => $summary_required,
                         'selected_units' => $summary_selected,
                         'needed_units' => $summary_needed,
