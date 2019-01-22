@@ -2094,7 +2094,29 @@ class ComplianceSelectionJob implements ShouldQueue
                                     'project_key' => $project->project_key,
                                     'program_key' => $unit_program->program_key,
                                     'pm_organization_id' => $organization_id,
-                                    'has_overlap' => $has_overlap
+                                    'has_overlap' => $has_overlap,
+                                    'is_site_visit' => 1,
+                                    'is_file_audit' => 0
+                                ]);
+                                $u->save();
+                                $this->processes++;
+
+                                $u = new UnitInspection([
+                                    'group' => $program['name'],
+                                    'group_id' => $group_id,
+                                    'unit_id' => $unit->id,
+                                    'unit_key' => $unit->unit_key,
+                                    'building_id' => $unit->building_id,
+                                    'building_key' => $unit->building_key,
+                                    'audit_id' => $audit->id,
+                                    'audit_key' => $audit->monitoring_key,
+                                    'project_id' => $project->id,
+                                    'project_key' => $project->project_key,
+                                    'program_key' => $unit_program->program_key,
+                                    'pm_organization_id' => $organization_id,
+                                    'has_overlap' => $has_overlap,
+                                    'is_site_visit' => 0,
+                                    'is_file_audit' => 1
                                 ]);
                                 $u->save();
                                 $this->processes++;
@@ -2116,7 +2138,6 @@ class ComplianceSelectionJob implements ShouldQueue
             $audit->comment .= 'Audit process finished at '.date('m/d/Y h:i:s A',time()).'after '.number_format($this->processes).' processes (not counting sub processes on the framework functions.)';
 
         $audit->save();
-            $audit->save();
 
         } else {
             $audit->comment = "Unable to get program units from devco. Cannot run compliance run and generate the audit.";
