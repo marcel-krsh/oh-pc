@@ -109,7 +109,7 @@
 
 						<div class="divTableRow isLead">
 							<div class="divTableCell">
-								<h3 style="margin-top:5px;text-align: left;"> {{formatDate($day->date, 'l F d, Y')}} <small><i class="a-trash-4 use-hand-cursor" onclick="deleteDay({{$day->id}});"></i></small></h3>
+								<h3 style="margin-top:5px;text-align: left;"> {{formatDate($day->date, 'l F d, Y')}} <small>@if(Auth::user()->id == $project->selected_audit()->lead_auditor->id) <i class="a-trash-4 use-hand-cursor" onclick="deleteDay({{$day->id}});"></i>@endIf</small></h3>
 							</div>
 							@foreach($auditors_key as $auditor_id)
 							<div class="divTableCell isLead" style="padding-top:14px">
