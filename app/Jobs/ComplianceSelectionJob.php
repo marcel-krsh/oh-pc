@@ -2004,19 +2004,19 @@ class ComplianceSelectionJob implements ShouldQueue
                                     $audit->save();
                                     $this->processes++;
         //Remove the Cached Audit
-        CachedAudit::where('audit_id', '=', $audit->id)->delete();
+        \App\Models\CachedAudit::where('audit_id', '=', $audit->id)->delete();
         $audit->comment = $audit->comment.' | Removed the CachedAudit';
                                     $audit->save();
                                     $this->processes++;
 
         //Remove the Ordering Building
-        OrderingBuilding::where('audit_id', '=', $audit->id)->delete();
+        \App\Models\OrderingBuilding::where('audit_id', '=', $audit->id)->delete();
         $audit->comment = $audit->comment.' | Removed the OrderingBuilding';
                                     $audit->save();
                                     $this->processes++;
 
         //Remove the Ordering Unit
-        OrderingUnit::where('audit_id', '=', $audit->id)->delete();
+        \App\Models\OrderingUnit::where('audit_id', '=', $audit->id)->delete();
         $audit->comment = $audit->comment.' | Removed the OrderingUnit';
                                     $audit->save();
                                     $this->processes++;
