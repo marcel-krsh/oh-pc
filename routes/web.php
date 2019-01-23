@@ -135,8 +135,8 @@
         Route::get('/projects/{project}/communications/title', 'AuditController@getProjectCommunicationsTitle')->name('project.communications.title');
         Route::get('/projects/{project}/documents', 'DocumentController@getProjectDocuments')->name('project.documents');
         Route::get('/projects/{project}/documents/title', 'AuditController@getProjectDocumentsTitle')->name('project.documents.title');
-        Route::get('/projects/{project}/notes', 'AuditController@getProjectNotes')->name('project.notes');
-        Route::get('/projects/{project}/notes/title', 'AuditController@getProjectNotesTitle')->name('project.notes.title');
+        Route::get('/projects/{project_id}/notes', 'NoteController@showTabFromProjectId')->name('project.notes');
+        // Route::get('/projects/{project}/notes/title', 'AuditController@getProjectNotesTitle')->name('project.notes.title');
         Route::get('/projects/{project}/comments', 'AuditController@getProjectComments')->name('project.comments');
         Route::get('/projects/{project}/comments/title', 'AuditController@getProjectCommentsTitle')->name('project.comments.title');
         Route::get('/projects/{project}/photos', 'AuditController@getProjectPhotos')->name('project.photos');
@@ -243,9 +243,12 @@
         });
 
         //Project
-        Route::get('/notes/project/{project}', 'NoteController@showTabFromProjectId')->name('notes.list');
+        Route::get('/notes/project/{project_id}', 'NoteController@showTabFromProjectId')->name('notes.list');
         Route::get('/notes/project/{project}.json', 'NoteController@notesFromProjectIdJson')->name('notes.loadjson');
         Route::get('/external-window/print-notes-{project}.html', 'NoteController@printNotes')->name('notes.print');
+        Route::post('/modals/create-note-entry', 'NoteController@create')->name('note.create');
+        Route::get('/modals/new-note-entry/{project}', 'NoteController@newNoteEntry');
+        Route::post('/notes/project/{project}', 'NoteController@searchNotes')->name('notes.search');
 
         // Audit
         Route::post('/audit/{id}/estimated/save', 'AuditController@saveEstimatedHours')->name('audit.estimated_hours.save');
@@ -357,8 +360,7 @@ Route::get('/modals/reimbursement_how_to', 'PagesController@reimbursement_how_to
 Route::get('/modals/correct_parcel_address/{parcel}', 'ImportController@correctAddress');
 Route::get('/modals/resolve_validation/{parcel}', 'ImportController@ResolveValidation');
 
-Route::post('/modals/create-note-entry', 'NoteController@create')->name('note.create');
-Route::get('/modals/new-note-entry/{parcel}', 'NoteController@newNoteEntry');
+
 
 
 // Documents Routes - line 220
@@ -382,7 +384,6 @@ Route::get('testCreate/{id?}', 'AdminToolController@getRequiredDocumentIds');
 
 // Philippe T Routes
 // Notes
-Route::post('/notes/parcel/{parcel}', 'NoteController@searchNotes')->name('notes.search');
 // Parcel History
 Route::post('/activities/parcel/{parcel}', 'bgHistoryController@searchActivities')->name('activities.search');
 // Communications

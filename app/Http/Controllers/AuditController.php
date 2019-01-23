@@ -1166,13 +1166,13 @@ foreach($details as $detail){
         }
     }
 
-    public function getProjectNotes($project = null)
-    {
-        
+    // public function getProjectNotes($project_id = null)
+    // {
+    //     $project = Project::where('id','=',$project_id)->first();
+    //     dd($project);
 
-
-        return view('projects.partials.notes', compact($project));
-    }
+    //     return view('projects.partials.notes', compact($project));
+    // }
 
     // public function getProjectComments ( $project = null ) {
     //     return view('projects.partials.comments');

@@ -21,39 +21,37 @@ class NoteController extends Controller
      * @param  int  $project_id
      * @return Response
      */
-    public function showTabFromProjectId(Project $project)
-    {
+    public function showTabFromProjectId($project_id)
+    {   
+        $project = Project::where('id','=',$project_id)->first();
+
         // Search (in session)
         if (Session::has('notes-search') && Session::get('notes-search') != '') {
             $search = Session::get('notes-search');
-            $notes = Note::where('project_id', $project->id)->where('note', 'LIKE', '%'.$search.'%')->with('owner')->orderBy('created_at', 'desc')->get();
+            //$notes = Note::where('project_id', $project->id)->where('note', 'LIKE', '%'.$search.'%')->with('owner')->orderBy('created_at', 'desc')->get();
+            $notes = Note::where('project_id', $project->id)->where('note', 'sounds like', $search)->with('owner')->orderBy('created_at', 'desc')->get();
         } else {
             $notes = Note::where('project_id', $project->id)->with('owner')->orderBy('created_at', 'desc')->get();
         }
+
 
         
         $attachment = 'attachment';
 
         $owners_array = [];
         foreach ($notes as $note) {
-            // create initials
-            $words = explode(" ", $note->owner->name);
-            $initials = "";
-            foreach ($words as $w) {
-                $initials .= $w[0];
-            }
-            $note->initials = $initials;
+            $note->initials = $note->owner->initials();
 
             // create associative arrays for initials and names
             if (!array_key_exists($note->owner->id, $owners_array)) {
-                $owners_array[$note->owner->id]['initials'] = $initials;
-                $owners_array[$note->owner->id]['name'] = $note->owner->name;
+                $owners_array[$note->owner->id]['initials'] = $note->initials;
+                $owners_array[$note->owner->id]['name'] = $note->owner->full_name();
                 $owners_array[$note->owner->id]['color'] = $note->owner->badge_color;
                 $owners_array[$note->owner->id]['id'] = $note->owner->id;
             }
         }
 
-        return view('projects.project_notes', compact('project', 'notes', 'owners_array', 'attachment'));
+        return view('projects.partials.notes', compact('project', 'notes', 'owners_array', 'attachment'));
     }
 
     public function newNoteEntry(Project $project)
@@ -83,7 +81,7 @@ class NoteController extends Controller
             $user = Auth::user();
 
             $note = new Note([
-                'owner_id' => $user->id,
+                'user_id' => $user->id,
                 'project_id' => $project->id,
                 'note' => $request->get('file-note')
             ]);

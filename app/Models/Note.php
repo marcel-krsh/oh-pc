@@ -15,8 +15,8 @@ class Note extends Model
 {
     protected $fillable = [
         'note',
-        'owner_id',
-        'parcel_id'
+        'user_id',
+        'project_id'
     ];
 
     /**
@@ -26,6 +26,6 @@ class Note extends Model
      */
     public function owner() : HasOne
     {
-        return $this->hasOne(User::class, 'id', 'owner_id');
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 }
