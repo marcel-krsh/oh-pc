@@ -16,7 +16,7 @@
             <div class="uk-width-1-1@s uk-width-1-4@m" id="recipient-dropdown" style="vertical-align: top;">
 	            <select id="filter-by-owner" class="uk-select filter-drops uk-width-1-1" onchange="filterByOwner();">
 	                <option value="all" selected="">
-	                    FILTER BY RECIPIENT 
+	                    FILTER BY AUTHOR 
 	                </option>
 	                @foreach ($owners_array as $owner)
 	                <option value="staff-{{$owner['id']}}"><a class="uk-dropdown-close">{{$owner['name']}}</a></option>    
