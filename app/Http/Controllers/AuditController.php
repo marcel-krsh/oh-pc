@@ -204,9 +204,9 @@ class AuditController extends Controller
 
         $details = OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->with('unit')->get();
 
-foreach($details as $detail){
-    dd($detail);
-}
+// foreach($details as $detail){
+//     dd($detail);
+// }
         return view('dashboard.partials.audit_building_details', compact('audit', 'target', 'building', 'details', 'targetaudit', 'context'));
     }
 
