@@ -28,8 +28,8 @@ class NoteController extends Controller
         // Search (in session)
         if (Session::has('notes-search') && Session::get('notes-search') != '') {
             $search = Session::get('notes-search');
-            //$notes = Note::where('project_id', $project->id)->where('note', 'LIKE', '%'.$search.'%')->with('owner')->orderBy('created_at', 'desc')->get();
-            $notes = Note::where('project_id', $project->id)->where('note', 'sounds like', $search)->with('owner')->orderBy('created_at', 'desc')->get();
+            $notes = Note::where('project_id', $project->id)->where('note', 'LIKE', '%'.$search.'%')->with('owner')->orderBy('created_at', 'desc')->get();
+            //$notes = Note::where('project_id', $project->id)->whereRaw('LOWER(`note`) LIKE ? ',['%'.trim(strtolower($search)).'%'])->with('owner')->orderBy('created_at', 'desc')->get();
         } else {
             $notes = Note::where('project_id', $project->id)->with('owner')->orderBy('created_at', 'desc')->get();
         }
