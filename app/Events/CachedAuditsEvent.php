@@ -286,7 +286,8 @@ class CachedAuditsEvent
                 'auditors_json' => null,
                 'amenities_json' => $uaJson,
                 'unit_id'=>$unit->unit->id,
-                'unit_key'=>$unit->unit->unit_key
+                'unit_key'=>$unit->unit->unit_key,
+                'unit_name'=>$unit->unit->unit_name
             ]);
             $cached_unit->save();
         }
