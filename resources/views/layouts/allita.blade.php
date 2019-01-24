@@ -60,6 +60,95 @@ if(Auth::check()){
 		body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-done):after {
 	  		opacity:1 !important;
 		}
+		/*Universal header styles*/
+		
+		#apcsv-logo {
+		    margin: 0 auto;
+		    display: inline-block;
+		    width: auto;
+		    height: 100%;
+		    vertical-align: middle;
+		    float: left;
+		}
+		#apcsv-list-left {
+		    float: left;
+		    display: inline-block;
+		    margin-top: 3px;
+		}
+		#apcsv-avatar {
+		    float: right;
+		    margin-right: 25px;
+		    border-radius: 15px;
+		    width: 20px;
+		    height: 20px;
+		    padding: 5px;
+		    font-size: 14px;
+		    background: #123458;
+		    text-align: center;
+		    -webkit-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.22);
+		    -moz-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.22);
+		    box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.22);
+		    color: white;
+		}
+		#apcsv-menu-icon {
+		    float: right;
+		    position: relative;
+		    top: 3px;
+		    text-decoration: none;
+		    padding: 1px 5px;
+		    margin-right: 15px;
+		    border: 1px solid #123458;
+		}
+		#apcsv-list-right {
+		    float: right;
+		    display: inline-block;
+		    margin-top: 3px;
+		}
+		.pcsv-toggle {
+		    color: #123458 ;
+		    text-decoration: none;
+		}
+		#apcsv-menu-items.hidden {
+		    visibility: hidden;
+		    opacity: 0;
+		}
+		#apcsv-menu-items {
+		    display: block;
+		    position: absolute;
+		    top: 35px;
+		    right: -55px;
+		    width: 200px;
+		    padding: 15px;
+		    background: #fbfbfb;
+		    border-radius: 3px;
+		    box-shadow: 0px 8px 10px 0px rgba(0,0,0,0.22);
+		    transition: opacity 600ms, visibility 600ms;
+		}
+		.apcsv-menu-item:first-of-type {
+		    border-radius: 6px 6px 0 0;
+		}
+		.apcsv-menu-item {
+		    display: block;
+		    border-bottom: 1px solid lightgray;
+		    padding-top: 15px;
+		    padding-bottom: 15px;
+		    transition: background-color 400ms;
+		}
+		.apcsv-menu-item:last-of-type {
+		    border-bottom: none;
+		    border-radius: 0 0 6px 6px;
+		}
+		.apcsv-menu-item a {
+		    color: #123458;
+		    text-decoration: none;
+		    display: block;
+		    text-align: center;
+		    font-weight: 100;
+		}
+		#main-tabs {
+			padding-top:0px !important;
+		}
+		
 	</style>
 	<?php /* session(['disablePacer'=>0]); */ ?>
 	@endif
@@ -120,60 +209,77 @@ if(Auth::check()){
 	    var uid = "{{$current_user->id}}";
 	    var sid = "{{$current_user->socket_id}}";
 	</script>
-	<link rel="stylesheet" href="https://devco.ohiohome.org/AuthorityOnlineALT/unified/unified-header.css">
-	<style type="text/css">#apcsv-ul-bar { z-index:999; }</style>
+	
 </head>
 <body >
-	<div id="ohfa-universal-header"><div id="apcsv-ul-bar">  <div id="apcsv-logo"><img src="https://devco.ohiohome.org/AuthorityOnlineALT/Unified/devco_logo_reversed.png" alt="Site Logo"></div>  <div id="apcsv-list-left"></div>  <div id="apcsv-avatar" title="AmeliaAtchinson (OSM Test)" onclick="openUserPreferences();">{{Auth::user()->initials()}}</div>  <div id="apcsv-menu-icon" class="hvr-grow"><a id="apcsv-toggle" class="pcsv-toggle" onclick="return false;" href="#apcsv-menu-items">APPS</a>    <div id="apcsv-menu-items" class="hidden">      <div class="apcsv-menu-item"> <a href="https://devco.ohiohome.org/AuthorityOnlineALT/">DEV|CO Compliance</a></div>      <div class="apcsv-menu-item"> <a href="https://pcinspectdev.ohiohome.org/">DEV|CO Inspection</a></div>    </div>  </div>  <div id="apcsv-list-right"></div></div></div>
+	
 	<a name="top"></a>
 	<!-- MAIN VIEW -->
 
-	<div id="app" class="uk-container uk-align-center">
-
+	<div id="app" class="uk-container uk-align-center" >
 		<div uk-grid class="uk-grid-collapse">
 			<div id="main-window" class=" uk-margin-large-bottom" uk-scrollspy="cls:uk-animation-fade; delay: 900">
 			
-				<div id="main-tabs" uk-sticky uk-grid>
-				    <div class="uk-width-1-6">
-				        <div class="menu-search">
-							<div class="uk-autocomplete quick-lookup-box uk-inline">
-								<span class="uk-form-icon a-magnify-2"></span>
-								<input class="uk-input" id="quick-lookup-box" type="text" placeholder="QUICK LOOK UP...">
+				<div id="main-tabs" uk-sticky style="max-width: 1519px; ">
+					<div uk-grid>
+						<div class="uk-width-5-6">
+							<img src="/images/devco_logo.png" alt="DEV|CO Inspection powered by Allita PC" style="position: relative; top: -9px; padding-left: 10px; display: inline-block;">
+						
+					        <div class="menu-search uk-margin-large-left uk-padding-bottom" style="display: inline-block; position: relative;top:-5px;" class="uk-margin-large-left">
+								<div class="uk-autocomplete quick-lookup-box uk-inline">
+									<span class="uk-form-icon a-magnify-2"></span>
+									<input class="uk-input" id="quick-lookup-box" type="text" placeholder="QUICK LOOK UP..." style="width: 250px;">
+								</div>
 							</div>
-						</div>
-				    </div>
-				    <div class="uk-width-5-6">
-				    	<div id="top-tabs-container">
-					        <ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m">
-				    			<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
-				    				<a href="">
-				    					<span class="list-tab-text">
-				    						<span class="uk-badge" v-if="statsAuditsTotal" v-cloak>@{{statsAuditsTotal}}
-				    						</span> 
-				    						<i class="a-mobile-home"></i> AUDITS
-				    					</span>
-				    				</a>
-				    			</li>
-								<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
-									<a href=""> 
-										<span class="list-tab-text">
-											<span class="uk-badge" v-if="statsCommunicationTotal" v-cloak v-html="statsCommunicationTotal"></span> 
-											 <i class="a-envelope-3"></i> COMMUNICATIONS
-										</span>
-									</a>
-								</li>
-								<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}', '3','','','',1);}">
-									<a href=""><span class="list-tab-text"><span class="uk-badge" v-if="statsReportsTotal" v-cloak>@{{statsReportsTotal}}</span></span> <i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
-								</li>
-								<li id="detail-tab-5" class="detail-tab-5" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-5').hasClass('uk-active')  || window.adminLoaded != 1){loadTab('{{ route('dashboard.admin') }}', '5','','','',1);}">
-									<a href=""><span class="list-tab-text">ADMIN</span></a>
-								</li>
-							</ul>
-						</div>
-				    </div>
+					    
+					    	<div id="top-tabs-container" style="display: inline-block; overflow: visible; padding-top:15px;">
+						        <ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m" style="background-color: transparent;">
+					    			<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
+					    				<a href="" style="">
+					    					<span class="list-tab-text">
+					    						<span class="uk-badge" v-if="statsAuditsTotal" v-cloak>@{{statsAuditsTotal}}
+					    						</span> 
+					    						<i class="a-mobile-home"></i> AUDITS
+					    					</span>
+					    				</a>
+					    			</li>
+									<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
+										<a href=""> 
+											<span class="list-tab-text">
+												<span class="uk-badge" v-if="statsCommunicationTotal" v-cloak v-html="statsCommunicationTotal"></span> 
+												 <i class="a-envelope-3"></i> COMMUNICATIONS
+											</span>
+										</a>
+									</li>
+									<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}', '3','','','',1);}">
+										<a href=""><span class="list-tab-text"><span class="uk-badge" v-if="statsReportsTotal" v-cloak>@{{statsReportsTotal}}</span></span> <i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
+									</li>
+									<li id="detail-tab-5" class="detail-tab-5" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-5').hasClass('uk-active')  || window.adminLoaded != 1){loadTab('{{ route('dashboard.admin') }}', '5','','','',1);}" >
+										<a href=""><span class="list-tab-text">ADMIN</span></a>
+									</li>
+								</ul>
+							</div>
+				    	</div>
+				    	<div class="uk-width-1-6" style="padding-top: 10px;">
+				    		<div id="apcsv-avatar" class="" title="AmeliaAtchinson (OSM Test)" onclick="openUserPreferences();" style="cursor: pointer;">
+							{{Auth::user()->initials()}}
+							</div>
+							<div id="apcsv-menu-icon" class="hvr-grow uk-inline">
+								<button id="apcsv-toggle" class="pcsv-toggle" style="background-color: transparent; border: none; cursor: pointer; 0" >APPS</button>    
+								<div uk-dropdown="mode: click">
+									<div class="apcsv-menu-item"> 
+										<a href="https://devco.ohiohome.org/AuthorityOnlineALT/" style="font-weight: 400">DEV|CO Compliance</a>
+									</div>
+									<div class="apcsv-menu-item">
+										<a href="/" style="font-weight: 400">DEV|CO Inspection</a>
+									</div>
+								</div>
+							</div>
+				    	</div>
+					</div>
 				</div>
 				
-				<ul id="tabs" class="maintabs uk-switcher"> 
+				<ul id="tabs" class="maintabs uk-switcher" style=" margin-top: 52px;"> 
 					<li>
 						<div id="detail-tab-1-content"></div>
 					</li>
@@ -184,7 +290,7 @@ if(Auth::check()){
 						<div id="detail-tab-3-content"></div>
 					</li>
 					<li>
-						<div id="detail-tab-5-content"></div>
+						<div id="detail-tab-5-content" style="padding-top:20px;"></div>
 					</li>
 				</ul>
 
@@ -374,6 +480,17 @@ if(Auth::check()){
 	@if(session('disablePacer') != 1)
 	<script>
 		window.paceOptions = { ajax: { trackMethods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'], ignoreURLs: ['https://pcinspectdev.ohiohome.org'] } }
+
+		// universal header:
+
+        function ToggleMenu() {
+            var menu = document.getElementById("apcsv-menu-items");
+            if ( menu.classList.contains('hidden') ) {
+                menu.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
+        }
 	</script>
 	<script src="/js/pace.min.js">{{session('disablePacer')}}</script>
 	@endif
