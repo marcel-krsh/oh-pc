@@ -560,11 +560,15 @@ class CommunicationController extends Controller
                 if (isset($forminputs['recipients'])) {
                     $message_recipients_array = $forminputs['recipients'];
                     foreach ($forminputs['recipients'] as $recipient_id) {
-                        $recipient = new CommunicationRecipient([
-                            'communication_id' => $message->id,
-                            'user_id' => (int) $recipient_id
-                        ]);
-                        $recipient->save();
+                        if($recipient_id > 0){
+                            $recipient = new CommunicationRecipient([
+                                'communication_id' => $message->id,
+                                'user_id' => (int) $recipient_id
+                            ]);
+                            $recipient->save();
+                        } else {
+                            dd('Recipient id failed to pass - value received:'.$recipient_id);
+                        }
                     }
                 }
             }
