@@ -99,7 +99,7 @@ class Communication extends Model
      */
     public function documents() : HasMany
     {
-        return $this->hasMany(\App\Models\DocuwareSync::class, 'communication_id->communication_id');
+        return $this->hasMany(\App\Models\SyncDocuware::class, 'communication_id->communication_id');
     }
 
     /**
