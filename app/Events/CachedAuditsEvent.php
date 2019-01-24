@@ -106,7 +106,7 @@ class CachedAuditsEvent
         foreach ($buildings as $building) {
             //dd($building->building);
             //$count_units = UnitInspection::where('building_key', '=', $building->building_key)->count();
-            $count_units = UnitInspection::where('building_key', '=', $building->building_key)->selectRaw('unit_id, ANY_VALUE(audit_key) as audit_key, ANY_VALUE(project_id) as project_id, ANY_VALUE(project_key) as project_key, ANY_VALUE(building_id) as building_id, ANY_VALUE(building_key) as building_key')->groupBy('unit_id', 'audit_key', 'project_id', 'project_key', 'building_id', 'building_key')->count();
+            $count_units = UnitInspection::where('building_key', '=', $building->building_key)->selectRaw('unit_id, ANY_VALUE(building_key) as building_key, ANY_VALUE(project_id) as project_id, ANY_VALUE(project_key) as project_key, ANY_VALUE(building_id) as building_id, ANY_VALUE(building_key) as building_key')->groupBy('unit_id', 'building_key', 'project_id', 'project_key', 'building_id', 'building_key')->get()->count();
             $finding_total = $building->nlt_count + $building->lt_count + $building->file_count;
             $building_amenities = AmenityInspection::where('building_id',$building->building_id)->with('amenity')->get();
             //dd($building_amenities,$building);
