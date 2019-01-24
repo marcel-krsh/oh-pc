@@ -335,19 +335,7 @@
                         @endif
         			
                         
-                        <div class="uk-width-1-1">
-                        <div id="applicant-info-update">
-                            <div uk-grid class="uk-margin">
-                                <div class="uk-width-1-3 uk-push-1-3">
-                                    <a class="uk-button uk-button-primary blue-button uk-width-1-1" onclick="dynamicModalClose();"> <span  uk-icon="close" class="uk-margin-left"></span> CANCEL</a>
-                                </div>
-                                <div class="uk-width-1-3  uk-push-1-3">
-                                    <a class="uk-button uk-button-primary blue-button uk-width-1-1" onclick="submitNewCommunication()"> <span uk-icon="mail" class="uk-margin-left"></span> SEND &nbsp;</a>
-                                </div>
-                            </div>
-                        </div>
-                    <div class="uk-width-2-3">
-                    <h4>Message body</h4>
+                        
                     
                
                 
