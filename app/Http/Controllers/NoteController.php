@@ -53,7 +53,7 @@ class NoteController extends Controller
         }
 
        // $units = UnitInspection::where('audit_key', '=', '5974')->with('unit','unit.building.address')->take(10)->get();
-        $units = UnitInspection::where('audit_key', '=', '5974')->selectRaw('unit_id, ANY_VALUE(audit_key), ANY_VALUE(project_id), ANY_VALUE(project_key), ANY_VALUE(building_id), ANY_VALUE(building_key)')->groupBy('unit_id', 'audit_key', 'project_id', 'project_key', 'building_id', 'building_key')->get();
+        $units = UnitInspection::where('audit_key', '=', '5974')->selectRaw('unit_id, ANY_VALUE(audit_key), ANY_VALUE(project_id), ANY_VALUE(project_key), ANY_VALUE(building_id), ANY_VALUE(building_key)')->groupBy('unit_id', 'audit_key', 'project_id', 'project_key', 'building_id', 'building_key')->take(10)->get();
         
         dd($units);
         $units_added = array();
