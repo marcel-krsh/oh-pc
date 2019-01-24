@@ -53,7 +53,14 @@ class NoteController extends Controller
         }
 
         $units = UnitInspection::where('audit_key', '=', '5974')->with('unit','unit.building.address')->take(10)->get();
-        dd($units);
+        $units_added = array();
+
+        foreach ($units as $unit) {
+            if(!in_array($unit->unit_id, $units_added)){
+                $units_added[] = $unit->unit_id;
+            }
+        }
+        dd($units_added);
 
         return view('projects.partials.notes', compact('project', 'notes', 'owners_array', 'attachment'));
     }
