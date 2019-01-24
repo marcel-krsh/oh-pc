@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
 use Carbon;
 
 class CachedUnit extends Model
@@ -45,7 +48,7 @@ class CachedUnit extends Model
         'updated_at',
         'unit_id',
         'unit_key',
-        'unit_name',
+        'unit_name'
     ];
 
     public function getAmenitiesJsonAttribute($value)
@@ -56,5 +59,15 @@ class CachedUnit extends Model
     public function getAuditorsJsonAttribute($value)
     {
         return json_decode($value);
+    }
+
+    /**
+     * Unit
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function unit() : HasOne
+    {
+        return $this->hasOne(\App\Models\Unit::class, 'id', 'unit_id');
     }
 }

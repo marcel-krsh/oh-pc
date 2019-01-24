@@ -92,8 +92,12 @@
 												<div uk-grid class="building-address">
 													
 									            	<div class="uk-width-1-1 uk-padding-remove">
-									            		<h3 class="uk-margin-bottom-remove colored">{{$detail->unit->address}}</h3>
-										            	<small class="colored">{{$detail->unit->city}}, {{$detail->unit->state}} {{$detail->unit->zip}}</small><br />
+									            		<h3 class="uk-margin-bottom-remove colored">
+									            			<?php
+									            			dd($detail->unit);
+									            			?>
+									            			{{$detail->unit->unit_name}}</h3>
+										            	<small class="colored">{{$detail->unit->address}}, {{$detail->unit->city}}, {{$detail->unit->state}} {{$detail->unit->zip}}</small><br />
 										            	<small class="colored"><span class="uk-text-middle">{{$detail->unit->type_total}} @if($detail->unit->type_total > 1) {{$detail->unit->type_text_plural}} @else {{$detail->unit->type_text}} @endif</span></small>
 									            	</div>
 									            </div>
