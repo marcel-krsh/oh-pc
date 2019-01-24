@@ -222,17 +222,17 @@ class CachedAuditsEvent
         // create cached units
         // $units = UnitInspection::select('unit_id', 'project_id',  'project_key', 'building_id', 'building_key')->where('audit_key', '=', $cached_audit->audit_key)->with('unit','unit.building.address')->groupBy('unit_id')->get();
         
-        //$units = UnitInspection::select('unit_id', 'project_id',  'project_key', 'building_id', 'building_key')->where('audit_key', '=', $cached_audit->audit_key)->get()->groupBy('unit_id');
+        $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->select('unit_id', 'project_id',  'project_key', 'building_id', 'building_key')->groupBy('unit_id')->get();
 
-        $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->with('unit','unit.building.address')->get();
+        // $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->with('unit','unit.building.address')->get();
 
         CachedUnit::where('audit_id',$cached_audit->audit_id)->delete();
         
-        $units_added = array();
+        //$units_added = array();
 
         foreach ($units as $unit) {
-            if(!in_array($unit->unit_id, $units_added)){
-                $units_added[] = $unit->unit_id;
+            //if(!in_array($unit->unit_id, $units_added)){
+                //$units_added[] = $unit->unit_id;
 
                 // get the unit type (bedroom type)
                 //
@@ -300,7 +300,7 @@ class CachedAuditsEvent
                 ]);
                 $cached_unit->save();
 
-            }
+            //}
         }
     }
 }
