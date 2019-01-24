@@ -531,9 +531,6 @@ class AuditController extends Controller
                         'optimized_remaining_inspections_file' => $summary_optimized_remaining_inspections_file
                 ];
 
-                $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->with('unit','unit.building.address')->get();
-                dd($units);
-
                 break;
             case 'assignment':
 
