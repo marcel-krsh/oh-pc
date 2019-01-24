@@ -530,8 +530,6 @@ class AuditController extends Controller
                         'optimized_completed_inspections_file' => $summary_optimized_completed_inspections_file,
                         'optimized_remaining_inspections_file' => $summary_optimized_remaining_inspections_file
                 ];
-
-                // 
                 
                 break;
             case 'assignment':
