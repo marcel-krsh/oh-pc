@@ -231,7 +231,7 @@ class CachedAuditsEvent
         foreach ($units as $unit) {
             if(!in_array($unit->unit_id, $units_added)){
                 $units_added[] = $unit->unit_id;
-                
+
                 // get the unit type (bedroom type)
                 //
                 //
@@ -257,7 +257,7 @@ class CachedAuditsEvent
                 $uaJson .= ']';
                 $jsonRun = 0;
                 
-
+/*
                 $cached_unit = new CachedUnit([
                     'audit_id' => $cached_audit->audit_id,
                     'audit_key' => $cached_audit->audit_key,
@@ -297,6 +297,7 @@ class CachedAuditsEvent
                     'unit_name'=>$unit->unit->unit_name
                 ]);
                 $cached_unit->save();
+*/
             }
         }
     }
