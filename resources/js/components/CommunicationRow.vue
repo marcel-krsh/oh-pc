@@ -1,5 +1,5 @@
 <template>
-	<div :class="{ [message.staffId]: true, [message.programId]:true, [message.hasAttachment]:true, 'filter_element': true, 'uk-width-1-1': true, 'communication-list-item': true }" uk-filter="outbound-phone" :id="message.communicationId" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1;">
+	<div :class="{ [message.staffId]: true, [message.programId]:true, [message.hasAttachment]:true, 'filter_element': true, 'uk-width-1-1': true, 'communication-list-item': true }" uk-filter="outbound-phone" :id="message.communicationId" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1;" v-on:click.self="openCommunication">
 		<div uk-grid :class="{'communication-summary': true, [message.communicationUnread]: true, 'uk-grid':true}">
 			<div class="uk-width-1-5@m uk-width-3-6@s communication-item-tt-to-from uk-margin-small-bottom" v-on:click.self="openCommunication">
                 <div class="communication-item-date-time">
@@ -18,7 +18,7 @@
 	            		<small v-html="message.organizationAddress"></small>
 	            	</p>
 	            </div>
-	        </div>
+	        </div> 
 	        <div class="uk-width-1-5@m communication-item-parcel uk-visible@m">
 	            <p v-if="message.auditId" style="margin-bottom:0">
 	        		<a v-on:click.self="openAudit" class="uk-link-muted" uk-tooltip="OPEN AUDIT" v-html="message.auditId"></a>
