@@ -222,7 +222,9 @@ class CachedAuditsEvent
         // create cached units
         // $units = UnitInspection::select('unit_id', 'project_id',  'project_key', 'building_id', 'building_key')->where('audit_key', '=', $cached_audit->audit_key)->with('unit','unit.building.address')->groupBy('unit_id')->get();
         
-        $units = UnitInspection::select('unit_id', 'project_id',  'project_key', 'building_id', 'building_key')->where('audit_key', '=', $cached_audit->audit_key)->get()->groupBy('unit_id');
+        //$units = UnitInspection::select('unit_id', 'project_id',  'project_key', 'building_id', 'building_key')->where('audit_key', '=', $cached_audit->audit_key)->get()->groupBy('unit_id');
+
+        $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->with('unit','unit.building.address')->get();
 
         CachedUnit::where('audit_id',$cached_audit->audit_id)->delete();
         
@@ -257,7 +259,7 @@ class CachedAuditsEvent
                 $uaJson .= ']';
                 $jsonRun = 0;
                 
-/*
+
                 $cached_unit = new CachedUnit([
                     'audit_id' => $cached_audit->audit_id,
                     'audit_key' => $cached_audit->audit_key,
@@ -297,7 +299,7 @@ class CachedAuditsEvent
                     'unit_name'=>$unit->unit->unit_name
                 ]);
                 $cached_unit->save();
-*/
+
             }
         }
     }
