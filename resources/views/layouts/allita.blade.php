@@ -222,7 +222,7 @@ if(Auth::check()){
 			
 				<div id="main-tabs" uk-sticky style="max-width: 1519px; ">
 					<div uk-grid>
-						<div class="uk-width-5-6">
+						<div class="uk-width-1-1">
 							<img src="/images/devco_logo.png" alt="DEV|CO Inspection powered by Allita PC" style="position: relative; top: -9px; padding-left: 10px; display: inline-block;">
 						
 					        <div class="menu-search uk-margin-large-left uk-padding-bottom" style="display: inline-block; position: relative;top:-5px;" class="uk-margin-large-left">
@@ -259,12 +259,11 @@ if(Auth::check()){
 									</li>
 								</ul>
 							</div>
-				    	</div>
-				    	<div class="uk-width-1-6" style="padding-top: 10px;">
-				    		<div id="apcsv-avatar" class="" title="AmeliaAtchinson (OSM Test)" onclick="openUserPreferences();" style="cursor: pointer;">
+				    	
+				    		<div id="apcsv-avatar" class="" title="AmeliaAtchinson (OSM Test)" onclick="openUserPreferences();" style="cursor: pointer; margin-top:15px">
 							{{Auth::user()->initials()}}
 							</div>
-							<div id="apcsv-menu-icon" class="hvr-grow uk-inline">
+							<div id="apcsv-menu-icon" class="hvr-grow uk-inline" style="margin-top:15px">
 								<button id="apcsv-toggle" class="pcsv-toggle" style="background-color: transparent; border: none; cursor: pointer; 0" >APPS</button>    
 								<div uk-dropdown="mode: click">
 									<div class="apcsv-menu-item"> 
