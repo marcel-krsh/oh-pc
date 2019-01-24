@@ -530,7 +530,9 @@ class AuditController extends Controller
                         'optimized_completed_inspections_file' => $summary_optimized_completed_inspections_file,
                         'optimized_remaining_inspections_file' => $summary_optimized_remaining_inspections_file
                 ];
-                
+
+                $units = UnitInspection::select('unit_id', 'project_id',  'project_key', 'building_id', 'building_key')->where('audit_key', '=', '5974')->get()->groupBy('unit_id');
+                dd($units);
                 break;
             case 'assignment':
 
