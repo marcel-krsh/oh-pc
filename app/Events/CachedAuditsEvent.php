@@ -222,7 +222,7 @@ class CachedAuditsEvent
         // create cached units
         // $units = UnitInspection::select('unit_id', 'project_id',  'project_key', 'building_id', 'building_key')->where('audit_key', '=', $cached_audit->audit_key)->with('unit','unit.building.address')->groupBy('unit_id')->get();
         
-        $units = UnitInspection::select('unit_id', 'project_id',  'project_key', 'building_id', 'building_key')->where('audit_key', '=', '5974')->get()->groupBy('unit_id');
+        $units = UnitInspection::select('unit_id', 'project_id',  'project_key', 'building_id', 'building_key')->where('audit_key', '=', $cached_audit->audit_key)->get()->groupBy('unit_id');
 
         CachedUnit::where('audit_id',$cached_audit->audit_id)->delete();
         
