@@ -7,6 +7,7 @@ use Auth;
 use Session;
 use App\Models\Project;
 use App\Models\Note;
+use App\Models\UnitInspection;
 
 class NoteController extends Controller
 {
