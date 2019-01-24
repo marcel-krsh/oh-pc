@@ -7,8 +7,8 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 import Vue from 'vue';
-import VueChatScroll from 'vue-chat-scroll';
-Vue.use(VueChatScroll);
+//import VueChatScroll from 'vue-chat-scroll';
+//Vue.use(VueChatScroll);
 
 /// for notifications
 import Toaster from 'v-toaster'
@@ -16,11 +16,11 @@ import 'v-toaster/dist/v-toaster.css'
 Vue.use(Toaster, {timeout: 5000})
 
 //chat
-Vue.component('message', require('./components/message.vue').default);
+//Vue.component('message', require('./components/message.vue').default);
 
 
 // load all components
-Vue.component('example', require('./components/Example.vue').default);
+//Vue.component('example', require('./components/Example.vue').default);
 Vue.component('auditrow', require('./components/AuditRow.vue').default, {
     name: 'auditrow'
 });

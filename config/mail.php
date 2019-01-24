@@ -56,8 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'donotreply@allita.org'),
-        'name' => env('MAIL_FROM_NAME', 'Allita Blight Manager'),
+        'address' => env('MAIL_FROM_ADDRESS', 'donotreply@ohiohome.org'),
+        'name' => env('MAIL_FROM_NAME', 'Program Compliance'),
     ],
 
     /*
