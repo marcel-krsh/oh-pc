@@ -532,7 +532,7 @@ class AuditController extends Controller
                 ];
 
 
-                $units = UnitInspection::select('unit_id', 'project_id',  'project_key', 'building_id', 'building_key')->where('audit_key', '=', '5974')->groupBy('unit_id')->get();
+                $units = UnitInspection::select('unit_id', 'project_id',  'project_key', 'building_id', 'building_key')->where('audit_key', '=', '5974')->get()->groupBy('unit_id');
                 dd($units);
                 
                 break;
