@@ -20,7 +20,7 @@
                
                 <div class="uk-width-5-6 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
                     <div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
-                    <div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="recipients[]" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
+                    <div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
                         'recipient-name'></span></div>
 
                 </div> <div class="uk-width-1-6 recipient-list" style="display: none;"></div>
@@ -73,6 +73,7 @@
 
                                         $("#recipient-id-"+formValue+"-holder").slideDown();
                                         $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-"+formValue);
+                                        $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("name","recipients[]");
                                         $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
                                         
                                         $("#recipient-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
