@@ -44079,7 +44079,15 @@ var render = function() {
           class: ((_obj$1 = { "communication-summary": true, "uk-grid": true }),
           (_obj$1[_vm.message.communicationUnread] = true),
           _obj$1),
-          attrs: { "uk-grid": "" }
+          attrs: { "uk-grid": "" },
+          on: {
+            click: function($event) {
+              if ($event.target !== $event.currentTarget) {
+                return null
+              }
+              return _vm.openCommunication($event)
+            }
+          }
         },
         [
           _c(
@@ -44097,14 +44105,36 @@ var render = function() {
               }
             },
             [
-              _c("div", { staticClass: "communication-item-date-time" }, [
-                _c("small", {
-                  domProps: { innerHTML: _vm._s(_vm.message.createdDate) }
-                })
-              ]),
+              _c(
+                "div",
+                {
+                  staticClass: "communication-item-date-time",
+                  on: {
+                    click: function($event) {
+                      if ($event.target !== $event.currentTarget) {
+                        return null
+                      }
+                      return _vm.openCommunication($event)
+                    }
+                  }
+                },
+                [
+                  _c("small", {
+                    domProps: { innerHTML: _vm._s(_vm.message.createdDate) }
+                  })
+                ]
+              ),
               _vm._v(" "),
               _c("span", {
-                domProps: { innerHTML: _vm._s(_vm.message.recipients) }
+                domProps: { innerHTML: _vm._s(_vm.message.recipients) },
+                on: {
+                  click: function($event) {
+                    if ($event.target !== $event.currentTarget) {
+                      return null
+                    }
+                    return _vm.openCommunication($event)
+                  }
+                }
               }),
               _vm._v(" "),
               _vm.message.unseen
@@ -44126,46 +44156,78 @@ var render = function() {
             "div",
             {
               staticClass:
-                "uk-width-1-5@s communication-type-and-who uk-hidden@m uk-text-right "
+                "uk-width-1-5@s communication-type-and-who uk-hidden@m uk-text-right ",
+              on: {
+                click: function($event) {
+                  if ($event.target !== $event.currentTarget) {
+                    return null
+                  }
+                  return _vm.openCommunication($event)
+                }
+              }
             },
             [
-              _c("div", { staticClass: "uk-margin-right" }, [
-                _vm.message.auditId
-                  ? _c("p", { staticStyle: { "margin-bottom": "0" } }, [
-                      _c("a", {
-                        staticClass: "uk-link-muted",
-                        attrs: { "uk-tooltip": "OPEN AUDIT" },
-                        domProps: { innerHTML: _vm._s(_vm.message.auditId) },
-                        on: {
-                          click: function($event) {
-                            if ($event.target !== $event.currentTarget) {
-                              return null
+              _c(
+                "div",
+                {
+                  staticClass: "uk-margin-right",
+                  on: {
+                    click: function($event) {
+                      if ($event.target !== $event.currentTarget) {
+                        return null
+                      }
+                      return _vm.openCommunication($event)
+                    }
+                  }
+                },
+                [
+                  _vm.message.auditId
+                    ? _c("p", { staticStyle: { "margin-bottom": "0" } }, [
+                        _c("a", {
+                          staticClass: "uk-link-muted",
+                          attrs: { "uk-tooltip": "OPEN AUDIT" },
+                          domProps: { innerHTML: _vm._s(_vm.message.auditId) },
+                          on: {
+                            click: function($event) {
+                              if ($event.target !== $event.currentTarget) {
+                                return null
+                              }
+                              return _vm.openAudit($event)
                             }
-                            return _vm.openAudit($event)
-                          }
-                        }
-                      })
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.message.auditId
-                  ? _c(
-                      "p",
-                      {
-                        staticClass: "uk-visible@m",
-                        staticStyle: { "margin-top": "0" },
-                        attrs: { "uk-tooltip": _vm.message.tooltipOrganization }
-                      },
-                      [
-                        _c("small", {
-                          domProps: {
-                            innerHTML: _vm._s(_vm.message.organizationAddress)
                           }
                         })
-                      ]
-                    )
-                  : _vm._e()
-              ])
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.message.auditId
+                    ? _c(
+                        "p",
+                        {
+                          staticClass: "uk-visible@m",
+                          staticStyle: { "margin-top": "0" },
+                          attrs: {
+                            "uk-tooltip": _vm.message.tooltipOrganization
+                          },
+                          on: {
+                            click: function($event) {
+                              if ($event.target !== $event.currentTarget) {
+                                return null
+                              }
+                              return _vm.openCommunication($event)
+                            }
+                          }
+                        },
+                        [
+                          _c("small", {
+                            domProps: {
+                              innerHTML: _vm._s(_vm.message.organizationAddress)
+                            }
+                          })
+                        ]
+                      )
+                    : _vm._e()
+                ]
+              )
             ]
           ),
           _vm._v(" "),
@@ -44173,7 +44235,15 @@ var render = function() {
             "div",
             {
               staticClass:
-                "uk-width-1-5@m communication-item-parcel uk-visible@m"
+                "uk-width-1-5@m communication-item-parcel uk-visible@m",
+              on: {
+                click: function($event) {
+                  if ($event.target !== $event.currentTarget) {
+                    return null
+                  }
+                  return _vm.openCommunication($event)
+                }
+              }
             },
             [
               _vm.message.auditId
@@ -44200,7 +44270,15 @@ var render = function() {
                     {
                       staticClass: "uk-visible@m",
                       staticStyle: { "margin-top": "0" },
-                      attrs: { "uk-tooltip": _vm.message.tooltipOrganization }
+                      attrs: { "uk-tooltip": _vm.message.tooltipOrganization },
+                      on: {
+                        click: function($event) {
+                          if ($event.target !== $event.currentTarget) {
+                            return null
+                          }
+                          return _vm.openCommunication($event)
+                        }
+                      }
                     },
                     [
                       _c("small", {
@@ -44234,7 +44312,15 @@ var render = function() {
                     "div",
                     {
                       staticClass: "uk-grid-collapse",
-                      attrs: { "uk-grid": "" }
+                      attrs: { "uk-grid": "" },
+                      on: {
+                        click: function($event) {
+                          if ($event.target !== $event.currentTarget) {
+                            return null
+                          }
+                          return _vm.openCommunication($event)
+                        }
+                      }
                     },
                     [
                       _c(
@@ -44256,6 +44342,16 @@ var render = function() {
                             ? _c("span", {
                                 domProps: {
                                   innerHTML: _vm._s(_vm.message.subject)
+                                },
+                                on: {
+                                  click: function($event) {
+                                    if (
+                                      $event.target !== $event.currentTarget
+                                    ) {
+                                      return null
+                                    }
+                                    return _vm.openCommunication($event)
+                                  }
                                 }
                               })
                             : _vm._e(),
@@ -44263,7 +44359,17 @@ var render = function() {
                           _vm._v(" "),
                           _c("span", {
                             staticStyle: { "font-size": "0.9em" },
-                            domProps: { innerHTML: _vm._s(_vm.message.summary) }
+                            domProps: {
+                              innerHTML: _vm._s(_vm.message.summary)
+                            },
+                            on: {
+                              click: function($event) {
+                                if ($event.target !== $event.currentTarget) {
+                                  return null
+                                }
+                                return _vm.openCommunication($event)
+                              }
+                            }
                           })
                         ]
                       ),
@@ -44288,7 +44394,17 @@ var render = function() {
                                 "div",
                                 {
                                   staticClass:
-                                    "uk-align-right communication-item-attachment uk-margin-right"
+                                    "uk-align-right communication-item-attachment uk-margin-right",
+                                  on: {
+                                    click: function($event) {
+                                      if (
+                                        $event.target !== $event.currentTarget
+                                      ) {
+                                        return null
+                                      }
+                                      return _vm.openCommunication($event)
+                                    }
+                                  }
                                 },
                                 [
                                   _c(
@@ -44297,6 +44413,17 @@ var render = function() {
                                       attrs: {
                                         "uk-tooltip":
                                           _vm.message.tooltipFilenames
+                                      },
+                                      on: {
+                                        click: function($event) {
+                                          if (
+                                            $event.target !==
+                                            $event.currentTarget
+                                          ) {
+                                            return null
+                                          }
+                                          return _vm.openCommunication($event)
+                                        }
                                       }
                                     },
                                     [_c("i", { staticClass: "a-lower" })]
@@ -44309,19 +44436,50 @@ var render = function() {
                     ]
                   )
                 : _vm.message.subject
-                  ? _c("div", [
-                      _vm.message.subject
-                        ? _c("span", {
-                            domProps: { innerHTML: _vm._s(_vm.message.subject) }
-                          })
-                        : _vm._e(),
-                      _c("br"),
-                      _vm._v(" "),
-                      _c("span", {
-                        staticStyle: { "font-size": "0.9em" },
-                        domProps: { innerHTML: _vm._s(_vm.message.summary) }
-                      })
-                    ])
+                  ? _c(
+                      "div",
+                      {
+                        on: {
+                          click: function($event) {
+                            if ($event.target !== $event.currentTarget) {
+                              return null
+                            }
+                            return _vm.openCommunication($event)
+                          }
+                        }
+                      },
+                      [
+                        _vm.message.subject
+                          ? _c("span", {
+                              domProps: {
+                                innerHTML: _vm._s(_vm.message.subject)
+                              },
+                              on: {
+                                click: function($event) {
+                                  if ($event.target !== $event.currentTarget) {
+                                    return null
+                                  }
+                                  return _vm.openCommunication($event)
+                                }
+                              }
+                            })
+                          : _vm._e(),
+                        _c("br"),
+                        _vm._v(" "),
+                        _c("span", {
+                          staticStyle: { "font-size": "0.9em" },
+                          domProps: { innerHTML: _vm._s(_vm.message.summary) },
+                          on: {
+                            click: function($event) {
+                              if ($event.target !== $event.currentTarget) {
+                                return null
+                              }
+                              return _vm.openCommunication($event)
+                            }
+                          }
+                        })
+                      ]
+                    )
                   : _vm._e()
             ]
           ),
@@ -44343,7 +44501,15 @@ var render = function() {
             [
               _c("div", {
                 staticClass: "uk-margin-right communication-item-date-time",
-                domProps: { innerHTML: _vm._s(_vm.message.createdDateRight) }
+                domProps: { innerHTML: _vm._s(_vm.message.createdDateRight) },
+                on: {
+                  click: function($event) {
+                    if ($event.target !== $event.currentTarget) {
+                      return null
+                    }
+                    return _vm.openCommunication($event)
+                  }
+                }
               })
             ]
           )
