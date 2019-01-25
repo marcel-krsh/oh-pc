@@ -451,10 +451,10 @@ class ComplianceSelectionJob implements ShouldQueue
                 $this->processes++;
             }
 
-              $summary['programs'][$i]['totals_after_optimization'] = count($tmp_program_output);
-              $audit->comment = $audit->comment.' | Combine and optimize total after optimization is '.count($tmp_program_output).'.';
+              $summary['programs'][$i]['totals_after_optimization'] = count($output);
+              $audit->comment = $audit->comment.' | Combine and optimize total after optimization is '.count($output).'.';
               $audit->save();
-              $summary['programs'][$i]['units_after_optimization'] = $tmp_program_output;
+              $summary['programs'][$i]['units_after_optimization'] = $output;
               $this->processes++;
         }
 
