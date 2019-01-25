@@ -442,7 +442,7 @@ class ComplianceSelectionJob implements ShouldQueue
                             $this->processes++;
                 }
 
-                $tmp_program_output = $tmp_selection;
+                $tmp_program_output = array_merge($tmp_program_output, $tmp_selection);
                 $output = array_merge($output, $tmp_selection);
                 $this->processes++;
             } else {
