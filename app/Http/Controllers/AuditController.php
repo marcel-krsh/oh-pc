@@ -381,7 +381,7 @@ class AuditController extends Controller
 
         // which audit is selected (latest if no selection)
         $selected_audit = $project->selected_audit();
-        dd($id, $project, $selected_audit);
+        //dd($id, $project, $selected_audit);
 
         // get that audit's stats and contact info from the project_details table
         $details = $project->details();
