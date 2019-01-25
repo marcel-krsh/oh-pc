@@ -446,15 +446,15 @@ class AuditController extends Controller
 
                     // count selected units using the list of program ids
                     $program_keys = explode(',', $program['program_keys']); 
-                    $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->audit_id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->count();
-                    $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->audit_id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->count();
+                    $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->count();
+                    $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->count();
 
                     $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
                     $needed_units_file = $program['totals_after_optimization'] - $selected_units_file;
 
                     $unit_keys = $program['units_after_optimization']; 
                     $inspected_units_site = UnitInspection::whereIn('unit_key', $unit_keys)
-                                ->where('audit_id', '=', $audit->audit_id)
+                                ->where('audit_id', '=', $audit->id)
                                 ->where('group_id', '=', $program['group'])
                                 // ->whereHas('amenity_inspections', function($query) {
                                 //     $query->where('completed_date_time', '!=', null);
@@ -464,7 +464,7 @@ class AuditController extends Controller
                                 ->count();
 
                     $inspected_units_file = UnitInspection::whereIn('unit_key', $unit_keys)
-                                ->where('audit_id', '=', $audit->audit_id)
+                                ->where('audit_id', '=', $audit->id)
                                 ->where('group_id', '=', $program['group'])
                                 ->where('is_file_audit', '=', 1)
                                 ->where('complete', '!=', null)
