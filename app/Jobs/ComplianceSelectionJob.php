@@ -1620,7 +1620,8 @@ class ComplianceSelectionJob implements ShouldQueue
         $selection[] = [
             "program_name" => "HTC",
             "program_ids" => SystemSetting::get('program_htc'),
-            "pool" => count($units),
+            // "pool" => count($units),
+            "pool" => $total_htc_units,
             "units" => $units_selected,
             "totals" => count($units_selected),
             "use_limiter" => 1,
