@@ -461,14 +461,14 @@ class AuditController extends Controller
                                 //     $query->where('completed_date_time', '!=', null);
                                 // })
                                 ->where('is_site_visit', '=', 1)
-                                ->where('complete', '!=', null)
+                                ->where('complete', '!=', NULL)
                                 ->count();
 
                     $inspected_units_file = UnitInspection::whereIn('unit_key', $unit_keys)
                                 ->where('audit_id', '=', $audit->id)
                                 ->where('group_id', '=', $program['group'])
                                 ->where('is_file_audit', '=', 1)
-                                ->where('complete', '!=', null)
+                                ->where('complete', '!=', NULL)
                                 ->count();
 
                     $to_be_inspected_units_site = $program['totals_after_optimization'] - $inspected_units_site;
