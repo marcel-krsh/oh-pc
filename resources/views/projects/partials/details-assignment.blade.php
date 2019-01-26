@@ -175,7 +175,7 @@
 													        <div class="">
 														    	<ul class="uk-list no-hover uk-form-horizontal">
 										                        	<li onclick="">
-																        <label class="uk-form-label" style="margin-top: 10px;"><div style="display:inline-block;width:30px;float:left;"><i class="a-marker-directions"></i></div> TRAVEL TIME:</label>
+																        <label class="uk-form-label" style="margin-top: 10px;"><div style="display:inline-block;width:30px;float:left;"><i class="a-marker-directions"></i></div> TRAVEL ADJUSTMENT:</label>
 																        <div class="uk-form-controls">
 																            <select class="uk-select travel-select" id="travel-{{$event['id']}}" data-eventid="{{$event['id']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}">
 																            @php
@@ -202,7 +202,12 @@
 																            for ($i = $event['start']; $i <= $event['start']; $i++){
 																            	$hours = sprintf("%02d", intval(($i-1) * 15 / 60) + 6);
 																				$minutes = sprintf("%02d",($i-1) * 15 - (($hours - 6) * 60));
-																                echo "<option value='".$i."'>".$hours.":".$minutes."</option>";
+																				if((int)$hours > 12){
+																					$ushours = $hours - 12;
+																					echo "<option value='".$i."'>".$ushours.":".$minutes." PM</option>";
+																				}else{
+																					echo "<option value='".$i."'>".$hours.":".$minutes." AM</option>";
+																				}
 																            }
 																            @endphp	
 																            </select>
@@ -559,7 +564,14 @@
             	hours = pad(hours, 2);
 				minutes = (start_slot-1) * 15 - ((hours - 6) * 60);
             	minutes = pad(minutes, 2);
-				time = hours+':'+minutes;
+
+            	if(hours > 12){
+            		hours = hours - 12;
+            		time = hours+':'+minutes+' PM';
+            	} else {
+            		time = hours+':'+minutes+' AM';
+            	}
+            	
 				if(start_slot == start){
 					$('#start-'+eventid).append($('<option selected value="'+start_slot+'">'+time+'</option>'));
 				}else{
@@ -656,7 +668,14 @@
             	hours = pad(hours, 2);
 				minutes = (start_slot-1) * 15 - ((hours - 6) * 60);
             	minutes = pad(minutes, 2);
-				time = hours+':'+minutes;
+
+            	if(hours > 12){
+            		hours = hours - 12;
+            		time = hours+':'+minutes+' PM';
+            	} else {
+            		time = hours+':'+minutes+' AM';
+            	}
+
 				if(start_slot == start){
 					$('#start-'+eventid).append($('<option selected value="'+start_slot+'">'+time+'</option>'));
 				}else{
