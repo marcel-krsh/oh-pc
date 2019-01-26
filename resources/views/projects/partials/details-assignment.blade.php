@@ -665,6 +665,9 @@
                 
             }
 		});	
+
+		// make sure the numbers make sense with initial travel time
+		$('.travel-select').trigger('change');
 	});
 
 	function addAssignmentAuditor(dayid, auditorid=''){
