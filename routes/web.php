@@ -25,6 +25,7 @@
         Route::get('/document/list/{projectNumber}','SyncController@getDocs');
         //Route::get('/document/{documentId}','SyncController@getDoc');
         Route::get('/document/{documentId}', function($documentId) {
+            $docRecord = /App/Models/SyncDocuware::where('docuware_doc_id', $documentId)->first();
             // Do Devco Auth here?
             $deviceId=11;
             $deviceName='TestingSystem';
@@ -40,10 +41,15 @@
             //$document_contents = \Illuminate\Support\Facades\Storage::disk('base')->get('public/TestFile.pdf');
 
             // Respond Back
-            $response = response()->make($document_contents, 200);
+            //$response = response()->make($document_contents, 200);
+            //$response = response()->make($document_contents);
+            return response()->streamDownload(function () {
+                echo $document_contents;
+            }, "document.{$docRecord->dw_extenstion}");
+
             //$response->header('Content-Type', 'application/pdf'); // change this to the download content type.
 
-            return $response;
+            //return $response;
             //return public_path('TestFile.pdf');
         });
 

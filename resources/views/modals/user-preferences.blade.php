@@ -6,61 +6,70 @@
 	  				<div class="uk-width-1-1 uk-padding-remove-left">
 			  			<h3><span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$data['summary']['name']}};" class="user-badge user-badge-{{$data['summary']['color']}} user-badge-bigger no-float uk-link">
 										{{$data['summary']['initials']}}
-									</span> {{$data['summary']['name']}} <br /><small>{{$data['summary']['email']}} | {{$data['summary']['phone']}}</small></h3>
+									</span> {{$data['summary']['name']}} <br /><small>{{$data['summary']['email']}} | {{$data['summary']['phone']}}</small><a href="javascript:logout()" class="uk-button uk-button-small uk-padding-small-top uk-align-right"><i class="a-circle-keyhole"></i> LOGOUT</a></h3>
+									
+									<form id="logout-form" action="/logout" method="POST" style="display: none;" siq_id="autopick_1705">
+                                            <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                        </form>
 					</div>
-
+					
 	  				<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
 	  					<hr />
 	  					<h3 class="uk-margin-small-top">Set Availability <i class="a-calendar-pencil use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="expandModal(this);"></i></h3>
 	  					<div class="uk-grid-small uk-margin-remove" uk-grid>
 	  						<div class="uk-width-1-3 uk-padding-remove">
 	  							<label class="uk-text-small">Max Hours per Day</label>
+	  							
+
+	  								
+	  							</div>
+
 						        <select class="uk-select" id="max_hours" name="max_hours" onchange="autosave(this, 'auditor.availability_max_hours')">
-					                <option value="01:00:00" @if($data['summary']['availability_max_hours'] == '01:00:00') selected @endif>1:00</option>
-					                <option value="01:15:00" @if($data['summary']['availability_max_hours'] == '01:15:00') selected @endif>1:15</option>
-					                <option value="01:30:00" @if($data['summary']['availability_max_hours'] == '01:30:00') selected @endif>1:30</option>
-					                <option value="01:45:00" @if($data['summary']['availability_max_hours'] == '01:45:00') selected @endif>1:45</option>
-					                <option value="02:00:00" @if($data['summary']['availability_max_hours'] == '02:00:00') selected @endif>2:00</option>
-					                <option value="02:15:00" @if($data['summary']['availability_max_hours'] == '02:15:00') selected @endif>2:15</option>
-					                <option value="02:30:00" @if($data['summary']['availability_max_hours'] == '02:30:00') selected @endif>2:30</option>
-					                <option value="02:45:00" @if($data['summary']['availability_max_hours'] == '02:45:00') selected @endif>2:45</option>
-					                <option value="03:00:00" @if($data['summary']['availability_max_hours'] == '03:00:00') selected @endif>3:00</option>
-					                <option value="03:15:00" @if($data['summary']['availability_max_hours'] == '03:15:00') selected @endif>3:15</option>
-					                <option value="03:30:00" @if($data['summary']['availability_max_hours'] == '03:30:00') selected @endif>3:30</option>
-					                <option value="03:45:00" @if($data['summary']['availability_max_hours'] == '03:45:00') selected @endif>3:45</option>
-					                <option value="04:00:00" @if($data['summary']['availability_max_hours'] == '04:00:00') selected @endif>4:00</option>
-					                <option value="04:15:00" @if($data['summary']['availability_max_hours'] == '04:15:00') selected @endif>4:15</option>
-					                <option value="04:30:00" @if($data['summary']['availability_max_hours'] == '04:30:00') selected @endif>4:30</option>
-					                <option value="04:45:00" @if($data['summary']['availability_max_hours'] == '04:45:00') selected @endif>4:45</option>
-					                <option value="05:00:00" @if($data['summary']['availability_max_hours'] == '05:00:00') selected @endif>5:00</option>
-					                <option value="05:15:00" @if($data['summary']['availability_max_hours'] == '05:15:00') selected @endif>5:15</option>
-					                <option value="05:30:00" @if($data['summary']['availability_max_hours'] == '05:30:00') selected @endif>5:30</option>
-					                <option value="05:45:00" @if($data['summary']['availability_max_hours'] == '05:45:00') selected @endif>5:45</option>
-					                <option value="06:00:00" @if($data['summary']['availability_max_hours'] == '06:00:00') selected @endif>6:00</option>
-					                <option value="06:15:00" @if($data['summary']['availability_max_hours'] == '06:15:00') selected @endif>6:15</option>
-					                <option value="06:30:00" @if($data['summary']['availability_max_hours'] == '06:30:00') selected @endif>6:30</option>
-					                <option value="06:45:00" @if($data['summary']['availability_max_hours'] == '06:45:00') selected @endif>6:45</option>
-					                <option value="07:00:00" @if($data['summary']['availability_max_hours'] == '07:00:00') selected @endif>7:00</option>
-					                <option value="07:15:00" @if($data['summary']['availability_max_hours'] == '07:15:00') selected @endif>7:15</option>
-					                <option value="07:30:00" @if($data['summary']['availability_max_hours'] == '07:30:00') selected @endif>7:30</option>
-					                <option value="07:45:00" @if($data['summary']['availability_max_hours'] == '07:45:00') selected @endif>7:45</option>
-					                <option value="08:00:00" @if($data['summary']['availability_max_hours'] == '08:00:00') selected @endif>8:00</option>
-					                <option value="08:15:00" @if($data['summary']['availability_max_hours'] == '08:15:00') selected @endif>8:15</option>
-					                <option value="08:30:00" @if($data['summary']['availability_max_hours'] == '08:30:00') selected @endif>8:30</option>
-					                <option value="08:45:00" @if($data['summary']['availability_max_hours'] == '08:45:00') selected @endif>8:45</option>
-					                <option value="09:00:00" @if($data['summary']['availability_max_hours'] == '09:00:00') selected @endif>9:00</option>
-					                <option value="09:15:00" @if($data['summary']['availability_max_hours'] == '09:15:00') selected @endif>9:15</option>
-					                <option value="09:30:00" @if($data['summary']['availability_max_hours'] == '09:30:00') selected @endif>9:30</option>
-					                <option value="09:45:00" @if($data['summary']['availability_max_hours'] == '09:45:00') selected @endif>9:45</option>
-					                <option value="10:00:00" @if($data['summary']['availability_max_hours'] == '10:00:00') selected @endif>10:00</option>
-					                <option value="10:15:00" @if($data['summary']['availability_max_hours'] == '10:15:00') selected @endif>10:15</option>
-					                <option value="10:30:00" @if($data['summary']['availability_max_hours'] == '10:30:00') selected @endif>10:30</option>
-					                <option value="10:45:00" @if($data['summary']['availability_max_hours'] == '10:45:00') selected @endif>10:45</option>
-					                <option value="11:00:00" @if($data['summary']['availability_max_hours'] == '11:00:00') selected @endif>11:00</option>
-					                <option value="11:15:00" @if($data['summary']['availability_max_hours'] == '11:15:00') selected @endif>11:15</option>
-					                <option value="11:30:00" @if($data['summary']['availability_max_hours'] == '11:30:00') selected @endif>11:30</option>
-					                <option value="11:45:00" @if($data['summary']['availability_max_hours'] == '11:45:00') selected @endif>11:45</option>
-					                <option value="12:00:00" @if($data['summary']['availability_max_hours'] == '12:00:00') selected @endif>12:00</option>
+					                <option value="01:00:00" @if($data['summary']['availability_max_hours'] == '01:00:00') selected @endif>1:00 (H:MM)</option>
+					                <option value="01:15:00" @if($data['summary']['availability_max_hours'] == '01:15:00') selected @endif>1:15  (H:MM)</option>
+					                <option value="01:30:00" @if($data['summary']['availability_max_hours'] == '01:30:00') selected @endif>1:30 (H:MM)</option>
+					                <option value="01:45:00" @if($data['summary']['availability_max_hours'] == '01:45:00') selected @endif>1:45 (H:MM)</option>
+					                <option value="02:00:00" @if($data['summary']['availability_max_hours'] == '02:00:00') selected @endif>2:00 (H:MM)</option>
+					                <option value="02:15:00" @if($data['summary']['availability_max_hours'] == '02:15:00') selected @endif>2:15 (H:MM)</option>
+					                <option value="02:30:00" @if($data['summary']['availability_max_hours'] == '02:30:00') selected @endif>2:30 (H:MM)</option>
+					                <option value="02:45:00" @if($data['summary']['availability_max_hours'] == '02:45:00') selected @endif>2:45 (H:MM)</option>
+					                <option value="03:00:00" @if($data['summary']['availability_max_hours'] == '03:00:00') selected @endif>3:00 (H:MM)</option>
+					                <option value="03:15:00" @if($data['summary']['availability_max_hours'] == '03:15:00') selected @endif>3:15 (H:MM)</option>
+					                <option value="03:30:00" @if($data['summary']['availability_max_hours'] == '03:30:00') selected @endif>3:30 (H:MM)</option>
+					                <option value="03:45:00" @if($data['summary']['availability_max_hours'] == '03:45:00') selected @endif>3:45 (H:MM)</option>
+					                <option value="04:00:00" @if($data['summary']['availability_max_hours'] == '04:00:00') selected @endif>4:00 (H:MM)</option>
+					                <option value="04:15:00" @if($data['summary']['availability_max_hours'] == '04:15:00') selected @endif>4:15 (H:MM)</option>
+					                <option value="04:30:00" @if($data['summary']['availability_max_hours'] == '04:30:00') selected @endif>4:30 (H:MM)</option>
+					                <option value="04:45:00" @if($data['summary']['availability_max_hours'] == '04:45:00') selected @endif>4:45 (H:MM)</option>
+					                <option value="05:00:00" @if($data['summary']['availability_max_hours'] == '05:00:00') selected @endif>5:00 (H:MM)</option>
+					                <option value="05:15:00" @if($data['summary']['availability_max_hours'] == '05:15:00') selected @endif>5:15 (H:MM)</option>
+					                <option value="05:30:00" @if($data['summary']['availability_max_hours'] == '05:30:00') selected @endif>5:30 (H:MM)</option>
+					                <option value="05:45:00" @if($data['summary']['availability_max_hours'] == '05:45:00') selected @endif>5:45 (H:MM)</option>
+					                <option value="06:00:00" @if($data['summary']['availability_max_hours'] == '06:00:00') selected @endif>6:00 (H:MM)</option>
+					                <option value="06:15:00" @if($data['summary']['availability_max_hours'] == '06:15:00') selected @endif>6:15 (H:MM)</option>
+					                <option value="06:30:00" @if($data['summary']['availability_max_hours'] == '06:30:00') selected @endif>6:30 (H:MM)</option>
+					                <option value="06:45:00" @if($data['summary']['availability_max_hours'] == '06:45:00') selected @endif>6:45 (H:MM)</option>
+					                <option value="07:00:00" @if($data['summary']['availability_max_hours'] == '07:00:00') selected @endif>7:00 (H:MM)</option>
+					                <option value="07:15:00" @if($data['summary']['availability_max_hours'] == '07:15:00') selected @endif>7:15 (H:MM)</option>
+					                <option value="07:30:00" @if($data['summary']['availability_max_hours'] == '07:30:00') selected @endif>7:30 (H:MM)</option>
+					                <option value="07:45:00" @if($data['summary']['availability_max_hours'] == '07:45:00') selected @endif>7:45 (H:MM)</option>
+					                <option value="08:00:00" @if($data['summary']['availability_max_hours'] == '08:00:00') selected @endif>8:00 (H:MM)</option>
+					                <option value="08:15:00" @if($data['summary']['availability_max_hours'] == '08:15:00') selected @endif>8:15 (H:MM)</option>
+					                <option value="08:30:00" @if($data['summary']['availability_max_hours'] == '08:30:00') selected @endif>8:30 (H:MM)</option>
+					                <option value="08:45:00" @if($data['summary']['availability_max_hours'] == '08:45:00') selected @endif>8:45 (H:MM)</option>
+					                <option value="09:00:00" @if($data['summary']['availability_max_hours'] == '09:00:00') selected @endif>9:00 (H:MM)</option>
+					                <option value="09:15:00" @if($data['summary']['availability_max_hours'] == '09:15:00') selected @endif>9:15 (H:MM)</option>
+					                <option value="09:30:00" @if($data['summary']['availability_max_hours'] == '09:30:00') selected @endif>9:30 (H:MM)</option>
+					                <option value="09:45:00" @if($data['summary']['availability_max_hours'] == '09:45:00') selected @endif>9:45 (H:MM)</option>
+					                <option value="10:00:00" @if($data['summary']['availability_max_hours'] == '10:00:00') selected @endif>10:00 (HH:MM)</option>
+					                <option value="10:15:00" @if($data['summary']['availability_max_hours'] == '10:15:00') selected @endif>10:15 (HH:MM)</option>
+					                <option value="10:30:00" @if($data['summary']['availability_max_hours'] == '10:30:00') selected @endif>10:30 (HH:MM)</option>
+					                <option value="10:45:00" @if($data['summary']['availability_max_hours'] == '10:45:00') selected @endif>10:45 (HH:MM)</option>
+					                <option value="11:00:00" @if($data['summary']['availability_max_hours'] == '11:00:00') selected @endif>11:00 (HH:MM)</option>
+					                <option value="11:15:00" @if($data['summary']['availability_max_hours'] == '11:15:00') selected @endif>11:15 (HH:MM)</option>
+					                <option value="11:30:00" @if($data['summary']['availability_max_hours'] == '11:30:00') selected @endif>11:30 (HH:MM)</option>
+					                <option value="11:45:00" @if($data['summary']['availability_max_hours'] == '11:45:00') selected @endif>11:45 (HH:MM)</option>
+					                <option value="12:00:00" @if($data['summary']['availability_max_hours'] == '12:00:00') selected @endif>12:00 (HH:MM)</option>
 					            </select>
 	  						</div>
 	  						<div class="uk-width-1-3">
