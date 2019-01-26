@@ -87,10 +87,10 @@ class CachedAudit extends Model
         });
 
         
-        static::updated(function ($cached_audit) {
-            Event::fire('cachedaudit.created', $cached_audit);
-                Log::info('created fired for Cached Audit');
-        });
+        // static::updated(function ($cached_audit) {
+        //     Event::fire('cachedaudit.created', $cached_audit);
+        //         Log::info('created fired for Cached Audit');
+        // });
 
         // static::deleted(function ($audit) {
         //     Event::fire('audit.deleted', $audit);
