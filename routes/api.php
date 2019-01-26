@@ -165,13 +165,13 @@ Route::get('/users/verify_user', function (Request $request) {
 
 
 
-                    
+
                         $parcel->distance = 0;
-                    
+
                         $parcel->locked = VisitLists::select('id')->where('parcel_id', $parcel->id)->where('status', '1')->count() != 0;
-                                        
+
                         $parcel->acquired_by = HowAcquired::select('how_acquired_option_name')->where('id', $parcel->how_acquired_id)->first()->how_acquired_option_name;
-                                        
+
                         $parcel->state_acronym = State::select('state_acronym')->where('id', $parcel->state_id)->first()->state_acronym;
                         $parcel->state_name = State::select('state_name')->where('id', $parcel->state_id)->first()->state_name;
                         $parcel->county = County::select('county_name')->where('id', $parcel->county_id)->first()->county_name;
@@ -208,7 +208,7 @@ Route::get('/users/verify_user', function (Request $request) {
                             $parcel->disposition_date = null;
                             $parcel->disposition_type_id = null;
                         }
-                    
+
                         $parcel->incomplete_site_visits = SiteVisits::where('parcel_id', $parcel->id)->where('status', '<', '2')->count();
                         $parcel->uncorrected_corrections = Correction::where('parcel_id', $parcel->id)->where('corrected', '0')->count();
                     }
@@ -230,7 +230,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 //&& $distance != "")
                     $paid_invoices = ReimbursementInvoice::select('id')->where('program_id', $program_id)->where('status_id', '6')->where('active', '1')->get();
                     $parcels_in_invoices = ParcelsToReimbursementInvoice::select('parcel_id')->whereIn('reimbursement_invoice_id', $paid_invoices)->get();
-                
+
                     $randomParcel = Parcel::
                     where('program_id', $program_id)
                     ->whereIn('id', $parcels_in_invoices)
@@ -264,13 +264,13 @@ Route::get('/users/verify_user', function (Request $request) {
                           cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
 
                         $parcelDistance = $angle * $earthRadius;
-                    
+
                         $parcel->distance = $parcelDistance;
-                    
+
                         $parcel->locked = VisitLists::select('id')->where('parcel_id', $parcel->id)->where('status', '1')->count() != 0;
-                                        
+
                         $parcel->acquired_by = HowAcquired::select('how_acquired_option_name')->where('id', $parcel->how_acquired_id)->first()->how_acquired_option_name;
-                                        
+
                         $parcel->state_acronym = State::select('state_acronym')->where('id', $parcel->state_id)->first()->state_acronym;
                         $parcel->state_name = State::select('state_name')->where('id', $parcel->state_id)->first()->state_name;
                         $parcel->county = County::select('county_name')->where('id', $parcel->county_id)->first()->county_name;
@@ -451,11 +451,11 @@ Route::get('/users/verify_user', function (Request $request) {
                 throw $e;
             }
         });
-    
+
         Route::get('/get_visit_list', function (Request $request) {
             try {
                 $user_id = $request->query("user_id");
-            
+
                 $visits = VisitLists::where('user_id', $user_id)->where('status', '1')->get();
 
                 if ($visits) {
@@ -473,7 +473,7 @@ Route::get('/users/verify_user', function (Request $request) {
         Route::get('/get_visit', function (Request $request) {
             try {
                 $visit_id = $request->query("visit_id");
-            
+
                 $visit = VisitLists::where('id', $visit_id)->first();
 
                 if ($visit) {
@@ -618,13 +618,13 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 foreach ($programs as $program) {
                     $program_info = new StdClass;
-                
+
                     $parcels_visited_count = DB::table('site_visits')
                      ->select('id')
                      ->where('program_id', $program->id)
                      ->where('status', '2')
                      ->count();
-                 
+
                     $parcels_in_program_count = Parcel::select('id')->where('program_id', $program->id)->count();
 
 
@@ -638,7 +638,7 @@ Route::get('/users/verify_user', function (Request $request) {
                     // ->where('status','2')
                     // ->groupBy('parcel_id')
                     // ->count();
-                
+
                     $program_info->id = $program->id;
                     $program_info->program_name = $program->program_name;
                     $program_info->parcels_in_program = $parcels_in_program_count;
@@ -1148,7 +1148,7 @@ Route::get('/users/verify_user', function (Request $request) {
             }
         });
 
-    
+
         Route::get('/recaptures', function (Request $request) {
 
             try {
@@ -1172,7 +1172,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 throw $e;
             }
         });
-    
+
         Route::get('/comments', function (Request $request) {
 
             try {
@@ -1191,7 +1191,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 throw $e;
             }
         });
-    
+
         Route::get('/corrections', function (Request $request) {
 
             try {
@@ -1212,15 +1212,15 @@ Route::get('/users/verify_user', function (Request $request) {
         });
 
 
-    
-    
+
+
         Route::get('/update_parcel_location', function (Request $request) {
             try {
                 $parcel_id =  $request->query('parcel_id');
                 $latitude = $request->query('latitude');
                 $longitude = $request->query('longitude');
-            
-            
+
+
                 $parcel = Parcel::where('id', $parcel_id)->first();
 
                 if ($parcel) {
@@ -1248,8 +1248,8 @@ Route::get('/users/verify_user', function (Request $request) {
                 $corrected_site_visit_id = $request->input('corrected_site_visit_id');
                 $corrected_user_id = $request->input('corrected_user_id');
                 $corrected_date = $request->input('corrected_date');
-            
-            
+
+
                 $correction = Correction::where('id', $correction_id)->first();
 
                 if ($correction) {
@@ -1272,7 +1272,67 @@ Route::get('/users/verify_user', function (Request $request) {
             }
         });
 
-    
-    
+
+
         Route::get('/parcel_lookup', 'ParcelsController@quickLookup');
+
+
+        Route::get('/cached_audits', function (Request $request) {
+
+            try {
+
+                $results = CachedAudit::where('step_id','1')->get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+        Route::get('/audits', function (Request $request) {
+
+            try {
+
+                $results = Audit::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+
+        Route::get('/buildings', function (Request $request) {
+
+            try {
+
+                $results = Building::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
     });
