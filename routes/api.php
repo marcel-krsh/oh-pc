@@ -27,6 +27,9 @@ use App\BreakOutType;
 use App\ExpenseCategory;
 use App\Device;
 use Carbon\Carbon;
+use App\Models\Audit;
+use App\Models\CachedAudit;
+use App\Models\Building;
 
 /*
 |--------------------------------------------------------------------------
@@ -1300,7 +1303,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $results = Audit::get();
+                $results = AuditController::get();
 
                 if ($results) {
                     $reply = $results;
