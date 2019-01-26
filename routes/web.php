@@ -25,7 +25,7 @@
         Route::get('/document/list/{projectNumber}','SyncController@getDocs');
         //Route::get('/document/{documentId}','SyncController@getDoc');
         Route::get('/document/{documentId}', function($documentId) {
-            $docRecord = /App/Models/SyncDocuware::where('docuware_doc_id', $documentId)->first();
+            $docRecord = \App\Models\SyncDocuware::where('docuware_doc_id', $documentId)->first();
             // Do Devco Auth here?
             $deviceId=11;
             $deviceName='TestingSystem';
