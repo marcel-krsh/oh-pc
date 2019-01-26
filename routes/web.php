@@ -34,16 +34,17 @@
             $doc_service = new \App\Services\DocumentService;
             $document_contents = $doc_service->getDocument($documentId,Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
 
-            //\Illuminate\Support\Facades\Storage::put('test.pdf', $document_contents);
+                //\Illuminate\Support\Facades\Storage::put('test.pdf', $document_contents);
 
 
-            // Faking in a local test document
-            //$document_contents = \Illuminate\Support\Facades\Storage::disk('base')->get('public/TestFile.pdf');
+                // Faking in a local test document
+                //$document_contents = \Illuminate\Support\Facades\Storage::disk('base')->get('public/TestFile.pdf');
 
-            // Respond Back
-            //$response = response()->make($document_contents, 200);
-            //$response = response()->make($document_contents);
-            return response()->streamDownload(function () {
+                // Respond Back
+                //$response = response()->make($document_contents, 200);
+                //$response = response()->make($document_contents);
+
+            return response()->streamDownload(function () use $document_contents {
                 echo $document_contents;
             }, "document.{$docRecord->dw_extenstion}");
 
