@@ -84,6 +84,15 @@
                 return redirect('/');
         });
 
+        Route::get('tablet_login', function () {
+                //session(['brian'=>'test']);
+                if(Auth::user()->allowed_tablet){
+                    return Auth::user()->api_token;
+                } else {
+                    return 'No Tablet Access';
+                }
+        });
+
         Route::post('/session/{name?}/{value?}', 'DataController@setSession');
 
         Route::get('/', 'DashboardController@index');
