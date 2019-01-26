@@ -46,7 +46,7 @@
 
             return response()->streamDownload(function () use ($document_contents) {
                 echo $document_contents;
-            }, "{$docRecord->project_number}-{stripslashes($docRecord->document_class)}-{stripslashes($docRecord->document_description)}{$docRecord->dw_extension}");
+            }, "{$docRecord->project_number}-".stripslashes($docRecord->document_class)."-".stripslashes($docRecord->document_description)."{$docRecord->dw_extension}");
 
             //$response->header('Content-Type', 'application/pdf'); // change this to the download content type.
 
