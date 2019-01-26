@@ -44,7 +44,7 @@
                 //$response = response()->make($document_contents, 200);
                 //$response = response()->make($document_contents);
 
-            return response()->streamDownload(function () use $document_contents {
+            return response()->streamDownload(function () use ($document_contents) {
                 echo $document_contents;
             }, "document.{$docRecord->dw_extenstion}");
 
