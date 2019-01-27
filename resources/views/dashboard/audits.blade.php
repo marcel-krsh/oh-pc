@@ -683,13 +683,15 @@ The following div is defined in this particular tab and pushed to the main layou
 */
 ?>
 <div id="footer-actions" hidden>
-	@if(session('audit-hidenoncritical') != 1)
-	<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();"><i class="a-eye-not"></i> HIDE NON CRITICAL</button>
-	<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();" style="display:none;"><i class="a-eye-2"></i> SHOW NON CRITICAL</button>
-	@else
-	<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();" style="display:none;"><i class="a-eye-not"></i> HIDE NON CRITICAL</button>
-	<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();"><i class="a-eye-2"></i> SHOW NON CRITICAL</button>
-	@endif
+	@can('access_auditor')
+		@if(session('audit-hidenoncritical') != 1)
+		<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();"><i class="a-eye-not"></i> HIDE NON CRITICAL</button>
+		<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();" style="display:none;"><i class="a-eye-2"></i> SHOW NON CRITICAL</button>
+		@else
+		<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();" style="display:none;"><i class="a-eye-not"></i> HIDE NON CRITICAL</button>
+		<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();"><i class="a-eye-2"></i> SHOW NON CRITICAL</button>
+		@endif
+	@endcan
 	<a href="#top" id="smoothscrollLink" uk-scroll="{offset: 90}" class="uk-button uk-button-default"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
 </div>
 
@@ -709,7 +711,7 @@ The following div is defined in this particular tab and pushed to the main layou
 				$(this).keyup();
 			}
 		});
-
+		@can('access_auditor')
 		$('#step-all').click(function() {
 			if($('#step-all').prop('checked')){
 				$('input.stepselector').prop('checked', false);
@@ -721,16 +723,21 @@ The following div is defined in this particular tab and pushed to the main layou
 		    	$('#step-all').prop('checked', false);
 			}
 	    });
+	    @endcan
     });
 
+	@can('access_auditor')
     function rerunCompliance(audit){
 
     	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>RERUN COMPLIANCE SELECTION?</h2></div><div class="uk-width-2-3"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to rerun the automated compliance selection? <br /><br />Depending on how many are currently being processed, this could take up to 10 minutes to complete.</h3><p><strong>Why does it take up to 10 minutes?</strong> When a compliance selection is run, it performs all the unit selections based on the criteria for each program used by the project. Because each selection process uses an element of randomness, the total number of units that need inspected may be different each time it is run due to overlaps of programs to units. So, we run the process 10 times, and pick the one that has the highest amount of program overlap to units. This keeps the audit federally compliant while also making the most efficient use of your time.</p></div><div class="uk-width-1-3"><hr class="dashed-hr uk-margin-bottom"><h3><em style="color:#ca3a8d">WARNING!</em></h3><p style="color:#ca3a8d"> While this will not affect the days and times you have auditors scheduled for your audit, it will remove any auditor assignments to inspect specific areas and units.<br /><br /><small>PLEASE NOTE THAT THIS WILL NOT RUN ON AUDITS WITH FINDINGS RECORDED. YOU WILL NEED TO DO YOUR SELECTION MANUALY.</small></p></div><div class="uk-width-1-1"></div></div>').then(function() {
-		    console.log('Call the rerun.')
+		    	console.log('Re-running Audit.');
+		    	dynamicModalLoad('/audit/'+audit+'/rerun');
+		    	$('#audit-r-'+audit).remove();
 		}, function () {
 		    console.log('Rejected.')
 		});
     }
+    @endcan
 
 
 
