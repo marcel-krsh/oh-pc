@@ -12,7 +12,7 @@
                                             <input type="hidden" name="_token" value="{{csrf_token()}}">
                                         </form>
 					</div>
-					
+					@can('access_auditor')
 	  				<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
 	  					<hr />
 	  					<h3 class="uk-margin-small-top">Set Availability <i class="a-calendar-pencil use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="expandModal(this);"></i></h3>
@@ -189,8 +189,10 @@
 	  						</select>
 	  					</div>
 	  				</div>
+	  				@endcan
 	  			</div>
 	  		</div>
+	  		@can('access_auditor')
 	  		<div class="user-preference-col-2 uk-padding-remove uk-margin-small-top" style="display:none">
 	  			<div uk-grid>
 	  				<div class="uk-width-1-1">
@@ -372,6 +374,7 @@
 	  				</div>
 	  			</div>
 	  		</div>
+	  		@endcan
 	    </div>
 	</div>
 </div>
