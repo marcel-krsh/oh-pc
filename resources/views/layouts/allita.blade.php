@@ -254,9 +254,11 @@ if(Auth::check()){
 									<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}', '3','','','',1);}">
 										<a href=""><span class="list-tab-text"><span class="uk-badge" v-if="statsReportsTotal" v-cloak>@{{statsReportsTotal}}</span></span> <i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
 									</li>
+									@if(Auth::user()->admin_access())
 									<li id="detail-tab-5" class="detail-tab-5" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-5').hasClass('uk-active')  || window.adminLoaded != 1){loadTab('{{ route('dashboard.admin') }}', '5','','','',1);}" >
 										<a href=""><span class="list-tab-text">ADMIN</span></a>
 									</li>
+									@endIf
 								</ul>
 							</div>
 				    	
@@ -272,7 +274,7 @@ if(Auth::check()){
 									<div class="apcsv-menu-item">
 										<a href="/" style="font-weight: 400">DEV|CO Inspection</a>
 									</div>
-									@if(Auth::user()->allowed_tablet)
+									@if(Auth::user()->allowed_tablet && Auth::user()->auditor_access())
 									<div class="apcsv-menu-item uk-hidden-notouch">
 										<a href="allitapcbeta://" style="font-weight: 400">Open Tablet App</a>
 									</div>

@@ -82,13 +82,13 @@ class DashboardController extends Controller
 
     public function adminTools()
     {
-        // TBD based on role
-        if (1) {
+        
+        if (Auth::user()->admin_access()) {
             $sumStatData = [];
             $stats = [];
             return view('dashboard.admin', compact('stats', 'sumStatData'));
         } else {
-            return 'Sorry you do not have access to this page';
+            return 'Sorry you do not have access to this page.';
         }
     }
 
