@@ -229,7 +229,7 @@
         });
 
         // Admin tabs
-        if(Auth::user()->admin_access()){
+        
             Route::group(['prefix'=>'tabs'], function ()  {
                 
                     Route::get('organization', 'AdminToolController@organizationIndex');
@@ -248,7 +248,7 @@
                     Route::get('emails', 'PagesController@emailsTab');
                 
             });
-        }
+        
 
         // Admin store
         Route::group(['prefix'=>'admin'], function () {
