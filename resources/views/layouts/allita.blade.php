@@ -262,7 +262,7 @@ if(Auth::check()){
 								</ul>
 							</div>
 				    	
-				    		<div id="apcsv-avatar" class="" title="{{Auth::user()->full_name()}} - USER:{{Auth::user()->id}}" onclick="openUserPreferences();" style="cursor: pointer; margin-top:15px">
+				    		<div id="apcsv-avatar" class="" title="{{Auth::user()->full_name()}} - User ID:{{Auth::user()->id}} @if(Auth::user()->root_access()) Root Access @elseIf(Auth::user()->admin_access()) Admin Access @elseIf(Auth::user()->auditor_access() Auditor Access @elseIf(Auth::user()->pm_access()) Property Manager @endIf" onclick="openUserPreferences();" style="cursor: pointer; margin-top:15px">
 							{{Auth::user()->initials()}}
 							</div>
 							<div id="apcsv-menu-icon" class="hvr-grow uk-inline" style="margin-top:15px">
