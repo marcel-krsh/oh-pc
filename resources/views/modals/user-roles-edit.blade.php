@@ -5,8 +5,9 @@
 	  		<div class="uk-padding-remove uk-margin-small-top">
 	  			<div uk-grid> 
 	  				<div class="uk-width-1-1 uk-padding-remove-left">
-			  			<h3 uk-tooltip title="DEV|CO KEY: {{$user->devco_key}}<br />ALLITA ID: {{$user->id}}<br />PERSON ID:{{$user->person_id}}<br />API TOKEN: {{$user->api_token}}">{{$user->full_name()}}</h3>
+			  			<h3 uk-tooltip title="DEV|CO KEY: {{$user->devco_key}}<br />ALLITA ID: {{$user->id}}<br />PERSON ID:{{$user->person_id}}">{{$user->full_name()}}</h3>
 					</div>
+					
 
 	  				<div class="uk-width-1-1 uk-margin-remove uk-padding-remove-left">
 	  					<hr />
@@ -24,6 +25,16 @@
 							            <label><input class="uk-radio" type="radio" name="roles" value="0" @if($checked != 1) checked @endif> No Access</label>
 							            @endif
 							        </div>
+							        <div class="uk-margin">
+							        	<input type="checkbox" name="enable_tablet" @if($user->allowed_tablet == 1) checked @endif onchange="autosave(this, 'auditor.enable_tablet'); if($('input[type=checkbox]').prop('checked')) { $('#tablet-settings').slideDown(); }">
+	  									<div id="tablet-settings" style=" @if($user->allowed_tablet != 1) display:none @endif">
+			  								
+			  								<hr class="dashed-hr">
+
+			  								<div class="uk-input uk-form-blank">
+			  									<a class="uk-mute" onClick="getNewApiKey()" id="api-key">@if($user->api_key == '' || is_null($user->api_key)) REQUEST API KEY @else <span uk-tooltip title="Click to Request a New API Key"> $user->api_key </span>
+									        </div>
+									    </div>
 			  						<div class="uk-width-1-1 uk-margin-small-top">
 			  							<button class="uk-button uk-button-primary" style="height: 100%; width: 100%;" onclick="saveRoles(event);">SAVE</button>	
 			  						</div>
