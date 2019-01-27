@@ -230,24 +230,24 @@
 
         // Admin tabs
         
-            Route::group(['prefix'=>'tabs'], function ()  {
-                
-                    Route::get('organization', 'AdminToolController@organizationIndex');
-                    Route::post('organization', 'AdminToolController@searchOrganizations')->name('organizations.search');
-                    Route::get('amenity', 'AdminToolController@amenityIndex');
-                    Route::get('hud', 'AdminToolController@hudIndex');
-                    Route::get('findingtype', 'AdminToolController@findingtypeIndex');
-                    Route::post('findingtype', 'AdminToolController@searchFindingTypes')->name('findingtypes.search');
-                    Route::get('defaultfollowup', 'AdminToolController@defaultfollowupIndex');
-                    Route::get('boilerplate', 'AdminToolController@boilerplateIndex');
-                    Route::get('program', 'AdminToolController@programIndex');
-                    Route::get('users', 'AdminToolController@usersIndex');
-                    Route::post('users', 'AdminToolController@searchUsers')->name('users.search');
-                    Route::get('document_category', 'AdminToolController@documentIndex');
-                    Route::get('county', 'AdminToolController@countyIndex');
-                    Route::get('emails', 'PagesController@emailsTab');
-                
-            });
+        Route::group(['prefix'=>'tabs','middleware'=>'can:access_admin'], function ()  {
+            
+                Route::get('organization', 'AdminToolController@organizationIndex');
+                Route::post('organization', 'AdminToolController@searchOrganizations')->name('organizations.search');
+                Route::get('amenity', 'AdminToolController@amenityIndex');
+                Route::get('hud', 'AdminToolController@hudIndex');
+                Route::get('findingtype', 'AdminToolController@findingtypeIndex');
+                Route::post('findingtype', 'AdminToolController@searchFindingTypes')->name('findingtypes.search');
+                Route::get('defaultfollowup', 'AdminToolController@defaultfollowupIndex');
+                Route::get('boilerplate', 'AdminToolController@boilerplateIndex');
+                Route::get('program', 'AdminToolController@programIndex');
+                Route::get('users', 'AdminToolController@usersIndex');
+                Route::post('users', 'AdminToolController@searchUsers')->name('users.search');
+                Route::get('document_category', 'AdminToolController@documentIndex');
+                Route::get('county', 'AdminToolController@countyIndex');
+                Route::get('emails', 'PagesController@emailsTab');
+            
+        });
         
 
         // Admin store
