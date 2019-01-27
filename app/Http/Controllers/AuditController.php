@@ -29,6 +29,7 @@ use App\Models\AmenityInspection;
 use App\Models\UnitInspection;
 use App\Models\SystemSetting;
 use Auth;
+use App\Models\Job;
 use Session;
 use App\LogConverter;
 use Carbon;
@@ -46,9 +47,13 @@ class AuditController extends Controller
 
     public function rerunCompliance(Audit $audit){
         if($audit->findings->count() < 1){
+            $auditsAhead = Job::where('queue','compliance')->count();
             $audit->rerun_compliance = 1;
             $audit->save();
-            return 'No findings! Good to go!';
+
+            return '<p>Your request to re-run the compliance selection has been added to the queue. There are currently '.$auditsAhead.' audit(s) ahead of your request.</p><p>It usually takes approximately 1-10 minutes per audit selection depending on the size of the project.<p>';
+        } else {
+            return '<p>I am sorry, we cannot rerun your audit as it currently has findings against amenities on that project. You must finalize the current audit in order to refresh the program to unit association.</p>'
         }
         
     }
