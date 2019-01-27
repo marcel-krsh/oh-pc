@@ -1344,9 +1344,13 @@ class AuditController extends Controller
         $program_nhtf_ids = explode(',', SystemSetting::get('program_nhtf'));
         $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
 
-        // $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)->with('unit', 'program', 'unit.building.address')->orderBy('unit_id','asc')->get();
+        $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)->with('unit', 'program', 'unit.building.address')->orderBy('unit_id','asc')->get();
         
-        $unitprograms = UnitInspection::where('audit_id', '=', $audit->id)->with('unit', 'program', 'unit.building.address')->orderBy('unit_id','asc')->get();
+// unit_id 151064
+// program_id 286
+// audit_id 6659
+
+        //$unitprograms = UnitInspection::where('audit_id', '=', $audit->id)->with('unit', 'program', 'unit.building.address')->orderBy('unit_id','asc')->get();
 
         //dd($unitprograms->program->groups());
 
