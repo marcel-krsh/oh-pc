@@ -20,6 +20,7 @@
         "phpoffice/phpspreadsheet": "^1.6",
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "^3.3",
+        "renatomarinho/laravel-page-speed": "^1.8",
         "staudenmeir/eloquent-json-relations": "^1.1",
         "tremby/laravel-git-version": "^1.1",
         "yajra/laravel-datatables": "^1.0"
