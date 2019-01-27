@@ -11,7 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class UnitInspection extends Model
 {
     public $timestamps = true;
-    //protected $dateFormat = 'Y-m-d\TH:i:s.u';
+    //protected $dateFormat = 'Y-m-d\TH:i:s.u';//
+    protected $guarded = ['id'];
 
     
     public function amenities() : HasMany
@@ -29,6 +30,30 @@ class UnitInspection extends Model
         return $this->hasOne(\App\Models\Unit::class, 'id', 'unit_id');
     }
 
-    //
-    protected $guarded = ['id'];
+    public function program() : HasOne
+    {
+        return $this->hasOne(\App\Models\Program::class, 'program_key', 'program_key');
+    }
+
+    public function hasSiteInspection()
+    {
+        if($this->is_site_visit){
+            return 1;
+        }elseif(\App\Models\UnitInspection::where('program_id', '=', $this->program_id)->where('audit_id', '=', $this->audit_id)->where('unit_id', '=', $this->unit_id)->where('is_site_visit', '=', 1)->count()){
+            return 1;
+        }
+        return 0;
+    }
+
+    public function hasFileInspection()
+    {
+        if($this->is_file_audit){
+            return 1;
+        }elseif(\App\Models\UnitInspection::where('program_id', '=', $this->program_id)->where('audit_id', '=', $this->audit_id)->where('unit_id', '=', $this->unit_id)->where('is_file_audit', '=', 1)->count()){
+            return 1;
+        }
+        return 0;
+    }
+
+    
 }

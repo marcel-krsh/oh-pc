@@ -63,15 +63,17 @@ resizeModal(95);
 			<div class="modal-project-summary-right-bottom">
 				<div id="modal-project-summary-units" class="uk-padding-remove" uk-grid>
 					@php
-					$current_unitprogram = 0;
+					$current_unitid = 0;
+					$current_programkey = 0;
 					@endphp
 					@foreach($unitprograms as $unitprogram)
 
-					@if($current_unitprogram != $unitprogram->unit_id)
+					@if($current_unitid != $unitprogram->unit_id)
 					@php
-					$current_unitprogram = $unitprogram->unit_id;
+						$current_unitid = $unitprogram->unit_id;
+						$current_programkey = $unitprogram->program_key;
 					@endphp
-					<div class="modal-project-summary-unit uk-width-1-1">
+					<div class="modal-project-summary-unit ">
 						<div class="modal-project-summary-unit-status">
 							<i class="a-circle" uk-tooltip="title:SELECT ALL ELIGIBLE PROGRAMS FOR BOTH INSPECTIONS;" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}});"></i>
 						</div>
@@ -120,6 +122,7 @@ resizeModal(95);
 		            	</div>
 					</div>
 					@else
+					@if($current_programkey != $unitprogram->program_key)
 					<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1">
 			        	<div class="modal-project-summary-unit-program uk-visible-toggle">
 		            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle @if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection()) inspectable-selected @endif">
@@ -154,6 +157,7 @@ resizeModal(95);
 		            		</div>
 		            	</div>
 			        </div>
+			        @endif
 					@endif
 
 					@endforeach
