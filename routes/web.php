@@ -13,7 +13,7 @@
     Auth::routes();
 
     Route::group(['middleware' => 'web'], function () {
-       
+        app('debugbar')->disable();
         // rerun compliance run
         Route::get('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
 
