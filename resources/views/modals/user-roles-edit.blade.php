@@ -32,7 +32,7 @@
 			  								<hr class="dashed-hr">
 
 			  								<div class="uk-input uk-form-blank">
-			  									<a class="uk-mute" onClick="getNewApiKey()" id="api-key">@if($user->api_key == '' || is_null($user->api_key)) REQUEST API KEY @else <span uk-tooltip title="Click to Request a New API Key"> $user->api_key </span>
+			  									<a class="uk-mute" onClick="getNewApiKey()" id="api-key">@if($user->api_key == '' || is_null($user->api_key)) REQUEST API KEY @else <span uk-tooltip title="Click to Request a New API Key"> $user->api_key </span> @endIf
 									        </div>
 									    </div>
 			  						<div class="uk-width-1-1 uk-margin-small-top">
