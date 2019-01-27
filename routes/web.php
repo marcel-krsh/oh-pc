@@ -229,7 +229,7 @@
         });
 
         // Admin tabs
-        Route::group(['prefix'=>'tabs'], function () {
+        Route::group(['prefix'=>'tabs'], function () use (Auth::user()) {
             if(Auth::user()->admin_access()){
                 Route::get('organization', 'AdminToolController@organizationIndex');
                 Route::post('organization', 'AdminToolController@searchOrganizations')->name('organizations.search');
