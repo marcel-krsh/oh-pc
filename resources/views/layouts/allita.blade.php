@@ -272,6 +272,11 @@ if(Auth::check()){
 									<div class="apcsv-menu-item">
 										<a href="/" style="font-weight: 400">DEV|CO Inspection</a>
 									</div>
+									@if(Auth::user()->allowed_tablet)
+									<div class="apcsv-menu-item uk-hidden-notouch">
+										<a href="allitapcbeta://" style="font-weight: 400">Open Tablet App</a>
+									</div>
+									@end
 								</div>
 							</div>
 				    	</div>
