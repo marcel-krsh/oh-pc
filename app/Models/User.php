@@ -225,7 +225,7 @@ class User extends Authenticatable
     public function pm_access() : bool
     {
         foreach ($this->roles()->get() as $role) {
-            if ($role->id >= 1) {
+            if ($this->hasRole(1)) {
                 return true;
             }
         }
@@ -240,7 +240,7 @@ class User extends Authenticatable
     public function auditor_access() : bool
     {
         foreach ($this->roles()->get() as $role) {
-            if ($role->id >= 2) {
+            if ($this->hasRole(2)) {
                 return true;
             }
         }
@@ -255,7 +255,7 @@ class User extends Authenticatable
     public function manager_access() : bool
     {
         foreach ($this->roles()->get() as $role) {
-            if ($role->id >= 3) {
+            if ($this->hasRole(3)) {
                 return true;
             }
         }
@@ -270,7 +270,7 @@ class User extends Authenticatable
     public function admin_access() : bool
     {
         foreach ($this->roles()->get() as $role) {
-            if ($role->id >= 4) {
+            if ($this->hasRole(4)) {
                 return true;
             }
         }
@@ -285,7 +285,7 @@ class User extends Authenticatable
     public function root_access() : bool
     {
         foreach ($this->roles()->get() as $role) {
-            if ($role->id >= 5) {
+            if ($this->hasRole(5)) {
                 return true;
             }
         }
