@@ -276,7 +276,7 @@ if(Auth::check()){
 									<div class="apcsv-menu-item uk-hidden-notouch">
 										<a href="allitapcbeta://" style="font-weight: 400">Open Tablet App</a>
 									</div>
-									@end
+									@endif
 								</div>
 							</div>
 				    	</div>
