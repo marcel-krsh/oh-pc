@@ -69,6 +69,8 @@ class Kernel extends ConsoleKernel
     ];
 
     protected $middleware = [
+
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
         \RenatoMarinho\LaravelPageSpeed\Middleware\InlineCss::class,
         \RenatoMarinho\LaravelPageSpeed\Middleware\ElideAttributes::class,
         \RenatoMarinho\LaravelPageSpeed\Middleware\InsertDNSPrefetch::class,
