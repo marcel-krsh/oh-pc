@@ -225,14 +225,19 @@ if(Auth::check()){
 						<div class="uk-width-1-1">
 							<img src="/images/devco_logo.png" alt="DEV|CO Inspection powered by Allita PC" style="position: relative; top: -9px; padding-left: 10px; display: inline-block;">
 						
+					        @can('access_auditor')
 					        <div class="menu-search uk-margin-large-left uk-padding-bottom" style="display: inline-block; position: relative;top:-5px;" class="uk-margin-large-left">
 								<div class="uk-autocomplete quick-lookup-box uk-inline">
 									<span class="uk-form-icon a-magnify-2"></span>
 									<input class="uk-input" id="quick-lookup-box" type="text" placeholder="QUICK LOOK UP..." style="width: 250px;">
 								</div>
 							</div>
+							@else
+							<div style="width: 20px; display: inline-block;"></div>
+							@endCan
 					    
 					    	<div id="top-tabs-container" style="display: inline-block; overflow: visible; padding-top:15px;">
+						        @can('access_pm')
 						        <ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m" style="background-color: transparent;">
 					    			<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
 					    				<a href="" style="">
@@ -254,12 +259,13 @@ if(Auth::check()){
 									<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}', '3','','','',1);}">
 										<a href=""><span class="list-tab-text"><span class="uk-badge" v-if="statsReportsTotal" v-cloak>@{{statsReportsTotal}}</span></span> <i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
 									</li>
-									@if(Auth::user()->admin_access())
+									@can('access_admin')
 									<li id="detail-tab-5" class="detail-tab-5" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-5').hasClass('uk-active')  || window.adminLoaded != 1){loadTab('{{ route('dashboard.admin') }}', '5','','','',1);}" >
 										<a href=""><span class="list-tab-text">ADMIN</span></a>
 									</li>
-									@endIf
+									@endcan
 								</ul>
+								@endcan
 							</div>
 				    	
 				    		<div id="apcsv-avatar" class="" title="{{Auth::user()->full_name()}} - User ID:{{Auth::user()->id}} @if(Auth::user()->root_access()) Root Access @elseIf(Auth::user()->admin_access()) Admin Access @elseIf(Auth::user()->auditor_access()) Auditor Access @elseIf(Auth::user()->pm_access()) Property Manager @endIf" onclick="openUserPreferences();" style="cursor: pointer; margin-top:15px">
