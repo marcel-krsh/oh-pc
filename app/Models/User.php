@@ -48,7 +48,8 @@ class User extends Authenticatable
         'availability_max_hours',
         'availability_lunch',
         'availability_max_driving',
-        'default_address_id'
+        'default_address_id',
+        'allowed_tablet'
     ];
 
     protected static $logAttributes = [

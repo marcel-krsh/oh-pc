@@ -26,7 +26,11 @@ class DataController extends Controller
         // we get two things: a reference to know what to update and its new value
         $ref = $request->get('ref');
         $data = $request->get('data');
-        $user = Auth::user();
+        if(Auth::user()->admin_access() && !is_null($request->get('user_id'))) {
+            $user = \App\User::find($request->get('user_id'));
+        } else {
+            $user = Auth::user();
+        }
 
         switch ($ref) {
             case "auditor.availability_max_hours":
@@ -41,6 +45,16 @@ class DataController extends Controller
                 $user->availability_max_driving = $data;
                 $user->save();             
                 return 1; break;
+
+            case "auditor.allowed_tablet":
+                if(Auth::user()->admin_access()){
+                 $user->allowed_tablet = $data;
+                 $user->save();             
+                 return 'I stored this '.$data.' on user '.$user->id; break;
+                } else {
+                    return 'Sorry, you must be an admin to adjust tablet access for users.'
+                }
+               
 
             default:
                return "There was a problem with your request.";

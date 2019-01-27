@@ -25,16 +25,21 @@
 							            <label><input class="uk-radio" type="radio" name="roles" value="0" @if($checked != 1) checked @endif> No Access</label>
 							            @endif
 							        </div>
-							        <div class="uk-margin">
-							        	<input type="checkbox" name="enable_tablet" @if($user->allowed_tablet == 1) checked @endif onchange="autosave(this, 'auditor.enable_tablet'); if($('input[type=checkbox]').prop('checked')) { $('#tablet-settings').slideDown(); }">
-	  									<div id="tablet-settings" style=" @if($user->allowed_tablet != 1) display:none @endif">
+							    </div>
+							        <div class="uk-width-1-1 uk-margin">
+							        	<div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+								        	<input type="checkbox" value="1" name="allowed_tablet" @if($user->allowed_tablet == 1) checked @endif  onClick="if($('input[type=checkbox]').prop('checked')) { $('#tablet-settings').slideDown(); }"><label for="allowed_tablet">Allow Tablet Access</label>
+		  									<div id="tablet-settings" style=" @if($user->allowed_tablet != 1) display:none @endif"> 
 			  								
-			  								<hr class="dashed-hr">
+				  								<hr class="dashed-hr">
 
-			  								<div class="uk-input uk-form-blank">
-			  									<a class="uk-mute" onClick="getNewApiKey()" id="api-key">@if($user->api_key == '' || is_null($user->api_key)) REQUEST API KEY @else <span uk-tooltip title="Click to Request a New API Key"> $user->api_key </span> @endIf
-									        </div>
+				  								<div class="uk-input uk-form-blank"> API KEY: 
+				  									<a class="uk-mute" onClick="getNewApiKey()" id="api-key">@if($user->api_key == '' || is_null($user->api_key)) REQUEST API KEY @else <span uk-tooltip title="Click to Request a New API Key"> $user->api_key </span> @endIf</a>
+										        </div>
+									    	</div>
+
 									    </div>
+									</div>
 			  						<div class="uk-width-1-1 uk-margin-small-top">
 			  							<button class="uk-button uk-button-primary" style="height: 100%; width: 100%;" onclick="saveRoles(event);">SAVE</button>	
 			  						</div>
@@ -62,7 +67,7 @@
                 UIkit.modal.alert(data,{stack: true});
             } else {
                 dynamicModalClose();
-	            UIkit.notification('<span uk-icon="icon: check"></span> Roles Saved', {pos:'top-right', timeout:1000, status:'success'});
+	            UIkit.notification('<span uk-icon="icon: check"></span> User Settings Saved', {pos:'top-right', timeout:1000, status:'success'});
 	            $('#users-tab').trigger('click');
             
             }
