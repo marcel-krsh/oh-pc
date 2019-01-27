@@ -305,19 +305,21 @@
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 		            </th>
-		            <th style="min-width:190px;">
+		            <th @can('access_auditor') style="min-width:190px;" @else style="min-width:100px;" @endcan>
 		            	<div uk-grid>
 			            	<div class="filter-box filter-date-aging uk-vertical-align uk-width-1-1" uk-grid> 
 								<!-- SPAN TAG TITLE NEEDS UPDATED TO REFLECT CURRENT DATE RANGE -->
 								<span class="uk-width-1-2 uk-text-center uk-padding-remove-top uk-margin-remove-top">
 									<a class="uk-link-muted" onclick="dynamicModalLoad('date-aging-range');"><i class="a-calendar-8 uk-vertical-align-middle"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text"></i> <i class="a-calendar-8 uk-vertical-align-middle"></i></a>
 								</span>
+								@can('access_auditor')
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
 									<i class="a-avatar-home"></i> / <i class="a-home-2"></i>
 								</span>
 								<span class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top uk-text-center uk-link">
 									<i class="a-circle-checked"></i>
 								</span>
+								@endcan
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY SCHEDULED DATE">
 			            		@if($sort_by == 'audit-sort-scheduled-date')
@@ -326,6 +328,7 @@
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-scheduled-date', 1);"></a>
 			            		@endif
 							</span>
+							@can('access_auditor')
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL ASSIGNED INSPECTION AREAS">
 			            		@if($sort_by == 'audit-sort-assigned-areas')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-assigned-areas',  @php echo 1-$sort_order; @endphp);"></a>
@@ -347,6 +350,7 @@
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-compliance-status', 1);"></a>
 			            		@endif
 							</span>
+							@endcan
 						</div>
 		            </th>
 		            <th style="min-width: 80px;">
@@ -401,7 +405,7 @@
 							</span> 
 						</div>
 					</th>
-		            <th style="min-width: 120px;">
+		            <th  @can('access_auditor') style="min-width: 120px;" @else style="min-width: 90px;" @endcan >
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid> 
 			            		<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
@@ -409,7 +413,7 @@
 								</span>
 								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-envelope-4"></i>
-									<div class="uk-dropdown uk-dropdown-bottom" uk-dropdown="flip: false; pos: bottom-right;" style="top: 26px; left: 0px;">
+									<div class="uk-dropdown uk-dropdown-bottom" uk-dropdown="flip: false; pos: bottom-right; animation: uk-animation-slide-top-small; mode: click" style="top: 26px; left: 0px;">
 				                        <ul class="uk-nav uk-nav-dropdown uk-text-small uk-list">
 				                        	<li>
 				                        		<span style="padding-left:10px; border-bottom: 1px solid #ddd;display: block;padding-bottom: 5px;color: #bbb;margin-bottom: 0px;margin-top: 5px;">MESSAGES</span>
@@ -464,9 +468,11 @@
 								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-files"></i>
 								</span>
+								 @can('access_auditor')
 								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-person-clock"></i>
 								</span> 
+								@endcan
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY AUDITOR ASSIGNMENT STATUS">
 			            		@if($sort_by == 'audit-sort-status-auditor')
@@ -489,6 +495,7 @@
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-document', 1);"></a>
 			            		@endif
 							</span> 
+							 @can('access_auditor')
 							<span data-uk-tooltip="{pos:'bottom-right'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY HISTORY STATUS">
 			            		@if($sort_by == 'audit-sort-status-history')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-history',  @php echo 1-$sort_order; @endphp);"></a>
@@ -497,7 +504,9 @@
 			            		@endif
 							</span>
 						</div>
+						@endcan
 		            </th>
+		            @can('access_auditor')
 		            <th >
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-link">
@@ -531,6 +540,7 @@
 			            			
 			                    </div>
 			            	</div>
+			            	
 			            	<span data-uk-tooltip="{pos:'bottom'}" title="SORT BY NEXT TASK" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top">
 			            		@if($sort_by == 'audit-sort-next-task')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-next-task',  @php echo 1-$sort_order; @endphp);"></a>
@@ -538,8 +548,9 @@
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-next-task', 1);"></a>
 			            		@endif
 							</span> 
+
 			            </div>
-		            </th>
+		            </th>@endcan
 		            <th style="vertical-align:top;">
 		            	<div uk-grid>
 			            	<div class="uk-link uk-width-1-1 archived-icon" onclick="toggleArchivedAudits();" data-uk-tooltip="{pos:'bottom'}" title="Click to Hide Archived Audits">
@@ -740,7 +751,7 @@ The following div is defined in this particular tab and pushed to the main layou
     @endcan
 
 
-
+    @can('access_auditor')
     function updateAuditStepSelection(e){
 		e.preventDefault();
 		var form = $('#audit_steps_selection');
@@ -768,6 +779,7 @@ The following div is defined in this particular tab and pushed to the main layou
 	        } );
         } );
 	}
+	@endcan
 </script>
 <script>
 
