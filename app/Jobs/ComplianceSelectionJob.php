@@ -23,6 +23,7 @@ use App\Models\CachedAudit;
 use App\Models\Program;
 use App\Services\DevcoService;
 use App\Models\UnitProgram;
+use App\Models\UnitGroup;
 use App\Models\OrderingBuilding;
 use App\Models\OrderingUnit;
 use Illuminate\Support\Facades\Redis;
@@ -95,6 +96,23 @@ class ComplianceSelectionJob implements ShouldQueue
                                         'created_at'    =>  date("Y-m-d g:h:i", time()),
                                         'updated_at'    =>  date("Y-m-d g:h:i", time())
                                     ]);
+
+                                    if(count($program->groups())){
+                                        foreach($program->groups() as $group){
+                                            UnitGroup::insert([
+                                                'unit_key'      =>  $unit->unit_key,
+                                                'unit_id'       =>  $unit->id,
+                                                'group_id'      =>  $group,
+                                                'audit_id'      =>  $audit->id,
+                                                'monitoring_key'=>  $audit->monitoring_key,
+                                                'project_id'    =>  $audit->project_id,
+                                                'development_key'=> $audit->development_key,
+                                                'created_at'    =>  date("Y-m-d g:h:i", time()),
+                                                'updated_at'    =>  date("Y-m-d g:h:i", time())
+                                            ]);
+                                        }
+                                    }
+                                    
                                 } else {
                                     $audit->comment = $audit->comment.' | Unable to find program with key '.$unitProgram['attributes']['programKey'].' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key;
                                     $audit->save();
