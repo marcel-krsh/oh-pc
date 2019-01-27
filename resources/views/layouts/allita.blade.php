@@ -262,7 +262,7 @@ if(Auth::check()){
 								</ul>
 							</div>
 				    	
-				    		<div id="apcsv-avatar" class="" title="AmeliaAtchinson (OSM Test)" onclick="openUserPreferences();" style="cursor: pointer; margin-top:15px">
+				    		<div id="apcsv-avatar" class="" title="{{Auth::user()->full_name()}} - USER:{{Auth::user()->id}}" onclick="openUserPreferences();" style="cursor: pointer; margin-top:15px">
 							{{Auth::user()->initials()}}
 							</div>
 							<div id="apcsv-menu-icon" class="hvr-grow uk-inline" style="margin-top:15px">
@@ -295,9 +295,11 @@ if(Auth::check()){
 					<li>
 						<div id="detail-tab-3-content"></div>
 					</li>
+					@if(Auth::user()->admin_access())
 					<li>
 						<div id="detail-tab-5-content" style="padding-top:20px;"></div>
 					</li>
+					@endif
 				</ul>
 
 				<a id="smoothscrollLink" href="#top" uk-scroll="{offset: 90}"></a>
@@ -315,7 +317,7 @@ if(Auth::check()){
 	<div id="mainfooter" uk-grid>
 		<div class="uk-width-1-3">
 			<p class="uk-dark uk-light" style="position: absolute; bottom: 20px;"><a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light"><i class="a-mobile-home"></i>
-			@if(Auth::check() && Auth::user()->entity_type == 'hfa') 
+			@if(Auth::check() && Auth::user()->auditor_access()) 
 			Allita Program Compliance 
 			@else
 			Dev|Co Inspect
@@ -336,51 +338,13 @@ if(Auth::check()){
 	    }
 	}
 
-	@if (Auth::check())
-		
-	 //    setInterval(function() {
-	 //    	// console.log("checking for new messages...");
-		//   // ajax newest message and display notification
-		//   $.get( "/communications/new-messages", function( data ) {
-		//   		if(data){
-		//   			console.log("message found");
-		//   			var messages = '';
-		//   			var summary = '';
-		//   			for (var i = 0; i < data.length; i++) {
-		//   				summary = data[i]['communication']['message'];
-		//   				summary = (summary.length > 200) ? summary.substr(0, 199) + '&hellip;' : summary;
-		//   				if(data[i]['communication']['parcel']){
-		// 					messages = messages+'<a href="/view_message/'+data[i]['communication_id']+'" onclick="UIkit.notification.close()">"'+summary+'" from '+data[i]['communication']['owner']['name']+' for parcel '+data[i]['communication']['parcel']['parcel_id']+'</a>';
-		//   				}else{
-		//   					messages = messages+'<a href="/view_message/'+data[i]['communication_id']+'" onclick="UIkit.notification.close()">"'+summary+'" from '+data[i]['communication']['owner']['name']+'</a>';
-		//   				}
-		  				
-		//   				if (!i < data.length -1) {
-		//   					messages = messages+'<hr />';	
-		//   				}
-		//   			}
-
-		//  			// reload the unseen communications
-		//  			reloadUnseenMessages();
-
-		//   			UIkit.notification('<i uk-icon="envelope" class=""></i> You have '+data.length+' messages:<br /><br />'+messages, {pos:'top-right', timeout:0, status:'success'});
-
-		//   		}
-	 //        });
-		// }, 1000 * 10);
-
-	@endif
+	
 
 		$(".uk-modal").on("hide", function() {
 		    $("html").removeClass("uk-modal-page");
 		});
 
-	@if(Auth::check())
-	@if(Auth::user()->entity_type == 'hfa' && env('APP_DEBUG_NO_DEVCO') != 'true')
-			
-
-	@endIf
-	@endIf
+	
 
 	</script>
 
