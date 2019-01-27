@@ -64,14 +64,14 @@ resizeModal(95);
 				<div id="modal-project-summary-units" class="uk-padding-remove" uk-grid>
 					@php
 					$current_unitid = 0;
-					$current_programkey = 0;
+					//$current_programkey = 0;
 					@endphp
 					@foreach($unitprograms as $unitprogram)
 
 					@if($current_unitid != $unitprogram->unit_id)
 					@php
 						$current_unitid = $unitprogram->unit_id;
-						$current_programkey = $unitprogram->program_key;
+						//$current_programkey = $unitprogram->program_key;
 					@endphp
 					<div class="modal-project-summary-unit ">
 						<div class="modal-project-summary-unit-status">
@@ -89,7 +89,7 @@ resizeModal(95);
 					</div>
 					<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1">
 			        	<div class="modal-project-summary-unit-program uk-visible-toggle">
-		            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle @if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection()) inspectable-selected @endif">
+		            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle @if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection()) inspectable-selected @endif">{{$unitprogram->id}}
 		            			@if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection())
 		            			<i class="a-circle-checked" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}});"></i>
 		            			@else
@@ -122,7 +122,6 @@ resizeModal(95);
 		            	</div>
 					</div>
 					@else
-					@if($current_programkey != $unitprogram->program_key)
 					<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1">
 			        	<div class="modal-project-summary-unit-program uk-visible-toggle">
 		            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle @if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection()) inspectable-selected @endif">
@@ -157,7 +156,6 @@ resizeModal(95);
 		            		</div>
 		            	</div>
 			        </div>
-			        @endif
 					@endif
 
 					@endforeach
