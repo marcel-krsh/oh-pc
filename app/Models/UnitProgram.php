@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class UnitProgram extends Model
 {
@@ -28,5 +29,21 @@ class UnitProgram extends Model
     public function audit() : HasOne
     {
         return $this->hasOne(\App\Models\Audit::class, 'monitoring_key', 'monitoring_key');
+    }
+
+    // public function unit_inspections()
+    // {
+    //     // there may be one record for site and one for file in there... 
+    //     return \App\Models\UnitInspection::where('program_id', '=', $this->program_id)->where('audit_id', '=', $this->audit_id)->where('unit_id', '=', $this->unit_id)->get();
+    // }
+
+    public function hasSiteInspection()
+    {
+        return \App\Models\UnitInspection::where('program_id', '=', $this->program_id)->where('audit_id', '=', $this->audit_id)->where('unit_id', '=', $this->unit_id)->where('is_site_visit', '=', 1)->count();
+    }
+
+    public function hasFileInspection()
+    {
+        return \App\Models\UnitInspection::where('program_id', '=', $this->program_id)->where('audit_id', '=', $this->audit_id)->where('unit_id', '=', $this->unit_id)->where('is_file_audit', '=', 1)->count();
     }
 }

@@ -27,6 +27,7 @@ use App\Models\AuditAuditor;
 use App\Models\Availability;
 use App\Models\AmenityInspection;
 use App\Models\UnitInspection;
+use App\Models\SystemSetting;
 use Auth;
 use Session;
 use App\LogConverter;
@@ -442,7 +443,7 @@ class AuditController extends Controller
                 $summary_optimized_sample_size_file = 0;
                 $summary_optimized_completed_inspections_file = 0;
 
-                // create stats for each program
+                // create stats for each group
                 foreach($selection_summary['programs'] as $program){
 
                     // count selected units using the list of program ids
@@ -1257,14 +1258,101 @@ class AuditController extends Controller
     }
     public function modalProjectProgramSummary($project_id, $program_id)
     {
+        // dd($project_id, $program_id); // 45150, 7
+
         // units are automatically selected using the selection process
         // then randomize all units before displaying them on the modal
         // then user can adjust selection for that program
+        
+        $project = Project::where('id','=',$project_id)->first();
+
+        $audit = $project->selected_audit()->audit; 
+        $selection_summary = json_decode($audit->selection_summary, 1);
+
+        session(['audit-'.$audit->id.'-selection_summary' => $selection_summary]);
+
+        $programs = array();
+        foreach($selection_summary['programs'] as $p){
+            if($p['pool'] > 0){
+                $programs[] = [
+                    "id" => $p['group'], 
+                    "name" => $p['name']
+                ];
+            }
+        }
+
+        //dd($selection_summary['programs'][$program_id-1]);
+
+        $program = $selection_summary['programs'][$program_id-1];
+
+        // count selected units using the list of program ids
+        $program_keys = explode(',', $program['program_keys']); 
+        $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
+        $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
+
+        $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
+        $needed_units_file = $program['totals_after_optimization'] - $selected_units_file;
+
+        $unit_keys = $program['units_after_optimization']; 
+        $inspected_units_site = UnitInspection::whereIn('unit_key', $unit_keys)
+                    ->where('audit_id', '=', $audit->id)
+                    ->where('group_id', '=', $program['group'])
+                    // ->whereHas('amenity_inspections', function($query) {
+                    //     $query->where('completed_date_time', '!=', null);
+                    // })
+                    ->where('is_site_visit', '=', 1)
+                    ->where('complete', '!=', NULL)
+                    ->count();
+
+        $inspected_units_file = UnitInspection::whereIn('unit_key', $unit_keys)
+                    ->where('audit_id', '=', $audit->id)
+                    ->where('group_id', '=', $program['group'])
+                    ->where('is_file_audit', '=', 1)
+                    ->where('complete', '!=', NULL)
+                    ->count();
+
+        $to_be_inspected_units_site = $program['totals_after_optimization'] - $inspected_units_site;
+        $to_be_inspected_units_file = $program['totals_after_optimization'] - $inspected_units_file;
+
+        $stats = [
+            'id' => $program['group'],
+            'name' => $program['name'],
+            'pool' => $program['pool'],
+            'totals_after_optimization' => $program['totals_after_optimization'],
+            'units_before_optimization' => $program['units_before_optimization'],
+            'totals_before_optimization' => $program['totals_before_optimization'],
+            'required_units' => $program['totals_after_optimization'],
+            'selected_units' => $selected_units_site,
+            'needed_units' => $needed_units_site,
+            'inspected_units' => $inspected_units_site,
+            'to_be_inspected_units' => $to_be_inspected_units_site,
+            'required_units_file' => $program['totals_after_optimization'],
+            'selected_units_file' => $selected_units_file,
+            'needed_units_file' => $needed_units_file,
+            'inspected_units_file' => $inspected_units_file,
+            'to_be_inspected_units_file' => $to_be_inspected_units_file
+        ];
+
+        //$units = $project->units;
+        
+        // only select programs that we cover in the groups
+        $program_home_ids = explode(',', SystemSetting::get('program_home'));
+        $program_medicaid_ids = explode(',', SystemSetting::get('program_medicaid'));
+        $program_811_ids = explode(',', SystemSetting::get('program_811'));
+        $program_bundle_ids = explode(',', SystemSetting::get('program_bundle'));
+        $program_ohtf_ids = explode(',', SystemSetting::get('program_ohtf'));
+        $program_nhtf_ids = explode(',', SystemSetting::get('program_nhtf'));
+        $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
+
+        $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)->orderBy('unit_id','asc')->take(30)->get();
+        //$unitprograms = UnitProgram::where('audit_id', '=', $audit->id)->orderBy('unit_id','asc')->first();
+
+        //dd($unitprograms->program->groups());
 
         $data = collect([
             'project' => [
-                "id" => 1,
-                "name" => "Project Name",
+                "id" => $project->id,
+                "name" => $project->project_name,
                 'selected_program' => $program_id
             ],
             'programs' => [
@@ -1343,7 +1431,7 @@ class AuditController extends Controller
             ]
         ]);
         
-        return view('modals.project-summary', compact('data'));
+        return view('modals.project-summary', compact('data', 'project', 'stats', 'programs', 'unitprograms'));
     }
 
     public function addAssignmentAuditor($audit_id, $day_id, $auditorid=null)

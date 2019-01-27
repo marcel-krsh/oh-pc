@@ -11,19 +11,34 @@ class Address extends Model
     
     protected $guarded = ['id'];
 
-    public function formatted_address() 
+    public function formatted_address($unit_name = null) 
     {
     	$address = '';
 
-    	if($this->line_1){
-    		$address = $this->line_1;
-    	}
-    	if($this->line_2){
-    		$address = $address . "<br />" . $this->line_2;
-    	}
-    	if($this->city){
-    		$address = $address . "<br />" . $this->city. " ".$this->state. " " . $this->zip;
-    	}
+        if($unit_name){
+            if($this->line_1){
+                $address = $this->line_1;
+            }
+            if($this->line_2){
+                $address = $address . ", " . $this->line_2;
+            }
+            $address = $address . " # " . $unit_name;
+            if($this->city){
+                $address = $address . "<br />" . $this->city. " ".$this->state. " " . $this->zip;
+            }
+        }else{
+            if($this->line_1){
+                $address = $this->line_1;
+            }
+            if($this->line_2){
+                $address = $address . "<br />" . $this->line_2;
+            }
+            if($this->city){
+                $address = $address . "<br />" . $this->city. " ".$this->state. " " . $this->zip;
+            }
+        }
+
+    	
 
     	return $address;
     }

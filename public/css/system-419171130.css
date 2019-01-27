@@ -3843,10 +3843,9 @@ i.fa-square.chart-color-to-be-inspected { background-color:#e0e0df; }
     color:#0099d5;
 }
 .modal-project-summary-unit {
-    padding-bottom: 25px;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 25px !important;
-    margin-top: 0 !important;
+    padding-top: 25px;
+    border-top: 1px solid #ccc;
+    margin-top: 20px;
 }
 .modal-project-summary-unit-info-icon {
   float:left;

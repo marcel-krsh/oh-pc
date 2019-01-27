@@ -1,3 +1,6 @@
+<script>
+resizeModal(95);
+</script>
 <div id="modal-project-summary" class="uk-padding-remove uk-margin-bottom">
 	<div class="modal-project-summary-left">
 		<div uk-grid>
@@ -5,148 +8,159 @@
 				<canvas id="chartjs-modal-summary" class="chartjs" style="display: block;"></canvas>
 			</div>
 			<div class="uk-width-1-1 uk-padding-remove uk-text-center">
-				<h3  uk-tooltip="title:">{{$data['project']['name']}}<br /><small>Project # | Audit #</small></h3>
-				<table class="uk-table uk-table-small uk-text-left noline small-padding">
+				<h3  uk-tooltip="title:">{{$data['project']['name']}}<br /><small>Project {{$project->project_number}} | Audit {{$project->selected_audit()->audit_id}}</small></h3>
+				<table class="uk-table uk-table-small uk-text-left noline small-padding" style="margin-top:40px">
 					<tbody>
 						<tr>
-							<td></td>
-							<td class="uk-text-center"><i class="a-mobile-home iheader"></i></td>
-							<td class="uk-text-center"><i class="a-folder iheader"></i></td>
-						</tr>
-						<tr>
 							<td>
-								<div uk-leader><strong>TOTAL UNITS</strong></div>
+								<div uk-leader><strong>{{$stats['name']}}</strong></div>
 							</td>
-							<td class="uk-text-center border-right">2,000</td>
-							<td class="uk-text-center">2,000</td>
+							<td class="uk-text-center border-right"><i class="a-mobile-home iheader"></i></td>
+							<td class="uk-text-center"><i class="a-folder iheader"></i></td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-required"></i> Required Units</div>
 							</td>
-							<td class="uk-text-center border-right">500</td>
-							<td class="uk-text-center">500</td>
+							<td class="uk-text-center border-right">{{$stats['required_units']}}</td>
+							<td class="uk-text-center">{{$stats['required_units_file']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Selected Units</div>
 							</td>
-							<td class="uk-text-center border-right">375</td>
-							<td class="uk-text-center">375</td>
+							<td class="uk-text-center border-right">{{$stats['selected_units']}}</td>
+							<td class="uk-text-center">{{$stats['selected_units_file']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-needed"></i> Needed Units</div>
 							</td>
-							<td class="uk-text-center border-right">125</td>
-							<td class="uk-text-center">125</td>
+							<td class="uk-text-center border-right">{{$stats['needed_units']}}</td>
+							<td class="uk-text-center">{{$stats['needed_units_file']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-inspected"></i> Inspected Units</div>
 							</td>
-							<td class="uk-text-center border-right">125</td>
-							<td class="uk-text-center">250</td>
+							<td class="uk-text-center border-right">{{$stats['inspected_units']}}</td>
+							<td class="uk-text-center">{{$stats['inspected_units_file']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-to-be-inspected"></i> To Be Inspected Units</div>
 							</td>
-							<td class="uk-text-center border-right">250</td>
-							<td class="uk-text-center">125</td>
+							<td class="uk-text-center border-right">{{$stats['to_be_inspected_units']}}</td>
+							<td class="uk-text-center">{{$stats['to_be_inspected_units_file']}}</td>
 						</tr>
 					</tbody>
 				</table>
-
-				<div style="margin-top:30px">
-					<i class="a-server-stack"></i> HOME / OHTF / NHTF overlap
-				</div>
 			</div>
 		</div>
 	</div>
 	<div class="modal-project-summary-right">
-		
-		<div style="position: fixed;
-		    top: 80px;
-		    height: 100%;
-		    width: 45%;">
-		<div class="modal-project-summary-right-bottom">
-			<div id="modal-project-summary-units" class="uk-padding-remove" uk-grid>
-				@foreach($data["units"] as $unit)
-				<div class="modal-project-summary-unit uk-width-1-1 {{$unit['status']}}">
-					<div class="modal-project-summary-unit-status">
-						@if($unit['status'] == 'not-inspectable')
-						<i class="a-circle-cross" uk-tooltip="title:NOT INSPECTABLE;"></i>
-						@else
-						<i class="a-circle" uk-tooltip="title:SELECT ALL ELIGIBLE PROGRAMS FOR BOTH INSPECTIONS;" onclick="projectSummarySelection(this, {{$unit['id']}});"></i>
-						@endif
-					</div>
-					<div class="modal-project-summary-unit-info">
-						<div class="modal-project-summary-unit-info-icon">
-							<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;" title="" aria-expanded="false"></i>
+		<div style="position: fixed; top: 80px; height: 100%;width: 45%;">
+			<div class="modal-project-summary-right-bottom">
+				<div id="modal-project-summary-units" class="uk-padding-remove" uk-grid>
+					@php
+					$current_unitprogram = 0;
+					@endphp
+					@foreach($unitprograms as $unitprogram)
+
+					@if($current_unitprogram != $unitprogram->unit_id)
+					@php
+					$current_unitprogram = $unitprogram->unit_id;
+					@endphp
+					<div class="modal-project-summary-unit uk-width-1-1">
+						<div class="modal-project-summary-unit-status">
+							<i class="a-circle" uk-tooltip="title:SELECT ALL ELIGIBLE PROGRAMS FOR BOTH INSPECTIONS;" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}});"></i>
 						</div>
-						<div class="modal-project-summary-unit-info-main">
-		            		<h4 class="uk-margin-bottom-remove">{{$unit['address']}}<br />{{$unit['address2']}}<br />
-			            	Move In Date: {{$unit['move_in_date']}}</h4>
-				        </div>
-				        <div class="modal-project-summary-unit-programs">
-			            	@foreach($unit['programs'] as $program)
-			            	<div class="modal-project-summary-unit-program uk-visible-toggle">
-			            		@if($unit['status'] != 'not-inspectable' && $program['status'] != 'not-inspectable')
-			            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle @if($program['physical_audit_checked'] == 'true' && $program['file_audit_checked'] == 'true') inspectable-selected @endif">
-			            			@if($program['physical_audit_checked'] == 'true' && $program['file_audit_checked'] == 'true')
-			            			<i class="a-circle-checked" onclick="projectSummarySelection(this, {{$unit['id']}}, {{$program['id']}});"></i>
-			            			@else
-			            			<i class="a-circle" onclick="projectSummarySelection(this, {{$unit['id']}}, {{$program['id']}});"></i>
-			            			@endif
-			            		</div>
-			            		@endif
-			            		<div class="modal-project-summary-unit-program-info @if($program['status'] == 'not-inspectable') not-inspectable @endif">
-			            			@if($program['status'] != 'not-inspectable')
-			            			<div class="modal-project-summary-unit-program-icon @if($program['physical_audit_checked'] == 'true') inspectable-selected @endif" @if($unit['status'] != 'not-inspectable') onclick="projectSummarySelection(this, {{$unit['id']}}, {{$program['id']}}, 'physical');" @endif>
-			            				<i class="a-mobile"></i>
-			            				<div class="modal-project-summary-unit-program-icon-status">	
-		            					@if($unit['status'] == 'not-inspectable')
-		            						<i class="a-circle-cross"></i>
-		            					@else
-			            					@if($program['physical_audit_checked'] == 'true')
-					            			<i class="a-circle-checked"></i>
-					            			@else
-					            			<i class="a-circle"></i>
-					            			@endif
-					            		@endif
-			            				</div>
-			            			</div>
-			            			<div class="modal-project-summary-unit-program-icon @if($program['file_audit_checked'] == 'true') inspectable-selected @endif" @if($unit['status'] != 'not-inspectable') onclick="projectSummarySelection(this, {{$unit['id']}}, {{$program['id']}}, 'file');" @endif >
-			            				<i class="a-folder"></i>
-			            				<div class="modal-project-summary-unit-program-icon-status">
-			            				@if($unit['status'] == 'not-inspectable')
-		            						<i class="a-circle-cross"></i>
-		            					@else
-			            					@if($program['file_audit_checked'] == 'true')
-					            			<i class="a-circle-checked"></i>
-					            			@else
-					            			<i class="a-circle"></i>
-					            			@endif
-					            		@endif
-			            				</div>
-			            			</div>
-			            			@else
-			            			<div class="modal-project-summary-unit-program-icon">
-			            				<i class="a-circle-cross"></i>
-			            			</div>
-			            			@endif
-			            			
-			            			{{$program['name']}}
-			            		</div>
-			            	</div>
-			            	@endforeach
-			            </div>
+						<div class="modal-project-summary-unit-info">
+							<div class="modal-project-summary-unit-info-icon">
+								<i class="a-marker-basic uk-text-muted uk-link use-hand-cursor" uk-tooltip="title:View On Map;" title="" aria-expanded="false" onclick="window.open('https://maps.google.com/maps?q={{$unitprogram->unit->building->address->line_1}}+{{$unitprogram->unit->building->address->city}}+{{$unitprogram->unit->building->address->state}}+{{$unitprogram->unit->building->address->zip}}');"></i>
+							</div>
+							<div class="modal-project-summary-unit-info-main">
+			            		<h4 class="uk-margin-bottom-remove">{!!$unitprogram->unit->building->address->formatted_address($unitprogram->unit->unit_name)!!}<br />
+			            			{{$unitprogram->unit->most_recent_event()->type->event_type_description}}: {{formatDate($unitprogram->unit->most_recent_event()->event_date)}}</h4>
+					        </div>
+					    </div>
 					</div>
+					<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1">
+			        	<div class="modal-project-summary-unit-program uk-visible-toggle">
+		            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle @if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection()) inspectable-selected @endif">
+		            			@if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection())
+		            			<i class="a-circle-checked" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}});"></i>
+		            			@else
+		            			<i class="a-circle" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}});"></i>
+		            			@endif
+		            		</div>
+		            		<div class="modal-project-summary-unit-program-info">
+		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasSiteInspection()) inspectable-selected @endif" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'physical');">
+		            				<i class="a-mobile"></i>
+		            				<div class="modal-project-summary-unit-program-icon-status">	
+	            						@if($unitprogram->hasSiteInspection())
+				            			<i class="a-circle-checked"></i>
+				            			@else
+				            			<i class="a-circle"></i>
+				            			@endif
+		            				</div>
+		            			</div>
+		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasFileInspection()) inspectable-selected @endif" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'file');">
+		            				<i class="a-folder"></i>
+		            				<div class="modal-project-summary-unit-program-icon-status">
+		            					@if($unitprogram->hasFileInspection())
+				            			<i class="a-circle-checked"></i>
+				            			@else
+				            			<i class="a-circle"></i>
+				            			@endif
+		            				</div>
+		            			</div>
+		            			{{$unitprogram->program->program_name}}
+		            		</div>
+		            	</div>
+					</div>
+					@else
+					<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1">
+			        	<div class="modal-project-summary-unit-program uk-visible-toggle">
+		            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle @if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection()) inspectable-selected @endif">
+		            			@if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection())
+		            			<i class="a-circle-checked" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}});"></i>
+		            			@else
+		            			<i class="a-circle" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}});"></i>
+		            			@endif
+		            		</div>
+		            		<div class="modal-project-summary-unit-program-info">
+		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasSiteInspection()) inspectable-selected @endif" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'physical');">
+		            				<i class="a-mobile"></i>
+		            				<div class="modal-project-summary-unit-program-icon-status">	
+	            						@if($unitprogram->hasSiteInspection())
+				            			<i class="a-circle-checked"></i>
+				            			@else
+				            			<i class="a-circle"></i>
+				            			@endif
+		            				</div>
+		            			</div>
+		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasFileInspection()) inspectable-selected @endif" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'file');">
+		            				<i class="a-folder"></i>
+		            				<div class="modal-project-summary-unit-program-icon-status">
+		            					@if($unitprogram->hasFileInspection())
+				            			<i class="a-circle-checked"></i>
+				            			@else
+				            			<i class="a-circle"></i>
+				            			@endif
+		            				</div>
+		            			</div>
+		            			{{$unitprogram->program->program_name}}
+		            		</div>
+		            	</div>
+			        </div>
+					@endif
+
+					@endforeach
+
+					
 				</div>
-				@endforeach
 			</div>
-		</div>
 		</div>
 		<div class="modal-project-summary-right-top">
 			<div class="uk-padding-remove uk-margin-top uk-flex uk-flex-between" >
@@ -158,7 +172,7 @@
         			<form id="modal-project-summary-program-filter-form">
         				<fieldset class="uk-fieldset">
         					<div id="modal-project-summary-program-filters" class="uk-margin uk-child-width-auto uk-grid">
-        						@foreach($data['programs'] as $program)
+        						@foreach($programs as $program)
         							@if(session('project-summary-program-{{$program["id"]}}') == 1)
 						            <input id="filter-project-summary-program-{{$program['id']}}" value="{{ $program['id'] }}" type="checkbox" checked/>
 									<label for="filter-project-summary-program-{{$program['id']}}">{{$program['name']}}</label>
@@ -315,7 +329,7 @@
 			"datasets":[
 				{
 					"label":"Program 1",
-					"data":[0,0,0,30,70],
+					"data":[0,0,0,{{$stats['inspected_units'] + $stats['inspected_units_file']}},{{$stats['to_be_inspected_units'] + $stats['to_be_inspected_units_file']}}],
 					"backgroundColor":[
 						chartColors.required,
 						chartColors.selected,
@@ -327,7 +341,7 @@
 				},
 				{
 					"label":"Program 3",
-					"data":[0,30,50,0,0],
+					"data":[0,{{$stats['selected_units'] + $stats['selected_units_file']}},{{$stats['needed_units'] + $stats['needed_units_file']}},0,0],
 					"backgroundColor":[
 						chartColors.required,
 						chartColors.selected,
@@ -339,7 +353,7 @@
 				},
 				{
 					"label":"Program 2",
-					"data":[100,0,0,0,0],
+					"data":[{{$stats['required_units'] + $stats['required_units_file']}},0,0,0,0],
 					"backgroundColor":[
 						chartColors.required,
 						chartColors.selected,

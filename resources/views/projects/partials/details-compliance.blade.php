@@ -206,6 +206,34 @@
 								]
 							}
 						});
+
+						document.getElementById("chartjs-{{$program['id']}}").onclick = function(e) {
+						   var slice = mainSummaryChart.getElementAtEvent(e);
+						   if (!slice.length) return; // return if not clicked on slice
+						   var label = slice[0]._model.label;
+						   var color = slice[0]._view.backgroundColor;
+						   console.log(slice[0]._view.backgroundColor);
+						   var programName = label;
+
+						   switch (color) {
+						   		case '#191818':
+						         // alert(label + ' / required');
+						         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+						         break;
+						   		case '#0099d5':
+						         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+						         break;
+						   		case '#d31373':
+						         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+						         break;
+						   		case '#21a26e':
+						         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+						         break;
+						   		case '#e0e0df':
+						         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+						         break;
+						   }
+						}
 					</script>
 				</li>
 				@endif

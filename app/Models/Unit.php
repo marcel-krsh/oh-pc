@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\SystemSetting;
 
 class Unit extends Model
 {
@@ -56,5 +57,17 @@ class Unit extends Model
     public function programs() : HasMany
     {
         return $this->hasMany(\App\Models\UnitProgram::class, 'unit_id', 'id');
+    }
+
+    public function isInspectable() : bool
+    {
+        // TBD
+        return true;
+    }
+
+    public function most_recent_event()
+    {
+        // SystemSetting::get('household_move_in_type_id')
+        return $this->household_events()->orderBy('event_date', 'desc')->first();
     }
 }
