@@ -73,7 +73,7 @@ resizeModal(95);
 						$current_unitid = $unitprogram->unit_id;
 						//$current_programkey = $unitprogram->program_key;
 					@endphp
-					<div class="modal-project-summary-unit ">
+					<div class="modal-project-summary-unit summary-unit-{{$unitprogram->unit_id}} @if($unitprogram->unitHasSelection()) has-selected @else no-selection @endif">
 						<div class="modal-project-summary-unit-status">
 							<i class="a-circle" uk-tooltip="title:SELECT ALL ELIGIBLE PROGRAMS FOR BOTH INSPECTIONS;" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}});"></i>
 						</div>
@@ -87,9 +87,9 @@ resizeModal(95);
 					        </div>
 					    </div>
 					</div>
-					<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1">
+					<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1  summary-unit-programs-{{$unitprogram->unit_id}} @if($unitprogram->unitHasSelection()) has-selected @else no-selection @endif" >
 			        	<div class="modal-project-summary-unit-program uk-visible-toggle">
-		            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle @if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection()) inspectable-selected @endif">{{$unitprogram->id}}
+		            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle @if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection()) inspectable-selected @endif"  data-unitid="{{$unitprogram->unit_id}}">
 		            			@if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection())
 		            			<i class="a-circle-checked" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}});"></i>
 		            			@else
@@ -97,7 +97,7 @@ resizeModal(95);
 		            			@endif
 		            		</div>
 		            		<div class="modal-project-summary-unit-program-info">
-		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasSiteInspection()) inspectable-selected @endif" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'physical');">
+		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasSiteInspection()) inspectable-selected @endif" data-unitid="{{$unitprogram->unit_id}}" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'physical');">
 		            				<i class="a-mobile"></i>
 		            				<div class="modal-project-summary-unit-program-icon-status">	
 	            						@if($unitprogram->hasSiteInspection())
@@ -107,7 +107,7 @@ resizeModal(95);
 				            			@endif
 		            				</div>
 		            			</div>
-		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasFileInspection()) inspectable-selected @endif" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'file');">
+		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasFileInspection()) inspectable-selected @endif"  data-unitid="{{$unitprogram->unit_id}}" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'file');">
 		            				<i class="a-folder"></i>
 		            				<div class="modal-project-summary-unit-program-icon-status">
 		            					@if($unitprogram->hasFileInspection())
@@ -122,9 +122,9 @@ resizeModal(95);
 		            	</div>
 					</div>
 					@else
-					<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1">
+					<div class="modal-project-summary-unit-programs summary-unit-programs-{{$unitprogram->unit_id}} uk-margin-remove uk-width-1-1 @if($unitprogram->unitHasSelection()) has-selected @else no-selection @endif">
 			        	<div class="modal-project-summary-unit-program uk-visible-toggle">
-		            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle @if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection()) inspectable-selected @endif">
+		            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle @if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection()) inspectable-selected @endif"  data-unitid="{{$unitprogram->unit_id}}">
 		            			@if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection())
 		            			<i class="a-circle-checked" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}});"></i>
 		            			@else
@@ -132,7 +132,7 @@ resizeModal(95);
 		            			@endif
 		            		</div>
 		            		<div class="modal-project-summary-unit-program-info">
-		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasSiteInspection()) inspectable-selected @endif" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'physical');">
+		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasSiteInspection()) inspectable-selected @endif"  data-unitid="{{$unitprogram->unit_id}}" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'physical');">
 		            				<i class="a-mobile"></i>
 		            				<div class="modal-project-summary-unit-program-icon-status">	
 	            						@if($unitprogram->hasSiteInspection())
@@ -142,7 +142,7 @@ resizeModal(95);
 				            			@endif
 		            				</div>
 		            			</div>
-		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasFileInspection()) inspectable-selected @endif" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'file');">
+		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasFileInspection()) inspectable-selected @endif" data-unitid="{{$unitprogram->unit_id}}" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'file');">
 		            				<i class="a-folder"></i>
 		            				<div class="modal-project-summary-unit-program-icon-status">
 		            					@if($unitprogram->hasFileInspection())
@@ -166,9 +166,9 @@ resizeModal(95);
 		</div>
 		<div class="modal-project-summary-right-top">
 			<div class="uk-padding-remove uk-margin-top uk-flex uk-flex-between" >
-				<button id="" class="uk-button uk-button-default uk-button-small button-filter button-filter-selected button-filter-wide" onclick="" type="button">ALL</button>
-				<button id="" class="uk-button uk-button-default uk-button-small button-filter button-filter-wide" onclick="" type="button">SELECTED</button>
-				<button id="" class="uk-button uk-button-default uk-button-small button-filter button-filter-wide" onclick="" type="button">UNSELECTED</button>
+				<button id="" class="uk-button uk-button-default uk-button-small button-filter button-filter-selected button-filter-wide" onclick="filterAll();" type="button">ALL</button>
+				<button id="" class="uk-button uk-button-default uk-button-small button-filter button-filter-wide" onclick="filterSelected();" type="button">SELECTED</button>
+				<button id="" class="uk-button uk-button-default uk-button-small button-filter button-filter-wide" onclick="filterUnselected();" type="button">UNSELECTED</button>
 				<button id="" class="uk-button uk-button-default uk-button-small button-filter" onclick="" type="button"><i class="fas fa-filter"></i></button>
 				<div class="uk-dropdown uk-dropdown-bottom filter-dropdown filter-program-dropdown" uk-dropdown=" flip: false; pos: bottom-right;" style="top: 26px; left: 0px;">
         			<form id="modal-project-summary-program-filter-form">
@@ -198,6 +198,23 @@ resizeModal(95);
 </div>
 
 <script>
+
+	function filterAll(){
+		$('.has-selected, .no-selection').fadeIn( "slow", function() {});
+	}
+
+	function filterSelected(){
+		// remove all and then display only selected
+		$('.no-selection').fadeOut( "slow", function() {
+			$('.has-selected').fadeIn( "slow", function() {});
+		});
+	}
+
+	function filterUnselected(){
+		$('.has-selected').fadeOut( "slow", function() {
+			$('.no-selection').fadeIn( "slow", function() {});
+		});
+	}
 
 	function filterProgramSummary() {
 		event.preventDefault();

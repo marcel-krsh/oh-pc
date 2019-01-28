@@ -3885,7 +3885,9 @@ i.fa-square.chart-color-to-be-inspected { background-color:#e0e0df; }
 .modal-project-summary-unit-program-icon i:hover{
   cursor: pointer;
 }
-
+.inspectable-selected i {
+    color: #0099d5;
+}
 .modal-project-summary-unit.not-inspectable, .modal-project-summary-unit:not(.not-inspectable) .modal-project-summary-unit-program-info.not-inspectable {
     opacity: 0.5;
 }
