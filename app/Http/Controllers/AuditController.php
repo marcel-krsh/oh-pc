@@ -1058,7 +1058,7 @@ class AuditController extends Controller
                     return ['status'=>0, 'message'=>'Sorry, this audit reference cannot be found or no lead has been set yet.'];
                 }
             } else {
-                return 'Sorry, only the lead or a manager can input estimated hours for an audit.'
+                return 'Sorry, only the lead or a manager can input estimated hours for an audit.';
             }
 
         
