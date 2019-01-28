@@ -283,6 +283,7 @@ class DashboardController extends Controller
                 $stepStatusText='';
             } elseif (Auth::user()->auditor_access()){
                 $inpectionScheduleIcon = 'a-calendar-7';
+                $inspectionScheduleIcon = ''; // @todo need to put in icon here
                 $tooltipInspectionSchedule = 'title:'.$audit['inspection_schedule_text'];
                 $tooltipInspectableItems = 'title:'.$audit['inspectable_items'].' INSPECTABLE ITEMS;';
                 $tooltipInspectionStatus = 'title:'.$audit['inspection_status_text'];
