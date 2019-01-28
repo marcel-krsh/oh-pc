@@ -408,9 +408,11 @@
 		            <th  @can('access_auditor') style="min-width: 120px;" @else style="min-width: 90px;" @endcan >
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid> 
+			            		@can('access_auditor')
 			            		<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-avatar"></i>
 								</span>
+								@endcan
 								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-envelope-4"></i>
 									<div class="uk-dropdown uk-dropdown-bottom" uk-dropdown="flip: false; pos: bottom-right; animation: uk-animation-slide-top-small; mode: click" style="top: 26px; left: 0px;">
@@ -474,13 +476,15 @@
 								</span> 
 								@endcan
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY AUDITOR ASSIGNMENT STATUS">
-			            		@if($sort_by == 'audit-sort-status-auditor')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-auditor',  @php echo 1-$sort_order; @endphp);"></a>
-			            		@else
-			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-auditor', 1);"></a>
-			            		@endif
-							</span> 
+							@can('access_auditor')
+								<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY AUDITOR ASSIGNMENT STATUS">
+				            		@if($sort_by == 'audit-sort-status-auditor')
+				            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-auditor',  @php echo 1-$sort_order; @endphp);"></a>
+				            		@else
+				            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-auditor', 1);"></a>
+				            		@endif
+								</span> 
+							@endif
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS">
 			            		@if($sort_by == 'audit-sort-status-message')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-message',  @php echo 1-$sort_order; @endphp);"></a>
