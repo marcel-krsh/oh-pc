@@ -86,6 +86,106 @@ class Audit extends Model
         $this->update(['compliance_run'=>1,'rerun_compliance'=>null]);
     }
 
+    public function stats() : HasMany
+    {
+        return $this->hasMany(\App\Models\StatsCompliance::class);
+    }
+
+    public function stats_compliance(){
+        // fetches the stats from the stats_compliance table if they exist
+        // otherwise, create them using the summary stored in the audit
+        
+        if(count($this->stats) == 0){
+            // calculate and save data for each program
+            $selection_summary = json_decode($this->selection_summary, 1);
+
+            $summary_required = 0;
+            $summary_selected = 0;
+            $summary_needed = 0;
+            $summary_inspected = 0;
+            $summary_to_be_inspected = 0;
+            $summary_optimized_remaining_inspections = 0;
+            $summary_optimized_sample_size = 0;
+            $summary_optimized_completed_inspections = 0;
+
+            $summary_required_file = 0;
+            $summary_selected_file = 0;
+            $summary_needed_file = 0;
+            $summary_inspected_file = 0;
+            $summary_to_be_inspected_file = 0;
+            $summary_optimized_remaining_inspections_file = 0;
+            $summary_optimized_sample_size_file = 0;
+            $summary_optimized_completed_inspections_file = 0;
+
+            // $program_keys_array = array();
+            // $program_keys_array[1] = explode(',', SystemSetting::get('program_bundle')); // 1 - FAF || NSP || TCE || RTCAP || 811 units
+            // $program_keys_array[2] = explode(',', SystemSetting::get('program_811')); // 2 - 811 units
+            // $program_keys_array[3] = explode(',', SystemSetting::get('program_medicaid')); // 3 - Medicaid units
+            // $program_keys_array[4] = explode(',', SystemSetting::get('program_home')); // 4 - HOME
+            // $program_keys_array[5] = explode(',', SystemSetting::get('program_ohtf')); // 5 - OHTF
+            // $program_keys_array[6] = explode(',', SystemSetting::get('program_nhtf')); // 6 - NHTF
+            // $program_keys_array[7] = explode(',', SystemSetting::get('program_htc')); // 7 - HTC
+
+            foreach($selection_summary['programs'] as $program){ // those are "groups"!
+
+                // count selected units using the list of program ids
+                $program_keys = explode(',', $program['program_keys']); 
+                $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $this->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
+                $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $this->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
+
+                $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
+                $needed_units_file = $program['totals_after_optimization'] - $selected_units_file;
+
+                $unit_keys = $program['units_after_optimization']; 
+                $inspected_units_site = UnitInspection::whereIn('unit_key', $unit_keys)
+                            ->where('audit_id', '=', $this->id)
+                            ->where('group_id', '=', $program['group'])
+                            // ->whereHas('amenity_inspections', function($query) {
+                            //     $query->where('completed_date_time', '!=', null);
+                            // })
+                            ->where('is_site_visit', '=', 1)
+                            ->where('complete', '!=', NULL)
+                            ->count();
+
+                $inspected_units_file = UnitInspection::whereIn('unit_key', $unit_keys)
+                            ->where('audit_id', '=', $this->id)
+                            ->where('group_id', '=', $program['group'])
+                            ->where('is_file_audit', '=', 1)
+                            ->where('complete', '!=', NULL)
+                            ->count();
+
+                $to_be_inspected_units_site = $program['totals_after_optimization'] - $inspected_units_site;
+                $to_be_inspected_units_file = $program['totals_after_optimization'] - $inspected_units_file;
+
+                $group = $program['group'];
+                $newstat = new StatsCompliance([
+                    'audit_id' => $this->id,
+                    'monitoring_key' => $this->monitoring_key,
+                    'project_id' => $this->project_id,
+                    'development_key' => $this->development_key,
+                    'group_id' => $program['group'],
+                    'group_name' => $program['name'],
+                    'required_site' => $program['totals_after_optimization'],
+                    'required_file' => $program['totals_after_optimization'],
+                    'selected_site' => $selected_units_site,
+                    'selected_file' => $selected_units_file,
+                    'needed_site' => $needed_units_site,
+                    'needed_file' => $needed_units_file,
+                    'inspected_site' => $inspected_units_site,
+                    'inspected_file' => $inspected_units_file,
+                    'tobeinspected_site' => $to_be_inspected_units_site,
+                    'tobeinspected_file' => $to_be_inspected_units_file
+                ]);
+                $newstat->save();
+            }
+
+            return $this->stats;
+            
+        }else{
+            return $this->stats;
+        }
+    }
+
     public function checkStatus($type = null)
     {
 

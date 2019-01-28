@@ -27,7 +27,8 @@ class DashboardController extends Controller
         // $this->middleware('allita.auth');
         if (env('APP_DEBUG_NO_DEVCO') == 'true') {
             //Auth::onceUsingId(1); // TEST BRIAN
-            Auth::onceUsingId(286); // TEST BRIAN
+            //Auth::onceUsingId(286); // TEST BRIAN
+            Auth::onceUsingId(env('USER_ID_IMPERSONATION'));    
             
             // this is normally setup upon login
             $current_user = Auth::user();
