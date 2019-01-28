@@ -39,11 +39,23 @@ class UnitProgram extends Model
 
     public function hasSiteInspection()
     {
-        return \App\Models\UnitInspection::where('program_id', '=', $this->program_id)->where('audit_id', '=', $this->audit_id)->where('unit_id', '=', $this->unit_id)->where('is_site_visit', '=', 1)->count();
+        return \App\Models\UnitInspection::where('program_key', '=', $this->program_key)->where('audit_id', '=', $this->audit_id)->where('unit_id', '=', $this->unit_id)->where('is_site_visit', '=', 1)->count();
     }
 
     public function hasFileInspection()
     {
-        return \App\Models\UnitInspection::where('program_id', '=', $this->program_id)->where('audit_id', '=', $this->audit_id)->where('unit_id', '=', $this->unit_id)->where('is_file_audit', '=', 1)->count();
+        return \App\Models\UnitInspection::where('program_key', '=', $this->program_key)->where('audit_id', '=', $this->audit_id)->where('unit_id', '=', $this->unit_id)->where('is_file_audit', '=', 1)->count();
+    }
+
+    public function unitHasSelection()
+    {
+        return \App\Models\UnitInspection::where('audit_id', '=', $this->audit_id)
+                ->where('unit_id', '=', $this->unit_id)
+                ->where(function ($query) {
+                    $query->where('is_file_audit', '=', 1)
+                          ->orWhere('is_site_visit', '=', 1);
+                })
+                ->count();
+
     }
 }
