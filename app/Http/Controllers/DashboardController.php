@@ -219,10 +219,10 @@ class DashboardController extends Controller
         $data = [];
 
         foreach ($audits as $audit) {
-            if ($audit['status'] != 'critical') {
-                $notcritical = 'notcritical';
-            } else {
+            if ($audit['status'] == 'critical' && Auth::user()->auditor_access()) {
                 $notcritical = 'critical';
+            } else {
+                $notcritical = 'notcritical';
             }
 
             if (session('audit-hidenoncritical') == 1 && $audit['status'] != 'critical') {
@@ -235,6 +235,7 @@ class DashboardController extends Controller
                 $lead_name = $audit->lead_json->name;
                 $lead_color = $audit->lead_json->color;
                 $lead_initials = $audit->lead_json->initials;
+
             } else {
                 $lead_name = '';
                 $lead_color = '';
@@ -258,6 +259,38 @@ class DashboardController extends Controller
                 $followupDateYear = null;
             }
             
+            if(!Auth::user()->auditor_access()){
+                // PM - blank out some values
+                $audit['inspection_status'] = '';
+                $inspectionScheduleIcon = '';
+                $tooltipInspectionSchedule = '';
+                $tooltipInspectableItems = '';
+                $tooltipInspectionStatus = '';
+                $audit['inspectable_items']='';
+                $audit['total_items']='';
+                $audit['audit_compliance_icon']='';
+                $audit['audit_compliance_status']='';
+                $tooltipComplianceStatus= '';
+
+                $audit['auditor_status_icon'] = '';
+                $audit['auditor_status'] = '';
+                $auditorTooltip = '';
+                $audit['history_status_icon']= '';
+                $audit['history_status'] = '';
+                $historyStatusText='';
+                $audit['step_status_icon'] = '';
+                $audit['step_status']='';
+                $stepStatusText='';
+            } elseif (Auth::user()->auditor_access()){
+                $inpectionScheduleIcon = 'a-calendar-7';
+                $tooltipInspectionSchedule = 'title:'.$audit['inspection_schedule_text'];
+                $tooltipInspectableItems = 'title:'.$audit['inspectable_items'].' INSPECTABLE ITEMS;';
+                $tooltipInspectionStatus = 'title:'.$audit['inspection_status_text'];
+                $tooltipComplianceStatus= 'title:'.$audit['audit_compliance_status_text'];
+                $auditorTooltip = 'title:'.$audit['auditor_status_text'].';';
+                $historyStatusText = 'title:'.$audit['history_status_text'].';';
+                $stepStatusText = 'title:'.$audit['step_status_text'].';';
+            }
 
             $data[] = [
                 'id' => $audit->id,
@@ -276,16 +309,18 @@ class DashboardController extends Controller
                 'address' => $audit['address'],
                 'address2' => $audit['city'].', '.$audit['state'].' '.$audit['zip'],
                 'inspectionStatus' => $audit['inspection_status'],
-                'tooltipInspectionStatus' => 'title:'.$audit['inspection_status_text'],
-                'tooltipInspectionSchedule' => 'title:'.$audit['inspection_schedule_text'],
+                'tooltipInspectionStatus' => $tooltipInspectionStatus,
+                'tooltipInspectionSchedule' => $tooltipInspectionSchedule,
+                'tooltipInspectionScheduleIcon' => $inspectionScheduleIcon,
                 'inspectionScheduleDate' => $inspectionScheduleDate,
                 'inspectionScheduleDateYear' => $inspectionScheduleDateYear,
-                'tooltipInspectableItems' => 'title:'.$audit['inspectable_items'].' INSPECTABLE ITEMS;',
+                'tooltipInspectableItems' => $tooltipInspectableItems,
                 'inspectableItems' => $audit['inspectable_items'],
                 'totalItems' => $audit['total_items'],
                 'complianceIconClass' => $audit['audit_compliance_icon'],
                 'complianceStatusClass' => $audit['audit_compliance_status'],
-                'tooltipComplianceStatus' => 'title:'.$audit['audit_compliance_status_text'],
+                'tooltipComplianceStatus' => $tooltipComplianceStatus,
+
                 'followupStatusClass' => $audit['followup_status'],
                 'tooltipFollowupStatus' => 'title:'.$audit['followup_status_text'],
                 'followupDate' => $followupDate,
@@ -302,7 +337,7 @@ class DashboardController extends Controller
 
                 'auditorStatusIconClass' => $audit['auditor_status_icon'],
                 'auditorStatusClass' => $audit['auditor_status'],
-                'tooltipAuditorStatus' => 'title:'.$audit['auditor_status_text'].';',
+                'tooltipAuditorStatus' => $auditorTooltip,
                 'messageStatusIconClass' => $audit['message_status_icon'],
                 'messageStatusClass' => $audit['message_status'],
                 'tooltipMessageStatus' => 'title:'.$audit['message_status_text'].';',
@@ -311,10 +346,11 @@ class DashboardController extends Controller
                 'tooltipDocumentStatus' => 'title:'.$audit['document_status_text'].';',
                 'historyStatusIconClass' => $audit['history_status_icon'],
                 'historyStatusClass' => $audit['history_status'],
-                'tooltipHistoryStatus' => 'title:'.$audit['history_status_text'].';',
+                'tooltipHistoryStatus' => $historyStatusText,
                 'stepStatusIconClass' => $audit['step_status_icon'],
                 'stepStatusClass' => $audit['step_status'],
-                'tooltipStepStatus' => 'title:'.$audit['step_status_text'].';'
+                'tooltipStepStatus' => $stepStatusText,
+                'auditor_access' => Auth::user()->auditor_access()
             ];
         }
 

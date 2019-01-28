@@ -305,11 +305,11 @@
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 		            </th>
-		            <th @can('access_auditor') style="min-width:190px;" @else style="min-width:100px;" @endcan>
+		            <th @can('access_auditor') style="min-width:190px;" @else style="max-width:50px;" @endcan>
 		            	<div uk-grid>
 			            	<div class="filter-box filter-date-aging uk-vertical-align uk-width-1-1" uk-grid> 
 								<!-- SPAN TAG TITLE NEEDS UPDATED TO REFLECT CURRENT DATE RANGE -->
-								<span class="uk-width-1-2 uk-text-center uk-padding-remove-top uk-margin-remove-top">
+								<span class="@can('access_auditor') uk-width-1-2 @else uk-width-1-1 @endcan uk-text-center uk-padding-remove-top uk-margin-remove-top">
 									<a class="uk-link-muted" onclick="dynamicModalLoad('date-aging-range');"><i class="a-calendar-8 uk-vertical-align-middle"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text"></i> <i class="a-calendar-8 uk-vertical-align-middle"></i></a>
 								</span>
 								@can('access_auditor')
@@ -321,7 +321,7 @@
 								</span>
 								@endcan
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY SCHEDULED DATE">
+							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-2 @else uk-width-1-1 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY SCHEDULED DATE">
 			            		@if($sort_by == 'audit-sort-scheduled-date')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-scheduled-date',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
@@ -353,7 +353,7 @@
 							@endcan
 						</div>
 		            </th>
-		            <th style="min-width: 80px;">
+		            <th style="@can('access_auditor') min-width: 80px @else max-width: 50px @endcan">
 		            	<div uk-grid>
 			            	<div class="filter-box filter-date-expire uk-vertical-align uk-width-1-1 uk-text-center"> 
 								<span>
@@ -369,7 +369,7 @@
 							</span>
 						</div>
 					</th>
-		            <th style="min-width: 90px;">
+		            <th style="@can('access_auditor') min-width: 90px; @else max-width: 103px; @endcan ">
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid> 
 			            		<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
@@ -405,7 +405,7 @@
 							</span> 
 						</div>
 					</th>
-		            <th  @can('access_auditor') style="min-width: 120px;" @else style="min-width: 90px;" @endcan >
+		            <th  @can('access_auditor') style="min-width: 120px;" @else style="max-width: 70px;" @endcan >
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid> 
 			            		@can('access_auditor')
@@ -569,122 +569,122 @@
 		    </thead>
 		    <tbody>
 		    	@if(0)
-		    	@foreach($audits as $audit)
-		    	<tr id="audit-r-{{$loop->iteration}}" class="{{$audit['status']}} @if($audit['status'] != 'critical') notcritical @endif" style=" @if(session('audit-hidenoncritical') == 1 && $audit['status'] != 'critical') display:none; @endif ">
-		            <td id="audit-c-1-{{$loop->iteration}}" class="uk-text-center audit-td-lead">
-		            	<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$audit->lead_json->name}};" title="" aria-expanded="false" class="user-badge user-badge-{{$audit->lead_json->color}} no-float uk-link">
-							{{$audit->lead_json->initials}}
-						</span>
-						<span id="audit-rid-{{$loop->iteration}}"><small>#{{$loop->iteration}}</small></span>
-		            </td>
-		            <td id="audit-c-2-{{$loop->iteration}}" class="audit-td-project">
-		            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		            		<span id="audit-i-project-detail-{{$loop->iteration}}" onclick="projectDetails({{$audit['id']}},{{$loop->iteration}},{{$audit['total_buildings']}});" uk-tooltip="pos:top-left;title:View Buildings and Common Areas;" class="uk-link"><i class="a-menu uk-text-muted"></i></span>
-		            	</div>
-		            	<div class="uk-vertical-align-middle uk-display-inline-block">
-		            		<h3 id="audit-project-name-{{$loop->iteration}}" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip="title:Open Audit Details in Tab;" onClick="loadTab('{{ route('project', $audit['id']) }}', '4', 1, 1);">{{$audit['project_ref']}}</h3>
-			            	<small id="audit-project-aid-{{$loop->iteration}}" class="uk-text-muted faded filter-search-project" uk-tooltip="title:View Project's Audit Details;">AUDIT {{$audit['id']}}</small>
-			            </div>
-		            </td>
-		            <td class="audit-td-name">
-		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<i class="a-info-circle uk-text-muted uk-link" uk-tooltip="title:View Contact Details;"></i>
-		            	</div> 
-		            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
-		            		<h3 class="uk-margin-bottom-remove filter-search-pm">{{$audit['title']}}</h3>
-			            	<small class="uk-text-muted faded filter-search-pm">{{$audit['pm']}}</small>
-		            	</div>
-		            </td>
-		            <td class="hasdivider audit-td-address">
-		            	<div class="divider"></div>
-		            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-		            		<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;"></i>
-		            	</div> 
-		            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
-		            		<h3 class="uk-margin-bottom-remove filter-search-address">{{$audit['address']}}</h3>
-			            	<small class="uk-text-muted faded filter-search-address">{{$audit['city']}}, {{$audit['state']}} {{$audit['zip']}}</small>
-		            	</div>
-		            </td>
-		            <td class="hasdivider audit-td-scheduled">
-		            	<div class="divider"></div>
-		            	<div class="uk-display-inline-block uk-margin-small-top uk-text-center fullwidth" uk-grid>
-			            	<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
-			            		<div class="uk-width-1-3">
-			            			<i class="a-mobile-repeat {{$audit['inspection_status']}}" uk-tooltip="title:{{$audit['inspection_status_text']}};"></i>
-			            		</div>
-			            		<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top">
-				            		<h3 class="uk-link" uk-tooltip="title:{{$audit['inspection_schedule_text']}};">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('m/d')}}</h3>
-				            		<div class="dateyear">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('Y')}}</div>
-			            		</div>
-			            	</div> 
-			            	<div class="uk-width-1-6 uk-text-right uk-padding-remove" uk-tooltip="title:{{$audit['inspectable_items']}} INSPECTABLE ITEMS;">{{$audit['inspectable_items']}} /</div> 
-			            	<div class="uk-width-1-6 uk-text-left uk-padding-remove">{{$audit['total_items']}}</div> 
-			            	<div class="uk-width-1-6 uk-text-left">
-			            		<i class="{{$audit['audit_compliance_icon']}} {{$audit['audit_compliance_status']}}"  uk-tooltip="title:{{$audit['audit_compliance_status_text']}};"></i>
+			    	@foreach($audits as $audit)
+			    	<tr id="audit-r-{{$audit->audit_id}}" class="{{$audit['status']}} @if($audit['status'] != 'critical') notcritical @endif" style=" @if(session('audit-hidenoncritical') == 1 && $audit['status'] != 'critical') display:none; @endif ">
+			            <td id="audit-c-1-{{$loop->iteration}}" class="uk-text-center audit-td-lead">
+			            	<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$audit->lead_json->name}};" title="" aria-expanded="false" class="user-badge user-badge-{{$audit->lead_json->color}} no-float uk-link">
+								{{$audit->lead_json->initials}}
+							</span>
+							<span id="audit-rid-{{$loop->iteration}}"><small>#{{$loop->iteration}}</small></span>
+			            </td>
+			            <td id="audit-c-2-{{$loop->iteration}}" class="audit-td-project">
+			            	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
+			            		<span id="audit-i-project-detail-{{$loop->iteration}}" onclick="projectDetails({{$audit['id']}},{{$loop->iteration}},{{$audit['total_buildings']}});" uk-tooltip="pos:top-left;title:View Buildings and Common Areas;" class="uk-link"><i class="a-menu uk-text-muted"></i></span>
 			            	</div>
-			            </div>
-		            </td>
-		            <td class="hasdivider audit-td-due">
-		            	<div class="divider"></div>
-		            	<div class="uk-display-inline-block uk-margin-small-top uk-text-center fullwidth" uk-grid>
-			            	<div class="uk-width-1-3">
-			            		<i class="a-bell-2 {{$audit['followup_status']}}" uk-tooltip="title:{{$audit['followup_status_text']}};"></i>
+			            	<div class="uk-vertical-align-middle uk-display-inline-block">
+			            		<h3 id="audit-project-name-{{$loop->iteration}}" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip="title:Open Audit Details in Tab;" onClick="loadTab('{{ route('project', $audit['id']) }}', '4', 1, 1);">{{$audit['project_ref']}}</h3>
+				            	<small id="audit-project-aid-{{$loop->iteration}}" class="uk-text-muted faded filter-search-project" uk-tooltip="title:View Project's Audit Details;">AUDIT {{$audit['id']}}</small>
+				            </div>
+			            </td>
+			            <td class="audit-td-name">
+			            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
+			            		<i class="a-info-circle uk-text-muted uk-link" uk-tooltip="title:View Contact Details;"></i>
 			            	</div> 
-			            	<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top">
-			            		@if($audit['followup_date'])
-			            		<h3 class="uk=link" uk-tooltip="title:Click to reschedule audits;">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('m/d')}}</h3>
-				            	<div class="dateyear">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('Y')}}</div>
-			            		@else
-			            		<i class="a-calendar-pencil" uk-tooltip="title:New followup;"></i>
-			            		@endif
+			            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
+			            		<h3 class="uk-margin-bottom-remove filter-search-pm">{{$audit['title']}}</h3>
+				            	<small class="uk-text-muted faded filter-search-pm">{{$audit['pm']}}</small>
+			            	</div>
+			            </td>
+			            <td class="hasdivider audit-td-address">
+			            	<div class="divider"></div>
+			            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
+			            		<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;"></i>
 			            	</div> 
-			            </div>
-		            </td>
-		            <td class="hasdivider">
-		            	<div class="divider"></div>
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
-			            	<div class="uk-width-1-4 {{$audit['file_audit_status']}}" uk-tooltip="title:{{$audit['file_audit_status_text']}};">
-			            		<i class="{{$audit['file_audit_icon']}}"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4 {{$audit['nlt_audit_status']}}" uk-tooltip="title:{{$audit['nlt_audit_status_text']}};">
-			            		<i class="{{$audit['nlt_audit_icon']}}"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4 {{$audit['lt_audit_status']}}" uk-tooltip="title:{{$audit['lt_audit_status_text']}};">
-			            		<i class="{{$audit['lt_audit_icon']}}"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4 {{$audit['smoke_audit_status']}}" uk-tooltip="title:{{$audit['smoke_audit_status_text']}};">
-			            		<i class="{{$audit['smoke_audit_icon']}}"></i>
-			            	</div> 
-			            </div>
-		            </td>
-		            <td class="hasdivider">
-		            	<div class="divider"></div>
-		            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
-			            	<div class="uk-width-1-4">
-			            		<i class="{{$audit['auditor_status_icon']}} {{$audit['auditor_status']}}" uk-tooltip="title:{{$audit['auditor_status_text']}};"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="{{$audit['message_status_icon']}} {{$audit['message_status']}}" uk-tooltip="title:{{$audit['message_status_text']}};"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="{{$audit['document_status_icon']}} {{$audit['document_status']}}" uk-tooltip="title:{{$audit['document_status_text']}};"></i>
-			            	</div> 
-			            	<div class="uk-width-1-4">
-			            		<i class="{{$audit['history_status_icon']}} {{$audit['history_status']}}" uk-tooltip="title:{{$audit['history_status_text']}};"></i>
-			            	</div> 
-			            </div>
-		            </td>
-		            <td>
-		            	<div class="uk-margin-top" uk-grid>
-		            		<div class="uk-width-1-1  uk-padding-remove-top">
-			            		<i class="{{$audit['step_status_icon']}} {{$audit['step_status']}}" uk-tooltip="title:{{$audit['step_status_text']}};"></i>
-							</div>
-		            	</div>
-		            </td>
-		        </tr>
-		    	@endforeach
+			            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
+			            		<h3 class="uk-margin-bottom-remove filter-search-address">{{$audit['address']}}</h3>
+				            	<small class="uk-text-muted faded filter-search-address">{{$audit['city']}}, {{$audit['state']}} {{$audit['zip']}}</small>
+			            	</div>
+			            </td>
+			            <td class="hasdivider audit-td-scheduled">
+			            	<div class="divider"></div>
+			            	<div class="uk-display-inline-block uk-margin-small-top uk-text-center fullwidth" uk-grid>
+				            	<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
+				            		<div class="uk-width-1-3">
+				            			<i class="a-mobile-repeat {{$audit['inspection_status']}}" uk-tooltip="title:{{$audit['inspection_status_text']}};"></i>
+				            		</div>
+				            		<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top">
+					            		<h3 class="uk-link" uk-tooltip="title:{{$audit['inspection_schedule_text']}};">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('m/d')}}</h3>
+					            		<div class="dateyear">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('Y')}}</div>
+				            		</div>
+				            	</div> 
+				            	<div class="uk-width-1-6 uk-text-right uk-padding-remove" uk-tooltip="title:{{$audit['inspectable_items']}} INSPECTABLE ITEMS;">{{$audit['inspectable_items']}} /</div> 
+				            	<div class="uk-width-1-6 uk-text-left uk-padding-remove">{{$audit['total_items']}}</div> 
+				            	<div class="uk-width-1-6 uk-text-left">
+				            		<i class="{{$audit['audit_compliance_icon']}} {{$audit['audit_compliance_status']}}"  uk-tooltip="title:{{$audit['audit_compliance_status_text']}};"></i>
+				            	</div>
+				            </div>
+			            </td>
+			            <td class="hasdivider audit-td-due">
+			            	<div class="divider"></div>
+			            	<div class="uk-display-inline-block uk-margin-small-top uk-text-center fullwidth" uk-grid>
+				            	<div class="uk-width-1-3">
+				            		<i class="a-bell-2 {{$audit['followup_status']}}" uk-tooltip="title:{{$audit['followup_status_text']}};"></i>
+				            	</div> 
+				            	<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top">
+				            		@if($audit['followup_date'])
+				            		<h3 class="uk=link" uk-tooltip="title:Click to reschedule audits;">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('m/d')}}</h3>
+					            	<div class="dateyear">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('Y')}}</div>
+				            		@else
+				            		<i class="a-calendar-pencil" uk-tooltip="title:New followup;"></i>
+				            		@endif
+				            	</div> 
+				            </div>
+			            </td>
+			            <td class="hasdivider">
+			            	<div class="divider"></div>
+			            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
+				            	<div class="uk-width-1-4 {{$audit['file_audit_status']}}" uk-tooltip="title:{{$audit['file_audit_status_text']}};">
+				            		<i class="{{$audit['file_audit_icon']}}"></i>
+				            	</div> 
+				            	<div class="uk-width-1-4 {{$audit['nlt_audit_status']}}" uk-tooltip="title:{{$audit['nlt_audit_status_text']}};">
+				            		<i class="{{$audit['nlt_audit_icon']}}"></i>
+				            	</div> 
+				            	<div class="uk-width-1-4 {{$audit['lt_audit_status']}}" uk-tooltip="title:{{$audit['lt_audit_status_text']}};">
+				            		<i class="{{$audit['lt_audit_icon']}}"></i>
+				            	</div> 
+				            	<div class="uk-width-1-4 {{$audit['smoke_audit_status']}}" uk-tooltip="title:{{$audit['smoke_audit_status_text']}};">
+				            		<i class="{{$audit['smoke_audit_icon']}}"></i>
+				            	</div> 
+				            </div>
+			            </td>
+			            <td class="hasdivider">
+			            	<div class="divider"></div>
+			            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
+				            	<div class="uk-width-1-4">
+				            		<i class="{{$audit['auditor_status_icon']}} {{$audit['auditor_status']}}" uk-tooltip="title:{{$audit['auditor_status_text']}};"></i>
+				            	</div> 
+				            	<div class="uk-width-1-4">
+				            		<i class="{{$audit['message_status_icon']}} {{$audit['message_status']}}" uk-tooltip="title:{{$audit['message_status_text']}};"></i>
+				            	</div> 
+				            	<div class="uk-width-1-4">
+				            		<i class="{{$audit['document_status_icon']}} {{$audit['document_status']}}" uk-tooltip="title:{{$audit['document_status_text']}};"></i>
+				            	</div> 
+				            	<div class="uk-width-1-4">
+				            		<i class="{{$audit['history_status_icon']}} {{$audit['history_status']}}" uk-tooltip="title:{{$audit['history_status_text']}};"></i>
+				            	</div> 
+				            </div>
+			            </td>
+			            <td>
+			            	<div class="uk-margin-top" uk-grid>
+			            		<div class="uk-width-1-1  uk-padding-remove-top">
+				            		<i class="{{$audit['step_status_icon']}} {{$audit['step_status']}}" uk-tooltip="title:{{$audit['step_status_text']}};"></i>
+								</div>
+			            	</div>
+			            </td>
+			        </tr>
+			    	@endforeach
 		    	@endif
-		    	<tr is="auditrow" :class="{[audit.notcritical]:true}" :style="{ display: [audit.display] }" v-if="audits" v-for="(audit, index) in audits.slice().reverse()" :id="'audit-r-'+index" :key="audit.auditId" :index="index" :audit="audit"></tr>
+		    	<tr is="auditrow" :class="{[audit.notcritical]:true}" :style="{ display: [audit.display] }" v-if="audits" v-for="(audit, index) in audits.slice().reverse()" :id="'audit-r-'+audit.auditId" :key="audit.auditId" :index="index" :audit="audit"></tr>
         		<div id="spinner-audits" class="uk-width-1-1" style="text-align:center;"></div>
 		    </tbody>
 		</table>
