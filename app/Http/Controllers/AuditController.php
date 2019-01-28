@@ -984,18 +984,30 @@ class AuditController extends Controller
     }
 
     public function addADay(Request $request, $id){
-        // TBD only authorized users can add days (lead/managers)
         
+
         $audit = Audit::where('id','=',$id)->first();
-        $date = formatDate($request->get('date'), "Y-m-d H:i:s", "F d, Y");
+        
+        if(Auth::user()->id == $audit->lead_user_id || Auth::user()->manager_access()){
+            $date = formatDate($request->get('date'), "Y-m-d H:i:s", "F d, Y");
+            $check = ScheduleDay::where('audit_id',$id)->where('date',$date)->count();
+            if($check < 1){
+                // Day has not been entered yet :)
+                $day = new ScheduleDay([
+                    'audit_id' => $id,
+                    'date' => $date
+                ]);
+                $day->save();
 
-        $day = new ScheduleDay([
-            'audit_id' => $id,
-            'date' => $date
-        ]);
-        $day->save();
+                return 1;
+            } else {
+                return 'This day was already scheduled!';
+            }
+        } else {
+            return 'Sorry, only the lead or a manager can schedule days for an audit.';
+        }
 
-        return 1;
+        
     }
 
     public function deleteDay(Request $request, $id, $day_id){
@@ -1004,43 +1016,50 @@ class AuditController extends Controller
         // 1. delete schedules
         // 2. delete day
         // 3. update estimated needed time and checks by rebuilding CachedAudit 
+            $audit = Audit::where('id','=',$id)->first();
+         if(Auth::user()->id == $audit->lead_user_id || Auth::user()->manager_access()){
+            $schedules = ScheduleTime::where('day_id','=',$day_id)->where('audit_id','=',$id)->delete();
+            $day = ScheduleDay::where('id','=',$day_id)->where('audit_id','=',$id)->delete();
+     
+            // Event::fire('audit.cache', $audit->audit);
 
-        $audit = Audit::where('id','=',$id)->first();
-        $schedules = ScheduleTime::where('day_id','=',$day_id)->where('audit_id','=',$id)->delete();
-        $day = ScheduleDay::where('id','=',$day_id)->where('audit_id','=',$id)->delete();
- 
-        // Event::fire('audit.cache', $audit->audit);
-
-        $output = ['data' => 1];
-        return $output;
+            $output = ['data' => 1];
+            return $output;
+        } else {
+            return 'Sorry, only the lead or a manager can remove days from an audit.';
+        }
     }
 
     public function saveEstimatedHours(Request $request, $id){ 
         // audit id
-        $forminputs = $request->get('inputs');
-        parse_str($forminputs, $forminputs);
+            $forminputs = $request->get('inputs');
+            parse_str($forminputs, $forminputs);
 
-        $hours = (int) $forminputs['estimated_hours'];
-        $minutes = (int) $forminputs['estimated_minutes'];
+            $hours = (int) $forminputs['estimated_hours'];
+            $minutes = (int) $forminputs['estimated_minutes'];
 
-        $audit = CachedAudit::where('audit_id','=',$id)->where('lead','=',Auth::user()->id)->first();
+            $audit = CachedAudit::where('audit_id','=',$id)->where('lead','=',Auth::user()->id)->first();
 
-        $new_estimate = $hours.":".$minutes.":00";
+            $new_estimate = $hours.":".$minutes.":00";
+            if(Auth::user()->id == $audit->audit->lead_user_id || Auth::user()->manager_access()){
+        
+                if($audit){
+                    $audit->update([
+                        'estimated_time' => $new_estimate
+                    ]);
 
-        if($audit){
-            $audit->update([
-                'estimated_time' => $new_estimate
-            ]);
+                    // get new needed time
+                    $audit->fresh();
 
-            // get new needed time
-            $audit->fresh();
+                    $needed = $audit->hours_still_needed();
 
-            $needed = $audit->hours_still_needed();
-
-            return ['status'=>1, 'hours'=> $hours.":".$minutes, 'needed'=>$needed];
-        }else{
-            return ['status'=>0, 'message'=>'Sorry, this audit reference cannot be found or no lead has been set yet.'];
-        }
+                    return ['status'=>1, 'hours'=> $hours.":".$minutes, 'needed'=>$needed];
+                }else{
+                    return ['status'=>0, 'message'=>'Sorry, this audit reference cannot be found or no lead has been set yet.'];
+                }
+            } else {
+                return 'Sorry, only the lead or a manager can input estimated hours for an audit.'
+            }
 
         
     }
@@ -1163,15 +1182,7 @@ class AuditController extends Controller
     //     return view('projects.partials.communications', compact('data'));
     // }
 
-    public function getProjectDocuments($project = null)
-    {
-        if (!is_null($project)) {
-            $documents = \App\Models\Document::where('project_id', $project->id);
-            return view('projects.partials.documents', compact($project));
-        } else {
-            return '<h2 class="uk-text-align-center uk-heading">Sorry.</h2><p align="center">No documents were found attached to this project.<hr> Approximately '.date('mMi').' documents have been found in docuware<br /> and we are assigning them all to their projects. <br /><br />Thanks for your patience!</p>';
-        }
-    }
+    
 
     // public function getProjectNotes($project_id = null)
     // {
@@ -3334,8 +3345,7 @@ class AuditController extends Controller
     }
 
     public function updateStep($id){
-        // can this user have the right to change step?? TBD
-        // 
+         
         $audit = CachedAudit::where('audit_id','=',$id)->first();
         $steps = GuideStep::where('guide_step_type_id','=',1)->orderBy('order','asc')->get();
 
@@ -3343,30 +3353,34 @@ class AuditController extends Controller
     }
 
     public function saveStep(Request $request, $id){
-        $step_id = $request->get('step');
-        $step = GuideStep::where('id','=',$step_id)->first();
-        $audit = CachedAudit::where('id','=',$id)->first();
+           $step_id = $request->get('step');
+            $step = GuideStep::where('id','=',$step_id)->first();
+            $audit = CachedAudit::where('id','=',$id)->first();
 
-        // check if user has the right to save step using roles TBD
-        
-        // add new guide_progress entry
-        $progress = new GuideProgress([
-            'user_id' => Auth::user()->id,
-            'audit_id' => $audit->id,
-            'project_id' => $audit->project_id,
-            'guide_step_id' => $step_id,
-            'type_id' => 1
-        ]);
-        $progress->save();
+            // check if user has the right to save step using roles TBD
+            if(Auth::user()->id == $audit->lead_user_id || Auth::user()->manager_access()){
+         
+                // add new guide_progress entry
+                $progress = new GuideProgress([
+                    'user_id' => Auth::user()->id,
+                    'audit_id' => $audit->id,
+                    'project_id' => $audit->project_id,
+                    'guide_step_id' => $step_id,
+                    'type_id' => 1
+                ]);
+                $progress->save();
 
-        // update CachedAudit table with new step info
-        $audit->update([
-            'step_id' => $step->id,
-            'step_status_icon' => $step->icon,
-            'step_status_text' => $step->step_help,
-        ]);
+                // update CachedAudit table with new step info
+                $audit->update([
+                    'step_id' => $step->id,
+                    'step_status_icon' => $step->icon,
+                    'step_status_text' => $step->step_help,
+                ]);
 
-        return 1;
+                 return 1;
+             }else {
+                return 'Sorry, you do not have the correct permissions to update step progress.';
+             }
     }
 
 }
