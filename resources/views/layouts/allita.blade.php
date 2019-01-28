@@ -1,4 +1,4 @@
-<?php session(['disablePacer'=>1]); ?>
+﻿<?php session(['disablePacer'=>1]); ?>
 <?php setlocale(LC_MONETARY, 'en_US'); 
 /// protect against inactive users.
 $allowPageLoad = false;
@@ -282,7 +282,7 @@ if(Auth::check()){
 									</div>
 									@if(Auth::user()->allowed_tablet && Auth::user()->auditor_access())
 									<div class="apcsv-menu-item uk-hidden-notouch">
-										<a href="allitapcbeta://" style="font-weight: 400">Open Tablet App</a>
+										<a href="allitapc://" style="font-weight: 400">Open Tablet App</a>
 									</div>
 									@endif
 								</div>
