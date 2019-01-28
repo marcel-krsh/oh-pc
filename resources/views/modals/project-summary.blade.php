@@ -166,9 +166,9 @@ resizeModal(95);
 		</div>
 		<div class="modal-project-summary-right-top">
 			<div class="uk-padding-remove uk-margin-top uk-flex uk-flex-between" >
-				<button id="" class="uk-button uk-button-default uk-button-small button-filter button-filter-selected button-filter-wide" onclick="filterAll();" type="button">ALL</button>
-				<button id="" class="uk-button uk-button-default uk-button-small button-filter button-filter-wide" onclick="filterSelected();" type="button">SELECTED</button>
-				<button id="" class="uk-button uk-button-default uk-button-small button-filter button-filter-wide" onclick="filterUnselected();" type="button">UNSELECTED</button>
+				<button id="summary-btn-all" class="uk-button uk-button-default uk-button-small button-filter button-filter-selected button-filter-wide" onclick="filterAll();" type="button">ALL</button>
+				<button id="summary-btn-selected" class="uk-button uk-button-default uk-button-small button-filter button-filter-wide" onclick="filterSelected();" type="button">SELECTED</button>
+				<button id="summary-btn-unselected" class="uk-button uk-button-default uk-button-small button-filter button-filter-wide" onclick="filterUnselected();" type="button">UNSELECTED</button>
 				<button id="" class="uk-button uk-button-default uk-button-small button-filter" onclick="" type="button"><i class="fas fa-filter"></i></button>
 				<div class="uk-dropdown uk-dropdown-bottom filter-dropdown filter-program-dropdown" uk-dropdown=" flip: false; pos: bottom-right;" style="top: 26px; left: 0px;">
         			<form id="modal-project-summary-program-filter-form">
@@ -200,17 +200,23 @@ resizeModal(95);
 <script>
 
 	function filterAll(){
+		$('[id^=summary-btn-]').removeClass('button-filter-selected');
+		$('#summary-btn-all').addClass('button-filter-selected');
 		$('.has-selected, .no-selection').fadeIn( "slow", function() {});
 	}
 
 	function filterSelected(){
 		// remove all and then display only selected
+		$('[id^=summary-btn-]').removeClass('button-filter-selected');
+		$('#summary-btn-selected').addClass('button-filter-selected');
 		$('.no-selection').fadeOut( "slow", function() {
 			$('.has-selected').fadeIn( "slow", function() {});
 		});
 	}
 
 	function filterUnselected(){
+		$('[id^=summary-btn-]').removeClass('button-filter-selected');
+		$('#summary-btn-unselected').addClass('button-filter-selected');
 		$('.has-selected').fadeOut( "slow", function() {
 			$('.no-selection').fadeIn( "slow", function() {});
 		});
