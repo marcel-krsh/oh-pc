@@ -33,7 +33,8 @@ class CommunicationController extends Controller
         //
         if (env('APP_DEBUG_NO_DEVCO') == 'true') {
             //Auth::onceUsingId(1); // TEST BRIAN
-            Auth::onceUsingId(286); // TEST BRIAN
+            //Auth::onceUsingId(286); // TEST BRIAN
+            Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
         }
     }
 
