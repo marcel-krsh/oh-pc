@@ -43736,7 +43736,7 @@ var render = function() {
               })
             : _vm._e(),
           _vm._v(" "),
-          _vm.audit.inspectableItems > 0
+          _vm.audit.auditor_access && _vm.audit.inspectableItems > 0
             ? _c("div", {
                 staticClass: "uk-width-1-6 uk-text-right uk-padding-remove",
                 attrs: { "uk-tooltip": _vm.audit.tooltipInspectableItems },
@@ -43746,25 +43746,29 @@ var render = function() {
               })
             : _vm._e(),
           _vm._v(" "),
-          _c("div", {
-            staticClass: "uk-width-1-6 uk-text-left uk-padding-remove",
-            attrs: {
-              "uk-tooltip":
-                _vm.audit.totalItems + " TOTAL UNITS WILL BE INSPECTED"
-            },
-            domProps: { innerHTML: _vm._s(_vm.audit.totalItems) }
-          }),
+          _vm.audit.auditor_access
+            ? _c("div", {
+                staticClass: "uk-width-1-6 uk-text-left uk-padding-remove",
+                attrs: {
+                  "uk-tooltip":
+                    _vm.audit.totalItems + " TOTAL UNITS WILL BE INSPECTED"
+                },
+                domProps: { innerHTML: _vm._s(_vm.audit.totalItems) }
+              })
+            : _vm._e(),
           _vm._v(" "),
-          _c("div", { staticClass: "uk-width-1-6 uk-text-left" }, [
-            _c("i", {
-              class: ((_obj$2 = {}),
-              (_obj$2[_vm.audit.complianceIconClass] = true),
-              (_obj$2[_vm.audit.complianceStatusClass] = true),
-              _obj$2),
-              attrs: { "uk-tooltip": _vm.audit.tooltipComplianceStatus },
-              on: { click: _vm.rerunCompliance }
-            })
-          ])
+          _vm.audit.auditor_access
+            ? _c("div", { staticClass: "uk-width-1-6 uk-text-left" }, [
+                _c("i", {
+                  class: ((_obj$2 = {}),
+                  (_obj$2[_vm.audit.complianceIconClass] = true),
+                  (_obj$2[_vm.audit.complianceStatusClass] = true),
+                  _obj$2),
+                  attrs: { "uk-tooltip": _vm.audit.tooltipComplianceStatus },
+                  on: { click: _vm.rerunCompliance }
+                })
+              ])
+            : _vm._e()
         ]
       )
     ]),
