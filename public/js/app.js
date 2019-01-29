@@ -1887,9 +1887,9 @@ __webpack_require__.r(__webpack_exports__);
   props: ['audit', 'index'],
   methods: {
     openFindings: function openFindings(element, auditid, buildingid) {
-      var unitid = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : '';
-      var type = arguments.length > 4 ? arguments[4] : undefined;
-      var amenity = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : '';
+      var unitid = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'null';
+      var type = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'null';
+      var amenity = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 'null';
       dynamicModalLoad('findings/' + type + '/audit/' + auditid + '/building/' + buildingid + '/unit/' + unitid + '/amenity/' + amenity, 1, 0, 1);
       alert('clicked it.');
     },
@@ -43885,7 +43885,7 @@ var render = function() {
               attrs: { "uk-tooltip": _vm.audit.tooltipNltAuditStatus },
               on: {
                 click: function($event) {
-                  _vm.openFindings()
+                  _vm.openFindings(this, _vm.audit.auditId, null, null, "lt")
                 }
               }
             },
@@ -43907,9 +43907,11 @@ var render = function() {
               }),
               (_obj$8[_vm.audit.ltAuditStatusClass] = true),
               _obj$8),
-              attrs: {
-                "uk-tooltip": _vm.audit.tooltipLtAuditStatus,
-                onClick: "openFindings(this, audit.auditId, null, null, 'lt')"
+              attrs: { "uk-tooltip": _vm.audit.tooltipLtAuditStatus },
+              on: {
+                click: function($event) {
+                  _vm.openFindings(this, _vm.audit.auditId, null, null, "lt")
+                }
               }
             },
             [
