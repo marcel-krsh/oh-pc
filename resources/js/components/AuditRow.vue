@@ -122,7 +122,7 @@
     export default {
 	    props: ['audit','index'],
 	    methods: {
-            openFindings: function() {
+            openFindings: function (element, auditid, buildingid, unitid='', type,amenity='') {
                 dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1);
                 alert('clicked it.');
             },

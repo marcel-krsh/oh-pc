@@ -1886,7 +1886,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['audit', 'index'],
   methods: {
-    openFindings: function openFindings() {
+    openFindings: function openFindings(element, auditid, buildingid) {
+      var unitid = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : '';
+      var type = arguments.length > 4 ? arguments[4] : undefined;
+      var amenity = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : '';
       dynamicModalLoad('findings/' + type + '/audit/' + auditid + '/building/' + buildingid + '/unit/' + unitid + '/amenity/' + amenity, 1, 0, 1);
       alert('clicked it.');
     },
