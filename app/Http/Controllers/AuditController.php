@@ -319,8 +319,8 @@ class AuditController extends Controller
                 $auditor_initials = $amenity->amenity_inspection->user->initials();
                 $auditor_name = $amenity->amenity_inspection->user->full_name();
             }else{
-                $auditor_initials = NULL;
-                $auditor_name = NULL;
+                $auditor_initials = '<i class="a-avatar-plus"></i>';
+                $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
             }
 // if($amenity->amenity == null){
 //     dd($amenity);
