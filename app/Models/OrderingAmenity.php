@@ -38,7 +38,12 @@ class OrderingAmenity extends Model
      */
     public function amenity() : HasOne
     {
-        return $this->hasOne(\App\Models\CachedAmenity::class, 'id', 'amenity_id');
+        return $this->hasOne(\App\Models\Amenity::class, 'id', 'amenity_id');
+    }
+
+    public function amenity_inspection() : HasOne
+    {
+        return $this->hasOne(\App\Models\AmenityInspection::class, 'amenity_id', 'amenity_id');
     }
 
     /**

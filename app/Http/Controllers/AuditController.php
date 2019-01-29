@@ -260,22 +260,24 @@ class AuditController extends Controller
         }
             $ordered_amenities_count = $ordered_amenities_count->count();
 
+
         // $amenities_count = CachedAmenity::where('audit_id', '=', $audit_id);
+        //dd($building_id, $audit_id, AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->get());
         $amenities_count = AmenityInspection::where('audit_id', '=', $audit_id);
         if ($building_id) {
             $amenities_count = $amenities_count->where('building_id', '=', $building_id);
         }
-            $amenities_count = $amenities_count->count();
+            $amenities_count = $amenities_count->count(); 
 
         if ($amenities_count != $ordered_amenities_count && $amenities_count != 0) {
             // this shouldn't happen
             // reset ordering
             // $amenities_to_reset = CachedAmenity::where('audit_id', '=', $audit_id);
-            $amenities_to_reset = AmenityInspection::where('audit_id', '=', $audit_id);
-            if ($building_id) {
-                $amenities_to_reset = $amenities_to_reset->where('building_id', '=', $building_id);
-            }
-                $amenities_to_reset = $amenities_to_reset->delete();
+            // $amenities_to_reset = AmenityInspection::where('audit_id', '=', $audit_id);
+            // if ($building_id) {
+            //     $amenities_to_reset = $amenities_to_reset->where('building_id', '=', $building_id);
+            // }
+            //     $amenities_to_reset = $amenities_to_reset->delete();
         }
 
         if ($ordered_amenities_count == 0 && $amenities_count != 0) {
@@ -295,7 +297,7 @@ class AuditController extends Controller
                     'user_id' => Auth::user()->id,
                     'audit_id' => $audit_id,
                     'building_id' => $building_id,
-                    'amenity_id' => $amenity->id,
+                    'amenity_id' => $amenity->amenity_id,
                     'order' => $i
                 ]);
                 $ordering->save();
@@ -307,9 +309,42 @@ class AuditController extends Controller
         if ($building_id) {
             $amenities = $amenities->where('building_id', '=', $building_id);
         }
-                $amenities = $amenities->orderBy('order', 'asc')->with('amenity')->get()->pluck('amenity')->flatten();
+        $amenities = $amenities->orderBy('order', 'asc')->with('amenity')->get(); //->pluck('amenity')->flatten()
 
-        $data['amenities'] = $amenities;
+        $data_amenities = array();
+        foreach($amenities as $amenity){
+            // dd($amenity->amenity);
+
+            if($amenity->amenity_inspection->auditor_id !== NULL){
+                $auditor_initials = $amenity->amenity_inspection->user->initials();
+                $auditor_name = $amenity->amenity_inspection->user->full_name();
+            }else{
+                $auditor_initials = NULL;
+                $auditor_name = NULL;
+            }
+// if($amenity->amenity == null){
+//     dd($amenity);
+// }
+            $data_amenities[] = [
+                "id" => $amenity->amenity_id,
+                "audit_id" => $amenity->audit_id,
+                "name" => $amenity->amenity->amenity_description,
+                "status" => '',
+                "auditor_initials" => $auditor_initials,
+                "auditor_name" => $auditor_name,
+                "finding_nlt_status" => '',
+                "finding_lt_status" =>'',
+                "finding_sd_status" =>'',
+                "finding_photo_status" =>'',
+                "finding_comment_status" =>'',
+                "finding_copy_status" =>'',
+                "finding_trash_status" =>'',
+                "building_id" => $amenity->building_id,
+                "unit_id" => $amenity->unit_id
+            ];
+        }
+
+        $data['amenities'] = $data_amenities;
 
         $data['comments'] = CachedComment::where('parent_id', '=', null)->with('replies')->get();
 

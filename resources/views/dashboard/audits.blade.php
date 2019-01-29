@@ -73,7 +73,6 @@
 			</div>
     		<div class="uk-inline uk-padding-remove" style="margin-top:7px; flex:140px;">
     			<div class="area-name">
-    				<i class="a-circle-checked"></i>
 					areaName
 				</div>
 			</div>

@@ -276,12 +276,12 @@ function loadInspectionMain(data, id, context='audits', level = '') {
 			newarea = inspectionAreaTemplate;
 			newarea = newarea.replace(/areaContext/g, context);
 			newarea = newarea.replace(/areaRowId/g, area.id);
-			newarea = newarea.replace(/areaName/g, area.name);
-			newarea = newarea.replace(/areaStatus/g, area.status);
-			newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);
-			newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);
+			newarea = newarea.replace(/areaName/g, area.name); // missing
+			newarea = newarea.replace(/areaStatus/g, area.status);  // missing
+			newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);  // missing
+			newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);  // missing
 
-			newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);
+			newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);  // missing
 			newarea = newarea.replace(/areaLTStatus/g, area.finding_lt_status);
 			newarea = newarea.replace(/areaSDStatus/g, area.finding_sd_status);
 			newarea = newarea.replace(/areaPicStatus/g, area.finding_photo_status);

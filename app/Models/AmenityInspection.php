@@ -12,7 +12,7 @@ class AmenityInspection extends Model
 {
     public $timestamps = true;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
-
+    protected $table = 'amenity_inspections';
     
 
     //
@@ -21,5 +21,10 @@ class AmenityInspection extends Model
     public function amenity() : HasOne
     {
     	return $this->hasOne(\App\Models\Amenity::class, 'id', 'amenity_id');
+    }
+
+    public function user() : HasOne
+    {
+        return $this->hasOne(\App\Models\User::class, 'id', 'auditor_id');
     }
 }
