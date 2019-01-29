@@ -43850,15 +43850,11 @@ var render = function() {
               }),
               (_obj$4[_vm.audit.fileAuditStatusClass] = true),
               _obj$4),
-              attrs: {
-                "uk-tooltip": _vm.audit.tooltipFileAuditStatus,
-                onclick: _vm.openFindings(
-                  this,
-                  _vm.audit.auditId,
-                  null,
-                  null,
-                  "file"
-                )
+              attrs: { "uk-tooltip": _vm.audit.tooltipFileAuditStatus },
+              on: {
+                click: function($event) {
+                  _vm.openFindings(this, _vm.audit.auditId, null, null, "file")
+                }
               }
             },
             [
