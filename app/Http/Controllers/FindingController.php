@@ -18,7 +18,7 @@ use App\Models\AmenityInspection;
 use App\Models\UnitInspection;
 use App\Models\BuildingInspection;
 use App\Models\Amenity;
-use App\Models\Findings;
+use App\Models\Finding;
 
 
 class FindingController extends Controller
@@ -96,7 +96,7 @@ class FindingController extends Controller
             // always use the audit id as a selector to ensure you get the correct one
             $amenities = AmenityInspection::where('audit_id',$auditid)->where('unit_id',$unitid)->get()->all(); 
 
-            $findings = Findings::where('project_id',$audit->project_id)
+            $findings = Finding::where('project_id',$audit->project_id)
                 ->with('comments')
                 ->with('comments.comments')
                 ->with('photos')
