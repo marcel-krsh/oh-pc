@@ -149,7 +149,6 @@ class FindingController extends Controller
                 ->with('comments')
                 ->with('comments.comments')
                 ->whereNull('finding_id')
-                ->whereNull('document_id')
                 ->whereNull('photo_id')
                 ->whereNull('followup_id')
                 ->orderBy('updated_at','desc')
