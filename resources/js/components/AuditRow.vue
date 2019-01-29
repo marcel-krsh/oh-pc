@@ -86,7 +86,7 @@
             	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.nltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipNltAuditStatus" v-on:click="openFindings(this, audit.auditId, null, null, 'nlt')">
             		<i :class="{[audit.nltAuditIconClass]:true}"></i>
             	</div> 
-            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.ltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipLtAuditStatus" onclick="openFindings(this, {[audit.auditId]:true}, null, null, 'lt')">
+            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.ltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipLtAuditStatus" @click.native="openFindings(this, "+audit.auditId+", null, null, 'lt')">
             		<i :class="{[audit.ltAuditIconClass]:true}"></i>
             	</div> 
             </div>
