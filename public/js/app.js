@@ -1886,6 +1886,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['audit', 'index'],
   methods: {
+    openFindings: function openFindings(element, auditid, buildingid) {
+      var unitid = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'null';
+      var type = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'null';
+      var amenity = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 'null';
+      dynamicModalLoad('findings/' + type + '/audit/' + auditid + '/building/' + buildingid + '/unit/' + unitid + '/amenity/' + amenity, 1, 0, 1);
+    },
     rerunCompliance: function (_rerunCompliance) {
       function rerunCompliance() {
         return _rerunCompliance.apply(this, arguments);
@@ -43850,15 +43856,11 @@ var render = function() {
               }),
               (_obj$4[_vm.audit.fileAuditStatusClass] = true),
               _obj$4),
-              attrs: {
-                "uk-tooltip": _vm.audit.tooltipFileAuditStatus,
-                onclick: _vm.openFindings(
-                  this,
-                  _vm.audit.auditId,
-                  null,
-                  null,
-                  "file"
-                )
+              attrs: { "uk-tooltip": _vm.audit.tooltipFileAuditStatus },
+              on: {
+                click: function($event) {
+                  _vm.openFindings(this, _vm.audit.auditId, null, null, "file")
+                }
               }
             },
             [
@@ -43870,11 +43872,57 @@ var render = function() {
             ]
           ),
           _vm._v(" "),
-          _vm._v('">')
+          _c(
+            "div",
+            {
+              class: ((_obj$6 = {
+                "uk-width-1-3": true,
+                "use-hand-cursor": true
+              }),
+              (_obj$6[_vm.audit.nltAuditStatusClass] = true),
+              _obj$6),
+              attrs: { "uk-tooltip": _vm.audit.tooltipNltAuditStatus },
+              on: {
+                click: function($event) {
+                  _vm.openFindings(this, _vm.audit.auditId, null, null, "lt")
+                }
+              }
+            },
+            [
+              _c("i", {
+                class: ((_obj$7 = {}),
+                (_obj$7[_vm.audit.nltAuditIconClass] = true),
+                _obj$7)
+              })
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              class: ((_obj$8 = {
+                "uk-width-1-3": true,
+                "use-hand-cursor": true
+              }),
+              (_obj$8[_vm.audit.ltAuditStatusClass] = true),
+              _obj$8),
+              attrs: { "uk-tooltip": _vm.audit.tooltipLtAuditStatus },
+              on: {
+                click: function($event) {
+                  _vm.openFindings(this, _vm.audit.auditId, null, null, "lt")
+                }
+              }
+            },
+            [
+              _c("i", {
+                class: ((_obj$9 = {}),
+                (_obj$9[_vm.audit.ltAuditIconClass] = true),
+                _obj$9)
+              })
+            ]
+          )
         ]
-      ),
-      _vm._v(" "),
-      _vm._v('">')
+      )
     ]),
     _vm._v(" "),
     _c("td", { staticClass: "hasdivider" }, [
@@ -43890,10 +43938,10 @@ var render = function() {
         [
           _c("div", { staticClass: "uk-width-1-4" }, [
             _c("i", {
-              class: ((_obj$6 = { "use-hand-cursor": true }),
-              (_obj$6[_vm.audit.auditorStatusIconClass] = true),
-              (_obj$6[_vm.audit.auditorStatusClass] = true),
-              _obj$6),
+              class: ((_obj$10 = { "use-hand-cursor": true }),
+              (_obj$10[_vm.audit.auditorStatusIconClass] = true),
+              (_obj$10[_vm.audit.auditorStatusClass] = true),
+              _obj$10),
               attrs: { "uk-tooltip": _vm.audit.tooltipAuditorStatus },
               on: { click: _vm.openAssignment }
             })
@@ -43901,30 +43949,30 @@ var render = function() {
           _vm._v(" "),
           _c("div", { staticClass: "uk-width-1-4" }, [
             _c("i", {
-              class: ((_obj$7 = { "use-hand-cursor": true }),
-              (_obj$7[_vm.audit.messageStatusIconClass] = true),
-              (_obj$7[_vm.audit.messageStatusClass] = true),
-              _obj$7),
+              class: ((_obj$11 = { "use-hand-cursor": true }),
+              (_obj$11[_vm.audit.messageStatusIconClass] = true),
+              (_obj$11[_vm.audit.messageStatusClass] = true),
+              _obj$11),
               attrs: { "uk-tooltip": _vm.audit.tooltipMessageStatus }
             })
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "uk-width-1-4" }, [
             _c("i", {
-              class: ((_obj$8 = { "use-hand-cursor": true }),
-              (_obj$8[_vm.audit.documentStatusIconClass] = true),
-              (_obj$8[_vm.audit.documentStatusClass] = true),
-              _obj$8),
+              class: ((_obj$12 = { "use-hand-cursor": true }),
+              (_obj$12[_vm.audit.documentStatusIconClass] = true),
+              (_obj$12[_vm.audit.documentStatusClass] = true),
+              _obj$12),
               attrs: { "uk-tooltip": _vm.audit.tooltipDocumentStatus }
             })
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "uk-width-1-4" }, [
             _c("i", {
-              class: ((_obj$9 = { "use-hand-cursor": true }),
-              (_obj$9[_vm.audit.historyStatusIconClass] = true),
-              (_obj$9[_vm.audit.historyStatusClass] = true),
-              _obj$9),
+              class: ((_obj$13 = { "use-hand-cursor": true }),
+              (_obj$13[_vm.audit.historyStatusIconClass] = true),
+              (_obj$13[_vm.audit.historyStatusClass] = true),
+              _obj$13),
               attrs: { "uk-tooltip": _vm.audit.tooltipHistoryStatus }
             })
           ])
@@ -43936,10 +43984,10 @@ var render = function() {
       _c("div", { staticClass: "uk-margin-top", attrs: { "uk-grid": "" } }, [
         _c("div", { staticClass: "uk-width-1-1  uk-padding-remove-top" }, [
           _c("i", {
-            class: ((_obj$10 = { "use-hand-cursor": true }),
-            (_obj$10[_vm.audit.stepStatusIconClass] = true),
-            (_obj$10[_vm.audit.stepStatusClass] = true),
-            _obj$10),
+            class: ((_obj$14 = { "use-hand-cursor": true }),
+            (_obj$14[_vm.audit.stepStatusIconClass] = true),
+            (_obj$14[_vm.audit.stepStatusClass] = true),
+            _obj$14),
             attrs: { "uk-tooltip": _vm.audit.tooltipStepStatus },
             on: { click: _vm.updateStep }
           })
@@ -43958,6 +44006,10 @@ var render = function() {
   var _obj$8
   var _obj$9
   var _obj$10
+  var _obj$11
+  var _obj$12
+  var _obj$13
+  var _obj$14
 }
 var staticRenderFns = []
 render._withStripped = true

@@ -80,13 +80,13 @@
         <td class="hasdivider">
         	<div class="divider"></div>
         	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
-            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.fileAuditStatusClass]:true}" :uk-tooltip="audit.tooltipFileAuditStatus" :onclick="openFindings(this, audit.auditId, null, null, 'file')">
+            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.fileAuditStatusClass]:true}" :uk-tooltip="audit.tooltipFileAuditStatus" v-on:click="openFindings(this, audit.auditId, null, null, 'file')">
             		<i :class="{[audit.fileAuditIconClass]:true}"></i>
             	</div> 
-            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.nltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipNltAuditStatus" :onclick="openFindings(this, audit.auditId, null, null, 'nlt');>
+            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.nltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipNltAuditStatus" v-on:click="openFindings(this, audit.auditId, null, null, 'lt')">
             		<i :class="{[audit.nltAuditIconClass]:true}"></i>
             	</div> 
-            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.ltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipLtAuditStatus" :onclick="openFindings(this, audit.auditId, null, null, 'lt');>
+            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.ltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipLtAuditStatus"  v-on:click="openFindings(this, audit.auditId, null, null, 'lt')" >
             		<i :class="{[audit.ltAuditIconClass]:true}"></i>
             	</div> 
             </div>
@@ -122,6 +122,9 @@
     export default {
 	    props: ['audit','index'],
 	    methods: {
+            openFindings: function (element, auditid, buildingid, unitid='null', type='null',amenity='null') {
+                dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1);
+            },
             rerunCompliance: function() {
                 rerunCompliance(this.audit.auditId); 
             },

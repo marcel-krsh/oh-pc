@@ -796,31 +796,15 @@ The following div is defined in this particular tab and pushed to the main layou
                 // page: 1,
                 // loading: 1,
                 // busy: false
+
             }
         },
         created: function() {
             this.loading = 0;
         },
         methods: {
-            // loadMore: function () {
-                // var self = this;
-                // self.busy = true;
-                // var tempdiv = '<div uk-spinner style="margin: 20px 0;"></div>';
-                // $('#spinner').html(tempdiv);
-
-                // setTimeout(() => {
-                //     axios.get('dashboard/communications/'+this.page)
-                //         .then((response) => {   
-                //             $.each(response.data, function(index, value) {
-                //                 $('#spinner').html('');
-                //                 self.messages.unshift(value);
-                //             });
-                //         });
-
-                //     this.page = this.page + 1;
-                //     this.busy = false;
-                // }, 2500);
-            //  }
+        	
+            
         },
 
         mounted: function() {
