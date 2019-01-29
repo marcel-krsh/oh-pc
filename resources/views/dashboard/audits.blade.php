@@ -796,6 +796,7 @@ The following div is defined in this particular tab and pushed to the main layou
                 // page: 1,
                 // loading: 1,
                 // busy: false
+                openFindings: function,
             }
         },
         created: function() {
