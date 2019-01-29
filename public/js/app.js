@@ -1891,7 +1891,6 @@ __webpack_require__.r(__webpack_exports__);
       var type = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'null';
       var amenity = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 'null';
       dynamicModalLoad('findings/' + type + '/audit/' + auditid + '/building/' + buildingid + '/unit/' + unitid + '/amenity/' + amenity, 1, 0, 1);
-      alert('clicked it.');
     },
     rerunCompliance: function (_rerunCompliance) {
       function rerunCompliance() {
