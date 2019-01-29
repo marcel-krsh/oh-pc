@@ -1,18 +1,18 @@
 <template>
 	<tr>
-		<td :id="'audit-c-1-'+auditIndex" class="uk-text-center audit-td-lead">
+		<td :id="'audit-c-1-'+audit.auditId" class="uk-text-center audit-td-lead">
         	<span id="audit-avatar-badge-1" v-on:click="openAssignment" :uk-tooltip="audit.tooltipLead" title="" aria-expanded="false" :class="{[audit.userBadgeColor]:true, 'user-badge':true, 'no-float':true, 'uk-link': true }">
 				<span v-html="audit.initials"></span>
 			</span>
-			<span :id="'audit-rid-'+auditIndex"><small>#<span v-html="auditIndex"></span></small></span>
+			<span :id="'audit-rid-'+audit.auditId"><small>#<span v-html="auditIndex"></span></small></span>
         </td>
-        <td :id="'audit-c-2-'+auditIndex" class="audit-td-project">
+        <td :id="'audit-c-2-'+audit.auditId" class="audit-td-project">
         	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-        		<span :id="'audit-i-project-detail-'+auditIndex" v-on:click="openProjectDetails" uk-tooltip="pos:top-left;title:VIEW BUILDINGS AND COMMON AREAS;" class="uk-link"><i class="a-menu uk-text-muted"></i></span>
+        		<span :id="'audit-i-project-detail-'+audit.auditId" v-on:click="openProjectDetails" uk-tooltip="pos:top-left;title:VIEW BUILDINGS AND COMMON AREAS;" class="uk-link"><i class="a-menu uk-text-muted"></i></span>
         	</div>
         	<div class="uk-vertical-align-middle uk-display-inline-block">
-        		<h3 :id="'audit-project-name-'+auditIndex" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip="title:OPEN AUDIT DETAILS IN TAB;" v-on:click="openProject"><span v-html="audit.projectRef"></span></h3>
-            	<small :id="'audit-project-aid-'+auditIndex" class="uk-text-muted faded filter-search-project" uk-tooltip="title:VIEW PROJECT AUDIT DETAILS;">AUDIT <span v-html="audit.auditId"></span></small>
+        		<h3 :id="'audit-project-name-'+audit.auditId" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip="title:OPEN AUDIT DETAILS IN TAB;" v-on:click="openProject"><span v-html="audit.projectRef"></span></h3>
+            	<small :id="'audit-project-aid-'+audit.auditId" class="uk-text-muted faded filter-search-project" uk-tooltip="title:VIEW PROJECT AUDIT DETAILS;">AUDIT <span v-html="audit.auditId"></span></small>
             </div>
         </td>
         <td class="audit-td-name">
@@ -37,7 +37,7 @@
         <td class="hasdivider audit-td-scheduled">
         	<div class="divider"></div>
         	<div class="uk-display-inline-block uk-margin-small-top uk-text-center fullwidth" uk-grid>
-            	<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
+            	<div class="uk-width-1-1 uk-padding-remove-top" v-bind:class="{'uk-width-1-2' : audit.auditor_access}" uk-grid>
             		<div class="uk-width-1-3">
             			<i :class="{[audit.inspectionStatus]:true, 'use-hand-cursor':true, 'a-mobile-repeat':true}" :uk-tooltip="audit.tooltipInspectionStatus"></i>
             		</div>
@@ -49,12 +49,15 @@
                         <i class="a-calendar-7 action-needed use-hand-cursor" uk-tooltip="Click to schedule audits"></i>
                     </div>
             	</div> 
-            	<div class="uk-width-1-6 uk-text-right uk-padding-remove" uk-tooltip="0 UNITS ASSIGNED TO YOU" v-html="audit.inspectableItems+' /'" v-if="audit.inspectableItems < 1 "></div>
-                <div class="uk-width-1-6 uk-text-right uk-padding-remove" :uk-tooltip="audit.tooltipInspectableItems" v-html="audit.inspectableItems+' /'" v-if="audit.inspectableItems > 0"></div> 
-            	<div class="uk-width-1-6 uk-text-left uk-padding-remove" :uk-tooltip="audit.totalItems + ' TOTAL UNITS WILL BE INSPECTED'" v-html="audit.totalItems"></div> 
-            	<div class="uk-width-1-6 uk-text-left">
-            		<i :class="{[audit.complianceIconClass]:true, [audit.complianceStatusClass]:true}" :uk-tooltip="audit.tooltipComplianceStatus" v-on:click="rerunCompliance"></i>
-            	</div>
+                <div v-if="audit.auditor_access">
+                	<div class="uk-width-1-6 uk-text-right uk-padding-remove" uk-tooltip="0 UNITS ASSIGNED TO YOU" v-html="audit.inspectableItems+' /'" v-if="audit.inspectableItems < 1 "></div>
+                    <div class="uk-width-1-6 uk-text-right uk-padding-remove" :uk-tooltip="audit.tooltipInspectableItems" v-html="audit.inspectableItems+' /'" v-if="audit.inspectableItems > 0"></div> 
+
+                	<div class="uk-width-1-6 uk-text-left uk-padding-remove" :uk-tooltip="audit.totalItems + ' TOTAL UNITS WILL BE INSPECTED'" v-html="audit.totalItems"></div> 
+                	<div class="uk-width-1-6 uk-text-left">
+                		<i :class="{[audit.complianceIconClass]:true, [audit.complianceStatusClass]:true}" :uk-tooltip="audit.tooltipComplianceStatus" v-on:click="rerunCompliance"></i>
+                	</div>
+                </div>
             </div>
         </td>
         <td class="hasdivider audit-td-due">
@@ -65,11 +68,11 @@
             	</div> 
             	<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top">
             		<div v-if="audit.followupDate">
-	            		<h3 class="uk=link" uk-tooltip="title:CLICK TO RESCHEDULE AUDITS;" v-html="audit.followupDate"></h3>
+	            		<h3 class="uk=link" uk-tooltip="title: CLICK TO VIEW FOLLOW-UP;" v-html="audit.followupDate"></h3>
 		            	<div class="dateyear" v-html="audit.followupDateYear"></div>
             		</div>
             		<div v-else>
-            			<i class="a-calendar-pencil use-hand-cursor" uk-tooltip="title:NEW FOLLOWUP;"></i>
+            			<i v-if="audit.auditor_access" class="a-calendar-pencil use-hand-cursor" uk-tooltip="title:NEW FOLLOWUP;"></i>
             		</div>
             	</div> 
             </div>
@@ -132,7 +135,7 @@
             	loadTab('/projects/'+this.audit.projectKey, '4', 1, 1, '', 1);
             },
             openProjectDetails: function() {
-            	projectDetails(this.audit.auditId, this.index, this.audit.total_buildings);
+            	projectDetails(this.audit.auditId, this.audit.auditId, this.audit.total_buildings);
             },
             scheduleAudit: function() {
                 loadTab('/projects/'+this.audit.projectRef, '4', 1, 1, '', 1);
@@ -148,6 +151,7 @@
         computed: {
         	auditIndex: function() {
         		return this.index + 1;
+                // return this.audit.auditId;
         	},
             mapLink: function() {
                 return "https://maps.google.com/maps?q="+this.audit.address+"+"+this.audit.address2;

@@ -1880,6 +1880,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['audit', 'index'],
   methods: {
@@ -1906,7 +1909,7 @@ __webpack_require__.r(__webpack_exports__);
       loadTab('/projects/' + this.audit.projectKey, '4', 1, 1, '', 1);
     },
     openProjectDetails: function openProjectDetails() {
-      projectDetails(this.audit.auditId, this.index, this.audit.total_buildings);
+      projectDetails(this.audit.auditId, this.audit.auditId, this.audit.total_buildings);
     },
     scheduleAudit: function scheduleAudit() {
       loadTab('/projects/' + this.audit.projectRef, '4', 1, 1, '', 1);
@@ -1920,7 +1923,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     auditIndex: function auditIndex() {
-      return this.index + 1;
+      return this.index + 1; // return this.audit.auditId;
     },
     mapLink: function mapLink() {
       return "https://maps.google.com/maps?q=" + this.audit.address + "+" + this.audit.address2;
@@ -43467,7 +43470,7 @@ var render = function() {
       "td",
       {
         staticClass: "uk-text-center audit-td-lead",
-        attrs: { id: "audit-c-1-" + _vm.auditIndex }
+        attrs: { id: "audit-c-1-" + _vm.audit.auditId }
       },
       [
         _c(
@@ -43491,7 +43494,7 @@ var render = function() {
           [_c("span", { domProps: { innerHTML: _vm._s(_vm.audit.initials) } })]
         ),
         _vm._v(" "),
-        _c("span", { attrs: { id: "audit-rid-" + _vm.auditIndex } }, [
+        _c("span", { attrs: { id: "audit-rid-" + _vm.audit.auditId } }, [
           _c("small", [
             _vm._v("#"),
             _c("span", { domProps: { innerHTML: _vm._s(_vm.auditIndex) } })
@@ -43504,7 +43507,7 @@ var render = function() {
       "td",
       {
         staticClass: "audit-td-project",
-        attrs: { id: "audit-c-2-" + _vm.auditIndex }
+        attrs: { id: "audit-c-2-" + _vm.audit.auditId }
       },
       [
         _c(
@@ -43519,7 +43522,7 @@ var render = function() {
               {
                 staticClass: "uk-link",
                 attrs: {
-                  id: "audit-i-project-detail-" + _vm.auditIndex,
+                  id: "audit-i-project-detail-" + _vm.audit.auditId,
                   "uk-tooltip":
                     "pos:top-left;title:VIEW BUILDINGS AND COMMON AREAS;"
                 },
@@ -43540,7 +43543,7 @@ var render = function() {
                 staticClass:
                   "uk-margin-bottom-remove uk-link filter-search-project",
                 attrs: {
-                  id: "audit-project-name-" + _vm.auditIndex,
+                  id: "audit-project-name-" + _vm.audit.auditId,
                   "uk-tooltip": "title:OPEN AUDIT DETAILS IN TAB;"
                 },
                 on: { click: _vm.openProject }
@@ -43557,7 +43560,7 @@ var render = function() {
               {
                 staticClass: "uk-text-muted faded filter-search-project",
                 attrs: {
-                  id: "audit-project-aid-" + _vm.auditIndex,
+                  id: "audit-project-aid-" + _vm.audit.auditId,
                   "uk-tooltip": "title:VIEW PROJECT AUDIT DETAILS;"
                 }
               },
@@ -43660,7 +43663,8 @@ var render = function() {
           _c(
             "div",
             {
-              staticClass: "uk-width-1-2 uk-padding-remove-top",
+              staticClass: "uk-width-1-1 uk-padding-remove-top",
+              class: { "uk-width-1-2": _vm.audit.auditor_access },
               attrs: { "uk-grid": "" }
             },
             [
@@ -43722,45 +43726,53 @@ var render = function() {
             ]
           ),
           _vm._v(" "),
-          _vm.audit.inspectableItems < 1
-            ? _c("div", {
-                staticClass: "uk-width-1-6 uk-text-right uk-padding-remove",
-                attrs: { "uk-tooltip": "0 UNITS ASSIGNED TO YOU" },
-                domProps: {
-                  innerHTML: _vm._s(_vm.audit.inspectableItems + " /")
-                }
-              })
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.audit.inspectableItems > 0
-            ? _c("div", {
-                staticClass: "uk-width-1-6 uk-text-right uk-padding-remove",
-                attrs: { "uk-tooltip": _vm.audit.tooltipInspectableItems },
-                domProps: {
-                  innerHTML: _vm._s(_vm.audit.inspectableItems + " /")
-                }
-              })
-            : _vm._e(),
-          _vm._v(" "),
-          _c("div", {
-            staticClass: "uk-width-1-6 uk-text-left uk-padding-remove",
-            attrs: {
-              "uk-tooltip":
-                _vm.audit.totalItems + " TOTAL UNITS WILL BE INSPECTED"
-            },
-            domProps: { innerHTML: _vm._s(_vm.audit.totalItems) }
-          }),
-          _vm._v(" "),
-          _c("div", { staticClass: "uk-width-1-6 uk-text-left" }, [
-            _c("i", {
-              class: ((_obj$2 = {}),
-              (_obj$2[_vm.audit.complianceIconClass] = true),
-              (_obj$2[_vm.audit.complianceStatusClass] = true),
-              _obj$2),
-              attrs: { "uk-tooltip": _vm.audit.tooltipComplianceStatus },
-              on: { click: _vm.rerunCompliance }
-            })
-          ])
+          _vm.audit.auditor_access
+            ? _c("div", [
+                _vm.audit.inspectableItems < 1
+                  ? _c("div", {
+                      staticClass:
+                        "uk-width-1-6 uk-text-right uk-padding-remove",
+                      attrs: { "uk-tooltip": "0 UNITS ASSIGNED TO YOU" },
+                      domProps: {
+                        innerHTML: _vm._s(_vm.audit.inspectableItems + " /")
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.audit.inspectableItems > 0
+                  ? _c("div", {
+                      staticClass:
+                        "uk-width-1-6 uk-text-right uk-padding-remove",
+                      attrs: {
+                        "uk-tooltip": _vm.audit.tooltipInspectableItems
+                      },
+                      domProps: {
+                        innerHTML: _vm._s(_vm.audit.inspectableItems + " /")
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                _c("div", {
+                  staticClass: "uk-width-1-6 uk-text-left uk-padding-remove",
+                  attrs: {
+                    "uk-tooltip":
+                      _vm.audit.totalItems + " TOTAL UNITS WILL BE INSPECTED"
+                  },
+                  domProps: { innerHTML: _vm._s(_vm.audit.totalItems) }
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "uk-width-1-6 uk-text-left" }, [
+                  _c("i", {
+                    class: ((_obj$2 = {}),
+                    (_obj$2[_vm.audit.complianceIconClass] = true),
+                    (_obj$2[_vm.audit.complianceStatusClass] = true),
+                    _obj$2),
+                    attrs: { "uk-tooltip": _vm.audit.tooltipComplianceStatus },
+                    on: { click: _vm.rerunCompliance }
+                  })
+                ])
+              ])
+            : _vm._e()
         ]
       )
     ]),
@@ -43796,7 +43808,7 @@ var render = function() {
                     _c("h3", {
                       staticClass: "uk=link",
                       attrs: {
-                        "uk-tooltip": "title:CLICK TO RESCHEDULE AUDITS;"
+                        "uk-tooltip": "title: CLICK TO VIEW FOLLOW-UP;"
                       },
                       domProps: { innerHTML: _vm._s(_vm.audit.followupDate) }
                     }),
@@ -43809,10 +43821,12 @@ var render = function() {
                     })
                   ])
                 : _c("div", [
-                    _c("i", {
-                      staticClass: "a-calendar-pencil use-hand-cursor",
-                      attrs: { "uk-tooltip": "title:NEW FOLLOWUP;" }
-                    })
+                    _vm.audit.auditor_access
+                      ? _c("i", {
+                          staticClass: "a-calendar-pencil use-hand-cursor",
+                          attrs: { "uk-tooltip": "title:NEW FOLLOWUP;" }
+                        })
+                      : _vm._e()
                   ])
             ]
           )
@@ -56136,8 +56150,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/briangreenwood/allita_pcsv/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/briangreenwood/allita_pcsv/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/flip/Documents/Work/Allita/allita-pcsv/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/flip/Documents/Work/Allita/allita-pcsv/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

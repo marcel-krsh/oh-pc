@@ -236,7 +236,7 @@ if(Auth::check()){
 							<div style="width: 20px; display: inline-block;"></div>
 							@endCan
 					    
-					    	<div id="top-tabs-container" style="display: inline-block; overflow: visible; padding-top:15px;">
+					    	<div id="top-tabs-container" style="display: inline-block; overflow: visible; padding-top:15px; min-height: 26px;">
 						        @can('access_pm')
 						        <ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m" style="background-color: transparent;">
 					    			<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">

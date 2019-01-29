@@ -28,6 +28,7 @@ use App\Models\Availability;
 use App\Models\AmenityInspection;
 use App\Models\UnitInspection;
 use App\Models\SystemSetting;
+use App\Models\StatsCompliance;
 use Auth;
 use App\Models\Job;
 use Session;
@@ -41,7 +42,10 @@ class AuditController extends Controller
     {
         // $this->middleware('auth');
         if (env('APP_DEBUG_NO_DEVCO') == 'true') {
-            Auth::onceUsingId(286); // TEST BRIAN
+            Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
+            //Auth::onceUsingId(286); // TEST BRIAN
+            // 6281 holly
+            // 6346 Robin (Abigail)
         }
     }
 
@@ -429,6 +433,9 @@ class AuditController extends Controller
                     A unit is complete once all of its amenities have been marked complete - it has a completed date on it
 
                  */
+       
+                $stats = $audit->stats_compliance();
+                //dd($stats);
 
                 $summary_required = 0;
                 $summary_selected = 0;
@@ -449,76 +456,81 @@ class AuditController extends Controller
                 $summary_optimized_completed_inspections_file = 0;
 
                 // create stats for each group
-                foreach($selection_summary['programs'] as $program){
+                // foreach($selection_summary['programs'] as $program){
 
-                    // count selected units using the list of program ids
-                    $program_keys = explode(',', $program['program_keys']); 
-                    $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
-                    $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
+                //     // count selected units using the list of program ids
+                //     $program_keys = explode(',', $program['program_keys']); 
+                //     $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
+                //     $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
 
-                    $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
-                    $needed_units_file = $program['totals_after_optimization'] - $selected_units_file;
+                //     $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
+                //     $needed_units_file = $program['totals_after_optimization'] - $selected_units_file;
 
-                    $unit_keys = $program['units_after_optimization']; 
-                    $inspected_units_site = UnitInspection::whereIn('unit_key', $unit_keys)
-                                ->where('audit_id', '=', $audit->id)
-                                ->where('group_id', '=', $program['group'])
-                                // ->whereHas('amenity_inspections', function($query) {
-                                //     $query->where('completed_date_time', '!=', null);
-                                // })
-                                ->where('is_site_visit', '=', 1)
-                                ->where('complete', '!=', NULL)
-                                ->count();
+                //     $unit_keys = $program['units_after_optimization']; 
+                //     $inspected_units_site = UnitInspection::whereIn('unit_key', $unit_keys)
+                //                 ->where('audit_id', '=', $audit->id)
+                //                 ->where('group_id', '=', $program['group'])
+                //                 // ->whereHas('amenity_inspections', function($query) {
+                //                 //     $query->where('completed_date_time', '!=', null);
+                //                 // })
+                //                 ->where('is_site_visit', '=', 1)
+                //                 ->where('complete', '!=', NULL)
+                //                 ->count();
 
-                    $inspected_units_file = UnitInspection::whereIn('unit_key', $unit_keys)
-                                ->where('audit_id', '=', $audit->id)
-                                ->where('group_id', '=', $program['group'])
-                                ->where('is_file_audit', '=', 1)
-                                ->where('complete', '!=', NULL)
-                                ->count();
+                //     $inspected_units_file = UnitInspection::whereIn('unit_key', $unit_keys)
+                //                 ->where('audit_id', '=', $audit->id)
+                //                 ->where('group_id', '=', $program['group'])
+                //                 ->where('is_file_audit', '=', 1)
+                //                 ->where('complete', '!=', NULL)
+                //                 ->count();
 
-                    $to_be_inspected_units_site = $program['totals_after_optimization'] - $inspected_units_site;
-                    $to_be_inspected_units_file = $program['totals_after_optimization'] - $inspected_units_file;
+                //     $to_be_inspected_units_site = $program['totals_after_optimization'] - $inspected_units_site;
+                //     $to_be_inspected_units_file = $program['totals_after_optimization'] - $inspected_units_file;
 
-                    $data['programs'][] = [
-                        'id' => $program['group'],
-                        'name' => $program['name'],
-                        'pool' => $program['pool'],
-                        'comments' => $program['comments'],
-                        'user_limiter' => $program['use_limiter'],
-                        'totals_after_optimization' => $program['totals_after_optimization'],
-                        'units_before_optimization' => $program['units_before_optimization'],
-                        'totals_before_optimization' => $program['totals_before_optimization'],
-                        'required_units' => $program['totals_after_optimization'],
-                        'selected_units' => $selected_units_site,
-                        'needed_units' => $needed_units_site,
-                        'inspected_units' => $inspected_units_site,
-                        'to_be_inspected_units' => $to_be_inspected_units_site,
-                        'required_units_file' => $program['totals_after_optimization'],
-                        'selected_units_file' => $selected_units_file,
-                        'needed_units_file' => $needed_units_file,
-                        'inspected_units_file' => $inspected_units_file,
-                        'to_be_inspected_units_file' => $to_be_inspected_units_file
-                    ];
+                //     $data['programs'][] = [
+                //         'id' => $program['group'],
+                //         'name' => $program['name'],
+                //         'pool' => $program['pool'],
+                //         'comments' => $program['comments'],
+                //         'user_limiter' => $program['use_limiter'],
+                //         'totals_after_optimization' => $program['totals_after_optimization'],
+                //         'units_before_optimization' => $program['units_before_optimization'],
+                //         'totals_before_optimization' => $program['totals_before_optimization'],
+                //         'required_units' => $program['totals_after_optimization'],
+                //         'selected_units' => $selected_units_site,
+                //         'needed_units' => $needed_units_site,
+                //         'inspected_units' => $inspected_units_site,
+                //         'to_be_inspected_units' => $to_be_inspected_units_site,
+                //         'required_units_file' => $program['totals_after_optimization'],
+                //         'selected_units_file' => $selected_units_file,
+                //         'needed_units_file' => $needed_units_file,
+                //         'inspected_units_file' => $inspected_units_file,
+                //         'to_be_inspected_units_file' => $to_be_inspected_units_file
+                //     ];
 
-                    $summary_required = $summary_required + $program['totals_before_optimization'];
-                    $summary_selected = $summary_selected + $selected_units_site;
-                    $summary_needed = $summary_needed + $needed_units_site;
-                    $summary_inspected = $summary_inspected + $inspected_units_site;
-                    $summary_to_be_inspected = $summary_to_be_inspected + $to_be_inspected_units_site;
+                //     $summary_required = $summary_required + $program['totals_before_optimization'];
+                //     $summary_selected = $summary_selected + $selected_units_site;
+                //     $summary_needed = $summary_needed + $needed_units_site;
+                //     $summary_inspected = $summary_inspected + $inspected_units_site;
+                //     $summary_to_be_inspected = $summary_to_be_inspected + $to_be_inspected_units_site;
 
-                    $summary_optimized_sample_size = $summary_optimized_sample_size + $program['totals_after_optimization'];
-                    $summary_optimized_completed_inspections = $summary_optimized_completed_inspections + $inspected_units_site;
-                    $summary_optimized_remaining_inspections = $summary_optimized_sample_size - $summary_optimized_completed_inspections;
+                //     $summary_optimized_sample_size = $summary_optimized_sample_size + $program['totals_after_optimization'];
+                //     $summary_optimized_completed_inspections = $summary_optimized_completed_inspections + $inspected_units_site;
+                //     $summary_optimized_remaining_inspections = $summary_optimized_sample_size - $summary_optimized_completed_inspections;
 
-                    $summary_required_file = $summary_required_file + $program['totals_before_optimization'];
-                    $summary_selected_file = $summary_selected_file + $selected_units_file;
-                    $summary_needed_file = $summary_needed_file + $needed_units_file;
-                    $summary_inspected_file = $summary_inspected_file + $inspected_units_file;
-                    $summary_to_be_inspected_file = $summary_to_be_inspected_file + $to_be_inspected_units_file;
-                    $summary_optimized_sample_size_file = $summary_optimized_sample_size_file + $program['totals_after_optimization'];
-                    $summary_optimized_completed_inspections_file = $summary_optimized_completed_inspections_file + $inspected_units_file;
-                    $summary_optimized_remaining_inspections_file = $summary_optimized_sample_size_file - $summary_optimized_completed_inspections_file;
+                //     $summary_required_file = $summary_required_file + $program['totals_before_optimization'];
+                //     $summary_selected_file = $summary_selected_file + $selected_units_file;
+                //     $summary_needed_file = $summary_needed_file + $needed_units_file;
+                //     $summary_inspected_file = $summary_inspected_file + $inspected_units_file;
+                //     $summary_to_be_inspected_file = $summary_to_be_inspected_file + $to_be_inspected_units_file;
+                //     $summary_optimized_sample_size_file = $summary_optimized_sample_size_file + $program['totals_after_optimization'];
+                //     $summary_optimized_completed_inspections_file = $summary_optimized_completed_inspections_file + $inspected_units_file;
+                //     $summary_optimized_remaining_inspections_file = $summary_optimized_sample_size_file - $summary_optimized_completed_inspections_file;
+                // }
+                // 
+                
+                foreach($stats as $stat){
+                    dd($stat);
                 }
 
                 $data['summary'] = [
@@ -984,18 +996,30 @@ class AuditController extends Controller
     }
 
     public function addADay(Request $request, $id){
-        // TBD only authorized users can add days (lead/managers)
         
+
         $audit = Audit::where('id','=',$id)->first();
-        $date = formatDate($request->get('date'), "Y-m-d H:i:s", "F d, Y");
+        
+        if(Auth::user()->id == $audit->lead_user_id || Auth::user()->manager_access()){
+            $date = formatDate($request->get('date'), "Y-m-d H:i:s", "F d, Y");
+            $check = ScheduleDay::where('audit_id',$id)->where('date',$date)->count();
+            if($check < 1){
+                // Day has not been entered yet :)
+                $day = new ScheduleDay([
+                    'audit_id' => $id,
+                    'date' => $date
+                ]);
+                $day->save();
 
-        $day = new ScheduleDay([
-            'audit_id' => $id,
-            'date' => $date
-        ]);
-        $day->save();
+                return 1;
+            } else {
+                return 'This day was already scheduled!';
+            }
+        } else {
+            return 'Sorry, only the lead or a manager can schedule days for an audit.';
+        }
 
-        return 1;
+        
     }
 
     public function deleteDay(Request $request, $id, $day_id){
@@ -1004,43 +1028,50 @@ class AuditController extends Controller
         // 1. delete schedules
         // 2. delete day
         // 3. update estimated needed time and checks by rebuilding CachedAudit 
+            $audit = Audit::where('id','=',$id)->first();
+         if(Auth::user()->id == $audit->lead_user_id || Auth::user()->manager_access()){
+            $schedules = ScheduleTime::where('day_id','=',$day_id)->where('audit_id','=',$id)->delete();
+            $day = ScheduleDay::where('id','=',$day_id)->where('audit_id','=',$id)->delete();
+     
+            // Event::fire('audit.cache', $audit->audit);
 
-        $audit = Audit::where('id','=',$id)->first();
-        $schedules = ScheduleTime::where('day_id','=',$day_id)->where('audit_id','=',$id)->delete();
-        $day = ScheduleDay::where('id','=',$day_id)->where('audit_id','=',$id)->delete();
- 
-        // Event::fire('audit.cache', $audit->audit);
-
-        $output = ['data' => 1];
-        return $output;
+            $output = ['data' => 1];
+            return $output;
+        } else {
+            return 'Sorry, only the lead or a manager can remove days from an audit.';
+        }
     }
 
     public function saveEstimatedHours(Request $request, $id){ 
         // audit id
-        $forminputs = $request->get('inputs');
-        parse_str($forminputs, $forminputs);
+            $forminputs = $request->get('inputs');
+            parse_str($forminputs, $forminputs);
 
-        $hours = (int) $forminputs['estimated_hours'];
-        $minutes = (int) $forminputs['estimated_minutes'];
+            $hours = (int) $forminputs['estimated_hours'];
+            $minutes = (int) $forminputs['estimated_minutes'];
 
-        $audit = CachedAudit::where('audit_id','=',$id)->where('lead','=',Auth::user()->id)->first();
+            $audit = CachedAudit::where('audit_id','=',$id)->where('lead','=',Auth::user()->id)->first();
 
-        $new_estimate = $hours.":".$minutes.":00";
+            $new_estimate = $hours.":".$minutes.":00";
+            if(Auth::user()->id == $audit->audit->lead_user_id || Auth::user()->manager_access()){
+        
+                if($audit){
+                    $audit->update([
+                        'estimated_time' => $new_estimate
+                    ]);
 
-        if($audit){
-            $audit->update([
-                'estimated_time' => $new_estimate
-            ]);
+                    // get new needed time
+                    $audit->fresh();
 
-            // get new needed time
-            $audit->fresh();
+                    $needed = $audit->hours_still_needed();
 
-            $needed = $audit->hours_still_needed();
-
-            return ['status'=>1, 'hours'=> $hours.":".$minutes, 'needed'=>$needed];
-        }else{
-            return ['status'=>0, 'message'=>'Sorry, this audit reference cannot be found or no lead has been set yet.'];
-        }
+                    return ['status'=>1, 'hours'=> $hours.":".$minutes, 'needed'=>$needed];
+                }else{
+                    return ['status'=>0, 'message'=>'Sorry, this audit reference cannot be found or no lead has been set yet.'];
+                }
+            } else {
+                return 'Sorry, only the lead or a manager can input estimated hours for an audit.';
+            }
 
         
     }
@@ -1163,15 +1194,7 @@ class AuditController extends Controller
     //     return view('projects.partials.communications', compact('data'));
     // }
 
-    public function getProjectDocuments($project = null)
-    {
-        if (!is_null($project)) {
-            $documents = \App\Models\Document::where('project_id', $project->id);
-            return view('projects.partials.documents', compact($project));
-        } else {
-            return '<h2 class="uk-text-align-center uk-heading">Sorry.</h2><p align="center">No documents were found attached to this project.<hr> Approximately '.date('mMi').' documents have been found in docuware<br /> and we are assigning them all to their projects. <br /><br />Thanks for your patience!</p>';
-        }
-    }
+    
 
     // public function getProjectNotes($project_id = null)
     // {
@@ -3334,8 +3357,7 @@ class AuditController extends Controller
     }
 
     public function updateStep($id){
-        // can this user have the right to change step?? TBD
-        // 
+         
         $audit = CachedAudit::where('audit_id','=',$id)->first();
         $steps = GuideStep::where('guide_step_type_id','=',1)->orderBy('order','asc')->get();
 
@@ -3343,30 +3365,34 @@ class AuditController extends Controller
     }
 
     public function saveStep(Request $request, $id){
-        $step_id = $request->get('step');
-        $step = GuideStep::where('id','=',$step_id)->first();
-        $audit = CachedAudit::where('id','=',$id)->first();
+           $step_id = $request->get('step');
+            $step = GuideStep::where('id','=',$step_id)->first();
+            $audit = CachedAudit::where('id','=',$id)->first();
 
-        // check if user has the right to save step using roles TBD
-        
-        // add new guide_progress entry
-        $progress = new GuideProgress([
-            'user_id' => Auth::user()->id,
-            'audit_id' => $audit->id,
-            'project_id' => $audit->project_id,
-            'guide_step_id' => $step_id,
-            'type_id' => 1
-        ]);
-        $progress->save();
+            // check if user has the right to save step using roles TBD
+            if(Auth::user()->id == $audit->lead_user_id || Auth::user()->manager_access()){
+         
+                // add new guide_progress entry
+                $progress = new GuideProgress([
+                    'user_id' => Auth::user()->id,
+                    'audit_id' => $audit->id,
+                    'project_id' => $audit->project_id,
+                    'guide_step_id' => $step_id,
+                    'type_id' => 1
+                ]);
+                $progress->save();
 
-        // update CachedAudit table with new step info
-        $audit->update([
-            'step_id' => $step->id,
-            'step_status_icon' => $step->icon,
-            'step_status_text' => $step->step_help,
-        ]);
+                // update CachedAudit table with new step info
+                $audit->update([
+                    'step_id' => $step->id,
+                    'step_status_icon' => $step->icon,
+                    'step_status_text' => $step->step_help,
+                ]);
 
-        return 1;
+                 return 1;
+             }else {
+                return 'Sorry, you do not have the correct permissions to update step progress.';
+             }
     }
 
 }

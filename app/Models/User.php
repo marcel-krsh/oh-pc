@@ -225,7 +225,7 @@ class User extends Authenticatable
     public function pm_access() : bool
     {
         foreach ($this->roles()->get() as $role) {
-            if ($this->hasRole(1)) {
+            if ($this->hasRole(1) || $this->hasRole(2) || $this->hasRole(3) || $this->hasRole(4) || $this->hasRole(5)) {
                 return true;
             }
         }

@@ -15,7 +15,8 @@ class TwoFAController extends Controller
     public function __construct()
     {
         // $this->middleware('auth');
-        Auth::onceUsingId(286); // TEST BRIAN
+        //Auth::onceUsingId(286); // TEST BRIAN
+        Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
     }
 
     public function index($resend = 0)

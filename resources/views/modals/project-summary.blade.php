@@ -22,36 +22,36 @@ resizeModal(95);
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-required"></i> Required Units</div>
 							</td>
-							<td class="uk-text-center border-right">{{$stats['required_units']}}</td>
-							<td class="uk-text-center">{{$stats['required_units_file']}}</td>
+							<td id="stat-req-site" class="uk-text-center border-right">{{$stats['required_units']}}</td>
+							<td id="stat-req-file" class="uk-text-center">{{$stats['required_units_file']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Selected Units</div>
 							</td>
-							<td class="uk-text-center border-right">{{$stats['selected_units']}}</td>
-							<td class="uk-text-center">{{$stats['selected_units_file']}}</td>
+							<td id="stat-sel-site" class="uk-text-center border-right">{{$stats['selected_units']}}</td>
+							<td id="stat-sel-file" class="uk-text-center">{{$stats['selected_units_file']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-needed"></i> Needed Units</div>
 							</td>
-							<td class="uk-text-center border-right">{{$stats['needed_units']}}</td>
-							<td class="uk-text-center">{{$stats['needed_units_file']}}</td>
+							<td id="stat-need-site" class="uk-text-center border-right">{{$stats['needed_units']}}</td>
+							<td id="stat-need-file" class="uk-text-center">{{$stats['needed_units_file']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-inspected"></i> Inspected Units</div>
 							</td>
-							<td class="uk-text-center border-right">{{$stats['inspected_units']}}</td>
-							<td class="uk-text-center">{{$stats['inspected_units_file']}}</td>
+							<td id="stat-insp-site" class="uk-text-center border-right">{{$stats['inspected_units']}}</td>
+							<td id="stat-insp-file" class="uk-text-center">{{$stats['inspected_units_file']}}</td>
 						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-to-be-inspected"></i> To Be Inspected Units</div>
 							</td>
-							<td class="uk-text-center border-right">{{$stats['to_be_inspected_units']}}</td>
-							<td class="uk-text-center">{{$stats['to_be_inspected_units_file']}}</td>
+							<td id="stat-tobeinsp-site" class="uk-text-center border-right">{{$stats['to_be_inspected_units']}}</td>
+							<td id="stat-tobeinsp-file" class="uk-text-center">{{$stats['to_be_inspected_units_file']}}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -198,6 +198,8 @@ resizeModal(95);
 </div>
 
 <script>
+
+	var stats = JSON.parse('{!! json_encode($stats) !!}');
 
 	function filterAll(){
 		$('[id^=summary-btn-]').removeClass('button-filter-selected');
