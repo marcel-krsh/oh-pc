@@ -83,7 +83,7 @@
             	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.fileAuditStatusClass]:true}" :uk-tooltip="audit.tooltipFileAuditStatus" v-on:click="openFindings(this, audit.auditId, null, null, 'file')">
             		<i :class="{[audit.fileAuditIconClass]:true}"></i>
             	</div> 
-            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.nltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipNltAuditStatus" v-on:click="openFindings(this, audit.auditId, null, null, 'nlt')">
+            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.nltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipNltAuditStatus" v-on:click="this.openFindings(this, audit.auditId, null, null, 'nlt')">
             		<i :class="{[audit.nltAuditIconClass]:true}"></i>
             	</div> 
             	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.ltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipLtAuditStatus"  onClick="openFindings(this, audit.auditId, null, null, 'lt')" >
