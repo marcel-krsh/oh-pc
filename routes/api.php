@@ -1280,7 +1280,7 @@ Route::get('/users/verify_user', function (Request $request) {
         Route::get('/parcel_lookup', 'ParcelsController@quickLookup');
 
 
-        Route::get('/cached_audits', function (Request $request) {
+        Route::get('/get_cached_audits', function (Request $request) {
 
             try {
 
@@ -1299,7 +1299,7 @@ Route::get('/users/verify_user', function (Request $request) {
             }
         });
 
-        Route::get('/audits', function (Request $request) {
+        Route::get('/get_audits', function (Request $request) {
 
             try {
 
@@ -1319,7 +1319,7 @@ Route::get('/users/verify_user', function (Request $request) {
         });
 
 
-        Route::get('/buildings', function (Request $request) {
+        Route::get('/get_buildings', function (Request $request) {
 
             try {
 
