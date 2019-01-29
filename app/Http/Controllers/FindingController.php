@@ -138,7 +138,7 @@ class FindingController extends Controller
                 ->whereNull('finding_id')
                 ->whereNull('document_id')
                 ->whereNull('photo_id')
-                ->whereNull('follow_up_id')
+                ->whereNull('followup_id')
                 ->whereNull('comment_id')
                 ->orderBy('updated_at','desc')
                 ->get()
@@ -151,7 +151,7 @@ class FindingController extends Controller
                 ->whereNull('finding_id')
                 ->whereNull('document_id')
                 ->whereNull('photo_id')
-                ->whereNull('follow_up_id')
+                ->whereNull('followup_id')
                 ->orderBy('updated_at','desc')
                 ->get()
                 ->all();
@@ -166,7 +166,7 @@ class FindingController extends Controller
                 ->whereNull('finding_id')
                 ->whereNull('document_id')
                 ->whereNull('photo_id')
-                ->whereNull('follow_up_id')
+                ->whereNull('followup_id')
                 ->orderBy('updated_at','desc')
                 ->get()
                 ->all();
