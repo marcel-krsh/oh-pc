@@ -20,6 +20,14 @@ use App\Models\BuildingInspection;
 use App\Models\Amenity;
 use App\Models\Finding;
 
+use App\Models\Followup;
+
+use App\Models\Comment;
+
+use App\Models\Photo;
+
+use App\Models\SyncDocuware;
+
 
 class FindingController extends Controller
 {
@@ -129,7 +137,7 @@ class FindingController extends Controller
                 ->get()->all();
                 
             //get comments that are only on the root of the project
-            $comments = Comments::where('project_id',$audit->project_id)
+            $comments = Comment::where('project_id',$audit->project_id)
                 ->with('comments')
                 ->whereNull('finding_id')
                 ->whereNull('document_id')
