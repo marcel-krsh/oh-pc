@@ -27,7 +27,7 @@ use App\BreakOutType;
 use App\ExpenseCategory;
 use App\Device;
 use Carbon\Carbon;
-use App\Models\AuditController;
+use App\Http\Controllers\AuditController;
 use App\Models\CachedAudit;
 use App\Models\Building;
 
