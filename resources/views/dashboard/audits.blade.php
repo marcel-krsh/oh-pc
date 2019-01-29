@@ -802,6 +802,9 @@ The following div is defined in this particular tab and pushed to the main layou
             this.loading = 0;
         },
         methods: {
+        	function openFindings(element, auditid, buildingid, unitid='', type,amenity=''){
+				dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1);
+			}
             // loadMore: function () {
                 // var self = this;
                 // self.busy = true;
