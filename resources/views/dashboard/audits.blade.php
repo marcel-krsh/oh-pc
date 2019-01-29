@@ -796,7 +796,7 @@ The following div is defined in this particular tab and pushed to the main layou
                 // page: 1,
                 // loading: 1,
                 // busy: false
-                openFindings: function,
+
             }
         },
         created: function() {
@@ -806,25 +806,7 @@ The following div is defined in this particular tab and pushed to the main layou
         	openFindings: function (element, auditid, buildingid, unitid='', type,amenity=''){
 				dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1);
 			}
-            // loadMore: function () {
-                // var self = this;
-                // self.busy = true;
-                // var tempdiv = '<div uk-spinner style="margin: 20px 0;"></div>';
-                // $('#spinner').html(tempdiv);
-
-                // setTimeout(() => {
-                //     axios.get('dashboard/communications/'+this.page)
-                //         .then((response) => {   
-                //             $.each(response.data, function(index, value) {
-                //                 $('#spinner').html('');
-                //                 self.messages.unshift(value);
-                //             });
-                //         });
-
-                //     this.page = this.page + 1;
-                //     this.busy = false;
-                // }, 2500);
-            //  }
+            
         },
 
         mounted: function() {
