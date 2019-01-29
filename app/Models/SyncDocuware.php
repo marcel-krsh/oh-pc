@@ -13,6 +13,11 @@ class SyncDocuware extends Model
 
     //
     protected $guarded = ['id'];
+
+    public function comments() : HasMany 
+    {
+        return $this->hasMany(App\Models\Comment::class, 'comment_id', 'id');
+    }
    
 
     
