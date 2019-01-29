@@ -1338,4 +1338,24 @@ Route::get('/users/verify_user', function (Request $request) {
             }
         });
 
+
+        Route::get('/get_users', function (Request $request) {
+
+            try {
+
+                $results = User::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
     });
