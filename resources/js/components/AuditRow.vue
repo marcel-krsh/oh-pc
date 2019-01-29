@@ -122,6 +122,10 @@
     export default {
 	    props: ['audit','index'],
 	    methods: {
+            openFindings: function() {
+                dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1);
+                alert('clicked it.');
+            },
             rerunCompliance: function() {
                 rerunCompliance(this.audit.auditId); 
             },
