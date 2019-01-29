@@ -43876,11 +43876,7 @@ var render = function() {
               (_obj$6[_vm.audit.nltAuditStatusClass] = true),
               _obj$6),
               attrs: { "uk-tooltip": _vm.audit.tooltipNltAuditStatus },
-              on: {
-                click: function($event) {
-                  this.openFindings(this, _vm.audit.auditId, null, null, "nlt")
-                }
-              }
+              on: { click: _vm.openFindings }
             },
             [
               _c("i", {

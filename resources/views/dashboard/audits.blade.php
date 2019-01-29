@@ -803,8 +803,9 @@ The following div is defined in this particular tab and pushed to the main layou
             this.loading = 0;
         },
         methods: {
-        	openFindings: function (element, auditid, buildingid, unitid='', type,amenity=''){
-				dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1)
+        	openFindings{
+				//dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1)
+				alert('clicked it.')
 			}
             
         },
