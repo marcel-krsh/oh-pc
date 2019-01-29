@@ -43900,11 +43900,9 @@ var render = function() {
               }),
               (_obj$8[_vm.audit.ltAuditStatusClass] = true),
               _obj$8),
-              attrs: { "uk-tooltip": _vm.audit.tooltipLtAuditStatus },
-              nativeOn: {
-                click: function($event) {
-                  _vm.openFindings(this, _vm.audit.auditId, null, null, "lt")
-                }
+              attrs: {
+                "uk-tooltip": _vm.audit.tooltipLtAuditStatus,
+                onClick: "openFindings(this, audit.auditId, null, null, 'lt')"
               }
             },
             [
