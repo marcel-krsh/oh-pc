@@ -19,13 +19,9 @@ use App\Models\UnitInspection;
 use App\Models\BuildingInspection;
 use App\Models\Amenity;
 use App\Models\Finding;
-
 use App\Models\Followup;
-
 use App\Models\Comment;
-
 use App\Models\Photo;
-
 use App\Models\SyncDocuware;
 
 
