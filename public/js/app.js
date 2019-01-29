@@ -43903,7 +43903,7 @@ var render = function() {
               attrs: {
                 "uk-tooltip": _vm.audit.tooltipLtAuditStatus,
                 onclick:
-                  "openFindings(this, { audit.auditId }, null, null, 'lt')"
+                  "openFindings(this, {[audit.auditId]:true}, null, null, 'lt')"
               }
             },
             [
