@@ -1747,6 +1747,8 @@ margin-top:10px;
 .inspection-area {
     border-bottom: 1px solid #cccccc !important;
     padding-top: 6px;
+    max-height: 48px;
+    height: 48px;
 }
 .inspection-area:last-child {
     border-bottom: 0px solid #cccccc !important;
@@ -1756,6 +1758,7 @@ margin-top:10px;
 }
 .inspection-area .area-name {
   padding-left:10px;
+      margin-top: 5px;
 }
 #auditstable .inspection-area .area-name i {
     vertical-align: middle;

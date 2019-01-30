@@ -41,11 +41,6 @@ class Photo extends Model
         return $this->hasOne(App\Models\Photo::class, 'id', 'photo_id');
     }
 
-    public function document() : HasOne 
-    {
-        return $this->hasOne(App\Models\SyncDocuware::class, 'id', 'document_id');
-    }
-
     public function finding() : HasOne 
     {
         return $this->hasOne(App\Models\Finding::class, 'id', 'finding_id');

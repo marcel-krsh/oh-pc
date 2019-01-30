@@ -49,15 +49,15 @@
                         <i class="a-calendar-7 action-needed use-hand-cursor" uk-tooltip="Click to schedule audits"></i>
                     </div>
             	</div> 
-                <div v-if="audit.auditor_access">
-                	<div class="uk-width-1-6 uk-text-right uk-padding-remove" uk-tooltip="0 UNITS ASSIGNED TO YOU" v-html="audit.inspectableItems+' /'" v-if="audit.inspectableItems < 1 "></div>
-                    <div class="uk-width-1-6 uk-text-right uk-padding-remove" :uk-tooltip="audit.tooltipInspectableItems" v-html="audit.inspectableItems+' /'" v-if="audit.inspectableItems > 0"></div> 
+                
+                	<div class="uk-width-1-6 uk-text-right uk-padding-remove" uk-tooltip="0 UNITS ASSIGNED TO YOU" v-html="audit.inspectableItems+' /'" v-if="audit.auditor_access && audit.inspectableItems < 1 "></div>
+                    <div class="uk-width-1-6 uk-text-right uk-padding-remove" :uk-tooltip="audit.tooltipInspectableItems" v-html="audit.inspectableItems+' /'" v-if="audit.auditor_access && audit.inspectableItems > 0"></div> 
 
-                	<div class="uk-width-1-6 uk-text-left uk-padding-remove" :uk-tooltip="audit.totalItems + ' TOTAL UNITS WILL BE INSPECTED'" v-html="audit.totalItems"></div> 
-                	<div class="uk-width-1-6 uk-text-left">
+                	<div v-if="audit.auditor_access" class="uk-width-1-6 uk-text-left uk-padding-remove" :uk-tooltip="audit.totalItems + ' TOTAL UNITS WILL BE INSPECTED'" v-html="audit.totalItems"></div> 
+                	<div v-if="audit.auditor_access" class="uk-width-1-6 uk-text-left">
                 		<i :class="{[audit.complianceIconClass]:true, [audit.complianceStatusClass]:true}" :uk-tooltip="audit.tooltipComplianceStatus" v-on:click="rerunCompliance"></i>
                 	</div>
-                </div>
+                 
             </div>
         </td>
         <td class="hasdivider audit-td-due">
@@ -80,13 +80,13 @@
         <td class="hasdivider">
         	<div class="divider"></div>
         	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
-            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.fileAuditStatusClass]:true}" :uk-tooltip="audit.tooltipFileAuditStatus">
+            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.fileAuditStatusClass]:true}" :uk-tooltip="audit.tooltipFileAuditStatus" v-on:click="openFindings(this, audit.auditId, null, null, 'file')">
             		<i :class="{[audit.fileAuditIconClass]:true}"></i>
             	</div> 
-            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.nltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipNltAuditStatus">
+            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.nltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipNltAuditStatus" v-on:click="openFindings(this, audit.auditId, null, null, 'lt')">
             		<i :class="{[audit.nltAuditIconClass]:true}"></i>
             	</div> 
-            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.ltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipLtAuditStatus">
+            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.ltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipLtAuditStatus"  v-on:click="openFindings(this, audit.auditId, null, null, 'lt')" >
             		<i :class="{[audit.ltAuditIconClass]:true}"></i>
             	</div> 
             </div>
@@ -122,6 +122,9 @@
     export default {
 	    props: ['audit','index'],
 	    methods: {
+            openFindings: function (element, auditid, buildingid, unitid='null', type='null',amenity='null') {
+                dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1);
+            },
             rerunCompliance: function() {
                 rerunCompliance(this.audit.auditId); 
             },

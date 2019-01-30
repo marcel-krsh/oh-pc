@@ -27,4 +27,6 @@ class AmenityInspection extends Model
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'auditor_id');
     }
+
+    
 }

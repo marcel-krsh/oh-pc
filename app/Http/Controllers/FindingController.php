@@ -18,7 +18,12 @@ use App\Models\AmenityInspection;
 use App\Models\UnitInspection;
 use App\Models\BuildingInspection;
 use App\Models\Amenity;
-use App\Models\Findings;
+use App\Models\Finding;
+use App\Models\FindingType;
+use App\Models\Followup;
+use App\Models\Comment;
+use App\Models\Photo;
+use App\Models\SyncDocuware;
 
 
 class FindingController extends Controller
@@ -64,9 +69,10 @@ class FindingController extends Controller
         $buildings = null;
         $units = null;
         $amenities = null;
+        $allFindings = null;
 
         if($auditid){
-            $audit = CachedAudit::where('audit_id',$auditid)->first();
+            $audit = CachedAudit::where('audit_id',$auditid)->with('inspection_items')->with('inspection_items.amenity.finding_types')->with('inspection_items.amenity.finding_types.boilerplates()')->first();
         }
         if($buildingid){
             // always use the audit id as a selector to ensure you get the correct one
@@ -83,6 +89,8 @@ class FindingController extends Controller
         if(is_null($audit)){
             return "alert('No audit found for ID:".$auditid."');";
         }
+
+        $allFindingTypes = FindingType::select('*')->with('boilerplates.boilerplate')->orderBy('type','asc')->orderBy('name','asc')->get();
         //dd($audit);
         /// All of them for switching
             $audits = CachedAudit::where('project_id',$audit->project_id)->get()->all();
@@ -96,7 +104,7 @@ class FindingController extends Controller
             // always use the audit id as a selector to ensure you get the correct one
             $amenities = AmenityInspection::where('audit_id',$auditid)->where('unit_id',$unitid)->get()->all(); 
 
-            $findings = Findings::where('project_id',$audit->project_id)
+            $findings = Finding::where('project_id',$audit->project_id)
                 ->with('comments')
                 ->with('comments.comments')
                 ->with('photos')
@@ -129,12 +137,12 @@ class FindingController extends Controller
                 ->get()->all();
                 
             //get comments that are only on the root of the project
-            $comments = Comments::where('project_id',$audit->project_id)
+            $comments = Comment::where('project_id',$audit->project_id)
                 ->with('comments')
                 ->whereNull('finding_id')
                 ->whereNull('document_id')
                 ->whereNull('photo_id')
-                ->whereNull('follow_up_id')
+                ->whereNull('followup_id')
                 ->whereNull('comment_id')
                 ->orderBy('updated_at','desc')
                 ->get()
@@ -145,9 +153,8 @@ class FindingController extends Controller
                 ->with('comments')
                 ->with('comments.comments')
                 ->whereNull('finding_id')
-                ->whereNull('document_id')
                 ->whereNull('photo_id')
-                ->whereNull('follow_up_id')
+                ->whereNull('followup_id')
                 ->orderBy('updated_at','desc')
                 ->get()
                 ->all();
@@ -160,9 +167,8 @@ class FindingController extends Controller
                 ->with('photos.comments')
                 ->with('photos.comments.comments')
                 ->whereNull('finding_id')
-                ->whereNull('document_id')
                 ->whereNull('photo_id')
-                ->whereNull('follow_up_id')
+                ->whereNull('followup_id')
                 ->orderBy('updated_at','desc')
                 ->get()
                 ->all();
@@ -364,7 +370,7 @@ class FindingController extends Controller
                 ]
             ]
         ]);
-        return view('modals.findings', compact('data', 'checkDoneAddingFindings', 'type'));
+        return view('modals.findings', compact('data', 'checkDoneAddingFindings', 'type' , 'photos','comments','findings','documents','unit','building','amenity','project','followups','audits','buildings','amenities','allFindingTypes'));
     }
 
     function findingItems($findingid, $itemid = '')

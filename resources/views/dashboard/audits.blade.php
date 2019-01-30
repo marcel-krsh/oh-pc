@@ -64,9 +64,9 @@
 				<div class="linespattern"></div>
 				<span id="" class="uk-position-bottom-center colored"><small><span class="rowindex" style="display:none;">areaRowId</span></small></span>
 			</div>
-	    	<div class="uk-inline uk-padding-remove" style="margin-top:7px; ">
+	    	<div class="uk-inline uk-padding-remove" style="margin-top:10px; ">
     			<div class="area-avatar">
-					<div uk-tooltip="pos:top-left;title:areaAuditorName;" title="" aria-expanded="false" class="user-badge auditor-badge-areaAuditorColor no-float">
+					<div uk-tooltip="pos:top-left;title:areaAuditorName;" title="" aria-expanded="false" class="user-badge auditor-badge-areaAuditorColor no-float use-hand-cursor">
 						areaAuditorInitials
 					</div>
 				</div>
@@ -166,11 +166,10 @@
 		<div id="auditsfilters" class="uk-width-2-3 uk-margin-top">
 			@if(isset($auditFilterMineOnly))
 			<div id="audit-filter-mine" class="uk-badge uk-text-right@s badge-filter">
-				@if(Auth::user()->isManager)
-				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'yes']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>MY AUDITS ONLY</span></a>
+				@can('access_auditor')
+				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'no']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>MY AUDITS ONLY</span></a>
 				@else
-				<span>&nbsp;MY AUDITS ONLY</span>
-				@endif
+				@endcan
 			</div>
 			@endif
 			<div id="audit-filter-project" class="uk-badge uk-text-right@s badge-filter" hidden>
@@ -796,31 +795,15 @@ The following div is defined in this particular tab and pushed to the main layou
                 // page: 1,
                 // loading: 1,
                 // busy: false
+
             }
         },
         created: function() {
             this.loading = 0;
         },
         methods: {
-            // loadMore: function () {
-                // var self = this;
-                // self.busy = true;
-                // var tempdiv = '<div uk-spinner style="margin: 20px 0;"></div>';
-                // $('#spinner').html(tempdiv);
-
-                // setTimeout(() => {
-                //     axios.get('dashboard/communications/'+this.page)
-                //         .then((response) => {   
-                //             $.each(response.data, function(index, value) {
-                //                 $('#spinner').html('');
-                //                 self.messages.unshift(value);
-                //             });
-                //         });
-
-                //     this.page = this.page + 1;
-                //     this.busy = false;
-                // }, 2500);
-            //  }
+        	
+            
         },
 
         mounted: function() {

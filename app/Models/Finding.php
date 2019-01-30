@@ -21,6 +21,16 @@ class Finding extends Model
     	return $this->hasMany(App\Models\Comment::class, 'finding_id', 'id');
     }
 
+    public function boilerplates() 
+    {
+       $boilerplates = \DB::table('boilerplates')
+            ->join('finding_type_boilerplates', 'boilerplates.id', '=', 'finding_type_boilerplates.finding_id')
+            ->where('finding_type_boilerplates.finding_id',$this->id)
+            ->select('boilerplates.*')->get();
+
+        return $boilerplates;
+    }
+
     public function photos() : HasMany 
     {
     	return $this->hasMany(App\Models\Photo::class, 'finding_id', 'id');
