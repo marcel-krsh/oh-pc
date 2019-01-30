@@ -1577,6 +1577,7 @@ margin-top:10px;
     margin-left: 20px;
     height: 100%;
     padding-top: 20px;
+        min-height: 96px;
 }
 
 #auditstable table td .building-type-bottom {

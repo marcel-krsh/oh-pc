@@ -53,6 +53,8 @@ class ComplianceGenerator extends Controller
 	                'building_id'=>$b->id,
 	                'amenity_id'=>$ba->amenity_id,
 	                'amenity_key'=>$ba->amenity_key,
+                    'project_id'=>$audit->project_id,
+                    'development_key'=>$audit->development_key,
 
 	           ]);
 	   		}
@@ -66,6 +68,10 @@ class ComplianceGenerator extends Controller
 	                'unit_id'=>$ua->unit_id,
 	                'amenity_id'=>$ua->amenity_id,
 	                'amenity_key'=>$ua->amenity_key,
+                    'building_key'=>$b->building_key,
+                    'building_id'=>$b->id,
+                    'project_id'=>$audit->project_id,
+                    'development_key'=>$audit->development_key,
 
 	           ]);
 	   		}
