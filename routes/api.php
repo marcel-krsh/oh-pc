@@ -29,6 +29,8 @@ use App\Device;
 use Carbon\Carbon;
 use App\Models\Audit;
 use App\Models\CachedAudit;
+use App\Models\CachedBuilding;
+use App\Models\CachedUnit;
 use App\Models\Building;
 
 /*
@@ -1285,6 +1287,44 @@ Route::get('/users/verify_user', function (Request $request) {
             try {
 
                 $results = CachedAudit::where('step_id','1')->get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+        Route::get('/get_cached_buildings', function (Request $request) {
+
+            try {
+
+                $results = CachedBuilding::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+        Route::get('/get_cached_units', function (Request $request) {
+
+            try {
+
+                $results = CachedUnit::get();
 
                 if ($results) {
                     $reply = $results;
