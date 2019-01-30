@@ -21,15 +21,18 @@
 	</div>
 </div>
 <script>
-	function saveAuditorToAmenity(amenity_id, audit_id, building_id, unit_id){
+	function saveAuditorToAmenity(amenity_id, audit_id, building_id, unit_id, element){
 		$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign', {
 			'auditor_id' : $('#auditor_id').val(),
             '_token' : '{{ csrf_token() }}'
         }, function(data) {
-            if(data!=1){ 
+            if(data==0){ 
                 UIkit.modal.alert(data,{stack: true});
             } else {
                 UIkit.notification('<span uk-icon="icon: check"></span> Auditor Assigned', {pos:'top-right', timeout:1000, status:'success'});
+                // reload inspection screen
+                var target = $('#{{$element}}').html(data);
+
                 dynamicModalClose();
             }
         } );

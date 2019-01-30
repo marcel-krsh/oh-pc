@@ -381,7 +381,7 @@ class AuditController extends Controller
         //return view('dashboard.partials.audit_building_inspection', compact('audit_id', 'target', 'detail_id', 'building_id', 'detail', 'inspection', 'areas', 'rowid'));
     }
 
-    public function assignAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id)
+    public function assignAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id, $element)
     {
         if($unit_id != "null"){ 
             $amenity = AmenityInspection::where('amenity_id','=',$amenity_id)
@@ -401,7 +401,7 @@ class AuditController extends Controller
 
         $auditors = CachedAudit::where('audit_id','=',$audit_id)->first()->auditors;
         
-        return view('modals.auditor-amenity-assignment', compact('auditors', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id'));
+        return view('modals.auditor-amenity-assignment', compact('auditors', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element'));
     }
 
     public function saveAssignAuditorToAmenity(Request $request, $amenity_id, $audit_id, $building_id, $unit_id)
@@ -420,7 +420,9 @@ class AuditController extends Controller
                 }
                 $amenity->auditor_id = $auditor_id;
                 $amenity->save(); 
-                return 1;
+
+                $user = $amenity->user->initials();
+                return $user;
             } 
         }
 

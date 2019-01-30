@@ -1517,7 +1517,7 @@ margin-top:10px;
 .buildings > div > div.building:hover,
 .buildings > div > div > div.building-details > div > div.building:not([expanded="true"]):hover,
 .buildings > div > div.building:hover .findings-icon-status span.uk-badge{
-  background-color:#f0f0f0;
+  /* background-color:#f0f0f0; */
 }
 .building-details > div > div.building:nth-of-type(odd),
 .building-details > div > div > div.building-details > div > div.building:nth-of-type(odd),

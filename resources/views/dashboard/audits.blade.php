@@ -66,7 +66,7 @@
 			</div>
 	    	<div class="uk-inline uk-padding-remove" style="margin-top:10px; ">
     			<div class="area-avatar">
-					<div uk-tooltip="pos:top-left;title:areaAuditorName;" title="" aria-expanded="false" class="user-badge auditor-badge-areaAuditorColor no-float use-hand-cursor" onclick="assignAuditor(areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity);">
+					<div id="auditor-areaDataAudit-areaDataBuilding-areaDataArea-areaDataAmenity" uk-tooltip="pos:top-left;title:areaAuditorName;" title="" aria-expanded="false" class="user-badge auditor-badge-areaAuditorColor no-float use-hand-cursor" onclick="assignAuditor(areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity, 'auditor-areaDataAudit-areaDataBuilding-areaDataArea-areaDataAmenity');">
 						areaAuditorInitials
 					</div>
 				</div>
@@ -753,9 +753,8 @@ The following div is defined in this particular tab and pushed to the main layou
     @endcan
 
     @can('access_auditor')
-    function assignAuditor(audit_id, building_id, unit_id, amenity_id){
-    	console.log("assigning auditor to "+amenity_id);
-    	dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign');
+    function assignAuditor(audit_id, building_id, unit_id, amenity_id, element){
+    	dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element);
     }
     @endcan
 
