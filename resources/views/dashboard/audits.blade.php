@@ -166,11 +166,10 @@
 		<div id="auditsfilters" class="uk-width-2-3 uk-margin-top">
 			@if(isset($auditFilterMineOnly))
 			<div id="audit-filter-mine" class="uk-badge uk-text-right@s badge-filter">
-				@if(Auth::user()->isManager)
-				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'yes']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>MY AUDITS ONLY</span></a>
+				@can('access_auditor')
+				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'no']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>MY AUDITS ONLY</span></a>
 				@else
-				<span>&nbsp;MY AUDITS ONLY</span>
-				@endif
+				@endcan
 			</div>
 			@endif
 			<div id="audit-filter-project" class="uk-badge uk-text-right@s badge-filter" hidden>
