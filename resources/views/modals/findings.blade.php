@@ -133,10 +133,10 @@
 			<div class="modal-findings-left-main">
 				<div id="modal-findings-list-filters" class="uk-margin uk-child-width-auto uk-grid filter-checkbox-list js-filter-findings">
 						@foreach($allFindingTypes as $findingType)
-						<div id="filter-checkbox-list-item-{{$findingType->id}}" class=" uk-padding-remove filter-checkbox-list-item" data-finding="{{$findingType->type}}" data-title-finding="{{$findingType->name}}" uk-grid>
+						<div id="filter-checkbox-list-item-{{$findingType->id}}" class="finding-type-list-item uk-padding-remove all filter-checkbox-list-item {{strtolower($findingType->type)}} {{str_replace('\\','',strtolower($findingType->name))}} @if($findingType->site) site @endIf @if($findingType->building_system) building system @endIf @if($findingType->building_exterior) building exterior @endIf @if($findingType->common_area) common area @endIf" uk-grid style="overflow: hidden;">
 							<div class="uk-width-1-1 uk-padding-remove indented">
-					            <input id="filter-findings-filter-{{$findingType->id}}" value="" type="checkbox" data-finding="{{$findingType->type}} @if($findingType->site) ,site @endIf @if($findingType->building_system) ,building_system @endIf @if($findingType->building_exterior) , building_exterior @endIf " onclick="newFinding({{$findingType->id}});"/>
-								<label for="filter-findings-filter-{{$findingType->id}}" data-finding="{{$findingType->type}}" ><i class="@if($findingType->type == 'lt')a-skull @endIf @if($findingType->type == 'nlt')a-booboo @endIf @if($findingType->type == 'file')a-folder @endIf  "></i> @if($findingType->building_exterior)<span uk-tooltip title="Building Exterior"> BE </span>|@endif @if($findingType->building_system)<span uk-tooltip title="Building System"> BS </span>|@endif @if($findingType->site)<span uk-tooltip title="Site"> S </span>|@endif @if($findingType->common_area)<span uk-tooltip title="Common Area"> CA </span>|@endif @if($findingType->unit)<span uk-tooltip title="Unit"> U </span>|@endif @if($findingType->file)<span uk-tooltip title="File"> F </span>|@endif {{$findingType->name}} </label>
+					            <input id="filter-findings-filter-{{$findingType->id}}" value="" type="checkbox" onclick="newFinding({{$findingType->id}});"/>
+								<label for="filter-findings-filter-{{$findingType->id}}" ><i class="@if($findingType->type == 'lt')a-skull @endIf @if($findingType->type == 'nlt')a-booboo @endIf @if($findingType->type == 'file')a-folder @endIf  "></i> @if($findingType->building_exterior)<span uk-tooltip title="Building Exterior"> BE </span>|@endif @if($findingType->building_system)<span uk-tooltip title="Building System"> BS </span>|@endif @if($findingType->site)<span uk-tooltip title="Site"> S </span>|@endif @if($findingType->common_area)<span uk-tooltip title="Common Area"> CA </span>|@endif @if($findingType->unit)<span uk-tooltip title="Unit"> U </span>|@endif @if($findingType->file)<span uk-tooltip title="File"> F </span>|@endif {{$findingType->name}} </label>
 							</div>
 						</div>
 						@endforeach
@@ -149,30 +149,30 @@
 				<div uk-grid>
 			        <div class="uk-inline uk-width-1-2">
 			            <i class="a-magnify-2 uk-form-icon"></i>
-			            <input name="finding-description" id="finding-description" class="uk-input button-filter" placeholder="ENTER FINDING DESCRIPTION" type="text">
+			            <input type='text' name="finding-description" id="finding-description" class="uk-input button-filter" placeholder="ENTER FINDING DESCRIPTION" type="text">
 			        </div>
 			        <div class="uk-inline uk-width-1-2">
 			        	<div uk-grid>
 			        		<div class="uk-width-1-4">
-			        			<button id="all-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter uk-active" uk-filter-control title="Show All Findings (Unfiltered)" onclick="$('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#all-findings-filter').fadeIn();"><i class="uk-icon-asterisk"></i></button>
+			        			<button id="all-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter uk-active"  title="Show All Findings (Unfiltered)" onclick="$('.lt').fadeOut();$('.nlt').fadeOut();$('.file').fadeOut();$('.all').fadeIn(); $('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#all-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#all-filter-button').addClass('uk-active');"><i class="uk-icon-asterisk"></i></button>
 					        	<span id="all-findings-filter"  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false" @if($type != 'all') style="display: none;" @endIf>
 									<a  class="sort-desc"></a>
 								</span>
 			        		</div>
 			        		<div class="uk-width-1-4">
-			        			<button id="file-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='file'];" title="Show File Findings Only" onclick="$('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeIn();$('#all-findings-filter').fadeOut();"><i class="a-folder"></i></button>
+			        			<button id="file-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show File Findings Only" onclick="$('.lt').fadeOut();$('.nlt').fadeOut();$('.all').fadeOut();$('.file').fadeIn(); $('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#file-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#file-filter-button').addClass('uk-active');"><i class="a-folder"></i></button>
 					        	<span id="file-findings-filter" @if($type != 'file') style="display: none;" @endIf  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
 									<a  class="sort-desc"></a>
 								</span>
 			        		</div>
 			        		<div class="uk-width-1-4">
-			        			<button id="nlt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='nlt'];" title="Show Non-life Threatning Findings Only" onclick="$('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeIn();$('#file-findings-filter').fadeOut();$('#all-findings-filter').fadeOut();"><i class="a-booboo"></i></button>
+			        			<button id="nlt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show Non-life Threatning Findings Only" onclick="$('.lt').fadeOut();$('.nlt').fadeOut();$('.all').fadeOut();$('.nlt').fadeIn(); $('#all-findings-filter').fadeOut();  $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#nlt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#nlt-filter-button').addClass('uk-active');"><i class="a-booboo"></i></button>
 					        	<span id="nlt-findings-filter" @if($type != 'nlt') style="display: none;" @endIf class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
 									<a  class="sort-desc"></a>
 								</span>
 			        		</div>
 			        		<div class="uk-width-1-4">
-			        			<button id="lt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" uk-filter-control="filter: [data-finding='lt'];" title="Show Life Threatning Findings Only" onclick="$('#lt-findings-filter').fadeIn();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#all-findings-filter').fadeOut();"><i class="a-skull"></i></button>
+			        			<button id="lt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show Life Threatning Findings Only" onclick="$('.lt').fadeOut();$('.nlt').fadeOut();$('.all').fadeOut();$('.lt').fadeIn(); $('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#lt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#lt-filter-button').addClass('uk-active');"><i class="a-skull"></i></button>
 					        	<span id="lt-findings-filter" @if($type != 'lt') style="display: none;" @endIf  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
 									<a  class="sort-desc"></a>
 								</span>
@@ -185,7 +185,54 @@
 		</div>
 	</div>
 </div>
+<script>
 
+        // filter recipients based on class
+        $('#finding-description').on('keyup', function () {
+          var searchString = $(this).val().toLowerCase();
+          console.log(searchString);
+          if(searchString.length > 0){
+              $('.finding-type-list-item').hide();
+              $('.finding-type-list-item[class*="' + searchString + '"]').show();
+              console.log('searching '+'.finding-type-list-item[class*="' + searchString + '"]');
+              if($('#lt-filter-button').hasClass('uk-active')){
+              	$('.nlt').hide(); $('.file').hide();
+              	console.log('hiding nlt and file');
+              }
+              if($('#nlt-filter-button').hasClass('uk-active')){
+              	$('.lt').hide(); $('.file').hide();
+              	console.log('hiding lt and file');
+              }
+              if($('#file-filter-button').hasClass('uk-active')){
+              	$('.nlt').hide(); $('.lt').hide();
+              	console.log('hiding nlt and lt');
+              }
+          }else{
+              if($('#lt-filter-button').hasClass('uk-active')){
+              	$('.nlt').hide(); $('.file').hide();$('.lt').fadeIn();
+              	console.log('showing lt');
+              }
+              if($('#nlt-filter-button').hasClass('.uk-active')){
+              	$('.lt').hide(); $('.file').hide();$('.nlt').fadeIn();
+              	console.log('showing nlt');
+              }
+              if($('#file-filter-button').hasClass('.uk-active')){
+              	$('.nlt').hide(); $('.lt').hide(); $('.file').fadeIn();
+              	console.log('showing file');
+              }
+              if($('#all-filter-button').hasClass('.uk-active')){
+              	$('.all').fadeIn();
+              	console.log('showing all');
+              }
+          }
+        });
+
+
+        
+        
+		
+	
+</script>
 
 @include('templates.modal-findings-new-form')
 @include('templates.modal-findings-new')
