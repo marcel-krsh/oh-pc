@@ -192,6 +192,8 @@
 
         Route::get('/modals/amenities/add/{type}/{id}', 'AuditController@addAmenity')->name('amenities.add');
         Route::post('/modals/amenities/save', 'AuditController@saveAmenity')->name('amenities.save');
+        Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/assign', 'AuditController@assignAuditorToAmenity')->name('amenities.assign.auditor');
+        Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/assign', 'AuditController@saveAssignAuditorToAmenity')->name('amenities.assign.auditor.save');
 
         Route::post('/autosave', 'DataController@autosave');
 

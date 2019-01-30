@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Audit;
+use App\Models\Building;
+use App\Models\Unit;
 use App\Models\Project;
 use App\Models\CachedAudit;
 use App\Models\CachedBuilding;
@@ -313,7 +315,6 @@ class AuditController extends Controller
 
         $data_amenities = array();
         foreach($amenities as $amenity){
-            // dd($amenity->amenity);
 
             if($amenity->amenity_inspection->auditor_id !== NULL){
                 $auditor_initials = $amenity->amenity_inspection->user->initials();
@@ -378,6 +379,52 @@ class AuditController extends Controller
 
         return response()->json($data);
         //return view('dashboard.partials.audit_building_inspection', compact('audit_id', 'target', 'detail_id', 'building_id', 'detail', 'inspection', 'areas', 'rowid'));
+    }
+
+    public function assignAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id)
+    {
+        if($unit_id != "null"){ 
+            $amenity = AmenityInspection::where('amenity_id','=',$amenity_id)
+                                        ->where('audit_id','=',$audit_id)
+                                        ->where('building_id','=',$building_id)
+                                        ->where('unit_id','=',$unit_id)
+                                        ->first();
+            $name = "Unit ".Unit::where('id','=',$unit_id)->first()->unit_name;
+        }else{ 
+            $amenity = AmenityInspection::where('amenity_id','=',$amenity_id)
+                                        ->where('audit_id','=',$audit_id)
+                                        ->where('building_id','=',$building_id)
+                                        ->where('unit_id','=',NULL)
+                                        ->first();
+            $name = "Building ".Building::where('id', '=', $building_id)->first()->building_name;
+        }
+
+        $auditors = CachedAudit::where('audit_id','=',$audit_id)->first()->auditors;
+        
+        return view('modals.auditor-amenity-assignment', compact('auditors', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id'));
+    }
+
+    public function saveAssignAuditorToAmenity(Request $request, $amenity_id, $audit_id, $building_id, $unit_id)
+    {
+        $auditor_id = $request->get('auditor_id');
+
+        if($auditor_id){
+            //dd(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$auditor_id)->first(), $audit_id, $auditor_id);
+
+            // make sure this id is already in the auditor's list for this audit
+            if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$auditor_id)->first()){ 
+                if($unit_id != "null"){
+                    $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('building_id', '=', $building_id)->where('unit_id','=',$unit_id)->first();
+                }else{
+                    $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('building_id', '=', $building_id)->where('unit_id','=',NULL)->first();
+                }
+                $amenity->auditor_id = $auditor_id;
+                $amenity->save(); 
+                return 1;
+            } 
+        }
+
+        return 0;
     }
 
     public function getProject($id = null)
