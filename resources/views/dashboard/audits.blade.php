@@ -64,9 +64,9 @@
 				<div class="linespattern"></div>
 				<span id="" class="uk-position-bottom-center colored"><small><span class="rowindex" style="display:none;">areaRowId</span></small></span>
 			</div>
-	    	<div class="uk-inline uk-padding-remove" style="margin-top:7px; ">
+	    	<div class="uk-inline uk-padding-remove" style="margin-top:10px; ">
     			<div class="area-avatar">
-					<div uk-tooltip="pos:top-left;title:areaAuditorName;" title="" aria-expanded="false" class="user-badge auditor-badge-areaAuditorColor no-float">
+					<div uk-tooltip="pos:top-left;title:areaAuditorName;" title="" aria-expanded="false" class="user-badge auditor-badge-areaAuditorColor no-float use-hand-cursor">
 						areaAuditorInitials
 					</div>
 				</div>
