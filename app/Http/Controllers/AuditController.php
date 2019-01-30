@@ -472,7 +472,6 @@ class AuditController extends Controller
         if($unit_id != "null"){ 
             $amenity = AmenityInspection::where('amenity_id','=',$amenity_id)
                                         ->where('audit_id','=',$audit_id)
-                                        ->where('building_id','=',$building_id)
                                         ->where('unit_id','=',$unit_id)
                                         ->first();
             $name = "Unit ".Unit::where('id','=',$unit_id)->first()->unit_name;
@@ -500,7 +499,7 @@ class AuditController extends Controller
             // make sure this id is already in the auditor's list for this audit
             if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$auditor_id)->first()){ 
                 if($unit_id != "null"){
-                    $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('building_id', '=', $building_id)->where('unit_id','=',$unit_id)->first();
+                    $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('unit_id','=',$unit_id)->first();
                 }else{
                     $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('building_id', '=', $building_id)->where('unit_id','=',NULL)->first();
                 }
