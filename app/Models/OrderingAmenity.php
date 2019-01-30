@@ -43,7 +43,12 @@ class OrderingAmenity extends Model
 
     public function amenity_inspection() : HasOne
     {
-        return $this->hasOne(\App\Models\AmenityInspection::class, 'amenity_id', 'amenity_id')->where('building_id','=',$this->building_id);
+        if($this->unit_id)
+        {
+            return $this->hasOne(\App\Models\AmenityInspection::class, 'amenity_id', 'amenity_id')->where('unit_id','=',$this->unit_id);
+        }else{
+            return $this->hasOne(\App\Models\AmenityInspection::class, 'amenity_id', 'amenity_id')->where('building_id','=',$this->building_id);
+        }
     }
 
     /**
