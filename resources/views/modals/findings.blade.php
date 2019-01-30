@@ -132,11 +132,11 @@
 		<div class="modal-findings-left-main-container">
 			<div class="modal-findings-left-main">
 				<div id="modal-findings-list-filters" class="uk-margin uk-child-width-auto uk-grid filter-checkbox-list js-filter-findings">
-						@foreach($data['finding-types'] as $finding_type)
-						<div id="filter-checkbox-list-item-{{$finding_type['id']}}" class=" uk-padding-remove filter-checkbox-list-item" data-finding="{{$finding_type['type']}}" data-title-finding="{{$finding_type['name']}}" uk-grid>
+						@foreach($allFindingTypes as $findingType)
+						<div id="filter-checkbox-list-item-{{$findingType->id}}" class=" uk-padding-remove filter-checkbox-list-item" data-finding="{{$findingType->type}}" data-title-finding="{{$findingType->name}}" uk-grid>
 							<div class="uk-width-1-1 uk-padding-remove indented">
-					            <input id="filter-findings-filter-{{$finding_type['id']}}" value="" type="checkbox" data-finding="{{$finding_type['type']}}" onclick="newFinding({{$finding_type['id']}});"/>
-								<label for="filter-findings-filter-{{$finding_type['id']}}" data-finding="{{$finding_type['type']}}" ><i class="{{$finding_type['icon']}}"></i> {{$finding_type['name']}}</label>
+					            <input id="filter-findings-filter-{{$findingType->id}}" value="" type="checkbox" data-finding="{{$findingType->type}} @if($findingType->site) ,site @endIf @if($findingType->building_system) ,building_system @endIf @if($findingType->building_exterior) , building_exterior @endIf " onclick="newFinding({{$findingType->id}});"/>
+								<label for="filter-findings-filter-{{$findingType->id}}" data-finding="{{$findingType->type}}" ><i class="@if($findingType->type == 'lt')a-skull @endIf @if($findingType->type == 'nlt')a-booboo @endIf @if($findingType->type == 'file')a-folder @endIf  "></i> @if($findingType->building_exterior)<span uk-tooltip title="Building Exterior"> BE </span>|@endif @if($findingType->building_system)<span uk-tooltip title="Building System"> BS </span>|@endif @if($findingType->site)<span uk-tooltip title="Site"> S </span>|@endif @if($findingType->common_area)<span uk-tooltip title="Common Area"> CA </span>|@endif @if($findingType->unit)<span uk-tooltip title="Unit"> U </span>|@endif @if($findingType->file)<span uk-tooltip title="File"> F </span>|@endif {{$findingType->name}} </label>
 							</div>
 						</div>
 						@endforeach
