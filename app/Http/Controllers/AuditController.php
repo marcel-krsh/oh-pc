@@ -319,7 +319,7 @@ class AuditController extends Controller
                 $auditor_initials = $amenity->amenity_inspection->user->initials();
                 $auditor_name = $amenity->amenity_inspection->user->full_name();
             }else{
-                $auditor_initials = '<i class="a-avatar-plus"></i>';
+                $auditor_initials = '<i class="a-avatar-plus_1"></i>';
                 $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
             }
 
@@ -436,7 +436,7 @@ class AuditController extends Controller
                 $auditor_initials = $amenity->amenity_inspection->user->initials();
                 $auditor_name = $amenity->amenity_inspection->user->full_name();
             }else{
-                $auditor_initials = '<i class="a-avatar-plus"></i>';
+                $auditor_initials = '<i class="a-avatar-plus_1"></i>';
                 $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
             }
 
