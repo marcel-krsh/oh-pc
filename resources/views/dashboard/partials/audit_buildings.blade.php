@@ -20,8 +20,8 @@
 															@if(count($building->auditors()))
 															<div uk-slideshow="animation: slide; min-height:90;">
 															    <div class="uk-position-relative uk-visible-toggle">
-															        <ul class="uk-slideshow-items">
-															            <li>
+															        <ul class="uk-slideshow-items" style="min-height: 90px;">
+															            <li class="uk-active uk-transition-active" style="transform: translateX(0px);">
 															            	<div uk-grid>
 																			@foreach($building->auditors() as $auditor)
 																			<div class="building-auditor uk-width-1-2 uk-margin-remove">
