@@ -43500,12 +43500,19 @@ var render = function() {
           [_c("span", { domProps: { innerHTML: _vm._s(_vm.audit.initials) } })]
         ),
         _vm._v(" "),
-        _c("span", { attrs: { id: "audit-rid-" + _vm.audit.auditId } }, [
-          _c("small", [
-            _vm._v("#"),
-            _c("span", { domProps: { innerHTML: _vm._s(_vm.auditIndex) } })
-          ])
-        ])
+        _c(
+          "span",
+          {
+            staticStyle: { position: "relative", top: "27px", left: "-15px" },
+            attrs: { id: "audit-rid-" + _vm.audit.auditId }
+          },
+          [
+            _c("small", [
+              _vm._v("#"),
+              _c("span", { domProps: { innerHTML: _vm._s(_vm.auditIndex) } })
+            ])
+          ]
+        )
       ]
     ),
     _vm._v(" "),

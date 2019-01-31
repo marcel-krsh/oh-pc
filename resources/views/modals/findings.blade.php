@@ -1,4 +1,4 @@
-<div id="modal-findings" class="uk-margin-top uk-height-viewport" >
+<div id="modal-findings" class="uk-margin-top" style="height: 90%" >
 	<div class="modal-findings-right" uk-filter="target: .js-findings">
 		<div class="modal-findings-right-top">
 		    <div class="uk-width-1-1 filter-button-set-right" uk-grid>
@@ -105,12 +105,51 @@
 		</div>
 
 	</div>
+	<style>
+		.finding-modal-list-items {
+			padding-top: 4px;
+			padding-bottom: 10px;
+			
+			list-style-type: circle;
+		}
+	</style>
 	<div class="modal-findings-left" uk-filter="target: .js-filter-findings">
 		<div class="modal-findings-left-bottom-container">
 			<div class="modal-findings-left-bottom">
 				<div id="modal-findings-filters" class="uk-margin uk-child-width-auto" uk-grid>
 			        <div class="uk-width-1-1 uk-padding-remove uk-inline">
-			            <button class="uk-button button-finding-filter" onclick="alert('Showing all inspectable amenities for the buiding selected');"><i class="a-mobile-home"></i> Elevator #2</button>
+			            <button id="amenity-selection" uk-sticky class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="$('#amenity-list').slideToggle();">Select Amenity</button>
+					    <div id="amenity-list" class="uk-width-1-1 uk-panel-scrollable" style="display: none">
+					    	<div class="uk-column-1-3@m uk-column-1-2@s ">
+					        	<ul >
+					        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
+					        		<li class="uk-column-span uk-margin-top uk-margin-bottom">Building BIN: Address City ST 12345</li>
+					        		
+
+					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
+					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
+					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
+
+									<hr class="dashed-hr uk-column-span">
+					        		<li class="uk-column-span uk-margin-top uk-margin-bottom">Building BIN: Address City ST 12345</li>
+					        		
+					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
+					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
+					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
+					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
+					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
+									
+									<hr class="dashed-hr uk-column-span">
+					        		<li class="uk-column-span uk-margin-top uk-margin-bottom">Building BIN: Address City ST 12345</li>
+					        		
+					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
+					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
+					        		
+					        	</ul>
+				        	</div>
+					        
+					    </div>
+
 					</div>
 			        <div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
 			            <button class="uk-button button-finding-filter" onclick="alert('Showing all buildings for the address selected');"><i class="a-buildings"></i> Building</button>
