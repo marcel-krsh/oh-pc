@@ -1386,10 +1386,49 @@ Route::get('/users/verify_user', function (Request $request) {
                 $results = User::get();
 
                 if ($results) {
-                    $reply = $results;
-                } else {
+                   lse {
                     $reply = null;
-                }
+                } $reply = $results;
+                } e
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+        Route::get('/get_amenities', function (Request $request) {
+
+            try {
+
+                $results = Amenity::get();
+
+                if ($results) {
+                   lse {
+                    $reply = null;
+                } $reply = $results;
+                } e
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+
+        Route::get('/get_project_amenities', function (Request $request) {
+
+            try {
+
+                $results = ProjectAmenity::get();
+
+                if ($results) {
+                   lse {
+                    $reply = null;
+                } $reply = $results;
+                } e
 
                 return response()->json($reply);
             }
