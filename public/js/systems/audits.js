@@ -635,12 +635,21 @@ function applyFilter(filter, value) {
 }
 
 function switchInspectionMenu(action, context, level='', id){
-	console.log("Switching menu "+action+level);
-	$('#inspection-'+context+'-'+level+'main-'+id).html("Switching menu "+action+level);
-	$('#inspection-'+context+'-'+level+'main-'+id+' .inspection-areas').html('areas');
-	$('#inspection-'+context+'-'+level+'main-'+id+'-container').fadeIn( "slow", function() {
-	    // Animation complete
-	  });
+	//console.log("Switching menu "+action+level);
+	console.log(action);
+	if(action == 'site_audit'){
+		$('.fileaudit').fadeOut('slow',function(){});
+		$('.siteaudit').fadeIn('slow',function(){});
+	}else if(action == 'file_audit'){
+		$('.siteaudit').fadeOut('slow',function(){});
+		$('.fileaudit').fadeIn('slow',function(){});
+	}
+	
+	// $('#inspection-'+context+'-'+level+'main-'+id).html("Switching menu "+action+level);
+	// $('#inspection-'+context+'-'+level+'main-'+id+' .inspection-areas').html('areas');
+	// $('#inspection-'+context+'-'+level+'main-'+id+'-container').fadeIn( "slow", function() {
+	//     // Animation complete
+	//   });
 }
 
 var quicklookupbox = new autoComplete({

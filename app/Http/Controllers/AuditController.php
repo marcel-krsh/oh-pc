@@ -331,11 +331,17 @@ class AuditController extends Controller
                 $completed_icon = "a-circle-checked ok-actionable";
             }
 
+            if($amenity->amenity->file == 1){
+                $status = " fileaudit";
+            }else{
+                $status = " siteaudit";
+            }
+
             $data_amenities[] = [
                 "id" => $amenity->amenity_id,
                 "audit_id" => $amenity->audit_id,
                 "name" => $amenity->amenity->amenity_description,
-                "status" => '',
+                "status" => $status,
                 "auditor_initials" => $auditor_initials,
                 "auditor_name" => $auditor_name,
                 "auditor_color" => $auditor_color,
@@ -458,11 +464,17 @@ class AuditController extends Controller
                 $completed_icon = "a-circle-checked ok-actionable";
             }
 
+            if($amenity->amenity->file == 1){
+                $status = " fileaudit";
+            }else{
+                $status = " siteaudit";
+            }
+
             $data_amenities[] = [
                 "id" => $amenity->amenity_id,
                 "audit_id" => $amenity->audit_id,
                 "name" => $amenity->amenity->amenity_description,
-                "status" => '',
+                "status" => $status,
                 "auditor_initials" => $auditor_initials,
                 "auditor_name" => $auditor_name,
                 "auditor_color" => $auditor_color,
@@ -550,7 +562,7 @@ class AuditController extends Controller
                 $amenity->save(); 
 
                 $initials = $amenity->user->initials();
-                $color = "user-badge-".$amenity->user->badge_color;
+                $color = "auditor-badge-".$amenity->user->badge_color;
                 return ["initials" => $initials, "color" => $color];
             } 
         }
