@@ -291,7 +291,7 @@ if(Auth::check()){
 					</div>
 				</div>
 				
-				<ul id="tabs" class="maintabs uk-switcher" style=" margin-top: 52px;"> 
+				<ul id="tabs" class="maintabs uk-switcher" > 
 					<li>
 						<div id="detail-tab-1-content"></div>
 					</li>
