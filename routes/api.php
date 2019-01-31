@@ -34,6 +34,8 @@ use App\Models\CachedUnit;
 use App\Models\Building;
 use App\Models\Amenity;
 use App\Models\ProjectAmenity;
+use App\Models\BuildingAmenity;
+use App\Models\UnitAmenity;
 
 /*
 |--------------------------------------------------------------------------
@@ -1425,6 +1427,46 @@ Route::get('/users/verify_user', function (Request $request) {
             try {
 
                 $results = ProjectAmenity::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+
+        Route::get('/get_unit_amenities', function (Request $request) {
+
+            try {
+
+                $results = UnitAmenity::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+
+        Route::get('/get_building_amenities', function (Request $request) {
+
+            try {
+
+                $results = BuildingAmenity::get();
 
                 if ($results) {
                     $reply = $results;
