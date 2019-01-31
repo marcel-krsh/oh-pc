@@ -1757,9 +1757,16 @@ margin-top:10px;
 .inspection-area > div {
   padding:3px 16px;
 }
+.inspection-area .completion-icon {
+    margin-left: 9px;
+    font-size: 28px;
+    padding-top: 6px;
+    display:inline-block;
+}
 .inspection-area .area-name {
   padding-left:10px;
       margin-top: 5px;
+    display:inline-block;
 }
 #auditstable .inspection-area .area-name i {
     vertical-align: middle;

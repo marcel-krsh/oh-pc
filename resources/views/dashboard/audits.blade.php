@@ -72,6 +72,7 @@
 				</div>
 			</div>
     		<div class="uk-inline uk-padding-remove" style="margin-top:7px; flex:140px;">
+    			<i id="completed-areaDataAudit-areaDataBuilding-areaDataArea-areaDataAmenity" class="areaCompletedIcon completion-icon use-hand-cursor" uk-tooltip="title:CLICK TO COMPLETE" onclick="markAmenityComplete(areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity, 'completed-areaDataAudit-areaDataBuilding-areaDataArea-areaDataAmenity')"></i>
     			<div class="area-name">
 					areaName
 				</div>
@@ -90,7 +91,7 @@
 					</div>
 				</div>
 				<div class="findings-icon uk-inline areaSDStatus">
-					<i class="a-flames"></i>
+					<i class="a-bell-2"></i>
 					<div class="findings-icon-status plus">
 						<span class="uk-badge">+</span>
 					</div>
@@ -134,10 +135,7 @@
     			<div class="uk-width-1-3">
     				<button class="uk-button tool-add-area uk-link" onclick="addAmenity('tplId', 'tplBuildingOrUnit');"><i class="a-plus"></i> AREA</button>
     			</div>
-    			<div class="uk-width-1-3">
-    				<button class="uk-button tool-edit uk-link"><i class="a-pencil-2"></i> EDIT</button>
-    			</div>
-    			<div class="uk-width-1-3 uk-text-right">
+    			<div class="uk-width-1-3 uk-text-right" hidden>
     				<i class="a-horizontal-expand"></i>
     			</div>
     		</div>
@@ -757,6 +755,32 @@ The following div is defined in this particular tab and pushed to the main layou
     	dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element);
     }
     @endcan
+
+
+    function markAmenityComplete(audit_id, building_id, unit_id, amenity_id, element){
+    	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>MARK THIS COMPLETE?</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to mark this complete?</h3></div>').then(function() {
+		    	
+		    	$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/complete', {
+		            '_token' : '{{ csrf_token() }}'
+		        }, function(data) {
+		            if(data==0){ 
+		                UIkit.modal.alert(data,{stack: true});
+		            } else {console.log(data.status);
+		            	if(data.status == 'complete'){
+		            		UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+		            		$('#'+element).toggleClass('a-circle');
+		            		$('#'+element).toggleClass('a-circle-checked');
+		            	}else{
+		            		UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+		            	}
+		            }
+		        } );
+
+		    	
+		}, function () {
+		    console.log('Rejected.')
+		});
+    }
 
     @can('access_auditor')
     function updateAuditStepSelection(e){

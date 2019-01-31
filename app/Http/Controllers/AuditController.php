@@ -77,7 +77,7 @@ class AuditController extends Controller
             // this case shouldn't happen
             // delete all ordered records
             // reorder them
-            OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->delete();
+            // OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->delete();
         }
 
         if (OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->count() == 0 && CachedBuilding::where('audit_id', '=', $audit)->count() != 0) {
@@ -216,9 +216,6 @@ class AuditController extends Controller
 
         $details = OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->with('unit')->get();
 
-// foreach($details as $detail){
-//     dd($detail);
-// }
         return view('dashboard.partials.audit_building_details', compact('audit', 'target', 'building', 'details', 'targetaudit', 'context'));
     }
 
@@ -246,6 +243,9 @@ class AuditController extends Controller
             'building_id' => $building_id,
             'project_id' => $audit->project_id
         ]);
+
+        // if unit or building is completed, the icon for the unit turn solid green
+        // check circle by the name of amenity to mark amenity complete
 
         $data['menu'] = collect([
             ['name' => 'SITE AUDIT', 'icon' => 'a-mobile-home', 'status' => 'critical active', 'style' => '', 'action' => 'site_audit'],
@@ -318,9 +318,17 @@ class AuditController extends Controller
             if($amenity->amenity_inspection->auditor_id !== NULL){
                 $auditor_initials = $amenity->amenity_inspection->user->initials();
                 $auditor_name = $amenity->amenity_inspection->user->full_name();
+                $auditor_color = $amenity->amenity_inspection->user->badge_color;
             }else{
                 $auditor_initials = '<i class="a-avatar-plus_1"></i>';
                 $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
+                $auditor_color = '';
+            }
+
+            if($amenity->amenity_inspection->completed_date_time == NULL){
+                $completed_icon = "a-circle";
+            }else{
+                $completed_icon = "a-circle-checked ok-actionable";
             }
 
             $data_amenities[] = [
@@ -330,6 +338,7 @@ class AuditController extends Controller
                 "status" => '',
                 "auditor_initials" => $auditor_initials,
                 "auditor_name" => $auditor_name,
+                "auditor_color" => $auditor_color,
                 "finding_nlt_status" => '',
                 "finding_lt_status" =>'',
                 "finding_sd_status" =>'',
@@ -338,7 +347,8 @@ class AuditController extends Controller
                 "finding_copy_status" =>'',
                 "finding_trash_status" =>'',
                 "building_id" => $amenity->building_id,
-                "unit_id" => $amenity->unit_id
+                "unit_id" => $amenity->unit_id,
+                "completed_icon" => $completed_icon
             ];
         }
 
@@ -431,13 +441,21 @@ class AuditController extends Controller
 
         $data_amenities = array();
         foreach($amenities as $amenity){
-//dd($amenity->amenity_inspection, $amenity);
+
             if($amenity->amenity_inspection->auditor_id !== NULL){
                 $auditor_initials = $amenity->amenity_inspection->user->initials();
                 $auditor_name = $amenity->amenity_inspection->user->full_name();
+                $auditor_color = $amenity->amenity_inspection->user->badge_color;
             }else{
                 $auditor_initials = '<i class="a-avatar-plus_1"></i>';
                 $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
+                $auditor_color = '';
+            }
+
+            if($amenity->amenity_inspection->completed_date_time == NULL){
+                $completed_icon = "a-circle";
+            }else{
+                $completed_icon = "a-circle-checked ok-actionable";
             }
 
             $data_amenities[] = [
@@ -447,6 +465,7 @@ class AuditController extends Controller
                 "status" => '',
                 "auditor_initials" => $auditor_initials,
                 "auditor_name" => $auditor_name,
+                "auditor_color" => $auditor_color,
                 "finding_nlt_status" => '',
                 "finding_lt_status" =>'',
                 "finding_sd_status" =>'',
@@ -455,7 +474,8 @@ class AuditController extends Controller
                 "finding_copy_status" =>'',
                 "finding_trash_status" =>'',
                 "building_id" => $amenity->building_id,
-                "unit_id" => $amenity->unit_id
+                "unit_id" => $amenity->unit_id,
+                "completed_icon" => $completed_icon
             ];
         }
 
@@ -465,6 +485,29 @@ class AuditController extends Controller
 
         return response()->json($data);
         //return view('dashboard.partials.audit_building_inspection', compact('audit_id', 'target', 'detail_id', 'building_id', 'detail', 'inspection', 'areas', 'rowid'));
+    }   
+
+    public function markCompleted(Request $request, $amenity_id, $audit_id, $building_id, $unit_id)
+    {
+        
+        if($unit_id != "null"){
+            $amenity_inspection = AmenityInspection::where('audit_id','=', $audit_id)->where('amenity_id','=',$amenity_id)->where('unit_id','=',$unit_id)->first();
+        }else{
+            $amenity_inspection = AmenityInspection::where('audit_id','=', $audit_id)->where('amenity_id','=',$amenity_id)->where('building_id', '=', $building_id)->where('unit_id','=',NULL)->first();
+        }
+
+        if($amenity_inspection->completed_date_time !== NULL){
+            // it was already completed, we remove completion
+            $amenity_inspection->completed_date_time = NULL;
+            $amenity_inspection->save();
+            return ['status'=>'not completed'];
+        }else{
+            $amenity_inspection->completed_date_time = date('Y-m-d H:i:s',time());
+            $amenity_inspection->save();
+            return ['status'=>'complete'];
+        }
+        
+        return 0;
     }
 
     public function assignAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id, $element)

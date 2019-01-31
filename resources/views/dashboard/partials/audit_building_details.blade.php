@@ -54,7 +54,7 @@
 															@if($detail->unit->type == "pool")
 															<i class="a-pool colored"></i>
 															@else
-															<i class="a-buildings colored"></i>
+															<i class="a-buildings-2 colored"></i>
 															@endif
 														</div>
 														<div class="building-status">
