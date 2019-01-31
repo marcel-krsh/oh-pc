@@ -1388,10 +1388,10 @@ Route::get('/users/verify_user', function (Request $request) {
                 $results = User::get();
 
                 if ($results) {
-                   lse {
+                    $reply = $results;
+                } else {
                     $reply = null;
-                } $reply = $results;
-                } e
+                }
 
                 return response()->json($reply);
             }
@@ -1407,10 +1407,10 @@ Route::get('/users/verify_user', function (Request $request) {
                 $results = Amenity::get();
 
                 if ($results) {
-                   lse {
+                    $reply = $results;
+                } else {
                     $reply = null;
-                } $reply = $results;
-                } e
+                }
 
                 return response()->json($reply);
             }
@@ -1427,10 +1427,10 @@ Route::get('/users/verify_user', function (Request $request) {
                 $results = ProjectAmenity::get();
 
                 if ($results) {
-                   lse {
+                    $reply = $results;
+                } else {
                     $reply = null;
-                } $reply = $results;
-                } e
+                }
 
                 return response()->json($reply);
             }
