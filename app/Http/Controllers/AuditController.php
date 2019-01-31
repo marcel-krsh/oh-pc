@@ -549,8 +549,9 @@ class AuditController extends Controller
                 $amenity->auditor_id = $auditor_id;
                 $amenity->save(); 
 
-                $user = $amenity->user->initials();
-                return $user;
+                $initials = $amenity->user->initials();
+                $color = "user-badge-".$amenity->user->badge_color;
+                return ["initials" => $initials, "color" => $color];
             } 
         }
 

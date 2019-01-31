@@ -31,7 +31,8 @@
             } else {
                 UIkit.notification('<span uk-icon="icon: check"></span> Auditor Assigned', {pos:'top-right', timeout:1000, status:'success'});
                 // reload inspection screen
-                var target = $('#{{$element}}').html(data);
+                var target = $('#{{$element}}').html(data.initials);
+                $('#{{$element}}').toggleClass(data.color);
 
                 dynamicModalClose();
             }
