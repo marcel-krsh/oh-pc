@@ -65,7 +65,9 @@ class OrderingBuilding extends Model
 
         //dd($this->audit_id, $this->building_id, $this->id);
         // get all the auditors for that building/units in the building
-        $auditors = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('building_id','=',$this->building->building_id)->select('auditor_id')->groupBy('auditor_id')->get();
+        $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('building_id','=',$this->building->building_id)->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+
+        $auditors = User::whereIn('id', $auditor_ids)->get();
 
         return $auditors;
     }

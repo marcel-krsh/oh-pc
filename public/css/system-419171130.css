@@ -1759,7 +1759,7 @@ margin-top:10px;
 }
 .inspection-area .completion-icon {
     margin-left: 9px;
-    font-size: 28px;
+    font-size: 28px !important;
     padding-top: 6px;
     display:inline-block;
 }
@@ -1767,6 +1767,7 @@ margin-top:10px;
   padding-left:10px;
       margin-top: 5px;
     display:inline-block;
+    vertical-align: top;
 }
 #auditstable .inspection-area .area-name i {
     vertical-align: middle;
@@ -2403,7 +2404,7 @@ margin-top:10px;
 }
 #auditstable .building .findings-icon-status span{
     position: absolute;
-    right: -5px;
+    right: 0px;
     top: -3px;
     border-radius: 50%;
     border-width: 2px;

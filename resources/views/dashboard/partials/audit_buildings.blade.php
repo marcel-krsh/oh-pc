@@ -16,34 +16,23 @@
 											<div uk-grid>
 												<div class="uk-width-1-1 uk-padding-remove">
 													<div uk-grid style="padding-top:10px;">
-														<div class="building-auditors uk-width-1-2">
-															@if($building->auditors())
-															@foreach($building->auditors() as $auditor)
-															@if($auditor->auditor_id)
-															{{$auditor->auditor_id}}<br />
-															@endif
-															@endforeach
-															@endif
-
-															@if($building->building->auditors_json)
+														<div id="building-auditors-{{$building->building_id}}" class="building-auditors uk-width-1-2">
+															@if(count($building->auditors()))
 															<div uk-slideshow="animation: slide; min-height:90;">
-
 															    <div class="uk-position-relative uk-visible-toggle">
-
-															        
 															        <ul class="uk-slideshow-items">
 															            <li>
 															            	<div uk-grid>
-															                @foreach($building->building->auditors_json as $auditor)
+																			@foreach($building->auditors() as $auditor)
 																			<div class="building-auditor uk-width-1-2 uk-margin-remove">
-																				<div id="building-{{$context}}-{{$target}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor->name}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor->color}} no-float">
-																					{{$auditor->initials}}
+																				<div id="building-{{$context}}-{{$target}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor->full_name()}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor->badge_color}} no-float">
+																					{{$auditor->initials()}}
 																				</div>
 																				@if($auditor->status != '')
 																				<div class="auditor-status"><span></span></div>
 																				@endif
 																			</div>
-																		@if($loop->iteration % 6 == 0 && $loop->iteration < count($building->building->auditors_json) )
+																		@if($loop->iteration % 6 == 0 && $loop->iteration < count($building->auditors()) )
 															            	</div>
 															            </li>
 															            <li>
@@ -59,8 +48,9 @@
 															    <ul class="uk-slideshow-nav uk-dotnav uk-flex-center"></ul>
 
 															</div>
+															
 															@else
-															<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{$audit}}, {{$building->building_id}}, '', '', '');"></i>
+															<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{$audit}}, {{$building->building_id}});"></i>
 															@endif
 														</div>
 														<div class="uk-width-1-2 uk-padding-remove">
