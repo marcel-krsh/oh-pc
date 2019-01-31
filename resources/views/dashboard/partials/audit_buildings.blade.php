@@ -50,7 +50,7 @@
 															</div>
 															
 															@else
-															<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{$audit}}, {{$building->building_id}});"></i>
+															<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{$audit}}, {{$building->building_id}}, 0, 0, 'building-auditors-{{$building->building_id}}');"></i>
 															@endif
 														</div>
 														<div class="uk-width-1-2 uk-padding-remove">

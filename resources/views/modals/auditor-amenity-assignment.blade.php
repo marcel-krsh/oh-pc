@@ -31,8 +31,14 @@
             } else {
                 UIkit.notification('<span uk-icon="icon: check"></span> Auditor Assigned', {pos:'top-right', timeout:1000, status:'success'});
                 // reload inspection screen
-                var target = $('#{{$element}}').html(data.initials);
-                $('#{{$element}}').toggleClass(data.color);
+               
+                if(unit_id == 0 && building_id != 0 && amenity_id == 0){
+                	var newcontent = '<div class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' no-float">'+data.initials+'</div>';
+                	$('#{{$element}}').html(newcontent);
+                }else{
+	                var target = $('#{{$element}}').html(data.initials);
+	                $('#{{$element}}').toggleClass(data.color);
+                }
 
                 dynamicModalClose();
             }

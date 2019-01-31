@@ -583,7 +583,7 @@ class AuditController extends Controller
 
                     $initials = $user->initials();
                     $color = "auditor-badge-".$user->badge_color;
-                    return ["initials" => $initials, "color" => $color];
+                    return ["initials" => $initials, "color" => $color, "name" => $user->full_name()];
                 } 
             }
         }else{
