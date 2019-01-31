@@ -524,19 +524,27 @@ class AuditController extends Controller
 
     public function assignAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id, $element)
     {
-        if($unit_id != "null"){ 
-            $amenity = AmenityInspection::where('amenity_id','=',$amenity_id)
-                                        ->where('audit_id','=',$audit_id)
-                                        ->where('unit_id','=',$unit_id)
-                                        ->first();
-            $name = "Unit ".Unit::where('id','=',$unit_id)->first()->unit_name;
-        }else{ 
-            $amenity = AmenityInspection::where('amenity_id','=',$amenity_id)
-                                        ->where('audit_id','=',$audit_id)
-                                        ->where('building_id','=',$building_id)
-                                        ->where('unit_id','=',NULL)
-                                        ->first();
-            $name = "Building ".Building::where('id', '=', $building_id)->first()->building_name;
+        // check if we are mass assigning
+        if($amenity_id == 0){
+            if($building_id != 0){
+                $amenity = null;
+                $name = "Mass assignment for building ".CachedBuilding::where('id', '=', $building_id)->first()->building_name;
+            }
+        }else{
+            if($unit_id != "null"){ 
+                $amenity = AmenityInspection::where('amenity_id','=',$amenity_id)
+                                            ->where('audit_id','=',$audit_id)
+                                            ->where('unit_id','=',$unit_id)
+                                            ->first();
+                $name = "Unit ".Unit::where('id','=',$unit_id)->first()->unit_name;
+            }else{ 
+                $amenity = AmenityInspection::where('amenity_id','=',$amenity_id)
+                                            ->where('audit_id','=',$audit_id)
+                                            ->where('building_id','=',$building_id)
+                                            ->where('unit_id','=',NULL)
+                                            ->first();
+                $name = "Building ".CachedBuilding::where('id', '=', $building_id)->first()->building_name;
+            }
         }
 
         $auditors = CachedAudit::where('audit_id','=',$audit_id)->first()->auditors;
@@ -546,25 +554,51 @@ class AuditController extends Controller
 
     public function saveAssignAuditorToAmenity(Request $request, $amenity_id, $audit_id, $building_id, $unit_id)
     {
-        $auditor_id = $request->get('auditor_id');
+        // dd($amenity_id, $audit_id, $building_id, $unit_id);
+        // is it mass assignment
+        if($amenity_id == 0 && $building_id != 0){
+            $auditor_id = $request->get('auditor_id');
 
-        if($auditor_id){
-            //dd(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$auditor_id)->first(), $audit_id, $auditor_id);
+            if($auditor_id){
+                //dd(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$auditor_id)->first(), $audit_id, $auditor_id);
 
-            // make sure this id is already in the auditor's list for this audit
-            if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$auditor_id)->first()){ 
-                if($unit_id != "null"){
-                    $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('unit_id','=',$unit_id)->first();
-                }else{
-                    $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('building_id', '=', $building_id)->where('unit_id','=',NULL)->first();
-                }
-                $amenity->auditor_id = $auditor_id;
-                $amenity->save(); 
+                // make sure this id is already in the auditor's list for this audit
+                if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$auditor_id)->first()){ 
 
-                $initials = $amenity->user->initials();
-                $color = "auditor-badge-".$amenity->user->badge_color;
-                return ["initials" => $initials, "color" => $color];
-            } 
+                    $building = CachedBuilding::where('id', '=', $building_id)->first();
+
+                    $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building->building_id)->update([
+                        "auditor_id" => $auditor_id
+                    ]);
+
+                    $user = User::where('id','=',$auditor_id)->first();
+
+                    $initials = $user->initials();
+                    $color = "auditor-badge-".$user->badge_color;
+                    return ["initials" => $initials, "color" => $color];
+                } 
+            }
+        }else{
+            $auditor_id = $request->get('auditor_id');
+
+            if($auditor_id){
+                //dd(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$auditor_id)->first(), $audit_id, $auditor_id);
+
+                // make sure this id is already in the auditor's list for this audit
+                if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$auditor_id)->first()){ 
+                    if($unit_id != "null"){
+                        $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('unit_id','=',$unit_id)->first();
+                    }else{
+                        $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('building_id', '=', $building_id)->where('unit_id','=',NULL)->first();
+                    }
+                    $amenity->auditor_id = $auditor_id;
+                    $amenity->save(); 
+
+                    $initials = $amenity->user->initials();
+                    $color = "auditor-badge-".$amenity->user->badge_color;
+                    return ["initials" => $initials, "color" => $color];
+                } 
+            }
         }
 
         return 0;

@@ -751,7 +751,7 @@ The following div is defined in this particular tab and pushed to the main layou
     @endcan
 
     @can('access_auditor')
-    function assignAuditor(audit_id, building_id, unit_id, amenity_id, element){
+    function assignAuditor(audit_id, building_id, unit_id=0, amenity_id=0, element){
     	dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element);
     }
     @endcan

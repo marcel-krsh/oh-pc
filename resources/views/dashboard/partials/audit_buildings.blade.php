@@ -16,7 +16,7 @@
 											<div uk-grid>
 												<div class="uk-width-1-1 uk-padding-remove">
 													<div uk-grid style="padding-top:10px;">
-														<div class="building-auditors uk-width-1-2">
+														<div id="building-auditors-{{$building->building_id}}" class="building-auditors uk-width-1-2">
 															@if(count($building->auditors()))
 															<div uk-slideshow="animation: slide; min-height:90;">
 															    <div class="uk-position-relative uk-visible-toggle">
@@ -50,7 +50,7 @@
 															</div>
 															
 															@else
-															<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{$audit}}, {{$building->building_id}}, '', '', '');"></i>
+															<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{$audit}}, {{$building->building_id}});"></i>
 															@endif
 														</div>
 														<div class="uk-width-1-2 uk-padding-remove">
