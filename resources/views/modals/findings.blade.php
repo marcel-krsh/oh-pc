@@ -1,3 +1,19 @@
+<style>
+		.finding-modal-list-items {
+			padding-top: 4px;
+			padding-bottom: 10px;
+			
+			list-style-type: circle;
+		}
+		.calendar-selection-input {
+			    border: none;
+			    margin-left: 21px;
+			    font-size: 14px;
+			    margin-top: 3px;
+			    background: transparent;
+			}
+</style>
+
 <div id="modal-findings" class="uk-margin-top" style="height: 90%" >
 	<div class="modal-findings-right" uk-filter="target: .js-findings">
 		<div class="modal-findings-right-top">
@@ -105,60 +121,82 @@
 		</div>
 
 	</div>
-	<style>
-		.finding-modal-list-items {
-			padding-top: 4px;
-			padding-bottom: 10px;
-			
-			list-style-type: circle;
-		}
-	</style>
+
+
 	<div class="modal-findings-left" uk-filter="target: .js-filter-findings">
 		<div class="modal-findings-left-bottom-container">
 			<div class="modal-findings-left-bottom">
 				<div id="modal-findings-filters" class="uk-margin uk-child-width-auto" uk-grid>
 			        <div class="uk-width-1-1 uk-padding-remove uk-inline">
-			            <button id="amenity-selection" uk-sticky class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="$('#amenity-list').slideToggle();">Select Amenity</button>
+			            <button id="amenity-selection" class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="amenityList()"><i id="amenity-selection-icon" class="a-arrow-small-up"></i> Select Amenity</button>
 					    <div id="amenity-list" class="uk-width-1-1 uk-panel-scrollable" style="display: none">
 					    	<div class="uk-column-1-3@m uk-column-1-2@s ">
 					        	<ul >
-					        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
-					        		<li class="uk-column-span uk-margin-top uk-margin-bottom">Building BIN: Address City ST 12345</li>
-					        		
-
-					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
-					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
-					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
-
-									<hr class="dashed-hr uk-column-span">
-					        		<li class="uk-column-span uk-margin-top uk-margin-bottom">Building BIN: Address City ST 12345</li>
-					        		
-					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
-					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
-					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
-					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
-					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
-									
-									<hr class="dashed-hr uk-column-span">
-					        		<li class="uk-column-span uk-margin-top uk-margin-bottom">Building BIN: Address City ST 12345</li>
-					        		
-					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
-					        		<li class="finding-modal-list-items"><a onClick="UIkit.modal.alert('ITEM!');">Item?</a></li>
-					        		
+					        		<li class="s-id amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Site : Address City ST 12345</li>
+					        		<li class="s-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
+					        		<li class="s-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
+					        		<li class="s-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
+									<hr class="b-id amenity-list-item dashed-hr uk-column-span">
+					        		<li class="b-id amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Building BIN: Address City ST 12345</li>
+					        		<li class="b-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
+					        		<li class="b-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
+					        		<hr class="amenity-list-item dashed-hr uk-column-span">
+					        		<li class="u-id amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Unit 123: Address City ST 12345</li>
+					        		<li class="u-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
+					        		<li class="u-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
+					        		<li class="u-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
+									<hr class="u-id2 amenity-list-item dashed-hr uk-column-span">
+					        		<li class="u-id2 amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Unit 135: Address City ST 12345</li>
+					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
+					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
+					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
+					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
 					        	</ul>
 				        	</div>
 					        
 					    </div>
 
 					</div>
-			        <div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
-			            <button class="uk-button button-finding-filter" onclick="alert('Showing all buildings for the address selected');"><i class="a-buildings"></i> Building</button>
+					<div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
+			            <button id="type-selection"  class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="typeList()"><i id="type-selection-icon" class="a-arrow-small-up"></i> <span id="select-type-text">Select Type</span></button>
+					    <div id="type-list" class="uk-width-1-1 uk-panel-scrollable" style="display: none">
+					    	<div class="uk-column-1-3@m uk-column-1-2@s ">
+					        	<ul >
+					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('s-id','Site: Address City ST 12345')">Site: Address City ST 12345</li>
+
+					        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
+					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('b-id', 'Building BIN:1234 Address City ST 12345')">Building BIN:1234 Address City ST 12345</li>
+
+					        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
+					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('u-id','Unit in BIN:5678 : Unit 12345')">Unit in BIN:5678 : Unit 12345</li>
+
+					        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
+					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('u-id2','Unit in BIN:5678 : Unit 123678')">Unit in BIN:5678 : Unit 123678</li>
+					        	</ul>
+				        	</div>
+					        
+					    </div>
+
 					</div>
+			        
 			        <div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
-			            <button class="uk-button button-finding-filter" onclick="alert('Change address within project');"><i class="a-buildings"></i> 1234567 Silvegwood Street, Colombus, OH 43219</button>
-					</div>
-			        <div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
-			            <button class="uk-button button-finding-filter" disabled><i class="a-calendar-pencil"></i> December 22, 2018</button>
+			            <div class="uk-width-1-1 uk-padding-remove uk-first-column">
+			            	<div class="uk-inline uk-button button-finding-filter ">
+            					<span class="uk-form-icon" ><i class="a-calendar-pencil" style="color:#000"></i></span>
+		  						<input type="text" id="finding-date" name="date" class=" flatpickr flatpickr-input calendar-selection-input uk-width-1-1"  readonly="readonly">
+		  					</div>
+		  					<script type="text/javascript">
+		  						flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
+
+		  						flatpickr("#finding-date", {
+										    altInput: true,
+										    altFormat: "F j, Y",
+										    dateFormat: "Y-m-d",
+										    defaultDate: "{{date('Y-m-d',time())}}",
+										});
+		  					</script>
+		  							
+		  				</div>
 					</div>
 		        </div>
 		        <div class="uk-margin-remove" uk-grid>
@@ -168,7 +206,7 @@
             	</div>
 			</div>
 		</div>
-		<div class="modal-findings-left-main-container">
+		<div class="modal-findings-left-main-container" style="display:none">
 			<div class="modal-findings-left-main">
 				<div id="modal-findings-list-filters" class="uk-margin uk-child-width-auto uk-grid filter-checkbox-list js-filter-findings">
 						@foreach($allFindingTypes as $findingType)
@@ -226,7 +264,7 @@
 </div>
 <script>
 
-        // filter recipients based on class
+        // filter findings based on class
         $('#finding-description').on('keyup', function () {
           var searchString = $(this).val().toLowerCase();
           console.log(searchString);
@@ -266,6 +304,59 @@
           }
         });
 
+        function amenityList(){
+        	// make sure type is up
+        	if($('#type-selection-icon').hasClass('a-arrow-small-down')){
+				$('#type-selection-icon').removeClass('a-arrow-small-up');
+				$('#type-selection-icon').addClass('a-arrow-small-down');
+				$('#type-selection-icon').slideToggle();
+			}
+			if($('#amenity-selection-icon').hasClass('a-arrow-small-up')){
+				$('#amenity-selection-icon').removeClass('a-arrow-small-up');
+				$('#amenity-selection-icon').addClass('a-arrow-small-down');
+			} else {
+				$('#amenity-selection-icon').addClass('a-arrow-small-up');
+				$('#amenity-selection-icon').removeClass('a-arrow-small-down');
+			}
+			$('#amenity-list').slideToggle();
+		}
+		function typeList(){
+			// make sure amenities is up
+			if($('#amenity-selection-icon').hasClass('a-arrow-small-down')){
+				$('#amenity-selection-icon').addClass('a-arrow-small-up');
+				$('#amenity-selection-icon').removeClass('a-arrow-small-down');
+				$('#amenity-list').slideToggle();
+			}
+
+			if($('#type-selection-icon').hasClass('a-arrow-small-up')){
+				$('#type-selection-icon').removeClass('a-arrow-small-up');
+				$('#type-selection-icon').addClass('a-arrow-small-down');
+			} else {
+				$('#type-selection-icon').addClass('a-arrow-small-up');
+				$('#type-selection-icon').removeClass('a-arrow-small-down');
+			}
+			$('#type-list').slideToggle();
+		}
+		function selectAmenity(amenity_id,display='selected'){
+			$('modal-findings-left-main-container').slideDown();
+			amenityList();
+			// filter the findings to the selection
+		}
+		function filterAmenities(type_id,display='selected'){
+
+			if(type_id == 'all'){
+				$('.amenity-list-item').show();
+				typeList();
+				amenityList();
+			} else {
+				$('.amenity-list-item').hide();
+				$('.'+type_id).show();
+				typeList();
+				amenityList();
+			}
+			$('#select-type-text').text(display);
+
+		}
 
         
         
