@@ -34,6 +34,8 @@ use App\Models\CachedUnit;
 use App\Models\Building;
 use App\Models\Amenity;
 use App\Models\ProjectAmenity;
+use App\Models\BuildingAmenity;
+use App\Models\UnitAmenity;
 
 /*
 |--------------------------------------------------------------------------
