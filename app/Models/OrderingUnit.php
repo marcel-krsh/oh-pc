@@ -69,4 +69,17 @@ class OrderingUnit extends Model
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
     }
+
+    public function auditors()
+    {
+        // $this->building_id is the cachedbuilding id
+
+        //dd($this->audit_id, $this->building_id, $this->id);
+        // get all the auditors for that building/units in the building
+        $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('unit_id','=',$this->unit->unit_id)->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+
+        $auditors = User::whereIn('id', $auditor_ids)->get();
+
+        return $auditors;
+    }
 }

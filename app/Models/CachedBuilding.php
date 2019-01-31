@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Carbon;
 
 class CachedBuilding extends Model
@@ -63,5 +65,14 @@ class CachedBuilding extends Model
     public function getFindingsJsonAttribute($value)
     {
         return json_decode($value);
+    }
+
+    public function building() : HasOne
+    {
+        return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
+    }
+
+    public function units() : HasManyThrough {
+        return $this->hasManyThrough('App\Models\Unit', 'App\Models\Building', 'id', 'building_id');
     }
 }

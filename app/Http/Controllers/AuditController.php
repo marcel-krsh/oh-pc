@@ -571,6 +571,14 @@ class AuditController extends Controller
                         "auditor_id" => $auditor_id
                     ]);
 
+                    // add to units
+                    foreach($building->building->units as $unit){
+
+                        $amenities_unit = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->update([
+                            "auditor_id" => $auditor_id
+                        ]);
+                    }
+
                     $user = User::where('id','=',$auditor_id)->first();
 
                     $initials = $user->initials();
