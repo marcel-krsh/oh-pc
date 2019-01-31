@@ -17,6 +17,14 @@
 												<div class="uk-width-1-1 uk-padding-remove">
 													<div uk-grid style="padding-top:10px;">
 														<div class="building-auditors uk-width-1-2">
+															@if($building->auditors())
+															@foreach($building->auditors() as $auditor)
+															@if($auditor->auditor_id)
+															{{$auditor->auditor_id}}<br />
+															@endif
+															@endforeach
+															@endif
+
 															@if($building->building->auditors_json)
 															<div uk-slideshow="animation: slide; min-height:90;">
 
@@ -52,7 +60,7 @@
 
 															</div>
 															@else
-															<i class="a-avatar-plus_1" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;"></i>
+															<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{$audit}}, {{$building->building_id}}, '', '', '');"></i>
 															@endif
 														</div>
 														<div class="uk-width-1-2 uk-padding-remove">
@@ -99,7 +107,7 @@
 								            		@endIf
 												</div>
 												@else
-												<div >
+												<div style="margin-top: 12px;">
 								            		<i class="a-bell" uk-tooltip="pos:top-left;title:NO INCOMPLETE FOLLOWUPS;"></i>
 												</div>
 												@endif
@@ -111,7 +119,7 @@
 						</div>
 						<div class="uk-width-5-6 uk-padding-remove">
 							<div uk-grid>
-								<div class="uk-width-1-2">
+								<div class="uk-width-3-5">
 									<div id="building-{{$context}}-{{$target}}-c-3-{{$key}}" class="uk-margin-remove" style="flex: 750px;" uk-grid>
 										<div class="uk-width-1-1">
 											<div uk-grid>
@@ -193,7 +201,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="uk-width-1-2 uk-flex">
+								<div class="uk-width-2-5 uk-flex">
 									<div id="building-{{$context}}-{{$target}}-c-5-{{$key}}" style="flex: 640px;" class="uk-margin-remove" uk-grid>
 										<div class="uk-width-1-1" id="inspection-{{$context}}-tools-switch-{{$key}}">
 											<div uk-grid class="area-status-list">
