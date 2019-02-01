@@ -73,6 +73,6 @@ class CachedBuilding extends Model
     }
 
     public function units() : HasManyThrough {
-        return $this->hasManyThrough('App\Models\Unit', 'App\Models\Building', 'id', 'building_id');
+        return $this->hasManyThrough('App\Models\Unit', 'App\Models\Building', 'id', 'building_id', 'building_id', 'id');
     }
 }

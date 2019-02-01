@@ -526,9 +526,12 @@ class AuditController extends Controller
     {
         // check if we are mass assigning
         if($amenity_id == 0){
-            if($building_id != 0){
+            if($unit_id != 0){
                 $amenity = null;
-                $name = "Mass assignment for building ".CachedBuilding::where('id', '=', $building_id)->first()->building_name;
+                $name = "Unit ".CachedUnit::where('id', '=', $unit_id)->first()->unit_name;
+            }elseif($building_id != 0){
+                $amenity = null;
+                $name = "Building ".CachedBuilding::where('id', '=', $building_id)->first()->building_name;
             }
         }else{
             if($unit_id != "null"){ 
@@ -556,7 +559,28 @@ class AuditController extends Controller
     {
         // dd($amenity_id, $audit_id, $building_id, $unit_id);
         // is it mass assignment
-        if($amenity_id == 0 && $building_id != 0){
+        if($amenity_id == 0 && $unit_id != 0){
+            $auditor_id = $request->get('auditor_id');
+
+            if($auditor_id){
+
+                // make sure this id is already in the auditor's list for this audit
+                if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$auditor_id)->first()){ 
+
+                    $unit = CachedUnit::where('id', '=', $unit_id)->first();
+
+                    $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->unit_id)->update([
+                        "auditor_id" => $auditor_id
+                    ]);
+
+                    $user = User::where('id','=',$auditor_id)->first();
+
+                    $initials = $user->initials();
+                    $color = "auditor-badge-".$user->badge_color;
+                    return ["initials" => $initials, "color" => $color, "name" => $user->full_name()];
+                } 
+            }
+        }elseif($amenity_id == 0 && $building_id != 0){
             $auditor_id = $request->get('auditor_id');
 
             if($auditor_id){

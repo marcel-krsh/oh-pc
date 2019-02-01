@@ -16,7 +16,7 @@
 											<div uk-grid>
 												<div class="uk-width-1-1 uk-padding-remove">
 													<div uk-grid style="padding-top:10px;">
-														<div id="building-auditors-{{$building->building_id}}" class="building-auditors uk-width-1-2">
+														<div id="building-auditors-{{$building->building_id}}" class="building-auditors uk-width-1-2 @if(count($building->auditors())) hasAuditors @endif">
 															@if(count($building->auditors()))
 															<div uk-slideshow="animation: slide; min-height:90;">
 															    <div class="uk-position-relative uk-visible-toggle">
@@ -180,7 +180,7 @@
 															</div>
 														</div>
 														<div class="uk-width-1-1 uk-margin-remove findings-action ok-actionable" style="margin-top: 0px;">
-															<button class="uk-button program-status uk-link" onclick="inspectionDetailsFromBuilding({{$building->building->building_id}}, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); "><i class="a-home-search"></i> INSPECTION</button>
+															<button class="uk-button program-status uk-link" onclick="@if($building->building->building_id) inspectionDetailsFromBuilding({{$building->building->building_id}}, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); @else inspectionDetailsFromBuilding(0, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); @endif"><i class="a-home-search"></i> INSPECTION</button>
 														</div>
 													</div>
 												</div>
