@@ -1764,10 +1764,14 @@ margin-top:10px;
     display:inline-block;
 }
 .inspection-area .area-name {
-  padding-left:10px;
-      margin-top: 5px;
-    display:inline-block;
+  padding-left: 10px;
+    margin-top: 5px;
+    display: inline-block;
     vertical-align: top;
+    font-size: 16px;
+    overflow-x: hidden;
+    max-width: 95px;
+    white-space: nowrap;
 }
 #auditstable .inspection-area .area-name i {
     vertical-align: middle;

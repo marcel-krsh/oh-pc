@@ -14,7 +14,7 @@
 										<div uk-grid>
 											<div class="uk-width-1-1 uk-padding-remove">
 												<div uk-grid style="padding-top:10px;">
-													<div id="unit-auditors-{{$detail->unit->id}}" class="building-auditors uk-width-1-2">
+													<div id="unit-auditors-{{$detail->unit->id}}" class="building-auditors uk-width-1-2 @if(count($detail->auditors())) hasAuditors @endif">
 														@if(count($detail->auditors()))
 														<div uk-slideshow="animation: slide; min-height:90;">
 														    <div class="uk-position-relative uk-visible-toggle">
@@ -22,8 +22,8 @@
 														            <li class="uk-active uk-transition-active" style="transform: translateX(0px);">
 														            	<div uk-grid>
 																		@foreach($detail->auditors() as $auditor)
-																		<div class="building-auditor uk-width-1-2 uk-margin-remove">
-																			<div id="building-{{$context}}-{{$target}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor->full_name()}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor->badge_color}} no-float">
+																		<div id="unit-auditor-{{$auditor->id}}{{$audit}}{{$building}}{{$detail->unit->id}}" class="building-auditor uk-width-1-2 uk-margin-remove">
+																			<div id="building-{{$context}}-{{$target}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor->full_name()}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor->badge_color}} no-float use-hand-cursor" onclick="swapAuditor({{$auditor->id}}, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'unit-auditor-{{$auditor->id}}{{$audit}}{{$building}}{{$detail->unit->id}}')">
 																				{{$auditor->initials()}}
 																			</div>
 																			@if($auditor->status != '')

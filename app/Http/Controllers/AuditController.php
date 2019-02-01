@@ -527,10 +527,10 @@ class AuditController extends Controller
         // check if we are mass assigning
         if($amenity_id == 0){
             if($unit_id != 0){
-                $amenity = null;
+                $amenity = 0;
                 $name = "Unit ".CachedUnit::where('id', '=', $unit_id)->first()->unit_name;
             }elseif($building_id != 0){
-                $amenity = null;
+                $amenity = 0;
                 $name = "Building ".CachedBuilding::where('id', '=', $building_id)->first()->building_name;
             }
         }else{
@@ -553,6 +553,76 @@ class AuditController extends Controller
         $auditors = CachedAudit::where('audit_id','=',$audit_id)->first()->auditors;
         
         return view('modals.auditor-amenity-assignment', compact('auditors', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element'));
+    }
+
+    public function swapAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element)
+    {
+        if($unit_id != 0){
+            $amenity = 0;
+            $name = "Unit ".CachedUnit::where('id', '=', $unit_id)->first()->unit_name ." (swap)";
+        }elseif($building_id != 0){
+            $amenity = 0;
+            $name = "Building ".CachedBuilding::where('id', '=', $building_id)->first()->building_name." (swap)";
+        }
+
+        $current_auditor = User::where('id', '=', $auditor_id)->first();
+
+        $auditors = CachedAudit::where('audit_id','=',$audit_id)->first()->auditors;
+        
+        return view('modals.auditor-amenity-assignment', compact('auditors', 'current_auditor', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element', 'auditor_id'));
+    }
+
+    public function saveSwapAuditorToAmenity(Request $request, $amenity_id, $audit_id, $building_id, $unit_id, $auditor_id)
+    {
+
+        $new_auditor_id = $request->get('new_auditor_id');
+
+        if($amenity_id == 0 && $unit_id != 0){
+
+            // make sure this id is already in the auditor's list for this audit
+            if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$new_auditor_id)->first()){ 
+
+                $unit = CachedUnit::where('id', '=', $unit_id)->first();
+
+                $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id','=',$auditor_id)->where('unit_id', '=', $unit->unit_id)->update([
+                    "auditor_id" => $new_auditor_id
+                ]);
+
+                $user = User::where('id','=',$new_auditor_id)->first();
+
+                $initials = $user->initials();
+                $color = "auditor-badge-".$user->badge_color;
+                return ["initials" => $initials, "color" => $color, "name" => $user->full_name()];
+            } 
+
+        }elseif($amenity_id == 0 && $building_id != 0){
+            
+                // make sure this id is already in the auditor's list for this audit
+                if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$new_auditor_id)->first()){ 
+
+                    $building = CachedBuilding::where('id', '=', $building_id)->first();
+
+                    $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id','=',$auditor_id)->where('building_id', '=', $building->building_id)->update([
+                        "auditor_id" => $new_auditor_id
+                    ]);
+
+                    // add to units
+                    foreach($building->building->units as $unit){
+
+                        $amenities_unit = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id','=',$auditor_id)->where('unit_id', '=', $unit->id)->update([
+                            "auditor_id" => $new_auditor_id
+                        ]);
+                    }
+
+                    $user = User::where('id','=',$new_auditor_id)->first();
+
+                    $initials = $user->initials();
+                    $color = "auditor-badge-".$user->badge_color;
+                    return ["initials" => $initials, "color" => $color, "name" => $user->full_name()];
+                } 
+        }
+
+        return 0;
     }
 
     public function saveAssignAuditorToAmenity(Request $request, $amenity_id, $audit_id, $building_id, $unit_id)

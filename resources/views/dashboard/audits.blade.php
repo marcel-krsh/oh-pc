@@ -754,6 +754,10 @@ The following div is defined in this particular tab and pushed to the main layou
     function assignAuditor(audit_id, building_id, unit_id=0, amenity_id=0, element){
     	dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element);
     }
+
+    function swapAuditor(auditor_id, audit_id, building_id, unit_id, element){
+    	dynamicModalLoad('amenities/0/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/swap/'+auditor_id+'/'+element);
+    }
     @endcan
 
 

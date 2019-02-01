@@ -25,7 +25,7 @@
 															            	<div uk-grid>
 																			@foreach($building->auditors() as $auditor)
 																			<div class="building-auditor uk-width-1-2 uk-margin-remove">
-																				<div id="building-{{$context}}-{{$target}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor->full_name()}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor->badge_color}} no-float">
+																				<div id="building-{{$context}}-{{$target}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor->full_name()}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor->badge_color}} use-hand-cursor no-float">
 																					{{$auditor->initials()}}
 																				</div>
 																				@if($auditor->status != '')
