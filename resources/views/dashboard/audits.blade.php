@@ -66,13 +66,13 @@
 			</div>
 	    	<div class="uk-inline uk-padding-remove" style="margin-top:10px; ">
     			<div class="area-avatar">
-					<div id="auditor-areaDataAudit-areaDataBuilding-areaDataArea-areaDataAmenity" uk-tooltip="pos:top-left;title:areaAuditorName;" title="" aria-expanded="false" class="user-badge auditor-badge-areaAuditorColor no-float use-hand-cursor" onclick="assignAuditor(areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity, 'auditor-areaDataAudit-areaDataBuilding-areaDataArea-areaDataAmenity');">
+					<div id="auditor-areaDataAuditareaDataBuildingareaDataAreaareaDataAmenity" uk-tooltip="pos:top-left;title:areaAuditorName;" title="" aria-expanded="false" class="user-badge auditor-badge-areaAuditorColor no-float use-hand-cursor" onclick="assignAuditor(areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity, 'auditor-areaDataAuditareaDataBuildingareaDataAreaareaDataAmenity');">
 						areaAuditorInitials
 					</div>
 				</div>
 			</div>
     		<div class="uk-inline uk-padding-remove" style="margin-top:7px; flex:140px;">
-    			<i id="completed-areaDataAudit-areaDataBuilding-areaDataArea-areaDataAmenity" class="areaCompletedIcon completion-icon use-hand-cursor" uk-tooltip="title:CLICK TO COMPLETE" onclick="markAmenityComplete(areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity, 'completed-areaDataAudit-areaDataBuilding-areaDataArea-areaDataAmenity')"></i>
+    			<i id="completed-areaDataAuditareaDataBuildingareaDataAreaareaDataAmenity" class="areaCompletedIcon completion-icon use-hand-cursor" uk-tooltip="title:CLICK TO COMPLETE" onclick="markAmenityComplete(areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity, 'completed-areaDataAuditareaDataBuildingareaDataAreaareaDataAmenity')"></i>
     			<div class="area-name">
 					areaName
 				</div>

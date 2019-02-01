@@ -45,8 +45,8 @@
                 	var newcontent = '<div class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' no-float">'+data.initials+'</div>';
                 	$('#{{$element}}').html(newcontent);
                 }else{
-	                var target = $('#{{$element}}').html(data.initials);
-	                $('#{{$element}}').toggleClass(data.color);
+                	var newcontent = '<div id="'+element+'" uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="user-badge '+data.color+' no-float use-hand-cursor" onclick="assignAuditor('+audit_id+', '+building_id+', '+unit_id+', '+amenity_id+', \''+element+'\');">'+data.initials+'</div>';
+	                $('#{{$element}}').replaceWith(newcontent);
                 }
 
                 dynamicModalClose();
