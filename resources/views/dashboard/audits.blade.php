@@ -66,7 +66,7 @@
 			</div>
 	    	<div class="uk-inline uk-padding-remove" style="margin-top:10px; ">
     			<div class="area-avatar">
-					<div id="auditor-areaDataAuditareaDataBuildingareaDataAreaareaDataAmenity" uk-tooltip="pos:top-left;title:areaAuditorName;" title="" aria-expanded="false" class="user-badge auditor-badge-areaAuditorColor no-float use-hand-cursor" onclick="assignAuditor(areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity, 'auditor-areaDataAuditareaDataBuildingareaDataAreaareaDataAmenity');">
+					<div id="auditor-areaAuditorIdareaDataAuditareaDataBuildingareaDataAreaareaDataAmenity" uk-tooltip="pos:top-left;title:areaAuditorName;" title="" aria-expanded="false" class="user-badge auditor-badge-areaAuditorColor no-float use-hand-cursor" onclick="assignAuditor(areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity, 'auditor-areaAuditorIdareaDataAuditareaDataBuildingareaDataAreaareaDataAmenity');">
 						areaAuditorInitials
 					</div>
 				</div>

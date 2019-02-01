@@ -278,6 +278,7 @@ function loadInspectionMain(data, id, context='audits', level = '') {
 			newarea = newarea.replace(/areaRowId/g, area.id);
 			newarea = newarea.replace(/areaName/g, area.name); // missing
 			newarea = newarea.replace(/areaStatus/g, area.status);  // missing
+			newarea = newarea.replace(/areaAuditorId/g, area.auditor_id);  // missing
 			newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);  // missing
 			newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);  // missing
 			newarea = newarea.replace(/areaCompletedIcon/g, area.completed_icon);  

@@ -318,6 +318,7 @@ class AuditController extends Controller
             if($amenity->amenity_inspection->auditor_id !== NULL){
                 $auditor_initials = $amenity->amenity_inspection->user->initials();
                 $auditor_name = $amenity->amenity_inspection->user->full_name();
+                $auditor_id = $amenity->amenity_inspection->user->id;
                 $auditor_color = $amenity->amenity_inspection->user->badge_color;
             }else{
                 $auditor_initials = '<i class="a-avatar-plus_1"></i>';
@@ -343,6 +344,7 @@ class AuditController extends Controller
                 "name" => $amenity->amenity->amenity_description,
                 "status" => $status,
                 "auditor_initials" => $auditor_initials,
+                "auditor_id" => $auditor_id,
                 "auditor_name" => $auditor_name,
                 "auditor_color" => $auditor_color,
                 "finding_nlt_status" => '',
@@ -451,6 +453,7 @@ class AuditController extends Controller
             if($amenity->amenity_inspection->auditor_id !== NULL){
                 $auditor_initials = $amenity->amenity_inspection->user->initials();
                 $auditor_name = $amenity->amenity_inspection->user->full_name();
+                $auditor_id = $amenity->amenity_inspection->user->id;
                 $auditor_color = $amenity->amenity_inspection->user->badge_color;
             }else{
                 $auditor_initials = '<i class="a-avatar-plus_1"></i>';
@@ -475,6 +478,7 @@ class AuditController extends Controller
                 "audit_id" => $amenity->audit_id,
                 "name" => $amenity->amenity->amenity_description,
                 "status" => $status,
+                "auditor_id" => $auditor_id,
                 "auditor_initials" => $auditor_initials,
                 "auditor_name" => $auditor_name,
                 "auditor_color" => $auditor_color,
@@ -551,8 +555,9 @@ class AuditController extends Controller
         }
 
         $auditors = CachedAudit::where('audit_id','=',$audit_id)->first()->auditors;
-        
-        return view('modals.auditor-amenity-assignment', compact('auditors', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element'));
+        $current_auditor = null;
+
+        return view('modals.auditor-amenity-assignment', compact('auditors', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element', 'current_auditor'));
     }
 
     public function swapAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element)
@@ -596,7 +601,7 @@ class AuditController extends Controller
             } 
 
         }elseif($amenity_id == 0 && $building_id != 0){
-            
+
                 // make sure this id is already in the auditor's list for this audit
                 if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$new_auditor_id)->first()){ 
 

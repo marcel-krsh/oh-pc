@@ -50,7 +50,7 @@
                 	$('#{{$element}}').html(newcontent);
 
                 	var newunitcontent = '<div id="'+element+'" uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="user-badge '+data.color+' no-float use-hand-cursor" onclick="assignAuditor('+audit_id+', '+building_id+', '+unit_id+', '+amenity_id+', \''+element+'\');">'+data.initials+'</div>';
-	                $('[id^=auditor-{{$audit_id}}{{$building_id}}]').replaceWith(newunitcontent);
+	                $('[id^=auditor-{{$current_auditor->id}}{{$audit_id}}{{$building_id}}]').replaceWith(newunitcontent);
 
                 	@else
 
