@@ -592,6 +592,7 @@ class AuditController extends Controller
             if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$new_auditor_id)->first()){ 
 
                 $unit = CachedUnit::where('unit_id', '=', $unit_id)->first();
+                $cached_unit_id = $unit->id;
 
                 $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id','=',$auditor_id)->where('unit_id', '=', $unit->unit_id)->update([
                     "auditor_id" => $new_auditor_id
@@ -599,9 +600,29 @@ class AuditController extends Controller
 
                 $user = User::where('id','=',$new_auditor_id)->first();
 
+                $unit_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id','=',$unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+
+                $building_auditor_ids = array();
+                $units = Unit::where('building_id', '=', $building_id)->get();
+                foreach($units as $unit){
+                    $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                }
+
+                $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
+                foreach($unit_auditors as $unit_auditor){
+                    $unit_auditor->full_name = $unit_auditor->full_name();
+                    $unit_auditor->initials = $unit_auditor->initials();
+                }
+                $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
+                foreach($building_auditors as $building_auditor){
+                    $building_auditor->full_name = $building_auditor->full_name();
+                    $building_auditor->initials = $building_auditor->initials();
+                }
+
+
                 $initials = $user->initials();
                 $color = "auditor-badge-".$user->badge_color;
-                return ["initials" => $initials, "color" => $color, "name" => $user->full_name()];
+                return ["initials" => $initials, "color" => $color, "name" => $user->full_name(), "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $cached_unit_id, "building_id" => $building->id];
             } 
 
         }elseif($amenity_id == 0 && $building_id != 0){
@@ -625,9 +646,28 @@ class AuditController extends Controller
 
                     $user = User::where('id','=',$new_auditor_id)->first();
 
+                    $unit_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id','=',$unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+
+                    $building_auditor_ids = array();
+                    $units = Unit::where('building_id', '=', $building_id)->get();
+                    foreach($units as $unit){
+                        $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                    }
+
+                    $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
+                    foreach($unit_auditors as $unit_auditor){
+                        $unit_auditor->full_name = $unit_auditor->full_name();
+                        $unit_auditor->initials = $unit_auditor->initials();
+                    }
+                    $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
+                    foreach($building_auditors as $building_auditor){
+                        $building_auditor->full_name = $building_auditor->full_name();
+                        $building_auditor->initials = $building_auditor->initials();
+                    }
+
                     $initials = $user->initials();
                     $color = "auditor-badge-".$user->badge_color;
-                    return ["initials" => $initials, "color" => $color, "name" => $user->full_name()];
+                    return ["initials" => $initials, "color" => $color, "name" => $user->full_name(), "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $cached_unit_id, "building_id" => $building->id];
                 } 
         }
 
@@ -706,6 +746,7 @@ class AuditController extends Controller
                         $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('unit_id','=',$unit_id)->first();
      
                         $unit = CachedUnit::where('unit_id','=',$unit_id)->first(); 
+                        $cached_unit_id = $unit_id;
                         // reset unit auditors list
                         //$unit_auditors = OrderingUnit::where('audit_id', '=', $audit_id)->where('user_id', '=', Auth::user()->id)->where('unit_id', '=', $unit->id)->first()->auditors();
 
@@ -716,7 +757,7 @@ class AuditController extends Controller
                         //->auditors();
                     }else{
                         $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('building_id', '=', $building_id)->where('unit_id','=',NULL)->first();
-                        
+                        $cached_unit_id = 0;
                     }
                     $amenity->auditor_id = $auditor_id;
                     $amenity->save(); 
@@ -748,10 +789,9 @@ class AuditController extends Controller
                         $building_auditor->initials = $building_auditor->initials();
                     }
 
-                    $unit = CachedUnit::where('unit_id','=',$unit_id)->first(); 
                     $initials = $amenity->user->initials();
                     $color = "auditor-badge-".$amenity->user->badge_color;
-                    return ["initials" => $initials, "color" => $color, "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $unit->id, "building_id" => $building->id];
+                    return ["initials" => $initials, "color" => $color, "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $cached_unit_id, "building_id" => $building->id];
                 } 
             }
         }
