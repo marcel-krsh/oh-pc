@@ -76,7 +76,7 @@ class OrderingUnit extends Model
 
         //dd($this->audit_id, $this->building_id, $this->id);
         // get all the auditors for that building/units in the building
-        $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('unit_id','=',$this->unit->unit_id)->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+        $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('unit_id','=',$this->unit->unit_id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
 
         $auditors = User::whereIn('id', $auditor_ids)->get();
 

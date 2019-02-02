@@ -71,7 +71,7 @@ class OrderingBuilding extends Model
         // we are missing building_ids in the table, we for now we need to go through the units individually
         $auditor_unit_ids = array();
         
-        $units = $unit = Unit::where('building_id', '=', $this->building->building_id)->get();
+        $units = Unit::where('building_id', '=', $this->building->building_id)->get();
 
         foreach($units as $unit){
             $auditor_unit_ids = array_merge($auditor_unit_ids, \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());

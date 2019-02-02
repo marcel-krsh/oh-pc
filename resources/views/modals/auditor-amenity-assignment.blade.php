@@ -46,6 +46,7 @@
                
                 if(unit_id != 0 && amenity_id == 0){
                 	@if($current_auditor)
+                	console.log('1');
                 	var newcontent = '<div id="unit-auditor-{{$current_auditor->id}}{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' no-float use-hand-cursor" onclick="swapAuditor({{$current_auditor->id}}, {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-{{$current_auditor->id}}{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+data.initials+'</div>';
                 	$('#{{$element}}').html(newcontent);
 
@@ -53,6 +54,7 @@
 	                $('[id^=auditor-{{$current_auditor->id}}{{$audit_id}}{{$building_id}}]').replaceWith(newunitcontent);
 
                 	@else
+                	console.log('2');
 
                 	var newcontent = '<div class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' no-float">'+data.initials+'</div>';
                 	$('#{{$element}}').html(newcontent);
@@ -66,11 +68,29 @@
 
                 	@endif
                 }else if(unit_id == 0 && building_id != 0 && amenity_id == 0){
+                	console.log('3');
                 	var newcontent = '<div class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' no-float">'+data.initials+'</div>';
                 	$('#{{$element}}').html(newcontent);
                 }else{
                 	var newcontent = '<div id="'+element+'" uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="user-badge '+data.color+' no-float use-hand-cursor" onclick="assignAuditor('+audit_id+', '+building_id+', '+unit_id+', '+amenity_id+', \''+element+'\');">'+data.initials+'</div>';
 	                $('#{{$element}}').replaceWith(newcontent);
+
+	                var unitelement = '#unit-auditors-'+data.unit_id+' .uk-slideshow-items li.uk-active > div';
+	               console.log(unitelement);
+	                $(unitelement).html('');
+	                $.each(data.unit_auditors, function(index, value){
+	                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+data.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
+	                	$(unitelement).append(newcontent);
+	                });
+
+	                var buildingelement = '#building-auditors-'+data.building_id+' .uk-slideshow-items li.uk-active > div';
+	               
+	                $(buildingelement).html('');
+	                $.each(data.building_auditors, function(index, value){
+	                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+data.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
+	                	$(buildingelement).append(newcontent);
+	                });
+	                
                 }
 
                 dynamicModalClose();
