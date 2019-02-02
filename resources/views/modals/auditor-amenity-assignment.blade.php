@@ -79,7 +79,7 @@
 	               console.log(unitelement);
 	                $(unitelement).html('');
 	                $.each(data.unit_auditors, function(index, value){
-	                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+data.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
+	                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
 	                	$(unitelement).append(newcontent);
 	                });
 
@@ -87,7 +87,7 @@
 	               
 	                $(buildingelement).html('');
 	                $.each(data.building_auditors, function(index, value){
-	                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+data.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
+	                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
 	                	$(buildingelement).append(newcontent);
 	                });
 	                

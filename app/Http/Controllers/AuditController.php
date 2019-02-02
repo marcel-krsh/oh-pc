@@ -564,12 +564,14 @@ class AuditController extends Controller
 
     public function swapAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element)
     {
+
+        //dd($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element);
         if($unit_id != 0){
             $amenity = 0;
-            $name = "Unit ".CachedUnit::where('id', '=', $unit_id)->first()->unit_name ." (swap)";
+            $name = "Unit ".CachedUnit::where('unit_id', '=', $unit_id)->first()->unit_name ." (swap)";
         }elseif($building_id != 0){
             $amenity = 0;
-            $name = "Building ".CachedBuilding::where('id', '=', $building_id)->first()->building_name." (swap)";
+            $name = "Building ".CachedBuilding::where('building_id', '=', $building_id)->first()->building_name." (swap)";
         }
 
         $current_auditor = User::where('id', '=', $auditor_id)->first();
@@ -589,7 +591,7 @@ class AuditController extends Controller
             // make sure this id is already in the auditor's list for this audit
             if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$new_auditor_id)->first()){ 
 
-                $unit = CachedUnit::where('id', '=', $unit_id)->first();
+                $unit = CachedUnit::where('unit_id', '=', $unit_id)->first();
 
                 $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id','=',$auditor_id)->where('unit_id', '=', $unit->unit_id)->update([
                     "auditor_id" => $new_auditor_id
@@ -607,7 +609,7 @@ class AuditController extends Controller
                 // make sure this id is already in the auditor's list for this audit
                 if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$new_auditor_id)->first()){ 
 
-                    $building = CachedBuilding::where('id', '=', $building_id)->first();
+                    $building = CachedBuilding::where('building_id', '=', $building_id)->first();
 
                     $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id','=',$auditor_id)->where('building_id', '=', $building->building_id)->update([
                         "auditor_id" => $new_auditor_id
