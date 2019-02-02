@@ -534,10 +534,10 @@ class AuditController extends Controller
         if($amenity_id == 0){
             if($unit_id != 0){
                 $amenity = 0;
-                $name = "Unit ".CachedUnit::where('id', '=', $unit_id)->first()->unit_name;
+                $name = "Unit ".CachedUnit::where('unit_id', '=', $unit_id)->first()->unit_name;
             }elseif($building_id != 0){
                 $amenity = 0;
-                $name = "Building ".CachedBuilding::where('id', '=', $building_id)->first()->building_name;
+                $name = "Building ".CachedBuilding::where('building_id', '=', $building_id)->first()->building_name;
             }
         }else{
             if($unit_id != "null"){ 
@@ -591,8 +591,9 @@ class AuditController extends Controller
             // make sure this id is already in the auditor's list for this audit
             if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$new_auditor_id)->first()){ 
 
+                $building = CachedBuilding::where('building_id','=',$building_id)->first(); 
                 $unit = CachedUnit::where('unit_id', '=', $unit_id)->first();
-                $cached_unit_id = $unit->id;
+                $cached_unit_id = $unit->unit_id;
 
                 $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id','=',$auditor_id)->where('unit_id', '=', $unit->unit_id)->update([
                     "auditor_id" => $new_auditor_id
@@ -622,7 +623,7 @@ class AuditController extends Controller
 
                 $initials = $user->initials();
                 $color = "auditor-badge-".$user->badge_color;
-                return ["initials" => $initials, "color" => $color, "name" => $user->full_name(), "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $cached_unit_id, "building_id" => $building->id];
+                return ["initials" => $initials, "color" => $color, "name" => $user->full_name(), "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $cached_unit_id, "building_id" => $building->building_id];
             } 
 
         }elseif($amenity_id == 0 && $building_id != 0){
@@ -667,7 +668,7 @@ class AuditController extends Controller
 
                     $initials = $user->initials();
                     $color = "auditor-badge-".$user->badge_color;
-                    return ["initials" => $initials, "color" => $color, "name" => $user->full_name(), "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $cached_unit_id, "building_id" => $building->id];
+                    return ["initials" => $initials, "color" => $color, "name" => $user->full_name(), "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => 0, "building_id" => $building->building_id];
                 } 
         }
 
@@ -676,7 +677,7 @@ class AuditController extends Controller
 
     public function saveAssignAuditorToAmenity(Request $request, $amenity_id, $audit_id, $building_id, $unit_id)
     {
-        // dd($amenity_id, $audit_id, $building_id, $unit_id);
+        //dd($amenity_id, $audit_id, $building_id, $unit_id);
         // "395" "6659" "23058" "208307"
 
         // is it mass assignment
@@ -789,9 +790,10 @@ class AuditController extends Controller
                         $building_auditor->initials = $building_auditor->initials();
                     }
 
+                    $user = User::where('id','=',$auditor_id)->first();
                     $initials = $amenity->user->initials();
                     $color = "auditor-badge-".$amenity->user->badge_color;
-                    return ["initials" => $initials, "color" => $color, "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $cached_unit_id, "building_id" => $building->id];
+                    return ["initials" => $initials, "color" => $color, "name" => $user->full_name() , "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $cached_unit_id, "building_id" => $building->id];
                 } 
             }
         }

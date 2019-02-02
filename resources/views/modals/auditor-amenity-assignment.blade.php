@@ -6,7 +6,7 @@
 		<p>You are switching two auditors. This will replace all the assignments from {{$current_auditor->full_name()}} with your selection below.</p>
 		@endif
 		@if($auditors)
-		<select class="uk-select uk-grid-margin uk-first-column" id="auditor_id" name="auditor_id" onchange="saveAuditorToAmenity({{$amenity_id}}, {{$audit_id}}, {{$building_id}}, {{$unit_id}})">
+		<select class="uk-select uk-grid-margin uk-first-column" id="auditor_id" name="auditor_id" onchange="saveAuditorToAmenity({{$amenity_id}}, {{$audit_id}}, {{$building_id}}, {{$unit_id}}, '{{$element}}')">
 			<option value="">SELECT AUDITOR</option>
 			@foreach($auditors as $auditor)
             <option value="{{$auditor->user_id}}" @if($current_auditor) @if($current_auditor->id == $auditor->user_id) selected @endif @endif @if($amenity) @if($amenity->auditor_id == $auditor->user_id) selected @endif @endif>{{$auditor->user->full_name()}}</option>
@@ -47,11 +47,28 @@
                 if(unit_id != 0 && amenity_id == 0){
                 	@if($current_auditor)
                 	console.log('1');
-                	var newcontent = '<div id="unit-auditor-{{$current_auditor->id}}{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' no-float use-hand-cursor" onclick="swapAuditor({{$current_auditor->id}}, {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-{{$current_auditor->id}}{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+data.initials+'</div>';
+                	var newcontent = '<div id="auditor-{{$current_auditor->id}}{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' no-float use-hand-cursor" onclick="swapAuditor({{$current_auditor->id}}, {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-{{$current_auditor->id}}{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+data.initials+'</div>';
                 	$('#{{$element}}').html(newcontent);
 
                 	var newunitcontent = '<div id="'+element+'" uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="user-badge '+data.color+' no-float use-hand-cursor" onclick="assignAuditor('+audit_id+', '+building_id+', '+unit_id+', '+amenity_id+', \''+element+'\');">'+data.initials+'</div>';
 	                $('[id^=auditor-{{$current_auditor->id}}{{$audit_id}}{{$building_id}}]').replaceWith(newunitcontent);
+
+	                var unitelement = '#unit-auditors-'+data.unit_id+' .uk-slideshow-items li.uk-active > div';
+	   console.log(unitelement);
+	                $(unitelement).html('');
+	                $.each(data.unit_auditors, function(index, value){
+	                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
+	                	$(unitelement).append(newcontent);
+	                });
+
+	                var buildingelement = '#building-auditors-'+data.building_id+' .uk-slideshow-items li.uk-active > div';
+	    console.log(buildingelement);           
+	                $(buildingelement).html('');
+	                $.each(data.building_auditors, function(index, value){
+	                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
+	                	$(buildingelement).append(newcontent);
+	                });
+
 
                 	@else
                 	console.log('2');
@@ -72,11 +89,12 @@
                 	var newcontent = '<div class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' no-float">'+data.initials+'</div>';
                 	$('#{{$element}}').html(newcontent);
                 }else{
+                	console.log("element "+element);
                 	var newcontent = '<div id="'+element+'" uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="user-badge '+data.color+' no-float use-hand-cursor" onclick="assignAuditor('+audit_id+', '+building_id+', '+unit_id+', '+amenity_id+', \''+element+'\');">'+data.initials+'</div>';
 	                $('#{{$element}}').replaceWith(newcontent);
 
 	                var unitelement = '#unit-auditors-'+data.unit_id+' .uk-slideshow-items li.uk-active > div';
-	               console.log(unitelement);
+	   
 	                $(unitelement).html('');
 	                $.each(data.unit_auditors, function(index, value){
 	                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
