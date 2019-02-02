@@ -780,7 +780,13 @@ class AuditController extends Controller
                     }else{
                         $unit_auditor_ids = array();
                         // reset building auditors list
-                        $building_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id','=',$building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+                        
+                        $building_auditor_ids = array();
+                        $units = Unit::where('building_id', '=', $building_id)->get();
+                        foreach($units as $unit){
+                            $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                        }
+                        $building_auditor_ids = array_merge($building_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id','=',$building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
                     }
                     
                     $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
