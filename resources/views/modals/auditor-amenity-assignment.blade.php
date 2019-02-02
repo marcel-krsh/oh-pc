@@ -109,6 +109,7 @@
 
 
                 }else{
+                	console.log('4');
                 	console.log("element "+element);
                 	var newcontent = '<div id="'+element+'" uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="user-badge '+data.color+' no-float use-hand-cursor" onclick="assignAuditor('+audit_id+', '+building_id+', '+unit_id+', '+amenity_id+', \''+element+'\');">'+data.initials+'</div>';
 	                $('#{{$element}}').replaceWith(newcontent);
