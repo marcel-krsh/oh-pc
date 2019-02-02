@@ -638,16 +638,17 @@ class AuditController extends Controller
                     ]);
 
                     // add to units
+                    $unit_auditor_ids = array();
                     foreach($building->building->units as $unit){
 
                         $amenities_unit = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id','=',$auditor_id)->where('unit_id', '=', $unit->id)->update([
                             "auditor_id" => $new_auditor_id
                         ]);
+                        
+                        $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id','=',$unit->id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
                     }
 
                     $user = User::where('id','=',$new_auditor_id)->first();
-
-                    $unit_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id','=',$unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
 
                     $building_auditor_ids = array();
                     $units = Unit::where('building_id', '=', $building_id)->get();
