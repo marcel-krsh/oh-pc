@@ -48,7 +48,7 @@
 														</div>
 														
 														@else
-														<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{$audit}}, {{$building}}, {{$detail->unit->id}}, 0, 'unit-auditors-{{$detail->unit->id}}');"></i>
+														<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{$audit}}, {{$building}}, {{$detail->unit->unit_id}}, 0, 'unit-auditor-{{$audit}}{{$building}}{{$detail->unit->unit_id}}');"></i>
 														@endif
 
 													</div>
