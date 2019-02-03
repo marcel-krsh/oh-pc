@@ -221,6 +221,9 @@ function loadInspectionMenu(data, id, context='audits', level='') {
 		newmenu =  newmenu.replace(/menuName/g, menuitem.name);
 		newmenu = newmenu.replace(/menuAction/g, menuitem.action);
 		newmenu = newmenu.replace(/menuTarget/g, id);
+		newmenu = newmenu.replace(/menuAudit/g, menuitem.audit_id);
+		newmenu = newmenu.replace(/menuBuilding/g, menuitem.building_id);
+		newmenu = newmenu.replace(/menuUnit/g, menuitem.unit_id);
 		newmenu = newmenu.replace(/menuLevel/g, level);
 		newmenu = newmenu.replace(/menuIcon/g, menuitem.icon);
 		newmenu = newmenu.replace(/menuStatus/g, menuitem.status);
@@ -635,7 +638,7 @@ function applyFilter(filter, value) {
     });
 }
 
-function switchInspectionMenu(action, context, level='', id){
+function switchInspectionMenu(action, context, level='', audit_id, building_id, unit_id){
 	//console.log("Switching menu "+action+level);
 	console.log(action);
 	if(action == 'site_audit'){
@@ -644,6 +647,10 @@ function switchInspectionMenu(action, context, level='', id){
 	}else if(action == 'file_audit'){
 		$('.siteaudit').fadeOut('slow',function(){});
 		$('.fileaudit').fadeIn('slow',function(){});
+	}else if(action == 'complete'){
+		console.log(audit_id+'-'+building_id+'-'+unit_id);
+		markAmenityComplete(audit_id, building_id, unit_id, 0, '');
+		
 	}
 	
 	// $('#inspection-'+context+'-'+level+'main-'+id).html("Switching menu "+action+level);

@@ -249,9 +249,9 @@ class AuditController extends Controller
         // check circle by the name of amenity to mark amenity complete
 
         $data['menu'] = collect([
-            ['name' => 'SITE AUDIT', 'icon' => 'a-mobile-home', 'status' => 'critical active', 'style' => '', 'action' => 'site_audit'],
-            ['name' => 'FILE AUDIT', 'icon' => 'a-folder', 'status' => 'action-required', 'style' => '', 'action' => 'file_audit'],
-            ['name' => 'SUBMIT', 'icon' => 'a-avatar-star', 'status' => 'in-progress', 'style' => 'margin-top:30px;', 'action' => 'submit']
+            ['name' => 'SITE AUDIT', 'icon' => 'a-mobile-home', 'status' => 'critical active', 'style' => '', 'action' => 'site_audit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => null],
+            ['name' => 'FILE AUDIT', 'icon' => 'a-folder', 'status' => 'action-required', 'style' => '', 'action' => 'file_audit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => null],
+            ['name' => 'SUBMIT', 'icon' => 'a-avatar-star', 'status' => 'in-progress', 'style' => 'margin-top:30px;', 'action' => 'submit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => null]
         ]);
 
         // $data['amenities'] = CachedAmenity::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->get();
@@ -399,9 +399,10 @@ class AuditController extends Controller
         ]);
 
         $data['menu'] = collect([
-            ['name' => 'SITE AUDIT', 'icon' => 'a-mobile-home', 'status' => 'critical active', 'style' => '', 'action' => 'site_audit'],
-            ['name' => 'FILE AUDIT', 'icon' => 'a-folder', 'status' => 'action-required', 'style' => '', 'action' => 'file_audit'],
-            ['name' => 'SUBMIT', 'icon' => 'a-avatar-star', 'status' => 'in-progress', 'style' => 'margin-top:30px;', 'action' => 'submit']
+            ['name' => 'SITE AUDIT', 'icon' => 'a-mobile-home', 'status' => 'active', 'style' => '', 'action' => 'site_audit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => $unit->id],
+            ['name' => 'FILE AUDIT', 'icon' => 'a-folder', 'status' => '', 'style' => '', 'action' => 'file_audit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => $unit->id],
+            ['name' => 'COMPLETE', 'icon' => 'a-circle-checked', 'status' => '', 'style' => 'margin-top:30px;', 'action' => 'complete', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => $unit->id],
+            ['name' => 'SUBMIT', 'icon' => 'a-avatar-star', 'status' => '', 'style' => 'margin-top:30px;', 'action' => 'submit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => $unit->id]
         ]);
 
         $ordered_amenities_count = OrderingAmenity::where('audit_id', '=', $audit_id)->where('user_id', '=', Auth::user()->id);
@@ -508,22 +509,41 @@ class AuditController extends Controller
 
     public function markCompleted(Request $request, $amenity_id, $audit_id, $building_id, $unit_id)
     {
-        
-        if($unit_id != "null"){
-            $amenity_inspection = AmenityInspection::where('audit_id','=', $audit_id)->where('amenity_id','=',$amenity_id)->where('unit_id','=',$unit_id)->first();
-        }else{
-            $amenity_inspection = AmenityInspection::where('audit_id','=', $audit_id)->where('amenity_id','=',$amenity_id)->where('building_id', '=', $building_id)->where('unit_id','=',NULL)->first();
-        }
+        if($amenity_id == 0){
+            if($unit_id != "null" && $unit_id != 0){
+            // the complete button was clicked at the unit level
+                $amenity_inspections = AmenityInspection::where('audit_id','=', $audit_id)->where('unit_id','=',$unit_id)->get();
+            }else{
+            // the complete button was clicked at the building level
+                $amenity_inspections = AmenityInspection::where('audit_id','=', $audit_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->get();
+            }
+            //dd($amenity_id, $audit_id, $building_id, $unit_id, $amenity_inspections);
+            foreach($amenity_inspections as $amenity_inspection){
+                // if an amenity has already been completed, do not update the date
+                if($amenity_inspection->completed_date_time === NULL){
+                    $amenity_inspection->completed_date_time = date('Y-m-d H:i:s',time());
+                    $amenity_inspection->save();
+                }
+            }
 
-        if($amenity_inspection->completed_date_time !== NULL){
-            // it was already completed, we remove completion
-            $amenity_inspection->completed_date_time = NULL;
-            $amenity_inspection->save();
-            return ['status'=>'not completed'];
-        }else{
-            $amenity_inspection->completed_date_time = date('Y-m-d H:i:s',time());
-            $amenity_inspection->save();
             return ['status'=>'complete'];
+        }else{
+            if($unit_id != "null" && $unit_id != 0){
+                $amenity_inspection = AmenityInspection::where('audit_id','=', $audit_id)->where('amenity_id','=',$amenity_id)->where('unit_id','=',$unit_id)->first();
+            }else{
+                $amenity_inspection = AmenityInspection::where('audit_id','=', $audit_id)->where('amenity_id','=',$amenity_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->first();
+            }
+
+            if($amenity_inspection->completed_date_time !== NULL){
+                // it was already completed, we remove completion
+                $amenity_inspection->completed_date_time = NULL;
+                $amenity_inspection->save();
+                return ['status'=>'not completed'];
+            }else{
+                $amenity_inspection->completed_date_time = date('Y-m-d H:i:s',time());
+                $amenity_inspection->save();
+                return ['status'=>'complete'];
+            }
         }
         
         return 0;

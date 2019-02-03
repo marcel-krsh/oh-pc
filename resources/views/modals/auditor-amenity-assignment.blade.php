@@ -109,7 +109,7 @@
                 		
                 		// we don't know if/which unit is open
 	                	var unitelement = 'div[id^=unit-auditors-]  .uk-slideshow-items li.uk-active > div';
-console.log(data.unit_auditors);
+
 		                $(unitelement).html('');
 		                $.each(data.unit_auditors, function(index, value){
 		                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
@@ -118,15 +118,13 @@ console.log(data.unit_auditors);
                 	}else{
                 		// we don't know if/which unit is open
 	                	var unitelement = 'div[id^=unit-auditors-]';
-console.log(data.unit_auditors);
+
 		                $(unitelement).html('');
 		                $.each(data.unit_auditors, function(index, value){
 		                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
 		                	$(unitelement).append(newcontent);
 		                });
-                	}
-
-                	
+                	}                	
 
 	                var buildingelement = '#building-auditors-'+data.building_id+' .uk-slideshow-items li.uk-active > div';
 	               

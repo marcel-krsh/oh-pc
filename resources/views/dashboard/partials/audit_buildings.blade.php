@@ -50,7 +50,24 @@
 															</div>
 															
 															@else
-															<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{$audit}}, {{$building->building->building_id}}, 0, 0, 'building-auditors-{{$building->building->building_id}}');"></i>
+
+															<div uk-slideshow="animation: slide; min-height:90;">
+															    <div class="uk-position-relative uk-visible-toggle">
+															        <ul class="uk-slideshow-items" style="min-height: 90px;">
+															            <li class="uk-active uk-transition-active" style="transform: translateX(0px);">
+															            	<div uk-grid>
+																			<div class="building-auditor uk-width-1-2 uk-margin-remove">
+																				<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{$audit}}, {{$building->building->building_id}}, 0, 0, 'building-auditors-{{$building->building->building_id}}');"></i>
+																			</div>
+																			</div>
+															            </li>
+															        </ul>
+															        
+															    </div>
+
+															    <ul class="uk-slideshow-nav uk-dotnav uk-flex-center"></ul>
+
+															</div>
 															@endif
 														</div>
 														<div class="uk-width-1-2 uk-padding-remove">

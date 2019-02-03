@@ -4,7 +4,7 @@
 </template>
 
 <template class="uk-hidden" id="inspection-menu-item-template">
-    <button class="uk-button uk-link menuStatus" onclick="switchInspectionMenu('menuAction', 'menuLevel', 'menuTarget');" style="menuStyle"><i class="menuIcon"></i> menuName</button>
+    <button class="uk-button uk-link menuStatus" onclick="switchInspectionMenu('menuAction', 'menuLevel', 'menuTarget', 'menuAudit', 'menuBuilding', 'menuUnit');" style="menuStyle"><i class="menuIcon"></i> menuName</button>
 </template>
 
 <template class="uk-hidden" id="inspection-comment-reply-template">
@@ -771,9 +771,16 @@ The following div is defined in this particular tab and pushed to the main layou
 		                UIkit.modal.alert(data,{stack: true});
 		            } else {console.log(data.status);
 		            	if(data.status == 'complete'){
-		            		UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
-		            		$('#'+element).toggleClass('a-circle');
-		            		$('#'+element).toggleClass('a-circle-checked');
+		            		if(amenity_id == 0){
+		            			UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+		            			$('[id^=completed-'+audit_id+building_id+unit_id+']').removeClass('a-circle');
+		            			$('[id^=completed-'+audit_id+building_id+unit_id+']').addClass('a-circle-checked');
+		            		}else{
+		            			UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+			            		$('#'+element).toggleClass('a-circle');
+			            		$('#'+element).toggleClass('a-circle-checked');
+		            		}
+
 		            	}else{
 		            		UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
 		            	}
