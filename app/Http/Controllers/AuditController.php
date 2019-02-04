@@ -3989,9 +3989,9 @@ class AuditController extends Controller
            $step_id = $request->get('step');
             $step = GuideStep::where('id','=',$step_id)->first();
             $audit = CachedAudit::where('id','=',$id)->first();
-dd($audit->lead_user_id,Auth::user()->id );
+
             // check if user has the right to save step using roles TBD
-            if(Auth::user()->id == $audit->lead_user_id || Auth::user()->manager_access()){
+            if(Auth::user()->id == $audit->lead || Auth::user()->manager_access()){
          
                 // add new guide_progress entry
                 $progress = new GuideProgress([
