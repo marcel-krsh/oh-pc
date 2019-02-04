@@ -78,13 +78,13 @@
 				</div>
 			</div>
     		<div class="uk-inline uk-padding-remove">
-    			<div class="findings-icon uk-inline areaNLTStatus">
+    			<div class="findings-icon uk-inline areaNLTStatus" onclick="openFindings(this, areaDataAudit, areaDataBuilding, areaDataArea, 'nlt', areaDataAmenity);">
 					<i class="a-booboo"></i>
 					<div class="findings-icon-status plus">
 						<span class="uk-badge">+</span>
 					</div>
 				</div>
-				<div class="findings-icon uk-inline areaLTStatus">
+				<div class="findings-icon uk-inline areaLTStatus" onclick="openFindings(this, areaDataAudit, areaDataBuilding, areaDataArea, 'lt', areaDataAmenity);">
 					<i class="a-skull"></i>
 					<div class="findings-icon-status plus">
 						<span class="uk-badge">+</span>
