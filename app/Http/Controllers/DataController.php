@@ -53,7 +53,7 @@ class DataController extends Controller
                  $user->save();             
                  return 'I stored this '.$data.' on user '.$user->id; break;
                 } else {
-                    return 'Sorry, you must be an admin to adjust tablet access for users.'
+                    return 'Sorry, you must be an admin to adjust tablet access for users.';
                 }
                
 
