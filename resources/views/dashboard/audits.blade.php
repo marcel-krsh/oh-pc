@@ -121,7 +121,7 @@
 				<div class="findings-icon uk-inline areaTrashStatus">
 					<i class="a-trash-4"></i>
 					<div class="findings-icon-status plus">
-						<span class="uk-badge">+</span>
+						<span class="uk-badge">-</span>
 					</div>
 				</div>
 			</div> 
