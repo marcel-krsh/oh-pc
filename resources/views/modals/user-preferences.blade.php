@@ -20,10 +20,6 @@
 	  						<div class="uk-width-1-3 uk-padding-remove">
 	  							<label class="uk-text-small">Max Hours per Day</label>
 	  							
-
-	  								
-	  							</div>
-
 						        <select class="uk-select" id="max_hours" name="max_hours" onchange="autosave(this, 'auditor.availability_max_hours')">
 					                <option value="01:00:00" @if($data['summary']['availability_max_hours'] == '01:00:00') selected @endif>1:00 (H:MM)</option>
 					                <option value="01:15:00" @if($data['summary']['availability_max_hours'] == '01:15:00') selected @endif>1:15  (H:MM)</option>
