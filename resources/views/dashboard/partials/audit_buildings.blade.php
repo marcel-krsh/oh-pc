@@ -213,7 +213,7 @@
 														</div>
 														<div class="uk-width-1-1 uk-margin-remove findings-action ok-actionable" style="margin-top: 0px;">
 															@if($building->building->building_id !== NULL)
-															<button class="uk-button program-status uk-link" onclick="@if($building->building->building_id) inspectionDetailsFromBuilding({{$building->building->building_id}}, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); @else inspectionDetailsFromBuilding(0, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); @endif"><i class="a-home-search"></i> INSPECTION</button>
+															<button class="uk-button program-status uk-link" onclick="@if($building->building->building_id) inspectionDetailsFromBuilding({{$building->building->building_id}}, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); @else inspectionDetailsFromBuilding(0, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); @endif"><i class="a-home-search"></i> INSPECT BUILDING</button>
 															@endif
 														</div>
 													</div>

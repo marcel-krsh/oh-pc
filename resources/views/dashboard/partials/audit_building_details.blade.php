@@ -146,7 +146,7 @@
 														</div>
 													</div>
 													<div class="uk-width-1-1 findings-action ok-actionable" style="margin-top: 0px;">
-														<button class="uk-button program-status uk-link" onclick="inspectionDetails({{$detail->unit->id}},{{$building}},{{$audit}},{{$key}},{{$targetaudit}},{{$loop->iteration}},'{{$context}}');"><i class="a-home-search"></i> INSPECT UNITS</button>
+														<button class="uk-button program-status uk-link" onclick="inspectionDetails({{$detail->unit->id}},{{$building}},{{$audit}},{{$key}},{{$targetaudit}},{{$loop->iteration}},'{{$context}}');"><i class="a-home-search"></i> INSPECT UNIT</button>
 													</div>
 												</div>
 											</div>
