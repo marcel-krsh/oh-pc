@@ -1195,6 +1195,7 @@ class AuditController extends Controller
                         $auditors_key[] = $auditor->user_id;
                     }
                 }
+                
                 if($is_lead_an_auditor == 0 && $project->selected_audit()->lead_auditor){
                     // add to audit_auditors
                     $new_auditor = new AuditAuditor([

@@ -94,7 +94,7 @@
 							@if($auditor->user_id != $project->selected_audit()->lead_auditor->id)
 							<div class="divTableCell">
 								<span @if(Auth::user()->id == $project->selected_audit()->lead_auditor->id)
-								 uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($auditor->user->full_name())}} {{$auditor->user_id}};" title="" onclick="removeAuditorFromAudit({{$auditor->user_id}});" aria-expanded="false" class="user-badge user-badge-{{$auditor->user->badge_color}} no-float uk-link" @else uk-tooltip title="{{strtoupper($auditor->user->full_name())}}" @endIf >{{$auditor->user->initials()}}</span>
+								 uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($auditor->user->full_name())}} {{$auditor->user_id}};" title="" onclick="removeAuditorFromAudit({{$auditor->user_id}});" aria-expanded="false" class="user-badge user-badge-{{$auditor->user->badge_color}} no-float uk-link" @else uk-tooltip title="{{strtoupper($auditor->user->full_name())}}" class="user-badge user-badge-{{$auditor->user->badge_color}} no-float uk-link" @endIf >{{$auditor->user->initials()}}</span>
 							</div>
 							@endif
 							@endforeach
