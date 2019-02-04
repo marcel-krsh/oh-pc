@@ -135,8 +135,16 @@
 	                });
 
 
-                }else{
+                }else if(unit_id == 0 && building_id == 0 && amenity_id != 0){
+
                 	console.log('4');
+                	console.log('element {{$element}}');
+                	var newcontent = '<div id="building-audits-'+data.id+'-avatar-1" uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' use-hand-cursor no-float" onclick="swapAuditor('+data.id+', {{$audit_id}}, 0, 0, \'building-audits-'+data.id+'-avatar-1\', '+amenity_id+')">'+data.initials+'</div>';
+                	$('#{{$element}}').replaceWith(newcontent);
+
+
+                }else{
+                	console.log('5');
                 	console.log("element "+element);
                 	var newcontent = '<div id="'+element+'" uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="user-badge '+data.color+' no-float use-hand-cursor" onclick="assignAuditor('+audit_id+', '+building_id+', '+unit_id+', '+amenity_id+', \''+element+'\');">'+data.initials+'</div>';
 	                $('#{{$element}}').replaceWith(newcontent);

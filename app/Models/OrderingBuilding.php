@@ -66,7 +66,12 @@ class OrderingBuilding extends Model
 
         //dd($this->audit_id, $this->building_id, $this->id);
         // get all the auditors for that building/units in the building
-        $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('building_id','=',$this->building->building_id)->whereNotNull('auditor_id')->whereNotNull('building_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+       
+        if($this->building->building_id == 0 || $this->building->building_id === NULL){ 
+            $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('cachedbuilding_id','=',$this->building_id)->whereNotNull('auditor_id')->whereNull('building_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+        }else{
+            $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('building_id','=',$this->building->building_id)->whereNotNull('auditor_id')->whereNotNull('building_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+        }
 
         // we are missing building_ids in the table, we for now we need to go through the units individually
         $auditor_unit_ids = array();

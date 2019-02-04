@@ -25,9 +25,15 @@
 															            	<div uk-grid>
 																			@foreach($building->auditors() as $auditor)
 																			<div class="building-auditor uk-width-1-2 uk-margin-remove">
+																				@if($building->building->building_id === NULL)
+																				<div id="building-{{$context}}-{{$auditor->id}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor->full_name()}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor->badge_color}} use-hand-cursor no-float" onclick="swapAuditor({{$auditor->id}}, {{$audit}}, 0, 0, 'building-audits-{{$auditor->id}}-avatar-1', {{$building->building->amenity_id}})">
+																					{{$auditor->initials()}}
+																				</div>
+																				@else
 																				<div id="building-{{$context}}-{{$target}}-avatar-{{$loop->iteration}}" uk-tooltip="pos:top-left;title:{{$auditor->full_name()}};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{$auditor->badge_color}} use-hand-cursor no-float" onclick="swapAuditor({{$auditor->id}}, {{$audit}}, {{$building->building->building_id}}, 0, 'building-auditors-{{$building->building->building_id}}')">
 																					{{$auditor->initials()}}
 																				</div>
+																				@endif
 																				@if($auditor->status != '')
 																				<div class="auditor-status"><span></span></div>
 																				@endif
@@ -56,8 +62,17 @@
 															        <ul class="uk-slideshow-items" style="min-height: 90px;">
 															            <li class="uk-active uk-transition-active" style="transform: translateX(0px);">
 															            	<div uk-grid>
+														            		@php
+																			$rand = mt_rand();
+																			@endphp
 																			<div class="building-auditor uk-width-1-2 uk-margin-remove">
-																				<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{$audit}}, {{$building->building->building_id}}, 0, 0, 'building-auditors-{{$building->building->building_id}}');"></i>
+																			<div id="building-auditor-{{$rand}}" class="building-auditor uk-width-1-2 uk-margin-remove">
+																				@if($building->building->building_id === NULL)
+																				<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{$audit}}, 0, 0, {{$building->building->amenity_id}}, 'building-auditor-{{$rand}}');"></i>
+																				@else
+																				<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{$audit}}, {{$building->building->building_id}}, 0, 0, 'building-auditor-{{$rand}}');"></i>
+																				@endif
+																			</div>
 																			</div>
 																			</div>
 															            </li>
@@ -197,7 +212,9 @@
 															</div>
 														</div>
 														<div class="uk-width-1-1 uk-margin-remove findings-action ok-actionable" style="margin-top: 0px;">
+															@if($building->building->building_id !== NULL)
 															<button class="uk-button program-status uk-link" onclick="@if($building->building->building_id) inspectionDetailsFromBuilding({{$building->building->building_id}}, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); @else inspectionDetailsFromBuilding(0, {{$audit}}, {{$key}},{{$target}}, {{$loop->iteration}},'{{$context}}'); @endif"><i class="a-home-search"></i> INSPECTION</button>
+															@endif
 														</div>
 													</div>
 												</div>
