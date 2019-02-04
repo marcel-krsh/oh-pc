@@ -422,7 +422,7 @@ class DashboardController extends Controller
         }
         */
 
-        $projects = CachedAudit::select('address', 'city', 'zip', 'project_id', 'audit_id', 'pm', 'project_ref')->where(function ($q) use ($request) {
+        $projects = CachedAudit::select('address', 'city', 'zip', 'project_id', 'title', 'state', 'audit_id', 'pm', 'project_ref', 'project_key')->where(function ($q) use ($request) {
                             //$request = Request::input();
                             $q->where('project_ref', 'LIKE', '%'.$request->search.'%')
                             ->orWhere('project_key', 'like', '%'.$request->search.'%')
@@ -440,11 +440,13 @@ class DashboardController extends Controller
             $results[] = [
                         $data->address,
                         $data->city,
+                        $data->state,
                         $data->zip,
-                        $data->project_id,
+                        $data->title,
                         $data->audit_id,
                         $data->pm,
-                        $data->project_ref
+                        $data->project_ref,
+                        $data->project_key
                     ];
         }
                     

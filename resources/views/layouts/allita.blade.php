@@ -411,8 +411,9 @@ if(Auth::check()){
 			    search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 			    var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
 
-			    var output = '<div class="autocomplete-suggestion" data-item-id="'+item[4]+'" data-val="'+search+'">';
-			    output = output + 'Project ID: '+item[3]+'<br />';
+			    var output = '<div class="autocomplete-suggestion" data-item-id="'+item[8]+'" data-val="'+search+'">';
+			    output = output + item[4]+'<br />';
+			    output = output + 'Project ID: '+item[7]+'<br />';
 			    output = output + item[0]+'<br />';
 			    output = output + item[1]+', '+item[2]+' '+item[3]+'<br />';
 				output = output + '<span class="hideImport'+item[6]+'">';
