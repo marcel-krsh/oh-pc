@@ -128,29 +128,29 @@
 			<div class="modal-findings-left-bottom">
 				<div id="modal-findings-filters" class="uk-margin uk-child-width-auto" uk-grid>
 			        <div class="uk-width-1-1 uk-padding-remove uk-inline">
-			            <button id="amenity-selection" class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="amenityList()"><i id="amenity-selection-icon" class="a-arrow-small-up"></i> Select Amenity</button>
+			            <button id="amenity-selection" class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="amenityList()"><i id="amenity-selection-icon" class="a-arrow-small-up"></i> <span id="select-amenity-text">Select Amenity</span></button>
 					    <div id="amenity-list" class="uk-width-1-1 uk-panel-scrollable" style="display: none">
 					    	<div class="uk-column-1-3@m uk-column-1-2@s ">
 					        	<ul >
 					        		<li class="s-id amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Site : Address City ST 12345</li>
-					        		<li class="s-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
-					        		<li class="s-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
-					        		<li class="s-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
+					        		<li class="s-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Site: Address City ST 12345: Item ?')">Item?</a></li>
+					        		<li class="s-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Site: Address City ST 12345: Item ?')">Item?</a></li>
+					        		<li class="s-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Site: Address City ST 12345: Item ?')">Item?</a></li>
 									<hr class="b-id amenity-list-item dashed-hr uk-column-span">
 					        		<li class="b-id amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Building BIN: Address City ST 12345</li>
-					        		<li class="b-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
-					        		<li class="b-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
+					        		<li class="b-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Building BIN: Address City ST 12345: Item ?')">Item?</a></li>
+					        		<li class="b-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Building BIN: Address City ST 12345: Item ?')">Item?</a></li>
 					        		<hr class="amenity-list-item dashed-hr uk-column-span">
 					        		<li class="u-id amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Unit 123: Address City ST 12345</li>
-					        		<li class="u-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
-					        		<li class="u-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
-					        		<li class="u-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
+					        		<li class="u-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 123: Address City ST 12345: Item ?')">Item?</a></li>
+					        		<li class="u-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 123: Address City ST 12345: Item ?')">Item?</a></li>
+					        		<li class="u-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 123: Address City ST 12345: Item ?')">Item?</a></li>
 									<hr class="u-id2 amenity-list-item dashed-hr uk-column-span">
 					        		<li class="u-id2 amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Unit 135: Address City ST 12345</li>
-					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
-					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
-					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
-					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id')">Item?</a></li>
+					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 135: Address City ST 12345: Item ?')">Item?</a></li>
+					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 135: Address City ST 12345: Item ?')">Item?</a></li>
+					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 135: Address City ST 12345: Item ?')">Item?</a></li>
+					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 135: Address City ST 12345: Item ?')">Item?</a></li>
 					        	</ul>
 				        	</div>
 					        
@@ -338,9 +338,10 @@
 			$('#type-list').slideToggle();
 		}
 		function selectAmenity(amenity_id,display='selected'){
-			$('modal-findings-left-main-container').slideDown();
+			$('.modal-findings-left-main-container').slideDown();
 			amenityList();
 			// filter the findings to the selection
+			$('#select-amenity-text').text(display);
 		}
 		function filterAmenities(type_id,display='selected'){
 
