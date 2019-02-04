@@ -1666,8 +1666,11 @@ class ComplianceSelectionJob implements ShouldQueue
         AmenityInspection::where('audit_id',$audit->id)->delete();
 
         $this->processes++;
+
+        // make sure we don't have name duplicates
         foreach ($audit->project->amenities as $pa) {
-           AmenityInspection::insert([
+            AmenityInspection::insert([
+                'name'=>$name,
                 'audit_id'=>$audit->id,
                 'monitoring_key'=>$audit->monitoring_key,
                 'project_id'=>$audit->project_id,
@@ -1675,8 +1678,8 @@ class ComplianceSelectionJob implements ShouldQueue
                 'amenity_id'=>$pa->amenity_id,
                 'amenity_key'=>$pa->amenity_key,
 
-           ]);
-           $this->processes++;
+            ]);
+            $this->processes++;
         }
         foreach ($audit->project->buildings as $b) {
             foreach($b->amenities as $ba){

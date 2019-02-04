@@ -314,6 +314,7 @@ class AuditController extends Controller
                     'audit_id' => $audit_id,
                     'building_id' => $building_id,
                     'amenity_id' => $amenity->amenity_id,
+                    'amenity_inspection_id' => $amenity->id,
                     'order' => $i
                 ]);
                 $ordering->save();
@@ -328,6 +329,13 @@ class AuditController extends Controller
         $amenities = $amenities->orderBy('order', 'asc')->with('amenity')->get(); //->pluck('amenity')->flatten()
 
         $data_amenities = array();
+
+        // manage name duplicates, number them based on their id
+        $amenity_names = array();
+        foreach($amenities as $amenity){
+            $amenity_names[$amenity->amenity->amenity_description][] = $amenity->amenity_inspection_id;
+        }
+        
         foreach($amenities as $amenity){
 
             if($amenity->amenity_inspection->auditor_id !== NULL){
@@ -352,6 +360,15 @@ class AuditController extends Controller
                 $status = " fileaudit";
             }else{
                 $status = " siteaudit";
+            }
+
+            // check for name duplicates and assign a #
+            $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
+            if($key > 0){
+                $key = $key + 1;
+                $name = $amenity->amenity->amenity_description." ".$key;
+            }else{
+                $name = $amenity->amenity->amenity_description;
             }
 
             $data_amenities[] = [
@@ -451,6 +468,7 @@ class AuditController extends Controller
                     'building_id' => $building_id,
                     'unit_id' => $unit->id,
                     'amenity_id' => $amenity->amenity_id,
+                    'amenity_inspection_id' => $amenity->id,
                     'order' => $i
                 ]);
                 $ordering->save();
@@ -465,6 +483,13 @@ class AuditController extends Controller
         $amenities = $amenities->orderBy('order', 'asc')->with('amenity')->get(); //->pluck('amenity')->flatten()
 
         $data_amenities = array();
+
+        // manage name duplicates, number them based on their id
+        $amenity_names = array();
+        foreach($amenities as $amenity){
+            $amenity_names[$amenity->amenity->amenity_description][] = $amenity->amenity_inspection_id;
+        }
+
         foreach($amenities as $amenity){
 
             if($amenity->amenity_inspection->auditor_id !== NULL){
@@ -491,10 +516,19 @@ class AuditController extends Controller
                 $status = " siteaudit";
             }
 
+            // check for name duplicates and assign a #
+            $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
+            if($key > 0){
+                $key = $key + 1;
+                $name = $amenity->amenity->amenity_description." ".$key;
+            }else{
+                $name = $amenity->amenity->amenity_description;
+            }
+
             $data_amenities[] = [
                 "id" => $amenity->amenity_id,
                 "audit_id" => $amenity->audit_id,
-                "name" => $amenity->amenity->amenity_description,
+                "name" => $name,
                 "status" => $status,
                 "auditor_id" => $auditor_id,
                 "auditor_initials" => $auditor_initials,
