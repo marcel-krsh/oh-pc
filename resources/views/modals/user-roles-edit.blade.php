@@ -41,7 +41,7 @@
 									    </div>
 									</div>
 			  						<div class="uk-width-1-1 uk-margin-small-top">
-			  							<button class="uk-button uk-button-primary" style="height: 100%; width: 100%;" onclick="saveRoles(event);">SAVE</button>	
+			  							<button class="uk-button uk-button-primary" style=" width: 100%;" onclick="saveRoles(event);">SAVE</button>	
 			  						</div>
 			  					</div>
 		  					</form>
