@@ -36,6 +36,7 @@ use App\Models\Amenity;
 use App\Models\ProjectAmenity;
 use App\Models\BuildingAmenity;
 use App\Models\UnitAmenity;
+use App\Models\AuditAuditor;
 
 /*
 |--------------------------------------------------------------------------
@@ -1388,6 +1389,28 @@ Route::get('/users/verify_user', function (Request $request) {
             try {
 
                 $results = User::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+        Route::get('/get_auditor_users', function (Request $request) {
+
+            try {
+
+
+                $auditors = AuditAuditor::select('user_id')->get();
+
+                $results = User::whereIn('user_id', $auditors)->get();
 
                 if ($results) {
                     $reply = $results;
