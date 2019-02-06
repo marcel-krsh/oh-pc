@@ -1410,7 +1410,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 $auditors = AuditAuditor::select('user_id')->get();
 
-                $results = User::whereIn('user_id', $auditors)->get();
+                $results = User::whereIn('id', $auditors)->get();
 
                 if ($results) {
                     $reply = $results;
