@@ -3766,12 +3766,23 @@ class AuditController extends Controller
                 $unit_id = null;
 
                 // get project_id from db
-                $building = CachedBuilding::where('id', '=', $building_id)->first();
+                $building = CachedBuilding::where('building_id', '=', $building_id)->first();
                 if ($building) {
                     $project_id = $building->project_id;
                 } else {
                     $project_id = null;
                 }
+
+                $audit = CachedAudit::where('audit_id','=',$building->audit_id)->first();
+                $auditors_collection = $audit->auditors;
+                $amenities_collection = Amenity::where('inspectable','=',1)
+                                        ->where(function ($query) {
+                                            $query->where('building_exterior','=',1)
+                                                  ->orWhere('building_system','=',1)
+                                                  ->orWhere('common_area','=',1);
+
+                                        })
+                                        ->orderBy('amenity_description', 'asc')->get();
 
                 break;
             case 'unit':
@@ -3816,15 +3827,6 @@ class AuditController extends Controller
             $amenities = $amenities. '["'.$amenity->amenity_description.'","'.$amenity->id.'"],';
         }
         $amenities = $amenities . ']';
-
-
-        
-        // $auditors = collect([
-        //     ['id' => 1, 'name' => "auditor name 1"],
-        //     ['id' => 2, 'name' => "auditor name 2"],
-        //     ['id' => 3, 'name' => "auditor name 3"],
-        //     ['id' => 4, 'name' => "auditor name 4"]
-        // ]);
 
         return view('modals.amenity-add', compact('data', 'auditors', 'amenities'));
     }
@@ -3912,6 +3914,34 @@ class AuditController extends Controller
                         'order' => $latest_ordering+1
                     ]);
                     $ordering->save();
+
+                }elseif($building_id){
+                    $amenity = new AmenityInspection([
+                            'audit_id' => $audit->audit_id,
+                            'building_id' => $building_id,
+                            'amenity_id' => $amenity_type->id,
+                            'auditor_id' => $auditor->user_id
+                        ]);
+                    $amenity->save();
+
+                    // latest ordering
+                    $latest_ordering = OrderingAmenity::where('user_id','=',Auth::user()->id)
+                                                        ->where('audit_id','=',$audit->audit_id)
+                                                        ->where('building_id', '=', $building_id)
+                                                        ->orderBy('order', 'desc')
+                                                        ->first()
+                                                        ->order;
+                    // save the ordering
+                    $ordering = new OrderingAmenity([
+                        'user_id' => Auth::user()->id,
+                        'audit_id' => $audit->audit_id,
+                        'building_id' => $building_id,
+                        'amenity_id' => $amenity_type->id,
+                        'amenity_inspection_id' => $amenity->id,
+                        'order' => $latest_ordering+1
+                    ]);
+                    $ordering->save();
+
                 }else{
                     $amenity = new AmenityInspection([
                             'audit_id' => $audit->audit_id,
@@ -3949,6 +3979,10 @@ class AuditController extends Controller
         $amenities = OrderingAmenity::where('audit_id', '=', $audit->audit_id)->where('user_id', '=', Auth::user()->id);
         if ($unit_id) {
             $amenities = $amenities->where('unit_id', '=', $unit_id);
+        }
+        if($building_id){
+            $amenities = $amenities->where('building_id', '=', $building_id);
+            $amenities = $amenities->whereNull('unit_id');
         }
         $amenities = $amenities->orderBy('order', 'asc')->with('amenity')->get(); //->pluck('amenity')->flatten()
 
