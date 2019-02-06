@@ -2156,6 +2156,9 @@ class AuditController extends Controller
 
         if( $audit && $user){
             AuditAuditor::where('user_id','=',$user->id)->where('audit_id','=',$auditid)->first()->delete();
+            
+            // remove their assignements
+            AmenityInspection::where('auditor_id',$user->id)->where('audit_id','=',$auditid)->update(['auditor_id'=>NULL]);
             return 1;
         }
 
@@ -3939,7 +3942,7 @@ class AuditController extends Controller
                     $ordering = new OrderingBuilding([
                         'user_id' => Auth::user()->id,
                         'audit_id' => $audit->audit_id,
-                        'building_id' => $cached_building->id
+                        'building_id' => $cached_building->id,
                         'order' => $latest_ordering+1
                     ]);
                     $ordering->save();
