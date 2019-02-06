@@ -4,7 +4,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Parcel;
 use App\Program;
-use App\User;
 use App\DispositionType;
 use App\SiteVisits;
 use App\ReimbursementInvoice;
@@ -37,6 +36,7 @@ use App\Models\ProjectAmenity;
 use App\Models\BuildingAmenity;
 use App\Models\UnitAmenity;
 use App\Models\AuditAuditor;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
