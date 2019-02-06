@@ -4,7 +4,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Parcel;
 use App\Program;
-use App\User;
 use App\DispositionType;
 use App\SiteVisits;
 use App\ReimbursementInvoice;
@@ -36,6 +35,8 @@ use App\Models\Amenity;
 use App\Models\ProjectAmenity;
 use App\Models\BuildingAmenity;
 use App\Models\UnitAmenity;
+use App\Models\AuditAuditor;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -1388,6 +1389,28 @@ Route::get('/users/verify_user', function (Request $request) {
             try {
 
                 $results = User::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+        Route::get('/get_auditor_users', function (Request $request) {
+
+            try {
+
+
+                $auditors = AuditAuditor::select('user_id')->get();
+
+                $results = User::whereIn('id', $auditors)->get();
 
                 if ($results) {
                     $reply = $results;
