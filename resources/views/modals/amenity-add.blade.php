@@ -4,7 +4,6 @@
 	  		<div class="uk-width-1-1 uk-padding-remove uk-margin-small-top">
 	  			
 	  			<h3>New Amenity Inspectable Area</h3>
-<p>TBD note: update controller when database has amenity_types and auditors.</p>
 	  			<form id="modal-amenity-form" class="uk-margin-medium-top" onsubmit="saveAmenity()">
 					<fieldset class="uk-fieldset">
 						<div uk-grid>
@@ -78,7 +77,7 @@ button.squared {
             minChars: 0,
             source: function(term, suggest){
                 term = term.toLowerCase();
-                var choices = [['Brian', '1'], ['Bob', '2'], ['Bill', '3']];
+                var choices = {!!$auditors!!};
                 var suggestions = [];
                 for (i=0;i<choices.length;i++)
                     if (~(choices[i][0]+' '+choices[i][1]).toLowerCase().indexOf(term)) suggestions.push(choices[i]);
@@ -104,7 +103,8 @@ button.squared {
             minChars: 1,
             source: function(term, suggest){
                 term = term.toLowerCase();
-                var choices = [['Bedroom', '1'], ['Stairs', '2'], ['Living Room', '3']];
+                // var choices = [['Bedroom', '1'], ['Stairs', '2'], ['Living Room', '3']];
+                var choices = {!!$amenities!!};
                 var suggestions = [];
                 for (i=0;i<choices.length;i++)
                     if (~(choices[i][0]+' '+choices[i][1]).toLowerCase().indexOf(term)) suggestions.push(choices[i]);
@@ -194,26 +194,54 @@ button.squared {
 					newarea = inspectionAreaTemplate;
 					newarea = newarea.replace(/areaContext/g, context);
 					newarea = newarea.replace(/areaRowId/g, area.id);
-					newarea = newarea.replace(/areaName/g, area.name);
-					newarea = newarea.replace(/areaStatus/g, area.status);
-					newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);
-					newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);
-
-					newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);
+					newarea = newarea.replace(/areaName/g, area.name); // missing
+					newarea = newarea.replace(/areaStatus/g, area.status);  // missing
+					newarea = newarea.replace(/areaAuditorId/g, area.auditor_id);  // missing
+					newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);  // missing
+					newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);  // missing
+					newarea = newarea.replace(/areaCompletedIcon/g, area.completed_icon);  
+					newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);  // missing
 					newarea = newarea.replace(/areaLTStatus/g, area.finding_lt_status);
 					newarea = newarea.replace(/areaSDStatus/g, area.finding_sd_status);
 					newarea = newarea.replace(/areaPicStatus/g, area.finding_photo_status);
 					newarea = newarea.replace(/areaCommentStatus/g, area.finding_comment_status);
 					newarea = newarea.replace(/areaCopyStatus/g, area.finding_copy_status);
 					newarea = newarea.replace(/areaTrashStatus/g, area.finding_trash_status);
-					
+
 					newarea = newarea.replace(/areaDataAudit/g, area.audit_id);
 					newarea = newarea.replace(/areaDataBuilding/g, area.building_id);
 					newarea = newarea.replace(/areaDataArea/g, area.unit_id);
 					newarea = newarea.replace(/areaDataAmenity/g, area.id);
 
 					areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor_color);
+
+					
 				});
+						
+				// data.forEach(function(area) {
+				// 	newarea = inspectionAreaTemplate;
+				// 	newarea = newarea.replace(/areaContext/g, context);
+				// 	newarea = newarea.replace(/areaRowId/g, area.id);
+				// 	newarea = newarea.replace(/areaName/g, area.name);
+				// 	newarea = newarea.replace(/areaStatus/g, area.status);
+				// 	newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);
+				// 	newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);
+
+				// 	newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);
+				// 	newarea = newarea.replace(/areaLTStatus/g, area.finding_lt_status);
+				// 	newarea = newarea.replace(/areaSDStatus/g, area.finding_sd_status);
+				// 	newarea = newarea.replace(/areaPicStatus/g, area.finding_photo_status);
+				// 	newarea = newarea.replace(/areaCommentStatus/g, area.finding_comment_status);
+				// 	newarea = newarea.replace(/areaCopyStatus/g, area.finding_copy_status);
+				// 	newarea = newarea.replace(/areaTrashStatus/g, area.finding_trash_status);
+					
+				// 	newarea = newarea.replace(/areaDataAudit/g, area.audit_id);
+				// 	newarea = newarea.replace(/areaDataBuilding/g, area.building_id);
+				// 	newarea = newarea.replace(/areaDataArea/g, area.unit_id);
+				// 	newarea = newarea.replace(/areaDataAmenity/g, area.id);
+
+				// 	areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor_color);
+				// });
 
 				$('#'+mainDivId).html(inspectionMainTemplate);
 				$('#'+mainDivId+' .inspection-areas').html(areas);
