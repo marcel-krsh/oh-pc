@@ -1291,7 +1291,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $results = CachedAudit::where('step_id','1')->get();
+                $results = CachedAudit::where('step_id','61')->get();
 
                 if ($results) {
                     $reply = $results;
