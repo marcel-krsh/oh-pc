@@ -78,12 +78,16 @@ function createAudits(){
 	console.log("create audits clicked");
 }
 
-function projectDetails(id, target, buildingcount = 10) {
-	if ($('#audit-r-'+target+'-buildings').length){
+function projectDetails(id, target, buildingcount = 10, reload = 0) {
+	if ($('#audit-r-'+target+'-buildings').length && reload == 0){
 
 		// close own details
 		$('#audit-r-'+target+'-buildings').remove();
 	}else{
+		if(reload == 1){
+			$('#audit-r-'+target+'-buildings').remove();
+		}
+
 		// scroll to row early
     	$('html, body').animate({
 			scrollTop: $('#audit-r-'+target).offset().top - 59

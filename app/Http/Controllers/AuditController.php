@@ -3851,7 +3851,7 @@ class AuditController extends Controller
 
         $new_amenities = $request->get('new_amenities');
 
-        dd($project_id, $building_id, $unit_id);
+        //dd($project_id, $building_id, $unit_id);
         /*
         "45150"
         "23061"
@@ -3927,7 +3927,7 @@ class AuditController extends Controller
                                 'city' => $audit->city,
                                 'state' => $audit->state,
                                 'zip' => $audit->zip,
-                                'amenity_id' =>$amenity_type->amenity_id
+                                'amenity_id' =>$amenity_type->id
                             ]);
                     $cached_building->save();
 
@@ -3954,6 +3954,10 @@ class AuditController extends Controller
                         'order' => $latest_ordering+1
                     ]);
                     $ordering->save();
+
+                    $buildings = OrderingBuilding::where('audit_id', '=', $audit->audit_id)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->with('building')->get();
+
+                    $data = $buildings;
 
                 }else{
 
@@ -3993,7 +3997,7 @@ class AuditController extends Controller
                         ]);
                         $ordering->save();
 
-                       // $buildings = OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->with('building')->get();
+                       // 
 
                         // $data_amenities[] = [
                         //     "id" => $amenity->amenity_id,
@@ -4015,6 +4019,7 @@ class AuditController extends Controller
                         //     "unit_id" => $amenity->unit_id,
                         //     "completed_icon" => $completed_icon
                         // ];
+                        
 
                     }elseif($building_id){
                         $amenity = new AmenityInspection([
@@ -4119,15 +4124,14 @@ class AuditController extends Controller
                             "completed_icon" => $completed_icon
                         ];
                     }
+
+                    $data = $data_amenities;
+
                 } // end if not project
                 
             } // end foreach amenity
         }
         
-
-        
-
-        $data = $data_amenities;
             
         return $data;
     }

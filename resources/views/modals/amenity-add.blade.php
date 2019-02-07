@@ -173,6 +173,15 @@ button.squared {
 				'new_amenities' : newAmenities,
 				'_token' : '{{ csrf_token() }}'
 			}, function(data) {
+			@if($data['project_id'])
+
+				console.log('updating project buildings');
+				// reload list of buildings
+				projectDetails({{$data['project_id']}}, {{$data['project_id']}}, data.length, 1);
+				dynamicModalClose();
+
+			@else 
+
 				// locate where to update data
 				var mainDivId = $('.inspection-areas').parent().attr("id"); 
 				var mainDivContainerId = $('#'+mainDivId).parent().attr("id"); 
@@ -217,7 +226,7 @@ button.squared {
 
 					
 				});
-						
+
 				// data.forEach(function(area) {
 				// 	newarea = inspectionAreaTemplate;
 				// 	newarea = newarea.replace(/areaContext/g, context);
@@ -251,6 +260,8 @@ button.squared {
 				  });
 
 				dynamicModalClose();
+
+			@endif
 			} 
 		);
 
