@@ -22,6 +22,17 @@ class AmenityInspection extends Model
     {
     	return $this->hasOne(\App\Models\Amenity::class, 'id', 'amenity_id');
     }
+    public function unit() : HasOne
+    {
+        return $this->hasOne(\App\Models\Unit::class, 'id', 'unit_id');
+    }
+
+    public function cached_unit() : object
+    {
+        $cachedUnit = CachedUnit::where('unit_id',$this->unit_id)->where('audit_id',$this->audit_id)->first();
+
+        return $cachedUnit;
+    }
 
     public function user() : HasOne
     {

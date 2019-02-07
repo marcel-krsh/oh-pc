@@ -130,27 +130,69 @@
 			        <div class="uk-width-1-1 uk-padding-remove uk-inline">
 			            <button id="amenity-selection" class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="amenityList()"><i id="amenity-selection-icon" class="a-arrow-small-up"></i> <span id="select-amenity-text">Select Amenity</span></button>
 					    <div id="amenity-list" class="uk-width-1-1 uk-panel-scrollable" style="display: none">
-					    	<div class="uk-column-1-3@m uk-column-1-2@s ">
+					    	<div class="uk-column-1-1 ">
 					        	<ul >
-					        		<li class="s-id amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Site : Address City ST 12345</li>
-					        		<li class="s-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Site: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<li class="s-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Site: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<li class="s-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Site: Address City ST 12345: Item ?')">Item?</a></li>
-									<hr class="b-id amenity-list-item dashed-hr uk-column-span">
-					        		<li class="b-id amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Building BIN: Address City ST 12345</li>
-					        		<li class="b-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Building BIN: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<li class="b-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Building BIN: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<hr class="amenity-list-item dashed-hr uk-column-span">
-					        		<li class="u-id amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Unit 123: Address City ST 12345</li>
-					        		<li class="u-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 123: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<li class="u-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 123: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<li class="u-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 123: Address City ST 12345: Item ?')">Item?</a></li>
-									<hr class="u-id2 amenity-list-item dashed-hr uk-column-span">
-					        		<li class="u-id2 amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Unit 135: Address City ST 12345</li>
-					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 135: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 135: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 135: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 135: Address City ST 12345: Item ?')">Item?</a></li>
+					        		<li class="s-{{$audit->project_ref}} amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Site : {{$audit->address}}</li>
+					        		@php // get the project level amenities
+					        			$projectAmenities = $amenities->filter(function ($project){
+																if(!is_null($project->project_id)){
+																    return true; // not complete
+																} else {
+																	return false; // complete
+																}
+															});
+										$projectAmenities = $projectAmenities->sortBy('amenity_id')->sortBy('id');
+
+
+					        		@endphp
+
+					        		@foreach($projectAmenities as $amenity)
+					        		<li class="s-{{$audit->project_ref}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','Site: {{$audit->address}}: {{$amenity->amenity->description}}')">{{$amenity->amenity->amenity_description}}</a></li>
+					        		@endforeach
+
+					        		@php // get the building level amenities
+					        			$buildingAmenities = $amenities->filter(function ($building){
+																if(!is_null($building->building_id)){
+																    return true; // not complete
+																} else {
+																	return false; // complete
+																}
+															});
+										$buildingAmenities = $buildingAmenities->sortBy('building_id')->sortBy('amenity_id')->sortBy('id');
+
+										$currentBuildingId = 0;
+					        		@endphp
+
+					        		@foreach($buildingAmenities as $amenity)
+					        			@if($currentBuildingId != $amenity->building_id)
+					        				<li class="b-{{$amenity->building_id}} amenity-list-item finding-modal-list-items"><strong>Building BIN: {{$amenity->building_key}}</strong></li>
+					        				@php $currentBuildingId = $amenity->building_id; @endphp
+					        			@endif
+					        			<li class="b-{{$amenity->building_id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','Building BIN: {{$amenity->building_key}}: {{$amenity->amenity->description}}')">{{$amenity->amenity->amenity_description}}</a></li>
+
+					        		@endforeach
+
+					        		@php // get the unit level amenities
+					        			$unitAmenities = $amenities->filter(function ($unit){
+																if(!is_null($unit->unit_id)){
+																    return true; // not complete
+																} else {
+																	return false; // complete
+																}
+															});
+										$unitAmenities = $unitAmenities->sortBy('unit_id')->sortBy('amenity_id')->sortBy('id');
+
+										$currentUnitId = 0;
+					        		@endphp
+
+					        		@foreach($unitAmenities as $amenity)
+					        			@if($currentUnitId != $amenity->unit_id)
+					        				<li class="u-{{$amenity->unit_id}} amenity-list-item finding-modal-list-items"><strong>Unit : {{$amenity->cached_unit()->unit_name}} in BIN: {{$amenity->cached_unit()->building_key}} ADDRESS: {{$amenity->cached_unit()->address}}</strong></li>
+					        				@php $currentUnitId = $amenity->unit_id; @endphp
+					        			@endif
+					        			<li class="u-{{$amenity->unit_id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','Unit: {{$amenity->cached_unit()->unit_name}}: {{$amenity->amenity->description}}')">{{$amenity->amenity->amenity_description}}</a></li>
+
+					        		@endforeach
 					        	</ul>
 				        	</div>
 					        
@@ -352,8 +394,11 @@
   	</div>
   </div>
  </div>
- @if($type != 'all')
+
 <script>
+	window.findingModalSelectedType = '';
+	window.findingModalSelectedAmenity = '';
+
 	function clickDefault(){
 		setTimeout(function() {
 			$('#{{$type}}-filter-button').trigger('click');
@@ -378,9 +423,15 @@
         @elseif(!is_null($building))
        			console.log('Filtering to building id:b-{{$building->id}}');
         		// set filter test for type
-        		filterAmenities('b-{{$building->building_id}}', 'Building BIN:{{$building->building_key}} Address City ST 12345');
+        		filterAmenities('b-{{$building->building_id}}', 'Building BIN:{{$building->building_key}} Address City ST 12345',0);
 
         		// filter to type and allita type (nlt, lt, file)
+        @else
+        		// console.log('Open type listing - opened from the audit list');
+        		// setTimeout(function() {
+        		// 	typeList();
+        		// }, .7);
+
         @endif
 		
 	}
@@ -466,16 +517,20 @@
 			// filter the findings to the selection
 			$('#select-amenity-text').text(display);
 		}
-		function filterAmenities(type_id,display='selected'){
+		function filterAmenities(type_id,display='selected',closeType=1){
 
 			if(type_id == 'all'){
 				$('.amenity-list-item').show();
-				typeList();
+				if(closeType == 1){
+					typeList();
+				}
 				amenityList();
 			} else {
 				$('.amenity-list-item').hide();
 				$('.'+type_id).show();
+				if(closeType == 1){
 				typeList();
+				}
 				amenityList();
 			}
 			$('#select-type-text').text(display);
@@ -485,4 +540,4 @@
 		window.onload(clickDefault());
 
 </script>
-@endif
+

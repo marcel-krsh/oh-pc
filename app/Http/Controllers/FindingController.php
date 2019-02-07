@@ -105,7 +105,7 @@ class FindingController extends Controller
 
         
             // always use the audit id as a selector to ensure you get the correct one
-            $amenities = AmenityInspection::where('audit_id',$auditid)->get(); 
+            $amenities = AmenityInspection::where('audit_id',$auditid)->with('amenity')->get(); 
 
             $findings = Finding::where('project_id',$audit->project_id)
                 ->with('comments')
