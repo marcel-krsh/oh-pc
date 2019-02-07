@@ -15,7 +15,8 @@
 					@can('access_auditor')
 	  				<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
 	  					<hr />
-	  					<h3 class="uk-margin-small-top">Set Availability <i class="a-calendar-pencil use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="expandModal(this);"></i></h3>
+
+	  					<h3 class="uk-margin-small-top">Set Availability <i class="a-calendar-pencil use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="expandModal(this);"></i></h3>@can('access_root')
 	  					<div class="uk-grid-small uk-margin-remove" uk-grid>
 	  						<div class="uk-width-1-3 uk-padding-remove">
 	  							<label class="uk-text-small">Max Hours per Day</label>
@@ -131,6 +132,7 @@
 					            </select>
 	  						</div>
 	  					</div>
+	  					@endcan
 	  				</div>
 
 	  				<div class="uk-width-1-1 uk-margin-remove uk-padding-remove-left">
@@ -670,6 +672,9 @@
 		    minDate: "today",
 		    altFormat: "F j, Y",
 		    dateFormat: "F j, Y",
+		    "locale": {
+		        "firstDayOfWeek": 1 // start week on Monday
+		    	}
 		});
 
 	</script>

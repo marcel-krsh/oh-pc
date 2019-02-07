@@ -162,16 +162,60 @@
 					    <div id="type-list" class="uk-width-1-1 uk-panel-scrollable" style="display: none">
 					    	<div class="uk-column-1-3@m uk-column-1-2@s ">
 					        	<ul >
-					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('s-id','Site: Address City ST 12345')">Site: Address City ST 12345</li>
+					        		<!-- Site is always the first one -->
+					        		@php $siteCompleteTest = $amenities->filter(function ($site){
+																if(!is_null($site->project_id) && is_null($site->completed_date_time)){
+																    return true; // not complete
+																} else {
+																	return false; // complete
+																}
+													});
+																	// if there are any returned - they are not all complete.
+										if(count($siteCompleteTest)>0) {
+											$siteComplete = 0; // not complete
+										} else {
+											$siteComplete = 1; // complete
+											
+										}
+																
+									@endphp
+
+
+					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('s-{{$audit->project_ref}}','Site:  City ST 12345')" style="color : @if($siteComplete == 1) #000 @else #50b8ec @endIf " >@if($siteComplete == 1) <i class="a-circle-checked"></i> @else <i class="a-circle"></i>@endIf Site: Address City ST 12345</li>
 
 					        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
-					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('b-id', 'Building BIN:1234 Address City ST 12345')">Building BIN:1234 Address City ST 12345</li>
 
-					        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
-					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('u-id','Unit in BIN:5678 : Unit 12345')">Unit in BIN:5678 : Unit 12345</li>
+					        		@foreach($buildings as $type)
+						        		@if(!is_null($type->building_id))
+							        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('b-{{$type->building_id}}','Building BIN: {{$type->building_key}}, NAME: {{$type->building_name}}, ADDRESS: {{$type->address}}')">@if($type->complete == 0 || is_null($type->complete)) <i class="a-circle" style="color: #50b8ec" ></i> @else <i class="a-circle-checked"></i> @endIf <strong style="color : @if($type->complete == 1) #000 @else #50b8ec @endIf "> Building BIN:{{$type->building_key}} NAME: {{$type->building_name}} ADDRESS: {{$type->address}}</strong></li>
+							        		@php $buildingUnits = $units->filter(function ($unit) use ($type){
+																				if($unit->building_id == $type->building_id){
+																				    return true;
+																				} else {
+																					return false;
+																				}
+																	});
+																				
+											@endphp
+							        		@if($buildingUnits)
+							        		<ul class="uk-margin-left">
+							        			@forEach($buildingUnits as $bu)
+							        			<li class="use-hand-cursor uk-column-span uk-margin" onclick="filterAmenities('u-{{$bu->unit_id}}','Unit {{$bu->unit_name}} in BIN:{{$bu->building_key}} ')" style="color : @if($bu->complete == 1) #000 @else #50b8ec @endIf ">&nbsp;&nbsp;&nbsp;@if($bu->complete == 0 || is_null($bu->complete)) <i class="a-circle" style="color: #50b8ec" ></i> @else <i class="a-circle-checked"></i> @endIf<i class="a-buildings-2"></i> Unit {{$bu->unit_name}}</li>
+							        			@endforeach
 
-					        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
-					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('u-id2','Unit in BIN:5678 : Unit 123678')">Unit in BIN:5678 : Unit 123678</li>
+							        		</ul>
+							        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
+							        		@else 
+							        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
+							        		@endIf
+
+							        		
+							        	@endif
+					        		@endforeach
+					        		
+					        		
+					        		
+					        		
 					        	</ul>
 				        	</div>
 					        
@@ -206,11 +250,14 @@
             	</div>
 			</div>
 		</div>
+
+		<!-- FINDING TYPE LISTS -->
+
 		<div class="modal-findings-left-main-container" style="display:none">
 			<div class="modal-findings-left-main">
 				<div id="modal-findings-list-filters" class="uk-margin uk-child-width-auto uk-grid filter-checkbox-list js-filter-findings">
 						@foreach($allFindingTypes as $findingType)
-						<div id="filter-checkbox-list-item-{{$findingType->id}}" class="finding-type-list-item uk-padding-remove all filter-checkbox-list-item {{strtolower($findingType->type)}} {{str_replace('\\','',strtolower($findingType->name))}} @if($findingType->site) site @endIf @if($findingType->building_system) building system @endIf @if($findingType->building_exterior) building exterior @endIf @if($findingType->common_area) common area @endIf" uk-grid style="overflow: hidden;">
+						<div id="filter-checkbox-list-item-{{$findingType->id}}" class="finding-type-list-item uk-padding-remove all filter-checkbox-list-item {{strtolower($findingType->type)}} {{str_replace('\\','',strtolower($findingType->name))}} @if($findingType->site) site @endIf @if($findingType->building_system) building system @endIf @if($findingType->building_exterior) building exterior @endIf @if($findingType->common_area) common area @endIf @foreach($findingType->amenities() as $fAmenity) a-{{$fAmenity->id}} @endforeach " uk-grid style="overflow: hidden;">
 							<div class="uk-width-1-1 uk-padding-remove indented">
 					            <input id="filter-findings-filter-{{$findingType->id}}" value="" type="checkbox" onclick="newFinding({{$findingType->id}});"/>
 								<label for="filter-findings-filter-{{$findingType->id}}" ><i class="@if($findingType->type == 'lt')a-skull @endIf @if($findingType->type == 'nlt')a-booboo @endIf @if($findingType->type == 'file')a-folder @endIf  "></i> @if($findingType->building_exterior)<span uk-tooltip title="Building Exterior"> BE </span>|@endif @if($findingType->building_system)<span uk-tooltip title="Building System"> BS </span>|@endif @if($findingType->site)<span uk-tooltip title="Site"> S </span>|@endif @if($findingType->common_area)<span uk-tooltip title="Common Area"> CA </span>|@endif @if($findingType->unit)<span uk-tooltip title="Unit"> U </span>|@endif @if($findingType->file)<span uk-tooltip title="File"> F </span>|@endif {{$findingType->name}} </label>
@@ -221,6 +268,14 @@
 		        </div>
 			</div>
 		</div>
+
+		<!-- END FINDING TYPE LISTS -->
+
+
+<!-- 		TOP LEFT BAR FILTERS -->
+
+
+
 		<div class="modal-findings-left-top" uk-grid>
 			<div class="uk-width-1-1 filter-button-set">
 				<div uk-grid>
@@ -263,6 +318,74 @@
 	</div>
 </div>
 <script>
+</script>
+
+@include('templates.modal-findings-new-form')
+@include('templates.modal-findings-new')
+@include('templates.modal-findings-items')
+
+<div id="modal-findings-completion-check" uk-modal>
+  <div class="uk-modal-dialog uk-modal-body uk-modal-content" uk-overflow-auto> 
+  	<a class="uk-modal-close-default" uk-close></a>
+  	<div uk-grid>
+  		<div class="uk-width-1-2  uk-margin-medium-top">
+  			<p>Have you finished inspecting all items for that building/unit/common area?</p> 
+  			<div class="uk-padding-remove" uk-grid>
+	  			<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
+	  				<button class="uk-button uk-button-primary uk-margin-left uk-margin-right uk-padding-remove uk-margin-remove uk-width-1-1">Yes, Mark as Complete and Submit to Lead.</button>
+	  			</div>
+	  			<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
+	  				<button class="uk-button uk-button-primary uk-padding-remove uk-margin-remove uk-width-1-1">Just the Items I have Findings For.</button>
+	  			</div>
+	  			<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
+	  				<button class="uk-button uk-button-default uk-padding-remove uk-margin-remove uk-width-1-1 uk-modal-close">No, I am still working on it.</button>
+	  			</div>
+	  		</div>
+  		</div>
+  		<div class="uk-width-1-2  uk-margin-medium-top">
+  			<div>bulleted list of items that have not had any findings here<br />
+  			<ul class="uk-list">
+  				<li>item</li>
+  				<li>item</li>
+  			</ul>
+  		</div>
+  	</div>
+  </div>
+ </div>
+ @if($type != 'all')
+<script>
+	function clickDefault(){
+		setTimeout(function() {
+			$('#{{$type}}-filter-button').trigger('click');
+			//alert('filtered');
+		}, .5);
+
+		@if(!is_null($amenity))
+        	setTimeout(function() {
+				console.log('Filtering to amenity id:a-{{$amenity->id}} ({{$amenity->description}})');
+				// set filter text for amenity
+
+				// set filter text for type
+
+				// filter to amenity and amenity type and allita type (nlt, lt, file)
+			}, .5);
+        @elseif(!is_null($unit))
+        		console.log('Filtering to unit id:u-{{$unit->id}}');
+        		// set filter test for type
+
+        		// filter to type and allita type (nlt, lt, file)
+
+        @elseif(!is_null($building))
+       			console.log('Filtering to building id:b-{{$building->id}}');
+        		// set filter test for type
+        		filterAmenities('b-{{$building->building_id}}', 'Building BIN:{{$building->building_key}} Address City ST 12345');
+
+        		// filter to type and allita type (nlt, lt, file)
+        @endif
+		
+	}
+
+
 
         // filter findings based on class
         $('#finding-description').on('keyup', function () {
@@ -358,54 +481,8 @@
 			$('#select-type-text').text(display);
 
 		}
-
-        
-        
 		
-	
-</script>
+		window.onload(clickDefault());
 
-@include('templates.modal-findings-new-form')
-@include('templates.modal-findings-new')
-@include('templates.modal-findings-items')
-
-<div id="modal-findings-completion-check" uk-modal>
-  <div class="uk-modal-dialog uk-modal-body uk-modal-content" uk-overflow-auto> 
-  	<a class="uk-modal-close-default" uk-close></a>
-  	<div uk-grid>
-  		<div class="uk-width-1-2  uk-margin-medium-top">
-  			<p>Have you finished inspecting all items for that building/unit/common area?</p> 
-  			<div class="uk-padding-remove" uk-grid>
-	  			<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
-	  				<button class="uk-button uk-button-primary uk-margin-left uk-margin-right uk-padding-remove uk-margin-remove uk-width-1-1">Yes, Mark as Complete and Submit to Lead.</button>
-	  			</div>
-	  			<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
-	  				<button class="uk-button uk-button-primary uk-padding-remove uk-margin-remove uk-width-1-1">Just the Items I have Findings For.</button>
-	  			</div>
-	  			<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
-	  				<button class="uk-button uk-button-default uk-padding-remove uk-margin-remove uk-width-1-1 uk-modal-close">No, I am still working on it.</button>
-	  			</div>
-	  		</div>
-  		</div>
-  		<div class="uk-width-1-2  uk-margin-medium-top">
-  			<div>bulleted list of items that have not had any findings here<br />
-  			<ul class="uk-list">
-  				<li>item</li>
-  				<li>item</li>
-  			</ul>
-  		</div>
-  	</div>
-  </div>
- </div>
- @if($type != 'all')
-<script>
-	function clickDefault(){
-		setTimeout(function() {
-			$('#{{$type}}-filter-button').trigger('click');
-			//alert('filtered');
-		}, .5);
-		
-	}
-	window.onload(clickDefault());
 </script>
 @endif
