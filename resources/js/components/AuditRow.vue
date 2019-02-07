@@ -4,7 +4,7 @@
         	<span id="audit-avatar-badge-1" v-on:click="openAssignment" :uk-tooltip="audit.tooltipLead" title="" aria-expanded="false" :class="{[audit.userBadgeColor]:true, 'user-badge':true, 'no-float':true, 'uk-link': true }">
 				<span v-html="audit.initials"></span>
 			</span>
-			<span :id="'audit-rid-'+audit.auditId" style="position: relative; top: 27px; left: -15px;"><small>#<span v-html="auditIndex"></span></small></span>
+			<span :id="'audit-rid-'+audit.auditId" style="position: relative; top: 5px; left: -9px;"><small>#<span v-html="auditIndex"></span></small></span>
         </td>
         <td :id="'audit-c-2-'+audit.auditId" class="audit-td-project">
         	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
