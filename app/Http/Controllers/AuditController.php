@@ -3821,7 +3821,8 @@ class AuditController extends Controller
         $data = collect([
             "project_id" => $project_id,
             "building_id" => $building_id,
-            "unit_id" => $unit_id
+            "unit_id" => $unit_id,
+            "audit_id" => $audit->audit_id
         ]);
 
         // get auditors for that audit
@@ -3846,24 +3847,21 @@ class AuditController extends Controller
         $project_id = $request->get('project_id');
         $building_id =  $request->get('building_id');
         $unit_id =  $request->get('unit_id');
+        $audit_id =  $request->get('audit_id');
 
         $new_amenities = $request->get('new_amenities');
 
-        // dd($project_id, $building_id, $unit_id);
+        //dd($project_id, $building_id, $unit_id, $audit_id);
         /*
         "45055"
         "16725"
         null
-         */
-        /*
-        "45150"
-        "23061"
-        "208319"
+        "6410"
          */
 
         // get current audit id using project_id
         // only one audit can be active at one time
-        $audit = CachedAudit::where("audit_id", "=", $project_id)->orderBy('id', 'desc')->first();
+        $audit = CachedAudit::where("audit_id", "=", $audit_id)->orderBy('id', 'desc')->first();
 
         if (!$audit) {
             dd("There is an error - cannot find that audit - 3854");
@@ -3888,7 +3886,7 @@ class AuditController extends Controller
                 $amenity_type = Amenity::where("id", "=", $new_amenity['amenity_id'])->first();
 
                 // project level amenities are handled through OrderingBuilding and CachedBuilding
-                if($project_id){
+                if($project_id && $unit_id == '' && $building_id == ''){
 
                     $name = $amenity_type->amenity_description;
 
@@ -3974,9 +3972,11 @@ class AuditController extends Controller
 
                     // save new amenity
                     if($unit_id){
+
                         $unitamenity = new UnitAmenity([
                             'unit_id' => $unit_id,
-                            'amenity_id' => $amenity_type->id
+                            'amenity_id' => $amenity_type->id,
+                            'comment' => 'manually added by '.Auth::user()->id
                         ]);
                         $unitamenity->save();
 
@@ -4005,32 +4005,17 @@ class AuditController extends Controller
                             'order' => $latest_ordering+1
                         ]);
                         $ordering->save();
-
-                       // 
-
-                        // $data_amenities[] = [
-                        //     "id" => $amenity->amenity_id,
-                        //     "audit_id" => $amenity->audit_id,
-                        //     "name" => $name,
-                        //     "status" => $status,
-                        //     "auditor_id" => $auditor_id,
-                        //     "auditor_initials" => $auditor_initials,
-                        //     "auditor_name" => $auditor_name,
-                        //     "auditor_color" => $auditor_color,
-                        //     "finding_nlt_status" => '',
-                        //     "finding_lt_status" =>'',
-                        //     "finding_sd_status" =>'',
-                        //     "finding_photo_status" =>'',
-                        //     "finding_comment_status" =>'',
-                        //     "finding_copy_status" =>'',
-                        //     "finding_trash_status" =>'',
-                        //     "building_id" => $amenity->building_id,
-                        //     "unit_id" => $amenity->unit_id,
-                        //     "completed_icon" => $completed_icon
-                        // ];
                         
 
                     }elseif($building_id){
+
+                        $buildingamenity = new BuildingAmenity([
+                            'building_id' => $building_id,
+                            'amenity_id' => $amenity_type->id,
+                            'comment' => 'manually added by '.Auth::user()->id
+                        ]);
+                        $buildingamenity->save();
+
                         $amenity = new AmenityInspection([
                                 'audit_id' => $audit->audit_id,
                                 'building_id' => $building_id,
@@ -4134,7 +4119,50 @@ class AuditController extends Controller
                         ];
                     }
 
-                    $data = $data_amenities;
+                    $data['amenities'] = $data_amenities;
+
+
+                    if($unit_id != NULL && $building_id != NULL){
+                        $unit_auditor_ids = AmenityInspection::where('audit_id', '=', $audit->audit_id)->where('unit_id','=',$unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+
+
+                        $building_auditor_ids = array();
+                        $units = Unit::where('building_id', '=', $building_id)->get();
+                        foreach($units as $unit){
+                            $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit->audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                        }
+                        // $building_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id','=',$building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+                    }else{
+                        if($building_id == 0 && $unit_id == 0){
+                            $unit_auditor_ids = array();
+                            $building_auditor_ids = array();
+                        }else{
+                            $unit_auditor_ids = array();
+                            // reset building auditors list
+                            
+                            $building_auditor_ids = array();
+                            $units = Unit::where('building_id', '=', $building_id)->get();
+                            foreach($units as $unit){
+                                $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit->audit_id)->where('unit_id','=',$unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+
+                                $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit->audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                            }
+                            $building_auditor_ids = array_merge($building_auditor_ids, AmenityInspection::where('audit_id', '=', $audit->audit_id)->where('building_id','=',$building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                        }
+                    }
+
+                    $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
+                    foreach($unit_auditors as $unit_auditor){
+                        $unit_auditor->full_name = $unit_auditor->full_name();
+                        $unit_auditor->initials = $unit_auditor->initials();
+                    }
+                    $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
+                    foreach($building_auditors as $building_auditor){
+                        $building_auditor->full_name = $building_auditor->full_name();
+                        $building_auditor->initials = $building_auditor->initials();
+                    }
+
+                    $data['auditor'] = ["unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $audit->audit_id, "building_id" => $building_id];
 
                 } // end if not project
                 

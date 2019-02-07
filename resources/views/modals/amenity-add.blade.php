@@ -42,34 +42,34 @@
 	</div>
 </div>
 <style>
-#amenity-to-create {
+	#amenity-to-create {
 
-}
-#amenity-to-create li {
-	border:1px solid #ddd;
-	cursor: pointer;
-	float:left;
-	margin-top: 0;
-    margin-right: 10px;
-    padding:3px 19px 3px 17px;
-    border-radius: 7px;
-    margin-bottom:5px;
-}
-#amenity-to-create li:hover {
-	padding-right:6px;
-}
-#amenity-to-create li:hover:after{
-  display: inline-block;
-  content: "\00d7"; /* This will render the 'X' */
-  padding-left: 4px;
-  width: 9px;
-}
-button.bordered {
-	border:1px solid #ddd;
-}
-button.squared {
-	border-radius: 0px;
-}
+	}
+	#amenity-to-create li {
+		border:1px solid #ddd;
+		cursor: pointer;
+		float:left;
+		margin-top: 0;
+	    margin-right: 10px;
+	    padding:3px 19px 3px 17px;
+	    border-radius: 7px;
+	    margin-bottom:5px;
+	}
+	#amenity-to-create li:hover {
+		padding-right:6px;
+	}
+	#amenity-to-create li:hover:after{
+	  display: inline-block;
+	  content: "\00d7"; /* This will render the 'X' */
+	  padding-left: 4px;
+	  width: 9px;
+	}
+	button.bordered {
+		border:1px solid #ddd;
+	}
+	button.squared {
+		border-radius: 0px;
+	}
 </style>
 <script>
 	var selectAuditor = new autoComplete({
@@ -168,12 +168,13 @@ button.squared {
 		
 		$.post('/modals/amenities/save', {
 				'project_id' : '{{$data['project_id']}}',
+				'audit_id' : '{{$data['audit_id']}}',
 				'building_id' : '{{$data['building_id']}}',
 				'unit_id' : '{{$data['unit_id']}}',
 				'new_amenities' : newAmenities,
 				'_token' : '{{ csrf_token() }}'
 			}, function(data) {
-			@if($data['project_id'])
+			@if($data['project_id'] && $data['building_id']=='' && $data['unit_id']=='')
 
 				// reload list of buildings
 				projectDetails({{$data['project_id']}}, {{$data['project_id']}}, data.length, 1);
@@ -198,7 +199,7 @@ button.squared {
 				var areas = '';
 				var newarea = '';
 
-				data.forEach(function(area) {
+				data.amenities.forEach(function(area) {
 					newarea = inspectionAreaTemplate;
 					newarea = newarea.replace(/areaContext/g, context);
 					newarea = newarea.replace(/areaRowId/g, area.id);
@@ -223,33 +224,46 @@ button.squared {
 
 					areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor_color);
 
+					//console.log("unit id "+area.unit_id+" - building_id "+area.building_id);
+					// update building auditor's list
+					if(area.unit_id == null && area.building_id != null){
+	                	console.log('updating building auditors ');
+
+	                	if($('#building-auditors-'+area.building_id).hasClass('hasAuditors')){
+	                		
+	                		// we don't know if/which unit is open
+		                	var unitelement = 'div[id^=unit-auditors-]  .uk-slideshow-items li.uk-active > div';
+
+			                $(unitelement).html('');
+			                $.each(data.unit_auditors, function(index, value){
+			                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
+			                	$(unitelement).append(newcontent);
+			                });
+	                	}else{
+	                		// we don't know if/which unit is open
+		                	var unitelement = 'div[id^=unit-auditors-]';
+
+			                $(unitelement).html('');
+			                $.each(data.auditor.unit_auditors, function(index, value){
+			                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
+			                	$(unitelement).append(newcontent);
+			                });
+	                	}       
+
+		                var buildingelement = '#building-auditors-'+area.building_id+' .uk-slideshow-items li.uk-active > div';
+		               
+		                $(buildingelement).html('');
+		                $.each(data.auditor.building_auditors, function(index, value){
+		                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', 0, \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
+		                	$(buildingelement).append(newcontent);
+		                });
+		            }else{
+					// update unit auditor's list
+						console.log('units auditor list update');
+		            }
+
 					
 				});
-
-				// data.forEach(function(area) {
-				// 	newarea = inspectionAreaTemplate;
-				// 	newarea = newarea.replace(/areaContext/g, context);
-				// 	newarea = newarea.replace(/areaRowId/g, area.id);
-				// 	newarea = newarea.replace(/areaName/g, area.name);
-				// 	newarea = newarea.replace(/areaStatus/g, area.status);
-				// 	newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);
-				// 	newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);
-
-				// 	newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);
-				// 	newarea = newarea.replace(/areaLTStatus/g, area.finding_lt_status);
-				// 	newarea = newarea.replace(/areaSDStatus/g, area.finding_sd_status);
-				// 	newarea = newarea.replace(/areaPicStatus/g, area.finding_photo_status);
-				// 	newarea = newarea.replace(/areaCommentStatus/g, area.finding_comment_status);
-				// 	newarea = newarea.replace(/areaCopyStatus/g, area.finding_copy_status);
-				// 	newarea = newarea.replace(/areaTrashStatus/g, area.finding_trash_status);
-					
-				// 	newarea = newarea.replace(/areaDataAudit/g, area.audit_id);
-				// 	newarea = newarea.replace(/areaDataBuilding/g, area.building_id);
-				// 	newarea = newarea.replace(/areaDataArea/g, area.unit_id);
-				// 	newarea = newarea.replace(/areaDataAmenity/g, area.id);
-
-				// 	areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor_color);
-				// });
 
 				$('#'+mainDivId).html(inspectionMainTemplate);
 				$('#'+mainDivId+' .inspection-areas').html(areas);
@@ -257,6 +271,7 @@ button.squared {
 				    // Animation complete
 				    console.log("Area list updated");
 				  });
+
 
 				dynamicModalClose();
 
