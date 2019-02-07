@@ -100,7 +100,7 @@ button.squared {
 
      var selectAmenities = new autoComplete({
             selector: '#modal-amenity-form-amenity',
-            minChars: 1,
+            minChars: 0,
             source: function(term, suggest){
                 term = term.toLowerCase();
                 // var choices = [['Bedroom', '1'], ['Stairs', '2'], ['Living Room', '3']];

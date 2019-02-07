@@ -4749,7 +4749,7 @@ ul ul, ol ul {
 .hideImportnull {
   display: none;
 }
-.autocomplete-suggestions {max-height: none;}
+.autocomplete-suggestions {max-height: 500px;}
 .autocomplete-suggestion {border-bottom:1px solid #ddd; padding:15px 10px; cursor: pointer;}
 .blur {
   -webkit-filter: blur(5px);
