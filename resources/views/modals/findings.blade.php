@@ -127,11 +127,14 @@
 		<div class="modal-findings-left-bottom-container">
 			<div class="modal-findings-left-bottom">
 				<div id="modal-findings-filters" class="uk-margin uk-child-width-auto" uk-grid>
-			        <div class="uk-width-1-1 uk-padding-remove uk-inline">
-			            <button id="amenity-selection" class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="amenityList()"><i id="amenity-selection-icon" class="a-arrow-small-up"></i> <span id="select-amenity-text">Select Amenity</span></button>
+			     
+			    	<div class="uk-width-1-1 uk-padding-remove uk-inline">
+			        
+			        	<button id="amenity-selection" class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="amenityList()"><i id="amenity-selection-icon" class="a-arrow-small-up"></i> <span id="select-amenity-text">Select Amenity</span></button>
 					    <div id="amenity-list" class="uk-width-1-1 uk-panel-scrollable" style="display: none">
 					    	<div class="uk-column-1-1 ">
 					        	<ul >
+
 					        		<li class="s-{{$audit->project_ref}} amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Site : {{$audit->address}}</li>
 					        		@php // get the project level amenities
 					        			$projectAmenities = $amenities->filter(function ($project){
@@ -147,7 +150,7 @@
 										$amenityIncrement = 1;
 
 					        		@endphp
-
+					        
 					        		@foreach($projectAmenities as $amenity)
 					        		@php if($currentAmenityId != $amenity->amenity_id) { 
 					        						// new amenity
@@ -242,12 +245,14 @@
 					        			{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} </a></li>
 
 					        		@endforeach
+					        
 					        	</ul>
 				        	</div>
 					        
 					    </div>
-
+				
 					</div>
+					
 					<div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
 			            <button id="type-selection"  class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="typeList()"><i id="type-selection-icon" class="a-arrow-small-up"></i> <span id="select-type-text">Select Type</span></button>
 					    <div id="type-list" class="uk-width-1-1 uk-panel-scrollable" style="display: none">
@@ -275,7 +280,7 @@
 					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('s-{{$audit->project_ref}}','Site:  City ST 12345')" style="color : @if($siteComplete == 1) #000 @else #50b8ec @endIf " >@if($siteComplete == 1) <i class="a-circle-checked"></i> @else <i class="a-circle"></i>@endIf Site: Address City ST 12345</li>
 
 					        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
-
+					 
 					        		@foreach($buildings as $type)
 						        		@if(!is_null($type->building_id))
 							        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('b-{{$type->building_id}}','Building BIN: {{$type->building_key}}, NAME: {{$type->building_name}}, ADDRESS: {{$type->address}}')">@if($type->complete == 0 || is_null($type->complete)) <i class="a-circle" style="color: #50b8ec" ></i> @else <i class="a-circle-checked"></i> @endIf <strong style="color : @if($type->complete == 1) #000 @else #50b8ec @endIf "> Building BIN:{{$type->building_key}} NAME: {{$type->building_name}} ADDRESS: {{$type->address}}</strong></li>
@@ -286,7 +291,7 @@
 																					return false;
 																				}
 																	});
-																				
+																			
 											@endphp
 							        		@if($buildingUnits)
 							        		<ul class="uk-margin-left">
@@ -472,7 +477,7 @@
         @elseif(!is_null($building))
        			console.log('Filtering to building id:b-{{$building->id}}');
         		// set filter test for type
-        		filterAmenities('b-{{$building->building_id}}', 'Building BIN:{{$building->building_key}} Address City ST 12345',0);
+        		//filterAmenities('b-{{$building->building_id}}', 'Building BIN:{{$building->building_key}} Address City ST 12345',0);
 
         		// filter to type and allita type (nlt, lt, file)
         @else
@@ -589,7 +594,6 @@
 
 		}
 		
-		window.onload(clickDefault());
+		clickDefault();
 
 </script>
-
