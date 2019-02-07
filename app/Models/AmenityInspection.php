@@ -34,6 +34,35 @@ class AmenityInspection extends Model
         return $cachedUnit;
     }
 
+    public function unit_has_multiple() : bool
+    {
+        $total = AmenityInspection::where('amenity_id',$this->amenity_id)->where('unit_id',$this->unit_id)->where('audit_id',$this->audit_id)->count();
+        if($total > 1){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function building_has_multiple() : bool
+    {
+        $total = AmenityInspection::where('amenity_id',$this->amenity_id)->where('building_id',$this->building_id)->where('audit_id',$this->audit_id)->count();
+        if($total > 1){
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function project_has_multiple() : bool
+    {
+        $total = AmenityInspection::where('amenity_id',$this->amenity_id)->where('project_id',$this->project_id)->where('audit_id',$this->audit_id)->count();
+        if($total > 1){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function user() : HasOne
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'auditor_id');

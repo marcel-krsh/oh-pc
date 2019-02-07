@@ -143,11 +143,26 @@
 															});
 										$projectAmenities = $projectAmenities->sortBy('amenity_id')->sortBy('id');
 
+										$currentAmenityId = 0;
+										$amenityIncrement = 1;
 
 					        		@endphp
 
 					        		@foreach($projectAmenities as $amenity)
-					        		<li class="s-{{$audit->project_ref}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','Site: {{$audit->address}}: {{$amenity->amenity->amenity_description}}')">{{$amenity->amenity->amenity_description}}</a></li>
+					        		@php if($currentAmenityId != $amenity->amenity_id) { 
+					        						// new amenity
+					        						$currentAmenityId = $amenity->amenity_id;
+					        						if($amenity->project_has_multiple()){ 
+					        							$amenityIncrement = 1;
+					        						} else {
+					        							$amenityIncrement = '';
+					        						}
+					        					} else {
+					        						// same amenity - increment it.
+					        						$amenityIncrement++; 
+					        					}
+					        			@endphp
+					        		<li class="s-{{$audit->project_ref}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','{{$amenity->amenity->amenity_description}}')">{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} </a></li>
 					        		@endforeach
 
 					        		@php // get the building level amenities
@@ -161,6 +176,8 @@
 										$buildingAmenities = $buildingAmenities->sortBy('building_id')->sortBy('amenity_id')->sortBy('id');
 
 										$currentBuildingId = 0;
+										$currentAmenityId = 0;
+										$amenityIncrement = 1;
 					        		@endphp
 
 					        		@foreach($buildingAmenities as $amenity)
@@ -168,7 +185,22 @@
 					        				<li class="b-{{$amenity->building_id}} amenity-list-item finding-modal-list-items"><strong>Building BIN: {{$amenity->building_key}}</strong></li>
 					        				@php $currentBuildingId = $amenity->building_id; @endphp
 					        			@endif
-					        			<li class="b-{{$amenity->building_id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','Building BIN: {{$amenity->building_key}}: {{$amenity->amenity->amenity_description}}')">{{$amenity->amenity->amenity_description}}</a></li>
+					        			@php if($currentAmenityId != $amenity->amenity_id) { 
+					        						// new amenity
+					        						$currentAmenityId = $amenity->amenity_id; 
+					        						if($amenity->building_has_multiple()){ 
+					        							$amenityIncrement = 1;
+					        						} else {
+					        							$amenityIncrement = '';
+					        						}
+					        					} else {
+					        						// same amenity - increment it.
+					        						$amenityIncrement++; 
+					        					}
+					        			@endphp
+					        			<li class="b-{{$amenity->building_id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} ')">
+					        				
+					        			{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} </a></li>
 
 					        		@endforeach
 
@@ -183,6 +215,8 @@
 										$unitAmenities = $unitAmenities->sortBy('unit_id')->sortBy('amenity_id')->sortBy('id');
 
 										$currentUnitId = 0;
+										$currentAmenityId = 0;
+										$amenityIncrement = 1;
 					        		@endphp
 
 					        		@foreach($unitAmenities as $amenity)
@@ -190,7 +224,22 @@
 					        				<li class="u-{{$amenity->unit_id}} amenity-list-item finding-modal-list-items"><strong>Unit : {{$amenity->cached_unit()->unit_name}} in BIN: {{$amenity->cached_unit()->building_key}} ADDRESS: {{$amenity->cached_unit()->address}}</strong></li>
 					        				@php $currentUnitId = $amenity->unit_id; @endphp
 					        			@endif
-					        			<li class="u-{{$amenity->unit_id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','Unit: {{$amenity->cached_unit()->unit_name}}: {{$amenity->amenity->amenity_description}}')">{{$amenity->amenity->amenity_description}}</a></li>
+					        			@php if($currentAmenityId != $amenity->amenity_id) { 
+					        						// new amenity
+					        						$currentAmenityId = $amenity->amenity_id; 
+					        						if($amenity->unit_has_multiple()){ 
+					        							$amenityIncrement = 1;
+					        						} else {
+					        							$amenityIncrement = '';
+					        						}
+					        					} else {
+					        						// same amenity - increment it.
+					        						$amenityIncrement++; 
+					        					}
+					        			@endphp
+					        			<li class="u-{{$amenity->unit_id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','{{$amenity->amenity->amenity_description}} {{$amenityIncrement}}')">
+					        				
+					        			{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} </a></li>
 
 					        		@endforeach
 					        	</ul>
@@ -488,6 +537,7 @@
 			if($('#amenity-selection-icon').hasClass('a-arrow-small-up')){
 				$('#amenity-selection-icon').removeClass('a-arrow-small-up');
 				$('#amenity-selection-icon').addClass('a-arrow-small-down');
+				$('#select-amenity-text').text('Select Amenity');
 			} else {
 				$('#amenity-selection-icon').addClass('a-arrow-small-up');
 				$('#amenity-selection-icon').removeClass('a-arrow-small-down');
@@ -534,6 +584,8 @@
 				amenityList();
 			}
 			$('#select-type-text').text(display);
+			$('.modal-findings-left-main-container').slideUp();
+			$('#select-amenity-text').text('Select Amenity');
 
 		}
 		
