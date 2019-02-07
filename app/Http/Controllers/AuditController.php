@@ -376,7 +376,7 @@ class AuditController extends Controller
             }
 
             $data_amenities[] = [
-                "id" => $amenity->amenity_id,
+                "id" => $amenity->amenity_inspection_id,
                 "audit_id" => $amenity->audit_id,
                 "name" => $amenity->amenity->amenity_description,
                 "status" => $status,
@@ -537,7 +537,7 @@ class AuditController extends Controller
             }
 
             $data_amenities[] = [
-                "id" => $amenity->amenity_id,
+                "id" => $amenity->amenity_inspection_id,
                 "audit_id" => $amenity->audit_id,
                 "name" => $name,
                 "status" => $status,
@@ -4168,7 +4168,6 @@ class AuditController extends Controller
                 
             } // end foreach amenity
         }
-        
             
         return $data;
     }
