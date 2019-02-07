@@ -515,7 +515,7 @@ stickynav {
 	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
 	margin-left:auto;
 	margin-right:auto;
-	/*padding-top:50px;*/
+	/*padding-top:16px;*/
 	padding-left:0;
 	padding-right:0;
 	padding-bottom:140px;
@@ -3300,7 +3300,7 @@ margin-top:10px;
 #project {}
 #project-top {
   background: rgb(255,255,246);
-  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(228,228,227,1) 100%);
+  background: linear-gradient(180deg, rgba(255,255,246,1) 0%, rgba(228,228,227,1) 100%);
   height: 60px;
 }
 #project-main {
@@ -4691,7 +4691,7 @@ table.uk-table tr:first-child {
 #tabs {
   margin: 0;
     padding-left: 0;
-    padding-top: 50px;
+    /*padding-right: 25px;*/
     /*position: relative;
     top: 60px;*/
 }
@@ -4749,7 +4749,7 @@ ul ul, ol ul {
 .hideImportnull {
   display: none;
 }
-.autocomplete-suggestions {max-height: 500px;}
+.autocomplete-suggestions {max-height: none;}
 .autocomplete-suggestion {border-bottom:1px solid #ddd; padding:15px 10px; cursor: pointer;}
 .blur {
   -webkit-filter: blur(5px);
