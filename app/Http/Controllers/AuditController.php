@@ -33,6 +33,8 @@ use App\Models\SystemSetting;
 use App\Models\StatsCompliance;
 use App\Models\Amenity;
 use App\Models\UnitAmenity;
+use App\Models\ProjectAmenity;
+use App\Models\BuildingAmenity;
 use Auth;
 use App\Models\Job;
 use Session;
@@ -3841,17 +3843,18 @@ class AuditController extends Controller
 
     public function saveAmenity(Request $request)
     {
-        // TBD
-        //
-        //
-        //
         $project_id = $request->get('project_id');
         $building_id =  $request->get('building_id');
         $unit_id =  $request->get('unit_id');
 
         $new_amenities = $request->get('new_amenities');
 
-        //dd($project_id, $building_id, $unit_id);
+        // dd($project_id, $building_id, $unit_id);
+        /*
+        "45055"
+        "16725"
+        null
+         */
         /*
         "45150"
         "23061"
@@ -3870,10 +3873,6 @@ class AuditController extends Controller
 
         if (count($new_amenities)) {
             foreach ($new_amenities as $new_amenity) { 
-                // TBD
-                // Get auditor's name, color and initials
-                // 1) check if auditor_id is a valid auditor on that audit
-                // 2) get the information
                 
                 $auditor = AuditAuditor::where("user_id", "=", $new_amenity['auditor_id'])->where("audit_id", "=", $audit->audit_id)->with('user')->first();
                 if (!$auditor) {
@@ -3893,10 +3892,20 @@ class AuditController extends Controller
 
                     $name = $amenity_type->amenity_description;
 
+                    // create ProjectAmenity
                     // create CachedBuilding
                     // create AmenityInspection
                     // create OrderingBuilding
                     // load buildings
+                    
+                    $project_amenity = new ProjectAmenity([
+                        'project_key' => $audit->project_key,
+                        'project_id' => $audit->project_id,
+                        'amenity_type_key' => $amenity_type->amenity_type_key,
+                        'amenity_id' => $amenity_type->id,
+                        'comment' => 'manually added by '.Auth::user()->id
+                    ]);
+                    $project_amenity->save();
                     
                     $cached_building = new CachedBuilding([
                                 'building_name' => $name,

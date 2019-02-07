@@ -175,7 +175,6 @@ button.squared {
 			}, function(data) {
 			@if($data['project_id'])
 
-				console.log('updating project buildings');
 				// reload list of buildings
 				projectDetails({{$data['project_id']}}, {{$data['project_id']}}, data.length, 1);
 				dynamicModalClose();
