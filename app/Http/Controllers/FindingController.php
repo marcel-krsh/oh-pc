@@ -37,7 +37,7 @@ class FindingController extends Controller
         }
     }
 
-    public function modalFindings($type, $auditid, $buildingid = '', $unitid = '', $amenityid = '')
+    public function modalFindings($type, $auditid, $buildingid = null, $unitid = null, $amenityid = null)
     {
         // get user's audits, projects, buildings, areas, units, based on click
         /*
@@ -71,20 +71,22 @@ class FindingController extends Controller
         $amenities = null;
         $allFindings = null;
 
-        if($auditid){
+        if($auditid > 0){
             $audit = CachedAudit::where('audit_id',$auditid)->with('inspection_items')->with('inspection_items.amenity.finding_types')->with('inspection_items.amenity.finding_types.boilerplates()')->first();
         }
-        if($buildingid){
+        if($buildingid > 0){
             // always use the audit id as a selector to ensure you get the correct one
-            $building = CachedBuilding::where('audit_id',$auditid)->where('building_id',$buildingid)->first();
+            $building = CachedBuilding::where('audit_id',$auditid)->where('id',$buildingid)->first();
+            //dd($buildingid, $building,$auditid);
         }
-        if($unitid){
+        if($unitid > 0){
             // always use the audit id as a selector to ensure you get the correct one
             $unit = CachedUnit::where('audit_id',$auditid)->where('unit_id',$unitid)->first();
         }
-        if($amenityid){
-            // always use the audit id as a selector to ensure you get the correct one
-            $amenity = AmenityInspection::where('audit_id',$auditid)->where('unit_id',$unitid)->first();
+        if($amenityid > 0){
+            // we use the inspection id to make sure we get the one associated that they clicked on (in case of duplicate amenities)
+            $amenity = AmenityInspection::where('id',$amenityid)->first();
+
         }
         if(is_null($audit)){
             return "alert('No audit found for ID:".$auditid."');";
@@ -96,13 +98,14 @@ class FindingController extends Controller
             $audits = CachedAudit::where('project_id',$audit->project_id)->get()->all();
 
             // always use the audit id as a selector to ensure you get the correct one
-            $buildings = CachedBuilding::where('audit_id',$auditid)->get()->all();
+            $buildings = BuildingInspection::where('audit_id',$auditid)->get();
        
             // always use the audit id as a selector to ensure you get the correct one
-            $units = CachedUnit::where('audit_id',$auditid)->where('unit_id',$unitid)->get()->all();
+            $units = UnitInspection::select('unit_id','unit_key','unit_name','building_id','building_key','audit_id','complete')->where('audit_id',$auditid)->where('complete',0)->orWhereNull('complete')->groupBy('unit_id')->get();
+
         
             // always use the audit id as a selector to ensure you get the correct one
-            $amenities = AmenityInspection::where('audit_id',$auditid)->where('unit_id',$unitid)->get()->all(); 
+            $amenities = AmenityInspection::where('audit_id',$auditid)->get(); 
 
             $findings = Finding::where('project_id',$audit->project_id)
                 ->with('comments')
@@ -370,7 +373,7 @@ class FindingController extends Controller
                 ]
             ]
         ]);
-        return view('modals.findings', compact('data', 'checkDoneAddingFindings', 'type' , 'photos','comments','findings','documents','unit','building','amenity','project','followups','audits','buildings','amenities','allFindingTypes'));
+        return view('modals.findings', compact('data','audit', 'checkDoneAddingFindings', 'type' , 'photos','comments','findings','documents','unit','building','amenity','project','followups','audits','units','buildings','amenities','allFindingTypes'));
     }
 
     function findingItems($findingid, $itemid = '')

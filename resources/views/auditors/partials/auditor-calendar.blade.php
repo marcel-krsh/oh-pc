@@ -5,9 +5,11 @@
 			<li id="auditor-calendar-{{$data['summary']['ref-previous']}}" class="grid-schedule-availability" style="display:none;">
 				<div class="auditor-calendar-header grid-schedule-availability-header">
 					<div class="week-spacer"></div>
+					@php $days=[0=>'MON',1=>'TUE',2=>'WED',3=>'THU',4=>'FRI',5=>'SAT',6=>'SUN']; $day = 0; @endphp
 					@foreach($data['calendar-previous']['header'] as $header_date)
-					<div class="week-day">{{$header_date}}</div>
+					<div class="week-day">{{$days[$day]}} @php $day++; if($day > 6){$day = 0;} @endphp {{$header_date}}</div>
 					<div class="week-spacer"></div>
+					
 					@endforeach
 				</div>
 				<div class="grid-schedule-availability-sidebar">
@@ -61,8 +63,9 @@
 			<li id="auditor-calendar-{{$data['summary']['ref']}}" class="grid-schedule-availability" @if($beforeafter == 'before' || $beforeafter == 'after') style="display:none" @endif>
 				<div class="auditor-calendar-header grid-schedule-availability-header">
 					<div class="week-spacer"></div>
+					@php $day = 0 ; @endphp
 					@foreach($data['calendar']['header'] as $header_date)
-					<div class="week-day">{{$header_date}}</div>
+					<div class="week-day">{{$days[$day]}} @php $day++; if($day > 6){$day = 0;} @endphp {{$header_date}}</div>
 					<div class="week-spacer"></div>
 					@endforeach
 				</div>
@@ -118,6 +121,9 @@
 					    defaultDate:"today",
 					    altFormat: "F j, Y",
 					    dateFormat: "Ymd",
+					    "locale": {
+					        "firstDayOfWeek": 1 // start week on Monday
+					    	}
 					});
 					$('.flatpickr.selectday').change(function(){
 						loadCalendar($(this).val());
@@ -128,8 +134,9 @@
 			<li id="auditor-calendar-{{$data['summary']['ref-next']}}" class="grid-schedule-availability" style="display:none;">
 				<div class="auditor-calendar-header grid-schedule-availability-header">
 					<div class="week-spacer"></div>
+					@php $day = 0 ; @endphp
 					@foreach($data['calendar-next']['header'] as $header_date)
-					<div class="week-day ">{{$header_date}}</div>
+					<div class="week-day ">{{$days[$day]}} @php $day++; if($day > 6){$day = 0;} @endphp {{$header_date}}</div>
 					<div class="week-spacer"></div>
 					@endforeach
 				</div>
