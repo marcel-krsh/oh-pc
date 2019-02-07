@@ -43503,7 +43503,7 @@ var render = function() {
         _c(
           "span",
           {
-            staticStyle: { position: "relative", top: "27px", left: "-15px" },
+            staticStyle: { position: "relative", top: "5px", left: "-9px" },
             attrs: { id: "audit-rid-" + _vm.audit.auditId }
           },
           [
