@@ -147,7 +147,7 @@
 					        		@endphp
 
 					        		@foreach($projectAmenities as $amenity)
-					        		<li class="s-{{$audit->project_ref}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','Site: {{$audit->address}}: {{$amenity->amenity->description}}')">{{$amenity->amenity->amenity_description}}</a></li>
+					        		<li class="s-{{$audit->project_ref}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','Site: {{$audit->address}}: {{$amenity->amenity->amenity_description}}')">{{$amenity->amenity->amenity_description}}</a></li>
 					        		@endforeach
 
 					        		@php // get the building level amenities
@@ -168,7 +168,7 @@
 					        				<li class="b-{{$amenity->building_id}} amenity-list-item finding-modal-list-items"><strong>Building BIN: {{$amenity->building_key}}</strong></li>
 					        				@php $currentBuildingId = $amenity->building_id; @endphp
 					        			@endif
-					        			<li class="b-{{$amenity->building_id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','Building BIN: {{$amenity->building_key}}: {{$amenity->amenity->description}}')">{{$amenity->amenity->amenity_description}}</a></li>
+					        			<li class="b-{{$amenity->building_id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','Building BIN: {{$amenity->building_key}}: {{$amenity->amenity->amenity_description}}')">{{$amenity->amenity->amenity_description}}</a></li>
 
 					        		@endforeach
 
@@ -190,7 +190,7 @@
 					        				<li class="u-{{$amenity->unit_id}} amenity-list-item finding-modal-list-items"><strong>Unit : {{$amenity->cached_unit()->unit_name}} in BIN: {{$amenity->cached_unit()->building_key}} ADDRESS: {{$amenity->cached_unit()->address}}</strong></li>
 					        				@php $currentUnitId = $amenity->unit_id; @endphp
 					        			@endif
-					        			<li class="u-{{$amenity->unit_id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','Unit: {{$amenity->cached_unit()->unit_name}}: {{$amenity->amenity->description}}')">{{$amenity->amenity->amenity_description}}</a></li>
+					        			<li class="u-{{$amenity->unit_id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','Unit: {{$amenity->cached_unit()->unit_name}}: {{$amenity->amenity->amenity_description}}')">{{$amenity->amenity->amenity_description}}</a></li>
 
 					        		@endforeach
 					        	</ul>
