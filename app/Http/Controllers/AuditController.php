@@ -32,6 +32,7 @@ use App\Models\UnitInspection;
 use App\Models\SystemSetting;
 use App\Models\StatsCompliance;
 use App\Models\Amenity;
+use App\Models\UnitAmenity;
 use Auth;
 use App\Models\Job;
 use Session;
@@ -3850,6 +3851,13 @@ class AuditController extends Controller
 
         $new_amenities = $request->get('new_amenities');
 
+        dd($project_id, $building_id, $unit_id);
+        /*
+        "45150"
+        "23061"
+        "208319"
+         */
+
         // get current audit id using project_id
         // only one audit can be active at one time
         $audit = CachedAudit::where("audit_id", "=", $project_id)->orderBy('id', 'desc')->first();
@@ -3949,21 +3957,16 @@ class AuditController extends Controller
 
                 }else{
 
-                    // $existing_amenities = CachedAmenity::where('project_id', '=', $project_id);
-                    // if ($building_id) {
-                    //     $existing_amenities = $existing_amenities->where('building_id', '=', $building_id);
-                    // }
-                    // if ($unit_id) {
-                    //     $existing_amenities = $existing_amenities->where('unit_id', '=', $unit_id);
-                    // }
-                    //     //$existing_amenities = $existing_amenities->whereRaw('LOWER(name) like ?', [strtolower($amenity->name).'%']);
-                    //     $existing_amenities = $existing_amenities->where('amenity_type_id', '=', $amenity_type->id);
-                    //     $existing_amenities = $existing_amenities->get();
-
                     $name = $amenity_type->amenity_description;
 
                     // save new amenity
                     if($unit_id){
+                        $unitamenity = new UnitAmenity([
+                            'unit_id' => $unit_id,
+                            'amenity_id' => $amenity_type->id
+                        ]);
+                        $unitamenity->save();
+
                         $amenity = new AmenityInspection([
                                 'audit_id' => $audit->audit_id,
                                 'unit_id' => $unit_id,
@@ -3990,7 +3993,7 @@ class AuditController extends Controller
                         ]);
                         $ordering->save();
 
-                        $buildings = OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->with('building')->get();
+                       // $buildings = OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->with('building')->get();
 
                         // $data_amenities[] = [
                         //     "id" => $amenity->amenity_id,
@@ -4150,12 +4153,22 @@ class AuditController extends Controller
         }
             $current_ordering = $current_ordering->orderBy('order', 'asc')->get()->toArray();
 
+        $pre_reordering = OrderingAmenity::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->where('amenity_id', '=', $amenity_id);
+        if ($unit_id) {
+            $pre_reordering = $pre_reordering->where('unit_id', '=', $unit_id);
+        }
+        if ($building_id) {
+            $pre_reordering = $pre_reordering->where('building_id', '=', $building_id);
+        }
+        $pre_reordering = $pre_reordering->orderBy('order', 'asc')->first();
+
         $inserted = [ [
                     'user_id' => Auth::user()->id,
                     'audit_id' => $audit,
                     'building_id' => $building_id,
                     'unit_id' => $unit_id,
                     'amenity_id' => $amenity_id,
+                    'amenity_inspection_id' => $pre_reordering->amenity_inspection_id,
                     'order' => $index
                ]];
 
@@ -4181,6 +4194,7 @@ class AuditController extends Controller
                 'building_id' => $ordering['building_id'],
                 'unit_id' => $ordering['unit_id'],
                 'amenity_id' => $ordering['amenity_id'],
+                'amenity_inspection_id' => $ordering['amenity_inspection_id'],
                 'order' => $key+1
             ]);
             $new_ordering->save();
