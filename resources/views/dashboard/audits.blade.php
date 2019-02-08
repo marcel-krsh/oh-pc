@@ -133,7 +133,7 @@
     	<div class="inspection-tools-top uk-width-1-1">
     		<div uk-grid>
     			<div class="uk-width-1-3">
-    				<button class="uk-button tool-add-area uk-link" onclick="addAmenity('tplId', 'tplBuildingOrUnit');"><i class="a-plus"></i> AREA</button>
+    				
     			</div>
     			<div class="uk-width-1-3 uk-text-right" hidden>
     				<i class="a-horizontal-expand"></i>

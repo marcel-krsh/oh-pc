@@ -218,9 +218,28 @@ function loadInspectionMenu(data, id, context='audits', level='') {
 	var inspectionLeftTemplate = $('#inspection-left-template').html();
 	var inspectionMenuItemTemplate = $('#inspection-menu-item-template').html();
 
-	var menus = '';
+	var unitOrBuildingOrProjectId = null;
+	var unitOrBuildingOrProject = null;
+
+	if(data.detail.unit_id != null){
+		unitOrBuildingOrProjectId = data.detail.unit_id;
+		unitOrBuildingOrProject = 'unit';
+	} else if(data.detail.building_id != null){
+		unitOrBuildingOrProjectId = data.detail.building_id;
+		unitOrBuildingOrProject = 'building';
+	} else if(data.detail.project_id != null){
+		unitOrBuildingOrProjectId = data.detail.project_id;
+		unitOrBuildingOrProject = 'project';
+	}
+	
+	var addAmenityButton = '<button class="uk-button tool-add-area uk-link" onclick="addAmenity(\'tplId\', \'tplBuildingOrUnit\');"><i class="a-circle-plus"></i> AREA</button>';
+
+	addAmenityButton = addAmenityButton.replace(/tplId/g, unitOrBuildingOrProjectId);
+	addAmenityButton = addAmenityButton.replace(/tplBuildingOrUnit/g, unitOrBuildingOrProject);
+
+	var menus = addAmenityButton;
 	var newmenu = '';
-	data.forEach(function(menuitem) {
+	data.menu.forEach(function(menuitem) {
 		newmenu = inspectionMenuItemTemplate;
 		newmenu =  newmenu.replace(/menuName/g, menuitem.name);
 		newmenu = newmenu.replace(/menuAction/g, menuitem.action);
@@ -233,6 +252,8 @@ function loadInspectionMenu(data, id, context='audits', level='') {
 		newmenu = newmenu.replace(/menuStatus/g, menuitem.status);
 		menus = menus + newmenu.replace(/menuStyle/g, menuitem.style);
 	});
+
+
 	$('#inspection-'+context+'-'+level+'menus-'+id).html(inspectionLeftTemplate);
 	$('#inspection-'+context+'-'+level+'menus-'+id+' .inspection-menu').html(menus);
 	$('#inspection-'+context+'-'+level+'menus-'+id+'-container').fadeIn( "slow", function() {
@@ -256,8 +277,8 @@ function loadInspectionTools(data, id, context='audits', level = '') {
 		unitOrBuildingOrProject = 'project';
 	}
 
-	inspectionToolsTemplate = inspectionToolsTemplate.replace(/tplId/g, unitOrBuildingOrProjectId);
-	inspectionToolsTemplate = inspectionToolsTemplate.replace(/tplBuildingOrUnit/g, unitOrBuildingOrProject);
+	// inspectionToolsTemplate = inspectionToolsTemplate.replace(/tplId/g, unitOrBuildingOrProjectId);
+	// inspectionToolsTemplate = inspectionToolsTemplate.replace(/tplBuildingOrUnit/g, unitOrBuildingOrProject);
 
 	$('#inspection-'+context+'-'+level+'tools-'+id).html(inspectionToolsTemplate);
 	$('#inspection-'+context+'-'+level+'tools-'+id+'-container').fadeIn( "slow", function() {
@@ -548,7 +569,7 @@ function inspectionDetailsFromBuilding(buildingid, auditid, target, targetaudit,
                 } else {
 					// $('#building-detail-r-'+target+'-inspect').html(data);
 					$('#building-'+context+'-r-'+target).attr( "expanded", true );
-					loadInspectionMenu(data.menu, target, context);
+					loadInspectionMenu(data, target, context);
 					loadInspectionMain(data.amenities, target, context);
 					loadInspectionTools(data, target, context);
 					// 
