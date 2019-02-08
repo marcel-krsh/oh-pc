@@ -34,6 +34,13 @@ class AmenityInspection extends Model
         return $cachedUnit;
     }
 
+    public function building_inspection() : object
+    {
+        $buildingInspection = BuildingInspection::where('building_id',$this->building_id)->where('audit_id',$this->audit_id)->first();
+
+        return $buildingInspection;
+    }
+
     public function unit_has_multiple() : bool
     {
         $total = AmenityInspection::where('amenity_id',$this->amenity_id)->where('unit_id',$this->unit_id)->where('audit_id',$this->audit_id)->count();

@@ -37,6 +37,87 @@ class FindingController extends Controller
         }
     }
 
+    public function findingList($type, $amenityinspection, Request $request){
+        $allFindingTypes = null;
+        $ai = null;
+        $search = $request->search;
+        if(is_null($search)) { $search = '';}
+
+        $ai = AmenityInspection::where('id',$amenityinspection)->with('amenity')->first();
+           
+                
+        if($ai){
+                // determine the amenity type
+                if($ai->building_id){
+                    $amenityLocationType = "b";
+                } else if($ai->project_id){
+                    $amenityLocationType = "p";
+                } else if($ai->unit_id) {
+                    $amenityLocationType = "u";
+                }
+            if($type != 'all'){    
+
+                $allFindingTypes = $ai->amenity->finding_types();
+                   
+            } else {
+
+                $allFindingTypes = FindingType::select('*')->get();
+
+            }
+
+                $allFindingTypes = $allFindingTypes->filter(function($findingType) use($type, $search,$amenityLocationType) {
+
+                        if($findingType->type == $type || $type == 'all'){
+
+                            switch ($amenityLocationType) {
+                                case 'b':
+                                    if(!$findingType->building_exterior && !$findingType->building_system && !$findingType->common_area){
+                                        return false;
+                                    }
+                                    break;
+
+                                case 'p':
+                                    if(!$findingType->site && !$findingType->common_area){
+                                        return false;
+                                    }
+                                    break;
+
+                                case 'u':
+                                    if(!$findingType->unit){
+                                        return false;
+                                    }
+                                    break;
+
+                                default:
+                                    return false;
+                                    break;
+                            }
+                            
+                            if($search != '' ){
+                                if(strpos(strtolower($findingType->name), strtolower($search)) !== false) {
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+
+                            }
+                            return true;
+
+                        } else {
+                            return false;
+                        }
+                    });
+        } else {
+                    return 'I was not able to find that amenity... it appears to have been delted. Perhaps it was deleted by another auditor? Try closing this inspection and reopening it to view an updated amenity list.';
+        }
+
+        //->orderBy('type','asc')->orderBy('name','asc')->get();
+        
+        //dd($type,$amenityinspection,$request,$allFindingTypes,$ai,$request->search);
+
+        return view('modals.finding-types-list', compact('allFindingTypes'));
+    }
+
     public function modalFindings($type, $auditid, $buildingid = null, $unitid = null, $amenityid = null)
     {
         // get user's audits, projects, buildings, areas, units, based on click
@@ -81,7 +162,7 @@ class FindingController extends Controller
         }
         if($unitid > 0){
             // always use the audit id as a selector to ensure you get the correct one
-            $unit = CachedUnit::where('audit_id',$auditid)->where('unit_id',$unitid)->first();
+            $unit = CachedUnit::where('audit_id',$auditid)->where('unit_id',$unitid)->with('building')->first();
         }
         if($amenityid > 0){
             // we use the inspection id to make sure we get the one associated that they clicked on (in case of duplicate amenities)
@@ -92,7 +173,6 @@ class FindingController extends Controller
             return "alert('No audit found for ID:".$auditid."');";
         }
 
-        $allFindingTypes = FindingType::select('*')->with('boilerplates.boilerplate')->orderBy('type','asc')->orderBy('name','asc')->get();
         //dd($audit);
         /// All of them for switching
             $audits = CachedAudit::where('project_id',$audit->project_id)->get()->all();

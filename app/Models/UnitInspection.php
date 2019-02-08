@@ -30,6 +30,11 @@ class UnitInspection extends Model
         return $this->hasOne(\App\Models\Unit::class, 'id', 'unit_id');
     }
 
+    public function building() : HasOne
+    {
+        return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
+    }
+
     public function program() : HasOne
     {
         return $this->hasOne(\App\Models\Program::class, 'program_key', 'program_key');
