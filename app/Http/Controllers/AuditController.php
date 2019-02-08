@@ -600,12 +600,7 @@ class AuditController extends Controller
 
         //dd($comment, $amenity_id, $audit_id, $building_id, $unit_id);
         /*
-        ""
-        null
-        "307"
-        "6410"
-        "16725"
-        "142584"
+        
          */
 
         // check if the amenity has findings
@@ -626,11 +621,19 @@ class AuditController extends Controller
                 return $element;
 
             }elseif($building_id){
-                // building_amenities
-                // ordering_amenities
-                // amenity_inspection
+                
+                $amenity_inspection = AmenityInspection::where('id','=',$amenity_id)->first();
+                $ordering_amenities = OrderingAmenity::where('audit_id','=',$audit_id)->where('amenity_inspection_id','=',$amenity_id)->whereNull('unit_id')->where('building_id','=',$building_id)->first();
+                $building_amenity = BuildingAmenity::where('building_id','=',$building_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
+
+                $amenity_inspection->delete();
+                $ordering_amenities->delete();
+                $building_amenity->delete();
+
+                return $element;
 
             }else{
+                // TBD - we don't have a button yet for this
                 // project_amenities
                 // ordering_amenities
                 // amenity_inspection
