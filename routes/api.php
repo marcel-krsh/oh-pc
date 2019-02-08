@@ -37,6 +37,11 @@ use App\Models\BuildingAmenity;
 use App\Models\UnitAmenity;
 use App\Models\AuditAuditor;
 use App\Models\User;
+use App\Models\OrderingAmenity;
+use App\Models\OrderingBuilding;
+use App\Models\OrderingUnit;
+use App\Models\People;
+use App\Models\PhoneNumbers;
 
 /*
 |--------------------------------------------------------------------------
@@ -1291,7 +1296,11 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $results = CachedAudit::where('step_id','61')->get();
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = CachedAudit::where('step_id','61')->where('updated_at', '>', $lastEdited)->get();
+                else
+                    $results = CachedAudit::where('step_id','61')->get();
 
                 if ($results) {
                     $reply = $results;
@@ -1310,7 +1319,11 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $results = CachedBuilding::get();
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = CachedBuilding::where('updated_at', '>', $lastEdited)->get();
+                else
+                    $results = CachedBuilding::get();
 
                 if ($results) {
                     $reply = $results;
@@ -1329,7 +1342,11 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $results = CachedUnit::get();
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = CachedUnit::where('updated_at', '>', $lastEdited)->get();
+                else
+                    $results = CachedUnit::get();
 
                 if ($results) {
                     $reply = $results;
@@ -1348,7 +1365,11 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $results = Audit::get();
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = Audit::where('last_edited', '>', $lastEdited)->get();
+                else
+                    $results = Audit::get();
 
                 if ($results) {
                     $reply = $results;
@@ -1368,7 +1389,11 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $results = Building::get();
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = Building::where('last_edited', '>', $lastEdited)->get();
+                else
+                    $results = Building::get();
 
                 if ($results) {
                     $reply = $results;
@@ -1388,7 +1413,11 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $results = User::get();
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = User::where('last_edited', '>', $lastEdited)->get();
+                else
+                    $results = User::get();
 
                 if ($results) {
                     $reply = $results;
@@ -1410,7 +1439,93 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 $auditors = AuditAuditor::select('user_id')->get();
 
-                $results = User::whereIn('id', $auditors)->get();
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = User::whereIn('last_edited', '>', $lastEdited)->get();
+                else
+                    $results = User::whereIn('id', $auditors)->get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+
+        Route::get('/get_auditor_people', function (Request $request) {
+
+            try {
+
+
+                $auditors = AuditAuditor::select('user_id')->get();
+
+                $people_ids = User::whereIn('id', $auditors)->select('person_id')->get();
+
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = People::where('last_edited', '>', $lastEdited)->whereIn('id', $people_ids)->get();
+                else
+                    $results = People::whereIn('id', $people_ids)->get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+        Route::get('/get_auditor_phone_numbers', function (Request $request) {
+
+            try {
+
+
+                $auditors = AuditAuditor::select('user_id')->get();
+
+                $people_ids = User::whereIn('id', $auditors)->select('person_id')->get();
+
+                $phone_number_ids = People::whereIn('id', $people_ids)->select('default_phone_number_key')->get();
+
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = PhoneNumbers::where('last_edited', '>', $lastEdited)->whereIn('phone_number_key', $phone_number_ids)->get();
+                else
+                    $results = PhoneNumbers::whereIn('phone_number_key', $phone_number_ids)->get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+        Route::get('/get_audit_auditors', function (Request $request) {
+
+            try {
+
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = AuditAuditor::whereIn('last_edited', '>', $lastEdited)->get();
+                else
+                    $results = AuditAuditor::whereIn('id', $auditors)->get();
 
                 if ($results) {
                     $reply = $results;
@@ -1429,7 +1544,11 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $results = Amenity::get();
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = Amenity::where('updated_at', '>', $lastEdited)->get();
+                else
+                    $results = Amenity::get();
 
                 if ($results) {
                     $reply = $results;
@@ -1449,7 +1568,11 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $results = ProjectAmenity::get();
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = ProjectAmenity::where('last_edited', '>', $lastEdited)->get();
+                else
+                    $results = ProjectAmenity::get();
 
                 if ($results) {
                     $reply = $results;
@@ -1469,7 +1592,11 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $results = UnitAmenity::get();
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = UnitAmenity::where('last_edited', '>', $lastEdited)->get();
+                else
+                    $results = UnitAmenity::get();
 
                 if ($results) {
                     $reply = $results;
@@ -1489,7 +1616,83 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $results = BuildingAmenity::get();
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = BuildingAmenity::where('last_edited', '>', $lastEdited)->get();
+                else
+                    $results = BuildingAmenity::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+
+        Route::get('/get_ordering_amenities', function (Request $request) {
+
+            try {
+
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = OrderingAmenity::where('last_edited', '>', $lastEdited)->get();
+                else
+                    $results = OrderingAmenity::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+
+        Route::get('/get_ordering_buildings', function (Request $request) {
+
+            try {
+
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = OrderingBuilding::where('last_edited', '>', $lastEdited)->get();
+                else
+                    $results = OrderingBuilding::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+
+        Route::get('/get_ordering_units', function (Request $request) {
+
+            try {
+
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = OrderingUnit::where('last_edited', '>', $lastEdited)->get();
+                else
+                    $results = OrderingUnit::get();
 
                 if ($results) {
                     $reply = $results;
