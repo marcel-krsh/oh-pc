@@ -10,6 +10,7 @@ use App\Models\Audit;
 use App\Models\Building;
 use App\Models\Unit;
 use App\Models\Project;
+use App\Models\Finding;
 use App\Models\CachedAudit;
 use App\Models\CachedBuilding;
 use App\Models\CachedUnit;
@@ -375,6 +376,13 @@ class AuditController extends Controller
                 $name = $amenity->amenity->amenity_description;
             }
 
+            // check if this amenity has findings (to disable trash)
+            if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit_id)->count()){
+                $has_findings = 1;
+            }else{
+                $has_findings = 0;
+            }
+
             $data_amenities[] = [
                 "id" => $amenity->amenity_inspection_id,
                 "audit_id" => $amenity->audit_id,
@@ -393,7 +401,8 @@ class AuditController extends Controller
                 "finding_trash_status" =>'',
                 "building_id" => $amenity->building_id,
                 "unit_id" => 0,
-                "completed_icon" => $completed_icon
+                "completed_icon" => $completed_icon,
+                "has_findings" => $has_findings
             ];
         }
 
@@ -414,11 +423,11 @@ class AuditController extends Controller
         $context = $request->get('context');
         $inspection = "test";
 
-        // dd($audit_id, $building_id, $detail_id);
+        //dd($audit_id, $building_id, $detail_id);
         /*
-        "6659"
-        "23062"
-        "1005316" unitid
+        "6410"
+        "16725"
+        "1005405"
          */
 
         // Fetch inspection data from different models:
@@ -502,7 +511,7 @@ class AuditController extends Controller
         }
 
         foreach($amenities as $amenity){
-
+//if(!$amenity->amenity_inspection){dd($amenity->id);} // 6093
             if($amenity->amenity_inspection->auditor_id !== NULL){
                 $auditor_initials = $amenity->amenity_inspection->user->initials();
                 $auditor_name = $amenity->amenity_inspection->user->full_name();
@@ -536,6 +545,13 @@ class AuditController extends Controller
                 $name = $amenity->amenity->amenity_description;
             }
 
+            // check if this amenity has findings (to disable trash)
+            if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit_id)->count()){
+                $has_findings = 1;
+            }else{
+                $has_findings = 0;
+            }
+
             $data_amenities[] = [
                 "id" => $amenity->amenity_inspection_id,
                 "audit_id" => $amenity->audit_id,
@@ -554,7 +570,8 @@ class AuditController extends Controller
                 "finding_trash_status" =>'',
                 "building_id" => $amenity->building_id,
                 "unit_id" => $amenity->unit_id,
-                "completed_icon" => $completed_icon
+                "completed_icon" => $completed_icon,
+                "has_findings" => $has_findings
             ];
         }
 
@@ -565,6 +582,64 @@ class AuditController extends Controller
         return response()->json($data);
         //return view('dashboard.partials.audit_building_inspection', compact('audit_id', 'target', 'detail_id', 'building_id', 'detail', 'inspection', 'areas', 'rowid'));
     }   
+
+    public function deleteAmenity($amenity_id, $audit_id, $building_id, $unit_id, $element)
+    {
+
+        return view('modals.amenity-delete', compact('amenity_id', 'audit_id', 'building_id', 'unit_id', 'element'));
+    }
+
+    public function saveDeleteAmenity(Request $request)
+    {        
+        $comment = $request->get('comment');
+        $amenity_id = $request->get('amenity_id');
+        $audit_id = $request->get('audit_id');
+        $building_id = $request->get('building_id');
+        $unit_id = $request->get('unit_id');
+        $element = $request->get('element');
+
+        //dd($comment, $amenity_id, $audit_id, $building_id, $unit_id);
+        /*
+        ""
+        null
+        "307"
+        "6410"
+        "16725"
+        "142584"
+         */
+
+        // check if the amenity has findings
+        if(Finding::where('amenity_id','=',$amenity_id)->where('audit_id','=',$audit_id)->count()){
+            return 0;
+        }else{
+            
+            if($unit_id){
+
+                $amenity_inspection = AmenityInspection::where('id','=',$amenity_id)->first();
+                $ordering_amenities = OrderingAmenity::where('audit_id','=',$audit_id)->where('amenity_inspection_id','=',$amenity_id)->where('unit_id','=',$unit_id)->first();
+                $unit_amenity = UnitAmenity::where('unit_id','=',$unit_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
+
+                $amenity_inspection->delete();
+                $ordering_amenities->delete();
+                $unit_amenity->delete();
+
+                return $element;
+
+            }elseif($building_id){
+                // building_amenities
+                // ordering_amenities
+                // amenity_inspection
+
+            }else{
+                // project_amenities
+                // ordering_amenities
+                // amenity_inspection
+
+            }
+        }
+
+        return 1;
+    }
 
     public function markCompleted(Request $request, $amenity_id, $audit_id, $building_id, $unit_id)
     {
@@ -4105,8 +4180,14 @@ class AuditController extends Controller
                             $name = $amenity->amenity->amenity_description;
                         }
 
+                        if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit->audit_id)->count()){
+                            $has_findings = 1;
+                        }else{
+                            $has_findings = 0;
+                        }
+
                         $data_amenities[] = [
-                            "id" => $amenity->amenity_id,
+                            "id" => $amenity->amenity_inspection_id,
                             "audit_id" => $amenity->audit_id,
                             "name" => $name,
                             "status" => $status,
@@ -4123,7 +4204,8 @@ class AuditController extends Controller
                             "finding_trash_status" =>'',
                             "building_id" => $building_id,
                             "unit_id" => $amenity->unit_id,
-                            "completed_icon" => $completed_icon
+                            "completed_icon" => $completed_icon,
+                            "has_findings" => $has_findings
                         ];
                     }
 
