@@ -168,7 +168,7 @@
 					        						$amenityIncrement++; 
 					        					}
 					        			@endphp
-					        		<li id="amenity-inspection-{{$amenity->id}}" class="s-{{$audit->project_ref}} a-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','{{$amenity->amenity->amenity_description}}')">{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} </a></li>
+					        		<li id="amenity-inspection-{{$amenity->id}}" class="s-{{$audit->project_ref}} a-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','{{$amenity->amenity->amenity_description}}')">{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} </a></li>
 					        		@endforeach
 
 					        		@php // get the building level amenities
@@ -204,7 +204,7 @@
 					        						$amenityIncrement++; 
 					        					}
 					        			@endphp
-					        			<li id="amenity-inspection-{{$amenity->id}}" class="b-{{$amenity->building_id}} a-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} ')">
+					        			<li id="amenity-inspection-{{$amenity->id}}" class="b-{{$amenity->building_id}} a-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} ')">
 					        				
 					        			{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} </a></li>
 
@@ -243,7 +243,7 @@
 					        						$amenityIncrement++; 
 					        					}
 					        			@endphp
-					        			<li id="amenity-inspection-{{$amenity->id}}" class="u-{{$amenity->unit_id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','{{$amenity->amenity->amenity_description}} {{$amenityIncrement}}')">
+					        			<li id="amenity-inspection-{{$amenity->id}}" class="u-{{$amenity->unit_id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','{{$amenity->amenity->amenity_description}} {{$amenityIncrement}}')">
 					        				
 					        			{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} </a></li>
 
@@ -378,25 +378,25 @@
 			        <div class="uk-inline uk-width-1-2">
 			        	<div uk-grid>
 			        		<div class="uk-width-1-4">
-			        			<button id="all-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter uk-active"  title="Show All Findings (Unfiltered)" onclick="window.findingModalSelectedType='all'; filterFindingTypes(); $('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#all-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#all-filter-button').addClass('uk-active');"><i class="uk-icon-asterisk"></i></button>
+			        			<button id="all-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter uk-active"  title="Show All Findings (Unfiltered)" onclick="window.findingModalSelectedType='all'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } $('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#all-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#all-filter-button').addClass('uk-active');"><i class="uk-icon-asterisk"></i></button>
 					        	<span id="all-findings-filter"  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false" @if($type != 'all') style="display: none;" @endIf>
 									<a  class="sort-desc"></a>
 								</span>
 			        		</div>
 			        		<div class="uk-width-1-4">
-			        			<button id="file-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show File Findings Only" onclick="window.findingModalSelectedType='file'; filterFindingTypes(); setTimeout(function(){$('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#file-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#file-filter-button').addClass('uk-active');},.85);"><i class="a-folder"></i></button>
+			        			<button id="file-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show File Findings Only" onclick="window.findingModalSelectedType='file'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } setTimeout(function(){$('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#file-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#file-filter-button').addClass('uk-active');},.85);"><i class="a-folder"></i></button>
 					        	<span id="file-findings-filter" @if($type != 'file') style="display: none;" @endIf  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
 									<a  class="sort-desc"></a>
 								</span>
 			        		</div>
 			        		<div class="uk-width-1-4">
-			        			<button id="nlt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show Non-life Threatning Findings Only" onclick="window.findingModalSelectedType='nlt'; filterFindingTypes(); setTimeout(function(){$('#all-findings-filter').fadeOut();  $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#nlt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#nlt-filter-button').addClass('uk-active');},.85);"><i class="a-booboo"></i></button>
+			        			<button id="nlt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show Non-life Threatning Findings Only" onclick="window.findingModalSelectedType='nlt'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } setTimeout(function(){$('#all-findings-filter').fadeOut();  $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#nlt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#nlt-filter-button').addClass('uk-active');},.85);"><i class="a-booboo"></i></button>
 					        	<span id="nlt-findings-filter" @if($type != 'nlt') style="display: none;" @endIf class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
 									<a  class="sort-desc"></a>
 								</span>
 			        		</div>
 			        		<div class="uk-width-1-4">
-			        			<button id="lt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show Life Threatning Findings Only" onclick="window.findingModalSelectedType='lt'; filterFindingTypes(); setTimeout(function(){$('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#lt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#lt-filter-button').addClass('uk-active');},.85);"><i class="a-skull"></i></button>
+			        			<button id="lt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show Life Threatning Findings Only" onclick="window.findingModalSelectedType='lt'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } setTimeout(function(){$('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#lt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#lt-filter-button').addClass('uk-active');},.85);"><i class="a-skull"></i></button>
 					        	<span id="lt-findings-filter" @if($type != 'lt') style="display: none;" @endIf  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
 									<a  class="sort-desc"></a>
 								</span>
@@ -489,7 +489,7 @@
 						$locationType = 'u-'.$passedUnit->unit_id;
 				?>
 				// set filter text for type
-				window.findingModalSelectedType = '{{$locationType}}';
+				window.findingModalSelectedLocationType = '{{$locationType}}';
 				filterAmenities('u-{{$passedUnit->unit_id}}', 'Unit NAME: {{$passedUnit->unit_name}} in Building BIN:{{$passedUnit->building_key}} ADDRESS: {{$passedUnit->address}}',0);
         		// filter to type and allita type (nlt, lt, file)
 
@@ -499,11 +499,12 @@
 						$locationType = 'b-'.$passedBuilding->building_id;
 				?>
 				// set filter text for type
-				window.findingModalSelectedType = '{{$locationType}}';
+				window.findingModalSelectedLocationType = '{{$locationType}}';
 
 
         		// set filter test for type
-        		filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}} Address City ST 12345',0);
+        		filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}}k NAME: {{$passedBuilding->building_name}}, ADDRESS:{{$passedBuilding->address}}',0,1);
+        		//filterAmenities('b-16713','Building BIN: 93670, NAME: OH-11-00214, ADDRESS: ')
 
         		// filter to type and allita type (nlt, lt, file)
         @else
@@ -523,8 +524,10 @@
 
         // filter findings based on class
         $('#finding-description').on('keyup', function () {
-          if($('#finding-description').val().length > 2){
+          if($('#finding-description').val().length > 2 && window.findingModalSelectedAmenity != ''){
           	filterFindingTypes();
+      	  }else if($('#finding-description').val().length == 0 && window.findingModalSelectedAmenity != ''){
+      	  	filterFindingTypes();
       	  }
         });
 
@@ -563,29 +566,39 @@
 			}
 			$('#type-list').slideToggle();
 		}
-		function selectAmenity(amenity_id,display='selected'){
+		function selectAmenity(amenity_id,amenity_inspection_class,amenity_inspection_id,display='selected'){
 			$('.modal-findings-left-main-container').slideDown();
 			amenityList();
 			// filter the findings to the selection
 			$('#select-amenity-text').text(display);
+			console.log('Selected '+amenity_id);
+			window.findingModalSelectedAmenity = amenity_id;
+			window.findingModalSelectedAmenityInspection = amenity_inspection_class;
+			window.selectedAmenityInspection = amenity_inspection_id;
+			filterFindingTypes();
 		}
 		function filterAmenities(type_id,display='selected',closeType=1,openAmenity=1,selectAmenityText="Select Amenity"){
 
 			if(type_id == 'all'){
+				console.log('Filtering amenities list to all.');
 				$('.amenity-list-item').show();
 				if(closeType == 1){
+					console.log('Closing the location type list.');
 					typeList();
 				}
 				if(openAmenity == 1){
+					console.log('Opening the full amenity list.')
 					amenityList();
 				}
 			} else {
-				$('.amenity-list-item').fadeOut();
+				$('.amenity-list-item').hide();
 				$('.'+type_id).show();
 				if(closeType == 1){
+					console.log('Closing the location type list.');
 					typeList();
 				}
 				if(openAmenity == 1){
+					console.log('Opening the amenity type list filtered to '+type_id+' items.');
 					amenityList();
 				}
 			}
@@ -598,6 +611,13 @@
 		function filterFindingTypes(){
 				var searchString = $('#finding-description').val();
 				// load into the div 
+				console.log('loading /modals/findings_list/'+window.findingModalSelectedType+'/'+window.selectedAmenityInspection+'?search='+searchString);
+				$('#modal-findings-list').html('');
+				    var tempdiv = '<div>';
+					tempdiv = tempdiv + '<div style="height:200px; width:610px; text-align:center;"><div uk-spinner style="margin-left:auto;margin-right:auto;margin-top:30%"></div></div>';
+					tempdiv = tempdiv + '</div>';
+					$('#modal-findings-list').html(tempdiv);
+				
 				$('#modal-findings-list').load('/modals/findings_list/'+window.findingModalSelectedType+'/'+window.selectedAmenityInspection+'?search='+searchString, function(response, status, xhr) {
 				  if (status == "error") {
 				  	if(xhr.status == "401") {

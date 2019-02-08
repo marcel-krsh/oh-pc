@@ -108,14 +108,17 @@ class FindingController extends Controller
                         }
                     });
         } else {
-                    return 'I was not able to find that amenity... it appears to have been delted. Perhaps it was deleted by another auditor? Try closing this inspection and reopening it to view an updated amenity list.';
+                    
+                        return 'I was not able to find that amenity... it appears to have been delted. Perhaps it was deleted by another auditor? Try closing this inspection and reopening it to view an updated amenity list.';
+                   
+                    
         }
 
         //->orderBy('type','asc')->orderBy('name','asc')->get();
         
         //dd($type,$amenityinspection,$request,$allFindingTypes,$ai,$request->search);
 
-        return view('modals.finding-types-list', compact('allFindingTypes'));
+        return view('modals.finding-types-list', compact('allFindingTypes','search','type','amenityLocationType'));
     }
 
     public function modalFindings($type, $auditid, $buildingid = null, $unitid = null, $amenityid = null)
