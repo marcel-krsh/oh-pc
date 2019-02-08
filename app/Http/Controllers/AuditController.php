@@ -1091,7 +1091,7 @@ class AuditController extends Controller
         $step = $audit->step_status_text; //  :: CREATED DYNAMICALLY FROM CONTROLLER
         $step_icon = $audit->step_status_icon;
 
-        return '<i class="a-mobile-repeat"></i><i class="'.$step_icon.'"></i> <span class="list-tab-text"> PROJECT '. $project_number." ".$step.'</span>';
+        return '<i class="a-mobile-repeat"></i><i class="'.$step_icon.'"></i> <span class="list-tab-text"> PROJECT '. $project_number.'</span>';
     }
 
     public function getProjectDetails($id = null)
