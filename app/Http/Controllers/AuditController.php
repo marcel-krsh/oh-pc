@@ -3872,15 +3872,24 @@ class AuditController extends Controller
         if (count($new_amenities)) {
             foreach ($new_amenities as $new_amenity) { 
                 
-                $auditor = AuditAuditor::where("user_id", "=", $new_amenity['auditor_id'])->where("audit_id", "=", $audit->audit_id)->with('user')->first();
-                if (!$auditor) {
-                    dd("There is an error - this auditor doesn't seem to be assigned to this audit.");
+                if($new_amenity['auditor_id']){
+                    $auditor = AuditAuditor::where("user_id", "=", $new_amenity['auditor_id'])->where("audit_id", "=", $audit->audit_id)->with('user')->first();
+                    if (!$auditor) {
+                        dd("There is an error - this auditor doesn't seem to be assigned to this audit.");
+                    }
+
+                    $auditor_color = $auditor->user->badge_color;
+                    $auditor_initials = $auditor->user->initials();
+                    $auditor_name = $auditor->user->full_name();
+                    $auditorid = $auditor->user_id;
+                }else{
+                    $auditor_color = '';
+                    $auditor_initials = '';
+                    $auditor_name = '';
+                    $auditorid = NULL;
                 }
 
-                //tmp
-                $auditor_color = $auditor->user->badge_color;
-                $auditor_initials = $auditor->user->initials();
-                $auditor_name = $auditor->user->full_name();
+                
                 
                 // get amenity type
                 $amenity_type = Amenity::where("id", "=", $new_amenity['amenity_id'])->first();
@@ -3942,7 +3951,7 @@ class AuditController extends Controller
                                 'audit_id' => $audit->audit_id,
                                 'project_id' => $audit->project_id,
                                 'amenity_id' => $amenity_type->id,
-                                'auditor_id' => $auditor->user_id,
+                                'auditor_id' => $auditorid,
                                 'cachedbuilding_id' => $cached_building->id
                             ]);
                     $amenity->save();
@@ -3984,7 +3993,7 @@ class AuditController extends Controller
                                 'audit_id' => $audit->audit_id,
                                 'unit_id' => $unit_id,
                                 'amenity_id' => $amenity_type->id,
-                                'auditor_id' => $auditor->user_id
+                                'auditor_id' => $auditorid
                             ]);
                         $amenity->save();
 
@@ -4020,7 +4029,7 @@ class AuditController extends Controller
                                 'audit_id' => $audit->audit_id,
                                 'building_id' => $building_id,
                                 'amenity_id' => $amenity_type->id,
-                                'auditor_id' => $auditor->user_id
+                                'auditor_id' => $auditorid
                             ]);
                         $amenity->save();
 

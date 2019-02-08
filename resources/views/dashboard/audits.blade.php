@@ -118,7 +118,7 @@
 						<span class="uk-badge">+</span>
 					</div>
 				</div>
-				<div class="findings-icon uk-inline areaTrashStatus">
+				<div class="findings-icon uk-inline areaTrashStatus" onclick="deleteAmenity(this, areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity);">
 					<i class="a-trash-4"></i>
 					<div class="findings-icon-status plus">
 						<span class="uk-badge">-</span>
@@ -757,6 +757,10 @@ The following div is defined in this particular tab and pushed to the main layou
 
     function swapAuditor(auditor_id, audit_id, building_id, unit_id, element, amenity_id=0){
     	dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/swap/'+auditor_id+'/'+element);
+    }
+
+    function deleteAmenity(element, audit_id, building_id, unit_id, amenity_id){
+    	console.log('schwing');
     }
     @endcan
 
