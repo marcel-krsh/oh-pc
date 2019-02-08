@@ -118,7 +118,7 @@
 						<span class="uk-badge">+</span>
 					</div>
 				</div>
-				<div class="findings-icon uk-inline areaTrashStatus" onclick="deleteAmenity(this, areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity);">
+				<div class="findings-icon uk-inline areaTrashStatus" onclick="deleteAmenity('inspection-areaContext-area-r-areaRowId', areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity, areaDataHasFindings);">
 					<i class="a-trash-4"></i>
 					<div class="findings-icon-status plus">
 						<span class="uk-badge">-</span>
@@ -759,8 +759,14 @@ The following div is defined in this particular tab and pushed to the main layou
     	dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/swap/'+auditor_id+'/'+element);
     }
 
-    function deleteAmenity(element, audit_id, building_id, unit_id, amenity_id){
-    	console.log('schwing');
+    function deleteAmenity(element, audit_id, building_id, unit_id, amenity_id, has_findings = 0){
+    	if(has_findings){
+    		UIkit.modal.alert('<p class="uk-modal-body">This amenity has some findings and cannot be deleted.</p>').then(function () {  });
+    	}else{
+    		console.log('element '+element);
+    		dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/delete/'+element);
+    	}
+    	
     }
     @endcan
 

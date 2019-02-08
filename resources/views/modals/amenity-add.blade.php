@@ -224,8 +224,9 @@
 						newarea = newarea.replace(/areaDataBuilding/g, area.building_id);
 						newarea = newarea.replace(/areaDataArea/g, area.unit_id);
 						newarea = newarea.replace(/areaDataAmenity/g, area.id);
-
-						areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor_color);
+						
+						newarea = newarea.replace(/areaAuditorColor/g, area.auditor_color);
+						areas = areas + newarea.replace(/areaDataHasFindings/g, area.has_findings);
 
 						//console.log("unit id "+area.unit_id+" - building_id "+area.building_id);
 						// update building auditor's list
