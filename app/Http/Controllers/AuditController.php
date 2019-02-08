@@ -3854,8 +3854,8 @@ class AuditController extends Controller
         //dd($project_id, $building_id, $unit_id, $audit_id);
         /*
         "45055"
-        "16725"
-        null
+        "16721"
+        "141968"
         "6410"
          */
 
@@ -4047,8 +4047,7 @@ class AuditController extends Controller
                     $amenities = OrderingAmenity::where('audit_id', '=', $audit->audit_id)->where('user_id', '=', Auth::user()->id);
                     if ($unit_id) {
                         $amenities = $amenities->where('unit_id', '=', $unit_id);
-                    }
-                    if($building_id){
+                    }elseif($building_id){
                         $amenities = $amenities->where('building_id', '=', $building_id);
                         $amenities = $amenities->whereNull('unit_id');
                     }
@@ -4113,7 +4112,7 @@ class AuditController extends Controller
                             "finding_comment_status" =>'',
                             "finding_copy_status" =>'',
                             "finding_trash_status" =>'',
-                            "building_id" => $amenity->building_id,
+                            "building_id" => $building_id,
                             "unit_id" => $amenity->unit_id,
                             "completed_icon" => $completed_icon
                         ];
@@ -4162,13 +4161,13 @@ class AuditController extends Controller
                         $building_auditor->initials = $building_auditor->initials();
                     }
 
-                    $data['auditor'] = ["unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $audit->audit_id, "building_id" => $building_id];
+                    $data['auditor'] = ["unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $unit_id, "building_id" => $building_id];
 
                 } // end if not project
                 
             } // end foreach amenity
         }
-            
+            //dd($data);
         return $data;
     }
 

@@ -175,13 +175,13 @@
 				'_token' : '{{ csrf_token() }}'
 			}, function(data) {
 			@if($data['project_id'] && $data['building_id']=='' && $data['unit_id']=='')
-
+				console.log('project');
 				// reload list of buildings
 				projectDetails({{$data['project_id']}}, {{$data['project_id']}}, data.length, 1);
 				dynamicModalClose();
 
 			@else 
-
+				console.log('unit or building');
 				// locate where to update data
 				var mainDivId = $('.inspection-areas').parent().attr("id"); 
 				var mainDivContainerId = $('#'+mainDivId).parent().attr("id"); 
@@ -260,6 +260,44 @@
 		            }else{
 					// update unit auditor's list
 						console.log('units auditor list update');
+
+						// var newcontent = '<div id="building-audits-'+area.auditor_id+'-avatar-1" uk-tooltip="pos:top-left;title:'+area.auditor_name+';" title="" aria-expanded="false" class="auditor-badge auditor-badge-'+area.auditor_color+' use-hand-cursor no-float" onclick="swapAuditor('+area.auditor_id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'building-audits-'+area.auditor_id+'-avatar-1\')">'+area.auditor_initials+'</div>';
+
+						// // var newcontent = '<div class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+area.auditor_name+';" title="" aria-expanded="false" class="auditor-badge '+area.auditor_color+' no-float">'+area.auditor_initials+'</div>';
+
+	     
+
+	                	var unitelement = '#unit-auditors-'+area.unit_id+' .uk-slideshow-items li.uk-active > div';
+
+		                $(unitelement).html('');
+		                //console.log(unitelement);
+		                $.each(data.auditor.unit_auditors, function(index, value){
+		                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
+		                	$(unitelement).append(newcontent);
+
+		                	if($('#unit-auditors-'+area.unit_id).hasClass('hasAuditors')){
+		                		$(buildingelement).append(newcontent);
+		                	}else{
+		                		$(buildingelement).html(newcontent);
+		                	}
+		                });
+
+		                var buildingelement = '#building-auditors-'+area.building_id+' .uk-slideshow-items li.uk-active > div';
+		               //console.log(buildingelement);
+		                $(buildingelement).html('');
+		                $.each(data.auditor.building_auditors, function(index, value){
+		                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', 0, \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
+
+		                	if($('#building-auditors-'+area.building_id).hasClass('hasAuditors')){
+		                		//$('#building-auditors-'+area.building_id).append(newcontent);
+		                		$(buildingelement).append(newcontent);
+		                	}else{
+		                		//$('#building-auditors-'+area.building_id).html(newcontent);
+		                		$(buildingelement).html(newcontent);
+		                	}
+		                	
+		                });
+
 		            }
 
 					
