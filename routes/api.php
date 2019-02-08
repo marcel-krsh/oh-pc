@@ -1365,11 +1365,13 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
+                $cached_audits = CachedAudit::where('step_id','61')->select('audit_id')->get();
+
                 $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
-                    $results = Audit::where('last_edited', '>', $lastEdited)->get();
+                    $results = Audit::whereIn('audit_id', $cached_audits)->where('last_edited', '>', $lastEdited)->get();
                 else
-                    $results = Audit::get();
+                    $results = Audit::whereIn('audit_id', $cached_audits)->get();
 
                 if ($results) {
                     $reply = $results;
@@ -1441,7 +1443,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
-                    $results = User::whereIn('last_edited', '>', $lastEdited)->get();
+                    $results = User::whereIn('id', $auditors)->where('last_edited', '>', $lastEdited)->get();
                 else
                     $results = User::whereIn('id', $auditors)->get();
 
