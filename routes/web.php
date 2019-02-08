@@ -12,6 +12,8 @@
 */
     Auth::routes();
 
+    Route::get('/check', function(){ return '1';});
+
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
         // rerun compliance run
@@ -171,6 +173,7 @@
         Route::get('/modals/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}', 'FindingController@modalFindings');
 
         Route::get('/findings/{id}/items', 'FindingController@findingItems');
+        Route::get('/modals/findings_list/{type}/{amenityinspectionid}','FindingController@findingList');
         Route::get('/modals/findings/{id}/items/{itemid}/photos/{photoid}', 'FindingController@findingItemPhoto');
 
         Route::get('/modals/audit/{audit_id}/scheduling/days/{day_id}/auditors/{auditorid?}', 'AuditController@addAssignmentAuditor')->name('project.assignment.addauditor');
