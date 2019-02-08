@@ -266,8 +266,8 @@
 					@endforeach
 				</div>
 			</div>
-			<div class="rowinset-bottom">
-				<span class="uk-link" onclick="addArea({{$audit}});">+ ADD INSPECTABLE AREA TO PROJECT</span>
+			<div class="rowinset-bottom" style="    padding: 10px 0;">
+				<span class="uk-link" onclick="addAmenity('{{$audit}}', 'project');">+ ADD INSPECTABLE AREA TO PROJECT</span>
 			</div>
 			<script>
 				

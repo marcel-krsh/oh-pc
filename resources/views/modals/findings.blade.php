@@ -13,7 +13,10 @@
 			    background: transparent;
 			}
 </style>
-
+<script>
+	window.findingModalSelectedType = '{{$type}}';
+	<?php $passedAmenity = $amenity; $passedBuilding = $building; $passedUnit = $unit; ?>
+</script>
 <div id="modal-findings" class="uk-margin-top" style="height: 90%" >
 	<div class="modal-findings-right" uk-filter="target: .js-findings">
 		<div class="modal-findings-right-top">
@@ -127,51 +130,191 @@
 		<div class="modal-findings-left-bottom-container">
 			<div class="modal-findings-left-bottom">
 				<div id="modal-findings-filters" class="uk-margin uk-child-width-auto" uk-grid>
-			        <div class="uk-width-1-1 uk-padding-remove uk-inline">
-			            <button id="amenity-selection" class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="amenityList()"><i id="amenity-selection-icon" class="a-arrow-small-up"></i> <span id="select-amenity-text">Select Amenity</span></button>
+			     
+			    	<div class="uk-width-1-1 uk-padding-remove uk-inline">
+			        
+			        	<button id="amenity-selection" class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="amenityList()"><i id="amenity-selection-icon" class="a-arrow-small-up"></i> <span id="select-amenity-text">Select Amenity</span></button>
 					    <div id="amenity-list" class="uk-width-1-1 uk-panel-scrollable" style="display: none">
-					    	<div class="uk-column-1-3@m uk-column-1-2@s ">
+					    	<div class="uk-column-1-1 ">
 					        	<ul >
-					        		<li class="s-id amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Site : Address City ST 12345</li>
-					        		<li class="s-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Site: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<li class="s-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Site: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<li class="s-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Site: Address City ST 12345: Item ?')">Item?</a></li>
-									<hr class="b-id amenity-list-item dashed-hr uk-column-span">
-					        		<li class="b-id amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Building BIN: Address City ST 12345</li>
-					        		<li class="b-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Building BIN: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<li class="b-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Building BIN: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<hr class="amenity-list-item dashed-hr uk-column-span">
-					        		<li class="u-id amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Unit 123: Address City ST 12345</li>
-					        		<li class="u-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 123: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<li class="u-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 123: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<li class="u-id amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 123: Address City ST 12345: Item ?')">Item?</a></li>
-									<hr class="u-id2 amenity-list-item dashed-hr uk-column-span">
-					        		<li class="u-id2 amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Unit 135: Address City ST 12345</li>
-					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 135: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 135: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 135: Address City ST 12345: Item ?')">Item?</a></li>
-					        		<li class="u-id2 amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-id','Unit 135: Address City ST 12345: Item ?')">Item?</a></li>
+
+					        		<li class="s-{{$audit->project_ref}} amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Site : {{$audit->address}}</li>
+					        		@php // get the project level amenities
+					        			$projectAmenities = $amenities->filter(function ($project){
+																if(!is_null($project->project_id)){
+																    return true; // not complete
+																} else {
+																	return false; // complete
+																}
+															});
+										$projectAmenities = $projectAmenities->sortBy('amenity_id')->sortBy('id');
+
+										$currentAmenityId = 0;
+										$amenityIncrement = 1;
+
+					        		@endphp
+					        
+					        		@foreach($projectAmenities as $amenity)
+					        		@php if($currentAmenityId != $amenity->amenity_id) { 
+					        						// new amenity
+					        						$currentAmenityId = $amenity->amenity_id;
+					        						if($amenity->project_has_multiple()){ 
+					        							$amenityIncrement = 1;
+					        						} else {
+					        							$amenityIncrement = '';
+					        						}
+					        					} else {
+					        						// same amenity - increment it.
+					        						$amenityIncrement++; 
+					        					}
+					        			@endphp
+					        		<li id="amenity-inspection-{{$amenity->id}}" class="s-{{$audit->project_ref}} a-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','{{$amenity->amenity->amenity_description}}')">{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} </a></li>
+					        		@endforeach
+
+					        		@php // get the building level amenities
+					        			$buildingAmenities = $amenities->filter(function ($building){
+																if(!is_null($building->building_id)){
+																    return true; // not complete
+																} else {
+																	return false; // complete
+																}
+															});
+										$buildingAmenities = $buildingAmenities->sortBy('building_id')->sortBy('amenity_id')->sortBy('id');
+
+										$currentBuildingId = 0;
+										$currentAmenityId = 0;
+										$amenityIncrement = 1;
+					        		@endphp
+
+					        		@foreach($buildingAmenities as $amenity)
+					        			@if($currentBuildingId != $amenity->building_id)
+					        				<li class="b-{{$amenity->building_id}} amenity-list-item finding-modal-list-items"><strong>Building BIN: {{$amenity->building_key}}</strong></li>
+					        				@php $currentBuildingId = $amenity->building_id; @endphp
+					        			@endif
+					        			@php if($currentAmenityId != $amenity->amenity_id) { 
+					        						// new amenity
+					        						$currentAmenityId = $amenity->amenity_id; 
+					        						if($amenity->building_has_multiple()){ 
+					        							$amenityIncrement = 1;
+					        						} else {
+					        							$amenityIncrement = '';
+					        						}
+					        					} else {
+					        						// same amenity - increment it.
+					        						$amenityIncrement++; 
+					        					}
+					        			@endphp
+					        			<li id="amenity-inspection-{{$amenity->id}}" class="b-{{$amenity->building_id}} a-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} ')">
+					        				
+					        			{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} </a></li>
+
+					        		@endforeach
+
+					        		@php // get the unit level amenities
+					        			$unitAmenities = $amenities->filter(function ($unit){
+																if(!is_null($unit->unit_id)){
+																    return true; // not complete
+																} else {
+																	return false; // complete
+																}
+															});
+										$unitAmenities = $unitAmenities->sortBy('unit_id')->sortBy('amenity_id')->sortBy('id');
+
+										$currentUnitId = 0;
+										$currentAmenityId = 0;
+										$amenityIncrement = 1;
+					        		@endphp
+
+					        		@foreach($unitAmenities as $amenity)
+					        			@if($currentUnitId != $amenity->unit_id)
+					        				<li class="u-{{$amenity->unit_id}} a-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items"><strong>Unit : {{$amenity->cached_unit()->unit_name}} in BIN: {{$amenity->cached_unit()->building_key}} ADDRESS: {{$amenity->cached_unit()->address}}</strong></li>
+					        				@php $currentUnitId = $amenity->unit_id; @endphp
+					        			@endif
+					        			@php if($currentAmenityId != $amenity->amenity_id) { 
+					        						// new amenity
+					        						$currentAmenityId = $amenity->amenity_id; 
+					        						if($amenity->unit_has_multiple()){ 
+					        							$amenityIncrement = 1;
+					        						} else {
+					        							$amenityIncrement = '';
+					        						}
+					        					} else {
+					        						// same amenity - increment it.
+					        						$amenityIncrement++; 
+					        					}
+					        			@endphp
+					        			<li id="amenity-inspection-{{$amenity->id}}" class="u-{{$amenity->unit_id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('amenity-{{$amenity->amenity_id}}','{{$amenity->amenity->amenity_description}} {{$amenityIncrement}}')">
+					        				
+					        			{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} </a></li>
+
+					        		@endforeach
+					        
 					        	</ul>
 				        	</div>
 					        
 					    </div>
-
+				
 					</div>
+					
 					<div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
 			            <button id="type-selection"  class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="typeList()"><i id="type-selection-icon" class="a-arrow-small-up"></i> <span id="select-type-text">Select Type</span></button>
 					    <div id="type-list" class="uk-width-1-1 uk-panel-scrollable" style="display: none">
 					    	<div class="uk-column-1-3@m uk-column-1-2@s ">
 					        	<ul >
-					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('s-id','Site: Address City ST 12345')">Site: Address City ST 12345</li>
+					        		<!-- Site is always the first one -->
+					        		@php $siteCompleteTest = $amenities->filter(function ($site){
+																if(!is_null($site->project_id) && is_null($site->completed_date_time)){
+																    return true; // not complete
+																} else {
+																	return false; // complete
+																}
+													});
+																	// if there are any returned - they are not all complete.
+										if(count($siteCompleteTest)>0) {
+											$siteComplete = 0; // not complete
+										} else {
+											$siteComplete = 1; // complete
+											
+										}
+																
+									@endphp
+
+
+					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('s-{{$audit->project_ref}}','Site:  City ST 12345')" style="color : @if($siteComplete == 1) #000 @else #50b8ec @endIf " >@if($siteComplete == 1) <i class="a-circle-checked"></i> @else <i class="a-circle"></i>@endIf Site: Address City ST 12345</li>
 
 					        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
-					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('b-id', 'Building BIN:1234 Address City ST 12345')">Building BIN:1234 Address City ST 12345</li>
+					 
+					        		@foreach($buildings as $type)
+						        		@if(!is_null($type->building_id))
+							        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('b-{{$type->building_id}}','Building BIN: {{$type->building_key}}, NAME: {{$type->building_name}}, ADDRESS: {{$type->address}}')">@if($type->complete == 0 || is_null($type->complete)) <i class="a-circle" style="color: #50b8ec" ></i> @else <i class="a-circle-checked"></i> @endIf <strong style="color : @if($type->complete == 1) #000 @else #50b8ec @endIf "> Building BIN:{{$type->building_key}} NAME: {{$type->building_name}} ADDRESS: {{$type->address}}</strong></li>
+							        		@php $buildingUnits = $units->filter(function ($unit) use ($type){
+																				if($unit->building_id == $type->building_id){
+																				    return true;
+																				} else {
+																					return false;
+																				}
+																	});
+																			
+											@endphp
+							        		@if($buildingUnits)
+							        		<ul class="uk-margin-left">
+							        			@forEach($buildingUnits as $bu)
+							        			<li class="use-hand-cursor uk-column-span uk-margin" onclick="filterAmenities('u-{{$bu->unit_id}}','Unit {{$bu->unit_name}} in BIN:{{$bu->building_key}} ')" style="color : @if($bu->complete == 1) #000 @else #50b8ec @endIf ">&nbsp;&nbsp;&nbsp;@if($bu->complete == 0 || is_null($bu->complete)) <i class="a-circle" style="color: #50b8ec" ></i> @else <i class="a-circle-checked"></i> @endIf<i class="a-buildings-2"></i> Unit {{$bu->unit_name}}</li>
+							        			@endforeach
 
-					        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
-					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('u-id','Unit in BIN:5678 : Unit 12345')">Unit in BIN:5678 : Unit 12345</li>
+							        		</ul>
+							        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
+							        		@else 
+							        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
+							        		@endIf
 
-					        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
-					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('u-id2','Unit in BIN:5678 : Unit 123678')">Unit in BIN:5678 : Unit 123678</li>
+							        		
+							        	@endif
+					        		@endforeach
+					        		
+					        		
+					        		
+					        		
 					        	</ul>
 				        	</div>
 					        
@@ -206,21 +349,25 @@
             	</div>
 			</div>
 		</div>
+
+		<!-- FINDING TYPE LISTS -->
+
 		<div class="modal-findings-left-main-container" style="display:none">
 			<div class="modal-findings-left-main">
-				<div id="modal-findings-list-filters" class="uk-margin uk-child-width-auto uk-grid filter-checkbox-list js-filter-findings">
-						@foreach($allFindingTypes as $findingType)
-						<div id="filter-checkbox-list-item-{{$findingType->id}}" class="finding-type-list-item uk-padding-remove all filter-checkbox-list-item {{strtolower($findingType->type)}} {{str_replace('\\','',strtolower($findingType->name))}} @if($findingType->site) site @endIf @if($findingType->building_system) building system @endIf @if($findingType->building_exterior) building exterior @endIf @if($findingType->common_area) common area @endIf" uk-grid style="overflow: hidden;">
-							<div class="uk-width-1-1 uk-padding-remove indented">
-					            <input id="filter-findings-filter-{{$findingType->id}}" value="" type="checkbox" onclick="newFinding({{$findingType->id}});"/>
-								<label for="filter-findings-filter-{{$findingType->id}}" ><i class="@if($findingType->type == 'lt')a-skull @endIf @if($findingType->type == 'nlt')a-booboo @endIf @if($findingType->type == 'file')a-folder @endIf  "></i> @if($findingType->building_exterior)<span uk-tooltip title="Building Exterior"> BE </span>|@endif @if($findingType->building_system)<span uk-tooltip title="Building System"> BS </span>|@endif @if($findingType->site)<span uk-tooltip title="Site"> S </span>|@endif @if($findingType->common_area)<span uk-tooltip title="Common Area"> CA </span>|@endif @if($findingType->unit)<span uk-tooltip title="Unit"> U </span>|@endif @if($findingType->file)<span uk-tooltip title="File"> F </span>|@endif {{$findingType->name}} </label>
-							</div>
-						</div>
-						@endforeach
+				<div id="modal-findings-list" class="uk-margin uk-child-width-auto uk-grid">
+						
 
 		        </div>
 			</div>
 		</div>
+
+		<!-- END FINDING TYPE LISTS -->
+
+
+<!-- 		TOP LEFT BAR FILTERS -->
+
+
+
 		<div class="modal-findings-left-top" uk-grid>
 			<div class="uk-width-1-1 filter-button-set">
 				<div uk-grid>
@@ -231,25 +378,25 @@
 			        <div class="uk-inline uk-width-1-2">
 			        	<div uk-grid>
 			        		<div class="uk-width-1-4">
-			        			<button id="all-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter uk-active"  title="Show All Findings (Unfiltered)" onclick="$('.lt').fadeOut();$('.nlt').fadeOut();$('.file').fadeOut();$('.all').fadeIn(); $('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#all-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#all-filter-button').addClass('uk-active');"><i class="uk-icon-asterisk"></i></button>
+			        			<button id="all-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter uk-active"  title="Show All Findings (Unfiltered)" onclick="window.findingModalSelectedType='all'; filterFindingTypes(); $('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#all-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#all-filter-button').addClass('uk-active');"><i class="uk-icon-asterisk"></i></button>
 					        	<span id="all-findings-filter"  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false" @if($type != 'all') style="display: none;" @endIf>
 									<a  class="sort-desc"></a>
 								</span>
 			        		</div>
 			        		<div class="uk-width-1-4">
-			        			<button id="file-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show File Findings Only" onclick="$('.lt').fadeOut();$('.nlt').fadeOut();$('.all').fadeOut();$('.file').fadeIn(); $('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#file-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#file-filter-button').addClass('uk-active');"><i class="a-folder"></i></button>
+			        			<button id="file-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show File Findings Only" onclick="window.findingModalSelectedType='file'; filterFindingTypes(); setTimeout(function(){$('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#file-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#file-filter-button').addClass('uk-active');},.85);"><i class="a-folder"></i></button>
 					        	<span id="file-findings-filter" @if($type != 'file') style="display: none;" @endIf  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
 									<a  class="sort-desc"></a>
 								</span>
 			        		</div>
 			        		<div class="uk-width-1-4">
-			        			<button id="nlt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show Non-life Threatning Findings Only" onclick="$('.lt').fadeOut();$('.nlt').fadeOut();$('.all').fadeOut();$('.nlt').fadeIn(); $('#all-findings-filter').fadeOut();  $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#nlt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#nlt-filter-button').addClass('uk-active');"><i class="a-booboo"></i></button>
+			        			<button id="nlt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show Non-life Threatning Findings Only" onclick="window.findingModalSelectedType='nlt'; filterFindingTypes(); setTimeout(function(){$('#all-findings-filter').fadeOut();  $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#nlt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#nlt-filter-button').addClass('uk-active');},.85);"><i class="a-booboo"></i></button>
 					        	<span id="nlt-findings-filter" @if($type != 'nlt') style="display: none;" @endIf class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
 									<a  class="sort-desc"></a>
 								</span>
 			        		</div>
 			        		<div class="uk-width-1-4">
-			        			<button id="lt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show Life Threatning Findings Only" onclick="$('.lt').fadeOut();$('.nlt').fadeOut();$('.all').fadeOut();$('.lt').fadeIn(); $('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#lt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#lt-filter-button').addClass('uk-active');"><i class="a-skull"></i></button>
+			        			<button id="lt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show Life Threatning Findings Only" onclick="window.findingModalSelectedType='lt'; filterFindingTypes(); setTimeout(function(){$('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#lt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#lt-filter-button').addClass('uk-active');},.85);"><i class="a-skull"></i></button>
 					        	<span id="lt-findings-filter" @if($type != 'lt') style="display: none;" @endIf  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
 									<a  class="sort-desc"></a>
 								</span>
@@ -263,106 +410,6 @@
 	</div>
 </div>
 <script>
-
-        // filter findings based on class
-        $('#finding-description').on('keyup', function () {
-          var searchString = $(this).val().toLowerCase();
-          console.log(searchString);
-          if(searchString.length > 0){
-              $('.finding-type-list-item').hide();
-              $('.finding-type-list-item[class*="' + searchString + '"]').show();
-              console.log('searching '+'.finding-type-list-item[class*="' + searchString + '"]');
-              if($('#lt-filter-button').hasClass('uk-active')){
-              	$('.nlt').hide(); $('.file').hide();
-              	console.log('hiding nlt and file');
-              }
-              if($('#nlt-filter-button').hasClass('uk-active')){
-              	$('.lt').hide(); $('.file').hide();
-              	console.log('hiding lt and file');
-              }
-              if($('#file-filter-button').hasClass('uk-active')){
-              	$('.nlt').hide(); $('.lt').hide();
-              	console.log('hiding nlt and lt');
-              }
-          }else{
-              if($('#lt-filter-button').hasClass('uk-active')){
-              	$('.nlt').hide(); $('.file').hide();$('.lt').fadeIn();
-              	console.log('showing lt');
-              }
-              if($('#nlt-filter-button').hasClass('.uk-active')){
-              	$('.lt').hide(); $('.file').hide();$('.nlt').fadeIn();
-              	console.log('showing nlt');
-              }
-              if($('#file-filter-button').hasClass('.uk-active')){
-              	$('.nlt').hide(); $('.lt').hide(); $('.file').fadeIn();
-              	console.log('showing file');
-              }
-              if($('#all-filter-button').hasClass('.uk-active')){
-              	$('.all').fadeIn();
-              	console.log('showing all');
-              }
-          }
-        });
-
-        function amenityList(){
-        	// make sure type is up
-        	if($('#type-selection-icon').hasClass('a-arrow-small-down')){
-				$('#type-selection-icon').removeClass('a-arrow-small-up');
-				$('#type-selection-icon').addClass('a-arrow-small-down');
-				$('#type-selection-icon').slideToggle();
-			}
-			if($('#amenity-selection-icon').hasClass('a-arrow-small-up')){
-				$('#amenity-selection-icon').removeClass('a-arrow-small-up');
-				$('#amenity-selection-icon').addClass('a-arrow-small-down');
-			} else {
-				$('#amenity-selection-icon').addClass('a-arrow-small-up');
-				$('#amenity-selection-icon').removeClass('a-arrow-small-down');
-			}
-			$('#amenity-list').slideToggle();
-		}
-		function typeList(){
-			// make sure amenities is up
-			if($('#amenity-selection-icon').hasClass('a-arrow-small-down')){
-				$('#amenity-selection-icon').addClass('a-arrow-small-up');
-				$('#amenity-selection-icon').removeClass('a-arrow-small-down');
-				$('#amenity-list').slideToggle();
-			}
-
-			if($('#type-selection-icon').hasClass('a-arrow-small-up')){
-				$('#type-selection-icon').removeClass('a-arrow-small-up');
-				$('#type-selection-icon').addClass('a-arrow-small-down');
-			} else {
-				$('#type-selection-icon').addClass('a-arrow-small-up');
-				$('#type-selection-icon').removeClass('a-arrow-small-down');
-			}
-			$('#type-list').slideToggle();
-		}
-		function selectAmenity(amenity_id,display='selected'){
-			$('.modal-findings-left-main-container').slideDown();
-			amenityList();
-			// filter the findings to the selection
-			$('#select-amenity-text').text(display);
-		}
-		function filterAmenities(type_id,display='selected'){
-
-			if(type_id == 'all'){
-				$('.amenity-list-item').show();
-				typeList();
-				amenityList();
-			} else {
-				$('.amenity-list-item').hide();
-				$('.'+type_id).show();
-				typeList();
-				amenityList();
-			}
-			$('#select-type-text').text(display);
-
-		}
-
-        
-        
-		
-	
 </script>
 
 @include('templates.modal-findings-new-form')
@@ -397,15 +444,182 @@
   	</div>
   </div>
  </div>
- @if($type != 'all')
+
 <script>
+	window.findingModalSelectedAmenity = ''; //we do this to ensure we don't filter to a previous selection that is not relevant.
+	window.findingModalSelectedAmenityInspection = '';
 	function clickDefault(){
-		setTimeout(function() {
-			$('#{{$type}}-filter-button').trigger('click');
-			//alert('filtered');
-		}, .5);
 		
+		
+
+		@if(!is_null($passedAmenity))
+				// set filter text for amenity
+				window.findingModalSelectedAmenity = 'a-{{$passedAmenity->amenity_id}}';
+				window.findingModalSelectedAmenityInspection = 'amenity-inspection-{{$passedAmenity->id}}';
+				window.selectedAmenityInspection = '{{$passedAmenity->id}}';
+				<?php 
+					if($passedAmenity->project_id) {
+						// is a project type
+						$locationType = 's-'.$passedAmenity->project_ref;
+						$locationText = "Site picked";
+						
+					} elseif($passedAmenity->building_id){
+						// is a building
+						$locationType = 'b-'.$passedAmenity->building_id;
+						$locationText = "Building BIN: {$passedAmenity->building_id}, NAME: {addslashes($passedAmenity->building_inspection()->building_name)}, ADDRESS: {addslashes($passedAmenity->address)}";
+					} else {
+						// is a unit
+						$locationType = 'u-'.$passedAmenity->unit_id;
+						$locationText = "Unit Name: {$passedAmenity->cached_unit()->unit_name}, in BIN: {$passedAmenity->building_key} at ADDRESS: {$passedAmenity->cached_unit()->address}";
+					}
+				?>
+				// set filter text for drop lists
+				filterAmenities('{{$locationType}}','{!!$locationText!!}',0,0,$('#amenity-inspection-{{$passedAmenity->id}}').text());
+
+				window.findingModalSelectedLocationType = '{{$locationType}}';
+				
+				//filterFindingTypes();
+				console.log('Filtering to amenity id:a-{{$passedAmenity->amenity_id}} ({{$passedAmenity->amenity->amenity_description}}) for amenity inspection {{$passedAmenity->id}} with a location type target of '+window.findingModalSelectedLocationType+' further filetered to show '+window.findingModalSelectedType+' findings.');
+
+			
+        @elseif(!is_null($passedUnit))
+        		console.log('Filtering to unit id:u-{{$passedUnit->unit_id}}');
+        		// set filter test for type
+        		<?php 
+						$locationType = 'u-'.$passedUnit->unit_id;
+				?>
+				// set filter text for type
+				window.findingModalSelectedType = '{{$locationType}}';
+				filterAmenities('u-{{$passedUnit->unit_id}}', 'Unit NAME: {{$passedUnit->unit_name}} in Building BIN:{{$passedUnit->building_key}} ADDRESS: {{$passedUnit->address}}',0);
+        		// filter to type and allita type (nlt, lt, file)
+
+        @elseif(!is_null($passedBuilding))
+       			console.log('Filtering to building id:b-{{$passedBuilding->building_id}}');
+        		<?php 
+						$locationType = 'b-'.$passedBuilding->building_id;
+				?>
+				// set filter text for type
+				window.findingModalSelectedType = '{{$locationType}}';
+
+
+        		// set filter test for type
+        		filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}} Address City ST 12345',0);
+
+        		// filter to type and allita type (nlt, lt, file)
+        @else
+        		// console.log('Open type listing - opened from the audit list');
+        		// setTimeout(function() {
+        		// 	typeList();
+        		// }, .7);
+
+        @endif
+
+        $('#'+window.findingModalSelectedType+'-filter-button').trigger('click');
+
 	}
-	window.onload(clickDefault());
+	
+
+
+
+        // filter findings based on class
+        $('#finding-description').on('keyup', function () {
+          if($('#finding-description').val().length > 2){
+          	filterFindingTypes();
+      	  }
+        });
+
+        function amenityList(){
+        	// make sure type is up
+        	if($('#type-selection-icon').hasClass('a-arrow-small-down')){
+				$('#type-selection-icon').removeClass('a-arrow-small-up');
+				$('#type-selection-icon').addClass('a-arrow-small-down');
+				$('#type-selection-icon').slideToggle();
+			}
+			if($('#amenity-selection-icon').hasClass('a-arrow-small-up')){
+				$('#amenity-selection-icon').removeClass('a-arrow-small-up');
+				$('#amenity-selection-icon').addClass('a-arrow-small-down');
+				$('#select-amenity-text').text('Select Amenity');
+				$('.modal-findings-left-main-container').slideUp();
+			} else {
+				$('#amenity-selection-icon').addClass('a-arrow-small-up');
+				$('#amenity-selection-icon').removeClass('a-arrow-small-down');
+			}
+			$('#amenity-list').slideToggle();
+		}
+		function typeList(){
+			// make sure amenities is up
+			if($('#amenity-selection-icon').hasClass('a-arrow-small-down')){
+				$('#amenity-selection-icon').addClass('a-arrow-small-up');
+				$('#amenity-selection-icon').removeClass('a-arrow-small-down');
+				$('#amenity-list').slideToggle();
+			}
+
+			if($('#type-selection-icon').hasClass('a-arrow-small-up')){
+				$('#type-selection-icon').removeClass('a-arrow-small-up');
+				$('#type-selection-icon').addClass('a-arrow-small-down');
+			} else {
+				$('#type-selection-icon').addClass('a-arrow-small-up');
+				$('#type-selection-icon').removeClass('a-arrow-small-down');
+			}
+			$('#type-list').slideToggle();
+		}
+		function selectAmenity(amenity_id,display='selected'){
+			$('.modal-findings-left-main-container').slideDown();
+			amenityList();
+			// filter the findings to the selection
+			$('#select-amenity-text').text(display);
+		}
+		function filterAmenities(type_id,display='selected',closeType=1,openAmenity=1,selectAmenityText="Select Amenity"){
+
+			if(type_id == 'all'){
+				$('.amenity-list-item').show();
+				if(closeType == 1){
+					typeList();
+				}
+				if(openAmenity == 1){
+					amenityList();
+				}
+			} else {
+				$('.amenity-list-item').fadeOut();
+				$('.'+type_id).show();
+				if(closeType == 1){
+					typeList();
+				}
+				if(openAmenity == 1){
+					amenityList();
+				}
+			}
+			$('#select-type-text').text(display);
+			$('.modal-findings-left-main-container').slideUp();
+			$('#select-amenity-text').text(selectAmenityText);
+
+		}
+
+		function filterFindingTypes(){
+				var searchString = $('#finding-description').val();
+				// load into the div 
+				$('#modal-findings-list').load('/modals/findings_list/'+window.findingModalSelectedType+'/'+window.selectedAmenityInspection+'?search='+searchString, function(response, status, xhr) {
+				  if (status == "error") {
+				  	if(xhr.status == "401") {
+				  		var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
+				  	} else if( xhr.status == "500"){
+				  		var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
+				  	} else {
+				  		var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
+				  	}
+				    
+				    UIkit.modal.alert(msg);
+				  } else {
+				  	$('.modal-findings-left-main-container').fadeIn();
+				  }
+				});
+			
+		}
+		// A $( document ).ready() block.
+		$( document ).ready(function() {
+		    console.log( "Modal Loaded!" );
+		    clickDefault();
+		});
+		
+
 </script>
-@endif

@@ -1,9 +1,11 @@
 			<li id="auditor-calendar-{{$data['summary']['ref']}}" class="grid-schedule-availability" style="display:none">
 				<div class="auditor-calendar-header grid-schedule-availability-header">
 					<div class="week-spacer"></div>
+					@php $days=array(['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']); $day = 0; @endphp
 					@foreach($data['calendar']['header'] as $header_date)
-					<div class="week-day ">{{$header_date}}</div>
+					<div class="week-day ">{{$days[$day]}}<br />{{$header_date}}</div>
 					<div class="week-spacer"></div>
+					@php $day++; if($day > 6){$day = 0;} @endphp
 					@endforeach
 				</div>
 				<div class="grid-schedule-availability-sidebar">

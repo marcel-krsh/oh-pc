@@ -30,12 +30,15 @@ class Amenity extends Model
      */
     public function finding_types()
     {
-        $finding_types = \DB::table('finding_types')
-            ->join('amenity_hud', 'finding_types.id', '=', 'amenity_hud.amenity_id')
-            ->join('hud_inspectable_areas', 'amenity_hud.hud_inspectable_area_id', '=', 'hud_inspectable_areas.id')
-            ->join('hud_finding_type', 'hud_inspectable_areas.id', '=', 'hud_finding_type.hud_inspectable_area_id')
-            ->join('finding_types', 'hud_finding_type.finding_type_id', '=', 'finding_types.id')
-            ->select('finding_types.*')->get();
+        $finding_types = FindingType::
+            join('hud_finding_type', 'finding_types.id', '=', 'hud_finding_type.finding_type_id')
+            ->join('amenity_hud', 'hud_finding_type.hud_inspectable_area_id', '=', 'amenity_hud.hud_inspectable_area_id')
+            ->select('finding_types.*')
+            ->where('amenity_hud.amenity_id',$this->id)
+            ->groupBY('finding_types.id')
+            ->get();
+
+        //dd($finding_types,$this->id);
 
         return $finding_types;
     }

@@ -118,7 +118,7 @@ function searchFilterTerm(valThis) {
 }
 
 $('#finding-description').keyup(function(){
-   var valThis = $(this).val();
+   var valThis = $(this).val().toLowerCase();
    searchFilterTerm(valThis); 
 });
 

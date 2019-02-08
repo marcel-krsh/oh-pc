@@ -10,7 +10,7 @@
 							<div class="uk-width-2-5">
 								<p>Select one or more areas below.</p>
 								<div class="uk-margin-small-top">
-									<input id="modal-amenity-form-amenity" autofocus type="text" name="q" class="uk-width-1-1 uk-input" placeholder="Amenity Inspectable Area">
+									<input id="modal-amenity-form-amenity"  type="text" name="q" class="uk-width-1-1 uk-input" placeholder="Amenity Inspectable Area">
 						        </div>
 							</div>
 							<div class="uk-width-2-5">
@@ -31,7 +31,7 @@
 						    		
 								</ul>
 						    </div>
-						    <div class="uk-width-1-1 uk-margin-small">
+						    <div class="uk-width-1-1 uk-margin-small uk-text-right">
 								<button class="uk-button uk-button-primary">Save & Close</button>
 							</div>
 					    </div>
@@ -42,34 +42,34 @@
 	</div>
 </div>
 <style>
-#amenity-to-create {
+	#amenity-to-create {
 
-}
-#amenity-to-create li {
-	border:1px solid #ddd;
-	cursor: pointer;
-	float:left;
-	margin-top: 0;
-    margin-right: 10px;
-    padding:3px 19px 3px 17px;
-    border-radius: 7px;
-    margin-bottom:5px;
-}
-#amenity-to-create li:hover {
-	padding-right:6px;
-}
-#amenity-to-create li:hover:after{
-  display: inline-block;
-  content: "\00d7"; /* This will render the 'X' */
-  padding-left: 4px;
-  width: 9px;
-}
-button.bordered {
-	border:1px solid #ddd;
-}
-button.squared {
-	border-radius: 0px;
-}
+	}
+	#amenity-to-create li {
+		border:1px solid #ddd;
+		cursor: pointer;
+		float:left;
+		margin-top: 0;
+	    margin-right: 10px;
+	    padding:3px 19px 3px 17px;
+	    border-radius: 7px;
+	    margin-bottom:5px;
+	}
+	#amenity-to-create li:hover {
+		padding-right:6px;
+	}
+	#amenity-to-create li:hover:after{
+	  display: inline-block;
+	  content: "\00d7"; /* This will render the 'X' */
+	  padding-left: 4px;
+	  width: 9px;
+	}
+	button.bordered {
+		border:1px solid #ddd;
+	}
+	button.squared {
+		border-radius: 0px;
+	}
 </style>
 <script>
 	var selectAuditor = new autoComplete({
@@ -100,7 +100,7 @@ button.squared {
 
      var selectAmenities = new autoComplete({
             selector: '#modal-amenity-form-amenity',
-            minChars: 1,
+            minChars: 0,
             source: function(term, suggest){
                 term = term.toLowerCase();
                 // var choices = [['Bedroom', '1'], ['Stairs', '2'], ['Living Room', '3']];
@@ -163,96 +163,166 @@ button.squared {
 			});
 		});
 
-		var spinner = '<div style="height:200px;width: 100%;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
-        $('.modal-amenity-add').html(spinner);
-		
-		$.post('/modals/amenities/save', {
-				'project_id' : '{{$data['project_id']}}',
-				'building_id' : '{{$data['building_id']}}',
-				'unit_id' : '{{$data['unit_id']}}',
-				'new_amenities' : newAmenities,
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				// locate where to update data
-				var mainDivId = $('.inspection-areas').parent().attr("id"); 
-				var mainDivContainerId = $('#'+mainDivId).parent().attr("id"); 
+		if(newAmenities.length == 0){
+			dynamicModalClose();
+		}else{
+			var spinner = '<div style="height:200px;width: 100%;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+	        $('.modal-amenity-add').html(spinner);
+			
+			$.post('/modals/amenities/save', {
+					'project_id' : '{{$data['project_id']}}',
+					'audit_id' : '{{$data['audit_id']}}',
+					'building_id' : '{{$data['building_id']}}',
+					'unit_id' : '{{$data['unit_id']}}',
+					'new_amenities' : newAmenities,
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+				@if($data['project_id'] && $data['building_id']=='' && $data['unit_id']=='')
+					console.log('project');
+					// reload list of buildings
+					projectDetails({{$data['project_id']}}, {{$data['project_id']}}, data.length, 1);
+					dynamicModalClose();
 
-				// also get context
-				var context = $('.inspection-areas').first().attr("data-context");
+				@else 
+					console.log('unit or building');
+					// locate where to update data
+					var mainDivId = $('.inspection-areas').parent().attr("id"); 
+					var mainDivContainerId = $('#'+mainDivId).parent().attr("id"); 
 
-				// show spinner
-				$('#'+mainDivId).html(spinner);
-				
-				// add a row in .inspection-areas
-				var inspectionMainTemplate = $('#inspection-areas-template').html();
-				var inspectionAreaTemplate = $('#inspection-area-template').html();
+					// also get context
+					var context = $('.inspection-areas').first().attr("data-context");
 
-				var areas = '';
-				var newarea = '';
-
-				data.forEach(function(area) {
-					newarea = inspectionAreaTemplate;
-					newarea = newarea.replace(/areaContext/g, context);
-					newarea = newarea.replace(/areaRowId/g, area.id);
-					newarea = newarea.replace(/areaName/g, area.name); // missing
-					newarea = newarea.replace(/areaStatus/g, area.status);  // missing
-					newarea = newarea.replace(/areaAuditorId/g, area.auditor_id);  // missing
-					newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);  // missing
-					newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);  // missing
-					newarea = newarea.replace(/areaCompletedIcon/g, area.completed_icon);  
-					newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);  // missing
-					newarea = newarea.replace(/areaLTStatus/g, area.finding_lt_status);
-					newarea = newarea.replace(/areaSDStatus/g, area.finding_sd_status);
-					newarea = newarea.replace(/areaPicStatus/g, area.finding_photo_status);
-					newarea = newarea.replace(/areaCommentStatus/g, area.finding_comment_status);
-					newarea = newarea.replace(/areaCopyStatus/g, area.finding_copy_status);
-					newarea = newarea.replace(/areaTrashStatus/g, area.finding_trash_status);
-
-					newarea = newarea.replace(/areaDataAudit/g, area.audit_id);
-					newarea = newarea.replace(/areaDataBuilding/g, area.building_id);
-					newarea = newarea.replace(/areaDataArea/g, area.unit_id);
-					newarea = newarea.replace(/areaDataAmenity/g, area.id);
-
-					areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor_color);
-
+					// show spinner
+					$('#'+mainDivId).html(spinner);
 					
-				});
+					// add a row in .inspection-areas
+					var inspectionMainTemplate = $('#inspection-areas-template').html();
+					var inspectionAreaTemplate = $('#inspection-area-template').html();
+
+					var areas = '';
+					var newarea = '';
+
+					data.amenities.forEach(function(area) {
+						newarea = inspectionAreaTemplate;
+						newarea = newarea.replace(/areaContext/g, context);
+						newarea = newarea.replace(/areaRowId/g, area.id);
+						newarea = newarea.replace(/areaName/g, area.name); // missing
+						newarea = newarea.replace(/areaStatus/g, area.status);  // missing
+						newarea = newarea.replace(/areaAuditorId/g, area.auditor_id);  // missing
+						newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);  // missing
+						newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);  // missing
+						newarea = newarea.replace(/areaCompletedIcon/g, area.completed_icon);  
+						newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);  // missing
+						newarea = newarea.replace(/areaLTStatus/g, area.finding_lt_status);
+						newarea = newarea.replace(/areaSDStatus/g, area.finding_sd_status);
+						newarea = newarea.replace(/areaPicStatus/g, area.finding_photo_status);
+						newarea = newarea.replace(/areaCommentStatus/g, area.finding_comment_status);
+						newarea = newarea.replace(/areaCopyStatus/g, area.finding_copy_status);
+						newarea = newarea.replace(/areaTrashStatus/g, area.finding_trash_status);
+
+						newarea = newarea.replace(/areaDataAudit/g, area.audit_id);
+						newarea = newarea.replace(/areaDataBuilding/g, area.building_id);
+						newarea = newarea.replace(/areaDataArea/g, area.unit_id);
+						newarea = newarea.replace(/areaDataAmenity/g, area.id);
 						
-				// data.forEach(function(area) {
-				// 	newarea = inspectionAreaTemplate;
-				// 	newarea = newarea.replace(/areaContext/g, context);
-				// 	newarea = newarea.replace(/areaRowId/g, area.id);
-				// 	newarea = newarea.replace(/areaName/g, area.name);
-				// 	newarea = newarea.replace(/areaStatus/g, area.status);
-				// 	newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);
-				// 	newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);
+						newarea = newarea.replace(/areaAuditorColor/g, area.auditor_color);
+						areas = areas + newarea.replace(/areaDataHasFindings/g, area.has_findings);
 
-				// 	newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);
-				// 	newarea = newarea.replace(/areaLTStatus/g, area.finding_lt_status);
-				// 	newarea = newarea.replace(/areaSDStatus/g, area.finding_sd_status);
-				// 	newarea = newarea.replace(/areaPicStatus/g, area.finding_photo_status);
-				// 	newarea = newarea.replace(/areaCommentStatus/g, area.finding_comment_status);
-				// 	newarea = newarea.replace(/areaCopyStatus/g, area.finding_copy_status);
-				// 	newarea = newarea.replace(/areaTrashStatus/g, area.finding_trash_status);
-					
-				// 	newarea = newarea.replace(/areaDataAudit/g, area.audit_id);
-				// 	newarea = newarea.replace(/areaDataBuilding/g, area.building_id);
-				// 	newarea = newarea.replace(/areaDataArea/g, area.unit_id);
-				// 	newarea = newarea.replace(/areaDataAmenity/g, area.id);
+						//console.log("unit id "+area.unit_id+" - building_id "+area.building_id);
+						// update building auditor's list
+						if(area.unit_id == null && area.building_id != null){
+		                	console.log('updating building auditors ');
 
-				// 	areas = areas + newarea.replace(/areaAuditorColor/g, area.auditor_color);
-				// });
+		                	if($('#building-auditors-'+area.building_id).hasClass('hasAuditors')){
+		                		
+		                		// we don't know if/which unit is open
+			                	var unitelement = 'div[id^=unit-auditors-]  .uk-slideshow-items li.uk-active > div';
 
-				$('#'+mainDivId).html(inspectionMainTemplate);
-				$('#'+mainDivId+' .inspection-areas').html(areas);
-				$('#'+mainDivContainerId).fadeIn( "slow", function() {
-				    // Animation complete
-				    console.log("Area list updated");
-				  });
+				                $(unitelement).html('');
+				                $.each(data.unit_auditors, function(index, value){
+				                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
+				                	$(unitelement).append(newcontent);
+				                });
+		                	}else{
+		                		// we don't know if/which unit is open
+			                	var unitelement = 'div[id^=unit-auditors-]';
 
-				dynamicModalClose();
-			} 
-		);
+				                $(unitelement).html('');
+				                $.each(data.auditor.unit_auditors, function(index, value){
+				                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
+				                	$(unitelement).append(newcontent);
+				                });
+		                	}       
+
+			                var buildingelement = '#building-auditors-'+area.building_id+' .uk-slideshow-items li.uk-active > div';
+			               
+			                $(buildingelement).html('');
+			                $.each(data.auditor.building_auditors, function(index, value){
+			                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', 0, \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
+			                	$(buildingelement).append(newcontent);
+			                });
+			            }else{
+						// update unit auditor's list
+							console.log('units auditor list update');
+
+							// var newcontent = '<div id="building-audits-'+area.auditor_id+'-avatar-1" uk-tooltip="pos:top-left;title:'+area.auditor_name+';" title="" aria-expanded="false" class="auditor-badge auditor-badge-'+area.auditor_color+' use-hand-cursor no-float" onclick="swapAuditor('+area.auditor_id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'building-audits-'+area.auditor_id+'-avatar-1\')">'+area.auditor_initials+'</div>';
+
+							// // var newcontent = '<div class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+area.auditor_name+';" title="" aria-expanded="false" class="auditor-badge '+area.auditor_color+' no-float">'+area.auditor_initials+'</div>';
+
+		     
+
+		                	var unitelement = '#unit-auditors-'+area.unit_id+' .uk-slideshow-items li.uk-active > div';
+
+			                $(unitelement).html('');
+			                //console.log(unitelement);
+			                $.each(data.auditor.unit_auditors, function(index, value){
+			                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
+			                	$(unitelement).append(newcontent);
+
+			                	if($('#unit-auditors-'+area.unit_id).hasClass('hasAuditors')){
+			                		$(buildingelement).append(newcontent);
+			                	}else{
+			                		$(buildingelement).html(newcontent);
+			                	}
+			                });
+
+			                var buildingelement = '#building-auditors-'+area.building_id+' .uk-slideshow-items li.uk-active > div';
+			               //console.log(buildingelement);
+			                $(buildingelement).html('');
+			                $.each(data.auditor.building_auditors, function(index, value){
+			                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', 0, \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
+
+			                	if($('#building-auditors-'+area.building_id).hasClass('hasAuditors')){
+			                		//$('#building-auditors-'+area.building_id).append(newcontent);
+			                		$(buildingelement).append(newcontent);
+			                	}else{
+			                		//$('#building-auditors-'+area.building_id).html(newcontent);
+			                		$(buildingelement).html(newcontent);
+			                	}
+			                	
+			                });
+
+			            }
+
+						
+					});
+
+					$('#'+mainDivId).html(inspectionMainTemplate);
+					$('#'+mainDivId+' .inspection-areas').html(areas);
+					$('#'+mainDivContainerId).fadeIn( "slow", function() {
+					    // Animation complete
+					    console.log("Area list updated");
+					  });
+
+
+					dynamicModalClose();
+
+				@endif
+				} 
+			);
+		}
+
+		
 
 		
 	}

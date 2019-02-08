@@ -10,6 +10,7 @@ use App\Models\Audit;
 use App\Models\Building;
 use App\Models\Unit;
 use App\Models\Project;
+use App\Models\Finding;
 use App\Models\CachedAudit;
 use App\Models\CachedBuilding;
 use App\Models\CachedUnit;
@@ -32,6 +33,9 @@ use App\Models\UnitInspection;
 use App\Models\SystemSetting;
 use App\Models\StatsCompliance;
 use App\Models\Amenity;
+use App\Models\UnitAmenity;
+use App\Models\ProjectAmenity;
+use App\Models\BuildingAmenity;
 use Auth;
 use App\Models\Job;
 use Session;
@@ -372,8 +376,15 @@ class AuditController extends Controller
                 $name = $amenity->amenity->amenity_description;
             }
 
+            // check if this amenity has findings (to disable trash)
+            if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit_id)->count()){
+                $has_findings = 1;
+            }else{
+                $has_findings = 0;
+            }
+
             $data_amenities[] = [
-                "id" => $amenity->amenity_id,
+                "id" => $amenity->amenity_inspection_id,
                 "audit_id" => $amenity->audit_id,
                 "name" => $amenity->amenity->amenity_description,
                 "status" => $status,
@@ -390,7 +401,8 @@ class AuditController extends Controller
                 "finding_trash_status" =>'',
                 "building_id" => $amenity->building_id,
                 "unit_id" => 0,
-                "completed_icon" => $completed_icon
+                "completed_icon" => $completed_icon,
+                "has_findings" => $has_findings
             ];
         }
 
@@ -411,11 +423,11 @@ class AuditController extends Controller
         $context = $request->get('context');
         $inspection = "test";
 
-        // dd($audit_id, $building_id, $detail_id);
+        //dd($audit_id, $building_id, $detail_id);
         /*
-        "6659"
-        "23062"
-        "1005316" unitid
+        "6410"
+        "16725"
+        "1005405"
          */
 
         // Fetch inspection data from different models:
@@ -499,7 +511,7 @@ class AuditController extends Controller
         }
 
         foreach($amenities as $amenity){
-
+//if(!$amenity->amenity_inspection){dd($amenity->id);} // 6093
             if($amenity->amenity_inspection->auditor_id !== NULL){
                 $auditor_initials = $amenity->amenity_inspection->user->initials();
                 $auditor_name = $amenity->amenity_inspection->user->full_name();
@@ -533,8 +545,15 @@ class AuditController extends Controller
                 $name = $amenity->amenity->amenity_description;
             }
 
+            // check if this amenity has findings (to disable trash)
+            if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit_id)->count()){
+                $has_findings = 1;
+            }else{
+                $has_findings = 0;
+            }
+
             $data_amenities[] = [
-                "id" => $amenity->amenity_id,
+                "id" => $amenity->amenity_inspection_id,
                 "audit_id" => $amenity->audit_id,
                 "name" => $name,
                 "status" => $status,
@@ -551,7 +570,8 @@ class AuditController extends Controller
                 "finding_trash_status" =>'',
                 "building_id" => $amenity->building_id,
                 "unit_id" => $amenity->unit_id,
-                "completed_icon" => $completed_icon
+                "completed_icon" => $completed_icon,
+                "has_findings" => $has_findings
             ];
         }
 
@@ -562,6 +582,64 @@ class AuditController extends Controller
         return response()->json($data);
         //return view('dashboard.partials.audit_building_inspection', compact('audit_id', 'target', 'detail_id', 'building_id', 'detail', 'inspection', 'areas', 'rowid'));
     }   
+
+    public function deleteAmenity($amenity_id, $audit_id, $building_id, $unit_id, $element)
+    {
+
+        return view('modals.amenity-delete', compact('amenity_id', 'audit_id', 'building_id', 'unit_id', 'element'));
+    }
+
+    public function saveDeleteAmenity(Request $request)
+    {        
+        $comment = $request->get('comment');
+        $amenity_id = $request->get('amenity_id');
+        $audit_id = $request->get('audit_id');
+        $building_id = $request->get('building_id');
+        $unit_id = $request->get('unit_id');
+        $element = $request->get('element');
+
+        //dd($comment, $amenity_id, $audit_id, $building_id, $unit_id);
+        /*
+        ""
+        null
+        "307"
+        "6410"
+        "16725"
+        "142584"
+         */
+
+        // check if the amenity has findings
+        if(Finding::where('amenity_id','=',$amenity_id)->where('audit_id','=',$audit_id)->count()){
+            return 0;
+        }else{
+            
+            if($unit_id){
+
+                $amenity_inspection = AmenityInspection::where('id','=',$amenity_id)->first();
+                $ordering_amenities = OrderingAmenity::where('audit_id','=',$audit_id)->where('amenity_inspection_id','=',$amenity_id)->where('unit_id','=',$unit_id)->first();
+                $unit_amenity = UnitAmenity::where('unit_id','=',$unit_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
+
+                $amenity_inspection->delete();
+                $ordering_amenities->delete();
+                $unit_amenity->delete();
+
+                return $element;
+
+            }elseif($building_id){
+                // building_amenities
+                // ordering_amenities
+                // amenity_inspection
+
+            }else{
+                // project_amenities
+                // ordering_amenities
+                // amenity_inspection
+
+            }
+        }
+
+        return 1;
+    }
 
     public function markCompleted(Request $request, $amenity_id, $audit_id, $building_id, $unit_id)
     {
@@ -2156,6 +2234,9 @@ class AuditController extends Controller
 
         if( $audit && $user){
             AuditAuditor::where('user_id','=',$user->id)->where('audit_id','=',$auditid)->first()->delete();
+            
+            // remove their assignements
+            AmenityInspection::where('auditor_id',$user->id)->where('audit_id','=',$auditid)->update(['auditor_id'=>NULL]);
             return 1;
         }
 
@@ -3758,7 +3839,11 @@ class AuditController extends Controller
                 $building_id = null;
                 $unit_id = null;
 
-                //$audit = CachedAudit::where('project_id','=',$project_id)->first();
+                $audit = CachedAudit::where('audit_id','=',$project_id)->first();
+                $auditors_collection = $audit->auditors;
+                $amenities_collection = Amenity::where('inspectable','=',1)
+                                        ->where('project','=',1)
+                                        ->orderBy('amenity_description', 'asc')->get();
 
                 break;
             case 'building':
@@ -3766,12 +3851,23 @@ class AuditController extends Controller
                 $unit_id = null;
 
                 // get project_id from db
-                $building = CachedBuilding::where('id', '=', $building_id)->first();
+                $building = CachedBuilding::where('building_id', '=', $building_id)->first();
                 if ($building) {
                     $project_id = $building->project_id;
                 } else {
                     $project_id = null;
                 }
+
+                $audit = CachedAudit::where('audit_id','=',$building->audit_id)->first();
+                $auditors_collection = $audit->auditors;
+                $amenities_collection = Amenity::where('inspectable','=',1)
+                                        ->where(function ($query) {
+                                            $query->where('building_exterior','=',1)
+                                                  ->orWhere('building_system','=',1)
+                                                  ->orWhere('common_area','=',1);
+
+                                        })
+                                        ->orderBy('amenity_description', 'asc')->get();
 
                 break;
             case 'unit':
@@ -3800,7 +3896,8 @@ class AuditController extends Controller
         $data = collect([
             "project_id" => $project_id,
             "building_id" => $building_id,
-            "unit_id" => $unit_id
+            "unit_id" => $unit_id,
+            "audit_id" => $audit->audit_id
         ]);
 
         // get auditors for that audit
@@ -3817,33 +3914,29 @@ class AuditController extends Controller
         }
         $amenities = $amenities . ']';
 
-
-        
-        // $auditors = collect([
-        //     ['id' => 1, 'name' => "auditor name 1"],
-        //     ['id' => 2, 'name' => "auditor name 2"],
-        //     ['id' => 3, 'name' => "auditor name 3"],
-        //     ['id' => 4, 'name' => "auditor name 4"]
-        // ]);
-
         return view('modals.amenity-add', compact('data', 'auditors', 'amenities'));
     }
 
     public function saveAmenity(Request $request)
     {
-        // TBD
-        //
-        //
-        //
         $project_id = $request->get('project_id');
         $building_id =  $request->get('building_id');
         $unit_id =  $request->get('unit_id');
+        $audit_id =  $request->get('audit_id');
 
         $new_amenities = $request->get('new_amenities');
 
+        //dd($project_id, $building_id, $unit_id, $audit_id);
+        /*
+        "45055"
+        "16721"
+        "141968"
+        "6410"
+         */
+
         // get current audit id using project_id
         // only one audit can be active at one time
-        $audit = CachedAudit::where("project_id", "=", $project_id)->orderBy('id', 'desc')->first();
+        $audit = CachedAudit::where("audit_id", "=", $audit_id)->orderBy('id', 'desc')->first();
 
         if (!$audit) {
             dd("There is an error - cannot find that audit - 3854");
@@ -3853,172 +3946,319 @@ class AuditController extends Controller
 
         if (count($new_amenities)) {
             foreach ($new_amenities as $new_amenity) { 
-                // TBD
-                // Get auditor's name, color and initials
-                // 1) check if auditor_id is a valid auditor on that audit
-                // 2) get the information
                 
-                $auditor = AuditAuditor::where("user_id", "=", $new_amenity['auditor_id'])->where("audit_id", "=", $audit->audit_id)->with('user')->first();
-                if (!$auditor) {
-                    dd("There is an error - this auditor doesn't seem to be assigned to this audit.");
+                if($new_amenity['auditor_id']){
+                    $auditor = AuditAuditor::where("user_id", "=", $new_amenity['auditor_id'])->where("audit_id", "=", $audit->audit_id)->with('user')->first();
+                    if (!$auditor) {
+                        dd("There is an error - this auditor doesn't seem to be assigned to this audit.");
+                    }
+
+                    $auditor_color = $auditor->user->badge_color;
+                    $auditor_initials = $auditor->user->initials();
+                    $auditor_name = $auditor->user->full_name();
+                    $auditorid = $auditor->user_id;
+                }else{
+                    $auditor_color = '';
+                    $auditor_initials = '';
+                    $auditor_name = '';
+                    $auditorid = NULL;
                 }
 
-                //tmp
-                $auditor_color = $auditor->user->badge_color;
-                $auditor_initials = $auditor->user->initials();
-                $auditor_name = $auditor->user->full_name();
+                
                 
                 // get amenity type
                 $amenity_type = Amenity::where("id", "=", $new_amenity['amenity_id'])->first();
 
-                // check name and add numeric counter at the end if duplicate
-                $existing_amenities = CachedAmenity::where('project_id', '=', $project_id);
-                if ($building_id) {
-                    $existing_amenities = $existing_amenities->where('building_id', '=', $building_id);
-                }
-                if ($unit_id) {
-                    $existing_amenities = $existing_amenities->where('unit_id', '=', $unit_id);
-                }
-                    //$existing_amenities = $existing_amenities->whereRaw('LOWER(name) like ?', [strtolower($amenity->name).'%']);
-                    $existing_amenities = $existing_amenities->where('amenity_type_id', '=', $amenity_type->id);
-                    $existing_amenities = $existing_amenities->get();
+                // project level amenities are handled through OrderingBuilding and CachedBuilding
+                if($project_id && $unit_id == '' && $building_id == ''){
 
-                $name = $amenity_type->amenity_description;
+                    $name = $amenity_type->amenity_description;
 
-                // save new amenity
-                if($unit_id){
+                    // create ProjectAmenity
+                    // create CachedBuilding
+                    // create AmenityInspection
+                    // create OrderingBuilding
+                    // load buildings
+                    
+                    $project_amenity = new ProjectAmenity([
+                        'project_key' => $audit->project_key,
+                        'project_id' => $audit->project_id,
+                        'amenity_type_key' => $amenity_type->amenity_type_key,
+                        'amenity_id' => $amenity_type->id,
+                        'comment' => 'manually added by '.Auth::user()->id
+                    ]);
+                    $project_amenity->save();
+                    
+                    $cached_building = new CachedBuilding([
+                                'building_name' => $name,
+                                'building_id' => null,
+                                'building_key' => null,
+                                'audit_id' => $audit->audit_id,
+                                'audit_key' => $audit->audit_key,
+                                'project_id' => $audit->project_id,
+                                'project_key' => $audit->project_key,
+                                'lead_id' => $audit->lead_id,
+                                'lead_key' => $audit->lead_key,
+                                'status' => '',
+                                'type' => $amenity_type->icon,
+                                'type_total' => null,
+                                'type_text' => null,
+                                'type_text_plural' => null,
+                                'finding_total' => 0,
+                                'finding_file_status' => '',
+                                'finding_nlt_status' => '',
+                                'finding_lt_status' => '',
+                                'finding_file_total' => 0,
+                                'finding_file_completed' => 0,
+                                'finding_nlt_total' => 0,
+                                'finding_nlt_completed' => 0,
+                                'finding_lt_total' => 0,
+                                'finding_lt_completed' => 0,
+                                'address' => $audit->address,
+                                'city' => $audit->city,
+                                'state' => $audit->state,
+                                'zip' => $audit->zip,
+                                'amenity_id' =>$amenity_type->id
+                            ]);
+                    $cached_building->save();
+
                     $amenity = new AmenityInspection([
+                                'audit_id' => $audit->audit_id,
+                                'project_id' => $audit->project_id,
+                                'amenity_id' => $amenity_type->id,
+                                'auditor_id' => $auditorid,
+                                'cachedbuilding_id' => $cached_building->id
+                            ]);
+                    $amenity->save();
+
+                    // latest ordering
+                    $latest_ordering = OrderingBuilding::where('user_id','=',Auth::user()->id)
+                                                        ->where('audit_id','=',$audit->audit_id)
+                                                        ->orderBy('order', 'desc')
+                                                        ->first()
+                                                        ->order;
+                    // save the ordering
+                    $ordering = new OrderingBuilding([
+                        'user_id' => Auth::user()->id,
+                        'audit_id' => $audit->audit_id,
+                        'building_id' => $cached_building->id,
+                        'order' => $latest_ordering+1
+                    ]);
+                    $ordering->save();
+
+                    $buildings = OrderingBuilding::where('audit_id', '=', $audit->audit_id)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->with('building')->get();
+
+                    $data = $buildings;
+
+                }else{
+
+                    $name = $amenity_type->amenity_description;
+
+                    // save new amenity
+                    if($unit_id){
+
+                        $unitamenity = new UnitAmenity([
+                            'unit_id' => $unit_id,
+                            'amenity_id' => $amenity_type->id,
+                            'comment' => 'manually added by '.Auth::user()->id
+                        ]);
+                        $unitamenity->save();
+
+                        $amenity = new AmenityInspection([
+                                'audit_id' => $audit->audit_id,
+                                'unit_id' => $unit_id,
+                                'amenity_id' => $amenity_type->id,
+                                'auditor_id' => $auditorid
+                            ]);
+                        $amenity->save();
+
+                        // latest ordering
+                        $latest_ordering = OrderingAmenity::where('user_id','=',Auth::user()->id)
+                                                            ->where('audit_id','=',$audit->audit_id)
+                                                            ->where('unit_id', '=', $unit_id)
+                                                            ->orderBy('order', 'desc')
+                                                            ->first()
+                                                            ->order;
+                        // save the ordering
+                        $ordering = new OrderingAmenity([
+                            'user_id' => Auth::user()->id,
                             'audit_id' => $audit->audit_id,
                             'unit_id' => $unit_id,
                             'amenity_id' => $amenity_type->id,
-                            'auditor_id' => $auditor->user_id
+                            'amenity_inspection_id' => $amenity->id,
+                            'order' => $latest_ordering+1
                         ]);
-                    $amenity->save();
+                        $ordering->save();
+                        
 
-                    // latest ordering
-                    $latest_ordering = OrderingAmenity::where('user_id','=',Auth::user()->id)
-                                                        ->where('audit_id','=',$audit->audit_id)
-                                                        ->where('unit_id', '=', $unit_id)
-                                                        ->orderBy('order', 'desc')
-                                                        ->first()
-                                                        ->order;
-                    // save the ordering
-                    $ordering = new OrderingAmenity([
-                        'user_id' => Auth::user()->id,
-                        'audit_id' => $audit->audit_id,
-                        'unit_id' => $unit_id,
-                        'amenity_id' => $amenity_type->id,
-                        'amenity_inspection_id' => $amenity->id,
-                        'order' => $latest_ordering+1
-                    ]);
-                    $ordering->save();
-                }else{
-                    $amenity = new AmenityInspection([
-                            'audit_id' => $audit->audit_id,
-                            'project_id' => $project_id,
+                    }elseif($building_id){
+
+                        $buildingamenity = new BuildingAmenity([
                             'building_id' => $building_id,
-                            'unit_id' => NULL,
                             'amenity_id' => $amenity_type->id,
-                            'auditor_id' => $auditor->user_id
+                            'comment' => 'manually added by '.Auth::user()->id
                         ]);
-                    $amenity->save();
+                        $buildingamenity->save();
 
-                    // latest ordering
-                    $latest_ordering = OrderingAmenity::where('user_id','=',Auth::user()->id)
-                                                        ->where('audit_id','=',$audit->audit_id)
-                                                        ->where('unit_id', '=', $unit_id)
-                                                        ->orderBy('order', 'desc')
-                                                        ->first()
-                                                        ->order;
-                    // save the ordering
-                    $ordering = new OrderingAmenity([
-                        'user_id' => Auth::user()->id,
-                        'audit_id' => $audit->audit_id,
-                        'building_id' => $building_id,
-                        'amenity_id' => $amenity_type->id,
-                        'amenity_inspection_id' => $amenity->id,
-                        'order' => $latest_ordering+1
-                    ]);
-                    $ordering->save();
-                }
+                        $amenity = new AmenityInspection([
+                                'audit_id' => $audit->audit_id,
+                                'building_id' => $building_id,
+                                'amenity_id' => $amenity_type->id,
+                                'auditor_id' => $auditorid
+                            ]);
+                        $amenity->save();
+
+                        // latest ordering
+                        $latest_ordering = OrderingAmenity::where('user_id','=',Auth::user()->id)
+                                                            ->where('audit_id','=',$audit->audit_id)
+                                                            ->where('building_id', '=', $building_id)
+                                                            ->orderBy('order', 'desc')
+                                                            ->first()
+                                                            ->order;
+                        // save the ordering
+                        $ordering = new OrderingAmenity([
+                            'user_id' => Auth::user()->id,
+                            'audit_id' => $audit->audit_id,
+                            'building_id' => $building_id,
+                            'amenity_id' => $amenity_type->id,
+                            'amenity_inspection_id' => $amenity->id,
+                            'order' => $latest_ordering+1
+                        ]);
+                        $ordering->save();
+
+                    }
+
+                    $amenities = OrderingAmenity::where('audit_id', '=', $audit->audit_id)->where('user_id', '=', Auth::user()->id);
+                    if ($unit_id) {
+                        $amenities = $amenities->where('unit_id', '=', $unit_id);
+                    }elseif($building_id){
+                        $amenities = $amenities->where('building_id', '=', $building_id);
+                        $amenities = $amenities->whereNull('unit_id');
+                    }
+                    $amenities = $amenities->orderBy('order', 'asc')->with('amenity')->get(); //->pluck('amenity')->flatten()
+
+                    $data_amenities = array();
+
+                    // manage name duplicates, number them based on their id
+                    $amenity_names = array();
+                    foreach($amenities as $amenity){
+                        $amenity_names[$amenity->amenity->amenity_description][] = $amenity->amenity_inspection_id;
+                    }
+
+                    foreach($amenities as $amenity){
+
+                        if($amenity->amenity_inspection->auditor_id !== NULL){
+                            $auditor_initials = $amenity->amenity_inspection->user->initials();
+                            $auditor_name = $amenity->amenity_inspection->user->full_name();
+                            $auditor_id = $amenity->amenity_inspection->user->id;
+                            $auditor_color = $amenity->amenity_inspection->user->badge_color;
+                        }else{
+                            $auditor_initials = '<i class="a-avatar-plus_1"></i>';
+                            $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
+                            $auditor_color = '';
+                            $auditor_id = 0;
+                        }
+
+                        if($amenity->amenity_inspection->completed_date_time == NULL){
+                            $completed_icon = "a-circle";
+                        }else{
+                            $completed_icon = "a-circle-checked ok-actionable";
+                        }
+
+                        if($amenity->amenity->file == 1){
+                            $status = " fileaudit";
+                        }else{
+                            $status = " siteaudit";
+                        }
+
+                        // check for name duplicates and assign a #
+                        $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
+                        if($key > 0){
+                            $key = $key + 1;
+                            $name = $amenity->amenity->amenity_description." ".$key;
+                        }else{
+                            $name = $amenity->amenity->amenity_description;
+                        }
+
+                        if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit->audit_id)->count()){
+                            $has_findings = 1;
+                        }else{
+                            $has_findings = 0;
+                        }
+
+                        $data_amenities[] = [
+                            "id" => $amenity->amenity_inspection_id,
+                            "audit_id" => $amenity->audit_id,
+                            "name" => $name,
+                            "status" => $status,
+                            "auditor_id" => $auditor_id,
+                            "auditor_initials" => $auditor_initials,
+                            "auditor_name" => $auditor_name,
+                            "auditor_color" => $auditor_color,
+                            "finding_nlt_status" => '',
+                            "finding_lt_status" =>'',
+                            "finding_sd_status" =>'',
+                            "finding_photo_status" =>'',
+                            "finding_comment_status" =>'',
+                            "finding_copy_status" =>'',
+                            "finding_trash_status" =>'',
+                            "building_id" => $building_id,
+                            "unit_id" => $amenity->unit_id,
+                            "completed_icon" => $completed_icon,
+                            "has_findings" => $has_findings
+                        ];
+                    }
+
+                    $data['amenities'] = $data_amenities;
+
+
+                    if($unit_id != NULL && $building_id != NULL){
+                        $unit_auditor_ids = AmenityInspection::where('audit_id', '=', $audit->audit_id)->where('unit_id','=',$unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+
+
+                        $building_auditor_ids = array();
+                        $units = Unit::where('building_id', '=', $building_id)->get();
+                        foreach($units as $unit){
+                            $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit->audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                        }
+                        // $building_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id','=',$building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+                    }else{
+                        if($building_id == 0 && $unit_id == 0){
+                            $unit_auditor_ids = array();
+                            $building_auditor_ids = array();
+                        }else{
+                            $unit_auditor_ids = array();
+                            // reset building auditors list
+                            
+                            $building_auditor_ids = array();
+                            $units = Unit::where('building_id', '=', $building_id)->get();
+                            foreach($units as $unit){
+                                $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit->audit_id)->where('unit_id','=',$unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+
+                                $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit->audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                            }
+                            $building_auditor_ids = array_merge($building_auditor_ids, AmenityInspection::where('audit_id', '=', $audit->audit_id)->where('building_id','=',$building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                        }
+                    }
+
+                    $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
+                    foreach($unit_auditors as $unit_auditor){
+                        $unit_auditor->full_name = $unit_auditor->full_name();
+                        $unit_auditor->initials = $unit_auditor->initials();
+                    }
+                    $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
+                    foreach($building_auditors as $building_auditor){
+                        $building_auditor->full_name = $building_auditor->full_name();
+                        $building_auditor->initials = $building_auditor->initials();
+                    }
+
+                    $data['auditor'] = ["unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $unit_id, "building_id" => $building_id];
+
+                } // end if not project
                 
-            }
+            } // end foreach amenity
         }
-        
-
-        $amenities = OrderingAmenity::where('audit_id', '=', $audit->audit_id)->where('user_id', '=', Auth::user()->id);
-        if ($unit_id) {
-            $amenities = $amenities->where('unit_id', '=', $unit_id);
-        }
-        $amenities = $amenities->orderBy('order', 'asc')->with('amenity')->get(); //->pluck('amenity')->flatten()
-
-        $data_amenities = array();
-
-        // manage name duplicates, number them based on their id
-        $amenity_names = array();
-        foreach($amenities as $amenity){
-            $amenity_names[$amenity->amenity->amenity_description][] = $amenity->amenity_inspection_id;
-        }
-
-        foreach($amenities as $amenity){
-
-            if($amenity->amenity_inspection->auditor_id !== NULL){
-                $auditor_initials = $amenity->amenity_inspection->user->initials();
-                $auditor_name = $amenity->amenity_inspection->user->full_name();
-                $auditor_id = $amenity->amenity_inspection->user->id;
-                $auditor_color = $amenity->amenity_inspection->user->badge_color;
-            }else{
-                $auditor_initials = '<i class="a-avatar-plus_1"></i>';
-                $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
-                $auditor_color = '';
-                $auditor_id = 0;
-            }
-
-            if($amenity->amenity_inspection->completed_date_time == NULL){
-                $completed_icon = "a-circle";
-            }else{
-                $completed_icon = "a-circle-checked ok-actionable";
-            }
-
-            if($amenity->amenity->file == 1){
-                $status = " fileaudit";
-            }else{
-                $status = " siteaudit";
-            }
-
-            // check for name duplicates and assign a #
-            $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
-            if($key > 0){
-                $key = $key + 1;
-                $name = $amenity->amenity->amenity_description." ".$key;
-            }else{
-                $name = $amenity->amenity->amenity_description;
-            }
-
-            $data_amenities[] = [
-                "id" => $amenity->amenity_id,
-                "audit_id" => $amenity->audit_id,
-                "name" => $name,
-                "status" => $status,
-                "auditor_id" => $auditor_id,
-                "auditor_initials" => $auditor_initials,
-                "auditor_name" => $auditor_name,
-                "auditor_color" => $auditor_color,
-                "finding_nlt_status" => '',
-                "finding_lt_status" =>'',
-                "finding_sd_status" =>'',
-                "finding_photo_status" =>'',
-                "finding_comment_status" =>'',
-                "finding_copy_status" =>'',
-                "finding_trash_status" =>'',
-                "building_id" => $amenity->building_id,
-                "unit_id" => $amenity->unit_id,
-                "completed_icon" => $completed_icon
-            ];
-        }
-
-        $data = $data_amenities;
-            
+            //dd($data);
         return $data;
     }
 
@@ -4043,12 +4283,22 @@ class AuditController extends Controller
         }
             $current_ordering = $current_ordering->orderBy('order', 'asc')->get()->toArray();
 
+        $pre_reordering = OrderingAmenity::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->where('amenity_id', '=', $amenity_id);
+        if ($unit_id) {
+            $pre_reordering = $pre_reordering->where('unit_id', '=', $unit_id);
+        }
+        if ($building_id) {
+            $pre_reordering = $pre_reordering->where('building_id', '=', $building_id);
+        }
+        $pre_reordering = $pre_reordering->orderBy('order', 'asc')->first();
+
         $inserted = [ [
                     'user_id' => Auth::user()->id,
                     'audit_id' => $audit,
                     'building_id' => $building_id,
                     'unit_id' => $unit_id,
                     'amenity_id' => $amenity_id,
+                    'amenity_inspection_id' => $pre_reordering->amenity_inspection_id,
                     'order' => $index
                ]];
 
@@ -4074,6 +4324,7 @@ class AuditController extends Controller
                 'building_id' => $ordering['building_id'],
                 'unit_id' => $ordering['unit_id'],
                 'amenity_id' => $ordering['amenity_id'],
+                'amenity_inspection_id' => $ordering['amenity_inspection_id'],
                 'order' => $key+1
             ]);
             $new_ordering->save();

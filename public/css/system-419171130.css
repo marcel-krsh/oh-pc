@@ -1770,7 +1770,7 @@ margin-top:10px;
     vertical-align: top;
     font-size: 16px;
     overflow-x: hidden;
-    max-width: 95px;
+    max-width: 64%;
     white-space: nowrap;
 }
 #auditstable .inspection-area .area-name i {
@@ -3984,11 +3984,12 @@ i.fa-square.chart-color-to-be-inspected { background-color:#e0e0df; }
   width: 44%;
 }
 .modal-findings-left-bottom{
-  height: 260px;
-  overflow-y: auto;
-  position: absolute;
-  width: 100%;
-  margin-top: 15px;
+    max-height: 260px;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    position: absolute;
+    width: 100%;
+    margin-top: 15px;
 }
 .modal-findings-left-main-container{
   position: fixed;

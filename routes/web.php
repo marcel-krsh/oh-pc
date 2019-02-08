@@ -12,6 +12,8 @@
 */
     Auth::routes();
 
+    Route::get('/check', function(){ return '1';});
+
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
         // rerun compliance run
@@ -171,6 +173,7 @@
         Route::get('/modals/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}', 'FindingController@modalFindings');
 
         Route::get('/findings/{id}/items', 'FindingController@findingItems');
+        Route::get('/modals/findings_list/{type}/{amenityinspectionid}','FindingController@findingList');
         Route::get('/modals/findings/{id}/items/{itemid}/photos/{photoid}', 'FindingController@findingItemPhoto');
 
         Route::get('/modals/audit/{audit_id}/scheduling/days/{day_id}/auditors/{auditorid?}', 'AuditController@addAssignmentAuditor')->name('project.assignment.addauditor');
@@ -197,6 +200,10 @@
         Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/complete', 'AuditController@markCompleted')->name('amenities.mark.completed');
         Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}/{element}', 'AuditController@swapAuditorToAmenity')->name('amenities.swap.auditor');
         Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}', 'AuditController@saveSwapAuditorToAmenity')->name('amenities.swap.auditor.save');
+
+        Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/delete/{element}', 'AuditController@deleteAmenity')->name('amenities.delete');
+        Route::post('/modals/amenities/delete', 'AuditController@saveDeleteAmenity')->name('amenities.delete');
+
 
         Route::post('/autosave', 'DataController@autosave');
 
