@@ -783,8 +783,8 @@ The following div is defined in this particular tab and pushed to the main layou
 		            	if(data.status == 'complete'){
 		            		if(amenity_id == 0){
 		            			UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
-		            			$('[id^=completed-'+audit_id+building_id+unit_id+']').removeClass('a-circle');
-		            			$('[id^=completed-'+audit_id+building_id+unit_id+']').addClass('a-circle-checked');
+		            			$('[id^=completed-'+audit_id+building_id+']').removeClass('a-circle');
+		            			$('[id^=completed-'+audit_id+building_id+']').addClass('a-circle-checked');
 		            		}else{
 		            			UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
 			            		$('#'+element).toggleClass('a-circle');
