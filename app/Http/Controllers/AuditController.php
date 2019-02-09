@@ -4271,14 +4271,14 @@ class AuditController extends Controller
 
         $building_id = $request->get('building_id');
         $unit_id = $request->get('unit_id');
-        $amenity_id = $request->get('amenity_id');
+        $amenity_inspection_id = $request->get('amenity_id'); // this is the amenity_inspection_id
         $index = $request->get('index');
 
         //dd($building_id." ".$unit_id." ".$amenity_id." ".$index);
 
         // select all amenity orders except for the one we want to reorder
         $current_ordering = OrderingAmenity::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id);
-            $current_ordering = $current_ordering->where('amenity_id', '!=', $amenity_id);
+            $current_ordering = $current_ordering->where('amenity_inspection_id', '!=', $amenity_inspection_id);
         if ($unit_id) {
             $current_ordering = $current_ordering->where('unit_id', '=', $unit_id);
         }
@@ -4287,7 +4287,7 @@ class AuditController extends Controller
         }
             $current_ordering = $current_ordering->orderBy('order', 'asc')->get()->toArray();
 
-        $pre_reordering = OrderingAmenity::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->where('amenity_id', '=', $amenity_id);
+        $pre_reordering = OrderingAmenity::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->where('amenity_inspection_id', '=', $amenity_inspection_id);
         if ($unit_id) {
             $pre_reordering = $pre_reordering->where('unit_id', '=', $unit_id);
         }
@@ -4301,7 +4301,7 @@ class AuditController extends Controller
                     'audit_id' => $audit,
                     'building_id' => $building_id,
                     'unit_id' => $unit_id,
-                    'amenity_id' => $amenity_id,
+                    'amenity_id' => $pre_reordering->amenity_id,
                     'amenity_inspection_id' => $pre_reordering->amenity_inspection_id,
                     'order' => $index
                ]];
