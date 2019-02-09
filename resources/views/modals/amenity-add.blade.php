@@ -186,7 +186,12 @@
 				@else 
 					console.log('unit or building');
 					// locate where to update data
+					@if($data['unit_id'] != '')
+					var mainDivId = $('.inspection-detail-main-list .inspection-areas').parent().attr("id"); 
+					@else 
 					var mainDivId = $('.inspection-areas').parent().attr("id"); 
+					@endif
+					
 					var mainDivContainerId = $('#'+mainDivId).parent().attr("id"); 
 
 					// also get context
@@ -224,7 +229,7 @@
 						newarea = newarea.replace(/areaDataBuilding/g, area.building_id);
 						newarea = newarea.replace(/areaDataArea/g, area.unit_id);
 						newarea = newarea.replace(/areaDataAmenity/g, area.id);
-						
+
 						newarea = newarea.replace(/areaAuditorColor/g, area.auditor_color);
 						areas = areas + newarea.replace(/areaDataHasFindings/g, area.has_findings);
 
