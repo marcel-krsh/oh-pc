@@ -535,6 +535,10 @@ function inspectionDetailsFromBuilding(buildingid, auditid, target, targetaudit,
 			$('#inspection-'+context+'-menus-'+target+'-container').slideUp("slow");
 		    $('#inspection-'+context+'-tools-switch-'+target).fadeIn( "slow", function() {
 			    // Animation complete
+			    // delete content
+			    $('#inspection-'+context+'-main-'+target+'-container').remove();
+			    $('#inspection-'+context+'-menus-'+target+'-container').remove();
+			    $('#inspection-'+context+'-tools-switch-'+target).remove();
 			  });
 		    $('div[id^="building-'+context+'-r-"]').not( 'div[id="building-'+context+'-r-'+target+'"]' ).slideDown();
 			// unblur other building inspection rows
@@ -605,6 +609,10 @@ function inspectionDetails(id, buildingid, auditid, target, targetaudit, rowid, 
 			$('#inspection-'+context+'-detail-menus-'+target+'-container').slideUp("slow");
 		    $('#inspection-'+context+'-detail-tools-switch-'+target).fadeIn( "slow", function() {
 			    // Animation complete
+			    // delete content
+			    $('#inspection-'+context+'-detail-main-'+target+'-container').remove();
+			    $('#inspection-'+context+'-detail-menus-'+target+'-container').remove();
+			    $('#inspection-'+context+'-detail-tools-switch-'+target).remove();
 			  });
 		    $('div[id^="building-'+context+'-detail-r-"]').not( 'div[id="building-'+context+'-detail-r-'+target+'"]' ).slideDown();
 			// unblur other building inspection rows
