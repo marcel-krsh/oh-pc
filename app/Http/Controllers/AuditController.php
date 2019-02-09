@@ -633,12 +633,22 @@ class AuditController extends Controller
                     'project_id' => $project_id,
                     'audit_id' => $audit_id,
                     'amenity_id' => $amenity_id,
+                    'unit_id' => $unit_id,
+                    'building_id' => $building_id,
                     'comment' => $comment,
                     'recorded_date' => date('Y-m-d H:i:s',time())
                 ]);
                 $new_comment->save();
 
-                return $element;
+                // reload auditor names at the unit and building row levels
+                $reload_auditors = $this->reload_auditors($audit_id, $unit_id, NULL);
+                $unit_auditors = $reload_auditors['unit_auditors'];
+                $building_auditors = $reload_auditors['building_auditors'];
+
+                $data['element'] = $element;
+                $data['auditor'] = ["unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $unit_id, "building_id" => $building_id, "audit_id" => $audit_id];
+
+                return $data;
 
             }elseif($building_id != "null" && $building_id !== NULL){
                 // dd("building", $comment, $amenity_id, $audit_id, $building_id, $unit_id);    
@@ -655,12 +665,22 @@ class AuditController extends Controller
                     'project_id' => $project_id,
                     'audit_id' => $audit_id,
                     'amenity_id' => $amenity_id,
+                    'unit_id' => $unit_id,
+                    'building_id' => $building_id,
                     'comment' => $comment,
                     'recorded_date' => date('Y-m-d H:i:s',time())
                 ]);
                 $new_comment->save();
 
-                return $element;
+                // reload auditor names at the unit and building row levels
+                $reload_auditors = $this->reload_auditors($audit_id, $unit_id, $building_id);
+                $unit_auditors = $reload_auditors['unit_auditors'];
+                $building_auditors = $reload_auditors['building_auditors'];
+                
+                $data['element'] = $element;
+                $data['auditor'] = ["unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $unit_id, "building_id" => $building_id, "audit_id" => $audit_id];
+
+                return $data;
 
             }else{
                 // TBD - we don't have a button yet for this
@@ -4244,46 +4264,10 @@ class AuditController extends Controller
 
                     $data['amenities'] = $data_amenities;
 
-
-                    if($unit_id != NULL && $building_id != NULL){
-                        $unit_auditor_ids = AmenityInspection::where('audit_id', '=', $audit->audit_id)->where('unit_id','=',$unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
-
-
-                        $building_auditor_ids = array();
-                        $units = Unit::where('building_id', '=', $building_id)->get();
-                        foreach($units as $unit){
-                            $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit->audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
-                        }
-                        // $building_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id','=',$building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
-                    }else{
-                        if($building_id == 0 && $unit_id == 0){
-                            $unit_auditor_ids = array();
-                            $building_auditor_ids = array();
-                        }else{
-                            $unit_auditor_ids = array();
-                            // reset building auditors list
-                            
-                            $building_auditor_ids = array();
-                            $units = Unit::where('building_id', '=', $building_id)->get();
-                            foreach($units as $unit){
-                                $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit->audit_id)->where('unit_id','=',$unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
-
-                                $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit->audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
-                            }
-                            $building_auditor_ids = array_merge($building_auditor_ids, AmenityInspection::where('audit_id', '=', $audit->audit_id)->where('building_id','=',$building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
-                        }
-                    }
-
-                    $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
-                    foreach($unit_auditors as $unit_auditor){
-                        $unit_auditor->full_name = $unit_auditor->full_name();
-                        $unit_auditor->initials = $unit_auditor->initials();
-                    }
-                    $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
-                    foreach($building_auditors as $building_auditor){
-                        $building_auditor->full_name = $building_auditor->full_name();
-                        $building_auditor->initials = $building_auditor->initials();
-                    }
+                    // reload auditor names at the unit and building row levels
+                    $reload_auditors = $this->reload_auditors($audit->audit_id, $unit_id, $building_id);
+                    $unit_auditors = $reload_auditors['unit_auditors'];
+                    $building_auditors = $reload_auditors['building_auditors'];
 
                     $data['auditor'] = ["unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $unit_id, "building_id" => $building_id];
 
@@ -4293,6 +4277,48 @@ class AuditController extends Controller
         }
             //dd($data);
         return $data;
+    }
+
+    public function reload_auditors($audit_id, $unit_id, $building_id){
+
+        if($unit_id != NULL && $building_id != NULL && $unit_id != 'null' && $building_id != 'null'){
+            $unit_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id','=',$unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+
+            $building_auditor_ids = array();
+            $units = Unit::where('building_id', '=', $building_id)->get();
+            foreach($units as $unit){
+                $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+            }
+        }else{
+            if($building_id == 0 && $unit_id == 0){
+                $unit_auditor_ids = array();
+                $building_auditor_ids = array();
+            }else{
+                $unit_auditor_ids = array();
+                
+                $building_auditor_ids = array();
+                $units = Unit::where('building_id', '=', $building_id)->get();
+                foreach($units as $unit){
+                    $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id','=',$unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+
+                    $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                }
+                $building_auditor_ids = array_merge($building_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id','=',$building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+            }
+        }
+
+        $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
+        foreach($unit_auditors as $unit_auditor){
+            $unit_auditor->full_name = $unit_auditor->full_name();
+            $unit_auditor->initials = $unit_auditor->initials();
+        }
+        $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
+        foreach($building_auditors as $building_auditor){
+            $building_auditor->full_name = $building_auditor->full_name();
+            $building_auditor->initials = $building_auditor->initials();
+        }
+
+        return ['unit_auditors' => $unit_auditors, 'building_auditors' => $building_auditors];
     }
 
     public function reorderAmenitiesFromAudit($audit, Request $request)

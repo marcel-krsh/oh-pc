@@ -31,6 +31,8 @@ class Comment extends Model
         'photo_id',
         'followup_id',
         'document_id',
+        'unit_id',
+        'building_id',
         'comment_id',
         'recorded_date',
         'comment',
