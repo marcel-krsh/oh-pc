@@ -312,6 +312,8 @@
 						
 					});
 
+					$('#unit-amenity-count-{{$data['audit_id']}}{{$data['building_id']}}{{$data['unit_id']}}').html(data.amenities.length + ' AMENITIES');
+
 					$('#'+mainDivId).html(inspectionMainTemplate);
 					$('#'+mainDivId+' .inspection-areas').html(areas);
 					$('#'+mainDivContainerId).fadeIn( "slow", function() {

@@ -117,6 +117,8 @@
                 	
                 });
 
+                $('#unit-amenity-count-'+data.amenity_count_id).html(data.amenity_count + ' AMENITIES');
+                console.log('#unit-amenity-count-'+data.amenity_count_id);
             }
 
 			dynamicModalClose();

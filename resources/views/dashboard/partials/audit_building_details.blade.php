@@ -122,7 +122,7 @@
 									            		<h3 class="uk-margin-bottom-remove colored">
 									            			{{$detail->unit->unit_name}}</h3>
 										            	<small class="colored">{{$detail->unit->address}}, {{$detail->unit->city}}, {{$detail->unit->state}} {{$detail->unit->zip}}</small><br />
-										            	<small class="colored"><span class="uk-text-middle">{{$detail->unit->type_total}} @if($detail->unit->type_total > 1) {{$detail->unit->type_text_plural}} @else {{$detail->unit->type_text}} @endif</span></small>
+										            	<small class="colored"><span id="unit-amenity-count-{{$audit}}{{$building}}{{$detail->unit->unit_id}}" class="uk-text-middle">{{$detail->unit->amenity_totals()}} @if($detail->unit->amenity_totals() > 1) {{$detail->unit->type_text_plural}} @else {{$detail->unit->type_text}} @endif</span></small>
 									            	</div>
 									            </div>
 								            </div>

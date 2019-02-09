@@ -74,4 +74,9 @@ class CachedUnit extends Model
     {
         return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
     }
+
+    public function amenity_totals()
+    {
+        return \App\Models\UnitAmenity::where('unit_id', '=', $this->unit_id)->count();
+    }
 }

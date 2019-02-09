@@ -593,7 +593,7 @@ class AuditController extends Controller
 
     public function saveDeleteAmenity(Request $request)
     {        
-        $comment = $request->get('comment');
+        $comment = ($request->get('comment') !== null) ? $request->get('comment') : '' ;
         $amenity_id = $request->get('amenity_id');
         $audit_id = $request->get('audit_id');
         $building_id = $request->get('building_id');
@@ -648,6 +648,10 @@ class AuditController extends Controller
                 $data['element'] = $element;
                 $data['auditor'] = ["unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $unit_id, "building_id" => $building_id, "audit_id" => $audit_id];
 
+                $unit = CachedUnit::where('unit_id','=',$unit_id)->first();
+                $data['amenity_count'] = $unit->amenity_totals();
+                $data['amenity_count_id'] =  $audit_id.$unit->building_id.$unit_id;
+
                 return $data;
 
             }elseif($building_id != "null" && $building_id !== NULL){
@@ -676,9 +680,11 @@ class AuditController extends Controller
                 $reload_auditors = $this->reload_auditors($audit_id, $unit_id, $building_id);
                 $unit_auditors = $reload_auditors['unit_auditors'];
                 $building_auditors = $reload_auditors['building_auditors'];
-                
+
                 $data['element'] = $element;
                 $data['auditor'] = ["unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $unit_id, "building_id" => $building_id, "audit_id" => $audit_id];
+                $data['amenity_count'] = '';
+                $data['amenity_count_id'] = '';
 
                 return $data;
 
