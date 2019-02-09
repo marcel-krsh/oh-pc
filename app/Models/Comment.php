@@ -26,13 +26,13 @@ class Comment extends Model
         'user_id',
         'project_id',
         'audit_id',
+        'amenity_id',
         'finding_id',
         'photo_id',
         'followup_id',
         'document_id',
         'comment_id',
         'recorded_date',
-        'site_visit_id',
         'comment',
         'latitude',
         'longitude',
@@ -47,6 +47,11 @@ class Comment extends Model
     public function comment() : HasOne 
     {
         return $this->hasOne(App\Models\Comment::class, 'id', 'comment_id');
+    }
+
+    public function amenity() : HasOne 
+    {
+        return $this->hasOne(App\Models\AmenityInspection::class, 'id', 'amenity_id');
     }
 
     public function photo() : HasOne 

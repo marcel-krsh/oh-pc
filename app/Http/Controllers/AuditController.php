@@ -36,6 +36,7 @@ use App\Models\Amenity;
 use App\Models\UnitAmenity;
 use App\Models\ProjectAmenity;
 use App\Models\BuildingAmenity;
+use App\Models\Comment;
 use Auth;
 use App\Models\Job;
 use Session;
@@ -601,15 +602,23 @@ class AuditController extends Controller
 
         //dd($comment, $amenity_id, $audit_id, $building_id, $unit_id);
         /*
-        
+        null
+        "6217"
+        "6410"
+        "16724"
+        "null"
          */
+
+        $project_id = Audit::where('id','=',$audit_id)->first()->project_id;
 
         // check if the amenity has findings
         if(Finding::where('amenity_id','=',$amenity_id)->where('audit_id','=',$audit_id)->count()){
             return 0;
         }else{
             
-            if($unit_id){
+            if($unit_id != "null" && $unit_id !== NULL){
+                // dd("unit", $comment, $amenity_id, $audit_id, $building_id, $unit_id);
+
 
                 $amenity_inspection = AmenityInspection::where('id','=',$amenity_id)->first();
                 $ordering_amenities = OrderingAmenity::where('audit_id','=',$audit_id)->where('amenity_inspection_id','=',$amenity_id)->where('unit_id','=',$unit_id)->first();
@@ -619,10 +628,20 @@ class AuditController extends Controller
                 $ordering_amenities->delete();
                 $unit_amenity->delete();
 
+                $new_comment = new Comment([
+                    'user_id' => Auth::user()->id,
+                    'project_id' => $project_id,
+                    'audit_id' => $audit_id,
+                    'amenity_id' => $amenity_id,
+                    'comment' => $comment,
+                    'recorded_date' => date('Y-m-d H:i:s',time())
+                ]);
+                $new_comment->save();
+
                 return $element;
 
-            }elseif($building_id){
-                
+            }elseif($building_id != "null" && $building_id !== NULL){
+                // dd("building", $comment, $amenity_id, $audit_id, $building_id, $unit_id);    
                 $amenity_inspection = AmenityInspection::where('id','=',$amenity_id)->first();
                 $ordering_amenities = OrderingAmenity::where('audit_id','=',$audit_id)->where('amenity_inspection_id','=',$amenity_id)->whereNull('unit_id')->where('building_id','=',$building_id)->first();
                 $building_amenity = BuildingAmenity::where('building_id','=',$building_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
@@ -630,6 +649,16 @@ class AuditController extends Controller
                 $amenity_inspection->delete();
                 $ordering_amenities->delete();
                 $building_amenity->delete();
+
+                $new_comment = new Comment([
+                    'user_id' => Auth::user()->id,
+                    'project_id' => $project_id,
+                    'audit_id' => $audit_id,
+                    'amenity_id' => $amenity_id,
+                    'comment' => $comment,
+                    'recorded_date' => date('Y-m-d H:i:s',time())
+                ]);
+                $new_comment->save();
 
                 return $element;
 

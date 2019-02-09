@@ -220,7 +220,7 @@ function loadInspectionMenu(data, id, context='audits', level='') {
 
 	var unitOrBuildingOrProjectId = null;
 	var unitOrBuildingOrProject = null;
-
+console.log(data);
 	if(data.detail.unit_id != null){
 		unitOrBuildingOrProjectId = data.detail.unit_id;
 		unitOrBuildingOrProject = 'unit';
@@ -639,7 +639,7 @@ function inspectionDetails(id, buildingid, auditid, target, targetaudit, rowid, 
 					// $('#building-detail-r-'+target+'-inspect').html(data);
 
 					$('#building-'+context+'-detail-r-'+target).attr( "expanded", true );
-					loadInspectionMenu(data.menu, target, context, 'detail-');
+					loadInspectionMenu(data, target, context, 'detail-');
 					loadInspectionMain(data.amenities, target, context, 'detail-');
 					loadInspectionTools(data, target, context, 'detail-'); // includes the comments
 					//loadInspectionComments(data.comments, target, context, 'detail-');
