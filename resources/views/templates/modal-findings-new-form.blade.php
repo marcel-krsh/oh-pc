@@ -1,5 +1,5 @@
 	<div class="uk-modal-header">
-		<div class="uk-modal-title uk-remove-margin"><i class="a-circle-plus"></i> {{$findingtypeid->name}}<h4 style="line-height: 0px; margin-top: 10px; margin-left: 35px;">ON {{strtoupper($amenityinspectionid->amenity->amenity_description)}} {{$amenityincrement}}</h4></div>
+		<div class="uk-modal-title uk-remove-margin"> <i class=" a-circle-plus"></i> {{$findingtypeid->name}}<small><i class="uk-margin-left a-info-circle" uk-tooltip="title:Tied to HUD Areas<br > @foreach($findingtypeid->huds() as $hud) {{$hud->name}} @endforeach <br >Nominal Item Weight {{$findingtypeid->nominal_item_weight}} <br >Criticality {{$findingtypeid->criticality}}; pos:bottom"></i></small><h4 style="line-height: 0px; margin-top: 10px; margin-left: 35px;">ON {{strtoupper($amenityinspectionid->amenity->amenity_description)}}  {{$amenityincrement}}</h4></div>
 		
 	</div>
 	<hr class="dashed-hr uk-margin-bottom">

@@ -37,8 +37,9 @@ class FindingController extends Controller
         }
     }
 
-    public function addFindingForm(FindingType $findingtypeid,AmenityInspection $amenityinspectionid,Request $request){
+    public function addFindingForm($findingtypeid,AmenityInspection $amenityinspectionid,Request $request){
         if(Auth::user()->auditor_access()){
+            $findingtypeid = FindingType::where('id',$findingtypeid)->first();
             //dd($findingtypeid, $amenityinspectionid);
             // return form with boilerplates assigned?
             $amenityincrement = $request->amenity_increment;
