@@ -12,6 +12,26 @@
 			    margin-top: 3px;
 			    background: transparent;
 			}
+		.amenity-list-item {
+			list-style: none;
+		}
+		.amenity-auditor {
+			display: inline-block;
+		}
+		.amenity-auditor .auditor-badge {
+			height: 20px;
+		    width: 20px;
+		    font-size: 10px;
+		    text-align: center;
+		    border-radius: 50%;
+		    border: 1px solid #50b8ec;
+		    background-color: #ffffff;
+		    color: #50b8ec;
+		    font-weight: 400;
+		    line-height: 21px;
+		    margin: 3px 3px 3px 3px;
+		}
+
 </style>
 <script>
 	window.findingModalSelectedType = '{{$type}}';
@@ -134,11 +154,11 @@
 			    	<div class="uk-width-1-1 uk-padding-remove uk-inline">
 			        
 			        	<button id="amenity-selection" class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="amenityList()"><i id="amenity-selection-icon" class="a-arrow-small-up"></i> <span id="select-amenity-text">Select Amenity</span></button>
-					    <div id="amenity-list" class="uk-width-1-1 uk-panel-scrollable" style="display: none">
-					    	<div class="uk-column-1-1 ">
-					        	<ul >
+					    <div id="amenity-list" class="uk-width-1-1 uk-panel-scrollable" style="display: none" uk-grid>
+					    	<div class="uk-width-1-1 ">
+					        	<ul class="uk-list uk-list-divider uk-margin-left uk-margin-top">
 
-					        		<li class="s-{{$audit->project_ref}} amenity-list-item uk-column-span uk-margin-top uk-margin-bottom">Site : {{$audit->address}}</li>
+					        		<li class="s-{{$audit->project_ref}} amenity-list-item "><strong>Site : {{$audit->address}}</strong></li>
 					        		@php // get the project level amenities
 					        			$projectAmenities = $amenities->filter(function ($project){
 																if(!is_null($project->project_id)){
@@ -168,7 +188,15 @@
 					        						$amenityIncrement++; 
 					        					}
 					        			@endphp
-					        		<li id="amenity-inspection-{{$amenity->id}}" class="s-{{$audit->project_ref}} a-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','{{$amenity->amenity->amenity_description}}')">{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} </a></li>
+					        		<li id="amenity-inspection-{{$amenity->id}}" class=" s-{{$audit->project_ref}} aa-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items" style="color : @if(is_null($amenity->complete)) #50b8ec @else #000 @endIf ">
+					        			<a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','@if($amenity->auditor_id) {{$amenity->user->initials()}} @else NA @endIf : {{$amenity->amenity->amenity_description}}')" style="color : @if(is_null($amenity->complete)) #50b8ec @else #000 @endIf ">@if(is_null($amenity->complete)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id) <div class="amenity-auditor uk-margin-remove">
+					        											<div class="amenity-auditor uk-margin-remove">
+					        												<div uk-tooltip="pos:top-left;title:{{$amenity->user->full_name()}};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float">
+					        													{{$amenity->user->initials()}}
+					        												</div>
+					        											</div>
+					        										</div> @else 
+					        										<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED"></i>  @endif {{$amenity->amenity->amenity_description}} {{$amenityIncrement}}</a></li>
 					        		@endforeach
 
 					        		@php // get the building level amenities
@@ -204,9 +232,17 @@
 					        						$amenityIncrement++; 
 					        					}
 					        			@endphp
-					        			<li id="amenity-inspection-{{$amenity->id}}" class="b-{{$amenity->building_id}} a-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} ')">
+					        			<li id="amenity-inspection-{{$amenity->id}}" class="b-{{$amenity->building_id}} aa-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items" style="color : @if(is_null($amenity->complete)) #50b8ec @else #000 @endIf ">@if(is_null($amenity->complete)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id) <div class="amenity-auditor uk-margin-remove">
+					        											<div class="amenity-auditor uk-margin-remove">
+					        												<div uk-tooltip="pos:top-left;title:{{$amenity->user->full_name()}};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float">
+					        													{{$amenity->user->initials()}}
+					        												</div>
+					        											</div>
+					        										</div> @else 
+					        										<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED"></i>  @endif 
+					        										<a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','@if($amenity->auditor_id) {{$amenity->user->initials()}} @else NA @endIf :{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} ')" style="color : @if(is_null($amenity->complete)) #50b8ec @else #000 @endIf ">{{$amenity->amenity->amenity_description}} {{$amenityIncrement}}
 					        				
-					        			{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} </a></li>
+					        			</a></li>
 
 					        		@endforeach
 
@@ -227,7 +263,7 @@
 
 					        		@foreach($unitAmenities as $amenity)
 					        			@if($currentUnitId != $amenity->unit_id)
-					        				<li class="u-{{$amenity->unit_id}} a-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items"><strong>Unit : {{$amenity->cached_unit()->unit_name}} in BIN: {{$amenity->cached_unit()->building_key}} ADDRESS: {{$amenity->cached_unit()->address}}</strong></li>
+					        				<li class="u-{{$amenity->unit_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items"><strong>Unit : {{$amenity->cached_unit()->unit_name}} in BIN: {{$amenity->cached_unit()->building_key}} ADDRESS: {{$amenity->cached_unit()->address}}</strong></li>
 					        				@php $currentUnitId = $amenity->unit_id; @endphp
 					        			@endif
 					        			@php if($currentAmenityId != $amenity->amenity_id) { 
@@ -243,9 +279,16 @@
 					        						$amenityIncrement++; 
 					        					}
 					        			@endphp
-					        			<li id="amenity-inspection-{{$amenity->id}}" class="u-{{$amenity->unit_id}} amenity-list-item finding-modal-list-items"><a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','{{$amenity->amenity->amenity_description}} {{$amenityIncrement}}')">
+					        			<li id="amenity-inspection-{{$amenity->id}}" class="u-{{$amenity->unit_id}} amenity-list-item finding-modal-list-items aa-{{$amenity->amenity_id}}" style="color : @if(is_null($amenity->complete)) #50b8ec @else #000 @endIf "><a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','@if($amenity->auditor_id) {{$amenity->user->initials()}} @else NA @endIf :{{$amenity->amenity->amenity_description}} {{$amenityIncrement}}')"  style="color : @if(is_null($amenity->complete)) #50b8ec @else #000 @endIf ">
 					        				
-					        			{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} </a></li>
+					        			@if(is_null($amenity->complete)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id) <div class="amenity-auditor uk-margin-remove">
+					        											<div class="amenity-auditor uk-margin-remove">
+					        												<div uk-tooltip="pos:top-left;title:{{$amenity->user->full_name()}};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float">
+					        													{{$amenity->user->initials()}}
+					        												</div>
+					        											</div>
+					        										</div> @else 
+					        										<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED"></i>  @endif {{$amenity->amenity->amenity_description}} {{$amenityIncrement}}</a> </li>
 
 					        		@endforeach
 					        
@@ -257,7 +300,7 @@
 					</div>
 					
 					<div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
-			            <button id="type-selection"  class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="typeList()"><i id="type-selection-icon" class="a-arrow-small-up"></i> <span id="select-type-text">Select Type</span></button>
+			            <button id="type-selection"  class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="typeList()"><i id="type-selection-icon" class="a-arrow-small-up"></i> <span id="select-type-text">Select Location</span></button>
 					    <div id="type-list" class="uk-width-1-1 uk-panel-scrollable" style="display: none">
 					    	<div class="uk-column-1-3@m uk-column-1-2@s ">
 					        	<ul >
