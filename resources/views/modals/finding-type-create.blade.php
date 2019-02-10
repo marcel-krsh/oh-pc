@@ -150,7 +150,8 @@
                             <div class="uk-width-1-1 uk-scrollable-box">
                                 <ul class="uk-list">
                                     @foreach($huds as $hud)
-                                    <li><label><input class="uk-checkbox" type="checkbox" name="huds[]" value="{{$hud->id}}" @if($finding_type) @if($finding_type->huds) @if(in_array($hud->id, $finding_type->huds->pluck('hud_inspectable_area_id')->toArray())) checked @endif @endif @endif> {{$hud->name}}</label></li>
+                                    
+                                    <li><label><input class="uk-checkbox" type="checkbox" name="huds[]" value="{{$hud->id}}" @if($finding_type) @if($finding_type->huds()) @if(in_array($hud->id, $finding_type->huds()->pluck('id')->toArray())) checked @endif @endif @endif> {{$hud->name}}</label></li>
                                     @endforeach
                                 </ul>
                             </div>

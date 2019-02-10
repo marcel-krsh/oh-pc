@@ -62,7 +62,7 @@
         <tbody>
             @foreach($findingtypes as $data)
                 <tr>
-                    <td><a onclick="dynamicModalLoad('admin/finding_type/create/{{$data->id}}')" class="uk-link-muted"><small >{{$data->name}}: <br /><em style="color:gray">HUD INSPECTABLE AREAS WITH THIS FINDING:: <ul> @forEach($data->huds as $hud) <li>{{$hud->hud->name}}</li>  @endForEach</ul></em></small></a></td>
+                    <td><a onclick="dynamicModalLoad('admin/finding_type/create/{{$data->id}}')" class="uk-link-muted"><small >{{$data->name}}: <br /><em style="color:gray">HUD INSPECTABLE AREAS WITH THIS FINDING:: <ul> @forEach($data->huds() as $hud) <li>{{$hud->name}}</li>  @endForEach</ul></em></small></a></td>
                     <td><small>@if($data->nominal_item_weight){{$data->nominal_item_weight}}% @else 0% @endif</small></td>
                     <td><small>{{$data->criticality}}</small></td>
                     <td><small>@if($data->one) <i uk-tooltip title="Level 1" class="a-circle-checked"></i> @else - @endif</small></td>
@@ -76,7 +76,7 @@
                                 @if($data->unit)• UNIT<br/>@endIf
                                 @if($data->file)• FILE<br/>@endIf
                     </small></td>
-                    <td><small>@if($data->huds){{count($data->huds)}}@endif</small></td>
+                    <td><small>@if($data->huds()){{count($data->huds())}}@endif</small></td>
                     <td><small>@if($data->boilerplates){{count($data->boilerplates)}}@endif</small></td>
                     <td><small>@if($data->default_followups){{count($data->default_followups)}}@endif</small></td>
                     <td><small>@if($data->one) <i uk-tooltip title="Level 1" class="a-circle-checked"></i> @else - @endif</small></td>
