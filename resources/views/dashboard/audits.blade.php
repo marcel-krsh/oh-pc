@@ -272,7 +272,7 @@
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 					</th>
-		            <th class="uk-table-expand">
+		            <th >
 		            	<div uk-grid>
 			            	<div class="filter-box uk-width-1-1">
 								<input id="filter-by-address" class="filter-box filter-search-address-input" type="text" placeholder="PRIMARY ADDRESS" onkeyup="filterAuditList(this, 'filter-search-address')" value="@if(session()->has('filter-search-address-input')){{session('filter-search-address-input')}}@endif">
