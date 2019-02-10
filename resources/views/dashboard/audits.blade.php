@@ -112,7 +112,7 @@
 				</div>
 			</div>
 			<div class="uk-inline uk-padding-remove">	
-				<div class="findings-icon uk-inline areaCopyStatus">
+				<div class="findings-icon uk-inline areaCopyStatus" onclick="copyAmenity('inspection-areaContext-area-r-areaRowId', areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity);">
 					<i class="a-file-copy-2"></i>
 					<div class="findings-icon-status plus">
 						<span class="uk-badge">+</span>
@@ -767,6 +767,10 @@ The following div is defined in this particular tab and pushed to the main layou
     		dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/delete/'+element);
     	}
     	
+    }
+    function copyAmenity(element, audit_id, building_id, unit_id, amenity_id){
+    	console.log('ready to copy');
+    	// dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/delete/'+element);
     }
     @endcan
 

@@ -277,15 +277,15 @@ class AuditController extends Controller
 
         // $data['amenities'] = CachedAmenity::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->get();
         // count amenities & count ordering_amenities
-        $ordered_amenities_count = OrderingAmenity::where('audit_id', '=', $audit_id)->whereNull('unit_id')->where('user_id', '=', Auth::user()->id);
+        $ordered_amenities = OrderingAmenity::where('audit_id', '=', $audit_id)->whereNull('unit_id')->where('user_id', '=', Auth::user()->id)->whereHas('amenity_inspection');
         if ($building_id) {
-            $ordered_amenities_count = $ordered_amenities_count->where('building_id', '=', $building_id);
+            $ordered_amenities = $ordered_amenities->where('building_id', '=', $building_id);
         }
-            $ordered_amenities_count = $ordered_amenities_count->count();
+            //$ordered_amenities = $ordered_amenities->get();
+
+        $ordered_amenities_count = $ordered_amenities->count();
 
 
-        // $amenities_count = CachedAmenity::where('audit_id', '=', $audit_id);
-        //dd($building_id, $audit_id, AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->get());
         $amenities_count = AmenityInspection::where('audit_id', '=', $audit_id);
         if ($building_id) {
             $amenities_count = $amenities_count->where('building_id', '=', $building_id);
@@ -295,12 +295,12 @@ class AuditController extends Controller
         if ($amenities_count != $ordered_amenities_count && $amenities_count != 0) {
             // this shouldn't happen
             // reset ordering
-            // $amenities_to_reset = CachedAmenity::where('audit_id', '=', $audit_id);
-            // $amenities_to_reset = AmenityInspection::where('audit_id', '=', $audit_id);
-            // if ($building_id) {
-            //     $amenities_to_reset = $amenities_to_reset->where('building_id', '=', $building_id);
-            // }
-            //     $amenities_to_reset = $amenities_to_reset->delete();
+            $ordered_amenities = OrderingAmenity::where('audit_id', '=', $audit_id)->whereNull('unit_id')->where('user_id', '=', Auth::user()->id);
+            if ($building_id) {
+                $ordered_amenities = $ordered_amenities->where('building_id', '=', $building_id);
+            }
+            $ordered_amenities->delete();
+            
         }
 
         if ($ordered_amenities_count == 0 && $amenities_count != 0) {
@@ -329,7 +329,7 @@ class AuditController extends Controller
             }
         }
 
-        $amenities = OrderingAmenity::where('audit_id', '=', $audit_id)->whereNull('unit_id')->where('user_id', '=', Auth::user()->id);
+        $amenities = OrderingAmenity::where('audit_id', '=', $audit_id)->whereNull('unit_id')->where('user_id', '=', Auth::user()->id)->whereHas('amenity_inspection');
         if ($building_id) {
             $amenities = $amenities->where('building_id', '=', $building_id);
         }
@@ -458,11 +458,12 @@ class AuditController extends Controller
             ['name' => 'SUBMIT', 'icon' => 'a-avatar-star', 'status' => '', 'style' => 'margin-top:30px;', 'action' => 'submit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => $unit->id]
         ]);
 
-        $ordered_amenities_count = OrderingAmenity::where('audit_id', '=', $audit_id)->where('user_id', '=', Auth::user()->id);
+        $ordered_amenities = OrderingAmenity::where('audit_id', '=', $audit_id)->where('user_id', '=', Auth::user()->id)->whereHas('amenity_inspection');
         if ($detail_id) {
-            $ordered_amenities_count = $ordered_amenities_count->where('unit_id', '=', $unit->id);
+            $ordered_amenities = $ordered_amenities->where('unit_id', '=', $unit->id);
         }
-        $ordered_amenities_count = $ordered_amenities_count->count();
+
+        $ordered_amenities_count = $ordered_amenities->count();
 
         $amenities_count = AmenityInspection::where('audit_id', '=', $audit_id);
         if ($detail_id) {
@@ -470,6 +471,16 @@ class AuditController extends Controller
         }
         $amenities_count = $amenities_count->count(); 
 
+        if ($amenities_count != $ordered_amenities_count && $amenities_count != 0) {
+            // this shouldn't happen
+            // reset ordering
+            $ordered_amenities = OrderingAmenity::where('audit_id', '=', $audit_id)->where('user_id', '=', Auth::user()->id);
+            if ($detail_id) {
+                $ordered_amenities = $ordered_amenities->where('unit_id', '=', $unit->id);
+            }
+            $ordered_amenities->delete();
+            
+        }
 
         if ($ordered_amenities_count == 0 && $amenities_count != 0) {
             // if ordering_amenities is empty, create a default entry for the ordering
@@ -498,7 +509,7 @@ class AuditController extends Controller
             }
         }
 
-        $amenities = OrderingAmenity::where('audit_id', '=', $audit_id)->where('user_id', '=', Auth::user()->id);
+        $amenities = OrderingAmenity::where('audit_id', '=', $audit_id)->where('user_id', '=', Auth::user()->id)->whereHas('amenity_inspection');
         if ($detail_id) {
             $amenities = $amenities->where('unit_id', '=', $unit->id);
         }
@@ -722,9 +733,9 @@ class AuditController extends Controller
             return ['status'=>'complete'];
         }else{
             if($unit_id != "null" && $unit_id != 0){
-                $amenity_inspection = AmenityInspection::where('audit_id','=', $audit_id)->where('amenity_id','=',$amenity_id)->where('unit_id','=',$unit_id)->first();
+                $amenity_inspection = AmenityInspection::where('audit_id','=', $audit_id)->where('id','=',$amenity_id)->where('unit_id','=',$unit_id)->first();
             }else{
-                $amenity_inspection = AmenityInspection::where('audit_id','=', $audit_id)->where('amenity_id','=',$amenity_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->first();
+                $amenity_inspection = AmenityInspection::where('audit_id','=', $audit_id)->where('id','=',$amenity_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->first();
             }
 
             if($amenity_inspection->completed_date_time !== NULL){
