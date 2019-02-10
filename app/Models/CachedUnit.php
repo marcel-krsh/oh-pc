@@ -138,7 +138,10 @@ class CachedUnit extends Model
         }
 
         // prioritize not completed amenities
-        array_push($output, $output_completed);
+        foreach($output_completed as $o){
+            $output[] = $o;
+        }
+        
         $output = array_filter($output); // remove empty elements
 
         return $output;

@@ -228,25 +228,26 @@
 								<div class="uk-width-2-5 uk-flex">
 									<div id="building-{{$context}}-{{$target}}-c-5-{{$key}}" style="flex: 640px;" class="uk-margin-remove" uk-grid>
 										<div class="uk-width-1-1" id="inspection-{{$context}}-tools-switch-{{$key}}">
-											<div uk-grid class="area-status-list">
-												@if($building->building->amenities_json)
-												@foreach($building->building->amenities_json as $amenity)
-												@if($loop->iteration < 9)
-											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($amenity->status != '') area-status-{{$amenity->status}} @endif colored">
-											    	<span onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'all','{{$amenity->id}}');"><span class="uk-badge"  >
-											    	@if($amenity->qty){{$amenity->qty}} @else 1 @endif </span>
-											    	{{$amenity->type}}</span>
-											    </div>
-											    @else
-											    	@if($loop->iteration == 9)
-												    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($amenity->status != '') area-status-{{$amenity->status}} @endif colored">
-												    	<span onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'all','{{$amenity->id}}');"><span class="uk-badge" uk-tooltip="pos:top-left;title: @endif @if($amenity->qty) {{$amenity->qty}} @endif {{$amenity->type}}<br /> @if($loop->last) ;" ><i class="a-plus"></i> </span> MORE...</span>
+											@if($building->building->amenities_and_findings() && count($building->building->amenities_and_findings()) > 0)
+		    								<div uk-grid class="area-status-list">
+											    @foreach($building->building->amenities_and_findings() as $amenity)
+									
+													@if($loop->iteration < 9)
+												    <div class="uk-width-1-3 use-hand-cursor uk-padding-remove-top uk-margin-remove-top area-status colored @if($amenity['status'] != '') area-status-{{$amenity['status']}} @endif "  onclick="openFindings(this, {{$audit}}, {{$building->building_id}}, 0, 'all', {{$amenity['id']}});">
+												    	<span class="uk-badge">@if($amenity['completed'] == 1) <i class="a-check"></i> @else {{$amenity['findings_total']}} @endif</span>
+												    	{{$amenity['name']}}
 												    </div>
+												    @else
+												    	@if($loop->iteration == 9)
+													    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status colored @if($amenity['status'] != '') area-status-{{$amenity['status']}} @endif">
+													    	<span class="uk-badge" uk-tooltip="pos:top-left;title: @endif {{$amenity['findings_total']}} {{$amenity['name']}}<br /> @if($loop->last) ;"><i class="a-plus"></i> </span> MORE...
+													    </div>
+													    @endif
 												    @endif
-											    @endif
-											    @endforeach
-											    @endif
+												@endforeach
 											</div>
+											@endif
+
 										</div>
 										<div id="inspection-{{$context}}-tools-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
 											<div id="inspection-{{$context}}-tools-{{$key}}"></div>
