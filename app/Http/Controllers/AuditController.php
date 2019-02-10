@@ -371,12 +371,12 @@ class AuditController extends Controller
 
             // check for name duplicates and assign a #
             $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
-            if($key > 0){
+            //if($key > 0){
                 $key = $key + 1;
                 $name = $amenity->amenity->amenity_description." ".$key;
-            }else{
-                $name = $amenity->amenity->amenity_description;
-            }
+            // }else{
+            //     $name = $amenity->amenity->amenity_description;
+            // }
 
             // check if this amenity has findings (to disable trash)
             if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit_id)->count()){
@@ -551,12 +551,12 @@ class AuditController extends Controller
 
             // check for name duplicates and assign a #
             $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
-            if($key > 0){
+            //if($key > 0){
                 $key = $key + 1;
                 $name = $amenity->amenity->amenity_description." ".$key;
-            }else{
-                $name = $amenity->amenity->amenity_description;
-            }
+            // }else{
+            //     $name = $amenity->amenity->amenity_description;
+            // }
 
             // check if this amenity has findings (to disable trash)
             if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit_id)->count()){
@@ -4243,12 +4243,12 @@ class AuditController extends Controller
 
                         // check for name duplicates and assign a #
                         $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
-                        if($key > 0){
+                        //if($key > 0){
                             $key = $key + 1;
                             $name = $amenity->amenity->amenity_description." ".$key;
-                        }else{
-                            $name = $amenity->amenity->amenity_description;
-                        }
+                        // }else{
+                        //     $name = $amenity->amenity->amenity_description;
+                        // }
 
                         if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit->audit_id)->count()){
                             $has_findings = 1;
