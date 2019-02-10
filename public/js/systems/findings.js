@@ -292,23 +292,22 @@ function useBoilerplate(){
 	var currentFinding = $('.findings-new-add-comment').data("finding-id");
 
 }
-function clearTextarea(){
-	var currentFinding = $('.findings-new-add-comment').data("finding-id");
 
-}
 function appendBoilerplate(){
 	var currentFinding = $('.findings-new-add-comment').data("finding-id");
 
 }
 function insertTag(elem){
+	var input = $("#finding-comment");
 	var currentFinding = $('.findings-new-add-comment').data("finding-id");
-    var cursorPos = $('.findings-new-add-comment-textarea textarea').prop('selectionStart');
-    var v = $('.findings-new-add-comment-textarea textarea').val();
+    var cursorPos = input.prop('selectionStart');
+    var v = input.val();
     var textBefore = v.substring(0,  cursorPos);
     var textAfter  = v.substring(cursorPos, v.length);
 
-    $('.findings-new-add-comment-textarea textarea').val(textBefore + '%%' + $(elem).data("tag")+ '%%' + textAfter);
-
+    $('.findings-new-add-comment-textarea textarea').val(textBefore + ' || ' + $(elem).data("tag")+ ' || ' + textAfter);
+	$(input).focus();
+	input[0].selectionStart = input[0].selectionEnd = input.val().length;
 }
 function saveBoilerplace(){
 	var currentFinding = $('.findings-new-add-comment').data("finding-id");

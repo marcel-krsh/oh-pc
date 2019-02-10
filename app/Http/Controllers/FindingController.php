@@ -37,16 +37,40 @@ class FindingController extends Controller
         }
     }
 
+    public function addFindingForm(FindingType $findingtypeid,AmenityInspection $amenityinspectionid,Request $request){
+        if(Auth::user()->auditor_access()){
+            //dd($findingtypeid, $amenityinspectionid);
+            // return form with boilerplates assigned?
+            $amenityincrement = $request->amenity_increment;
+            return view('templates.modal-findings-new-form',compact('findingtypeid','amenityinspectionid','amenityincrement'));
+        }else{
+            return "Sorry, you do not have permission to access this page.";
+        }
+    }
+
+    public function addFinding(Request $request){
+        if(Auth::user()->auditor_access()){
+            dd($findingtypeid, $amenityinspectionid);
+            // return form with boilerplates assigned?
+        }else{
+            return "Sorry, you do not have permission to access this page.";
+        }
+    }
+
     public function findingList($type, $amenityinspection, Request $request){
+        if(Auth::user()->auditor_access()){
+            
         $allFindingTypes = null;
         $ai = null;
         $search = $request->search;
         if(is_null($search)) { $search = '';}
 
         $ai = AmenityInspection::where('id',$amenityinspection)->with('amenity')->first();
-           
+        
+
                 
         if($ai){
+                $amenityInspectionId = $ai->id;
                 // determine the amenity type
                 if($ai->building_id){
                     $amenityLocationType = "b";
@@ -118,7 +142,10 @@ class FindingController extends Controller
         
         //dd($type,$amenityinspection,$request,$allFindingTypes,$ai,$request->search);
 
-        return view('modals.finding-types-list', compact('allFindingTypes','search','type','amenityLocationType'));
+        return view('modals.finding-types-list', compact('allFindingTypes','search','type','amenityLocationType','amenityInspectionId'));
+        }else{
+            return "Sorry, you do not have permission to access this page.";
+        }
     }
 
     public function modalFindings($type, $auditid, $buildingid = null, $unitid = null, $amenityid = null)
@@ -145,6 +172,8 @@ class FindingController extends Controller
         //dd('type:'.$type.' auditid:'.$auditid.' buildingid:'.$buildingid.' unitid:'.$unitid.' amenityid:'.$amenityid);
 
         // the selected one that opened this modal
+
+        if(Auth::user()->auditor_access()){
         $audit = null;
         $building = null;
         $unit = null;
@@ -166,6 +195,7 @@ class FindingController extends Controller
         if($unitid > 0){
             // always use the audit id as a selector to ensure you get the correct one
             $unit = CachedUnit::where('audit_id',$auditid)->where('unit_id',$unitid)->with('building')->first();
+           // dd($unit, $unitid);
         }
         if($amenityid > 0){
             // we use the inspection id to make sure we get the one associated that they clicked on (in case of duplicate amenities)
@@ -457,6 +487,9 @@ class FindingController extends Controller
             ]
         ]);
         return view('modals.findings', compact('data','audit', 'checkDoneAddingFindings', 'type' , 'photos','comments','findings','documents','unit','building','amenity','project','followups','audits','units','buildings','amenities','allFindingTypes'));
+        }else{
+            return "Sorry, you do not have permission to access this page.";
+        }
     }
 
     function findingItems($findingid, $itemid = '')

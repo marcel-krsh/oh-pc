@@ -1,3 +1,4 @@
+
 <style>
 		.finding-modal-list-items {
 			padding-top: 4px;
@@ -35,7 +36,13 @@
 </style>
 <script>
 	window.findingModalSelectedType = '{{$type}}';
-	<?php $passedAmenity = $amenity; $passedBuilding = $building; $passedUnit = $unit; ?>
+	<?php $passedAmenity = $amenity; $passedBuilding = $building; $passedUnit = $unit; 
+
+	if($amenity && $passedAmenity->building_id){
+		$buildingName = $passedAmenity->building_inspection()->building_name;
+	}
+	//dd($unit,$passedUnit);
+	?>
 </script>
 <div id="modal-findings" class="uk-margin-top" style="height: 90%" >
 	<div class="modal-findings-right" uk-filter="target: .js-findings">
@@ -188,8 +195,8 @@
 					        						$amenityIncrement++; 
 					        					}
 					        			@endphp
-					        		<li id="amenity-inspection-{{$amenity->id}}" class=" s-{{$audit->project_ref}} aa-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items" style="color : @if(is_null($amenity->complete)) #50b8ec @else #000 @endIf ">
-					        			<a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','@if($amenity->auditor_id) {{$amenity->user->initials()}} @else NA @endIf : {{$amenity->amenity->amenity_description}}')" style="color : @if(is_null($amenity->complete)) #50b8ec @else #000 @endIf ">@if(is_null($amenity->complete)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id) <div class="amenity-auditor uk-margin-remove">
+					        		<li id="amenity-inspection-{{$amenity->id}}" class=" s-{{$audit->project_ref}} aa-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">
+					        			<a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','@if($amenity->auditor_id) {{$amenity->user->initials()}} @else NA @endIf : {{$amenity->amenity->amenity_description}} {{$amenityIncrement}}',{{$amenityIncrement}})" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">@if(is_null($amenity->completed_date_time)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id) <div class="amenity-auditor uk-margin-remove">
 					        											<div class="amenity-auditor uk-margin-remove">
 					        												<div uk-tooltip="pos:top-left;title:{{$amenity->user->full_name()}};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float">
 					        													{{$amenity->user->initials()}}
@@ -232,7 +239,7 @@
 					        						$amenityIncrement++; 
 					        					}
 					        			@endphp
-					        			<li id="amenity-inspection-{{$amenity->id}}" class="b-{{$amenity->building_id}} aa-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items" style="color : @if(is_null($amenity->complete)) #50b8ec @else #000 @endIf ">@if(is_null($amenity->complete)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id) <div class="amenity-auditor uk-margin-remove">
+					        			<li id="amenity-inspection-{{$amenity->id}}" class="b-{{$amenity->building_id}} aa-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">@if(is_null($amenity->completed_date_time)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id) <div class="amenity-auditor uk-margin-remove">
 					        											<div class="amenity-auditor uk-margin-remove">
 					        												<div uk-tooltip="pos:top-left;title:{{$amenity->user->full_name()}};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float">
 					        													{{$amenity->user->initials()}}
@@ -240,7 +247,7 @@
 					        											</div>
 					        										</div> @else 
 					        										<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED"></i>  @endif 
-					        										<a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','@if($amenity->auditor_id) {{$amenity->user->initials()}} @else NA @endIf :{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} ')" style="color : @if(is_null($amenity->complete)) #50b8ec @else #000 @endIf ">{{$amenity->amenity->amenity_description}} {{$amenityIncrement}}
+					        										<a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','@if($amenity->auditor_id) {{$amenity->user->initials()}} @else NA @endIf :{{$amenity->amenity->amenity_description}} {{$amenityIncrement}} ', {{$amenityIncrement}})" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">{{$amenity->amenity->amenity_description}} {{$amenityIncrement}}
 					        				
 					        			</a></li>
 
@@ -279,9 +286,9 @@
 					        						$amenityIncrement++; 
 					        					}
 					        			@endphp
-					        			<li id="amenity-inspection-{{$amenity->id}}" class="u-{{$amenity->unit_id}} amenity-list-item finding-modal-list-items aa-{{$amenity->amenity_id}}" style="color : @if(is_null($amenity->complete)) #50b8ec @else #000 @endIf "><a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','@if($amenity->auditor_id) {{$amenity->user->initials()}} @else NA @endIf :{{$amenity->amenity->amenity_description}} {{$amenityIncrement}}')"  style="color : @if(is_null($amenity->complete)) #50b8ec @else #000 @endIf ">
+					        			<li id="amenity-inspection-{{$amenity->id}}" class="u-{{$amenity->unit_id}} amenity-list-item finding-modal-list-items aa-{{$amenity->amenity_id}}" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf "><a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','@if($amenity->auditor_id) {{$amenity->user->initials()}} @else NA @endIf :{{$amenity->amenity->amenity_description}} {{$amenityIncrement}}', {{$amenityIncrement}})"  style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">
 					        				
-					        			@if(is_null($amenity->complete)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id) <div class="amenity-auditor uk-margin-remove">
+					        			@if(is_null($amenity->completed_date_time)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id) <div class="amenity-auditor uk-margin-remove">
 					        											<div class="amenity-auditor uk-margin-remove">
 					        												<div uk-tooltip="pos:top-left;title:{{$amenity->user->full_name()}};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float">
 					        													{{$amenity->user->initials()}}
@@ -455,7 +462,7 @@
 <script>
 </script>
 
-@include('templates.modal-findings-new-form')
+
 @include('templates.modal-findings-new')
 @include('templates.modal-findings-items')
 
@@ -496,6 +503,7 @@
 		
 
 		@if(!is_null($passedAmenity))
+
 				// set filter text for amenity
 				window.findingModalSelectedAmenity = 'a-{{$passedAmenity->amenity_id}}';
 				window.findingModalSelectedAmenityInspection = 'amenity-inspection-{{$passedAmenity->id}}';
@@ -509,7 +517,8 @@
 					} elseif($passedAmenity->building_id){
 						// is a building
 						$locationType = 'b-'.$passedAmenity->building_id;
-						$locationText = "Building BIN: {$passedAmenity->building_id}, NAME: {addslashes($passedAmenity->building_inspection()->building_name)}, ADDRESS: {addslashes($passedAmenity->address)}";
+						$locationText = "Building BIN: {$passedAmenity->building_id}, NAME: {addslashes($buildingName)}, ADDRESS: {addslashes($passedAmenity->address)}";
+						echo "console.log('Passed amenity is a building type');";
 					} else {
 						// is a unit
 						$locationType = 'u-'.$passedAmenity->unit_id;
@@ -609,13 +618,14 @@
 			}
 			$('#type-list').slideToggle();
 		}
-		function selectAmenity(amenity_id,amenity_inspection_class,amenity_inspection_id,display='selected'){
+		function selectAmenity(amenity_id,amenity_inspection_class,amenity_inspection_id,display='selected',amenity_increment=''){
 			$('.modal-findings-left-main-container').slideDown();
 			amenityList();
 			// filter the findings to the selection
 			$('#select-amenity-text').text(display);
 			console.log('Selected '+amenity_id);
 			window.findingModalSelectedAmenity = amenity_id;
+			window.findingModalSelectedAmenityIncrement = amenity_increment;
 			window.findingModalSelectedAmenityInspection = amenity_inspection_class;
 			window.selectedAmenityInspection = amenity_inspection_id;
 			filterFindingTypes();

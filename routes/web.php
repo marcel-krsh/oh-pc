@@ -137,7 +137,7 @@
             }
         })->name('session.setfilter');
 
-        Route::post('/communications/parcel/{parcel?}', 'CommunicationController@searchCommunications')->name('communications.search');
+        Route::post('/communications/project/{project?}', 'CommunicationController@searchCommunications')->name('communications.search');
 
         Route::get('/modals/audits/{id}/updateStep', 'AuditController@updateStep')->name('audits.updatestep');
         Route::post('audits/{id}/saveStep', 'AuditController@saveStep')->name('audits.savestep');
@@ -171,6 +171,8 @@
         Route::get('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummary');
         Route::post('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummaryFilterProgram');
         Route::get('/modals/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}', 'FindingController@modalFindings');
+        Route::get('/modals/add/finding/{findingtypeid?}/amenity_inspection/{amenityinspectionid?}','FindingController@addFindingForm');
+
 
         Route::get('/findings/{id}/items', 'FindingController@findingItems');
         Route::get('/modals/findings_list/{type}/{amenityinspectionid}','FindingController@findingList');

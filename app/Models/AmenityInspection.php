@@ -34,9 +34,11 @@ class AmenityInspection extends Model
         return $cachedUnit;
     }
 
-    public function building_inspection() : object
+    public function building_inspection() 
     {
         $buildingInspection = BuildingInspection::where('building_id',$this->building_id)->where('audit_id',$this->audit_id)->first();
+
+        //dd($buildingInspection);
 
         return $buildingInspection;
     }
