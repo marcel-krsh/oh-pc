@@ -77,5 +77,23 @@ class AmenityInspection extends Model
         return $this->hasOne(\App\Models\User::class, 'id', 'auditor_id');
     }
 
+    public function findings_total()
+    {
+        $nlt_count = ($this->nlt_count) ? $this->nlt_count : 0;
+        $lt_count = ($this->lt_count) ? $this->lt_count : 0;
+        $file_count = ($this->file_count) ? $this->file_count : 0;
+        $followup_count = ($this->followup_count) ? $this->followup_count : 0;
+
+        return $nlt_count + $lt_count + $file_count + $followup_count;
+    }
+
+    public function amenity_type()
+    {
+        if($this->amenity){
+            return $this->amenity->amenity_description;
+        }else{
+            return '';
+        }
+    }
     
 }

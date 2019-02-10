@@ -524,7 +524,7 @@ class AuditController extends Controller
         }
 
         foreach($amenities as $amenity){
-//if(!$amenity->amenity_inspection){dd($amenity->id);} // 6093
+            //if(!$amenity->amenity_inspection){dd($amenity->id);} // 6093
             if($amenity->amenity_inspection->auditor_id !== NULL){
                 $auditor_initials = $amenity->amenity_inspection->user->initials();
                 $auditor_name = $amenity->amenity_inspection->user->full_name();

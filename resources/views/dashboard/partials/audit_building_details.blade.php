@@ -184,19 +184,18 @@
 							<div class="uk-width-1-2 uk-flex">
 								<div id="building-{{$context}}-detail-{{$target}}-c-5-{{$key}}" style="flex: 640px;" class="uk-margin-remove" uk-grid>
 									<div class="uk-width-1-1" id="inspection-{{$context}}-detail-tools-switch-{{$key}}">
-										@if($detail->unit->amenities_json)
+										@if($detail->amenity_inspections())
 										<div uk-grid class="area-status-list">
-										    @foreach($detail->unit->amenities_json as $amenity)
+										    @foreach($detail->amenity_inspections() as $amenity)
 												@if($loop->iteration < 9)
-											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($amenity->status != '') area-status-{{$amenity->status}} @endif colored">
-											    	<span class="uk-badge">
-											    	@if($amenity->qty){{$amenity->qty}} @else 3 @endif </span>
-											    	{{$amenity->type}}
+											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status colored">
+											    	<span class="uk-badge">{{$amenity->findings_total()}}</span>
+											    	{{$amenity->amenity_type()}}
 											    </div>
 											    @else
 											    	@if($loop->iteration == 9)
-												    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status @if($amenity->status != '') area-status-{{$amenity->status}} @endif colored">
-												    	<span class="uk-badge" uk-tooltip="pos:top-left;title: @endif @if($amenity->qty) {{$amenity->qty}} @endif {{$amenity->type}}<br /> @if($loop->last) ;"><i class="a-plus"></i> </span> MORE...
+												    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status colored">
+												    	<span class="uk-badge" uk-tooltip="pos:top-left;title: @endif {{$amenity->findings_total()}} {{$amenity->amenity_type()}}<br /> @if($loop->last) ;"><i class="a-plus"></i> </span> MORE...
 												    </div>
 												    @endif
 											    @endif
@@ -204,6 +203,7 @@
 										</div>
 										@endif
 									</div>
+
 									<div id="inspection-{{$context}}-detail-tools-{{$key}}-container" class="uk-width-1-1 uk-margin-remove-top uk-padding-remove" style="display:none;">
 										<div id="inspection-{{$context}}-detail-tools-{{$key}}"></div>
 									</div>

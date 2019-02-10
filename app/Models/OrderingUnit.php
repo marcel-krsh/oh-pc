@@ -82,4 +82,38 @@ class OrderingUnit extends Model
 
         return $auditors;
     }
+
+    public function amenity_inspections()
+    {
+        $amenities = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('unit_id','=',$this->unit->unit_id)->whereNotNull('unit_id')->get();
+
+        return $amenities;
+    }
+
+    public function amenities_and_findings()
+    {
+        // total
+        // name (with numbering)
+        // link to findings modal
+        
+        // manage name duplicates, number them based on their id
+        $amenity_names = array();
+        $amenities = $this->amenity_inspections;
+
+        foreach($amenities as $amenity){
+            $amenity_names[$amenity->amenity->amenity_description][] = $amenity->amenity_inspection_id;
+        }
+
+        $output = array();
+        foreach($amenities as $amenity){
+            $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
+            $key = $key + 1;
+            $name = $amenity->amenity->amenity_description." ".$key;
+
+            $output[] = '';
+        }
+
+
+
+    }
 }
