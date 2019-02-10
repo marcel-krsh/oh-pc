@@ -43,6 +43,11 @@ class AmenityInspection extends Model
         return $buildingInspection;
     }
 
+    public function findings() : HasMany
+    {
+        return $this->hasMany('\App\Models\Finding', 'amenity_id');
+    }
+
     public function unit_has_multiple() : bool
     {
         $total = AmenityInspection::where('amenity_id',$this->amenity_id)->where('unit_id',$this->unit_id)->where('audit_id',$this->audit_id)->count();
@@ -79,6 +84,8 @@ class AmenityInspection extends Model
 
     public function findings_total()
     {
+        // either use the # in the row or calculate based on findings records in the db? 
+        // using the row:
         $nlt_count = ($this->nlt_count) ? $this->nlt_count : 0;
         $lt_count = ($this->lt_count) ? $this->lt_count : 0;
         $file_count = ($this->file_count) ? $this->file_count : 0;
@@ -94,6 +101,35 @@ class AmenityInspection extends Model
         }else{
             return '';
         }
+    }
+
+    public function status()
+    {
+        /*
+        if completed: green solid outline with the number of findings or a checkmark if no findings
+        otherwise
+        if follow-up within 24h: red double outline
+        if follow-up later than 24h: purple dashed
+        if finding and no follow-up, or follow-up done, blue dotted line
+         */
+        
+        if($this->completed_date_time !== NULL){
+            $status = "ok-actionable";
+        }else{
+            if(count($this->findings)){
+                foreach ($this->findings as $finding) {
+                    if($finding->has_followup_overdue()){
+                        $status = "action-required"; break;
+                    }elseif($finding->has_followup_within_24h()){
+                        $status = "action-needed";
+                    }
+                }
+            }else{
+                $status = "ok-actionable";
+            }
+        }
+
+        return $status;
     }
     
 }

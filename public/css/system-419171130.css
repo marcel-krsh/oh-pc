@@ -2142,7 +2142,7 @@ margin-top:10px;
     border-width:2px;
     animation: none;
 }
-#auditstable .building .area-status.area-status-action .uk-badge{
+#auditstable .building .area-status.area-status-action-required .uk-badge{
   border-color: #da328a;
     background-color: transparent;
     border-style: double;
@@ -2152,6 +2152,30 @@ margin-top:10px;
     line-height: 15px;
     margin-left: -2px;
     animation: border-pulsate 2s infinite;
+}
+#auditstable .building .area-status.area-status-ok-actionable .uk-badge{
+  border-color: #56b285;
+  background-color:transparent;
+  color: #56b285;
+    border-style: solid;
+    border-width:2px;
+    animation: none;
+}
+#auditstable .building .area-status.area-status-in-progress .uk-badge{
+  border-color: #49ade9;
+  background-color:transparent;
+  color: #49ade9;
+    border-style: dotted;
+    border-width:2px;
+    animation: none;
+}
+#auditstable .building .area-status.area-status-action-needed .uk-badge{
+  border-color: #76338b;
+  background-color:transparent;
+  color: #76338b;
+    border-style: dashed;
+    border-width:2px;
+    animation: none;
 }
 
 /*#auditstable .building .area-status, 

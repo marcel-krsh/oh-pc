@@ -371,12 +371,12 @@ class AuditController extends Controller
 
             // check for name duplicates and assign a #
             $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
-            //if($key > 0){
+            if($key > 0){
                 $key = $key + 1;
                 $name = $amenity->amenity->amenity_description." ".$key;
-            // }else{
-            //     $name = $amenity->amenity->amenity_description;
-            // }
+            }else{
+                $name = $amenity->amenity->amenity_description;
+            }
 
             // check if this amenity has findings (to disable trash)
             if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit_id)->count()){
@@ -551,12 +551,12 @@ class AuditController extends Controller
 
             // check for name duplicates and assign a #
             $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
-            //if($key > 0){
+            if($key > 0){
                 $key = $key + 1;
                 $name = $amenity->amenity->amenity_description." ".$key;
-            // }else{
-            //     $name = $amenity->amenity->amenity_description;
-            // }
+            }else{
+                $name = $amenity->amenity->amenity_description;
+            }
 
             // check if this amenity has findings (to disable trash)
             if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit_id)->count()){
@@ -660,6 +660,10 @@ class AuditController extends Controller
                 $data['auditor'] = ["unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $unit_id, "building_id" => $building_id, "audit_id" => $audit_id];
 
                 $unit = CachedUnit::where('unit_id','=',$unit_id)->first();
+                if($unit->type_total != $unit->amenity_totals()){
+                    $unit->type_total = $unit->amenity_totals();
+                    $unit->save();
+                }
                 $data['amenity_count'] = $unit->amenity_totals();
                 $data['amenity_count_id'] =  $audit_id.$unit->building_id.$unit_id;
 
@@ -3997,13 +4001,7 @@ class AuditController extends Controller
         $new_amenities = $request->get('new_amenities');
 
         //dd($project_id, $building_id, $unit_id, $audit_id);
-        /*
-        "45055"
-        "16721"
-        "141968"
-        "6410"
-         */
-
+       
         // get current audit id using project_id
         // only one audit can be active at one time
         $audit = CachedAudit::where("audit_id", "=", $audit_id)->orderBy('id', 'desc')->first();
@@ -4243,12 +4241,12 @@ class AuditController extends Controller
 
                         // check for name duplicates and assign a #
                         $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
-                        //if($key > 0){
+                        if($key > 0){
                             $key = $key + 1;
                             $name = $amenity->amenity->amenity_description." ".$key;
-                        // }else{
-                        //     $name = $amenity->amenity->amenity_description;
-                        // }
+                        }else{
+                            $name = $amenity->amenity->amenity_description;
+                        }
 
                         if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit->audit_id)->count()){
                             $has_findings = 1;
@@ -4280,6 +4278,8 @@ class AuditController extends Controller
                     }
 
                     $data['amenities'] = $data_amenities;
+
+                    // TBD update amenity totals?
 
                     // reload auditor names at the unit and building row levels
                     $reload_auditors = $this->reload_auditors($audit->audit_id, $unit_id, $building_id);

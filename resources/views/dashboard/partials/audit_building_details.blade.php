@@ -184,18 +184,19 @@
 							<div class="uk-width-1-2 uk-flex">
 								<div id="building-{{$context}}-detail-{{$target}}-c-5-{{$key}}" style="flex: 640px;" class="uk-margin-remove" uk-grid>
 									<div class="uk-width-1-1" id="inspection-{{$context}}-detail-tools-switch-{{$key}}">
-										@if($detail->amenity_inspections())
+										@if($detail->unit->amenities_and_findings())
+
 										<div uk-grid class="area-status-list">
-										    @foreach($detail->amenity_inspections() as $amenity)
+										    @foreach($detail->unit->amenities_and_findings() as $amenity)
 												@if($loop->iteration < 9)
-											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status colored">
-											    	<span class="uk-badge">{{$amenity->findings_total()}}</span>
-											    	{{$amenity->amenity_type()}}
+											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status colored @if($amenity['status'] != '') area-status-{{$amenity['status']}} @endif ">
+											    	<span class="uk-badge">@if($amenity['findings_total'] == 0) <i class="a-check"></i> @else {{$amenity['findings_total']}} @endif</span>
+											    	{{$amenity['name']}}
 											    </div>
 											    @else
 											    	@if($loop->iteration == 9)
-												    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status colored">
-												    	<span class="uk-badge" uk-tooltip="pos:top-left;title: @endif {{$amenity->findings_total()}} {{$amenity->amenity_type()}}<br /> @if($loop->last) ;"><i class="a-plus"></i> </span> MORE...
+												    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status colored @if($amenity['status'] != '') area-status-{{$amenity['status']}} @endif">
+												    	<span class="uk-badge" uk-tooltip="pos:top-left;title: @endif {{$amenity['findings_total']}} {{$amenity['name']}}<br /> @if($loop->last) ;"><i class="a-plus"></i> </span> MORE...
 												    </div>
 												    @endif
 											    @endif

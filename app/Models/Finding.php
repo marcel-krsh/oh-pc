@@ -38,7 +38,25 @@ class Finding extends Model
 
     public function followups() : HasMany 
     {
-    	return $this->hasMany(App\Models\Followup::class, 'finding_in', 'id');
+    	return $this->hasMany(App\Models\Followup::class, 'finding_id', 'id');
+    }
+
+    public function has_followup_within_24h()
+    {
+        if( count( $this->followups()->whereDate('date_due','<=', Carbon::today()->addHours(24))->whereDate('date_due','>=',Carbon::today()) ) ){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    public function has_followup_overdue()
+    {
+        if( count( $this->followups()->whereDate('date_due','<=', Carbon::today()) ) ){
+            return 1;
+        }else{
+            return 0;
+        }
     }
 
 
