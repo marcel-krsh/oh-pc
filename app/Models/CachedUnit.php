@@ -116,6 +116,7 @@ class CachedUnit extends Model
                 $completed = 1;
 
                 $output_completed[] = [
+                    "id" => $amenity->id,
                     "findings_total" => $amenity->findings_total(),
                     "name" => $name,
                     "status" => $status,
@@ -125,6 +126,7 @@ class CachedUnit extends Model
                 $completed = 0;
 
                 $output[] = [
+                    "id" => $amenity->id,
                     "findings_total" => $amenity->findings_total(),
                     "name" => $name,
                     "status" => $status,

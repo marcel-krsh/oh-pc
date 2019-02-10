@@ -189,7 +189,7 @@
 										<div uk-grid class="area-status-list">
 										    @foreach($detail->unit->amenities_and_findings() as $amenity)
 												@if($loop->iteration < 9)
-											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status colored @if($amenity['status'] != '') area-status-{{$amenity['status']}} @endif ">
+											    <div class="uk-width-1-3 use-hand-cursor uk-padding-remove-top uk-margin-remove-top area-status colored @if($amenity['status'] != '') area-status-{{$amenity['status']}} @endif "  onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'all', {{$amenity['id']}});">
 											    	<span class="uk-badge">@if($amenity['findings_total'] == 0) <i class="a-check"></i> @else {{$amenity['findings_total']}} @endif</span>
 											    	{{$amenity['name']}}
 											    </div>

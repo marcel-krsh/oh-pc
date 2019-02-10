@@ -33,26 +33,26 @@ class Photo extends Model
 
     public function photos() : HasMany 
     {
-        return $this->hasMany(App\Models\Photo::class, 'photo_id', 'id');
+        return $this->hasMany(\App\Models\Photo::class, 'photo_id', 'id');
     }
 
     public function photo() : HasOne 
     {
-        return $this->hasOne(App\Models\Photo::class, 'id', 'photo_id');
+        return $this->hasOne(\App\Models\Photo::class, 'id', 'photo_id');
     }
 
     public function finding() : HasOne 
     {
-        return $this->hasOne(App\Models\Finding::class, 'id', 'finding_id');
+        return $this->hasOne(\App\Models\Finding::class, 'id', 'finding_id');
     }
 
     public function followup() : HasOne 
     {
-        return $this->hasOne(App\Models\Followup::class, 'id', 'followup_id');
+        return $this->hasOne(\App\Models\Followup::class, 'id', 'followup_id');
     }
 
     public function comment() : HasOne 
     {
-        return $this->hasOne(App\Models\Followup::class, 'id', 'followup_id');
+        return $this->hasOne(\App\Models\Followup::class, 'id', 'followup_id');
     }
 }
