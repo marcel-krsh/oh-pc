@@ -43,6 +43,7 @@
 	    		
 	    	</div>
 	    	<div class="uk-width-1-2">
+	    		<input type="hidden" id="add-finding-form-finding_date" name="date" value="" />
 	    		<button class="uk-button uk-button-success uk-width-1-1" onclick="saveFinding(event);"><i class="a-file-pen"></i> SAVE FINDING</button>
 	    	</div>
 	    </div>
@@ -66,6 +67,8 @@
 	function saveFinding(e){
 		e.preventDefault();
 		var form = $('#add-finding-form');
+
+		$('#add-finding-form-finding_date').attr('value', window.findingModalSelectedAmenityDate);
 
 		$.post("/findings/create", {
             'inputs' : form.serialize(),

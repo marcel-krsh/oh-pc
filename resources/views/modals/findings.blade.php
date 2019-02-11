@@ -462,6 +462,8 @@
 
         @endif
 
+        window.findingModalSelectedAmenityDate = $('#finding-date').val();
+
         $('#'+window.findingModalSelectedType+'-filter-button').trigger('click');
 
 	}
@@ -518,6 +520,7 @@
 			amenityList();
 			// filter the findings to the selection
 			$('#select-amenity-text').text(display);
+
 			console.log('Selected '+amenity_id);
 			window.findingModalSelectedAmenity = amenity_id;
 			window.findingModalSelectedAmenityIncrement = amenity_increment;

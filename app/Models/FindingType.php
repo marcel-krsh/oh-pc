@@ -72,7 +72,7 @@ class FindingType extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function default_followups() : HasMany
+    public function default_follow_ups() : HasMany
     {
         return $this->hasMany(DefaultFollowup::class, 'finding_type_id', 'id');
     }

@@ -8,7 +8,7 @@
 	@endif
 		@foreach($allFindingTypes as $findingType)
 							
-							<div class="uk-width-1-1 uk-padding-small indented use-hand-cursor" onClick="dynamicModalLoad('add/finding/{{$findingType->id}}/amenity_inspection/{{$amenityInspectionId}}?amenity_increment='+window.findingModalSelectedAmenityIncrement,0,0,0,2)">
+							<div class="uk-width-1-1 uk-padding-small indented use-hand-cursor" onClick="dynamicModalLoad('add/finding/{{$findingType->id}}/amenity_inspection/{{$amenityInspectionId}}?finding_date='+window.findingModalSelectedAmenityDate+'&amenity_increment='+window.findingModalSelectedAmenityIncrement,0,0,0,2)">
 								<i class="@if($findingType->type == 'lt')a-skull @endIf @if($findingType->type == 'nlt')a-booboo @endIf @if($findingType->type == 'file')a-folder @endIf  "></i> @if($findingType->building_exterior)<span uk-tooltip title="Building Exterior"> BE </span>|@endif @if($findingType->building_system)<span uk-tooltip title="Building System"> BS </span>|@endif @if($findingType->site)<span uk-tooltip title="Site"> S </span>|@endif @if($findingType->common_area)<span uk-tooltip title="Common Area"> CA </span>|@endif @if($findingType->unit)<span uk-tooltip title="Unit"> U </span>|@endif @if($findingType->file)<span uk-tooltip title="File"> F </span>|@endif {{$findingType->name}}
 							</div>
 						

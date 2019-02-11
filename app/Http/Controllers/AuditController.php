@@ -388,7 +388,7 @@ class AuditController extends Controller
             $data_amenities[] = [
                 "id" => $amenity->amenity_inspection_id,
                 "audit_id" => $amenity->audit_id,
-                "name" => $amenity->amenity->amenity_description,
+                "name" => $name,
                 "status" => $status,
                 "auditor_initials" => $auditor_initials,
                 "auditor_id" => $auditor_id,
@@ -669,7 +669,7 @@ class AuditController extends Controller
 
                 return $data;
 
-            }elseif($building_id != "null" && $building_id !== NULL){
+            }elseif($building_id != "null" && $building_id !== NULL && $building_id != 0){
                 // dd("building", $comment, $amenity_id, $audit_id, $building_id, $unit_id);    
                 $amenity_inspection = AmenityInspection::where('id','=',$amenity_id)->first();
                 $ordering_amenities = OrderingAmenity::where('audit_id','=',$audit_id)->where('amenity_inspection_id','=',$amenity_id)->whereNull('unit_id')->where('building_id','=',$building_id)->first();

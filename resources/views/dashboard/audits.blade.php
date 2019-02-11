@@ -90,21 +90,21 @@
 						<span class="uk-badge">+</span>
 					</div>
 				</div>
-				<div class="findings-icon uk-inline areaSDStatus">
+				<div class="findings-icon uk-inline areaSDStatus" style="display:none">
 					<i class="a-bell-2"></i>
 					<div class="findings-icon-status plus">
 						<span class="uk-badge">+</span>
 					</div>
 				</div>
 			</div>
-			<div class="uk-inline" style="padding: 0 15px;">
+			<div class="uk-inline" style="padding: 0 15px; display:none">
 				<div class="findings-icon uk-inline areaPicStatus">
 					<i class="a-picture"></i>
 					<div class="findings-icon-status plus">
 						<span class="uk-badge">+</span>
 					</div>
 				</div>
-				<div class="findings-icon uk-inline areaCommentStatus">
+				<div class="findings-icon uk-inline areaCommentStatus" style="display:none">
 					<i class="a-comment-text"></i>
 					<div class="findings-icon-status plus">
 						<span class="uk-badge">+</span>

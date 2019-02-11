@@ -20,7 +20,11 @@ class AmenityInspection extends Model
 
     public function amenity() : HasOne
     {
-    	return $this->hasOne(\App\Models\Amenity::class, 'id', 'amenity_id');
+        return $this->hasOne(\App\Models\Amenity::class, 'id', 'amenity_id');
+    }
+    public function cached_audit() : HasOne
+    {
+        return $this->hasOne(\App\Models\CachedAudit::class, 'id', 'audit_id');
     }
     public function unit() : HasOne
     {

@@ -52,6 +52,7 @@ class Project extends Model
                                 ->with('organization.address')
                                 ->first();
 
+        $pm_organization_id = '';
         $pm_organization = '';
         $pm_address = '';
         $pm_line_1 = '';
@@ -62,6 +63,7 @@ class Project extends Model
 
         if ($pm_contact) { 
             if ($pm_contact->organization) {
+                $pm_organization_id = $pm_contact->organization_id;
                 $pm_organization = $pm_contact->organization->organization_name;
                 $pm_address = $pm_contact->organization->address->formatted_address();
                 $pm_line_1 = $pm_contact->organization->address->line_1;
@@ -79,7 +81,7 @@ class Project extends Model
             
         }
 
-        return ['organization'=> $pm_organization, 'name'=>$pm_name, 'email'=>$pm_email, 'phone'=>$pm_phone, 'fax'=>$pm_fax, 'address'=>$pm_address, 'line_1'=>$pm_line_1, 'line_2'=>$pm_line_2, 'city'=>$pm_city, 'state'=>$pm_state, 'zip'=>$pm_zip ];
+        return ['organization_id' => $pm_organization_id , 'organization'=> $pm_organization, 'name'=>$pm_name, 'email'=>$pm_email, 'phone'=>$pm_phone, 'fax'=>$pm_fax, 'address'=>$pm_address, 'line_1'=>$pm_line_1, 'line_2'=>$pm_line_2, 'city'=>$pm_city, 'state'=>$pm_state, 'zip'=>$pm_zip ];
     }
 
     public function owner()
@@ -88,6 +90,7 @@ class Project extends Model
                                 ->with('organization.address')
                                 ->first();
 
+        $owner_organization_id = '';
         $owner_organization = '';
         $owner_name = '';
         $owner_phone = '';
@@ -102,6 +105,7 @@ class Project extends Model
 
         if ($owner_contact) { 
             if ($owner_contact->organization) {
+                $owner_organization_id = $owner_contact->organization_id;
                 $owner_organization = $owner_contact->organization->organization_name;
                 $owner_address = $owner_contact->organization->address->formatted_address();
                 $owner_line_1 = $owner_contact->organization->address->line_1;
@@ -119,7 +123,7 @@ class Project extends Model
             
         }
 
-        return ['organization'=> $owner_organization, 'name'=>$owner_name, 'email'=>$owner_email, 'phone'=>$owner_phone, 'fax'=>$owner_fax, 'address'=>$owner_address, 'line_1'=>$owner_line_1, 'line_2'=>$owner_line_2, 'city'=>$owner_city, 'state'=>$owner_state, 'zip'=>$owner_zip ];
+        return ['organization_id'=> $owner_organization_id,'organization'=> $owner_organization, 'name'=>$owner_name, 'email'=>$owner_email, 'phone'=>$owner_phone, 'fax'=>$owner_fax, 'address'=>$owner_address, 'line_1'=>$owner_line_1, 'line_2'=>$owner_line_2, 'city'=>$owner_city, 'state'=>$owner_state, 'zip'=>$owner_zip ];
     }
 
     public function complianceContacts() : HasOne

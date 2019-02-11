@@ -24,6 +24,7 @@ use App\Models\Followup;
 use App\Models\Comment;
 use App\Models\Photo;
 use App\Models\SyncDocuware;
+use Carbon;
 
 
 class FindingController extends Controller
@@ -53,15 +54,16 @@ class FindingController extends Controller
         if(Auth::user()->auditor_access()){
             $inputs = $request->input('inputs');
             parse_str($inputs, $inputs);
+
             // make sure we have what we need
             $error = '';
-            if(!is_int($input['finding_type_id'])){
+            if($inputs['finding_type_id'] == ''){
                 $error .= '<p>I am having trouble with the finding type you selected. Please refresh your page and try again.</p>';
             }
-            if(!is_int($input['amenity_inspection_id'])){
+            if($inputs['amenity_inspection_id'] == ''){
                 $error .= '<p>I am having trouble with the amenity you selected. Please refresh your page and try again.</p>';
             }
-            if(!is_int($input['level'])){
+            if($inputs['level'] == ''){
                 $error .= '<p>Please select a level.</p>';
             }
 
@@ -74,11 +76,19 @@ class FindingController extends Controller
                 $findingType = FindingType::find($inputs['finding_type_id']);
                 $amenityInspection = AmenityInspection::find($inputs['amenity_inspection_id']);
 
+                $date = Carbon\Carbon::createFromFormat('Y-m-d' , $inputs['date'])->format('Y-m-d H:i:s');
+
+                $cached_audit = CachedAudit::where('audit_id', '=', $amenityInspection->audit_id)->first();
+                $project = $cached_audit->project;
+
+                $owner_organization_id = $project->owner()['organization_id'];
+                $pm_organization_id = $project->pm()['organization_id'];
+
                 // Check to make sure that we got that data
                 if(is_null($findingType)){
                     $error .= '<p>I was not able to identify the finding type you selected. This is not your fault! </p><p>Please notify your admin that you tried to add finding type id '.$input['finding_type_id'].' and it gave you this error:<br /> FindingController: Error #79<p>';
                 }
-                if(is_null($AmenityInspection)){
+                if(is_null($amenityInspection)){
                     $error .= '<p>I was not able to identify the amenity you selected. It is possible it was deleted while you were working on it by another user.</p><p>Please refresh your screen by closing the inpsection and reopening it. If you still see the amenity there, still try clicking on it to add a finding again, as it may be been deleted and re-added with a new identifier.</p><p>If that does not work, please notify your admin that you tried to add a finding to amenity inspection id '.$input['amenity_inspection_id'].' and it gave you this error:<br /> FindingController: Error #82<p>';
                 }
 
@@ -87,44 +97,46 @@ class FindingController extends Controller
                 } else {
                     // we have the goods - let's store this bad boy!
                     $errors = ''; // tracking errors to return to user.
-                    $finding = Finding::insert([
-                                'date_of_finding' => date('Y-m-d H:i:s',$input['date']),
-                                'owner_organization_id' => $amenityInspection->owner_organization_id(),
-                                'pm_organization_id' => $amenityInspection->pm_organization_id(),
+                    $finding = new Finding([
+                                'date_of_finding' => $date,
+                                'owner_organization_id' => $owner_organization_id,
+                                'pm_organization_id' => $pm_organization_id,
                                 'user_id' => Auth::user()->id,
                                 'audit_id' => $amenityInspection->audit_id,
-                                'project_id' => $amenityInspection->project_id,
+                                'project_id' => $project->id,
                                 'building_id' => $amenityInspection->building_id,
                                 'unit_id' => $amenityInspection->unit_id,
                                 'finding_type_id' => $findingType->id,
                                 'amenity_id' => $amenityInspection->amenity_id,
                                 'amenity_inspection_id' => $amenityInspection->id,
                                 'weight' => $findingType->nominal_item_weight,
-                                'criticality' => $findingType->crticality,
-                                'level'=> $input['level'],
+                                'criticality' => $findingType->criticality,
+                                'level'=> $inputs['level'],
                                 'site'=> $findingType->site,
                                 'building_system' => $findingType->building_system,
                                 'building_exterior' => $findingType->building_exterior,
                                 'common_area'=> $findingType->common_area,
                                 'allita_type' => $findingType->allita_type,
                                 'finding_status_id' => 1,
-                                ]);
+                        ]);
+                    $finding->save();
+
                     // save comment if there is one:
                     if(strlen($inputs['comment']) > 0){
                         // there was text entered - create the comment and attach it to the finding
                         Comment::insert([
                             'user_id' => Auth::user()->id,
-                            'audit_id' => $AmenityInspection->audit_id,
+                            'audit_id' => $amenityInspection->audit_id,
                             'finding_id' => $finding->id,
                             'comment' => $inputs['comment'],
-                            'recorded_date' => date('',$input['date'])
+                            'recorded_date' => $date
                         ]);
 
                     }
                     // put in default follow-ups
-                    if($findingType->has_default_follow_ups()){
+                    if(count($findingType->default_follow_ups)){
                         $errors = '';
-                        foreach ($findingType->default_follow_ups() as $fu) {
+                        foreach ($findingType->default_follow_ups as $fu) {
                             // set assignee
                             switch ($fu->assignment) {
                                 case 'pm':
