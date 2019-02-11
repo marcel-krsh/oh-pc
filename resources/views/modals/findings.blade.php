@@ -412,12 +412,12 @@
 					} elseif($passedAmenity->building_id){
 						// is a building
 						$locationType = 'b-'.$passedAmenity->building_id;
-						$locationText = "Building BIN: ".$passedAmenity->building_id.", NAME: ".addslashes($buildingName).", ADDRESS: ".addslashes($passedAmenity->address);
+						$locationText = "Building BIN: ".$passedAmenity->building_id.", NAME: ".addslashes($buildingName).", ADDRESS: ".addslashes($passedAmenity->building->address->line_1);
 						echo "console.log('Passed amenity is a building type');";
 					} else {
 						// is a unit
 						$locationType = 'u-'.$passedAmenity->unit_id;
-						$locationText = "Unit Name: ".$passedAmenity->cached_unit()->unit_name.", in BIN: ".$passedAmenity->building_key." at ADDRESS: ".$passedAmenity->cached_unit()->address;
+						$locationText = "Unit Name: ".$passedAmenity->cached_unit()->unit_name.", in BIN: ".$passedAmenity->building_key." at ADDRESS: ".$passedAmenity->unit->building->address->line_1;
 					}
 				?>
 				// set filter text for drop lists
@@ -430,6 +430,7 @@
 
 			
         @elseif(!is_null($passedUnit))
+
         		console.log('Filtering to unit id:u-{{$passedUnit->unit_id}}');
         		// set filter test for type
         		<?php 
@@ -437,7 +438,7 @@
 				?>
 				// set filter text for type
 				window.findingModalSelectedLocationType = '{{$locationType}}';
-				filterAmenities('u-{{$passedUnit->unit_id}}', 'Unit NAME: {{$passedUnit->unit_name}} in Building BIN:{{$passedUnit->building_key}} ADDRESS: {{$passedUnit->address}}',0);
+				filterAmenities('u-{{$passedUnit->unit_id}}', 'Unit NAME: {{$passedUnit->unit_name}} in Building BIN:{{$passedUnit->building_key}} ADDRESS: {{$passedUnit->building->address->line_1}}',0);
         		// filter to type and allita type (nlt, lt, file)
 
         @elseif(!is_null($passedBuilding))
@@ -450,7 +451,7 @@
 
 
         		// set filter test for type
-        		filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}}k NAME: {{$passedBuilding->building_name}}, ADDRESS:{{$passedBuilding->address}}',0,1);
+        		filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}}k NAME: {{$passedBuilding->building_name}}, ADDRESS:{{$passedBuilding->building->address->line_1}}',0,1);
         		//filterAmenities('b-16713','Building BIN: 93670, NAME: OH-11-00214, ADDRESS: ')
 
         		// filter to type and allita type (nlt, lt, file)

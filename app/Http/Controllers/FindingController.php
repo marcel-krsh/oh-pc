@@ -335,18 +335,18 @@ class FindingController extends Controller
         }
         if($buildingid > 0){
             // always use the audit id as a selector to ensure you get the correct one
-            $building = CachedBuilding::where('audit_id',$auditid)->where('id',$buildingid)->first();
+            $building = CachedBuilding::where('audit_id',$auditid)->where('id',$buildingid)->with('building.address')->first();
+
             //dd($buildingid, $building,$auditid);
         }
         if($unitid > 0){
             // always use the audit id as a selector to ensure you get the correct one
-            $unit = CachedUnit::where('audit_id',$auditid)->where('id',$unitid)->with('building')->first();
+            $unit = CachedUnit::where('audit_id',$auditid)->where('id',$unitid)->with('building')->with('building.address')->first();
            // dd($unit, $unitid);
         }
         if($amenityid > 0){
             // we use the inspection id to make sure we get the one associated that they clicked on (in case of duplicate amenities)
             $amenity = AmenityInspection::where('id',$amenityid)->first();
-
         }
         if(is_null($audit)){
             return "alert('No audit found for ID:".$auditid."');";

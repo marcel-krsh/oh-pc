@@ -37,6 +37,17 @@ class AmenityInspection extends Model
 
         return $cachedUnit;
     }
+    public function building() : HasOne
+    {
+        return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
+    }
+
+    public function cached_building() : object
+    {
+        $cachedBuilding = CachedBuilding::where('building_id',$this->building_id)->where('audit_id',$this->audit_id)->first();
+
+        return $cachedBuilding;
+    }
 
     public function building_inspection() 
     {
