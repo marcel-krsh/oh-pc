@@ -22,7 +22,7 @@
 	    </div>
 	    <div class="findings-new-add-comment-boilerplate-action" uk-grid>
 	    	<!-- <button class="uk-width-1-3" onclick="useBoilerplate();"><i class="a-file-text"></i> Use a boilerplate</button> -->
-	    	<button class="uk-width-1-3" onclick="clearComment();"><i class="a-file-minus"></i> Clear</button>
+	    	<a class="uk-width-1-3" onclick="clearComment();" style="color:#fff"><i class="a-file-minus"></i> Clear</a>
 	    	<!-- <button class="uk-width-1-3" onclick="appendBoilerplate();"><i class="a-file-plus"></i> Append a boilerplate</button> -->
 	    </div>
 	    <div class="findings-new-add-comment-quick-entry-list">

@@ -426,7 +426,7 @@
 				window.findingModalSelectedLocationType = '{{$locationType}}';
 				
 				//filterFindingTypes();
-				console.log('Filtering to amenity id:a-{{$passedAmenity->amenity_id}} ({{$passedAmenity->amenity->amenity_description}}) for amenity inspection {{$passedAmenity->id}} with a location type target of '+window.findingModalSelectedLocationType+' further filetered to show '+window.findingModalSelectedType+' findings.');
+				console.log('Filtering to amenity id:a-{{$passedAmenity->amenity_id}} ({{$passedAmenity->amenity->amenity_description}}) for amenity inspection {{$passedAmenity->id}} with a location type target of '+window.findingModalSelectedLocationType+' further filtered to show '+window.findingModalSelectedType+' findings.');
 
 			
         @elseif(!is_null($passedUnit))
