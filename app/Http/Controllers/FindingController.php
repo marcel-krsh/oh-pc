@@ -315,6 +315,7 @@ class FindingController extends Controller
     	 */
 
         //dd('type:'.$type.' auditid:'.$auditid.' buildingid:'.$buildingid.' unitid:'.$unitid.' amenityid:'.$amenityid);
+        //// "type:nlt auditid:6410 buildingid:16721 unitid:1005379 amenityid:"
 
         // the selected one that opened this modal
 
@@ -339,7 +340,7 @@ class FindingController extends Controller
         }
         if($unitid > 0){
             // always use the audit id as a selector to ensure you get the correct one
-            $unit = CachedUnit::where('audit_id',$auditid)->where('unit_id',$unitid)->with('building')->first();
+            $unit = CachedUnit::where('audit_id',$auditid)->where('id',$unitid)->with('building')->first();
            // dd($unit, $unitid);
         }
         if($amenityid > 0){

@@ -129,7 +129,7 @@ class AmenityInspection extends Model
                     }
                 }
             }else{
-                $status = "ok-actionable";
+                $status = "pending";
             }
         }
 
