@@ -43,37 +43,37 @@ class Comment extends Model
 
     public function comments() : HasMany 
     {
-        return $this->hasMany(App\Models\Comment::class, 'comment_id', 'id');
+        return $this->hasMany(\App\Models\Comment::class, 'comment_id', 'id');
     }
 
     public function comment() : HasOne 
     {
-        return $this->hasOne(App\Models\Comment::class, 'id', 'comment_id');
+        return $this->hasOne(\App\Models\Comment::class, 'id', 'comment_id');
     }
 
     public function amenity() : HasOne 
     {
-        return $this->hasOne(App\Models\AmenityInspection::class, 'id', 'amenity_id');
+        return $this->hasOne(\App\Models\AmenityInspection::class, 'id', 'amenity_id');
     }
 
     public function photo() : HasOne 
     {
-        return $this->hasOne(App\Models\Photo::class, 'id', 'photo_id');
+        return $this->hasOne(\App\Models\Photo::class, 'id', 'photo_id');
     }
 
     public function document() : HasOne 
     {
-        return $this->hasOne(App\Models\SyncDocuware::class, 'id', 'document_id');
+        return $this->hasOne(\App\Models\SyncDocuware::class, 'id', 'document_id');
     }
 
     public function finding() : HasOne 
     {
-        return $this->hasOne(App\Models\Finding::class, 'id', 'finding_id');
+        return $this->hasOne(\App\Models\Finding::class, 'id', 'finding_id');
     }
 
     public function followup() : HasOne 
     {
-        return $this->hasOne(App\Models\Followup::class, 'id', 'followup_id');
+        return $this->hasOne(\App\Models\Followup::class, 'id', 'followup_id');
     }
 
 }

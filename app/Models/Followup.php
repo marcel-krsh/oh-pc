@@ -18,22 +18,22 @@ class Followup extends Model
 
     public function comments() : HasMany 
     {
-    	return $this->hasMany(App\Models\Comment::class, 'followup_id', 'id');
+    	return $this->hasMany(\App\Models\Comment::class, 'followup_id', 'id');
     }
 
     public function photos() : HasMany 
     {
-    	return $this->hasMany(App\Models\Photo::class, 'followup_id', 'id');
+    	return $this->hasMany(\App\Models\Photo::class, 'followup_id', 'id');
     }
 
     public function documents() : HasMany 
     {
-    	return $this->hasMany(App\Models\SyncDocuware::class, 'followup_id', 'id');
+    	return $this->hasMany(\App\Models\SyncDocuware::class, 'followup_id', 'id');
     }
 
     public function finding() : HasOne 
     {
-    	return $this->hasOne(App\Models\Finding::class, 'id', 'finding_id');
+    	return $this->hasOne(\App\Models\Finding::class, 'id', 'finding_id');
     }
 
 

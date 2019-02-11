@@ -75,4 +75,79 @@ class CachedBuilding extends Model
     public function units() : HasManyThrough {
         return $this->hasManyThrough('App\Models\Unit', 'App\Models\Building', 'id', 'building_id', 'building_id', 'id');
     }
+
+    public function amenity_inspections()
+    {
+        return \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('building_id','=',$this->building_id)->whereNotNull('building_id')->get();
+    }
+
+    public function amenities_and_findings()
+    {
+        // total
+        // name (with numbering)
+        // link to findings modal
+        // blue dotted outline if they need to be done, otherwise completed
+        
+        //$amenity_inspections = $this->amenity_inspections();
+
+        // manage name duplicates, number them based on their id
+        $amenity_names = array();
+        $amenities = $this->amenity_inspections();
+
+        if(count($amenities) == 0){
+            return [];
+        }
+
+        foreach($amenities as $amenity){
+            $amenity_names[$amenity->amenity->amenity_description][] = $amenity->id;
+        }
+
+        $output = array();
+        $output_completed = array();
+      
+        foreach($amenities as $amenity){
+            $key = array_search($amenity->id, $amenity_names[$amenity->amenity->amenity_description]);
+            
+            if($key > 0){
+                $key = $key + 1;
+                $name = $amenity->amenity->amenity_description." ".$key;
+            }else{
+                $name = $amenity->amenity->amenity_description;
+            }
+
+            $status = $amenity->status();
+
+            if($amenity->completed_date_time !== NULL){
+                $completed = 1;
+
+                $output_completed[] = [
+                    "id" => $amenity->id,
+                    "findings_total" => $amenity->findings_total(),
+                    "name" => $name,
+                    "status" => $status,
+                    "completed" => $completed
+                ];
+            }else{
+                $completed = 0;
+
+                $output[] = [
+                    "id" => $amenity->id,
+                    "findings_total" => $amenity->findings_total(),
+                    "name" => $name,
+                    "status" => $status,
+                    "completed" => $completed
+                ];
+            }
+
+            
+        }
+
+        // prioritize not completed amenities
+        foreach($output_completed as $o){
+            $output[] = $o;
+        }
+        
+        $output = array_filter($output); // remove empty elements
+        return $output;
+    }
 }

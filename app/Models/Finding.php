@@ -18,7 +18,7 @@ class Finding extends Model
 
     public function comments() : HasMany 
     {
-    	return $this->hasMany(App\Models\Comment::class, 'finding_id', 'id');
+    	return $this->hasMany(\App\Models\Comment::class, 'finding_id', 'id');
     }
 
     public function boilerplates() 
@@ -33,12 +33,12 @@ class Finding extends Model
 
     public function photos() : HasMany 
     {
-    	return $this->hasMany(App\Models\Photo::class, 'finding_id', 'id');
+    	return $this->hasMany(\App\Models\Photo::class, 'finding_id', 'id');
     }
 
     public function followups() : HasMany 
     {
-    	return $this->hasMany(App\Models\Followup::class, 'finding_id', 'id');
+    	return $this->hasMany(\App\Models\Followup::class, 'finding_id', 'id');
     }
 
     public function has_followup_within_24h()

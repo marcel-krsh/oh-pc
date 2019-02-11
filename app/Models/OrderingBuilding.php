@@ -88,4 +88,11 @@ class OrderingBuilding extends Model
 
         return $auditors;
     }
+
+    public function amenity_inspections()
+    {
+        $amenities = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('unit_id','=',$this->building->building_id)->whereNotNull('building_id')->get();
+
+        return $amenities;
+    }
 }

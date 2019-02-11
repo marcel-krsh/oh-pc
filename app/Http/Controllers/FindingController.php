@@ -384,7 +384,7 @@ class FindingController extends Controller
                 ->with('documents.comments.comments')
                 ->orderBy('updated_at','desc')
                 ->get()->all();
-                
+           
             //get comments that are only on the root of the project
             $comments = Comment::where('project_id',$audit->project_id)
                 ->with('comments')
@@ -396,7 +396,7 @@ class FindingController extends Controller
                 ->orderBy('updated_at','desc')
                 ->get()
                 ->all();
-
+ 
             //get documents that are only on the root of the project or attached to a communication - this is only for auditors to see and above.
             $documents = SyncDocuware::where('project_id',$audit->project_id)
                 ->with('comments')

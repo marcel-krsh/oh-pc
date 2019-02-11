@@ -3997,6 +3997,7 @@ class AuditController extends Controller
         $building_id =  $request->get('building_id');
         $unit_id =  $request->get('unit_id');
         $audit_id =  $request->get('audit_id');
+        $amenity_id =  $request->get('amenity_id');
 
         $new_amenities = $request->get('new_amenities');
 
@@ -4012,7 +4013,7 @@ class AuditController extends Controller
 
         $user = Auth::user();
 
-        if (count($new_amenities)) {
+        if ($new_amenities !== null) {
             foreach ($new_amenities as $new_amenity) { 
                 
                 if($new_amenity['auditor_id']){
@@ -4291,8 +4292,193 @@ class AuditController extends Controller
                 } // end if not project
                 
             } // end foreach amenity
+        }elseif($amenity_id != 0){
+            // we are copying the amenity
+            // 
+            
+            $auditor_color = '';
+            $auditor_initials = '';
+            $auditor_name = '';
+            $auditorid = NULL;
+
+            $amenity_to_copy = AmenityInspection::where('id','=',$amenity_id)->first();
+            
+            if(!$amenity_to_copy){
+                dd("This amenity couldn't be found.");
+            }
+
+            // get amenity type
+            $amenity_type = Amenity::where("id", "=", $amenity_to_copy->amenity_id)->first();
+
+            $name = $amenity_type->amenity_description;
+
+            // save new amenity
+            if($unit_id){
+
+                $unitamenity = new UnitAmenity([
+                    'unit_id' => $unit_id,
+                    'amenity_id' => $amenity_type->id,
+                    'comment' => 'manually added by '.Auth::user()->id
+                ]);
+                $unitamenity->save();
+
+                $amenity = new AmenityInspection([
+                        'audit_id' => $audit->audit_id,
+                        'unit_id' => $unit_id,
+                        'amenity_id' => $amenity_type->id,
+                        'auditor_id' => $auditorid
+                    ]);
+                $amenity->save();
+
+                // latest ordering
+                $latest_ordering = OrderingAmenity::where('user_id','=',Auth::user()->id)
+                                                    ->where('audit_id','=',$audit->audit_id)
+                                                    ->where('unit_id', '=', $unit_id)
+                                                    ->orderBy('order', 'desc')
+                                                    ->first()
+                                                    ->order;
+                // save the ordering
+                $ordering = new OrderingAmenity([
+                    'user_id' => Auth::user()->id,
+                    'audit_id' => $audit->audit_id,
+                    'unit_id' => $unit_id,
+                    'amenity_id' => $amenity_type->id,
+                    'amenity_inspection_id' => $amenity->id,
+                    'order' => $latest_ordering+1
+                ]);
+                $ordering->save();
+                
+
+            }elseif($building_id){
+
+                $buildingamenity = new BuildingAmenity([
+                    'building_id' => $building_id,
+                    'amenity_id' => $amenity_type->id,
+                    'comment' => 'manually added by '.Auth::user()->id
+                ]);
+                $buildingamenity->save();
+
+                $amenity = new AmenityInspection([
+                        'audit_id' => $audit->audit_id,
+                        'building_id' => $building_id,
+                        'amenity_id' => $amenity_type->id,
+                        'auditor_id' => $auditorid
+                    ]);
+                $amenity->save();
+
+                // latest ordering
+                $latest_ordering = OrderingAmenity::where('user_id','=',Auth::user()->id)
+                                                    ->where('audit_id','=',$audit->audit_id)
+                                                    ->where('building_id', '=', $building_id)
+                                                    ->orderBy('order', 'desc')
+                                                    ->first()
+                                                    ->order;
+                // save the ordering
+                $ordering = new OrderingAmenity([
+                    'user_id' => Auth::user()->id,
+                    'audit_id' => $audit->audit_id,
+                    'building_id' => $building_id,
+                    'amenity_id' => $amenity_type->id,
+                    'amenity_inspection_id' => $amenity->id,
+                    'order' => $latest_ordering+1
+                ]);
+                $ordering->save();
+
+            }
+
+            $amenities = OrderingAmenity::where('audit_id', '=', $audit->audit_id)->where('user_id', '=', Auth::user()->id);
+            if ($unit_id) {
+                $amenities = $amenities->where('unit_id', '=', $unit_id);
+            }elseif($building_id){
+                $amenities = $amenities->where('building_id', '=', $building_id);
+                $amenities = $amenities->whereNull('unit_id');
+            }
+            $amenities = $amenities->orderBy('order', 'asc')->with('amenity')->get(); //->pluck('amenity')->flatten()
+
+            $data_amenities = array();
+
+            // manage name duplicates, number them based on their id
+            $amenity_names = array();
+            foreach($amenities as $amenity){
+                $amenity_names[$amenity->amenity->amenity_description][] = $amenity->amenity_inspection_id;
+            }
+
+            foreach($amenities as $amenity){
+
+                if($amenity->amenity_inspection->auditor_id !== NULL){
+                    $auditor_initials = $amenity->amenity_inspection->user->initials();
+                    $auditor_name = $amenity->amenity_inspection->user->full_name();
+                    $auditor_id = $amenity->amenity_inspection->user->id;
+                    $auditor_color = $amenity->amenity_inspection->user->badge_color;
+                }else{
+                    $auditor_initials = '<i class="a-avatar-plus_1"></i>';
+                    $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
+                    $auditor_color = '';
+                    $auditor_id = 0;
+                }
+
+                if($amenity->amenity_inspection->completed_date_time == NULL){
+                    $completed_icon = "a-circle";
+                }else{
+                    $completed_icon = "a-circle-checked ok-actionable";
+                }
+
+                if($amenity->amenity->file == 1){
+                    $status = " fileaudit";
+                }else{
+                    $status = " siteaudit";
+                }
+
+                // check for name duplicates and assign a #
+                $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
+                if($key > 0){
+                    $key = $key + 1;
+                    $name = $amenity->amenity->amenity_description." ".$key;
+                }else{
+                    $name = $amenity->amenity->amenity_description;
+                }
+
+                if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit->audit_id)->count()){
+                    $has_findings = 1;
+                }else{
+                    $has_findings = 0;
+                }
+
+                $data_amenities[] = [
+                    "id" => $amenity->amenity_inspection_id,
+                    "audit_id" => $amenity->audit_id,
+                    "name" => $name,
+                    "status" => $status,
+                    "auditor_id" => $auditor_id,
+                    "auditor_initials" => $auditor_initials,
+                    "auditor_name" => $auditor_name,
+                    "auditor_color" => $auditor_color,
+                    "finding_nlt_status" => '',
+                    "finding_lt_status" =>'',
+                    "finding_sd_status" =>'',
+                    "finding_photo_status" =>'',
+                    "finding_comment_status" =>'',
+                    "finding_copy_status" =>'',
+                    "finding_trash_status" =>'',
+                    "building_id" => $building_id,
+                    "unit_id" => $amenity->unit_id,
+                    "completed_icon" => $completed_icon,
+                    "has_findings" => $has_findings
+                ];
+            }
+
+            $data['amenities'] = $data_amenities;
+
+            // TBD update amenity totals?
+
+            // reload auditor names at the unit and building row levels
+            $reload_auditors = $this->reload_auditors($audit->audit_id, $unit_id, $building_id);
+            $unit_auditors = $reload_auditors['unit_auditors'];
+            $building_auditors = $reload_auditors['building_auditors'];
+
+            $data['auditor'] = ["unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $unit_id, "building_id" => $building_id];
+
         }
-            //dd($data);
         return $data;
     }
 

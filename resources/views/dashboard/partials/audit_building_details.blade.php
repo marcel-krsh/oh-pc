@@ -129,7 +129,6 @@
 											<div class="uk-width-2-5 uk-padding-remove uk-margin-small-top">
 												<div uk-grid>
 									            	<div class="uk-width-1-1 findings-icons"  style="margin-top: 0px;" uk-grid> 
-									            		
 									            		<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_file_status}}">
 									            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'file');">
 																<i class="a-folder"></i>
@@ -141,7 +140,6 @@
 																	@endif
 																</div>
 															</div>
-															
 														</div>
 														
 														<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_nlt_status}}">
@@ -156,6 +154,7 @@
 																</div>
 															</div>
 														</div>
+
 														<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_lt_status}}">
 															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'lt');">
 																<i class="a-skull"></i>
@@ -189,8 +188,8 @@
 										<div uk-grid class="area-status-list">
 										    @foreach($detail->unit->amenities_and_findings() as $amenity)
 												@if($loop->iteration < 9)
-											    <div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top area-status colored @if($amenity['status'] != '') area-status-{{$amenity['status']}} @endif ">
-											    	<span class="uk-badge">@if($amenity['findings_total'] == 0) <i class="a-check"></i> @else {{$amenity['findings_total']}} @endif</span>
+											    <div class="uk-width-1-3 use-hand-cursor uk-padding-remove-top uk-margin-remove-top area-status colored @if($amenity['status'] != '') area-status-{{$amenity['status']}} @endif "  onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'all', {{$amenity['id']}});">
+											    	<span class="uk-badge">@if($amenity['completed'] == 1) <i class="a-check"></i> @else {{$amenity['findings_total']}} @endif</span>
 											    	{{$amenity['name']}}
 											    </div>
 											    @else

@@ -175,6 +175,7 @@
 					'building_id' : '{{$data['building_id']}}',
 					'unit_id' : '{{$data['unit_id']}}',
 					'new_amenities' : newAmenities,
+					'amenity_id' : 0,
 					'_token' : '{{ csrf_token() }}'
 				}, function(data) {
 				@if($data['project_id'] && $data['building_id']=='' && $data['unit_id']=='')

@@ -116,6 +116,7 @@ class CachedUnit extends Model
                 $completed = 1;
 
                 $output_completed[] = [
+                    "id" => $amenity->id,
                     "findings_total" => $amenity->findings_total(),
                     "name" => $name,
                     "status" => $status,
@@ -125,6 +126,7 @@ class CachedUnit extends Model
                 $completed = 0;
 
                 $output[] = [
+                    "id" => $amenity->id,
                     "findings_total" => $amenity->findings_total(),
                     "name" => $name,
                     "status" => $status,
@@ -136,7 +138,10 @@ class CachedUnit extends Model
         }
 
         // prioritize not completed amenities
-        array_push($output, $output_completed);
+        foreach($output_completed as $o){
+            $output[] = $o;
+        }
+        
         $output = array_filter($output); // remove empty elements
 
         return $output;
