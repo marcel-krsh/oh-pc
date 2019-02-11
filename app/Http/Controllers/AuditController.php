@@ -613,11 +613,11 @@ class AuditController extends Controller
 
         //dd($comment, $amenity_id, $audit_id, $building_id, $unit_id);
         /*
-        null
-        "6217"
+        "blah"
+        "6230"
         "6410"
-        "16724"
-        "null"
+        "16725"
+        "0"
          */
 
         $project_id = Audit::where('id','=',$audit_id)->first()->project_id;
@@ -627,7 +627,7 @@ class AuditController extends Controller
             return 0;
         }else{
             
-            if($unit_id != "null" && $unit_id !== NULL){
+            if($unit_id != "null" && $unit_id !== NULL && $unit_id != 0){
                 // dd("unit", $comment, $amenity_id, $audit_id, $building_id, $unit_id);
 
 
