@@ -2,6 +2,9 @@
 		<div class="uk-modal-title uk-remove-margin"> <i class=" a-circle-plus"></i> {{$findingtypeid->name}}<small><i class="uk-margin-left a-info-circle" uk-tooltip="title:Tied to HUD Areas<br > @foreach($findingtypeid->huds() as $hud) {{$hud->name}} @endforeach <br >Nominal Item Weight {{$findingtypeid->nominal_item_weight}} <br >Criticality {{$findingtypeid->criticality}}; pos:bottom"></i></small><h4 style="line-height: 0px; margin-top: 10px; margin-left: 35px;">ON {{strtoupper($amenityinspectionid->amenity->amenity_description)}}  {{$amenityincrement}}</h4></div>
 		
 	</div>
+	<form id="add-finding-form" method="post">
+		<input type="hidden" name="amenity_inspection_id" value="{{$amenityinspectionid->id}}">
+		<input type="hidden" name="finding_type_id" value="{{$findingtypeid->id}}">
 	<hr class="dashed-hr uk-margin-bottom">
 	<div class="uk-form">
 		<div class="uk-form-row">
@@ -40,11 +43,11 @@
 	    		
 	    	</div>
 	    	<div class="uk-width-1-2">
-	    		<button class="uk-button uk-button-success uk-width-1-1" onclick="saveFinding();"><i class="a-file-pen"></i> SAVE FINDING</button>
+	    		<button class="uk-button uk-button-success uk-width-1-1" onclick="saveFinding(event);"><i class="a-file-pen"></i> SAVE FINDING</button>
 	    	</div>
 	    </div>
 	</div>
-
+	</form>
 	<script type="text/javascript">
 		// set cursor focus to the end of the current comment:
 		var input = $("#finding-comment");
@@ -58,4 +61,25 @@
 			input[0].selectionStart = input[0].selectionEnd = input.val().length;
 
 		}
-	</script>
+
+
+	function saveFinding(e){
+		e.preventDefault();
+		var form = $('#add-finding-form');
+
+		$.post("/findings/create", {
+            'inputs' : form.serialize(),
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            if(data!=1){ 
+                UIkit.modal.alert(data,{stack: true});
+            } else {
+                dynamicModalClose();
+	            UIkit.notification('<span uk-icon="icon: check"></span> Finding Saved', {pos:'top-right', timeout:1000, status:'success'});
+	            $('#finding-modal-audit-stream-refresh').trigger('click');
+            
+            }
+        } );
+	}
+
+ </script>

@@ -51,7 +51,139 @@ class FindingController extends Controller
 
     public function addFinding(Request $request){
         if(Auth::user()->auditor_access()){
-            dd($findingtypeid, $amenityinspectionid);
+            $inputs = $request->input('inputs');
+            parse_str($inputs, $inputs);
+            // make sure we have what we need
+            $error = '';
+            if(!is_int($input['finding_type_id']){
+                $error .= '<p>I am having trouble with the finding type you selected. Please refresh your page and try again.</p>';
+            }
+            if(!is_int($input['amenity_inspection_id']){
+                $error .= '<p>I am having trouble with the amenity you selected. Please refresh your page and try again.</p>';
+            }
+            if(!is_int($input['level']){
+                $error .= '<p>Please select a level.</p>';
+            }
+
+            if($error != ''){
+
+                return $error;
+
+            }else{
+                // passed initial error checking - lets get the data
+                $findingType = FindingType::find($inputs['finding_type_id']);
+                $amenityInspection = AmenityInspection::find($inputs['amenity_inspection_id']);
+
+                // Check to make sure that we got that data
+                if(is_null($findingType)){
+                    $error .= '<p>I was not able to identify the finding type you selected. This is not your fault! </p><p>Please notify your admin that you tried to add finding type id '.$input['finding_type_id'].' and it gave you this error:<br /> FindingController: Error #79<p>';
+                }
+                if(is_null($AmenityInspection)){
+                    $error .= '<p>I was not able to identify the amenity you selected. It is possible it was deleted while you were working on it by another user.</p><p>Please refresh your screen by closing the inpsection and reopening it. If you still see the amenity there, still try clicking on it to add a finding again, as it may be been deleted and re-added with a new identifier.</p><p>If that does not work, please notify your admin that you tried to add a finding to amenity inspection id '.$input['amenity_inspection_id'].' and it gave you this error:<br /> FindingController: Error #82<p>';
+                }
+
+                if($error != ''){
+                    return $error;
+                } else {
+                    // we have the goods - let's store this bad boy!
+                    $errors = ''; // tracking errors to return to user.
+                    $finding = Finding::insert([
+                                'date_of_fiding' => date('',$input['date']),
+                                'owner_organization_id' => $amenityInspection->owner_organization_id(),
+                                'pm_organization_id' => $amenityInspection->pm_organization_id(),
+                                'user_id' => Auth::user()->id,
+                                'audit_id' => $amenityInspection->audit_id,
+                                'project_id' => $amenityInspection->project_id,
+                                'building_id' => $amenityInspection->building_id,
+                                'unit_id' => $amenityInspection->unit_id,
+                                'finding_type_id' => $findingType->id,
+                                'amenity_id' => $amenityInspection->amenity_id,
+                                'amenity_inspection_id' => $amenityInspection->id,
+                                'weight' => $findingType->nominal_item_weight,
+                                'criticality' => $findingType->crticality,
+                                'level'=> $input['level'],
+                                'site'=> $findingType->site,
+                                'building_system' => $findingType->building_system,
+                                'building_exterior' => $findingType->building_exterior,
+                                'common_area'=> $findingType->common_area,
+                                'allita_type' => $findingType->allita_type,
+                                'finding_status_id' => 1,
+                                ]);
+                    // save comment if there is one:
+                    if(strlen($inputs['comment']) > 0){
+                        // there was text entered - create the comment and attach it to the finding
+                        Comment::insert([
+                            'user_id' => Auth::user()->id,
+                            'audit_id' => $AmenityInspection->audit_id,
+                            'finding_id' => $finding->id,
+                            'comment' => $inputs['comment'],
+                            'recorded_date' => date('',$input['date'])
+                        ]);
+
+                    }
+                    // put in default follow-ups
+                    if($findingType->has_default_follow_ups()){
+                        $errors = '';
+                        foreach ($findingType->default_follow_ups() as $fu) {
+                            // set assignee
+                            switch ($fu->assignment) {
+                                case 'pm':
+                                    $assigned_user_id = "???";# code...
+                                    break;
+
+                                case 'lead':
+                                    $assigned_user_id = "???";
+                                    break;
+                                
+                                case 'user':
+                                    $assigned_user_id = Auth::user()->id;
+                                    break;
+
+                                default:
+                                    $error .= '<p>Sorry, the default follow-up with id '.$fu->id.' could not be created because the default asigned user was not defined.</p> <p>FindingController Error #143</p>'
+                                    break;
+                            }
+                            // set due date
+                            $today = new DateTime(date("Y-m-d H:i:s",time()));
+                            $due = $today->modify("+ {$fu->quantity} {$fu->duration}");
+
+                            // reply photo doc doc_categories <--- reference to columns in table
+
+                            if($error == ''){
+                                Followup::insert([
+                                    'created_by_user_id' => Auth::user()->id,
+                                    'assigned_to_user' => $assigned_user_id,
+                                    'date_due' => $due, 
+                                    'finding_id' => $finding->id,
+                                    'project_id' =>$amenityInspection->project_id,
+                                    'audit_id' => $amenityInspection->audit_id,
+                                    'comment_type' => $fu->reply,
+                                    'document_type' => $fu->doc,
+                                    'document_categories' => $fu->doc_categories,
+                                    'photo_type' => $fu->photo,
+                                    'description' => $fu->description
+                                ]);
+                            } else { 
+                                $errors .= $error;
+                                $error = ''; // reset this so it can do all folow-ups even if this one is bad.
+                            }
+                        }
+
+                    }
+                    if($errors == ''){
+                            // no errors
+                            return '<h2>Added finding to the project.</h2> 
+                                    <script> // close the stacked modal but leave open the add finding. Refresh the findings list. 
+
+                                    </script>';
+                        } else {
+                            return '<h2>I added the finding but...</h2>
+                                    <p>One or more of the default follow-ups had erors- please see below and send this information to your admin.</p>
+                            '.$errors;
+                        }
+                }
+            }
+            //dd($inputs['finding_type_id'],$inputs['amenity_inspection_id'],$inputs['comment'],$inputs['level']);
             // return form with boilerplates assigned?
         }else{
             return "Sorry, you do not have permission to access this page.";
