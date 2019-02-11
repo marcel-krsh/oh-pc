@@ -1,6 +1,5 @@
 <div class="modal-findings-right" uk-filter="target: .js-findings">
-	<img src="images/fpo_finding.png" style="width: 100%;">
-	<div style="display:none">
+	
 		<div class="modal-findings-right-top">
 		    <div class="uk-width-1-1 filter-button-set-right" uk-grid>
 		        <div class="uk-width-1-5 uk-active findinggroup" uk-filter-control="filter: [data-finding-filter*='my-finding']; group: findingfilter;">
@@ -115,5 +114,5 @@
 				</div>
 			</div>
 		</div>
-	</div>
+
 </div>
