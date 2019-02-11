@@ -5,8 +5,7 @@
          <table class="uk-table uk-table-striped uk-table-condensed uk-table-hover gray-link-table" id="">
           <thead >
               <tr class="uk-text-small" style="color:#fff;background-color:#555;">
-                <th>CLASS</th>
-                <th>DESCRIPTION</th><th>FROM</th><th>STORED</th>
+                <th>CLASS: DESCRIPTION</th><th>TYPE</th><th>STORED</th>
                 <th>MODIFIED</th>
 
                 <th width="110">ACTIONS</th>
@@ -18,14 +17,12 @@
         <tr class="{{strtolower(str_replace(' ','-',$document->document_class))}} {{str_replace(' ','-',strtolower($document->document_description))}}">
             
             <td>
-                {{ucwords(strtolower($document->document_class))}}
-            </td>
-            <td>
+                {{ucwords(strtolower($document->document_class))}} : 
                 {{ucwords(strtolower($document->document_description))}}
             </td>
             <td>
                 <!-- FROM -->
-                NA
+                {{$document->dw_extension}}
             </td>
             <td><span uk-tooltip title="{{ date('g:h a', strtotime($document->dw_stored_date_time)) }}">{{ date('m/d/Y', strtotime($document->dw_stored_date_time)) }}</span></td>
             <td><span uk-tooltip title="{{ date('g:h a', strtotime($document->dw_mod_date_time)) }}">{{ date('m/d/Y', strtotime($document->dw_mod_date_time)) }}</td>
@@ -36,6 +33,12 @@
                 </a>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
                 @endcan
+                @if($document->dw_extension == '.dwtiff' || $document->dw_extension == '.tif' || $document->dw_extension == '.DWTIFF' || $document->dw_extension == '.tiff' || $document->dw_extension == '.TIF' ||$document->dw_extension == '.TIFF' )
+                    <?php $url = "http://docuware/DocuWare/Platform/WebClient/NTLM/1/Integration?fc={$document->cabinet_id}&did={$document->docuware_doc_id}&p=V"; 
+                    ?>
+                @else
+                     <?php $url = "/document/{$document->docuware_doc_id}"; ?>
+                @endif
                 <a href="/document/{{$document->docuware_doc_id}}" target="_blank"  uk-tooltip="Download file.">
                     <span class="a-lower"></span>
                 </a>
