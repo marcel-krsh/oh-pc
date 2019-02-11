@@ -45,7 +45,7 @@
 	?>
 </script>
 <div id="modal-findings" class="uk-margin-top" style="height: 90%" >
-	@include('audit_stream.audit_stream');
+	@include('audit_stream.audit_stream')
 
 
 	<div class="modal-findings-left" uk-filter="target: .js-filter-findings">

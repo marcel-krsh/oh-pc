@@ -380,8 +380,6 @@ class FindingController extends Controller
                 ->with('followups.photos')
                 ->with('followups.photos.comments')
                 ->with('followups.photos.comments.comments')
-                ->with('documents')
-                ->with('documents.comments')
                 ->orderBy('updated_at','desc')
                 ->get()->all();
 
