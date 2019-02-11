@@ -68,10 +68,46 @@ class FindingsEvent
 
             if($finding->building_id){
                 $building = CachedBuilding::where('building_id','=',$finding->building_id)->where('audit_id','=',$finding->audit_id)->first();
+                $finding_total = $building->finding_total;
+
+                if($type == "file"){
+                    $finding_file_total = $building->finding_file_total;
+                    $building->finding_file_total = $finding_file_total + 1;
+                    $building->finding_total = $finding_total + 1;
+                    $building->save();
+                }elseif($type == "nlt"){
+                    $finding_nlt_total = $building->finding_nlt_total;
+                    $building->finding_nlt_total = $finding_nlt_total + 1;
+                    $building->finding_total = $finding_total + 1;
+                    $building->save();
+                }elseif($type == "lt"){
+                    $finding_lt_total = $building->finding_lt_total;
+                    $building->finding_lt_total = $finding_lt_total + 1;
+                    $building->finding_total = $finding_total + 1;
+                    $building->save();
+                }
 
             }
             if($finding->unit_id){
                 $unit = CachedUnit::where('unit_id','=',$finding->unit_id)->where('audit_id','=',$finding->audit_id)->first();
+                $finding_total = $unit->finding_total;
+
+                if($type == "file"){
+                    $finding_file_total = $unit->finding_file_total;
+                    $unit->finding_file_total = $finding_file_total + 1;
+                    $unit->finding_total = $finding_total + 1;
+                    $unit->save();
+                }elseif($type == "nlt"){
+                    $finding_nlt_total = $unit->finding_nlt_total;
+                    $unit->finding_nlt_total = $finding_nlt_total + 1;
+                    $unit->finding_total = $finding_total + 1;
+                    $unit->save();
+                }elseif($type == "lt"){
+                    $finding_lt_total = $unit->finding_lt_total;
+                    $unit->finding_lt_total = $finding_lt_total + 1;
+                    $unit->finding_total = $finding_total + 1;
+                    $unit->save();
+                }
             }
         }
         
