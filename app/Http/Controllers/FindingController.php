@@ -55,13 +55,13 @@ class FindingController extends Controller
             parse_str($inputs, $inputs);
             // make sure we have what we need
             $error = '';
-            if(!is_int($input['finding_type_id']){
+            if(!is_int($input['finding_type_id'])){
                 $error .= '<p>I am having trouble with the finding type you selected. Please refresh your page and try again.</p>';
             }
-            if(!is_int($input['amenity_inspection_id']){
+            if(!is_int($input['amenity_inspection_id'])){
                 $error .= '<p>I am having trouble with the amenity you selected. Please refresh your page and try again.</p>';
             }
-            if(!is_int($input['level']){
+            if(!is_int($input['level'])){
                 $error .= '<p>Please select a level.</p>';
             }
 
@@ -140,7 +140,7 @@ class FindingController extends Controller
                                     break;
 
                                 default:
-                                    $error .= '<p>Sorry, the default follow-up with id '.$fu->id.' could not be created because the default asigned user was not defined.</p> <p>FindingController Error #143</p>'
+                                    $error .= '<p>Sorry, the default follow-up with id '.$fu->id.' could not be created because the default asigned user was not defined.</p> <p>FindingController Error #143</p>';
                                     break;
                             }
                             // set due date
