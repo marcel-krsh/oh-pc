@@ -46,6 +46,10 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\UpdateListener',
         ],
 
+        'finding.created' => [
+            'App\Events\FindingsEvent@findingCreated'
+        ],
+
     ];
 
     /**

@@ -16,6 +16,15 @@ class Finding extends Model
     //
     protected $guarded = ['id'];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($finding) {
+            Event::fire('finding.created', $audit);
+        });
+    }
+
     public function comments() : HasMany 
     {
     	return $this->hasMany(\App\Models\Comment::class, 'finding_id', 'id');
