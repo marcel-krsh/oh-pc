@@ -2087,17 +2087,159 @@ class AuditController extends Controller
         session(['audit-'.$audit->id.'-selection_summary' => $selection_summary]);
 
         $programs = array();
+        $program_keys_list = '';
         foreach($selection_summary['programs'] as $p){
             if($p['pool'] > 0){
                 $programs[] = [
                     "id" => $p['group'], 
                     "name" => $p['name']
                 ];
+                if($program_keys_list != ''){ 
+                    $program_keys_list = $program_keys_list.",";
+                }
+                $program_keys_list = $program_keys_list.$p['program_keys'];
             }
         }
 
         if($program_id == 0){
+            // get all the programs
             
+            $data = [
+                "project" => [
+                    'id' => $project->id
+                ]
+            ];
+
+            $stats = $audit->stats_compliance();
+            //dd($stats);
+
+            $summary_required = 0;
+            $summary_selected = 0;
+            $summary_needed = 0;
+            $summary_inspected = 0;
+            $summary_to_be_inspected = 0;
+            $summary_optimized_remaining_inspections = 0;
+            $summary_optimized_sample_size = 0;
+            $summary_optimized_completed_inspections = 0;
+
+            $summary_required_file = 0;
+            $summary_selected_file = 0;
+            $summary_needed_file = 0;
+            $summary_inspected_file = 0;
+            $summary_to_be_inspected_file = 0;
+            $summary_optimized_remaining_inspections_file = 0;
+            $summary_optimized_sample_size_file = 0;
+            $summary_optimized_completed_inspections_file = 0;
+
+            // create stats for each group
+            // build the dataset for the chart
+            $datasets = array();
+            foreach($selection_summary['programs'] as $program){
+
+                // count selected units using the list of program ids
+                $program_keys = explode(',', $program['program_keys']); 
+                $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
+                $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
+
+                $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
+                $needed_units_file = $program['totals_after_optimization'] - $selected_units_file;
+
+                $unit_keys = $program['units_after_optimization']; 
+                $inspected_units_site = UnitInspection::whereIn('unit_key', $unit_keys)
+                            ->where('audit_id', '=', $audit->id)
+                            ->where('group_id', '=', $program['group'])
+                            // ->whereHas('amenity_inspections', function($query) {
+                            //     $query->where('completed_date_time', '!=', null);
+                            // })
+                            ->where('is_site_visit', '=', 1)
+                            ->where('complete', '!=', NULL)
+                            ->count();
+
+                $inspected_units_file = UnitInspection::whereIn('unit_key', $unit_keys)
+                            ->where('audit_id', '=', $audit->id)
+                            ->where('group_id', '=', $program['group'])
+                            ->where('is_file_audit', '=', 1)
+                            ->where('complete', '!=', NULL)
+                            ->count();
+
+                $to_be_inspected_units_site = $program['totals_after_optimization'] - $inspected_units_site;
+                $to_be_inspected_units_file = $program['totals_after_optimization'] - $inspected_units_file;
+
+                $data['programs'][] = [
+                    'id' => $program['group'],
+                    'name' => $program['name'],
+                    'pool' => $program['pool'],
+                    'comments' => $program['comments'],
+                    'user_limiter' => $program['use_limiter'],
+                    'totals_after_optimization' => $program['totals_after_optimization'],
+                    'units_before_optimization' => $program['units_before_optimization'],
+                    'totals_before_optimization' => $program['totals_before_optimization'],
+                    'required_units' => $program['totals_after_optimization'],
+                    'selected_units' => $selected_units_site,
+                    'needed_units' => $needed_units_site,
+                    'inspected_units' => $inspected_units_site,
+                    'to_be_inspected_units' => $to_be_inspected_units_site,
+                    'required_units_file' => $program['totals_after_optimization'],
+                    'selected_units_file' => $selected_units_file,
+                    'needed_units_file' => $needed_units_file,
+                    'inspected_units_file' => $inspected_units_file,
+                    'to_be_inspected_units_file' => $to_be_inspected_units_file
+                ];
+
+                $datasets[] = [
+                    "program_name" => $program['name'],
+                    "required" => $program['totals_after_optimization'],
+                    "selected" => $selected_units_site+$selected_units_file,
+                    "needed" => $needed_units_site+$needed_units_file
+                ];
+
+                $summary_required = $summary_required + $program['totals_before_optimization'];
+                $summary_selected = $summary_selected + $selected_units_site;
+                $summary_needed = $summary_needed + $needed_units_site;
+                $summary_inspected = $summary_inspected + $inspected_units_site;
+                $summary_to_be_inspected = $summary_to_be_inspected + $to_be_inspected_units_site;
+
+                $summary_optimized_sample_size = $summary_optimized_sample_size + $program['totals_after_optimization'];
+                $summary_optimized_completed_inspections = $summary_optimized_completed_inspections + $inspected_units_site;
+                $summary_optimized_remaining_inspections = $summary_optimized_sample_size - $summary_optimized_completed_inspections;
+
+                $summary_required_file = $summary_required_file + $program['totals_before_optimization'];
+                $summary_selected_file = $summary_selected_file + $selected_units_file;
+                $summary_needed_file = $summary_needed_file + $needed_units_file;
+                $summary_inspected_file = $summary_inspected_file + $inspected_units_file;
+                $summary_to_be_inspected_file = $summary_to_be_inspected_file + $to_be_inspected_units_file;
+                $summary_optimized_sample_size_file = $summary_optimized_sample_size_file + $program['totals_after_optimization'];
+                $summary_optimized_completed_inspections_file = $summary_optimized_completed_inspections_file + $inspected_units_file;
+                $summary_optimized_remaining_inspections_file = $summary_optimized_sample_size_file - $summary_optimized_completed_inspections_file;
+
+            }
+
+            $data['summary'] = [
+                    'required_units' => $summary_required,
+                    'selected_units' => $summary_selected,
+                    'needed_units' => $summary_needed,
+                    'inspected_units' => $summary_inspected,
+                    'to_be_inspected_units' => $summary_to_be_inspected,
+                    'optimized_sample_size' => $summary_optimized_sample_size,
+                    'optimized_completed_inspections' => $summary_optimized_completed_inspections,
+                    'optimized_remaining_inspections' => $summary_optimized_remaining_inspections,
+                    'required_units_file' => $summary_required_file,
+                    'selected_units_file' => $summary_selected_file,
+                    'needed_units_file' => $summary_needed_file,
+                    'inspected_units_file' => $summary_inspected_file,
+                    'to_be_inspected_units_file' => $summary_to_be_inspected_file,
+                    'optimized_sample_size_file' => $summary_optimized_sample_size_file,
+                    'optimized_completed_inspections_file' => $summary_optimized_completed_inspections_file,
+                    'optimized_remaining_inspections_file' => $summary_optimized_remaining_inspections_file
+            ];
+
+    
+            // get all the units
+            $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)->with('unit', 'program', 'unit.building.address')->orderBy('unit_id','asc')->get();
+
+
+            return view('modals.project-summary-composite', compact('data', 'project', 'audit' , 'programs', 'unitprograms', 'datasets'));
+
         }else{
             //dd($selection_summary['programs'][$program_id-1]);
 
@@ -2165,92 +2307,94 @@ class AuditController extends Controller
             // TBD something is missing here. We selected all the programs for that units, ignoring the SystemSettings???
 
             $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)->with('unit', 'program', 'unit.building.address')->orderBy('unit_id','asc')->get();
+
+            $data = collect([
+                'project' => [
+                    "id" => $project->id,
+                    "name" => $project->project_name,
+                    'selected_program' => $program_id
+                ],
+                'programs' => [
+                    ["id" => 1, "name" => "Program Name 1"],
+                    ["id" => 2, "name" => "Program Name 2"],
+                    ["id" => 3, "name" => "Program Name 3"],
+                    ["id" => 4, "name" => "Program Name 4"]
+                ],
+                'units' => [
+                    [
+                        "id" => 1,
+                        "status" => "not-inspectable",
+                        "address" => "123457 Silvegwood Street",
+                        "address2" => "#102",
+                        "move_in_date" => "1/29/2018",
+                        "programs" => [
+                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "not-inspectable" ],
+                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "not-inspectable" ]
+                        ]
+                    ],
+                    [
+                        "id" => 2,
+                        "status" => "inspectable",
+                        "address" => "123457 Silvegwood Street",
+                        "address2" => "#102",
+                        "move_in_date" => "1/29/2018",
+                        "programs" => [
+                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "", "file_audit_checked" => "", "selected" => "", "status" => "inspectable" ],
+                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "", "file_audit_checked" => "", "selected" => "", "status" => "not-inspectable" ]
+                        ]
+                    ],
+                    [
+                        "id" => 2,
+                        "status" => "inspectable",
+                        "address" => "123457 Silvegwood Street",
+                        "address2" => "#102",
+                        "move_in_date" => "1/29/2018",
+                        "programs" => [
+                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "", "file_audit_checked" => "", "selected" => "", "status" => "not-inspectable" ],
+                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "", "file_audit_checked" => "", "selected" => "", "status" => "inspectable" ]
+                        ]
+                    ],
+                    [
+                        "id" => 2,
+                        "status" => "inspectable",
+                        "address" => "123457 Silvegwood Street",
+                        "address2" => "#102",
+                        "move_in_date" => "1/29/2018",
+                        "programs" => [
+                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "inspectable" ],
+                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "inspectable" ]
+                        ]
+                    ],
+                    [
+                        "id" => 2,
+                        "status" => "inspectable",
+                        "address" => "123457 Silvegwood Street",
+                        "address2" => "#102",
+                        "move_in_date" => "1/29/2018",
+                        "programs" => [
+                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "inspectable" ],
+                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "inspectable" ]
+                        ]
+                    ],
+                    [
+                        "id" => 2,
+                        "status" => "inspectable",
+                        "address" => "123457 Silvegwood Street",
+                        "address2" => "#102",
+                        "move_in_date" => "1/29/2018",
+                        "programs" => [
+                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "inspectable" ],
+                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "not-inspectable" ]
+                        ]
+                    ]
+                ]
+            ]);
+            
+            return view('modals.project-summary', compact('data', 'project', 'stats', 'programs', 'unitprograms'));
         }
         
         
-        $data = collect([
-            'project' => [
-                "id" => $project->id,
-                "name" => $project->project_name,
-                'selected_program' => $program_id
-            ],
-            'programs' => [
-                ["id" => 1, "name" => "Program Name 1"],
-                ["id" => 2, "name" => "Program Name 2"],
-                ["id" => 3, "name" => "Program Name 3"],
-                ["id" => 4, "name" => "Program Name 4"]
-            ],
-            'units' => [
-                [
-                    "id" => 1,
-                    "status" => "not-inspectable",
-                    "address" => "123457 Silvegwood Street",
-                    "address2" => "#102",
-                    "move_in_date" => "1/29/2018",
-                    "programs" => [
-                        ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "not-inspectable" ],
-                        ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "not-inspectable" ]
-                    ]
-                ],
-                [
-                    "id" => 2,
-                    "status" => "inspectable",
-                    "address" => "123457 Silvegwood Street",
-                    "address2" => "#102",
-                    "move_in_date" => "1/29/2018",
-                    "programs" => [
-                        ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "", "file_audit_checked" => "", "selected" => "", "status" => "inspectable" ],
-                        ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "", "file_audit_checked" => "", "selected" => "", "status" => "not-inspectable" ]
-                    ]
-                ],
-                [
-                    "id" => 2,
-                    "status" => "inspectable",
-                    "address" => "123457 Silvegwood Street",
-                    "address2" => "#102",
-                    "move_in_date" => "1/29/2018",
-                    "programs" => [
-                        ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "", "file_audit_checked" => "", "selected" => "", "status" => "not-inspectable" ],
-                        ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "", "file_audit_checked" => "", "selected" => "", "status" => "inspectable" ]
-                    ]
-                ],
-                [
-                    "id" => 2,
-                    "status" => "inspectable",
-                    "address" => "123457 Silvegwood Street",
-                    "address2" => "#102",
-                    "move_in_date" => "1/29/2018",
-                    "programs" => [
-                        ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "inspectable" ],
-                        ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "inspectable" ]
-                    ]
-                ],
-                [
-                    "id" => 2,
-                    "status" => "inspectable",
-                    "address" => "123457 Silvegwood Street",
-                    "address2" => "#102",
-                    "move_in_date" => "1/29/2018",
-                    "programs" => [
-                        ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "inspectable" ],
-                        ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "inspectable" ]
-                    ]
-                ],
-                [
-                    "id" => 2,
-                    "status" => "inspectable",
-                    "address" => "123457 Silvegwood Street",
-                    "address2" => "#102",
-                    "move_in_date" => "1/29/2018",
-                    "programs" => [
-                        ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "inspectable" ],
-                        ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "not-inspectable" ]
-                    ]
-                ]
-            ]
-        ]);
         
-        return view('modals.project-summary', compact('data', 'project', 'stats', 'programs', 'unitprograms'));
     }
 
     public function addAssignmentAuditor($audit_id, $day_id, $auditorid=null)
