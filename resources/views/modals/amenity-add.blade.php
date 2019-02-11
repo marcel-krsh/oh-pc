@@ -148,6 +148,9 @@
         		$("ul#amenity-to-create").append('<li onclick="$(this).remove();" data-auditor="'+auditorId+'" data-amenity="'+amenityId+'">'+amenityName+'</li>');
         	}
         }
+
+        $('#modal-amenity-form-amenity').val('');
+        $('#modal-amenity-form-auditor').val('');
 	}
 
 	function saveAmenity() {
