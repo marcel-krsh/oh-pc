@@ -39,7 +39,7 @@
                 @else
                      <?php $url = "/document/{$document->docuware_doc_id}"; ?>
                 @endif
-                <a href="/document/{{$document->docuware_doc_id}}" target="_blank"  uk-tooltip="Download file.">
+                <a href="{{$url}}" target="_blank"  uk-tooltip="Download file.">
                     <span class="a-lower"></span>
                 </a>
                 @if($document->notes)&nbsp;&nbsp;| &nbsp;&nbsp;<a class="uk-link-muted " uk-tooltip="{{ $document->notes }}">
