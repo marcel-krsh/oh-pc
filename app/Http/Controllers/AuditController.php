@@ -269,10 +269,10 @@ class AuditController extends Controller
         // check circle by the name of amenity to mark amenity complete
 
         $data['menu'] = collect([
-            ['name' => 'SITE AUDIT', 'icon' => 'a-mobile-home', 'status' => 'critical active', 'style' => '', 'action' => 'site_audit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => null],
-            ['name' => 'FILE AUDIT', 'icon' => 'a-folder', 'status' => 'action-required', 'style' => '', 'action' => 'file_audit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => null],
+            ['name' => 'SITE AUDIT', 'icon' => 'a-mobile-home', 'status' => '', 'style' => '', 'action' => 'site_audit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => null],
+            ['name' => 'FILE AUDIT', 'icon' => 'a-folder', 'status' => '', 'style' => '', 'action' => 'file_audit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => null],
             ['name' => 'COMPLETE', 'icon' => 'a-circle-checked', 'status' => '', 'style' => 'margin-top:30px;', 'action' => 'complete', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => null],
-            ['name' => 'SUBMIT', 'icon' => 'a-avatar-star', 'status' => 'in-progress', 'style' => 'margin-top:30px;', 'action' => 'submit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => null]
+            ['name' => 'SUBMIT', 'icon' => 'a-avatar-star', 'status' => '', 'style' => 'margin-top:30px;', 'action' => 'submit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => null]
         ]);
 
         // $data['amenities'] = CachedAmenity::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->get();
