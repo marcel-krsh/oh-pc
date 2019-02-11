@@ -236,7 +236,10 @@ class AuditController extends Controller
 
         $details = OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->with('unit')->get();
 
-        return view('dashboard.partials.audit_building_details', compact('audit', 'target', 'building', 'details', 'targetaudit', 'context'));
+        // swap needs project_id
+        $project_id = CachedAudit::where('audit_id','=',$audit)->first()->project_id;
+
+        return view('dashboard.partials.audit_building_details', compact('audit', 'target', 'building', 'details', 'targetaudit', 'context', 'project_id'));
     }
 
     public function inspectionFromBuilding($audit_id, $building_id, Request $request)
@@ -2066,9 +2069,11 @@ class AuditController extends Controller
 
         return view('dashboard.partials.project-summary-unit', compact('data'));
     }
-    public function modalProjectProgramSummary($project_id, $program_id)
+    public function modalProjectProgramSummary($project_id, $program_id=0)
     {
         // dd($project_id, $program_id); // 45150, 7
+
+        // if program_id == 0 we display all the programs
 
         // units are automatically selected using the selection process
         // then randomize all units before displaying them on the modal
@@ -2091,79 +2096,78 @@ class AuditController extends Controller
             }
         }
 
-        //dd($selection_summary['programs'][$program_id-1]);
+        if($program_id == 0){
 
-        $program = $selection_summary['programs'][$program_id-1];
+        }else{
+            //dd($selection_summary['programs'][$program_id-1]);
 
-        // count selected units using the list of program ids
-        $program_keys = explode(',', $program['program_keys']); 
-        $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
-        $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
+            $program = $selection_summary['programs'][$program_id-1];
 
-        $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
-        $needed_units_file = $program['totals_after_optimization'] - $selected_units_file;
+            // count selected units using the list of program ids
+            $program_keys = explode(',', $program['program_keys']); 
+            $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
+            $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
 
-        $unit_keys = $program['units_after_optimization']; 
-        $inspected_units_site = UnitInspection::whereIn('unit_key', $unit_keys)
-                    ->where('audit_id', '=', $audit->id)
-                    ->where('group_id', '=', $program['group'])
-                    // ->whereHas('amenity_inspections', function($query) {
-                    //     $query->where('completed_date_time', '!=', null);
-                    // })
-                    ->where('is_site_visit', '=', 1)
-                    ->where('complete', '!=', NULL)
-                    ->count();
+            $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
+            $needed_units_file = $program['totals_after_optimization'] - $selected_units_file;
 
-        $inspected_units_file = UnitInspection::whereIn('unit_key', $unit_keys)
-                    ->where('audit_id', '=', $audit->id)
-                    ->where('group_id', '=', $program['group'])
-                    ->where('is_file_audit', '=', 1)
-                    ->where('complete', '!=', NULL)
-                    ->count();
+            $unit_keys = $program['units_after_optimization']; 
+            $inspected_units_site = UnitInspection::whereIn('unit_key', $unit_keys)
+                        ->where('audit_id', '=', $audit->id)
+                        ->where('group_id', '=', $program['group'])
+                        // ->whereHas('amenity_inspections', function($query) {
+                        //     $query->where('completed_date_time', '!=', null);
+                        // })
+                        ->where('is_site_visit', '=', 1)
+                        ->where('complete', '!=', NULL)
+                        ->count();
 
-        $to_be_inspected_units_site = $program['totals_after_optimization'] - $inspected_units_site;
-        $to_be_inspected_units_file = $program['totals_after_optimization'] - $inspected_units_file;
+            $inspected_units_file = UnitInspection::whereIn('unit_key', $unit_keys)
+                        ->where('audit_id', '=', $audit->id)
+                        ->where('group_id', '=', $program['group'])
+                        ->where('is_file_audit', '=', 1)
+                        ->where('complete', '!=', NULL)
+                        ->count();
 
-        $stats = [
-            'id' => $program['group'],
-            'name' => $program['name'],
-            'pool' => $program['pool'],
-            'totals_after_optimization' => $program['totals_after_optimization'],
-            'units_before_optimization' => $program['units_before_optimization'],
-            'totals_before_optimization' => $program['totals_before_optimization'],
-            'required_units' => $program['totals_after_optimization'],
-            'selected_units' => $selected_units_site,
-            'needed_units' => $needed_units_site,
-            'inspected_units' => $inspected_units_site,
-            'to_be_inspected_units' => $to_be_inspected_units_site,
-            'required_units_file' => $program['totals_after_optimization'],
-            'selected_units_file' => $selected_units_file,
-            'needed_units_file' => $needed_units_file,
-            'inspected_units_file' => $inspected_units_file,
-            'to_be_inspected_units_file' => $to_be_inspected_units_file
-        ];
+            $to_be_inspected_units_site = $program['totals_after_optimization'] - $inspected_units_site;
+            $to_be_inspected_units_file = $program['totals_after_optimization'] - $inspected_units_file;
 
-        //$units = $project->units;
+            $stats = [
+                'id' => $program['group'],
+                'name' => $program['name'],
+                'pool' => $program['pool'],
+                'totals_after_optimization' => $program['totals_after_optimization'],
+                'units_before_optimization' => $program['units_before_optimization'],
+                'totals_before_optimization' => $program['totals_before_optimization'],
+                'required_units' => $program['totals_after_optimization'],
+                'selected_units' => $selected_units_site,
+                'needed_units' => $needed_units_site,
+                'inspected_units' => $inspected_units_site,
+                'to_be_inspected_units' => $to_be_inspected_units_site,
+                'required_units_file' => $program['totals_after_optimization'],
+                'selected_units_file' => $selected_units_file,
+                'needed_units_file' => $needed_units_file,
+                'inspected_units_file' => $inspected_units_file,
+                'to_be_inspected_units_file' => $to_be_inspected_units_file
+            ];
+
+            //$units = $project->units;
+            
+            // only select programs that we cover in the groups
+            $program_home_ids = explode(',', SystemSetting::get('program_home'));
+            $program_medicaid_ids = explode(',', SystemSetting::get('program_medicaid'));
+            $program_811_ids = explode(',', SystemSetting::get('program_811'));
+            $program_bundle_ids = explode(',', SystemSetting::get('program_bundle'));
+            $program_ohtf_ids = explode(',', SystemSetting::get('program_ohtf'));
+            $program_nhtf_ids = explode(',', SystemSetting::get('program_nhtf'));
+            $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
+
+            // TBD something is missing here. We selected all the programs for that units, ignoring the SystemSettings???
+
+            $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)->with('unit', 'program', 'unit.building.address')->orderBy('unit_id','asc')->get();
+        }
         
-        // only select programs that we cover in the groups
-        $program_home_ids = explode(',', SystemSetting::get('program_home'));
-        $program_medicaid_ids = explode(',', SystemSetting::get('program_medicaid'));
-        $program_811_ids = explode(',', SystemSetting::get('program_811'));
-        $program_bundle_ids = explode(',', SystemSetting::get('program_bundle'));
-        $program_ohtf_ids = explode(',', SystemSetting::get('program_ohtf'));
-        $program_nhtf_ids = explode(',', SystemSetting::get('program_nhtf'));
-        $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
-
-        $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)->with('unit', 'program', 'unit.building.address')->orderBy('unit_id','asc')->get();
         
-// unit_id 151064
-// program_id 286
-// audit_id 6659
-
-        //$unitprograms = UnitInspection::where('audit_id', '=', $audit->id)->with('unit', 'program', 'unit.building.address')->orderBy('unit_id','asc')->get();
-
-        //dd($unitprograms->program->groups());
-
         $data = collect([
             'project' => [
                 "id" => $project->id,
