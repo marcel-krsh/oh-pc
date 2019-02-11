@@ -88,7 +88,7 @@ class FindingController extends Controller
                     // we have the goods - let's store this bad boy!
                     $errors = ''; // tracking errors to return to user.
                     $finding = Finding::insert([
-                                'date_of_fiding' => date('',$input['date']),
+                                'date_of_finding' => date('Y-m-d H:i:s',$input['date']),
                                 'owner_organization_id' => $amenityInspection->owner_organization_id(),
                                 'pm_organization_id' => $amenityInspection->pm_organization_id(),
                                 'user_id' => Auth::user()->id,
