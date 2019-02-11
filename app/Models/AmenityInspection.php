@@ -90,12 +90,16 @@ class AmenityInspection extends Model
     {
         // either use the # in the row or calculate based on findings records in the db? 
         // using the row:
-        $nlt_count = ($this->nlt_count) ? $this->nlt_count : 0;
-        $lt_count = ($this->lt_count) ? $this->lt_count : 0;
-        $file_count = ($this->file_count) ? $this->file_count : 0;
-        $followup_count = ($this->followup_count) ? $this->followup_count : 0;
+        // $nlt_count = ($this->nlt_count) ? $this->nlt_count : 0;
+        // $lt_count = ($this->lt_count) ? $this->lt_count : 0;
+        // $file_count = ($this->file_count) ? $this->file_count : 0;
+        // $followup_count = ($this->followup_count) ? $this->followup_count : 0;
+        // return $nlt_count + $lt_count + $file_count + $followup_count;
+        
+        // calculating
+        return \App\Models\Finding::where('audit_id','=',$this->audit_id)->where('amenity_inspection_id','=',$this->id)->count();
 
-        return $nlt_count + $lt_count + $file_count + $followup_count;
+        
     }
 
     public function amenity_type()
