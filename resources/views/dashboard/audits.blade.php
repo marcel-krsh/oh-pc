@@ -931,7 +931,16 @@ The following div is defined in this particular tab and pushed to the main layou
 
 
     function markAmenityComplete(audit_id, building_id, unit_id, amenity_id, element){
-    	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>MARK THIS COMPLETE?</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to mark this complete?</h3></div>').then(function() {
+    	
+    	if($('#'+element).hasClass('a-circle-checked')){
+	    	var title = 'MARK THIS INCOMPLETE?';
+	    	var message = 'Are you sure you want to mark this incomplete?';
+    	}else{
+	    	var title = 'MARK THIS COMPLETE?';
+	    	var message = 'Are you sure you want to mark this complete?';
+    	}
+    	
+    	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>'+title+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>'+message+'</h3></div>').then(function() {
 		    	
 		    	$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/complete', {
 		            '_token' : '{{ csrf_token() }}'
@@ -951,7 +960,16 @@ The following div is defined in this particular tab and pushed to the main layou
 		            		}
 
 		            	}else{
-		            		UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+		            		
+		            		if(amenity_id == 0){
+		            			UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+		            			$('[id^=completed-'+audit_id+building_id+']').removeClass('a-circle-checked');
+		            			$('[id^=completed-'+audit_id+building_id+']').addClass('a-circle');
+		            		}else{
+		            			UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+			            		$('#'+element).toggleClass('a-circle-checked');
+			            		$('#'+element).toggleClass('a-circle');
+		            		}
 		            	}
 		            }
 		        } );

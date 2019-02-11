@@ -744,9 +744,9 @@ class AuditController extends Controller
 
             if($amenity_inspection->completed_date_time !== NULL){
                 // it was already completed, we remove completion
-                // $amenity_inspection->completed_date_time = NULL;
-                // $amenity_inspection->save();
-                return ['status'=>'already completed'];
+                $amenity_inspection->completed_date_time = NULL;
+                $amenity_inspection->save();
+                return ['status'=>'not completed'];
             }else{
                 $amenity_inspection->completed_date_time = date('Y-m-d H:i:s',time());
                 $amenity_inspection->save();
