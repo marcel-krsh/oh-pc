@@ -40,8 +40,8 @@ use App\Models\User;
 use App\Models\OrderingAmenity;
 use App\Models\OrderingBuilding;
 use App\Models\OrderingUnit;
+use App\Models\CachedAmenity;
 use App\Models\People;
-use App\Models\PhoneNumbers;
 
 /*
 |--------------------------------------------------------------------------
@@ -1291,6 +1291,29 @@ Route::get('/users/verify_user', function (Request $request) {
 
         Route::get('/parcel_lookup', 'ParcelsController@quickLookup');
 
+
+        Route::get('/get_cached_amenities', function (Request $request) {
+
+            try {
+
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = CachedAmenity::where('updated_at', '>', $lastEdited)->get();
+                else
+                    $results = CachedAmenity::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
 
         Route::get('/get_cached_audits', function (Request $request) {
 
