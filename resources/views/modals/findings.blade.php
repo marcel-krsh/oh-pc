@@ -412,12 +412,12 @@
 					} elseif($passedAmenity->building_id){
 						// is a building
 						$locationType = 'b-'.$passedAmenity->building_id;
-						$locationText = "Building BIN: {$passedAmenity->building_id}, NAME: {addslashes($buildingName)}, ADDRESS: {addslashes($passedAmenity->address)}";
+						$locationText = "Building BIN: ".$passedAmenity->building_id.", NAME: ".addslashes($buildingName).", ADDRESS: ".addslashes($passedAmenity->address);
 						echo "console.log('Passed amenity is a building type');";
 					} else {
 						// is a unit
 						$locationType = 'u-'.$passedAmenity->unit_id;
-						$locationText = "Unit Name: {$passedAmenity->cached_unit()->unit_name}, in BIN: {$passedAmenity->building_key} at ADDRESS: {$passedAmenity->cached_unit()->address}";
+						$locationText = "Unit Name: ".$passedAmenity->cached_unit()->unit_name.", in BIN: ".$passedAmenity->building_key." at ADDRESS: ".$passedAmenity->cached_unit()->address;
 					}
 				?>
 				// set filter text for drop lists
