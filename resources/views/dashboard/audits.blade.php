@@ -153,6 +153,9 @@
 	    		<i class="fas fa-filter"></i> FILTER FINDINGS
 	    	</div>
 
+	    	<img src="images/fpo_finding.png" style="width: 100%;">
+	
+
 			<ul class="uk-margin js-filter-comments inspec-tools-tab-findings-container uk-panel uk-panel-scrollable uk-height-large uk-height-max-large">
 			</ul>
     	</div>
