@@ -62,20 +62,24 @@
             		// we don't know if/which unit is open
                 	var unitelement = 'div[id^=unit-auditors-]';
 
-	                $(unitelement).html('');
-	                $.each(data.auditor.unit_auditors, function(index, value){
-	                	var newcontent = '<div id="unit-auditor-'+value.id+data.auditor.audit_id+data.auditor.building_id+data.auditor.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+data.auditor.audit_id+', '+data.auditor.building_id+', '+data.auditor.unit_id+', \'unit-auditor-'+value.id+data.auditor.audit_id+data.auditor.building_id+data.auditor.unit_id+'\')">'+value.initials+'</div>';
-	                	$(unitelement).append(newcontent);
-	                });
+                	if(data.auditor.unit_auditors.length > 0){
+		                $(unitelement).html('');
+		                $.each(data.auditor.unit_auditors, function(index, value){
+		                	var newcontent = '<div id="unit-auditor-'+value.id+data.auditor.audit_id+data.auditor.building_id+data.auditor.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+data.auditor.audit_id+', '+data.auditor.building_id+', '+data.auditor.unit_id+', \'unit-auditor-'+value.id+data.auditor.audit_id+data.auditor.building_id+data.auditor.unit_id+'\')">'+value.initials+'</div>';
+		                	$(unitelement).append(newcontent);
+		                });
+                	}
             	}       
 
                 var buildingelement = '#building-auditors-'+data.auditor.building_id+' .uk-slideshow-items li.uk-active > div';
                
-                $(buildingelement).html('');
-                $.each(data.auditor.building_auditors, function(index, value){
-                	var newcontent = '<div id="unit-auditor-'+value.id+data.auditor.audit_id+data.auditor.building_id+data.auditor.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+data.auditor.audit_id+', '+data.auditor.building_id+', 0, \'unit-auditor-'+value.id+data.auditor.audit_id+data.auditor.building_id+data.auditor.unit_id+'\')">'+value.initials+'</div>';
-                	$(buildingelement).append(newcontent);
-                });
+                if(data.auditor.building_auditors.length > 0){
+	                $(buildingelement).html('');
+	                $.each(data.auditor.building_auditors, function(index, value){
+	                	var newcontent = '<div id="unit-auditor-'+value.id+data.auditor.audit_id+data.auditor.building_id+data.auditor.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+data.auditor.audit_id+', '+data.auditor.building_id+', 0, \'unit-auditor-'+value.id+data.auditor.audit_id+data.auditor.building_id+data.auditor.unit_id+'\')">'+value.initials+'</div>';
+	                	$(buildingelement).append(newcontent);
+	                });
+	            }
             }else{
 			// update unit auditor's list
 				console.log('units auditor list update');
@@ -88,21 +92,24 @@
 
             	var unitelement = '#unit-auditors-'+data.auditor.unit_id+' .uk-slideshow-items li.uk-active > div';
 
-                $(unitelement).html('');
-                //console.log(unitelement);
-                $.each(data.auditor.unit_auditors, function(index, value){
-                	var newcontent = '<div id="unit-auditor-'+value.id+data.auditor.audit_id+data.auditor.building_id+data.auditor.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+data.auditor.audit_id+', '+data.auditor.building_id+', '+data.auditor.unit_id+', \'unit-auditor-'+value.id+data.auditor.audit_id+data.auditor.building_id+data.auditor.unit_id+'\')">'+value.initials+'</div>';
-                	$(unitelement).append(newcontent);
+            	if(data.auditor.unit_auditors.length > 0){
+	                $(unitelement).html('');
+	                //console.log(unitelement);
+	                $.each(data.auditor.unit_auditors, function(index, value){
+	                	var newcontent = '<div id="unit-auditor-'+value.id+data.auditor.audit_id+data.auditor.building_id+data.auditor.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+data.auditor.audit_id+', '+data.auditor.building_id+', '+data.auditor.unit_id+', \'unit-auditor-'+value.id+data.auditor.audit_id+data.auditor.building_id+data.auditor.unit_id+'\')">'+value.initials+'</div>';
+	                	$(unitelement).append(newcontent);
 
-                	if($('#unit-auditors-'+data.auditor.unit_id).hasClass('hasAuditors')){
-                		$(buildingelement).append(newcontent);
-                	}else{
-                		$(buildingelement).html(newcontent);
-                	}
-                });
+	                	if($('#unit-auditors-'+data.auditor.unit_id).hasClass('hasAuditors')){
+	                		$(buildingelement).append(newcontent);
+	                	}else{
+	                		$(buildingelement).html(newcontent);
+	                	}
+	                });
+	            }
 
                 var buildingelement = '#building-auditors-'+data.auditor.building_id+' .uk-slideshow-items li.uk-active > div';
                //console.log(buildingelement);
+               if(data.auditor.building_auditors.length > 0){
                 $(buildingelement).html('');
                 $.each(data.auditor.building_auditors, function(index, value){
                 	var newcontent = '<div id="unit-auditor-'+value.id+data.auditor.audit_id+data.auditor.building_id+data.auditor.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+data.auditor.audit_id+', '+data.auditor.building_id+', 0, \'unit-auditor-'+value.id+data.auditor.audit_id+data.auditor.building_id+data.auditor.unit_id+'\')">'+value.initials+'</div>';
@@ -116,6 +123,7 @@
                 	}
                 	
                 });
+            }
 
                 $('#unit-amenity-count-'+data.amenity_count_id).html(data.amenity_count + ' AMENITIES');
                 console.log('#unit-amenity-count-'+data.amenity_count_id);
