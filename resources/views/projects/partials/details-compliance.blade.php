@@ -405,16 +405,16 @@
 	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
 	         break;
 	   		case 'rgb(0, 139, 194)':
-	         alert(label + ' / selected');
+	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
 	         break;
 	   		case 'rgb(209, 0, 105)':
-	         alert(label + ' / needed');
+	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
 	         break;
 	   		case 'rgb(1, 173, 104)':
-	         alert(label + ' / inspected');
+	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
 	         break;
 	   		case 'rgb(203, 203, 200)':
-	         alert(label + ' / to be inspected');
+	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
 	         break;
 	   }
 	}
