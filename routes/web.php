@@ -150,6 +150,7 @@
          Route::get('/projects/{project}/details/assignment/date/{dateid}', 'AuditController@getProjectDetailsAssignmentSchedule')->name('project.details.assignment.schedule');
 
         Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');
+        Route::get('/communications/{project}.json', 'CommunicationController@communicationsFromProjectIdJson')->name('communications.loadjson');
         Route::get('/projects/{project}/communications/title', 'AuditController@getProjectCommunicationsTitle')->name('project.communications.title');
         Route::get('/projects/{project}/documents', 'DocumentController@getProjectDocuments')->name('project.documents');
         Route::get('/projects/{project}/documents/title', 'AuditController@getProjectDocumentsTitle')->name('project.documents.title');
@@ -427,7 +428,7 @@ Route::post('/activities/parcel/{parcel}', 'bgHistoryController@searchActivities
 Route::get('/communications/new-messages', 'CommunicationController@getNewMessages');
 
 Route::get('/communications/parcel/{parcel}', 'CommunicationController@showTabFromParcelId')->name('communications.list');
-Route::get('/communications/{parcel}.json', 'CommunicationController@communicationsFromParcelIdJson')->name('communications.loadjson');
+
 
 Route::post('/modals/new-outbound-email-entry', 'CommunicationController@create')->name('communication.create');
 Route::get('/modals/new-outbound-email-entry/{parcel?}', 'CommunicationController@newCommunicationEntry');

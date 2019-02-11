@@ -40,7 +40,7 @@ class CommunicationController extends Controller
 
 
     /**
-     * Show the communication list for a specific parcel.
+     * Show the communication list for a specific project.
      *
      * @param  int  $project_id
      * @return Response
@@ -51,7 +51,7 @@ class CommunicationController extends Controller
         //Search (in session)
         if (Session::has('communications-search') && Session::get('communications-search') != '') {
             $search = Session::get('communications-search');
-            $search_messages = Communication::where('parcel_id', $project->id)
+            $search_messages = Communication::where('project_id', $project->id)
                     ->where('message', 'LIKE', '%'.$search.'%')
                     ->with('owner')
                     ->with('recipients')
@@ -66,12 +66,15 @@ class CommunicationController extends Controller
                     ->with('recipients')
                     ->orderBy('created_at', 'desc')
                     ->get();
+
         } else {
-            $messages = Communication::where('parcel_id', $project->id)
+            $messages = Communication::where('project_id', $project->id)
                     ->where('parent_id', null)
                     ->with('owner')
                     ->orderBy('created_at', 'desc')
-                    ->get();
+                    ->get(); 
+
+            //dd('Project based: ',$messages, $project);
         }
 
         //$document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
@@ -114,7 +117,7 @@ class CommunicationController extends Controller
                 ->orWhere('id', $message->parent_id)
                 ->count();
 
-                $message_id_array = Communication::where('parcel_id', $project->id)
+                $message_id_array = Communication::where('project_id', $project->id)
                     ->where('id', $message->parent_id)
                     ->orWhere('parent_id', $message->parent_id)
                     ->pluck('id')->toArray();
@@ -123,7 +126,7 @@ class CommunicationController extends Controller
                 ->orWhere('id', $message->id)
                 ->count();
                 
-                $message_id_array = Communication::where('parcel_id', $project->id)
+                $message_id_array = Communication::where('project_id', $project->id)
                     ->where('id', $message->id)
                     ->orWhere('parent_id', $message->id)
                     ->pluck('id')->toArray();
@@ -135,7 +138,7 @@ class CommunicationController extends Controller
                 ->count();
         }
 
-        return view('parcels.parcel_communications', compact('project', 'messages', 'owners', 'owners_array'));
+        return view('projects.pproject_communications', compact('project', 'messages', 'owners', 'owners_array'));
     }
 
 
@@ -153,7 +156,7 @@ class CommunicationController extends Controller
 
             $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
 
-            // build a list of all categories used for uploaded documents in this parcel
+            // build a list of all categories used for uploaded documents in this project
             $categories_used = [];
             // category keys for name reference ['id' => 'name']
             $document_categories_key = [];
@@ -219,7 +222,7 @@ class CommunicationController extends Controller
             $project = null;
             $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
 
-            // build a list of all categories used for uploaded documents in this parcel
+            // build a list of all categories used for uploaded documents in this project
             $categories_used = [];
             // category keys for name reference ['id' => 'name']
             $document_categories_key = [];
@@ -280,10 +283,10 @@ class CommunicationController extends Controller
     }
 
 
-    public function communicationsFromAuditIdJson(CachedAudit $audit)
+    public function communicationsFromProjectIdJson(Project $project)
     {
         // not being used at this time.
-        $messages = Communication::where('audit_id', $audit->id)->get();
+        $messages = Communication::where('project_id', $project->id)->get();
 
         return $messages->toJSON();
     }
@@ -305,7 +308,7 @@ class CommunicationController extends Controller
 
         if ($audit_id === null || $audit_id == 0) {
             // used to redirect to dashboard communications
-            // tab instead of parcel's communications tab
+            // tab instead of project's communications tab
             $noaudit = 1;
             $audit = $message->audit;
         } else {
@@ -492,6 +495,18 @@ class CommunicationController extends Controller
                 $audit_id = null;
             }
 
+            if (isset($forminputs['project_id'])) {
+                try {
+                    $project_id = (int) $forminputs['project_id'];
+                    $project = Project::where('id', $project_id)->first();
+                } catch (\Illuminate\Database\QueryException $ex) {
+                    dd($ex->getMessage());
+                }
+                $project_id = $project->id;
+            } else {
+                $project_id = null;
+            }
+
             $user = Auth::user();
 
             // create message
@@ -509,6 +524,7 @@ class CommunicationController extends Controller
                 $message = new Communication([
                     'owner_id' => $user->id,
                     'audit_id' => $audit_id,
+                    'project_id' => $project_id,
                     'parent_id' => $originalMessageId,
                     'message' => $message_posted
                 ]);
@@ -519,6 +535,7 @@ class CommunicationController extends Controller
                 $message = new Communication([
                     'owner_id' => $user->id,
                     'audit_id' => $audit_id,
+                    'project_id' => $project_id,
                     'message' => $message_posted,
                     'subject' => $subject
                 ]);
@@ -661,7 +678,7 @@ class CommunicationController extends Controller
                     ->where('seen', 0)
                     ->with('communication')
                     ->with('communication.owner')
-                    ->with('communication.parcel')
+                    ->with('communication.project')
                     ->orderBy('id', 'desc')
                     ->where('id', '>', $previous_messages_id)
                     ->take($delta)
@@ -689,12 +706,12 @@ class CommunicationController extends Controller
             if (CommunicationRecipient::where('communication_id', '=', $message->id)->where('user_id', '=', $user->id)->exists() || $message->owner_id == $user->id) {
                 //prevents the UIkit notify to show up after reading the message
                 $user_needs_to_read_more = CommunicationRecipient::where('communication_id', $message->id)->where('user_id', $user->id)->where('seen', 0)->update(['seen' => 1]);
-                session(['open_parcel'=>$message->parcel_id, 'parcel_subtab'=>'communications','dynamicModalLoad'=>$message->id]);
+                session(['open_project'=>$message->project_id, 'project_subtab'=>'communications','dynamicModalLoad'=>$message->id]);
 
                 return redirect('/');
             }
         }
-        session(['open_parcel'=>'', 'parcel_subtab'=>'','dynamicModalLoad'=>'']);
+        session(['open_project'=>'', 'project_subtab'=>'','dynamicModalLoad'=>'']);
         $message = "You are not authorized to view this message.";
         $error = "Looks like you are trying to access a message not sent to you.";
         $type = "danger";
@@ -719,24 +736,22 @@ class CommunicationController extends Controller
 
     public function communicationsTab($page = 0, $project = 0)
     {
-        $number_per_page = 10;
+        $number_per_page = 100;
         $skip = $number_per_page * $page;
         $current_user = Auth::user();
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
 
-        // TBD project_id in searches
-        if ($project) {
-            $project_audits = CachedAudit::where('project_ref', '=', $project)->pluck('id')->toArray();
-        }
+        
 
         //Search (in session)
         if (Session::has('communications-search') && Session::get('communications-search') != '') {
             $search = Session::get('communications-search');
-            $search_messages = Communication::where(function ($query) use ($search) {
+            $search_messages = Communication::where(function ($query) use ($search,$project) {
                         $query->where('message', 'LIKE', '%'.$search.'%');
-                        $query->orWhereHas('audit', function ($query) use ($search) {
-                            $query->where('audit_id', 'LIKE', '%'.$search.'%');
-                        });
+                        if($project){
+                            $query->orWhere('project_id',$project->id );
+                        }
+                        
             })
                     ->where(function ($query) use ($current_user) {
                         $query->where('owner_id', '=', $current_user->id);
@@ -746,7 +761,8 @@ class CommunicationController extends Controller
                     });
 
             if ($project) {
-                $search_messages = $search_messages->whereIn('audit_id', $project_audits);
+                $search_messages = $search_messages->where('project_id', $project->id);
+
             }
 
             $search_messages = $search_messages->with('owner')
@@ -792,24 +808,38 @@ class CommunicationController extends Controller
                 $messages = null;
             }
         } else {
-            $messages = Communication::where(function ($query) use ($current_user) {
+            if($project){
+                //on project tab - show all messages
+                $user_eval = ">";
+                $user_spec = "0";
+            } else {
+                $user_eval = "=";
+                $user_spec = Auth::user()->id;
+            }
+            $messages = Communication::where(function ($query) use ($current_user,$user_eval,$user_spec) {
                         $query->where(function ($query) use ($current_user) {
                             $query->where('owner_id', '=', $current_user->id);
                             $query->whereHas('replies');
                         });
-                        $query->orWhereHas('recipients', function ($query) use ($current_user) {
-                            $query->where('user_id', '=', $current_user->id);
+                        $query->orWhereHas('recipients', function ($query) use ($current_user,$user_eval,$user_spec) {
+                            $query->where('user_id', "$user_eval", $user_spec);
                         });
             })
                     ->where('parent_id', '=', null);
 
             if ($project) {
-                $messages = $messages->whereIn('audit_id', $project_audits);
-            }
+                $messages = $messages->where('project_id', $project->id);
 
-            $messages = $messages->with('owner')
+            }
+            
+
+            $messages = $messages
+                        ->with('owner')
                         ->orderBy('created_at', 'desc')
-                        ->skip($skip)->take($number_per_page)->get();
+                        ->skip($skip)->take($number_per_page)
+                        ->get();
+
+            
 
             $messages = $messages->reverse();
         }
@@ -998,9 +1028,9 @@ class CommunicationController extends Controller
             return response()->json($data);
         } else {
             if ($project) {
-                // get latest audit
-                $audit = CachedAudit::where('project_ref', '=', $project)->orderBy('id', 'desc')->first();
-                return view('projects.partials.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project', 'audit'));
+                // get the project
+                $project = Project::where('id', '=', $project->id)->first();
+                return view('projects.partials.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project'));
             } else {
                 return view('dashboard.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project'));
             }

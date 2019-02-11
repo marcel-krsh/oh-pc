@@ -24,7 +24,8 @@ class Communication extends Model
         'audit_id',
         'owner_type',
         'message',
-        'subject'
+        'subject',
+        'project_id'
     ];
 
     use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
@@ -90,6 +91,16 @@ class Communication extends Model
     public function audit() : HasOne
     {
         return $this->hasOne(\App\Models\CachedAudit::class, 'id', 'audit_id');
+    }
+
+    /**
+     * Project
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function project() : HasOne
+    {
+        return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
     }
 
     /**

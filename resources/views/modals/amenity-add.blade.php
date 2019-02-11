@@ -45,6 +45,10 @@
 	#amenity-to-create {
 
 	}
+	.autocomplete-suggestions {
+		max-height: 400px;
+		overflow-y: auto;
+	}
 	#amenity-to-create li {
 		border:1px solid #ddd;
 		cursor: pointer;
