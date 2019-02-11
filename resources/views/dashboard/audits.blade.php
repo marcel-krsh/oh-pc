@@ -141,7 +141,7 @@
     		</div>
     	</div>
     	<div class="inspection-tools-tabs uk-width-1-1" uk-filter="target: .js-filter-comments">
-    		<ul class="uk-subnav uk-subnav-pill">
+    		<ul class="uk-subnav uk-subnav-pill" style="display:none">
 			    <li class="uk-badge use-hand-cursor" uk-filter-control=".comment-type-finding">FINDINGS</li>
 			    <li class="uk-badge use-hand-cursor" uk-filter-control=".comment-type-comment">COMMENTS</li>
 			    <li class="uk-badge use-hand-cursor" uk-filter-control=".comment-type-photo">PHOTOS</li>
@@ -149,7 +149,7 @@
 			    <li class="uk-badge use-hand-cursor" uk-filter-control=".comment-type-followup">FOLLOW UPS</li>
 			</ul>
 
-			<div style="color:#bbb;">
+			<div style="color:#bbb; display:none">
 	    		<i class="fas fa-filter"></i> FILTER FINDINGS
 	    	</div>
 
