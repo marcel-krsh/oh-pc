@@ -163,12 +163,12 @@
 	<div class="uk-margin-remove-top uk-width-1-1" uk-grid>
 		<div id="auditsfilters" class="uk-width-2-3 uk-margin-top">
 			@if(isset($auditFilterMineOnly))
-			<div id="audit-filter-mine" class="uk-badge uk-text-right@s badge-filter">
+			<!-- <div id="audit-filter-mine" class="uk-badge uk-text-right@s badge-filter">
 				@can('access_auditor')
 				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'no']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>MY AUDITS ONLY</span></a>
 				@else
 				@endcan
-			</div>
+			</div> -->
 			@endif
 			<div id="audit-filter-project" class="uk-badge uk-text-right@s badge-filter" hidden>
 				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'yes']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>FILTER PROJECT</span></a>
@@ -306,7 +306,7 @@
 			            	<div class="filter-box filter-date-aging uk-vertical-align uk-width-1-1" uk-grid> 
 								<!-- SPAN TAG TITLE NEEDS UPDATED TO REFLECT CURRENT DATE RANGE -->
 								<span class="@can('access_auditor') uk-width-1-2 @else uk-width-1-1 @endcan uk-text-center uk-padding-remove-top uk-margin-remove-top">
-									<a class="uk-link-muted" onclick="dynamicModalLoad('date-aging-range');"><i class="a-calendar-8 uk-vertical-align-middle"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text"></i> <i class="a-calendar-8 uk-vertical-align-middle"></i></a>
+									<i class="a-calendar-8 uk-vertical-align-middle"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text"></i> <i class="a-calendar-8 uk-vertical-align-middle"></i>
 								</span>
 								@can('access_auditor')
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
@@ -353,7 +353,7 @@
 		            	<div uk-grid>
 			            	<div class="filter-box filter-date-expire uk-vertical-align uk-width-1-1 uk-text-center"> 
 								<span>
-									<a class="uk-link-muted" onclick="dynamicModalLoad('date-aging-range');"><i class="a-calendar-8 uk-vertical-align-middle"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text"></i> <i class="a-calendar-8 uk-vertical-align-middle"></i></a>
+									<i class="a-calendar-8 uk-vertical-align-middle"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text"></i> <i class="a-calendar-8 uk-vertical-align-middle"></i>
 								</span>
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY FOLLOW-UP DATE">

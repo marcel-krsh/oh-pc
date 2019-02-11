@@ -13,9 +13,9 @@
                     <a class="uk-button uk-button-default filter_link uk-margin-right" data-filter="all">
                         ALL
                     </a>
-                    <a class="uk-button uk-button-default filter_link" data-filter="attachment-true" uk-tooltip="pos:top-left;title:Show results with attachments">
+                    <!-- <a class="uk-button uk-button-default filter_link" data-filter="attachment-true" uk-tooltip="pos:top-left;title:Show results with attachments">
                     <i class="a-paperclip-2"></i>
-                    </a>
+                    </a> -->
                     <a style="display:none" class="uk-button uk-button-default" aria-checked="false" uk-tooltip="pos:top-left;title:Show sent messages">
                     <i uk-icon="send" style="font-size:16px; line-height: 17px;"></i>
                     </a>

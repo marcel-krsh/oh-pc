@@ -1,13 +1,13 @@
 <div id="project-communications" uk-grid>
 	<div class="uk-width-1-1">
 		<div uk-grid class="uk-margin-top" id="message-filters" data-uk-button-radio="">
-        
+            <!--
 	        <div uk-grid class="uk-grid-collapse uk-visible@m">
 	            <a class="uk-button uk-button-default filter_link uk-margin-right" data-filter="all">
 	                ALL
 	            </a>
 	            <a class="uk-button uk-button-default filter_link" data-filter="attachment-true" uk-tooltip="pos:top-left;title:Show results with attachments">
-	            <i class="a-paperclip-2"></i>
+	            <i class="a-paperclip-2" style="position: relative;top:8px;"></i>
 	            </a>
 	            <a style="display:none" class="uk-button uk-button-default" aria-checked="false" uk-tooltip="pos:top-left;title:Show sent messages">
 	            <i uk-icon="send" style="font-size:16px; line-height: 17px;"></i>
@@ -41,8 +41,8 @@
 	            </select>
 	            
 	        </div>
-	       
-	        <div class="uk-width-1-1@s uk-width-1-5@m" style="vertical-align:top">
+	       -->
+	        <div class="uk-width-1-1@s uk-width-1-5@m " style="vertical-align:top">
 	            <a class="uk-button uk-button-success green-button uk-width-1-1" onclick="dynamicModalLoad('new-outbound-email-entry/{{$project->id}}')">
 	                <span class="a-envelope-4"></span> 
 	                <span>NEW MESSAGE</span>
@@ -126,7 +126,7 @@
                 var duplicate = 0;
 
                 setTimeout(() => {
-                    axios.get('/projects/{{$project}}/communications/'+this.page)
+                    axios.get('/projects/{{$project->id}}/communications/'+this.page)
                         .then((response) => { 
                             $('#spinner').html('');  
                             $.each(response.data, function(index, value) {

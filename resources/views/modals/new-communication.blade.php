@@ -1,12 +1,12 @@
 <div id="dynamic-modal-content">
 
 	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
-		@if(!is_null($project))<input type="hidden" name="project" value="{{$project->id}}">@endif
-		<div class="uk-container uk-container-center"> <!-- start form container -->
+		@if(!is_null($project))<input type="hidden" name="project_id" value="{{$project->id}}">@endif
+        <div class="uk-container uk-container-center"> <!-- start form container -->
 			<div uk-grid class="uk-grid-small ">
 				<div class="uk-width-1-1 uk-padding-small">
                     @if($project)
-					<h2><span  class="uk-icon-button uk-margin-right uk-margin-left uk-disabled uk-button-succes" uk-icon="mail"></span>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}}</span></h2>
+					<h2>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}}</span></h2>
                     @else
                     <h3>New Message</h3>
                     @endif
@@ -93,7 +93,7 @@
                             </script>
                     <!-- END RECIPIENT LISTING -->
                 </div>
-                @if($project)
+                @if(1 + 1 == 0)
                 <div class="uk-width-1-6 " style="padding:18px;"><div style="width:25px;display: inline-block;" onClick="showDocuments"><i class="a-paperclip-2 "></i></div> &nbsp;DOCUMENTS</div>
                 <div class="uk-width-5-6 "  id="attachments-box" style="border-bottom:1px #111 dashed; padding:18px; padding-left:25px;">
                     <div class="uk-button uk-button-small" style="padding-top: 2px;"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD DOCUMENT</div><div class="uk-button uk-button-small" style="padding-top: 2px; display:none"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;Class:Description [Date]</div>
@@ -134,7 +134,7 @@
 
                     
 
-                        @if($project)
+                        @if(1+1 == 0)
         				<div class="uk-width-1-1@m uk-width-1-1@s">
         					<h4>Select exising documents</h4>
         					<div class="communication-selector  uk-scrollable-box">
