@@ -1322,9 +1322,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
-                    $results = CachedAudit::where('step_id','61')->where('updated_at', '>', $lastEdited)->get();
+                    $results = CachedAudit::where('updated_at', '>', $lastEdited)->get();
                 else
-                    $results = CachedAudit::where('step_id','61')->get();
+                    $results = CachedAudit::get();
 
                 if ($results) {
                     $reply = $results;
