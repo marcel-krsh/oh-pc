@@ -42,6 +42,7 @@ use App\Models\OrderingBuilding;
 use App\Models\OrderingUnit;
 use App\Models\CachedAmenity;
 use App\Models\People;
+use App\Models\AmenityInspection;
 
 /*
 |--------------------------------------------------------------------------
@@ -1718,6 +1719,29 @@ Route::get('/users/verify_user', function (Request $request) {
                     $results = OrderingUnit::where('last_edited', '>', $lastEdited)->get();
                 else
                     $results = OrderingUnit::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+        Route::get('/get_amenity_inspections', function (Request $request) {
+
+            try {
+
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = AmenityInspection::where('last_edited', '>', $lastEdited)->get();
+                else
+                    $results = AmenityInspection::get();
 
                 if ($results) {
                     $reply = $results;
