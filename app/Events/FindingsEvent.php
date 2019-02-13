@@ -108,6 +108,27 @@ class FindingsEvent
                     $unit->finding_total = $finding_total + 1;
                     $unit->save();
                 }
+
+                // also save totals at the building level
+                $building = CachedBuilding::where('building_id','=',$unit->building_id)->where('audit_id','=',$finding->audit_id)->first();
+                $finding_total = $building->finding_total;
+
+                if($type == "file"){
+                    $finding_file_total = $building->finding_file_total;
+                    $building->finding_file_total = $finding_file_total + 1;
+                    $building->finding_total = $finding_total + 1;
+                    $building->save();
+                }elseif($type == "nlt"){
+                    $finding_nlt_total = $building->finding_nlt_total;
+                    $building->finding_nlt_total = $finding_nlt_total + 1;
+                    $building->finding_total = $finding_total + 1;
+                    $building->save();
+                }elseif($type == "lt"){
+                    $finding_lt_total = $building->finding_lt_total;
+                    $building->finding_lt_total = $finding_lt_total + 1;
+                    $building->finding_total = $finding_total + 1;
+                    $building->save();
+                }
             }
         }
         
