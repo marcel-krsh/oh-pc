@@ -1323,16 +1323,18 @@ class AuditController extends Controller
                 $summary_unit_ids = array_unique($summary_unit_ids);
                 $all_program_keys = array_unique($all_program_keys);
                 
-                $summary_inspected = UnitInspection::whereIn('unit_key', $summary_unit_ids)
+                $summary_inspected = UnitInspection::whereIn('unit_key', $summary_optimized_unit_ids)
                                 ->where('audit_id', '=', $audit->id)
                                 ->where('is_site_visit', '=', 1)
                                 ->where('complete', '!=', NULL)
+                                ->select('unit_id')->groupBy('unit_id')->get()
                                 ->count();
 
-                $summary_inspected_file = UnitInspection::whereIn('unit_key', $summary_unit_ids)
+                $summary_inspected_file = UnitInspection::whereIn('unit_key', $summary_optimized_unit_ids)
                             ->where('audit_id', '=', $audit->id)
                             ->where('is_file_audit', '=', 1)
                             ->where('complete', '!=', NULL)
+                            ->select('unit_id')->groupBy('unit_id')->get()
                             ->count();
 
                 $summary_required = UnitInspection::whereIn('unit_key', $summary_unit_ids)
@@ -1345,14 +1347,26 @@ class AuditController extends Controller
                             ->where('is_file_audit', '=', 1)
                             ->count();
 
+                $summary_optimized_required = UnitInspection::whereIn('unit_key', $summary_optimized_unit_ids)
+                                ->where('audit_id', '=', $audit->id)
+                                ->where('is_site_visit', '=', 1)
+                                ->select('unit_id')->groupBy('unit_id')->get()
+                                ->count();
+
+                $summary_optimized_required_file = UnitInspection::whereIn('unit_key', $summary_optimized_unit_ids)
+                            ->where('audit_id', '=', $audit->id)
+                            ->where('is_file_audit', '=', 1)
+                                ->select('unit_id')->groupBy('unit_id')->get()
+                            ->count();
+
                 $summary_selected = UnitInspection::whereIn('program_key', $all_program_keys)->where('audit_id', '=', $audit->id)->where('is_site_visit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
                 $summary_selected_file = UnitInspection::whereIn('program_key', $all_program_keys)->where('audit_id', '=', $audit->id)->where('is_file_audit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
 
-                $summary_needed = $summary_required - $summary_selected;
-                $summary_needed_file = $summary_required_file - $summary_selected_file;
+                $summary_needed = $summary_optimized_required - $summary_selected;
+                $summary_needed_file = $summary_optimized_required_file - $summary_selected_file;
 
-                $summary_to_be_inspected = $summary_required - $summary_inspected;
-                $summary_to_be_inspected_file = $summary_required_file - $summary_inspected_file;
+                $summary_to_be_inspected = $summary_optimized_required - $summary_inspected;
+                $summary_to_be_inspected_file = $summary_optimized_required_file - $summary_inspected_file;
 
                 $summary_optimized_sample_size = count($summary_optimized_unit_ids);
                 $summary_optimized_completed_inspections = $summary_inspected;
