@@ -326,7 +326,7 @@
 				        			$('#mine-filter-button').addClass('uk-active'); 
 			        			}else{
 			        				window.findingModalSelectedMine='true';
-			        				$('.amenity-list-item.finding-modal-list-items').show();
+			        				$('.amenity-list-item.finding-modal-list-items:not(.uid-{{$amenity->auditor_id}}').show();
 				        			$('#mine-filter-button').removeClass('uk-active');
 			        			}">MINE</button>
 					        </div>
@@ -489,7 +489,7 @@
 			$('.amenity-list-item.finding-modal-list-items:not(.uid-{{$amenity->auditor_id}}').hide();
 		}else{
 			window.findingModalSelectedMine = 'true';
-			$('.amenity-list-item.finding-modal-list-items').show();
+			$('.amenity-list-item.finding-modal-list-items:not(.uid-{{$amenity->auditor_id}}').show();
 			$('#mine-filter-button').removeClass('uk-active');
 		}
 
