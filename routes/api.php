@@ -43,6 +43,7 @@ use App\Models\OrderingUnit;
 use App\Models\CachedAmenity;
 use App\Models\People;
 use App\Models\AmenityInspection;
+use App\Models\Finding;
 
 /*
 |--------------------------------------------------------------------------
@@ -1742,6 +1743,52 @@ Route::get('/users/verify_user', function (Request $request) {
                     $results = AmenityInspection::where('last_edited', '>', $lastEdited)->get();
                 else
                     $results = AmenityInspection::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+        Route::get('/get_comments', function (Request $request) {
+
+            try {
+
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = Comment::where('last_edited', '>', $lastEdited)->get();
+                else
+                    $results = Comment::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+        Route::get('/get_findings', function (Request $request) {
+
+            try {
+
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = Finding::where('last_edited', '>', $lastEdited)->get();
+                else
+                    $results = Finding::get();
 
                 if ($results) {
                     $reply = $results;
