@@ -60,7 +60,7 @@
 					    	<div class="uk-width-1-1 ">
 					        	<ul class="uk-list uk-list-divider uk-margin-left uk-margin-top">
 
-					        		<li class="s-{{$audit->project_ref}} amenity-list-item "><strong>Site : {{$audit->address}}</strong></li>
+					        		<li class="s-{{$audit->project_ref}} amenity-list-item"><strong>Site : {{$audit->address}}</strong></li>
 					        		@php // get the project level amenities
 					        			$projectAmenities = $amenities->filter(function ($project){
 																if(!is_null($project->project_id)){
@@ -90,7 +90,7 @@
 					        						$amenityIncrement++; 
 					        					}
 					        			@endphp
-					        		<li id="amenity-inspection-{{$amenity->id}}" class=" s-{{$audit->project_ref}} aa-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">
+					        		<li id="amenity-inspection-{{$amenity->id}}" class=" s-{{$audit->project_ref}} aa-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items uid-{{$amenity->auditor_id}}" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">
 					        			<a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','@if($amenity->auditor_id) {{$amenity->user->initials()}} @else NA @endIf : {{$amenity->amenity->amenity_description}} {{$amenityIncrement}}',{{$amenityIncrement}})" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">@if(is_null($amenity->completed_date_time)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id) <div class="amenity-auditor uk-margin-remove">
 					        											<div class="amenity-auditor uk-margin-remove">
 					        												<div uk-tooltip="pos:top-left;title:{{$amenity->user->full_name()}};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float">
@@ -118,7 +118,7 @@
 
 					        		@foreach($buildingAmenities as $amenity)
 					        			@if($currentBuildingId != $amenity->building_id)
-					        				<li class="b-{{$amenity->building_id}} amenity-list-item finding-modal-list-items"><strong>Building BIN: {{$amenity->building_key}}</strong></li>
+					        				<li class="b-{{$amenity->building_id}} amenity-list-item finding-modal-list-items uid-{{$amenity->auditor_id}}"><strong>Building BIN: {{$amenity->building_key}}</strong></li>
 					        				@php $currentBuildingId = $amenity->building_id; @endphp
 					        			@endif
 					        			@php if($currentAmenityId != $amenity->amenity_id) { 
@@ -134,7 +134,7 @@
 					        						$amenityIncrement++; 
 					        					}
 					        			@endphp
-					        			<li id="amenity-inspection-{{$amenity->id}}" class="b-{{$amenity->building_id}} aa-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">@if(is_null($amenity->completed_date_time)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id) <div class="amenity-auditor uk-margin-remove">
+					        			<li id="amenity-inspection-{{$amenity->id}}" class="b-{{$amenity->building_id}} aa-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items  uid-{{$amenity->auditor_id}}" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">@if(is_null($amenity->completed_date_time)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id) <div class="amenity-auditor uk-margin-remove">
 					        											<div class="amenity-auditor uk-margin-remove">
 					        												<div uk-tooltip="pos:top-left;title:{{$amenity->user->full_name()}};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float">
 					        													{{$amenity->user->initials()}}
@@ -165,7 +165,7 @@
 
 					        		@foreach($unitAmenities as $amenity)
 					        			@if($currentUnitId != $amenity->unit_id)
-					        				<li class="u-{{$amenity->unit_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items"><strong>Unit : {{$amenity->cached_unit()->unit_name}} in BIN: {{$amenity->cached_unit()->building_key}} ADDRESS: {{$amenity->cached_unit()->address}}</strong></li>
+					        				<li class="u-{{$amenity->unit_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items "><strong>Unit : {{$amenity->cached_unit()->unit_name}} in BIN: {{$amenity->cached_unit()->building_key}} ADDRESS: {{$amenity->cached_unit()->address}}</strong></li>
 					        				@php $currentUnitId = $amenity->unit_id; @endphp
 					        			@endif
 					        			@php if($currentAmenityId != $amenity->amenity_id) { 
@@ -317,8 +317,23 @@
 			<div class="uk-width-1-1 filter-button-set">
 				<div uk-grid>
 			        <div class="uk-inline uk-width-1-2">
-			            <i class="a-magnify-2 uk-form-icon"></i>
-			            <input type='text' name="finding-description" id="finding-description" class="uk-input button-filter" placeholder="ENTER FINDING DESCRIPTION" type="text">
+			        	<div uk-grid>
+			        		<div class="uk-width-1-4">
+			        			<button id="mine-filter-button" uk-tooltip="title:SHOW MY AMENITIES AND LOCATIONS;" class="uk-button uk-button-default button-filter" style="border-left: 1px solid;border-right: 0px;" onclick=" console.log(window.findingModalSelectedMine);
+			        			if(window.findingModalSelectedMine == 'true'){
+			        				window.findingModalSelectedMine='false';
+			        				$('.amenity-list-item.finding-modal-list-items:not(.uid-{{$amenity->auditor_id}}').hide();
+				        			$('#mine-filter-button').addClass('uk-active'); 
+			        			}else{
+			        				window.findingModalSelectedMine='true';
+			        				$('.amenity-list-item.finding-modal-list-items').show();
+				        			$('#mine-filter-button').removeClass('uk-active');
+			        			}">MINE</button>
+					        </div>
+			        		<div class="uk-width-3-4">
+					            <input type='text' name="finding-description" id="finding-description" class="uk-input button-filter" placeholder="ENTER FINDING DESCRIPTION" type="text">
+					        </div>
+					    </div>
 			        </div>
 			        <div class="uk-inline uk-width-1-2">
 			        	<div uk-grid>
@@ -466,6 +481,17 @@
         window.findingModalSelectedAmenityDate = $('#finding-date').val();
 
         $('#'+window.findingModalSelectedType+'-filter-button').trigger('click');
+
+        console.log("select mine: "+window.findingModalSelectedMine);
+        if(window.findingModalSelectedMine == 'true'){
+			window.findingModalSelectedMine = 'false';
+			$('#mine-filter-button').addClass('uk-active');
+			$('.amenity-list-item.finding-modal-list-items:not(.uid-{{$amenity->auditor_id}}').hide();
+		}else{
+			window.findingModalSelectedMine = 'true';
+			$('.amenity-list-item.finding-modal-list-items').show();
+			$('#mine-filter-button').removeClass('uk-active');
+		}
 
 	}
 	
