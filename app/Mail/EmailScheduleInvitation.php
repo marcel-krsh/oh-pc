@@ -78,9 +78,9 @@ class EmailScheduleInvitation extends Mailable
         $introLines[] = $cached_audit->title;
         $introLines[] = $address;
         
-        header("text/calendar");
+        //header("text/calendar");
         $filename = "invite.ics";
-        file_put_contents($filename, $this->ics_link);
+        // file_put_contents($filename, $this->ics_link);
 
         $actionText = "";
         $actionUrl = "";
@@ -107,7 +107,7 @@ class EmailScheduleInvitation extends Mailable
         }
 
         return $this->view('emails.send_communication', compact('greeting', 'introLines', 'actionUrl', 'actionText', 'level', 'outroLines', 'actionText2', 'actionUrl2', 'level2'))
-                    ->attach($filename, [
+                    ->attachData($this->ics_link, $filename, [
                         'mime' => 'text/calendar',
                     ]);;
     }
