@@ -50,6 +50,10 @@ class EventServiceProvider extends ServiceProvider
             'App\Events\FindingsEvent@findingCreated'
         ],
 
+        'scheduletime.created' => [
+            'App\Events\SchedulesEvent@scheduleTimeCreated'
+        ],
+
     ];
 
     /**

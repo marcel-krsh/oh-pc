@@ -159,6 +159,43 @@ class CachedAudit extends Model
         }
     }
 
+    public function formatted_address($format = 'default')
+    {
+
+        $address = '';
+
+        if($format == 'extended'){
+            if($this->title){
+                $address = $this->title . "<br />";
+            }
+            if($this->pm){
+                $address =  $address . $this->pm . "<br />";
+            }
+            if($this->address){
+                $address = $this->address. "<br />";
+            }
+            if($this->city){
+                $address = $address . "<br />" . $this->city. " ".$this->state. " " . $this->zip;
+            }
+        }elseif($format == 'simple'){
+            if($this->address){
+                $address = $this->address;
+            }
+            if($this->city){
+                $address = $address . ", " . $this->city. " ".$this->state. " " . $this->zip;
+            }
+        }else{
+            if($this->address){
+                $address = $this->address. "<br />";
+            }
+            if($this->city){
+                $address = $address . "<br />" . $this->city. " ".$this->state. " " . $this->zip;
+            }
+        }
+
+        return $address;
+    }
+
     public function estimated_chart_data()
     {
         // used to display the chart on the assignment page
