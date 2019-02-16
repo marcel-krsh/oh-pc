@@ -322,11 +322,11 @@
 			        			<button id="mine-filter-button" uk-tooltip="title:SHOW MY AMENITIES AND LOCATIONS;" class="uk-button uk-button-default button-filter" style="border-left: 1px solid;border-right: 0px;" onclick=" console.log(window.findingModalSelectedMine);
 			        			if(window.findingModalSelectedMine == 'true'){
 			        				window.findingModalSelectedMine='false';
-			        				$('.amenity-list-item.finding-modal-list-items:not(.uid-{{$amenity->auditor_id}}').hide();
+			        				$('.amenity-list-item.finding-modal-list-items:not(.uid-{{Auth::user()->id}}').hide();
 				        			$('#mine-filter-button').addClass('uk-active'); 
 			        			}else{
 			        				window.findingModalSelectedMine='true';
-			        				$('.amenity-list-item.finding-modal-list-items:not(.uid-{{$amenity->auditor_id}}').show();
+			        				$('.amenity-list-item.finding-modal-list-items:not(.uid-{{Auth::user()->id}}').show();
 				        			$('#mine-filter-button').removeClass('uk-active');
 			        			}">MINE</button>
 					        </div>
