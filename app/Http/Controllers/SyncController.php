@@ -31,7 +31,9 @@ class SyncController extends Controller
 
         $unitProgram = $apiConnect->getUnitPrograms($request->get('unitId'), Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer');
 
-        dd($unitProgram);
+        $unitPrograms = json_decode($unitProgram, true);
+
+        dd($unitPrograms);
 
 
     }
