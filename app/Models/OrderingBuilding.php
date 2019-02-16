@@ -13,6 +13,7 @@ class OrderingBuilding extends Model
 
     protected $fillable = [
         'user_id',
+        'project_id',
         'audit_id',
         'building_id',
         'amenity_id',
@@ -49,7 +50,12 @@ class OrderingBuilding extends Model
      */
     public function audit() : HasOne
     {
-        return $this->hasOne(\App\Models\CachedAudit::class, 'id', 'audit_id');
+        return $this->hasOne(\App\Models\CachedAudit::class, 'audit_id', 'audit_id');
+    }
+
+    public function project() : HasOne
+    {
+        return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
     }
 
     /**

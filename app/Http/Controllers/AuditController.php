@@ -89,35 +89,100 @@ class AuditController extends Controller
 
         if (OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->count() == 0 && CachedBuilding::where('audit_id', '=', $audit)->count() != 0) {
             // if ordering_buildings is empty, create a default entry for the ordering
-            $buildings = CachedBuilding::where('audit_id', '=', $audit)->orderBy('id', 'desc')->get();
+            // if there is a previous audit and that user has ordering records, use those as default
             
-            $i = 1;
-            $new_ordering = [];
+            // also make sure that we have the same buildings now 
+            
+            // is there a previous record in the OrderingBuilding for the same project and user?
+            // if yes, we get it and check if all the buildings match
+            // if they do we copy the ordering
+            // if they don't we apply the default ordering
+            
+            // if not we apply the default ordering
+            
+            $default_ordering_needed = 0;
 
-            foreach ($buildings as $building) {
-                if($building->building_id !== NULL){
-                    $ordering = new OrderingBuilding([
-                        'user_id' => Auth::user()->id,
-                        'audit_id' => $audit,
-                        'building_id' => $building->building_id,
-                        'amenity_id' => 0,
-                        'order' => $i
-                    ]);
-                    $ordering->save();
-                    $i++;
+            // get the project from audit_id
+            $project_id = Audit::where('id','=',$audit)->first()->project_id;
+
+            // is there a previous record in the OrderingBuilding for the same project and user?
+            $previous_ordering_records_check = OrderingBuilding::where('project_id','=',$project_id)->where('user_id','=',Auth::user()->id)->where('audit_id','!=',$audit)->orderBy('audit_id', 'desc')->first();
+            if($previous_ordering_records_check){
+                $previous_ordering_records_audit_id = $previous_ordering_records_check->audit_id;
+
+                // if yes, we get it and check if all the buildings match
+                $previous_ordering_records = OrderingBuilding::where('project_id','=',$project_id)->where('user_id','=',Auth::user()->id)->where('audit_id','=',$previous_ordering_records_audit_id)->orderBy('order','asc')->get();
+
+                // compare count first
+                if(count($previous_ordering_records) == CachedBuilding::where('audit_id','=',$audit)->count()){
+                    // check if buildings are the same
+                    foreach($previous_ordering_records as $ordering_building){
+                        if(!CachedBuilding::where('audit_id','=',$audit)->where('building_id','=',$ordering_building->building_id)->count()){
+                             // use the default ordering
+                             $default_ordering_needed = 1;
+                             break;
+                        }
+                    }
+
+                    // all good, let's copy the previous ordering
+                    if($default_ordering_needed == 0){
+                        foreach($previous_ordering_records as $ordering_building){
+                            $ordering = new OrderingBuilding([
+                                'user_id' => Auth::user()->id,
+                                'audit_id' => $audit,
+                                'project_id' => $ordering_building->project_id,
+                                'building_id' => $ordering_building->building_id,
+                                'amenity_id' => $ordering_building->amenity_id,
+                                'order' => $ordering_building->order
+                            ]);
+                            $ordering->save();
+                        }
+                    }
                 }else{
-                    // it is a building-level amenity
-                    $ordering = new OrderingBuilding([
-                        'user_id' => Auth::user()->id,
-                        'audit_id' => $audit,
-                        'building_id' => NULL,
-                        'amenity_id' => $building->amenity_id,
-                        'order' => $i
-                    ]);
-                    $ordering->save();
-                    $i++;
+                    // use the default ordering
+                    $default_ordering_needed = 1;
+                }
+                
+
+            }else{
+                // use the default ordering
+                $default_ordering_needed = 1;
+            }
+
+            // use the default ordering
+            if($default_ordering_needed){
+                $buildings = CachedBuilding::where('audit_id', '=', $audit)->orderBy('id', 'desc')->get();
+            
+                $i = 1;
+
+                foreach ($buildings as $building) {
+                    if($building->building_id !== NULL){
+                        $ordering = new OrderingBuilding([
+                            'user_id' => Auth::user()->id,
+                            'audit_id' => $audit,
+                            'project_id' => $building->project_id,
+                            'building_id' => $building->building_id,
+                            'amenity_id' => 0,
+                            'order' => $i
+                        ]);
+                        $ordering->save();
+                        $i++;
+                    }else{
+                        // it is a building-level amenity
+                        $ordering = new OrderingBuilding([
+                            'user_id' => Auth::user()->id,
+                            'audit_id' => $audit,
+                            'project_id' => $building->project_id,
+                            'building_id' => NULL,
+                            'amenity_id' => $building->amenity_id,
+                            'order' => $i
+                        ]);
+                        $ordering->save();
+                        $i++;
+                    }
                 }
             }
+            
         }
         
         $buildings = OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->get();
@@ -143,6 +208,7 @@ class AuditController extends Controller
     {
         $building = $request->get('building'); // this is building_id not cached_building_id
         $amenity = $request->get('amenity');
+        $project = $request->get('project');
         $index = $request->get('index');
 
         
@@ -160,6 +226,7 @@ class AuditController extends Controller
             $inserted = [ [
                     'user_id' => Auth::user()->id,
                     'audit_id' => $audit,
+                    'project_id' => $project,
                     'building_id' => $building,
                     'amenity_id' => 0,
                     'order' => $index
@@ -178,6 +245,7 @@ class AuditController extends Controller
             $inserted = [ [
                     'user_id' => Auth::user()->id,
                     'audit_id' => $audit,
+                    'project_id' => $project,
                     'building_id' => NULL,
                     'amenity_id' => $amenity,
                     'order' => $index
@@ -196,6 +264,7 @@ class AuditController extends Controller
             $new_ordering = new OrderingBuilding([
                 'user_id' => $ordering['user_id'],
                 'audit_id' => $ordering['audit_id'],
+                'project_id' => $ordering['project_id'],
                 'building_id' => $ordering['building_id'],
                 'amenity_id' => $ordering['amenity_id'],
                 'order' => $key+1
