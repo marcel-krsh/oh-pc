@@ -29,7 +29,7 @@ class SyncController extends Controller
        
         $apiConnect = new DevcoService();
 
-        $unitProgram = $apiConnect->getUnitPrograms($request->get('unitId', Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer'));
+        $unitProgram = $apiConnect->getUnitPrograms($request->get('unitId'), Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer');
 
         dd($unitProgram);
 
