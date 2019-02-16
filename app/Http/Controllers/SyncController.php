@@ -25,7 +25,7 @@ use Storage;
 class SyncController extends Controller
 {
     
-    public function testapi {
+    public function testapi() {
         return 'route';
     }
     //
