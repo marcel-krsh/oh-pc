@@ -86,6 +86,7 @@ class AuditController extends Controller
             // OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->delete();
         }
 
+
         if (OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->count() == 0 && CachedBuilding::where('audit_id', '=', $audit)->count() != 0) {
             // if ordering_buildings is empty, create a default entry for the ordering
             $buildings = CachedBuilding::where('audit_id', '=', $audit)->orderBy('id', 'desc')->get();
@@ -94,28 +95,42 @@ class AuditController extends Controller
             $new_ordering = [];
 
             foreach ($buildings as $building) {
-                $ordering = new OrderingBuilding([
-                    'user_id' => Auth::user()->id,
-                    'audit_id' => $audit,
-                    'building_id' => $building->id,
-                    'order' => $i
-                ]);
-                $ordering->save();
-                $i++;
+                if($building->building_id !== NULL){
+                    $ordering = new OrderingBuilding([
+                        'user_id' => Auth::user()->id,
+                        'audit_id' => $audit,
+                        'building_id' => $building->building_id,
+                        'amenity_id' => 0,
+                        'order' => $i
+                    ]);
+                    $ordering->save();
+                    $i++;
+                }else{
+                    // it is a building-level amenity
+                    $ordering = new OrderingBuilding([
+                        'user_id' => Auth::user()->id,
+                        'audit_id' => $audit,
+                        'building_id' => NULL,
+                        'amenity_id' => $building->amenity_id,
+                        'order' => $i
+                    ]);
+                    $ordering->save();
+                    $i++;
+                }
             }
         }
         
-        $buildings = OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->with('building')->get();
+        $buildings = OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->get();
 
         // in the case of an amenity at the building level (like a parking lot), there won't be a clear link between the amenityinspection and the cachedbuilding
         foreach($buildings as $building){
-            if($building->building->building_id == NULL){
-                $amenity_id = $building->building->amenity_id;
-                $audit_id = $building->building->audit_id;
+            if($building->building_id === NULL){
+                $amenity_id = $building->amenity_id;
+                $audit_id = $building->audit_id;
                 $amenity_inspection = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->whereNull('building_id')->whereNull('cachedbuilding_id')->first();
                 
                 if($amenity_inspection){
-                    $amenity_inspection->cachedbuilding_id = $building->building->id;
+                    $amenity_inspection->cachedbuilding_id = $building->building_id;
                     $amenity_inspection->save();
                 }
             }
@@ -126,18 +141,48 @@ class AuditController extends Controller
 
     public function reorderBuildingsFromAudit($audit, Request $request)
     {
-        $building = $request->get('building');
+        $building = $request->get('building'); // this is building_id not cached_building_id
+        $amenity = $request->get('amenity');
         $index = $request->get('index');
 
-        // select all building orders except for the one we want to reorder
-        $current_ordering = OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->where('building_id', '!=', $building)->orderBy('order', 'asc')->get()->toArray();
+        
 
-        $inserted = [ [
+        if($building !== null){
+            $current_ordering = OrderingBuilding::where('audit_id', '=', $audit)
+                                    ->where('user_id', '=', Auth::user()->id)
+                                    ->where(function ($query) use($building) {
+                                        $query->where('building_id', '!=', $building)
+                                              ->orwhereNull('building_id');
+                                    })
+                                    ->orderBy('order', 'asc')
+                                    ->get()->toArray();
+
+            $inserted = [ [
                     'user_id' => Auth::user()->id,
                     'audit_id' => $audit,
                     'building_id' => $building,
+                    'amenity_id' => 0,
                     'order' => $index
                ]];
+        }else{
+            // select all building orders except for the one we want to reorder
+            $current_ordering = OrderingBuilding::where('audit_id', '=', $audit)
+                                    ->where('user_id', '=', Auth::user()->id)
+                                    ->where(function ($query) use($amenity) {
+                                        $query->where('amenity_id', '!=', $amenity)
+                                              ->orwhereNull('amenity_id');
+                                    })
+                                    ->orderBy('order', 'asc')
+                                    ->get()->toArray();
+
+            $inserted = [ [
+                    'user_id' => Auth::user()->id,
+                    'audit_id' => $audit,
+                    'building_id' => NULL,
+                    'amenity_id' => $amenity,
+                    'order' => $index
+               ]];
+        }
 
         // insert the building ordering in the array
         $reordered_array = $current_ordering;
@@ -152,6 +197,7 @@ class AuditController extends Controller
                 'user_id' => $ordering['user_id'],
                 'audit_id' => $ordering['audit_id'],
                 'building_id' => $ordering['building_id'],
+                'amenity_id' => $ordering['amenity_id'],
                 'order' => $key+1
             ]);
             $new_ordering->save();

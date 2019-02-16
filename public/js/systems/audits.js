@@ -840,10 +840,11 @@ function openFindings(element, auditid, buildingid, unitid='', type='all', ameni
 	dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1);
 }
 
-function reorderBuildings(auditId, buildingId, endIndex) {
+function reorderBuildings(auditId, buildingId, amenityId, endIndex) {
 	var url = 'dashboard/audits/'+auditId+'/buildings/reorder';
 	$.get(url, {
         'building' : buildingId,
+        'amenity' : amenityId,
         'index' : endIndex
         }, function(data) {
             if(data=='0'){ 
@@ -904,6 +905,7 @@ $(function () {
 		var listItem = document.getElementById( item.detail[1].id );
 		var auditId = $(listItem).data('audit');
 		var buildingId = $(listItem).data('building');
+		var amenityId = $(listItem).data('amenity');
 
 		if($('#'+item.detail[1].id).hasClass('building-detail')){
 			var unitId = $(listItem).data('area');
@@ -920,7 +922,7 @@ $(function () {
 			//UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
 			reorder(".buildings > .sortable", '.building');
 
-			reorderBuildings(auditId, buildingId, endIndex);
+			reorderBuildings(auditId, buildingId, amenityId, endIndex);
 			
 			//console.log("endIndex "+endIndex+' '+item.detail[1].id);
 			// update journey icons

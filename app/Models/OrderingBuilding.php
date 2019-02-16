@@ -14,8 +14,8 @@ class OrderingBuilding extends Model
     protected $fillable = [
         'user_id',
         'audit_id',
-        'project_id',
         'building_id',
+        'amenity_id',
         'order'
     ];
 
@@ -24,19 +24,22 @@ class OrderingBuilding extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
+    // public function building() : HasOne
+    // {
+    //     return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
+    // }
+
     public function building() : HasOne
     {
-        return $this->hasOne(\App\Models\CachedBuilding::class, 'id', 'building_id');
-    }
+        if($this->building_id === NULL){
+            return $this->hasOne(\App\Models\CachedBuilding::class, 'amenity_id', 'amenity_id')->where('audit_id','=',$this->audit_id);
+            //$cachedbuilding = \App\Models\CachedBuilding::where('audit_id','=',$this->audit_id)->where('amenity_id','=',$this->amenity_id)->first(); 
+        }else{
+            //$cachedbuilding = \App\Models\CachedBuilding::where('audit_id','=',$this->audit_id)->where('building_id','=',$this->building_id)->first();
+            return $this->hasOne(\App\Models\CachedBuilding::class, 'building_id', 'building_id')->where('audit_id','=',$this->audit_id);
+        }
 
-    /**
-     * Project
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function project() : HasOne
-    {
-        return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
+        //return $cachedbuilding;
     }
 
     /**
