@@ -1904,12 +1904,12 @@ class DevcoService extends PCAPIService
      */
     public function getUnitPrograms(int $unitId = 1, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : object
     {
-        dd($unitId,$user,$user_email,$user_name,$device_id,$device_name);
+        //dd($unitId,$user,$user_email,$user_name,$device_id,$device_name);
         $params = "unit={$unitId}";
 
         $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
-        dd("devco/unit_programs/{$unitId}?{$log_params}");
+        //dd("devco/unit_programs/{$unitId}?{$log_params}");
 
         return $this->get("devco/unit_programs/{$unitId}?{$log_params}");
     }
