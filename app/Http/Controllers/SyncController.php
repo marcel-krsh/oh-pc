@@ -28,7 +28,7 @@ class SyncController extends Controller
     public function testapi(Request $request) {
        
         $apiConnect = new DevcoService();
-        $unitProgram = $apiConnect->getUnitPrograms($request->get('unitId', Auth::user()->id, Auth::user()->email, , 1, 'System');
+        $unitProgram = $apiConnect->getUnitPrograms($request->get('unitId', Auth::user()->id, Auth::user()->email,null, 1, 'System');
 
         dd($unitProgram);
 
