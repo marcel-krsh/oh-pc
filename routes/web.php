@@ -61,6 +61,7 @@
 
         // Update Devco Test Routes
         Route::get('/update_devco/{model}/{referenceId}/{crud}','SyncController@crudDevco');
+        Route::get('/test/apiroute','SyncController@testapi');
 
         //chat routes
         Route::get('/chat','ChatController@chat');
