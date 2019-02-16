@@ -25,8 +25,14 @@ use Storage;
 class SyncController extends Controller
 {
     
-    public function testapi() {
-        return 'route';
+    public function testapi(Request $request) {
+       
+        $apiConnect = new DevcoService();
+        $unitProgram = $apiConnect->getUnitPrograms($request->get('unitId', Auth::user()->id, Auth::user()->email, , 1, 'System');
+
+        dd($unitProgram);
+
+
     }
     //
     public function getDocs(string $projectNumber, string $searchString = null, int $deviceId=0 , string $deviceName='System'){
