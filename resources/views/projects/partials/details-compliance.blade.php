@@ -20,42 +20,42 @@
 						</tr>
 						<tr>
 							<td>
-								<div uk-leader><strong>Compliance Requirements</strong></div>
+								<div uk-leader><strong>Compliance Requirements (without overlap)</strong></div>
 							</td>
 							<td class="uk-text-center border-right"></td>
 							<td class="uk-text-center"></td>
 						</tr>
 						<tr>
 							<td>
-								<div class="indented" uk-leader><i class="fas fa-square chart-color-required"></i> Required Units (without overlap)</div>
+								<div class="indented" uk-leader><i class="fas fa-square chart-color-required"></i> Required Units</div>
 							</td>
 							<td class="uk-text-center border-right">{{$data['summary']['required_units']}}</td>
 							<td class="uk-text-center">{{$data['summary']['required_units_file']}}</td>
 						</tr>
 						<tr>
 							<td>
-								<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Selected Units (optimized)</div>
+								<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Selected Units</div>
 							</td>
 							<td class="uk-text-center border-right">{{$data['summary']['selected_units']}}</td>
 							<td class="uk-text-center">{{$data['summary']['selected_units_file']}}</td>
 						</tr>
 						<tr>
 							<td>
-								<div class="indented" uk-leader><i class="fas fa-square chart-color-needed"></i> Needed Units (optimized)</div>
+								<div class="indented" uk-leader><i class="fas fa-square chart-color-needed"></i> Needed Units</div>
 							</td>
 							<td class="uk-text-center border-right">{{$data['summary']['needed_units']}}</td>
 							<td class="uk-text-center">{{$data['summary']['needed_units_file']}}</td>
 						</tr>
 						<tr>
 							<td>
-								<div class="indented" uk-leader><i class="fas fa-square chart-color-inspected"></i> Inspected Units (optimized)</div>
+								<div class="indented" uk-leader><i class="fas fa-square chart-color-inspected"></i> Inspected Units</div>
 							</td>
 							<td class="uk-text-center border-right">{{$data['summary']['inspected_units']}}</td>
 							<td class="uk-text-center">{{$data['summary']['inspected_units_file']}}</td>
 						</tr>
 						<tr>
 							<td>
-								<div class="indented" uk-leader><i class="fas fa-square chart-color-to-be-inspected"></i> To Be Inspected Units (optimized)</div>
+								<div class="indented" uk-leader><i class="fas fa-square chart-color-to-be-inspected"></i> To Be Inspected Units</div>
 							</td>
 							<td class="uk-text-center border-right">{{$data['summary']['to_be_inspected_units']}}</td>
 							<td class="uk-text-center">{{$data['summary']['to_be_inspected_units_file']}}</td>
