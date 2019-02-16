@@ -32,7 +32,7 @@ class SyncController extends Controller
 
         $units = Project::where('id',$request->get('project_id'))->with('units')->with('programs')->get();
 
-        dd($units);
+        dd($units, $units->programs());
         $programs = $units->programs;
         $units = $units->units;
 
