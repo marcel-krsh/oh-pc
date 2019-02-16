@@ -31,8 +31,8 @@ class SyncController extends Controller
         $apiConnect = new DevcoService();
 
         $units = Project::find($request->get('project_id'))->with('units')->with('programs');
-        $programs = $units->programs();
-        $units = $units->units();
+        $programs = $units->programs;
+        $units = $units->units;
 
         dd($programs,$units);
         foreach($units as $unit){
