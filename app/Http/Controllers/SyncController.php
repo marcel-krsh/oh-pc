@@ -29,11 +29,21 @@ class SyncController extends Controller
        
         $apiConnect = new DevcoService();
 
-        $unitProgram = $apiConnect->getUnitPrograms($request->get('unitId'), Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer');
+        $units = Project::find($request->get('project_id'))->with('units')->with('programs');
+        $programs = $units->programs();
+        $units = $units->units();
 
-        $unitPrograms = json_decode($unitProgram, true);
+        dd($programs,$units);
+        foreach($units as $unit){
 
-        $unitPrograms = $unitPrograms['data'];
+            $unitProgram = $apiConnect->getUnitPrograms($unit->unit_key, Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer');
+
+            $unitPrograms = json_decode($unitProgram, true);
+            $unitPrograms = $unitPrograms['data'];
+
+        }
+
+        
 
         dd($unitPrograms);
 
