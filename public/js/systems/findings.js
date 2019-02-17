@@ -164,8 +164,13 @@ function newFinding(id){
 	
 }
 
-$('.filter-button-set-right').find('[uk-filter-control]').click(function() {
-	if($(this).find('span').is(':visible')){
+function refreshFindingStream() {
+	console.log("refresh list");
+}
+
+function clickingOnFindingFilter(element) {
+	console.log('clicking on a filter');
+	if($(element).find('span').is(':visible')){
 
 		// switch order
 		var currentOrdering = 'sort-asc';
@@ -190,7 +195,7 @@ $('.filter-button-set-right').find('[uk-filter-control]').click(function() {
 				return 0;
 			});
 			 sortableElements.detach().appendTo(sortableElementParent);
-	  		$(this).find('span a').removeClass('sort-asc').addClass('sort-desc');
+	  		$(element).find('span a').removeClass('sort-asc').addClass('sort-desc');
 	  	}else{
 	  		var sortableElementParent = $('.js-findings');
 		  	var sortableElements = sortableElementParent.children();console.log(sortableElements.length);
@@ -207,23 +212,24 @@ $('.filter-button-set-right').find('[uk-filter-control]').click(function() {
 				return 0;
 			});
 		    sortableElements.detach().appendTo(sortableElementParent);
-	  		$(this).find('span a').removeClass('sort-desc').addClass('sort-asc');
+	  		$(element).find('span a').removeClass('sort-desc').addClass('sort-asc');
 	  	}
 	}else{
 
 		// close all spans in the group
-		if($(this).hasClass('auditgroup')){
+		if($(element).hasClass('auditgroup')){
 			$('.auditgroup').find('span').hide();
-		}else if($(this).hasClass('findinggroup')){
+		}else if($(element).hasClass('findinggroup')){
 			$('.findinggroup').find('span').hide();
 		}
 
 		// show selected one
-		$(this).find('span').toggle();
+		$(element).find('span').toggle();
 	}
-});
+}
 
 $('.filter-button-set').find('button.button-filter').click(function() {
+  
   $('#finding-description').val('');
   // check if selected span is already visible, if so switch the order
   if($(this).closest('div').find('span').is(':visible')){
@@ -346,7 +352,7 @@ function expandFindingItems(element) {
 				$(this).remove();
 
 				// also remove corresponding sticky header
-				$('#inspec-tools-tab-finding-sticky-'+findingId).slideOut("fast");
+				$('#inspec-tools-tab-finding-sticky-'+findingId).slideDown("fast");
 			 });
 		}
 		

@@ -1,37 +1,37 @@
 <div class="modal-findings-right" uk-filter="target: .js-findings">
 	
 		<div class="modal-findings-right-top">
-		    <div class="uk-width-1-1 filter-button-set-right" uk-grid>
-		        <div class="uk-width-1-5 uk-active findinggroup" uk-filter-control="filter: [data-finding-filter*='my-finding']; group: findingfilter;">
+		    <div class="uk-width-1-1 filter-button-set-right js-findings-buttons" uk-grid>
+		        <div class="uk-width-1-5 uk-active findinggroup" uk-filter-control="filter: [data-finding-filter*='my-finding']; group: findingfilter; " onclick="clickingOnFindingFilter(this);">
 	                <button class="uk-button uk-button-default button-filter button-filter-border-left" >My finding</button>
 		        	<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
 						<a class="sort-asc"></a>
 					</span>
 	            </div>
-	            <div class="uk-width-1-5 findinggroup" uk-filter-control="filter: [data-finding-filter*='all']; group: findingfilter;">    
+	            <div class="uk-width-1-5 findinggroup" uk-filter-control="filter: [data-finding-filter*='all']; group: findingfilter;" onclick="clickingOnFindingFilter(this);">    
 	            	<button class="uk-button uk-button-default button-filter" style="padding-left: 5px; padding-right: 5px;">All findings</button>
 		        	<span style="display:none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
 						<a class="sort-asc"></a>
 					</span>
 	            </div>
-	            <div class="uk-width-1-5 uk-active auditgroup" uk-filter-control="filter: [data-audit-filter*='this-audit']; group: auditfilter;">
+	            <div class="uk-width-1-5 uk-active auditgroup" uk-filter-control="filter: [data-audit-filter*='this-audit']; group: auditfilter;" onclick="clickingOnFindingFilter(this);">
 	                <button class="uk-button uk-button-default button-filter">this audit</button>
 	                <span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
 						<a class="sort-asc"></a>
 					</span>
 	            </div>
-	            <div class="uk-width-1-5 auditgroup" uk-filter-control="filter: [data-audit-filter*='all']; group: auditfilter; ">
+	            <div class="uk-width-1-5 auditgroup" uk-filter-control="filter: [data-audit-filter*='all']; group: auditfilter; " onclick="clickingOnFindingFilter(this);">
 	                <button class="uk-button uk-button-default button-filter">all audits</button>
 	                <span style="display:none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
 						<a class="sort-asc"></a>
 					</span>
 		        </div>
 		        <div class="uk-width-1-5 auditgroup">
-	                <button id="finding-modal-audit-stream-refresh" class="uk-button uk-button-default button-filter">REFRESH</button>
+	                <button id="finding-modal-audit-stream-refresh" class="uk-button uk-button-default button-filter"  onclick="refreshFindingStream();">REFRESH</button>
 	                
 		        </div>
 		    </div>
-		   </div>
+		</div>
 		   
 	    <div class="modal-findings-right-bottom-container">
 			<div class="modal-findings-right-bottom">
@@ -116,3 +116,12 @@
 		</div>
 
 </div>
+<script>
+	// $( document ).ready(function() {
+	// 	var filter = document.querySelector('.js-filter');
+ //        var filterBar= document.querySelector('.js-findings-buttons');
+	// 	UIkit.filter( filterBar, {
+ //                target: filter
+ //            });
+	// });
+</script>
