@@ -42,7 +42,7 @@ class SyncController extends Controller
         ->get();
 
         foreach($projects as $project){
-            if(count($project->programs)>0){
+            if(count($project->programs)>0 && count($project->units)>0){
                 $output .= "<a onclick=\"$('.project-{$project->id}-units').toggle();\">Project {$project->project_number}</a><br />";
                 //dd($project,$project->programs);
                 $programs = $project->programs;
