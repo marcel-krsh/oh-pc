@@ -317,13 +317,9 @@ class AuditController extends Controller
 
     public function detailsFromBuilding($audit, $building, Request $request)
     {
-        //dd(OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->count(), CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count(), CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count());
         $target = $request->get('target');
         $targetaudit = $request->get('targetaudit');
         $context = $request->get('context');
-
-        // check if user can see that audit
-        //
 
         // count buildings & count ordering_buildings
         if (OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->count() == 0 && CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count() != 0) {

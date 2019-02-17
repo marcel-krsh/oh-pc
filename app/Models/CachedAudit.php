@@ -292,7 +292,7 @@ class CachedAudit extends Model
     // amenity_inspections table is where we store all the amenities that need to be inspected
     public function inspection_items() : HasMany
     {
-        return $this->hasMany(\App\Models\AmenityInspection::class, 'audit_id');
+        return $this->hasMany(\App\Models\AmenityInspection::class, 'audit_id', 'audit_id');
     }
 
     public function total_items()
@@ -304,6 +304,23 @@ class CachedAudit extends Model
     {
         // count all the amenity_inspections items belonging to the current user
         return $this->inspection_items()->where('auditor_id','=',Auth::user()->id)->count();
+    }
+
+    public function hasAmenityInspectionAssigned($building_id = null, $unit_id = null) {
+
+        if($building_id !== null){
+            $test = $this->inspection_items()->where('auditor_id','=',Auth::user()->id)->where('building_id','=',$building_id)->count();
+        }elseif($unit_id !== null){
+            $test = $this->inspection_items()->where('auditor_id','=',Auth::user()->id)->where('unit_id','=',$unit_id)->count();
+        }else{
+            $test = $this->inspection_items()->where('auditor_id','=',Auth::user()->id)->count();
+        }
+
+        if($test > 0){ 
+            return true; 
+        } else { 
+            return false; 
+        }
     }
 
     

@@ -27,7 +27,7 @@ class OrderingUnit extends Model
      */
     public function building() : HasOne
     {
-        return $this->hasOne(\App\Models\CachedBuilding::class, 'id', 'building_id');
+        return $this->hasOne(\App\Models\CachedBuilding::class, 'building_id', 'building_id')->where('audit_id','=',$this->audit_id);
     }
 
     /**
@@ -47,7 +47,7 @@ class OrderingUnit extends Model
      */
     public function unit() : HasOne
     {
-        return $this->hasOne(\App\Models\CachedUnit::class, 'id', 'unit_id');
+        return $this->hasOne(\App\Models\CachedUnit::class, 'unit_id', 'unit_id')->where('audit_id','=',$this->audit_id);
     }
 
     /**

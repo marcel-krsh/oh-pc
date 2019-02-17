@@ -331,7 +331,8 @@ class FindingController extends Controller
         $allFindings = null;
 
         if($auditid > 0){
-            $audit = CachedAudit::where('audit_id',$auditid)->with('inspection_items')->with('inspection_items.amenity.finding_types')->with('inspection_items.amenity.finding_types.boilerplates()')->first();
+            //$audit = CachedAudit::where('audit_id',$auditid)->with('inspection_items')->with('inspection_items.amenity.finding_types')->with('inspection_items.amenity.finding_types.boilerplates()')->first();
+            $audit = CachedAudit::where('audit_id',$auditid)->with('inspection_items')->first();
         }
         if($buildingid > 0){
             // always use the audit id as a selector to ensure you get the correct one
