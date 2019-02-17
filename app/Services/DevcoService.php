@@ -1933,7 +1933,8 @@ class DevcoService extends PCAPIService
         //dd($data);
         $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
-        return $this->post("devco/unit_development_programs?{$log_params}",$data);
+        return $this->put("devco/unit_development_programs?{$log_params}",[
+    GuzzleHttp\RequestOptions::JSON => $data]);
     }
 
     public function getProjectDocuments(string $projectNumber = '1', string $searchString = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
