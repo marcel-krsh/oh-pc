@@ -284,7 +284,46 @@ class Project extends Model
 
     public function programs() : HasMany
     {
-        return $this->hasMany(\App\Models\ProjectProgram::class, 'project_id')->where('program_status_type_id', SystemSetting::get('active_program_status_type_id'));
+       
+        $programKeys = array();
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_htc')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_bundle')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_811')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_faf')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_nsp')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_tce')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_rtcap')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_medicaid')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_home')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_ohtf')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_nhtf')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('lease_purchase')));
+        // $test = ProjectProgram::where('project_id','45055')->where('program_status_type_id', SystemSetting::get('active_program_status_type_id'))
+        //         ->whereIn('program_key',$programKeys)->get();
+        // dd($test,$programKeys);
+        return $this->hasMany(\App\Models\ProjectProgram::class, 'project_id')->where('program_status_type_id', SystemSetting::get('active_program_status_type_id'))
+                ->whereIn('program_key',$programKeys);
+    }
+    public function all_other_programs() : HasMany
+    {
+       
+        $programKeys = array();
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_htc')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_bundle')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_811')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_faf')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_nsp')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_tce')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_rtcap')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_medicaid')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_home')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_ohtf')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_nhtf')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('lease_purchase')));
+        
+        // we don't exclude non active programs as we may still get back program funding
+        return $this->hasMany(\App\Models\ProjectProgram::class, 'project_id')
+                ->whereNotIn('program_key',$programKeys);
     }
 
     public function buildings() : HasMany

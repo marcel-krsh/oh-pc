@@ -27,29 +27,119 @@ class SyncController extends Controller
 {
     
     public function testapi(Request $request) {
-       
-        $apiConnect = new DevcoService();
+        $cannotRun = '';
+        $cannotRunCount = 0;
+        $canRun = '';
+        $canRunCount = 0;
+        $output = '<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>';
+        
 
-        $units = Project::where('id',$request->get('project_id'))->with('units')->with('programs')->get();
+        $projects = Project::with('units')->with('programs')->with('all_other_programs')
+        //->where('id','45055')
+        ->get();
 
-        dd($units, $units->programs());
-        $programs = $units->programs;
-        $units = $units->units;
+        foreach($projects as $project){
+            if(count($project->programs)>0 && count($project->units)>0){
+                $output .= "<a onclick=\"$('.project-{$project->id}-units').toggle();\">Project {$project->project_number}</a><br />";
+                //dd($project,$project->programs);
+                $programs = $project->programs;
+                $units = $project->units;
+                $currentFundingKey = 0;
+                $duplicateFundingKey = 0;
+                $fundingKeys = '';
+                $fundingKeys = array();
+                $projectPrograms = '';
+                $otherFundingKeys= '';
+                $otherFundingKeys = array();
+                $programFundingKeyToProgramKey = '';
+                $programFundingKeyToProgramKey = array();
+                foreach($programs as $program){
+                    // put the funding keys into an array
+                    $projectPrograms .= $program->program->program_name." - funding program key: {$program->program->funding_program_key} | award number: {$program->award_number}<br />";
+                    $fundingKeys[] = $program->program->funding_program_key;
+                    $programFundingKeyToProgramKey['key'.$program->program->funding_program_key] = $program->program_key;
+                }
+                // sort the funding keys
+                sort($fundingKeys);
+                foreach ($fundingKeys as $key) {
+                    if($key != $currentFundingKey){
+                        $currentFundingKey = $key;
+                    } else {
+                        $duplicateFundingKey++;
+                    }
+                }
+                
 
-        dd($programs,$units);
-        foreach($units as $unit){
 
-            $unitProgram = $apiConnect->getUnitPrograms($unit->unit_key, Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer');
+                $output .='Total Funding Keys:'.count($fundingKeys).'<br />';
 
-            $unitPrograms = json_decode($unitProgram, true);
-            $unitPrograms = $unitPrograms['data'];
+                if($duplicateFundingKey == 0){
+                    // no duplicates within our group
+                    // current funding keys is based on our programs we inspect.
+                    // we need to check and make sure none of the programs we don't inspect
+                    // have the same funding key as one of our programs... fun fun
+                    foreach($project->all_other_programs as $program){
+                        // put the funding keys into an array
+                        $projectPrograms .= 'NOT INSPECTED:'.$program->program->program_name." - funding program key: {$program->program->funding_program_key} | award number: {$program->award_number}<br />";
+                        $otherFundingKeys[] = $program->program->funding_program_key;
+                    }
+
+                    
+                    // now lets see if any of our other active programs have funding keys that match our inspected programs
+
+                    if(count(array_intersect($otherFundingKeys, $fundingKeys)) == 0) {
+
+                        $output .= $projectPrograms;
+                        //no programs have duplicate funding keys - we are good to go on assumptions.
+                        $apiConnect = new DevcoService();
+                        $unitCount = 0;
+                        foreach($units as $unit){
+                            $unitCount++;
+                            // get the unit's programs based on funding keys (not reliable, but with the above test passed, we can work on the assumption this is accurate.)
+                            $unitProgram = $apiConnect->getUnitPrograms($unit->unit_key, Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer');
+
+                            $unitPrograms = json_decode($unitProgram, true);
+                            $unitPrograms = $unitPrograms['data'];
+
+                            if(is_array($unitPrograms) && count($unitPrograms) > 1){
+                                foreach($unitPrograms as $up){
+                                    if(in_array($up['attributes']['fundingProgramKey'], $fundingKeys)){
+                                        // we are skipping programs that are not active or not inspected.
+                                        
+                                        // need to double check that it is not possible that the funding id is unique to our inspected programs - that it is not on a program we don't inspect
+
+                                        $programKey =  $programFundingKeyToProgramKey['key'.$up['attributes']['fundingProgramKey']];
+                                        //dd($unit,$up,$unitCount,$canRunCount,$programKey);
+                                        // insert the record into the program unit table using the api
+                                        $push = $apiConnect->putUnitProgram($unit->unit_key,$programKey,$programKey,$up['attributes']['startDate'],$up['attributes']['endDate'], Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer'); 
+                                        dd($push);
+                                    }
+                                    
+                                }
+                            }
+                            
+
+                        }
+                    } else {
+                        $cannotRun .='Project id:'.$project->id.' with devco reference '.$project->project_number.' (AKA: '.$project->project_name.') has '.count(array_intersect($otherFundingKeys, $fundingKeys)).' programs with duplicate funding keys that OVERLAP with our inspected programs - thus we cannot reliably assign programs to units.<br />'.$projectPrograms.'<hr />';
+                    $cannotRunCount++;
+
+                    }
+                } else {
+                    $cannotRun .='Project id:'.$project->id.' with devco reference '.$project->project_number.' (AKA: '.$project->project_name.') has '.($duplicateFundingKey +1).' programs with duplicate funding keys<br />'.$projectPrograms.'<hr />';
+                    $cannotRunCount++;
+                }
+
+                $output .= $canRun.'<hr />';
+                $canRunCount++;
+            }
 
         }
 
-        
-
-        dd($unitPrograms);
-
+        echo $output.'Total good to run '.$canRunCount.'<br /><br />Cannot Run:'.$cannotRunCount.'<br /><br />'.$cannotRun;
 
     }
     //
