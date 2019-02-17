@@ -84,7 +84,7 @@ class SyncController extends Controller
                         $unitPrograms = json_decode($unitProgram, true);
                         $unitPrograms = $unitPrograms['data'];
 
-                        if(is_array($unitPrograms) && count($unitPrograms) > 0){
+                        if(is_array($unitPrograms) && count($unitPrograms) > 1){
                             foreach($unitPrograms as $up){
                                 dd($up['attributes']['fundingProgramKey'],$programFundingKeyToProgramKey['key'.$up['attributes']['fundingProgramKey'].'']);
                                 $programKey =  $programFundingKeyToProgramKey['key'.$up['attributes']['fundingProgramKey']];
