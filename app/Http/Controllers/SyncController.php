@@ -72,14 +72,17 @@ class SyncController extends Controller
                     $output .= $projectPrograms;
                     //no programs have duplicate funding keys - we are good to go on assumptions.
                     $apiConnect = new DevcoService();
+                    $unitCount = 0;
                     foreach($units as $unit){
+                        $unitCount++;
                         // get the unit's programs based on funding keys (not reliable, but with the above test passed, we can work on the assumption this is accurate.)
                         $unitProgram = $apiConnect->getUnitPrograms($unit->unit_key, Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer');
 
                         $unitPrograms = json_decode($unitProgram, true);
-                        dd($unit,$unitPrograms);
                         $unitPrograms = $unitPrograms['data'];
-                        
+                        if(count($unitPrograms > 0)){
+                            dd($unit,$unitPrograms,$unitCount);
+                        }
                         //$canRun .= '<span class="project-'.$project->id.'-units" style="display:none">Processed unit '.$unit->id.' <br /></span>';
 
                     }
