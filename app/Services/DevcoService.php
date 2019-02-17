@@ -1929,7 +1929,7 @@ class DevcoService extends PCAPIService
         $data = array();
         $params = "unitKey={$unitKey}&programKey={$programKey}&fundingProgramKey={$fundingProgramKey}&startDate={$startDate}&endDate={$endDate}";
         $data = ['unitKey'=>$unitKey,'programKey'=>$programKey, 'fundingProgramKey'=>$fundingProgramKey,'startDate'=>$startDate,'endDate'=>$endDate];
-        dd($data);
+        //dd($data);
         $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
         return $this->post("devco/unit_development_programs?{$params}&{$log_params}",$data);
