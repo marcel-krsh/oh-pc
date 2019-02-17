@@ -86,7 +86,7 @@ class SyncController extends Controller
 
                         if(is_array($unitPrograms) && count($unitPrograms) > 1){
                             foreach($unitPrograms as $up){
-                                $programKey =  $programFundingKeyToProgramKey[$up['attributes']['fundingProgramKey'];
+                                $programKey =  $programFundingKeyToProgramKey[$up['attributes']['fundingProgramKey']];
                                 dd($unit,$up,$unitCount,$canRunCount,$programKey);
                                 // insert the record into the program unit table using the api
                                 $push = $apiConnect->putUnitProgram($unit->unit_key,$programKey,$up['attributes']['fundingProgramKey'],$up['attributes']['startDate'],$up['attributes']['endDate'], Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer'); 
