@@ -4427,7 +4427,9 @@ class AuditController extends Controller
                     $ordering = new OrderingBuilding([
                         'user_id' => Auth::user()->id,
                         'audit_id' => $audit->audit_id,
-                        'building_id' => $cached_building->id,
+                        'building_id' => NULL,
+                        'project_id' => $audit->project_id,
+                        'amenity_id' => $amenity_type->id,
                         'order' => $latest_ordering+1
                     ]);
                     $ordering->save();
