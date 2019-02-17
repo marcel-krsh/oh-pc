@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use Illuminate\Support\Carbon;
+use GuzzleHttp\RequestOptions;
 
 class DevcoService extends PCAPIService
 {
@@ -1934,7 +1935,7 @@ class DevcoService extends PCAPIService
         $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
         return $this->put("devco/unit_development_programs?{$log_params}",[
-                   \vendor\GuzzleHttp\RequestOptions::JSON => $data]);
+                    GuzzleHttp\RequestOptions::JSON => $data]);
     }
 
     public function getProjectDocuments(string $projectNumber = '1', string $searchString = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
