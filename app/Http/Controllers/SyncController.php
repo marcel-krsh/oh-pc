@@ -27,29 +27,73 @@ class SyncController extends Controller
 {
     
     public function testapi(Request $request) {
-       
-        $apiConnect = new DevcoService();
+        $cannotRun = '';
+        $cannotRunCount = 0;
+        $canRun = '';
+        $canRunCount = 0;
+        $output = '<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>';
+        
 
-        $units = Project::where('id',$request->get('project_id'))->with('units')->with('programs')->get();
+        $projects = Project::with('units')->with('programs')
+        //->where('id','45055')
+        ->get();
 
-        dd($units, $units->programs());
-        $programs = $units->programs;
-        $units = $units->units;
+        foreach($projects as $project){
+            if(count($project->programs)>0){
+                $output .= "<a onclick=\"$('.project-{$project->id}-units').toggle();\">Project {$project->project_number}</a><br />";
+                //dd($project,$project->programs);
+                $programs = $project->programs;
+                $units = $project->units;
+                $currentFundingKey = 0;
+                $duplicateFundingKey = 0;
+                $fundingKeys = '';
+                $fundingKeys = array();
+                $projectPrograms = '';
+                foreach($programs as $program){
+                    // put the funding keys into an array
+                    $projectPrograms .= $program->program->program_name." - funding program key: {$program->program->funding_program_key} | award number: {$program->award_number}<br />";
+                    $fundingKeys[] = $program->program->funding_program_key;
+                }
+                // sort the funding keys
+                sort($fundingKeys);
+                foreach ($fundingKeys as $key) {
+                    if($key != $currentFundingKey){
+                        $currentFundingKey = $key;
+                    } else {
+                        $duplicateFundingKey++;
+                    }
+                }
+                $output .='Total Funding Keys:'.count($fundingKeys).'<br />';
 
-        dd($programs,$units);
-        foreach($units as $unit){
+                if($duplicateFundingKey == 0){
+                    $output .= $projectPrograms;
+                    no programs have duplicate funding keys - we are good to go on assumptions.
+                    $apiConnect = new DevcoService();
+                    foreach($units as $unit){
+                        // get the unit's programs based on funding keys (not reliable, but with the above test passed, we can work on the assumption this is accurate.)
+                        $unitProgram = $apiConnect->getUnitPrograms($unit->unit_key, Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer');
 
-            $unitProgram = $apiConnect->getUnitPrograms($unit->unit_key, Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer');
+                        $unitPrograms = json_decode($unitProgram, true);
+                        $unitPrograms = $unitPrograms['data'];
+                        dd($unitPrograms);
+                        //$canRun .= '<span class="project-'.$project->id.'-units" style="display:none">Processed unit '.$unit->id.' <br /></span>';
 
-            $unitPrograms = json_decode($unitProgram, true);
-            $unitPrograms = $unitPrograms['data'];
+                    }
+                } else {
+                    $cannotRun .='Project id:'.$project->id.' with devco reference '.$project->project_number.' (AKA: '.$project->project_name.') has '.($duplicateFundingKey +1).' programs with duplicate funding keys<br />'.$projectPrograms.'<hr />';
+                    $cannotRunCount++;
+                }
+
+                $output .= $canRun.'<hr />';
+                $canRunCount++;
+            }
 
         }
 
-        
-
-        dd($unitPrograms);
-
+        echo $output.'Total good to run '.$canRunCount.'<br /><br />Cannot Run:'.$cannotRunCount.'<br /><br />'.$cannotRun;
 
     }
     //
