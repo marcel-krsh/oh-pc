@@ -1932,7 +1932,7 @@ class DevcoService extends PCAPIService
 
         $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
-        return $this->put("devco/unit_development_programs?{$params}&{$log_params}",$data);
+        return $this->post("devco/unit_development_programs?{$params}&{$log_params}",$data);
     }
 
     public function getProjectDocuments(string $projectNumber = '1', string $searchString = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)

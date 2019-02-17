@@ -38,7 +38,15 @@ class SyncController extends Controller
         
 
         $projects = Project::with('units')->with('programs')->with('all_other_programs')
-        //->where('id','45055')
+        ->where('id','!=','44392')
+        ->where('id','!=','44985')
+        ->where('id','!=','45026')
+        ->where('id','!=','45247')
+        ->where('id','!=','45529')
+        ->where('id','!=','45570')
+        ->where('id','!=','45803')
+        ->where('id','!=','45920')
+        ->where('id','!=','45920')
         ->get();
 
         foreach($projects as $project){
@@ -76,7 +84,9 @@ class SyncController extends Controller
 
                 $output .='Total Funding Keys:'.count($fundingKeys).'<br />';
 
-                if($duplicateFundingKey == 0){
+                if($duplicateFundingKey == 0 || $duplicateFundingKey > 0 ){
+                    // REMOVE THE > 0 to check for duplicates again
+                    // We resolved and adjusted the script to exclude projects with duplicates that cannot have units assigned based on funding key duplication.
                     // no duplicates within our group
                     // current funding keys is based on our programs we inspect.
                     // we need to check and make sure none of the programs we don't inspect
@@ -87,7 +97,7 @@ class SyncController extends Controller
                         $otherFundingKeys[] = $program->program->funding_program_key;
                     }
 
-                    
+
                     // now lets see if any of our other active programs have funding keys that match our inspected programs
 
                     if(count(array_intersect($otherFundingKeys, $fundingKeys)) == 0) {
@@ -125,7 +135,7 @@ class SyncController extends Controller
                         }
                     } else {
                         $cannotRun .='Project id:'.$project->id.' with devco reference '.$project->project_number.' (AKA: '.$project->project_name.') has '.count(array_intersect($otherFundingKeys, $fundingKeys)).' programs with duplicate funding keys that OVERLAP with our inspected programs - thus we cannot reliably assign programs to units.<br />'.$projectPrograms.'<hr />';
-                    $cannotRunCount++;
+                        $cannotRunCount++;
 
                     }
                 } else {
