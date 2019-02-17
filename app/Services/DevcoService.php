@@ -1929,6 +1929,7 @@ class DevcoService extends PCAPIService
         $data = array();
         
         $data = ['UnitKey'=>$unitKey,'DevelopmentProgramKey'=>$programKey,'StartDate'=>$startDate,'EndDate'=>$endDate];
+        json_encode($data);
         dd($data);
         $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
