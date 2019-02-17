@@ -120,12 +120,20 @@
                             <option value="4" @if($finding_type) @if($finding_type->criticality == 4) selected @endif @endif>4</option>
                             <option value="5" @if($finding_type) @if($finding_type->criticality == 5) selected @endif @endif>5</option>
                         </select>
-                    
-                        <label for="one" class="uk-width-1-1 uk-width-1-6@m uk-text-right">Levels: </label>
-                        <label><input class="uk-checkbox" type="checkbox" name="one" value="1" @if($finding_type) @if($finding_type->one) checked @endif @endif> 1</label>
-                        <label><input class="uk-checkbox" type="checkbox" name="two" value="1" @if($finding_type) @if($finding_type->two) checked @endif @endif> 2</label>
-                        <label><input class="uk-checkbox" type="checkbox" name="three" value="1" @if($finding_type) @if($finding_type->three) checked @endif @endif> 3</label>
                     </div>
+                </div>
+                <hr style="border-style: dashed;"/>
+
+                <div class="uk-form-row">
+                    <div class="uk-grid">
+                        
+                        <label class="uk-width-1-6 uk-margin-small-top"><input class="uk-checkbox uk-margin-small-right" type="checkbox" name="one" value="1" @if($finding_type) @if($finding_type->one) checked @endif @endif> Level One</label> <input class="uk-width-5-6 uk-input" type="text" name="one_description" placeholder="Enter Level 1 Description" value="{{$finding_type->one_description}}">
+                        <hr class="uk-width-1-1 dashed-hr">
+                        <label class="uk-width-1-6 uk-margin-top"><input class="uk-checkbox uk-margin-small-right" type="checkbox" name="two" value="1" @if($finding_type) @if($finding_type->two) checked @endif @endif> Level Two</label> <input class="uk-width-5-6 uk-input uk-margin-top" type="text" name="two_description" placeholder="Enter Level 2 Description" value="{{$finding_type->two_description}}">
+                        <hr class="uk-width-1-1 dashed-hr">
+                        <label class="uk-width-1-6  uk-margin-top"><input class="uk-checkbox uk-margin-small-right" type="checkbox" name="three" value="1" @if($finding_type) @if($finding_type->three) checked @endif @endif> Level Three</label> <input class="uk-width-5-6 uk-input uk-margin-top" type="text" name="three_description" placeholder="Enter Level 3 Description" value="{{$finding_type->three_description}}">
+                    </div>
+                    
                 </div>
 
                 <hr class="uk-margin-top-large " style="border-style: dashed;" />

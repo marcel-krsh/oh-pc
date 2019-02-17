@@ -122,9 +122,14 @@ class SyncController extends Controller
                                         // need to double check that it is not possible that the funding id is unique to our inspected programs - that it is not on a program we don't inspect
 
                                         $programKey =  $programFundingKeyToProgramKey['key'.$up['attributes']['fundingProgramKey']];
+                                        //get project program key
+
+                                        $projectProgramKey = ProjectProgram::select('project_program_key')->where('project_id',$project->id)->where('program_key',$programKey)->first();
+
+
                                         //dd($unit,$up,$unitCount,$canRunCount,$programKey);
                                         // insert the record into the program unit table using the api
-                                        $push = $apiConnect->putUnitProgram($unit->unit_key,$programKey,$up['attributes']['fundingProgramKey'],$up['attributes']['startDate'],$up['attributes']['endDate'], Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer'); 
+                                        $push = $apiConnect->putUnitProgram($unit->unit_key,$projectProgramKey->project_program_key,$up['attributes']['fundingProgramKey'],$up['attributes']['startDate'],$up['attributes']['endDate'], Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer'); 
                                         dd($push);
                                     }
                                     
