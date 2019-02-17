@@ -1,7 +1,10 @@
 		<div class="building-details uk-overflow-auto" style="">
 			<div class="sortable" uk-sortable="handle: .uk-sortable-details">
 				@foreach($details as $key=>$detail)
-				<div id="building-{{$context}}-detail-r-{{$key}}" class="building building-detail @if($detail->unit->status) building-{{$detail->unit->status}} {{$detail->unit->status}} @endif uk-grid-match uk-margin-remove" data-audit="{{$detail->unit->audit_id}}" data-building="{{$detail->unit->building_id}}" data-area="{{$detail->unit->id}}" uk-grid>
+				@php
+				//dd($detail);
+				@endphp
+				<div id="building-{{$context}}-detail-r-{{$key}}" class="building building-detail @if($detail->unit) building-{{$detail->unit->status}} {{$detail->unit->status}} @endif uk-grid-match uk-margin-remove" data-audit="{{$detail->audit_id}}" data-building="{{$detail->building_id}}" data-area="{{$detail->unit_id}}" uk-grid>
 					<div class="uk-width-1-6 uk-padding-remove">
 						<div class="uk-padding-remove uk-flex">
 							<div id="building-{{$context}}-detail-{{$target}}-c-1-{{$key}}" class="uk-inline uk-sortable-details" style="    min-width: 16px; padding: 0 3px;">
@@ -14,7 +17,7 @@
 										<div uk-grid>
 											<div class="uk-width-1-1 uk-padding-remove">
 												<div uk-grid style="padding-top:10px;">
-													<div id="unit-auditors-{{$detail->unit->unit_id}}" class="building-auditors uk-width-1-2 @if(count($detail->auditors())) hasAuditors @endif">
+													<div id="unit-auditors-{{$detail->unit_id}}" class="building-auditors uk-width-1-2 @if(count($detail->auditors())) hasAuditors @endif">
 														@if(count($detail->auditors()))
 														<div uk-slideshow="animation: slide; min-height:90;">
 														    <div class="uk-position-relative uk-visible-toggle">
@@ -58,7 +61,7 @@
 																		@endphp
 																		<div class="unit-auditor uk-width-1-2 uk-margin-remove">
 																		<div id="unit-auditor-{{$rand}}" class="building-auditor uk-width-1-2 uk-margin-remove">
-																			<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{$audit}}, {{$building}}, {{$detail->unit->unit_id}}, 0, 'unit-auditor-{{$audit}}{{$building}}{{$detail->unit->unit_id}}');"></i>
+																			<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{$audit}}, {{$building}}, {{$detail->unit_id}}, 0, 'unit-auditor-{{$audit}}{{$building}}{{$detail->unit_id}}');"></i>
 																		</div>
 																		</div>
 																		</div>
