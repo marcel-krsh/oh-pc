@@ -124,7 +124,7 @@ class SyncController extends Controller
                                         $programKey =  $programFundingKeyToProgramKey['key'.$up['attributes']['fundingProgramKey']];
                                         //dd($unit,$up,$unitCount,$canRunCount,$programKey);
                                         // insert the record into the program unit table using the api
-                                        $push = $apiConnect->putUnitProgram($unit->unit_key,$programKey,$programKey,$up['attributes']['startDate'],$up['attributes']['endDate'], Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer'); 
+                                        $push = $apiConnect->putUnitProgram($unit->unit_key,$programKey,$up['attributes']['fundingProgramKey'],$up['attributes']['startDate'],$up['attributes']['endDate'], Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer'); 
                                         dd($push);
                                     }
                                     
