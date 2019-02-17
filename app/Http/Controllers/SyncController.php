@@ -77,8 +77,9 @@ class SyncController extends Controller
                         $unitProgram = $apiConnect->getUnitPrograms($unit->unit_key, Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer');
 
                         $unitPrograms = json_decode($unitProgram, true);
-                        $unitPrograms = $unitPrograms['data'];
                         dd($unitPrograms);
+                        $unitPrograms = $unitPrograms['data'];
+                        
                         //$canRun .= '<span class="project-'.$project->id.'-units" style="display:none">Processed unit '.$unit->id.' <br /></span>';
 
                     }
