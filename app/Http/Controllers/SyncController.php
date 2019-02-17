@@ -80,7 +80,7 @@ class SyncController extends Controller
 
                         $unitPrograms = json_decode($unitProgram, true);
                         $unitPrograms = $unitPrograms['data'];
-                        if(is_array($unitPrograms) && count($unitPrograms > 0)){
+                        if(is_array($unitPrograms) && count($unitPrograms) > 0){
                             dd($unit,$unitPrograms,$unitCount);
                         }
                         //$canRun .= '<span class="project-'.$project->id.'-units" style="display:none">Processed unit '.$unit->id.' <br /></span>';
