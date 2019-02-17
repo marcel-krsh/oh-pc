@@ -86,7 +86,7 @@ class SyncController extends Controller
 
                         if(is_array($unitPrograms) && count($unitPrograms) > 1){
                             foreach($unitPrograms as $up){
-                                dd($up['attributes']['fundingProgramKey'],$programFundingKeyToProgramKey['key'.$up['attributes']['fundingProgramKey'].'']);
+                                dd($up['attributes']['fundingProgramKey'],$programFundingKeyToProgramKey);
                                 $programKey =  $programFundingKeyToProgramKey['key'.$up['attributes']['fundingProgramKey']];
                                 dd($unit,$up,$unitCount,$canRunCount,$programKey);
                                 // insert the record into the program unit table using the api
