@@ -471,7 +471,11 @@
 
 
         		// set filter test for type
-        		filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}}k NAME: {{$passedBuilding->building_name}}, ADDRESS:{{$passedBuilding->building->address->line_1}}',0,1);
+        		@if($passedBuilding->building)
+        		filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}} NAME: {{$passedBuilding->building_name}}, ADDRESS:{{$passedBuilding->building->address->line_1}}',0,1);
+        		@else 
+        		filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}} NAME: {{$passedBuilding->building_name}}',0,1);
+        		@endif
         		//filterAmenities('b-16713','Building BIN: 93670, NAME: OH-11-00214, ADDRESS: ')
 
         		// filter to type and allita type (nlt, lt, file)
