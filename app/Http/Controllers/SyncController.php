@@ -70,7 +70,7 @@ class SyncController extends Controller
 
                 if($duplicateFundingKey == 0){
                     $output .= $projectPrograms;
-                    no programs have duplicate funding keys - we are good to go on assumptions.
+                    //no programs have duplicate funding keys - we are good to go on assumptions.
                     $apiConnect = new DevcoService();
                     foreach($units as $unit){
                         // get the unit's programs based on funding keys (not reliable, but with the above test passed, we can work on the assumption this is accurate.)
