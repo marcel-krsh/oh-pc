@@ -9,7 +9,7 @@
 					</span>
 	            </div>
 	            <div class="uk-width-1-5 findinggroup" uk-filter-control="filter: [data-finding-filter*='all']; group: findingfilter;">    
-	            	<button class="uk-button uk-button-default button-filter">All findings</button>
+	            	<button class="uk-button uk-button-default button-filter" style="padding-left: 5px; padding-right: 5px;">All findings</button>
 		        	<span style="display:none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
 						<a class="sort-asc"></a>
 					</span>
