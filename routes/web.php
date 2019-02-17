@@ -165,8 +165,24 @@
         Route::get('/projects/{project}/findings/title', 'AuditController@getProjectFindingsTitle')->name('project.findings.title');
         Route::get('/projects/{project}/followups', 'AuditController@getProjectFollowups')->name('project.followups');
         Route::get('/projects/{project}/followups/title', 'AuditController@getProjectFollowupsTitle')->name('project.followups.title');
+
         Route::get('/projects/{project}/reports', 'AuditController@getProjectReports')->name('project.reports');
         Route::get('/projects/{project}/reports/title', 'AuditController@getProjectReportsTitle')->name('project.reports.title');
+
+        Route::get('/report/{report}', 'ReportsController@getReport');
+        Route::get('/report/{report}/comments', 'ReportsController@getComments');
+        Route::get('/report/{report}/{section}','ReportsController@getSection');
+        Route::get('/report/{report}/download/{type}','ReportsController@download');
+        Route::post('/report/{report}/status','ReportsController@changeStatus');
+        Route::post('/report/{report}/comment','ReportsController@addComment');
+        Route::post('/report/{report}/comment/{comment}','ReportsController@modifyComment');
+        Route::post('/report/{report}/section','ReportsController@addSection');
+        Route::post('/report/{report}/section/{section}','ReportsController@modifySection');
+        Route::post('/report/{report}/section/{section}/order','ReportsController@modifySectionOrder');
+        Route::post('/report/{report}/section/{section}/part','ReportsController@addSectionPart');
+        Route::post('/report/{report}/section/{section}/part/{part}','ReportsController@modifySectionPart');
+        Route::post('/report/{report}/section/{section}/part/{part}/order','ReportsController@modifySectionPartOrder');
+
         Route::get('/projects/{project}/stream', 'AuditController@getProjectStream')->name('project.stream');
         Route::get('/modals/projects/{project}/contact', 'AuditController@getProjectContact')->name('project.contact');
 
