@@ -80,8 +80,8 @@ class SyncController extends Controller
 
                         $unitPrograms = json_decode($unitProgram, true);
                         $unitPrograms = $unitPrograms['data'];
-                        
-                        if(is_array($unitPrograms) && count($unitPrograms) > 2){
+
+                        if(is_array($unitPrograms) && count($unitPrograms) > 1){
                            dd($unitPrograms);
                             // insert the record into the program unit table using the api
                             $push = $apiConnect->putUnitProgram($unit->unit_key, $unitPrograms['attributes'],$unitPrograms['attributes']['fundingProgramKey'],$unitPrograms['attributes']['startDate'],$unitPrograms['attributes']['endDate'], Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer'); 
