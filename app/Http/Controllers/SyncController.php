@@ -58,7 +58,7 @@ class SyncController extends Controller
                     // put the funding keys into an array
                     $projectPrograms .= $program->program->program_name." - funding program key: {$program->program->funding_program_key} | award number: {$program->award_number}<br />";
                     $fundingKeys[] = $program->program->funding_program_key;
-                    $programFundingKeyToProgramKey[$program->program->funding_program_key] = $program->program_key;
+                    $programFundingKeyToProgramKey['key'.$program->program->funding_program_key] = $program->program_key;
                 }
                 // sort the funding keys
                 sort($fundingKeys);
@@ -87,7 +87,7 @@ class SyncController extends Controller
                         if(is_array($unitPrograms) && count($unitPrograms) > 1){
                             foreach($unitPrograms as $up){
                                 dd($up['attributes']['fundingProgramKey']);
-                                $programKey =  $programFundingKeyToProgramKey[$up['attributes']['fundingProgramKey']];
+                                $programKey =  $programFundingKeyToProgramKey['key'.$up['attributes']['fundingProgramKey']];
                                 dd($unit,$up,$unitCount,$canRunCount,$programKey);
                                 // insert the record into the program unit table using the api
                                 $push = $apiConnect->putUnitProgram($unit->unit_key,$programKey,$up['attributes']['fundingProgramKey'],$up['attributes']['startDate'],$up['attributes']['endDate'], Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer'); 
