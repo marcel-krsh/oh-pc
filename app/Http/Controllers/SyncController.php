@@ -52,10 +52,13 @@ class SyncController extends Controller
                 $fundingKeys = '';
                 $fundingKeys = array();
                 $projectPrograms = '';
+                $programFundingKeyToProgramKey = '';
+                $programFundingKeyToProgramKey = array();
                 foreach($programs as $program){
                     // put the funding keys into an array
                     $projectPrograms .= $program->program->program_name." - funding program key: {$program->program->funding_program_key} | award number: {$program->award_number}<br />";
                     $fundingKeys[] = $program->program->funding_program_key;
+                    $programFundingKeyToProgramKey[$program->program->funding_program_key] = $program->program_key;
                 }
                 // sort the funding keys
                 sort($fundingKeys);
@@ -82,10 +85,14 @@ class SyncController extends Controller
                         $unitPrograms = $unitPrograms['data'];
 
                         if(is_array($unitPrograms) && count($unitPrograms) > 1){
-                           dd($unitPrograms);
-                            // insert the record into the program unit table using the api
-                            $push = $apiConnect->putUnitProgram($unit->unit_key, $unitPrograms['attributes'],$unitPrograms['attributes']['fundingProgramKey'],$unitPrograms['attributes']['startDate'],$unitPrograms['attributes']['endDate'], Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer'); 
-                            dd($unit,$unitPrograms,$unitCount,$canRunCount,$push);
+                            foreach($unitPrograms as $up){
+                                $programKey =  $programFundingKeyToProgramKey[$up['attributes']['fundingProgramKey'];
+                                dd($unit,$up,$unitCount,$canRunCount,$programKey);
+                                // insert the record into the program unit table using the api
+                                $push = $apiConnect->putUnitProgram($unit->unit_key,$programKey,$up['attributes']['fundingProgramKey'],$up['attributes']['startDate'],$up['attributes']['endDate'], Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer'); 
+                                dd($push);
+                                
+                            }
                         }
                         
 
