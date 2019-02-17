@@ -42,4 +42,9 @@ class Address extends Model
 
     	return $address;
     }
+
+    public function basic_address()
+    {
+        return $this->line_1." ".$this->city." ".$this->state." ".$this->zip;
+    }
 }

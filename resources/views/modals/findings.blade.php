@@ -227,7 +227,7 @@
 									@endphp
 
 
-					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('s-{{$audit->project_ref}}','Site:  City ST 12345')" style="color : @if($siteComplete == 1) #000 @else #50b8ec @endIf " >@if($siteComplete == 1) <i class="a-circle-checked"></i> @else <i class="a-circle"></i>@endIf Site: Address City ST 12345</li>
+					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('s-{{$audit->project_ref}}','Site: '.{{$audit->project->address->basic_address()}})" style="color : @if($siteComplete == 1) #000 @else #50b8ec @endIf " >@if($siteComplete == 1) <i class="a-circle-checked"></i> @else <i class="a-circle"></i>@endIf Site: {{$audit->project->address->basic_address()}}</li>
 
 					        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
 					 
