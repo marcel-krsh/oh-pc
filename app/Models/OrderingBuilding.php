@@ -76,22 +76,24 @@ class OrderingBuilding extends Model
         //dd($this->audit_id, $this->building_id, $this->id);
         // get all the auditors for that building/units in the building
        
-        if($this->building->building_id == 0 || $this->building->building_id === NULL){ 
-            $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('cachedbuilding_id','=',$this->building_id)->whereNotNull('auditor_id')->whereNull('building_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
-        }else{
+        // if building_id is null, we are looking at a building-level amenity that should only have one auditor
+        if($this->building->building_id){
             $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('building_id','=',$this->building->building_id)->whereNotNull('auditor_id')->whereNotNull('building_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+            
+
+            // we are missing building_ids in the table, we for now we need to go through the units individually
+            $auditor_unit_ids = array();
+            
+            $units = Unit::where('building_id', '=', $this->building->building_id)->get();
+
+            foreach($units as $unit){
+                $auditor_unit_ids = array_merge($auditor_unit_ids, \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+            }
+
+            $auditor_ids = array_merge($auditor_ids, $auditor_unit_ids);
+        }else{
+            $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('amenity_id','=',$this->amenity_id)->whereNotNull('auditor_id')->whereNull('building_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
         }
-
-        // we are missing building_ids in the table, we for now we need to go through the units individually
-        $auditor_unit_ids = array();
-        
-        $units = Unit::where('building_id', '=', $this->building->building_id)->get();
-
-        foreach($units as $unit){
-            $auditor_unit_ids = array_merge($auditor_unit_ids, \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
-        }
-
-        $auditor_ids = array_merge($auditor_ids, $auditor_unit_ids);
 
         $auditors = User::whereIn('id', $auditor_ids)->get();
 
