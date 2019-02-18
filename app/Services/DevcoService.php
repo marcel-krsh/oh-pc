@@ -1941,7 +1941,7 @@ class DevcoService extends PCAPIService
                       'debug' => TRUE,
                       'body' => $data,
                       'headers' => [
-                        'Content-Type' => 'application/json',
+                        'Content-Type' => 'application/json',]
                       ]);
     }
 
