@@ -33,9 +33,9 @@ class SyncController extends Controller
         $canRun = '';
         $canRunCount = 0;
         $output = '<script
-  src="https://code.jquery.com/jquery-3.3.1.min.js"
-  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-  crossorigin="anonymous"></script>';
+                    src="https://code.jquery.com/jquery-3.3.1.min.js"
+                    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+                    crossorigin="anonymous"></script>';
         
 
         $projects = Project::with('units')->with('programs')->with('all_other_programs')
