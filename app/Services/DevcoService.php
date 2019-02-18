@@ -1926,9 +1926,11 @@ class DevcoService extends PCAPIService
      * @return object
      */
 
-    public function putUnitProgram($unitKey, $programKey, $fundingProgramKey,$startDate='2015-01-27T00:00:00',$endDate='2015-01-27T00:00:00', int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) {
+    public function putUnitProgram($unitKey, $programKey, $fundingProgramKey,$startDate,$endDate, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) {
         $data = array();
-        
+        if(is_null($endDate)){
+            $endDate = '2015-01-27T00:00:00';
+        }
         $data = ['UnitKey'=>$unitKey,'DevelopmentProgramKey'=>$programKey,'StartDate'=>$startDate,'EndDate'=>$endDate];
         //json_encode($data);
         //dd($data);
