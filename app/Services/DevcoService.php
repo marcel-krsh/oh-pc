@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use Illuminate\Support\Carbon;
-use Vendor\GuzzleHttp\RequestOptions;
+use \vendor\guzzlehttp\guzzle\src\RequestOptions;
 
 class DevcoService extends PCAPIService
 {
