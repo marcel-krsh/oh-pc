@@ -1943,12 +1943,9 @@ class DevcoService extends PCAPIService
                       // 'headers' => [
                       //   'Content-Type' => 'application/json',]
                       // ]);
-        return $this->post("devco/unit_development_programs?",[
-          'debug' => TRUE,
-          'form_params' => $data,
-          'headers' => [
+        return $this->post("devco/unit_development_programs?",$data, [
             'Content-Type' => 'application/x-www-form-urlencoded',]
-          ]);
+          );
     }
 
     public function getProjectDocuments(string $projectNumber = '1', string $searchString = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
