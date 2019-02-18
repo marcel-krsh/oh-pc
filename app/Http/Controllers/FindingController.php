@@ -475,10 +475,7 @@ class FindingController extends Controller
 "deleted_at" => null 
 "amenity_inspection_id" => 5885 ]
  */
-        foreach($findings as $finding){
-
-        }
-
+        
         if (is_null($type)) {
             // default filter is all
             $type = 'all';
@@ -486,122 +483,122 @@ class FindingController extends Controller
 
         $checkDoneAddingFindings = 1;
 
-        $data = collect([
-            'findings' => [
-                [
-                    'id' => rand(100, 10000),
-                    'ref' => '20120394',
-                    'status' => 'action-needed',
-                    'type' => 'nlt',
-                    'finding-filter' => 'my-finding',
-                    'audit-filter' => 'this-audit',
-                    'icon' => 'a-booboo',
-                    'audit' => '20120394',
-                    'date' => '12/22/2018 12:51:38 PM',
-                    'description' => 'Inspection Group NLT Finding Description Here',
-                    'auditor' => [
-                        'id' => 1,
-                        'name' => 'Holly Swisher'
-                    ],
-                    'building' => [
-                        'id' => rand(100, 10000),
-                        'name' => 'Building 2'
-                    ],
-                    'amenity' => [
-                        'id' => '111',
-                        'name' => 'STAIR #1',
-                        'address' => '123457 Silvegwood Street',
-                        'city' => 'Columbus',
-                        'state' => 'OH',
-                        'zip' => '43219'
-                    ],
-                    'items' => [
-                        [
-                            'id' => rand(100, 10000),
-                            'type' => 'comment',
-                            'date' => '12/22/2018 12:51:38 PM',
-                            'auditor' => [
-                                'id' => 1,
-                                'name' => 'Holly Swisher'
-                            ]
-                        ]
-                    ]
+        // $data = collect([
+        //     'findings' => [
+        //         [
+        //             'id' => rand(100, 10000),
+        //             'ref' => '20120394',
+        //             'status' => 'action-needed',
+        //             'type' => 'nlt',
+        //             'finding-filter' => 'my-finding',
+        //             'audit-filter' => 'this-audit',
+        //             'icon' => 'a-booboo',
+        //             'audit' => '20120394',
+        //             'date' => '12/22/2018 12:51:38 PM',
+        //             'description' => 'Inspection Group NLT Finding Description Here',
+        //             'auditor' => [
+        //                 'id' => 1,
+        //                 'name' => 'Holly Swisher'
+        //             ],
+        //             'building' => [
+        //                 'id' => rand(100, 10000),
+        //                 'name' => 'Building 2'
+        //             ],
+        //             'amenity' => [
+        //                 'id' => '111',
+        //                 'name' => 'STAIR #1',
+        //                 'address' => '123457 Silvegwood Street',
+        //                 'city' => 'Columbus',
+        //                 'state' => 'OH',
+        //                 'zip' => '43219'
+        //             ],
+        //             'items' => [
+        //                 [
+        //                     'id' => rand(100, 10000),
+        //                     'type' => 'comment',
+        //                     'date' => '12/22/2018 12:51:38 PM',
+        //                     'auditor' => [
+        //                         'id' => 1,
+        //                         'name' => 'Holly Swisher'
+        //                     ]
+        //                 ]
+        //             ]
 
-                ],
-                [
-                    'id' => rand(100, 10000),
-                    'ref' => '11112394',
-                    'status' => 'action-required',
-                    'type' => 'sd',
-                    'finding-filter' => '',
-                    'audit-filter' => 'this-audit',
-                    'icon' => 'a-flames',
-                    'audit' => '20121111',
-                    'date' => '12/22/2018 12:51:38 PM',
-                    'description' => 'Inspection Group SD Finding Description Here',
-                    'auditor' => [
-                        'id' => 1,
-                        'name' => 'Holly Swisher'
-                    ],
-                    'building' => [
-                        'id' => rand(100, 10000),
-                        'name' => 'Building 2'
-                    ],
-                    'amenity' => [
-                        'id' => '111',
-                        'name' => 'STAIR #1',
-                        'address' => '123457 Silvegwood Street',
-                        'city' => 'Columbus',
-                        'state' => 'OH',
-                        'zip' => '43219'
-                    ],
-                    'items' => [
-                        [
-                            'id' => rand(100, 10000),
-                            'type' => 'comment',
-                            'date' => '12/22/2018 12:51:38 PM',
-                            'auditor' => [
-                                'id' => 1,
-                                'name' => 'Holly Swisher'
-                            ]
-                        ]
-                    ]
+        //         ],
+        //         [
+        //             'id' => rand(100, 10000),
+        //             'ref' => '11112394',
+        //             'status' => 'action-required',
+        //             'type' => 'sd',
+        //             'finding-filter' => '',
+        //             'audit-filter' => 'this-audit',
+        //             'icon' => 'a-flames',
+        //             'audit' => '20121111',
+        //             'date' => '12/22/2018 12:51:38 PM',
+        //             'description' => 'Inspection Group SD Finding Description Here',
+        //             'auditor' => [
+        //                 'id' => 1,
+        //                 'name' => 'Holly Swisher'
+        //             ],
+        //             'building' => [
+        //                 'id' => rand(100, 10000),
+        //                 'name' => 'Building 2'
+        //             ],
+        //             'amenity' => [
+        //                 'id' => '111',
+        //                 'name' => 'STAIR #1',
+        //                 'address' => '123457 Silvegwood Street',
+        //                 'city' => 'Columbus',
+        //                 'state' => 'OH',
+        //                 'zip' => '43219'
+        //             ],
+        //             'items' => [
+        //                 [
+        //                     'id' => rand(100, 10000),
+        //                     'type' => 'comment',
+        //                     'date' => '12/22/2018 12:51:38 PM',
+        //                     'auditor' => [
+        //                         'id' => 1,
+        //                         'name' => 'Holly Swisher'
+        //                     ]
+        //                 ]
+        //             ]
 
-                ],
-                [
-                    'id' => rand(100, 10000),
-                    'ref' => '999999948',
-                    'status' => 'action-required',
-                    'type' => 'sd',
-                    'finding-filter' => '',
-                    'audit-filter' => '',
-                    'icon' => 'a-flames',
-                    'audit' => '20121111',
-                    'date' => '12/22/2018 12:51:38 PM',
-                    'description' => 'Inspection Group SD Finding Description Here',
-                    'auditor' => [
-                        'id' => 1,
-                        'name' => 'Holly Swisher'
-                    ],
-                    'building' => [
-                        'id' => 144,
-                        'name' => 'Building 2'
-                    ],
-                    'amenity' => [
-                        'id' => '111',
-                        'name' => 'STAIR #1',
-                        'address' => '123457 Silvegwood Street',
-                        'city' => 'Columbus',
-                        'state' => 'OH',
-                        'zip' => '43219'
-                    ],
-                    'items' => [
-                    ]
+        //         ],
+        //         [
+        //             'id' => rand(100, 10000),
+        //             'ref' => '999999948',
+        //             'status' => 'action-required',
+        //             'type' => 'sd',
+        //             'finding-filter' => '',
+        //             'audit-filter' => '',
+        //             'icon' => 'a-flames',
+        //             'audit' => '20121111',
+        //             'date' => '12/22/2018 12:51:38 PM',
+        //             'description' => 'Inspection Group SD Finding Description Here',
+        //             'auditor' => [
+        //                 'id' => 1,
+        //                 'name' => 'Holly Swisher'
+        //             ],
+        //             'building' => [
+        //                 'id' => 144,
+        //                 'name' => 'Building 2'
+        //             ],
+        //             'amenity' => [
+        //                 'id' => '111',
+        //                 'name' => 'STAIR #1',
+        //                 'address' => '123457 Silvegwood Street',
+        //                 'city' => 'Columbus',
+        //                 'state' => 'OH',
+        //                 'zip' => '43219'
+        //             ],
+        //             'items' => [
+        //             ]
 
-                ]
-            ]
-        ]);
-        return view('modals.findings', compact('data','audit', 'checkDoneAddingFindings', 'type' , 'photos','comments','findings','documents','unit','building','amenity','project','followups','audits','units','buildings','amenities','allFindingTypes'));
+        //         ]
+        //     ]
+        // ]);
+        return view('modals.findings', compact('audit', 'checkDoneAddingFindings', 'type' , 'photos','comments','findings','documents','unit','building','amenity','project','followups','audits','units','buildings','amenities','allFindingTypes'));
         }else{
             return "Sorry, you do not have permission to access this page.";
         }

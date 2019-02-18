@@ -39,7 +39,7 @@
 					@if(count($findings))
 					@foreach($findings as $finding)
 
-					<div id="inspec-tools-tab-finding-{{$finding->id}}" class="inspec-tools-tab-finding" data-ordering-finding="{{$finding->id}}" data-finding-id="{{$finding->id}}" data-audit-filter="@if($finding->is_current_audit()) this-audit @endif all" data-finding-filter="@if(Auth::user()->id == $finding->user_id) my-finding @endif all" uk-grid>
+					<div id="inspec-tools-tab-finding-{{$finding->id}}" class="inspec-tools-tab-finding" data-ordering-finding="{{$finding->id}}" data-finding-id="{{$finding->id}}" data-audit-filter="@if($finding->is_current_audit()) this-audit @endif all" data-finding-filter="@if(Auth::user()->id == $finding->user_id) my-finding @endif all" @if(!$finding->is_current_audit() || Auth::user()->id != $finding->user_id) style="display:none" @endif uk-grid>
 			        	<div id="inspec-tools-tab-finding-sticky-{{$finding->id}}" class="inspec-tools-tab-finding-sticky uk-width-1-1 uk-padding-remove findingstatus" style="display:none">
 			        		<div class="uk-grid-match" uk-grid>
 								<div class="uk-width-1-4 uk-padding-remove-top uk-padding-remove-left">
@@ -118,6 +118,10 @@
 
 </div>
 <script>
+	$( document ).ready(function() {
+		$('.findinggroup.uk-active').trigger('click');
+		$('.auditgroup.uk-active').trigger('click');
+	});
 	// $( document ).ready(function() {
 	// 	var filter = document.querySelector('.js-filter');
  //        var filterBar= document.querySelector('.js-findings-buttons');
