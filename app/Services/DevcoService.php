@@ -1940,7 +1940,7 @@ class DevcoService extends PCAPIService
          // return $this->post("devco/unit_development_programs?",[\GuzzleHttp\RequestOptions::JSON =>$data]);
 
         return $this->post("devco/unit_development_programs?{$log_params}",[
-                      'debug' => TRUE,
+                      'debug' => FALSE,
                       'body' => $data,
                       'headers' => [
                         'Content-Type' => 'application/json',]
