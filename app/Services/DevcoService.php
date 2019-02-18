@@ -1932,20 +1932,22 @@ class DevcoService extends PCAPIService
             $endDate = '2015-01-27T00:00:00';
         }
         $data = ['UnitKey'=>$unitKey,'DevelopmentProgramKey'=>$programKey,'StartDate'=>$startDate,'EndDate'=>$endDate];
-        //json_encode($data);
-        //dd($data);
+        $data = json_encode($data);
+        dd($data);
+        
         $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
         
-        // return $this->post("devco/unit_development_programs?",[\GuzzleHttp\RequestOptions::JSON => ['UnitKey'=>$unitKey,'DevelopmentProgramKey'=>$programKey,'StartDate'=>$startDate,'EndDate'=>$endDate]]);
+         return $this->post("devco/unit_development_programs?",[\GuzzleHttp\RequestOptions::JSON =>$data]);
+
         //return $this->post("devco/unit_development_programs?{$log_params}",[
                       // 'debug' => TRUE,
                       // 'body' => $data,
                       // 'headers' => [
                       //   'Content-Type' => 'application/json',]
                       // ]);
-        return $this->post("devco/unit_development_programs?",$data, [
-            'Content-Type' => 'application/x-www-form-urlencoded',]
-          );
+        // return $this->post("devco/unit_development_programs?",$data, [
+        //     'Content-Type' => 'application/x-www-form-urlencoded',]
+        //   );
     }
 
     public function getProjectDocuments(string $projectNumber = '1', string $searchString = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
