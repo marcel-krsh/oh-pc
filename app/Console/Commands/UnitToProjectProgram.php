@@ -130,7 +130,7 @@ class UnitToProjectProgram extends Command
                             $projectUnits->advance();
                             $unitCount++;
                             // get the unit's programs based on funding keys (not reliable, but with the above test passed, we can work on the assumption this is accurate.)
-                            $unitProgram = $apiConnect->getUnitPrograms($unit->unit_key, Auth::user()->id, Auth::user()->email,'SystemUser', 1, 'SystemServer');
+                            $unitProgram = $apiConnect->getUnitPrograms($unit->unit_key, 1, 'admin@allita.org','SystemUser', 1, 'SystemServer');
 
                             $unitPrograms = json_decode($unitProgram, true);
                             $unitPrograms = $unitPrograms['data'];
