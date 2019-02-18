@@ -15,52 +15,12 @@ class Document extends Model
 {
     protected $table = 'documents';
 
-    protected $fillable = [
-        'id',
-        'user_id',
+    protected $guarded = ['id'];
 
-        // should be a pivot table
-        //'categories', // json array
-
-        // should be fields on the pivot table
-        //'approved',
-        //'notapproved',
-
-        'comment', // textarea
-
-        // polymorphic instead
-        //'parcel_id',
-        'documentable_id',
-        'documentable_type',
-
-        'provider_project_number',
-        'provider_document_class',
-        'provider_document_description',
-        'provider_document_date',
-        'provider_retention_schedule_code',
-        'provider_notes',
-        'provider_full_text',
-        'provider_file_name',
-        'provider_file_extension',
-        'provider_file_size',
-        'provider_page_count',
-        'provider_created_at',
-        'provider_updated_at',
-
-        'created_at',
-        'updated_at',
-        'deleted_at'
-    ];
-
-
-
-
-
-
-
-
-
-
+    public function finding() : HasOne 
+    {
+        return $this->hasOne(\App\Models\Finding::class, 'id', 'finding_id');
+    }
 
     // OLD METHODS.
     // VERIFY THAT WE NEED THEM.
@@ -71,20 +31,20 @@ class Document extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function retainages() : BelongsToMany
-    {
-        return $this->belongsToMany(\App\Models\Retainage::class, 'document_to_retainage', 'document_id', 'retainage_id');
-    }
+    // public function retainages() : BelongsToMany
+    // {
+    //     return $this->belongsToMany(\App\Models\Retainage::class, 'document_to_retainage', 'document_id', 'retainage_id');
+    // }
 
     /**
      * Advances
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function advances() : BelongsToMany
-    {
-        return $this->belongsToMany(\App\Models\CostItem::class, 'document_to_advance', 'document_id', 'cost_item_id');
-    }
+    // public function advances() : BelongsToMany
+    // {
+    //     return $this->belongsToMany(\App\Models\CostItem::class, 'document_to_advance', 'document_id', 'cost_item_id');
+    // }
 
     /**
      * Approve Categories

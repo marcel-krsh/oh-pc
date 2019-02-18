@@ -30,6 +30,10 @@ class AmenityInspection extends Model
     {
         return $this->hasOne(\App\Models\Unit::class, 'id', 'unit_id');
     }
+    public function project() : HasOne
+    {
+        return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
+    }
 
     public function cached_unit() : object
     {
@@ -61,6 +65,53 @@ class AmenityInspection extends Model
     public function findings() : HasMany
     {
         return $this->hasMany('\App\Models\Finding', 'amenity_id');
+    }
+
+    public function building_unit_amenity_names()
+    {
+        if($this->unit_id){
+
+            $unit_name = $this->unit->unit_name;
+            $building_name = $this->unit->building->building_name;
+            $amenity_name = $this->amenity->amenity_description;
+            return $building_name .":". $unit_name . ":" .$amenity_name;
+
+        }elseif($this->building_id){
+
+            $building_name = $this->building->building_name;
+            $amenity_name = $this->amenity->amenity_description;
+            return $building_name . ":" .$amenity_name;
+
+        }elseif($this->project_id){
+
+            $amenity_name = $this->amenity->amenity_description;
+            return $amenity_name;
+
+        }
+
+        return '';
+    }
+
+    public function address()
+    {
+        if($this->unit_id){
+
+            $address = $this->unit->building->address->formatted_address();
+            return $address;
+
+        }elseif($this->building_id){
+
+            $address = $this->building->address->formatted_address();
+            return $address;
+
+        }elseif($this->project_id){
+
+            $address = $this->project->address->formatted_address();
+            return $address;
+
+        }
+
+        return '';
     }
 
     public function unit_has_multiple() : bool
