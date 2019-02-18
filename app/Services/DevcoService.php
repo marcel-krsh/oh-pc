@@ -1938,11 +1938,11 @@ class DevcoService extends PCAPIService
         
         return $this->post("devco/unit_development_programs?",[\GuzzleHttp\RequestOptions::JSON => ['UnitKey'=>$unitKey,'DevelopmentProgramKey'=>$programKey,'StartDate'=>$startDate,'EndDate'=>$endDate]]);
         //return $this->post("devco/unit_development_programs?{$log_params}",[
-                      'debug' => TRUE,
-                      'body' => $data,
-                      'headers' => [
-                        'Content-Type' => 'application/json',]
-                      ]);
+                      // 'debug' => TRUE,
+                      // 'body' => $data,
+                      // 'headers' => [
+                      //   'Content-Type' => 'application/json',]
+                      // ]);
     }
 
     public function getProjectDocuments(string $projectNumber = '1', string $searchString = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
