@@ -1947,7 +1947,7 @@ class DevcoService extends PCAPIService
           'debug' => TRUE,
           'body' => $data,
           'headers' => [
-            'Content-Type' => 'application/x-www-form-urlencoded',
+            'Content-Type' => 'application/x-www-form-urlencoded',]
           ]);
     }
 
