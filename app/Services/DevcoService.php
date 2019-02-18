@@ -1946,10 +1946,10 @@ class DevcoService extends PCAPIService
         //                 'Content-Type' => 'application/json',]
         //               ]);
 
-        // return $this->post("devco/unit_development_programs?",['form_params'=>['UnitKey'=>$unitKey,'DevelopmentProgramKey'=>$programKey,'StartDate'=>$startDate,'EndDate'=>$endDate]]
-        //   );
+        return $this->post("devco/unit_development_programs?",['form_params'=>['UnitKey'=>$unitKey,'DevelopmentProgramKey'=>$programKey,'StartDate'=>$startDate,'EndDate'=>$endDate]]
+          );
 
-        return $this->post("devco/unit_development_programs?",['json' => ['UnitKey'=>$unitKey,'DevelopmentProgramKey'=>$programKey,'StartDate'=>$startDate,'EndDate'=>$endDate]]);
+        // return $this->post("devco/unit_development_programs?",['json' => ['UnitKey'=>$unitKey,'DevelopmentProgramKey'=>$programKey,'StartDate'=>$startDate,'EndDate'=>$endDate]]);
     }
 
     public function getProjectDocuments(string $projectNumber = '1', string $searchString = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
