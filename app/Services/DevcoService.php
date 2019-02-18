@@ -1936,13 +1936,14 @@ class DevcoService extends PCAPIService
         //dd($data);
         $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
         
-        return $this->post("devco/unit_development_programs?",[\GuzzleHttp\RequestOptions::JSON => ['UnitKey'=>$unitKey,'DevelopmentProgramKey'=>$programKey,'StartDate'=>$startDate,'EndDate'=>$endDate]]);
+        // return $this->post("devco/unit_development_programs?",[\GuzzleHttp\RequestOptions::JSON => ['UnitKey'=>$unitKey,'DevelopmentProgramKey'=>$programKey,'StartDate'=>$startDate,'EndDate'=>$endDate]]);
         //return $this->post("devco/unit_development_programs?{$log_params}",[
                       // 'debug' => TRUE,
                       // 'body' => $data,
                       // 'headers' => [
                       //   'Content-Type' => 'application/json',]
                       // ]);
+        return $this->post("devco/unit_development_programs?",['UnitKey'=>$unitKey,'DevelopmentProgramKey'=>$programKey,'StartDate'=>$startDate,'EndDate'=>$endDate]);
     }
 
     public function getProjectDocuments(string $projectNumber = '1', string $searchString = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
