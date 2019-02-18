@@ -1929,8 +1929,8 @@ class DevcoService extends PCAPIService
     public function putUnitProgram($unitKey, $programKey, $fundingProgramKey,$startDate,$endDate, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) {
         $data = array();
         
-            $endDate = '2015-01-27';
-            $startDate = '2015-01-27';
+            $endDate = '01-27-2015';
+            $startDate = '01-27-2015';
        
         $data = ['UnitKey'=>$unitKey,'DevelopmentProgramKey'=>$programKey,'StartDate'=>$startDate,'EndDate'=>$endDate];
         json_encode($data);
