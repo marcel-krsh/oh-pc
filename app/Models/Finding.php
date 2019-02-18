@@ -28,7 +28,32 @@ class Finding extends Model
 
     public function comments() : HasMany 
     {
-    	return $this->hasMany(\App\Models\Comment::class, 'finding_id', 'id');
+        return $this->hasMany(\App\Models\Comment::class, 'finding_id', 'id')->orderBy('id','asc');
+    }
+
+    public function documents() : HasMany 
+    {
+        return $this->hasMany(\App\Models\Document::class, 'finding_id', 'id')->orderBy('id','asc');
+    }
+
+    public function project(): HasOne
+    {
+        return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
+    }
+
+    public function amenity_inspection(): HasOne
+    {
+        return $this->hasOne(\App\Models\AmenityInspection::class, 'id', 'amenity_inspection_id');
+    }
+
+    public function finding_type(): HasOne
+    {
+        return $this->hasOne(\App\Models\FindingType::class, 'id', 'finding_type_id');
+    }
+
+    public function auditor() : HasOne
+    {
+        return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
     }
 
     public function boilerplates() 
@@ -43,12 +68,12 @@ class Finding extends Model
 
     public function photos() : HasMany 
     {
-    	return $this->hasMany(\App\Models\Photo::class, 'finding_id', 'id');
+    	return $this->hasMany(\App\Models\Photo::class, 'finding_id', 'id')->orderBy('id','asc');
     }
 
     public function followups() : HasMany 
     {
-    	return $this->hasMany(\App\Models\Followup::class, 'finding_id', 'id');
+    	return $this->hasMany(\App\Models\Followup::class, 'finding_id', 'id')->orderBy('id','asc');
     }
 
     public function has_followup_within_24h()
@@ -63,6 +88,34 @@ class Finding extends Model
     public function has_followup_overdue()
     {
         if( count( $this->followups()->whereDate('date_due','<=', Carbon::today()) ) ){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    public function icon() 
+    {
+        $type = $this->finding_type->type;
+
+        if($type == "nlt"){
+            return "a-booboo";
+        }elseif($type == "lt"){
+            return "a-skull";
+        }elseif($type == "file"){
+            return "a-folder";
+        }
+
+        return '';
+    }
+
+    public function is_current_audit()
+    {
+
+        // current project's audit
+        $current_audit = $this->project->lastAudit();
+
+        if($current_audit->id == $this->audit_id){
             return 1;
         }else{
             return 0;
