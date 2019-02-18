@@ -29,7 +29,10 @@ class SyncController extends Controller
     
     public function testapi(Request $request) {
         
-        return 'Depricated';
+        $apiConnect = new DevcoService();
+
+        $unitProjectPrograms = $apiConnect->getUnitProjectPrograms($request->get('unit_key'), Auth::user()->id, Auth::user()->email, Auth::user()->name, 1, 'SystemServer');
+        dd($unitProjectPrograms);
 
     }
     //
