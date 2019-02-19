@@ -322,6 +322,8 @@ function expandFindingItems(element) {
 						newitem = newitem.replace(/tplIcon/g, item.icon);
 						newitem = newitem.replace(/tplDate/g, item.date);
 						newitem = newitem.replace(/tplRef/g, item.ref);
+						newitem = newitem.replace(/tplTopActions/g, item.actions);
+						
 
 						var itemtype = item.type;
 						var itemauditorname = item.auditor.name;

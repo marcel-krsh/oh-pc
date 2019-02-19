@@ -36,5 +36,14 @@ class Followup extends Model
     	return $this->hasOne(\App\Models\Finding::class, 'id', 'finding_id');
     }
 
+    public function auditor() : HasOne
+    {
+        return $this->hasOne(\App\Models\User::class, 'id', 'created_by_user_id');
+    }
+
+    public function assigned_user() : HasOne
+    {
+        return $this->hasOne(\App\Models\User::class, 'id', 'assigned_to_user_id');
+    }
 
 }

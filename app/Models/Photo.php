@@ -53,6 +53,11 @@ class Photo extends Model
 
     public function comment() : HasOne 
     {
-        return $this->hasOne(\App\Models\Followup::class, 'id', 'followup_id');
+        return $this->hasOne(\App\Models\Comment::class, 'id', 'comment_id');
+    }
+
+    public function comments() : HasMany 
+    {
+        return $this->hasMany(\App\Models\Comment::class, 'photo_id', 'id');
     }
 }
