@@ -523,117 +523,143 @@ class FindingController extends Controller
 
         return response()->json($data);
 
-        $data['items'] = collect([
-                [
-                    'id' => rand(100, 10000),
-                    'ref' => '123456',
-                    'status' => 'action-required',
-                    'audit' => '20121111',
-                    'findingid' => $findingid,
-                    'parentitemid' => $itemid,
-                    'type' => 'comment',
-                    'icon' => 'a-comment-text',
-                    'date' => '12/05/2018 12:51:38 PM',
-                    'auditor' => [
-                        'id' => 1,
-                        'name' => 'Holly Swisher'
-                    ],
-                    'comment' => 'Custom comment based on stuff I saw...',
-                    'stats' => [
-                        ['type' => 'comment', 'icon' => 'a-comment-plus', 'count' => 1],
-                        ['type' => 'file', 'icon' => 'a-file-plus', 'count' => 2],
-                        ['type' => 'photo', 'icon' => 'a-picture', 'count' => 3]
-                    ]
-                ],
-                [
-                    'id' => rand(100, 10000),
-                    'ref' => '333444',
-                    'status' => 'action-needed',
-                    'audit' => '20121111',
-                    'findingid' => $findingid,
-                    'parentitemid' => $itemid,
-                    'type' => 'followup',
-                    'icon' => 'a-bell-plus',
-                    'duedate' => '12/22/2018',
-                    'date' => '12/22/2018 3:51:38 PM',
-                    'assigned' => ['id' => 3, 'name' => 'PM Name Here'],
-                    'auditor' => [
-                        'id' => 1,
-                        'name' => 'Holly Swisher'
-                    ],
-                    'comment' => 'Auto-generated follow-up for SD with tasks and due date auto-set for same day.',
-                    'stats' => [
-                        ['type' => 'comment', 'icon' => 'a-comment-plus', 'count' => 0],
-                        ['type' => 'file', 'icon' => 'a-file-plus', 'count' => 0],
-                        ['type' => 'photo', 'icon' => 'a-picture', 'count' => 0]
-                    ]
-                ],
-                [
-                    'id' => rand(100, 10000),
-                    'ref' => '123666',
-                    'status' => '',
-                    'audit' => '20121111',
-                    'findingid' => $findingid,
-                    'parentitemid' => $itemid,
-                    'type' => 'photo',
-                    'icon' => 'a-picture',
-                    'date' => '12/05/2018 12:51:38 PM',
-                    'auditor' => [
-                        'id' => 1,
-                        'name' => 'Holly Swisher'
-                    ],
-                    'photos' => [
-                        ['id' => 22, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 2],
-                        ['id' => 23, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 1],
-                        ['id' => 24, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 3],
-                        ['id' => 25, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 4],
-                        ['id' => 26, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 6],
-                        ['id' => 27, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 0]
-                    ],
-                    'comment' => '',
-                    'stats' => [
-                        ['type' => 'comment', 'icon' => 'a-comment-plus', 'count' => 2],
-                        ['type' => 'photo', 'icon' => 'a-picture', 'count' => 5]
-                    ]
-                ],
-                [
-                    'id' => rand(100, 10000),
-                    'ref' => '333444',
-                    'status' => 'action-required',
-                    'audit' => '20121111',
-                    'findingid' => $findingid,
-                    'parentitemid' => $itemid,
-                    'type' => 'file',
-                    'icon' => 'a-file-left',
-                    'duedate' => '12/22/2018',
-                    'date' => '12/22/2018 3:51:38 PM',
-                    'assigned' => ['id' => 3, 'name' => 'PM Name Here'],
-                    'auditor' => [
-                        'id' => 1,
-                        'name' => 'Holly Swisher'
-                    ],
-                    'categories' => [
-                        ['id' => 1, 'name' => 'Category Name 1', 'status' => 'checked'],
-                        ['id' => 2, 'name' => 'Category Name 2', 'status' => 'checked'],
-                        ['id' => 3, 'name' => 'Category Name 3', 'status' => 'notchecked'],
-                        ['id' => 4, 'name' => 'Category Name 4', 'status' => '']
-                    ],
-                    'file' => [
-                        'id' => 1,
-                        'name' => 'my_long-filename.pdf',
-                        'url' => '#',
-                        'type' => 'pdf',
-                        'size' => '1.3'
-                    ],
-                    'comment' => '',
-                    'stats' => [
-                        ['type' => 'comment', 'icon' => 'a-comment-plus', 'count' => 0],
-                        ['type' => 'file', 'icon' => 'a-file-plus', 'count' => 0],
-                        ['type' => 'photo', 'icon' => 'a-picture', 'count' => 0]
-                    ]
-                ]
-        ]);
-        return response()->json($data);
+        // $data['items'] = collect([
+        //         [
+        //             'id' => rand(100, 10000),
+        //             'ref' => '123456',
+        //             'status' => 'action-required',
+        //             'audit' => '20121111',
+        //             'findingid' => $findingid,
+        //             'parentitemid' => $itemid,
+        //             'type' => 'comment',
+        //             'icon' => 'a-comment-text',
+        //             'date' => '12/05/2018 12:51:38 PM',
+        //             'auditor' => [
+        //                 'id' => 1,
+        //                 'name' => 'Holly Swisher'
+        //             ],
+        //             'comment' => 'Custom comment based on stuff I saw...',
+        //             'stats' => [
+        //                 ['type' => 'comment', 'icon' => 'a-comment-plus', 'count' => 1],
+        //                 ['type' => 'file', 'icon' => 'a-file-plus', 'count' => 2],
+        //                 ['type' => 'photo', 'icon' => 'a-picture', 'count' => 3]
+        //             ]
+        //         ],
+        //         [
+        //             'id' => rand(100, 10000),
+        //             'ref' => '333444',
+        //             'status' => 'action-needed',
+        //             'audit' => '20121111',
+        //             'findingid' => $findingid,
+        //             'parentitemid' => $itemid,
+        //             'type' => 'followup',
+        //             'icon' => 'a-bell-plus',
+        //             'duedate' => '12/22/2018',
+        //             'date' => '12/22/2018 3:51:38 PM',
+        //             'assigned' => ['id' => 3, 'name' => 'PM Name Here'],
+        //             'auditor' => [
+        //                 'id' => 1,
+        //                 'name' => 'Holly Swisher'
+        //             ],
+        //             'comment' => 'Auto-generated follow-up for SD with tasks and due date auto-set for same day.',
+        //             'stats' => [
+        //                 ['type' => 'comment', 'icon' => 'a-comment-plus', 'count' => 0],
+        //                 ['type' => 'file', 'icon' => 'a-file-plus', 'count' => 0],
+        //                 ['type' => 'photo', 'icon' => 'a-picture', 'count' => 0]
+        //             ]
+        //         ],
+        //         [
+        //             'id' => rand(100, 10000),
+        //             'ref' => '123666',
+        //             'status' => '',
+        //             'audit' => '20121111',
+        //             'findingid' => $findingid,
+        //             'parentitemid' => $itemid,
+        //             'type' => 'photo',
+        //             'icon' => 'a-picture',
+        //             'date' => '12/05/2018 12:51:38 PM',
+        //             'auditor' => [
+        //                 'id' => 1,
+        //                 'name' => 'Holly Swisher'
+        //             ],
+        //             'photos' => [
+        //                 ['id' => 22, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 2],
+        //                 ['id' => 23, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 1],
+        //                 ['id' => 24, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 3],
+        //                 ['id' => 25, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 4],
+        //                 ['id' => 26, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 6],
+        //                 ['id' => 27, 'url' => 'http://fpoimg.com/420x300', 'commentscount' => 0]
+        //             ],
+        //             'comment' => '',
+        //             'stats' => [
+        //                 ['type' => 'comment', 'icon' => 'a-comment-plus', 'count' => 2],
+        //                 ['type' => 'photo', 'icon' => 'a-picture', 'count' => 5]
+        //             ]
+        //         ],
+        //         [
+        //             'id' => rand(100, 10000),
+        //             'ref' => '333444',
+        //             'status' => 'action-required',
+        //             'audit' => '20121111',
+        //             'findingid' => $findingid,
+        //             'parentitemid' => $itemid,
+        //             'type' => 'file',
+        //             'icon' => 'a-file-left',
+        //             'duedate' => '12/22/2018',
+        //             'date' => '12/22/2018 3:51:38 PM',
+        //             'assigned' => ['id' => 3, 'name' => 'PM Name Here'],
+        //             'auditor' => [
+        //                 'id' => 1,
+        //                 'name' => 'Holly Swisher'
+        //             ],
+        //             'categories' => [
+        //                 ['id' => 1, 'name' => 'Category Name 1', 'status' => 'checked'],
+        //                 ['id' => 2, 'name' => 'Category Name 2', 'status' => 'checked'],
+        //                 ['id' => 3, 'name' => 'Category Name 3', 'status' => 'notchecked'],
+        //                 ['id' => 4, 'name' => 'Category Name 4', 'status' => '']
+        //             ],
+        //             'file' => [
+        //                 'id' => 1,
+        //                 'name' => 'my_long-filename.pdf',
+        //                 'url' => '#',
+        //                 'type' => 'pdf',
+        //                 'size' => '1.3'
+        //             ],
+        //             'comment' => '',
+        //             'stats' => [
+        //                 ['type' => 'comment', 'icon' => 'a-comment-plus', 'count' => 0],
+        //                 ['type' => 'file', 'icon' => 'a-file-plus', 'count' => 0],
+        //                 ['type' => 'photo', 'icon' => 'a-picture', 'count' => 0]
+        //             ]
+        //         ]
+        // ]);
+        // return response()->json($data);
+    }
+
+    function resolveFinding(Request $request, $findingid)
+    {
+        $finding = Finding::where('id',$findingid)->first();
+
+        $now = Carbon\Carbon::now()->format('Y-m-d H:i:s');
+
+        // resolve all followups
+        if(count($finding->followups)){
+            foreach($finding->followups as $followup){
+                $followup->resolve($now);
+            }
+        }
+
+        if($finding->auditor_approved_resolution != 1){
+            $finding->auditor_approved_resolution = 1;
+            $finding->auditor_last_approved_resolution_at = $now;
+            $finding->save();
+        }
+
+        if($finding->auditor_last_approved_resolution_at !== null){
+            return formatDate($finding->auditor_last_approved_resolution_at);
+        }else{
+            return null;
+        }
     }
 
     function findingItemPhoto($finding_id, $item_id, $photo_id)

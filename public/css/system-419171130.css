@@ -2537,6 +2537,10 @@ margin-top:10px;
   font-size: 18px;
   line-height: 23px;
 }
+.inspec-tools-tab-finding .inspec-tools-findings-resolve span {
+    font-size: 19px;
+    vertical-align: sub;
+}
 .inspec-tools-tab-finding .inspec-tools-findings-resolve, #auditstable .inspec-tools-tab-finding .inspec-tools-findings-resolve {
   background-color: transparent;
   border-radius: 10px;
@@ -2740,8 +2744,8 @@ margin-top:10px;
 .inspec-tools-tab-finding.ok-actionable .inspec-tools-tab-finding-button.colored {color:#fff !important; background-color:#56b285; border:none;}
 .inspec-tools-tab-finding.in-progress .inspec-tools-tab-finding-button.colored {color:#fff !important; background-color:#49ade9; border:none;}
 
-.inspec-tools-tab-finding-info .inspec-tools-findings-resolve, .inspec-tools-tab-finding .inspec-tools-findings-resolve { border: 2px solid #ddd; color: #ddd;}
-.inspec-tools-tab-finding-info .inspec-tools-findings-resolve .uk-badge, .inspec-tools-tab-finding .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #ddd; color: #ddd;}
+.inspec-tools-tab-finding-info .inspec-tools-findings-resolve, .inspec-tools-tab-finding .inspec-tools-findings-resolve { border: 2px solid #aaa; color: #aaa;}
+.inspec-tools-tab-finding-info .inspec-tools-findings-resolve .uk-badge, .inspec-tools-tab-finding .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #aaa; color: #aaa;}
 .inspec-tools-tab-finding-info.no-action .inspec-tools-findings-resolve, .inspec-tools-tab-finding.no-action .inspec-tools-findings-resolve { border: 2px solid #939598; color: #939598;}
 .inspec-tools-tab-finding-info.no-action .inspec-tools-findings-resolve .uk-badge, .inspec-tools-tab-finding.no-action .inspec-tools-findings-resolve .uk-badge  { border: 2px solid #939598; color: #939598;}
 .inspec-tools-tab-finding-info.action-needed .inspec-tools-findings-resolve, .inspec-tools-tab-finding.action-needed .inspec-tools-findings-resolve { border: 2px dashed #76338b; color: #76338b;}

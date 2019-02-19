@@ -63,9 +63,22 @@
 					    				<i class="{{$finding->icon()}}"></i><br>
 					    				<span class="auditinfo">AUDIT {{$finding->audit_id}}</span>
 					    			</div>
-					    			<div class="uk-display-block" style="margin: 15px 0;">
-					    				<button class="uk-button inspec-tools-findings-resolve uk-link"><span class="uk-badge">
+					    			<div id="inspec-tools-finding-resolve-{{$finding->id}}" class="uk-display-block" style="margin: 15px 0;">
+					    			@can('access_auditor')
+					    				@if($finding->auditor_approved_resolution != 1)
+					    				<button class="uk-button inspec-tools-findings-resolve uk-link" onclick="resolveFinding({{$finding->id}})"><span class="a-circle">
 									    	 &nbsp; </span>RESOLVE</button>
+									   	@else
+									   	<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{strtoupper(formatDate($finding->auditor_last_approved_resolution_at))}};"><span class="a-circle-checked">
+									    	 &nbsp; </span>RESOLVED</button>
+									   	
+									    @endif
+									@else
+										@if($finding->auditor_approved_resolution == 1)
+					    				<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{strtoupper(formatDate($finding->auditor_last_approved_resolution_at))}};"><span class="a-circle-checked">
+									    	 &nbsp; </span>RESOLVED</button>
+									    @endif
+									@endcan
 									</div>
 									<div class="inspec-tools-tab-finding-stats" style="margin: 0 0 15px 0;">
 										<i class="a-bell"></i> <span id="inspec-tools-tab-finding-stat-reminders">{{count($finding->followups)}}</span><br />
@@ -122,6 +135,16 @@
 		$('.findinggroup.uk-active').trigger('click');
 		$('.auditgroup.uk-active').trigger('click');
 	});
+
+	@can('access_auditor')
+	function resolveFinding(findingid){
+		$.post('/findings/'+findingid+'/resolve', {
+			'_token' : '{{ csrf_token() }}'
+		}, function(data) {
+			$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';"><span class="a-circle-checked">&nbsp; </span>RESOLVED</button>');
+		});
+	}
+	@endcan
 
 	$(".inspec-tools-tab-findings-container").on( 'scroll', function(){
 

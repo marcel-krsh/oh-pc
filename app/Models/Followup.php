@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Carbon\Carbon;
 
 class Followup extends Model
 {
@@ -44,6 +45,29 @@ class Followup extends Model
     public function assigned_user() : HasOne
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'assigned_to_user_id');
+    }
+
+    public function resolve($now = null)
+    {
+        if(!$now){
+            $now = Carbon::now()->format('Y-m-d H:i:s');
+        }
+
+        if($this->comment_type_submitted){
+            // comment_type_approved_by_user_id
+            // comment_type_last_approver_at
+            $this->comment_type_approved_by_user_id = Auth::user()->id;
+            $this->comment_type_last_approver_at = $now;
+        }elseif($this->document_type_submitted){
+            $this->document_type_approved_by_user_id = Auth::user()->id;
+            $this->document_type_last_approver_at = $now;
+
+        }elseif($this->photo_type_submitted){
+            $this->photo_type_approved_by_user_id = Auth::user()->id;
+            $this->photo_type_last_approver_at = $now;
+        }
+        $this->save();
+        return 1;
     }
 
 }
