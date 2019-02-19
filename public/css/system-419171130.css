@@ -2608,7 +2608,9 @@ margin-top:10px;
 }
 
 .inspec-tools-tab-finding-sticky {
-  position: absolute;
+  /*position: sticky;
+  position: -webkit-sticky;*/
+  position:absolute;
   top: 0px;
   width: 100%;
   z-index: 10;

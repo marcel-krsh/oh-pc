@@ -122,11 +122,85 @@
 		$('.findinggroup.uk-active').trigger('click');
 		$('.auditgroup.uk-active').trigger('click');
 	});
-	// $( document ).ready(function() {
-	// 	var filter = document.querySelector('.js-filter');
- //        var filterBar= document.querySelector('.js-findings-buttons');
-	// 	UIkit.filter( filterBar, {
- //                target: filter
- //            });
-	// });
+
+	$(".inspec-tools-tab-findings-container").on( 'scroll', function(){
+
+	    var offset = $(".inspec-tools-tab-findings-container").scrollTop(); 
+
+	    var currentFinding ="";
+	    var currentFindingId ="";
+	    var position = 0;
+	    var findingId= "";
+	    var currentItem ="";
+	    var currentItemId ="";
+	    var positionItem = 0;
+	    var itemId= "";
+	    var tmpPosition = -offset;
+	    var tmpPositionItem = - offset - 48;
+
+	    if ($(".inspec-tools-tab-findings-container").scrollTop() > 40) {
+	    	// console.log('scrolltop > 40');
+
+	    	$.each($(".inspec-tools-tab-finding-sticky"), function(index, item) {
+
+		    	currentFinding = $(item).closest("[data-finding-id], .inspec-tools-tab-finding");
+			    currentFindingId = currentFinding.data('finding-id');
+			    position = $(currentFinding).offset().top - $(currentFinding).offsetParent().offset().top;
+
+		        if(position < 0){
+		        	if(position >= tmpPosition) {
+		        		tmpPosition = position;
+		        		findingId = currentFindingId;
+		        	}
+		        }
+		    });
+
+	    	$.each($(".inspec-tools-tab-finding-reply-sticky"), function(index, item) {
+
+		    	currentItem = $(item).closest("[data-parent-id], .inspec-tools-tab-finding-item");
+			    currentItemId = currentItem.data('parent-id');
+			    positionItem = $(currentItem).offset().top - $(currentItem).offsetParent().offset().top;
+				// console.log("currentItemId "+currentItemId+" | positionItem "+positionItem+" | tmpPositionItem "+tmpPositionItem);
+		        if(positionItem < 40){
+		        	if(positionItem >= tmpPositionItem) {
+		        		tmpPositionItem = positionItem;
+		        		itemId = currentItemId;
+		        	}
+		        }
+		    });
+
+		    // console.log("Finding id: "+findingId+" | Item id: "+itemId);
+
+	    	//console.log("finding: "+findingId);
+	    	$('div[id^="inspec-tools-tab-finding-sticky-"]').not( 'div[id="inspec-tools-tab-finding-sticky-'+findingId+'"]' ).hide();
+	    	$('div[id^="inspec-tools-tab-finding-reply-sticky-"]').not( 'div[id="inspec-tools-tab-finding-reply-sticky-'+itemId+'"]' ).hide();
+
+		    if($('#inspec-tools-tab-finding-'+findingId).attr('expanded')){
+		    	//console.log('#inspec-tools-tab-finding-'+findingId+' expanded');
+
+		        $('#inspec-tools-tab-finding-sticky-'+findingId).show();
+		        $('#inspec-tools-tab-finding-sticky-'+findingId).css("margin-top", $(".inspec-tools-tab-findings-container").scrollTop());
+			}else{
+				// hide that sticky
+				//console.log('hiding #inspec-tools-tab-finding-sticky-'+findingId+'');
+				$('#inspec-tools-tab-finding-sticky-'+findingId).hide();
+			}
+			
+			if($(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-item-'+itemId).attr('expanded')){
+		    	
+		        $(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).show();
+		        $(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).css("margin-top", $(".inspec-tools-tab-findings-container").scrollTop());
+			}else{
+				// hide that sticky
+				//console.log('hiding #inspec-tools-tab-finding-sticky-'+findingId+'');
+				$(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).hide();
+			}
+	    } else {
+	    	// hide the sticky for all findings
+	    	// console.log('scrolltop <= 40');
+		    $('div[id^="inspec-tools-tab-finding-sticky-"]').css("margin-top", 0);
+	    	$('div[id^="inspec-tools-tab-finding-sticky-"]').hide();
+	    }
+
+	});  
 </script>

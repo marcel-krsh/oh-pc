@@ -388,93 +388,6 @@ class FindingController extends Controller
 
             //dd(Finding::where('project_id',$audit->project_id)->first());
 
-        /*
-            $followups = Followup::where('project_id',$audit->project_id)
-                ->with('comments')
-                ->with('comments.comments')
-                ->with('photos')
-                ->with('photos.comments')
-                ->with('photos.comments.comments')
-                ->with('documents')
-                ->with('documents.comments')
-                ->with('documents.comments.comments')
-                ->orderBy('updated_at','desc')
-                ->get()->all();
-           
-            //get comments that are only on the root of the project
-            $comments = Comment::where('project_id',$audit->project_id)
-                ->with('comments')
-                ->whereNull('finding_id')
-                ->whereNull('document_id')
-                ->whereNull('photo_id')
-                ->whereNull('followup_id')
-                ->whereNull('comment_id')
-                ->orderBy('updated_at','desc')
-                ->get()
-                ->all();
- 
-            //get documents that are only on the root of the project or attached to a communication - this is only for auditors to see and above.
-            $documents = SyncDocuware::where('project_id',$audit->project_id)
-                ->with('comments')
-                ->with('comments.comments')
-                ->whereNull('finding_id')
-                ->whereNull('photo_id')
-                ->whereNull('followup_id')
-                ->orderBy('updated_at','desc')
-                ->get()
-                ->all();
-
-            //get documents that are only on the root of the project or attached to a communication - this is only for auditors to see and above.
-            $photos = Photo::where('project_id',$audit->project_id)
-                ->with('comments')
-                ->with('comments.comments')
-                ->with('photos')
-                ->with('photos.comments')
-                ->with('photos.comments.comments')
-                ->whereNull('finding_id')
-                ->whereNull('photo_id')
-                ->whereNull('followup_id')
-                ->orderBy('updated_at','desc')
-                ->get()
-                ->all();
-
-        */
-      
-/*
-"id" => 2 
-"date_of_finding" => "2019-02-11 13:11:59" 
-"owner_organization_id" => 0 
-"pm_organization_id" => 0 
-"user_id" => 6346 
-"audit_id" => 6410 
-"project_id" => 45055 
-"building_id" => 16713 
-"unit_id" => null 
-"finding_type_id" => 147 
-"amenity_id" => 401 
-"weight" => 5.0 
-"criticality" => 5 
-"level" => 3 
-"site" => 0 
-"building_system" => 0 
-"building_exterior" => 0 
-"common_area" => 1 
-"unit" => null 
-"allita_type" => null 
-"finding_status_id" => 1 
-"pm_submitted_resolution" => null 
-"auditor_approved_resolution" => 0 
-"auditor_declined_resolution" => null 
-"pm_total_submitted_resolutions" => null 
-"auditor_total_declines" => null 
-"pm_last_submitted_resolution_at" => null 
-"auditor_last_approved_resolution_at" => null 
-"auditor_last_declined_resolution_at" => null 
-"created_at" => "2019-02-11 13:11:59" 
-"updated_at" => "2019-02-11 13:11:59" 
-"deleted_at" => null 
-"amenity_inspection_id" => 5885 ]
- */
         
         if (is_null($type)) {
             // default filter is all
@@ -483,121 +396,6 @@ class FindingController extends Controller
 
         $checkDoneAddingFindings = 1;
 
-        // $data = collect([
-        //     'findings' => [
-        //         [
-        //             'id' => rand(100, 10000),
-        //             'ref' => '20120394',
-        //             'status' => 'action-needed',
-        //             'type' => 'nlt',
-        //             'finding-filter' => 'my-finding',
-        //             'audit-filter' => 'this-audit',
-        //             'icon' => 'a-booboo',
-        //             'audit' => '20120394',
-        //             'date' => '12/22/2018 12:51:38 PM',
-        //             'description' => 'Inspection Group NLT Finding Description Here',
-        //             'auditor' => [
-        //                 'id' => 1,
-        //                 'name' => 'Holly Swisher'
-        //             ],
-        //             'building' => [
-        //                 'id' => rand(100, 10000),
-        //                 'name' => 'Building 2'
-        //             ],
-        //             'amenity' => [
-        //                 'id' => '111',
-        //                 'name' => 'STAIR #1',
-        //                 'address' => '123457 Silvegwood Street',
-        //                 'city' => 'Columbus',
-        //                 'state' => 'OH',
-        //                 'zip' => '43219'
-        //             ],
-        //             'items' => [
-        //                 [
-        //                     'id' => rand(100, 10000),
-        //                     'type' => 'comment',
-        //                     'date' => '12/22/2018 12:51:38 PM',
-        //                     'auditor' => [
-        //                         'id' => 1,
-        //                         'name' => 'Holly Swisher'
-        //                     ]
-        //                 ]
-        //             ]
-
-        //         ],
-        //         [
-        //             'id' => rand(100, 10000),
-        //             'ref' => '11112394',
-        //             'status' => 'action-required',
-        //             'type' => 'sd',
-        //             'finding-filter' => '',
-        //             'audit-filter' => 'this-audit',
-        //             'icon' => 'a-flames',
-        //             'audit' => '20121111',
-        //             'date' => '12/22/2018 12:51:38 PM',
-        //             'description' => 'Inspection Group SD Finding Description Here',
-        //             'auditor' => [
-        //                 'id' => 1,
-        //                 'name' => 'Holly Swisher'
-        //             ],
-        //             'building' => [
-        //                 'id' => rand(100, 10000),
-        //                 'name' => 'Building 2'
-        //             ],
-        //             'amenity' => [
-        //                 'id' => '111',
-        //                 'name' => 'STAIR #1',
-        //                 'address' => '123457 Silvegwood Street',
-        //                 'city' => 'Columbus',
-        //                 'state' => 'OH',
-        //                 'zip' => '43219'
-        //             ],
-        //             'items' => [
-        //                 [
-        //                     'id' => rand(100, 10000),
-        //                     'type' => 'comment',
-        //                     'date' => '12/22/2018 12:51:38 PM',
-        //                     'auditor' => [
-        //                         'id' => 1,
-        //                         'name' => 'Holly Swisher'
-        //                     ]
-        //                 ]
-        //             ]
-
-        //         ],
-        //         [
-        //             'id' => rand(100, 10000),
-        //             'ref' => '999999948',
-        //             'status' => 'action-required',
-        //             'type' => 'sd',
-        //             'finding-filter' => '',
-        //             'audit-filter' => '',
-        //             'icon' => 'a-flames',
-        //             'audit' => '20121111',
-        //             'date' => '12/22/2018 12:51:38 PM',
-        //             'description' => 'Inspection Group SD Finding Description Here',
-        //             'auditor' => [
-        //                 'id' => 1,
-        //                 'name' => 'Holly Swisher'
-        //             ],
-        //             'building' => [
-        //                 'id' => 144,
-        //                 'name' => 'Building 2'
-        //             ],
-        //             'amenity' => [
-        //                 'id' => '111',
-        //                 'name' => 'STAIR #1',
-        //                 'address' => '123457 Silvegwood Street',
-        //                 'city' => 'Columbus',
-        //                 'state' => 'OH',
-        //                 'zip' => '43219'
-        //             ],
-        //             'items' => [
-        //             ]
-
-        //         ]
-        //     ]
-        // ]);
         return view('modals.findings', compact('audit', 'checkDoneAddingFindings', 'type' , 'photos','comments','findings','documents','unit','building','amenity','project','followups','audits','units','buildings','amenities','allFindingTypes'));
         }else{
             return "Sorry, you do not have permission to access this page.";
@@ -607,6 +405,59 @@ class FindingController extends Controller
     function findingItems($findingid, $itemid = '')
     {
         // itemid used for children of items
+        
+        $followups = Followup::where('finding_id',$findingid)
+            ->orderBy('updated_at','desc')
+            ->get();
+       
+        //get comments that are only on the root of the project
+        $comments = Comment::where('finding_id',$findingid)
+            ->get();
+
+        //get documents that are only on the root of the project or attached to a communication - this is only for auditors to see and above.
+        // $documents = SyncDocuware::where('project_id',$audit->project_id)
+        //     ->with('comments')
+        //     ->with('comments.comments')
+        //     ->whereNull('finding_id')
+        //     ->whereNull('photo_id')
+        //     ->whereNull('followup_id')
+        //     ->orderBy('updated_at','desc')
+        //     ->get()
+        //     ->all();
+
+        //get documents that are only on the root of the project or attached to a communication - this is only for auditors to see and above.
+        $photos = Photo::where('finding_id',$findingid)
+            ->orderBy('updated_at','desc')
+            ->get();
+
+        // all those items have different formats, we need to combine, reformat and reorder.
+        // 
+        $data = array();
+        foreach($comments as $comment){
+            $data['items'][] = [
+                'id' => $comment->id,
+                'ref' => $comment->id,
+                'status' => 'action-required',
+                'audit' => '20121111',
+                'findingid' => $findingid,
+                'parentitemid' => $itemid,
+                'type' => 'comment',
+                'icon' => 'a-comment-text',
+                'date' => formatDate($comment->recorded_date),
+                'auditor' => [
+                    'id' => $comment->user_id,
+                    'name' => $comment->user->full_name()
+                ],
+                'comment' => $comment->comment,
+                'stats' => [
+                    ['type' => 'comment', 'icon' => 'a-comment', 'count' => count($comment->comments)],
+                    ['type' => 'file', 'icon' => 'a-file', 'count' => count($comment->documents)],
+                    ['type' => 'photo', 'icon' => 'a-picture', 'count' => count($comment->photos)]
+                ]
+            ];
+        }
+
+        return response()->json($data);
 
         $data['items'] = collect([
                 [

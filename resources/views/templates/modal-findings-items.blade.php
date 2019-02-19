@@ -40,10 +40,10 @@
 					        <div class="uk-card uk-card-body uk-card-default uk-card-small">
 					    	 	<div class="uk-drop-grid uk-child-width-1-4" uk-grid>
 					    	 		tplTopActions
-					    	 		<div class="icon-circle use-hand-cursor" onclick="addChildItem(123, 'followup')"><i class="a-bell-plus"></i></div>
-					    	 		<div class="icon-circle use-hand-cursor"  onclick="addChildItem(123, 'comment')"><i class="a-comment-plus"></i></div>
-					    	 		<div class="icon-circle use-hand-cursor"  onclick="addChildItem(123, 'document')"><i class="a-file-plus"></i></div>
-					    	 		<div class="icon-circle use-hand-cursor"  onclick="addChildItem(123, 'photo')"><i class="a-picture"></i></div>
+					    	 		<div class="icon-circle use-hand-cursor" onclick="addChildItem(tplItemId, 'followup')"><i class="a-bell-plus"></i></div>
+					    	 		<div class="icon-circle use-hand-cursor"  onclick="addChildItem(tplItemId, 'comment')"><i class="a-comment-plus"></i></div>
+					    	 		<div class="icon-circle use-hand-cursor"  onclick="addChildItem(tplItemId, 'document')"><i class="a-file-plus"></i></div>
+					    	 		<div class="icon-circle use-hand-cursor"  onclick="addChildItem(tplItemId, 'photo')"><i class="a-picture"></i></div>
 					    	 	</div>
 					        </div>
 					    </div>

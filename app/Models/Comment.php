@@ -61,9 +61,19 @@ class Comment extends Model
         return $this->hasOne(\App\Models\Photo::class, 'id', 'photo_id');
     }
 
+    public function photos() : HasMany 
+    {
+        return $this->hasMany(\App\Models\Photo::class, 'comment_id', 'id');
+    }
+
     public function document() : HasOne 
     {
-        return $this->hasOne(\App\Models\SyncDocuware::class, 'id', 'document_id');
+        return $this->hasOne(\App\Models\Document::class, 'id', 'document_id');
+    }
+
+    public function documents() : HasMany 
+    {
+        return $this->hasMany(\App\Models\Document::class, 'comment_id', 'id');
     }
 
     public function finding() : HasOne 
@@ -74,6 +84,11 @@ class Comment extends Model
     public function followup() : HasOne 
     {
         return $this->hasOne(\App\Models\Followup::class, 'id', 'followup_id');
+    }
+
+    public function user() : HasOne
+    {
+        return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
     }
 
 }
