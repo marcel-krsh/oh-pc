@@ -642,23 +642,28 @@ class FindingController extends Controller
 
         $now = Carbon\Carbon::now()->format('Y-m-d H:i:s');
 
-        // resolve all followups
-        if(count($finding->followups)){
-            foreach($finding->followups as $followup){
-                $followup->resolve($now);
-            }
-        }
-
         if($finding->auditor_approved_resolution != 1){
+            // resolve all followups
+            if(count($finding->followups)){
+                foreach($finding->followups as $followup){
+                    $followup->resolve($now);
+                }
+            }
+
             $finding->auditor_approved_resolution = 1;
             $finding->auditor_last_approved_resolution_at = $now;
+            $finding->save();
+        }else{
+            // unresolve
+            $finding->auditor_approved_resolution = 0;
+            $finding->auditor_last_approved_resolution_at = null;
             $finding->save();
         }
 
         if($finding->auditor_last_approved_resolution_at !== null){
             return formatDate($finding->auditor_last_approved_resolution_at);
         }else{
-            return null;
+            return 0;
         }
     }
 

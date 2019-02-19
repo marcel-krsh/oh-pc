@@ -69,7 +69,7 @@
 					    				<button class="uk-button inspec-tools-findings-resolve uk-link" onclick="resolveFinding({{$finding->id}})"><span class="a-circle">
 									    	 &nbsp; </span>RESOLVE</button>
 									   	@else
-									   	<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{strtoupper(formatDate($finding->auditor_last_approved_resolution_at))}};"><span class="a-circle-checked">
+									   	<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{strtoupper(formatDate($finding->auditor_last_approved_resolution_at))}};" onclick="resolveFinding({{$finding->id}})"><span class="a-circle-checked">
 									    	 &nbsp; </span>RESOLVED</button>
 									   	
 									    @endif
@@ -141,7 +141,11 @@
 		$.post('/findings/'+findingid+'/resolve', {
 			'_token' : '{{ csrf_token() }}'
 		}, function(data) {
-			$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';"><span class="a-circle-checked">&nbsp; </span>RESOLVED</button>');
+			if(data != 0){
+				$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';" onclick="resolveFinding('+findingid+')"><span class="a-circle-checked">&nbsp; </span>RESOLVED</button>');
+			}else{
+				$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button inspec-tools-findings-resolve uk-link" onclick="resolveFinding('+findingid+')"><span class="a-circle">&nbsp; </span>RESOLVE</button>');
+			}
 		});
 	}
 	@endcan
