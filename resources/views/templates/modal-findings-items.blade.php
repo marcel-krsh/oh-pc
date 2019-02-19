@@ -78,7 +78,7 @@
 </template>
 
 <template class="uk-hidden" id="inspec-tools-tab-finding-items-template">
-	<div class="inspec-tools-tab-finding-items uk-width-1-1 uk-margin-remove" style="display:none">
+	<div class="inspec-tools-tab-finding-items uk-width-1-1 uk-margin-remove" style="    position: sticky; display:none">
 		<div class="inspec-tools-tab-finding-items-list" uk-grid>
 	    	
 	    </div>
