@@ -45,8 +45,9 @@
 	?>
 </script>
 <div id="modal-findings" class="uk-margin-top" style="height: 90%" >
+	<div id="modal-findings-items-container">
 	@include('audit_stream.audit_stream')
-
+	</div>
 
 	<div class="modal-findings-left" uk-filter="target: .js-filter-findings">
 		<div class="modal-findings-left-bottom-container">
@@ -377,6 +378,7 @@
 
 
 @include('templates.modal-findings-items')
+
 
 <div id="modal-findings-completion-check" uk-modal>
   <div class="uk-modal-dialog uk-modal-body uk-modal-content" uk-overflow-auto> 

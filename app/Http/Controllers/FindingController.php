@@ -294,7 +294,7 @@ class FindingController extends Controller
         }
     }
 
-    public function modalFindings($type, $auditid, $buildingid = null, $unitid = null, $amenityid = null)
+    public function modalFindings($type, $auditid, $buildingid = null, $unitid = null, $amenityid = null, $refresh_stream = 0)
     {
         // get user's audits, projects, buildings, areas, units, based on click
         /*
@@ -320,83 +320,73 @@ class FindingController extends Controller
 
         // the selected one that opened this modal
 
+        
         if(Auth::user()->auditor_access()){
-        $audit = null;
-        $building = null;
-        $unit = null;
-        $amenity = null;
+            $audit = null;
+            $building = null;
+            $unit = null;
+            $amenity = null;
 
-        $buildings = null;
-        $units = null;
-        $amenities = null;
-        $allFindings = null;
+            $buildings = null;
+            $units = null;
+            $amenities = null;
+            $allFindings = null;
 
-        if($auditid > 0){
-            //$audit = CachedAudit::where('audit_id',$auditid)->with('inspection_items')->with('inspection_items.amenity.finding_types')->with('inspection_items.amenity.finding_types.boilerplates()')->first();
-            $audit = CachedAudit::where('audit_id',$auditid)->with('inspection_items')->first();
-        }
-        if($buildingid > 0){
-            // always use the audit id as a selector to ensure you get the correct one
-            $building = CachedBuilding::where('audit_id',$auditid)->where('id',$buildingid)->with('building.address')->first();
+            if($auditid > 0){
+                //$audit = CachedAudit::where('audit_id',$auditid)->with('inspection_items')->with('inspection_items.amenity.finding_types')->with('inspection_items.amenity.finding_types.boilerplates()')->first();
+                $audit = CachedAudit::where('audit_id',$auditid)->with('inspection_items')->first();
+            }
+            if($buildingid > 0){
+                // always use the audit id as a selector to ensure you get the correct one
+                $building = CachedBuilding::where('audit_id',$auditid)->where('id',$buildingid)->with('building.address')->first();
 
-            //dd($buildingid, $building,$auditid);
-        }
-        if($unitid > 0){
-            // always use the audit id as a selector to ensure you get the correct one
-            $unit = CachedUnit::where('audit_id',$auditid)->where('id',$unitid)->with('building')->with('building.address')->first();
-           // dd($unit, $unitid);
-        }
-        if($amenityid > 0){
-            // we use the inspection id to make sure we get the one associated that they clicked on (in case of duplicate amenities)
-            $amenity = AmenityInspection::where('id',$amenityid)->first();
-        }
-        if(is_null($audit)){
-            return "alert('No audit found for ID:".$auditid."');";
-        }
+                //dd($buildingid, $building,$auditid);
+            }
+            if($unitid > 0){
+                // always use the audit id as a selector to ensure you get the correct one
+                $unit = CachedUnit::where('audit_id',$auditid)->where('id',$unitid)->with('building')->with('building.address')->first();
+               // dd($unit, $unitid);
+            }
+            if($amenityid > 0){
+                // we use the inspection id to make sure we get the one associated that they clicked on (in case of duplicate amenities)
+                $amenity = AmenityInspection::where('id',$amenityid)->first();
+            }
+            if(is_null($audit)){
+                return "alert('No audit found for ID:".$auditid."');";
+            }
 
-        //dd($audit);
-        /// All of them for switching
-            $audits = CachedAudit::where('project_id',$audit->project_id)->get()->all();
+            //dd($audit);
+            /// All of them for switching
+                $audits = CachedAudit::where('project_id',$audit->project_id)->get()->all();
 
-            // always use the audit id as a selector to ensure you get the correct one
-            $buildings = BuildingInspection::where('audit_id',$auditid)->get();
-       
-            // always use the audit id as a selector to ensure you get the correct one
-            $units = UnitInspection::select('unit_id','unit_key','unit_name','building_id','building_key','audit_id','complete')->where('audit_id',$auditid)->where('complete',0)->orWhereNull('complete')->groupBy('unit_id')->get();
+                // always use the audit id as a selector to ensure you get the correct one
+                $buildings = BuildingInspection::where('audit_id',$auditid)->get();
+           
+                // always use the audit id as a selector to ensure you get the correct one
+                $units = UnitInspection::select('unit_id','unit_key','unit_name','building_id','building_key','audit_id','complete')->where('audit_id',$auditid)->where('complete',0)->orWhereNull('complete')->groupBy('unit_id')->get();
 
-        
-            // always use the audit id as a selector to ensure you get the correct one
-            $amenities = AmenityInspection::where('audit_id',$auditid)->with('amenity')->get(); 
+            
+                // always use the audit id as a selector to ensure you get the correct one
+                $amenities = AmenityInspection::where('audit_id',$auditid)->with('amenity')->get(); 
 
-            $findings = Finding::where('project_id',$audit->project_id)
-                // ->with('comments')
-                // ->with('comments.comments')
-                // ->with('photos')
-                // ->with('photos.comments')
-                // ->with('photos.comments.comments')
-                // ->with('followups')
-                // ->with('followups.comments')
-                // ->with('followups.comments.comments')
-                // ->with('followups.documents')
-                // ->with('followups.documents.comments')
-                // ->with('followups.documents.comments.comments')
-                // ->with('followups.photos')
-                // ->with('followups.photos.comments')
-                // ->with('followups.photos.comments.comments')
-                ->orderBy('updated_at','desc')
-                ->get();
+                $findings = Finding::where('project_id',$audit->project_id)
+                    ->orderBy('updated_at','desc')
+                    ->get();
 
-            //dd(Finding::where('project_id',$audit->project_id)->first());
+            
+            if (is_null($type)) {
+                // default filter is all
+                $type = 'all';
+            }
 
-        
-        if (is_null($type)) {
-            // default filter is all
-            $type = 'all';
-        }
+            $checkDoneAddingFindings = 1;
 
-        $checkDoneAddingFindings = 1;
+            if($refresh_stream){
+                return view('audit_stream.audit_stream', compact('audit', 'checkDoneAddingFindings', 'type' , 'photos','comments','findings','documents','unit','building','amenity','project','followups','audits','units','buildings','amenities','allFindingTypes', 'auditid', 'buildingid', 'unitid', 'amenityid'));
+            }else{
+                return view('modals.findings', compact('audit', 'checkDoneAddingFindings', 'type' , 'photos','comments','findings','documents','unit','building','amenity','project','followups','audits','units','buildings','amenities','allFindingTypes', 'auditid', 'buildingid', 'unitid', 'amenityid'));
+            }
 
-        return view('modals.findings', compact('audit', 'checkDoneAddingFindings', 'type' , 'photos','comments','findings','documents','unit','building','amenity','project','followups','audits','units','buildings','amenities','allFindingTypes'));
         }else{
             return "Sorry, you do not have permission to access this page.";
         }

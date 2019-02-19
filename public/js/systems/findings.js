@@ -85,8 +85,11 @@ function newFinding(id){
 	
 }
 
-function refreshFindingStream() {
-	console.log("refresh list");
+function refreshFindingStream(type,auditid,buildingid,unitid,amenityid) {
+
+	tempdiv = '<div style="height:200px;text-align:center;width: 44%;padding-left: 53%;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+	$('#modal-findings-items-container').html(tempdiv);
+	$('#modal-findings-items-container').load('/modals/updatestream/'+type+'/'+auditid+'/'+buildingid+'/'+unitid+'/'+amenityid+'/1');
 }
 
 function clickingOnFindingFilter(element) {
@@ -323,7 +326,7 @@ function expandFindingItems(element) {
 						newitem = newitem.replace(/tplDate/g, item.date);
 						newitem = newitem.replace(/tplRef/g, item.ref);
 						newitem = newitem.replace(/tplTopActions/g, item.actions);
-						
+
 
 						var itemtype = item.type;
 						var itemauditorname = item.auditor.name;

@@ -27,7 +27,7 @@
 					</span>
 		        </div>
 		        <div class="uk-width-1-5 auditgroup">
-	                <button id="finding-modal-audit-stream-refresh" class="uk-button uk-button-default button-filter"  onclick="refreshFindingStream();">REFRESH</button>
+	                <button id="finding-modal-audit-stream-refresh" class="uk-button uk-button-default button-filter"  onclick="refreshFindingStream('{{$type}}',{{$auditid}},{{$buildingid}},{{$unitid}},{{$amenityid}});">REFRESH</button>
 	                
 		        </div>
 		    </div>
