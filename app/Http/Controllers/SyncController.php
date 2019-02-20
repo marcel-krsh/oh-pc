@@ -53,7 +53,7 @@ class SyncController extends Controller
                         echo "<li>CANCELLED:".$program->program->program_name.' '.$program->program_id.'</li>';
                 }
            }
-           echo "</ul><hr>"
+           echo "</ul><hr>";
         }
 
     }
