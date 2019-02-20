@@ -91,19 +91,9 @@
 									</div>
 				    			</div>
 				    			<div class="uk-width-3-4 uk-padding-remove-right uk-padding-remove">
-				    				<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description">
-					    				<p>{{formatDate($finding->date_of_finding)}}: FN#{{$finding->id}}<br />
-					    					By {{$finding->auditor->full_name()}}<br>
-					    					{!!$finding->amenity_inspection->address()!!}
-					    				</p>
-					    				<p>{{$finding->amenity_inspection->building_unit_amenity_names()}}<br />{{$finding->finding_type->name}}</p>
-					    				<div class="inspec-tools-tab-finding-actions">
-										    <button class="uk-button uk-link"><i class="a-pencil-2"></i> EDIT</button>
-					    					<button class="uk-button uk-link"><i class="a-trash-3"></i> DELETE</button>
-					    				</div>
 					    				<div class="inspec-tools-tab-finding-top-actions">
 					    					<i class="a-circle-plus use-hand-cursor"></i>
-										    <div uk-drop="mode: click" style="min-width: 315px;">
+										    <div uk-drop="mode: click" style="min-width: 315px; background-color: #fff; z-index: auto;">
 										        <div class="uk-card uk-card-body uk-card-default uk-card-small">
 										    	 	<div class="uk-drop-grid uk-child-width-1-4" uk-grid>
 										    	 		<div class="icon-circle use-hand-cursor" onclick="addChildItem({{$finding->id}}, 'followup')"><i class="a-bell-plus"></i></div>
@@ -113,6 +103,16 @@
 										    	 	</div>
 										        </div>
 										    </div>
+					    				</div>
+				    				<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description">
+					    				<p>{{formatDate($finding->date_of_finding)}}: FN#{{$finding->id}}<br />
+					    					By {{$finding->auditor->full_name()}}<br>
+					    					{!!$finding->amenity_inspection->address()!!}
+					    				</p>
+					    				<p>{{$finding->amenity_inspection->building_unit_amenity_names()}}<br />{{$finding->finding_type->name}}</p>
+					    				<div class="inspec-tools-tab-finding-actions">
+										    <button class="uk-button uk-link"><i class="a-pencil-2"></i> EDIT</button>
+					    					<button class="uk-button uk-link"><i class="a-trash-3"></i> DELETE</button>
 					    				</div>
 					    			</div>
 				    			</div>

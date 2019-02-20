@@ -2664,11 +2664,14 @@ margin-top:10px;
 .inspec-tools-tab-finding .inspec-tools-tab-finding-description {
   /*position: relative;*/
   margin-bottom: 30px;
+  margin-top: -20px;
 }
 .inspec-tools-tab-finding .inspec-tools-tab-finding-top-actions {
-  position: absolute;
+ /* position: absolute;
   right: 0;
-  top: 0;
+  top: 0;*/
+  float: right;
+    text-align: right;
 }
 .inspec-tools-tab-finding .inspec-tools-tab-finding-actions {
   /*position: absolute;*/
