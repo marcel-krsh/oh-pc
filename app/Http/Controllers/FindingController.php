@@ -50,6 +50,16 @@ class FindingController extends Controller
         }
     }
 
+    public function editFindingForm($findingid){
+        if(Auth::user()->auditor_access()){
+            $finding = Finding::where('id','=',$findingid)->first();
+
+            return view('templates.modal-findings-edit-form',compact('finding'));
+        }else{
+            return "Sorry, you do not have permission to access this page.";
+        }
+    }
+
     public function addFinding(Request $request){
         if(Auth::user()->auditor_access()){
             $inputs = $request->input('inputs');

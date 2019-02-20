@@ -190,6 +190,7 @@
         Route::post('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummaryFilterProgram');
         Route::get('/modals/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}', 'FindingController@modalFindings');
         Route::get('/modals/add/finding/{findingtypeid?}/amenity_inspection/{amenityinspectionid?}','FindingController@addFindingForm');
+        Route::get('/modals/edit/finding/{findingtypeid}','FindingController@editFindingForm');
         Route::post('/findings/create', 'FindingController@addFinding');
         Route::post('/findings/{findingid}/resolve', 'FindingController@resolveFinding');
         Route::get('/modals/updatestream/{type}/{auditid}/{buildingid?}/{unitid?}/{amenityid?}/{refresh}', 'FindingController@modalFindings');
