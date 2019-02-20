@@ -80,8 +80,8 @@ class ScheduleTime extends Model
         $mail[3] = "CALSCALE:GREGORIAN";
         $mail[4] = "METHOD:REQUEST";
         $mail[5] = "BEGIN:VEVENT";
-        $mail[6] = "DTSTART;TZID=America/Sao_Paulo:" . gmdate('Ymd\THis\Z', $this->start_date());
-        $mail[7] = "DTEND;TZID=America/Sao_Paulo:" . gmdate('Ymd\THis\Z', $this->end_date());
+        $mail[6] = "DTSTART;TZID=America/Sao_Paulo:" . gmdate('Ymd\THis\Z', strtotime($this->start_date()));
+        $mail[7] = "DTEND;TZID=America/Sao_Paulo:" . gmdate('Ymd\THis\Z', strtotime($this->end_date()));
         $mail[8] = "DTSTAMP;TZID=America/Sao_Paulo:" . gmdate('Ymd\THis\Z');
         $mail[9] = "UID:" . $uid;
         $mail[10] = "ORGANIZER;";
