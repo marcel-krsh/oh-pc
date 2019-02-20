@@ -38,8 +38,8 @@ class SyncController extends Controller
           $pp = $pp->attributes;
           echo $pp->unitKey.' '.$pp->developmentProgramKey.' '.$pp->startDate.' '.$pp->endDate.'<br />';
           //get the matching program from the developmentProgramKey
-          $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->first();
-          echo $program->program->name;
+          $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->with('program')->first();
+          echo $program->program->program_name.' '.$program->program_id.'<hr ><br />';
        }
        //dd($projectPrograms->data);
 
