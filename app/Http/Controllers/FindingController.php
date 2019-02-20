@@ -96,6 +96,26 @@ class FindingController extends Controller
         }
     }
 
+    public function deleteFinding(Request $request, $findingid){
+        if(Auth::user()->auditor_access()){
+
+            $finding = Finding::where('id','=',$findingid)->first();
+
+            // delete all replies
+            // comment
+            // photo
+            // document
+            // followups
+
+            $finding->delete();
+
+            return 1;
+
+        }else{
+            return "Sorry, you do not have permission to access this page.";
+        }
+    }
+
     public function addFinding(Request $request){
         if(Auth::user()->auditor_access()){
             $inputs = $request->input('inputs');

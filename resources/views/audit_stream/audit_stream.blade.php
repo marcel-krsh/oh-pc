@@ -110,10 +110,12 @@
 					    					{!!$finding->amenity_inspection->address()!!}
 					    				</p>
 					    				<p>{{$finding->amenity_inspection->building_unit_amenity_names()}}<br />{{$finding->finding_type->name}}</p>
+					    				@can('access_auditor')
 					    				<div class="inspec-tools-tab-finding-actions">
 										    <button class="uk-button uk-link" onclick="dynamicModalLoad('edit/finding/{{$finding->id}}',0,0,0,2)"><i class="a-pencil-2"></i> EDIT</button>
-					    					<button class="uk-button uk-link"><i class="a-trash-3"></i> DELETE</button>
+					    					<button class="uk-button uk-link" onclick="deleteFinding({{$finding->id}})"><i class="a-trash-3"></i> DELETE</button>
 					    				</div>
+					    				@endcan
 					    			</div>
 				    			</div>
 				    		</div>
@@ -149,6 +151,27 @@
 			}
 		});
 	}
+
+	function deleteFinding(findingid){
+    	
+    	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Delete Finding #{{$finding->id}}</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to delete this finding and all its follow-ups, comments, documents and photos?</h3></div>', {stack:1}).then(function() {
+		    	
+		    	$.post('/findings/'+findingid+'/delete', {
+		            '_token' : '{{ csrf_token() }}'
+		        }, function(data) {
+		            if(data==0){ 
+		                UIkit.modal.alert(data,{stack: true});
+		            } else {
+		            	UIkit.notification('<span uk-icon="icon: check"></span> Finding Deleted', {pos:'top-right', timeout:1000, status:'success'});
+	            		$('#finding-modal-audit-stream-refresh').trigger('click');
+		            }
+		        } );
+
+		    	
+		}, function () {
+		    console.log('Rejected.')
+		});
+    }
 	@endcan
 
 	$(".inspec-tools-tab-findings-container").on( 'scroll', function(){
