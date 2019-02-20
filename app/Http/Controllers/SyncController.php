@@ -35,8 +35,8 @@ class SyncController extends Controller
        $projectPrograms = json_decode($unitProjectPrograms);
        $projectPrograms =  $projectPrograms->data;
        foreach ($projectPrograms as $pp) {
-           $pp = $pp->attributes;
-           dd($pp);
+          $pp = $pp->attributes;
+          echo $pp->unitKey.' '.$pp->developmentProgramKey.' '.$endDate.'<br />';
        }
        //dd($projectPrograms->data);
 
