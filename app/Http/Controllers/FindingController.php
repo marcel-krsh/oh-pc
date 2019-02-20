@@ -96,18 +96,29 @@ class FindingController extends Controller
         }
     }
 
-    public function deleteFinding(Request $request, $findingid){
+    public function cancelFinding(Request $request, $findingid){
         if(Auth::user()->auditor_access()){
 
             $finding = Finding::where('id','=',$findingid)->first();
+            $date = Carbon\Carbon::now()->format('Y-m-d H:i:s');
+            
+            $finding->cancelled_at = $date;
+            $finding->save();
 
-            // delete all replies
-            // comment
-            // photo
-            // document
-            // followups
+            return 1;
 
-            $finding->delete();
+        }else{
+            return "Sorry, you do not have permission to access this page.";
+        }
+    }
+
+    public function restoreFinding(Request $request, $findingid){
+        if(Auth::user()->auditor_access()){
+
+            $finding = Finding::where('id','=',$findingid)->first();
+            
+            $finding->cancelled_at = null;
+            $finding->save();
 
             return 1;
 
@@ -436,10 +447,17 @@ class FindingController extends Controller
                 $amenities = AmenityInspection::where('audit_id',$auditid)->with('amenity')->get(); 
 
                 $findings = Finding::where('project_id',$audit->project_id)
+                    ->whereNull('cancelled_at')
                     ->orderBy('updated_at','desc')
                     ->get();
-
-            
+                $cancelled_findings = Finding::where('project_id',$audit->project_id)
+                    ->whereNotNull('cancelled_at')
+                    ->orderBy('updated_at','desc')
+                    ->get();
+                foreach($cancelled_findings as $cancelled_finding){
+                    $findings->add($cancelled_finding);
+                }
+               
             if (is_null($type)) {
                 // default filter is all
                 $type = 'all';

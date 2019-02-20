@@ -2537,6 +2537,9 @@ margin-top:10px;
   font-size: 18px;
   line-height: 23px;
 }
+.inspec-tools-tab-finding.cancelled p{
+  text-decoration: line-through;
+}
 .inspec-tools-tab-finding .inspec-tools-findings-resolve span {
     font-size: 19px;
     vertical-align: sub;

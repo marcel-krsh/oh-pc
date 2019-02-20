@@ -39,7 +39,7 @@
 					@if(count($findings))
 					@foreach($findings as $finding)
 
-					<div id="inspec-tools-tab-finding-{{$finding->id}}" class="inspec-tools-tab-finding" data-ordering-finding="{{$finding->id}}" data-finding-id="{{$finding->id}}" data-audit-filter="@if($finding->is_current_audit()) this-audit @endif all" data-finding-filter="@if(Auth::user()->id == $finding->user_id) my-finding @endif all" @if(!$finding->is_current_audit() || Auth::user()->id != $finding->user_id) style="display:none" @endif uk-grid>
+					<div id="inspec-tools-tab-finding-{{$finding->id}}" class="inspec-tools-tab-finding @if($finding->cancelled_at) cancelled @endif" @if($finding->cancelled_at) data-ordering-finding="x{{$finding->id}}" @else data-ordering-finding="{{$finding->id}}" @endif data-finding-id="{{$finding->id}}" data-audit-filter="@if($finding->is_current_audit()) this-audit @endif all" data-finding-filter="@if(Auth::user()->id == $finding->user_id) my-finding @endif all" @if(!$finding->is_current_audit() || Auth::user()->id != $finding->user_id) style="display:none" @endif uk-grid>
 			        	<div id="inspec-tools-tab-finding-sticky-{{$finding->id}}" class="inspec-tools-tab-finding-sticky uk-width-1-1 uk-padding-remove findingstatus" style="display:none">
 			        		<div class="uk-grid-match" uk-grid>
 								<div class="uk-width-1-4 uk-padding-remove-top uk-padding-remove-left">
@@ -65,6 +65,7 @@
 					    			</div>
 					    			<div id="inspec-tools-finding-resolve-{{$finding->id}}" class="uk-display-block" style="margin: 15px 0;">
 					    			@can('access_auditor')
+					    				@if(!$finding->cancelled_at)
 					    				@if($finding->auditor_approved_resolution != 1)
 					    				<button class="uk-button inspec-tools-findings-resolve uk-link" onclick="resolveFinding({{$finding->id}})"><span class="a-circle">
 									    	 &nbsp; </span>RESOLVE</button>
@@ -72,6 +73,7 @@
 									   	<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{strtoupper(formatDate($finding->auditor_last_approved_resolution_at))}};" onclick="resolveFinding({{$finding->id}})"><span class="a-circle-checked">
 									    	 &nbsp; </span>RESOLVED</button>
 									   	
+									    @endif
 									    @endif
 									@else
 										@if($finding->auditor_approved_resolution == 1)
@@ -91,6 +93,7 @@
 									</div>
 				    			</div>
 				    			<div class="uk-width-3-4 uk-padding-remove-right uk-padding-remove">
+				    					@if(!$finding->cancelled_at)
 					    				<div class="inspec-tools-tab-finding-top-actions">
 					    					<i class="a-circle-plus use-hand-cursor"></i>
 										    <div uk-drop="mode: click" style="min-width: 315px; background-color: #fff; z-index: auto;">
@@ -104,6 +107,11 @@
 										        </div>
 										    </div>
 					    				</div>
+					    				@else
+					    				<div class="inspec-tools-tab-finding-top-actions">
+					    					CANCELLED
+					    				</div>
+					    				@endif
 				    				<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description">
 					    				<p>{{formatDate($finding->date_of_finding)}}: FN#{{$finding->id}}<br />
 					    					By {{$finding->auditor->full_name()}}<br>
@@ -112,8 +120,14 @@
 					    				<p>{{$finding->amenity_inspection->building_unit_amenity_names()}}<br />{{$finding->finding_type->name}}</p>
 					    				@can('access_auditor')
 					    				<div class="inspec-tools-tab-finding-actions">
+					    					@if(!$finding->cancelled_at)
 										    <button class="uk-button uk-link" onclick="dynamicModalLoad('edit/finding/{{$finding->id}}',0,0,0,2)"><i class="a-pencil-2"></i> EDIT</button>
-					    					<button class="uk-button uk-link" onclick="deleteFinding({{$finding->id}})"><i class="a-trash-3"></i> DELETE</button>
+										    @endif
+										    @if($finding->cancelled_at)
+					    					<button class="uk-button uk-link" onclick="restoreFinding({{$finding->id}})"><i class="a-trash-3"></i> RESTORE</button>
+										    @else
+					    					<button class="uk-button uk-link" onclick="cancelFinding({{$finding->id}})"><i class="a-trash-3"></i> CANCEL</button>
+					    					@endif
 					    				</div>
 					    				@endcan
 					    			</div>
@@ -152,17 +166,38 @@
 		});
 	}
 
-	function deleteFinding(findingid){
+	function cancelFinding(findingid){
     	
-    	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Delete Finding #{{$finding->id}}</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to delete this finding and all its follow-ups, comments, documents and photos?</h3></div>', {stack:1}).then(function() {
+    	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Cancel Finding #{{$finding->id}}</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to cancel this finding? All its comments/photos/documents/followups will remain and the cancelled finding will be displayed at the bottom of the list.</h3></div>', {stack:1}).then(function() {
 		    	
-		    	$.post('/findings/'+findingid+'/delete', {
+		    	$.post('/findings/'+findingid+'/cancel', {
 		            '_token' : '{{ csrf_token() }}'
 		        }, function(data) {
 		            if(data==0){ 
 		                UIkit.modal.alert(data,{stack: true});
 		            } else {
-		            	UIkit.notification('<span uk-icon="icon: check"></span> Finding Deleted', {pos:'top-right', timeout:1000, status:'success'});
+		            	UIkit.notification('<span uk-icon="icon: check"></span> Finding Canceled', {pos:'top-right', timeout:1000, status:'success'});
+	            		$('#finding-modal-audit-stream-refresh').trigger('click');
+		            }
+		        } );
+
+		    	
+		}, function () {
+		    console.log('Rejected.')
+		});
+    }
+
+	function restoreFinding(findingid){
+    	
+    	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Restore Finding #{{$finding->id}}</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to restore this finding?</h3></div>', {stack:1}).then(function() {
+		    	
+		    	$.post('/findings/'+findingid+'/restore', {
+		            '_token' : '{{ csrf_token() }}'
+		        }, function(data) {
+		            if(data==0){ 
+		                UIkit.modal.alert(data,{stack: true});
+		            } else {
+		            	UIkit.notification('<span uk-icon="icon: check"></span> Finding Restored', {pos:'top-right', timeout:1000, status:'success'});
 	            		$('#finding-modal-audit-stream-refresh').trigger('click');
 		            }
 		        } );

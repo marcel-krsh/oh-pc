@@ -193,7 +193,8 @@
         Route::get('/modals/edit/finding/{findingtypeid}','FindingController@editFindingForm');
         Route::post('/findings/create', 'FindingController@addFinding');
         Route::post('/findings/edit', 'FindingController@editFinding');
-        Route::post('/findings/{findingid}/delete', 'FindingController@deleteFinding');
+        Route::post('/findings/{findingid}/cancel', 'FindingController@cancelFinding');
+        Route::post('/findings/{findingid}/restore', 'FindingController@restoreFinding');
         Route::post('/findings/{findingid}/resolve', 'FindingController@resolveFinding');
         Route::get('/modals/updatestream/{type}/{auditid}/{buildingid?}/{unitid?}/{amenityid?}/{refresh}', 'FindingController@modalFindings');
 

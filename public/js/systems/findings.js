@@ -93,7 +93,7 @@ function refreshFindingStream(type,auditid,buildingid,unitid,amenityid) {
 }
 
 function clickingOnFindingFilter(element) {
-	console.log('clicking on a filter');
+	//console.log('clicking on a filter');
 	if($(element).find('span').is(':visible')){
 
 		// switch order
@@ -105,7 +105,8 @@ function clickingOnFindingFilter(element) {
 	  	// switch the span data and the visual
 	  	if(currentOrdering == "sort-asc"){
 	  		var sortableElementParent = $('.js-findings');
-		  	var sortableElements = sortableElementParent.children(); console.log(sortableElements.length);
+		  	var sortableElements = sortableElementParent.children(); 
+		  	//console.log(sortableElements.length);
 		  	sortableElements.sort(function(a,b){
 				var an = a.getAttribute('data-ordering-finding'),
 					bn = b.getAttribute('data-ordering-finding');
@@ -122,7 +123,8 @@ function clickingOnFindingFilter(element) {
 	  		$(element).find('span a').removeClass('sort-asc').addClass('sort-desc');
 	  	}else{
 	  		var sortableElementParent = $('.js-findings');
-		  	var sortableElements = sortableElementParent.children();console.log(sortableElements.length);
+		  	var sortableElements = sortableElementParent.children();
+		  	//console.log(sortableElements.length);
 		  	sortableElements.sort(function(a,b){
 				var an = a.getAttribute('data-ordering-finding'),
 					bn = b.getAttribute('data-ordering-finding');
