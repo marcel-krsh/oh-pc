@@ -32,20 +32,23 @@ class SyncController extends Controller
        //get units for the project - all of them
         $projectUnits = Project::where('id',$request->get('project_id'))->with('units')->first();
         $projectUnits = $projectUnits->units;
-        dd($projectUnits);
+        //dd($projectUnits);
        $apiConnect = new DevcoService();
-
-       $unitProjectPrograms = $apiConnect->getUnitProjectPrograms($request->get('unit_key'), Auth::user()->id, Auth::user()->email, Auth::user()->name, 1, 'SystemServer');
-       $projectPrograms = json_decode($unitProjectPrograms);
-       $projectPrograms =  $projectPrograms->data;
-       foreach ($projectPrograms as $pp) {
-          $pp = $pp->attributes;
-          echo $pp->unitKey.' '.$pp->developmentProgramKey.' '.$pp->startDate.' '.$pp->endDate.'<br />';
-          //get the matching program from the developmentProgramKey
-          $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->with('program')->first();
-          echo $program->program->program_name.' '.$program->program_id.'<hr ><br />';
-       }
-       //dd($projectPrograms->data);
+       foreach ($projectUnits as $unit) {
+           # code...
+           echo "<br><strong>Unit: ".$unit->unit_name.'<br />';
+           $unitProjectPrograms = $apiConnect->getUnitProjectPrograms($unit->unit_key), Auth::user()->id, Auth::user()->email, Auth::user()->name, 1, 'SystemServer');
+           $projectPrograms = json_decode($unitProjectPrograms);
+           $projectPrograms =  $projectPrograms->data;
+           foreach ($projectPrograms as $pp) {
+              $pp = $pp->attributes;
+              echo $pp->unitKey.' '.$pp->developmentProgramKey.' '.$pp->startDate.' '.$pp->endDate.'<br />';
+              //get the matching program from the developmentProgramKey
+              $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->with('program')->first();
+              echo $program->program->program_name.' '.$program->program_id.'<hr ><br />';
+           }
+           //dd($projectPrograms->data);
+        }
 
     }
     //
