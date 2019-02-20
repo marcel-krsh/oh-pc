@@ -30,7 +30,7 @@ class SyncController extends Controller
     public function testapi(Request $request) {
         
        //get units for the project - all of them
-        $projectUnits = Project::where('project_id',$request->get('project_id'))->with('units')->first();
+        $projectUnits = Project::where('id',$request->get('project_id'))->with('units')->first();
         $projectUnits = $projectUnits->units;
         dd($projectUnits);
        $apiConnect = new DevcoService();
