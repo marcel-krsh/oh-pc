@@ -36,7 +36,10 @@ class SyncController extends Controller
        $projectPrograms =  $projectPrograms->data;
        foreach ($projectPrograms as $pp) {
           $pp = $pp->attributes;
-          echo $pp->unitKey.' '.$pp->developmentProgramKey.' '.$pp->endDate.'<br />';
+          echo $pp->unitKey.' '.$pp->developmentProgramKey.' '.$pp->startDate.' '.$pp->endDate.'<br />';
+          //get the matching program from the developmentProgramKey
+          $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->first();
+          echo $program->program->name;
        }
        //dd($projectPrograms->data);
 
