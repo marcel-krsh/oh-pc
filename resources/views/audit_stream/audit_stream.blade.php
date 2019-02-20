@@ -85,8 +85,9 @@
 										<i class="a-comment"></i> {{count($finding->comments)}}<br />
 										<i class="a-file"></i> {{count($finding->documents)}}<br />
 										<i class="a-picture"></i> {{count($finding->photos)}}<br />
-
+										@if(count($finding->followups) || count($finding->comments) || count($finding->documents) || count($finding->photos))
 										<i class="a-menu" onclick="expandFindingItems(this);"></i>
+										@endif
 									</div>
 				    			</div>
 				    			<div class="uk-width-3-4 uk-padding-remove-right uk-padding-remove">
