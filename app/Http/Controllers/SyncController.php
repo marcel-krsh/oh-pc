@@ -43,14 +43,14 @@ class SyncController extends Controller
            echo "<ul>";
            foreach ($projectPrograms as $pp) {
               $pp = $pp->attributes;
-              if(!is_null($pp->endDate)){
+              if(is_null($pp->endDate)){
                   echo '<li>'.$pp->unitKey.' '.$pp->developmentProgramKey.' '.$pp->startDate.' '.$pp->endDate.'<br />';
                   //get the matching program from the developmentProgramKey
                   $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->with('program')->first();
                   echo $program->program->program_name.' '.$program->program_id.'</li>';
                 } else {
                     $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->with('program')->first();
-                        echo "<li>CANCELLED:".$program->program->program_name.' '.$program->program_id.'</li>';
+                        echo "<li>CANCELLED:<del>".$program->program->program_name.' '.$program->program_id.'</del></li>';
                 }
            }
            echo "</ul><hr>";
