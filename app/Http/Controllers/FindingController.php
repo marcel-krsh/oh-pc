@@ -60,6 +60,42 @@ class FindingController extends Controller
         }
     }
 
+    public function editFinding(Request $request){
+        if(Auth::user()->auditor_access()){
+            $inputs = $request->input('inputs');
+            parse_str($inputs, $inputs);
+
+            $error = '';
+            if($inputs['finding_type_id'] == ''){
+                $error .= '<p>I am having trouble with the finding type you selected. Please refresh your page and try again.</p>';
+            }
+            if($inputs['level'] == ''){
+                $error .= '<p>Please select a level.</p>';
+            }
+
+            if($error != ''){
+
+                return $error;
+
+            }else{
+                $findingType = FindingType::find($inputs['finding_type_id']);
+                $date = Carbon\Carbon::createFromFormat('F j, Y' , $inputs['date'])->format('Y-m-d H:i:s');
+
+                $finding = Finding::where('id','=',$inputs['finding_id'])->first();
+                $finding->date_of_finding = $date;
+                $finding->finding_type_id = $findingType->id;
+                $finding->level = $inputs['level'];
+                $finding->save();
+
+                return 1;
+                
+            }
+
+        }else{
+            return "Sorry, you do not have permission to access this page.";
+        }
+    }
+
     public function addFinding(Request $request){
         if(Auth::user()->auditor_access()){
             $inputs = $request->input('inputs');

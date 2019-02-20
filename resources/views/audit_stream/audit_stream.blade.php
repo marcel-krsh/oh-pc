@@ -111,7 +111,7 @@
 					    				</p>
 					    				<p>{{$finding->amenity_inspection->building_unit_amenity_names()}}<br />{{$finding->finding_type->name}}</p>
 					    				<div class="inspec-tools-tab-finding-actions">
-										    <button class="uk-button uk-link" onclick="dynamicModalLoad('edit/finding/{{$finding->id}},0,0,0,2)"><i class="a-pencil-2"></i> EDIT</button>
+										    <button class="uk-button uk-link" onclick="dynamicModalLoad('edit/finding/{{$finding->id}}',0,0,0,2)"><i class="a-pencil-2"></i> EDIT</button>
 					    					<button class="uk-button uk-link"><i class="a-trash-3"></i> DELETE</button>
 					    				</div>
 					    			</div>

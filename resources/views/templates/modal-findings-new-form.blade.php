@@ -77,7 +77,7 @@
             if(data!=1){ 
                 UIkit.modal.alert(data,{stack: true});
             } else {
-                dynamicModalClose();
+                dynamicModalClose(2);
 	            UIkit.notification('<span uk-icon="icon: check"></span> Finding Saved', {pos:'top-right', timeout:1000, status:'success'});
 	            $('#finding-modal-audit-stream-refresh').trigger('click');
             
