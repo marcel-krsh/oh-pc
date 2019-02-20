@@ -33,8 +33,11 @@ class SyncController extends Controller
 
         $unitProjectPrograms = $apiConnect->getUnitProjectPrograms($request->get('unit_key'), Auth::user()->id, Auth::user()->email, Auth::user()->name, 1, 'SystemServer');
        $projectPrograms = json_decode($unitProjectPrograms);
-       //$projectPrograms =  $projectPrograms['data'];
-       dd($projectPrograms->data);
+       $projectPrograms =  $projectPrograms->data;
+       foreach ($projectPrograms as $pp => $attributes) {
+           echo $pp->unitKey.' '.$pp->startDate.' '.$pp->endDate;
+       }
+       //dd($projectPrograms->data);
 
     }
     //
