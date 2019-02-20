@@ -29,9 +29,13 @@ class SyncController extends Controller
     
     public function testapi(Request $request) {
         
-        $apiConnect = new DevcoService();
+       //get units for the project - all of them
+        $projectUnits = Project::where('project_id',$request->get('project_id'))->with('units')->first();
+        $projectUnits = $projectUnits->units;
+        dd($projectUnits);
+       $apiConnect = new DevcoService();
 
-        $unitProjectPrograms = $apiConnect->getUnitProjectPrograms($request->get('unit_key'), Auth::user()->id, Auth::user()->email, Auth::user()->name, 1, 'SystemServer');
+       $unitProjectPrograms = $apiConnect->getUnitProjectPrograms($request->get('unit_key'), Auth::user()->id, Auth::user()->email, Auth::user()->name, 1, 'SystemServer');
        $projectPrograms = json_decode($unitProjectPrograms);
        $projectPrograms =  $projectPrograms->data;
        foreach ($projectPrograms as $pp) {
