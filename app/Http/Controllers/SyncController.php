@@ -37,7 +37,7 @@ class SyncController extends Controller
        foreach ($projectUnits as $unit) {
            # code...
            echo "<br><strong>Unit: ".$unit->unit_name.'<br />';
-           $unitProjectPrograms = $apiConnect->getUnitProjectPrograms($unit->unit_key), Auth::user()->id, Auth::user()->email, Auth::user()->name, 1, 'SystemServer');
+           $unitProjectPrograms = $apiConnect->getUnitProjectPrograms($unit->unit_key, Auth::user()->id, Auth::user()->email, Auth::user()->name, 1, 'SystemServer');
            $projectPrograms = json_decode($unitProjectPrograms);
            $projectPrograms =  $projectPrograms->data;
            foreach ($projectPrograms as $pp) {
