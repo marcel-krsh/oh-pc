@@ -30,8 +30,8 @@ class SyncController extends Controller
     public function testapi(Request $request) {
         
        //get units for the project - all of them
-        $projectUnits = Project::where('id',$request->get('project_id'))->with('units')->first();
-        $projectUnits = $projectUnits->units;
+        $project = Project::where('id',$request->get('project_id'))->with('units')->first();
+        $projectUnits = $project->units;
         //dd($projectUnits);
        $apiConnect = new DevcoService();
        foreach ($projectUnits as $unit) {
@@ -60,8 +60,8 @@ class SyncController extends Controller
                     echo $program->program->program_name.' '.$program->program_id.'<br /></li>';
 
                     $record[] = [
-                        'project_id' => $projectUnits->id,
-                        'project_key' => $projectUnits->project_key,
+                        'project_id' => $project->id,
+                        'project_key' => $project->project_key,
                         'unit_id' => $unit->id,
                         'unit_key' => $unit->unit_key,
                         'program_id' => $program->program_id
