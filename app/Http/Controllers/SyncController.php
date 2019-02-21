@@ -40,17 +40,41 @@ class SyncController extends Controller
            $unitProjectPrograms = $apiConnect->getUnitProjectPrograms($unit->unit_key, Auth::user()->id, Auth::user()->email, Auth::user()->name, 1, 'SystemServer');
            $projectPrograms = json_decode($unitProjectPrograms);
            $projectPrograms =  $projectPrograms->data;
+
+           if($unit->unit_identity_id == 22){
+                $is_market_rate = 1; 
+           }else{
+                $is_market_rate = 0;
+           }
+
+           $records = array();
+
            echo "<ul>";
            foreach ($projectPrograms as $pp) {
-              $pp = $pp->attributes;
-              if(is_null($pp->endDate)){
-                  echo '<li>Unit Key:'.$pp->unitKey.' || Development Program Key:'.$pp->developmentProgramKey.' || Start Date:'.date('m/d/Y',strtotime($pp->startDate)).'<br />';
-                  //get the matching program from the developmentProgramKey
-                  $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->with('program')->first();
-                  echo $program->program->program_name.' '.$program->program_id.'<br /></li>';
-                } else {
+                $pp = $pp->attributes;
+                if(is_null($pp->endDate) && !$is_market_rate){
+                    // market rate? ignore
+                    echo '<li>Unit Key:'.$pp->unitKey.' || Development Program Key:'.$pp->developmentProgramKey.' || Start Date:'.date('m/d/Y',strtotime($pp->startDate)).'<br />';
+                    //get the matching program from the developmentProgramKey
                     $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->with('program')->first();
+                    echo $program->program->program_name.' '.$program->program_id.'<br /></li>';
+
+                    $record[] = [
+                        'project_id' => $projectUnits->id,
+                        'project_key' => $projectUnits->project_key,
+                        'unit_id' => $unit->id,
+                        'unit_key' => $unit->unit_key,
+                        'program_id' => $program->program_id
+                    ];
+                } else {
+                    // market rate?
+                    $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->with('program')->first();
+                    if($is_market_rate){
+                        echo "<li>MARKET RATE || CANCELLED:<del>".$program->program->program_name.' '.$program->program_id.'</del> || Start Date:'.date('m/d/Y',strtotime($pp->startDate)).' || End Date: '.date('m/d/Y',strtotime($pp->endDate)).'</li>';
+                    }else{
                         echo "<li>CANCELLED:<del>".$program->program->program_name.' '.$program->program_id.'</del> || Start Date:'.date('m/d/Y',strtotime($pp->startDate)).' || End Date: '.date('m/d/Y',strtotime($pp->endDate)).'</li>';
+                    }
+                    
                 }
            }
            echo "</ul><hr>";
