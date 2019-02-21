@@ -34,7 +34,7 @@ class SyncController extends Controller
         $projectUnits = $project->units;
         //dd($projectUnits);
        $apiConnect = new DevcoService();
-       foreach ($projectUnits as $unit) {
+       foreach ($projectUnits as $unit) {dd($unit);
            # code...
            echo "<br><strong>Unit: ".$unit->unit_name.'<br />';
            $unitProjectPrograms = $apiConnect->getUnitProjectPrograms($unit->unit_key, Auth::user()->id, Auth::user()->email, Auth::user()->name, 1, 'SystemServer');
