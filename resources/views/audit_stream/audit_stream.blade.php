@@ -244,12 +244,16 @@
 
 		    	currentItem = $(item).closest("[data-parent-id], .inspec-tools-tab-finding-item");
 			    currentItemId = currentItem.data('parent-id');
+			    currentFindingId = currentItem.data('finding-id');
+			    //console.log("currentItemId "+currentItemId, $('#inspec-tools-tab-finding-'+currentFindingId).offset().top);
+			    //console.log("currentItem offset "+$(currentItem).offset().top+" offsetparent "+$(currentItem).offsetParent().offset().top);
 			    positionItem = $(currentItem).offset().top - $(currentItem).offsetParent().offset().top;
-				// console.log("currentItemId "+currentItemId+" | positionItem "+positionItem+" | tmpPositionItem "+tmpPositionItem);
+				//console.log("currentItemId "+currentItemId+" | positionItem "+positionItem+" | tmpPositionItem "+tmpPositionItem);
 		        if(positionItem < 40){
 		        	if(positionItem >= tmpPositionItem) {
 		        		tmpPositionItem = positionItem;
 		        		itemId = currentItemId;
+		        		//console.log("SETTING itemid "+itemId+" tmpPositionItem "+tmpPositionItem);
 		        	}
 		        }
 		    });
@@ -271,15 +275,14 @@
 				$('#inspec-tools-tab-finding-sticky-'+findingId).hide();
 			}
 			
-			if($(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-item-'+itemId).attr('expanded')){
-		    	
-		        $(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).show();
-		        $(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).css("margin-top", $(".inspec-tools-tab-findings-container").scrollTop());
-			}else{
-				// hide that sticky
-				//console.log('hiding #inspec-tools-tab-finding-sticky-'+findingId+'');
-				$(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).hide();
-			}
+			// if($(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-item-'+itemId).attr('expanded')){
+		 //        $(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).show();
+		 //        $(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).css("margin-top", $(".inspec-tools-tab-findings-container").scrollTop());
+			// }else{
+			// 	// hide that sticky
+			// 	//console.log('hiding #inspec-tools-tab-finding-sticky-'+findingId+'');
+			// 	$(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).hide();
+			// }
 	    } else {
 	    	// hide the sticky for all findings
 	    	// console.log('scrolltop <= 40');

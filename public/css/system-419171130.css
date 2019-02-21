@@ -2624,7 +2624,7 @@ margin-top:10px;
 }
 .inspec-tools-tab-finding-reply-sticky {
   position: absolute;
-  top: 50px;
+  top: 0px;
   left: 0;
   width: 100%;
   z-index: 10;
@@ -3984,6 +3984,9 @@ i.fa-square.chart-color-to-be-inspected { background-color:#e0e0df; }
       border-right: 1px dotted #3a3a3a;
     padding-right: 25px;
     height: 95%;
+}
+.modal-findings-items-container {
+  position:relative;
 }
 .modal-findings-right {
   width: 44%;
