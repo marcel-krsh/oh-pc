@@ -74,50 +74,97 @@ class ComplianceSelectionJob implements ShouldQueue
                         $this->processes++;
                         // Get the unit's current program designation from DevCo
                         try {
-                            $unitProgramData = $apiConnect->getUnitPrograms($unit->unit_key, 1, 'admin@allita.org', 'Updating Unit Program Data', 1, 'Server');
-                            $unitProgramData = json_decode($unitProgramData, true);
+                            $unitProjectPrograms = $apiConnect->getUnitProjectPrograms($unit->unit_key, 1, 'admin@allita.org', 'Updating Unit Program Data', 1, 'SystemServer');
+                            $projectPrograms = json_decode($unitProjectPrograms);
+                            $projectPrograms =  $projectPrograms->data;
+
+                            if($unit->is_market_rate()){
+                                $is_market_rate = 1; 
+                            }else{
+                                $is_market_rate = 0;
+                            }
+
+                            //$records_to_insert = array();
+
+                            //$unitProgramData = $apiConnect->getUnitPrograms($unit->unit_key, 1, 'admin@allita.org', 'Updating Unit Program Data', 1, 'Server');
+                            //$unitProgramData = json_decode($unitProgramData, true);
+                            //
                             //dd($unitProgramData['data']);
                             //dd($unitProgramData['data'][0]['attributes']['programKey']);
-                            foreach ($unitProgramData['data'] as $unitProgram) {
+                            foreach ($projectPrograms as $pp) {
                                 $this->processes++;
-                               //dd('Unit Program Id - '.$unitProgram['attributes']['programKey']);
 
-                                $program = Program::where('program_key', $unitProgram['attributes']['programKey'])->first();
-                                if (!is_null($program)) {
-                                    UnitProgram::insert([
-                                        'unit_key'      =>  $unit->unit_key,
-                                        'unit_id'       =>  $unit->id,
-                                        'program_key'   =>  $program->program_key,
-                                        'program_id'    =>  $program->id,
-                                        'audit_id'      =>  $audit->id,
-                                        'monitoring_key'=>  $audit->monitoring_key,
-                                        'project_id'    =>  $audit->project_id,
-                                        'development_key'=> $audit->development_key,
-                                        'created_at'    =>  date("Y-m-d g:h:i", time()),
-                                        'updated_at'    =>  date("Y-m-d g:h:i", time())
-                                    ]);
+                                $pp = $pp->attributes;
+                                if(is_null($pp->endDate) && !$is_market_rate){
+                                    
+                                    $audit->comment = $audit->comment.' | Unit Key:'.$pp->unitKey.', Development Program Key:'.$pp->developmentProgramKey.', Start Date:'.date('m/d/Y',strtotime($pp->startDate));
+                                    $audit->comment_system = $audit->comment_system.' | Unit Key:'.$pp->unitKey.', Development Program Key:'.$pp->developmentProgramKey.', Start Date:'.date('m/d/Y',strtotime($pp->startDate));
+                                    $audit->save();
 
-                                    if(count($program->groups())){
-                                        foreach($program->groups() as $group){
-                                            UnitGroup::insert([
-                                                'unit_key'      =>  $unit->unit_key,
-                                                'unit_id'       =>  $unit->id,
-                                                'group_id'      =>  $group,
-                                                'audit_id'      =>  $audit->id,
-                                                'monitoring_key'=>  $audit->monitoring_key,
-                                                'project_id'    =>  $audit->project_id,
-                                                'development_key'=> $audit->development_key,
-                                                'created_at'    =>  date("Y-m-d g:h:i", time()),
-                                                'updated_at'    =>  date("Y-m-d g:h:i", time())
-                                            ]);
+                                    //get the matching program from the developmentProgramKey
+                                    $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->with('program')->first();
+                                    
+                                    $audit->comment = $audit->comment.' | '.$program->program->program_name.' '.$program->program_id;
+                                    $audit->comment_system = $audit->comment_system.' | '.$program->program->program_name.' '.$program->program_id;
+                                    $audit->save();
+
+                                    // $record[] = [
+                                    //     'project_id' => $project->id,
+                                    //     'project_key' => $project->project_key,
+                                    //     'unit_id' => $unit->id,
+                                    //     'unit_key' => $unit->unit_key,
+                                    //     'program_id' => $program->program_id
+                                    // ];
+
+                                    if (!is_null($program)) {
+                                        UnitProgram::insert([
+                                            'unit_key'      =>  $unit->unit_key,
+                                            'unit_id'       =>  $unit->id,
+                                            'program_key'   =>  $program->program_key,
+                                            'program_id'    =>  $program->id,
+                                            'audit_id'      =>  $audit->id,
+                                            'monitoring_key'=>  $audit->monitoring_key,
+                                            'project_id'    =>  $audit->project_id,
+                                            'development_key'=> $audit->development_key,
+                                            'created_at'    =>  date("Y-m-d g:h:i", time()),
+                                            'updated_at'    =>  date("Y-m-d g:h:i", time())
+                                        ]);
+
+                                        if(count($program->groups())){
+                                            foreach($program->groups() as $group){
+                                                UnitGroup::insert([
+                                                    'unit_key'      =>  $unit->unit_key,
+                                                    'unit_id'       =>  $unit->id,
+                                                    'group_id'      =>  $group,
+                                                    'audit_id'      =>  $audit->id,
+                                                    'monitoring_key'=>  $audit->monitoring_key,
+                                                    'project_id'    =>  $audit->project_id,
+                                                    'development_key'=> $audit->development_key,
+                                                    'created_at'    =>  date("Y-m-d g:h:i", time()),
+                                                    'updated_at'    =>  date("Y-m-d g:h:i", time())
+                                                ]);
+                                            }
                                         }
+                                        
+                                    } else {
+                                        $audit->comment = $audit->comment.' | Unable to find program with key '.$pp->developmentProgramKey.' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key;
+                                        $audit->comment_system = $audit->comment_system.' | Unable to find program with key '.$pp->developmentProgramKey.' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key;
+                                        $audit->save();
+                                        //Log::info('Unable to find program with key of '.$unitProgram['attributes']['programKey'].' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key);
+                                    }
+                                } else {
+                                    // market rate?
+                                    $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->with('program')->first();
+                                    if($is_market_rate){
+                                        
+                                        $audit->comment_system = $audit->comment_system." | MARKET RATE, CANCELLED:<del>".$program->program->program_name.' '.$program->program_id.'</del>, Start Date:'.date('m/d/Y',strtotime($pp->startDate)).', End Date: '.date('m/d/Y',strtotime($pp->endDate));
+                                        $audit->save();
+                                    }else{
+                                        
+                                        $audit->comment_system = $audit->comment_system." | CANCELLED:<del>".$program->program->program_name.' '.$program->program_id.'</del>, Start Date:'.date('m/d/Y',strtotime($pp->startDate)).', End Date: '.date('m/d/Y',strtotime($pp->endDate));
+                                        $audit->save();
                                     }
                                     
-                                } else {
-                                    $audit->comment = $audit->comment.' | Unable to find program with key '.$unitProgram['attributes']['programKey'].' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key;
-                                    $audit->comment_system = $audit->comment_system.' | Unable to find program with key '.$unitProgram['attributes']['programKey'].' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key;
-                                    $audit->save();
-                                    //Log::info('Unable to find program with key of '.$unitProgram['attributes']['programKey'].' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key);
                                 }
                             }
                         } catch (Exception $e) {

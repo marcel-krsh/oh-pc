@@ -42,7 +42,7 @@ class SyncController extends Controller
            $projectPrograms = json_decode($unitProjectPrograms);
            $projectPrograms =  $projectPrograms->data;
 
-           if($unit->unit_identity_id == 22){
+           if($unit->is_market_rate()){
                 $is_market_rate = 1; 
            }else{
                 $is_market_rate = 0;

@@ -43,7 +43,15 @@ class Unit extends Model
     {
         return $this->hasMany(\App\Models\HouseholdEvent::class, 'unit_id', 'id');
     }
-
+    
+    public function is_market_rate() : int
+    {
+        if($this->unit_identity_id == 22){
+            return true;
+        } else {
+            return false;
+        }
+    }
     public function isAssistedUnit() : bool
     {
         foreach ($this->household_events()->get() as $event) {
