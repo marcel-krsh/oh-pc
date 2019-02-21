@@ -312,14 +312,19 @@ class FindingController extends Controller
 
             if($fromtype == 'finding'){
                 $from = Finding::where('id','=',$inputs['id'])->first();
+                $finding_id = $from->id;
             }elseif($fromtype == 'comment'){
                 $from = Comment::where('id','=',$inputs['id'])->first();
+                $finding_id = $from->finding_id;
             }elseif($fromtype == 'photo'){
                 $from = Photo::where('id','=',$inputs['id'])->first();
+                $finding_id = $from->finding_id;
             }elseif($fromtype == 'document'){
                 $from = Document::where('id','=',$inputs['id'])->first();
+                $finding_id = $from->finding_id;
             }elseif($fromtype == 'followup'){
                 $from = Followup::where('id','=',$inputs['id'])->first();
+                $finding_id = $from->finding_id;
             }
 
             if($inputs['type'] == 'comment'){
@@ -327,7 +332,7 @@ class FindingController extends Controller
                     $newcomment = new Comment([
                         'user_id' => Auth::user()->id,
                         'audit_id' => $from->audit_id,
-                        'finding_id' => $from->finding_id,
+                        'finding_id' => $finding_id,
                         'comment' => $inputs['comment'],
                         'recorded_date' => $date
                     ]);

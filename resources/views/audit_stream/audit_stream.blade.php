@@ -93,9 +93,9 @@
 				    			</div>
 				    			<div class="uk-width-3-4 uk-padding-remove-right uk-padding-remove">
 				    					@if(!$finding->cancelled_at)
-					    				<div class="inspec-tools-tab-finding-top-actions">
+					    				<div class="inspec-tools-tab-finding-top-actions" style="z-index:auto">
 					    					<i class="a-circle-plus use-hand-cursor"></i>
-										    <div uk-drop="mode: click" style="min-width: 315px; background-color: #fff; z-index: 1000; ">
+										    <div uk-drop="mode: click" style="min-width: 315px; background-color: #ffffff;  ">
 										        <div class="uk-card uk-card-body uk-card-default uk-card-small">
 										    	 	<div class="uk-drop-grid uk-child-width-1-4" uk-grid>
 										    	 		<div class="icon-circle use-hand-cursor" onclick="addChildItem({{$finding->id}}, 'followup')"><i class="a-bell-plus"></i></div>
@@ -111,7 +111,7 @@
 					    					CANCELLED
 					    				</div>
 					    				@endif
-				    				<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description">
+				    				<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description"  style="z-index:auto">
 					    				<p>{{formatDate($finding->date_of_finding)}}: FN#{{$finding->id}}<br />
 					    					By {{$finding->auditor->full_name()}}<br>
 					    					{!!$finding->amenity_inspection->address()!!}
