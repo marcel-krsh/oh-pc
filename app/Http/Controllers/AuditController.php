@@ -69,6 +69,21 @@ class AuditController extends Controller
         }
         
     }
+
+    public function runCompliance(Project $project){
+        // this either reruns compliance if there is an active audit or creates an audit and run compliance
+        if($project->currentAudit()){
+            $this->rerunCompliance($project->currentAudit());
+        }else{
+            // $new_audit = new Audit([
+            //     'project_id' => $project->id,
+            //     'development_key' => $project->project_key,
+                
+            // ]);
+            // $new_audit->save();
+        }
+    }
+
     public function buildingsFromAudit($audit, Request $request)
     {
         $target = $request->get('target');
