@@ -30,11 +30,7 @@
 				</div>
 			</div>
 			<div class="uk-width-3-4 ">
-				<div class="uk-width-1-1 uk-display-inline-block uk-padding-remove inspec-tools-tab-finding-description">
-    				<p>tplDate: tplType#tplRef<br />
-    					By tplName</p>
-    				<p>tplContent</p>
-    				<div class="inspec-tools-tab-finding-top-actions">
+				<div class="inspec-tools-tab-finding-top-actions">
     					<i class="a-circle-plus use-hand-cursor"></i>
 					    <div uk-drop="mode: click" style="min-width: 315px;">
 					        <div class="uk-card uk-card-body uk-card-default uk-card-small">
@@ -44,6 +40,11 @@
 					        </div>
 					    </div>
     				</div>
+				<div class="uk-width-1-1 uk-display-inline-block uk-padding-remove inspec-tools-tab-finding-description">
+    				<p>tplDate: tplType#tplRef<br />
+    					By tplName</p>
+    				<p>tplContent</p>
+    				
     			</div>
 				<div class="inspec-tools-tab-finding-actions">
 				    <button class="uk-button uk-link"><i class="a-comment-plus"></i> REPLY</button>

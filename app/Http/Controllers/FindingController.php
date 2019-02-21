@@ -280,6 +280,53 @@ class FindingController extends Controller
         }
     }
 
+    public function replyFindingForm($findingid, $type){
+
+        // $type: followup, photo, document, comment
+        
+        if(Auth::user()->auditor_access()){
+            $finding = Finding::where('id','=',$findingid)->first();
+
+            return view('modals.finding-reply-'.$type,compact('finding'));
+        }else{
+            return "Sorry, you do not have permission to access this page.";
+        }
+    }
+
+    public function saveReplyFinding(Request $request){
+        if(Auth::user()->auditor_access()){
+            $inputs = $request->input('inputs');
+            parse_str($inputs, $inputs);
+
+            $date = Carbon\Carbon::now()->format('Y-m-d H:i:s');
+            $finding = Finding::where('id','=',$inputs['finding_id'])->first();
+
+            if($inputs['type'] == 'comment'){
+                if(strlen($inputs['comment']) > 0){
+                    $newcomment = new Comment([
+                        'user_id' => Auth::user()->id,
+                        'audit_id' => $finding->audit_id,
+                        'finding_id' => $finding->id,
+                        'comment' => $inputs['comment'],
+                        'recorded_date' => $date
+                    ]);
+                    $newcomment->save();
+                }
+                return 1;
+
+            }elseif($inputs['type'] == 'photo'){
+
+            }elseif($inputs['type'] == 'followup'){
+
+            }elseif($inputs['type'] == 'document'){
+
+            }
+
+        }else{
+            return "Sorry, you do not have permission to access this page.";
+        }
+    }
+
     public function findingList($type, $amenityinspection, Request $request){
         if(Auth::user()->auditor_access()){
             

@@ -449,7 +449,7 @@ function expandFindingItems(element) {
 }
 
 function addChildItem(findingId, type) {
-	console.log("adding a child item to this finding");
+	dynamicModalLoad('findings/'+findingId+'/reply/'+type, 0, 0, 0, 2);
 }
 
 function openFindingPhoto(findingid, itemid, id) {

@@ -96,7 +96,7 @@
 				    					@if(!$finding->cancelled_at)
 					    				<div class="inspec-tools-tab-finding-top-actions">
 					    					<i class="a-circle-plus use-hand-cursor"></i>
-										    <div uk-drop="mode: click" style="min-width: 315px; background-color: #fff; z-index: auto;">
+										    <div uk-drop="mode: click" style="min-width: 315px; background-color: #fff; z-index: 1000; ">
 										        <div class="uk-card uk-card-body uk-card-default uk-card-small">
 										    	 	<div class="uk-drop-grid uk-child-width-1-4" uk-grid>
 										    	 		<div class="icon-circle use-hand-cursor" onclick="addChildItem({{$finding->id}}, 'followup')"><i class="a-bell-plus"></i></div>
