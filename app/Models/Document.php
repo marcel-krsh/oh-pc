@@ -22,8 +22,25 @@ class Document extends Model
         return $this->hasOne(\App\Models\Finding::class, 'id', 'finding_id');
     }
 
+    public function auditor() : HasOne
+    {
+        return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
+    }
+
+    public function comments() : HasMany 
+    {
+        return $this->hasMany(\App\Models\Comment::class, 'document_id', 'id')->orderBy('id','asc');
+    }
+
+    public function photos() : HasMany 
+    {
+        return $this->hasMany(\App\Models\Photo::class, 'document_id', 'id')->orderBy('id','asc');
+    }
+
     // OLD METHODS.
     // VERIFY THAT WE NEED THEM.
+
+
 
 
     /**

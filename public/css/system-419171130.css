@@ -2675,6 +2675,8 @@ margin-top:10px;
   top: 0;*/
   float: right;
     text-align: right;
+    z-index:1000;
+    position:relative;
 }
 .inspec-tools-tab-finding .inspec-tools-tab-finding-actions {
   /*position: absolute;*/

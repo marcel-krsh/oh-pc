@@ -24,6 +24,7 @@ use App\Models\Followup;
 use App\Models\Comment;
 use App\Models\Photo;
 use App\Models\SyncDocuware;
+use App\Models\Document;
 use Carbon;
 
 
@@ -280,14 +281,22 @@ class FindingController extends Controller
         }
     }
 
-    public function replyFindingForm($findingid, $type){
+    public function replyFindingForm($id, $fromtype, $type){
 
         // $type: followup, photo, document, comment
         
         if(Auth::user()->auditor_access()){
-            $finding = Finding::where('id','=',$findingid)->first();
+            if($fromtype == 'finding'){
+                $from = Finding::where('id','=',$id)->first();
+            }elseif($fromtype == 'comment'){
+                $from = Comment::where('id','=',$id)->first();
+            }elseif($fromtype == 'photo'){
+                $from = Photo::where('id','=',$id)->first();
+            }elseif($fromtype == 'document'){
+                $from = Document::where('id','=',$id)->first();
+            }
 
-            return view('modals.finding-reply-'.$type,compact('finding'));
+            return view('modals.finding-reply-'.$type,compact('from', 'fromtype'));
         }else{
             return "Sorry, you do not have permission to access this page.";
         }
@@ -299,17 +308,40 @@ class FindingController extends Controller
             parse_str($inputs, $inputs);
 
             $date = Carbon\Carbon::now()->format('Y-m-d H:i:s');
-            $finding = Finding::where('id','=',$inputs['finding_id'])->first();
+            $fromtype = $inputs['fromtype'];
+
+            if($fromtype == 'finding'){
+                $from = Finding::where('id','=',$inputs['id'])->first();
+            }elseif($fromtype == 'comment'){
+                $from = Comment::where('id','=',$inputs['id'])->first();
+            }elseif($fromtype == 'photo'){
+                $from = Photo::where('id','=',$inputs['id'])->first();
+            }elseif($fromtype == 'document'){
+                $from = Document::where('id','=',$inputs['id'])->first();
+            }elseif($fromtype == 'followup'){
+                $from = Followup::where('id','=',$inputs['id'])->first();
+            }
 
             if($inputs['type'] == 'comment'){
                 if(strlen($inputs['comment']) > 0){
                     $newcomment = new Comment([
                         'user_id' => Auth::user()->id,
-                        'audit_id' => $finding->audit_id,
-                        'finding_id' => $finding->id,
+                        'audit_id' => $from->audit_id,
+                        'finding_id' => $from->finding_id,
                         'comment' => $inputs['comment'],
                         'recorded_date' => $date
                     ]);
+
+                    if($fromtype == 'comment'){
+                        $newcomment->comment_id = $from->id;
+                    }elseif($fromtype == 'photo'){
+                        $newcomment->photo_id = $from->id;
+                    }elseif($fromtype == 'document'){
+                        $newcomment->document_id = $from->id;
+                    }elseif($fromtype == 'followup'){
+                        $newcomment->followup_id = $from->id;
+                    }
+
                     $newcomment->save();
                 }
                 return 1;
@@ -523,135 +555,249 @@ class FindingController extends Controller
         }
     }
 
-    function findingItems($findingid, $itemid = '')
+    function findingItems($findingid, $type=null, $typeid=null)
     {
-        // itemid used for children of items
+        // type and typeid used for children of items (maybe it is a comment, with comment_id)
         
-        $followups = Followup::where('finding_id',$findingid)
-            ->orderBy('updated_at','desc')
-            ->get();
-       
-        //get comments that are only on the root of the project
-        $comments = Comment::where('finding_id',$findingid)
-            ->get();
+        if(!$type || !$typeid){
+            $followups = Followup::where('finding_id',$findingid)
+                ->orderBy('updated_at','desc')
+                ->get();
+           
+            $comments = Comment::where('finding_id',$findingid)
+                ->get();
 
-        //get documents that are only on the root of the project or attached to a communication - this is only for auditors to see and above.
-        // $documents = SyncDocuware::where('project_id',$audit->project_id)
-        //     ->with('comments')
-        //     ->with('comments.comments')
-        //     ->whereNull('finding_id')
-        //     ->whereNull('photo_id')
-        //     ->whereNull('followup_id')
-        //     ->orderBy('updated_at','desc')
-        //     ->get()
-        //     ->all();
+            //get documents that are only on the root of the project or attached to a communication - this is only for auditors to see and above.
+            // $documents = SyncDocuware::where('project_id',$audit->project_id)
+            //     ->orderBy('updated_at','desc')
+            //     ->get();
+            $documents = Document::where('finding_id',$findingid)
+                    ->orderBy('updated_at','desc')
+                    ->get();
 
-        //get documents that are only on the root of the project or attached to a communication - this is only for auditors to see and above.
-        $photos = Photo::where('finding_id',$findingid)
-            ->orderBy('updated_at','desc')
-            ->get();
+            $photos = Photo::where('finding_id',$findingid)
+                ->orderBy('updated_at','desc')
+                ->get();
+        }else{
+
+            if($type == 'comment'){
+                // comment, photo, document
+                $followups = null;
+               
+                $comments = Comment::where('finding_id',$findingid)
+                    ->where('comment_id',$typeid)
+                    ->get();
+                
+                $documents = Document::where('finding_id',$findingid)
+                    ->where('comment_id',$typeid)
+                    ->orderBy('updated_at','desc')
+                    ->get();
+
+                $photos = Photo::where('finding_id',$findingid)
+                    ->where('comment_id',$typeid)
+                    ->orderBy('updated_at','desc')
+                    ->get();
+
+            }elseif($type == 'photo'){
+                // comment, photo
+                $followups = null;
+               
+                $comments = Comment::where('finding_id',$findingid)
+                    ->where('photo_id',$typeid)
+                    ->get();
+
+                $documents = null;
+
+                $photos = Photo::where('finding_id',$findingid)
+                    ->where('photo_id',$typeid)
+                    ->orderBy('updated_at','desc')
+                    ->get();
+
+            }elseif($type == 'document'){
+                // comment, photo
+                $followups = null;
+               
+                $comments = Comment::where('finding_id',$findingid)
+                    ->where('document_id',$typeid)
+                    ->get();
+                
+                $documents = null;
+
+                $photos = Photo::where('finding_id',$findingid)
+                    ->where('document_id',$typeid)
+                    ->orderBy('updated_at','desc')
+                    ->get();
+            }elseif($type == 'followup'){
+                // comment, photo, document
+                $followups = null;
+               
+                $comments = Comment::where('finding_id',$findingid)
+                    ->where('followup_id',$typeid)
+                    ->get();
+
+                
+                $documents = Document::where('finding_id',$findingid)
+                    ->where('followup_id',$typeid)
+                    ->orderBy('updated_at','desc')
+                    ->get();
+
+                $photos = Photo::where('finding_id',$findingid)
+                    ->where('followup_id',$typeid)
+                    ->orderBy('updated_at','desc')
+                    ->get();
+            }
+        }
+        
+        
 
         // all those items have different formats, we need to combine, reformat and reorder.
         // 
         $data = array();
 
-        /*
-        <div class="icon-circle use-hand-cursor" onclick="addChildItem(tplItemId, 'followup')"><i class="a-bell-plus"></i></div>
-        <div class="icon-circle use-hand-cursor"  onclick="addChildItem(tplItemId, 'comment')"><i class="a-comment-plus"></i></div>
-        <div class="icon-circle use-hand-cursor"  onclick="addChildItem(tplItemId, 'document')"><i class="a-file-plus"></i></div>
-        <div class="icon-circle use-hand-cursor"  onclick="addChildItem(tplItemId, 'photo')"><i class="a-picture"></i></div>
-         */
-
-        foreach($comments as $comment){
-            $data['items'][] = [
-                'id' => $comment->id,
-                'ref' => $comment->id,
-                'status' => '',
-                'audit' => $comment->audit_id,
-                'findingid' => $findingid,
-                'parentitemid' => $itemid,
-                'type' => 'comment',
-                'icon' => 'a-comment-text',
-                'date' => formatDate($comment->recorded_date),
-                'auditor' => [
-                    'id' => $comment->user_id,
-                    'name' => $comment->user->full_name()
-                ],
-                'comment' => $comment->comment,
-                'stats' => [
-                    ['type' => 'comment', 'icon' => 'a-comment', 'count' => count($comment->comments)],
-                    ['type' => 'file', 'icon' => 'a-file', 'count' => count($comment->documents)],
-                    ['type' => 'photo', 'icon' => 'a-picture', 'count' => count($comment->photos)]
-                ],
-                'actions' => '<div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$comment->id.', \'comment\')"><i class="a-comment-plus"></i></div><div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$comment->id.', \'document\')"><i class="a-file-plus"></i></div><div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$comment->id.', \'photo\')"><i class="a-picture"></i></div>'
-            ];
-        }
-
-        foreach($followups as $followup){
-            // 'parentitemid' => $itemid,
-            $data['items'][] = [
-                'id' => $followup->id,
-                'ref' => $followup->id,
-                'status' => '',
-                'audit' => $followup->audit_id,
-                'findingid' => $followup->finding_id,
-                'type' => 'followup',
-                'icon' => 'a-bell',
-                'duedate' => formatDate($followup->date_due),
-                'date' => formatDate($followup->created_at),
-                'assigned' => [
-                    'id' => $followup->assigned_to_user_id,
-                    'name' => $followup->assigned_user->full_name()
-                ],
-                'auditor' => [
-                    'id' => $followup->created_by_user_id,
-                    'name' => $followup->auditor->full_name()
-                ],
-                'stats' => [
-                    ['type' => 'comment', 'icon' => 'a-comment', 'count' => count($followup->comments)],
-                    ['type' => 'file', 'icon' => 'a-file', 'count' => count($followup->documents)],
-                    ['type' => 'photo', 'icon' => 'a-picture', 'count' => count($followup->photos)]
-                ],
-                'actions' => '<div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$followup->id.', \'comment\')"><i class="a-comment-plus"></i></div><div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$followup->id.', \'document\')"><i class="a-file-plus"></i></div><div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$followup->id.', \'photo\')"><i class="a-picture"></i></div>'
-            ];
-        }
-
-        foreach($photos as $photo){
-
-            $photos = array();
-
-            foreach($photo->photos as $phototo){
-                $photos[] = [
-                    'id' => $phototo->id, 
-                    'url' => $phototo->file_path, 
-                    'commentscount' => count($phototo->comments)
+        if($comments){
+            foreach($comments as $comment){
+                $data['items'][] = [
+                    'id' => $comment->id,
+                    'ref' => $comment->id,
+                    'status' => '',
+                    'audit' => $comment->audit_id,
+                    'findingid' => $findingid,
+                    'parentitemid' => $typeid,
+                    'type' => 'comment',
+                    'icon' => 'a-comment-text',
+                    'date' => formatDate($comment->recorded_date),
+                    'auditor' => [
+                        'id' => $comment->user_id,
+                        'name' => $comment->user->full_name()
+                    ],
+                    'comment' => $comment->comment,
+                    'stats' => [
+                        ['type' => 'comment', 'icon' => 'a-comment', 'count' => count($comment->comments)],
+                        ['type' => 'file', 'icon' => 'a-file', 'count' => count($comment->documents)],
+                        ['type' => 'photo', 'icon' => 'a-picture', 'count' => count($comment->photos)]
+                    ],
+                    'actions' => '<div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$comment->id.', \'comment\', \'comment\')"><i class="a-comment-plus"></i></div><div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$comment->id.', \'document\',\'comment\')"><i class="a-file-plus"></i></div><div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$comment->id.', \'photo\',\'comment\')"><i class="a-picture"></i></div>'
                 ];
             }
-
-            $data['items'][] = [
-                'id' => $photo->id,
-                'ref' => $photo->id,
-                'status' => '',
-                'audit' => $photo->audit_id,
-                'findingid' => $findingid,
-                'parentitemid' => $itemid,
-                'type' => 'photo',
-                'icon' => 'a-picture',
-                'date' => formatDate($photo->recorded_date),
-                'auditor' => [
-                    'id' => $photo->user_id,
-                    'name' => $photo->user->full_name()
-                ],
-                'photos' => $photos,
-                'comment' => $photo->comment->comment,
-                'stats' => [
-                    ['type' => 'comment', 'icon' => 'a-comment', 'count' => count($photo->comments)],
-                    ['type' => 'photo', 'icon' => 'a-picture', 'count' => count($photo->photos)]
-                ],
-                'actions' => '<div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$photo->id.', \'comment\')"><i class="a-comment-plus"></i></div><div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$photo->id.', \'photo\')"><i class="a-picture"></i></div>'
-            ];
         }
 
+        if($followups){
+            foreach($followups as $followup){
+                // 'parentitemid' => $itemid,
+                $data['items'][] = [
+                    'id' => $followup->id,
+                    'ref' => $followup->id,
+                    'status' => '',
+                    'audit' => $followup->audit_id,
+                    'findingid' => $followup->finding_id,
+                    'parentitemid' => $typeid,
+                    'type' => 'followup',
+                    'icon' => 'a-bell',
+                    'duedate' => formatDate($followup->date_due),
+                    'date' => formatDate($followup->created_at),
+                    'assigned' => [
+                        'id' => $followup->assigned_to_user_id,
+                        'name' => $followup->assigned_user->full_name()
+                    ],
+                    'auditor' => [
+                        'id' => $followup->created_by_user_id,
+                        'name' => $followup->auditor->full_name()
+                    ],
+                    'stats' => [
+                        ['type' => 'comment', 'icon' => 'a-comment', 'count' => count($followup->comments)],
+                        ['type' => 'file', 'icon' => 'a-file', 'count' => count($followup->documents)],
+                        ['type' => 'photo', 'icon' => 'a-picture', 'count' => count($followup->photos)]
+                    ],
+                    'actions' => '<div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$followup->id.', \'comment\',\'followup\')"><i class="a-comment-plus"></i></div><div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$followup->id.', \'document\',\'followup\')"><i class="a-file-plus"></i></div><div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$followup->id.', \'photo\',\'followup\')"><i class="a-picture"></i></div>'
+                ];
+            }
+        }
+        
+
+        // TBD TEST DOCS
+        if($documents){
+            foreach($documents as $document){
+                $categories = array();
+
+                $category_array = json_decode($document->categories, true);
+                $document_categories = DocumentCategory::whereIn('id', $category_array)->where('active', '1')->orderby('document_category_name', 'asc')->get();
+
+                foreach($document_categories as $category){
+                    $categories[] = [
+                        'id' => $category->id, 
+                        'name' => $category->document_category_name, 
+                        'status' => ''
+                    ];
+                }
+
+                $data['items'][] = [
+                    'id' => $document->id,
+                    'ref' => $document->id,
+                    'status' => '',
+                    'audit' => $document->audit_id,
+                    'findingid' => $document->finding_id,
+                    'parentitemid' => $typeid,
+                    'type' => 'file',
+                    'icon' => 'a-file-left',
+                    'date' => formatDate($document->created_at),
+                    'auditor' => [
+                        'id' => $document->user_id,
+                        'name' => $document->auditor->full_name()
+                    ],
+                    'categories' => $categories,
+                    'file' => [
+                        'id' => $document->id,
+                        'name' => $document->filename,
+                        'url' => $document->file_path,
+                        'type' => '',
+                        'size' => ''
+                    ],
+                    'stats' => [
+                        ['type' => 'comment', 'icon' => 'a-comment', 'count' => count($document->comments)],
+                        ['type' => 'photo', 'icon' => 'a-picture', 'count' => count($document->photos)]
+                    ],
+                    'actions' => '<div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$document->id.', \'comment\',\'document\')"><i class="a-comment-plus"></i></div><div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$document->id.', \'photo\',\'document\')"><i class="a-picture"></i></div>'
+                ];
+            }
+        }
+
+        if($photos){
+            foreach($photos as $photo){
+
+                $photos = array();
+
+                foreach($photo->photos as $phototo){
+                    $photos[] = [
+                        'id' => $phototo->id, 
+                        'url' => $phototo->file_path, 
+                        'commentscount' => count($phototo->comments)
+                    ];
+                }
+
+                $data['items'][] = [
+                    'id' => $photo->id,
+                    'ref' => $photo->id,
+                    'status' => '',
+                    'audit' => $photo->audit_id,
+                    'findingid' => $findingid,
+                    'parentitemid' => $typeid,
+                    'type' => 'photo',
+                    'icon' => 'a-picture',
+                    'date' => formatDate($photo->recorded_date),
+                    'auditor' => [
+                        'id' => $photo->user_id,
+                        'name' => $photo->user->full_name()
+                    ],
+                    'photos' => $photos,
+                    'comment' => $photo->comment->comment,
+                    'stats' => [
+                        ['type' => 'comment', 'icon' => 'a-comment', 'count' => count($photo->comments)],
+                        ['type' => 'photo', 'icon' => 'a-picture', 'count' => count($photo->photos)]
+                    ],
+                    'actions' => '<div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$photo->id.', \'comment\',\'photo\')"><i class="a-comment-plus"></i></div><div class="icon-circle use-hand-cursor"  onclick="addChildItem('.$photo->id.', \'photo\',\'photo\')"><i class="a-picture"></i></div>'
+                ];
+            }
+        }
         return response()->json($data);
 
         // $data['items'] = collect([

@@ -197,11 +197,11 @@
         Route::post('/findings/{findingid}/cancel', 'FindingController@cancelFinding');
         Route::post('/findings/{findingid}/restore', 'FindingController@restoreFinding');
         Route::post('/findings/{findingid}/resolve', 'FindingController@resolveFinding');
-        Route::get('/modals/findings/{findingid}/reply/{type}','FindingController@replyFindingForm');
+        Route::get('/modals/addreply/{id}/{fromtype}/{type}','FindingController@replyFindingForm');
         Route::get('/modals/updatestream/{type}/{auditid}/{buildingid?}/{unitid?}/{amenityid?}/{refresh}', 'FindingController@modalFindings');
 
 
-        Route::get('/findings/{id}/items', 'FindingController@findingItems');
+        Route::get('/findings/{findingid}/items/{type?}/{typeid?}', 'FindingController@findingItems');
         Route::get('/modals/findings_list/{type}/{amenityinspectionid}','FindingController@findingList');
         Route::get('/modals/findings/{id}/items/{itemid}/photos/{photoid}', 'FindingController@findingItemPhoto');
 

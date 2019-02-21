@@ -1,9 +1,10 @@
 	<div class="uk-modal-header">
-		<div class="uk-modal-title uk-remove-margin"> <i class=" a-circle-plus"></i> FINDING #{{$finding->id}} <small>ADD COMMENT</small></div>
+		<div class="uk-modal-title uk-remove-margin"> <i class=" a-circle-plus"></i> {{strtoupper($fromtype)}} #{{$from->id}} <small>ADD COMMENT</small></div>
 		
 	</div>
 	<form id="add-comment-finding-form" method="post">
-		<input type="hidden" name="finding_id" value="{{$finding->id}}">
+		<input type="hidden" name="id" value="{{$from->id}}">
+		<input type="hidden" name="fromtype" value="{{$fromtype}}">
 		<input type="hidden" name="type" value="comment">
 	<hr class="dashed-hr uk-margin-bottom">
 	<p>COMMENT:</p>

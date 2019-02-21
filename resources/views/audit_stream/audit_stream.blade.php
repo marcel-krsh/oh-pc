@@ -50,7 +50,6 @@
 								<div class="uk-width-3-4 uk-padding-remove-top uk-padding-remove-right">
 									<div>
 										{{formatDate($finding->date_of_finding)}}: FN#{{$finding->id}}
-										<div class="uk-float-right"><i class="a-circle-plus use-hand-cursor"></i></div>
 									</div>
 								</div>
 			        		</div>
