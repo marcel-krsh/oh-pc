@@ -2280,28 +2280,6 @@ class ComplianceSelectionJob implements ShouldQueue
                                 ]);
                                 $u->save();
                                 $this->processes++;
-
-                                // $u = new UnitInspection([
-                                //     'group' => $program['name'],
-                                //     'group_id' => $group_id,
-                                //     'unit_id' => $unit->id,
-                                //     'unit_key' => $unit->unit_key,
-                                //     'unit_name' => $unit->unit_name,
-                                //     'building_id' => $unit->building_id,
-                                //     'building_key' => $unit->building_key,
-                                //     'audit_id' => $audit->id,
-                                //     'audit_key' => $audit->monitoring_key,
-                                //     'project_id' => $project->id,
-                                //     'project_key' => $project->project_key,
-                                //     'program_key' => $unit_program->program_key,
-                                //     'program_id' => $unit_program->program_id,
-                                //     'pm_organization_id' => $organization_id,
-                                //     'has_overlap' => $has_overlap,
-                                //     'is_site_visit' => 0,
-                                //     'is_file_audit' => 1
-                                // ]);
-                                // $u->save();
-                                // $this->processes++;
                             }
                         }
                     }
