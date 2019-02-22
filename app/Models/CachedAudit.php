@@ -86,7 +86,7 @@ class CachedAudit extends Model
             Event::fire('cachedaudit.created', $cached_audit);
         });
 
-        
+
         // static::updated(function ($cached_audit) {
         //     Event::fire('cachedaudit.created', $cached_audit);
         //         Log::info('created fired for Cached Audit');
@@ -97,7 +97,7 @@ class CachedAudit extends Model
         // });
     }
 
-    
+
     public function auditors() : HasMany
     {
         return $this->hasMany(\App\Models\AuditAuditor::class, 'audit_id', 'audit_id');
@@ -131,7 +131,7 @@ class CachedAudit extends Model
         return 'This is access through the audit relationship';
     }
 
-    public function estimated_hours() 
+    public function estimated_hours()
     {
         if($this->estimated_time){
             return explode(':', $this->estimated_time)[0];
@@ -140,7 +140,7 @@ class CachedAudit extends Model
         }
     }
 
-    public function estimated_minutes() 
+    public function estimated_minutes()
     {
         if($this->estimated_time){
             return explode(':', $this->estimated_time)[1];
@@ -149,7 +149,7 @@ class CachedAudit extends Model
         }
     }
 
-    public function hours_still_needed() 
+    public function hours_still_needed()
     {
         if($this->estimated_time_needed){
             $time = explode(':', $this->estimated_time_needed);
@@ -220,16 +220,11 @@ class CachedAudit extends Model
         foreach($this->days as $day){
             $time_scheduled = $time_scheduled + ScheduleTime::where('audit_id','=',$this->audit_id)->where('day_id','=',$day->id)->sum('span') * 15;
         }
-        
-        if($this->estimated_time >= $time_scheduled ) {
-            $needed_time_in_hours = floor(($estimated_time_in_minutes - $time_scheduled) / 60);
-            $needed_time_in_minutes = ($estimated_time_in_minutes - $time_scheduled) % 60;
-        } else {
-            $needed_time_in_hours = 0;
-            $needed_time_in_minutes = 0;
-        } 
-        
-        
+
+        $needed_time_in_hours = floor(($estimated_time_in_minutes - $time_scheduled) / 60);
+        $needed_time_in_minutes = ($estimated_time_in_minutes - $time_scheduled) % 60;
+
+
         $needed_time = $needed_time_in_hours.':'.$needed_time_in_minutes.':00';
         if($needed_time != $this->estimated_time_needed){
             // update the cachedaudit record with the new needed time
@@ -238,7 +233,6 @@ class CachedAudit extends Model
         }
         // ----------------------------------------------------------------
 
-
         $needed = 0;
         if($this->estimated_time_needed){
             $estimated_time_needed = explode(':', $this->estimated_time_needed);
@@ -246,7 +240,9 @@ class CachedAudit extends Model
             $needed = ltrim($estimated_time_needed[0], '0').'.'.$estimated_time_needed[1];
         }
 
-
+        if($needed < 0) {
+        	$needed = 0;
+        }
 
         $output['data'] = '['.$needed;
         $output['labels'] = '[\'Needed\'';
@@ -324,12 +320,12 @@ class CachedAudit extends Model
             $test = $this->inspection_items()->where('auditor_id','=',Auth::user()->id)->count();
         }
 
-        if($test > 0){ 
-            return true; 
-        } else { 
-            return false; 
+        if($test > 0){
+            return true;
+        } else {
+            return false;
         }
     }
 
-    
+
 }
