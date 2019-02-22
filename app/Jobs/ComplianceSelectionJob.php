@@ -28,6 +28,7 @@ use App\Models\OrderingBuilding;
 use App\Models\OrderingUnit;
 use Illuminate\Support\Facades\Redis;
 use App\Models\AmenityInspection;
+use App\Models\ProjectProgram;
 use Auth;
 
 class ComplianceSelectionJob implements ShouldQueue
@@ -130,8 +131,8 @@ class ComplianceSelectionJob implements ShouldQueue
                                             'updated_at'    =>  date("Y-m-d g:h:i", time())
                                         ]);
 
-                                        if(count($program->groups())){
-                                            foreach($program->groups() as $group){
+                                        if(count($program->program->groups())){
+                                            foreach($program->program->groups() as $group){
                                                 UnitGroup::insert([
                                                     'unit_key'      =>  $unit->unit_key,
                                                     'unit_id'       =>  $unit->id,
@@ -1153,6 +1154,7 @@ class ComplianceSelectionJob implements ShouldQueue
             ];
             $this->processes++;
         }else{
+            $htc_units_subset_for_home = array();
             $audit->comment_system = $audit->comment_system.' | Select Process is not working with HOME.';
             $audit->save();
         }
@@ -1303,6 +1305,7 @@ class ComplianceSelectionJob implements ShouldQueue
             ];
             $this->processes++;
         }else{
+            $htc_units_subset_for_ohtf = array();
             $audit->comment_system = $audit->comment_system.' | Select Process is not working with OHTF.';
             $audit->save();
         }
@@ -1457,6 +1460,8 @@ class ComplianceSelectionJob implements ShouldQueue
                 }
             }
         }else{
+            $overlap = [];
+            $htc_units_subset_for_nhtf = array();
             $audit->comment_system = $audit->comment_system.' | Select Process is not working with NHTF.';
             $audit->save();
         }
@@ -1786,13 +1791,13 @@ class ComplianceSelectionJob implements ShouldQueue
         // make sure we don't have name duplicates
         foreach ($audit->project->amenities as $pa) {
             AmenityInspection::insert([
-                'name'=>$name,
+                //'name'=>$pa->amenity->amenity_description,
                 'audit_id'=>$audit->id,
                 'monitoring_key'=>$audit->monitoring_key,
                 'project_id'=>$audit->project_id,
                 'development_key'=>$audit->development_key,
                 'amenity_id'=>$pa->amenity_id,
-                'amenity_key'=>$pa->amenity_key,
+                'amenity_key'=>$pa->amenity->amenity_key,
 
             ]);
             $this->processes++;
@@ -1804,8 +1809,8 @@ class ComplianceSelectionJob implements ShouldQueue
                     'monitoring_key'=>$audit->monitoring_key,
                     'building_key'=>$b->building_key,
                     'building_id'=>$b->id,
-                    'amenity_id'=>$ba->amenity_id,
-                    'amenity_key'=>$ba->amenity_key,
+                    'amenity_id'=>$ba->amenity->id,
+                    'amenity_key'=>$ba->amenity->amenity_key,
 
                ]);
                $this->processes++;
@@ -1816,10 +1821,10 @@ class ComplianceSelectionJob implements ShouldQueue
                AmenityInspection::insert([
                     'audit_id'=>$audit->id,
                     'monitoring_key'=>$audit->monitoring_key,
-                    'unit_key'=>$ua->unit_key,
-                    'unit_id'=>$ua->unit_id,
+                    'unit_key'=>$u->unit_key,
+                    'unit_id'=>$u->unit_id,
                     'amenity_id'=>$ua->amenity_id,
-                    'amenity_key'=>$ua->amenity_key,
+                    'amenity_key'=>$ua->amenity->amenity_key,
 
                ]);
                $this->processes++;

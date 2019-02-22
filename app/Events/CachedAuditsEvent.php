@@ -113,22 +113,33 @@ class CachedAuditsEvent
             //build amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
             //
-            $baJson = '';
-            $baJson = '[';
+            
+            $baJson = array();
             forEach($building_amenities as $ba){
 
                 if($ba->amenity->inspectable == 1){
-                    if($jsonRun == 1){
-                        $baJson .= ' , ';
-                        //insert comma between groups
-                    }
+                    // if($jsonRun == 1){
+                    //     $baJson .= ' , ';
+                    //     //insert comma between groups
+                    // }
                     $jsonRun = 1;
-                    $baJson .= '{"id": "'.$ba->amenity_id.'", "qty": "0", "type": "'.addslashes($ba->amenity->amenity_description).'","status":"","common_area":"'.$ba->common_area.'","project":"'.$ba->project.'","building_system":"'.$ba->building_system.'","building_exterior":"'.$ba->building_exterior.'","unit":"'.$ba->unit.'","file":"'.$ba->file.'"}';
+                    $baJson[] = [
+                        "id" => $ba->amenity_id,
+                        "qty" => "0", 
+                        "type" => addslashes($ba->amenity->amenity_description),
+                        "status" => "",
+                        "common_area" => $ba->common_area,
+                        "project" => $ba->project,
+                        "building_system" => $ba->building_system,
+                        "building_exterior" => $ba->building_exterior,
+                        "unit" => $ba->unit,
+                        "file" => $ba->file
+                    ];
                 } else {
                     //dd($ba,$ba->amenity->inspectable);
                 }
             }
-            $baJson .= ']';
+            
             $jsonRun = 0;
             
             
@@ -162,7 +173,7 @@ class CachedAuditsEvent
                 'state' => $building->building->address->state,
                 'zip' => $building->building->address->zip,
                 'auditors_json' => json_encode($auditors_array),
-                'amenities_json' => $baJson
+                'amenities_json' => json_encode($baJson)
             ]);
             $cached_building->save();
 
@@ -174,13 +185,23 @@ class CachedAuditsEvent
             //build amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
             
+            $baJson = array();
             forEach($project_amenities as $ba){
 
                 if($ba->amenity->inspectable){
-                    $baJson = '[{"id": "'.$ba->amenity_id.'", "qty": "0", "type": "'.addslashes($ba->amenity->amenity_description).'","status":"","common_area":"'.$ba->common_area.'","project":"'.$ba->project.'","building_system":"'.$ba->building_system.'","building_exterior":"'.$ba->building_exterior.'","unit":"'.$ba->unit.'","file":"'.$ba->file.'"}]';
+                    $baJson[] = [
+                        "id" => $ba->amenity_id,
+                        "qty" => "0", 
+                        "type" => addslashes($ba->amenity->amenity_description),
+                        "status" => "",
+                        "common_area" => $ba->common_area,
+                        "project" => $ba->project,
+                        "building_system" => $ba->building_system,
+                        "building_exterior" => $ba->building_exterior,
+                        "unit" => $ba->unit,
+                        "file" => $ba->file
+                    ];
                 
-            
-            
                     $cached_building = new CachedBuilding([
                         'building_name' => $ba->amenity->amenity_description,
                         'building_id' => null,
@@ -211,7 +232,7 @@ class CachedAuditsEvent
                         'state' => $cached_audit->state,
                         'zip' => $cached_audit->zip,
                         'auditors_json' => json_encode($auditors_array),
-                        'amenities_json' => $baJson,
+                        'amenities_json' => json_encode($baJson),
                         'amenity_id' =>$ba->amenity_id
                     ]);
                     $cached_building->save();
@@ -241,21 +262,32 @@ class CachedAuditsEvent
                 $uaCount = 0;
                 //Unit amenity json:
                 //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
-                $uaJson = '[';
+                $uaJson = array();
                 forEach($unit_amenities as $ua){
                     if($ua->amenity->inspectable){
                         $uaCount++;
-                        if($jsonRun == 1){
-                            $uaJson .= ' , ';
-                            //insert comma between groups
-                        }
+                        // if($jsonRun == 1){
+                        //     $uaJson .= ' , ';
+                        //     //insert comma between groups
+                        // }
                         $jsonRun = 1;
 
-                        $uaJson .= '{"id": "'.$ua->amenity_id.'", "qty": "0", "type": "'.addslashes($ua->amenity->amenity_description).'","status":"","common_area":"'.$ua->common_area.'","project":"'.$ua->project.'","building_system":"'.$ua->building_system.'","building_exterior":"'.$ua->building_exterior.'","unit":"'.$ua->unit.'","file":"'.$ua->file.'"}';
+                        $uaJson[] = [
+                            "id" => $ua->amenity_id,
+                            "qty" => "0", 
+                            "type" => addslashes($ua->amenity->amenity_description),
+                            "status" => "",
+                            "common_area" => $ua->common_area,
+                            "project" => $ua->project,
+                            "building_system" => $ua->building_system,
+                            "building_exterior" => $ua->building_exterior,
+                            "unit" => $ua->unit,
+                            "file" => $ua->file
+                        ];
                         
                     }
                 }
-                $uaJson .= ']';
+                
                 $jsonRun = 0;
                 
 
@@ -292,7 +324,7 @@ class CachedAuditsEvent
                     'state' => $unit->unit->building->address->state,
                     'zip' => $unit->unit->building->address->zip,
                     'auditors_json' => null,
-                    'amenities_json' => $uaJson,
+                    'amenities_json' => json_encode($uaJson),
                     'unit_id'=>$unit->unit->id,
                     'unit_key'=>$unit->unit->unit_key,
                     'unit_name'=>$unit->unit->unit_name
