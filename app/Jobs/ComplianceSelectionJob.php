@@ -1791,7 +1791,7 @@ class ComplianceSelectionJob implements ShouldQueue
         // make sure we don't have name duplicates
         foreach ($audit->project->amenities as $pa) {
             AmenityInspection::insert([
-                'name'=>$pa->amenity->amenity_description,
+                //'name'=>$pa->amenity->amenity_description,
                 'audit_id'=>$audit->id,
                 'monitoring_key'=>$audit->monitoring_key,
                 'project_id'=>$audit->project_id,
