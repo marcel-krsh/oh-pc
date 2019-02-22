@@ -14,6 +14,11 @@
 
     Route::get('/check', function(){ return '1';});
 
+    Route::get('/ping', function () {
+        echo 'pong';
+        return 'pong';
+    });
+
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
         // rerun compliance run
@@ -135,8 +140,8 @@
                         session()->forget($type);
                     }
                 }
-                
-                
+
+
                 return 1;
             }
         })->name('session.setfilter');
@@ -235,8 +240,8 @@
 
         Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/delete/{element}', 'AuditController@deleteAmenity')->name('amenities.delete');
         Route::post('/modals/amenities/delete', 'AuditController@saveDeleteAmenity')->name('amenities.delete');
-        
-      
+
+
 
 
         Route::post('/autosave', 'DataController@autosave');
@@ -275,9 +280,9 @@
         });
 
         // Admin tabs
-        
+
         Route::group(['prefix'=>'tabs','middleware'=>'can:access_admin'], function ()  {
-            
+
                 Route::get('organization', 'AdminToolController@organizationIndex');
                 Route::post('organization', 'AdminToolController@searchOrganizations')->name('organizations.search');
                 Route::get('amenity', 'AdminToolController@amenityIndex');
@@ -292,9 +297,9 @@
                 Route::get('document_category', 'AdminToolController@documentIndex');
                 Route::get('county', 'AdminToolController@countyIndex');
                 Route::get('emails', 'PagesController@emailsTab');
-            
+
         });
-        
+
 
         // Admin store
         Route::group(['prefix'=>'admin'], function () {
@@ -511,7 +516,7 @@ Route::post('/purchase_orders/{po}/parcels', 'PurchaseOrderController@getParcels
 // Expense Categories Modal
 Route::get('/modals/expense-categories-details/{output}/{category}/{program}/{parcel?}/{zero_values?}', 'ExpenseCategoriesController@showDetails');
 Route::get('/modals/expense-categories-vendor-details/{vendor}/{parcel?}/{program?}/{zero_values?}', 'ExpenseCategoriesController@showVendorExpenses');
-// Dispositions 
+// Dispositions
 Route::get('/dispositions/{parcel}/{disposition?}/{format?}', 'DispositionController@getDispositionFromParcelId')->name('export.disposition');
 Route::get('/session/next_step', function () {
     $next_step = session('next_step');
@@ -743,7 +748,7 @@ Route::get('/notices/images/{notice}', 'HomeController@NoticeImageTrack');
 
         // POC routes for 2FA using Twilio SMS, voice and fax
         Route::get('tfa/makecall', 'TwoFAController@makeVoiceCall');
-    
+
         Route::post('tfa/getsms', 'TwoFAController@getsms')->name('device.receive.sms');
         Route::post('tfa/getsms/failed', 'TwoFAController@getsmsfailed');
         Route::post('tfa/getvoice', 'TwoFAController@getvoice')->name('device.receive.voice');

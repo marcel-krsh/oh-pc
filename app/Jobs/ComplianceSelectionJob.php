@@ -1565,6 +1565,7 @@ class ComplianceSelectionJob implements ShouldQueue
             }
 
             $units_selected = [];
+            $units_selected_count = 0;
 
             // only proceed with selection if needed
             if ($number_of_htc_units_needed > 0 && count($units) > 0) {
@@ -1636,6 +1637,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                     if ($isLeasePurchase) {
                         $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $number_of_htc_units_needed);
+                        $units_selected_count = $units_selected_count + count($units_selected);
                         $this->processes++;
                         $comments[] = 'It is a lease purchase. Total selected: '.count($units_selected);
                         $audit->comment = $audit->comment.' | Select Process It is a lease purchase. Total selected: '.count($units_selected);
@@ -1669,6 +1671,7 @@ class ComplianceSelectionJob implements ShouldQueue
                         if ($is_multi_building_project) {
 
                             $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $number_of_htc_units_needed);
+                            $units_selected_count = $units_selected_count + count($units_selected);
                             $this->processes++;
                             $comments[] = 'The project is a multi building project. Total selected: '.count($units_selected);
                             $audit->comment = $audit->comment.' | Select Process The project is a multi building project. Total selected: '.count($units_selected);
@@ -1682,6 +1685,7 @@ class ComplianceSelectionJob implements ShouldQueue
                             // group units by building, then proceed with the random selection
                             // create a new list of units based on building and project key
                             $units_selected = [];
+                            $units_selected_count = 0;
                             foreach ($buildings as $building) {
                                 $this->processes++;
                                 if ($building->units) {
@@ -1725,6 +1729,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                     $new_building_selection = $this->randomSelection($audit,$building->units->pluck('unit_key')->toArray(), 0, $number_of_htc_units_needed);
                                     $this->processes++;
                                     $units_selected = array_merge($units_selected, $new_building_selection);
+                                    $units_selected_count = $units_selected_count + count($new_building_selection);
                                     $this->processes++;
                                     $comments[] = 'Randomly selected units in building '.$building->building_key.'. Total selected: '.count($new_building_selection).'.';
 
@@ -1737,6 +1742,7 @@ class ComplianceSelectionJob implements ShouldQueue
                     }
                 } else {
                     $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $number_of_htc_units_needed);
+                    $units_selected_count = $units_selected_count + count($units_selected);
                     $comments[] = 'Total selected: '.count($units_selected);
 
                     $audit->comment = $audit->comment.' | Select Process Total selected: '.count($units_selected);
@@ -1747,7 +1753,10 @@ class ComplianceSelectionJob implements ShouldQueue
             }
 
             $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
+            $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
             $this->processes++;
+
+            // $units_selected_count isn't using the array_merge to keep the duplicate
 
             $selection[] = [
                 "program_name" => "HTC",
@@ -1755,7 +1764,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 // "pool" => count($units),
                 "pool" => $total_htc_units,
                 "units" => $units_selected,
-                "totals" => count($units_selected),
+                "totals" => $units_selected_count,
                 "use_limiter" => 1,
                 "comments" => $comments
             ];
@@ -1953,17 +1962,24 @@ class ComplianceSelectionJob implements ShouldQueue
         if($cached_audit){
             // when updating a cachedaudit, run the status test
             $total_items = $audit->total_items(); 
-            $inspection_schedule_checks = $cached_audit->checkStatus('schedules');
-            $inspection_status_text = $inspection_schedule_checks['inspection_status_text']; 
-            $inspection_schedule_date = $inspection_schedule_checks['inspection_schedule_date'];
-            $inspection_schedule_text = $inspection_schedule_checks['inspection_schedule_text'];
-            $inspection_status = $inspection_schedule_checks['inspection_status']; 
-            $inspection_icon = $inspection_schedule_checks['inspection_icon'];
-            if($inspection_schedule_checks['status'] == 'critical'){
-                $status = 'critical'; // TBD critical/other
-            }else{
+            // $inspection_schedule_checks = $cached_audit->checkStatus('schedules');
+            // $inspection_status_text = $inspection_schedule_checks['inspection_status_text']; 
+            // $inspection_schedule_date = $inspection_schedule_checks['inspection_schedule_date'];
+            // $inspection_schedule_text = $inspection_schedule_checks['inspection_schedule_text'];
+            // $inspection_status = $inspection_schedule_checks['inspection_status']; 
+            // $inspection_icon = $inspection_schedule_checks['inspection_icon'];
+            
+            $inspection_status_text = $cached_audit->inspection_status_text; 
+            $inspection_schedule_date = $cached_audit->inspection_schedule_date;
+            $inspection_schedule_text = $cached_audit->inspection_schedule_text;
+            $inspection_status = $cached_audit->inspection_status; 
+            $inspection_icon = $cached_audit->inspection_icon;
+
+            //if($inspection_schedule_checks['status'] == 'critical'){
+            //    $status = 'critical'; // TBD critical/other
+            //}else{
                 $status = ''; // TBD critical/other
-            }
+            //}
             
             // current step
             $step = $cached_audit->current_step();
@@ -2221,7 +2237,10 @@ class ComplianceSelectionJob implements ShouldQueue
                 $this->processes++;
                 //Log::info('best run is selected');
                 foreach ($best_run['programs'] as $program) {
+
+                    // SITE AUDIT
                     $unit_keys = $program['units_after_optimization'];
+
                     $this->processes++;
 
                     $units = Unit::whereIn('unit_key', $unit_keys)->get();
@@ -2262,6 +2281,53 @@ class ComplianceSelectionJob implements ShouldQueue
                                 $u->save();
                                 $this->processes++;
 
+                                // $u = new UnitInspection([
+                                //     'group' => $program['name'],
+                                //     'group_id' => $group_id,
+                                //     'unit_id' => $unit->id,
+                                //     'unit_key' => $unit->unit_key,
+                                //     'unit_name' => $unit->unit_name,
+                                //     'building_id' => $unit->building_id,
+                                //     'building_key' => $unit->building_key,
+                                //     'audit_id' => $audit->id,
+                                //     'audit_key' => $audit->monitoring_key,
+                                //     'project_id' => $project->id,
+                                //     'project_key' => $project->project_key,
+                                //     'program_key' => $unit_program->program_key,
+                                //     'program_id' => $unit_program->program_id,
+                                //     'pm_organization_id' => $organization_id,
+                                //     'has_overlap' => $has_overlap,
+                                //     'is_site_visit' => 0,
+                                //     'is_file_audit' => 1
+                                // ]);
+                                // $u->save();
+                                // $this->processes++;
+                            }
+                        }
+                    }
+
+                    // FILE AUDIT
+                    $unit_keys = $program['units_before_optimization'];
+
+                    $this->processes++;
+
+                    $units = Unit::whereIn('unit_key', $unit_keys)->get();
+                    $this->processes++;
+
+                    foreach ($units as $unit) {
+                        $this->processes++;
+                        if (in_array($unit->unit_key, $overlap)) {
+                            $has_overlap = 1;
+                        } else {
+                            $has_overlap = 0;
+                        }
+
+                        $program_keys = explode(',', $program['program_keys']);
+                        $this->processes++;
+
+                        foreach ($unit->programs as $unit_program) {
+                            if (in_array($unit_program->program_key, $program_keys)) {
+
                                 $u = new UnitInspection([
                                     'group' => $program['name'],
                                     'group_id' => $group_id,
@@ -2286,6 +2352,7 @@ class ComplianceSelectionJob implements ShouldQueue
                             }
                         }
                     }
+
                     $group_id = $group_id + 1;
                     $this->processes++;
                 }
