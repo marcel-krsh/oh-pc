@@ -262,7 +262,7 @@ class CachedAuditsEvent
                 $uaCount = 0;
                 //Unit amenity json:
                 //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
-                $uaJson = '[';
+                $uaJson = array();
                 forEach($unit_amenities as $ua){
                     if($ua->amenity->inspectable){
                         $uaCount++;
@@ -272,11 +272,22 @@ class CachedAuditsEvent
                         }
                         $jsonRun = 1;
 
-                        $uaJson .= '{"id": "'.$ua->amenity_id.'", "qty": "0", "type": "'.addslashes($ua->amenity->amenity_description).'","status":"","common_area":"'.$ua->common_area.'","project":"'.$ua->project.'","building_system":"'.$ua->building_system.'","building_exterior":"'.$ua->building_exterior.'","unit":"'.$ua->unit.'","file":"'.$ua->file.'"}';
+                        $uaJson[] = [
+                            "id" => $ua->amenity_id,
+                            "qty" => "0", 
+                            "type" => addslashes($ua->amenity->amenity_description),
+                            "status" => "",
+                            "common_area" => $ua->common_area,
+                            "project" => $ua->project,
+                            "building_system" => $ua->building_system,
+                            "building_exterior" => $ua->building_exterior,
+                            "unit" => $ua->unit,
+                            "file" => $ua->file
+                        ];
                         
                     }
                 }
-                $uaJson .= ']';
+                
                 $jsonRun = 0;
                 
 
@@ -313,7 +324,7 @@ class CachedAuditsEvent
                     'state' => $unit->unit->building->address->state,
                     'zip' => $unit->unit->building->address->zip,
                     'auditors_json' => null,
-                    'amenities_json' => $uaJson,
+                    'amenities_json' => json_encode($uaJson),
                     'unit_id'=>$unit->unit->id,
                     'unit_key'=>$unit->unit->unit_key,
                     'unit_name'=>$unit->unit->unit_name
