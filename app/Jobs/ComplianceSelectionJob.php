@@ -1565,6 +1565,7 @@ class ComplianceSelectionJob implements ShouldQueue
             }
 
             $units_selected = [];
+            $units_selected_count = 0;
 
             // only proceed with selection if needed
             if ($number_of_htc_units_needed > 0 && count($units) > 0) {
@@ -1636,6 +1637,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                     if ($isLeasePurchase) {
                         $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $number_of_htc_units_needed);
+                        $units_selected_count = $units_selected_count + count($units_selected);
                         $this->processes++;
                         $comments[] = 'It is a lease purchase. Total selected: '.count($units_selected);
                         $audit->comment = $audit->comment.' | Select Process It is a lease purchase. Total selected: '.count($units_selected);
@@ -1669,6 +1671,7 @@ class ComplianceSelectionJob implements ShouldQueue
                         if ($is_multi_building_project) {
 
                             $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $number_of_htc_units_needed);
+                            $units_selected_count = $units_selected_count + count($units_selected);
                             $this->processes++;
                             $comments[] = 'The project is a multi building project. Total selected: '.count($units_selected);
                             $audit->comment = $audit->comment.' | Select Process The project is a multi building project. Total selected: '.count($units_selected);
@@ -1682,6 +1685,7 @@ class ComplianceSelectionJob implements ShouldQueue
                             // group units by building, then proceed with the random selection
                             // create a new list of units based on building and project key
                             $units_selected = [];
+                            $units_selected_count = 0;
                             foreach ($buildings as $building) {
                                 $this->processes++;
                                 if ($building->units) {
@@ -1725,6 +1729,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                     $new_building_selection = $this->randomSelection($audit,$building->units->pluck('unit_key')->toArray(), 0, $number_of_htc_units_needed);
                                     $this->processes++;
                                     $units_selected = array_merge($units_selected, $new_building_selection);
+                                    $units_selected_count = $units_selected_count + count($new_building_selection);
                                     $this->processes++;
                                     $comments[] = 'Randomly selected units in building '.$building->building_key.'. Total selected: '.count($new_building_selection).'.';
 
@@ -1737,6 +1742,7 @@ class ComplianceSelectionJob implements ShouldQueue
                     }
                 } else {
                     $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $number_of_htc_units_needed);
+                    $units_selected_count = $units_selected_count + count($units_selected);
                     $comments[] = 'Total selected: '.count($units_selected);
 
                     $audit->comment = $audit->comment.' | Select Process Total selected: '.count($units_selected);
@@ -1747,7 +1753,10 @@ class ComplianceSelectionJob implements ShouldQueue
             }
 
             $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
+            $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
             $this->processes++;
+
+            // $units_selected_count isn't using the array_merge to keep the duplicate
 
             $selection[] = [
                 "program_name" => "HTC",
@@ -1755,7 +1764,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 // "pool" => count($units),
                 "pool" => $total_htc_units,
                 "units" => $units_selected,
-                "totals" => count($units_selected),
+                "totals" => $units_selected_count,
                 "use_limiter" => 1,
                 "comments" => $comments
             ];

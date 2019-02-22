@@ -199,7 +199,7 @@ class Project extends Model
 
         $last_audit = $this->lastAudit();
         if(is_null($audit_id)){
-            $audit_id = $this->selected_audit()->id;
+            $audit_id = $this->selected_audit()->audit_id;
         }
 
         if($this->complianceContacts()->first()){
