@@ -2221,7 +2221,10 @@ class ComplianceSelectionJob implements ShouldQueue
                 $this->processes++;
                 //Log::info('best run is selected');
                 foreach ($best_run['programs'] as $program) {
+
+                    // SITE AUDIT
                     $unit_keys = $program['units_after_optimization'];
+
                     $this->processes++;
 
                     $units = Unit::whereIn('unit_key', $unit_keys)->get();
@@ -2262,6 +2265,53 @@ class ComplianceSelectionJob implements ShouldQueue
                                 $u->save();
                                 $this->processes++;
 
+                                // $u = new UnitInspection([
+                                //     'group' => $program['name'],
+                                //     'group_id' => $group_id,
+                                //     'unit_id' => $unit->id,
+                                //     'unit_key' => $unit->unit_key,
+                                //     'unit_name' => $unit->unit_name,
+                                //     'building_id' => $unit->building_id,
+                                //     'building_key' => $unit->building_key,
+                                //     'audit_id' => $audit->id,
+                                //     'audit_key' => $audit->monitoring_key,
+                                //     'project_id' => $project->id,
+                                //     'project_key' => $project->project_key,
+                                //     'program_key' => $unit_program->program_key,
+                                //     'program_id' => $unit_program->program_id,
+                                //     'pm_organization_id' => $organization_id,
+                                //     'has_overlap' => $has_overlap,
+                                //     'is_site_visit' => 0,
+                                //     'is_file_audit' => 1
+                                // ]);
+                                // $u->save();
+                                // $this->processes++;
+                            }
+                        }
+                    }
+
+                    // FILE AUDIT
+                    $unit_keys = $program['units_before_optimization'];
+
+                    $this->processes++;
+
+                    $units = Unit::whereIn('unit_key', $unit_keys)->get();
+                    $this->processes++;
+
+                    foreach ($units as $unit) {
+                        $this->processes++;
+                        if (in_array($unit->unit_key, $overlap)) {
+                            $has_overlap = 1;
+                        } else {
+                            $has_overlap = 0;
+                        }
+
+                        $program_keys = explode(',', $program['program_keys']);
+                        $this->processes++;
+
+                        foreach ($unit->programs as $unit_program) {
+                            if (in_array($unit_program->program_key, $program_keys)) {
+
                                 $u = new UnitInspection([
                                     'group' => $program['name'],
                                     'group_id' => $group_id,
@@ -2286,6 +2336,7 @@ class ComplianceSelectionJob implements ShouldQueue
                             }
                         }
                     }
+
                     $group_id = $group_id + 1;
                     $this->processes++;
                 }
