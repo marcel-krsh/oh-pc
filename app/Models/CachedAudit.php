@@ -220,9 +220,15 @@ class CachedAudit extends Model
         foreach($this->days as $day){
             $time_scheduled = $time_scheduled + ScheduleTime::where('audit_id','=',$this->audit_id)->where('day_id','=',$day->id)->sum('span') * 15;
         }
-
-        $needed_time_in_hours = floor(($estimated_time_in_minutes - $time_scheduled) / 60);
-        $needed_time_in_minutes = ($estimated_time_in_minutes - $time_scheduled) % 60;
+        
+        if($this->estimated_time >= $time_scheduled ) {
+            $needed_time_in_hours = floor(($estimated_time_in_minutes - $time_scheduled) / 60);
+            $needed_time_in_minutes = ($estimated_time_in_minutes - $time_scheduled) % 60;
+        } else {
+            $needed_time_in_hours = 0;
+            $needed_time_in_minutes = 0;
+        } 
+        
         
         $needed_time = $needed_time_in_hours.':'.$needed_time_in_minutes.':00';
         if($needed_time != $this->estimated_time_needed){
@@ -239,6 +245,8 @@ class CachedAudit extends Model
             //$minutes = 100 * $estimated_time_needed[1] / 60;
             $needed = ltrim($estimated_time_needed[0], '0').'.'.$estimated_time_needed[1];
         }
+
+
 
         $output['data'] = '['.$needed;
         $output['labels'] = '[\'Needed\'';
