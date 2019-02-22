@@ -266,10 +266,10 @@ class CachedAuditsEvent
                 forEach($unit_amenities as $ua){
                     if($ua->amenity->inspectable){
                         $uaCount++;
-                        if($jsonRun == 1){
-                            $uaJson .= ' , ';
-                            //insert comma between groups
-                        }
+                        // if($jsonRun == 1){
+                        //     $uaJson .= ' , ';
+                        //     //insert comma between groups
+                        // }
                         $jsonRun = 1;
 
                         $uaJson[] = [
