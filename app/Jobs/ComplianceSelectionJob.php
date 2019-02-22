@@ -131,8 +131,8 @@ class ComplianceSelectionJob implements ShouldQueue
                                             'updated_at'    =>  date("Y-m-d g:h:i", time())
                                         ]);
 
-                                        if(count($program->groups())){
-                                            foreach($program->groups() as $group){
+                                        if(count($program->program->groups())){
+                                            foreach($program->program->groups() as $group){
                                                 UnitGroup::insert([
                                                     'unit_key'      =>  $unit->unit_key,
                                                     'unit_id'       =>  $unit->id,
