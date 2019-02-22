@@ -1962,17 +1962,24 @@ class ComplianceSelectionJob implements ShouldQueue
         if($cached_audit){
             // when updating a cachedaudit, run the status test
             $total_items = $audit->total_items(); 
-            $inspection_schedule_checks = $cached_audit->checkStatus('schedules');
-            $inspection_status_text = $inspection_schedule_checks['inspection_status_text']; 
-            $inspection_schedule_date = $inspection_schedule_checks['inspection_schedule_date'];
-            $inspection_schedule_text = $inspection_schedule_checks['inspection_schedule_text'];
-            $inspection_status = $inspection_schedule_checks['inspection_status']; 
-            $inspection_icon = $inspection_schedule_checks['inspection_icon'];
-            if($inspection_schedule_checks['status'] == 'critical'){
-                $status = 'critical'; // TBD critical/other
-            }else{
+            // $inspection_schedule_checks = $cached_audit->checkStatus('schedules');
+            // $inspection_status_text = $inspection_schedule_checks['inspection_status_text']; 
+            // $inspection_schedule_date = $inspection_schedule_checks['inspection_schedule_date'];
+            // $inspection_schedule_text = $inspection_schedule_checks['inspection_schedule_text'];
+            // $inspection_status = $inspection_schedule_checks['inspection_status']; 
+            // $inspection_icon = $inspection_schedule_checks['inspection_icon'];
+            
+            $inspection_status_text = $cached_audit->inspection_status_text; 
+            $inspection_schedule_date = $cached_audit->inspection_schedule_date;
+            $inspection_schedule_text = $cached_audit->inspection_schedule_text;
+            $inspection_status = $cached_audit->inspection_status; 
+            $inspection_icon = $cached_audit->inspection_icon;
+
+            //if($inspection_schedule_checks['status'] == 'critical'){
+            //    $status = 'critical'; // TBD critical/other
+            //}else{
                 $status = ''; // TBD critical/other
-            }
+            //}
             
             // current step
             $step = $cached_audit->current_step();
