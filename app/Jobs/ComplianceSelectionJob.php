@@ -1154,6 +1154,7 @@ class ComplianceSelectionJob implements ShouldQueue
             ];
             $this->processes++;
         }else{
+            $htc_units_subset_for_home = array();
             $audit->comment_system = $audit->comment_system.' | Select Process is not working with HOME.';
             $audit->save();
         }
@@ -1304,6 +1305,7 @@ class ComplianceSelectionJob implements ShouldQueue
             ];
             $this->processes++;
         }else{
+            $htc_units_subset_for_ohtf = array();
             $audit->comment_system = $audit->comment_system.' | Select Process is not working with OHTF.';
             $audit->save();
         }
@@ -1458,6 +1460,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 }
             }
         }else{
+            $htc_units_subset_for_nhtf = array();
             $audit->comment_system = $audit->comment_system.' | Select Process is not working with NHTF.';
             $audit->save();
         }
