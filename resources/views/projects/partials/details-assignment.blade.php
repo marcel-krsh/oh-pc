@@ -70,7 +70,7 @@
 					<div class="project-details-button-container" id="addadaybutton">
 						<!-- <input type="text" id="addaday" name="addaday" class="flatpickr-input"  data-input style="display:none">
 						<button class="uk-button uk-link addadaybutton" type="button" data-toggle><i class="far fa-calendar-plus"></i> ADD A DAY</button> -->
-						<span class="uk-form-icon" uk-icon="icon: calendar"></span>
+						<span class="uk-form-icon" uk-icon="icon: calendar" style="margin-left: 10px;" ></span>
 						<input type="text" id="addaday" name="addaday" value="" class="uk-button uk-link addadaybutton flatpickr flatpickr-input active" placeholder="ADD A DAY" />
 					</div>
 
