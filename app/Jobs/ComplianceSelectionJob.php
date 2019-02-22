@@ -1791,13 +1791,13 @@ class ComplianceSelectionJob implements ShouldQueue
         // make sure we don't have name duplicates
         foreach ($audit->project->amenities as $pa) {
             AmenityInspection::insert([
-                'name'=>$name,
+                'name'=>$pa->amenity->amenity_description,
                 'audit_id'=>$audit->id,
                 'monitoring_key'=>$audit->monitoring_key,
                 'project_id'=>$audit->project_id,
                 'development_key'=>$audit->development_key,
                 'amenity_id'=>$pa->amenity_id,
-                'amenity_key'=>$pa->amenity_key,
+                'amenity_key'=>$pa->amenity->amenity_key,
 
             ]);
             $this->processes++;
@@ -1809,8 +1809,8 @@ class ComplianceSelectionJob implements ShouldQueue
                     'monitoring_key'=>$audit->monitoring_key,
                     'building_key'=>$b->building_key,
                     'building_id'=>$b->id,
-                    'amenity_id'=>$ba->amenity_id,
-                    'amenity_key'=>$ba->amenity_key,
+                    'amenity_id'=>$ba->amenity->id,
+                    'amenity_key'=>$ba->amenity->amenity_key,
 
                ]);
                $this->processes++;
@@ -1821,10 +1821,10 @@ class ComplianceSelectionJob implements ShouldQueue
                AmenityInspection::insert([
                     'audit_id'=>$audit->id,
                     'monitoring_key'=>$audit->monitoring_key,
-                    'unit_key'=>$ua->unit_key,
-                    'unit_id'=>$ua->unit_id,
+                    'unit_key'=>$u->unit_key,
+                    'unit_id'=>$u->unit_id,
                     'amenity_id'=>$ua->amenity_id,
-                    'amenity_key'=>$ua->amenity_key,
+                    'amenity_key'=>$ua->amenity->amenity_key,
 
                ]);
                $this->processes++;
