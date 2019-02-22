@@ -64,8 +64,9 @@ class AuditController extends Controller
             $audit->rerun_compliance = 1;
             $audit->save();
 
-            //ComplianceSelectionJob::dispatch($audit)->onQueue('compliance');
-
+            if($auditsAhead == 0){
+                ComplianceSelectionJob::dispatch($audit)->onQueue('compliance');
+            }
 
             return '<p>Your request to re-run the compliance selection has been added to the queue. There are currently '.$auditsAhead.' audit(s) ahead of your request.</p><p>It usually takes approximately 1-10 minutes per audit selection depending on the size of the project.<p>';
         } else {
