@@ -43,6 +43,7 @@ use Session;
 use App\LogConverter;
 use Carbon;
 use Event;
+use App\Jobs\ComplianceSelectionJob;
 
 class AuditController extends Controller
 {
@@ -63,6 +64,9 @@ class AuditController extends Controller
             $audit->rerun_compliance = 1;
             $audit->save();
 
+            ComplianceSelectionJob::dispatch($audit)->onQueue('compliance');
+
+
             return '<p>Your request to re-run the compliance selection has been added to the queue. There are currently '.$auditsAhead.' audit(s) ahead of your request.</p><p>It usually takes approximately 1-10 minutes per audit selection depending on the size of the project.<p>';
         } else {
             return '<p>I am sorry, we cannot rerun your audit as it currently has findings against amenities on that project. You must finalize the current audit in order to refresh the program to unit association.</p>';
@@ -78,7 +82,7 @@ class AuditController extends Controller
             // $new_audit = new Audit([
             //     'project_id' => $project->id,
             //     'development_key' => $project->project_key,
-                
+
             // ]);
             // $new_audit->save();
         }
