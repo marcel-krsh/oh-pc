@@ -1460,6 +1460,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 }
             }
         }else{
+            $overlap = [];
             $htc_units_subset_for_nhtf = array();
             $audit->comment_system = $audit->comment_system.' | Select Process is not working with NHTF.';
             $audit->save();
