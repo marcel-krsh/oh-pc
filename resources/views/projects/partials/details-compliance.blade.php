@@ -402,19 +402,19 @@
 	   switch (color) {
 	   		case 'rgb(24, 22, 22)':
 	         // alert(label + ' / required');
-	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);
 	         break;
 	   		case 'rgb(0, 139, 194)':
-	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);
 	         break;
 	   		case 'rgb(209, 0, 105)':
-	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);
 	         break;
 	   		case 'rgb(1, 173, 104)':
-	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);
 	         break;
 	   		case 'rgb(203, 203, 200)':
-	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);
 	         break;
 	   }
 	}
