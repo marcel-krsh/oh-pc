@@ -1,10 +1,10 @@
 @include('projects.templates.details-compliance')
 <div class="project-details-info-compliance uk-overflow-auto ok-actionable" style="" uk-grid>
-	
-	<div class="uk-width-1-1">		
+
+	<div class="uk-width-1-1">
 		<div class=" uk-margin-left uk-margin-right ">
 			<hr>
-			
+
 		</div>
 		<div class="project-details-info-compliance-summary uk-margin-top uk-margin-left uk-margin-right uk-grid-match" uk-grid>
 			<div class="uk-width-1-5">
@@ -111,7 +111,7 @@
 		        <li>
 					<div class="project-details-info-compliance-program uk-panel uk-grid-match" style="height:180px" uk-grid>
 						<div class="uk-width-1-3 uk-padding-remove">
-							<canvas id="chartjs-{{$program['id']}}" class="chartjs" style="height:100%"></canvas>
+							<canvas id="chartjs-{{$program['id']}}" class="chartjs" style="height:95%"></canvas>
 						</div>
 						<div class="uk-width-2-3">
 							<table class="uk-table uk-table-small noline small-padding">
@@ -269,7 +269,7 @@
 	// 	  });
 
 	// }
-	// 
+	//
 	var chartColors = {
 		  required: '#191818',
 		  selected: '#0099d5',
@@ -336,7 +336,7 @@
 	var mainSummaryChart = new Chart(document.getElementById("chartjs-summary"),{
 		"type":"doughnut",
 		"options": summaryOptions,
-		
+
 		"data":{
 			"labels": ["Required","Selected","Needed","Inspected", "To Be Inspected"],
 			"datasets":[

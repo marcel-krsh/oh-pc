@@ -1,5 +1,5 @@
 <div class="project-details-info-assignment uk-overflow-auto ok-actionable" uk-grid>
-	<div class="uk-width-1-1">	
+	<div class="uk-width-1-1">
 		<div class=" uk-margin-left uk-margin-right ">
 			<hr>
 		</div>
@@ -22,7 +22,7 @@
 				<h3 class="estHour">
 					Sorry, no assignments have been made available yet. {{$project->selected_audit()->lead_auditor->full_name()}} needs to enter the estimated time for this audit, and then assign auditors to each day of the inspection.
 				</h3>
-				
+
 				@endif
 
 				@if(Auth::user()->id == $project->selected_audit()->lead_auditor->id)
@@ -43,11 +43,11 @@
 								</select>
 							</div>
 	  						<div class="uk-width-1-4">
-								<button class="uk-button uk-button-primary" style=" width: 100%;margin-top: 26px;" onclick="saveEstimatedHours(event);">SAVE</button>	
+								<button class="uk-button uk-button-primary" style=" width: 100%;margin-top: 26px;" onclick="saveEstimatedHours(event);">SAVE</button>
 							</div>
 							@if(!$data['summary']['estimated'])
 	  						<div class="uk-width-1-4">
-								<button class="uk-button uk-button-default" style=" width: 100%;margin-top: 26px;" type="cancel" onclick=" $('.estHour').toggle();return false;">CANCEL</button>	
+								<button class="uk-button uk-button-default" style=" width: 100%;margin-top: 26px;" type="cancel" onclick=" $('.estHour').toggle();return false;">CANCEL</button>
 							</div>
 							@endif
 					</form>
@@ -62,16 +62,18 @@
 					<li>{{$data['summary']['file_audits_needed']}} FILE AUDITS NEED TO BE COMPLETED.</li>
 					<li>{{$data['summary']['physical_audits_needed']}} PHYSICAL AUDITS NEED TO BE COMPLETED.</li>
 					<li>{{$data['summary']['schedule_conflicts']}} SCHEDULE CONFLICTS NEED TO BE RESOLVED.</li>
-				</ul>	
+				</ul>
 			</div>
 
 			@if(Auth::user()->id == $project->selected_audit()->lead_auditor->id)
 				<div id="project-details-assignment-buttons" class="uk-width-1-1 uk-margin-large-top project-details-buttons ">
-					<div class="project-details-button-container flatpickr" id="addadaybutton">
-						<input type="text" id="addaday" name="addaday" class="flatpickr-input"  data-input style="display:none">
-						<button class="uk-button uk-link addadaybutton" type="button" data-toggle><i class="far fa-calendar-plus"></i> ADD A DAY</button>
+					<div class="project-details-button-container" id="addadaybutton">
+						<!-- <input type="text" id="addaday" name="addaday" class="flatpickr-input"  data-input style="display:none">
+						<button class="uk-button uk-link addadaybutton" type="button" data-toggle><i class="far fa-calendar-plus"></i> ADD A DAY</button> -->
+						<span class="uk-form-icon" uk-icon="icon: calendar"></span>
+						<input type="text" id="addaday" name="addaday" value="" class="uk-button uk-link addadaybutton flatpickr flatpickr-input active" placeholder="ADD A DAY" />
 					</div>
-				
+
 				</div>
 				@endIf
 		</div>
@@ -82,10 +84,10 @@
 
 				<div class="divTable divTableFixed">
 					<div class="divTableBody">
-						
+
 						<div class="divTableRow divTableHeader">
 							<div class="divTableCell">
-								
+
 							</div>
 							<div class="divTableCell">
 								<span uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($project->selected_audit()->lead_auditor->full_name())}} {{$project->selected_audit()->lead}};" title="" aria-expanded="false" class="user-badge user-badge-{{$project->selected_audit()->lead_auditor->badge_color}} no-float uk-link" >{{$project->selected_audit()->lead_auditor->initials()}}</span>
@@ -145,11 +147,11 @@
 							</div>
 							@foreach($daily_schedules[$day->id] as $daily_schedule)
 							<div class="divTableCell isLead grid-schedule">
-								
+
 								<div class="auditor-calendar-content grid-schedule-content">
 									<div class="day">
 										@if($daily_schedule['content']['no_availability'])
-										<div class="event" data-start="1" data-span="60"> 
+										<div class="event" data-start="1" data-span="60">
 											<i class="a-circle-cross" uk-tooltip="title:No availability"></i>
 										</div>
 										@else
@@ -165,7 +167,7 @@
 												<i class="{{$event['icon']}}"></i>
 												@endif
 											@endif
-											@if(Auth::user()->id == $project->selected_audit()->lead && $event['icon'] != '' && $event['modal_type'] != '') 
+											@if(Auth::user()->id == $project->selected_audit()->lead && $event['icon'] != '' && $event['modal_type'] != '')
 												@if($event['modal_type'] == 'addschedule')
 													@if(Auth::user()->id == $project->selected_audit()->lead_auditor->id)
 													<div id="eventmodal-{{$event['id']}}" uk-modal>
@@ -187,12 +189,12 @@
 																				}else{
 																					echo "<option value='".$i."'>".$hours.":".$minutes."</option>";
 																				}
-																                
+
 																            }
 																            @endphp
 																            </select>
 																        </div>
-										                        	</li>	
+										                        	</li>
 										                        	<li onclick="">
 																        <label class="uk-form-label" style="margin-top: 10px;">
 																        	<div style="display:inline-block;width:30px;float:left;"><i class="a-clock-3"></i></div> ARRIVAL TIME:</label>
@@ -209,10 +211,10 @@
 																					echo "<option value='".$i."'>".$hours.":".$minutes." AM</option>";
 																				}
 																            }
-																            @endphp	
+																            @endphp
 																            </select>
 																        </div>
-										                        	</li>	
+										                        	</li>
 										                        	<li onclick="">
 																        <label class="uk-form-label" style="margin-top: 10px;"><div style="display:inline-block;width:30px;float:left;"><i class="a-clock-arrow-right"></i></div> DURATION:</label>
 																        <div class="uk-form-controls">
@@ -226,7 +228,7 @@
 																            @endphp
 																            </select>
 																        </div>
-										                        	</li>	
+										                        	</li>
 										                        	<li onclick="">
 																        <div class="uk-form-controls">
 																        	<button class="uk-button uk-button-primary" onclick="scheduleTime('{{$event['id']}}', '{{$day->id}}', '{{$event['auditor_id']}}');">Schedule</button>
@@ -317,7 +319,7 @@
 		margin: 0;
 	}
 	.divTableRow {
-		
+
 	}
 	.divTableRow .divTableCell h3 i {
 		font-size: 14px;
@@ -398,7 +400,7 @@
 
 	#project-details-info-container .divTable .no-action,
 	#project-details-info-container .divTable .action-needed,
-	#project-details-info-container .divTable .action-required, 
+	#project-details-info-container .divTable .action-required,
 	#project-details-info-container .divTable .critical,
 	#project-details-info-container .divTable .ok-actionable,
 	#project-details-info-container .divTable .in-progress {
@@ -409,13 +411,13 @@
 	}
 	#project-details-info-container .divTable .no-action { color:#939598; }
 	#project-details-info-container .divTable .action-needed { color:#76338b; }
-	#project-details-info-container .divTable .action-required, 
+	#project-details-info-container .divTable .action-required,
 	#project-details-info-container .divTable .critical { color:#da328a; background-color: rgba(218, 50, 138, 0.1); }
 	#project-details-info-container .divTable .ok-actionable { color:#56b285; background-color:rgba(86, 178, 133, 0.2); }
 	#project-details-info-container .divTable .in-progress { color:#49ade9; }
 
 	#project-details-info-container .divTableRow:last-child .divTableCell {
-	  
+
 		border-bottom: 2px solid #939598;
 	}
 </style>
@@ -486,7 +488,7 @@
     var mainAssignmentChart = new Chart(document.getElementById("chartjs-assignment"),{
 		"type":"doughnut",
 		"options": assignmentOptions,
-		
+
 		"data":{
 			"labels": {!!$chart_data['labels']!!},
 			"datasets":[
@@ -515,12 +517,12 @@
                 'duration' : duration,
                 '_token' : '{{ csrf_token() }}'
                 }, function(data) {
-                    if(data!=1){ 
+                    if(data!=1){
                         UIkit.modal.alert(data,{stack: true});
                     } else {
                     	UIkit.modal('#eventmodal-'+eventid).hide();
-                        UIkit.notification('<span uk-icon="icon: check"></span> Auditor Scheduled', {pos:'top-right', timeout:1000, status:'success'});   
-                        $('#project-details-button-2').trigger( 'click' );       
+                        UIkit.notification('<span uk-icon="icon: check"></span> Auditor Scheduled', {pos:'top-right', timeout:1000, status:'success'});
+                        $('#project-details-button-2').trigger( 'click' );
                     }
         });
 	}
@@ -546,7 +548,7 @@
 			var minutes = '';
 			var time = '';
 			var start_slot = '';
-			
+
 			// check that time is later than end of travel time
 			if(start < eventstart + travel){
 				start = eventstart + travel;
@@ -556,8 +558,8 @@
 			var slots = eventspan - travel;
 
 			// reload start
-			$('#start-'+eventid).empty(); 
-			
+			$('#start-'+eventid).empty();
+
 			for (i = 0; i < slots ; i++){
 				start_slot = eventstart + travel + i;
             	hours = Math.floor((start_slot-1) * 15 / 60) + 6;
@@ -571,13 +573,13 @@
             	} else {
             		time = hours+':'+minutes+' AM';
             	}
-            	
+
 				if(start_slot == start){
 					$('#start-'+eventid).append($('<option selected value="'+start_slot+'">'+time+'</option>'));
 				}else{
 					$('#start-'+eventid).append($('<option/>', { value: start_slot, text: time }));
 				}
-                
+
             }
 
             slots = eventstart + eventspan - start;
@@ -599,7 +601,7 @@
 				}
   			 }
 
-		});	
+		});
 
 		$( ".start-select" ).change(function() {
 			var eventid = $(this).data('eventid');
@@ -616,7 +618,7 @@
 			var start_slot = '';
 
 			var slots = eventstart + eventspan - start;
-			
+
 			// reload duration
 			$('#duration-'+eventid).empty();
 			for (i = slots; i > 0; i--){
@@ -631,7 +633,7 @@
 					$('#duration-'+eventid).append($('<option/>', { value: i, text: time }));
 				}
   			 }
-		});	
+		});
 
 		$( ".duration-select" ).change(function() {
 			var eventid = $(this).data('eventid');
@@ -646,7 +648,7 @@
 			var minutes = '';
 			var time = '';
 			var start_slot = '';
-			
+
 			// check that time is later than end of travel time
 			if(start < eventstart + travel){
 				start = eventstart + travel;
@@ -661,7 +663,7 @@
 			var slots = eventspan - travel - duration + 1;
 
 			// reload start
-			$('#start-'+eventid).empty(); 
+			$('#start-'+eventid).empty();
 			for (i = 0; i < slots; i++){
 				start_slot =eventstart + travel + i;
             	hours = Math.floor((start_slot-1) * 15 / 60) + 6;
@@ -681,9 +683,9 @@
 				}else{
 					$('#start-'+eventid).append($('<option/>', { value: start_slot, text: time }));
 				}
-                
+
             }
-		});	
+		});
 
 		// make sure the numbers make sense with initial travel time
 		$('.travel-select').trigger('change');
@@ -698,11 +700,11 @@
             $.post("scheduling/event/"+eventid+"/delete", {
 	                '_token' : '{{ csrf_token() }}'
 	                }, function(data) {
-	                    if(data!=1){ 
+	                    if(data!=1){
 	                        UIkit.modal.alert(data,{stack: true});
 	                    } else {
-	                    	UIkit.notification('<span uk-icon="icon: check"></span> Scheduled Time Removed', {pos:'top-right', timeout:1000, status:'success'});   
-	                        $('#project-details-button-2').trigger( 'click' );       
+	                    	UIkit.notification('<span uk-icon="icon: check"></span> Scheduled Time Removed', {pos:'top-right', timeout:1000, status:'success'});
+	                        $('#project-details-button-2').trigger( 'click' );
 	                    }
 	        });
         }, function () {
@@ -715,11 +717,11 @@
             $.post("auditors/"+auditorid+"/removefromaudit/{{$data['project']['audit_id']}}", {
                     '_token' : '{{ csrf_token() }}'
                     }, function(data) {
-                        if(data!=1){ 
+                        if(data!=1){
                             UIkit.modal.alert(data,{stack: true});
                         } else {
-                            UIkit.notification('<span uk-icon="icon: check"></span> Auditor Removed', {pos:'top-right', timeout:1000, status:'success'});   
-                            $('#project-details-button-2').trigger( 'click' );       
+                            UIkit.notification('<span uk-icon="icon: check"></span> Auditor Removed', {pos:'top-right', timeout:1000, status:'success'});
+                            $('#project-details-button-2').trigger( 'click' );
                         }
             });
         });
@@ -731,11 +733,11 @@
             $.post("/audit/{{$data['project']['audit_id']}}/scheduling/days/"+id+"/delete", {
                     '_token' : '{{ csrf_token() }}'
                     }, function(data) {
-                        if(data.data!=1){ 
+                        if(data.data!=1){
                             UIkit.modal.alert(data.data,{stack: true});
                         } else {
-                            UIkit.notification('<span uk-icon="icon: check"></span> Day Deleted', {pos:'top-right', timeout:1000, status:'success'});   
-                            $('#project-details-button-2').trigger( 'click' );       
+                            UIkit.notification('<span uk-icon="icon: check"></span> Day Deleted', {pos:'top-right', timeout:1000, status:'success'});
+                            $('#project-details-button-2').trigger( 'click' );
                         }
             });
         });
@@ -749,7 +751,7 @@
             'inputs' : form.serialize(),
             '_token' : '{{ csrf_token() }}'
         }, function(data) {
-            if(data.status!=1){ 
+            if(data.status!=1){
                 UIkit.modal.alert(data.message,{stack: true});
             } else {
                 UIkit.notification('<span uk-icon="icon: check"></span> Estimated Hours Saved', {pos:'top-right', timeout:1000, status:'success'});
@@ -767,13 +769,29 @@
 
 	flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
 
-	flatpickr("#addadaybutton", {
-	    minDate: "today",
-	    altFormat: "F j, Y",
-	    dateFormat: "F j, Y",
-	     wrap: true,
-	     positionElement: $('.addadaybutton')[0],
-	    onChange: function(selectedDates, dateStr, instance) {
+		// flatpickr("#addaday", {
+		//     mode: "range",
+		//     minDate: "today",
+		//     altFormat: "F j, Y",
+		//     dateFormat: "F j, Y",
+		//     wrap: true,
+	 //     positionElement: $('.addadaybutton')[0],
+	 //    onChange: function(selectedDates, dateStr, instance) {
+
+	 //        $.post("/audit/{{$data['project']['audit_id']}}/scheduling/addaday", {
+	 //            'date' : dateStr,
+	 //            '_token' : '{{ csrf_token() }}'
+	 //        }, function(data) {
+		//         $('#project-details-button-2').trigger( 'click' );
+		// 	});
+	 //    }
+		// });
+		flatpickr("#addaday", {
+		    mode: "range",
+		    minDate: "today",
+		    altFormat: "F j, Y",
+		    dateFormat: "F j, Y",
+		    onChange: function(selectedDates, dateStr, instance) {
 
 	        $.post("/audit/{{$data['project']['audit_id']}}/scheduling/addaday", {
 	            'date' : dateStr,
@@ -782,7 +800,8 @@
 		        $('#project-details-button-2').trigger( 'click' );
 			});
 	    }
-	});
+		});
+
 	@endIf
 
 </script>
