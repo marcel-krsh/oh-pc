@@ -160,8 +160,8 @@ class AuthService
             }
         } catch (GuzzleException | \Exception $e) {
             //@todo: Throw PC-API Exception
-            echo $this->_url."<br>";
-            echo $endpoint."<br>";
+            //echo $this->_url."<br>";
+            //echo $endpoint."<br>";
             dd('Guzzle exception - line 156 Auth Service :'.$e->getMessage());
         }
 
