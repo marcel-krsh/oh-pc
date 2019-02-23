@@ -1172,13 +1172,13 @@ class ComplianceSelectionJob implements ShouldQueue
 
                 } else {
 
-                    if(ceil($total_units_with_program/5) > count($total_units)){
-                        $required_units = count($total_units);
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, count($total_units));
+                    if(ceil($total_units_with_program/5) > $total_units){
+                        $required_units = $total_units;
+                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
                         $this->processes++;
-                        $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.count($total_units).' which is the total number of units';
+                        $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.$total_units.' which is the total number of units';
 
-                        $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.count($total_units).' which is the total number of units';
+                        $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.$total_units.' which is the total number of units';
                         $audit->save();
                     }else{
                         $required_units = ceil($total_units_with_program/5);
