@@ -1773,6 +1773,9 @@ class ComplianceSelectionJob implements ShouldQueue
                     }
 
                     if ($isLeasePurchase) {
+
+                        // number_of_htc_units_needed 20% of total, minus how many are added by the HTC overlap
+
                         $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $number_of_htc_units_needed);
 
                         $required_units = $number_of_htc_units_needed;
@@ -1869,12 +1872,17 @@ class ComplianceSelectionJob implements ShouldQueue
                                     $total_htc_units_without_overlap = count($htc_units_without_overlap);
                                     $this->processes++;
 
-                                    $new_building_selection = $this->randomSelection($audit,$building->units->pluck('unit_key')->toArray(), 0, $number_of_htc_units_needed);
+                                    // $number_of_htc_building_units_needed is 20% of building total minus the HTC overlapping units in that building
+                                    $number_of_htc_building_units_needed = ceil($total_htc_units_for_building/5) - $total_htc_units_with_overlap_for_building;
+                                    
+                                    $new_building_selection = $this->randomSelection($audit,$building->units->pluck('unit_key')->toArray(), 0, $number_of_htc_building_units_needed);
 
-                                    $required_units = $required_units + $number_of_htc_units_needed;
+                                    $required_units = $required_units + $number_of_htc_building_units_needed;
 
                                     $this->processes++;
+
                                     $units_selected = array_merge($units_selected, $new_building_selection);
+
                                     $units_selected_count = $units_selected_count + count($new_building_selection);
                                     $this->processes++;
                                     $comments[] = 'Randomly selected units in building '.$building->building_key.'. Total selected: '.count($new_building_selection).'.';
