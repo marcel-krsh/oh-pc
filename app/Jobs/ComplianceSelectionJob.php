@@ -480,6 +480,8 @@ class ComplianceSelectionJob implements ShouldQueue
             $tmp_program_output = []; // used to store the units selected for this program set
             $this->processes++;
 
+            $tmp_program_output_total_not_merged = 0;
+
             if ($selection[$i]['use_limiter'] == 1) {
                 $audit->comment = $audit->comment.' | Combine and optimize used limiter on selection['.$i.'].';
                 $audit->save();
@@ -513,15 +515,18 @@ class ComplianceSelectionJob implements ShouldQueue
                 }
 
                 $tmp_program_output = array_merge($tmp_program_output, $tmp_selection);
+                $tmp_program_output_total_not_merged = $tmp_program_output_total_not_merged + count($tmp_selection);
                 $output = array_merge($output, $tmp_selection);
                 $this->processes++;
             } else {
                 $tmp_program_output = $selection[$i]['units'];
+                $tmp_program_output_total_not_merged = $tmp_program_output_total_not_merged + count($selection[$i]['units']);
                 $output = array_merge($output, $selection[$i]['units']);
                 $this->processes++;
             }
 
               $summary['programs'][$i]['totals_after_optimization'] = count($tmp_program_output);
+              $summary['programs'][$i]['totals_after_optimization_not_merged'] = $tmp_program_output_total_not_merged;
               $audit->comment = $audit->comment.' | Combine and optimize total after optimization is '.count($tmp_program_output).'.';
               $audit->save();
               $summary['programs'][$i]['units_after_optimization'] = $tmp_program_output;
