@@ -1836,11 +1836,16 @@ class ComplianceSelectionJob implements ShouldQueue
                                 $this->processes++;
                                 if ($building->units) {
                                     // get total of HTC funded units for that building
-                                    $total_htc_units_for_building = Unit::where('building_key', '=', $building->building_key)
+                                    $htc_units_for_building = Unit::where('building_key', '=', $building->building_key)
                                                     ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
                                                         $query->where('audit_id', '=', $audit->id);
                                                         $query->whereIn('program_key', $program_htc_ids);
-                                                    })->count();
+                                                    })
+                                                    ->pluck('unit_key')
+                                                    ->toArray();
+
+                                    $total_htc_units_for_building = count($htc_units_for_building);
+
                                                     $this->processes++;
                                     $comments[] = 'The total of HTC units for building key '.$building->building_key.' is '.$total_htc_units_for_building.'.';
 
@@ -1851,12 +1856,12 @@ class ComplianceSelectionJob implements ShouldQueue
                                     // get total of HTC units that overlap with HOME, OHTF and NHTF in that particular building
                                     // units with HTC, not in subset
 
-                                    $total_htc_units_with_overlap_for_building = Unit::where('building_key', '=', $building->building_key)
-                                                    ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
-                                                        $query->where('audit_id', '=', $audit->id);
-                                                        $query->whereIn('program_key', $program_htc_ids);
-                                                    })->count();
-                                                    $this->processes++;
+                                    // $total_htc_units_with_overlap_for_building = Unit::where('building_key', '=', $building->building_key)
+                                    //                 ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
+                                    //                     $query->where('audit_id', '=', $audit->id);
+                                    //                     $query->whereIn('program_key', $program_htc_ids);
+                                    //                 })->count();
+                                    //                 $this->processes++;
                                     
                                     // get all HTC units that do not overlap with HOME, OHTF and NHTF in that building
                                     $htc_units_without_overlap = Unit::where('building_key', '=', $building->building_key)
@@ -1869,18 +1874,19 @@ class ComplianceSelectionJob implements ShouldQueue
                                                     })->get();
                                                     $this->processes++;
 
-                                    $total_htc_units_without_overlap = count($htc_units_without_overlap);
+                                    $total_htc_units_for_building_without_overlap = count($htc_units_without_overlap);
+                                    $total_htc_units_for_building_overlapping = $total_htc_units_for_building - $total_htc_units_for_building_without_overlap;
                                     $this->processes++;
 
-                                    // $number_of_htc_building_units_needed is 20% of building total minus the HTC overlapping units in that building
-                                    if(ceil($total_htc_units_for_building/5) - $total_htc_units_with_overlap_for_building < 0){
+                                    // $number_of_htc_building_units_needed is 20% of building total $htc_units_for_building minus the HTC overlapping units in that building $total_htc_units_for_building_overlapping
+                                    if(ceil($total_htc_units_for_building/5) - $total_htc_units_for_building_without_overlap < 0){
                                         $number_of_htc_building_units_needed = 0;
                                     }else{
 
-                                        $number_of_htc_building_units_needed = ceil($total_htc_units_for_building/5) - $total_htc_units_with_overlap_for_building;
+                                        $number_of_htc_building_units_needed = ceil($total_htc_units_for_building/5) - $total_htc_units_for_building_without_overlap;
                                     }
                                     
-                                    $new_building_selection = $this->randomSelection($audit,$building->units->pluck('unit_key')->toArray(), 0, $number_of_htc_building_units_needed);
+                                    $new_building_selection = $this->randomSelection($audit,$htc_units_for_building, 0, $number_of_htc_building_units_needed);
 
                                     $required_units = $required_units + $number_of_htc_building_units_needed;
 
