@@ -1403,13 +1403,13 @@ class AuditController extends Controller
                     $program_keys = explode(',', $program['program_keys']);
                     $all_program_keys =  array_merge($all_program_keys, $program_keys);
 
-                    $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->get()->count();
-                    $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->get()->count();
+                    $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->count();
+                    $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->count();
 
                     
 
-                    $needed_units_site = $program['totals_before_optimization'] - $selected_units_site;
-                    $needed_units_file = $program['totals_before_optimization'] - $selected_units_file;
+                    $needed_units_site = $program['required_units'] - $selected_units_site;
+                    $needed_units_file = $program['required_units'] - $selected_units_file;
 
                     $unit_keys = $program['units_before_optimization']; 
 
@@ -1437,8 +1437,8 @@ class AuditController extends Controller
                                 ->get()
                                 ->count();
 
-                    $to_be_inspected_units_site = $program['totals_after_optimization_not_merged'] - $inspected_units_site;
-                    $to_be_inspected_units_file = $program['totals_before_optimization'] - $inspected_units_file;
+                    $to_be_inspected_units_site = $program['required_units'] - $inspected_units_site;
+                    $to_be_inspected_units_file = $program['required_units'] - $inspected_units_file;
 
                     $summary_required = $summary_required + $program['required_units'];
 
