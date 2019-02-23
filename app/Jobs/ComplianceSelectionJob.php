@@ -379,8 +379,11 @@ class ComplianceSelectionJob implements ShouldQueue
             if ($min > $total) {
                 $min = $total;
             }
-            if ($needed < $min) {
+            if ($needed <= $min) {
                 $needed = $min;
+            }
+            if($needed == 0){
+                return [];
             }
             $this->processes++;
 
@@ -1887,6 +1890,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                     }
                                     
                                     $audit->comment = $audit->comment.' | Number of HTC Building units needed '.$number_of_htc_building_units_needed.'. Total HTC units for that building: '.$total_htc_units_for_building.'. Total without overlap: '.$total_htc_units_for_building_without_overlap;
+                                    //Number of HTC Building units needed 0. Total HTC units for that building: 51. Total without overlap: 51
                                     $audit->save();
 
                                     $new_building_selection = $this->randomSelection($audit,$htc_units_for_building, 0, $number_of_htc_building_units_needed);
