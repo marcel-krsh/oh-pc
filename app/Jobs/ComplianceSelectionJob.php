@@ -371,8 +371,10 @@ class ComplianceSelectionJob implements ShouldQueue
 
             $needed = ceil($total * $percentage / 100);
 
-            $audit->comment = $audit->comment.' | Random selection calculated total '.$total.' versus '.$needed.' needed.';
+            if($needed){
+                $audit->comment = $audit->comment.' | Random selection calculated total '.$total.' versus '.$needed.' needed.';
                 $audit->save();
+            }
 
             if ($min > $total) {
                 $min = $total;
@@ -1082,6 +1084,12 @@ class ComplianceSelectionJob implements ShouldQueue
         // 4 - HOME
         //
         //
+        //
+        // TBD 
+        // multiple instances of a home program by award number can exist
+        // apply same logic for each award number!!
+        // duplicate groups...
+        // only for home
         
 
         $program_home_ids = explode(',', SystemSetting::get('program_home'));
@@ -1164,14 +1172,24 @@ class ComplianceSelectionJob implements ShouldQueue
 
                 } else {
 
-                    $required_units = ceil($total_units_with_program/5);
+                    if(ceil($total_units_with_program/5) > count($total_units)){
+                        $required_units = count($total_units);
+                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, count($total_units));
+                        $this->processes++;
+                        $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.count($total_units).' which is the total number of units';
 
-                    $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units_with_program/5));
-                    $this->processes++;
-                    $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_units_with_program/5);
+                        $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.count($total_units).' which is the total number of units';
+                        $audit->save();
+                    }else{
+                        $required_units = ceil($total_units_with_program/5);
+                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units_with_program/5));$this->processes++;
+                        $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_units_with_program/5);
 
-                    $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_units_with_program/5);
-                    $audit->save();
+                        $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_units_with_program/5);
+                        $audit->save();
+                    }
+
+                    
                     $this->processes++;
                 }
             }
@@ -1319,13 +1337,24 @@ class ComplianceSelectionJob implements ShouldQueue
                     $this->processes++;
                 } else {
 
-                    $required_units = ceil($total_units_with_program/5);
+                    if(ceil($total_units_with_program/5) > $total_units){
+                        $required_units = $total_units;
+                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
+                        $this->processes++;
+                        $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.$total_units. 'which is the total number of units';
 
-                    $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units_with_program/5));
-                    $this->processes++;
-                    $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.ceil($total_units_with_program/5);
+                        $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.$total_units. 'which is the total number of units';
+                    }else{
+                        $required_units = ceil($total_units_with_program/5);
+                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units_with_program/5));
+                        $this->processes++;
+                        $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.ceil($total_units_with_program/5);
 
-                    $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.ceil($total_units_with_program/5);
+                        $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.ceil($total_units_with_program/5);
+
+                    }
+
+                    
                     $audit->save();
                     $this->processes++;
                 }
@@ -1477,12 +1506,22 @@ class ComplianceSelectionJob implements ShouldQueue
                     $this->processes++;
                 } else {
 
-                    $required_units = ceil($total_units_with_program/5);
+                    if(ceil($total_units_with_program/5) > $total_units){
+                        $required_units = $total_units;
+                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
+                        $this->processes++;
+                        $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$total_units. 'which is the total number of units';
 
-                    $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units_with_program/5));
-                    $this->processes++;
-                    $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.ceil($total_units_with_program/5);
-                    $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.ceil($total_units_with_program/5);
+                        $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$total_units. 'which is the total number of units';
+                    }else{
+                        $required_units = ceil($total_units_with_program/5);
+                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units_with_program/5));
+                        $this->processes++;
+                        $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.ceil($total_units_with_program/5);
+
+                        $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.ceil($total_units_with_program/5);
+
+                    }
                     $audit->save();
                     $this->processes++;
                 }
