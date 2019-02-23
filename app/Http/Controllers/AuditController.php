@@ -1440,7 +1440,7 @@ class AuditController extends Controller
                         'pool' => $program['pool'],
                         'comments' => $program['comments'],
                         'user_limiter' => $program['use_limiter'],
-                        'totals_after_optimization' => $program['totals_after_optimization'],
+                        'totals_after_optimization' => $program['totals_after_optimization_not_merged'],
                         'units_before_optimization' => $program['units_before_optimization'],
                         'totals_before_optimization' => $program['totals_before_optimization'],
                         'required_units' => $program['totals_after_optimization'],
