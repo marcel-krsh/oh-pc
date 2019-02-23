@@ -471,6 +471,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 $audit->save();
             $summary['programs'][$i]['pool'] = $selection[$i]['pool'];
             $summary['programs'][$i]['program_keys'] = $selection[$i]['program_ids'];
+            $summary['programs'][$i]['required_units'] = $selection[$i]['required_units'];
             $summary['programs'][$i]['totals_before_optimization'] = $selection[$i]['totals'];
             $summary['programs'][$i]['units_before_optimization'] = $selection[$i]['units'];
             $summary['programs'][$i]['use_limiter'] = $selection[$i]['use_limiter'];
