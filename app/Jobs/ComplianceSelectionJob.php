@@ -1735,6 +1735,9 @@ class ComplianceSelectionJob implements ShouldQueue
 
                     if ($isLeasePurchase) {
                         $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $number_of_htc_units_needed);
+
+                        $required_units = $number_of_htc_units_needed;
+
                         $units_selected_count = $units_selected_count + count($units_selected);
                         $this->processes++;
                         $comments[] = 'It is a lease purchase. Total selected: '.count($units_selected);
@@ -1769,6 +1772,9 @@ class ComplianceSelectionJob implements ShouldQueue
                         if ($is_multi_building_project) {
 
                             $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $number_of_htc_units_needed);
+
+                            $required_units = $number_of_htc_units_needed;
+
                             $units_selected_count = $units_selected_count + count($units_selected);
                             $this->processes++;
                             $comments[] = 'The project is a multi building project. Total selected: '.count($units_selected);
@@ -1825,6 +1831,9 @@ class ComplianceSelectionJob implements ShouldQueue
                                     $this->processes++;
 
                                     $new_building_selection = $this->randomSelection($audit,$building->units->pluck('unit_key')->toArray(), 0, $number_of_htc_units_needed);
+
+                                    $required_units = $required_units + $number_of_htc_units_needed;
+
                                     $this->processes++;
                                     $units_selected = array_merge($units_selected, $new_building_selection);
                                     $units_selected_count = $units_selected_count + count($new_building_selection);
@@ -1840,6 +1849,9 @@ class ComplianceSelectionJob implements ShouldQueue
                     }
                 } else {
                     $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $number_of_htc_units_needed);
+
+                    $required_units = $number_of_htc_units_needed;
+                    
                     $units_selected_count = $units_selected_count + count($units_selected);
                     $comments[] = 'Total selected: '.count($units_selected);
 
