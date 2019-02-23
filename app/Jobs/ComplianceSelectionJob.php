@@ -1886,6 +1886,9 @@ class ComplianceSelectionJob implements ShouldQueue
                                         $number_of_htc_building_units_needed = ceil($total_htc_units_for_building/5) - $total_htc_units_for_building_without_overlap;
                                     }
                                     
+                                    $audit->comment = $audit->comment.' | Number of HTC Building units needed '.$number_of_htc_building_units_needed.'. Total HTC units for that building: '.$total_htc_units_for_building.'. Total without overlap: '.$total_htc_units_for_building_without_overlap;
+                                    $audit->save();
+
                                     $new_building_selection = $this->randomSelection($audit,$htc_units_for_building, 0, $number_of_htc_building_units_needed);
 
                                     $required_units = $required_units + $number_of_htc_building_units_needed;
