@@ -1858,9 +1858,19 @@ class ComplianceSelectionJob implements ShouldQueue
                                                 ->toArray();
 
                                 $htc_units_without_overlap = Unit::where('building_key', '=', $building->building_key)
-                                                ->whereHas('programs', function ($query) use ($audit, $program_htc_only_ids) {
+                                                ->whereNotIn('unit_key', $overlap)
+                                                ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
                                                     $query->where('audit_id', '=', $audit->id);
-                                                    $query->whereIn('program_key', $program_htc_only_ids);
+                                                    $query->whereIn('program_key', $program_htc_ids);
+                                                })
+                                                ->pluck('unit_key')
+                                                ->toArray();
+
+                                $htc_units_with_overlap = Unit::where('building_key', '=', $building->building_key)
+                                                ->whereIn('unit_key', $overlap)
+                                                ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
+                                                    $query->where('audit_id', '=', $audit->id);
+                                                    $query->whereIn('program_key', $program_htc_ids);
                                                 })
                                                 ->pluck('unit_key')
                                                 ->toArray();
