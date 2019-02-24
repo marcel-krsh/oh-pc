@@ -7,16 +7,39 @@ resizeModal(95);
 			<div class="uk-width-1-1 uk-padding-remove " style="min-height:200px; margin-top:30px;">
 				<canvas id="chartjs-modal-summary" class="chartjs" style="display: block;"></canvas>
 			</div>
-			<div class="uk-width-1-1 uk-padding-remove uk-text-center">
+			<div class="uk-width-1-1 uk-padding-remove uk-text-center" style="display:block; max-height:300px; overflow: auto; width: 100%">
 				<h3>ALL PROGRAMS<br /><small>Project #: {{$project->project_number}} | Audit #: {{$audit->id}}</small></h3>
-				<table class="uk-table uk-table-small noline small-padding">
+				<table class="uk-table uk-table-small noline small-padding" >
 					<tbody>
 						<tr>
 							<td></td>
 							<td class="uk-text-center"><i class="a-mobile-home iheader"></i></td>
 							<td class="uk-text-center"><i class="a-folder iheader"></i></td>
 						</tr>
+						@foreach($data['programs'] as $prog)
 						<tr>
+							<td>
+								<div uk-leader><strong>{{ $prog['name'] }}</strong></div>
+							</td>
+							<td class="uk-text-center border-right"></td>
+							<td class="uk-text-center"></td>
+						</tr>
+						<tr>
+							<td>
+								<div class="indented" uk-leader><i class="fas fa-square chart-color-required"></i> Required Units</div>
+							</td>
+							<td class="uk-text-center border-right">{{$prog['required_units']}}</td>
+							<td class="uk-text-center">{{$prog['required_units_file']}}</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="indented" uk-leader><i class="fas fa-square chart-color-needed"></i> Needed Units</div>
+							</td>
+							<td class="uk-text-center border-right">{{$prog['needed_units']}}</td>
+							<td class="uk-text-center">{{$prog['needed_units_file']}}</td>
+						</tr>
+						@endforeach
+						<!-- <tr>
 							<td>
 								<div uk-leader><strong>Compliance Requirements (with overlap)</strong></div>
 							</td>
@@ -57,7 +80,7 @@ resizeModal(95);
 							</td>
 							<td class="uk-text-center border-right">{{$data['summary']['to_be_inspected_units']}}</td>
 							<td class="uk-text-center">{{$data['summary']['to_be_inspected_units_file']}}</td>
-						</tr>
+						</tr> -->
 					</tbody>
 				</table>
 			</div>
@@ -104,7 +127,7 @@ resizeModal(95);
 		            		<div class="modal-project-summary-unit-program-info">
 		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasSiteInspection()) inspectable-selected @endif" data-unitid="{{$unitprogram->unit_id}}" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'physical');">
 		            				<i class="a-mobile"></i>
-		            				<div class="modal-project-summary-unit-program-icon-status">	
+		            				<div class="modal-project-summary-unit-program-icon-status">
 	            						@if($unitprogram->hasSiteInspection())
 				            			<i class="a-circle-checked"></i>
 				            			@else
@@ -139,7 +162,7 @@ resizeModal(95);
 		            		<div class="modal-project-summary-unit-program-info">
 		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasSiteInspection()) inspectable-selected @endif"  data-unitid="{{$unitprogram->unit_id}}" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'physical');">
 		            				<i class="a-mobile"></i>
-		            				<div class="modal-project-summary-unit-program-icon-status">	
+		            				<div class="modal-project-summary-unit-program-icon-status">
 	            						@if($unitprogram->hasSiteInspection())
 				            			<i class="a-circle-checked"></i>
 				            			@else
@@ -165,7 +188,7 @@ resizeModal(95);
 
 					@endforeach
 
-					
+
 				</div>
 			</div>
 		</div>
@@ -243,16 +266,16 @@ resizeModal(95);
 	        });
 
 			$.post('/modals/projects/{{$data["project"]["id"]}}/programs/0/summary', {
-					'programs' : programsSelected, 
+					'programs' : programsSelected,
 					'_token' : '{{ csrf_token() }}'
 				}, function(data) {
 					$('#modal-project-summary-units').fadeOut( "slow", function() {
-					    $('#modal-project-summary-units').html(data).fadeIn();	
+					    $('#modal-project-summary-units').html(data).fadeIn();
 					});
-				} 
+				}
 			);
 		});
-		
+
 	}
 
 	function projectSummarySelection(element, unitid, programid=null, type="both"){
@@ -260,7 +283,7 @@ resizeModal(95);
 
 		// we know which project {{$data["project"]["id"]}}
 		// we need to know which unit, which program, if file or physical audit and whether it is checked or unchecked
-		
+
 		// icon clicked at the unit level to toggle all inspectable programs on/off
 		if(programid == null){
 			// change element's color and icon
@@ -344,7 +367,7 @@ resizeModal(95);
 				}
 
 				// AJAX CALL HERE
-				
+
 			}
 		}
 
@@ -394,27 +417,46 @@ resizeModal(95);
 	var modalSummaryChart = new Chart(document.getElementById("chartjs-modal-summary"),{
 		"type":"doughnut",
 		"options": summaryCompositeOptions,
-		
+
 		"data":{
-			"labels": ["Required","Selected","Needed","Inspected", "To Be Inspected"],
+			"labels": ["Selected","Needed","Inspected", "To Be Inspected"],
 			"datasets":[
 				@foreach($datasets as $dataset)
 				{
 					"label":"{{$dataset['program_name']}}",
-					"data":[{{$dataset['required']}},{{$dataset['selected']}},{{$dataset['needed']}}, 0,0],
+					"data":[{{$dataset['selected']}},{{$dataset['needed']}}, 0,0],
 					"backgroundColor":[
-						chartColors.required,
 						chartColors.selected,
 						chartColors.needed,
 						chartColors.inspected,
 						chartColors.tobeinspected
 					],
+					"labels" : [
+						"{{$dataset['program_name']}}" + ' - Selected',
+						"{{$dataset['program_name']}}" + ' - Needed',
+						"{{$dataset['program_name']}}" + ' - Inspected',
+						"{{$dataset['program_name']}}" + ' - To Be Inspected'
+					],
 					"borderWidth": 1
 				},
 				@endforeach
-				
 			]
-		}
+		},
+		options: {
+      responsive: true,
+      legend: {
+        display: false,
+      },
+      tooltips: {
+      	callbacks: {
+        	label: function(tooltipItem, data) {
+          	var dataset = data.datasets[tooltipItem.datasetIndex];
+            var index = tooltipItem.index;
+            return dataset.labels[index] + ': ' + dataset.data[index];
+          }
+        }
+      }
+    }
 	});
 
 </script>
