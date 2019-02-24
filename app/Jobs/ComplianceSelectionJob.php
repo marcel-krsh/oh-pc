@@ -1868,12 +1868,9 @@ class ComplianceSelectionJob implements ShouldQueue
                                     
                                     // get all HTC units that do not overlap with HOME, OHTF and NHTF in that building
                                     $htc_units_without_overlap = Unit::where('building_key', '=', $building->building_key)
-                                                    ->whereHas('programs', function ($query) use ($audit, $program_htc_ids, $program_home_ids, $program_ohtf_ids, $program_nhtf_ids) {
+                                                    ->whereHas('programs', function ($query) use ($audit, $program_htc_only_ids) {
                                                         $query->where('audit_id', '=', $audit->id);
-                                                        $query->whereIn('program_key', $program_htc_ids);
-                                                        $query->whereNotIn('program_key', $program_home_ids);
-                                                        $query->whereNotIn('program_key', $program_ohtf_ids);
-                                                        $query->whereNotIn('program_key', $program_nhtf_ids);
+                                                        $query->whereIn('program_key', $program_htc_only_ids);
                                                     })->get();
                                                     $this->processes++;
 
