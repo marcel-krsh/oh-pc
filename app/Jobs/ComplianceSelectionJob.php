@@ -1690,23 +1690,6 @@ class ComplianceSelectionJob implements ShouldQueue
             $number_of_htc_units_required = ceil($total_htc_units/5);
             $required_units = $number_of_htc_units_required; // that's it, in all cases, that number is 20% of units
 
-
-            // commented because it may need to be done at the building level depending on the conditions below
-            // if (ceil($total_htc_units/5) >= count($htc_units_subset)) {
-            //     $number_of_htc_units_needed = ceil($total_htc_units/5) - count($htc_units_subset);
-            //     $this->processes++;
-            //     $comments[] = 'The number of HTC units that needs to be selected is 20% of the total number of HTC units regardless of the number of HTC units already selected with HOME, OHTF and NHTF: '.$number_of_htc_units_needed.'.';
-            //     $audit->comment = $audit->comment.' | Select Process The number of HTC units that needs to be selected is 20% of the total number of HTC units regardless of the number of HTC units already selected with HOME, OHTF and NHTF: '.$number_of_htc_units_needed.'.';
-            //      $audit->save();
-            //      $this->processes++;
-            // } else {
-            //     $number_of_htc_units_needed = 0;
-            //     $comments[] = 'There are enough HTC units in the HOME, OHTF and NHTF, no need to select more.';
-            //     $audit->comment = $audit->comment.' | Select Process There are enough HTC units in the HOME, OHTF and NHTF, no need to select more.';
-            //     $audit->save();
-            //     $this->processes++;
-            // }
-
             $units_selected = [];
             $units_selected_count = 0;
 
@@ -1853,7 +1836,9 @@ class ComplianceSelectionJob implements ShouldQueue
                         // create a new list of units based on building and project key
                         $units_selected = [];
                         $units_selected_count = 0;
-                        $required_units = 0;
+
+                        $required_units = 0; // in the case of buildings, we need to sum each totals because of the rounding
+                        
                         foreach ($buildings as $building) {
                             $this->processes++;
                             if ($building->units) {
@@ -1881,6 +1866,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                                 ->toArray();
 
                                 $required_units_for_that_building = ceil(count($htc_units_for_building)/5);
+                                $required_units = $required_units + $required_units_for_that_building;
                                 $htc_units_with_overlap_for_that_building = count($htc_units_for_building) - count($htc_units_without_overlap);
 
                                 if($required_units_for_that_building >= $htc_units_with_overlap_for_that_building){
@@ -1946,9 +1932,6 @@ class ComplianceSelectionJob implements ShouldQueue
             $this->processes++;
 
             // $units_selected_count isn't using the array_merge to keep the duplicate
-
-            // required units is selected + overlap
-            $required_units = $required_units + count($overlap);
 
             $selection[] = [
                 "program_name" => "HTC",
