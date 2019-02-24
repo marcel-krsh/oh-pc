@@ -64,8 +64,9 @@ class AuditController extends Controller
             $audit->rerun_compliance = 1;
             $audit->save();
 
-            ComplianceSelectionJob::dispatch($audit)->onQueue('compliance');
-
+            if($auditsAhead == 0){
+                ComplianceSelectionJob::dispatch($audit)->onQueue('compliance');
+            }
 
             return '<p>Your request to re-run the compliance selection has been added to the queue. There are currently '.$auditsAhead.' audit(s) ahead of your request.</p><p>It usually takes approximately 1-10 minutes per audit selection depending on the size of the project.<p>';
         } else {
@@ -1334,15 +1335,23 @@ class AuditController extends Controller
                 //dd($selection_summary['programs']);
 
                 /*
-                "name" => "HTC" 
-                "pool" => 0 
-                "group" => 7 
-                "comments" => array:4 [▶] 
-                "use_limiter" => 1 
-                "program_keys" => "30001,30005,30004,30030,30031,600009,600010,30036,30049,30048,66,67,68,36,30043,30059,30055" "units_after_optimization" => array:16 [▶] 
-                "totals_after_optimization" => 16 
-                "units_before_optimization" => array:36 [▶] 
-                "totals_before_optimization" => 36 ]
+                SUMMARY STATS:
+                Requirement (without overlap)
+                - required units (this is given by the selection process) $program['totals_before_optimization']
+                - selected (this is counted in the db)
+                - needed (this is calculated)
+                - to be inspected (this is counted in the db)
+
+                To meet compliance (optimized and overlap) & without duplicates (group by unit)
+                - sample size (this is given by the selection process) $program['totals_after_optimization']
+                - completed (this is counted)
+                - remaining inspection (this is calculated)
+
+                FOR EACH PROGRAM: (with unit duplicates)
+                - required units (this is given by the selection process)
+                - selected (this is counted in the db)
+                - needed (this is calculated)
+                - to be inspected (this is counted in the db with grouped by unit)
                  */
 
 
@@ -1394,20 +1403,18 @@ class AuditController extends Controller
                     $program_keys = explode(',', $program['program_keys']);
                     $all_program_keys =  array_merge($all_program_keys, $program_keys);
 
-                    //$selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
-                    $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->get()->count();
-                    //$selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
-                    $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->get()->count();
+                    $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->count();
+                    $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->count();
 
                     
 
-                    $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
-                    $needed_units_file = $program['totals_before_optimization'] - $selected_units_file;
+                    $needed_units_site = $program['required_units'] - $selected_units_site;
+                    $needed_units_file = $program['required_units'] - $selected_units_file;
 
                     $unit_keys = $program['units_before_optimization']; 
 
                     $summary_unit_ids = array_merge($summary_unit_ids, $program['units_before_optimization']);
-                    $summary_optimized_unit_ids = array_merge($summary_optimized_unit_ids, $program['units_after_optimization']);
+                //    $summary_optimized_unit_ids = array_merge($summary_optimized_unit_ids, $program['units_after_optimization']);
 
                     $inspected_units_site = UnitInspection::whereIn('unit_key', $program['units_after_optimization'])
                                 ->where('audit_id', '=', $audit->id)
@@ -1430,8 +1437,10 @@ class AuditController extends Controller
                                 ->get()
                                 ->count();
 
-                    $to_be_inspected_units_site = $program['totals_after_optimization'] - $inspected_units_site;
-                    $to_be_inspected_units_file = $program['totals_before_optimization'] - $inspected_units_file;
+                    $to_be_inspected_units_site = $program['required_units'] - $inspected_units_site;
+                    $to_be_inspected_units_file = $program['required_units'] - $inspected_units_file;
+
+                    $summary_required = $summary_required + $program['required_units'];
 
                     $data['programs'][] = [
                         'id' => $program['group'],
@@ -1439,14 +1448,15 @@ class AuditController extends Controller
                         'pool' => $program['pool'],
                         'comments' => $program['comments'],
                         'user_limiter' => $program['use_limiter'],
-                        'totals_after_optimization' => $program['totals_after_optimization'],
-                        'units_before_optimization' => $program['units_before_optimization'],
-                        'totals_before_optimization' => $program['totals_before_optimization'],
-                        'required_units' => $program['totals_after_optimization'],
+                        // 'totals_after_optimization' => $program['totals_after_optimization_not_merged'],
+                        // 'units_before_optimization' => $program['units_before_optimization'],
+                        // 'totals_before_optimization' => $program['totals_before_optimization'],
+                        'required_units' => $program['required_units'],
                         'selected_units' => $selected_units_site,
                         'needed_units' => $needed_units_site,
                         'inspected_units' => $inspected_units_site,
                         'to_be_inspected_units' => $to_be_inspected_units_site,
+
                         'required_units_file' => $program['totals_before_optimization'],
                         'selected_units_file' => $selected_units_file,
                         'needed_units_file' => $needed_units_file,
@@ -1496,10 +1506,10 @@ class AuditController extends Controller
                             ->where('complete', '!=', NULL)
                             ->count();
 
-                $summary_required = UnitInspection::whereIn('unit_key', $summary_unit_ids)
-                                ->where('audit_id', '=', $audit->id)
-                                ->where('is_site_visit', '=', 1)
-                                ->count();
+                // $summary_required = UnitInspection::whereIn('unit_key', $summary_unit_ids)
+                //                 ->where('audit_id', '=', $audit->id)
+                //                 ->where('is_site_visit', '=', 1)
+                //                 ->count();
 
                 $summary_required_file = UnitInspection::whereIn('unit_key', $summary_unit_ids)
                             ->where('audit_id', '=', $audit->id)
@@ -1532,7 +1542,7 @@ class AuditController extends Controller
                 $summary_optimized_completed_inspections = $summary_inspected;
                 $summary_optimized_remaining_inspections = $summary_optimized_sample_size - $summary_optimized_completed_inspections;
 
-                $summary_optimized_sample_size_file = count($summary_optimized_unit_ids);
+                $summary_optimized_sample_size_file = $summary_required_file;
                 $summary_optimized_completed_inspections_file = $summary_optimized_completed_inspections_file + $summary_inspected_file;
                 $summary_optimized_remaining_inspections_file = $summary_optimized_sample_size_file - $summary_optimized_completed_inspections_file;
 
@@ -1550,7 +1560,7 @@ class AuditController extends Controller
                         'needed_units_file' => $summary_needed_file,
                         'inspected_units_file' => $summary_inspected_file,
                         'to_be_inspected_units_file' => $summary_to_be_inspected_file,
-                        'optimized_sample_size_file' => count($summary_optimized_unit_ids),
+                        'optimized_sample_size_file' => $summary_required_file,
                         'optimized_completed_inspections_file' => $summary_optimized_completed_inspections_file,
                         'optimized_remaining_inspections_file' => $summary_optimized_remaining_inspections_file
                 ];

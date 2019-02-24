@@ -160,9 +160,16 @@ class AuthService
             }
         } catch (GuzzleException | \Exception $e) {
             //@todo: Throw PC-API Exception
-            echo $this->_url."<br>";
-            echo $endpoint."<br>";
-            dd('Guzzle exception - line 156 Auth Service :'.$e->getMessage());
+            //echo $this->_url."<br>";
+            //echo $endpoint."<br>";
+            $message = $e->getMessage();
+            $message = str_replace(env('ALLITA_PCAPI_USERNAME'), '#####', $message);
+            $message = str_replace(env('ALLITA_PCAPI_PASSWORD'), '#####', $message);
+            $message = str_replace(env('ALLITA_PCAPI_KEY'), '#####', $message);
+            $message = str_replace('username', '#####', $message);
+            $message = str_replace('password', '#####', $message);
+            $message = str_replace('key', '#####', $message);
+            dd('Guzzle exception - line 156 Auth Service :'.$message);
         }
 
         return $is_successful;
