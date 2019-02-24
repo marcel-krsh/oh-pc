@@ -1835,6 +1835,7 @@ class ComplianceSelectionJob implements ShouldQueue
                             // create a new list of units based on building and project key
                             $units_selected = [];
                             $units_selected_count = 0;
+                            $required_units = 0;
                             foreach ($buildings as $building) {
                                 $this->processes++;
                                 if ($building->units) {
@@ -1902,7 +1903,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                                     $new_building_selection = $this->randomSelection($audit,$htc_units_for_building, 0, $number_of_htc_building_units_needed);
 
-                                    $required_units = $required_units + $number_of_htc_building_units_needed;
+                                    $required_units = $required_units + count($new_building_selection);
 
                                     $this->processes++;
 

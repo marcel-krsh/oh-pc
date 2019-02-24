@@ -105,7 +105,7 @@
 		</div>
 
 		<div class="project-details-info-compliance-programs uk-position-relative uk-visible-toggle uk-margin-top"  >
-    		<ul class="uk-slider-items uk-child-width-1-2 uk-margin-top">
+    		<ul class=" uk-margin-top">
         		@foreach($data['programs'] as $program)
         		@if($program['required_units'] != 0)
 		        <li>
