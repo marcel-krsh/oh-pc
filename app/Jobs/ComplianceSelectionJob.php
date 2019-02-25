@@ -1602,7 +1602,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 $this->processes++;
                 if ($units_to_check_for_overlap[$i] == $units_to_check_for_overlap[$j] && $i != $j && !in_array($units_to_check_for_overlap[$i], $overlap)) {
                     $overlap[] = $units_to_check_for_overlap[$i];
-                    $overlap_list = $overlap_list . $units_to_check_for_overlap[$i]',';
+                    $overlap_list = $overlap_list . $units_to_check_for_overlap[$i].',';
                     $this->processes++;
                 }
             }
