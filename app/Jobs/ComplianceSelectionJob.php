@@ -1609,7 +1609,7 @@ class ComplianceSelectionJob implements ShouldQueue
         }
 
         $comments[] = 'Overlap list: '.$overlap_list;
-        $audit->comment = $audit->comment.'Overlap list: '.$overlap_list;
+        $audit->comment = $audit->comment.' | Overlap list: '.$overlap_list;
         $audit->save();
 
         //
