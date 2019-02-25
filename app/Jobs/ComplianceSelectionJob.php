@@ -2500,11 +2500,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                         $unit_inspections_inserted = 0;
                         foreach ($unit->programs as $unit_program) {
-                            if($unit_inspections_inserted > $program['required_units']){
-                                break;
-                            }
-
-                            if (in_array($unit_program->program_key, $program_keys)) {
+                            if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted <= $program['required_units']) {
                                 $u = new UnitInspection([
                                     'group' => $program['name'],
                                     'group_id' => $group_id,
@@ -2552,11 +2548,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                         $unit_inspections_inserted = 0;
                         foreach ($unit->programs as $unit_program) {
-                            if($unit_inspections_inserted > count($program['units_before_optimization'])){
-                                break;
-                            }
-
-                            if (in_array($unit_program->program_key, $program_keys)) {
+                            if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted <= count($program['units_before_optimization'])) {
 
                                 $u = new UnitInspection([
                                     'group' => $program['name'],
