@@ -1877,7 +1877,34 @@ class ComplianceSelectionJob implements ShouldQueue
 
                                 $required_units_for_that_building = ceil(count($htc_units_for_building)/5);
                                 $required_units = $required_units + $required_units_for_that_building;
-                                $htc_units_with_overlap_for_that_building = count($htc_units_for_building) - count($htc_units_without_overlap);
+                                // $htc_units_with_overlap_for_that_building = count($htc_units_for_building) - count($htc_units_without_overlap);
+                                $htc_units_with_overlap_for_that_building = count($htc_units_with_overlap);
+
+                                // TEST
+                                $overlap_list = '';
+                                foreach($overlap as $overlap_key){
+                                    $overlap_list = $overlap_list . $overlap_key . ',';
+                                }
+                                $comments[] = 'Overlap: '.$overlap_list;
+                                $audit->comment = $audit->comment.' | Overlap: '.$overlap_list;
+                                $audit->save();
+
+                                $htc_units_for_building_list = '';
+                                foreach($htc_units_for_building as $htc_units_for_building_key){
+                                    $htc_units_for_building_list = $htc_units_for_building_list . $htc_units_for_building_key. ',';
+                                }
+                                $comments[] = 'htc_units_for_building_list: '.$htc_units_for_building_list;
+                                $audit->comment = $audit->comment.' | htc_units_for_building_list: '.$htc_units_for_building_list;
+                                $audit->save();
+
+                                $htc_units_with_overlap_list = '';
+                                foreach($htc_units_with_overlap as $htc_units_with_overlap_key){
+                                    $htc_units_with_overlap_list = $htc_units_with_overlap_list . $htc_units_with_overlap_key. ',';
+                                }
+                                $comments[] = 'htc_units_with_overlap_list: '.$htc_units_with_overlap_list;
+                                $audit->comment = $audit->comment.' | htc_units_with_overlap_list: '.$htc_units_with_overlap_list;
+                                $audit->save();
+                                // END TEST
 
                                 if($required_units_for_that_building >= $htc_units_with_overlap_for_that_building){
                                     // we are missing some units
