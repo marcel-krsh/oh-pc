@@ -1095,6 +1095,9 @@ class ComplianceSelectionJob implements ShouldQueue
         // only for home
         
 
+        $units_to_check_for_overlap = [];
+        
+
         $program_home_ids = explode(',', SystemSetting::get('program_home'));
         $program_home_names = Program::whereIn('program_key', $program_home_ids)->get()->pluck('program_name')->toArray();
         $this->processes++;
@@ -1140,7 +1143,6 @@ class ComplianceSelectionJob implements ShouldQueue
             $units_selected = [];
             $htc_units_subset_for_all = [];
             $htc_units_subset = [];
-            $units_to_check_for_overlap = [];
             
             $comments[] = 'Total units with HOME funding is '.$total_units;
             $comments[] = 'Total units in the project with a program is '.$total_units_with_program;
@@ -1592,17 +1594,23 @@ class ComplianceSelectionJob implements ShouldQueue
 
         // check for HOME, OHTF, NHTF overlap and send to analyst
         // overlap contains the keys of units
-        $overlap = [];
+        $overlap = array();
+        $overlap_list = '';
         for ($i=0; $i<count($units_to_check_for_overlap); $i++) {
             $this->processes++;
             for ($j=0; $j<count($units_to_check_for_overlap); $j++) {
                 $this->processes++;
                 if ($units_to_check_for_overlap[$i] == $units_to_check_for_overlap[$j] && $i != $j && !in_array($units_to_check_for_overlap[$i], $overlap)) {
                     $overlap[] = $units_to_check_for_overlap[$i];
+                    $overlap_list = $overlap_list . $units_to_check_for_overlap[$i]',';
                     $this->processes++;
                 }
             }
         }
+
+        $comments[] = 'Overlap list: '.$overlap_list;
+        $audit->comment = $audit->comment.'Overlap list: '.$overlap_list;
+        $audit->save();
 
         //
         //
