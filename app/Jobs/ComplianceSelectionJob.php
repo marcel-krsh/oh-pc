@@ -1608,8 +1608,8 @@ class ComplianceSelectionJob implements ShouldQueue
             }
         }
 
-        $comments[] = 'Overlap list: '.$overlap_list;
-        $audit->comment = $audit->comment.' | Overlap list: '.$overlap_list;
+        $comments[] = 'Overlap list to send to analyst: '.$overlap_list;
+        $audit->comment = $audit->comment.' | Overlap list to send to analyst: '.$overlap_list;
         $audit->save();
 
         //
@@ -1776,10 +1776,10 @@ class ComplianceSelectionJob implements ShouldQueue
                                                     $query->whereIn('program_key', $program_htc_only_ids);
                                                 })->pluck('unit_key')->toArray();
 
-                    if($number_of_htc_units_required <= count($overlap)){
+                    if($number_of_htc_units_required <= count($htc_units_subset)){
                         $number_of_htc_units_needed = 0;
                     }else{
-                        $number_of_htc_units_needed = $number_of_htc_units_required - count($overlap);
+                        $number_of_htc_units_needed = $number_of_htc_units_required - count($htc_units_subset);
                     }
 
                     $units_selected = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
@@ -1822,10 +1822,10 @@ class ComplianceSelectionJob implements ShouldQueue
                                                     $query->whereIn('program_key', $program_htc_only_ids);
                                                 })->pluck('unit_key')->toArray();
 
-                        if($number_of_htc_units_required <= count($overlap)){
+                        if($number_of_htc_units_required <= count($htc_units_subset)){
                             $number_of_htc_units_needed = 0;
                         }else{
-                            $number_of_htc_units_needed = $number_of_htc_units_required - count($overlap);
+                            $number_of_htc_units_needed = $number_of_htc_units_required - count($htc_units_subset);
                         }
 
                         $units_selected = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
@@ -1858,6 +1858,8 @@ class ComplianceSelectionJob implements ShouldQueue
                                 // if the 20% of all building's unit is less than the building's units that are in the overlap, done
                                 // otherwise get the missing units
 
+                                // $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf
+
                                 $htc_units_for_building = Unit::where('building_key', '=', $building->building_key)
                                                 ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
                                                     $query->where('audit_id', '=', $audit->id);
@@ -1867,7 +1869,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                                 ->toArray();
 
                                 $htc_units_without_overlap = Unit::where('building_key', '=', $building->building_key)
-                                                ->whereNotIn('unit_key', $overlap)
+                                                ->whereNotIn('unit_key', $htc_units_subset)
                                                 ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
                                                     $query->where('audit_id', '=', $audit->id);
                                                     $query->whereIn('program_key', $program_htc_ids);
@@ -1876,7 +1878,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                                 ->toArray();
 
                                 $htc_units_with_overlap = Unit::where('building_key', '=', $building->building_key)
-                                                ->whereIn('unit_key', $overlap)
+                                                ->whereIn('unit_key', $htc_units_subset)
                                                 ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
                                                     $query->where('audit_id', '=', $audit->id);
                                                     $query->whereIn('program_key', $program_htc_ids);
@@ -1891,8 +1893,8 @@ class ComplianceSelectionJob implements ShouldQueue
 
                                 // TEST
                                 $overlap_list = '';
-                                foreach($overlap as $overlap_key){
-                                    $overlap_list = $overlap_list . $overlap_key . ',';
+                                foreach($htc_units_subset as $htc_units_subset_key){
+                                    $overlap_list = $overlap_list . $htc_units_subset_key . ',';
                                 }
                                 $comments[] = 'Overlap: '.$overlap_list;
                                 $audit->comment = $audit->comment.' | Overlap: '.$overlap_list;
