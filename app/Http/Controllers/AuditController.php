@@ -1415,7 +1415,7 @@ class AuditController extends Controller
                     $unit_keys = $program['units_before_optimization']; 
 
                     $summary_unit_ids = array_merge($summary_unit_ids, $program['units_before_optimization']);
-                //    $summary_optimized_unit_ids = array_merge($summary_optimized_unit_ids, $program['units_after_optimization']);
+                    $summary_optimized_unit_ids = array_merge($summary_optimized_unit_ids, $program['units_after_optimization']);
 
                     //whereIn('unit_key', $program['units_after_optimization'])
                     $inspected_units_site = UnitInspection::where('audit_id', '=', $audit->id)
@@ -1520,7 +1520,7 @@ class AuditController extends Controller
                 $summary_to_be_inspected = $summary_required - $summary_inspected;
                 $summary_to_be_inspected_file = $summary_required_file - $summary_inspected_file;
 
-                $summary_optimized_sample_size = count($summary_optimized_unit_ids);
+                $summary_optimized_sample_size = $summary_optimized_required;
                 $summary_optimized_completed_inspections = $summary_inspected;
                 $summary_optimized_remaining_inspections = $summary_optimized_sample_size - $summary_optimized_completed_inspections;
 
