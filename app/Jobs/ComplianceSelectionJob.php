@@ -2498,7 +2498,12 @@ class ComplianceSelectionJob implements ShouldQueue
                         $program_keys = explode(',', $program['program_keys']);
                         $this->processes++;
 
+                        $unit_inspections_inserted = 0;
                         foreach ($unit->programs as $unit_program) {
+                            if($unit_inspections_inserted > $program['required_units']){
+                                break();
+                            }
+
                             if (in_array($unit_program->program_key, $program_keys)) {
                                 $u = new UnitInspection([
                                     'group' => $program['name'],
@@ -2520,6 +2525,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                     'is_file_audit' => 0
                                 ]);
                                 $u->save();
+                                $unit_inspections_inserted++;
                                 $this->processes++;
                             }
                         }
@@ -2544,7 +2550,12 @@ class ComplianceSelectionJob implements ShouldQueue
                         $program_keys = explode(',', $program['program_keys']);
                         $this->processes++;
 
+                        $unit_inspections_inserted = 0;
                         foreach ($unit->programs as $unit_program) {
+                            if($unit_inspections_inserted > count($program['units_before_optimization'])){
+                                break();
+                            }
+
                             if (in_array($unit_program->program_key, $program_keys)) {
 
                                 $u = new UnitInspection([
@@ -2567,6 +2578,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                     'is_file_audit' => 1
                                 ]);
                                 $u->save();
+                                $unit_inspections_inserted++;
                                 $this->processes++;
                             }
                         }

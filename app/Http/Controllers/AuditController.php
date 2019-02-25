@@ -1474,6 +1474,7 @@ class AuditController extends Controller
                 
 
                 $summary_optimized_unit_ids = array_unique($summary_optimized_unit_ids);
+
                 $all_program_keys = array_unique($all_program_keys);
                 
                 $summary_inspected = UnitInspection::whereIn('unit_key', $summary_optimized_unit_ids)
