@@ -2487,6 +2487,8 @@ class ComplianceSelectionJob implements ShouldQueue
                     $units = Unit::whereIn('unit_key', $unit_keys)->get();
                     $this->processes++;
 
+                    $unit_inspections_inserted = 0;
+                    
                     foreach ($units as $unit) {
                         $this->processes++;
                         if (in_array($unit->unit_key, $overlap)) {
@@ -2498,7 +2500,6 @@ class ComplianceSelectionJob implements ShouldQueue
                         $program_keys = explode(',', $program['program_keys']);
                         $this->processes++;
 
-                        $unit_inspections_inserted = 0;
                         foreach ($unit->programs as $unit_program) {
                             if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < $program['required_units']) {
                                 $u = new UnitInspection([
@@ -2535,6 +2536,8 @@ class ComplianceSelectionJob implements ShouldQueue
                     $units = Unit::whereIn('unit_key', $unit_keys)->get();
                     $this->processes++;
 
+                    $unit_inspections_inserted = 0;
+
                     foreach ($units as $unit) {
                         $this->processes++;
                         if (in_array($unit->unit_key, $overlap)) {
@@ -2546,7 +2549,7 @@ class ComplianceSelectionJob implements ShouldQueue
                         $program_keys = explode(',', $program['program_keys']);
                         $this->processes++;
 
-                        $unit_inspections_inserted = 0;
+                        
                         foreach ($unit->programs as $unit_program) {
                             if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < count($program['units_before_optimization'])) {
 
