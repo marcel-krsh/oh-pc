@@ -239,9 +239,7 @@
 				@endif
 		        @endforeach
     		</ul>
-		    <a class="uk-position-center-left uk-position-small uk-hidden-hover" style="width:20px" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
-		    <a class="uk-position-center-right uk-position-small uk-hidden-hover" style="width:20px" href="#" uk-slidenav-next uk-slider-item="next"></a>
-		</div>
+    	</div>
 
 	</div>
 

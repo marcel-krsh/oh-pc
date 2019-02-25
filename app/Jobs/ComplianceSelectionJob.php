@@ -1984,6 +1984,14 @@ class ComplianceSelectionJob implements ShouldQueue
             $audit->comment = $audit->comment.' | Combining HTC total selected: '.count($units_selected).' + '.count($htc_units_subset_for_home).' + '.count($htc_units_subset_for_ohtf).' + '.count($htc_units_subset_for_nhtf);
                     $audit->save();
 
+            $htc_units_from_home_list = '';
+            foreach($htc_units_subset_for_home as $htc_unit_for_home){
+                $htc_units_from_home_list = $htc_units_from_home_list . $htc_unit_for_home;
+            }
+            $comments[] = 'HTC units from HOME: '.$htc_units_from_home_list;
+            $audit->comment = $audit->comment.' | HTC units from HOME: '.$htc_units_from_home_list;
+                    $audit->save();     
+
             $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
             $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
             $this->processes++;
