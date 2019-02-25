@@ -392,10 +392,15 @@ class ComplianceSelectionJob implements ShouldQueue
                 $this->processes++;
             $output = [];
 
-            foreach (array_rand($units, $needed) as $id) {
-                $output[] = $units[$id];
-                $this->processes++;
+            if($needed == 1){
+                $output[] = array_rand($units, $needed);
+            }else{
+                foreach (array_rand($units, $needed) as $id) {
+                    $output[] = $units[$id];
+                    $this->processes++;
+                }
             }
+            
             $audit->comment = $audit->comment.' | Random selection randomized list and returning output to selection process.';
                 $audit->save();
                 $this->processes++;
