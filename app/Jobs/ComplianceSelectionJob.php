@@ -1582,26 +1582,27 @@ class ComplianceSelectionJob implements ShouldQueue
             ];
             $this->processes++;
 
-            // check for HOME, OHTF, NHTF overlap and send to analyst
-            // overlap contains the keys of units
-            $overlap = [];
-            for ($i=0; $i<count($units_to_check_for_overlap); $i++) {
-                $this->processes++;
-                for ($j=0; $j<count($units_to_check_for_overlap); $j++) {
-                    $this->processes++;
-                    if ($units_to_check_for_overlap[$i] == $units_to_check_for_overlap[$j] && $i != $j && !in_array($units_to_check_for_overlap[$i], $overlap)) {
-                        $overlap[] = $units_to_check_for_overlap[$i];
-                        $this->processes++;
-                    }
-                }
-            }
+            
         }else{
-            $overlap = [];
+            
             $htc_units_subset_for_nhtf = array();
             $audit->comment_system = $audit->comment_system.' | Select Process is not working with NHTF.';
             $audit->save();
         }
 
+        // check for HOME, OHTF, NHTF overlap and send to analyst
+        // overlap contains the keys of units
+        $overlap = [];
+        for ($i=0; $i<count($units_to_check_for_overlap); $i++) {
+            $this->processes++;
+            for ($j=0; $j<count($units_to_check_for_overlap); $j++) {
+                $this->processes++;
+                if ($units_to_check_for_overlap[$i] == $units_to_check_for_overlap[$j] && $i != $j && !in_array($units_to_check_for_overlap[$i], $overlap)) {
+                    $overlap[] = $units_to_check_for_overlap[$i];
+                    $this->processes++;
+                }
+            }
+        }
 
         //
         //
