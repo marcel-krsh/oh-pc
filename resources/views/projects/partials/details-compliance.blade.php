@@ -160,6 +160,9 @@
 							</table>
 						</div>
 					</div>
+					<div class="uk-column-1-2">
+						{{$program['comments']}}
+					</div>
 					<script>
 						new Chart(document.getElementById("chartjs-{{$program['id']}}"),{
 							"type":"doughnut",
