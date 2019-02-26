@@ -125,9 +125,9 @@
 			<div class="uk-width-2-3">
 				<ul class="leaders" style="margin-right:30px;">
 					<li><span>Total Buildings</span> <span>{{$details->total_building}}</span></li>
-					<li><span class="indented">Total Building Common Areas</span> <span>{{$details->total_building_common_areas}}</span></li>
-					<li><span class="indented">Total Building Systems</span> <span>{{$details->total_building_systems}}</span></li>
-					<li><span class="indented">Total Building Exteriors</span> <span>{{$details->total_building_exteriors}}</span></li>
+					<li style="display:none"><span class="indented">Total Building Common Areas</span> <span>{{$details->total_building_common_areas}}</span></li>
+					<li style="display:none"><span class="indented">Total Building Systems</span> <span>{{$details->total_building_systems}}</span></li>
+					<li style="display:none"><span class="indented">Total Building Exteriors</span> <span>{{$details->total_building_exteriors}}</span></li>
 					<li><span>Total Project Common Areas</span> <span></span></li>
 					<li><span>Total Units</span> <span>{{$details->total_units}}</span></li>
 					<li><span class="indented">• Market Rate Units</span> <span>{{$details->market_rate}}</span></li>
