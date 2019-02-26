@@ -1,5 +1,5 @@
 <script>
-resizeModal(95);
+	resizeModal(95);
 </script>
 <div id="modal-project-summary" class="uk-padding-remove uk-margin-bottom">
 	<div class="modal-project-summary-left">
@@ -98,8 +98,8 @@ resizeModal(95);
 
 					@if($current_unitid != $unitprogram->unit_id)
 					@php
-						$current_unitid = $unitprogram->unit_id;
-						//$current_programkey = $unitprogram->program_key;
+					$current_unitid = $unitprogram->unit_id;
+					//$current_programkey = $unitprogram->program_key;
 					@endphp
 					<div class="modal-project-summary-unit summary-unit-{{$unitprogram->unit_id}} @if($unitprogram->unitHasSelection()) has-selected @else no-selection @endif">
 						<div class="modal-project-summary-unit-status">
@@ -110,132 +110,132 @@ resizeModal(95);
 								<i class="a-marker-basic uk-text-muted uk-link use-hand-cursor" uk-tooltip="title:View On Map;" title="" aria-expanded="false" onclick="window.open('https://maps.google.com/maps?q={{$unitprogram->unit->building->address->line_1}}+{{$unitprogram->unit->building->address->city}}+{{$unitprogram->unit->building->address->state}}+{{$unitprogram->unit->building->address->zip}}');"></i>
 							</div>
 							<div class="modal-project-summary-unit-info-main">
-			            		<h4 class="uk-margin-bottom-remove">{!!$unitprogram->unit->building->address->formatted_address($unitprogram->unit->unit_name)!!}<br />
-			            			{{$unitprogram->unit->most_recent_event()->type->event_type_description}}: {{formatDate($unitprogram->unit->most_recent_event()->event_date)}}</h4>
-					        </div>
-					    </div>
+								<h4 class="uk-margin-bottom-remove">{!!$unitprogram->unit->building->address->formatted_address($unitprogram->unit->unit_name)!!}<br />
+									{{$unitprogram->unit->most_recent_event()->type->event_type_description}}: {{formatDate($unitprogram->unit->most_recent_event()->event_date)}}</h4>
+								</div>
+							</div>
+						</div>
+						<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1  summary-unit-programs-{{$unitprogram->unit_id}} @if($unitprogram->unitHasSelection()) has-selected @else no-selection @endif" >
+							<div class="modal-project-summary-unit-program uk-visible-toggle">
+								<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle @if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection()) inspectable-selected @endif"  data-unitid="{{$unitprogram->unit_id}}">
+									@if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection())
+									<i class="a-circle-checked" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}});"></i>
+									@else
+									<i class="a-circle" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}});"></i>
+									@endif
+								</div>
+								<div class="modal-project-summary-unit-program-info">
+									<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasSiteInspection()) inspectable-selected @endif" data-unitid="{{$unitprogram->unit_id}}" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'physical');">
+										<i class="a-mobile"></i>
+										<div class="modal-project-summary-unit-program-icon-status">
+											@if($unitprogram->hasSiteInspection())
+											<i class="a-circle-checked"></i>
+											@else
+											<i class="a-circle"></i>
+											@endif
+										</div>
+									</div>
+									<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasFileInspection()) inspectable-selected @endif"  data-unitid="{{$unitprogram->unit_id}}" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'file');">
+										<i class="a-folder"></i>
+										<div class="modal-project-summary-unit-program-icon-status">
+											@if($unitprogram->hasFileInspection())
+											<i class="a-circle-checked"></i>
+											@else
+											<i class="a-circle"></i>
+											@endif
+										</div>
+									</div>
+									{{$unitprogram->program->program_name}}
+								</div>
+							</div>
+						</div>
+						@else
+						<div class="modal-project-summary-unit-programs summary-unit-programs-{{$unitprogram->unit_id}} uk-margin-remove uk-width-1-1 @if($unitprogram->unitHasSelection()) has-selected @else no-selection @endif">
+							<div class="modal-project-summary-unit-program uk-visible-toggle">
+								<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle @if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection()) inspectable-selected @endif"  data-unitid="{{$unitprogram->unit_id}}">
+									@if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection())
+									<i class="a-circle-checked" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}});"></i>
+									@else
+									<i class="a-circle" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}});"></i>
+									@endif
+								</div>
+								<div class="modal-project-summary-unit-program-info">
+									<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasSiteInspection()) inspectable-selected @endif"  data-unitid="{{$unitprogram->unit_id}}" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'physical');">
+										<i class="a-mobile"></i>
+										<div class="modal-project-summary-unit-program-icon-status">
+											@if($unitprogram->hasSiteInspection())
+											<i class="a-circle-checked"></i>
+											@else
+											<i class="a-circle"></i>
+											@endif
+										</div>
+									</div>
+									<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasFileInspection()) inspectable-selected @endif" data-unitid="{{$unitprogram->unit_id}}" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'file');">
+										<i class="a-folder"></i>
+										<div class="modal-project-summary-unit-program-icon-status">
+											@if($unitprogram->hasFileInspection())
+											<i class="a-circle-checked"></i>
+											@else
+											<i class="a-circle"></i>
+											@endif
+										</div>
+									</div>
+									{{$unitprogram->program->program_name}}
+								</div>
+							</div>
+						</div>
+						@endif
+
+						@endforeach
+
+
 					</div>
-					<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1  summary-unit-programs-{{$unitprogram->unit_id}} @if($unitprogram->unitHasSelection()) has-selected @else no-selection @endif" >
-			        	<div class="modal-project-summary-unit-program uk-visible-toggle">
-		            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle @if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection()) inspectable-selected @endif"  data-unitid="{{$unitprogram->unit_id}}">
-		            			@if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection())
-		            			<i class="a-circle-checked" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}});"></i>
-		            			@else
-		            			<i class="a-circle" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}});"></i>
-		            			@endif
-		            		</div>
-		            		<div class="modal-project-summary-unit-program-info">
-		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasSiteInspection()) inspectable-selected @endif" data-unitid="{{$unitprogram->unit_id}}" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'physical');">
-		            				<i class="a-mobile"></i>
-		            				<div class="modal-project-summary-unit-program-icon-status">
-	            						@if($unitprogram->hasSiteInspection())
-				            			<i class="a-circle-checked"></i>
-				            			@else
-				            			<i class="a-circle"></i>
-				            			@endif
-		            				</div>
-		            			</div>
-		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasFileInspection()) inspectable-selected @endif"  data-unitid="{{$unitprogram->unit_id}}" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'file');">
-		            				<i class="a-folder"></i>
-		            				<div class="modal-project-summary-unit-program-icon-status">
-		            					@if($unitprogram->hasFileInspection())
-				            			<i class="a-circle-checked"></i>
-				            			@else
-				            			<i class="a-circle"></i>
-				            			@endif
-		            				</div>
-		            			</div>
-		            			{{$unitprogram->program->program_name}}
-		            		</div>
-		            	</div>
+				</div>
+			</div>
+			<div class="modal-project-summary-right-top">
+				<div class="uk-padding-remove uk-margin-top uk-flex uk-flex-between" >
+					<button id="summary-btn-all" class="uk-button uk-button-default uk-button-small button-filter button-filter-selected button-filter-wide" onclick="filterAll();" type="button">ALL</button>
+					<button id="summary-btn-selected" class="uk-button uk-button-default uk-button-small button-filter button-filter-wide" onclick="filterSelected();" type="button">SELECTED</button>
+					<button id="summary-btn-unselected" class="uk-button uk-button-default uk-button-small button-filter button-filter-wide" onclick="filterUnselected();" type="button">UNSELECTED</button>
+					<button id="" class="uk-button uk-button-default uk-button-small button-filter" onclick="" type="button"><i class="fas fa-filter"></i></button>
+					<div class="uk-dropdown uk-dropdown-bottom filter-dropdown filter-program-dropdown" uk-dropdown=" flip: false; pos: bottom-right;" style="top: 26px; left: 0px;">
+						<form id="modal-project-summary-program-filter-form">
+							<fieldset class="uk-fieldset">
+								<div id="modal-project-summary-program-filters" class="uk-margin uk-child-width-auto uk-grid">
+									@foreach($actual_programs as $program)
+									<!-- @if(session('project-summary-program-{{$program["id"]}}') == 1)
+									<input id="filter-project-summary-program-{{$program['id']}}" value="{{ $program['id'] }}" type="checkbox" checked/>
+									<label for="filter-project-summary-program-{{$program['id']}}">{{$program['name']}}</label>
+									@else -->
+									<input id="filter-project-summary-program-{{$program->program_key}}" value="{{ $program->program_key }}" type="checkbox"/>
+									<label for="filter-project-summary-program-{{$program->program_key}}">{{$program->program_name}}</label>
+									<!-- @endif -->
+									@endforeach
+								</div>
+								<div class="uk-margin-remove" uk-grid>
+									<div class="uk-width-1-1">
+										<button class="uk-button uk-button-primary uk-width-1-1" onclick="filterProgramSummary()">APPLY SELECTION</button>
+									</div>
+								</div>
+							</fieldset>
+						</form>
 					</div>
-					@else
-					<div class="modal-project-summary-unit-programs summary-unit-programs-{{$unitprogram->unit_id}} uk-margin-remove uk-width-1-1 @if($unitprogram->unitHasSelection()) has-selected @else no-selection @endif">
-			        	<div class="modal-project-summary-unit-program uk-visible-toggle">
-		            		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle @if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection()) inspectable-selected @endif"  data-unitid="{{$unitprogram->unit_id}}">
-		            			@if($unitprogram->hasSiteInspection() && $unitprogram->hasFileInspection())
-		            			<i class="a-circle-checked" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}});"></i>
-		            			@else
-		            			<i class="a-circle" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}});"></i>
-		            			@endif
-		            		</div>
-		            		<div class="modal-project-summary-unit-program-info">
-		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasSiteInspection()) inspectable-selected @endif"  data-unitid="{{$unitprogram->unit_id}}" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'physical');">
-		            				<i class="a-mobile"></i>
-		            				<div class="modal-project-summary-unit-program-icon-status">
-	            						@if($unitprogram->hasSiteInspection())
-				            			<i class="a-circle-checked"></i>
-				            			@else
-				            			<i class="a-circle"></i>
-				            			@endif
-		            				</div>
-		            			</div>
-		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasFileInspection()) inspectable-selected @endif" data-unitid="{{$unitprogram->unit_id}}" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'file');">
-		            				<i class="a-folder"></i>
-		            				<div class="modal-project-summary-unit-program-icon-status">
-		            					@if($unitprogram->hasFileInspection())
-				            			<i class="a-circle-checked"></i>
-				            			@else
-				            			<i class="a-circle"></i>
-				            			@endif
-		            				</div>
-		            			</div>
-		            			{{$unitprogram->program->program_name}}
-		            		</div>
-		            	</div>
-			        </div>
-					@endif
-
-					@endforeach
-
-
 				</div>
 			</div>
 		</div>
-		<div class="modal-project-summary-right-top">
-			<div class="uk-padding-remove uk-margin-top uk-flex uk-flex-between" >
-				<button id="summary-btn-all" class="uk-button uk-button-default uk-button-small button-filter button-filter-selected button-filter-wide" onclick="filterAll();" type="button">ALL</button>
-				<button id="summary-btn-selected" class="uk-button uk-button-default uk-button-small button-filter button-filter-wide" onclick="filterSelected();" type="button">SELECTED</button>
-				<button id="summary-btn-unselected" class="uk-button uk-button-default uk-button-small button-filter button-filter-wide" onclick="filterUnselected();" type="button">UNSELECTED</button>
-				<button id="" class="uk-button uk-button-default uk-button-small button-filter" onclick="" type="button"><i class="fas fa-filter"></i></button>
-				<div class="uk-dropdown uk-dropdown-bottom filter-dropdown filter-program-dropdown" uk-dropdown=" flip: false; pos: bottom-right;" style="top: 26px; left: 0px;">
-        			<form id="modal-project-summary-program-filter-form">
-        				<fieldset class="uk-fieldset">
-        					<div id="modal-project-summary-program-filters" class="uk-margin uk-child-width-auto uk-grid">
-        						@foreach($programs as $program)
-        							@if(session('project-summary-program-{{$program["id"]}}') == 1)
-						            <input id="filter-project-summary-program-{{$program['id']}}" value="{{ $program['id'] }}" type="checkbox" checked/>
-									<label for="filter-project-summary-program-{{$program['id']}}">{{$program['name']}}</label>
-									@else
-						            <input id="filter-project-summary-program-{{$program['id']}}" value="{{ $program['id'] }}" type="checkbox"/>
-									<label for="filter-project-summary-program-{{$program['id']}}">{{$program['name']}}</label>
-									@endif
-        						@endforeach
-					        </div>
-					        <div class="uk-margin-remove" uk-grid>
-                        		<div class="uk-width-1-1">
-                        			<button class="uk-button uk-button-primary uk-width-1-1" onclick="filterProgramSummary()">APPLY SELECTION</button>
-                        		</div>
-                        	</div>
-        				</fieldset>
-        			</form>
-                </div>
-			</div>
-		</div>
 	</div>
-</div>
 
-<script>
+	<script>
 
-	var data = JSON.parse('{!! json_encode($data) !!}');
+		var data = JSON.parse('{!! json_encode($data) !!}');
 
-	function filterAll(){
-		$('[id^=summary-btn-]').removeClass('button-filter-selected');
-		$('#summary-btn-all').addClass('button-filter-selected');
-		$('.has-selected, .no-selection').fadeIn( "slow", function() {});
-	}
+		function filterAll(){
+			$('[id^=summary-btn-]').removeClass('button-filter-selected');
+			$('#summary-btn-all').addClass('button-filter-selected');
+			$('.has-selected, .no-selection').fadeIn( "slow", function() {});
+		}
 
-	function filterSelected(){
+		function filterSelected(){
 		// remove all and then display only selected
 		$('[id^=summary-btn-]').removeClass('button-filter-selected');
 		$('#summary-btn-selected').addClass('button-filter-selected');
@@ -257,22 +257,22 @@ resizeModal(95);
 
 		$('.filter-program-dropdown').fadeOut("slow", function() {
 			var spinner = '<div style="height:200px;width: 100%;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
-	        $('#modal-project-summary-units').html(spinner);
+			$('#modal-project-summary-units').html(spinner);
 
 			var form = $('#modal-project-summary-program-filter-form');
 			var programsSelected = [];
-	        $("#modal-project-summary-program-filter-form input:checkbox:checked").each(function(){
-	            programsSelected.push($(this).val());
-	        });
+			$("#modal-project-summary-program-filter-form input:checkbox:checked").each(function(){
+				programsSelected.push($(this).val());
+			});
 
 			$.post('/modals/projects/{{$data["project"]["id"]}}/programs/0/summary', {
-					'programs' : programsSelected,
-					'_token' : '{{ csrf_token() }}'
-				}, function(data) {
-					$('#modal-project-summary-units').fadeOut( "slow", function() {
-					    $('#modal-project-summary-units').html(data).fadeIn();
-					});
-				}
+				'programs' : programsSelected,
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				$('#modal-project-summary-units').fadeOut( "slow", function() {
+					$('#modal-project-summary-units').html(data).fadeIn();
+				});
+			}
 			);
 		});
 
@@ -309,9 +309,9 @@ resizeModal(95);
 				var auditIconDivs = $(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-icon');
 				var bothSelected = 1;
 				$.each( auditIconDivs, function( key, e ) {
-				  if(!$(e).hasClass('inspectable-selected')){
-				  	bothSelected = 0;
-				  }
+					if(!$(e).hasClass('inspectable-selected')){
+						bothSelected = 0;
+					}
 				});
 				if(bothSelected){
 					$(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-quick-toggle').addClass('inspectable-selected');
@@ -336,9 +336,9 @@ resizeModal(95);
 				var auditIconDivs = $(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-icon');
 				var bothSelected = 1;
 				$.each( auditIconDivs, function( key, e ) {
-				  if(!$(e).hasClass('inspectable-selected')){
-				  	bothSelected = 0;
-				  }
+					if(!$(e).hasClass('inspectable-selected')){
+						bothSelected = 0;
+					}
 				});
 				if(bothSelected){
 					$(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-quick-toggle').addClass('inspectable-selected');
@@ -355,15 +355,15 @@ resizeModal(95);
 					$(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-icon-status i.a-circle').toggleClass("a-circle").toggleClass("a-circle-checked");
 					$(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-icon').addClass("inspectable-selected");
 
-			 		$(element).toggleClass("a-circle");
-			 		$(element).toggleClass("a-circle-checked");
+					$(element).toggleClass("a-circle");
+					$(element).toggleClass("a-circle-checked");
 				}else{
 					$(element).closest('.modal-project-summary-unit-program-quick-toggle').removeClass('inspectable-selected');
 					$(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-icon-status i.a-circle-checked').toggleClass("a-circle").toggleClass("a-circle-checked");
 					$(element).closest('.modal-project-summary-unit-program').find('.modal-project-summary-unit-program-icon').removeClass("inspectable-selected");
 
-			 		$(element).toggleClass("a-circle-checked");
-			 		$(element).toggleClass("a-circle");
+					$(element).toggleClass("a-circle-checked");
+					$(element).toggleClass("a-circle");
 				}
 
 				// AJAX CALL HERE
@@ -380,11 +380,11 @@ resizeModal(95);
         segmentShowStroke : false,
         legendPosition : 'bottom',
         "cutoutPercentage":20,
-			"legend" : {
-				"display" : false
-			},
-			"responsive" : true,
-			"maintainAspectRatio" : false,
+        "legend" : {
+        	"display" : false
+        },
+        "responsive" : true,
+        "maintainAspectRatio" : false,
 
         //String - The colour of each segment stroke
         segmentStrokeColor : "#fff",
@@ -400,63 +400,63 @@ resizeModal(95);
         duration: 100000,
 
         tooltips: {
-            enabled: true,
-            mode: 'single',
-            callbacks: {
-                label: function(tooltipItem, data) {
-                    var label = data.labels[tooltipItem.index];
-                    var datasetLabel = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                    return label + ': ' + addCommas(datasetLabel) + ' units' ;
-                }
-            }
+        	enabled: true,
+        	mode: 'single',
+        	callbacks: {
+        		label: function(tooltipItem, data) {
+        			var label = data.labels[tooltipItem.index];
+        			var datasetLabel = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+        			return label + ': ' + addCommas(datasetLabel) + ' units' ;
+        		}
+        	}
         }
 
 
-    }
-
-	var modalSummaryChart = new Chart(document.getElementById("chartjs-modal-summary"),{
-		"type":"doughnut",
-		"options": summaryCompositeOptions,
-
-		"data":{
-			"labels": ["Selected","Needed","Inspected", "To Be Inspected"],
-			"datasets":[
-				@foreach($datasets as $dataset)
-				{
-					"label":"{{$dataset['program_name']}}",
-					"data":[{{$dataset['selected']}},{{$dataset['needed']}}, 0,0],
-					"backgroundColor":[
-						chartColors.selected,
-						chartColors.needed,
-						chartColors.inspected,
-						chartColors.tobeinspected
-					],
-					"labels" : [
-						"{{$dataset['program_name']}}" + ' - Selected',
-						"{{$dataset['program_name']}}" + ' - Needed',
-						"{{$dataset['program_name']}}" + ' - Inspected',
-						"{{$dataset['program_name']}}" + ' - To Be Inspected'
-					],
-					"borderWidth": 1
-				},
-				@endforeach
-			]
-		},
-		options: {
-      responsive: true,
-      legend: {
-        display: false,
-      },
-      tooltips: {
-      	callbacks: {
-        	label: function(tooltipItem, data) {
-          	var dataset = data.datasets[tooltipItem.datasetIndex];
-            var index = tooltipItem.index;
-            return dataset.labels[index] + ': ' + dataset.data[index];
-          }
-        }
       }
-    }
-	});
 
-</script>
+      var modalSummaryChart = new Chart(document.getElementById("chartjs-modal-summary"),{
+      	"type":"doughnut",
+      	"options": summaryCompositeOptions,
+
+      	"data":{
+      		"labels": ["Selected","Needed","Inspected", "To Be Inspected"],
+      		"datasets":[
+      		@foreach($datasets as $dataset)
+      		{
+      			"label":"{{$dataset['program_name']}}",
+      			"data":[{{$dataset['selected']}},{{$dataset['needed']}}, 0,0],
+      			"backgroundColor":[
+      			chartColors.selected,
+      			chartColors.needed,
+      			chartColors.inspected,
+      			chartColors.tobeinspected
+      			],
+      			"labels" : [
+      			"{{$dataset['program_name']}}" + ' - Selected',
+      			"{{$dataset['program_name']}}" + ' - Needed',
+      			"{{$dataset['program_name']}}" + ' - Inspected',
+      			"{{$dataset['program_name']}}" + ' - To Be Inspected'
+      			],
+      			"borderWidth": 1
+      		},
+      		@endforeach
+      		]
+      	},
+      	options: {
+      		responsive: true,
+      		legend: {
+      			display: false,
+      		},
+      		tooltips: {
+      			callbacks: {
+      				label: function(tooltipItem, data) {
+      					var dataset = data.datasets[tooltipItem.datasetIndex];
+      					var index = tooltipItem.index;
+      					return dataset.labels[index] + ': ' + dataset.data[index];
+      				}
+      			}
+      		}
+      	}
+      });
+
+    </script>
