@@ -161,7 +161,9 @@
 						</div>
 					</div>
 					<div class="uk-column-1-2">
-						{{$program['comments']}}
+						@foreach($program['comments'] as $comment)
+						{{$comment}}<br />
+						@endforeach
 					</div>
 					<script>
 						new Chart(document.getElementById("chartjs-{{$program['id']}}"),{
