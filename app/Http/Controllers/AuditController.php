@@ -1410,7 +1410,7 @@ class AuditController extends Controller
                     $selected_units_file = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->count();                    
 
                     $needed_units_site = max($program['required_units'] - $selected_units_site, 0);
-                    $needed_units_file = max($program['required_units'] - $selected_units_file, 0);
+                    $needed_units_file = max($program['required_units_file'] - $selected_units_file, 0);
 
                     $unit_keys = $program['units_before_optimization']; 
 
@@ -1442,7 +1442,7 @@ class AuditController extends Controller
                     $to_be_inspected_units_file = $selected_units_file - $inspected_units_file;
 
                     $summary_required = $summary_required + $program['required_units'];
-                    $summary_required_file = $summary_required_file + $program['totals_before_optimization'];
+                    $summary_required_file = $summary_required_file + $program['required_units_file'];
 
                     $data['programs'][] = [
                         'id' => $program['group'],
@@ -1459,7 +1459,7 @@ class AuditController extends Controller
                         'inspected_units' => $inspected_units_site,
                         'to_be_inspected_units' => $to_be_inspected_units_site,
 
-                        'required_units_file' => $program['totals_before_optimization'],
+                        'required_units_file' => $program['required_units_file'],
                         'selected_units_file' => $selected_units_file,
                         'needed_units_file' => $needed_units_file,
                         'inspected_units_file' => $inspected_units_file,

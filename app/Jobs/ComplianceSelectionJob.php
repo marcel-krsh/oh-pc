@@ -481,9 +481,9 @@ class ComplianceSelectionJob implements ShouldQueue
                 $audit->save();
             $summary['programs'][$i]['pool'] = $selection[$i]['pool'];
             $summary['programs'][$i]['program_keys'] = $selection[$i]['program_ids'];
-            $summary['programs'][$i]['required_units'] = $selection[$i]['required_units'];
             $summary['programs'][$i]['totals_before_optimization'] = $selection[$i]['totals'];
             $summary['programs'][$i]['units_before_optimization'] = $selection[$i]['units'];
+            $summary['programs'][$i]['required_units_file'] = $selection[$i]['required_units'];
             $summary['programs'][$i]['use_limiter'] = $selection[$i]['use_limiter'];
             $summary['programs'][$i]['comments'] = $selection[$i]['comments'];
 
@@ -498,6 +498,8 @@ class ComplianceSelectionJob implements ShouldQueue
                 $audit->save();
                 $this->processes++;
                 $needed = $this->adjustedLimit($audit,count($selection[$i]['units']));
+
+                $summary['programs'][$i]['required_units'] = $needed;
 
                 foreach ($priority as $p => $val) {
                     if (in_array($p, $selection[$i]['units']) && count($tmp_selection) < $needed) {
@@ -530,6 +532,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 $output = array_merge($output, $tmp_selection);
                 $this->processes++;
             } else {
+                $summary['programs'][$i]['required_units'] = $selection[$i]['required_units'];
                 $tmp_program_output = $selection[$i]['units'];
                 $tmp_program_output_total_not_merged = $tmp_program_output_total_not_merged + count($selection[$i]['units']);
                 $output = array_merge($output, $selection[$i]['units']);
@@ -2488,7 +2491,7 @@ class ComplianceSelectionJob implements ShouldQueue
                     $this->processes++;
 
                     $unit_inspections_inserted = 0;
-                    
+
                     foreach ($units as $unit) {
                         $this->processes++;
                         if (in_array($unit->unit_key, $overlap)) {
