@@ -37,6 +37,7 @@ use App\Models\UnitAmenity;
 use App\Models\ProjectAmenity;
 use App\Models\BuildingAmenity;
 use App\Models\Comment;
+use App\Models\Group;
 use Auth;
 use App\Models\Job;
 use Session;
@@ -2240,59 +2241,68 @@ class AuditController extends Controller
         }
         $project = Project::where('id','=',$project_id)->first();
         $audit = $project->selected_audit()->audit;
+        $selection_summary = json_decode($audit->selection_summary, 1);
 
         // get units filterd in programs
        $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
        															->whereIn('program_key', $programs)
        															->with('unit', 'program', 'unit.building.address')
        															->orderBy('unit_id','asc')
-       															->get()
-       															->count();
+       															->get();
 
-        $data = collect([
-                'project' => [
-                    "id" => 1,
-                    "name" => "Project Name",
-                    'selected_program' => $program_id
-                ],
-                'programs' => [
-                    ["id" => 1, "name" => "Program Name 1"],
-                    ["id" => 2, "name" => "Program Name 2"],
-                    ["id" => 3, "name" => "Program Name 3"],
-                    ["id" => 4, "name" => "Program Name 4"]
-                ],
-                'units' => [
-                    [
-                        "id" => 1,
-                        "status" => "not-inspectable",
-                        "address" => "123457 Silvegwood Street",
-                        "address2" => "#102",
-                        "move_in_date" => "1/29/2018",
-                        "programs" => [
-                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "inspectable" ],
-                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "not-inspectable" ]
-                        ]
-                    ],
-                    [
-                        "id" => 2,
-                        "status" => "inspectable",
-                        "address" => "123457 Silvegwood Street",
-                        "address2" => "#102",
-                        "move_in_date" => "1/29/2018",
-                        "programs" => [
-                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "not-inspectable" ],
-                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "inspectable" ]
-                        ]
-                    ]
-                ]
-            ]);
+        // $data = collect([
+        //         'project' => [
+        //             "id" => 1,
+        //             "name" => "Project Name",
+        //             'selected_program' => $program_id
+        //         ],
+        //         'programs' => [
+        //             ["id" => 1, "name" => "Program Name 1"],
+        //             ["id" => 2, "name" => "Program Name 2"],
+        //             ["id" => 3, "name" => "Program Name 3"],
+        //             ["id" => 4, "name" => "Program Name 4"]
+        //         ],
+        //         'units' => [
+        //             [
+        //                 "id" => 1,
+        //                 "status" => "not-inspectable",
+        //                 "address" => "123457 Silvegwood Street",
+        //                 "address2" => "#102",
+        //                 "move_in_date" => "1/29/2018",
+        //                 "programs" => [
+        //                     ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "inspectable" ],
+        //                     ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "not-inspectable" ]
+        //                 ]
+        //             ],
+        //             [
+        //                 "id" => 2,
+        //                 "status" => "inspectable",
+        //                 "address" => "123457 Silvegwood Street",
+        //                 "address2" => "#102",
+        //                 "move_in_date" => "1/29/2018",
+        //                 "programs" => [
+        //                     ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "not-inspectable" ],
+        //                     ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "inspectable" ]
+        //                 ]
+        //             ]
+        //         ]
+        //     ]);
         //return $data = ($unitprograms);
 
-        return view('dashboard.partials.project-summary-unit', compact('data'));
+        return view('dashboard.partials.project-summary-unit', compact('unitprograms'));
     }
 
     public function modalProjectProgramSummary($project_id, $program_id = 0)
     {
+    	// $ss = SystemSetting::where('id', '<', 47)->get();
+    	// foreach ($ss as $key => $s) {
+    	// 	$pr_keys = explode(',', $s->value);
+    	// 	foreach ($pr_keys as $key => $pr_key) {
+    	// 		$temp_gr = explode('_', $s->key);
+    	// 		$group = Group::where('group_name', strtoupper($temp_gr[1]))->first();
+    	// 		//FAF NSP TCE RTCAP 811
+    	// 	}
+    	// }
         // if program_id == 0 we display all the programs (Here these are actually gorups not programs!)
         // units are automatically selected using the selection process
         // then randomize all units before displaying them on the modal
@@ -2432,7 +2442,22 @@ class AuditController extends Controller
             ];
             // get all the units in the selected audit
             $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)->with('unit', 'program', 'unit.building.address')->orderBy('unit_id','asc')->get();
-            $actual_programs =  $unitprograms->pluck('program')->unique();
+            $actual_programs =  $unitprograms->pluck('program')->unique()->toArray();
+            //Once the program_groups is poulated, write a relationship and get groups of each program, below code wouldn't be necessary - Div|20190225
+            foreach ($actual_programs as $key => $actual_program) {
+            	$group_names = array();
+            	foreach ($selection_summary['programs'] as $summary_group) {
+                $program_keys = explode(',', $program['program_keys']);
+            		if(in_array($actual_program['program_key'], $program_keys)) {
+            			$group_names[] = $summary_group['name'];
+            		}
+		        	}
+		        	if(!empty($group_names)) {
+		        		$actual_programs[$key]['group_names'] = implode(', ', $group_names);
+		        	} else {
+		        		$actual_programs[$key]['group_names'] = ' - ';
+		        	}
+            }
             //Need to get groups data for these programs
             return view('modals.project-summary-composite', compact('data', 'project', 'audit' , 'programs', 'unitprograms', 'datasets', 'actual_programs'));
         }else{
