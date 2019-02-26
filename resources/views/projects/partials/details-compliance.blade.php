@@ -110,7 +110,7 @@
         		@if($program['required_units'] != 0)
 		        <li>
 					<div class="project-details-info-compliance-program uk-panel uk-grid-match" style="height:180px" uk-grid>
-						<div class="uk-width-1-5 uk-padding-remove">
+						<div class="uk-width-1-5 uk-padding-remove" style="min-height:165px;">
 							<canvas id="chartjs-{{$program['id']}}" class="chartjs" ></canvas>
 						</div>
 						<div class="uk-width-2-5">
