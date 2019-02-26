@@ -2286,7 +2286,7 @@ class AuditController extends Controller
                     ]
                 ]
             ]);
-        return $data = ($unitprograms);
+        //return $data = ($unitprograms);
 
         return view('dashboard.partials.project-summary-unit', compact('data'));
     }
