@@ -3558,6 +3558,14 @@ span.indented, div.indented {
 #project-details-info-container {
     margin-bottom: 20px;
 }
+.project-details-info-compliance-programs ul li {
+      margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #ccc;
+}
+.project-details-info-compliance-program {
+  margin-bottom:20px;
+}
 #project-details-info-container .no-action { color: #3a3a3a; border-color:#939598;  }
 #project-details-info-container .no-action hr { color: #939598 border-top: 3px solid;  }
 #project-details-info-container .no-action .project-details-info-compliance-summary {
