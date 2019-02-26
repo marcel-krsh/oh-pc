@@ -22,7 +22,8 @@
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
         // rerun compliance run
-        Route::get('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
+        //Route::get('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
+        Route::post('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
 
         // run compliance run
         Route::get('/project/{project}/runselection', 'AuditController@runCompliance');

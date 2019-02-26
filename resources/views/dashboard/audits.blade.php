@@ -745,7 +745,17 @@ The following div is defined in this particular tab and pushed to the main layou
 
     	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>RERUN COMPLIANCE SELECTION?</h2></div><div class="uk-width-2-3"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to rerun the automated compliance selection? <br /><br />Depending on how many are currently being processed, this could take up to 10 minutes to complete.</h3><p><strong>Why does it take up to 10 minutes?</strong> When a compliance selection is run, it performs all the unit selections based on the criteria for each program used by the project. Because each selection process uses an element of randomness, the total number of units that need inspected may be different each time it is run due to overlaps of programs to units. So, we run the process 10 times, and pick the one that has the highest amount of program overlap to units. This keeps the audit federally compliant while also making the most efficient use of your time.</p></div><div class="uk-width-1-3"><hr class="dashed-hr uk-margin-bottom"><h3><em style="color:#ca3a8d">WARNING!</em></h3><p style="color:#ca3a8d"> While this will not affect the days and times you have auditors scheduled for your audit, it will remove any auditor assignments to inspect specific areas and units.<br /><br /><small>PLEASE NOTE THAT THIS WILL NOT RUN ON AUDITS WITH FINDINGS RECORDED. YOU WILL NEED TO DO YOUR SELECTION MANUALY.</small></p></div><div class="uk-width-1-1"></div></div>').then(function() {
 		    	console.log('Re-running Audit.');
-		    	dynamicModalLoad('/audit/'+audit+'/rerun');
+
+		    	$.post('/audit/'+audit+'/rerun', {
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					if(data){
+					UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection In Progress', {pos:'top-right', timeout:1000, status:'success'});
+				}else{
+					UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection Failed', {pos:'top-right', timeout:1000, status:'error'});
+				}
+				});
+
 		    	$('#audit-r-'+audit).remove();
 		}, function () {
 		    console.log('Rejected.')
