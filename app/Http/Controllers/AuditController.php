@@ -1527,7 +1527,7 @@ class AuditController extends Controller
                 $summary_optimized_completed_inspections = $summary_inspected;
                 $summary_optimized_remaining_inspections = $summary_optimized_sample_size - $summary_optimized_completed_inspections;
 
-                $summary_optimized_sample_size_file = $summary_required_file;
+                $summary_optimized_sample_size_file = $summary_optimized_required_file;
                 $summary_optimized_completed_inspections_file = $summary_optimized_completed_inspections_file + $summary_inspected_file;
                 $summary_optimized_remaining_inspections_file = $summary_optimized_sample_size_file - $summary_optimized_completed_inspections_file;
 
