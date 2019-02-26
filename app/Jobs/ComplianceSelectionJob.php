@@ -1900,29 +1900,29 @@ class ComplianceSelectionJob implements ShouldQueue
                                 $htc_units_with_overlap_for_that_building = count($htc_units_with_overlap);
 
                                 // TEST
-                                $overlap_list = '';
-                                foreach($htc_units_subset as $htc_units_subset_key){
-                                    $overlap_list = $overlap_list . $htc_units_subset_key . ',';
-                                }
-                                $comments[] = 'Overlap: '.$overlap_list;
-                                $audit->comment = $audit->comment.' | Overlap: '.$overlap_list;
-                                $audit->save();
+                                // $overlap_list = '';
+                                // foreach($htc_units_subset as $htc_units_subset_key){
+                                //     $overlap_list = $overlap_list . $htc_units_subset_key . ',';
+                                // }
+                                // $comments[] = 'Overlap: '.$overlap_list;
+                                // $audit->comment = $audit->comment.' | Overlap: '.$overlap_list;
+                                // $audit->save();
 
-                                $htc_units_for_building_list = '';
-                                foreach($htc_units_for_building as $htc_units_for_building_key){
-                                    $htc_units_for_building_list = $htc_units_for_building_list . $htc_units_for_building_key. ',';
-                                }
-                                $comments[] = 'htc_units_for_building_list: '.$htc_units_for_building_list;
-                                $audit->comment = $audit->comment.' | htc_units_for_building_list: '.$htc_units_for_building_list;
-                                $audit->save();
+                                // $htc_units_for_building_list = '';
+                                // foreach($htc_units_for_building as $htc_units_for_building_key){
+                                //     $htc_units_for_building_list = $htc_units_for_building_list . $htc_units_for_building_key. ',';
+                                // }
+                                // $comments[] = 'htc_units_for_building_list: '.$htc_units_for_building_list;
+                                // $audit->comment = $audit->comment.' | htc_units_for_building_list: '.$htc_units_for_building_list;
+                                // $audit->save();
 
-                                $htc_units_with_overlap_list = '';
-                                foreach($htc_units_with_overlap as $htc_units_with_overlap_key){
-                                    $htc_units_with_overlap_list = $htc_units_with_overlap_list . $htc_units_with_overlap_key. ',';
-                                }
-                                $comments[] = 'htc_units_with_overlap_list: '.$htc_units_with_overlap_list;
-                                $audit->comment = $audit->comment.' | htc_units_with_overlap_list: '.$htc_units_with_overlap_list;
-                                $audit->save();
+                                // $htc_units_with_overlap_list = '';
+                                // foreach($htc_units_with_overlap as $htc_units_with_overlap_key){
+                                //     $htc_units_with_overlap_list = $htc_units_with_overlap_list . $htc_units_with_overlap_key. ',';
+                                // }
+                                // $comments[] = 'htc_units_with_overlap_list: '.$htc_units_with_overlap_list;
+                                // $audit->comment = $audit->comment.' | htc_units_with_overlap_list: '.$htc_units_with_overlap_list;
+                                // $audit->save();
                                 // END TEST
 
                                 if($required_units_for_that_building >= $htc_units_with_overlap_for_that_building){
@@ -1983,21 +1983,21 @@ class ComplianceSelectionJob implements ShouldQueue
             }
             //}
 
-            $comments[] = 'Combining HTC total selected: '.count($units_selected).' + '.count($htc_units_subset_for_home).' + '.count($htc_units_subset_for_ohtf).' + '.count($htc_units_subset_for_nhtf);
-            $audit->comment = $audit->comment.' | Combining HTC total selected: '.count($units_selected).' + '.count($htc_units_subset_for_home).' + '.count($htc_units_subset_for_ohtf).' + '.count($htc_units_subset_for_nhtf);
-                    $audit->save();
+            // $comments[] = 'Combining HTC total selected: '.count($units_selected).' + '.count($htc_units_subset_for_home).' + '.count($htc_units_subset_for_ohtf).' + '.count($htc_units_subset_for_nhtf);
+            // $audit->comment = $audit->comment.' | Combining HTC total selected: '.count($units_selected).' + '.count($htc_units_subset_for_home).' + '.count($htc_units_subset_for_ohtf).' + '.count($htc_units_subset_for_nhtf);
+            //         $audit->save();
 
-            $htc_units_from_home_list = '';
-            foreach($htc_units_subset_for_home as $htc_unit_for_home){
-                $htc_units_from_home_list = $htc_units_from_home_list . $htc_unit_for_home;
-            }
-            $comments[] = 'HTC units from HOME: '.$htc_units_from_home_list;
-            $audit->comment = $audit->comment.' | HTC units from HOME: '.$htc_units_from_home_list;
-                    $audit->save();     
+            // $htc_units_from_home_list = '';
+            // foreach($htc_units_subset_for_home as $htc_unit_for_home){
+            //     $htc_units_from_home_list = $htc_units_from_home_list . $htc_unit_for_home;
+            // }
+            // $comments[] = 'HTC units from HOME: '.$htc_units_from_home_list;
+            // $audit->comment = $audit->comment.' | HTC units from HOME: '.$htc_units_from_home_list;
+            //         $audit->save();     
 
-            $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
-            $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
-            $this->processes++;
+            // $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
+            // $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
+            // $this->processes++;
 
             // $units_selected_count isn't using the array_merge to keep the duplicate
 
