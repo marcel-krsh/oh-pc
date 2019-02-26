@@ -1506,7 +1506,7 @@ class AuditController extends Controller
                                 ->select('unit_id')->groupBy('unit_id')->get()
                                 ->count();
 
-                $summary_optimized_inspected_file = UnitInspection::whereIn('unit_key', $summary_optimized_unit_ids)
+                $summary_optimized_inspected_file = UnitInspection::whereIn('unit_key', $summary_unit_ids)
                             ->where('audit_id', '=', $audit->id)
                             ->where('is_file_audit', '=', 1)
                             ->where('complete', '!=', NULL)
@@ -1519,7 +1519,7 @@ class AuditController extends Controller
                                 ->select('unit_id')->groupBy('unit_id')->get()
                                 ->count();
 
-                $summary_optimized_required_file = UnitInspection::whereIn('unit_key', $summary_optimized_unit_ids)
+                $summary_optimized_required_file = UnitInspection::whereIn('unit_key', $summary_unit_ids)
                             ->where('audit_id', '=', $audit->id)
                             ->where('is_file_audit', '=', 1)
                                 ->select('unit_id')->groupBy('unit_id')->get()
