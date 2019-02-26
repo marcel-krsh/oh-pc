@@ -392,10 +392,15 @@ class ComplianceSelectionJob implements ShouldQueue
                 $this->processes++;
             $output = [];
 
-            foreach (array_rand($units, $needed) as $id) {
-                $output[] = $units[$id];
-                $this->processes++;
+            if($needed == 1){
+                $output[] = array_rand($units, $needed);
+            }else{
+                foreach (array_rand($units, $needed) as $id) {
+                    $output[] = $units[$id];
+                    $this->processes++;
+                }
             }
+            
             $audit->comment = $audit->comment.' | Random selection randomized list and returning output to selection process.';
                 $audit->save();
                 $this->processes++;
@@ -1095,6 +1100,9 @@ class ComplianceSelectionJob implements ShouldQueue
         // only for home
         
 
+        $units_to_check_for_overlap = [];
+        
+
         $program_home_ids = explode(',', SystemSetting::get('program_home'));
         $program_home_names = Program::whereIn('program_key', $program_home_ids)->get()->pluck('program_name')->toArray();
         $this->processes++;
@@ -1140,7 +1148,6 @@ class ComplianceSelectionJob implements ShouldQueue
             $units_selected = [];
             $htc_units_subset_for_all = [];
             $htc_units_subset = [];
-            $units_to_check_for_overlap = [];
             
             $comments[] = 'Total units with HOME funding is '.$total_units;
             $comments[] = 'Total units in the project with a program is '.$total_units_with_program;
@@ -1582,26 +1589,33 @@ class ComplianceSelectionJob implements ShouldQueue
             ];
             $this->processes++;
 
-            // check for HOME, OHTF, NHTF overlap and send to analyst
-            // overlap contains the keys of units
-            $overlap = [];
-            for ($i=0; $i<count($units_to_check_for_overlap); $i++) {
-                $this->processes++;
-                for ($j=0; $j<count($units_to_check_for_overlap); $j++) {
-                    $this->processes++;
-                    if ($units_to_check_for_overlap[$i] == $units_to_check_for_overlap[$j] && $i != $j && !in_array($units_to_check_for_overlap[$i], $overlap)) {
-                        $overlap[] = $units_to_check_for_overlap[$i];
-                        $this->processes++;
-                    }
-                }
-            }
+            
         }else{
-            $overlap = [];
+            
             $htc_units_subset_for_nhtf = array();
             $audit->comment_system = $audit->comment_system.' | Select Process is not working with NHTF.';
             $audit->save();
         }
 
+        // check for HOME, OHTF, NHTF overlap and send to analyst
+        // overlap contains the keys of units
+        $overlap = array();
+        $overlap_list = '';
+        for ($i=0; $i<count($units_to_check_for_overlap); $i++) {
+            $this->processes++;
+            for ($j=0; $j<count($units_to_check_for_overlap); $j++) {
+                $this->processes++;
+                if ($units_to_check_for_overlap[$i] == $units_to_check_for_overlap[$j] && $i != $j && !in_array($units_to_check_for_overlap[$i], $overlap)) {
+                    $overlap[] = $units_to_check_for_overlap[$i];
+                    $overlap_list = $overlap_list . $units_to_check_for_overlap[$i].',';
+                    $this->processes++;
+                }
+            }
+        }
+
+        $comments[] = 'Overlap list to send to analyst: '.$overlap_list;
+        $audit->comment = $audit->comment.' | Overlap list to send to analyst: '.$overlap_list;
+        $audit->save();
 
         //
         //
@@ -1767,10 +1781,10 @@ class ComplianceSelectionJob implements ShouldQueue
                                                     $query->whereIn('program_key', $program_htc_only_ids);
                                                 })->pluck('unit_key')->toArray();
 
-                    if($number_of_htc_units_required <= count($overlap)){
+                    if($number_of_htc_units_required <= count($htc_units_subset)){
                         $number_of_htc_units_needed = 0;
                     }else{
-                        $number_of_htc_units_needed = $number_of_htc_units_required - count($overlap);
+                        $number_of_htc_units_needed = $number_of_htc_units_required - count($htc_units_subset);
                     }
 
                     $units_selected = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
@@ -1813,10 +1827,10 @@ class ComplianceSelectionJob implements ShouldQueue
                                                     $query->whereIn('program_key', $program_htc_only_ids);
                                                 })->pluck('unit_key')->toArray();
 
-                        if($number_of_htc_units_required <= count($overlap)){
+                        if($number_of_htc_units_required <= count($htc_units_subset)){
                             $number_of_htc_units_needed = 0;
                         }else{
-                            $number_of_htc_units_needed = $number_of_htc_units_required - count($overlap);
+                            $number_of_htc_units_needed = $number_of_htc_units_required - count($htc_units_subset);
                         }
 
                         $units_selected = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
@@ -1849,6 +1863,8 @@ class ComplianceSelectionJob implements ShouldQueue
                                 // if the 20% of all building's unit is less than the building's units that are in the overlap, done
                                 // otherwise get the missing units
 
+                                // $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf
+
                                 $htc_units_for_building = Unit::where('building_key', '=', $building->building_key)
                                                 ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
                                                     $query->where('audit_id', '=', $audit->id);
@@ -1858,16 +1874,53 @@ class ComplianceSelectionJob implements ShouldQueue
                                                 ->toArray();
 
                                 $htc_units_without_overlap = Unit::where('building_key', '=', $building->building_key)
-                                                ->whereHas('programs', function ($query) use ($audit, $program_htc_only_ids) {
+                                                ->whereNotIn('unit_key', $htc_units_subset)
+                                                ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
                                                     $query->where('audit_id', '=', $audit->id);
-                                                    $query->whereIn('program_key', $program_htc_only_ids);
+                                                    $query->whereIn('program_key', $program_htc_ids);
+                                                })
+                                                ->pluck('unit_key')
+                                                ->toArray();
+
+                                $htc_units_with_overlap = Unit::where('building_key', '=', $building->building_key)
+                                                ->whereIn('unit_key', $htc_units_subset)
+                                                ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
+                                                    $query->where('audit_id', '=', $audit->id);
+                                                    $query->whereIn('program_key', $program_htc_ids);
                                                 })
                                                 ->pluck('unit_key')
                                                 ->toArray();
 
                                 $required_units_for_that_building = ceil(count($htc_units_for_building)/5);
                                 $required_units = $required_units + $required_units_for_that_building;
-                                $htc_units_with_overlap_for_that_building = count($htc_units_for_building) - count($htc_units_without_overlap);
+                                // $htc_units_with_overlap_for_that_building = count($htc_units_for_building) - count($htc_units_without_overlap);
+                                $htc_units_with_overlap_for_that_building = count($htc_units_with_overlap);
+
+                                // TEST
+                                $overlap_list = '';
+                                foreach($htc_units_subset as $htc_units_subset_key){
+                                    $overlap_list = $overlap_list . $htc_units_subset_key . ',';
+                                }
+                                $comments[] = 'Overlap: '.$overlap_list;
+                                $audit->comment = $audit->comment.' | Overlap: '.$overlap_list;
+                                $audit->save();
+
+                                $htc_units_for_building_list = '';
+                                foreach($htc_units_for_building as $htc_units_for_building_key){
+                                    $htc_units_for_building_list = $htc_units_for_building_list . $htc_units_for_building_key. ',';
+                                }
+                                $comments[] = 'htc_units_for_building_list: '.$htc_units_for_building_list;
+                                $audit->comment = $audit->comment.' | htc_units_for_building_list: '.$htc_units_for_building_list;
+                                $audit->save();
+
+                                $htc_units_with_overlap_list = '';
+                                foreach($htc_units_with_overlap as $htc_units_with_overlap_key){
+                                    $htc_units_with_overlap_list = $htc_units_with_overlap_list . $htc_units_with_overlap_key. ',';
+                                }
+                                $comments[] = 'htc_units_with_overlap_list: '.$htc_units_with_overlap_list;
+                                $audit->comment = $audit->comment.' | htc_units_with_overlap_list: '.$htc_units_with_overlap_list;
+                                $audit->save();
+                                // END TEST
 
                                 if($required_units_for_that_building >= $htc_units_with_overlap_for_that_building){
                                     // we are missing some units
@@ -1926,6 +1979,18 @@ class ComplianceSelectionJob implements ShouldQueue
 
             }
             //}
+
+            $comments[] = 'Combining HTC total selected: '.count($units_selected).' + '.count($htc_units_subset_for_home).' + '.count($htc_units_subset_for_ohtf).' + '.count($htc_units_subset_for_nhtf);
+            $audit->comment = $audit->comment.' | Combining HTC total selected: '.count($units_selected).' + '.count($htc_units_subset_for_home).' + '.count($htc_units_subset_for_ohtf).' + '.count($htc_units_subset_for_nhtf);
+                    $audit->save();
+
+            $htc_units_from_home_list = '';
+            foreach($htc_units_subset_for_home as $htc_unit_for_home){
+                $htc_units_from_home_list = $htc_units_from_home_list . $htc_unit_for_home;
+            }
+            $comments[] = 'HTC units from HOME: '.$htc_units_from_home_list;
+            $audit->comment = $audit->comment.' | HTC units from HOME: '.$htc_units_from_home_list;
+                    $audit->save();     
 
             $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
             $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
@@ -2422,6 +2487,8 @@ class ComplianceSelectionJob implements ShouldQueue
                     $units = Unit::whereIn('unit_key', $unit_keys)->get();
                     $this->processes++;
 
+                    $unit_inspections_inserted = 0;
+                    
                     foreach ($units as $unit) {
                         $this->processes++;
                         if (in_array($unit->unit_key, $overlap)) {
@@ -2434,7 +2501,7 @@ class ComplianceSelectionJob implements ShouldQueue
                         $this->processes++;
 
                         foreach ($unit->programs as $unit_program) {
-                            if (in_array($unit_program->program_key, $program_keys)) {
+                            if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < $program['required_units']) {
                                 $u = new UnitInspection([
                                     'group' => $program['name'],
                                     'group_id' => $group_id,
@@ -2455,6 +2522,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                     'is_file_audit' => 0
                                 ]);
                                 $u->save();
+                                $unit_inspections_inserted++;
                                 $this->processes++;
                             }
                         }
@@ -2468,6 +2536,8 @@ class ComplianceSelectionJob implements ShouldQueue
                     $units = Unit::whereIn('unit_key', $unit_keys)->get();
                     $this->processes++;
 
+                    $unit_inspections_inserted = 0;
+
                     foreach ($units as $unit) {
                         $this->processes++;
                         if (in_array($unit->unit_key, $overlap)) {
@@ -2479,8 +2549,9 @@ class ComplianceSelectionJob implements ShouldQueue
                         $program_keys = explode(',', $program['program_keys']);
                         $this->processes++;
 
+                        
                         foreach ($unit->programs as $unit_program) {
-                            if (in_array($unit_program->program_key, $program_keys)) {
+                            if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < count($program['units_before_optimization'])) {
 
                                 $u = new UnitInspection([
                                     'group' => $program['name'],
@@ -2502,6 +2573,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                     'is_file_audit' => 1
                                 ]);
                                 $u->save();
+                                $unit_inspections_inserted++;
                                 $this->processes++;
                             }
                         }

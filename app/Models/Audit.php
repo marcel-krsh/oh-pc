@@ -133,29 +133,35 @@ class Audit extends Model
                 $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $this->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->get()->count();
                 $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $this->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->get()->count();
 
-                $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
-                $needed_units_file = $program['totals_after_optimization'] - $selected_units_file;
+                $needed_units_site = max($program['required_units'] - $selected_units_site, 0);
+                $needed_units_file = max($program['required_units'] - $selected_units_file, 0);
 
-                $unit_keys = $program['units_after_optimization']; 
-                $inspected_units_site = UnitInspection::whereIn('unit_key', $unit_keys)
-                            ->where('audit_id', '=', $this->id)
+                $unit_keys = $program['units_before_optimization']; 
+
+                //whereIn('unit_key', $program['units_after_optimization'])
+                $inspected_units_site = UnitInspection::where('audit_id', '=', $this->id)
                             ->where('group_id', '=', $program['group'])
                             // ->whereHas('amenity_inspections', function($query) {
                             //     $query->where('completed_date_time', '!=', null);
                             // })
                             ->where('is_site_visit', '=', 1)
                             ->where('complete', '!=', NULL)
+                            //->select('unit_id')->groupBy('unit_id')->get()
+                            ->get()
                             ->count();
 
-                $inspected_units_file = UnitInspection::whereIn('unit_key', $unit_keys)
-                            ->where('audit_id', '=', $this->id)
+                            //whereIn('unit_key', $unit_keys)
+                            
+                $inspected_units_file = UnitInspection::where('audit_id', '=', $this->id)
                             ->where('group_id', '=', $program['group'])
                             ->where('is_file_audit', '=', 1)
                             ->where('complete', '!=', NULL)
+                            //->select('unit_id')->groupBy('unit_id')->get()
+                            ->get()
                             ->count();
 
-                $to_be_inspected_units_site = $program['totals_after_optimization'] - $inspected_units_site;
-                $to_be_inspected_units_file = $program['totals_after_optimization'] - $inspected_units_file;
+                $to_be_inspected_units_site = $selected_units_site - $inspected_units_site;
+                $to_be_inspected_units_file = $selected_units_file - $inspected_units_file;
 
                 $group = $program['group'];
                 $newstat = new StatsCompliance([

@@ -105,7 +105,7 @@
 		</div>
 
 		<div class="project-details-info-compliance-programs uk-position-relative uk-visible-toggle uk-margin-top"  >
-    		<ul class=" uk-margin-top">
+    		<ul class="uk-list uk-margin-top">
         		@foreach($data['programs'] as $program)
         		@if($program['required_units'] != 0)
 		        <li>
@@ -118,8 +118,8 @@
 								<tbody>
 									<tr>
 										<td><strong>{{$program['name']}} INSPECTION</strong></td>
-										<td class="uk-text-center"><i class="a-mobile-home iheader"></i></td>
-										<td class="uk-text-center"><i class="a-folder iheader"></i></td>
+										<td class="uk-text-center" style="min-width: 30px;"><i class="a-mobile-home iheader"></i></td>
+										<td class="uk-text-center" style="min-width: 30px;"><i class="a-folder iheader"></i></td>
 									</tr>
 									<tr>
 										<td>
@@ -239,9 +239,7 @@
 				@endif
 		        @endforeach
     		</ul>
-		    <a class="uk-position-center-left uk-position-small uk-hidden-hover" style="width:20px" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
-		    <a class="uk-position-center-right uk-position-small uk-hidden-hover" style="width:20px" href="#" uk-slidenav-next uk-slider-item="next"></a>
-		</div>
+    	</div>
 
 	</div>
 

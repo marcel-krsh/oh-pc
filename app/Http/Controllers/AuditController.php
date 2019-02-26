@@ -1403,21 +1403,22 @@ class AuditController extends Controller
                     $program_keys = explode(',', $program['program_keys']);
                     $all_program_keys =  array_merge($all_program_keys, $program_keys);
 
-                    $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->count();
-                    $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->count();
-
+                    // $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->count();
+                    // $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->count();
                     
+                    $selected_units_site = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->count();
+                    $selected_units_file = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->count();                    
 
-                    $needed_units_site = $program['required_units'] - $selected_units_site;
-                    $needed_units_file = $program['required_units'] - $selected_units_file;
+                    $needed_units_site = max($program['required_units'] - $selected_units_site, 0);
+                    $needed_units_file = max($program['required_units'] - $selected_units_file, 0);
 
                     $unit_keys = $program['units_before_optimization']; 
 
                     $summary_unit_ids = array_merge($summary_unit_ids, $program['units_before_optimization']);
-                //    $summary_optimized_unit_ids = array_merge($summary_optimized_unit_ids, $program['units_after_optimization']);
+                    $summary_optimized_unit_ids = array_merge($summary_optimized_unit_ids, $program['units_after_optimization']);
 
-                    $inspected_units_site = UnitInspection::whereIn('unit_key', $program['units_after_optimization'])
-                                ->where('audit_id', '=', $audit->id)
+                    //whereIn('unit_key', $program['units_after_optimization'])
+                    $inspected_units_site = UnitInspection::where('audit_id', '=', $audit->id)
                                 ->where('group_id', '=', $program['group'])
                                 // ->whereHas('amenity_inspections', function($query) {
                                 //     $query->where('completed_date_time', '!=', null);
@@ -1428,8 +1429,8 @@ class AuditController extends Controller
                                 ->get()
                                 ->count();
 
-                    $inspected_units_file = UnitInspection::whereIn('unit_key', $unit_keys)
-                                ->where('audit_id', '=', $audit->id)
+                    //whereIn('unit_key', $unit_keys)
+                    $inspected_units_file = UnitInspection::where('audit_id', '=', $audit->id)
                                 ->where('group_id', '=', $program['group'])
                                 ->where('is_file_audit', '=', 1)
                                 ->where('complete', '!=', NULL)
@@ -1437,10 +1438,11 @@ class AuditController extends Controller
                                 ->get()
                                 ->count();
 
-                    $to_be_inspected_units_site = $program['required_units'] - $inspected_units_site;
-                    $to_be_inspected_units_file = $program['required_units'] - $inspected_units_file;
+                    $to_be_inspected_units_site = $selected_units_site - $inspected_units_site;
+                    $to_be_inspected_units_file = $selected_units_file - $inspected_units_file;
 
                     $summary_required = $summary_required + $program['required_units'];
+                    $summary_required_file = $summary_required_file + $program['totals_before_optimization'];
 
                     $data['programs'][] = [
                         'id' => $program['group'],
@@ -1464,34 +1466,15 @@ class AuditController extends Controller
                         'to_be_inspected_units_file' => $to_be_inspected_units_file
                     ];
 
-                    if($program['name'] == 'HTC'){
-
-                    //     dd([
-                    //     'id' => $program['group'],
-                    //     'name' => $program['name'],
-                    //     'pool' => $program['pool'],
-                    //     'comments' => $program['comments'],
-                    //     'user_limiter' => $program['use_limiter'],
-                    //     'totals_after_optimization' => $program['totals_after_optimization'],
-                    //     'units_before_optimization' => $program['units_before_optimization'],
-                    //     'totals_before_optimization' => $program['totals_before_optimization'],
-                    //     'required_units' => $program['totals_after_optimization'],
-                    //     'selected_units' => $selected_units_site,
-                    //     'needed_units' => $needed_units_site,
-                    //     'inspected_units' => $inspected_units_site,
-                    //     'to_be_inspected_units' => $to_be_inspected_units_site,
-                    //     'required_units_file' => $program['totals_before_optimization'],
-                    //     'selected_units_file' => $selected_units_file,
-                    //     'needed_units_file' => $needed_units_file,
-                    //     'inspected_units_file' => $inspected_units_file,
-                    //     'to_be_inspected_units_file' => $to_be_inspected_units_file
-                    // ]);
-                    }
+                    // if($program['group'] == 3){
+                    //     dd($data['programs']);
+                    // }
 
                 }
                 
 
                 $summary_optimized_unit_ids = array_unique($summary_optimized_unit_ids);
+
                 $all_program_keys = array_unique($all_program_keys);
                 
                 $summary_inspected = UnitInspection::whereIn('unit_key', $summary_optimized_unit_ids)
@@ -1511,10 +1494,10 @@ class AuditController extends Controller
                 //                 ->where('is_site_visit', '=', 1)
                 //                 ->count();
 
-                $summary_required_file = UnitInspection::whereIn('unit_key', $summary_unit_ids)
-                            ->where('audit_id', '=', $audit->id)
-                            ->where('is_file_audit', '=', 1)
-                            ->count();
+                // $summary_required_file = UnitInspection::whereIn('unit_key', $summary_unit_ids)
+                //             ->where('audit_id', '=', $audit->id)
+                //             ->where('is_file_audit', '=', 1)
+                //             ->count();
 
                 $summary_optimized_required = UnitInspection::whereIn('unit_key', $summary_optimized_unit_ids)
                                 ->where('audit_id', '=', $audit->id)
@@ -1532,13 +1515,13 @@ class AuditController extends Controller
                 $summary_selected = UnitInspection::whereIn('program_key', $all_program_keys)->where('audit_id', '=', $audit->id)->where('is_site_visit','=',1)->select('unit_id')->count();
                 $summary_selected_file = UnitInspection::whereIn('program_key', $all_program_keys)->where('audit_id', '=', $audit->id)->where('is_file_audit','=',1)->count();
 
-                $summary_needed = $summary_required - $summary_selected;
-                $summary_needed_file = $summary_required_file - $summary_selected_file;
+                $summary_needed = max($summary_required - $summary_selected, 0);
+                $summary_needed_file = max($summary_required_file - $summary_selected_file, 0);
 
                 $summary_to_be_inspected = $summary_required - $summary_inspected;
                 $summary_to_be_inspected_file = $summary_required_file - $summary_inspected_file;
 
-                $summary_optimized_sample_size = count($summary_optimized_unit_ids);
+                $summary_optimized_sample_size = $summary_optimized_required;
                 $summary_optimized_completed_inspections = $summary_inspected;
                 $summary_optimized_remaining_inspections = $summary_optimized_sample_size - $summary_optimized_completed_inspections;
 
