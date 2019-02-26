@@ -161,6 +161,9 @@
 						</div>
 					</div>
 					<div class="uk-column-1-2 uk-padding">
+
+						<p><strong>{{$program['name']}} COMPLIANCE SELECTION NOTES:</strong></p>
+						
 						@foreach($program['comments'] as $comment)
 						<p>{{$comment}}</p>
 						@endforeach
