@@ -110,10 +110,10 @@
         		@if($program['required_units'] != 0)
 		        <li>
 					<div class="project-details-info-compliance-program uk-panel uk-grid-match" style="height:180px" uk-grid>
-						<div class="uk-width-1-3 uk-padding-remove">
+						<div class="uk-width-1-5 uk-padding-remove">
 							<canvas id="chartjs-{{$program['id']}}" class="chartjs" style="height:95%"></canvas>
 						</div>
-						<div class="uk-width-2-3">
+						<div class="uk-width-2-5">
 							<table class="uk-table uk-table-small noline small-padding">
 								<tbody>
 									<tr>
@@ -159,11 +159,13 @@
 								</tbody>
 							</table>
 						</div>
+						<div class="uk-width-2-5">
+						</div>
 					</div>
 					<div class="uk-column-1-2 uk-padding">
 
 						<p><strong>{{$program['name']}} COMPLIANCE SELECTION NOTES:</strong></p>
-						
+
 						@foreach($program['comments'] as $comment)
 						<p>{{$comment}}</p>
 						@endforeach
