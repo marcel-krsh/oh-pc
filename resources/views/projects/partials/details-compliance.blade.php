@@ -160,9 +160,9 @@
 							</table>
 						</div>
 					</div>
-					<div class="uk-column-1-2">
+					<div class="uk-column-1-2 uk-padding">
 						@foreach($program['comments'] as $comment)
-						{{$comment}}<br />
+						<p>{{$comment}}</p>
 						@endforeach
 					</div>
 					<script>
