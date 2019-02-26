@@ -111,7 +111,7 @@
 		        <li>
 					<div class="project-details-info-compliance-program uk-panel uk-grid-match" style="height:180px" uk-grid>
 						<div class="uk-width-1-5 uk-padding-remove">
-							<canvas id="chartjs-{{$program['id']}}" class="chartjs" style="height:95%"></canvas>
+							<canvas id="chartjs-{{$program['id']}}" class="chartjs" ></canvas>
 						</div>
 						<div class="uk-width-2-5">
 							<table class="uk-table uk-table-small noline small-padding">
