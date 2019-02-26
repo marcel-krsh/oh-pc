@@ -1540,7 +1540,7 @@ class AuditController extends Controller
                 $summary_optimized_completed_inspections = $summary_optimized_inspected;
                 $summary_optimized_remaining_inspections = $summary_optimized_sample_size - $summary_optimized_completed_inspections;
 
-                $summary_optimized_sample_size_file = $summary_required_file;
+                $summary_optimized_sample_size_file = $summary_optimized_required_file;
                 $summary_optimized_completed_inspections_file = $summary_optimized_required_file;
                 $summary_optimized_remaining_inspections_file = $summary_optimized_sample_size_file - $summary_optimized_completed_inspections_file;
 
@@ -1558,7 +1558,7 @@ class AuditController extends Controller
                         'needed_units_file' => $summary_needed_file,
                         'inspected_units_file' => $summary_inspected_file,
                         'to_be_inspected_units_file' => $summary_to_be_inspected_file,
-                        'optimized_sample_size_file' => $summary_optimized_required_file,
+                        'optimized_sample_size_file' => $summary_inspected_file,
                         'optimized_completed_inspections_file' => $summary_optimized_completed_inspections_file,
                         'optimized_remaining_inspections_file' => $summary_optimized_remaining_inspections_file
                 ];
