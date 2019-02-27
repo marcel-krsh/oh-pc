@@ -40,7 +40,7 @@
 	    	</div> -->
 	    	
 	    	<div class="uk-width-1-2">
-	    		<a href="" class="uk-button uk-button-primary uk-width-1-1" uk-close> CLOSE MODAL</a>
+	    		<a href="#" class="uk-button uk-button-primary uk-width-1-1" uk-close> CLOSE MODAL</a>
 	    	</div>
 	    	<div class="uk-width-1-2">
 	    		<input type="hidden" id="add-finding-form-finding_date" name="date" value="" />
