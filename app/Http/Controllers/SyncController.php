@@ -19,6 +19,7 @@ use Auth;
 use App\Models\Audit;
 use App\Models\Project;
 use App\Models\ProjectProgram;
+use App\Models\SyncProject;
 use App\Jobs\CreateTestAuditJob;
 
 use File;
@@ -29,56 +30,179 @@ class SyncController extends Controller
     
     public function testapi(Request $request) {
         
-       //get units for the project - all of them
-        $project = Project::where('id',$request->get('project_id'))->with('units')->first();
-        $projectUnits = $project->units;
+       //////////////////////////////////////////////////
+        /////// Project Sync
+        /////
 
-        //dd($projectUnits);
-       $apiConnect = new DevcoService();
-       foreach ($projectUnits as $unit) {
-           # code...
-           echo "<br><strong>Unit: ".$unit->unit_name.'<br />';
-           $unitProjectPrograms = $apiConnect->getUnitProjectPrograms($unit->unit_key, Auth::user()->id, Auth::user()->email, Auth::user()->name, 1, 'SystemServer');
-           $projectPrograms = json_decode($unitProjectPrograms);
-           $projectPrograms =  $projectPrograms->data;
+        /// get last modified date inside the database
+        /// PHP 7.3 will fix issue with PDO not recognizing the milisecond precision
+        /// PHP 7.2X and lower instead drops the milisecond off.
+        /// Most php apps operate at the precision of whole seconds. However Devco operates at a TimeStamp(3) precision.
+        /// To get the full time stamp out of the Allita DB, we trick the query into thinking it is a string.
+        /// To do this we use the DB::raw() function and use CONCAT on the column.
+        /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-           if($unit->is_market_rate()){
-                $is_market_rate = 1; 
-           }else{
-                $is_market_rate = 0;
-           }
-
-           $records = array();
-
-           echo "<ul>";
-           foreach ($projectPrograms as $pp) {
-                $pp = $pp->attributes;
-                if(is_null($pp->endDate) && !$is_market_rate){
-                    // market rate? ignore
-                    echo '<li>Unit Key:'.$pp->unitKey.' || Development Program Key:'.$pp->developmentProgramKey.' || Start Date:'.date('m/d/Y',strtotime($pp->startDate)).'<br />';
-                    //get the matching program from the developmentProgramKey
-                    $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->with('program')->first();
-                    echo $program->program->program_name.' '.$program->program_id.'<br /></li>';
-
-                    $record[] = [
-                        'project_id' => $project->id,
-                        'project_key' => $project->project_key,
-                        'unit_id' => $unit->id,
-                        'unit_key' => $unit->unit_key,
-                        'program_id' => $program->program_id
-                    ];
-                } else {
-                    // market rate?
-                    $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->with('program')->first();
-                    if($is_market_rate){
-                        echo "<li>MARKET RATE || CANCELLED:<del>".$program->program->program_name.' '.$program->program_id.'</del> || Start Date:'.date('m/d/Y',strtotime($pp->startDate)).' || End Date: '.date('m/d/Y',strtotime($pp->endDate)).'</li>';
-                    }else{
-                        echo "<li>CANCELLED:<del>".$program->program->program_name.' '.$program->program_id.'</del> || Start Date:'.date('m/d/Y',strtotime($pp->startDate)).' || End Date: '.date('m/d/Y',strtotime($pp->endDate)).'</li>';
+        $lastModifiedDate = SyncProject::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"), 'last_edited', 'id')->orderBy('last_edited', 'desc')->first();
+        // if the value is null set a default start date to start the sync.
+        if (is_null($lastModifiedDate)) {
+            $modified = '10/1/1900';
+        } else {
+            // format date stored to the format we are looking for...
+            // we resync the last second of the data to be sure we get any records that happened to be recorded at the same second.
+            $currentModifiedDateTimeStamp = strtotime($lastModifiedDate->last_edited_convert);
+            settype($currentModifiedDateTimeStamp, 'float');
+            $currentModifiedDateTimeStamp = $currentModifiedDateTimeStamp - .001;
+            $modified = date('m/d/Y G:i:s.u', $currentModifiedDateTimeStamp);
+            //dd($lastModifiedDate, $modified);
+        }
+        $apiConnect = new DevcoService();
+        if (!is_null($apiConnect)) {
+            $syncData = $apiConnect->listDevelopments(1, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = json_decode($syncData, true);
+            $syncPage = 1;
+            //dd($syncData);
+            //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
+            if ($syncData['meta']['totalPageCount'] > 0) {
+                do {
+                    if ($syncPage > 1) {
+                        //Get Next Page
+                        $syncData = $apiConnect->listDevelopments($syncPage, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = json_decode($syncData, true);
+                        //dd('Page Count is Higher',$syncData);
                     }
-                    
-                }
-           }
-           echo "</ul><hr>";
+                    foreach ($syncData['data'] as $i => $v) {
+                            // check if record exists
+                            $updateRecord = SyncProject::select('id', 'allita_id', 'last_edited', 'updated_at')->where('project_key', $v['attributes']['developmentKey'])->first();
+                            // convert booleans
+                            //settype($v['attributes']['isActive'], 'boolean');
+                            //dd($updateRecord,$updateRecord->updated_at);
+                        if (isset($updateRecord->id)) {
+                            // record exists - get matching table record
+
+                            /// NEW CODE TO UPDATE ALLITA TABLE PART 1
+                            $allitaTableRecord = Project::find($updateRecord->allita_id);
+                            /// END NEW CODE PART 1
+
+                            // convert dates to seconds and miliseconds to see if the current record is newer.
+                            $devcoDate = new DateTime($v['attributes']['lastEdited']);
+                            $allitaDate = new DateTime($lastModifiedDate->last_edited_convert);
+                            $allitaFloat = ".".$allitaDate->format('u');
+                            $devcoFloat = ".".$devcoDate->format('u');
+                            settype($allitaFloat, 'float');
+                            settype($devcoFloat, 'float');
+                            $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
+                            $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
+                                
+                            //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
+                                
+                            if ($devcoDateEval > $allitaDateEval) {
+                                if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
+                                    // record is newer than the one currently on file in the allita db.
+                                    // update the sync table first
+                                    SyncProject::where('id', $updateRecord['id'])
+                                    ->update([
+                                        'project_name'=>$v['attributes']['developmentName'],
+                                        'physical_address_key'=>$v['attributes']['physicalAddressKey'],
+                                        'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                        'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
+                                        'total_unit_count'=>$v['attributes']['totalUnitCount'],
+                                        'total_building_count'=>$v['attributes']['totalBuildingCount'],
+                                        'project_number'=>$v['attributes']['projectNumber'],
+                                        'sample_size'=>$v['attributes']['sampleSize'],
+                                            
+                                        'last_edited'=>$v['attributes']['lastEdited'],
+                                    ]);
+                                    $UpdateAllitaValues = SyncProject::find($updateRecord['id']);
+                                    // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
+                                    $allitaTableRecord->update([
+                                        'project_name'=>$v['attributes']['developmentName'],
+                                        'physical_address_key'=>$v['attributes']['physicalAddressKey'],
+                                        'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                        'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
+                                        'total_unit_count'=>$v['attributes']['totalUnitCount'],
+                                        'total_building_count'=>$v['attributes']['totalBuildingCount'],
+                                        'project_number'=>$v['attributes']['projectNumber'],
+                                        'sample_size'=>$v['attributes']['sampleSize'],
+
+                                        'last_edited'=>$UpdateAllitaValues->updated_at,
+                                    ]);
+                                    //dd('inside.');
+                                } elseif (is_null($allitaTableRecord)) {
+                                    // the allita table record doesn't exist
+                                    // create the allita table record and then update the record
+                                    // we create it first so we can ensure the correct updated at
+                                    // date ends up in the allita table record
+                                    // (if we create the sync record first the updated at date would become out of sync with the allita table.)
+
+                                    $allitaTableRecord = Project::create([
+                                        'project_name'=>$v['attributes']['developmentName'],
+                                        'physical_address_key'=>$v['attributes']['physicalAddressKey'],
+                                        'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                        'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
+                                        'total_unit_count'=>$v['attributes']['totalUnitCount'],
+                                        'total_building_count'=>$v['attributes']['totalBuildingCount'],
+                                        'project_number'=>$v['attributes']['projectNumber'],
+                                        'sample_size'=>$v['attributes']['sampleSize'],
+                                            
+                                        'project_key'=>$v['attributes']['developmentKey'],
+                                    ]);
+                                    // Create the sync table entry with the allita id
+                                    $syncTableRecord = SyncProject::where('id', $updateRecord['id'])
+                                    ->update([
+                                        'project_name'=>$v['attributes']['developmentName'],
+                                        'physical_address_key'=>$v['attributes']['physicalAddressKey'],
+                                        'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                        'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
+                                        'total_unit_count'=>$v['attributes']['totalUnitCount'],
+                                        'total_building_count'=>$v['attributes']['totalBuildingCount'],
+                                        'project_number'=>$v['attributes']['projectNumber'],
+                                        'sample_size'=>$v['attributes']['sampleSize'],
+                                            
+                                        'project_key'=>$v['attributes']['developmentKey'],
+                                        'last_edited'=>$v['attributes']['lastEdited'],
+                                        'allita_id'=>$allitaTableRecord->id,
+                                    ]);
+                                    // Update the Allita Table Record with the Sync Table's updated at date
+                                    $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
+                                }
+                            }
+                        } else {
+                            // Create the Allita Entry First
+                            // We do this so the updated_at value of the Sync Table does not become newer
+                            // when we add in the allita_id
+                            $allitaTableRecord = Project::create([
+                            'project_name'=>$v['attributes']['developmentName'],
+                                    'physical_address_key'=>$v['attributes']['physicalAddressKey'],
+                                    'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                    'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
+                                    'total_unit_count'=>$v['attributes']['totalUnitCount'],
+                                    'total_building_count'=>$v['attributes']['totalBuildingCount'],
+                                    'project_number'=>$v['attributes']['projectNumber'],
+                                    'sample_size'=>$v['attributes']['sampleSize'],
+                                    'project_key'=>$v['attributes']['developmentKey'],
+                            ]);
+                            // Create the sync table entry with the allita id
+                            $syncTableRecord = SyncProject::create([
+                                    'project_name'=>$v['attributes']['developmentName'],
+                                    'physical_address_key'=>$v['attributes']['physicalAddressKey'],
+                                    'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                    'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
+                                    'total_unit_count'=>$v['attributes']['totalUnitCount'],
+                                    'total_building_count'=>$v['attributes']['totalBuildingCount'],
+                                    'project_number'=>$v['attributes']['projectNumber'],
+                                    'sample_size'=>$v['attributes']['sampleSize'],
+
+                                'project_key'=>$v['attributes']['developmentKey'],
+                                'last_edited'=>$v['attributes']['lastEdited'],
+                                'allita_id'=>$allitaTableRecord->id,
+                            ]);
+                            // Update the Allita Table Record with the Sync Table's updated at date
+                            $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
+                        }
+                    }
+                    $syncPage++;
+                } while ($syncPage <= $syncData['meta']['totalPageCount']);
+            }
         }
 
     }
