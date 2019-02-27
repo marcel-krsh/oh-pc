@@ -312,6 +312,10 @@
             Route::post('hud_area/store/{id?}', 'AdminToolController@hudAreaStore');
             Route::post('amenity/store/{id?}', 'AdminToolController@amenityStore');
             Route::post('users/{id}/saveroles', 'AdminToolController@userSaveRoles');
+
+            Route::get('groups-data', 'GroupController@getGroupsJson');
+            Route::get('update-group-programs', 'GroupController@udateGroupProgramRelations');
+
         });
 
         //Project

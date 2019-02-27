@@ -10,6 +10,11 @@ class Group extends Model
 
     protected $guarded = ['id'];
 
+    public function scopeActive($query)
+    {
+        return $query->where('active', 1);
+    }
+
     public function groups()
     {
     	$groups = array();

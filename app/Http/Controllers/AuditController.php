@@ -3,47 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
-use App\Models\User;
+use App\Models\Amenity;
+use App\Models\AmenityInspection;
 use App\Models\Audit;
-use App\Models\Building;
-use App\Models\Unit;
-use App\Models\Project;
-use App\Models\Finding;
-use App\Models\CachedAudit;
-use App\Models\CachedBuilding;
-use App\Models\CachedUnit;
-use App\Models\OrderingBuilding;
-use App\Models\OrderingUnit;
-use App\Models\OrderingAmenity;
-use App\Models\CachedInspection;
-use App\Models\CachedAmenity;
-use App\Models\CachedComment;
-use App\Models\ProjectDetail;
-use App\Models\UnitProgram;
-use App\Models\GuideStep;
-use App\Models\GuideProgress;
-use App\Models\ScheduleDay;
-use App\Models\ScheduleTime;
 use App\Models\AuditAuditor;
 use App\Models\Availability;
-use App\Models\AmenityInspection;
-use App\Models\UnitInspection;
-use App\Models\SystemSetting;
-use App\Models\StatsCompliance;
-use App\Models\Amenity;
-use App\Models\UnitAmenity;
-use App\Models\ProjectAmenity;
+use App\Models\Building;
 use App\Models\BuildingAmenity;
+use App\Models\CachedAudit;
+use App\Models\CachedBuilding;
+use App\Models\CachedComment;
+use App\Models\CachedInspection;
+use App\Models\CachedUnit;
 use App\Models\Comment;
-use Auth;
+use App\Models\Finding;
+use App\Models\GuideProgress;
+use App\Models\GuideStep;
 use App\Models\Job;
-use Session;
-use App\LogConverter;
+use App\Models\OrderingAmenity;
+use App\Models\OrderingBuilding;
+use App\Models\OrderingUnit;
+use App\Models\Project;
+use App\Models\ProjectAmenity;
+use App\Models\ScheduleDay;
+use App\Models\ScheduleTime;
+use App\Models\SystemSetting;
+use App\Models\Unit;
+use App\Models\UnitAmenity;
+use App\Models\UnitInspection;
+use App\Models\UnitProgram;
+use App\Models\User;
+use Auth;
 use Carbon;
-use Event;
-use App\Jobs\ComplianceSelectionJob;
+use Illuminate\Http\Request;
+use Session;
 
 class AuditController extends Controller
 {
@@ -58,9 +51,10 @@ class AuditController extends Controller
         }
     }
 
-    public function rerunCompliance(Audit $audit){
-        if($audit->findings->count() < 1){
-            $auditsAhead = Job::where('queue','compliance')->count();
+    public function rerunCompliance(Audit $audit)
+    {
+        if ($audit->findings->count() < 1) {
+            $auditsAhead = Job::where('queue', 'compliance')->count();
             $audit->rerun_compliance = 1;
             $audit->save();
 
@@ -77,11 +71,12 @@ class AuditController extends Controller
 
     }
 
-    public function runCompliance(Project $project){
+    public function runCompliance(Project $project)
+    {
         // this either reruns compliance if there is an active audit or creates an audit and run compliance
-        if($project->currentAudit()){
+        if ($project->currentAudit()) {
             $this->rerunCompliance($project->currentAudit());
-        }else{
+        } else {
             // $new_audit = new Audit([
             //     'project_id' => $project->id,
             //     'development_key' => $project->project_key,
@@ -108,7 +103,6 @@ class AuditController extends Controller
             // OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->delete();
         }
 
-
         if (OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->count() == 0 && CachedBuilding::where('audit_id', '=', $audit)->count() != 0) {
             // if ordering_buildings is empty, create a default entry for the ordering
             // if there is a previous audit and that user has ordering records, use those as default
@@ -125,79 +119,78 @@ class AuditController extends Controller
             $default_ordering_needed = 0;
 
             // get the project from audit_id
-            $project_id = Audit::where('id','=',$audit)->first()->project_id;
+            $project_id = Audit::where('id', '=', $audit)->first()->project_id;
 
             // is there a previous record in the OrderingBuilding for the same project and user?
-            $previous_ordering_records_check = OrderingBuilding::where('project_id','=',$project_id)->where('user_id','=',Auth::user()->id)->where('audit_id','!=',$audit)->orderBy('audit_id', 'desc')->first();
-            if($previous_ordering_records_check){
+            $previous_ordering_records_check = OrderingBuilding::where('project_id', '=', $project_id)->where('user_id', '=', Auth::user()->id)->where('audit_id', '!=', $audit)->orderBy('audit_id', 'desc')->first();
+            if ($previous_ordering_records_check) {
                 $previous_ordering_records_audit_id = $previous_ordering_records_check->audit_id;
 
                 // if yes, we get it and check if all the buildings match
-                $previous_ordering_records = OrderingBuilding::where('project_id','=',$project_id)->where('user_id','=',Auth::user()->id)->where('audit_id','=',$previous_ordering_records_audit_id)->orderBy('order','asc')->get();
+                $previous_ordering_records = OrderingBuilding::where('project_id', '=', $project_id)->where('user_id', '=', Auth::user()->id)->where('audit_id', '=', $previous_ordering_records_audit_id)->orderBy('order', 'asc')->get();
 
                 // compare count first
-                if(count($previous_ordering_records) == CachedBuilding::where('audit_id','=',$audit)->count()){
+                if (count($previous_ordering_records) == CachedBuilding::where('audit_id', '=', $audit)->count()) {
                     // check if buildings are the same
-                    foreach($previous_ordering_records as $ordering_building){
-                        if(!CachedBuilding::where('audit_id','=',$audit)->where('building_id','=',$ordering_building->building_id)->count()){
-                             // use the default ordering
-                             $default_ordering_needed = 1;
-                             break;
+                    foreach ($previous_ordering_records as $ordering_building) {
+                        if (!CachedBuilding::where('audit_id', '=', $audit)->where('building_id', '=', $ordering_building->building_id)->count()) {
+                            // use the default ordering
+                            $default_ordering_needed = 1;
+                            break;
                         }
                     }
 
                     // all good, let's copy the previous ordering
-                    if($default_ordering_needed == 0){
-                        foreach($previous_ordering_records as $ordering_building){
+                    if ($default_ordering_needed == 0) {
+                        foreach ($previous_ordering_records as $ordering_building) {
                             $ordering = new OrderingBuilding([
                                 'user_id' => Auth::user()->id,
                                 'audit_id' => $audit,
                                 'project_id' => $ordering_building->project_id,
                                 'building_id' => $ordering_building->building_id,
                                 'amenity_id' => $ordering_building->amenity_id,
-                                'order' => $ordering_building->order
+                                'order' => $ordering_building->order,
                             ]);
                             $ordering->save();
                         }
                     }
-                }else{
+                } else {
                     // use the default ordering
                     $default_ordering_needed = 1;
                 }
 
-
-            }else{
+            } else {
                 // use the default ordering
                 $default_ordering_needed = 1;
             }
 
             // use the default ordering
-            if($default_ordering_needed){
+            if ($default_ordering_needed) {
                 $buildings = CachedBuilding::where('audit_id', '=', $audit)->orderBy('id', 'desc')->get();
 
                 $i = 1;
 
                 foreach ($buildings as $building) {
-                    if($building->building_id !== NULL){
+                    if ($building->building_id !== null) {
                         $ordering = new OrderingBuilding([
                             'user_id' => Auth::user()->id,
                             'audit_id' => $audit,
                             'project_id' => $building->project_id,
                             'building_id' => $building->building_id,
                             'amenity_id' => 0,
-                            'order' => $i
+                            'order' => $i,
                         ]);
                         $ordering->save();
                         $i++;
-                    }else{
+                    } else {
                         // it is a building-level amenity
                         $ordering = new OrderingBuilding([
                             'user_id' => Auth::user()->id,
                             'audit_id' => $audit,
                             'project_id' => $building->project_id,
-                            'building_id' => NULL,
+                            'building_id' => null,
                             'amenity_id' => $building->amenity_id,
-                            'order' => $i
+                            'order' => $i,
                         ]);
                         $ordering->save();
                         $i++;
@@ -210,13 +203,13 @@ class AuditController extends Controller
         $buildings = OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->get();
 
         // in the case of an amenity at the building level (like a parking lot), there won't be a clear link between the amenityinspection and the cachedbuilding
-        foreach($buildings as $building){
-            if($building->building_id === NULL){
+        foreach ($buildings as $building) {
+            if ($building->building_id === null) {
                 $amenity_id = $building->amenity_id;
                 $audit_id = $building->audit_id;
                 $amenity_inspection = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->whereNull('building_id')->whereNull('cachedbuilding_id')->first();
 
-                if($amenity_inspection){
+                if ($amenity_inspection) {
                     $amenity_inspection->cachedbuilding_id = $building->building_id;
                     $amenity_inspection->save();
                 }
@@ -233,45 +226,43 @@ class AuditController extends Controller
         $project = $request->get('project');
         $index = $request->get('index');
 
-
-
-        if($building !== null){
+        if ($building !== null) {
             $current_ordering = OrderingBuilding::where('audit_id', '=', $audit)
-                                    ->where('user_id', '=', Auth::user()->id)
-                                    ->where(function ($query) use($building) {
-                                        $query->where('building_id', '!=', $building)
-                                              ->orwhereNull('building_id');
-                                    })
-                                    ->orderBy('order', 'asc')
-                                    ->get()->toArray();
+                ->where('user_id', '=', Auth::user()->id)
+                ->where(function ($query) use ($building) {
+                    $query->where('building_id', '!=', $building)
+                        ->orwhereNull('building_id');
+                })
+                ->orderBy('order', 'asc')
+                ->get()->toArray();
 
-            $inserted = [ [
-                    'user_id' => Auth::user()->id,
-                    'audit_id' => $audit,
-                    'project_id' => $project,
-                    'building_id' => $building,
-                    'amenity_id' => 0,
-                    'order' => $index
-               ]];
-        }else{
+            $inserted = [[
+                'user_id' => Auth::user()->id,
+                'audit_id' => $audit,
+                'project_id' => $project,
+                'building_id' => $building,
+                'amenity_id' => 0,
+                'order' => $index,
+            ]];
+        } else {
             // select all building orders except for the one we want to reorder
             $current_ordering = OrderingBuilding::where('audit_id', '=', $audit)
-                                    ->where('user_id', '=', Auth::user()->id)
-                                    ->where(function ($query) use($amenity) {
-                                        $query->where('amenity_id', '!=', $amenity)
-                                              ->orwhereNull('amenity_id');
-                                    })
-                                    ->orderBy('order', 'asc')
-                                    ->get()->toArray();
+                ->where('user_id', '=', Auth::user()->id)
+                ->where(function ($query) use ($amenity) {
+                    $query->where('amenity_id', '!=', $amenity)
+                        ->orwhereNull('amenity_id');
+                })
+                ->orderBy('order', 'asc')
+                ->get()->toArray();
 
-            $inserted = [ [
-                    'user_id' => Auth::user()->id,
-                    'audit_id' => $audit,
-                    'project_id' => $project,
-                    'building_id' => NULL,
-                    'amenity_id' => $amenity,
-                    'order' => $index
-               ]];
+            $inserted = [[
+                'user_id' => Auth::user()->id,
+                'audit_id' => $audit,
+                'project_id' => $project,
+                'building_id' => null,
+                'amenity_id' => $amenity,
+                'order' => $index,
+            ]];
         }
 
         // insert the building ordering in the array
@@ -289,7 +280,7 @@ class AuditController extends Controller
                 'project_id' => $ordering['project_id'],
                 'building_id' => $ordering['building_id'],
                 'amenity_id' => $ordering['amenity_id'],
-                'order' => $key+1
+                'order' => $key + 1,
             ]);
             $new_ordering->save();
         }
@@ -304,13 +295,13 @@ class AuditController extends Controller
         // select all building orders except for the one we want to reorder
         $current_ordering = OrderingUnit::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->where('building_id', '=', $building)->where('unit_id', '!=', $unit)->orderBy('order', 'asc')->get()->toArray();
 
-        $inserted = [ [
-                    'user_id' => Auth::user()->id,
-                    'audit_id' => $audit,
-                    'building_id' => $building,
-                    'unit_id' => $unit,
-                    'order' => $index
-               ]];
+        $inserted = [[
+            'user_id' => Auth::user()->id,
+            'audit_id' => $audit,
+            'building_id' => $building,
+            'unit_id' => $unit,
+            'order' => $index,
+        ]];
 
         // insert the building ordering in the array
         $reordered_array = $current_ordering;
@@ -326,13 +317,14 @@ class AuditController extends Controller
                 'audit_id' => $ordering['audit_id'],
                 'building_id' => $ordering['building_id'],
                 'unit_id' => $ordering['unit_id'],
-                'order' => $key+1
+                'order' => $key + 1,
             ]);
             $new_ordering->save();
         }
     }
 
-    public function getProjectContact(Project $project) {
+    public function getProjectContact(Project $project)
+    {
 
         return view('modals.project-contact', compact('project'));
     }
@@ -357,7 +349,7 @@ class AuditController extends Controller
                     'audit_id' => $audit,
                     'building_id' => $detail->building_id,
                     'unit_id' => $detail->id,
-                    'order' => $i
+                    'order' => $i,
                 ]);
                 $ordering->save();
                 $i++;
@@ -366,11 +358,10 @@ class AuditController extends Controller
             $details = null;
         }
 
-
         $details = OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->with('unit')->get();
 
         // swap needs project_id
-        $project_id = CachedAudit::where('audit_id','=',$audit)->first()->project_id;
+        $project_id = CachedAudit::where('audit_id', '=', $audit)->first()->project_id;
 
         return view('dashboard.partials.audit_building_details', compact('audit', 'target', 'building', 'details', 'targetaudit', 'context', 'project_id'));
     }
@@ -383,12 +374,12 @@ class AuditController extends Controller
         $context = $request->get('context');
         $inspection = "test";
 
-        $audit = Audit::where('id','=',$audit_id)->first();
+        $audit = Audit::where('id', '=', $audit_id)->first();
 
-        if(CachedInspection::first()){
+        if (CachedInspection::first()) {
             $data['detail'] = CachedInspection::first();
             $data['menu'] = $data['detail']->menu_json;
-        }else{
+        } else {
             $data['detail'] = null;
             $data['menu'] = null;
         }
@@ -398,7 +389,7 @@ class AuditController extends Controller
         $data['detail'] = collect([
             'unit_id' => null,
             'building_id' => $building_id,
-            'project_id' => $audit->project_id
+            'project_id' => $audit->project_id,
         ]);
 
         // if unit or building is completed, the icon for the unit turn solid green
@@ -408,7 +399,7 @@ class AuditController extends Controller
             ['name' => 'SITE AUDIT', 'icon' => 'a-mobile-home', 'status' => '', 'style' => '', 'action' => 'site_audit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => null],
             ['name' => 'FILE AUDIT', 'icon' => 'a-folder', 'status' => '', 'style' => '', 'action' => 'file_audit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => null],
             ['name' => 'COMPLETE', 'icon' => 'a-circle-checked', 'status' => '', 'style' => 'margin-top:30px;', 'action' => 'complete', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => null],
-            ['name' => 'SUBMIT', 'icon' => 'a-avatar-star', 'status' => '', 'style' => 'margin-top:30px;', 'action' => 'submit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => null]
+            ['name' => 'SUBMIT', 'icon' => 'a-avatar-star', 'status' => '', 'style' => 'margin-top:30px;', 'action' => 'submit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => null],
         ]);
 
         // $data['amenities'] = CachedAmenity::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->get();
@@ -417,16 +408,15 @@ class AuditController extends Controller
         if ($building_id) {
             $ordered_amenities = $ordered_amenities->where('building_id', '=', $building_id);
         }
-            //$ordered_amenities = $ordered_amenities->get();
+        //$ordered_amenities = $ordered_amenities->get();
 
         $ordered_amenities_count = $ordered_amenities->count();
-
 
         $amenities_count = AmenityInspection::where('audit_id', '=', $audit_id);
         if ($building_id) {
             $amenities_count = $amenities_count->where('building_id', '=', $building_id);
         }
-            $amenities_count = $amenities_count->count();
+        $amenities_count = $amenities_count->count();
 
         if ($amenities_count != $ordered_amenities_count && $amenities_count != 0) {
             // this shouldn't happen
@@ -446,7 +436,7 @@ class AuditController extends Controller
             if ($building_id) {
                 $amenities = $amenities->where('building_id', '=', $building_id);
             }
-                $amenities = $amenities->orderBy('id', 'desc')->get();
+            $amenities = $amenities->orderBy('id', 'desc')->get();
 
             $i = 1;
             $new_ordering = [];
@@ -458,7 +448,7 @@ class AuditController extends Controller
                     'building_id' => $building_id,
                     'amenity_id' => $amenity->amenity_id,
                     'amenity_inspection_id' => $amenity->id,
-                    'order' => $i
+                    'order' => $i,
                 ]);
                 $ordering->save();
                 $i++;
@@ -475,49 +465,49 @@ class AuditController extends Controller
 
         // manage name duplicates, number them based on their id
         $amenity_names = array();
-        foreach($amenities as $amenity){
+        foreach ($amenities as $amenity) {
             $amenity_names[$amenity->amenity->amenity_description][] = $amenity->amenity_inspection_id;
         }
 
-        foreach($amenities as $amenity){
+        foreach ($amenities as $amenity) {
 
-            if($amenity->amenity_inspection->auditor_id !== NULL){
+            if ($amenity->amenity_inspection->auditor_id !== null) {
                 $auditor_initials = $amenity->amenity_inspection->user->initials();
                 $auditor_name = $amenity->amenity_inspection->user->full_name();
                 $auditor_id = $amenity->amenity_inspection->user->id;
                 $auditor_color = $amenity->amenity_inspection->user->badge_color;
-            }else{
+            } else {
                 $auditor_initials = '<i class="a-avatar-plus_1"></i>';
                 $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
                 $auditor_color = '';
                 $auditor_id = 0;
             }
 
-            if($amenity->amenity_inspection->completed_date_time == NULL){
+            if ($amenity->amenity_inspection->completed_date_time == null) {
                 $completed_icon = "a-circle";
-            }else{
+            } else {
                 $completed_icon = "a-circle-checked ok-actionable";
             }
 
-            if($amenity->amenity->file == 1){
+            if ($amenity->amenity->file == 1) {
                 $status = " fileaudit";
-            }else{
+            } else {
                 $status = " siteaudit";
             }
 
             // check for name duplicates and assign a #
             $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
-            if($key > 0){
+            if ($key > 0) {
                 $key = $key + 1;
-                $name = $amenity->amenity->amenity_description." ".$key;
-            }else{
+                $name = $amenity->amenity->amenity_description . " " . $key;
+            } else {
                 $name = $amenity->amenity->amenity_description;
             }
 
             // check if this amenity has findings (to disable trash)
-            if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit_id)->count()){
+            if (Finding::where('amenity_id', '=', $amenity->amenity_inspection_id)->where('audit_id', '=', $audit_id)->count()) {
                 $has_findings = 1;
-            }else{
+            } else {
                 $has_findings = 0;
             }
 
@@ -531,16 +521,16 @@ class AuditController extends Controller
                 "auditor_name" => $auditor_name,
                 "auditor_color" => $auditor_color,
                 "finding_nlt_status" => '',
-                "finding_lt_status" =>'',
-                "finding_sd_status" =>'',
-                "finding_photo_status" =>'',
-                "finding_comment_status" =>'',
-                "finding_copy_status" =>'',
-                "finding_trash_status" =>'',
+                "finding_lt_status" => '',
+                "finding_sd_status" => '',
+                "finding_photo_status" => '',
+                "finding_comment_status" => '',
+                "finding_copy_status" => '',
+                "finding_trash_status" => '',
                 "building_id" => $amenity->building_id,
                 "unit_id" => 0,
                 "completed_icon" => $completed_icon,
-                "has_findings" => $has_findings
+                "has_findings" => $has_findings,
             ];
         }
 
@@ -576,22 +566,22 @@ class AuditController extends Controller
         // inspectionDetails(1005325,23060,6659,0,6659,1,'audits');
 
         // $detail_id is the cachedunit id
-        $cached_unit = CachedUnit::where('id','=',$detail_id)->first();
+        $cached_unit = CachedUnit::where('id', '=', $detail_id)->first();
         $unit = $cached_unit->unit;
 
-        $audit = Audit::where('id','=',$audit_id)->first();
+        $audit = Audit::where('id', '=', $audit_id)->first();
 
         $data['detail'] = collect([
             'unit_id' => $unit->id,
             'building_id' => $building_id,
-            'project_id' => $audit->project_id
+            'project_id' => $audit->project_id,
         ]);
 
         $data['menu'] = collect([
             ['name' => 'SITE AUDIT', 'icon' => 'a-mobile-home', 'status' => 'active', 'style' => '', 'action' => 'site_audit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => $unit->id],
             ['name' => 'FILE AUDIT', 'icon' => 'a-folder', 'status' => '', 'style' => '', 'action' => 'file_audit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => $unit->id],
             ['name' => 'COMPLETE', 'icon' => 'a-circle-checked', 'status' => '', 'style' => 'margin-top:30px;', 'action' => 'complete', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => $unit->id],
-            ['name' => 'SUBMIT', 'icon' => 'a-avatar-star', 'status' => '', 'style' => 'margin-top:30px;', 'action' => 'submit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => $unit->id]
+            ['name' => 'SUBMIT', 'icon' => 'a-avatar-star', 'status' => '', 'style' => 'margin-top:30px;', 'action' => 'submit', 'audit_id' => $audit->id, 'building_id' => $building_id, 'unit_id' => $unit->id],
         ]);
 
         $ordered_amenities = OrderingAmenity::where('audit_id', '=', $audit_id)->where('user_id', '=', Auth::user()->id)->whereHas('amenity_inspection');
@@ -625,7 +615,7 @@ class AuditController extends Controller
             if ($detail_id) {
                 $amenities = $amenities->where('unit_id', '=', $unit->id);
             }
-                $amenities = $amenities->orderBy('id', 'desc')->get();
+            $amenities = $amenities->orderBy('id', 'desc')->get();
 
             $i = 1;
             $new_ordering = [];
@@ -638,7 +628,7 @@ class AuditController extends Controller
                     'unit_id' => $unit->id,
                     'amenity_id' => $amenity->amenity_id,
                     'amenity_inspection_id' => $amenity->id,
-                    'order' => $i
+                    'order' => $i,
                 ]);
                 $ordering->save();
                 $i++;
@@ -655,49 +645,49 @@ class AuditController extends Controller
 
         // manage name duplicates, number them based on their id
         $amenity_names = array();
-        foreach($amenities as $amenity){
+        foreach ($amenities as $amenity) {
             $amenity_names[$amenity->amenity->amenity_description][] = $amenity->amenity_inspection_id;
         }
 
-        foreach($amenities as $amenity){
+        foreach ($amenities as $amenity) {
             //if(!$amenity->amenity_inspection){dd($amenity->id);} // 6093
-            if($amenity->amenity_inspection->auditor_id !== NULL){
+            if ($amenity->amenity_inspection->auditor_id !== null) {
                 $auditor_initials = $amenity->amenity_inspection->user->initials();
                 $auditor_name = $amenity->amenity_inspection->user->full_name();
                 $auditor_id = $amenity->amenity_inspection->user->id;
                 $auditor_color = $amenity->amenity_inspection->user->badge_color;
-            }else{
+            } else {
                 $auditor_initials = '<i class="a-avatar-plus_1"></i>';
                 $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
                 $auditor_color = '';
                 $auditor_id = 0;
             }
 
-            if($amenity->amenity_inspection->completed_date_time == NULL){
+            if ($amenity->amenity_inspection->completed_date_time == null) {
                 $completed_icon = "a-circle";
-            }else{
+            } else {
                 $completed_icon = "a-circle-checked ok-actionable";
             }
 
-            if($amenity->amenity->file == 1){
+            if ($amenity->amenity->file == 1) {
                 $status = " fileaudit";
-            }else{
+            } else {
                 $status = " siteaudit";
             }
 
             // check for name duplicates and assign a #
             $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
-            if($key > 0){
+            if ($key > 0) {
                 $key = $key + 1;
-                $name = $amenity->amenity->amenity_description." ".$key;
-            }else{
+                $name = $amenity->amenity->amenity_description . " " . $key;
+            } else {
                 $name = $amenity->amenity->amenity_description;
             }
 
             // check if this amenity has findings (to disable trash)
-            if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit_id)->count()){
+            if (Finding::where('amenity_id', '=', $amenity->amenity_inspection_id)->where('audit_id', '=', $audit_id)->count()) {
                 $has_findings = 1;
-            }else{
+            } else {
                 $has_findings = 0;
             }
 
@@ -711,16 +701,16 @@ class AuditController extends Controller
                 "auditor_name" => $auditor_name,
                 "auditor_color" => $auditor_color,
                 "finding_nlt_status" => '',
-                "finding_lt_status" =>'',
-                "finding_sd_status" =>'',
-                "finding_photo_status" =>'',
-                "finding_comment_status" =>'',
-                "finding_copy_status" =>'',
-                "finding_trash_status" =>'',
+                "finding_lt_status" => '',
+                "finding_sd_status" => '',
+                "finding_photo_status" => '',
+                "finding_comment_status" => '',
+                "finding_copy_status" => '',
+                "finding_trash_status" => '',
                 "building_id" => $amenity->building_id,
                 "unit_id" => $amenity->unit_id,
                 "completed_icon" => $completed_icon,
-                "has_findings" => $has_findings
+                "has_findings" => $has_findings,
             ];
         }
 
@@ -740,7 +730,7 @@ class AuditController extends Controller
 
     public function saveDeleteAmenity(Request $request)
     {
-        $comment = ($request->get('comment') !== null) ? $request->get('comment') : '' ;
+        $comment = ($request->get('comment') !== null) ? $request->get('comment') : '';
         $amenity_id = $request->get('amenity_id');
         $audit_id = $request->get('audit_id');
         $building_id = $request->get('building_id');
@@ -756,20 +746,19 @@ class AuditController extends Controller
         "0"
          */
 
-        $project_id = Audit::where('id','=',$audit_id)->first()->project_id;
+        $project_id = Audit::where('id', '=', $audit_id)->first()->project_id;
 
         // check if the amenity has findings
-        if(Finding::where('amenity_id','=',$amenity_id)->where('audit_id','=',$audit_id)->count()){
+        if (Finding::where('amenity_id', '=', $amenity_id)->where('audit_id', '=', $audit_id)->count()) {
             return 0;
-        }else{
+        } else {
 
-            if($unit_id != "null" && $unit_id !== NULL && $unit_id != 0){
+            if ($unit_id != "null" && $unit_id !== null && $unit_id != 0) {
                 // dd("unit", $comment, $amenity_id, $audit_id, $building_id, $unit_id);
 
-
-                $amenity_inspection = AmenityInspection::where('id','=',$amenity_id)->first();
-                $ordering_amenities = OrderingAmenity::where('audit_id','=',$audit_id)->where('amenity_inspection_id','=',$amenity_id)->where('unit_id','=',$unit_id)->first();
-                $unit_amenity = UnitAmenity::where('unit_id','=',$unit_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
+                $amenity_inspection = AmenityInspection::where('id', '=', $amenity_id)->first();
+                $ordering_amenities = OrderingAmenity::where('audit_id', '=', $audit_id)->where('amenity_inspection_id', '=', $amenity_id)->where('unit_id', '=', $unit_id)->first();
+                $unit_amenity = UnitAmenity::where('unit_id', '=', $unit_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
 
                 $amenity_inspection->delete();
                 $ordering_amenities->delete();
@@ -783,33 +772,33 @@ class AuditController extends Controller
                     'unit_id' => $unit_id,
                     'building_id' => $building_id,
                     'comment' => $comment,
-                    'recorded_date' => date('Y-m-d H:i:s',time())
+                    'recorded_date' => date('Y-m-d H:i:s', time()),
                 ]);
                 $new_comment->save();
 
                 // reload auditor names at the unit and building row levels
-                $reload_auditors = $this->reload_auditors($audit_id, $unit_id, NULL);
+                $reload_auditors = $this->reload_auditors($audit_id, $unit_id, null);
                 $unit_auditors = $reload_auditors['unit_auditors'];
                 $building_auditors = $reload_auditors['building_auditors'];
 
                 $data['element'] = $element;
                 $data['auditor'] = ["unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $unit_id, "building_id" => $building_id, "audit_id" => $audit_id];
 
-                $unit = CachedUnit::where('unit_id','=',$unit_id)->first();
-                if($unit->type_total != $unit->amenity_totals()){
+                $unit = CachedUnit::where('unit_id', '=', $unit_id)->first();
+                if ($unit->type_total != $unit->amenity_totals()) {
                     $unit->type_total = $unit->amenity_totals();
                     $unit->save();
                 }
                 $data['amenity_count'] = $unit->amenity_totals();
-                $data['amenity_count_id'] =  $audit_id.$unit->building_id.$unit_id;
+                $data['amenity_count_id'] = $audit_id . $unit->building_id . $unit_id;
 
                 return $data;
 
-            }elseif($building_id != "null" && $building_id !== NULL && $building_id != 0){
+            } elseif ($building_id != "null" && $building_id !== null && $building_id != 0) {
                 // dd("building", $comment, $amenity_id, $audit_id, $building_id, $unit_id);
-                $amenity_inspection = AmenityInspection::where('id','=',$amenity_id)->first();
-                $ordering_amenities = OrderingAmenity::where('audit_id','=',$audit_id)->where('amenity_inspection_id','=',$amenity_id)->whereNull('unit_id')->where('building_id','=',$building_id)->first();
-                $building_amenity = BuildingAmenity::where('building_id','=',$building_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
+                $amenity_inspection = AmenityInspection::where('id', '=', $amenity_id)->first();
+                $ordering_amenities = OrderingAmenity::where('audit_id', '=', $audit_id)->where('amenity_inspection_id', '=', $amenity_id)->whereNull('unit_id')->where('building_id', '=', $building_id)->first();
+                $building_amenity = BuildingAmenity::where('building_id', '=', $building_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
 
                 $amenity_inspection->delete();
                 $ordering_amenities->delete();
@@ -823,7 +812,7 @@ class AuditController extends Controller
                     'unit_id' => $unit_id,
                     'building_id' => $building_id,
                     'comment' => $comment,
-                    'recorded_date' => date('Y-m-d H:i:s',time())
+                    'recorded_date' => date('Y-m-d H:i:s', time()),
                 ]);
                 $new_comment->save();
 
@@ -839,7 +828,7 @@ class AuditController extends Controller
 
                 return $data;
 
-            }else{
+            } else {
                 // TBD - we don't have a button yet for this
                 // project_amenities
                 // ordering_amenities
@@ -853,40 +842,40 @@ class AuditController extends Controller
 
     public function markCompleted(Request $request, $amenity_id, $audit_id, $building_id, $unit_id)
     {
-        if($amenity_id == 0){
-            if($unit_id != "null" && $unit_id != 0){
-            // the complete button was clicked at the unit level
-                $amenity_inspections = AmenityInspection::where('audit_id','=', $audit_id)->where('unit_id','=',$unit_id)->get();
-            }else{
-            // the complete button was clicked at the building level
-                $amenity_inspections = AmenityInspection::where('audit_id','=', $audit_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->get();
+        if ($amenity_id == 0) {
+            if ($unit_id != "null" && $unit_id != 0) {
+                // the complete button was clicked at the unit level
+                $amenity_inspections = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit_id)->get();
+            } else {
+                // the complete button was clicked at the building level
+                $amenity_inspections = AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->get();
             }
             //dd($amenity_id, $audit_id, $building_id, $unit_id, $amenity_inspections);
-            foreach($amenity_inspections as $amenity_inspection){
+            foreach ($amenity_inspections as $amenity_inspection) {
                 // if an amenity has already been completed, do not update the date
-                if($amenity_inspection->completed_date_time === NULL){
-                    $amenity_inspection->completed_date_time = date('Y-m-d H:i:s',time());
+                if ($amenity_inspection->completed_date_time === null) {
+                    $amenity_inspection->completed_date_time = date('Y-m-d H:i:s', time());
                     $amenity_inspection->save();
                 }
             }
 
-            return ['status'=>'complete'];
-        }else{
-            if($unit_id != "null" && $unit_id != 0){
-                $amenity_inspection = AmenityInspection::where('audit_id','=', $audit_id)->where('id','=',$amenity_id)->where('unit_id','=',$unit_id)->first();
-            }else{
-                $amenity_inspection = AmenityInspection::where('audit_id','=', $audit_id)->where('id','=',$amenity_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->first();
+            return ['status' => 'complete'];
+        } else {
+            if ($unit_id != "null" && $unit_id != 0) {
+                $amenity_inspection = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->where('unit_id', '=', $unit_id)->first();
+            } else {
+                $amenity_inspection = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->first();
             }
 
-            if($amenity_inspection->completed_date_time !== NULL){
+            if ($amenity_inspection->completed_date_time !== null) {
                 // it was already completed, we remove completion
-                $amenity_inspection->completed_date_time = NULL;
+                $amenity_inspection->completed_date_time = null;
                 $amenity_inspection->save();
-                return ['status'=>'not completed'];
-            }else{
-                $amenity_inspection->completed_date_time = date('Y-m-d H:i:s',time());
+                return ['status' => 'not completed'];
+            } else {
+                $amenity_inspection->completed_date_time = date('Y-m-d H:i:s', time());
                 $amenity_inspection->save();
-                return ['status'=>'complete'];
+                return ['status' => 'complete'];
             }
         }
 
@@ -896,39 +885,39 @@ class AuditController extends Controller
     public function assignAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id, $element)
     {
         // check if we are mass assigning
-        if($amenity_id == 0){
-            if($unit_id != 0){
+        if ($amenity_id == 0) {
+            if ($unit_id != 0) {
                 $amenity = 0;
-                $name = "Unit ".CachedUnit::where('unit_id', '=', $unit_id)->first()->unit_name;
-            }elseif($building_id != 0){
+                $name = "Unit " . CachedUnit::where('unit_id', '=', $unit_id)->first()->unit_name;
+            } elseif ($building_id != 0) {
                 $amenity = 0;
-                $name = "Building ".CachedBuilding::where('building_id', '=', $building_id)->first()->building_name;
+                $name = "Building " . CachedBuilding::where('building_id', '=', $building_id)->first()->building_name;
             }
-        }else{
-            if($unit_id != "null" && $unit_id != 0){
-                $amenity = AmenityInspection::where('amenity_id','=',$amenity_id)
-                                            ->where('audit_id','=',$audit_id)
-                                            ->where('unit_id','=',$unit_id)
-                                            ->first();
-                $name = "Unit ".Unit::where('id','=',$unit_id)->first()->unit_name;
-            }elseif($building_id === NULL || $building_id == 0){
-                $amenity = AmenityInspection::where('amenity_id','=',$amenity_id)
-                                            ->where('audit_id','=',$audit_id)
-                                            ->whereNull('building_id')
-                                            ->whereNull('unit_id')
-                                            ->first();
-                $name = "Building ".CachedBuilding::where('id', '=', $amenity->cachedbuilding_id)->first()->building_name;
-            }else{
-                $amenity = AmenityInspection::where('amenity_id','=',$amenity_id)
-                                            ->where('audit_id','=',$audit_id)
-                                            ->where('building_id','=',$building_id)
-                                            ->whereNull('unit_id')
-                                            ->first();
-                $name = "Building ".CachedBuilding::where('building_id', '=', $building_id)->first()->building_name;
+        } else {
+            if ($unit_id != "null" && $unit_id != 0) {
+                $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+                    ->where('audit_id', '=', $audit_id)
+                    ->where('unit_id', '=', $unit_id)
+                    ->first();
+                $name = "Unit " . Unit::where('id', '=', $unit_id)->first()->unit_name;
+            } elseif ($building_id === null || $building_id == 0) {
+                $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+                    ->where('audit_id', '=', $audit_id)
+                    ->whereNull('building_id')
+                    ->whereNull('unit_id')
+                    ->first();
+                $name = "Building " . CachedBuilding::where('id', '=', $amenity->cachedbuilding_id)->first()->building_name;
+            } else {
+                $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+                    ->where('audit_id', '=', $audit_id)
+                    ->where('building_id', '=', $building_id)
+                    ->whereNull('unit_id')
+                    ->first();
+                $name = "Building " . CachedBuilding::where('building_id', '=', $building_id)->first()->building_name;
             }
         }
 
-        $auditors = CachedAudit::where('audit_id','=',$audit_id)->first()->auditors;
+        $auditors = CachedAudit::where('audit_id', '=', $audit_id)->first()->auditors;
         $current_auditor = null;
 
         return view('modals.auditor-amenity-assignment', compact('auditors', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element', 'current_auditor'));
@@ -938,24 +927,24 @@ class AuditController extends Controller
     {
 
         //dd($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element);
-        if($amenity_id != 0){
-            $amenity = AmenityInspection::where('amenity_id','=',$amenity_id)
-                                            ->where('audit_id','=',$audit_id)
-                                            ->whereNull('building_id')
-                                            ->whereNull('unit_id')
-                                            ->first();
-            $name = "Building ".CachedBuilding::where('id', '=', $amenity->cachedbuilding_id)->first()->building_name." (swap)";
-        }elseif($unit_id != 0){
+        if ($amenity_id != 0) {
+            $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+                ->where('audit_id', '=', $audit_id)
+                ->whereNull('building_id')
+                ->whereNull('unit_id')
+                ->first();
+            $name = "Building " . CachedBuilding::where('id', '=', $amenity->cachedbuilding_id)->first()->building_name . " (swap)";
+        } elseif ($unit_id != 0) {
             $amenity = 0;
-            $name = "Unit ".CachedUnit::where('unit_id', '=', $unit_id)->first()->unit_name ." (swap)";
-        }elseif($building_id != 0){
+            $name = "Unit " . CachedUnit::where('unit_id', '=', $unit_id)->first()->unit_name . " (swap)";
+        } elseif ($building_id != 0) {
             $amenity = 0;
-            $name = "Building ".CachedBuilding::where('building_id', '=', $building_id)->first()->building_name." (swap)";
+            $name = "Building " . CachedBuilding::where('building_id', '=', $building_id)->first()->building_name . " (swap)";
         }
 
         $current_auditor = User::where('id', '=', $auditor_id)->first();
 
-        $auditors = CachedAudit::where('audit_id','=',$audit_id)->first()->auditors;
+        $auditors = CachedAudit::where('audit_id', '=', $audit_id)->first()->auditors;
 
         return view('modals.auditor-amenity-assignment', compact('auditors', 'current_auditor', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element', 'auditor_id'));
     }
@@ -965,124 +954,122 @@ class AuditController extends Controller
 
         $new_auditor_id = $request->get('new_auditor_id');
 
-        if($amenity_id == 0 && $unit_id != 0){
+        if ($amenity_id == 0 && $unit_id != 0) {
 
             // make sure this id is already in the auditor's list for this audit
-            if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$new_auditor_id)->first()){
+            if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $new_auditor_id)->first()) {
 
-                $building = CachedBuilding::where('building_id','=',$building_id)->first();
+                $building = CachedBuilding::where('building_id', '=', $building_id)->first();
                 $unit = CachedUnit::where('unit_id', '=', $unit_id)->first();
                 $cached_unit_id = $unit->unit_id;
 
-                $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id','=',$auditor_id)->where('unit_id', '=', $unit->unit_id)->update([
-                    "auditor_id" => $new_auditor_id
+                $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id', '=', $auditor_id)->where('unit_id', '=', $unit->unit_id)->update([
+                    "auditor_id" => $new_auditor_id,
                 ]);
 
-                $user = User::where('id','=',$new_auditor_id)->first();
+                $user = User::where('id', '=', $new_auditor_id)->first();
 
-                $unit_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id','=',$unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+                $unit_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
 
                 $building_auditor_ids = array();
                 $units = Unit::where('building_id', '=', $building_id)->get();
-                foreach($units as $unit){
-                    $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                foreach ($units as $unit) {
+                    $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
                 }
 
                 $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
-                foreach($unit_auditors as $unit_auditor){
+                foreach ($unit_auditors as $unit_auditor) {
                     $unit_auditor->full_name = $unit_auditor->full_name();
                     $unit_auditor->initials = $unit_auditor->initials();
                 }
                 $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
-                foreach($building_auditors as $building_auditor){
+                foreach ($building_auditors as $building_auditor) {
                     $building_auditor->full_name = $building_auditor->full_name();
                     $building_auditor->initials = $building_auditor->initials();
                 }
 
-
                 $initials = $user->initials();
-                $color = "auditor-badge-".$user->badge_color;
+                $color = "auditor-badge-" . $user->badge_color;
                 return ["initials" => $initials, "color" => $color, "name" => $user->full_name(), "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $cached_unit_id, "building_id" => $building->building_id];
             }
 
-        }elseif($amenity_id == 0 && $building_id != 0){
+        } elseif ($amenity_id == 0 && $building_id != 0) {
 
-                // make sure this id is already in the auditor's list for this audit
-                if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$new_auditor_id)->first()){
+            // make sure this id is already in the auditor's list for this audit
+            if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $new_auditor_id)->first()) {
 
-                    $building = CachedBuilding::where('building_id', '=', $building_id)->first();
+                $building = CachedBuilding::where('building_id', '=', $building_id)->first();
 
-                    $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id','=',$auditor_id)->where('building_id', '=', $building->building_id)->update([
-                        "auditor_id" => $new_auditor_id
-                    ]);
-
-                    // add to units
-                    $unit_auditor_ids = array();
-                    foreach($building->building->units as $unit){
-
-                        $amenities_unit = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id','=',$auditor_id)->where('unit_id', '=', $unit->id)->update([
-                            "auditor_id" => $new_auditor_id
-                        ]);
-
-                        $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id','=',$unit->id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
-                    }
-
-                    $user = User::where('id','=',$new_auditor_id)->first();
-
-                    $building_auditor_ids = array();
-                    $units = Unit::where('building_id', '=', $building_id)->get();
-                    foreach($units as $unit){
-                        $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
-                    }
-
-                    $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
-                    foreach($unit_auditors as $unit_auditor){
-                        $unit_auditor->full_name = $unit_auditor->full_name();
-                        $unit_auditor->initials = $unit_auditor->initials();
-                    }
-                    $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
-                    foreach($building_auditors as $building_auditor){
-                        $building_auditor->full_name = $building_auditor->full_name();
-                        $building_auditor->initials = $building_auditor->initials();
-                    }
-
-                    $initials = $user->initials();
-                    $color = "auditor-badge-".$user->badge_color;
-                    return ["initials" => $initials, "color" => $color, "name" => $user->full_name(), "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => 0, "building_id" => $building->building_id];
-                }
-        }elseif($amenity_id !=0 && $building_id == 0){
-            if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$new_auditor_id)->first()){
-
-                $amenity = AmenityInspection::where('amenity_id','=',$amenity_id)
-                                            ->where('audit_id','=',$audit_id)
-                                            ->whereNull('building_id')
-                                            ->whereNull('unit_id')
-                                            ->first();
-
-                $building = CachedBuilding::where('id', '=', $amenity->cachedbuilding_id)->first();
-
-                $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id','=',$auditor_id)->where('building_id', '=', $building->building_id)->update([
-                    "auditor_id" => $new_auditor_id
+                $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id', '=', $auditor_id)->where('building_id', '=', $building->building_id)->update([
+                    "auditor_id" => $new_auditor_id,
                 ]);
 
-
+                // add to units
                 $unit_auditor_ids = array();
+                foreach ($building->building->units as $unit) {
+
+                    $amenities_unit = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id', '=', $auditor_id)->where('unit_id', '=', $unit->id)->update([
+                        "auditor_id" => $new_auditor_id,
+                    ]);
+
+                    $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                }
+
+                $user = User::where('id', '=', $new_auditor_id)->first();
+
                 $building_auditor_ids = array();
-                $user = User::where('id','=',$new_auditor_id)->first();
+                $units = Unit::where('building_id', '=', $building_id)->get();
+                foreach ($units as $unit) {
+                    $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                }
 
                 $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
-                foreach($unit_auditors as $unit_auditor){
+                foreach ($unit_auditors as $unit_auditor) {
                     $unit_auditor->full_name = $unit_auditor->full_name();
                     $unit_auditor->initials = $unit_auditor->initials();
                 }
                 $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
-                foreach($building_auditors as $building_auditor){
+                foreach ($building_auditors as $building_auditor) {
                     $building_auditor->full_name = $building_auditor->full_name();
                     $building_auditor->initials = $building_auditor->initials();
                 }
 
                 $initials = $user->initials();
-                $color = "auditor-badge-".$user->badge_color;
+                $color = "auditor-badge-" . $user->badge_color;
+                return ["initials" => $initials, "color" => $color, "name" => $user->full_name(), "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => 0, "building_id" => $building->building_id];
+            }
+        } elseif ($amenity_id != 0 && $building_id == 0) {
+            if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $new_auditor_id)->first()) {
+
+                $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+                    ->where('audit_id', '=', $audit_id)
+                    ->whereNull('building_id')
+                    ->whereNull('unit_id')
+                    ->first();
+
+                $building = CachedBuilding::where('id', '=', $amenity->cachedbuilding_id)->first();
+
+                $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id', '=', $auditor_id)->where('building_id', '=', $building->building_id)->update([
+                    "auditor_id" => $new_auditor_id,
+                ]);
+
+                $unit_auditor_ids = array();
+                $building_auditor_ids = array();
+                $user = User::where('id', '=', $new_auditor_id)->first();
+
+                $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
+                foreach ($unit_auditors as $unit_auditor) {
+                    $unit_auditor->full_name = $unit_auditor->full_name();
+                    $unit_auditor->initials = $unit_auditor->initials();
+                }
+                $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
+                foreach ($building_auditors as $building_auditor) {
+                    $building_auditor->full_name = $building_auditor->full_name();
+                    $building_auditor->initials = $building_auditor->initials();
+                }
+
+                $initials = $user->initials();
+                $color = "auditor-badge-" . $user->badge_color;
                 return ["initials" => $initials, "color" => $color, "name" => $user->full_name(), "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => 0, "building_id" => $building->building_id];
             }
         }
@@ -1096,114 +1083,113 @@ class AuditController extends Controller
         // "395" "6659" "23058" "208307"
 
         // is it mass assignment
-        if($amenity_id == 0 && $unit_id != 0){
+        if ($amenity_id == 0 && $unit_id != 0) {
             $auditor_id = $request->get('auditor_id');
 
-            if($auditor_id){
+            if ($auditor_id) {
 
                 // make sure this id is already in the auditor's list for this audit
-                if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$auditor_id)->first()){
+                if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $auditor_id)->first()) {
 
                     $unit = CachedUnit::where('unit_id', '=', $unit_id)->first();
 
                     $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->whereNotNull('unit_id')->where('unit_id', '=', $unit->unit_id)->update([
-                        "auditor_id" => $auditor_id
+                        "auditor_id" => $auditor_id,
                     ]);
 
-                    $user = User::where('id','=',$auditor_id)->first();
+                    $user = User::where('id', '=', $auditor_id)->first();
 
                     $initials = $user->initials();
-                    $color = "auditor-badge-".$user->badge_color;
+                    $color = "auditor-badge-" . $user->badge_color;
                     return ["initials" => $initials, "color" => $color, "id" => $user->id, "name" => $user->full_name()];
                 }
             }
-        }elseif($amenity_id == 0 && $building_id != 0){
+        } elseif ($amenity_id == 0 && $building_id != 0) {
             $auditor_id = $request->get('auditor_id');
 
-            if($auditor_id){
+            if ($auditor_id) {
 
                 // make sure this id is already in the auditor's list for this audit
-                if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$auditor_id)->first()){
+                if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $auditor_id)->first()) {
 
                     $building = CachedBuilding::where('building_id', '=', $building_id)->first();
 
                     $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building->building_id)->update([
-                        "auditor_id" => $auditor_id
+                        "auditor_id" => $auditor_id,
                     ]);
 
                     // add to units
-                    foreach($building->building->units as $unit){
+                    foreach ($building->building->units as $unit) {
 
                         $amenities_unit = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->update([
-                            "auditor_id" => $auditor_id
+                            "auditor_id" => $auditor_id,
                         ]);
                     }
 
                     $unit_auditor_ids = array();
                     $building_auditor_ids = array();
                     $units = Unit::where('building_id', '=', $building_id)->get();
-                    foreach($units as $unit){
-                        $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id','=',$unit->id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                    foreach ($units as $unit) {
+                        $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
 
-                        $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                        $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
                     }
-                    $building_auditor_ids = array_merge($building_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id','=',$building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                    $building_auditor_ids = array_merge($building_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
 
                     $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
-                    foreach($unit_auditors as $unit_auditor){
+                    foreach ($unit_auditors as $unit_auditor) {
                         $unit_auditor->full_name = $unit_auditor->full_name();
                         $unit_auditor->initials = $unit_auditor->initials();
                     }
                     $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
-                    foreach($building_auditors as $building_auditor){
+                    foreach ($building_auditors as $building_auditor) {
                         $building_auditor->full_name = $building_auditor->full_name();
                         $building_auditor->initials = $building_auditor->initials();
                     }
 
-                    $user = User::where('id','=',$auditor_id)->first();
+                    $user = User::where('id', '=', $auditor_id)->first();
 
                     $initials = $user->initials();
-                    $color = "auditor-badge-".$user->badge_color;
-                    return ["initials" => $initials, "color" => $color, "id" => $user->id, "name" => $user->full_name() , "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => 0, "building_id" => $building->building_id];
+                    $color = "auditor-badge-" . $user->badge_color;
+                    return ["initials" => $initials, "color" => $color, "id" => $user->id, "name" => $user->full_name(), "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => 0, "building_id" => $building->building_id];
                 }
             }
-        }else{
+        } else {
             $auditor_id = $request->get('auditor_id');
 
-            if($auditor_id){
+            if ($auditor_id) {
                 //dd(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$auditor_id)->first(), $audit_id, $auditor_id);
 
                 // make sure this id is already in the auditor's list for this audit
-                if(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$auditor_id)->first()){
+                if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $auditor_id)->first()) {
 
                     // if $building_id = 0 we are working with an amenity at the building level like parking lot
-                    if($building_id == 0 && $unit_id == 0){
+                    if ($building_id == 0 && $unit_id == 0) {
                         $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->whereNull('building_id')->first(); // TBD this may not work. might be a flaw in the selection...
-                        $building = CachedBuilding::where('id','=',$amenity->cachedbuilding_id)->first();
-                    }else{
-                        $building = CachedBuilding::where('building_id','=',$building_id)->first();
+                        $building = CachedBuilding::where('id', '=', $amenity->cachedbuilding_id)->first();
+                    } else {
+                        $building = CachedBuilding::where('building_id', '=', $building_id)->first();
                     }
 
                     //dd($building_id, $amenity_id, $unit_id, $building);
 
-                    if($unit_id != "null" && $unit_id != 0){
-                        $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('unit_id','=',$unit_id)->first();
+                    if ($unit_id != "null" && $unit_id != 0) {
+                        $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('unit_id', '=', $unit_id)->first();
 
-                        $unit = CachedUnit::where('unit_id','=',$unit_id)->first();
+                        $unit = CachedUnit::where('unit_id', '=', $unit_id)->first();
                         $cached_unit_id = $unit_id;
                         // reset unit auditors list
                         //$unit_auditors = OrderingUnit::where('audit_id', '=', $audit_id)->where('user_id', '=', Auth::user()->id)->where('unit_id', '=', $unit->id)->first()->auditors();
-
 
                         // reset building auditors list
                         // $building = CachedBuilding::where('building_id','=',$building_id)->first();
                         // $building_auditors = OrderingBuilding::where('audit_id', '=', $audit_id)->where('user_id', '=', Auth::user()->id)->where('building_id', '=', $building->id)->first();
                         //->auditors();
-                    }else{
-                        if($building_id == 0 && $unit_id == 0){
+                    } else {
+                        if ($building_id == 0 && $unit_id == 0) {
                             $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->whereNull('building_id')->whereNull('unit_id')->first();
                             $cached_unit_id = 0;
-                        }else{
+                        } else {
                             $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->first();
                             $cached_unit_id = 0;
                         }
@@ -1211,50 +1197,49 @@ class AuditController extends Controller
                     $amenity->auditor_id = $auditor_id;
                     $amenity->save();
 
-                    if($unit_id != "null" && $unit_id !=0){
-                        $unit_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id','=',$unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
-
+                    if ($unit_id != "null" && $unit_id != 0) {
+                        $unit_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
 
                         $building_auditor_ids = array();
                         $units = Unit::where('building_id', '=', $building_id)->get();
-                        foreach($units as $unit){
-                            $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                        foreach ($units as $unit) {
+                            $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
                         }
                         // $building_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id','=',$building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
-                    }else{
-                        if($building_id == 0 && $unit_id == 0){
+                    } else {
+                        if ($building_id == 0 && $unit_id == 0) {
                             $unit_auditor_ids = array();
                             $building_auditor_ids = array();
-                        }else{
+                        } else {
                             $unit_auditor_ids = array();
                             // reset building auditors list
 
                             $building_auditor_ids = array();
                             $units = Unit::where('building_id', '=', $building_id)->get();
-                            foreach($units as $unit){
-                                $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id','=',$unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                            foreach ($units as $unit) {
+                                $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
 
-                                $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                                $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
                             }
-                            $building_auditor_ids = array_merge($building_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id','=',$building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                            $building_auditor_ids = array_merge($building_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
                         }
                     }
 
                     $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
-                    foreach($unit_auditors as $unit_auditor){
+                    foreach ($unit_auditors as $unit_auditor) {
                         $unit_auditor->full_name = $unit_auditor->full_name();
                         $unit_auditor->initials = $unit_auditor->initials();
                     }
                     $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
-                    foreach($building_auditors as $building_auditor){
+                    foreach ($building_auditors as $building_auditor) {
                         $building_auditor->full_name = $building_auditor->full_name();
                         $building_auditor->initials = $building_auditor->initials();
                     }
 
-                    $user = User::where('id','=',$auditor_id)->first();
+                    $user = User::where('id', '=', $auditor_id)->first();
                     $initials = $amenity->user->initials();
-                    $color = "auditor-badge-".$amenity->user->badge_color;
-                    return ["initials" => $initials, "color" => $color, "id"=> $user->id, "name" => $user->full_name() , "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $cached_unit_id, "building_id" => $building->building_id];
+                    $color = "auditor-badge-" . $amenity->user->badge_color;
+                    return ["initials" => $initials, "color" => $color, "id" => $user->id, "name" => $user->full_name(), "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $cached_unit_id, "building_id" => $building->building_id];
                 }
             }
         }
@@ -1264,23 +1249,23 @@ class AuditController extends Controller
 
     public function getProject($id = null)
     {
-        $project = Project::where('project_key','=',$id)->first();
+        $project = Project::where('project_key', '=', $id)->first();
         $projectId = $project->id;
 
         // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
 
         $projectTabs = collect([
-                ['title' => 'Details', 'icon' => 'a-clipboard', 'status' => '', 'badge' => '', 'action' => 'project.details'],
-                ['title' => 'Communications', 'icon' => 'a-envelope-incoming', 'status' => '', 'badge' => '', 'action' => 'project.communications'],
-                ['title' => 'Documents', 'icon' => 'a-file-clock', 'status' => '', 'badge' => '', 'action' => 'project.documents'],
-                ['title' => 'Notes', 'icon' => 'a-file-text', 'status' => '', 'badge' => '', 'action' => 'project.notes'],
-                // ['title' => 'Comments', 'icon' => 'a-comment-text', 'status' => '', 'badge' => '', 'action' => 'project.comments'],
-                // ['title' => 'Photos', 'icon' => 'a-picture', 'status' => '', 'badge' => '', 'action' => 'project.photos'],
-                // ['title' => 'Findings', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.findings'],
-                // ['title' => 'Follow-ups', 'icon' => 'a-bell-ring', 'status' => '', 'badge' => '', 'action' => 'project.followups'],
-                ['title' => 'Audit Stream', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.stream'],
-                ['title' => 'Reports', 'icon' => 'a-file-chart-3', 'status' => '', 'badge' => '', 'action' => 'project.reports'],
-            ]);
+            ['title' => 'Details', 'icon' => 'a-clipboard', 'status' => '', 'badge' => '', 'action' => 'project.details'],
+            ['title' => 'Communications', 'icon' => 'a-envelope-incoming', 'status' => '', 'badge' => '', 'action' => 'project.communications'],
+            ['title' => 'Documents', 'icon' => 'a-file-clock', 'status' => '', 'badge' => '', 'action' => 'project.documents'],
+            ['title' => 'Notes', 'icon' => 'a-file-text', 'status' => '', 'badge' => '', 'action' => 'project.notes'],
+            // ['title' => 'Comments', 'icon' => 'a-comment-text', 'status' => '', 'badge' => '', 'action' => 'project.comments'],
+            // ['title' => 'Photos', 'icon' => 'a-picture', 'status' => '', 'badge' => '', 'action' => 'project.photos'],
+            // ['title' => 'Findings', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.findings'],
+            // ['title' => 'Follow-ups', 'icon' => 'a-bell-ring', 'status' => '', 'badge' => '', 'action' => 'project.followups'],
+            ['title' => 'Audit Stream', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.stream'],
+            ['title' => 'Reports', 'icon' => 'a-file-chart-3', 'status' => '', 'badge' => '', 'action' => 'project.reports'],
+        ]);
         $tab = 'project-detail-tab-1';
 
         return view('projects.project', compact('tab', 'projectTabs', 'projectId'));
@@ -1289,7 +1274,7 @@ class AuditController extends Controller
     public function getProjectTitle($id = null)
     {
 
-        $project_number = Project::where('project_key','=',$id)->first()->project_number;
+        $project_number = Project::where('project_key', '=', $id)->first()->project_number;
 
         $audit = CachedAudit::where('project_key', '=', $id)->orderBy('id', 'desc')->first();
 
@@ -1297,14 +1282,14 @@ class AuditController extends Controller
         $step = $audit->step_status_text; //  :: CREATED DYNAMICALLY FROM CONTROLLER
         $step_icon = $audit->step_status_icon;
 
-        return '<i class="a-mobile-repeat"></i><i class="'.$step_icon.'"></i> <span class="list-tab-text"> PROJECT '. $project_number.'</span>';
+        return '<i class="a-mobile-repeat"></i><i class="' . $step_icon . '"></i> <span class="list-tab-text"> PROJECT ' . $project_number . '</span>';
     }
 
     public function getProjectDetails($id = null)
     {
         // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
 
-        $project = Project::where('id','=',$id)->first();
+        $project = Project::where('id', '=', $id)->first();
 
         // which audit is selected (latest if no selection)
         $selected_audit = $project->selected_audit();
@@ -1325,7 +1310,7 @@ class AuditController extends Controller
         // types: compliance, assignment, findings, followups, reports, documents, comments, photos
         // project: project_id?
 
-        $project = Project::where('id','=',$id)->first();
+        $project = Project::where('id', '=', $id)->first();
         //dd($project->selected_audit());
 
         switch ($type) {
@@ -1356,20 +1341,19 @@ class AuditController extends Controller
                 - to be inspected (this is counted in the db with grouped by unit)
                  */
 
-
                 $data = [
                     "project" => [
-                        'id' => $project->id
-                    ]
+                        'id' => $project->id,
+                    ],
                 ];
 
                 /*
-                    the output of the compliance process should produce the "required units" count. Then the selected should be the same unless they changed some units. That would increase the value of needed units.
+                the output of the compliance process should produce the "required units" count. Then the selected should be the same unless they changed some units. That would increase the value of needed units.
 
-                    Inspected units are counted when the inspection is completed for that unit.
-                    To be inspected units is the balance.
+                Inspected units are counted when the inspection is completed for that unit.
+                To be inspected units is the balance.
 
-                    A unit is complete once all of its amenities have been marked complete - it has a completed date on it
+                A unit is complete once all of its amenities have been marked complete - it has a completed date on it
 
                  */
 
@@ -1399,17 +1383,17 @@ class AuditController extends Controller
                 $all_program_keys = array();
 
                 // create stats for each group
-                foreach($selection_summary['programs'] as $program){
+                foreach ($selection_summary['programs'] as $program) {
 
                     // count selected units using the list of program ids
                     $program_keys = explode(',', $program['program_keys']);
-                    $all_program_keys =  array_merge($all_program_keys, $program_keys);
+                    $all_program_keys = array_merge($all_program_keys, $program_keys);
 
                     // $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->count();
                     // $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->count();
 
-                    $selected_units_site = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->count();
-                    $selected_units_file = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->count();
+                    $selected_units_site = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit', '=', 1)->count();
+                    $selected_units_file = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit', '=', 1)->count();
 
                     $needed_units_site = max($program['required_units'] - $selected_units_site, 0);
                     $needed_units_file = max($program['required_units_file'] - $selected_units_file, 0);
@@ -1421,24 +1405,24 @@ class AuditController extends Controller
 
                     //whereIn('unit_key', $program['units_after_optimization'])
                     $inspected_units_site = UnitInspection::where('audit_id', '=', $audit->id)
-                                ->where('group_id', '=', $program['group'])
-                                // ->whereHas('amenity_inspections', function($query) {
-                                //     $query->where('completed_date_time', '!=', null);
-                                // })
-                                ->where('is_site_visit', '=', 1)
-                                ->where('complete', '!=', NULL)
-                                //->select('unit_id')->groupBy('unit_id')->get()
-                                ->get()
-                                ->count();
+                        ->where('group_id', '=', $program['group'])
+                    // ->whereHas('amenity_inspections', function($query) {
+                    //     $query->where('completed_date_time', '!=', null);
+                    // })
+                        ->where('is_site_visit', '=', 1)
+                        ->where('complete', '!=', null)
+                    //->select('unit_id')->groupBy('unit_id')->get()
+                        ->get()
+                        ->count();
 
                     //whereIn('unit_key', $unit_keys)
                     $inspected_units_file = UnitInspection::where('audit_id', '=', $audit->id)
-                                ->where('group_id', '=', $program['group'])
-                                ->where('is_file_audit', '=', 1)
-                                ->where('complete', '!=', NULL)
-                                //->select('unit_id')->groupBy('unit_id')->get()
-                                ->get()
-                                ->count();
+                        ->where('group_id', '=', $program['group'])
+                        ->where('is_file_audit', '=', 1)
+                        ->where('complete', '!=', null)
+                    //->select('unit_id')->groupBy('unit_id')->get()
+                        ->get()
+                        ->count();
 
                     $to_be_inspected_units_site = $selected_units_site - $inspected_units_site;
                     $to_be_inspected_units_file = $selected_units_file - $inspected_units_file;
@@ -1465,7 +1449,7 @@ class AuditController extends Controller
                         'selected_units_file' => $selected_units_file,
                         'needed_units_file' => $needed_units_file,
                         'inspected_units_file' => $inspected_units_file,
-                        'to_be_inspected_units_file' => $to_be_inspected_units_file
+                        'to_be_inspected_units_file' => $to_be_inspected_units_file,
                     ];
 
                     // if($program['group'] == 3){
@@ -1474,22 +1458,21 @@ class AuditController extends Controller
 
                 }
 
-
                 $summary_optimized_unit_ids = array_unique($summary_optimized_unit_ids);
 
                 $all_program_keys = array_unique($all_program_keys);
 
                 $summary_inspected = UnitInspection::whereIn('unit_key', $summary_optimized_unit_ids)
-                                ->where('audit_id', '=', $audit->id)
-                                ->where('is_site_visit', '=', 1)
-                                ->where('complete', '!=', NULL)
-                                ->count();
+                    ->where('audit_id', '=', $audit->id)
+                    ->where('is_site_visit', '=', 1)
+                    ->where('complete', '!=', null)
+                    ->count();
 
                 $summary_inspected_file = UnitInspection::whereIn('unit_key', $summary_optimized_unit_ids)
-                            ->where('audit_id', '=', $audit->id)
-                            ->where('is_file_audit', '=', 1)
-                            ->where('complete', '!=', NULL)
-                            ->count();
+                    ->where('audit_id', '=', $audit->id)
+                    ->where('is_file_audit', '=', 1)
+                    ->where('complete', '!=', null)
+                    ->count();
 
                 // $summary_required = UnitInspection::whereIn('unit_key', $summary_unit_ids)
                 //                 ->where('audit_id', '=', $audit->id)
@@ -1502,35 +1485,35 @@ class AuditController extends Controller
                 //             ->count();
 
                 $summary_optimized_inspected = UnitInspection::whereIn('unit_key', $summary_optimized_unit_ids)
-                                ->where('audit_id', '=', $audit->id)
-                                ->where('is_site_visit', '=', 1)
-                                ->where('complete', '!=', NULL)
-                                ->select('unit_id')->groupBy('unit_id')->get()
-                                ->count();
+                    ->where('audit_id', '=', $audit->id)
+                    ->where('is_site_visit', '=', 1)
+                    ->where('complete', '!=', null)
+                    ->select('unit_id')->groupBy('unit_id')->get()
+                    ->count();
 
                 $summary_optimized_inspected_file = UnitInspection::whereIn('unit_key', $summary_unit_ids)
-                            ->where('audit_id', '=', $audit->id)
-                            ->where('is_file_audit', '=', 1)
-                            ->where('complete', '!=', NULL)
-                            ->select('unit_id')->groupBy('unit_id')->get()
-                            ->count();
+                    ->where('audit_id', '=', $audit->id)
+                    ->where('is_file_audit', '=', 1)
+                    ->where('complete', '!=', null)
+                    ->select('unit_id')->groupBy('unit_id')->get()
+                    ->count();
 
                 $summary_optimized_required = UnitInspection::whereIn('unit_key', $summary_optimized_unit_ids)
-                                ->where('audit_id', '=', $audit->id)
-                                ->where('is_site_visit', '=', 1)
-                                ->select('unit_id')->groupBy('unit_id')->get()
-                                ->count();
+                    ->where('audit_id', '=', $audit->id)
+                    ->where('is_site_visit', '=', 1)
+                    ->select('unit_id')->groupBy('unit_id')->get()
+                    ->count();
 
                 $summary_optimized_required_file = UnitInspection::whereIn('unit_key', $summary_unit_ids)
-                            ->where('audit_id', '=', $audit->id)
-                            ->where('is_file_audit', '=', 1)
-                                ->select('unit_id')->groupBy('unit_id')->get()
-                            ->count();
+                    ->where('audit_id', '=', $audit->id)
+                    ->where('is_file_audit', '=', 1)
+                    ->select('unit_id')->groupBy('unit_id')->get()
+                    ->count();
 
                 //$summary_optimized_required_file = $summary_required_file;
 
-                $summary_selected = UnitInspection::whereIn('program_key', $all_program_keys)->where('audit_id', '=', $audit->id)->where('is_site_visit','=',1)->select('unit_id')->count();
-                $summary_selected_file = UnitInspection::whereIn('program_key', $all_program_keys)->where('audit_id', '=', $audit->id)->where('is_file_audit','=',1)->count();
+                $summary_selected = UnitInspection::whereIn('program_key', $all_program_keys)->where('audit_id', '=', $audit->id)->where('is_site_visit', '=', 1)->select('unit_id')->count();
+                $summary_selected_file = UnitInspection::whereIn('program_key', $all_program_keys)->where('audit_id', '=', $audit->id)->where('is_file_audit', '=', 1)->count();
 
                 $summary_needed = max($summary_required - $summary_selected, 0);
                 $summary_needed_file = max($summary_required_file - $summary_selected_file, 0);
@@ -1547,22 +1530,22 @@ class AuditController extends Controller
                 $summary_optimized_remaining_inspections_file = $summary_optimized_sample_size_file - $summary_optimized_completed_inspections_file;
 
                 $data['summary'] = [
-                        'required_units' => $summary_required,
-                        'selected_units' => $summary_selected,
-                        'needed_units' => $summary_needed,
-                        'inspected_units' => $summary_inspected,
-                        'to_be_inspected_units' => $summary_to_be_inspected,
-                        'optimized_sample_size' => $summary_optimized_sample_size,
-                        'optimized_completed_inspections' => $summary_optimized_completed_inspections,
-                        'optimized_remaining_inspections' => $summary_optimized_remaining_inspections,
-                        'required_units_file' => $summary_required_file,
-                        'selected_units_file' => $summary_selected_file,
-                        'needed_units_file' => $summary_needed_file,
-                        'inspected_units_file' => $summary_inspected_file,
-                        'to_be_inspected_units_file' => $summary_to_be_inspected_file,
-                        'optimized_sample_size_file' => $summary_optimized_required_file,
-                        'optimized_completed_inspections_file' => $summary_optimized_completed_inspections_file,
-                        'optimized_remaining_inspections_file' => $summary_optimized_remaining_inspections_file
+                    'required_units' => $summary_required,
+                    'selected_units' => $summary_selected,
+                    'needed_units' => $summary_needed,
+                    'inspected_units' => $summary_inspected,
+                    'to_be_inspected_units' => $summary_to_be_inspected,
+                    'optimized_sample_size' => $summary_optimized_sample_size,
+                    'optimized_completed_inspections' => $summary_optimized_completed_inspections,
+                    'optimized_remaining_inspections' => $summary_optimized_remaining_inspections,
+                    'required_units_file' => $summary_required_file,
+                    'selected_units_file' => $summary_selected_file,
+                    'needed_units_file' => $summary_needed_file,
+                    'inspected_units_file' => $summary_inspected_file,
+                    'to_be_inspected_units_file' => $summary_to_be_inspected_file,
+                    'optimized_sample_size_file' => $summary_optimized_required_file,
+                    'optimized_completed_inspections_file' => $summary_optimized_completed_inspections_file,
+                    'optimized_remaining_inspections_file' => $summary_optimized_remaining_inspections_file,
                 ];
 
                 break;
@@ -1572,41 +1555,40 @@ class AuditController extends Controller
                 $auditors = $project->selected_audit()->auditors;
                 $is_lead_an_auditor = 0;
                 $auditors_key = array(); // used to store in which order the auditors will be displayed
-                if($project->selected_audit()->lead_auditor){
+                if ($project->selected_audit()->lead_auditor) {
                     $auditors_key[] = $project->selected_audit()->lead_auditor->id;
                 }
 
-                foreach($auditors as $auditor){
-                    if($project->selected_audit()->lead_auditor){
-                        if($project->selected_audit()->lead_auditor->id == $auditor->user_id){
+                foreach ($auditors as $auditor) {
+                    if ($project->selected_audit()->lead_auditor) {
+                        if ($project->selected_audit()->lead_auditor->id == $auditor->user_id) {
                             $is_lead_an_auditor = 1;
-                        }else{
+                        } else {
                             $auditors_key[] = $auditor->user_id;
                         }
-                    }else{
+                    } else {
                         $auditors_key[] = $auditor->user_id;
                     }
                 }
 
-                if($is_lead_an_auditor == 0 && $project->selected_audit()->lead_auditor){
+                if ($is_lead_an_auditor == 0 && $project->selected_audit()->lead_auditor) {
                     // add to audit_auditors
                     $new_auditor = new AuditAuditor([
                         'user_id' => $project->selected_audit()->lead_auditor->id,
                         'user_key' => $project->selected_audit()->lead_auditor->devco_key,
                         'monitoring_key' => $project->selected_audit()->audit_key,
-                        'audit_id' => $project->selected_audit()->audit_id
+                        'audit_id' => $project->selected_audit()->audit_id,
                     ]);
                     $new_auditor->save();
                 }
 
                 $chart_data = $project->selected_audit()->estimated_chart_data();
 
-
                 //foreach auditor and for each day, fetch calendar combining availability and schedules
                 $daily_schedules = array();
-                foreach($project->selected_audit()->days as $day){
-                    $date = Carbon\Carbon::createFromFormat('Y-m-d H:i:s' , $day->date);
-                    foreach($auditors_key as $auditor_id){
+                foreach ($project->selected_audit()->days as $day) {
+                    $date = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $day->date);
+                    foreach ($auditors_key as $auditor_id) {
                         $daily_schedules[$day->id][] = $this->getAuditorDailyCalendar($date, $day->id, $project->selected_audit()->audit_id, $auditor_id);
                     }
                 }
@@ -1662,7 +1644,7 @@ class AuditController extends Controller
                     "project" => [
                         'id' => $project->id,
                         'ref' => $project->project_number,
-                        'audit_id' => $project->selected_audit()->audit_id
+                        'audit_id' => $project->selected_audit()->audit_id,
                     ],
                     "summary" => [
                         'required_unit_selected' => 0,
@@ -1671,10 +1653,10 @@ class AuditController extends Controller
                         'file_audits_needed' => 0,
                         'physical_audits_needed' => 0,
                         'schedule_conflicts' => 0,
-                        'estimated' => $project->selected_audit()->estimated_hours().':'.$project->selected_audit()->estimated_minutes(),
+                        'estimated' => $project->selected_audit()->estimated_hours() . ':' . $project->selected_audit()->estimated_minutes(),
                         'estimated_hours' => $project->selected_audit()->estimated_hours(),
                         'estimated_minutes' => $project->selected_audit()->estimated_minutes(),
-                        'needed' => $project->selected_audit()->hours_still_needed()
+                        'needed' => $project->selected_audit()->hours_still_needed(),
                     ],
                     'audits' => [
                         [
@@ -1688,13 +1670,13 @@ class AuditController extends Controller
                             'zip' => '43219',
                             'lead' => 2, // user_id
                             'schedules' => [
-                                ['icon' => 'a-circle', 'status' => '', 'is_lead' => 1, 'tooltip' =>''],
-                                ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>''],
-                                ['icon' => 'a-circle', 'status' => '', 'is_lead' => 0, 'tooltip' =>''],
-                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'']
-                            ]
-                        ]
-                    ]
+                                ['icon' => 'a-circle', 'status' => '', 'is_lead' => 1, 'tooltip' => ''],
+                                ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' => ''],
+                                ['icon' => 'a-circle', 'status' => '', 'is_lead' => 0, 'tooltip' => ''],
+                                ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' => ''],
+                            ],
+                        ],
+                    ],
                 ]);
 
                 return view('projects.partials.details-assignment', compact('data', 'project', 'chart_data', 'auditors_key', 'daily_schedules'));
@@ -1715,29 +1697,30 @@ class AuditController extends Controller
             default:
         }
 
-        return view('projects.partials.details-'.$type, compact('data', 'project'));
+        return view('projects.partials.details-' . $type, compact('data', 'project'));
     }
 
-    public function getAuditorDailyCalendar($date, $day_id, $audit_id, $auditor_id) {
+    public function getAuditorDailyCalendar($date, $day_id, $audit_id, $auditor_id)
+    {
 
         $events_array = array();
         $availabilities = Availability::where('user_id', '=', $auditor_id)
-                            ->where('date', '=', $date->format('Y-m-d'))
-                            ->orderBy('start_slot', 'asc')
-                            ->get();
+            ->where('date', '=', $date->format('Y-m-d'))
+            ->orderBy('start_slot', 'asc')
+            ->get();
 
         $a_array = $availabilities->toArray();
 
         // $day = ScheduleDay::where('id','=',$day_id)->first();
 
         $schedules = ScheduleTime::where('auditor_id', '=', $auditor_id)
-                            ->where('day_id', '=', $day_id)
-                            ->orderBy('start_slot', 'asc')
-                            ->get();
+            ->where('day_id', '=', $day_id)
+            ->orderBy('start_slot', 'asc')
+            ->get();
 
         $s_array = $schedules->toArray();
 
-       //dd($a_array, $s_array);
+        //dd($a_array, $s_array);
 
         // we check chronologically by slot of 15 min
         // detect if slot is at the beginning of a scheduled time, add that schedule to the event array and set slot to the end of the scheduled event. Also if there are variables for avail start and span (see below) then add the availability before and reset those variables.
@@ -1749,18 +1732,18 @@ class AuditController extends Controller
         $check_avail_span = null;
 
         // get user default address and compare with project's address for estimated driving times
-        $auditor = User::where('id','=',$auditor_id)->first();
+        $auditor = User::where('id', '=', $auditor_id)->first();
         $default_address = $auditor->default_address();
         $distanceAndTime = $auditor->distanceAndTime($audit_id);
-        if($distanceAndTime){
+        if ($distanceAndTime) {
             // round up to the next 15 minute slot
             $minutes = intval($distanceAndTime[2] / 60, 10);
             $travel_time = ($minutes - ($minutes % 15) + 15) / 15; // time in 15 min slots
-        }else{
+        } else {
             $travel_time = null;
         }
 
-        while($slot <= 60){
+        while ($slot <= 60) {
             $skip = 0;
 
             // Is slot the start of an event
@@ -1768,23 +1751,23 @@ class AuditController extends Controller
             // add travel event
             // add event
             // reset slot to the end of the event
-            foreach($s_array as $s){
-                if($audit_id == $s['audit_id']){
-                    $thisauditclass="thisaudit";
-                }else{
-                    $thisauditclass="";
+            foreach ($s_array as $s) {
+                if ($audit_id == $s['audit_id']) {
+                    $thisauditclass = "thisaudit";
+                } else {
+                    $thisauditclass = "";
                 }
 
-                if($slot == $s['start_slot'] - $s['travel_span'] ){
+                if ($slot == $s['start_slot'] - $s['travel_span']) {
                     // save any previous availability
-                    if($check_avail_start != null && $check_avail_span != null){
+                    if ($check_avail_start != null && $check_avail_span != null) {
 
-                        $hours = sprintf("%02d",  floor(($check_avail_start - 1) * 15 / 60) + 6);
+                        $hours = sprintf("%02d", floor(($check_avail_start - 1) * 15 / 60) + 6);
                         $minutes = sprintf("%02d", ($check_avail_start - 1) * 15 % 60);
-                        $start_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
-                        $hours = sprintf("%02d",  floor(($check_avail_start + $check_avail_span - 1) * 15 / 60) + 6);
+                        $start_time = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
+                        $hours = sprintf("%02d", floor(($check_avail_start + $check_avail_span - 1) * 15 / 60) + 6);
                         $minutes = sprintf("%02d", ($check_avail_start + $check_avail_span - 1) * 15 % 60);
-                        $end_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+                        $end_time = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
 
                         $events_array[] = [
                             "id" => uniqid(),
@@ -1792,15 +1775,15 @@ class AuditController extends Controller
                             "audit_id" => $audit_id,
                             "status" => "",
                             "travel_time" => $travel_time,
-                            "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$start_time)->format('h:i A')),
-                            "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$end_time)->format('h:i A')),
+                            "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')),
+                            "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
                             "start" => $check_avail_start,
-                            "span" =>  $check_avail_span,
-                            "travel_span" =>  null,
+                            "span" => $check_avail_span,
+                            "travel_span" => null,
                             "icon" => "a-circle-plus",
                             "class" => "available no-border-top no-border-bottom",
                             "modal_type" => "addschedule",
-                            "tooltip" => "AVAILABLE TIME ".strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$start_time)->format('h:i A'))." ".strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$end_time)->format('h:i A'))
+                            "tooltip" => "AVAILABLE TIME " . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')) . " " . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
                         ];
 
                         $check_avail_start = null;
@@ -1808,14 +1791,14 @@ class AuditController extends Controller
                     }
 
                     // save travel
-                    if($s['travel_span'] > 0){
+                    if ($s['travel_span'] > 0) {
 
-                        $hours = sprintf("%02d",  floor(($s['start_slot'] - $s['travel_span'] - 1) * 15 / 60) + 6);
+                        $hours = sprintf("%02d", floor(($s['start_slot'] - $s['travel_span'] - 1) * 15 / 60) + 6);
                         $minutes = sprintf("%02d", ($s['start_slot'] - $s['travel_span'] - 1) * 15 % 60);
-                        $start_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
-                        $hours = sprintf("%02d",  floor(($s['start_slot'] - 1) * 15 / 60) + 6);
+                        $start_time = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
+                        $hours = sprintf("%02d", floor(($s['start_slot'] - 1) * 15 / 60) + 6);
                         $minutes = sprintf("%02d", ($s['start_slot'] - 1) * 15 % 60);
-                        $end_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+                        $end_time = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
 
                         $events_array[] = [
                             "id" => uniqid(),
@@ -1823,18 +1806,18 @@ class AuditController extends Controller
                             "audit_id" => $audit_id,
                             "status" => "",
                             "travel_time" => "",
-                            "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$start_time)->format('h:i A')),
-                            "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$end_time)->format('h:i A')),
+                            "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')),
+                            "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
                             "start" => $s['start_slot'] - $s['travel_span'],
-                            "span" =>  $s['travel_span'],
-                            "travel_span" =>  null,
+                            "span" => $s['travel_span'],
+                            "travel_span" => null,
                             "icon" => "",
-                            "class" => "travel ".$thisauditclass,
+                            "class" => "travel " . $thisauditclass,
                             "modal_type" => "",
-                            "tooltip" => "TRAVEL TIME ".strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$start_time)->format('h:i A'))." ".strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$end_time)->format('h:i A'))
+                            "tooltip" => "TRAVEL TIME " . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')) . " " . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
                         ];
                         $travelclass = " no-border-top";
-                    }else{
+                    } else {
                         $travelclass = "";
                     }
 
@@ -1845,15 +1828,15 @@ class AuditController extends Controller
                         "audit_id" => $audit_id,
                         "status" => "",
                         "travel_time" => "",
-                        "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['start_time'])->format('h:i A')),
-                        "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['end_time'])->format('h:i A')),
+                        "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $s['start_time'])->format('h:i A')),
+                        "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $s['end_time'])->format('h:i A')),
                         "start" => $s['start_slot'],
-                        "span" =>  $s['span'],
-                        "travel_span" =>  null,
+                        "span" => $s['span'],
+                        "travel_span" => null,
                         "icon" => "a-mobile-checked",
-                        "class" => "schedule ".$thisauditclass.$travelclass,
+                        "class" => "schedule " . $thisauditclass . $travelclass,
                         "modal_type" => "removeschedule",
-                        "tooltip" => "SCHEDULED TIME ".strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['start_time'])->format('h:i A'))." ".strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$s['end_time'])->format('h:i A'))
+                        "tooltip" => "SCHEDULED TIME " . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $s['start_time'])->format('h:i A')) . " " . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $s['end_time'])->format('h:i A')),
                     ];
 
                     // reset slot to the just after the scheduled time
@@ -1864,12 +1847,12 @@ class AuditController extends Controller
 
             // Is slot within an availability
             // if there is already check_avail_start, only update check_avail_span, otherwise save both. slot++
-            if(!$skip){
-                foreach($a_array as $a){
-                    if($slot >= $a['start_slot'] && $slot < $a['start_slot'] + $a['span']){
-                        if($check_avail_start != null && $check_avail_span != null){
+            if (!$skip) {
+                foreach ($a_array as $a) {
+                    if ($slot >= $a['start_slot'] && $slot < $a['start_slot'] + $a['span']) {
+                        if ($check_avail_start != null && $check_avail_span != null) {
                             $check_avail_span++;
-                        }else{
+                        } else {
                             $check_avail_start = $slot;
                             $check_avail_span = 1;
                         }
@@ -1881,14 +1864,14 @@ class AuditController extends Controller
 
             // Is slot in nothing
             // Are there check_avail_start and check_avail_span? If so add avail to events and reset the variables. slot++
-            if(!$skip){
-                if($check_avail_start != null && $check_avail_span != null){
-                    $hours = sprintf("%02d",  floor(($check_avail_start - 1) * 15 / 60) + 6);
+            if (!$skip) {
+                if ($check_avail_start != null && $check_avail_span != null) {
+                    $hours = sprintf("%02d", floor(($check_avail_start - 1) * 15 / 60) + 6);
                     $minutes = sprintf("%02d", ($check_avail_start - 1) * 15 % 60);
-                    $start_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
-                    $hours = sprintf("%02d",  floor(($check_avail_start + $check_avail_span - 1) * 15 / 60) + 6);
+                    $start_time = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
+                    $hours = sprintf("%02d", floor(($check_avail_start + $check_avail_span - 1) * 15 / 60) + 6);
                     $minutes = sprintf("%02d", ($check_avail_start + $check_avail_span - 1) * 15 % 60);
-                    $end_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+                    $end_time = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
 
                     $events_array[] = [
                         "id" => uniqid(),
@@ -1896,21 +1879,21 @@ class AuditController extends Controller
                         "audit_id" => $audit_id,
                         "status" => "",
                         "travel_time" => $travel_time,
-                        "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$start_time)->format('h:i A')),
-                        "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$end_time)->format('h:i A')),
+                        "start_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')),
+                        "end_time" => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
                         "start" => $check_avail_start,
-                        "span" =>  $check_avail_span,
-                        "travel_span" =>  null,
+                        "span" => $check_avail_span,
+                        "travel_span" => null,
                         "icon" => "a-circle-plus",
                         "class" => "available no-border-top no-border-bottom",
                         "modal_type" => "addschedule",
-                        "tooltip" => "AVAILABLE TIME ".strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$start_time)->format('h:i A'))." ".strtoupper(Carbon\Carbon::createFromFormat('H:i:s',$end_time)->format('h:i A'))
+                        "tooltip" => "AVAILABLE TIME " . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')) . " " . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
                     ];
 
                     $check_avail_start = null;
                     $check_avail_span = null;
                     $slot++;
-                }else{
+                } else {
                     $slot++;
                 }
             }
@@ -1918,22 +1901,28 @@ class AuditController extends Controller
 
         $header[] = $date->copy()->format('m/d');
 
-        if(count($events_array)){
+        if (count($events_array)) {
 
             // figure out the before and after areas on the schedule
             $start_slot = 60;
             $end_slot = 1;
-            foreach($events_array as $e){
-                if($e['start'] <= $start_slot) $start_slot = $e['start'];
-                if($e['start'] + $e['span'] >= $end_slot) $end_slot = $e['start'] + $e['span'];
+            foreach ($events_array as $e) {
+                if ($e['start'] <= $start_slot) {
+                    $start_slot = $e['start'];
+                }
+
+                if ($e['start'] + $e['span'] >= $end_slot) {
+                    $end_slot = $e['start'] + $e['span'];
+                }
+
             }
 
             $before_time_start = 1;
             $before_time_span = $start_slot - 1;
             $after_time_start = $end_slot;
-            $after_time_span = 61-$end_slot;
+            $after_time_span = 61 - $end_slot;
             $no_availability = 0;
-        }else{
+        } else {
             $events_array = [];
             $before_time_start = 1;
             $before_time_span = 0;
@@ -1951,27 +1940,27 @@ class AuditController extends Controller
             "before_time_span" => $before_time_span,
             "after_time_start" => $after_time_start,
             "after_time_span" => $after_time_span,
-            "events" => $events_array
+            "events" => $events_array,
         ];
-
 
         $calendar = [
             "header" => $header,
-            "content" => $days
+            "content" => $days,
         ];
 
-         return $calendar;
+        return $calendar;
     }
 
-    public function deleteSchedule(Request $request, $event_id){
+    public function deleteSchedule(Request $request, $event_id)
+    {
         // TBD check users
         $current_user = Auth::user();
 
-        $event = ScheduleTime::where('id','=',$event_id)->first();
+        $event = ScheduleTime::where('id', '=', $event_id)->first();
 
         // user needs to be the lead
         // TBD add manager/roles
-        if($event && $event->cached_audit->lead == $current_user->id){
+        if ($event && $event->cached_audit->lead == $current_user->id) {
             $event->delete();
             return 1;
         }
@@ -1979,20 +1968,21 @@ class AuditController extends Controller
         return 0;
     }
 
-    public function scheduleAuditor(Request $request, $audit_id, $day_id, $auditor_id){
+    public function scheduleAuditor(Request $request, $audit_id, $day_id, $auditor_id)
+    {
         // TBD user check
 
         $start = $request->get('start');
         $duration = $request->get('duration');
         $travel = $request->get('travel');
 
-        $hours = sprintf("%02d",  floor(($start - 1) * 15 / 60) + 6);
+        $hours = sprintf("%02d", floor(($start - 1) * 15 / 60) + 6);
         $minutes = sprintf("%02d", ($start - 1) * 15 % 60);
-        $start_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+        $start_time = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
 
-        $hours = sprintf("%02d",  floor(($start + $duration - 1) * 15 / 60) + 6);
+        $hours = sprintf("%02d", floor(($start + $duration - 1) * 15 / 60) + 6);
         $minutes = sprintf("%02d", ($start + $duration - 1) * 15 % 60);
-        $end_time = formatTime($hours.':'.$minutes.':00', 'H:i:s');
+        $end_time = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
 
         $new_schedule = new ScheduleTime([
             'audit_id' => $audit_id,
@@ -2002,26 +1992,26 @@ class AuditController extends Controller
             'end_time' => $end_time,
             'start_slot' => $start,
             'span' => $duration,
-            'travel_span' => $travel
+            'travel_span' => $travel,
         ]);
         $new_schedule->save();
 
         return 1;
     }
 
-    public function addADay(Request $request, $id){
+    public function addADay(Request $request, $id)
+    {
 
+        $audit = Audit::where('id', '=', $id)->first();
 
-        $audit = Audit::where('id','=',$id)->first();
-
-        if(Auth::user()->id == $audit->lead_user_id || Auth::user()->manager_access()){
+        if (Auth::user()->id == $audit->lead_user_id || Auth::user()->manager_access()) {
             $date = formatDate($request->get('date'), "Y-m-d H:i:s", "F d, Y");
-            $check = ScheduleDay::where('audit_id',$id)->where('date',$date)->count();
-            if($check < 1){
+            $check = ScheduleDay::where('audit_id', $id)->where('date', $date)->count();
+            if ($check < 1) {
                 // Day has not been entered yet :)
                 $day = new ScheduleDay([
                     'audit_id' => $id,
-                    'date' => $date
+                    'date' => $date,
                 ]);
                 $day->save();
 
@@ -2033,19 +2023,19 @@ class AuditController extends Controller
             return 'Sorry, only the lead or a manager can schedule days for an audit.';
         }
 
-
     }
 
-    public function deleteDay(Request $request, $id, $day_id){
+    public function deleteDay(Request $request, $id, $day_id)
+    {
         // TBD only authorized users can add days (lead/managers)
 
         // 1. delete schedules
         // 2. delete day
         // 3. update estimated needed time and checks by rebuilding CachedAudit
-            $audit = Audit::where('id','=',$id)->first();
-         if(Auth::user()->id == $audit->lead_user_id || Auth::user()->manager_access()){
-            $schedules = ScheduleTime::where('day_id','=',$day_id)->where('audit_id','=',$id)->delete();
-            $day = ScheduleDay::where('id','=',$day_id)->where('audit_id','=',$id)->delete();
+        $audit = Audit::where('id', '=', $id)->first();
+        if (Auth::user()->id == $audit->lead_user_id || Auth::user()->manager_access()) {
+            $schedules = ScheduleTime::where('day_id', '=', $day_id)->where('audit_id', '=', $id)->delete();
+            $day = ScheduleDay::where('id', '=', $day_id)->where('audit_id', '=', $id)->delete();
 
             // Event::fire('audit.cache', $audit->audit);
 
@@ -2056,37 +2046,37 @@ class AuditController extends Controller
         }
     }
 
-    public function saveEstimatedHours(Request $request, $id){
+    public function saveEstimatedHours(Request $request, $id)
+    {
         // audit id
-            $forminputs = $request->get('inputs');
-            parse_str($forminputs, $forminputs);
+        $forminputs = $request->get('inputs');
+        parse_str($forminputs, $forminputs);
 
-            $hours = (int) $forminputs['estimated_hours'];
-            $minutes = (int) $forminputs['estimated_minutes'];
+        $hours = (int) $forminputs['estimated_hours'];
+        $minutes = (int) $forminputs['estimated_minutes'];
 
-            $audit = CachedAudit::where('audit_id','=',$id)->where('lead','=',Auth::user()->id)->first();
+        $audit = CachedAudit::where('audit_id', '=', $id)->where('lead', '=', Auth::user()->id)->first();
 
-            $new_estimate = $hours.":".$minutes.":00";
-            if(Auth::user()->id == $audit->audit->lead_user_id || Auth::user()->manager_access()){
+        $new_estimate = $hours . ":" . $minutes . ":00";
+        if (Auth::user()->id == $audit->audit->lead_user_id || Auth::user()->manager_access()) {
 
-                if($audit){
-                    $audit->update([
-                        'estimated_time' => $new_estimate
-                    ]);
+            if ($audit) {
+                $audit->update([
+                    'estimated_time' => $new_estimate,
+                ]);
 
-                    // get new needed time
-                    $audit->fresh();
+                // get new needed time
+                $audit->fresh();
 
-                    $needed = $audit->hours_still_needed();
+                $needed = $audit->hours_still_needed();
 
-                    return ['status'=>1, 'hours'=> $hours.":".$minutes, 'needed'=>$needed];
-                }else{
-                    return ['status'=>0, 'message'=>'Sorry, this audit reference cannot be found or no lead has been set yet.'];
-                }
+                return ['status' => 1, 'hours' => $hours . ":" . $minutes, 'needed' => $needed];
             } else {
-                return 'Sorry, only the lead or a manager can input estimated hours for an audit.';
+                return ['status' => 0, 'message' => 'Sorry, this audit reference cannot be found or no lead has been set yet.'];
             }
-
+        } else {
+            return 'Sorry, only the lead or a manager can input estimated hours for an audit.';
+        }
 
     }
 
@@ -2095,7 +2085,7 @@ class AuditController extends Controller
 
         $data = collect([
             "project" => [
-                'id' => 1
+                'id' => 1,
             ],
             "summary" => [
                 'required_unit_selected' => 0,
@@ -2113,40 +2103,40 @@ class AuditController extends Controller
                     'id' => 1,
                     'name' => 'Brian Greenwood',
                     'initials' => 'BG',
-                    'color' => 'pink'
+                    'color' => 'pink',
                 ],
                 [
                     'id' => 2,
                     'name' => 'Brianna Bluewood',
                     'initials' => 'BB',
-                    'color' => 'blue'
+                    'color' => 'blue',
                 ],
                 [
                     'id' => 3,
                     'name' => 'John Smith',
                     'initials' => 'JS',
-                    'color' => 'black'
+                    'color' => 'black',
                 ],
                 [
                     'id' => 4,
                     'name' => 'Sarah Connor',
                     'initials' => 'SC',
-                    'color' => 'red'
-                ]
+                    'color' => 'red',
+                ],
             ],
             "days" => [
                 [
                     'id' => 6,
                     'date' => '12/22/2018',
                     'status' => 'action-required',
-                    'icon' => 'a-avatar-fail'
+                    'icon' => 'a-avatar-fail',
                 ],
                 [
                     'id' => 7,
                     'date' => '12/23/2018',
                     'status' => 'ok-actionable',
-                    'icon' => 'a-avatar-approve'
-                ]
+                    'icon' => 'a-avatar-approve',
+                ],
             ],
             'projects' => [
                 [
@@ -2159,11 +2149,11 @@ class AuditController extends Controller
                     'zip' => '43219',
                     'lead' => 2, // user_id
                     'schedules' => [
-                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                        ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                        ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT']
-                    ]
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
+                    ],
                 ],
                 [
                     'id' => '19200115',
@@ -2175,11 +2165,11 @@ class AuditController extends Controller
                     'zip' => '43219',
                     'lead' => 1, // user_id
                     'schedules' => [
-                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                        ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                        ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT']
-                    ]
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
+                    ],
                 ],
                 [
                     'id' => '19200116',
@@ -2191,13 +2181,13 @@ class AuditController extends Controller
                     'zip' => '43219',
                     'lead' => 2, // user_id
                     'schedules' => [
-                        ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                        ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' =>'APPROVE SCHEDULE CONFLICT'],
-                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' =>'APPROVE SCHEDULE CONFLICT']
-                    ]
-                ]
-            ]
+                        ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
+                        ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
+                    ],
+                ],
+            ],
         ]);
         return view('projects.partials.details-assignment-schedule', compact('data'));
     }
@@ -2207,8 +2197,6 @@ class AuditController extends Controller
     //     $data = [];
     //     return view('projects.partials.communications', compact('data'));
     // }
-
-
 
     // public function getProjectNotes($project_id = null)
     // {
@@ -2246,66 +2234,43 @@ class AuditController extends Controller
 
     public function modalProjectProgramSummaryFilterProgram($project_id, $program_id, Request $request)
     {
+        /**
+         * Make chart data refelct the filter along with filter
+         * Include selected numbers for each group below chart
+         * Show the group to which the unit belongs to
+         *         this is tricky part, need to crate a function that automatically reads the program_settings and populates program_groups table
+         * Include Substitute for : Program (Program group)
+         * Show selection of HTC group -- need help on this
+         *
+         * SWAP MODAL
+         *     Make this as 4 sections
+         *         Chart
+         *         Groups audit info (Is this programs?)
+         *         Units info
+         */
         $programs = $request->get('programs');
-
-        if (is_array($programs) && count($programs)>0) {
+        if (is_array($programs) && count($programs) > 0) {
             $filters = collect([
-                'programs' => $programs
+                'programs' => $programs,
             ]);
         } else {
             $filters = null;
         }
-        $project = Project::where('id','=',$project_id)->first();
+        $project = Project::where('id', '=', $project_id)->first();
         $audit = $project->selected_audit()->audit;
-
+        $selection_summary = json_decode($audit->selection_summary, 1);
         // get units filterd in programs
-       $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
-       															->whereIn('program_key', $programs)
-       															->with('unit', 'program', 'unit.building.address')
-       															->orderBy('unit_id','asc')
-       															->get()
-       															->count();
-
-        $data = collect([
-                'project' => [
-                    "id" => 1,
-                    "name" => "Project Name",
-                    'selected_program' => $program_id
-                ],
-                'programs' => [
-                    ["id" => 1, "name" => "Program Name 1"],
-                    ["id" => 2, "name" => "Program Name 2"],
-                    ["id" => 3, "name" => "Program Name 3"],
-                    ["id" => 4, "name" => "Program Name 4"]
-                ],
-                'units' => [
-                    [
-                        "id" => 1,
-                        "status" => "not-inspectable",
-                        "address" => "123457 Silvegwood Street",
-                        "address2" => "#102",
-                        "move_in_date" => "1/29/2018",
-                        "programs" => [
-                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "inspectable" ],
-                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "not-inspectable" ]
-                        ]
-                    ],
-                    [
-                        "id" => 2,
-                        "status" => "inspectable",
-                        "address" => "123457 Silvegwood Street",
-                        "address2" => "#102",
-                        "move_in_date" => "1/29/2018",
-                        "programs" => [
-                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "not-inspectable" ],
-                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "inspectable" ]
-                        ]
-                    ]
-                ]
-            ]);
-        //return $data = ($unitprograms);
-
-        return view('dashboard.partials.project-summary-unit', compact('data'));
+        $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
+            ->whereIn('program_key', $programs)
+            ->with('unit', 'program.relatedGroups', 'unit.building.address')
+            ->orderBy('unit_id', 'asc')
+            ->get();
+        $all_unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
+        							->with('program.relatedGroups')
+        							->orderBy('unit_id', 'asc')
+        							->get();
+        $actual_programs = $all_unitprograms->pluck('program')->unique()->toArray();
+        return view('dashboard.partials.project-summary-unit', compact('unitprograms', 'actual_programs'));
     }
 
     public function modalProjectProgramSummary($project_id, $program_id = 0)
@@ -2314,31 +2279,30 @@ class AuditController extends Controller
         // units are automatically selected using the selection process
         // then randomize all units before displaying them on the modal
         // then user can adjust selection for that program
-        $project = Project::where('id','=',$project_id)->first();
+        $project = Project::where('id', '=', $project_id)->first();
         $audit = $project->selected_audit()->audit;
         $selection_summary = json_decode($audit->selection_summary, 1);
-        session(['audit-'.$audit->id.'-selection_summary' => $selection_summary]);
+        session(['audit-' . $audit->id . '-selection_summary' => $selection_summary]);
         $programs = array();
         $program_keys_list = '';
-        foreach($selection_summary['programs'] as $p){
-            if($p['pool'] > 0){
+        foreach ($selection_summary['programs'] as $p) {
+            if ($p['pool'] > 0) {
                 $programs[] = [
                     "id" => $p['group'],
-                    "name" => $p['name']
+                    "name" => $p['name'],
                 ];
-                if($program_keys_list != ''){
-                    $program_keys_list = $program_keys_list.",";
+                if ($program_keys_list != '') {
+                    $program_keys_list = $program_keys_list . ",";
                 }
-                $program_keys_list = $program_keys_list.$p['program_keys'];
+                $program_keys_list = $program_keys_list . $p['program_keys'];
             }
         }
-
-        if($program_id == 0){
+        if ($program_id == 0) {
             // get all the programs
             $data = [
                 "project" => [
-                    'id' => $project->id
-                ]
+                    'id' => $project->id,
+                ],
             ];
             $stats = $audit->stats_compliance();
             $summary_required = 0;
@@ -2360,29 +2324,29 @@ class AuditController extends Controller
             // create stats for each group
             // build the dataset for the chart
             $datasets = array();
-            foreach($selection_summary['programs'] as $program){
+            foreach ($selection_summary['programs'] as $program) {
                 // count selected units using the list of program ids
                 $program_keys = explode(',', $program['program_keys']);
-                $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
-                $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
+                $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit', '=', 1)->select('unit_id')->groupBy('unit_id')->get()->count();
+                $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit', '=', 1)->select('unit_id')->groupBy('unit_id')->get()->count();
                 $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
                 $needed_units_file = $program['totals_after_optimization'] - $selected_units_file;
                 $unit_keys = $program['units_after_optimization'];
                 $inspected_units_site = UnitInspection::whereIn('unit_key', $unit_keys)
-                            ->where('audit_id', '=', $audit->id)
-                            ->where('group_id', '=', $program['group'])
-                            // ->whereHas('amenity_inspections', function($query) {
-                            //     $query->where('completed_date_time', '!=', null);
-                            // })
-                            ->where('is_site_visit', '=', 1)
-                            ->where('complete', '!=', NULL)
-                            ->count();
+                    ->where('audit_id', '=', $audit->id)
+                    ->where('group_id', '=', $program['group'])
+                // ->whereHas('amenity_inspections', function($query) {
+                //     $query->where('completed_date_time', '!=', null);
+                // })
+                    ->where('is_site_visit', '=', 1)
+                    ->where('complete', '!=', null)
+                    ->count();
                 $inspected_units_file = UnitInspection::whereIn('unit_key', $unit_keys)
-                            ->where('audit_id', '=', $audit->id)
-                            ->where('group_id', '=', $program['group'])
-                            ->where('is_file_audit', '=', 1)
-                            ->where('complete', '!=', NULL)
-                            ->count();
+                    ->where('audit_id', '=', $audit->id)
+                    ->where('group_id', '=', $program['group'])
+                    ->where('is_file_audit', '=', 1)
+                    ->where('complete', '!=', null)
+                    ->count();
                 $to_be_inspected_units_site = $program['totals_after_optimization'] - $inspected_units_site;
                 $to_be_inspected_units_file = $program['totals_after_optimization'] - $inspected_units_file;
                 $data['programs'][] = [
@@ -2403,14 +2367,14 @@ class AuditController extends Controller
                     'selected_units_file' => $selected_units_file,
                     'needed_units_file' => $needed_units_file,
                     'inspected_units_file' => $inspected_units_file,
-                    'to_be_inspected_units_file' => $to_be_inspected_units_file
+                    'to_be_inspected_units_file' => $to_be_inspected_units_file,
                 ];
                 //chartjs data
                 $datasets[] = [
                     "program_name" => $program['name'],
                     "required" => $program['totals_after_optimization'],
                     "selected" => $selected_units_site + $selected_units_file,
-                    "needed" => $needed_units_site + $needed_units_file
+                    "needed" => $needed_units_site + $needed_units_file,
                 ];
                 $summary_required = $summary_required + $program['totals_before_optimization'];
                 $summary_selected = $summary_selected + $selected_units_site;
@@ -2430,58 +2394,65 @@ class AuditController extends Controller
                 $summary_optimized_remaining_inspections_file = $summary_optimized_sample_size_file - $summary_optimized_completed_inspections_file;
             }
             $data['summary'] = [
-                    'required_units' => $summary_required,
-                    'selected_units' => $summary_selected,
-                    'needed_units' => $summary_needed,
-                    'inspected_units' => $summary_inspected,
-                    'to_be_inspected_units' => $summary_to_be_inspected,
-                    'optimized_sample_size' => $summary_optimized_sample_size,
-                    'optimized_completed_inspections' => $summary_optimized_completed_inspections,
-                    'optimized_remaining_inspections' => $summary_optimized_remaining_inspections,
-                    'required_units_file' => $summary_required_file,
-                    'selected_units_file' => $summary_selected_file,
-                    'needed_units_file' => $summary_needed_file,
-                    'inspected_units_file' => $summary_inspected_file,
-                    'to_be_inspected_units_file' => $summary_to_be_inspected_file,
-                    'optimized_sample_size_file' => $summary_optimized_sample_size_file,
-                    'optimized_completed_inspections_file' => $summary_optimized_completed_inspections_file,
-                    'optimized_remaining_inspections_file' => $summary_optimized_remaining_inspections_file
+                'required_units' => $summary_required,
+                'selected_units' => $summary_selected,
+                'needed_units' => $summary_needed,
+                'inspected_units' => $summary_inspected,
+                'to_be_inspected_units' => $summary_to_be_inspected,
+                'optimized_sample_size' => $summary_optimized_sample_size,
+                'optimized_completed_inspections' => $summary_optimized_completed_inspections,
+                'optimized_remaining_inspections' => $summary_optimized_remaining_inspections,
+                'required_units_file' => $summary_required_file,
+                'selected_units_file' => $summary_selected_file,
+                'needed_units_file' => $summary_needed_file,
+                'inspected_units_file' => $summary_inspected_file,
+                'to_be_inspected_units_file' => $summary_to_be_inspected_file,
+                'optimized_sample_size_file' => $summary_optimized_sample_size_file,
+                'optimized_completed_inspections_file' => $summary_optimized_completed_inspections_file,
+                'optimized_remaining_inspections_file' => $summary_optimized_remaining_inspections_file,
             ];
             // get all the units in the selected audit
-            $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)->with('unit', 'program', 'unit.building.address')->orderBy('unit_id','asc')->get();
-            $actual_programs =  $unitprograms->pluck('program')->unique();
-            //Need to get groups data for these programs
-            return view('modals.project-summary-composite', compact('data', 'project', 'audit' , 'programs', 'unitprograms', 'datasets', 'actual_programs'));
-        }else{
+            $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)->with('unit', 'program.relatedGroups', 'unit.building.address')->orderBy('unit_id', 'asc')->get();
+            $actual_programs = $unitprograms->pluck('program')->unique()->toArray();
+            foreach ($actual_programs as $key => $actual_program) {
+            	$group_names = array_column($actual_program['related_groups'], 'group_name');
+            	if (!empty($group_names)) {
+                  $actual_programs[$key]['group_names'] = implode(', ', $group_names);
+              } else {
+                  $actual_programs[$key]['group_names'] = ' - ';
+              }
+            }
+            return view('modals.project-summary-composite', compact('data', 'project', 'audit', 'programs', 'unitprograms', 'datasets', 'actual_programs'));
+        } else {
             //dd($selection_summary['programs'][$program_id-1]);
 
-            $program = $selection_summary['programs'][$program_id-1];
+            $program = $selection_summary['programs'][$program_id - 1];
 
             // count selected units using the list of program ids
             $program_keys = explode(',', $program['program_keys']);
-            $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
-            $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->select('unit_id')->groupBy('unit_id')->get()->count();
+            $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit', '=', 1)->select('unit_id')->groupBy('unit_id')->get()->count();
+            $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit', '=', 1)->select('unit_id')->groupBy('unit_id')->get()->count();
 
             $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
             $needed_units_file = $program['totals_after_optimization'] - $selected_units_file;
 
             $unit_keys = $program['units_after_optimization'];
             $inspected_units_site = UnitInspection::whereIn('unit_key', $unit_keys)
-                        ->where('audit_id', '=', $audit->id)
-                        ->where('group_id', '=', $program['group'])
-                        // ->whereHas('amenity_inspections', function($query) {
-                        //     $query->where('completed_date_time', '!=', null);
-                        // })
-                        ->where('is_site_visit', '=', 1)
-                        ->where('complete', '!=', NULL)
-                        ->count();
+                ->where('audit_id', '=', $audit->id)
+                ->where('group_id', '=', $program['group'])
+            // ->whereHas('amenity_inspections', function($query) {
+            //     $query->where('completed_date_time', '!=', null);
+            // })
+                ->where('is_site_visit', '=', 1)
+                ->where('complete', '!=', null)
+                ->count();
 
             $inspected_units_file = UnitInspection::whereIn('unit_key', $unit_keys)
-                        ->where('audit_id', '=', $audit->id)
-                        ->where('group_id', '=', $program['group'])
-                        ->where('is_file_audit', '=', 1)
-                        ->where('complete', '!=', NULL)
-                        ->count();
+                ->where('audit_id', '=', $audit->id)
+                ->where('group_id', '=', $program['group'])
+                ->where('is_file_audit', '=', 1)
+                ->where('complete', '!=', null)
+                ->count();
 
             $to_be_inspected_units_site = $program['totals_after_optimization'] - $inspected_units_site;
             $to_be_inspected_units_file = $program['totals_after_optimization'] - $inspected_units_file;
@@ -2502,7 +2473,7 @@ class AuditController extends Controller
                 'selected_units_file' => $selected_units_file,
                 'needed_units_file' => $needed_units_file,
                 'inspected_units_file' => $inspected_units_file,
-                'to_be_inspected_units_file' => $to_be_inspected_units_file
+                'to_be_inspected_units_file' => $to_be_inspected_units_file,
             ];
 
             //$units = $project->units;
@@ -2518,19 +2489,19 @@ class AuditController extends Controller
 
             // TBD something is missing here. We selected all the programs for that units, ignoring the SystemSettings???
 
-            $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)->with('unit', 'program', 'unit.building.address')->orderBy('unit_id','asc')->get();
+            $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)->with('unit', 'program', 'unit.building.address')->orderBy('unit_id', 'asc')->get();
 
             $data = collect([
                 'project' => [
                     "id" => $project->id,
                     "name" => $project->project_name,
-                    'selected_program' => $program_id
+                    'selected_program' => $program_id,
                 ],
                 'programs' => [
                     ["id" => 1, "name" => "Program Name 1"],
                     ["id" => 2, "name" => "Program Name 2"],
                     ["id" => 3, "name" => "Program Name 3"],
-                    ["id" => 4, "name" => "Program Name 4"]
+                    ["id" => 4, "name" => "Program Name 4"],
                 ],
                 'units' => [
                     [
@@ -2540,9 +2511,9 @@ class AuditController extends Controller
                         "address2" => "#102",
                         "move_in_date" => "1/29/2018",
                         "programs" => [
-                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "not-inspectable" ],
-                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "not-inspectable" ]
-                        ]
+                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "not-inspectable"],
+                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "not-inspectable"],
+                        ],
                     ],
                     [
                         "id" => 2,
@@ -2551,9 +2522,9 @@ class AuditController extends Controller
                         "address2" => "#102",
                         "move_in_date" => "1/29/2018",
                         "programs" => [
-                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "", "file_audit_checked" => "", "selected" => "", "status" => "inspectable" ],
-                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "", "file_audit_checked" => "", "selected" => "", "status" => "not-inspectable" ]
-                        ]
+                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "", "file_audit_checked" => "", "selected" => "", "status" => "inspectable"],
+                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "", "file_audit_checked" => "", "selected" => "", "status" => "not-inspectable"],
+                        ],
                     ],
                     [
                         "id" => 2,
@@ -2562,9 +2533,9 @@ class AuditController extends Controller
                         "address2" => "#102",
                         "move_in_date" => "1/29/2018",
                         "programs" => [
-                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "", "file_audit_checked" => "", "selected" => "", "status" => "not-inspectable" ],
-                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "", "file_audit_checked" => "", "selected" => "", "status" => "inspectable" ]
-                        ]
+                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "", "file_audit_checked" => "", "selected" => "", "status" => "not-inspectable"],
+                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "", "file_audit_checked" => "", "selected" => "", "status" => "inspectable"],
+                        ],
                     ],
                     [
                         "id" => 2,
@@ -2573,9 +2544,9 @@ class AuditController extends Controller
                         "address2" => "#102",
                         "move_in_date" => "1/29/2018",
                         "programs" => [
-                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "inspectable" ],
-                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "inspectable" ]
-                        ]
+                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "inspectable"],
+                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "inspectable"],
+                        ],
                     ],
                     [
                         "id" => 2,
@@ -2584,9 +2555,9 @@ class AuditController extends Controller
                         "address2" => "#102",
                         "move_in_date" => "1/29/2018",
                         "programs" => [
-                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "inspectable" ],
-                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "inspectable" ]
-                        ]
+                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "inspectable"],
+                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "inspectable"],
+                        ],
                     ],
                     [
                         "id" => 2,
@@ -2595,23 +2566,21 @@ class AuditController extends Controller
                         "address2" => "#102",
                         "move_in_date" => "1/29/2018",
                         "programs" => [
-                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "inspectable" ],
-                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "not-inspectable" ]
-                        ]
-                    ]
-                ]
+                            ["id" => 1, "name" => "Program name 1", "physical_audit_checked" => "true", "file_audit_checked" => "false", "selected" => "", "status" => "inspectable"],
+                            ["id" => 2, "name" => "Program name 2", "physical_audit_checked" => "false", "file_audit_checked" => "true", "selected" => "", "status" => "not-inspectable"],
+                        ],
+                    ],
+                ],
             ]);
 
             return view('modals.project-summary', compact('data', 'project', 'stats', 'programs', 'unitprograms'));
         }
 
-
-
     }
 
-    public function addAssignmentAuditor($audit_id, $day_id, $auditorid=null)
+    public function addAssignmentAuditor($audit_id, $day_id, $auditorid = null)
     {
-        $audit = CachedAudit::where('audit_id','=',$audit_id)->first();
+        $audit = CachedAudit::where('audit_id', '=', $audit_id)->first();
 
         // make sure the logged in user is a manager or the lead on the audit TBD
         $current_user = Auth::user();
@@ -2620,13 +2589,13 @@ class AuditController extends Controller
         //     dd("You must be the lead.");
         // }
 
-        $day = ScheduleDay::where('id','=',$day_id)->where('audit_id','=',$audit_id)->first();
+        $day = ScheduleDay::where('id', '=', $day_id)->where('audit_id', '=', $audit_id)->first();
 
-        $auditor = User::where('id','=',$auditorid)->first();
+        $auditor = User::where('id', '=', $auditorid)->first();
         // dd($audit_id, $audit, $day, $auditorid, $auditor);
 
         // get auditors from user roles
-        $auditors = User::whereHas('roles', function($query){
+        $auditors = User::whereHas('roles', function ($query) {
             $query->where('role_id', '=', 2);
         })->get();
 
@@ -2639,18 +2608,18 @@ class AuditController extends Controller
 
         // dd($userid, $auditid, $request->get('dayid'));
         // 6301 6410 4
-        $day = ScheduleDay::where('audit_id','=',$auditid)->where('id','=',$request->get('dayid'))->first();
+        $day = ScheduleDay::where('audit_id', '=', $auditid)->where('id', '=', $request->get('dayid'))->first();
 
-        $audit = Audit::where('id','=',$auditid)->first();
+        $audit = Audit::where('id', '=', $auditid)->first();
 
-        $user = User::where('id','=',$userid)->first();
+        $user = User::where('id', '=', $userid)->first();
 
-        if($day && $audit && $user && count(AuditAuditor::where('audit_id','=',$auditid)->where('user_id','=',$userid)->get()) == 0){
+        if ($day && $audit && $user && count(AuditAuditor::where('audit_id', '=', $auditid)->where('user_id', '=', $userid)->get()) == 0) {
             $new_auditor = new AuditAuditor([
                 'audit_id' => $auditid,
                 'monitoring_key' => $audit->monitoring_key,
                 'user_id' => $userid,
-                'user_key' => $user->devco_key
+                'user_key' => $user->devco_key,
             ]);
             $new_auditor->save();
             return 1;
@@ -2662,15 +2631,15 @@ class AuditController extends Controller
     public function removeAuditorFromAudit(Request $request, $userid, $auditid)
     {
 
-        $audit = Audit::where('id','=',$auditid)->first();
+        $audit = Audit::where('id', '=', $auditid)->first();
 
-        $user = User::where('id','=',$userid)->first();
+        $user = User::where('id', '=', $userid)->first();
 
-        if( $audit && $user){
-            AuditAuditor::where('user_id','=',$user->id)->where('audit_id','=',$auditid)->first()->delete();
+        if ($audit && $user) {
+            AuditAuditor::where('user_id', '=', $user->id)->where('audit_id', '=', $auditid)->first()->delete();
 
             // remove their assignements
-            AmenityInspection::where('auditor_id',$user->id)->where('audit_id','=',$auditid)->update(['auditor_id'=>NULL]);
+            AmenityInspection::where('auditor_id', $user->id)->where('audit_id', '=', $auditid)->update(['auditor_id' => null]);
             return 1;
         }
 
@@ -2684,7 +2653,7 @@ class AuditController extends Controller
         $data = collect([
             "project" => [
                 "id" => $id,
-                "name" => "Project Name"
+                "name" => "Project Name",
             ],
             "summary" => [
                 "id" => $auditorid,
@@ -2699,7 +2668,7 @@ class AuditController extends Controller
                 'ref-next' => '20181231',
                 'preferred_longest_drive' => '02:30',
                 'preferred_lunch' => '00:30',
-                'total_estimated_commitment' => "07:40"
+                'total_estimated_commitment' => "07:40",
             ],
             "itinerary-start" => [
                 "id" => 1,
@@ -2716,7 +2685,7 @@ class AuditController extends Controller
                 "end" => "08:30 AM",
                 "lead" => 1, // user id
                 "order" => 1,
-                "itinerary" => []
+                "itinerary" => [],
             ],
             "itinerary-end" => [
                 "id" => 9,
@@ -2733,7 +2702,7 @@ class AuditController extends Controller
                 "end" => "4:10 PM",
                 "lead" => 1,
                 "order" => 5,
-                "itinerary" => []
+                "itinerary" => [],
             ],
             "itinerary" => [
                 [
@@ -2768,8 +2737,8 @@ class AuditController extends Controller
                             "end" => "12:00 AM",
                             "lead" => 1,
                             "order" => 2,
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 [
                     "id" => 5,
@@ -2792,8 +2761,8 @@ class AuditController extends Controller
                             "end" => "1:55 PM",
                             "lead" => 1,
                             "order" => 1,
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 [
                     "id" => 7,
@@ -2816,9 +2785,9 @@ class AuditController extends Controller
                             "end" => "3:10 PM",
                             "lead" => 2,
                             "order" => 1,
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             "calendar" => [
                 "header" => ["12/18", "12/19", "12/20", "12/21", "12/22", "12/23", "12/24", "12/25", "12/26"],
@@ -2838,33 +2807,33 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "action-required",
                                 "start" => "9",
-                                "span" =>  "24",
+                                "span" => "24",
                                 "icon" => "a-mobile-not",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "33",
-                                "span" =>  "2",
+                                "span" => "2",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 114,
                                 "status" => "",
                                 "start" => "35",
-                                "span" =>  "11",
+                                "span" => "11",
                                 "icon" => "a-mobile-checked",
                                 "lead" => 1,
                                 "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
+                                "modal_type" => "",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 112,
@@ -2881,33 +2850,33 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "",
                                 "start" => "9",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-mobile-not",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "21",
-                                "span" =>  "1",
+                                "span" => "1",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 114,
                                 "status" => "",
                                 "start" => "22",
-                                "span" =>  "24",
+                                "span" => "24",
                                 "icon" => "a-circle-plus",
                                 "lead" => 1,
                                 "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
+                                "modal_type" => "choose-filing",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 113,
@@ -2924,33 +2893,33 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "action-required",
                                 "start" => "9",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-mobile-not",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "21",
-                                "span" =>  "4",
+                                "span" => "4",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 114,
                                 "status" => "",
                                 "start" => "25",
-                                "span" =>  "21",
+                                "span" => "21",
                                 "icon" => "a-circle-plus",
                                 "lead" => 1,
                                 "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
+                                "modal_type" => "choose-filing",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 115,
@@ -2967,23 +2936,23 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "",
                                 "start" => "9",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-circle-plus",
                                 "lead" => 1,
                                 "class" => "available no-border-top",
-                                "modal_type" => "choose-filing"
+                                "modal_type" => "choose-filing",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "30",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-circle-plus",
                                 "lead" => 1,
                                 "class" => "available no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
+                                "modal_type" => "choose-filing",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 116,
@@ -3000,72 +2969,72 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "in-progress",
                                 "start" => "9",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-mobile-checked",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => "change-date"
+                                "modal_type" => "change-date",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "25",
-                                "span" =>  "1",
+                                "span" => "1",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "26",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-folder",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "38",
-                                "span" =>  "8",
+                                "span" => "8",
                                 "icon" => "a-folder",
                                 "lead" => 1,
                                 "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
+                                "modal_type" => "",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 114,
                         "date" => "12/23",
-                        "no_availability" => 1
+                        "no_availability" => 1,
                     ],
                     [
                         "id" => 114,
                         "date" => "12/24",
-                        "no_availability" => 1
+                        "no_availability" => 1,
                     ],
                     [
                         "id" => 114,
                         "date" => "12/25",
-                        "no_availability" => 1
+                        "no_availability" => 1,
                     ],
                     [
                         "id" => 114,
                         "date" => "12/26",
-                        "no_availability" => 1
-                    ]
+                        "no_availability" => 1,
+                    ],
                 ],
                 "footer" => [
                     "previous" => "DECEMBER 13, 2018",
                     'ref-previous' => '20181213',
                     "today" => "DECEMBER 22, 2018",
                     "next" => "DECEMBER 31, 2018",
-                    'ref-next' => '20181231'
-                ]
+                    'ref-next' => '20181231',
+                ],
             ],
             "calendar-previous" => [
                 "header" => ["12/09", "12/10", "12/11", "12/12", "12/13", "12/14", "12/15", "12/16", "12/17"],
@@ -3085,33 +3054,33 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "action-required",
                                 "start" => "9",
-                                "span" =>  "24",
+                                "span" => "24",
                                 "icon" => "a-mobile-not",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "33",
-                                "span" =>  "2",
+                                "span" => "2",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 114,
                                 "status" => "",
                                 "start" => "35",
-                                "span" =>  "11",
+                                "span" => "11",
                                 "icon" => "a-mobile-checked",
                                 "lead" => 1,
                                 "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
+                                "modal_type" => "",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 112,
@@ -3128,33 +3097,33 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "",
                                 "start" => "9",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-mobile-not",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "21",
-                                "span" =>  "1",
+                                "span" => "1",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 114,
                                 "status" => "",
                                 "start" => "22",
-                                "span" =>  "24",
+                                "span" => "24",
                                 "icon" => "a-circle-plus",
                                 "lead" => 1,
                                 "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
+                                "modal_type" => "choose-filing",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 113,
@@ -3171,33 +3140,33 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "action-required",
                                 "start" => "9",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-mobile-not",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "21",
-                                "span" =>  "4",
+                                "span" => "4",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 114,
                                 "status" => "",
                                 "start" => "25",
-                                "span" =>  "21",
+                                "span" => "21",
                                 "icon" => "a-circle-plus",
                                 "lead" => 1,
                                 "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
+                                "modal_type" => "choose-filing",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 115,
@@ -3214,23 +3183,23 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "",
                                 "start" => "9",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-circle-plus",
                                 "lead" => 1,
                                 "class" => "available no-border-top",
-                                "modal_type" => "choose-filing"
+                                "modal_type" => "choose-filing",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "30",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-circle-plus",
                                 "lead" => 1,
                                 "class" => "available no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
+                                "modal_type" => "choose-filing",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 116,
@@ -3247,43 +3216,43 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "in-progress",
                                 "start" => "9",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-mobile-checked",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => "change-date"
+                                "modal_type" => "change-date",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "25",
-                                "span" =>  "1",
+                                "span" => "1",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "26",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-folder",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "38",
-                                "span" =>  "8",
+                                "span" => "8",
                                 "icon" => "a-folder",
                                 "lead" => 1,
                                 "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
+                                "modal_type" => "",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 116,
@@ -3300,43 +3269,43 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "in-progress",
                                 "start" => "9",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-mobile-checked",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => "change-date"
+                                "modal_type" => "change-date",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "25",
-                                "span" =>  "1",
+                                "span" => "1",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "26",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-folder",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "38",
-                                "span" =>  "8",
+                                "span" => "8",
                                 "icon" => "a-folder",
                                 "lead" => 1,
                                 "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
+                                "modal_type" => "",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 116,
@@ -3353,43 +3322,43 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "in-progress",
                                 "start" => "9",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-mobile-checked",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => "change-date"
+                                "modal_type" => "change-date",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "25",
-                                "span" =>  "1",
+                                "span" => "1",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "26",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-folder",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "38",
-                                "span" =>  "8",
+                                "span" => "8",
                                 "icon" => "a-folder",
                                 "lead" => 1,
                                 "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
+                                "modal_type" => "",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 116,
@@ -3406,43 +3375,43 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "in-progress",
                                 "start" => "9",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-mobile-checked",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => "change-date"
+                                "modal_type" => "change-date",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "25",
-                                "span" =>  "1",
+                                "span" => "1",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "26",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-folder",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "38",
-                                "span" =>  "8",
+                                "span" => "8",
                                 "icon" => "a-folder",
                                 "lead" => 1,
                                 "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
+                                "modal_type" => "",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 116,
@@ -3459,52 +3428,52 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "in-progress",
                                 "start" => "9",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-mobile-checked",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => "change-date"
+                                "modal_type" => "change-date",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "25",
-                                "span" =>  "1",
+                                "span" => "1",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "26",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-folder",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "38",
-                                "span" =>  "8",
+                                "span" => "8",
                                 "icon" => "a-folder",
                                 "lead" => 1,
                                 "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
-                    ]
+                                "modal_type" => "",
+                            ],
+                        ],
+                    ],
                 ],
                 "footer" => [
                     "previous" => "DECEMBER 04, 2018",
                     'ref-previous' => '20181204',
                     "today" => "DECEMBER 13, 2018",
                     "next" => "DECEMBER 22, 2018",
-                    'ref-next' => '20181222'
-                ]
+                    'ref-next' => '20181222',
+                ],
             ],
             "calendar-next" => [
                 "header" => ["12/27", "12/28", "12/29", "12/30", "12/31", "01/01", "01/02", "01/03", "01/04"],
@@ -3524,33 +3493,33 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "action-required",
                                 "start" => "9",
-                                "span" =>  "24",
+                                "span" => "24",
                                 "icon" => "a-mobile-not",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "33",
-                                "span" =>  "2",
+                                "span" => "2",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 114,
                                 "status" => "",
                                 "start" => "35",
-                                "span" =>  "11",
+                                "span" => "11",
                                 "icon" => "a-mobile-checked",
                                 "lead" => 1,
                                 "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
+                                "modal_type" => "",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 112,
@@ -3567,33 +3536,33 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "",
                                 "start" => "9",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-mobile-not",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "21",
-                                "span" =>  "1",
+                                "span" => "1",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 114,
                                 "status" => "",
                                 "start" => "22",
-                                "span" =>  "24",
+                                "span" => "24",
                                 "icon" => "a-circle-plus",
                                 "lead" => 1,
                                 "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
+                                "modal_type" => "choose-filing",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 113,
@@ -3610,33 +3579,33 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "action-required",
                                 "start" => "9",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-mobile-not",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "21",
-                                "span" =>  "4",
+                                "span" => "4",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 114,
                                 "status" => "",
                                 "start" => "25",
-                                "span" =>  "21",
+                                "span" => "21",
                                 "icon" => "a-circle-plus",
                                 "lead" => 1,
                                 "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
+                                "modal_type" => "choose-filing",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 115,
@@ -3653,23 +3622,23 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "",
                                 "start" => "9",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-circle-plus",
                                 "lead" => 1,
                                 "class" => "available no-border-top",
-                                "modal_type" => "choose-filing"
+                                "modal_type" => "choose-filing",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "30",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-circle-plus",
                                 "lead" => 1,
                                 "class" => "available no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
+                                "modal_type" => "choose-filing",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 116,
@@ -3686,43 +3655,43 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "in-progress",
                                 "start" => "9",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-mobile-checked",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => "change-date"
+                                "modal_type" => "change-date",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "25",
-                                "span" =>  "1",
+                                "span" => "1",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "26",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-folder",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "38",
-                                "span" =>  "8",
+                                "span" => "8",
                                 "icon" => "a-folder",
                                 "lead" => 1,
                                 "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
+                                "modal_type" => "",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 116,
@@ -3739,43 +3708,43 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "in-progress",
                                 "start" => "9",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-mobile-checked",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => "change-date"
+                                "modal_type" => "change-date",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "25",
-                                "span" =>  "1",
+                                "span" => "1",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "26",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-folder",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "38",
-                                "span" =>  "8",
+                                "span" => "8",
                                 "icon" => "a-folder",
                                 "lead" => 1,
                                 "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
+                                "modal_type" => "",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 116,
@@ -3792,43 +3761,43 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "in-progress",
                                 "start" => "9",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-mobile-checked",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => "change-date"
+                                "modal_type" => "change-date",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "25",
-                                "span" =>  "1",
+                                "span" => "1",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "26",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-folder",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "38",
-                                "span" =>  "8",
+                                "span" => "8",
                                 "icon" => "a-folder",
                                 "lead" => 1,
                                 "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
+                                "modal_type" => "",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 116,
@@ -3845,43 +3814,43 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "in-progress",
                                 "start" => "9",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-mobile-checked",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => "change-date"
+                                "modal_type" => "change-date",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "25",
-                                "span" =>  "1",
+                                "span" => "1",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "26",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-folder",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "38",
-                                "span" =>  "8",
+                                "span" => "8",
                                 "icon" => "a-folder",
                                 "lead" => 1,
                                 "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
+                                "modal_type" => "",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 116,
@@ -3898,44 +3867,44 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "in-progress",
                                 "start" => "9",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-mobile-checked",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => "change-date"
+                                "modal_type" => "change-date",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "25",
-                                "span" =>  "1",
+                                "span" => "1",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "26",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-folder",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "38",
-                                "span" =>  "8",
+                                "span" => "8",
                                 "icon" => "a-folder",
                                 "lead" => 1,
                                 "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
-                    ]
+                                "modal_type" => "",
+                            ],
+                        ],
+                    ],
                 ],
                 "footer" => [
                     "previous" => "DECEMBER 22, 2018",
@@ -3943,8 +3912,8 @@ class AuditController extends Controller
                     "today" => "DECEMBER 31, 2018",
                     "next" => "JANUARY 09, 2019",
                     'ref-next' => '20190109',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         return view('projects.partials.details-assignment-auditor-stat', compact('data'));
@@ -4002,7 +3971,7 @@ class AuditController extends Controller
         $data = collect([
             "project" => [
                 "id" => $id,
-                "name" => "Project Name"
+                "name" => "Project Name",
             ],
             "summary" => [
                 "id" => $auditorid,
@@ -4010,7 +3979,7 @@ class AuditController extends Controller
                 'initials' => 'JD',
                 'color' => 'blue',
                 'date' => $newdateformatted,
-                'ref' => $newdateref
+                'ref' => $newdateref,
             ],
             "calendar" => [
                 "header" => $header_dates,
@@ -4030,33 +3999,33 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "action-required",
                                 "start" => "9",
-                                "span" =>  "24",
+                                "span" => "24",
                                 "icon" => "a-mobile-not",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "33",
-                                "span" =>  "2",
+                                "span" => "2",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 114,
                                 "status" => "",
                                 "start" => "35",
-                                "span" =>  "11",
+                                "span" => "11",
                                 "icon" => "a-mobile-checked",
                                 "lead" => 1,
                                 "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
+                                "modal_type" => "",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 112,
@@ -4073,33 +4042,33 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "",
                                 "start" => "9",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-mobile-not",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "21",
-                                "span" =>  "1",
+                                "span" => "1",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 114,
                                 "status" => "",
                                 "start" => "22",
-                                "span" =>  "24",
+                                "span" => "24",
                                 "icon" => "a-circle-plus",
                                 "lead" => 1,
                                 "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
+                                "modal_type" => "choose-filing",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 113,
@@ -4116,33 +4085,33 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "action-required",
                                 "start" => "9",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-mobile-not",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "21",
-                                "span" =>  "4",
+                                "span" => "4",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 114,
                                 "status" => "",
                                 "start" => "25",
-                                "span" =>  "21",
+                                "span" => "21",
                                 "icon" => "a-circle-plus",
                                 "lead" => 1,
                                 "class" => "available no-border-top no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
+                                "modal_type" => "choose-filing",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 115,
@@ -4159,23 +4128,23 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "",
                                 "start" => "9",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-circle-plus",
                                 "lead" => 1,
                                 "class" => "available no-border-top",
-                                "modal_type" => "choose-filing"
+                                "modal_type" => "choose-filing",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "30",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-circle-plus",
                                 "lead" => 1,
                                 "class" => "available no-border-bottom",
-                                "modal_type" => "choose-filing"
-                            ]
-                        ]
+                                "modal_type" => "choose-filing",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 116,
@@ -4192,73 +4161,73 @@ class AuditController extends Controller
                                 "id" => 112,
                                 "status" => "in-progress",
                                 "start" => "9",
-                                "span" =>  "16",
+                                "span" => "16",
                                 "icon" => "a-mobile-checked",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => "change-date"
+                                "modal_type" => "change-date",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "breaktime",
                                 "start" => "25",
-                                "span" =>  "1",
+                                "span" => "1",
                                 "icon" => "",
                                 "lead" => 1,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "26",
-                                "span" =>  "12",
+                                "span" => "12",
                                 "icon" => "a-folder",
                                 "lead" => 2,
                                 "class" => "",
-                                "modal_type" => ""
+                                "modal_type" => "",
                             ],
                             [
                                 "id" => 113,
                                 "status" => "",
                                 "start" => "38",
-                                "span" =>  "8",
+                                "span" => "8",
                                 "icon" => "a-folder",
                                 "lead" => 1,
                                 "class" => "no-border-bottom",
-                                "modal_type" => ""
-                            ]
-                        ]
+                                "modal_type" => "",
+                            ],
+                        ],
                     ],
                     [
                         "id" => 114,
                         "date" => "12/23",
-                        "no_availability" => 1
+                        "no_availability" => 1,
                     ],
                     [
                         "id" => 114,
                         "date" => "12/24",
-                        "no_availability" => 1
+                        "no_availability" => 1,
                     ],
                     [
                         "id" => 114,
                         "date" => "12/25",
-                        "no_availability" => 1
+                        "no_availability" => 1,
                     ],
                     [
                         "id" => 114,
                         "date" => "12/26",
-                        "no_availability" => 1
-                    ]
+                        "no_availability" => 1,
+                    ],
                 ],
                 "footer" => [
                     "previous" => $newdate_previous,
                     'ref-previous' => $newdate_ref_previous,
                     "today" => $newdateformatted,
                     "next" => $newdate_next,
-                    'ref-next' => $newdate_ref_next
-                ]
-            ]
+                    'ref-next' => $newdate_ref_next,
+                ],
+            ],
         ]);
 
         return view('projects.partials.details-assignment-auditor-calendar', compact('data'));
@@ -4273,11 +4242,11 @@ class AuditController extends Controller
                 $building_id = null;
                 $unit_id = null;
 
-                $audit = CachedAudit::where('audit_id','=',$project_id)->first();
+                $audit = CachedAudit::where('audit_id', '=', $project_id)->first();
                 $auditors_collection = $audit->auditors;
-                $amenities_collection = Amenity::where('inspectable','=',1)
-                                        ->where('project','=',1)
-                                        ->orderBy('amenity_description', 'asc')->get();
+                $amenities_collection = Amenity::where('inspectable', '=', 1)
+                    ->where('project', '=', 1)
+                    ->orderBy('amenity_description', 'asc')->get();
 
                 break;
             case 'building':
@@ -4292,16 +4261,16 @@ class AuditController extends Controller
                     $project_id = null;
                 }
 
-                $audit = CachedAudit::where('audit_id','=',$building->audit_id)->first();
+                $audit = CachedAudit::where('audit_id', '=', $building->audit_id)->first();
                 $auditors_collection = $audit->auditors;
-                $amenities_collection = Amenity::where('inspectable','=',1)
-                                        ->where(function ($query) {
-                                            $query->where('building_exterior','=',1)
-                                                  ->orWhere('building_system','=',1)
-                                                  ->orWhere('common_area','=',1);
+                $amenities_collection = Amenity::where('inspectable', '=', 1)
+                    ->where(function ($query) {
+                        $query->where('building_exterior', '=', 1)
+                            ->orWhere('building_system', '=', 1)
+                            ->orWhere('common_area', '=', 1);
 
-                                        })
-                                        ->orderBy('amenity_description', 'asc')->get();
+                    })
+                    ->orderBy('amenity_description', 'asc')->get();
 
                 break;
             case 'unit':
@@ -4317,13 +4286,13 @@ class AuditController extends Controller
                     $building_id = null;
                 }
 
-                $audit = CachedAudit::where('audit_id','=',$unit->audit_id)->first();
+                $audit = CachedAudit::where('audit_id', '=', $unit->audit_id)->first();
                 $auditors_collection = $audit->auditors;
-                $amenities_collection = Amenity::where('unit','=',1)->where('inspectable','=',1)->orderBy('amenity_description', 'asc')->get();
+                $amenities_collection = Amenity::where('unit', '=', 1)->where('inspectable', '=', 1)->orderBy('amenity_description', 'asc')->get();
 
                 break;
             default:
-               // something is wrong, there should be at least either a unit_id or a building_id or a project_id
+                // something is wrong, there should be at least either a unit_id or a building_id or a project_id
                 dd("Error 3788 - cannot add amenity");
         }
 
@@ -4331,20 +4300,20 @@ class AuditController extends Controller
             "project_id" => $project_id,
             "building_id" => $building_id,
             "unit_id" => $unit_id,
-            "audit_id" => $audit->audit_id
+            "audit_id" => $audit->audit_id,
         ]);
 
         // get auditors for that audit
         //[['Brian', '1'], ['Bob', '2'], ['Bill', '3']]
         $auditors = '[';
-        foreach($auditors_collection as $auditor){
-            $auditors = $auditors. '["'.$auditor->user->full_name().'","'.$auditor->user->id.'"],';
+        foreach ($auditors_collection as $auditor) {
+            $auditors = $auditors . '["' . $auditor->user->full_name() . '","' . $auditor->user->id . '"],';
         }
         $auditors = $auditors . ']';
 
         $amenities = '[';
-        foreach($amenities_collection as $amenity){
-            $amenities = $amenities. '["'.$amenity->amenity_description.'","'.$amenity->id.'"],';
+        foreach ($amenities_collection as $amenity) {
+            $amenities = $amenities . '["' . $amenity->amenity_description . '","' . $amenity->id . '"],';
         }
         $amenities = $amenities . ']';
 
@@ -4354,10 +4323,10 @@ class AuditController extends Controller
     public function saveAmenity(Request $request)
     {
         $project_id = $request->get('project_id');
-        $building_id =  $request->get('building_id');
-        $unit_id =  $request->get('unit_id');
-        $audit_id =  $request->get('audit_id');
-        $amenity_id =  $request->get('amenity_id');
+        $building_id = $request->get('building_id');
+        $unit_id = $request->get('unit_id');
+        $audit_id = $request->get('audit_id');
+        $amenity_id = $request->get('amenity_id');
 
         $new_amenities = $request->get('new_amenities');
 
@@ -4376,7 +4345,7 @@ class AuditController extends Controller
         if ($new_amenities !== null) {
             foreach ($new_amenities as $new_amenity) {
 
-                if($new_amenity['auditor_id']){
+                if ($new_amenity['auditor_id']) {
                     $auditor = AuditAuditor::where("user_id", "=", $new_amenity['auditor_id'])->where("audit_id", "=", $audit->audit_id)->with('user')->first();
                     if (!$auditor) {
                         dd("There is an error - this auditor doesn't seem to be assigned to this audit.");
@@ -4386,20 +4355,18 @@ class AuditController extends Controller
                     $auditor_initials = $auditor->user->initials();
                     $auditor_name = $auditor->user->full_name();
                     $auditorid = $auditor->user_id;
-                }else{
+                } else {
                     $auditor_color = '';
                     $auditor_initials = '';
                     $auditor_name = '';
-                    $auditorid = NULL;
+                    $auditorid = null;
                 }
-
-
 
                 // get amenity type
                 $amenity_type = Amenity::where("id", "=", $new_amenity['amenity_id'])->first();
 
                 // project level amenities are handled through OrderingBuilding and CachedBuilding
-                if($project_id && $unit_id == '' && $building_id == ''){
+                if ($project_id && $unit_id == '' && $building_id == '') {
 
                     $name = $amenity_type->amenity_description;
 
@@ -4414,66 +4381,66 @@ class AuditController extends Controller
                         'project_id' => $audit->project_id,
                         'amenity_type_key' => $amenity_type->amenity_type_key,
                         'amenity_id' => $amenity_type->id,
-                        'comment' => 'manually added by '.Auth::user()->id
+                        'comment' => 'manually added by ' . Auth::user()->id,
                     ]);
                     $project_amenity->save();
 
                     $cached_building = new CachedBuilding([
-                                'building_name' => $name,
-                                'building_id' => null,
-                                'building_key' => null,
-                                'audit_id' => $audit->audit_id,
-                                'audit_key' => $audit->audit_key,
-                                'project_id' => $audit->project_id,
-                                'project_key' => $audit->project_key,
-                                'lead_id' => $audit->lead_id,
-                                'lead_key' => $audit->lead_key,
-                                'status' => '',
-                                'type' => $amenity_type->icon,
-                                'type_total' => null,
-                                'type_text' => null,
-                                'type_text_plural' => null,
-                                'finding_total' => 0,
-                                'finding_file_status' => '',
-                                'finding_nlt_status' => '',
-                                'finding_lt_status' => '',
-                                'finding_file_total' => 0,
-                                'finding_file_completed' => 0,
-                                'finding_nlt_total' => 0,
-                                'finding_nlt_completed' => 0,
-                                'finding_lt_total' => 0,
-                                'finding_lt_completed' => 0,
-                                'address' => $audit->address,
-                                'city' => $audit->city,
-                                'state' => $audit->state,
-                                'zip' => $audit->zip,
-                                'amenity_id' =>$amenity_type->id
-                            ]);
+                        'building_name' => $name,
+                        'building_id' => null,
+                        'building_key' => null,
+                        'audit_id' => $audit->audit_id,
+                        'audit_key' => $audit->audit_key,
+                        'project_id' => $audit->project_id,
+                        'project_key' => $audit->project_key,
+                        'lead_id' => $audit->lead_id,
+                        'lead_key' => $audit->lead_key,
+                        'status' => '',
+                        'type' => $amenity_type->icon,
+                        'type_total' => null,
+                        'type_text' => null,
+                        'type_text_plural' => null,
+                        'finding_total' => 0,
+                        'finding_file_status' => '',
+                        'finding_nlt_status' => '',
+                        'finding_lt_status' => '',
+                        'finding_file_total' => 0,
+                        'finding_file_completed' => 0,
+                        'finding_nlt_total' => 0,
+                        'finding_nlt_completed' => 0,
+                        'finding_lt_total' => 0,
+                        'finding_lt_completed' => 0,
+                        'address' => $audit->address,
+                        'city' => $audit->city,
+                        'state' => $audit->state,
+                        'zip' => $audit->zip,
+                        'amenity_id' => $amenity_type->id,
+                    ]);
                     $cached_building->save();
 
                     $amenity = new AmenityInspection([
-                                'audit_id' => $audit->audit_id,
-                                'project_id' => $audit->project_id,
-                                'amenity_id' => $amenity_type->id,
-                                'auditor_id' => $auditorid,
-                                'cachedbuilding_id' => $cached_building->id
-                            ]);
+                        'audit_id' => $audit->audit_id,
+                        'project_id' => $audit->project_id,
+                        'amenity_id' => $amenity_type->id,
+                        'auditor_id' => $auditorid,
+                        'cachedbuilding_id' => $cached_building->id,
+                    ]);
                     $amenity->save();
 
                     // latest ordering
-                    $latest_ordering = OrderingBuilding::where('user_id','=',Auth::user()->id)
-                                                        ->where('audit_id','=',$audit->audit_id)
-                                                        ->orderBy('order', 'desc')
-                                                        ->first()
-                                                        ->order;
+                    $latest_ordering = OrderingBuilding::where('user_id', '=', Auth::user()->id)
+                        ->where('audit_id', '=', $audit->audit_id)
+                        ->orderBy('order', 'desc')
+                        ->first()
+                        ->order;
                     // save the ordering
                     $ordering = new OrderingBuilding([
                         'user_id' => Auth::user()->id,
                         'audit_id' => $audit->audit_id,
-                        'building_id' => NULL,
+                        'building_id' => null,
                         'project_id' => $audit->project_id,
                         'amenity_id' => $amenity_type->id,
-                        'order' => $latest_ordering+1
+                        'order' => $latest_ordering + 1,
                     ]);
                     $ordering->save();
 
@@ -4481,35 +4448,35 @@ class AuditController extends Controller
 
                     $data = $buildings;
 
-                }else{
+                } else {
 
                     $name = $amenity_type->amenity_description;
 
                     // save new amenity
-                    if($unit_id){
+                    if ($unit_id) {
 
                         $unitamenity = new UnitAmenity([
                             'unit_id' => $unit_id,
                             'amenity_id' => $amenity_type->id,
-                            'comment' => 'manually added by '.Auth::user()->id
+                            'comment' => 'manually added by ' . Auth::user()->id,
                         ]);
                         $unitamenity->save();
 
                         $amenity = new AmenityInspection([
-                                'audit_id' => $audit->audit_id,
-                                'unit_id' => $unit_id,
-                                'amenity_id' => $amenity_type->id,
-                                'auditor_id' => $auditorid
-                            ]);
+                            'audit_id' => $audit->audit_id,
+                            'unit_id' => $unit_id,
+                            'amenity_id' => $amenity_type->id,
+                            'auditor_id' => $auditorid,
+                        ]);
                         $amenity->save();
 
                         // latest ordering
-                        $latest_ordering = OrderingAmenity::where('user_id','=',Auth::user()->id)
-                                                            ->where('audit_id','=',$audit->audit_id)
-                                                            ->where('unit_id', '=', $unit_id)
-                                                            ->orderBy('order', 'desc')
-                                                            ->first()
-                                                            ->order;
+                        $latest_ordering = OrderingAmenity::where('user_id', '=', Auth::user()->id)
+                            ->where('audit_id', '=', $audit->audit_id)
+                            ->where('unit_id', '=', $unit_id)
+                            ->orderBy('order', 'desc')
+                            ->first()
+                            ->order;
                         // save the ordering
                         $ordering = new OrderingAmenity([
                             'user_id' => Auth::user()->id,
@@ -4517,35 +4484,34 @@ class AuditController extends Controller
                             'unit_id' => $unit_id,
                             'amenity_id' => $amenity_type->id,
                             'amenity_inspection_id' => $amenity->id,
-                            'order' => $latest_ordering+1
+                            'order' => $latest_ordering + 1,
                         ]);
                         $ordering->save();
 
-
-                    }elseif($building_id){
+                    } elseif ($building_id) {
 
                         $buildingamenity = new BuildingAmenity([
                             'building_id' => $building_id,
                             'amenity_id' => $amenity_type->id,
-                            'comment' => 'manually added by '.Auth::user()->id
+                            'comment' => 'manually added by ' . Auth::user()->id,
                         ]);
                         $buildingamenity->save();
 
                         $amenity = new AmenityInspection([
-                                'audit_id' => $audit->audit_id,
-                                'building_id' => $building_id,
-                                'amenity_id' => $amenity_type->id,
-                                'auditor_id' => $auditorid
-                            ]);
+                            'audit_id' => $audit->audit_id,
+                            'building_id' => $building_id,
+                            'amenity_id' => $amenity_type->id,
+                            'auditor_id' => $auditorid,
+                        ]);
                         $amenity->save();
 
                         // latest ordering
-                        $latest_ordering = OrderingAmenity::where('user_id','=',Auth::user()->id)
-                                                            ->where('audit_id','=',$audit->audit_id)
-                                                            ->where('building_id', '=', $building_id)
-                                                            ->orderBy('order', 'desc')
-                                                            ->first()
-                                                            ->order;
+                        $latest_ordering = OrderingAmenity::where('user_id', '=', Auth::user()->id)
+                            ->where('audit_id', '=', $audit->audit_id)
+                            ->where('building_id', '=', $building_id)
+                            ->orderBy('order', 'desc')
+                            ->first()
+                            ->order;
                         // save the ordering
                         $ordering = new OrderingAmenity([
                             'user_id' => Auth::user()->id,
@@ -4553,7 +4519,7 @@ class AuditController extends Controller
                             'building_id' => $building_id,
                             'amenity_id' => $amenity_type->id,
                             'amenity_inspection_id' => $amenity->id,
-                            'order' => $latest_ordering+1
+                            'order' => $latest_ordering + 1,
                         ]);
                         $ordering->save();
 
@@ -4562,7 +4528,7 @@ class AuditController extends Controller
                     $amenities = OrderingAmenity::where('audit_id', '=', $audit->audit_id)->where('user_id', '=', Auth::user()->id);
                     if ($unit_id) {
                         $amenities = $amenities->where('unit_id', '=', $unit_id);
-                    }elseif($building_id){
+                    } elseif ($building_id) {
                         $amenities = $amenities->where('building_id', '=', $building_id);
                         $amenities = $amenities->whereNull('unit_id');
                     }
@@ -4572,48 +4538,48 @@ class AuditController extends Controller
 
                     // manage name duplicates, number them based on their id
                     $amenity_names = array();
-                    foreach($amenities as $amenity){
+                    foreach ($amenities as $amenity) {
                         $amenity_names[$amenity->amenity->amenity_description][] = $amenity->amenity_inspection_id;
                     }
 
-                    foreach($amenities as $amenity){
+                    foreach ($amenities as $amenity) {
 
-                        if($amenity->amenity_inspection->auditor_id !== NULL){
+                        if ($amenity->amenity_inspection->auditor_id !== null) {
                             $auditor_initials = $amenity->amenity_inspection->user->initials();
                             $auditor_name = $amenity->amenity_inspection->user->full_name();
                             $auditor_id = $amenity->amenity_inspection->user->id;
                             $auditor_color = $amenity->amenity_inspection->user->badge_color;
-                        }else{
+                        } else {
                             $auditor_initials = '<i class="a-avatar-plus_1"></i>';
                             $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
                             $auditor_color = '';
                             $auditor_id = 0;
                         }
 
-                        if($amenity->amenity_inspection->completed_date_time == NULL){
+                        if ($amenity->amenity_inspection->completed_date_time == null) {
                             $completed_icon = "a-circle";
-                        }else{
+                        } else {
                             $completed_icon = "a-circle-checked ok-actionable";
                         }
 
-                        if($amenity->amenity->file == 1){
+                        if ($amenity->amenity->file == 1) {
                             $status = " fileaudit";
-                        }else{
+                        } else {
                             $status = " siteaudit";
                         }
 
                         // check for name duplicates and assign a #
                         $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
-                        if($key > 0){
+                        if ($key > 0) {
                             $key = $key + 1;
-                            $name = $amenity->amenity->amenity_description." ".$key;
-                        }else{
+                            $name = $amenity->amenity->amenity_description . " " . $key;
+                        } else {
                             $name = $amenity->amenity->amenity_description;
                         }
 
-                        if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit->audit_id)->count()){
+                        if (Finding::where('amenity_id', '=', $amenity->amenity_inspection_id)->where('audit_id', '=', $audit->audit_id)->count()) {
                             $has_findings = 1;
-                        }else{
+                        } else {
                             $has_findings = 0;
                         }
 
@@ -4627,16 +4593,16 @@ class AuditController extends Controller
                             "auditor_name" => $auditor_name,
                             "auditor_color" => $auditor_color,
                             "finding_nlt_status" => '',
-                            "finding_lt_status" =>'',
-                            "finding_sd_status" =>'',
-                            "finding_photo_status" =>'',
-                            "finding_comment_status" =>'',
-                            "finding_copy_status" =>'',
-                            "finding_trash_status" =>'',
+                            "finding_lt_status" => '',
+                            "finding_sd_status" => '',
+                            "finding_photo_status" => '',
+                            "finding_comment_status" => '',
+                            "finding_copy_status" => '',
+                            "finding_trash_status" => '',
                             "building_id" => $building_id,
                             "unit_id" => $amenity->unit_id,
                             "completed_icon" => $completed_icon,
-                            "has_findings" => $has_findings
+                            "has_findings" => $has_findings,
                         ];
                     }
 
@@ -4654,18 +4620,18 @@ class AuditController extends Controller
                 } // end if not project
 
             } // end foreach amenity
-        }elseif($amenity_id != 0){
+        } elseif ($amenity_id != 0) {
             // we are copying the amenity
             //
 
             $auditor_color = '';
             $auditor_initials = '';
             $auditor_name = '';
-            $auditorid = NULL;
+            $auditorid = null;
 
-            $amenity_to_copy = AmenityInspection::where('id','=',$amenity_id)->first();
+            $amenity_to_copy = AmenityInspection::where('id', '=', $amenity_id)->first();
 
-            if(!$amenity_to_copy){
+            if (!$amenity_to_copy) {
                 dd("This amenity couldn't be found.");
             }
 
@@ -4675,30 +4641,30 @@ class AuditController extends Controller
             $name = $amenity_type->amenity_description;
 
             // save new amenity
-            if($unit_id){
+            if ($unit_id) {
 
                 $unitamenity = new UnitAmenity([
                     'unit_id' => $unit_id,
                     'amenity_id' => $amenity_type->id,
-                    'comment' => 'manually added by '.Auth::user()->id
+                    'comment' => 'manually added by ' . Auth::user()->id,
                 ]);
                 $unitamenity->save();
 
                 $amenity = new AmenityInspection([
-                        'audit_id' => $audit->audit_id,
-                        'unit_id' => $unit_id,
-                        'amenity_id' => $amenity_type->id,
-                        'auditor_id' => $auditorid
-                    ]);
+                    'audit_id' => $audit->audit_id,
+                    'unit_id' => $unit_id,
+                    'amenity_id' => $amenity_type->id,
+                    'auditor_id' => $auditorid,
+                ]);
                 $amenity->save();
 
                 // latest ordering
-                $latest_ordering = OrderingAmenity::where('user_id','=',Auth::user()->id)
-                                                    ->where('audit_id','=',$audit->audit_id)
-                                                    ->where('unit_id', '=', $unit_id)
-                                                    ->orderBy('order', 'desc')
-                                                    ->first()
-                                                    ->order;
+                $latest_ordering = OrderingAmenity::where('user_id', '=', Auth::user()->id)
+                    ->where('audit_id', '=', $audit->audit_id)
+                    ->where('unit_id', '=', $unit_id)
+                    ->orderBy('order', 'desc')
+                    ->first()
+                    ->order;
                 // save the ordering
                 $ordering = new OrderingAmenity([
                     'user_id' => Auth::user()->id,
@@ -4706,35 +4672,34 @@ class AuditController extends Controller
                     'unit_id' => $unit_id,
                     'amenity_id' => $amenity_type->id,
                     'amenity_inspection_id' => $amenity->id,
-                    'order' => $latest_ordering+1
+                    'order' => $latest_ordering + 1,
                 ]);
                 $ordering->save();
 
-
-            }elseif($building_id){
+            } elseif ($building_id) {
 
                 $buildingamenity = new BuildingAmenity([
                     'building_id' => $building_id,
                     'amenity_id' => $amenity_type->id,
-                    'comment' => 'manually added by '.Auth::user()->id
+                    'comment' => 'manually added by ' . Auth::user()->id,
                 ]);
                 $buildingamenity->save();
 
                 $amenity = new AmenityInspection([
-                        'audit_id' => $audit->audit_id,
-                        'building_id' => $building_id,
-                        'amenity_id' => $amenity_type->id,
-                        'auditor_id' => $auditorid
-                    ]);
+                    'audit_id' => $audit->audit_id,
+                    'building_id' => $building_id,
+                    'amenity_id' => $amenity_type->id,
+                    'auditor_id' => $auditorid,
+                ]);
                 $amenity->save();
 
                 // latest ordering
-                $latest_ordering = OrderingAmenity::where('user_id','=',Auth::user()->id)
-                                                    ->where('audit_id','=',$audit->audit_id)
-                                                    ->where('building_id', '=', $building_id)
-                                                    ->orderBy('order', 'desc')
-                                                    ->first()
-                                                    ->order;
+                $latest_ordering = OrderingAmenity::where('user_id', '=', Auth::user()->id)
+                    ->where('audit_id', '=', $audit->audit_id)
+                    ->where('building_id', '=', $building_id)
+                    ->orderBy('order', 'desc')
+                    ->first()
+                    ->order;
                 // save the ordering
                 $ordering = new OrderingAmenity([
                     'user_id' => Auth::user()->id,
@@ -4742,7 +4707,7 @@ class AuditController extends Controller
                     'building_id' => $building_id,
                     'amenity_id' => $amenity_type->id,
                     'amenity_inspection_id' => $amenity->id,
-                    'order' => $latest_ordering+1
+                    'order' => $latest_ordering + 1,
                 ]);
                 $ordering->save();
 
@@ -4751,7 +4716,7 @@ class AuditController extends Controller
             $amenities = OrderingAmenity::where('audit_id', '=', $audit->audit_id)->where('user_id', '=', Auth::user()->id);
             if ($unit_id) {
                 $amenities = $amenities->where('unit_id', '=', $unit_id);
-            }elseif($building_id){
+            } elseif ($building_id) {
                 $amenities = $amenities->where('building_id', '=', $building_id);
                 $amenities = $amenities->whereNull('unit_id');
             }
@@ -4761,48 +4726,48 @@ class AuditController extends Controller
 
             // manage name duplicates, number them based on their id
             $amenity_names = array();
-            foreach($amenities as $amenity){
+            foreach ($amenities as $amenity) {
                 $amenity_names[$amenity->amenity->amenity_description][] = $amenity->amenity_inspection_id;
             }
 
-            foreach($amenities as $amenity){
+            foreach ($amenities as $amenity) {
 
-                if($amenity->amenity_inspection->auditor_id !== NULL){
+                if ($amenity->amenity_inspection->auditor_id !== null) {
                     $auditor_initials = $amenity->amenity_inspection->user->initials();
                     $auditor_name = $amenity->amenity_inspection->user->full_name();
                     $auditor_id = $amenity->amenity_inspection->user->id;
                     $auditor_color = $amenity->amenity_inspection->user->badge_color;
-                }else{
+                } else {
                     $auditor_initials = '<i class="a-avatar-plus_1"></i>';
                     $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
                     $auditor_color = '';
                     $auditor_id = 0;
                 }
 
-                if($amenity->amenity_inspection->completed_date_time == NULL){
+                if ($amenity->amenity_inspection->completed_date_time == null) {
                     $completed_icon = "a-circle";
-                }else{
+                } else {
                     $completed_icon = "a-circle-checked ok-actionable";
                 }
 
-                if($amenity->amenity->file == 1){
+                if ($amenity->amenity->file == 1) {
                     $status = " fileaudit";
-                }else{
+                } else {
                     $status = " siteaudit";
                 }
 
                 // check for name duplicates and assign a #
                 $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
-                if($key > 0){
+                if ($key > 0) {
                     $key = $key + 1;
-                    $name = $amenity->amenity->amenity_description." ".$key;
-                }else{
+                    $name = $amenity->amenity->amenity_description . " " . $key;
+                } else {
                     $name = $amenity->amenity->amenity_description;
                 }
 
-                if(Finding::where('amenity_id','=',$amenity->amenity_inspection_id)->where('audit_id','=',$audit->audit_id)->count()){
+                if (Finding::where('amenity_id', '=', $amenity->amenity_inspection_id)->where('audit_id', '=', $audit->audit_id)->count()) {
                     $has_findings = 1;
-                }else{
+                } else {
                     $has_findings = 0;
                 }
 
@@ -4816,16 +4781,16 @@ class AuditController extends Controller
                     "auditor_name" => $auditor_name,
                     "auditor_color" => $auditor_color,
                     "finding_nlt_status" => '',
-                    "finding_lt_status" =>'',
-                    "finding_sd_status" =>'',
-                    "finding_photo_status" =>'',
-                    "finding_comment_status" =>'',
-                    "finding_copy_status" =>'',
-                    "finding_trash_status" =>'',
+                    "finding_lt_status" => '',
+                    "finding_sd_status" => '',
+                    "finding_photo_status" => '',
+                    "finding_comment_status" => '',
+                    "finding_copy_status" => '',
+                    "finding_trash_status" => '',
                     "building_id" => $building_id,
                     "unit_id" => $amenity->unit_id,
                     "completed_icon" => $completed_icon,
-                    "has_findings" => $has_findings
+                    "has_findings" => $has_findings,
                 ];
             }
 
@@ -4844,41 +4809,42 @@ class AuditController extends Controller
         return $data;
     }
 
-    public function reload_auditors($audit_id, $unit_id, $building_id){
+    public function reload_auditors($audit_id, $unit_id, $building_id)
+    {
 
-        if($unit_id != NULL && $building_id != NULL && $unit_id != 'null' && $building_id != 'null'){
-            $unit_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id','=',$unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+        if ($unit_id != null && $building_id != null && $unit_id != 'null' && $building_id != 'null') {
+            $unit_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
 
             $building_auditor_ids = array();
             $units = Unit::where('building_id', '=', $building_id)->get();
-            foreach($units as $unit){
-                $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+            foreach ($units as $unit) {
+                $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
             }
-        }else{
-            if($building_id == 0 && $unit_id == 0){
+        } else {
+            if ($building_id == 0 && $unit_id == 0) {
                 $unit_auditor_ids = array();
                 $building_auditor_ids = array();
-            }else{
+            } else {
                 $unit_auditor_ids = array();
 
                 $building_auditor_ids = array();
                 $units = Unit::where('building_id', '=', $building_id)->get();
-                foreach($units as $unit){
-                    $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id','=',$unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                foreach ($units as $unit) {
+                    $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
 
-                    $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id','=',$audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                    $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
                 }
-                $building_auditor_ids = array_merge($building_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id','=',$building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                $building_auditor_ids = array_merge($building_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
             }
         }
 
         $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
-        foreach($unit_auditors as $unit_auditor){
+        foreach ($unit_auditors as $unit_auditor) {
             $unit_auditor->full_name = $unit_auditor->full_name();
             $unit_auditor->initials = $unit_auditor->initials();
         }
         $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
-        foreach($building_auditors as $building_auditor){
+        foreach ($building_auditors as $building_auditor) {
             $building_auditor->full_name = $building_auditor->full_name();
             $building_auditor->initials = $building_auditor->initials();
         }
@@ -4898,14 +4864,14 @@ class AuditController extends Controller
 
         // select all amenity orders except for the one we want to reorder
         $current_ordering = OrderingAmenity::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id);
-            $current_ordering = $current_ordering->where('amenity_inspection_id', '!=', $amenity_inspection_id);
+        $current_ordering = $current_ordering->where('amenity_inspection_id', '!=', $amenity_inspection_id);
         if ($unit_id) {
             $current_ordering = $current_ordering->where('unit_id', '=', $unit_id);
         }
         if ($building_id) {
             $current_ordering = $current_ordering->where('building_id', '=', $building_id);
         }
-            $current_ordering = $current_ordering->orderBy('order', 'asc')->get()->toArray();
+        $current_ordering = $current_ordering->orderBy('order', 'asc')->get()->toArray();
 
         $pre_reordering = OrderingAmenity::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->where('amenity_inspection_id', '=', $amenity_inspection_id);
         if ($unit_id) {
@@ -4916,15 +4882,15 @@ class AuditController extends Controller
         }
         $pre_reordering = $pre_reordering->orderBy('order', 'asc')->first();
 
-        $inserted = [ [
-                    'user_id' => Auth::user()->id,
-                    'audit_id' => $audit,
-                    'building_id' => $building_id,
-                    'unit_id' => $unit_id,
-                    'amenity_id' => $pre_reordering->amenity_id,
-                    'amenity_inspection_id' => $pre_reordering->amenity_inspection_id,
-                    'order' => $index
-               ]];
+        $inserted = [[
+            'user_id' => Auth::user()->id,
+            'audit_id' => $audit,
+            'building_id' => $building_id,
+            'unit_id' => $unit_id,
+            'amenity_id' => $pre_reordering->amenity_id,
+            'amenity_inspection_id' => $pre_reordering->amenity_inspection_id,
+            'order' => $index,
+        ]];
 
         // insert the building ordering in the array
         $reordered_array = $current_ordering;
@@ -4938,7 +4904,7 @@ class AuditController extends Controller
         if ($building_id) {
             $previous_ordering = $previous_ordering->where('building_id', '=', $building_id);
         }
-            $previous_ordering->delete();
+        $previous_ordering->delete();
 
         // clean-up the ordering and store
         foreach ($reordered_array as $key => $ordering) {
@@ -4949,49 +4915,51 @@ class AuditController extends Controller
                 'unit_id' => $ordering['unit_id'],
                 'amenity_id' => $ordering['amenity_id'],
                 'amenity_inspection_id' => $ordering['amenity_inspection_id'],
-                'order' => $key+1
+                'order' => $key + 1,
             ]);
             $new_ordering->save();
         }
     }
 
-    public function updateStep($id){
+    public function updateStep($id)
+    {
 
-        $audit = CachedAudit::where('audit_id','=',$id)->first();
-        $steps = GuideStep::where('guide_step_type_id','=',1)->orderBy('order','asc')->get();
+        $audit = CachedAudit::where('audit_id', '=', $id)->first();
+        $steps = GuideStep::where('guide_step_type_id', '=', 1)->orderBy('order', 'asc')->get();
 
         return view('modals.audit-update-step', compact('steps', 'audit'));
     }
 
-    public function saveStep(Request $request, $id){
-           $step_id = $request->get('step');
-            $step = GuideStep::where('id','=',$step_id)->first();
-            $audit = CachedAudit::where('id','=',$id)->first();
+    public function saveStep(Request $request, $id)
+    {
+        $step_id = $request->get('step');
+        $step = GuideStep::where('id', '=', $step_id)->first();
+        $audit = CachedAudit::where('id', '=', $id)->first();
 
-            // check if user has the right to save step using roles TBD
-            if(Auth::user()->id == $audit->lead || Auth::user()->manager_access()){
+        // check if user has the right to save step using roles TBD
+        if (Auth::user()->id == $audit->lead || Auth::user()->manager_access()) {
 
-                // add new guide_progress entry
-                $progress = new GuideProgress([
-                    'user_id' => Auth::user()->id,
-                    'audit_id' => $audit->id,
-                    'project_id' => $audit->project_id,
-                    'guide_step_id' => $step_id,
-                    'type_id' => 1
-                ]);
-                $progress->save();
+            // add new guide_progress entry
+            $progress = new GuideProgress([
+                'user_id' => Auth::user()->id,
+                'audit_id' => $audit->id,
+                'project_id' => $audit->project_id,
+                'guide_step_id' => $step_id,
+                'type_id' => 1,
+            ]);
+            $progress->save();
 
-                // update CachedAudit table with new step info
-                $audit->update([
-                    'step_id' => $step->id,
-                    'step_status_icon' => $step->icon,
-                    'step_status_text' => $step->step_help,
-                ]);
+            // update CachedAudit table with new step info
+            $audit->update([
+                'step_id' => $step->id,
+                'step_status_icon' => $step->icon,
+                'step_status_text' => $step->step_help,
+            ]);
 
-                 return 1;
-             }else {
-                return 'Sorry, you do not have the correct permissions to update step progress.';
-             }
+            return 1;
+        } else {
+            return 'Sorry, you do not have the correct permissions to update step progress.';
+        }
     }
 
 }
