@@ -1634,7 +1634,8 @@ class ComplianceSelectionJob implements ShouldQueue
         $comments = [];
 
         $required_units = 0; // this is computed, not counted!
-
+        $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
+        
         // total HTC funded units (71)
         $all_htc_units = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
                             $query->where('audit_id', '=', $audit->id);
