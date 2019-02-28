@@ -10,10 +10,12 @@ if(!empty($assigned_temp_programs)) {
 }
 $unit = $unitprogram->first();
 $unit_selected = collect($unitprogram->pluck('unitInspected')->flatten())
-																			->where('audit_id', $unit->audit_id);
+																			->where('audit_id', $unit->audit_id)
+																			->whereIn('program_key', $unitprogram->pluck('program_key'));
 $selected_units_count = $unit_selected->count();
+//dd($unit_selected);
 @endphp
-<div class="modal-project-summary-unit summary-unit-{{ $unit->unit_id }} {{ $selected_units_count > 0 ? 'no-selection' : 'has-selected' }}">
+<div class="modal-project-summary-unit summary-unit-{{ $unit->unit_id }} {{ $selected_units_count > 0 ? 'has-selected' : 'no-selection' }}">
 	<div class="modal-project-summary-unit-status">
 		<i class="a-circle" uk-tooltip="title:SELECT ALL ELIGIBLE PROGRAMS FOR BOTH INSPECTIONS;" onclick="projectSummarySelection(this, {{ $unit->unit_id }});">
 		</i>
@@ -32,11 +34,14 @@ $selected_units_count = $unit_selected->count();
 @foreach($unitprogram as $each_program)
 @php
 $program_selected = $unit_selected->where('program_key', $each_program->program_key);
-$unit_program_selected_count = $program_selected->where('is_site_visit', 1)->where('is_file_visit', 1)->count();
+$unit_program_selected_count = $program_selected->where('is_site_visit', 1)->where('is_file_audit', 1)->count();
 $site_program_selected_count = $program_selected->where('is_site_visit', 1)->count();
-$file_program_selected_count = $program_selected->where('is_file_visit', 1)->count();
+$file_program_selected_count = $program_selected->where('is_file_audit', 1)->count();
+//dd($each_program);
+//30004
+
 @endphp
-<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1  summary-unit-programs-{{ $each_program->unit_id }} {{ $selected_units_count > 0 ? 'no-selection' : 'has-selected' }}">
+<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1  summary-unit-programs-{{ $each_program->unit_id }} {{ $selected_units_count > 0 ? 'has-selected' : 'no-selection' }}">
 	<div class="modal-project-summary-unit-program uk-visible-toggle">
 		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle {{ $unit_program_selected_count > 0 ? 'inspectable-selected' : '' }}" data-unitid="{{ $each_program->unit_id }}">
 			@if($unit_program_selected_count > 0)
@@ -73,7 +78,7 @@ $file_program_selected_count = $program_selected->where('is_file_visit', 1)->cou
 
 @if($loop->last)
 @foreach($substitute_programs as $ex_pr)
-<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1  summary-unit-programs-{{ $unit->unit_id }} {{ $selected_units_count > 0 ? 'no-selection' : 'has-selected' }}">
+<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1  summary-unit-programs-{{ $unit->unit_id }} {{ $selected_units_count > 0 ? 'has-selected' : 'no-selection' }}">
 	<div class="modal-project-summary-unit-program uk-visible-toggle">
 		<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle" data-unitid="{{ $unit->unit_id }}">
 			<i class="a-circle" onclick="projectSummarySelection(this, {{ $unit->unit_id }}, {{ $unit->program_id }});"></i>

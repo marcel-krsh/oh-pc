@@ -2260,11 +2260,18 @@ class AuditController extends Controller
         $audit = $project->selected_audit()->audit;
         $selection_summary = json_decode($audit->selection_summary, 1);
         // get units filterd in programs
-        $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
+        if(empty($programs))
+        	$unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
+            ->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
+            ->orderBy('unit_id', 'asc')
+            ->get();
+        else {
+        	$unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
             ->whereIn('program_key', $programs)
             ->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
             ->orderBy('unit_id', 'asc')
             ->get();
+        }
         $all_unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
         							->with('program.relatedGroups')
         							->orderBy('unit_id', 'asc')
