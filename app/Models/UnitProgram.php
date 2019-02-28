@@ -55,4 +55,13 @@ class UnitProgram extends Model
             ->count();
 
     }
+
+    public function unitInspected()
+    {
+        return $this->hasMany(\App\Models\UnitInspection::class, 'unit_id', 'unit_id')
+            ->where(function ($query) {
+                $query->where('is_file_audit', '=', 1)
+                    ->orWhere('is_site_visit', '=', 1);
+            });
+    }
 }

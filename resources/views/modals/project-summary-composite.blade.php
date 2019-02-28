@@ -8,7 +8,7 @@
 				<canvas id="chartjs-modal-summary" class="chartjs" style="display: block;"></canvas>
 			</div>
 			<div class="uk-width-1-1 uk-padding-remove uk-text-center" style="display:block; max-height:300px; overflow: auto; width: 100%">
-				<h3>ALL PROGRAMS<br /><small>Project #: {{$project->project_number}} | Audit #: {{$audit->id}}</small></h3>
+				<h3>PROGRAMS<br /><small>Project #: {{$project->project_number}} | Audit #: {{$audit->id}}</small></h3>
 				<table class="uk-table uk-table-small noline small-padding" >
 					<tbody>
 						<tr>
@@ -38,49 +38,14 @@
 							<td class="uk-text-center border-right">{{$prog['needed_units']}}</td>
 							<td class="uk-text-center">{{$prog['needed_units_file']}}</td>
 						</tr>
-						@endforeach
-						<!-- <tr>
-							<td>
-								<div uk-leader><strong>Compliance Requirements (with overlap)</strong></div>
-							</td>
-							<td class="uk-text-center border-right"></td>
-							<td class="uk-text-center"></td>
-						</tr>
-						<tr>
-							<td>
-								<div class="indented" uk-leader><i class="fas fa-square chart-color-required"></i> Required Units</div>
-							</td>
-							<td class="uk-text-center border-right">{{$data['summary']['required_units']}}</td>
-							<td class="uk-text-center">{{$data['summary']['required_units_file']}}</td>
-						</tr>
 						<tr>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Selected Units</div>
 							</td>
-							<td class="uk-text-center border-right">{{$data['summary']['selected_units']}}</td>
-							<td class="uk-text-center">{{$data['summary']['selected_units_file']}}</td>
+							<td class="uk-text-center border-right">{{$prog['selected_units']}}</td>
+							<td class="uk-text-center">{{$prog['selected_units_file']}}</td>
 						</tr>
-						<tr>
-							<td>
-								<div class="indented" uk-leader><i class="fas fa-square chart-color-needed"></i> Needed Units</div>
-							</td>
-							<td class="uk-text-center border-right">{{$data['summary']['needed_units']}}</td>
-							<td class="uk-text-center">{{$data['summary']['needed_units_file']}}</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="indented" uk-leader><i class="fas fa-square chart-color-inspected"></i> Inspected Units</div>
-							</td>
-							<td class="uk-text-center border-right">{{$data['summary']['inspected_units']}}</td>
-							<td class="uk-text-center">{{$data['summary']['inspected_units_file']}}</td>
-						</tr>
-						<tr>
-							<td>
-								<div class="indented" uk-leader><i class="fas fa-square chart-color-to-be-inspected"></i> To Be Inspected Units</div>
-							</td>
-							<td class="uk-text-center border-right">{{$data['summary']['to_be_inspected_units']}}</td>
-							<td class="uk-text-center">{{$data['summary']['to_be_inspected_units_file']}}</td>
-						</tr> -->
+						@endforeach
 					</tbody>
 				</table>
 			</div>
@@ -181,6 +146,7 @@
 	}
 
 	function projectSummarySelection(element, unitid, programid=null, type="both"){
+		debugger;
 		// ajax call here
 
 		// we know which project {{$data["project"]["id"]}}
