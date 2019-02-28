@@ -1634,6 +1634,7 @@ class ComplianceSelectionJob implements ShouldQueue
         $comments = [];
 
         $required_units = 0; // this is computed, not counted!
+        $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
 
         // total HTC funded units (71)
         $all_htc_units = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
@@ -2180,12 +2181,13 @@ class ComplianceSelectionJob implements ShouldQueue
             if ($pm_contact->organization) {
                 $pm_name = $pm_contact->organization->organization_name;
             }
-        }
-        if ($pm_name == '') {
-            if ($pm_contact->person) {
-                $pm_name = $pm_contact->person->first_name." ".$pm_contact->person->last_name;
+            if ($pm_name == '') {
+                if ($pm_contact->person) {
+                    $pm_name = $pm_contact->person->first_name." ".$pm_contact->person->last_name;
+                }
             }
         }
+        
 
         // inspection_schedule_json needs to be populated TBD
 
