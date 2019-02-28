@@ -1400,7 +1400,7 @@ class ComplianceSelectionJob implements ShouldQueue
                         }
                     }
                     if ($has_htc_funding) {
-                        $htc_units_subset = array_merge($htc_units_subset, $unit_selected->unit_key);
+                        $htc_units_subset[] = $unit_selected->unit_key;
                         $this->processes++;
                         $comments[] = 'We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
                         $audit->comment = $audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
