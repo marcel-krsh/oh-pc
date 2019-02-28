@@ -1208,25 +1208,26 @@ class ComplianceSelectionJob implements ShouldQueue
                 }
             }
 
-            foreach ($units_selected as $unit_selected) {
+            foreach ($units_selected as $unit_key) {
                 $has_htc_funding = 0;
 
-                $comments[] = 'Checking if HTC funding applies to this unit '.$unit_selected.' by cross checking with HTC programs: '.$program_htc_overlap_names;
+                $unit_selected = Unit::where('unit_key', '=', $unit_key)->first();
 
-                    $audit->comment = $audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected.' by cross checking with HTC programs: '.$program_htc_overlap_names;
+                $comments[] = 'Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs: '.$program_htc_overlap_names;
+
+                    $audit->comment = $audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs: '.$program_htc_overlap_names;
                     $audit->save();
                     $this->processes++;
                 
                 // if units have HTC funding add to subset
-                $unit = Unit::where('unit_key', '=', $unit_selected)->first();
                 $this->processes++;
                 foreach ($unit->programs as $unit_program) {
                     $this->processes++;
                     if (in_array($unit_program->program_key, $program_htc_overlap)) {
                         $has_htc_funding = 1;
-                        $comments[] = 'The unit key '.$unit_selected.' belongs to a program with HTC funding '.$unit_program->program_name;
+                        $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
 
-                        $audit->comment = $audit->comment.' | Select Process The unit key '.$unit_selected.' belongs to a program with HTC funding '.$unit_program->program_name;
+                        $audit->comment = $audit->comment.' | Select Process The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
                         $audit->save();
                         $this->processes++;
                     }
@@ -1237,7 +1238,7 @@ class ComplianceSelectionJob implements ShouldQueue
                     $audit->comment = $audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
                         $audit->save();
                         $this->processes++;
-                    $htc_units_subset[] = $unit_selected;
+                    $htc_units_subset[] = $unit_selected->unit_key;
                 }
             }
 
@@ -1399,7 +1400,7 @@ class ComplianceSelectionJob implements ShouldQueue
                         }
                     }
                     if ($has_htc_funding) {
-                        $htc_units_subset = array_merge($htc_units_subset, $unit_selected);
+                        $htc_units_subset = array_merge($htc_units_subset, $unit_selected->unit_key);
                         $this->processes++;
                         $comments[] = 'We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
                         $audit->comment = $audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
@@ -1554,14 +1555,14 @@ class ComplianceSelectionJob implements ShouldQueue
                     $this->processes++;
 
                 // if units have HTC funding add to subset
-                $unit = Unit::where('unit_key', '=', $unit_selected)->first();
+                //$unit = Unit::where('unit_key', '=', $unit_selected)->first();
                 $this->processes++;
                 foreach ($unit_selected->programs as $unit_program) {
                     $this->processes++;
                     if (in_array($unit_program->program_key, $program_htc_overlap)) {
                         $has_htc_funding = 1;
-                        $comments[] = 'The unit key '.$unit_selected.' belongs to a program with HTC funding '.$unit_program->program_name;
-                        $audit->comment = $audit->comment.' | Select Process The unit key '.$unit_selected.' belongs to a program with HTC funding '.$unit_program->program_name;
+                        $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
+                        $audit->comment = $audit->comment.' | Select Process The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
                         $audit->save();
                         $this->processes++;
 
@@ -1574,7 +1575,7 @@ class ComplianceSelectionJob implements ShouldQueue
                         $audit->save();
                         $this->processes++;
 
-                    $htc_units_subset[] = $unit_selected;
+                    $htc_units_subset[] = $unit_selected->unit_key;
                 }
             }
 
