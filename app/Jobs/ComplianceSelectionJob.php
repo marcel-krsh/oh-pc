@@ -713,6 +713,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
         $selection = [];
 
+        $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
 
         //
         //
