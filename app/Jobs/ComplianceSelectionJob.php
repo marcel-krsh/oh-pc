@@ -1374,7 +1374,8 @@ class ComplianceSelectionJob implements ShouldQueue
                 }
             }
 
-            foreach ($units_selected as $unit_selected) {
+            foreach ($units_selected as $unit_key) {
+                $unit_selected = Unit::where('unit_key','=',$unit_key)->first();
                 $this->processes++;
                 if($unit_selected){
                     $has_htc_funding = 0;
@@ -1541,7 +1542,8 @@ class ComplianceSelectionJob implements ShouldQueue
                 }
             }
 
-            foreach ($units_selected as $unit_selected) {
+            foreach ($units_selected as $unit_key) {
+                $unit_selected = Unit::where('unit_key','=',$unit_key)->first();
                 $this->processes++;
                 $has_htc_funding = 0;
 
