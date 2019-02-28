@@ -2260,16 +2260,32 @@ class AuditController extends Controller
         $audit = $project->selected_audit()->audit;
         $selection_summary = json_decode($audit->selection_summary, 1);
         // get units filterd in programs
-        $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
-            ->whereIn('program_key', $programs)
-            ->with('unit', 'program.relatedGroups', 'unit.building.address')
+        if(empty($programs))
+        	$unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
+            ->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
             ->orderBy('unit_id', 'asc')
             ->get();
+        else {
+        	$unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
+            ->whereIn('program_key', $programs)
+            ->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
+            ->orderBy('unit_id', 'asc')
+            ->get();
+        }
         $all_unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
         							->with('program.relatedGroups')
         							->orderBy('unit_id', 'asc')
         							->get();
         $actual_programs = $all_unitprograms->pluck('program')->unique()->toArray();
+        $unitprograms = $unitprograms->groupBy('unit_id');
+        foreach ($actual_programs as $key => $actual_program) {
+        	$group_names = array_column($actual_program['related_groups'], 'group_name');
+        	if (!empty($group_names)) {
+              $actual_programs[$key]['group_names'] = implode(', ', $group_names);
+          } else {
+              $actual_programs[$key]['group_names'] = ' - ';
+          }
+        }
         return view('dashboard.partials.project-summary-unit', compact('unitprograms', 'actual_programs'));
     }
 
@@ -2412,8 +2428,13 @@ class AuditController extends Controller
                 'optimized_remaining_inspections_file' => $summary_optimized_remaining_inspections_file,
             ];
             // get all the units in the selected audit
-            $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)->with('unit', 'program.relatedGroups', 'unit.building.address')->orderBy('unit_id', 'asc')->get();
+            $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
+            														//->where('unit_id', 151063)
+            														->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
+            														->orderBy('unit_id', 'asc')
+            														->get();
             $actual_programs = $unitprograms->pluck('program')->unique()->toArray();
+            $unitprograms = $unitprograms->groupBy('unit_id');
             foreach ($actual_programs as $key => $actual_program) {
             	$group_names = array_column($actual_program['related_groups'], 'group_name');
             	if (!empty($group_names)) {

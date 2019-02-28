@@ -14,7 +14,7 @@ class UnitInspection extends Model
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';//
     protected $guarded = ['id'];
 
-    
+
     public function amenities() : HasMany
     {
         return $this->hasMany(\App\Models\UnitAmenity::class, 'unit_id', 'unit_id');
@@ -60,5 +60,5 @@ class UnitInspection extends Model
         return 0;
     }
 
-    
+
 }
