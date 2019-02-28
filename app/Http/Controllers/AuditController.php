@@ -123,7 +123,7 @@ class AuditController extends Controller
 
             // is there a previous record in the OrderingBuilding for the same project and user?
             $previous_ordering_records_check = OrderingBuilding::where('project_id', '=', $project_id)->where('user_id', '=', Auth::user()->id)->where('audit_id', '!=', $audit)->orderBy('audit_id', 'desc')->first();
-            if (count($previous_ordering_records_check)) {
+            if ($previous_ordering_records_check) {
                 $previous_ordering_records_audit_id = $previous_ordering_records_check->audit_id;
 
                 // if yes, we get it and check if all the buildings match
