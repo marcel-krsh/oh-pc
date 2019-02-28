@@ -1221,7 +1221,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 
                 // if units have HTC funding add to subset
                 $this->processes++;
-                foreach ($unit->programs as $unit_program) {
+                foreach ($unit_selected->programs as $unit_program) {
                     $this->processes++;
                     if (in_array($unit_program->program_key, $program_htc_overlap)) {
                         $has_htc_funding = 1;
