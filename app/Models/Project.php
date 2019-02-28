@@ -60,6 +60,10 @@ class Project extends Model
         $pm_city = '';
         $pm_state = '';
         $pm_zip = '';
+        $pm_name = '';
+        $pm_email = '';
+        $pm_phone = '';
+        $pm_fax = '';
 
         if ($pm_contact) { 
             if ($pm_contact->organization) {
