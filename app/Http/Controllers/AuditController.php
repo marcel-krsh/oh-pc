@@ -2229,7 +2229,31 @@ class AuditController extends Controller
 
     public function getProjectStream($project = null)
     {
-        return view('projects.partials.stream');
+        if(Auth::user()->auditor_access()){
+
+            $project = Project::where('id', '=', $project)->first();
+
+            if($project->currentAudit()){
+                $auditid = $project->currentAudit()->audit_id;
+            }else{
+                return "Sorry, there is no audit associated with this project.";
+            }
+
+            $findings = Finding::where('project_id',$project)
+                    ->whereNull('cancelled_at')
+                    ->orderBy('updated_at','desc')
+                    ->get();
+            
+            $buildingid = '';
+            $unitid = '';
+            $amenityid = '';
+            $type = 'all';
+
+        }else{
+            return "Sorry, you do not have permission to access this page.";
+        }
+
+        return view('projects.partials.stream', compact('type','findings','auditid', 'buildingid', 'unitid', 'amenityid'));
     }
 
     public function getProjectReports($project = null)
