@@ -37,9 +37,12 @@ use Auth;
 use Carbon;
 use Illuminate\Http\Request;
 use Session;
+use View;
 
 class AuditController extends Controller
 {
+		private $htc_group_id;
+
     public function __construct()
     {
         // $this->middleware('auth');
@@ -49,6 +52,8 @@ class AuditController extends Controller
             // 6281 holly
             // 6346 Robin (Abigail)
         }
+      $this->htc_group_id = 7;
+      View::share ('htc_group_id', $this->htc_group_id );
     }
 
     public function rerunCompliance(Audit $audit)
@@ -2273,17 +2278,20 @@ class AuditController extends Controller
             ->get();
         }
         $all_unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
-        							->with('program.relatedGroups')
+        							->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
         							->orderBy('unit_id', 'asc')
         							->get();
         $actual_programs = $all_unitprograms->pluck('program')->unique()->toArray();
         $unitprograms = $unitprograms->groupBy('unit_id');
         foreach ($actual_programs as $key => $actual_program) {
         	$group_names = array_column($actual_program['related_groups'], 'group_name');
+        	$group_ids = array_column($actual_program['related_groups'], 'id');
         	if (!empty($group_names)) {
               $actual_programs[$key]['group_names'] = implode(', ', $group_names);
+              $actual_programs[$key]['group_ids'] = $group_ids;
           } else {
               $actual_programs[$key]['group_names'] = ' - ';
+              $actual_programs[$key]['group_ids'] = [];
           }
         }
         return view('dashboard.partials.project-summary-unit', compact('unitprograms', 'actual_programs'));
@@ -2437,10 +2445,13 @@ class AuditController extends Controller
             $unitprograms = $unitprograms->groupBy('unit_id');
             foreach ($actual_programs as $key => $actual_program) {
             	$group_names = array_column($actual_program['related_groups'], 'group_name');
+            	$group_ids = array_column($actual_program['related_groups'], 'id');
             	if (!empty($group_names)) {
                   $actual_programs[$key]['group_names'] = implode(', ', $group_names);
+                  $actual_programs[$key]['group_ids'] = $group_ids;
               } else {
                   $actual_programs[$key]['group_names'] = ' - ';
+                  $actual_programs[$key]['group_ids'] = [];
               }
             }
             return view('modals.project-summary-composite', compact('data', 'project', 'audit', 'programs', 'unitprograms', 'datasets', 'actual_programs'));

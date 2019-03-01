@@ -145,7 +145,7 @@
 
 	}
 
-	function projectSummarySelection(element, unitid, programid=null, type="both"){
+	function projectSummarySelection(element, unitid, programid=null, groupids=null, type="both"){
 		debugger;
 		// ajax call here
 
