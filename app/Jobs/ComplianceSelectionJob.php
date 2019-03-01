@@ -476,7 +476,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 $this->processes++;
         for ($i=0; $i < count($selection); $i++) {
             $summary['programs'][$i]['name'] = $selection[$i]['program_name'];
-            $summary['programs'][$i]['group'] = $i + 1;
+            $summary['programs'][$i]['group'] = $selection[$i]['group_id'];
             $audit->comment = $audit->comment.' | DEBUG COMPLIANCE SELECTION LINE 348: Combine and optimize created the group $summary[\'programs\']['.$i.'][\'group\'] = '.($i + 1);
                 $audit->save();
             $summary['programs'][$i]['pool'] = $selection[$i]['pool'];
@@ -952,6 +952,7 @@ class ComplianceSelectionJob implements ShouldQueue
             }
             
             $selection[] = [
+                "group_id" => 1,
                 "program_name" => "FAF NSP TCE RTCAP 811",
                 "program_ids" => SystemSetting::get('program_bundle'),
                 "pool" => count($units),
@@ -1012,6 +1013,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 $audit->save();
                 $this->processes++;
             $selection[] = [
+                "group_id" => 2,
                 "program_name" => "811",
                 "program_ids" => SystemSetting::get('program_811'),
                 "pool" => count($units),
@@ -1074,6 +1076,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 $this->processes++;
 
             $selection[] = [
+                "group_id" => 3,
                 "program_name" => "Medicaid",
                 "program_ids" => SystemSetting::get('program_medicaid'),
                 "pool" => count($units),
@@ -1247,6 +1250,7 @@ class ComplianceSelectionJob implements ShouldQueue
             $this->processes++;
 
             $selection[] = [
+                "group_id" => 4,
                 "program_name" => "HOME",
                 "program_ids" => SystemSetting::get('program_home'),
                 "pool" => count($units),
@@ -1421,6 +1425,7 @@ class ComplianceSelectionJob implements ShouldQueue
             $this->processes++;
 
             $selection[] = [
+                "group_id" => 5,
                 "program_name" => "OHTF",
                 "program_ids" => SystemSetting::get('program_ohtf'),
                 "pool" => count($units),
@@ -1584,6 +1589,7 @@ class ComplianceSelectionJob implements ShouldQueue
             $this->processes++;
 
             $selection[] = [
+                "group_id" => 6,
                 "program_name" => "NHTF",
                 "program_ids" => SystemSetting::get('program_nhtf'),
                 "pool" => count($units),
@@ -2007,6 +2013,7 @@ class ComplianceSelectionJob implements ShouldQueue
             // $units_selected_count isn't using the array_merge to keep the duplicate
 
             $selection[] = [
+                "group_id" => 7,
                 "program_name" => "HTC",
                 "program_ids" => SystemSetting::get('program_htc'),
                 // "pool" => count($units),
