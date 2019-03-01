@@ -942,13 +942,19 @@ The following div is defined in this particular tab and pushed to the main layou
 
     function markAmenityComplete(audit_id, building_id, unit_id, amenity_id, element){
     	
-    	if($('#'+element).hasClass('a-circle-checked')){
-	    	var title = 'MARK THIS INCOMPLETE?';
-	    	var message = 'Are you sure you want to mark this incomplete?';
+    	if(element){
+    		if($('#'+element).hasClass('a-circle-checked')){
+		    	var title = 'MARK THIS INCOMPLETE?';
+		    	var message = 'Are you sure you want to mark this incomplete?';
+	    	}else{
+		    	var title = 'MARK THIS COMPLETE?';
+		    	var message = 'Are you sure you want to mark this complete?';
+	    	}
     	}else{
-	    	var title = 'MARK THIS COMPLETE?';
-	    	var message = 'Are you sure you want to mark this complete?';
+    		var title = 'MARK THIS COMPLETE?';
+		    var message = 'Are you sure you want to mark this complete?';
     	}
+    	
     	
     	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>'+title+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>'+message+'</h3></div>').then(function() {
 		    	
