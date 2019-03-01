@@ -220,7 +220,7 @@
 		</div>
 	</div>
 
-	<div id="auditstable" class="uk-width-1-1 uk-overflow-auto">
+	<div id="auditstable" class="uk-width-1-1 uk-overflow-auto" style="min-height: 700px;">
 		<table class="uk-table uk-table-striped uk-table-hover uk-table-small uk-table-divider" style="min-width: 1420px;">
 		    <thead>
 		        <tr>
