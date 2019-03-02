@@ -492,6 +492,13 @@ class ComplianceSelectionJob implements ShouldQueue
             $summary['programs'][$i]['use_limiter'] = $selection[$i]['use_limiter'];
             $summary['programs'][$i]['comments'] = $selection[$i]['comments'];
 
+            // to deal with multiple buildings - each building will have its own selection[$i] with the same group_id
+            if(array_key_exists('building_key', $selection[$i]){
+                $summary['programs'][$i]['building_key'] = $selection[$i]['building_key'];
+            }else{
+                $summary['programs'][$i]['building_key'] = '';
+            }
+
             $tmp_selection = []; // used to store selection as we go through the priorities
             $tmp_program_output = []; // used to store the units selected for this program set
             $this->processes++;
@@ -2020,8 +2027,8 @@ class ComplianceSelectionJob implements ShouldQueue
                                 $this->processes++;
 
 
-                                $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
-                                $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
+                                $units_selected = array_merge($units_selected, $htc_units_with_overlap);
+                                $units_selected_count = $units_selected_count + count($htc_units_with_overlap);
                                 $this->processes++;
 
                                 // $units_selected_count isn't using the array_merge to keep the duplicate
