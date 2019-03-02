@@ -2490,7 +2490,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
             // save all units selected in selection table
             if ($best_run) {
-                $group_id = 1;
+                
                 $this->processes++;
                 //Log::info('best run is selected');
                 foreach ($best_run['programs'] as $program) {
@@ -2520,7 +2520,7 @@ class ComplianceSelectionJob implements ShouldQueue
                             if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < $program['required_units']) {
                                 $u = new UnitInspection([
                                     'group' => $program['name'],
-                                    'group_id' => $group_id,
+                                    'group_id' => $program['group_id'],
                                     'unit_id' => $unit->id,
                                     'unit_key' => $unit->unit_key,
                                     'unit_name' => $unit->unit_name,
@@ -2571,7 +2571,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                                 $u = new UnitInspection([
                                     'group' => $program['name'],
-                                    'group_id' => $group_id,
+                                    'group_id' => $program['group_id'],
                                     'unit_id' => $unit->id,
                                     'unit_key' => $unit->unit_key,
                                     'unit_name' => $unit->unit_name,
@@ -2595,7 +2595,6 @@ class ComplianceSelectionJob implements ShouldQueue
                         }
                     }
 
-                    $group_id = $group_id + 1;
                     $this->processes++;
                 }
             }
