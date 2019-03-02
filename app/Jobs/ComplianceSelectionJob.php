@@ -2007,15 +2007,18 @@ class ComplianceSelectionJob implements ShouldQueue
                                 
                                 $new_building_selection = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed_for_that_building, $required_units_for_that_building);
                                 
-                                $units_selected_count = $units_selected_count + count($new_building_selection);
+                                //$units_selected_count = $units_selected_count + count($new_building_selection);
+                                $units_selected_count = count($new_building_selection);
 
-                                if(count($new_building_selection)){
-                                    $units_selected = array_merge($units_selected, $new_building_selection);
-                                }
+                                // if(count($new_building_selection)){
+                                //     $units_selected = array_merge($units_selected, $new_building_selection);
+                                // }
                                 
-                                $comments[] = 'The total of HTC units for building key '.$building->building_key.' is '.count($htc_units_for_building).'. Overlap units: '.$htc_units_with_overlap_for_that_building.'. Missing units: '.$number_of_htc_units_needed_for_that_building;
+                                $units_selected = $new_building_selection;
+                                
+                                $comments[] = 'The total of HTC units for building key '.$building->building_key.' is '.count($htc_units_for_building).'. Required units: '.$required_units_for_that_building.'. Overlap units: '.$htc_units_with_overlap_for_that_building.'. Missing units: '.$number_of_htc_units_needed_for_that_building;
 
-                                $audit->comment = $audit->comment.' | Select Process The total of HTC units for building key '.$building->building_key.' is '.count($htc_units_for_building).'. Overlap units: '.$htc_units_with_overlap_for_that_building.'. Missing units: '.$number_of_htc_units_needed_for_that_building;
+                                $audit->comment = $audit->comment.' | Select Process The total of HTC units for building key '.$building->building_key.' is '.count($htc_units_for_building).'. Required units: '.$required_units_for_that_building.'. Overlap units: '.$htc_units_with_overlap_for_that_building.'. Missing units: '.$number_of_htc_units_needed_for_that_building;
 
                                 $audit->save();
                                 $this->processes++;
