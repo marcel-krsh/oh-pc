@@ -2008,7 +2008,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                     $number_of_htc_units_needed_for_that_building = 0;
                                 }
                                 
-                                $new_building_selection = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed_for_that_building, $required_units_for_that_building);
+                                $new_building_selection = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed_for_that_building);
                                 
                                 //$units_selected_count = $units_selected_count + count($new_building_selection);
                                 $units_selected_count = count($new_building_selection);
@@ -2034,6 +2034,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
 
                                 $units_selected = array_merge($units_selected, $htc_units_with_overlap);
+                                $units_selected = array_slice($units_selected, 0, $required_units_for_that_building); // cap selection to required number
                                 $units_selected_count = $units_selected_count + count($htc_units_with_overlap);
                                 $this->processes++;
 
@@ -2083,6 +2084,8 @@ class ComplianceSelectionJob implements ShouldQueue
                                 $this->processes++;
 
                 $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
+                $units_selected = array_slice($units_selected, 0, $number_of_htc_units_required);
+                
                 $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
                 $this->processes++;
 
