@@ -1925,9 +1925,17 @@ class ComplianceSelectionJob implements ShouldQueue
 
                         $required_units = 0; // in the case of buildings, we need to sum each totals because of the rounding
                         
+                        $first_building_done = 0; // this is to control the comments to only keep the ones we care about after the first building information is displayed.
+
                         foreach ($buildings as $building) {
                             $this->processes++;
                             if ($building->units) {
+
+                                if($first_building_done){
+                                    $comments = array(); // clear the comments.
+                                }else{
+                                    $first_building_done = 1;
+                                }
 
                                 // how many units from the overlap are in that building
                                 // list all the units not in the overlap for that building
@@ -2085,7 +2093,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                 $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
                 $units_selected = array_slice($units_selected, 0, $number_of_htc_units_required);
-                
+
                 $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
                 $this->processes++;
 

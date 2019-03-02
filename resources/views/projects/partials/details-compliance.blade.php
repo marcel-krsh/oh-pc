@@ -117,7 +117,7 @@
 							<table class="uk-table uk-table-small noline small-padding">
 								<tbody>
 									<tr>
-										<td><strong>{{$program['name']}} INSPECTION</strong></td>
+										<td><strong>{{$program['name']}} INSPECTION {{$program['building_name']}}</strong></td>
 										<td class="uk-text-center" style="min-width: 30px;"><i class="a-mobile-home iheader"></i></td>
 										<td class="uk-text-center" style="min-width: 30px;"><i class="a-folder iheader"></i></td>
 									</tr>
