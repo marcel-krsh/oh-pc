@@ -52,12 +52,15 @@
 			$unit_program_selected_count = $program_selected->where('is_site_visit', 1)->where('is_file_audit', 1)->count();
 			$site_program_selected_count = $program_selected->where('is_site_visit', 1)->count();
 			$file_program_selected_count = $program_selected->where('is_file_audit', 1)->count();
+			$group_ids = $other_groups->pluck('id')->toJson();
 		} else {
 			$split = false;
 			$unit_program_selected_count = $program_selected->where('is_site_visit', 1)->where('is_file_audit', 1)->count();
 			$site_program_selected_count = $program_selected->where('is_site_visit', 1)->count();
 			$file_program_selected_count = $program_selected->where('is_file_audit', 1)->count();
+			$group_ids = $each_program->program->relatedGroups->pluck('id')->toJson();
 		}
+		//dd($group_ids);
 		//dd($split);
 		@endphp
 		@if($split)
@@ -65,13 +68,13 @@
 			<div class="modal-project-summary-unit-program uk-visible-toggle">
 				<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle {{ $htc_unit_program_selected_count > 0 ? 'inspectable-selected' : '' }}" data-unitid="{{ $each_program->unit_id }}">
 					@if($htc_unit_program_selected_count > 0)
-					<i class="a-circle-checked" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_id }}, 'htc' );"></i>
+					<i class="a-circle-checked" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }} );"></i>
 					@else
-					<i class="a-circle" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_id }}, 'htc');"></i>
+					<i class="a-circle" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }});"></i>
 					@endif
 				</div>
 				<div class="modal-project-summary-unit-program-info">
-					<div class="modal-project-summary-unit-program-icon {{ $htc_site_program_selected_count > 0 ? 'inspectable-selected': '' }}" data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_id }}, 'htc, 'physical');">
+					<div class="modal-project-summary-unit-program-icon {{ $htc_site_program_selected_count > 0 ? 'inspectable-selected': '' }}" data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }}, 'physical');">
 						<i class="a-mobile"></i>
 						<div class="modal-project-summary-unit-program-icon-status">
 							@if($htc_site_program_selected_count > 0)
@@ -81,7 +84,7 @@
 							@endif
 						</div>
 					</div>
-					<div class="modal-project-summary-unit-program-icon {{ $htc_file_program_selected_count > 0 ? 'inspectable-selected': '' }}"  data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_id }}, 'htc', 'file');">
+					<div class="modal-project-summary-unit-program-icon {{ $htc_file_program_selected_count > 0 ? 'inspectable-selected': '' }}"  data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }}, 'file');">
 						<i class="a-folder"></i>
 						<div class="modal-project-summary-unit-program-icon-status">
 							@if( $htc_file_program_selected_count > 0 )
@@ -96,17 +99,18 @@
 			</div>
 		</div>
 		@endif
+
 		<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1  summary-unit-programs-{{ $each_program->unit_id }} {{ $selected_units_count > 0 ? 'has-selected' : 'no-selection' }}">
 			<div class="modal-project-summary-unit-program uk-visible-toggle">
 				<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle {{ $unit_program_selected_count > 0 ? 'inspectable-selected' : '' }}" data-unitid="{{ $each_program->unit_id }}">
 					@if($unit_program_selected_count > 0)
-					<i class="a-circle-checked" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_id }}, 'others');"></i>
+					<i class="a-circle-checked" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }});"></i>
 					@else
-					<i class="a-circle" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_id }}, 'others');"></i>
+					<i class="a-circle" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }});"></i>
 					@endif
 				</div>
 				<div class="modal-project-summary-unit-program-info">
-					<div class="modal-project-summary-unit-program-icon {{ $site_program_selected_count > 0 ? 'inspectable-selected': '' }}" data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_id }}, 'others', 'physical');">
+					<div class="modal-project-summary-unit-program-icon {{ $site_program_selected_count > 0 ? 'inspectable-selected': '' }}" data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }}, 'physical');">
 						<i class="a-mobile"></i>
 						<div class="modal-project-summary-unit-program-icon-status">
 							@if($site_program_selected_count > 0)
@@ -116,7 +120,7 @@
 							@endif
 						</div>
 					</div>
-					<div class="modal-project-summary-unit-program-icon {{ $file_program_selected_count > 0 ? 'inspectable-selected': '' }}"  data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_id }}, 'others', 'file');">
+					<div class="modal-project-summary-unit-program-icon {{ $file_program_selected_count > 0 ? 'inspectable-selected': '' }}"  data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }}, 'file');">
 						<i class="a-folder"></i>
 						<div class="modal-project-summary-unit-program-icon-status">
 							@if( $file_program_selected_count > 0 )
@@ -143,20 +147,24 @@
 			if(empty($other_group_ids)) {
 				continue;
 			}
+			$sub_group_ids = [];
+			$pr_group_coll = $ex_pr['related_groups'];
+			$sub_groups = array_column($pr_group_coll, 'id');
+			$sub_group_ids = json_encode($sub_groups);
 		@endphp
 			<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1  summary-unit-programs-{{ $unit->unit_id }} {{ $selected_units_count > 0 ? 'has-selected' : 'no-selection' }}">
 				<div class="modal-project-summary-unit-program uk-visible-toggle">
 					<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle" data-unitid="{{ $unit->unit_id }}">
-						<i class="a-circle" onclick="projectSummarySelection(this, {{ $unit->unit_id }}, {{ $unit->program_id }}, 'others');"></i>
+						<i class="a-circle" onclick="projectSummarySelection(this, {{ $unit->unit_id }}, {{ $unit->program_key }}, {{ $sub_group_ids }});"></i>
 					</div>
 					<div class="modal-project-summary-unit-program-info">
-						<div class="modal-project-summary-unit-program-icon" data-unitid="{{ $unit->unit_id }}" onclick="projectSummarySelection(this, {{ $unit->unit_id }}, {{ $unit->program_id }}, 'others', 'physical');">
+						<div class="modal-project-summary-unit-program-icon" data-unitid="{{ $unit->unit_id }}" onclick="projectSummarySelection(this, {{ $unit->unit_id }}, {{ $unit->program_key }}, {{ $sub_group_ids }}, 'physical');">
 							<i class="a-mobile"></i>
 							<div class="modal-project-summary-unit-program-icon-status">
 								<i class="a-circle"></i>
 							</div>
 						</div>
-						<div class="modal-project-summary-unit-program-icon"  data-unitid="{{ $unit->unit_id }}" onclick="projectSummarySelection(this, {{ $unit->unit_id }}, {{ $unit->program_id }}, 'others', 'file');">
+						<div class="modal-project-summary-unit-program-icon"  data-unitid="{{ $unit->unit_id }}" onclick="projectSummarySelection(this, {{ $unit->unit_id }}, {{ $unit->program_key }}, {{ $sub_group_ids }}, 'file');">
 							<i class="a-folder"></i>
 							<div class="modal-project-summary-unit-program-icon-status">
 								<i class="a-circle"></i>
