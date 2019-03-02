@@ -1948,7 +1948,9 @@ class ComplianceSelectionJob implements ShouldQueue
                                 
                                 $units_selected_count = $units_selected_count + count($new_building_selection);
 
-                                $units_selected = array_merge($units_selected, $new_building_selection);
+                                if(count($new_building_selection)){
+                                    $units_selected = array_merge($units_selected, $new_building_selection);
+                                }
                                 
                                 $comments[] = 'The total of HTC units for building key '.$building->building_key.' is '.count($htc_units_for_building).'. Overlap units: '.$htc_units_with_overlap_for_that_building.'. Missing units: '.$number_of_htc_units_needed_for_that_building;
 
