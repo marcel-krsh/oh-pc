@@ -1967,7 +1967,10 @@ class ComplianceSelectionJob implements ShouldQueue
                                                 ->toArray();
 
                                 $required_units_for_that_building = ceil(count($htc_units_for_building)/5);
-                                $required_units = $required_units + $required_units_for_that_building;
+                                //$required_units = $required_units + $required_units_for_that_building;
+                                
+                                $required_units = $required_units_for_that_building;
+
                                 // $htc_units_with_overlap_for_that_building = count($htc_units_for_building) - count($htc_units_without_overlap);
                                 $htc_units_with_overlap_for_that_building = count($htc_units_with_overlap);
 
