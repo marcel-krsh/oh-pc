@@ -493,7 +493,7 @@ class ComplianceSelectionJob implements ShouldQueue
             $summary['programs'][$i]['comments'] = $selection[$i]['comments'];
 
             // to deal with multiple buildings - each building will have its own selection[$i] with the same group_id
-            if(array_key_exists('building_key', $selection[$i]){
+            if(array_key_exists('building_key', $selection[$i])){
                 $summary['programs'][$i]['building_key'] = $selection[$i]['building_key'];
             }else{
                 $summary['programs'][$i]['building_key'] = '';
