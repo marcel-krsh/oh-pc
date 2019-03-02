@@ -393,7 +393,8 @@ class ComplianceSelectionJob implements ShouldQueue
             $output = [];
 
             if($needed == 1){
-                $output[] = array_rand($units, $needed);
+                $output_key = array_rand($units, $needed);
+                $output[] = $units[$output_key];
             }else{
                 foreach (array_rand($units, $needed) as $id) {
                     $output[] = $units[$id];
