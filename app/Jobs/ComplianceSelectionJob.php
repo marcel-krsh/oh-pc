@@ -122,7 +122,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                             'unit_key'      =>  $unit->unit_key,
                                             'unit_id'       =>  $unit->id,
                                             'program_key'   =>  $program->program_key,
-                                            'program_id'    =>  $program->id,
+                                            'program_id'    =>  $program->program_id,
                                             'audit_id'      =>  $audit->id,
                                             'monitoring_key'=>  $audit->monitoring_key,
                                             'project_id'    =>  $audit->project_id,
