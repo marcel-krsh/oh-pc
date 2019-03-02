@@ -1495,6 +1495,7 @@ class AuditController extends Controller
                         'id' => $program['group'],
                         'name' => $program['name'],
                         'pool' => $program['pool'],
+                        'building_key' => $program['building_key'],
                         'building_name' => $building_name,
                         'comments' => $program['comments'],
                         'user_limiter' => $program['use_limiter'],
