@@ -18,7 +18,7 @@
 	    	<a class="uk-width-1-3" onclick="clearComment();" style="color:#fff"><i class="a-file-minus"></i> Clear</a>
 	    	<!-- <button class="uk-width-1-3" onclick="appendBoilerplate();"><i class="a-file-plus"></i> Append a boilerplate</button> -->
 	    </div>
-	    <div class="findings-new-add-comment-quick-entry-list">
+	    <div class="findings-new-add-comment-quick-entry-list uk-hidden">
 	    	<span class="uk-badge findings-quick-entry" onclick="insertTag(this);" data-tag="property-manager-contact-name">PROPERTY MANAGER CONTACT NAME</span>
 	    	<span class="uk-badge findings-quick-entry" onclick="insertTag(this);" data-tag="address-of-this-building">ADDRESS OF THIS BUILDING</span>
 	    	<span class="uk-badge findings-quick-entry" onclick="insertTag(this);" data-tag="date-in-7-days">DATE IN 7 DAYS</span>
