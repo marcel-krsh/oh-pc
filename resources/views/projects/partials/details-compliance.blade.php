@@ -111,13 +111,13 @@
 		        <li>
 					<div class="project-details-info-compliance-program uk-panel uk-grid-match" style="height:180px" uk-grid>
 						<div class="uk-width-1-5 uk-padding-remove" style="min-height:165px;">
-							<canvas id="chartjs-{{$program['id']}}" class="chartjs" ></canvas>
+							<canvas id="chartjs-{{$program['id']}}{{$program['building_key']}}" class="chartjs" ></canvas>
 						</div>
 						<div class="uk-width-2-5">
 							<table class="uk-table uk-table-small noline small-padding">
 								<tbody>
 									<tr>
-										<td><strong>{{$program['name']}} INSPECTION</strong></td>
+										<td><strong>{{$program['name']}} INSPECTION @if($program['building_name']!='') | BUILDING {{$program['building_name']}}@endif</strong></td>
 										<td class="uk-text-center" style="min-width: 30px;"><i class="a-mobile-home iheader"></i></td>
 										<td class="uk-text-center" style="min-width: 30px;"><i class="a-folder iheader"></i></td>
 									</tr>
@@ -171,7 +171,7 @@
 						@endforeach
 					</div>
 					<script>
-						new Chart(document.getElementById("chartjs-{{$program['id']}}"),{
+						new Chart(document.getElementById("chartjs-{{$program['id']}}{{$program['building_key']}}"),{
 							"type":"doughnut",
 							"options": summaryOptions,
 							"data":{

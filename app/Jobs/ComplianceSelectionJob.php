@@ -122,7 +122,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                             'unit_key'      =>  $unit->unit_key,
                                             'unit_id'       =>  $unit->id,
                                             'program_key'   =>  $program->program_key,
-                                            'program_id'    =>  $program->id,
+                                            'program_id'    =>  $program->program_id,
                                             'audit_id'      =>  $audit->id,
                                             'monitoring_key'=>  $audit->monitoring_key,
                                             'project_id'    =>  $audit->project_id,
@@ -361,7 +361,7 @@ class ComplianceSelectionJob implements ShouldQueue
         }
     }
 
-    public function randomSelection($audit, $units, $percentage = 20, $min = 0)
+    public function randomSelection($audit, $units, $percentage = 20, $min = 0, $max = 0)
     {
         $audit->comment = $audit->comment.' | Starting randomSelection.';
                 $audit->save();
@@ -393,11 +393,16 @@ class ComplianceSelectionJob implements ShouldQueue
             $output = [];
 
             if($needed == 1){
-                $output[] = array_rand($units, $needed);
+                $output_key = array_rand($units, $needed);
+                $output[] = $units[$output_key];
             }else{
+                $number_added = 0;
                 foreach (array_rand($units, $needed) as $id) {
-                    $output[] = $units[$id];
-                    $this->processes++;
+                    if($number_added < $max || $max == 0){
+                        $output[] = $units[$id];
+                        $number_added++;
+                        $this->processes++;
+                    }
                 }
             }
             
@@ -486,6 +491,13 @@ class ComplianceSelectionJob implements ShouldQueue
             $summary['programs'][$i]['required_units_file'] = $selection[$i]['required_units'];
             $summary['programs'][$i]['use_limiter'] = $selection[$i]['use_limiter'];
             $summary['programs'][$i]['comments'] = $selection[$i]['comments'];
+
+            // to deal with multiple buildings - each building will have its own selection[$i] with the same group_id
+            if(array_key_exists('building_key', $selection[$i])){
+                $summary['programs'][$i]['building_key'] = $selection[$i]['building_key'];
+            }else{
+                $summary['programs'][$i]['building_key'] = '';
+            }
 
             $tmp_selection = []; // used to store selection as we go through the priorities
             $tmp_program_output = []; // used to store the units selected for this program set
@@ -1657,6 +1669,8 @@ class ComplianceSelectionJob implements ShouldQueue
         $this->processes++;
 
         if($total_htc_units){
+            $use_limiter = 1;
+
             $audit->comment = $audit->comment.' | Select Process Starting HTC.';
             $audit->save();
             $this->processes++;
@@ -1809,6 +1823,27 @@ class ComplianceSelectionJob implements ShouldQueue
                     $audit->comment = $audit->comment.' | Select Process It is a lease purchase. Total selected: '.count($units_selected);
                         $audit->save();
                         $this->processes++;
+
+                    $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
+                    $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
+                    $this->processes++;
+
+                    // $units_selected_count isn't using the array_merge to keep the duplicate
+
+                    $selection[] = [
+                        "group_id" => 7,
+                        "program_name" => "HTC",
+                        "building_key" => "",
+                        "program_ids" => SystemSetting::get('program_htc'),
+                        // "pool" => count($units),
+                        "pool" => $total_htc_units,
+                        "units" => $units_selected,
+                        "totals" => $units_selected_count,
+                        "required_units" => $required_units,
+                        "use_limiter" => $use_limiter,
+                        "comments" => $comments
+                    ];
+                    $this->processes++;
                 } else {
                     $is_multi_building_project = 0;
                     $comments[] = 'It is not a lease purchase.';
@@ -1855,7 +1890,30 @@ class ComplianceSelectionJob implements ShouldQueue
                         $audit->comment = $audit->comment.' | Select Process The project is a multi building project. Total selected: '.count($units_selected);
                                 $audit->save();
                                 $this->processes++;
+
+                        $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
+                        $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
+                        $this->processes++;
+
+                        // $units_selected_count isn't using the array_merge to keep the duplicate
+
+                        $selection[] = [
+                            "group_id" => 7,
+                            "program_name" => "HTC",
+                            "building_key" => "",
+                            "program_ids" => SystemSetting::get('program_htc'),
+                            // "pool" => count($units),
+                            "pool" => $total_htc_units,
+                            "units" => $units_selected,
+                            "totals" => $units_selected_count,
+                            "required_units" => $required_units,
+                            "use_limiter" => $use_limiter,
+                            "comments" => $comments
+                        ];
+                        $this->processes++;
                     } else {
+                        $use_limiter = 0; // we apply the limiter for each building
+
                         $comments[] = 'The project is not a multi building project.';
                         $audit->comment = $audit->comment.' | Select Process The project is not a multi building project.';
                                 $audit->save();
@@ -1867,15 +1925,26 @@ class ComplianceSelectionJob implements ShouldQueue
 
                         $required_units = 0; // in the case of buildings, we need to sum each totals because of the rounding
                         
+                        $first_building_done = 0; // this is to control the comments to only keep the ones we care about after the first building information is displayed.
+
                         foreach ($buildings as $building) {
                             $this->processes++;
                             if ($building->units) {
+
+                                if($first_building_done){
+                                    $comments = array(); // clear the comments.
+                                }else{
+                                    $first_building_done = 1;
+                                }
 
                                 // how many units from the overlap are in that building
                                 // list all the units not in the overlap for that building
                                 // 
                                 // if the 20% of all building's unit is less than the building's units that are in the overlap, done
                                 // otherwise get the missing units
+
+                                // we keep the selection and overlaps UP TO the required number for each building
+                                // then we apply the limiter for EACH building
 
                                 // $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf
 
@@ -1906,7 +1975,10 @@ class ComplianceSelectionJob implements ShouldQueue
                                                 ->toArray();
 
                                 $required_units_for_that_building = ceil(count($htc_units_for_building)/5);
-                                $required_units = $required_units + $required_units_for_that_building;
+                                //$required_units = $required_units + $required_units_for_that_building;
+                                
+                                $required_units = $required_units_for_that_building;
+
                                 // $htc_units_with_overlap_for_that_building = count($htc_units_for_building) - count($htc_units_without_overlap);
                                 $htc_units_with_overlap_for_that_building = count($htc_units_with_overlap);
 
@@ -1946,13 +2018,18 @@ class ComplianceSelectionJob implements ShouldQueue
                                 
                                 $new_building_selection = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed_for_that_building);
                                 
-                                $units_selected_count = $units_selected_count + count($new_building_selection);
+                                //$units_selected_count = $units_selected_count + count($new_building_selection);
+                                $units_selected_count = count($new_building_selection);
 
-                                $units_selected = array_merge($units_selected, $new_building_selection);
+                                // if(count($new_building_selection)){
+                                //     $units_selected = array_merge($units_selected, $new_building_selection);
+                                // }
                                 
-                                $comments[] = 'The total of HTC units for building key '.$building->building_key.' is '.count($htc_units_for_building).'. Overlap units: '.$htc_units_with_overlap_for_that_building.'. Missing units: '.$number_of_htc_units_needed_for_that_building;
+                                $units_selected = $new_building_selection;
+                                
+                                $comments[] = 'The total of HTC units for building key '.$building->building_key.' is '.count($htc_units_for_building).'. Required units: '.$required_units_for_that_building.'. Overlap units: '.$htc_units_with_overlap_for_that_building.'. Missing units: '.$number_of_htc_units_needed_for_that_building;
 
-                                $audit->comment = $audit->comment.' | Select Process The total of HTC units for building key '.$building->building_key.' is '.count($htc_units_for_building).'. Overlap units: '.$htc_units_with_overlap_for_that_building.'. Missing units: '.$number_of_htc_units_needed_for_that_building;
+                                $audit->comment = $audit->comment.' | Select Process The total of HTC units for building key '.$building->building_key.' is '.count($htc_units_for_building).'. Required units: '.$required_units_for_that_building.'. Overlap units: '.$htc_units_with_overlap_for_that_building.'. Missing units: '.$number_of_htc_units_needed_for_that_building;
 
                                 $audit->save();
                                 $this->processes++;
@@ -1961,6 +2038,29 @@ class ComplianceSelectionJob implements ShouldQueue
 
                                 $audit->comment = $audit->comment.' | Select Process Randomly selected units in building '.$building->building_key.'. Total selected: '.count($new_building_selection).'.';
                                 $audit->save();
+                                $this->processes++;
+
+
+                                $units_selected = array_merge($units_selected, $htc_units_with_overlap);
+                                $units_selected = array_slice($units_selected, 0, $required_units_for_that_building); // cap selection to required number
+                                $units_selected_count = $units_selected_count + count($htc_units_with_overlap);
+                                $this->processes++;
+
+                                // $units_selected_count isn't using the array_merge to keep the duplicate
+
+                                $selection[] = [
+                                    "group_id" => 7,
+                                    "program_name" => "HTC",
+                                    "building_key" => $building->building_key,
+                                    "program_ids" => SystemSetting::get('program_htc'),
+                                    // "pool" => count($units),
+                                    "pool" => $total_htc_units,
+                                    "units" => $units_selected,
+                                    "totals" => $units_selected_count,
+                                    "required_units" => $required_units,
+                                    "use_limiter" => $use_limiter,
+                                    "comments" => $comments
+                                ];
                                 $this->processes++;
                             }
                         }
@@ -1991,6 +2091,29 @@ class ComplianceSelectionJob implements ShouldQueue
                                 $audit->save();
                                 $this->processes++;
 
+                $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
+                $units_selected = array_slice($units_selected, 0, $number_of_htc_units_required);
+
+                $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
+                $this->processes++;
+
+                // $units_selected_count isn't using the array_merge to keep the duplicate
+
+                $selection[] = [
+                    "group_id" => 7,
+                    "program_name" => "HTC",
+                    "building_key" => '',
+                    "program_ids" => SystemSetting::get('program_htc'),
+                    // "pool" => count($units),
+                    "pool" => $total_htc_units,
+                    "units" => $units_selected,
+                    "totals" => $units_selected_count,
+                    "required_units" => $required_units,
+                    "use_limiter" => $use_limiter,
+                    "comments" => $comments
+                ];
+                $this->processes++;
+
             }
             //}
 
@@ -2006,25 +2129,7 @@ class ComplianceSelectionJob implements ShouldQueue
             // $audit->comment = $audit->comment.' | HTC units from HOME: '.$htc_units_from_home_list;
             //         $audit->save();     
 
-            $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
-            $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
-            $this->processes++;
-
-            // $units_selected_count isn't using the array_merge to keep the duplicate
-
-            $selection[] = [
-                "group_id" => 7,
-                "program_name" => "HTC",
-                "program_ids" => SystemSetting::get('program_htc'),
-                // "pool" => count($units),
-                "pool" => $total_htc_units,
-                "units" => $units_selected,
-                "totals" => $units_selected_count,
-                "required_units" => $required_units,
-                "use_limiter" => 1,
-                "comments" => $comments
-            ];
-            $this->processes++;
+            
             
         }else{
             $audit->comment_system = $audit->comment_system.' | Select Process is not working with HTC.';
@@ -2490,7 +2595,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
             // save all units selected in selection table
             if ($best_run) {
-                $group_id = 1;
+                
                 $this->processes++;
                 //Log::info('best run is selected');
                 foreach ($best_run['programs'] as $program) {
@@ -2520,7 +2625,7 @@ class ComplianceSelectionJob implements ShouldQueue
                             if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < $program['required_units']) {
                                 $u = new UnitInspection([
                                     'group' => $program['name'],
-                                    'group_id' => $group_id,
+                                    'group_id' => $program['group'],
                                     'unit_id' => $unit->id,
                                     'unit_key' => $unit->unit_key,
                                     'unit_name' => $unit->unit_name,
@@ -2571,7 +2676,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                                 $u = new UnitInspection([
                                     'group' => $program['name'],
-                                    'group_id' => $group_id,
+                                    'group_id' => $program['group'],
                                     'unit_id' => $unit->id,
                                     'unit_key' => $unit->unit_key,
                                     'unit_name' => $unit->unit_name,
@@ -2595,7 +2700,6 @@ class ComplianceSelectionJob implements ShouldQueue
                         }
                     }
 
-                    $group_id = $group_id + 1;
                     $this->processes++;
                 }
             }
