@@ -33,7 +33,7 @@
 	    	</div> -->
 	    	
 	    	<div class="uk-width-1-2">
-	    		
+	    		<button class="uk-button uk-button-primary uk-width-1-1" onclick="dynamicModalClose(2);"><i class="a-circle-cross"></i> CANCEL</button>
 	    	</div>
 	    	<div class="uk-width-1-2">
 	    		<button class="uk-button uk-button-success uk-width-1-1" onclick="saveCommentFinding(event);"><i class="a-file-pen"></i> SAVE COMMENT</button>
