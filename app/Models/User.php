@@ -464,12 +464,12 @@ class User extends Authenticatable
         if($address != ''){
             $audit = Audit::where('id','=',$audit_id)->first();
             $project_address = $audit->project->address->formatted_address();
-//dd("https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$address."&destinations=".$project_address."&key=AIzaSyCL8rFkhcyFrEV-sA8EXs5TOpw8tD7Dsvg");
+
 
             $address = urlencode($address);
             $googleAPI = env('GOOGLE_API_KEY');
             $project_address = urlencode($project_address);
-            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=".$address."&destinations=".$project_address."&key=".$googleApi;
+            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=".$address."&destinations=".$project_address."&key=".$googleAPI;
             $ch      = curl_init();
             $timeout = 0;
             curl_setopt( $ch, CURLOPT_URL, $url );
