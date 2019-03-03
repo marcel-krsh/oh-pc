@@ -469,7 +469,7 @@ class User extends Authenticatable
             $address = urlencode($address);
             $googleAPI = env('GOOGLE_API_KEY');
             $project_address = urlencode($project_address);
-            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=".$address."&destinations=".$project_address."&key=".$googleAPI;
+            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=".$address."&destinations=".$project_address."&key=AIzaSyCIXStIobkIUMeRCH-nwikznhFc39pAf9Q";
             $ch      = curl_init();
             $timeout = 0;
             curl_setopt( $ch, CURLOPT_URL, $url );
@@ -481,7 +481,7 @@ class User extends Authenticatable
             // send request and wait for response
             $response = json_decode( $data, true );
             curl_close( $ch );
-            dd($response,env('GOOGLE_API_KEY'),$googleAPI);
+            //dd($response,env('GOOGLE_API_KEY'),$googleAPI);
             if(count($response)){
                 return [$response['rows'][0]['elements'][0]['distance']['text'], $response['rows'][0]['elements'][0]['duration']['text'], $response['rows'][0]['elements'][0]['duration']['value']]; // array with 10 miles, 10 hours 36 mins, and the value in seconds
             } else {
