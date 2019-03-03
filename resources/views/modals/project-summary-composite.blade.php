@@ -100,21 +100,21 @@
 
 	function projectSummarySelection(element, unitid, programid=null, grouptypes=null, type="both"){
 		// ajax call here
-			var spinner = '<div style="height:200px;width: 100%;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
-			$('.modal-project-summary-left').html(spinner);
-			$.post('/modals/projects/{{$data["project"]["id"]}}/programs/save-program-unit-inspections', {
-				'unit_id' : unitid,
-				'program_key' : programid,
-				'group_ids' : grouptypes,
-				'type' : type,
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				$('#modal-left-summary').fadeOut( "slow", function() {
-					$('#modal-left-summary').html(data).fadeIn();
-				});
-			}
-			);
-
+		var spinner = '<div style="height:200px;width: 100%;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+		$('.modal-project-summary-left').html(spinner);
+		$.post('/modals/projects/{{$data["project"]["id"]}}/programs/save-program-unit-inspections', {
+			'unit_id' : unitid,
+			'program_key' : programid,
+			'group_ids' : grouptypes,
+			'type' : type,
+			'_token' : '{{ csrf_token() }}'
+		}, function(data) {
+			$('#modal-left-summary').fadeOut( "slow", function() {
+				$('#modal-left-summary').html(data).fadeIn();
+			});
+			filterProgramSummary();
+		}
+		);
 
 		// we know which project {{$data["project"]["id"]}}
 		// we need to know which unit, which program, if file or physical audit and whether it is checked or unchecked
@@ -204,6 +204,7 @@
 				// AJAX CALL HERE
 
 			}
+
 		}
 
 		// check if all programs for this unit have been selected and update the main check icon
@@ -212,4 +213,4 @@
 
 
 
-    </script>
+</script>
