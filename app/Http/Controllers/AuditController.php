@@ -2244,7 +2244,7 @@ class AuditController extends Controller
                     ->whereNull('cancelled_at')
                     ->orderBy('updated_at','desc')
                     ->get();
-            
+
             $buildingid = '';
             $unitid = '';
             $amenityid = '';
@@ -2322,7 +2322,7 @@ class AuditController extends Controller
         return view('dashboard.partials.project-summary-unit', compact('unitprograms', 'actual_programs'));
     }
 
-    public function projectSummaryComposite($project_id)
+    private function projectSummaryComposite($project_id)
     {
     	$project = Project::where('id', '=', $project_id)->first();
       $audit = $project->selected_audit()->audit;
@@ -2368,9 +2368,11 @@ class AuditController extends Controller
         // create stats for each group
         // build the dataset for the chart
         $datasets = array();
-        foreach ($selection_summary['programs'] as $program) {
+        $all_program_keys = [];
+        foreach ($selection_summary['programs'] as $program) { //this is actually groups not programs!
             // count selected units using the list of program ids
             $program_keys = explode(',', $program['program_keys']);
+            $all_program_keys[] =  $program_keys;
             $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit', '=', 1)->select('unit_id')->groupBy('unit_id')->get()->count();
             $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit', '=', 1)->select('unit_id')->groupBy('unit_id')->get()->count();
             $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
@@ -2460,7 +2462,8 @@ class AuditController extends Controller
         											'data' => $data,
         											'datasets' => $datasets,
         											'project' => $project,
-        											'programs' => $programs
+        											'programs' => $programs,
+        											'all_program_keys' => $all_program_keys
         										);
         return $send_project_details;
     }
@@ -2475,6 +2478,7 @@ class AuditController extends Controller
 
           // get all the units in the selected audit
           $get_project_details = $this->projectSummaryComposite($project_id);
+          collect($get_project_details['all_program_keys'])->flatten()->unique();
           $audit = $get_project_details['audit'];
           $data = $get_project_details['data'];
           $datasets = $get_project_details['datasets'];
@@ -5065,19 +5069,6 @@ class AuditController extends Controller
     	//get the count
     	//load chart and below
 
-
-    // 	'unit_id' : unitid, *
-				// 'program_id' : programid, -> can be null in case all programs selected
-				// 'group_types' : groupids, -> other, htc and null
-				// 'type' : type, -> both, file, site
-				//	Consider one program any type
-				//		only file
-				//		only site
-				//	Consider both
-				//		both
-				//	Consider all programs, any type
-				//		both
-
 				$unit_id = $request->get('unit_id');
 			  $program_key = $request->get('program_key');
 				$group_ids = $request->get('group_ids');
@@ -5086,60 +5077,70 @@ class AuditController extends Controller
       	$audit = $project->selected_audit()->audit;
 
       	$unit = Unit::with('building')->find($unit_id);
+				$program = Program::where('program_key', $program_key)->first();
 				//Consider one program any type, no nulls, maybe nulls for groups
+				// This is for existing programs!
+
 				//groups, other or HTC, how to deal?
-				if(!is_null($program_key) && $type != 'both') {
-				  $program = Program::where('program_key', $program_key)->first();
-				  //return $unit_program = UnitProgram::find($program_id);
+				//If file
+				//	check if exists, if yes remove
+				//If site
+				//	Check if exists, if yes remove
+				//if Both
+				//	check if both file and site extsts
+				//		if yes remove both
+				//	check if only one of these exists
+				//		insert that doesn't exist
+				//	If none exists
+				//		insert both
+				if(!is_null($program_key)) {
+					$unitprograms = UnitProgram::where('audit_id', $audit->id)
+																			->where('program_key', $program->program_key)
+																			->where('unit_id', $unit->id)
+																			->where('project_id', $project->id)
+          														->get()
+          														->count();
+          $new_program = false;
+          if($unitprograms == 0) {
+          	$add_unit_program = new UnitProgram;
+          	//unit_key
+          	//unit_id
+          	//program_id
+          	//program_key
+          	//audit_id
+          	//monitoring_key - from audit
+          	//project_id
+          	//development_key -- from audit
+          	$add_unit_program->unit_key = $unit->unit_key;
+          	$add_unit_program->unit_id = $unit->id;
+          	$add_unit_program->program_id = $program->id;
+          	$add_unit_program->program_key = $program->program_key;
+          	$add_unit_program->project_id = $project->id;
+          	$add_unit_program->audit_id = $audit->id;
+          	$add_unit_program->monitoring_key = $audit->monitoring_key;
+          	$add_unit_program->development_key = $audit->development_key;
+          	$add_unit_program->save();
+          	$new_program = true;
+          }
 					if($type == 'file') {
-						$check_if_file_exists = UnitInspection::where('unit_id', $unit_id)->where('program_key', $program_key)->where('audit_id', $audit->id)->whereIn('group_id', $group_ids)->where('is_file_audit', 1)->get();
-						if($check_if_file_exists->count() > 0) {
-							foreach ($check_if_file_exists as $key => $exists) {
-								$exists->is_file_audit = 0;
-								$exists->save();
-							}
-						} else {
-							$unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
-																			->where('program_key', $program_key)
-          														->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
-          														->orderBy('unit_id', 'asc')
-          														->get();
-          		if($unitprograms->count() == 0) {
-          			$group_ids = array_diff($group_ids, [$this->htc_group_id]);
-          		}
-							foreach ($group_ids as $key => $group_id) {
-								$group = Group::find($group_id);
-								$insert_new = new UnitInspection;
-								$insert_new->program_id = $program->id;
-								$insert_new->audit_id = $audit->id;
-								$insert_new->audit_id = $audit->id;
-								$insert_new->group = $group->group_name;
-								$insert_new->group_id = $group_id;
-								$insert_new->is_file_audit = 1;
-								$insert_new->is_site_visit = 0;
-								$insert_new->unit_id = $unit_id;
-								$insert_new->unit_key = $unit->unit_key;
-								$insert_new->unit_name = $unit->unit_name;
-								$insert_new->building_key = $unit->building->key;
-								$insert_new->building_id = $unit->building->building_key;
-								$insert_new->audit_key = $audit->monitoring_key;
-								$insert_new->project_id = $project->id;
-								$insert_new->project_key = $project->project_key;
-								$insert_new->program_key = $program->program_key;
-								$insert_new->save();
-							}
-						}
+					  $this->inspectionsUpdate($unit, $program, $audit, $group_ids, $project, 'is_file_audit', $new_program);
+					} elseif($type == 'physical') {
+						$this->inspectionsUpdate($unit, $program, $audit, $group_ids, $project, 'is_site_visit', $new_program);
 					} else {
-						$check_if_site_exists = UnitInspection::where('program_key', $program_key)->where('audit_id', $audit->id)->whereIn('group_id', $group_ids)->where('is_site_visit', 1)->get();
-						if($check_if_file_exists->count() > 0) {
-							foreach ($check_if_file_exists as $key => $exists) {
-								$exists->is_file_audit = 0;
-								$exists->save();
-							}
+						$check_if_file_exists = UnitInspection::where('unit_id', $unit->id)->where('program_key', $program->program_key)->where('audit_id', $audit->id)->whereIn('group_id', $group_ids)->where('is_file_audit', 1)->get()->count();
+						$check_if_site_exists = UnitInspection::where('unit_id', $unit->id)->where('program_key', $program->program_key)->where('audit_id', $audit->id)->whereIn('group_id', $group_ids)->where('is_site_visit', 1)->get()->count();
+						if(($check_if_file_exists > 0 && $check_if_site_exists > 0) || ($check_if_file_exists == 0 && $check_if_site_exists == 0)) {
+						  $this->inspectionsUpdate($unit, $program, $audit, $group_ids, $project, 'is_file_audit', $new_program);
+							$this->inspectionsUpdate($unit, $program, $audit, $group_ids, $project, 'is_site_visit', $new_program);
+						} elseif($check_if_file_exists > 0 && $check_if_site_exists == 0) {
+							$this->inspectionsUpdate($unit, $program, $audit, $group_ids, $project, 'is_site_visit', $new_program);
+						} elseif($check_if_file_exists == 0 && $check_if_site_exists > 0) {
+							$this->inspectionsUpdate($unit, $program, $audit, $group_ids, $project, 'is_file_audit', $new_program);
 						}
 					}
 				}
 
+				//Substitute programs
 
 
 			  $get_project_details = $this->projectSummaryComposite($project_id);
@@ -5149,6 +5150,72 @@ class AuditController extends Controller
         $project = $get_project_details['project'];
         $programs = $get_project_details['programs'];
         return view('dashboard.partials.project-summary-left', compact('data', 'project', 'audit', 'programs', 'datasets'));
+    }
+
+    private function inspectionsUpdate($unit, $program, $audit, $group_ids, $project, $type, $new_program = false)
+    {
+    	$check_if_record_exists = UnitInspection::where('unit_id', $unit->id)->where('program_key', $program->program_key)->where('audit_id', $audit->id)->whereIn('group_id', $group_ids)->where($type, 1)->get();
+			if($check_if_record_exists->count() > 0) {
+				foreach ($check_if_record_exists as $key => $exists) {
+					if($type == 'is_file_audit') {
+						$exists->is_file_audit = 0;
+						$exists->save();
+					} else {
+						$exists->is_site_visit = 0;
+						$exists->save();
+					}
+				}
+			} else {
+				$unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
+																->where('program_key', $program->program_key)
+    														->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
+    														->orderBy('unit_id', 'asc')
+    														->get();
+    		if($unitprograms->count() == 0) {
+    			$group_ids = array_diff($group_ids, [$this->htc_group_id]);
+    		}
+				foreach ($group_ids as $key => $group_id) {
+					//HTC
+					//	New
+					//
+					//	Old
+					//Other
+					//	New
+					//
+					//	Old
+					//
+					if($new_program && $group_id == $this->htc_group_id) {
+
+					} else {
+						$group = Group::find($group_id);
+						$insert_new = new UnitInspection;
+						$insert_new->program_id = $program->id;
+						$insert_new->audit_id = $audit->id;
+						$insert_new->audit_id = $audit->id;
+						$insert_new->group = $group->group_name;
+						$insert_new->group_id = $group_id;
+						$insert_new->unit_id = $unit->id;
+						$insert_new->unit_key = $unit->unit_key;
+						$insert_new->unit_name = $unit->unit_name;
+						$insert_new->building_key = $unit->building_key;
+						$insert_new->building_id = $unit->building->building_key;
+						$insert_new->audit_key = $audit->monitoring_key;
+						$insert_new->project_id = $project->id;
+						$insert_new->project_key = $project->project_key;
+						$insert_new->program_key = $program->program_key;
+						$insert_new->has_overlap = 0;
+						if($type == 'is_file_audit') {
+							$insert_new->is_file_audit = 1;
+							$insert_new->is_site_visit = 0;
+						} else {
+							$insert_new->is_site_visit = 1;
+							$insert_new->is_file_audit = 0;
+						}
+						$insert_new->save();
+					}
+				}
+			}
+			return true;
     }
 
 }

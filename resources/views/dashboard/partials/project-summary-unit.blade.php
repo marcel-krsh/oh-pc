@@ -45,36 +45,47 @@
 		if($htc_groups_count > 0 && ($all_groups_count > $htc_groups_count)) {
 			$split = true;
 			$htc_program_selected = $program_selected->where('group_id', $htc_group_id);
-			$htc_unit_program_selected_count = $htc_program_selected->where('is_site_visit', 1)->where('is_file_audit', 1)->count();
+			//$htc_unit_program_selected_count = $htc_program_selected->where('is_site_visit', 1)->where('is_file_audit', 1)->count();
 			$htc_site_program_selected_count = $htc_program_selected->where('is_site_visit', 1)->count();
 			$htc_file_program_selected_count = $htc_program_selected->where('is_file_audit', 1)->count();
+			$htc_group_ids = json_encode([$htc_group_id]);
+			if($htc_site_program_selected_count > 0 && $htc_file_program_selected_count > 0) {
+				$htc_unit_program_selected_count = 1;
+			} else {
+				$htc_unit_program_selected_count = 0;
+			}
 			$program_selected = $program_selected->whereNotIn('id', [$htc_group_id]);
-			$unit_program_selected_count = $program_selected->where('is_site_visit', 1)->where('is_file_audit', 1)->count();
+			//$unit_program_selected_count = $program_selected->where('is_site_visit', 1)->where('is_file_audit', 1)->count();
 			$site_program_selected_count = $program_selected->where('is_site_visit', 1)->count();
 			$file_program_selected_count = $program_selected->where('is_file_audit', 1)->count();
 			$group_ids = $other_groups->pluck('id')->toJson();
 		} else {
 			$split = false;
-			$unit_program_selected_count = $program_selected->where('is_site_visit', 1)->where('is_file_audit', 1)->count();
+			//$unit_program_selected_count = $program_selected->where('is_site_visit', 1)->where('is_file_audit', 1)->count();
 			$site_program_selected_count = $program_selected->where('is_site_visit', 1)->count();
 			$file_program_selected_count = $program_selected->where('is_file_audit', 1)->count();
 			$group_ids = $each_program->program->relatedGroups->pluck('id')->toJson();
 		}
-		//dd($group_ids);
-		//dd($split);
+		if($site_program_selected_count > 0 && $file_program_selected_count > 0) {
+			$unit_program_selected_count = 1;
+		} else {
+			$unit_program_selected_count = 0;
+		}
+		// if($each_program->program_key == 30004)
+		// dd($htc_program_selected);
 		@endphp
 		@if($split)
 		<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1  summary-unit-programs-{{ $each_program->unit_id }} {{ $selected_units_count > 0 ? 'has-selected' : 'no-selection' }}">
 			<div class="modal-project-summary-unit-program uk-visible-toggle">
 				<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle {{ $htc_unit_program_selected_count > 0 ? 'inspectable-selected' : '' }}" data-unitid="{{ $each_program->unit_id }}">
 					@if($htc_unit_program_selected_count > 0)
-					<i class="a-circle-checked" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }} );"></i>
+					<i class="a-circle-checked" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $htc_group_ids }} );"></i>
 					@else
-					<i class="a-circle" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }});"></i>
+					<i class="a-circle" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $htc_group_ids }});"></i>
 					@endif
 				</div>
 				<div class="modal-project-summary-unit-program-info">
-					<div class="modal-project-summary-unit-program-icon {{ $htc_site_program_selected_count > 0 ? 'inspectable-selected': '' }}" data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }}, 'physical');">
+					<div class="modal-project-summary-unit-program-icon {{ $htc_site_program_selected_count > 0 ? 'inspectable-selected': '' }}" data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $htc_group_ids }}, 'physical');">
 						<i class="a-mobile"></i>
 						<div class="modal-project-summary-unit-program-icon-status">
 							@if($htc_site_program_selected_count > 0)
@@ -84,7 +95,7 @@
 							@endif
 						</div>
 					</div>
-					<div class="modal-project-summary-unit-program-icon {{ $htc_file_program_selected_count > 0 ? 'inspectable-selected': '' }}"  data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }}, 'file');">
+					<div class="modal-project-summary-unit-program-icon {{ $htc_file_program_selected_count > 0 ? 'inspectable-selected': '' }}"  data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $htc_group_ids }}, 'file');">
 						<i class="a-folder"></i>
 						<div class="modal-project-summary-unit-program-icon-status">
 							@if( $htc_file_program_selected_count > 0 )
@@ -155,16 +166,16 @@
 			<div class="modal-project-summary-unit-programs uk-margin-remove uk-width-1-1  summary-unit-programs-{{ $unit->unit_id }} {{ $selected_units_count > 0 ? 'has-selected' : 'no-selection' }}">
 				<div class="modal-project-summary-unit-program uk-visible-toggle">
 					<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle" data-unitid="{{ $unit->unit_id }}">
-						<i class="a-circle" onclick="projectSummarySelection(this, {{ $unit->unit_id }}, {{ $unit->program_key }}, {{ $sub_group_ids }});"></i>
+						<i class="a-circle" onclick="projectSummarySelection(this, {{ $unit->unit_id }}, {{ $ex_pr['program_key'] }}, {{ $sub_group_ids }});"></i>
 					</div>
 					<div class="modal-project-summary-unit-program-info">
-						<div class="modal-project-summary-unit-program-icon" data-unitid="{{ $unit->unit_id }}" onclick="projectSummarySelection(this, {{ $unit->unit_id }}, {{ $unit->program_key }}, {{ $sub_group_ids }}, 'physical');">
+						<div class="modal-project-summary-unit-program-icon" data-unitid="{{ $unit->unit_id }}" onclick="projectSummarySelection(this, {{ $unit->unit_id }}, {{ $ex_pr['program_key'] }}, {{ $sub_group_ids }}, 'physical');">
 							<i class="a-mobile"></i>
 							<div class="modal-project-summary-unit-program-icon-status">
 								<i class="a-circle"></i>
 							</div>
 						</div>
-						<div class="modal-project-summary-unit-program-icon"  data-unitid="{{ $unit->unit_id }}" onclick="projectSummarySelection(this, {{ $unit->unit_id }}, {{ $unit->program_key }}, {{ $sub_group_ids }}, 'file');">
+						<div class="modal-project-summary-unit-program-icon"  data-unitid="{{ $unit->unit_id }}" onclick="projectSummarySelection(this, {{ $unit->unit_id }}, {{ $ex_pr['program_key'] }}, {{ $sub_group_ids }}, 'file');">
 							<i class="a-folder"></i>
 							<div class="modal-project-summary-unit-program-icon-status">
 								<i class="a-circle"></i>
