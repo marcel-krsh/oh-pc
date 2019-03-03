@@ -806,18 +806,35 @@ class ComplianceSelectionJob implements ShouldQueue
                 $audit->save();
                 $this->processes++;
 
+            $number_of_units_required = ceil($total/5);
+
             if (!$has_htc_funding) {
                 $comments[] = 'By checking each unit and associated programs with HTC funding, we determined that no HTC funding exists for this pool';
                 $audit->comment = $audit->comment.' | By checking each unit and associated programs with HTC funding, we determined that no HTC funding exists for this pool';
 
                 $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 20);
 
-                $required_units = count($units_selected);
+                //$required_units = count($units_selected);
+                $required_units = $number_of_units_required;
 
                 $comments[] = '20% of the pool is randomly selected. Total selected: '.count($units_selected);
                  $audit->comment = $audit->comment.' | 20% of the pool is randomly selected. Total selected: '.count($units_selected);
                  
                 $audit->save();
+                $this->processes++;
+            
+                $selection[] = [
+                    "group_id" => 1,
+                    "building_key" => "",
+                    "program_name" => "FAF NSP TCE RTCAP 811",
+                    "program_ids" => SystemSetting::get('program_bundle'),
+                    "pool" => count($units),
+                    "units" => $units_selected,
+                    "totals" => count($units_selected),
+                    "required_units" => $required_units,
+                    "use_limiter" => $has_htc_funding, // used to trigger limiter
+                    "comments" => $comments
+                ];
                 $this->processes++;
 
             } else {
@@ -888,12 +905,27 @@ class ComplianceSelectionJob implements ShouldQueue
                     if ($isLeasePurchase) {
                         $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 20);
 
-                        $required_units = count($units_selected);
+                        //$required_units = count($units_selected);
+                        $required_units = $number_of_units_required;
 
                         $comments[] = '20% of the pool is randomly selected. Total selected: '.count($units_selected);
                         $audit->comment = $audit->comment.' | 20% of the pool is randomly selected. Total selected: '.count($units_selected);
                             $audit->save();
                             $this->processes++;
+            
+                        $selection[] = [
+                            "group_id" => 1,
+                            "building_key" => "",
+                            "program_name" => "FAF NSP TCE RTCAP 811",
+                            "program_ids" => SystemSetting::get('program_bundle'),
+                            "pool" => count($units),
+                            "units" => $units_selected,
+                            "totals" => count($units_selected),
+                            "required_units" => $required_units,
+                            "use_limiter" => $has_htc_funding, // used to trigger limiter
+                            "comments" => $comments
+                        ];
+                        $this->processes++;
                     } else {
                         $is_multi_building_project = 0;
 
@@ -922,14 +954,31 @@ class ComplianceSelectionJob implements ShouldQueue
                             $units_selected = $this->randomSelection($audit, $units->pluck('unit_key')->toArray(), 20);
                             $this->processes++;
 
-                            $required_units = count($units_selected);
+                            //$required_units = count($units_selected);
+                            $required_units = $number_of_units_required;
 
                             $comments[] = '20% of the pool is randomly selected. Total selected: '.count($units_selected);
 
                             $audit->comment = $audit->comment.' | 20% of the pool is randomly selected. Total selected: '.count($units_selected);
                                     $audit->save();
                                     $this->processes++;
+            
+                            $selection[] = [
+                                "group_id" => 1,
+                                "building_key" => "",
+                                "program_name" => "FAF NSP TCE RTCAP 811",
+                                "program_ids" => SystemSetting::get('program_bundle'),
+                                "pool" => count($units),
+                                "units" => $units_selected,
+                                "totals" => count($units_selected),
+                                "required_units" => $required_units,
+                                "use_limiter" => $has_htc_funding, // used to trigger limiter
+                                "comments" => $comments
+                            ];
+                            $this->processes++;
                         } else {
+                            $use_limiter = 0; // we apply the limiter for each building
+
                             $comments[] = 'The project is not a multi building project.';
                             $audit->comment = $audit->comment.' | The project is not a multi building project.';
                                     $audit->save();
@@ -937,17 +986,51 @@ class ComplianceSelectionJob implements ShouldQueue
                             // group units by building, then proceed with the random selection
                             // create a new list of units based on building and project key
                             $units_selected = [];
+
+                            $first_building_done = 0; // this is to control the comments to only keep the ones we care about after the first building information is displayed.
+
                             foreach ($buildings as $building) {
                                 $this->processes++;
-                                $new_building_selection = $this->randomSelection($audit,$building->units->pluck('unit_key')->toArray(), 20);
+                                if($first_building_done){
+                                    $comments = array(); // clear the comments.
+                                }else{
+                                    $first_building_done = 1;
+                                }
 
-                                $required_units = $required_units + count($new_building_selection);
+                                $units_for_that_building = Unit::where('building_key', '=', $building->building_key)
+                                                ->whereHas('programs', function ($query) use ($audit, $program_bundle_ids) {
+                                                    $query->where('monitoring_key', '=', $audit->monitoring_key);
+                                                    $query->whereIn('program_key', $program_bundle_ids);
+                                                })
+                                                ->pluck('unit_key')
+                                                ->toArray();
+
+                                $required_units_for_that_building = ceil(count($units_for_that_building)/5);
                                 
-                                $units_selected = array_merge($units_selected, $new_building_selection);
+                                $required_units = $required_units_for_that_building;
+                                
+                                $new_building_selection = $this->randomSelection($audit,$units_for_that_building, 20);
+                                $units_selected = $new_building_selection;
+                                $units_selected_count = count($new_building_selection);
+
                                 $comments[] = '20% of building key '.$building->building_key.' is randomly selected. Total selected: '.count($new_building_selection).'.';
                                 $audit->comment = $audit->comment.' | 20% of building key '.$building->building_key.' is randomly selected. Total selected: '.count($new_building_selection).'.';
                                     $audit->save();
                                     $this->processes++;
+
+                                $selection[] = [
+                                    "group_id" => 1,
+                                    "building_key" => $building->building_key,
+                                    "program_name" => "FAF NSP TCE RTCAP 811",
+                                    "program_ids" => SystemSetting::get('program_bundle'),
+                                    "pool" => count($units),
+                                    "units" => $units_selected,
+                                    "totals" => count($units_selected),
+                                    "required_units" => $required_units,
+                                    "use_limiter" => $has_htc_funding, // used to trigger limiter
+                                    "comments" => $comments
+                                ];
+                                $this->processes++;
                             }
                         }
                     }
@@ -960,21 +1043,22 @@ class ComplianceSelectionJob implements ShouldQueue
                     $audit->comment = $audit->comment.' | 20% of the pool is randomly selected. Total selected: '.count($units_selected);
                                     $audit->save();
                                     $this->processes++;
+
+                    $selection[] = [
+                        "group_id" => 1,
+                        "building_key" => "",
+                        "program_name" => "FAF NSP TCE RTCAP 811",
+                        "program_ids" => SystemSetting::get('program_bundle'),
+                        "pool" => count($units),
+                        "units" => $units_selected,
+                        "totals" => count($units_selected),
+                        "required_units" => $required_units,
+                        "use_limiter" => $has_htc_funding, // used to trigger limiter
+                        "comments" => $comments
+                    ];
+                    $this->processes++;
                 }
             }
-            
-            $selection[] = [
-                "group_id" => 1,
-                "program_name" => "FAF NSP TCE RTCAP 811",
-                "program_ids" => SystemSetting::get('program_bundle'),
-                "pool" => count($units),
-                "units" => $units_selected,
-                "totals" => count($units_selected),
-                "required_units" => $required_units,
-                "use_limiter" => $has_htc_funding, // used to trigger limiter
-                "comments" => $comments
-            ];
-            $this->processes++;
         }else{
 
             $audit->comment_system = $audit->comment_system.' | Select Process is not working with group 1.';
