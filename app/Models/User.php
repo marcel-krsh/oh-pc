@@ -481,7 +481,11 @@ class User extends Authenticatable
             $response = json_decode( $data, true );
             curl_close( $ch );
             
-            return [$response['rows'][0]['elements'][0]['distance']['text'], $response['rows'][0]['elements'][0]['duration']['text'], $response['rows'][0]['elements'][0]['duration']['value']]; // array with 10 miles, 10 hours 36 mins, and the value in seconds
+            if(count($response)){
+                return [$response['rows'][0]['elements'][0]['distance']['text'], $response['rows'][0]['elements'][0]['duration']['text'], $response['rows'][0]['elements'][0]['duration']['value']]; // array with 10 miles, 10 hours 36 mins, and the value in seconds
+            } else {
+                return 0;
+            }
             
         }else{
             return null;
