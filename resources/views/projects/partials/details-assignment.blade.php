@@ -14,18 +14,22 @@
 					@if($data['summary']['needed'])<br />
 					<span id="estimated_hours_needed">{{$data['summary']['needed']}}</span> Need Assigned @endif
 				</h3>
-				@elseif(Auth::user()->id == $project->selected_audit()->lead_auditor->id)
+				@elseif($project->selected_audit()->lead_auditor && Auth::user()->id == $project->selected_audit()->lead_auditor->id)
 				<h3 class="estHour">
 					Enter an estimated number of hours for this audit.
 				</h3>
 				@else
 				<h3 class="estHour">
+					@if($project->selected_audit()->lead_auditor)
 					Sorry, no assignments have been made available yet. {{$project->selected_audit()->lead_auditor->full_name()}} needs to enter the estimated time for this audit, and then assign auditors to each day of the inspection.
+					@else
+					Sorry, no assignments have been made and no lead auditor has been named.
+					@endif
 				</h3>
 
 				@endif
 
-				@if(Auth::user()->id == $project->selected_audit()->lead_auditor->id)
+				@if($project->selected_audit()->lead_auditor && Auth::user()->id == $project->selected_audit()->lead_auditor->id)
 				<h3 class="estHour estHourForm" @if($data['summary']['estimated'] != ':' || !$data['summary']['estimated']) style="display:none" @else style="margin-top: 0;" @endif>
 					<form id="estimated_hours_form" method="post" class="uk-width-1-1 uk-margin-bottom">
 						<div class="uk-grid-small" uk-grid>
@@ -65,7 +69,7 @@
 				</ul>
 			</div>
 
-			@if(Auth::user()->id == $project->selected_audit()->lead_auditor->id)
+			@if($project->selected_audit()->lead_auditor && Auth::user()->id == $project->selected_audit()->lead_auditor->id)
 				<div id="project-details-assignment-buttons" class="uk-width-1-1 uk-margin-large-top project-details-buttons ">
 					<div class="project-details-button-container" id="addadaybutton">
 						<!-- <input type="text" id="addaday" name="addaday" class="flatpickr-input"  data-input style="display:none">
@@ -260,7 +264,11 @@
 				@endforeach
 			</div>
 			<hr />
+			@if($project->selected_audit()->lead_auditor)
 			<span class="italic">NOTE: Only lead auditors can change a shedule. If you have any questions about your schedule please contact {{$project->selected_audit()->lead_auditor->full_name()}}.</span>
+			@else
+			<span class="italic">NOTE: Only lead auditors can change a shedule.</span>
+			@endif
 		</div>
 
 	</div>
@@ -504,7 +512,7 @@
 </script>
 
 <script>
-	@if(Auth::user()->id == $project->selected_audit()->lead_auditor->id)
+	@if(Auth::user()->id == $project->selected_audit()->lead_auditor && Auth::user()->id == $project->selected_audit()->lead_auditor->id)
 	function scheduleTime(eventid, dayid, auditorid){
 		var travel = parseInt($('#travel-'+eventid).val(), 10);
 		var start = parseInt($('#start-'+eventid).val(), 10);
