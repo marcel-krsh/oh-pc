@@ -21,6 +21,15 @@
 
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
+        // Route::get('/testProject/{project}', function($project){
+        //     $project = App\Models\Project::where('id',$project)->with('programs.program')->first();
+        //     //dd($project->programs);
+        //     $content = $project->id."<br />";
+        //     forEach($project->programs as $program){
+        //         $content.= $program->program->program_name."<br />";
+        //     }
+        //     return $content;
+        // });
         // rerun compliance run
         Route::get('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
         Route::post('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
