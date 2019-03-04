@@ -751,12 +751,13 @@ The following div is defined in this particular tab and pushed to the main layou
 				}, function(data) {
 					if(data){
 					UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection In Progress', {pos:'top-right', timeout:1000, status:'success'});
+
+		    		$('#audit-r-'+audit).remove();
 				}else{
-					UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection Failed', {pos:'top-right', timeout:1000, status:'error'});
+					UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection Failed. Findings were found.', {pos:'top-right', timeout:5000, status:'warning'});
 				}
 				});
 
-		    	$('#audit-r-'+audit).remove();
 		}, function () {
 		    console.log('Rejected.')
 		});

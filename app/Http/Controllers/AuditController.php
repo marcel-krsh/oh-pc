@@ -60,6 +60,7 @@ class AuditController extends Controller
 
     public function rerunCompliance(Audit $audit)
     {
+        // if there are findings, we cannot rerun the compliance
         if ($audit->findings->count() < 1) {
             $auditsAhead = Job::where('queue', 'compliance')->count();
             $audit->rerun_compliance = 1;
