@@ -57,7 +57,7 @@
 
 
 </div><!--4-10-->
-
+@if(env('APP_ENV') == 'local')
 <div class="uk-width-2-5@m uk-width-1-1">
     <div class="uk-grid-collapse" uk-grid>
         <div class="uk-width-1-1">
@@ -219,6 +219,7 @@
     </div><!--6-10-->
 
 </div>
+@endif
 <?php /*
 <div class="uk-width-3-5@m uk-width-1-1">
     <div class="uk-grid">
