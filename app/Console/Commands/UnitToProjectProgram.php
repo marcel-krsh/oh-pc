@@ -162,7 +162,7 @@ class UnitToProjectProgram extends Command
                             
 
                         }
-                        $this->line(PHP_EOL)
+                        $this->line(PHP_EOL);
                         $projectUnits->finish();
                     } else {
                         $cannotRun .='Project id:'.$project->id.' with devco reference '.$project->project_number.' (AKA: '.$project->project_name.') has '.count(array_intersect($otherFundingKeys, $fundingKeys)).' programs with duplicate funding keys that OVERLAP with our inspected programs - thus we cannot reliably assign programs to units.<br />'.$projectPrograms.'=======================================================================================';
