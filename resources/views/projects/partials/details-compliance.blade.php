@@ -158,11 +158,12 @@
 									</tr>
 								</tbody>
 							</table>
+							<button class="uk-button uk-button-default expandcomment" onclick="$(this).find( 'span' ).toggleClass('a-arrow-small-down a-arrow-small-up'); $('#comment-{{$program['id']}}{{$program['building_key']}}').toggleClass('uk-hidden');"><span class="a-arrow-small-down uk-text-small uk-vertical-align-middle"></span> VIEW COMPLIANCE SELECTION PROCESS</button>
 						</div>
 						<div class="uk-width-2-5">
 						</div>
 					</div>
-					<div class="uk-column-1-2 uk-padding">
+					<div id="comment-{{$program['id']}}{{$program['building_key']}}" class="uk-column-1-2 uk-padding uk-hidden">
 
 						<p><strong>{{$program['name']}} COMPLIANCE SELECTION NOTES:</strong></p>
 
