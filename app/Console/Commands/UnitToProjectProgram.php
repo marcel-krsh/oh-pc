@@ -130,7 +130,8 @@ class UnitToProjectProgram extends Command
                         $this->line(PHP_EOL);
                         foreach($units as $unit){
                             if($unit->unit_key == '404633'){
-                                $go == 1;
+                                $go = 1;
+                                $this->line('SKIPPING '.$unit->unit_key);
                             }
 
                             if($go == 1){
