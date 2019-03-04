@@ -70,7 +70,7 @@ class UnitToProjectProgram extends Command
 
         foreach($projects as $project){
             if(count($project->programs)>0 && count($project->units)>0){
-                $this->line("Project {$project->project_number}".PHP_EOL.PHP_EOL);
+                $this->line("Project {$project->project_number}, ID: {$project->id}, Key: {$project->project_key}".PHP_EOL.PHP_EOL);
                 //dd($project,$project->programs);
                 $programs = $project->programs;
                 $units = $project->units;
@@ -126,15 +126,17 @@ class UnitToProjectProgram extends Command
                         $apiConnect = new DevcoService();
                         $unitCount = 0;
                         $projectUnits = $this->output->createProgressBar(count($units));
+                        $this->line(PHP_EOL);
                         foreach($units as $unit){
-                            $projectUnits->advance();
+                            //$projectUnits->advance();
+                            $this->line("UNIT KEY: {$unit->unit_key} || ");
                             $unitCount++;
                             // get the unit's programs based on funding keys (not reliable, but with the above test passed, we can work on the assumption this is accurate.)
                             $unitProgram = $apiConnect->getUnitPrograms($unit->unit_key, 1, 'admin@allita.org','SystemUser', 1, 'SystemServer');
 
                             $unitPrograms = json_decode($unitProgram, true);
                             $unitPrograms = $unitPrograms['data'];
-
+                            //sleep(1);
                             if(is_array($unitPrograms) && count($unitPrograms) > 0){
                                 foreach($unitPrograms as $up){
                                     if(in_array($up['attributes']['fundingProgramKey'], $fundingKeys)){
@@ -147,18 +149,26 @@ class UnitToProjectProgram extends Command
 
                                         $projectProgramKey = ProjectProgram::select('project_program_key')->where('project_id',$project->id)->where('program_key',$programKey)->first();
 
-
+                                        
                                         //dd($unit,$up,$unitCount,$canRunCount,$programKey);
                                         // insert the record into the program unit table using the api
+                                        $this->line(" DevelopmentProgramKey: {$projectProgramKey->project_program_key} || FundingProgramKey: {$up['attributes']['fundingProgramKey']}");
                                         $push = $apiConnect->putUnitProgram($unit->unit_key,$projectProgramKey->project_program_key,$up['attributes']['fundingProgramKey'],$up['attributes']['startDate'],$up['attributes']['endDate'], 1, 'admin@allita.org','SystemUser', 1, 'SystemServer'); 
+
+                                        //sleep(1);
+
+
                                         
                                     }
                                     
                                 }
+                            } else {
+                                $this->line('No Program Data To Update');
                             }
                             
 
                         }
+                        $this->line(PHP_EOL);
                         $projectUnits->finish();
                     } else {
                         $cannotRun .='Project id:'.$project->id.' with devco reference '.$project->project_number.' (AKA: '.$project->project_name.') has '.count(array_intersect($otherFundingKeys, $fundingKeys)).' programs with duplicate funding keys that OVERLAP with our inspected programs - thus we cannot reliably assign programs to units.<br />'.$projectPrograms.'=======================================================================================';
