@@ -300,9 +300,11 @@ if(Auth::check()){
 					<li>
 						<div id="detail-tab-2-content"></div>
 					</li>
+					@if(env('APP_ENV') == 'local')
 					<li>
 						<div id="detail-tab-3-content"></div>
 					</li>
+					@endIf
 					@if(Auth::user()->admin_access())
 					<li>
 						<div id="detail-tab-5-content" style="padding-top:20px;"></div>
