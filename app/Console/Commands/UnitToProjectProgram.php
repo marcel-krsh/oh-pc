@@ -136,7 +136,7 @@ class UnitToProjectProgram extends Command
 
                             $unitPrograms = json_decode($unitProgram, true);
                             $unitPrograms = $unitPrograms['data'];
-
+                            sleep(1);
                             if(is_array($unitPrograms) && count($unitPrograms) > 0){
                                 foreach($unitPrograms as $up){
                                     if(in_array($up['attributes']['fundingProgramKey'], $fundingKeys)){
@@ -149,7 +149,7 @@ class UnitToProjectProgram extends Command
 
                                         $projectProgramKey = ProjectProgram::select('project_program_key')->where('project_id',$project->id)->where('program_key',$programKey)->first();
 
-                                        sleep(1);
+                                        
                                         //dd($unit,$up,$unitCount,$canRunCount,$programKey);
                                         // insert the record into the program unit table using the api
                                         $this->line(" DevelopmentProgramKey: {$projectProgramKey->project_program_key} || FundingProgramKey: {$up['attributes']['fundingProgramKey']}");
@@ -162,6 +162,8 @@ class UnitToProjectProgram extends Command
                                     }
                                     
                                 }
+                            } else {
+                                $this->line('No Program Data To Update');
                             }
                             
 
