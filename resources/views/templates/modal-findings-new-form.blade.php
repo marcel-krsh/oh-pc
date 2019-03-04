@@ -8,13 +8,13 @@
 	<hr class="dashed-hr uk-margin-bottom">
 	<div class="uk-form">
 		<div class="uk-form-row">
-			@if($findingtypeid->one) <label class="use-hand-cursor"><input type="radio" name="level" class="uk-radio" value="1" @if(!$findingtypeid->two && !$findingtypeid->three) checked @endif onClick="$('#finding-comment').focus();"> LEVEL 1 <span class="uk-hidden-touch "><i class="a-info-circle" uk-tooltip title="{{$findingtypeid->one_description}}"></i></span></label>
-			<span class="uk-hidden-notouch uk-margin-small-top">{{$findingtypeid->one_description}}  <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top">
+			@if($findingtypeid->one) <label class="use-hand-cursor"><input type="radio" name="level" class="uk-radio" value="1" @if(!$findingtypeid->two && !$findingtypeid->three) checked @endif onClick="$('#finding-comment').focus();"> LEVEL 1 </label>
+			<span class=" uk-margin-small-top">{{$findingtypeid->one_description}}  <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top">
 			</span> &nbsp; &nbsp;@endif
 
-			@if($findingtypeid->two) <label class="use-hand-cursor"><input type="radio" name="level" class="uk-radio" value="2" @if(!$findingtypeid->one && !$findingtypeid->three) checked @endif onClick="$('#finding-comment').focus();"> LEVEL 2  <span class="uk-hidden-touch"><i class="a-info-circle" uk-tooltip title="{{$findingtypeid->two_description}}"></i></span></label>  &nbsp; &nbsp;<span class="uk-hidden-notouch uk-margin-small-top">{{$findingtypeid->two_description}}  <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top"></span>@endif
+			@if($findingtypeid->two) <label class="use-hand-cursor"><input type="radio" name="level" class="uk-radio" value="2" @if(!$findingtypeid->one && !$findingtypeid->three) checked @endif onClick="$('#finding-comment').focus();"> LEVEL 2  </label>  &nbsp; &nbsp;<span class=" uk-margin-small-top">{{$findingtypeid->two_description}}  <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top"></span>@endif
 
-			@if($findingtypeid->three) <label class="use-hand-cursor" ><input type="radio" name="level" class="uk-radio" value="3" @if(!$findingtypeid->two && !$findingtypeid->one) checked @endif onClick="$('#finding-comment').focus();"> LEVEL 3  <span class="uk-hidden-touch"><i class="a-info-circle" uk-tooltip title="{{$findingtypeid->three_description}}"></i></span> </label>  &nbsp; &nbsp;<span class="uk-hidden-notouch uk-margin-small-top">{{$findingtypeid->three_description}} </span>@endif
+			@if($findingtypeid->three) <label class="use-hand-cursor" ><input type="radio" name="level" class="uk-radio" value="3" @if(!$findingtypeid->two && !$findingtypeid->one) checked @endif onClick="$('#finding-comment').focus();"> LEVEL 3   </label>  &nbsp; &nbsp;<span class=" uk-margin-small-top">{{$findingtypeid->three_description}} </span>@endif
 		</div>
 	</div>
 	<hr class="dashed-hr uk-margin-bottom">
