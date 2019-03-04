@@ -129,7 +129,7 @@ class UnitToProjectProgram extends Command
                         $projectUnits = $this->output->createProgressBar(count($units));
                         $this->line(PHP_EOL);
                         foreach($units as $unit){
-                            if($unit->unit_key == 404633){
+                            if($unit->unit_key == '404633'){
                                 $go == 1;
                             }
 
