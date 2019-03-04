@@ -749,12 +749,15 @@ The following div is defined in this particular tab and pushed to the main layou
 		    	$.post('/audit/'+audit+'/rerun', {
 					'_token' : '{{ csrf_token() }}'
 				}, function(data) {
-					if(data){
-					UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection In Progress', {pos:'top-right', timeout:1000, status:'success'});
+					if(data == 1){
+						UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection In Progress', {pos:'top-right', timeout:1000, status:'success'});
 
-		    		$('#audit-r-'+audit).remove();
+			    		$('#audit-r-'+audit).remove();
+			    	}else{
+			    		UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection Failed. Findings were found.', {pos:'top-right', timeout:5000, status:'warning'});
+			    	}
 				}else{
-					UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection Failed. Findings were found.', {pos:'top-right', timeout:5000, status:'warning'});
+					UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection Failed.', {pos:'top-right', timeout:5000, status:'warning'});
 				}
 				});
 

@@ -61,7 +61,7 @@ class AuditController extends Controller
     public function rerunCompliance(Audit $audit)
     {
         // if there are findings, we cannot rerun the compliance
-        dd($audit->findings->count(), count($audit->findings));
+        // dd($audit->findings->count(), count($audit->findings));
         if ($audit->findings->count() < 1) {
             $auditsAhead = Job::where('queue', 'compliance')->count();
             $audit->rerun_compliance = 1;
@@ -74,7 +74,7 @@ class AuditController extends Controller
             return 1;
             //return '<p>Your request to re-run the compliance selection has been added to the queue. There are currently '.$auditsAhead.' audit(s) ahead of your request.</p><p>It usually takes approximately 1-10 minutes per audit selection depending on the size of the project.<p>';
         } else {
-            return null;
+            return 0;
             //return '<p>I am sorry, we cannot rerun your audit as it currently has findings against amenities on that project. You must finalize the current audit in order to refresh the program to unit association.</p>';
         }
 
