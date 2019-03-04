@@ -161,7 +161,6 @@
     	</div>
     </div>
 </template>
-
 <div id="audits" class="uk-no-margin-top" uk-grid>
 	<div class="uk-margin-remove-top uk-width-1-1" uk-grid>
 		<div id="auditsfilters" class="uk-width-2-3 uk-margin-top">
