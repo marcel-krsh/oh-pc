@@ -512,7 +512,7 @@
 </script>
 
 <script>
-	@if(Auth::user()->id == $project->selected_audit()->lead_auditor && Auth::user()->id == $project->selected_audit()->lead_auditor->id)
+	@if($project->selected_audit()->lead_auditor && Auth::user()->id == $project->selected_audit()->lead_auditor->id)
 	function scheduleTime(eventid, dayid, auditorid){
 		var travel = parseInt($('#travel-'+eventid).val(), 10);
 		var start = parseInt($('#start-'+eventid).val(), 10);
