@@ -68,7 +68,9 @@ class UnitToProjectProgram extends Command
         $this->line('PROCESSING '.count($projects).' PROJECTS'.PHP_EOL.PHP_EOL);
 
         $go = 0;
+        $projectCount == 0;
         foreach($projects as $project){
+            $projectCount++;
             if(count($project->programs)>0 && count($project->units)>0){
                 $this->line("Project {$project->project_number}, ID: {$project->id}, Key: {$project->project_key}".PHP_EOL.PHP_EOL);
                 //dd($project,$project->programs);
@@ -191,6 +193,7 @@ class UnitToProjectProgram extends Command
                 $this->line($canRun.'=======================================================================================');
                 $canRunCount++;
             }
+            $this->line(PHP_EOL.'FINISHED '.$projectCount.'/'.count($projects).PHP_EOL);
 
         }
 
