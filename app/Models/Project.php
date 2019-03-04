@@ -305,7 +305,12 @@ class Project extends Model
         // $test = ProjectProgram::where('project_id','45055')->where('program_status_type_id', SystemSetting::get('active_program_status_type_id'))
         //         ->whereIn('program_key',$programKeys)->get();
         // dd($test,$programKeys);
-        return $this->hasMany(\App\Models\ProjectProgram::class, 'project_id')->where('program_status_type_id', SystemSetting::get('active_program_status_type_id'))
+        // need to make this read from system settings (not hard code) for program statuses
+        return $this->hasMany(\App\Models\ProjectProgram::class, 'project_id')
+                ->where('program_status_type_id', 246 )
+                ->orWhere('program_status_type_id', 206)
+                ->orWhere('program_status_type_id', 210)
+                ->orWhere('program_status_type_id', 211)
                 ->whereIn('program_key',$programKeys);
     }
     public function all_other_programs() : HasMany
