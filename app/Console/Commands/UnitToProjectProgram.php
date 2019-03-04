@@ -136,7 +136,7 @@ class UnitToProjectProgram extends Command
 
                             $unitPrograms = json_decode($unitProgram, true);
                             $unitPrograms = $unitPrograms['data'];
-                            sleep(1);
+                            //sleep(1);
                             if(is_array($unitPrograms) && count($unitPrograms) > 0){
                                 foreach($unitPrograms as $up){
                                     if(in_array($up['attributes']['fundingProgramKey'], $fundingKeys)){
@@ -155,7 +155,7 @@ class UnitToProjectProgram extends Command
                                         $this->line(" DevelopmentProgramKey: {$projectProgramKey->project_program_key} || FundingProgramKey: {$up['attributes']['fundingProgramKey']}");
                                         $push = $apiConnect->putUnitProgram($unit->unit_key,$projectProgramKey->project_program_key,$up['attributes']['fundingProgramKey'],$up['attributes']['startDate'],$up['attributes']['endDate'], 1, 'admin@allita.org','SystemUser', 1, 'SystemServer'); 
 
-                                        sleep(1);
+                                        //sleep(1);
 
 
                                         
