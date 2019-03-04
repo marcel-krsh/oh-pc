@@ -67,7 +67,7 @@ class UnitToProjectProgram extends Command
 
         $this->line('PROCESSING '.count($projects).' PROJECTS'.PHP_EOL.PHP_EOL);
 
-
+        $go = 0;
         foreach($projects as $project){
             if(count($project->programs)>0 && count($project->units)>0){
                 $this->line("Project {$project->project_number}, ID: {$project->id}, Key: {$project->project_key}".PHP_EOL.PHP_EOL);
@@ -83,7 +83,7 @@ class UnitToProjectProgram extends Command
                 $otherFundingKeys = array();
                 $programFundingKeyToProgramKey = '';
                 $programFundingKeyToProgramKey = array();
-                $go = 0;
+                
                 foreach($programs as $program){
                     // put the funding keys into an array
                     $projectPrograms .= $program->program->program_name." - funding program key: {$program->program->funding_program_key} | award number: {$program->award_number}<br />";
