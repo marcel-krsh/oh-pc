@@ -75,7 +75,7 @@
 		// remove all and then display only selected
 		$('[id^=summary-btn-]').removeClass('button-filter-selected');
 		window.buildingKey = buildingKey;
-		$('.has-selected, .no-selection').fadeOut( "slow", function() {
+		$('.modal-project-summary-unit').fadeOut( "slow", function() {
 			$('.'+window.buildingKey).fadeIn( "slow");
 			console.log('fading in '+window.buildingKey);
 		});
