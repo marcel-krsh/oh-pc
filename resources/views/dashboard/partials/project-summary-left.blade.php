@@ -13,8 +13,8 @@
 							<td class="uk-text-center"><i class="a-folder iheader"></i></td>
 						</tr>
 						@foreach($data['programs'] as $prog)
-						<tr class="uk-margin-top" style="border-top: 1px dashed">
-							<td>
+						<tr style="border-top: 1px dashed">
+							<td style="padding-top:10px;">
 								<div uk-leader><strong>{{ $prog['name'] }} @if($prog['building_name']) | {{$prog['building_name']}} @endif</strong></div>
 							</td>
 							<td class="uk-text-center border-right"></td>
@@ -39,7 +39,7 @@
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Selected Units</div>
 							</td>
 							<td class="uk-text-center border-right">{{$prog['selected_units']}}</td>
-							<td class="uk-text-center">{{$prog['selected_units_file']}}</td>
+							<td class="uk-text-center" style="padding-bottom:20px;">{{$prog['selected_units_file']}}</td>
 						</tr>
 						@endforeach
 					</tbody>
