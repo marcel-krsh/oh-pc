@@ -74,10 +74,10 @@
 	function filterBuilding(buildingKey){
 		// remove all and then display only selected
 		$('[id^=summary-btn-]').removeClass('button-filter-selected');
-		
-		$('.has-selected, .no-selection').fadeOut( "slow", function() use buildingKey {
-			$('.building-'+buildingKey).fadeIn( "slow");
-			console.log('fading in building-'+buildingKey);
+		window.buildingKey = buildingKey;
+		$('.has-selected, .no-selection').fadeOut( "slow", function() {
+			$('.building-'+window.buildingKey).fadeIn( "slow");
+			console.log('fading in building-'+window.buildingKey);
 		});
 	}
 
