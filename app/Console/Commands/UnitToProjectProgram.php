@@ -67,8 +67,10 @@ class UnitToProjectProgram extends Command
 
         $this->line('PROCESSING '.count($projects).' PROJECTS'.PHP_EOL.PHP_EOL);
 
-
+        $go = 0;
+        $projectCount = 0;
         foreach($projects as $project){
+            $projectCount++;
             if(count($project->programs)>0 && count($project->units)>0){
                 $this->line("Project {$project->project_number}, ID: {$project->id}, Key: {$project->project_key}".PHP_EOL.PHP_EOL);
                 //dd($project,$project->programs);
@@ -83,6 +85,7 @@ class UnitToProjectProgram extends Command
                 $otherFundingKeys = array();
                 $programFundingKeyToProgramKey = '';
                 $programFundingKeyToProgramKey = array();
+                
                 foreach($programs as $program){
                     // put the funding keys into an array
                     $projectPrograms .= $program->program->program_name." - funding program key: {$program->program->funding_program_key} | award number: {$program->award_number}<br />";
@@ -128,42 +131,49 @@ class UnitToProjectProgram extends Command
                         $projectUnits = $this->output->createProgressBar(count($units));
                         $this->line(PHP_EOL);
                         foreach($units as $unit){
-                            //$projectUnits->advance();
-                            $this->line("UNIT KEY: {$unit->unit_key} || ");
-                            $unitCount++;
-                            // get the unit's programs based on funding keys (not reliable, but with the above test passed, we can work on the assumption this is accurate.)
-                            $unitProgram = $apiConnect->getUnitPrograms($unit->unit_key, 1, 'admin@allita.org','SystemUser', 1, 'SystemServer');
+                            if($unit->unit_key == '404633'){
+                                $go = 1;
+                                $this->line('SKIPPING '.$unit->unit_key);
+                            }
 
-                            $unitPrograms = json_decode($unitProgram, true);
-                            $unitPrograms = $unitPrograms['data'];
-                            //sleep(1);
-                            if(is_array($unitPrograms) && count($unitPrograms) > 0){
-                                foreach($unitPrograms as $up){
-                                    if(in_array($up['attributes']['fundingProgramKey'], $fundingKeys)){
-                                        // we are skipping programs that are not active or not inspected.
-                                        
-                                        // need to double check that it is not possible that the funding id is unique to our inspected programs - that it is not on a program we don't inspect
+                            if($go == 1){
+                                //$projectUnits->advance();
+                                $this->line("UNIT KEY: {$unit->unit_key} || ");
+                                $unitCount++;
+                                // get the unit's programs based on funding keys (not reliable, but with the above test passed, we can work on the assumption this is accurate.)
+                                $unitProgram = $apiConnect->getUnitPrograms($unit->unit_key, 1, 'admin@allita.org','SystemUser', 1, 'SystemServer');
 
-                                        $programKey =  $programFundingKeyToProgramKey['key'.$up['attributes']['fundingProgramKey']];
-                                        //get project program key
+                                $unitPrograms = json_decode($unitProgram, true);
+                                $unitPrograms = $unitPrograms['data'];
+                                //sleep(1);
+                                if(is_array($unitPrograms) && count($unitPrograms) > 0){
+                                    foreach($unitPrograms as $up){
+                                        if(in_array($up['attributes']['fundingProgramKey'], $fundingKeys)){
+                                            // we are skipping programs that are not active or not inspected.
+                                            
+                                            // need to double check that it is not possible that the funding id is unique to our inspected programs - that it is not on a program we don't inspect
 
-                                        $projectProgramKey = ProjectProgram::select('project_program_key')->where('project_id',$project->id)->where('program_key',$programKey)->first();
+                                            $programKey =  $programFundingKeyToProgramKey['key'.$up['attributes']['fundingProgramKey']];
+                                            //get project program key
 
-                                        
-                                        //dd($unit,$up,$unitCount,$canRunCount,$programKey);
-                                        // insert the record into the program unit table using the api
-                                        $this->line(" DevelopmentProgramKey: {$projectProgramKey->project_program_key} || FundingProgramKey: {$up['attributes']['fundingProgramKey']}");
-                                        $push = $apiConnect->putUnitProgram($unit->unit_key,$projectProgramKey->project_program_key,$up['attributes']['fundingProgramKey'],$up['attributes']['startDate'],$up['attributes']['endDate'], 1, 'admin@allita.org','SystemUser', 1, 'SystemServer'); 
+                                            $projectProgramKey = ProjectProgram::select('project_program_key')->where('project_id',$project->id)->where('program_key',$programKey)->first();
 
-                                        //sleep(1);
+                                            
+                                            //dd($unit,$up,$unitCount,$canRunCount,$programKey);
+                                            // insert the record into the program unit table using the api
+                                            $this->line(" DevelopmentProgramKey: {$projectProgramKey->project_program_key} || FundingProgramKey: {$up['attributes']['fundingProgramKey']}");
+                                            $push = $apiConnect->putUnitProgram($unit->unit_key,$projectProgramKey->project_program_key,$up['attributes']['fundingProgramKey'],$up['attributes']['startDate'],$up['attributes']['endDate'], 1, 'admin@allita.org','SystemUser', 1, 'SystemServer'); 
+
+                                            //sleep(1);
 
 
+                                            
+                                        }
                                         
                                     }
-                                    
+                                } else {
+                                    $this->line('No Program Data To Update');
                                 }
-                            } else {
-                                $this->line('No Program Data To Update');
                             }
                             
 
@@ -183,6 +193,7 @@ class UnitToProjectProgram extends Command
                 $this->line($canRun.'=======================================================================================');
                 $canRunCount++;
             }
+            $this->line(PHP_EOL.'FINISHED '.$projectCount.'/'.count($projects).PHP_EOL);
 
         }
 

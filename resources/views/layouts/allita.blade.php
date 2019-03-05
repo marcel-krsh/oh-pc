@@ -63,13 +63,14 @@ if(Auth::check()){
 		/*Universal header styles*/
 		
 		#apcsv-logo {
-		    margin: 0 auto;
-		    display: inline-block;
-		    width: auto;
-		    height: 100%;
-		    vertical-align: middle;
-		    float: left;
+		    position: relative; top: -9px; padding-left: 10px; display: inline-block;
 		}
+		@media only screen and (max-width: 1310px) {
+			#apcsv-logo {
+		    display: none;
+			}
+		}
+
 		#apcsv-list-left {
 		    float: left;
 		    display: inline-block;
@@ -148,6 +149,15 @@ if(Auth::check()){
 		#main-tabs {
 			padding-top:0px !important;
 		}
+
+		#phone {
+			height: 100%;
+			width: 100%;
+			position: absolute;
+			top:0;
+			left:0;
+			background: #000;
+		}
 		
 	</style>
 	<?php /* session(['disablePacer'=>0]); */ ?>
@@ -212,18 +222,32 @@ if(Auth::check()){
 	
 </head>
 <body >
-	
 	<a name="top"></a>
+	<div id="phone" class="uk-visible-touch uk-hidden@s">
+		<div id="phone-app" class="uk-container uk-align-center" >
+			<div uk-grid>
+				<div class="uk-width-1-1 uk-sticky" style="height: 10%;">
+					<a ><i class="a-menu uk-text-muted"></i> DEV|CO INSPECT</a>
+					<hr class="dashed-hr">
+
+				</div>
+				<div id="mobile-content" class="uk-scroll uk-width-1-1" style="height: 88%">
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
 	<!-- MAIN VIEW -->
 
-	<div id="app" class="uk-container uk-align-center" >
+	<div id="app" class="uk-container uk-align-center uk-visible@s" >
 		<div uk-grid class="uk-grid-collapse">
 			<div id="main-window" class=" uk-margin-large-bottom" uk-scrollspy="cls:uk-animation-fade; delay: 900">
 			
 				<div id="main-tabs" uk-sticky style="max-width: 1519px; ">
 					<div uk-grid>
 						<div class="uk-width-1-1">
-							<img src="/images/devco_logo.png" alt="DEV|CO Inspection powered by Allita PC" style="position: relative; top: -9px; padding-left: 10px; display: inline-block;">
+							<img id="apcsv-logo" src="/images/devco_logo.png" alt="DEV|CO Inspection powered by Allita PC" >
 						
 					        @can('access_auditor')
 					        <div class="menu-search uk-margin-large-left uk-padding-bottom" style="display: inline-block; position: relative;top:-5px;" class="uk-margin-large-left">
@@ -277,7 +301,7 @@ if(Auth::check()){
 								<button id="apcsv-toggle" class="pcsv-toggle" style="background-color: transparent; border: none; cursor: pointer; 0" >APPS</button>    
 								<div uk-dropdown="mode: click">
 									<div class="apcsv-menu-item"> 
-										<a href="https://devco.ohiohome.org/AuthorityOnlineALT/" style="font-weight: 400">DEV|CO Compliance</a>
+										<a href="https://devco.ohiohome.org/AuthorityOnline/" style="font-weight: 400">DEV|CO Compliance</a>
 									</div>
 									<div class="apcsv-menu-item">
 										<a href="/" style="font-weight: 400">DEV|CO Inspection</a>
@@ -324,7 +348,7 @@ if(Auth::check()){
 		</div>
 	</div>
 
-	<div id="mainfooter" uk-grid>
+	<div id="mainfooter"  class="uk-visible@s" uk-grid>
 		<div class="uk-width-1-3">
 			<p class="uk-dark uk-light" style="position: absolute; bottom: 20px;"><a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light"><i class="a-mobile-home"></i>
 			@if(Auth::check() && Auth::user()->auditor_access()) 

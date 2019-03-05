@@ -44,11 +44,12 @@
 	    	</div> -->
 	    	
 	    	<div class="uk-width-1-2">
-	    		<a onClick="dynamicModalClose(2)" class="uk-button uk-button-primary uk-width-1-1"> CLOSE MODAL</a>
+	    		<a onClick="dynamicModalClose(2);" class="uk-button uk-button-primary uk-width-1-1"> CLOSE</a>
 	    	</div>
+	    	
 	    	<div class="uk-width-1-2">
 	    		<input type="hidden" id="add-finding-form-finding_date" name="date" value="" />
-	    		<button class="uk-button uk-button-success uk-width-1-1" onclick="saveFinding(event);"><i class="a-file-pen"></i> SAVE FINDING</button>
+	    		<button class="uk-button uk-button-success uk-width-1-1" onclick="saveFinding(event);"><i class="a-file-pen"></i> SAVE AND CLOSE</button>
 	    	</div>
 	    </div>
 	</div>
@@ -79,11 +80,12 @@
             '_token' : '{{ csrf_token() }}'
         }, function(data) {
             if(data!=1){ 
-                UIkit.modal.alert(data,{stack: true});
+                UIkit.modal.alert(data+'DUDE!',{stack: true});
             } else {
-                dynamicModalClose(2);
-	            UIkit.notification('<span uk-icon="icon: check"></span> Finding Saved', {pos:'top-right', timeout:1000, status:'success'});
+                
+	            
 	            $('#finding-modal-audit-stream-refresh').trigger('click');
+	            dynamicModalClose(2);
             
             }
         } );
