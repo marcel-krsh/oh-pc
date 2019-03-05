@@ -223,18 +223,40 @@ if(Auth::check()){
 </head>
 <body >
 	<a name="top"></a>
+	<!-- MOBILE -->
 	<div id="phone" class="uk-visible-touch uk-hidden@s">
 		<div id="phone-app" class="uk-container uk-align-center" >
-			<div uk-grid>
-				<div class="uk-width-1-1 uk-sticky" style="height: 10%;">
-					<a ><i class="a-menu uk-text-muted"></i> DEV|CO INSPECT</a>
-					<hr class="dashed-hr">
-
+			<div class="uk-padding-small" style="background-color:#3c3c3c; margin-bottom: 200px; z-index: 980;" uk-sticky="width-element: #phone; show-on-up: true">
+					<a class="uk-contrast" uk-toggle="target: #offcanvas-phone"><h2><i class="a-menu uk-text-muted uk-contrast"></i> DEV|CO INSPECT</h2></a>
 				</div>
-				<div id="mobile-content" class="uk-scroll uk-width-1-1" style="height: 88%">
+				<div uk-grid>
+				
+				<div id="mobile-content" class="uk-width-1-1" style="height: 1600px;">
 				</div>
+				<script type="text/javascript">
+					isMobile = function(){
+    							var isMobile = window.matchMedia("only screen and (max-width: 640px)");
+					    return isMobile.matches ? true : false
+					}
+					if(isMobile){
+						//load mobile content
+					}
+				</script>
 			</div>
 		</div>
+	</div>
+
+	<div id="offcanvas-phone" uk-offcanvas="overlay: true">
+    	<div class="uk-offcanvas-bar" style="background-color: #0d0d23">
+
+	        <button class="uk-offcanvas-close" type="button" uk-close></button>
+
+
+	        <h3>Use Your Phone Instead?</h3>
+
+	        <p>If you want to access Allita's PC Inspect tools on your phone... tell your manager you found this easter egg, and want it to use it instead of a tablet.</p>
+
+	    </div>
 	</div>
 	
 	
@@ -467,16 +489,20 @@ if(Auth::check()){
 
 	@if($tab !== null)
 	<script>
-		setTimeout(function(){
-			$('#{{$tab}}').trigger("click");
+		if(!isMobile){
+			setTimeout(function(){
+				$('#{{$tab}}').trigger("click");
 			},100);
+		}
 			window.currentSite='allita_pc';
 	</script>
 	@else
 	<script >
-		setTimeout(function(){
-			$('#detail-tab-1').trigger("click");
-		},100);
+		if(!isMobile){
+			setTimeout(function(){
+				$('#detail-tab-1').trigger("click");
+			},100);
+		}
 		window.currentSite='allita_pc';
 		
 	</script>
