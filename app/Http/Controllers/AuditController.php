@@ -363,7 +363,37 @@ class AuditController extends Controller
                 $ordering->save();
                 $i++;
             }
+        } elseif(OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->count() != CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count()){
+            
+            // there is a mismatch, go through each cachedunit and add the missing ones at the end of the ordering
+            $details = CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->orderBy('id', 'desc')->get();
+
+            // highest ordering
+            $last_ordering = OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->orderBy('order','desc')->first()->order;
+            $new_ordering = $last_ordering;
+
+            foreach ($details as $detail) {
+
+                //dd(OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $detail->building_id)->where('user_id', '=', Auth::user()->id)->where('unit_id','=',$detail->id)->count());
+
+                if(OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $detail->building_id)->where('user_id', '=', Auth::user()->id)->where('unit_id','=',$detail->id)->count() == 0){
+                    $new_ordering++;
+                    //dd($detail);
+                    $ordering = new OrderingUnit([
+                        'user_id' => Auth::user()->id,
+                        'audit_id' => $audit,
+                        'building_id' => $detail->building_id,
+                        'unit_id' => $detail->id,
+                        'order' => $new_ordering,
+                    ]);
+                    $ordering->save();
+                }
+                
+            }
+
+
         } elseif (CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count() != OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->count() && CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count() != 0) {
+            
             $details = null;
         }
 

@@ -64,7 +64,7 @@ class UnitInspection extends Model
     public function swap_remove(Audit $audit)
     {
         // only remove the cached information if both site and file are removed
-        
+        //dd($audit->id, $this->unit_id);
         $check_if_not_last_one = UnitInspection::where('audit_id','=',$audit->id)
                                     ->where('unit_id','=',$this->unit_id)
                                     ->where(function ($query) {
@@ -77,7 +77,8 @@ class UnitInspection extends Model
             
             $cached_building = CachedBuilding::where('audit_id','=',$audit->id)->where('building_id','=',$cached_unit->building_id)->first();
 
-            $ordering_unit = OrderingUnit::where('audit_id','=',$audit->id)->where('building_id','=',$cached_unit->building_id)->where('unit_id','=',$this->unit_id)->delete();
+            // unit_id in OrderingUnit is cached_unit_id...
+            $ordering_unit = OrderingUnit::where('audit_id','=',$audit->id)->where('building_id','=',$cached_unit->building_id)->where('unit_id','=',$cached_unit->id)->delete();
 
             $new_type_total = $cached_building->type_total - 1;
 
@@ -97,8 +98,22 @@ class UnitInspection extends Model
     {
         // we may be running this several times, so we have to check that the record doesn't already exists for that unit
         if(CachedUnit::where('audit_id','=',$audit->id)->where('unit_id','=',$this->unit_id)->count() == 0){
+
+            // insert unit amenities
+            foreach($this->amenities as $ua){
+               AmenityInspection::insert([
+                    'audit_id'=>$audit->id,
+                    'monitoring_key'=>$audit->monitoring_key,
+                    'unit_key'=>$this->unit_key,
+                    'unit_id'=>$this->unit_id,
+                    'amenity_id'=>$ua->amenity_id,
+                    'amenity_key'=>$ua->amenity->amenity_key,
+
+               ]);
+            }
+
             $unit_amenities = AmenityInspection::where('unit_id',$this->unit_id)->with('amenity')->get();
-            //dd($unit_amenities);
+            //dd($unit_amenities, $this->unit_id);
             $uaCount = 0;
             //Unit amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]

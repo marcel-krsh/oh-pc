@@ -18,8 +18,8 @@
 										<div uk-grid>
 											<div class="uk-width-1-1 uk-padding-remove">
 												<div uk-grid style="padding-top:10px;">
-													<div id="unit-auditors-{{$detail->unit_id}}" class="building-auditors uk-width-1-2 @if(count($detail->auditors())) hasAuditors @endif">
-														@if(count($detail->auditors()))
+													<div id="unit-auditors-{{$detail->unit_id}}" class="building-auditors uk-width-1-2 @if($detail->auditors()) hasAuditors @endif">
+														@if($detail->auditors())
 														<div uk-slideshow="animation: slide; min-height:90;">
 														    <div class="uk-position-relative uk-visible-toggle">
 														        <ul class="uk-slideshow-items" style="min-height: 90px;">
