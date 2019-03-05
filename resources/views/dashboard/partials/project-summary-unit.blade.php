@@ -15,7 +15,7 @@
 	@endphp
 	<div class="modal-project-summary-unit summary-unit-{{ $unit->unit_id }} {{ $selected_units_count > 0 ? 'has-selected' : 'no-selection' }}">
 		<div class="modal-project-summary-unit-status">
-			<i class="a-circle" uk-tooltip="title:SELECT ALL ELIGIBLE PROGRAMS FOR BOTH INSPECTIONS;" onclick="projectSummarySelection(this, {{ $unit->unit_id }});">
+			<i class="a-circle" uk-tooltip="title:SELECT ALL ELIGIBLE PROGRAMS FOR BOTH INSPECTIONS;" style="display:none" onclick="projectSummarySelection(this, {{ $unit->unit_id }});">
 			</i>
 		</div>
 		<div class="modal-project-summary-unit-info">
