@@ -75,7 +75,7 @@
 		// remove all and then display only selected
 		$('[id^=summary-btn-]').removeClass('button-filter-selected');
 		
-		$('.has-selected, .no-selection').fadeOut( "slow", function(buildingKey) {
+		$('.has-selected, .no-selection').fadeOut( "slow", function() use buildingKey {
 			$('.building-'+buildingKey).fadeIn( "slow");
 			console.log('fading in building-'+buildingKey);
 		});
