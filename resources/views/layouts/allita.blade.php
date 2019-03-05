@@ -226,7 +226,7 @@ if(Auth::check()){
 	<div id="phone" class="uk-visible-touch uk-hidden@s">
 		<div id="phone-app" class="uk-container uk-align-center" >
 			<div uk-grid>
-				<div class="uk-width-1-1 uk-padding-small" uk-sticky style="height: 10%; background: #333">
+				<div class="uk-card uk-card-default uk-card-body" style="background:000; margin-bottom: 200px; z-index: 980;" uk-sticky="top: 100; animation: uk-animation-slide-top; bottom: #sticky-on-scroll-up">
 					<a ><h2><i class="a-menu uk-text-muted uk-contrast"></i> DEV|CO INSPECT</h2></a>
 				</div>
 				<div id="mobile-content" class="uk-scroll uk-width-1-1" style="height: 88%">
