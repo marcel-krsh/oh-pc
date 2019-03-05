@@ -77,7 +77,7 @@ class UnitInspection extends Model
             
             $cached_building = CachedBuilding::where('audit_id','=',$audit->id)->where('building_id','=',$cached_unit->building_id)->first();
 
-            $ordering_unit = OrderingUnit::where('audit_id','=',$audit->id)->where('user_id','=',Auth::user()->id)->where('building_id','=',$cached_unit->building_id)->where('unit_id','=',$this->unit_id)->delete();
+            $ordering_unit = OrderingUnit::where('audit_id','=',$audit->id)->where('building_id','=',$cached_unit->building_id)->where('unit_id','=',$this->unit_id)->delete();
 
             $new_type_total = $cached_building->type_total - 1;
 
