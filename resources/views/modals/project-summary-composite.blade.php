@@ -71,6 +71,14 @@
 			$('.no-selection').fadeIn( "slow", function() {});
 		});
 	}
+	function filterBuilding(buildingKey){
+		// remove all and then display only selected
+		$('[id^=summary-btn-]').removeClass('button-filter-selected');
+		
+		$('.has-selected, .no-selection').fadeOut( "slow", function() {
+			$('.building-'+buildingKey).fadeIn( "slow", function() {});
+		});
+	}
 
 	function filterProgramSummary() {
 		event.preventDefault();
