@@ -292,7 +292,7 @@
 		        </div>
 		        <div class="uk-margin-remove" uk-grid>
             		<div class="uk-width-1-1 uk-padding-remove">
-            			<button class="uk-button uk-button-primary button-finding-filter uk-width-1-1 @if(!$checkDoneAddingFindings) uk-modal-close @endif" @if($checkDoneAddingFindings) onclick="completionCheck();return false;" @endif>DONE ADDING FINDINGS</button>
+            			<button class="uk-button uk-button-primary button-finding-filter uk-width-1-1 @if(!$checkDoneAddingFindings) uk-modal-close @endif" <?php /* @if($checkDoneAddingFindings) onclick="completionCheck();return false;" @endif */ ?> onClick="dynamicModalClose()">DONE ADDING FINDINGS</button>
             		</div>
             	</div>
 			</div>

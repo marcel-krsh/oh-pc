@@ -277,7 +277,7 @@ if(Auth::check()){
 								<button id="apcsv-toggle" class="pcsv-toggle" style="background-color: transparent; border: none; cursor: pointer; 0" >APPS</button>    
 								<div uk-dropdown="mode: click">
 									<div class="apcsv-menu-item"> 
-										<a href="https://devco.ohiohome.org/AuthorityOnlineALT/" style="font-weight: 400">DEV|CO Compliance</a>
+										<a href="https://devco.ohiohome.org/AuthorityOnline/" style="font-weight: 400">DEV|CO Compliance</a>
 									</div>
 									<div class="apcsv-menu-item">
 										<a href="/" style="font-weight: 400">DEV|CO Inspection</a>

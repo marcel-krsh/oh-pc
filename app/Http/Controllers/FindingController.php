@@ -263,10 +263,7 @@ class FindingController extends Controller
                     }
                     if($errors == ''){
                             // no errors
-                            return '<h2>Added finding to the project.</h2> 
-                                    <script> // close the stacked modal but leave open the add finding. Refresh the findings list. 
-
-                                    </script>';
+                            return '1';
                         } else {
                             return '<h2>I added the finding but...</h2>
                                     <p>One or more of the default follow-ups had erors- please see below and send this information to your admin.</p>
