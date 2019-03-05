@@ -63,12 +63,7 @@ if(Auth::check()){
 		/*Universal header styles*/
 		
 		#apcsv-logo {
-		    margin: 0 auto;
-		    display: inline-block;
-		    width: auto;
-		    height: 100%;
-		    vertical-align: middle;
-		    float: left;
+		    position: relative; top: -9px; padding-left: 10px; display: inline-block;
 		}
 		@media only screen and (max-width: 1310px) {
 			#apcsv-logo {
@@ -229,7 +224,7 @@ if(Auth::check()){
 				<div id="main-tabs" uk-sticky style="max-width: 1519px; ">
 					<div uk-grid>
 						<div class="uk-width-1-1">
-							<img src="/images/devco_logo.png" alt="DEV|CO Inspection powered by Allita PC" style="position: relative; top: -9px; padding-left: 10px; display: inline-block;">
+							<img id="apcsv-logo" src="/images/devco_logo.png" alt="DEV|CO Inspection powered by Allita PC" >
 						
 					        @can('access_auditor')
 					        <div class="menu-search uk-margin-large-left uk-padding-bottom" style="display: inline-block; position: relative;top:-5px;" class="uk-margin-large-left">
