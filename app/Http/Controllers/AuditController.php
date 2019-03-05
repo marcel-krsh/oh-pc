@@ -5216,68 +5216,82 @@ class AuditController extends Controller
 
     private function inspectionsUpdate($unit, $program, $audit, $group_ids, $project, $type, $new_program = false)
     {
-    	$check_if_record_exists = UnitInspection::where('unit_id', $unit->id)->where('program_key', $program->program_key)->where('audit_id', $audit->id)->whereIn('group_id', $group_ids)->where($type, 1)->get();
-			if($check_if_record_exists->count() > 0) {
-				foreach ($check_if_record_exists as $key => $exists) {
-					if($type == 'is_file_audit') {
-						$exists->is_file_audit = 0;
-						$exists->save();
-					} else {
-						$exists->is_site_visit = 0;
-						$exists->save();
-					}
+    	$check_if_record_exists = UnitInspection::where('unit_id', $unit->id)
+                                        ->where('program_key', $program->program_key)
+                                        ->where('audit_id', $audit->id)
+                                        ->whereIn('group_id', $group_ids)
+                                        ->where($type, 1)
+                                        ->get();
+
+		if($check_if_record_exists->count() > 0) {
+			foreach ($check_if_record_exists as $key => $exists) {
+				if($type == 'is_file_audit') {
+					$exists->is_file_audit = 0;
+					$exists->save();
+				} else {
+					$exists->is_site_visit = 0;
+					$exists->save();
 				}
-			} else {
-				$unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
-																->where('program_key', $program->program_key)
-    														->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
-    														->orderBy('unit_id', 'asc')
-    														->get();
+
+                // update cached_building, cached_units
+                $exists->swap_remove($audit);
+			}
+		} else {
+			$unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
+										->where('program_key', $program->program_key)
+										->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
+    									->orderBy('unit_id', 'asc')
+    									->get();
+
     		if($unitprograms->count() == 0) {
     			$group_ids = array_diff($group_ids, [$this->htc_group_id]);
     		}
-				foreach ($group_ids as $key => $group_id) {
-					//HTC
-					//	New
-					//
-					//	Old
-					//Other
-					//	New
-					//
-					//	Old
-					//
-					if($new_program && $group_id == $this->htc_group_id) {
 
-					} else {
-						$group = Group::find($group_id);
-						$insert_new = new UnitInspection;
-						$insert_new->program_id = $program->id;
-						$insert_new->audit_id = $audit->id;
-						$insert_new->audit_id = $audit->id;
-						$insert_new->group = $group->group_name;
-						$insert_new->group_id = $group_id;
-						$insert_new->unit_id = $unit->id;
-						$insert_new->unit_key = $unit->unit_key;
-						$insert_new->unit_name = $unit->unit_name;
-						$insert_new->building_key = $unit->building_key;
-						$insert_new->building_id = $unit->building->building_key;
-						$insert_new->audit_key = $audit->monitoring_key;
-						$insert_new->project_id = $project->id;
-						$insert_new->project_key = $project->project_key;
-						$insert_new->program_key = $program->program_key;
-						$insert_new->has_overlap = 0;
-						if($type == 'is_file_audit') {
-							$insert_new->is_file_audit = 1;
-							$insert_new->is_site_visit = 0;
-						} else {
-							$insert_new->is_site_visit = 1;
-							$insert_new->is_file_audit = 0;
-						}
-						$insert_new->save();
-					}
+			foreach ($group_ids as $key => $group_id) {
+				//HTC
+				//	New
+				//
+				//	Old
+				//Other
+				//	New
+				//
+				//	Old
+				//
+				if($new_program && $group_id == $this->htc_group_id) {
+
+				} else {
+					$group = Group::find($group_id);
+					$insert_new = new UnitInspection;
+    					$insert_new->program_id = $program->id;
+    					$insert_new->audit_id = $audit->id;
+    					$insert_new->audit_id = $audit->id;
+    					$insert_new->group = $group->group_name;
+    					$insert_new->group_id = $group_id;
+    					$insert_new->unit_id = $unit->id;
+    					$insert_new->unit_key = $unit->unit_key;
+    					$insert_new->unit_name = $unit->unit_name;
+    					$insert_new->building_key = $unit->building_key;
+    					$insert_new->building_id = $unit->building->id;
+    					$insert_new->audit_key = $audit->monitoring_key;
+    					$insert_new->project_id = $project->id;
+    					$insert_new->project_key = $project->project_key;
+    					$insert_new->program_key = $program->program_key;
+    					$insert_new->has_overlap = 0;
+    					if($type == 'is_file_audit') {
+    						$insert_new->is_file_audit = 1;
+    						$insert_new->is_site_visit = 0;
+    					} else {
+    						$insert_new->is_site_visit = 1;
+    						$insert_new->is_file_audit = 0;
+    					}
+					$insert_new->save();
+
+                    // update cached_building, cached_units
+                    $insert_new->swap_add($audit); // only adds once
 				}
 			}
-			return true;
+		}
+		return true;
     }
 
 }

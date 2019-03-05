@@ -1,7 +1,7 @@
 
 		<div uk-grid>
-			<div class="uk-width-1-1 uk-padding-remove " style="min-height:200px; margin-top:30px;">
-				<canvas id="chartjs-modal-summary" class="chartjs" style="display: block;"></canvas>
+			<div class="uk-width-1-1 uk-padding-remove " style="min-height:200px; margin-top:30px;min-height:300px;">
+				<canvas id="chartjs-modal-summary" class="chartjs" style="display: none;"></canvas>
 			</div>
 			<div class="uk-width-1-1 uk-padding-remove uk-text-center" style="display:block; max-height:300px; overflow: auto; width: 100%">
 				<h3>PROGRAMS<br /><small>Project #: {{$project->project_number}} | Audit #: {{$audit->id}}</small></h3>
@@ -49,7 +49,10 @@
 
 	<script>
 			var data = JSON.parse('{!! json_encode($data) !!}');
-
+      var chartColors = {
+        estimated: '#0099d5',
+        needed: '#d31373'
+      };
 			var summaryCompositeOptions = {
         //Boolean - Whether we should show a stroke on each segment
         segmentShowStroke : false,

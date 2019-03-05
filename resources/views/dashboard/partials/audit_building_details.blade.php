@@ -1,5 +1,6 @@
 		<div class="building-details uk-overflow-auto" style="">
 			<div class="sortable" uk-sortable="handle: .uk-sortable-details">
+				@if($details)
 				@foreach($details as $key=>$detail)
 				@php
 				//dd($detail);
@@ -226,5 +227,6 @@
 					</div>					
 				</div>
 				@endforeach
+				@endif
 			</div>
 		</div>
