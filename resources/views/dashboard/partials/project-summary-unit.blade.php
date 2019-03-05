@@ -54,7 +54,7 @@
 			} else {
 				$htc_unit_program_selected_count = 0;
 			}
-			$program_selected = $program_selected->whereNotIn('id', [$htc_group_id]);
+			$program_selected = $program_selected->where('group_id','!=', $htc_group_id);
 			//$unit_program_selected_count = $program_selected->where('is_site_visit', 1)->where('is_file_audit', 1)->count();
 			$site_program_selected_count = $program_selected->where('is_site_visit', 1)->count();
 			$file_program_selected_count = $program_selected->where('is_file_audit', 1)->count();
