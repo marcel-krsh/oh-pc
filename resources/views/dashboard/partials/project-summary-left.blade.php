@@ -15,7 +15,7 @@
 						@foreach($data['programs'] as $prog)
 						<tr>
 							<td>
-								<div uk-leader><strong>{{ $prog['name'] }}</strong></div>
+								<div uk-leader><strong>{{ $prog['name'] }} @if($prog['building_name']) | {{$prog['building_name']}} @endif</strong></div>
 							</td>
 							<td class="uk-text-center border-right"></td>
 							<td class="uk-text-center"></td>
