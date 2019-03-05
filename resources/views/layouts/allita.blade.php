@@ -223,7 +223,7 @@ if(Auth::check()){
 </head>
 <body >
 	<a name="top"></a>
-	<div id="phone" class="uk-visible-touch uk-visible@s">
+	<div id="phone" class="uk-visible-touch uk-hidden@s">
 		<div id="phone-app" class="uk-container uk-align-center" >
 			<div uk-grid>
 				<div class="uk-width-1-1 uk-sticky" style="height: 10%;">
@@ -240,7 +240,7 @@ if(Auth::check()){
 	
 	<!-- MAIN VIEW -->
 
-	<div id="app" class="uk-container uk-align-center uk-hidden@s" >
+	<div id="app" class="uk-container uk-align-center uk-visible@s" >
 		<div uk-grid class="uk-grid-collapse">
 			<div id="main-window" class=" uk-margin-large-bottom" uk-scrollspy="cls:uk-animation-fade; delay: 900">
 			
@@ -348,7 +348,7 @@ if(Auth::check()){
 		</div>
 	</div>
 
-	<div id="mainfooter"  class="uk-hidden@s" uk-grid>
+	<div id="mainfooter"  class="uk-visible@s" uk-grid>
 		<div class="uk-width-1-3">
 			<p class="uk-dark uk-light" style="position: absolute; bottom: 20px;"><a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light"><i class="a-mobile-home"></i>
 			@if(Auth::check() && Auth::user()->auditor_access()) 
