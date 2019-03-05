@@ -348,7 +348,7 @@ if(Auth::check()){
 		</div>
 	</div>
 
-	<div id="mainfooter" uk-grid>
+	<div id="mainfooter"  class="uk-hidden@s" uk-grid>
 		<div class="uk-width-1-3">
 			<p class="uk-dark uk-light" style="position: absolute; bottom: 20px;"><a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light"><i class="a-mobile-home"></i>
 			@if(Auth::check() && Auth::user()->auditor_access()) 
