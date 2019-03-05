@@ -159,7 +159,7 @@
 										            		
 											            	@if($building->building->type != "pool")
 											            	<br />
-											            	@if($building->building->building_id != '')
+											            	@if($building->building->building_id != '' && $building->building->type_total > 0)
 											            	<small class="colored use-hand-cursor" onclick="buildingDetails({{$building->building->building_id}},{{$audit}},{{$key}},{{$target}},10,'{{$context}}');" uk-tooltip="pos:top-left;title:Building details;" ><i class="a-menu colored uk-text-middle"></i> 
 											            		@if($building->building->type_total > 0)
 											            		<span class="uk-text-middle uk-text-uppercase">{{$building->building->type_total}} @if($building->building->type_total > 1) {{$building->building->type_text_plural}} @else {{$building->building->type_text}} @endif</span>
