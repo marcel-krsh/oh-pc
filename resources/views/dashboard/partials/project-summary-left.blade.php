@@ -3,7 +3,7 @@
 			<div class="uk-width-1-1 uk-padding-remove uk-hidden" style="min-height:200px; margin-top:30px;min-height:300px;">
 				<canvas id="chartjs-modal-summary" class="chartjs" style="display: none;"></canvas>
 			</div>
-			<div class="uk-width-1-1 uk-padding-remove uk-text-center" style="display:block; max-height:740px; overflow: auto; width: 100% margin-top:30px;">
+			<div class="uk-width-1-1 uk-padding-remove uk-text-center" style="display:block; max-height:740px; overflow: auto; width: 100%; margin-top:30px;">
 				<h3>PROGRAMS<br /><small>Project #: {{$project->project_number}} | Audit #: {{$audit->id}}</small></h3>
 				<table class="uk-table uk-table-small noline small-padding" >
 					<tbody>
