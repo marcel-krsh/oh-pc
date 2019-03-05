@@ -247,14 +247,14 @@ if(Auth::check()){
 	</div>
 
 	<div id="offcanvas-phone" uk-offcanvas="overlay: true">
-    	<div class="uk-offcanvas-bar" style="background-color: #9c9c9c;">
+    	<div class="uk-offcanvas-bar" style="background-color: #0d0d23">
 
 	        <button class="uk-offcanvas-close" type="button" uk-close></button>
 
 
-	        <h3>Title</h3>
+	        <h3>Use Your Phone Instead?</h3>
 
-	        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+	        <p>If you want to access Allita's PC Inspect tools on your phone... tell your manager you found this easter egg, and want it to use it instead of a tablet.</p>
 
 	    </div>
 	</div>
