@@ -1,19 +1,19 @@
 
 		<div uk-grid>
-			<div class="uk-width-1-1 uk-padding-remove " style="min-height:200px; margin-top:30px;min-height:300px;">
+			<div class="uk-width-1-1 uk-padding-remove uk-hidden" style="min-height:200px; margin-top:30px;min-height:300px;">
 				<canvas id="chartjs-modal-summary" class="chartjs" style="display: none;"></canvas>
 			</div>
-			<div class="uk-width-1-1 uk-padding-remove uk-text-center" style="display:block; max-height:300px; overflow: auto; width: 100%">
+			<div class="uk-width-1-1 uk-padding-remove uk-text-center" style="display:block; max-height:740px; overflow: auto; width: 100% margin-top:30px;">
 				<h3>PROGRAMS<br /><small>Project #: {{$project->project_number}} | Audit #: {{$audit->id}}</small></h3>
 				<table class="uk-table uk-table-small noline small-padding" >
 					<tbody>
 						<tr>
 							<td></td>
 							<td class="uk-text-center"><i class="a-mobile-home iheader"></i></td>
-							<td class="uk-text-center"><i class="a-folder iheader"></i></td>
+							<td class="uk-text-center" style="padding-bottom:15px;"><i class="a-folder iheader"></i></td>
 						</tr>
 						@foreach($data['programs'] as $prog)
-						<tr style="border-top: 1px dashed">
+						<tr style="border-top: 1px solid">
 							<td style="padding-top:10px;">
 								<div uk-leader><strong>{{ $prog['name'] }} @if($prog['building_name']) | {{$prog['building_name']}} @endif</strong></div>
 							</td>
