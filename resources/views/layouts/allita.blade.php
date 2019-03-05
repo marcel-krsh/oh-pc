@@ -70,6 +70,12 @@ if(Auth::check()){
 		    vertical-align: middle;
 		    float: left;
 		}
+		@media only screen and (max-width: 1310px) {
+			#apcsv-logo {
+		    display: none;
+			}
+		}
+
 		#apcsv-list-left {
 		    float: left;
 		    display: inline-block;
