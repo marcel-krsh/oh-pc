@@ -223,10 +223,11 @@ if(Auth::check()){
 </head>
 <body >
 	<a name="top"></a>
+	<!-- MOBILE -->
 	<div id="phone" class="uk-visible-touch uk-hidden@s">
 		<div id="phone-app" class="uk-container uk-align-center" >
 			<div class="uk-padding-small" style="background-color:#3c3c3c; margin-bottom: 200px; z-index: 980;" uk-sticky="width-element: #phone; show-on-up: true">
-					<a class="uk-contrast"><h2><i class="a-menu uk-text-muted uk-contrast"></i> DEV|CO INSPECT</h2></a>
+					<a class="uk-contrast" uk-toggle="target: #offcanvas-phone"><h2><i class="a-menu uk-text-muted uk-contrast"></i> DEV|CO INSPECT</h2></a>
 				</div>
 				<div uk-grid>
 				
@@ -243,6 +244,19 @@ if(Auth::check()){
 				</script>
 			</div>
 		</div>
+	</div>
+
+	<div id="offcanvas-phone" uk-offcanvas="overlay: true">
+    	<div class="uk-offcanvas-bar" style="background-color: #9c9c9c;">
+
+	        <button class="uk-offcanvas-close" type="button" uk-close></button>
+
+
+	        <h3>Title</h3>
+
+	        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+	    </div>
 	</div>
 	
 	
