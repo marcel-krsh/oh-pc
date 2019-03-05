@@ -489,20 +489,20 @@ if(Auth::check()){
 
 	@if($tab !== null)
 	<script>
-		if(!isMobile){
+		
 			setTimeout(function(){
 				$('#{{$tab}}').trigger("click");
 			},100);
-		}
+		
 			window.currentSite='allita_pc';
 	</script>
 	@else
 	<script >
-		if(!isMobile){
+		
 			setTimeout(function(){
 				$('#detail-tab-1').trigger("click");
 			},100);
-		}
+		
 		window.currentSite='allita_pc';
 		
 	</script>
