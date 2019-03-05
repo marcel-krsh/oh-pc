@@ -13,7 +13,7 @@
 							<td class="uk-text-center"><i class="a-folder iheader"></i></td>
 						</tr>
 						@foreach($data['programs'] as $prog)
-						<tr>
+						<tr class="uk-margin-top" style="border-top: 1px dashed">
 							<td>
 								<div uk-leader><strong>{{ $prog['name'] }} @if($prog['building_name']) | {{$prog['building_name']}} @endif</strong></div>
 							</td>
