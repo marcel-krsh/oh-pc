@@ -76,8 +76,8 @@
 		$('[id^=summary-btn-]').removeClass('button-filter-selected');
 		window.buildingKey = buildingKey;
 		$('.has-selected, .no-selection').fadeOut( "slow", function() {
-			$('.building-'+window.buildingKey).fadeIn( "slow");
-			console.log('fading in building-'+window.buildingKey);
+			$('.'+window.buildingKey).fadeIn( "slow");
+			console.log('fading in '+window.buildingKey);
 		});
 	}
 
