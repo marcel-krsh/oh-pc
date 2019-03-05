@@ -23,7 +23,7 @@
 				<i class="a-marker-basic uk-text-muted uk-link use-hand-cursor" uk-tooltip="title:View On Map;" title="" aria-expanded="false" onclick="window.open('https://maps.google.com/maps?q={{ $unit->unit->building->address->line_1 }}+{{ $unit->unit->building->address->city }}+{{ $unit->unit->building->address->state }}+{{ $unit->unit->building->address->zip }}');"></i>
 			</div>
 			<div class="modal-project-summary-unit-info-main">
-				<h4 class="uk-margin-bottom-remove">{!! $unit->unit->building->address->formatted_address($unit->unit->unit_name) !!}<br />
+				<h4 class="uk-margin-bottom-remove">{{$unit->unit->building->building_name}}<br />{!! $unit->unit->building->address->formatted_address($unit->unit->unit_name) !!}<br />
 					{{ $unit->unit->most_recent_event()->type->event_type_description }}: {{ formatDate($unit->unit->most_recent_event()->event_date) }}
 				</h4>
 			</div>
