@@ -14,7 +14,7 @@
 	//dd($unit_selected);
 	@endphp
 	<div class="modal-project-summary-unit summary-unit-{{ $unit->unit_id }} {{ $selected_units_count > 0 ? 'has-selected' : 'no-selection' }} building-{{$unit->building_key}}">
-		<div class="modal-project-summary-unit-status">
+		<div class="modal-project-summary-unit-status"><?php dd($unit); ?>
 			<i class="a-circle" uk-tooltip="title:SELECT ALL ELIGIBLE PROGRAMS FOR BOTH INSPECTIONS;" style="display:none" onclick="projectSummarySelection(this, {{ $unit->unit_id }});">
 			</i>
 		</div>
