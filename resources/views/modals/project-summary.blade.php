@@ -219,7 +219,7 @@ resizeModal(95);
 	function filterBuilding(buildingKey){
 		// remove all and then display only selected
 		$('[id^=summary-btn-]').removeClass('button-filter-selected');
-		$('#summary-btn-selected').addClass('button-filter-selected');
+		
 		$('.has-selected, .no-selection').fadeOut( "slow", function() {
 			$('.'+buildingKey).fadeIn( "slow", function() {});
 		});

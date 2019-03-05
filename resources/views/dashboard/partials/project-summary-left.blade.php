@@ -15,7 +15,7 @@
 						@foreach($data['programs'] as $prog)
 						<tr style="border-top: 1px solid">
 							<td style="padding-top:10px;">
-								<div uk-leader><strong>{{ $prog['name'] }} @if($prog['building_name']) | <a onClick="filterBuilding({{$prog['building_key']}})">{{$prog['building_name']}}</a> @endif
+								<div uk-leader><strong>{{ $prog['name'] }} @if($prog['building_name']) | <a onClick="filterBuilding('building-{{$prog['building_key']}}')">{{$prog['building_name']}}</a> @endif
 
                 </strong></div>
 							</td>
