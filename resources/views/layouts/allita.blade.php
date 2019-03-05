@@ -149,6 +149,15 @@ if(Auth::check()){
 		#main-tabs {
 			padding-top:0px !important;
 		}
+
+		#phone {
+			height: 100%;
+			width: 100%;
+			position: absolute;
+			top:0;
+			left:0;
+			background: #000;
+		}
 		
 	</style>
 	<?php /* session(['disablePacer'=>0]); */ ?>
@@ -213,11 +222,25 @@ if(Auth::check()){
 	
 </head>
 <body >
-	
 	<a name="top"></a>
+	<div id="phone" class="uk-visible-touch uk-visible@s">
+		<div id="phone-app" class="uk-container uk-align-center" >
+			<div uk-grid>
+				<div class="uk-width-1-1 uk-sticky" style="height: 10%;">
+					<a ><i class="a-menu uk-text-muted"></i> DEV|CO INSPECT</a>
+					<hr class="dashed-hr">
+
+				</div>
+				<div id="mobile-content" class="uk-scroll uk-width-1-1" style="height: 88%">
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
 	<!-- MAIN VIEW -->
 
-	<div id="app" class="uk-container uk-align-center" >
+	<div id="app" class="uk-container uk-align-center uk-hidden@s" >
 		<div uk-grid class="uk-grid-collapse">
 			<div id="main-window" class=" uk-margin-large-bottom" uk-scrollspy="cls:uk-animation-fade; delay: 900">
 			
