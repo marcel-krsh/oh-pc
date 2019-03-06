@@ -33,7 +33,7 @@ class OrderingBuilding extends Model
     public function building() : HasOne
     {
         if($this->building_id === NULL){
-            return $this->hasOne(\App\Models\CachedBuilding::class, 'amenity_id', 'amenity_id');
+            return $this->hasOne(\App\Models\CachedBuilding::class, 'amenity_id', 'amenity_id')->where('audit_id','=',$this->audit_id);
             //$cachedbuilding = \App\Models\CachedBuilding::where('audit_id','=',$this->audit_id)->where('amenity_id','=',$this->amenity_id)->first(); 
         }else{
             //$cachedbuilding = \App\Models\CachedBuilding::where('audit_id','=',$this->audit_id)->where('building_id','=',$this->building_id)->first();

@@ -220,7 +220,8 @@ class AuditController extends Controller
                 $amenity_inspection = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->whereNull('building_id')->whereNull('cachedbuilding_id')->first();
 
                 if ($amenity_inspection) {
-                    $amenity_inspection->cachedbuilding_id = $building->building_id;
+                    // problem here.... building_id is null!!
+                    $amenity_inspection->cachedbuilding_id = $building->building->id;
                     $amenity_inspection->save();
                 }
             }
