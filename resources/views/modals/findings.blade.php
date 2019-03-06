@@ -164,11 +164,15 @@
 										$currentUnitId = 0;
 										$currentAmenityId = 0;
 										$amenityIncrement = 1;
+
 					        		@endphp
 
 					        		@foreach($unitAmenities as $amenity)
 					        			@if($currentUnitId != $amenity->unit_id)
-					        				<li class="u-{{$amenity->unit_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items @if($audit->hasAmenityInspectionAssigned(null, $amenity->unit_id)) uid-{{Auth::user()->id}} @endif"><strong>Unit : {{$amenity->cached_unit()->unit_name}} in BIN: {{$amenity->cached_unit()->building_key}} ADDRESS: {{$amenity->cached_unit()->address}}</strong></li>
+					        				<li class="u-{{$amenity->unit_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items @if($audit->hasAmenityInspectionAssigned(null, $amenity->unit_id)) uid-{{Auth::user()->id}} @endif">
+					        					@if($amenity->cached_unit())
+					        					<strong>Unit : {{$amenity->cached_unit()->unit_name}} in BIN: {{$amenity->cached_unit()->building_key}} ADDRESS: {{$amenity->cached_unit()->address}}</strong>
+					        				@endif</li>
 					        				@php $currentUnitId = $amenity->unit_id; @endphp
 					        			@endif
 					        			@php if($currentAmenityId != $amenity->amenity_id) { 

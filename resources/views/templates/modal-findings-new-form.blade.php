@@ -21,7 +21,7 @@
 	<p>COMMENT:</p>
 	<div class="findings-new-add-comment" data-finding-id="tplFindingId">
 	    <div class="findings-new-add-comment-textarea">
-	    	<textarea class="uk-textarea" id="finding-comment" name="comment" placeholder="Enter your comment here. If you leave it blank, no comment will be added."> </textarea><!-- 
+	    	<textarea class="uk-textarea" id="finding-comment" name="comment" placeholder="Enter your comment here. If you leave it blank, no comment will be added."></textarea><!-- 
 	    	<div class="textarea-status">SAVED</div> -->
 	    </div>
 	    <div class="findings-new-add-comment-boilerplate-action" uk-grid>
