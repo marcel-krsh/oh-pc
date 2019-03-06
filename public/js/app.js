@@ -1881,8 +1881,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['audit', 'index'],
   methods: {
@@ -43475,7 +43473,7 @@ var render = function() {
     _c(
       "td",
       {
-        staticClass: "uk-text-center audit-td-lead",
+        staticClass: "uk-text-center audit-td-lead use-hand-cursor",
         attrs: { id: "audit-c-1-" + _vm.audit.auditId }
       },
       [
@@ -43548,7 +43546,11 @@ var render = function() {
         _vm._v(" "),
         _c(
           "div",
-          { staticClass: "uk-vertical-align-middle uk-display-inline-block" },
+          {
+            staticClass:
+              "uk-vertical-align-middle uk-display-inline-block use-hand-cursor",
+            on: { click: _vm.openProjectDetails }
+          },
           [
             _c(
               "h3",
@@ -43557,9 +43559,8 @@ var render = function() {
                   "uk-margin-bottom-remove uk-link filter-search-project",
                 attrs: {
                   id: "audit-project-name-" + _vm.audit.auditId,
-                  "uk-tooltip": "title:OPEN AUDIT DETAILS IN TAB;"
-                },
-                on: { click: _vm.openProject }
+                  "uk-tooltip": "title:VIEW BUILDINGS AND COMMON AREAS;"
+                }
               },
               [
                 _c("span", {
@@ -43574,7 +43575,7 @@ var render = function() {
                 staticClass: "uk-text-muted faded filter-search-project",
                 attrs: {
                   id: "audit-project-aid-" + _vm.audit.auditId,
-                  "uk-tooltip": "title:VIEW PROJECT AUDIT DETAILS;"
+                  "uk-tooltip": "title:VIEW BUILDINGS AND COMMON AREAS;"
                 }
               },
               [
@@ -43608,7 +43609,10 @@ var render = function() {
       _c(
         "div",
         {
-          staticClass: "uk-vertical-align-top uk-display-inline-block fadetext"
+          staticClass:
+            "uk-vertical-align-top uk-display-inline-block fadetext use-hand-cursor",
+          attrs: { "uk-tooltip": "title:VIEW PROJECT DETAILS;" },
+          on: { click: _vm.openProject }
         },
         [
           _c("h3", {
@@ -43646,7 +43650,8 @@ var render = function() {
         "div",
         {
           staticClass:
-            "uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext"
+            "uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext",
+          on: { click: _vm.openMapLink }
         },
         [
           _c("h3", {
@@ -43764,7 +43769,8 @@ var render = function() {
                 staticClass: "uk-width-1-6 uk-text-left uk-padding-remove",
                 attrs: {
                   "uk-tooltip":
-                    _vm.audit.totalItems + " TOTAL UNITS WILL BE INSPECTED"
+                    _vm.audit.totalItems +
+                    " TOTAL BUILDINGS PROJECT AMENITIES AND UNITS THAT WILL BE INSPECTED"
                 },
                 domProps: { innerHTML: _vm._s(_vm.audit.totalItems) }
               })
@@ -43943,7 +43949,7 @@ var render = function() {
           attrs: { "uk-grid": "" }
         },
         [
-          _c("div", { staticClass: "uk-width-1-4" }, [
+          _c("div", { staticClass: "uk-width-1-3" }, [
             _c("i", {
               class: ((_obj$10 = { "use-hand-cursor": true }),
               (_obj$10[_vm.audit.auditorStatusIconClass] = true),
@@ -43954,7 +43960,7 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
-          _c("div", { staticClass: "uk-width-1-4" }, [
+          _c("div", { staticClass: "uk-width-1-3" }, [
             _c("i", {
               class: ((_obj$11 = { "use-hand-cursor": true }),
               (_obj$11[_vm.audit.messageStatusIconClass] = true),
@@ -43964,23 +43970,13 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
-          _c("div", { staticClass: "uk-width-1-4" }, [
+          _c("div", { staticClass: "uk-width-1-3" }, [
             _c("i", {
               class: ((_obj$12 = { "use-hand-cursor": true }),
               (_obj$12[_vm.audit.documentStatusIconClass] = true),
               (_obj$12[_vm.audit.documentStatusClass] = true),
               _obj$12),
               attrs: { "uk-tooltip": _vm.audit.tooltipDocumentStatus }
-            })
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "uk-width-1-4" }, [
-            _c("i", {
-              class: ((_obj$13 = { "use-hand-cursor": true }),
-              (_obj$13[_vm.audit.historyStatusIconClass] = true),
-              (_obj$13[_vm.audit.historyStatusClass] = true),
-              _obj$13),
-              attrs: { "uk-tooltip": _vm.audit.tooltipHistoryStatus }
             })
           ])
         ]
@@ -43991,10 +43987,10 @@ var render = function() {
       _c("div", { staticClass: "uk-margin-top", attrs: { "uk-grid": "" } }, [
         _c("div", { staticClass: "uk-width-1-1  uk-padding-remove-top" }, [
           _c("i", {
-            class: ((_obj$14 = { "use-hand-cursor": true }),
-            (_obj$14[_vm.audit.stepStatusIconClass] = true),
-            (_obj$14[_vm.audit.stepStatusClass] = true),
-            _obj$14),
+            class: ((_obj$13 = { "use-hand-cursor": true }),
+            (_obj$13[_vm.audit.stepStatusIconClass] = true),
+            (_obj$13[_vm.audit.stepStatusClass] = true),
+            _obj$13),
             attrs: { "uk-tooltip": _vm.audit.tooltipStepStatus },
             on: { click: _vm.updateStep }
           })
@@ -44016,7 +44012,6 @@ var render = function() {
   var _obj$11
   var _obj$12
   var _obj$13
-  var _obj$14
 }
 var staticRenderFns = []
 render._withStripped = true

@@ -220,7 +220,7 @@
 	</div>
 
 	<div id="auditstable" class="uk-width-1-1 uk-overflow-auto" style="min-height: 700px;">
-		<table class="uk-table uk-table-striped uk-table-hover uk-table-small uk-table-divider" style="min-width: 1420px;">
+		<table class="uk-table uk-table-striped uk-table-hover uk-table-small uk-table-divider" style="min-width: 1320px;">
 		    <thead>
 		        <tr>
 		            <th class="uk-table-shrink">
@@ -403,15 +403,15 @@
 							</span> 
 						</div>
 					</th>
-		            <th  @can('access_auditor') style="min-width: 120px;" @else style="max-width: 70px;" @endcan >
+		            <th  @can('access_auditor') style="min-width: 80px;" @else style="max-width: 70px;" @endcan >
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid> 
 			            		@can('access_auditor')
-			            		<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
+			            		<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-avatar"></i>
 								</span>
 								@endcan
-								<span class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
+								<span class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-envelope-4"></i>
 									<div class="uk-dropdown uk-dropdown-bottom" uk-dropdown="flip: false; pos: bottom-right; animation: uk-animation-slide-top-small; mode: click" style="top: 26px; left: 0px;">
 				                        <ul class="uk-nav uk-nav-dropdown uk-text-small uk-list">
@@ -465,17 +465,13 @@
 					                    </ul>
 				                    </div>
 								</span>
-								<span class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
+								<span class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-files"></i>
 								</span>
-								 @can('access_auditor')
-								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i class="a-person-clock"></i>
-								</span> 
-								@endcan
+								
 							</div>
 							@can('access_auditor')
-								<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY AUDITOR ASSIGNMENT STATUS">
+								<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY AUDITOR ASSIGNMENT STATUS">
 				            		@if($sort_by == 'audit-sort-status-auditor')
 				            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-auditor',  @php echo 1-$sort_order; @endphp);"></a>
 				            		@else
@@ -483,30 +479,24 @@
 				            		@endif
 								</span> 
 							@endif
-							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS">
+							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS">
 			            		@if($sort_by == 'audit-sort-status-message')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-message',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-message', 1);"></a>
 			            		@endif
 							</span> 
-							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY DOCUMENT STATUS">
+							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY DOCUMENT STATUS">
 			            		@if($sort_by == 'audit-sort-status-document')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-document',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-document', 1);"></a>
 			            		@endif
 							</span> 
-							 @can('access_auditor')
-							<span data-uk-tooltip="{pos:'bottom-right'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY HISTORY STATUS">
-			            		@if($sort_by == 'audit-sort-status-history')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-history',  @php echo 1-$sort_order; @endphp);"></a>
-			            		@else
-			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-history', 1);"></a>
-			            		@endif
-							</span>
+							
+							
 						</div>
-						@endcan
+						
 		            </th>
 		            @can('access_auditor')
 		            <th >
@@ -553,6 +543,7 @@
 
 			            </div>
 		            </th>@endcan
+		            @if(1==0)
 		            <th style="vertical-align:top;">
 		            	<div uk-grid>
 			            	<div class="uk-link uk-width-1-1 archived-icon" onclick="toggleArchivedAudits();" data-uk-tooltip="{pos:'bottom'}" title="Click to Hide Archived Audits">
@@ -563,6 +554,7 @@
 							</div>
 						</div>
 		            </th>
+		            @endif
 		        </tr>
 		    </thead>
 		    <tbody>
