@@ -1110,3 +1110,5 @@ The following div is defined in this particular tab and pushed to the main layou
     });
 
 </script>
+
+	<script>window.auditsLoaded = 1; </script>
