@@ -58,8 +58,8 @@ class SchedulesEvent
         $recipient = $scheduletime->auditor;
 
         $emailNotification = new EmailScheduleInvitation($recipient->id, $scheduletime, $scheduletime->ics_link());
-   //     \Mail::to($recipient->email)->send($emailNotification);     
-        \Mail::to('jotassin@gmail.com')->send($emailNotification);
+        \Mail::to($recipient->email)->send($emailNotification);     
+   //     \Mail::to('jotassin@gmail.com')->send($emailNotification);
 
         // $admins = ['jotassin@gmail.com'];
         // $emailNotification = new EmailSystemAdmin('testing the scheduletime event.','');
