@@ -1763,6 +1763,11 @@ margin-top:10px;
     padding-top: 6px;
     display:inline-block;
 }
+.completion-icon-big {
+    margin-top: 21px;
+    display: block;
+    font-size: 25px !important;
+}
 .inspection-area .area-name {
   padding-left: 10px;
     margin-top: 5px;

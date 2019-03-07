@@ -932,7 +932,7 @@ The following div is defined in this particular tab and pushed to the main layou
     @endcan
 
 
-    function markAmenityComplete(audit_id, building_id, unit_id, amenity_id, element){
+    function markAmenityComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel = 0){
     	
     	if(element){
     		if($('#'+element).hasClass('a-circle-checked')){
@@ -950,14 +950,18 @@ The following div is defined in this particular tab and pushed to the main layou
     	
     	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>'+title+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>'+message+'</h3></div>').then(function() {
 		    	
-		    	$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/complete', {
+		    	$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/'+toplevel+'/complete', {
 		            '_token' : '{{ csrf_token() }}'
 		        }, function(data) {
 		            if(data==0){ 
 		                UIkit.modal.alert(data,{stack: true});
 		            } else {console.log(data.status);
 		            	if(data.status == 'complete'){
-		            		if(amenity_id == 0){
+		            		if(toplevel == 1){
+		            			UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+			            		$('#'+element).toggleClass('a-circle');
+			            		$('#'+element).toggleClass('a-circle-checked');
+		            		}else if(amenity_id == 0){
 		            			UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
 		            			$('[id^=completed-'+audit_id+building_id+']').removeClass('a-circle');
 		            			$('[id^=completed-'+audit_id+building_id+']').addClass('a-circle-checked');
@@ -969,7 +973,11 @@ The following div is defined in this particular tab and pushed to the main layou
 
 		            	}else{
 		            		
-		            		if(amenity_id == 0){
+		            		if(toplevel == 1){
+		            			UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+			            		$('#'+element).toggleClass('a-circle');
+			            		$('#'+element).toggleClass('a-circle-checked');
+		            		}else if(amenity_id == 0){
 		            			UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
 		            			$('[id^=completed-'+audit_id+building_id+']').removeClass('a-circle-checked');
 		            			$('[id^=completed-'+audit_id+building_id+']').addClass('a-circle');

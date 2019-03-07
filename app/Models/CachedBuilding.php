@@ -76,6 +76,21 @@ class CachedBuilding extends Model
         return $this->hasManyThrough('App\Models\Unit', 'App\Models\Building', 'id', 'building_id', 'building_id', 'id');
     }
 
+    public function is_amenity()
+    {
+        if(!$this->building_id){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function amenity()
+    {
+        // this only applies when working with a project-level amenity listed along other buildings in the cache
+        return \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('amenity_id','=',$this->amenity_id)->first();
+    }
+
     public function amenity_inspections()
     {
         return \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('building_id','=',$this->building_id)->whereNotNull('building_id')->get();

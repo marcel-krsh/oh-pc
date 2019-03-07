@@ -880,7 +880,7 @@ class AuditController extends Controller
         return 1;
     }
 
-    public function markCompleted(Request $request, $amenity_id, $audit_id, $building_id, $unit_id)
+    public function markCompleted(Request $request, $amenity_id, $audit_id, $building_id, $unit_id, $toplevel)
     {
         if ($amenity_id == 0) {
             if ($unit_id != "null" && $unit_id != 0) {
@@ -904,7 +904,12 @@ class AuditController extends Controller
             if ($unit_id != "null" && $unit_id != 0) {
                 $amenity_inspection = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->where('unit_id', '=', $unit_id)->first();
             } else {
-                $amenity_inspection = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->first();
+                if($toplevel == 1){
+                    // clicked at the building level, but this is an amenity
+                    $amenity_inspection = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->whereNull('unit_id')->first();
+                }else{
+                    $amenity_inspection = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->first();
+                }
             }
 
             if ($amenity_inspection->completed_date_time !== null) {
