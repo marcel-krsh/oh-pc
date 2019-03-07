@@ -174,7 +174,7 @@
 													<div uk-grid>
 														<div class="uk-width-1-1 findings-icons" uk-grid style="margin-top: 0px;"> 
 										            		<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$building->building->finding_file_status}} action-needed">
-										            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'file');">
+										            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'file', null, @if($building->building_id) '0' @else '1' @endif);">
 																	<i class="a-folder"></i>
 																	<div class="findings-icon-status">
 																		@if($building->building->finding_file_completed == 0)
@@ -187,7 +187,7 @@
 																
 															</div>
 															<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$building->building->finding_nlt_status}}">
-																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'nlt');">
+																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'nlt', null, @if($building->building_id) '0' @else '1' @endif);">
 																	<i class="a-booboo"></i>
 																	<div class="findings-icon-status">
 																		@if($building->building->finding_nlt_completed == 0)
@@ -199,7 +199,7 @@
 																</div>
 															</div>
 															<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$building->building->finding_lt_status}}">
-																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'lt');">
+																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'lt', null, @if($building->building_id) '0' @else '1' @endif);">
 																	<i class="a-skull" uk-tooltip="pos:top-left;title:Reason;"></i>
 																	<div class="findings-icon-status">
 																		@if($building->building->finding_lt_completed == 0)

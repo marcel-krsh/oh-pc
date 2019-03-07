@@ -836,8 +836,8 @@ function reorder(classname, childclassname) {
 	});
 }
 //onclick="openFindings(this, 6659, 23057, 1005319, 'file');"
-function openFindings(element, auditid, buildingid, unitid='', type='all', amenity=''){
-	dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1);
+function openFindings(element, auditid, buildingid, unitid='', type='all', amenity='', toplevel=0){
+	dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity+'/'+toplevel,1,0,1);
 }
 
 function reorderBuildings(auditId, projectId, buildingId, amenityId, endIndex) {

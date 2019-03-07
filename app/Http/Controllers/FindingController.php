@@ -452,8 +452,12 @@ class FindingController extends Controller
         }
     }
 
-    public function modalFindings($type, $auditid, $buildingid = null, $unitid = null, $amenityid = null, $refresh_stream = 0)
+    public function modalFindings($type, $auditid, $buildingid = null, $unitid = null, $amenityid = null, $toplevel = 0, $refresh_stream = 0)
     {
+        // $toplevel is to detect top level amenities
+        // a project-level amenity will appear like a building, toplevel will be set to 1 to differentiate
+        // a building-level amenity will appear like a unit, toplevel will be set to 1 to differentiate
+
         // get user's audits, projects, buildings, areas, units, based on click
         /*
     	
@@ -548,9 +552,9 @@ class FindingController extends Controller
             $checkDoneAddingFindings = 1;
 
             if($refresh_stream){
-                return view('audit_stream.audit_stream', compact('audit', 'checkDoneAddingFindings', 'type' , 'photos','comments','findings','documents','unit','building','amenity','project','followups','audits','units','buildings','amenities','allFindingTypes', 'auditid', 'buildingid', 'unitid', 'amenityid'));
+                return view('audit_stream.audit_stream', compact('audit', 'checkDoneAddingFindings', 'type' , 'photos','comments','findings','documents','unit','building','amenity','project','followups','audits','units','buildings','amenities','allFindingTypes', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel'));
             }else{
-                return view('modals.findings', compact('audit', 'checkDoneAddingFindings', 'type' , 'photos','comments','findings','documents','unit','building','amenity','project','followups','audits','units','buildings','amenities','allFindingTypes', 'auditid', 'buildingid', 'unitid', 'amenityid'));
+                return view('modals.findings', compact('audit', 'checkDoneAddingFindings', 'type' , 'photos','comments','findings','documents','unit','building','amenity','project','followups','audits','units','buildings','amenities','allFindingTypes', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel'));
             }
 
         }else{

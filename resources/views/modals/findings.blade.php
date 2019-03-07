@@ -456,7 +456,7 @@
 
 			
         @elseif(!is_null($passedUnit))
-
+        	@if($toplevel != 1)
         		console.log('Filtering to unit id:u-{{$passedUnit->unit_id}}');
         		// set filter test for type
         		<?php 
@@ -467,8 +467,14 @@
 				filterAmenities('u-{{$passedUnit->unit_id}}', 'Unit NAME: {{$passedUnit->unit_name}} in Building BIN:{{$passedUnit->building_key}} ADDRESS: {{$passedUnit->building->address->line_1}}',0);
         		// filter to type and allita type (nlt, lt, file)
 
+        	@else 
+        		console.log('Filtering building-level amenities {{$passedBuilding->building_id}}}');
+        		filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}} NAME: {{$passedBuilding->building_name}}',0,1);
+        	@endif
+
         @elseif(!is_null($passedBuilding))
-       			console.log('Filtering to building id:b-{{$passedBuilding->building_id}}');
+        	@if($toplevel != 1)
+        		console.log('Filtering to building id:b-{{$passedBuilding->building_id}}');
         		<?php 
 						$locationType = 'b-'.$passedBuilding->building_id;
 				?>
@@ -485,8 +491,12 @@
         		//filterAmenities('b-16713','Building BIN: 93670, NAME: OH-11-00214, ADDRESS: ')
 
         		// filter to type and allita type (nlt, lt, file)
+        	@else 
+        		console.log('Filtering project-level amenities {{$audit->project_ref}}');
+        		filterAmenities('s-{{$audit->project_ref}}', 'Site: {{$audit->project->address->basic_address()}}',0,1);
+        	@endif
         @else
-        		// console.log('Open type listing - opened from the audit list');
+        		//console.log('filtering by project-level');
         		// setTimeout(function() {
         		// 	typeList();
         		// }, .7);
