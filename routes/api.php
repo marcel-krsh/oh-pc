@@ -1550,9 +1550,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
-                    $results = AuditAuditor::whereIn('last_edited', '>', $lastEdited)->get();
+                    $results = AuditAuditor::where('updated_at', '>', $lastEdited)->get();
                 else
-                    $results = AuditAuditor::whereIn('id', $auditors)->get();
+                    $results = AuditAuditor::get();
 
                 if ($results) {
                     $reply = $results;
