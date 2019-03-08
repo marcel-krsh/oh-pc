@@ -17,8 +17,14 @@ class OrderingUnit extends Model
         'project_id',
         'building_id',
         'unit_id',
-        'order'
-    ];
+        'order',
+        'amenity_inspection_id'
+    ];  
+
+    public function amenity_inspection() : HasOne
+    {
+        return $this->hasOne(\App\Models\AmenityInspection::class, 'id', 'amenity_inspection_id');
+    }
 
     /**
      * Building

@@ -3,7 +3,7 @@
 			<div class="buildings uk-overflow-auto" style="">
 				<div class="sortablebuildings sortable" uk-sortable="handle: .uk-sortable-handle-{{$context}}">
 					@foreach($buildings as $key=>$building)
-					<div id="building-{{$context}}-r-{{$key}}" class="uk-margin-remove building @if($building->building) building-{{$building->building->status}} {{$building->building->status}} @endif @if($building->building->status != 'critical') notcritical @endif uk-grid-match" style=" @if(session('audit-hidenoncritical') == 1 && $building->building->status != 'critical') display:none; @endif " data-audit="{{$building->building->audit_id}}" data-project="{{$building->project_id}}" data-building="{{$building->building->building_id}}" data-amenity="{{$building->building->amenity_id}}" uk-grid>
+					<div id="building-{{$context}}-r-{{$key}}" class="uk-margin-remove building @if($building->building) building-{{$building->building->status}} {{$building->building->status}} @endif @if($building->building->status != 'critical') notcritical @endif uk-grid-match" style=" @if(session('audit-hidenoncritical') == 1 && $building->building->status != 'critical') display:none; @endif " data-audit="{{$building->building->audit_id}}" data-project="{{$building->project_id}}" data-building="{{$building->building->building_id}}" data-amenity="{{$building->building->amenity_id}}" data-amenityinspection="{{$building->building->amenity_inspection_id}}" uk-grid>
 						<div class="uk-width-1-6 uk-padding-remove">
 							<div class="uk-padding-remove uk-flex">
 								<div id="building-{{$context}}-{{$target}}-c-1-{{$key}}" class="uk-inline uk-sortable-handle-{{$context}}" style="min-width: 16px; padding: 0 3px;">
@@ -248,6 +248,21 @@
 													    @endif
 												    @endif
 												@endforeach
+											</div>
+											@else
+											<div class="uk-inline uk-padding-remove uk-float-right" style="margin-top: 7px;">	
+												<div class="findings-icon toplevel uk-inline uk-margin-right" onclick="copyAmenity('', {{$audit}}, 0, 0, {{$building->building->amenity()->id}}, 1);">
+													<i class="a-file-copy-2"></i>
+													<div class="findings-icon-status toplevel plus">
+														<span class="uk-badge">+</span>
+													</div>
+												</div>
+												<div class="findings-icon toplevel uk-inline  uk-margin-right" onclick="deleteAmenity('building-{{$context}}-r-{{$key}}', {{$audit}}, 0, 0, {{$building->building->amenity_inspection_id}}, 0, 1);">
+													<i class="a-trash-4"></i>
+													<div class="findings-icon-status toplevel plus">
+														<span class="uk-badge">-</span>
+													</div>
+												</div>
 											</div>
 											@endif
 

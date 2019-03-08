@@ -45,6 +45,8 @@
 			console.log("processed "+data.element);
 			$('#'+$.trim(data.element)).remove();
 
+			@if($building_id || $unit_id)
+
 			if(data.auditor.unit_id == null && data.auditor.building_id != null){
             	console.log('updating building auditors ');
 
@@ -128,6 +130,7 @@
                 $('#unit-amenity-count-'+data.amenity_count_id).html(data.amenity_count + ' AMENITIES');
                 console.log('#unit-amenity-count-'+data.amenity_count_id);
             }
+            @endif
 
 			dynamicModalClose();
 		});

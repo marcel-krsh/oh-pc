@@ -233,9 +233,13 @@ class CachedAuditsEvent
                         'zip' => $cached_audit->zip,
                         'auditors_json' => json_encode($auditors_array),
                         'amenities_json' => json_encode($baJson),
-                        'amenity_id' =>$ba->amenity_id
+                        'amenity_id' =>$ba->amenity_id,
+                        'amenity_inspection_id' =>$ba->id
                     ]);
                     $cached_building->save();
+
+                    $ba->cachedbuilding_id = $cached_building->id;
+                    $ba->save();
                 }
             }
 

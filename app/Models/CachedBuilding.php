@@ -49,8 +49,15 @@ class CachedBuilding extends Model
         'amenities_json',
         'findings_json',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'amenity_inspection_id'
     ];
+
+    public function amenity_inspection() : HasOne
+    {
+        // used when building-level amenity
+        return $this->hasOne(\App\Models\AmenityInspection::class, 'id', 'amenity_inspection_id');
+    }
 
     public function getAmenitiesJsonAttribute($value)
     {
@@ -88,7 +95,7 @@ class CachedBuilding extends Model
     public function amenity()
     {
         // this only applies when working with a project-level amenity listed along other buildings in the cache
-        return \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('amenity_id','=',$this->amenity_id)->first();
+        return \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('amenity_id','=',$this->amenity_id)->where('cachedbuilding_id','=',$this->id)->first();
     }
 
     public function amenity_inspections()

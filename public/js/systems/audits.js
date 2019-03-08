@@ -83,6 +83,7 @@ function projectDetails(id, target, buildingcount = 10, reload = 0) {
 
 		// close own details
 		$('#audit-r-'+target+'-buildings').remove();
+		$('tr[id^="audit-r-"]').show();
 	}else{
 		if(reload == 1){
 			$('#audit-r-'+target+'-buildings').remove();
@@ -95,6 +96,7 @@ function projectDetails(id, target, buildingcount = 10, reload = 0) {
 
 		// close all details
 		$('tr[id$="-buildings"]').remove();
+		$('tr[id^="audit-r-"]').not( 'tr[id="audit-r-'+target+'"]' ).hide();
 
 		// open the expanded div early based on expected number of buildings
 		if($('#audit-r-'+target).hasClass('notcritical')){
@@ -840,11 +842,12 @@ function openFindings(element, auditid, buildingid, unitid='', type='all', ameni
 	dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity+'/'+toplevel,1,0,1);
 }
 
-function reorderBuildings(auditId, projectId, buildingId, amenityId, endIndex) {
+function reorderBuildings(auditId, projectId, buildingId, amenityId, amenityInspectionId, endIndex) {
 	var url = 'dashboard/audits/'+auditId+'/buildings/reorder';
 	$.get(url, {
         'building' : buildingId,
         'amenity' : amenityId,
+        'amenity_inspection' : amenityInspectionId,
         'project' : projectId,
         'index' : endIndex
         }, function(data) {
@@ -907,6 +910,7 @@ $(function () {
 		var auditId = $(listItem).data('audit');
 		var buildingId = $(listItem).data('building');
 		var amenityId = $(listItem).data('amenity');
+		var amenityInspectionId = $(listItem).data('amenityinspection');
 		var projectId = $(listItem).data('project');
 
 		if($('#'+item.detail[1].id).hasClass('building-detail')){
@@ -924,7 +928,7 @@ $(function () {
 			//UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
 			reorder(".buildings > .sortable", '.building');
 
-			reorderBuildings(auditId, projectId, buildingId, amenityId, endIndex);
+			reorderBuildings(auditId, projectId, buildingId, amenityId, amenityInspectionId, endIndex);
 			
 			//console.log("endIndex "+endIndex+' '+item.detail[1].id);
 			// update journey icons

@@ -74,34 +74,35 @@
 										$projectAmenities = $projectAmenities->sortBy('amenity_id')->sortBy('id');
 
 										$currentAmenityId = 0;
-										$amenityIncrement = 1;
+										$amenityIncrement = array();
 
 					        		@endphp
 					        
 					        		@foreach($projectAmenities as $amenity)
 					        			@php 
-					        				if($currentAmenityId != $amenity->amenity_id) { 
+					        				if(!array_key_exists($amenity->amenity_id, $amenityIncrement)){
+					        				//if($currentAmenityId != $amenity->amenity_id) { 
 				        						// new amenity
 				        						$currentAmenityId = $amenity->amenity_id;
 				        						if($amenity->project_has_multiple()){ 
-				        							$amenityIncrement = 1;
+				        							$amenityIncrement[$currentAmenityId] = 1;
 				        						} else {
-				        							$amenityIncrement = '';
+				        							$amenityIncrement[$currentAmenityId] = 0;
 				        						}
 				        					} else {
 				        						// same amenity - increment it.
-				        						$amenityIncrement++; 
+				        						$amenityIncrement[$amenity->amenity_id]++; 
 				        					}
 					        			@endphp
 					        		<li id="amenity-inspection-{{$amenity->id}}" class=" s-{{$audit->project_ref}} aa-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items uid-{{$amenity->auditor_id}}" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">
-					        			<a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','@if($amenity->auditor_id) {{$amenity->user->initials()}} @else NA @endIf : {{$amenity->amenity->amenity_description}} {{$amenityIncrement}}',{{$amenityIncrement}})" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">@if(is_null($amenity->completed_date_time)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id) <div class="amenity-auditor uk-margin-remove">
+					        			<a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','@if($amenity->auditor_id) {{$amenity->user->initials()}} @else NA @endIf : {{$amenity->amenity->amenity_description}} @if($amenityIncrement[$amenity->amenity_id] != 0){{$amenityIncrement[$amenity->amenity_id]}} @endif',{{$amenityIncrement[$amenity->amenity_id]}})" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">@if(is_null($amenity->completed_date_time)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id) <div class="amenity-auditor uk-margin-remove">
 					        											<div class="amenity-auditor uk-margin-remove">
 					        												<div uk-tooltip="pos:top-left;title:{{$amenity->user->full_name()}};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float">
 					        													{{$amenity->user->initials()}}
 					        												</div>
 					        											</div>
 					        										</div> @else 
-					        										<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED"></i>  @endif {{$amenity->amenity->amenity_description}} {{$amenityIncrement}}</a></li>
+					        										<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED"></i>  @endif {{$amenity->amenity->amenity_description}} @if($amenityIncrement[$amenity->amenity_id] != 0){{$amenityIncrement[$amenity->amenity_id]}} @endif</a></li>
 					        		@endforeach
 
 					        		@php // get the building level amenities

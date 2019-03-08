@@ -17,7 +17,8 @@ class OrderingBuilding extends Model
         'audit_id',
         'building_id',
         'amenity_id',
-        'order'
+        'order',
+        'amenity_inspection_id'
     ];
 
     /**
@@ -33,7 +34,7 @@ class OrderingBuilding extends Model
     public function building() : HasOne
     {
         if($this->building_id === NULL){
-            return $this->hasOne(\App\Models\CachedBuilding::class, 'amenity_id', 'amenity_id')->where('audit_id','=',$this->audit_id);
+            return $this->hasOne(\App\Models\CachedBuilding::class, 'amenity_id', 'amenity_id')->where('audit_id','=',$this->audit_id)->where('amenity_inspection_id', '=', $this->amenity_inspection_id);
             //$cachedbuilding = \App\Models\CachedBuilding::where('audit_id','=',$this->audit_id)->where('amenity_id','=',$this->amenity_id)->first(); 
         }else{
             //$cachedbuilding = \App\Models\CachedBuilding::where('audit_id','=',$this->audit_id)->where('building_id','=',$this->building_id)->first();
@@ -56,6 +57,11 @@ class OrderingBuilding extends Model
     public function project() : HasOne
     {
         return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
+    }
+
+    public function amenity_inspection() : HasOne
+    {
+        return $this->hasOne(\App\Models\AmenityInspection::class, 'id', 'amenity_inspection_id');
     }
 
     /**

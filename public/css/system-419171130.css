@@ -2452,6 +2452,18 @@ margin-top:10px;
     bottom:1px;
     top: unset;
 }
+#auditstable .building .findings-icon-status.toplevel span {
+    font-size: 17px;
+    bottom: -4px;
+    right: -8px;
+    line-height: 7px;
+}
+#auditstable .building:not([expanded="true"]) .findings-icon.toplevel, #auditstable .building .findings-icon.toplevel{
+    opacity: 0.4;
+}
+#auditstable .building:hover .findings-icon.toplevel {
+    opacity:1;
+}
 #auditstable .building .findings-icon-status i {
     position: absolute;
     right: -1px;
