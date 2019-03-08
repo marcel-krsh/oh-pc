@@ -1394,9 +1394,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
-                    $results = Audit::whereIn('audit_id', $cached_audits)->where('last_edited', '>', $lastEdited)->get();
+                    $results = Audit::whereIn('id', $cached_audits)->where('last_edited', '>', $lastEdited)->get();
                 else
-                    $results = Audit::whereIn('audit_id', $cached_audits)->get();
+                    $results = Audit::whereIn('id', $cached_audits)->get();
 
                 if ($results) {
                     $reply = $results;
