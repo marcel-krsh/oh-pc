@@ -1390,7 +1390,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $cached_audits = CachedAudit::where('step_id','61')->select('audit_id')->get();
+                $cached_audits = CachedAudit::select('audit_id')->get();
 
                 $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
