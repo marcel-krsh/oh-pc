@@ -15,7 +15,6 @@ use App\DocumentCategory;
 use App\Helpers\GeoData;
 use App\Http\Controllers;
 use App\Photo;
-use App\Comment;
 use App\Correction;
 use App\State;
 use App\County;
@@ -44,6 +43,7 @@ use App\Models\CachedAmenity;
 use App\Models\People;
 use App\Models\AmenityInspection;
 use App\Models\Finding;
+use App\Models\Comment;
 
 /*
 |--------------------------------------------------------------------------
@@ -1550,9 +1550,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
-                    $results = AuditAuditor::whereIn('last_edited', '>', $lastEdited)->get();
+                    $results = AuditAuditor::where('updated_at', '>', $lastEdited)->get();
                 else
-                    $results = AuditAuditor::whereIn('id', $auditors)->get();
+                    $results = AuditAuditor::get();
 
                 if ($results) {
                     $reply = $results;
