@@ -1,5 +1,5 @@
 		<td colspan="10">
-			<div class="rowinset-top">PROJECT LEVEL INSPECTION AREAS AND BUILDINGS <span class="uk-link" style="color:#ffffff;" onclick="$('#audit-r-{{$target}}-buildings').remove();"><i class="a-circle-cross"></i></span></div>
+			<div class="rowinset-top">PROJECT LEVEL INSPECTION AREAS AND BUILDINGS <span class="uk-link" style="color:#ffffff;" onclick="$('#audit-r-{{$target}}-buildings').remove();$('tr[id^=\'audit-r-\']').show();"><i class="a-circle-cross"></i></span></div>
 			<div class="buildings uk-overflow-auto" style="">
 				<div class="sortablebuildings sortable" uk-sortable="handle: .uk-sortable-handle-{{$context}}">
 					@foreach($buildings as $key=>$building)
