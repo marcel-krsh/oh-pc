@@ -15,7 +15,6 @@ use App\DocumentCategory;
 use App\Helpers\GeoData;
 use App\Http\Controllers;
 use App\Photo;
-use App\Comment;
 use App\Correction;
 use App\State;
 use App\County;
@@ -44,6 +43,7 @@ use App\Models\CachedAmenity;
 use App\Models\People;
 use App\Models\AmenityInspection;
 use App\Models\Finding;
+use App\Models\Comment;
 
 /*
 |--------------------------------------------------------------------------
