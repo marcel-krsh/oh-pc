@@ -405,7 +405,7 @@ class DocumentController extends Controller
         }
         $document_categories = DocumentCategory::where('parent_id', '<>', 0)->orderBy('parent_id')->orderBy('document_category_name')->get()->all();
 
-        return view('projects.partials.documents', compact('project', 'documents', 'document_categories'));
+        return view('projects.partials.docuware-documents', compact('project', 'documents', 'document_categories'));
 
     }
     public function showTabFromParcelId(Parcel $parcel, Request $request)
