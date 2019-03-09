@@ -12,16 +12,21 @@ class SyncDocuware extends Model
     public $timestamps = true;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
-    
+
 
     //
     protected $guarded = ['id'];
 
-    public function comments() : HasMany 
+    public function comments() : HasMany
     {
         return $this->hasMany(Comment::class, 'comment_id', 'id');
     }
-   
 
-    
+    public function categories()
+		{
+		    return $this->belongsToMany('App\Models\DocumentCategory', 'document_document_categories', 'sync_docuware_id', 'document_category_id')->where('parent_id','<>',0);
+		}
+
+
+
 }

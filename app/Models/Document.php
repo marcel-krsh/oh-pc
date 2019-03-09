@@ -17,7 +17,7 @@ class Document extends Model
 
     protected $guarded = ['id'];
 
-    public function finding() : HasOne 
+    public function finding() : HasOne
     {
         return $this->hasOne(\App\Models\Finding::class, 'id', 'finding_id');
     }
@@ -27,12 +27,12 @@ class Document extends Model
         return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
     }
 
-    public function comments() : HasMany 
+    public function comments() : HasMany
     {
         return $this->hasMany(\App\Models\Comment::class, 'document_id', 'id')->orderBy('id','asc');
     }
 
-    public function photos() : HasMany 
+    public function photos() : HasMany
     {
         return $this->hasMany(\App\Models\Photo::class, 'document_id', 'id')->orderBy('id','asc');
     }
@@ -73,6 +73,7 @@ class Document extends Model
      *
      * @return mixed
      */
+
     public function approve_categories($cat_array = null)
     {
         if (is_array($cat_array)) {
@@ -120,8 +121,13 @@ class Document extends Model
                     }
                 }
             }
-            
+
             return 1;
         }
     }
+
+    public function assigned_categories()
+		{
+		    return $this->belongsToMany('App\Models\DocumentCategory', 'local_document_categories', 'document_id', 'document_category_id')->where('parent_id','<>',0);
+		}
 }
