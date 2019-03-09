@@ -1,47 +1,10 @@
-<template class="uk-hidden" id="category-list-template">
-	<div class="uk-width-1-1 uk-margin-small-bottom">
-		<input name="category-id-x-y" id="category-id-x-y" type="a-checkbox">
-		<label for="category-id-x">
-			Category Name
-		</label>
-	</div>
-</template>
-<template class="uk-hidden" id="sent-document-list-template">
-	<tr>
-		<td>10/10/10</td>
-		<td><ul class="uk-subnav document-category-menu">Categories</ul></td>
-		<td><a class="uk-link-muted" onclick="newEmailRequest('2');"><span class="a-checkbox"></span>&nbsp;&nbsp;|&nbsp;&nbsp;</a><a onclick="resetDocTabCategoryListVars();selectCategory('2')" uk-tooltip="Select all categories listed for this document group that was uploaded."><span class="a-higher"></span></a></td>
-	</tr>
-</template>
-<template id="document-list-template" class="uk-hidden">
-	<tr class="">
-		<td>Upload date</td>
-		<td>type</td>
-		<td>Staff name</td>
-		<td>Categories</td>
-		<td><a class="uk-link-muted " onclick="deleteDocument(123)"><span class="a-trash-4"></span></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#" target="_blank"><span class="a-lower"></span></a></td>
-	</tr>
-</template>{{--
-<script>
-	$('.detail-tab-1-text').html('<span class="a-home-2"></span> PARCEL: {{ $project->parcel_id }} :: Documents ');
-	$('#main-option-text').html('Parcel: {{ $project->parcel_id }}');
-	$('#main-option-icon').attr('uk-icon','arrow-circle-o-left');
-	var subTabType = window.subTabType;
-	if(subTabType == 'documents'){
-		delete window.subTabType;
-		$('#parcel-subtab-1').attr("aria-expaned", "false");
-		$('#parcel-subtab-1').removeClass("uk-active");
-		$('#parcel-subtab-2').attr("aria-expaned", "true");
-		$('#parcel-subtab-2').addClass("uk-active");
-	}
-</script> --}}
+
 <div class="uk-grid uk-margin-top uk-animation-fade">
 	<div class="uk-width-3-5@m uk-width-1-1 ">
 		<table class="uk-table uk-table-striped uk-table-condensed uk-table-hover gray-link-table" id="">
 			<thead>
 				<tr class="uk-text-small" style="color:#fff;background-color:#555;">
-					<th>CLASS: DESCRIPTION</th>
-					<th>TYPE</th>
+					<th>CATEGORY: FILE</th>
 					<th>STORED</th>
 					<th>MODIFIED</th>
 					<th width="110">ACTIONS</th>
@@ -49,28 +12,15 @@
 			</thead>
 			<tbody id="sent-document-list">
 				@foreach ($documents as $document)
-				<?php
-				if($document->categories){
-             //$listcats = implode(",", json_decode($document->categories, true));
-					$listcats = $document->categories->lists('id');
-				}else{
-					$listcats = '';
-				}
-				?>
 				<tr>
 					<td style="vertical-align: middle;">
 						<ul class="uk-list document-category-menu">
-		    		{{-- See if doc is approved or declined
-		    			* allita_document_approval = null (none)
-		    			* allita_document_approval == 0 (declined) //think twice
-		    			* allita_document_approval == 1 (approved)
-		    			--}}
 		    			@foreach ($document->assigned_categories as $document_category)
 		    			<li class="{{ ($document->notapproved == 1) ? "declined-category s" : "" }} {{ ($document->approved == 1) ? "approved-category" : "" }}">
 		    				<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}" class="">
 		    					<span id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes" : "check-received-no received-no" }}"></span>
-		    					<span id="sent-id-{{ $document->id }}category-id-1-not-received-icon" class="{{ ($document->notapproved == 0) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }}"></span>
-		    					{{ ucwords(strtolower($document->filename)) }}
+		    					<span id="sent-id-{{ $document->id }}category-id-1-not-received-icon" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }}"></span>
+		    					{{ $document_category->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}
 		    				</a>
 		    				<div uk-dropdown="toggle: #sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}">
 		    					<ul class="uk-nav uk-nav-dropdown">
@@ -100,24 +50,30 @@
 		    			@endforeach
 		    		</ul>
 		    	</td>
-		    	<td>{{ $document->filename }}</td>
-		    	<td><span uk-tooltip title="{{ date('g:h a', strtotime($document->created_at)) }}">{{ date('m/d/Y', strtotime($document->created_at)) }}</span>
+		    	<td><span uk-tooltip title="{{ $document->created_at->format('h:i a') }}">{{ date('m/d/Y', strtotime($document->created_at)) }}</span>
 		    	</td>
-		    	<td><span uk-tooltip title="{{ date('g:h a', strtotime($document->updated_at)) }}">{{ date('m/d/Y', strtotime($document->updated_at)) }}</span>
+		    	<td><span uk-tooltip title="{{ date('h:i a', strtotime($document->updated_at)) }}">{{ date('m/d/Y', strtotime($document->updated_at)) }}</span>
 		    	</td>
 		    	<td>
+		    		<a class="uk-link-muted " uk-tooltip="@foreach($document->assigned_categories as $document_category){{ $document_category->parent->document_category_name }}/{{ $document_category->document_category_name }}@endforeach">
+              <span class="a-info-circle"  style="color: #56b285;"></span>
+            </a>
+            &nbsp;|&nbsp;
+            <a class="uk-link-muted " onclick="dynamicModalLoad('edit-local-document/{{$document->id}}')" uk-tooltip="Edit this file">
+             		<span class="a-pencil-2" style="color: rgb(0, 193, 247);"></span>
+            </a>
+            &nbsp;|&nbsp;
 		    		@can('access_admin')
 		    		<a class="uk-link-muted " onclick="deleteFile({{ $document->id }});" uk-tooltip="Delete this file">
-		    			<span class="a-trash-4"></span>
+		    			<span class="a-trash-4" style="color: #da328a;"></span>
 		    		</a>
-		    		&nbsp;&nbsp;|&nbsp;&nbsp;
+		    		&nbsp;|&nbsp;
 		    		@endcan
-		    		<?php $url = "/document/{$document->id}"; ?>
-		    		<a href="{{ $url }}" target="_blank"  uk-tooltip="Download file.">
+		    		<a href="storage/app/{{ $document->file_path }}" target="_blank"  uk-tooltip="Download file." download>
 		    			<span class="a-lower"></span>
 		    		</a>
-		    		@if($document->comment)&nbsp;&nbsp;| &nbsp;&nbsp;<a class="uk-link-muted " uk-tooltip="{{ $document->comment }}">
-		    			<span class="a-file-info"></span>
+		    		@if($document->comment)&nbsp;|&nbsp;<a class="uk-link-muted " uk-tooltip="{{ $document->comment }}">
+		    			<span class="a-file-info" style="color: #00538a;"></span>
 		    		</a>
 		    		@endif
 		    	</td>
@@ -164,7 +120,7 @@
 					</div>
 				<div class="uk-align-center uk-margin-top">
 					<div id="list-item-upload-step-2" class="noclick">
-						<div class="js-upload-noclick uk-placeholder"><center>Please select a category to upload a new document</center></div>
+						{{-- <div class="js-upload-noclick uk-placeholder"><center>Please select a category to upload a new document</center></div> --}}
 						<div class="js-upload uk-placeholder uk-text-center">
 							<span class="a-higher"></span>
 							<span class="uk-text-middle"> Please upload your document by dropping it here or</span>
@@ -191,7 +147,7 @@
 								});
 								var bar = document.getElementById('js-progressbar');
 								settings    = {
-									url: '{{ URL::route("documents.allita-upload", $project->id) }}',
+									url: '{{ URL::route("documents.local-upload", $project->id) }}',
 									multiple: true,
 									allow : '*.(jpg|gif|png|pdf|doc|docx|xls|xlsx)',
 									beforeSend: function () {
@@ -236,7 +192,7 @@
 										setTimeout(function () {
 											bar.setAttribute('hidden', 'hidden');
 										}, 250);
-										documentsAllita('{{$project->id}}');
+										documentsLocal('{{$project->id}}');
 									}
 								};
 								var select = UIkit.upload('.js-upload', settings);
@@ -252,16 +208,18 @@
 	<script type="text/javascript">
 		function markApproved(id,catid){
 			UIkit.modal.confirm("Are you sure you want to approve this file?").then(function() {
-				$.post('{{ URL::route("documents.approve", $project->id) }}', {
+				$.post('{{ URL::route("documents.local-approve", $project->id) }}', {
 					'id' : id,
 					'catid' : catid,
 					'_token' : '{{ csrf_token() }}'
 				}, function(data) {
-					if(data!='1'){ console.log("processing");
-					UIkit.modal.alert(data);
+					if(data != 1 ) {
+						console.log("processing");
+						UIkit.modal.alert(data);
 				} else {
+					dynamicModalClose();
 				}
-				loadParcelSubTab('documents',{{ $project->id }});
+				documentsLocal('{{$project->id}}');
 			}
 			);
 			});
@@ -269,16 +227,18 @@
 
 		function markUnreviewed(id,catid){
 			UIkit.modal.confirm("Are you sure you want to clear the review on this file?").then(function() {
-				$.post('{{ URL::route("documents.clearReview", $project->id) }}', {
+				$.post('{{ URL::route("documents.local-clearReview", $project->id) }}', {
 					'id' : id,
 					'catid' : catid,
 					'_token' : '{{ csrf_token() }}'
 				}, function(data) {
-					if(data!='1'){ console.log("processing");
-					UIkit.modal.alert(data);
+					if(data != 1){
+						console.log("processing");
+						UIkit.modal.alert(data);
 				} else {
+					dynamicModalClose();
 				}
-				loadParcelSubTab('documents',{{ $project->id }});
+				documentsLocal('{{$project->id}}');
 			}
 			);
 			});
@@ -286,17 +246,17 @@
 
 		function markNotApproved(id,catid){
 			UIkit.modal.confirm("Are you sure you want to decline this file?").then(function() {
-				$.post('{{ URL::route("documents.notapprove", $project->id) }}', {
+				$.post('{{ URL::route("documents.local-notapprove", $project->id) }}', {
 					'id' : id,
 					'catid' : catid,
 					'_token' : '{{ csrf_token() }}'
 				}, function(data) {
-					if(data!='1'){
+					if(data != 1){
 						UIkit.modal.alert(data);
 					} else {
-						UIkit.modal.alert('The document is not approved.');
+						dynamicModalClose();
 					}
-					loadParcelSubTab('documents',{{ $project->id }});
+					documentsLocal('{{$project->id}}');
 				});
 			});
 		}

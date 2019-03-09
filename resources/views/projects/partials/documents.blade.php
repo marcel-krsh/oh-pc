@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/css/documents-tab.css">
+
 <div id="project-documents" uk-grid>
 	<div class="uk-width-1-1@s uk-width-1-5@m " style="vertical-align:top">
 		<a class="uk-button uk-width-1-1" id="project-documents-button-1" onclick="documentsDocuware('{{$project->id}}')">
@@ -7,7 +7,7 @@
 		</a>
 	</div>
 	<div class="uk-width-1-1@s uk-width-1-5@m " style="vertical-align:top">
-		<a class="uk-button uk-width-1-1" id="project-documents-button-2" onclick="documentsAllita('{{$project->id}}')">
+		<a class="uk-button uk-width-1-1" id="project-documents-button-2" onclick="documentsLocal('{{$project->id}}')">
 			<span class="a-envelope-4"></span>
 			<span>Allita</span>
 		</a>
