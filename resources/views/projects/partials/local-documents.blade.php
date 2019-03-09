@@ -63,12 +63,12 @@
              		<span class="a-pencil-2" style="color: rgb(0, 193, 247);"></span>
             </a>
             &nbsp;|&nbsp;
-		    		@can('access_admin')
+		    	 @can('access_admin')
 		    		<a class="uk-link-muted " onclick="deleteFile({{ $document->id }});" uk-tooltip="Delete this file">
 		    			<span class="a-trash-4" style="color: #da328a;"></span>
 		    		</a>
 		    		&nbsp;|&nbsp;
-		    		@endcan
+		    	 @endcan
 		    		<a href="storage/app/{{ $document->file_path }}" target="_blank"  uk-tooltip="Download file." download>
 		    			<span class="a-lower"></span>
 		    		</a>
@@ -263,15 +263,15 @@
 
 		function deleteFile(id){
 			UIkit.modal.confirm("Are you sure you want to delete this file? This is permanent.").then(function() {
-				$.post('{{ URL::route("documents.deleteDocument", $project->id) }}', {
+				$.post('{{ URL::route("documents.local-deleteDocument", $project->id) }}', {
 					'id' : id,
 					'_token' : '{{ csrf_token() }}'
 				}, function(data) {
-					if(data!='1'){
+					if(data!= 1){
 						UIkit.modal.alert(data);
 					} else {
 					}
-					loadParcelSubTab('documents', {{ $project->id }} );
+					documentsLocal('{{$project->id}}');
 				});
 			});
 		}

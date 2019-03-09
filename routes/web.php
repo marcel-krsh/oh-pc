@@ -179,14 +179,12 @@
         Route::get('/projects/{project}/docuware-documents', 'DocumentController@getProjectDocuwareDocuments')->name('project.docuware-documents');
         Route::get('/projects/{project}/local-documents', 'DocumentController@getProjectLocalDocuments')->name('project.local-documents');
 				Route::post('/documents/project/{project}/upload', 'DocumentController@localUpload')->name('documents.local-upload');
-				Route::post('/documents/parcel/{project}/local-approve', 'DocumentController@approveLocalDocument')->name('documents.local-approve');
-				Route::post('/documents/parcel/{project}/local-notapprove', 'DocumentController@notApproveLocalDocument')->name('documents.local-notapprove');
-				Route::post('/documents/parcel/{project}/local-clearReview', 'DocumentController@clearLocalReview')->name('documents.local-clearReview');
+				Route::post('/documents/project/{project}/local-approve', 'DocumentController@approveLocalDocument')->name('documents.local-approve');
+				Route::post('/documents/project/{project}/local-notapprove', 'DocumentController@notApproveLocalDocument')->name('documents.local-notapprove');
+				Route::post('/documents/project/{project}/local-clearReview', 'DocumentController@clearLocalReview')->name('documents.local-clearReview');
 				Route::get('/modals/edit-local-document/{document}', 'DocumentController@editLocalDocument')->name('document.local-edit');
 				Route::post('/modals/edit-local-document/{document}', 'DocumentController@saveEditedLocalDocument')->name('document.local-saveedit');
-				Route::post('/documents/parcel/{parcel}/comment', 'DocumentController@uploadComment')->name('documents.uploadComment');
-				Route::post('/documents/parcel/{parcel}/deletedocument', 'DocumentController@deleteDocument')->name('documents.deleteDocument');
-				Route::get('/documents/parcel/{parcel}/downloaddocument/{document}', 'DocumentController@downloadDocument')->name('documents.downloadDocument');
+				Route::post('/documents/project/{project}/local-deletedocument', 'DocumentController@deleteLocalDocument')->name('documents.local-deleteDocument');
 
 
 

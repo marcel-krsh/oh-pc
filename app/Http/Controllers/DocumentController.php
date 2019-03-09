@@ -222,6 +222,18 @@ class DocumentController extends Controller
         return 1;
     }
 
+    public function deleteLocalDocument(Project $project, Request $request)
+    {
+        $document = Document::find($request->id);
+        // remove files
+        Storage::delete($document->file_path);
+        // remove categoried of the document
+        LocalDocumentCategory::where('document_id', $document->id)->delete();
+        // remove database record
+        $document->delete();
+        return 1;
+    }
+
     public function getProjectDocuwareDocuments(Project $project, Request $request)
     {
         //dd($project);
