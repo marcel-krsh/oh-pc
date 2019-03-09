@@ -1,7 +1,7 @@
 function toggleCritical() {
-		
 
-	$.get( '/session/filters/audit-hidenoncritical/', function( data ) {  
+
+	$.get( '/session/filters/audit-hidenoncritical/', function( data ) {
        // reload
 		// $('#detail-tab-1').trigger("click");
 		// UIkit.switcher('#top-tabs').show(0);
@@ -9,15 +9,15 @@ function toggleCritical() {
 		$('.btnToggleCritical').toggle();
     });
 
-	
+
 }
 
 function sortAuditList(sortBy, sortOrder, inputClass='') {
 	// 'audit-sort-by'
     // 'audit-sort-order'
-    
+
     $('#audits').fadeOut('slow');
-    
+
     // capture input value if any
     if(inputClass != ''){
     	var filter = '';
@@ -33,15 +33,15 @@ function sortAuditList(sortBy, sortOrder, inputClass='') {
 	    	filter = $('.'+inputClass).val();
 	    	$.get( '/session/filters/'+inputClass+'/'+filter, function( data ) {});
 	    }
-	    
+
     }
 
-	$.get( '/session/filters/audit-sort-by/'+sortBy, function( data ) {  
-		$.get( '/session/filters/audit-sort-order/'+sortOrder, function( data ) {  
+	$.get( '/session/filters/audit-sort-by/'+sortBy, function( data ) {
+		$.get( '/session/filters/audit-sort-order/'+sortOrder, function( data ) {
 			//?filter="+filter+"&filterId="+filterId
 			loadTab("dashboard/audits", "1", 0, 0, '', 1);
 
-      	});	
+      	});
     });
 }
 
@@ -50,7 +50,7 @@ function filterAuditList(element, searchClass){
 	$('.filter-box').not(element).val('');
 
 	var value = $(element).val().toLowerCase();
-	
+
 	$('tr[id^="audit-r-"]').each(function() {
 		var parentElement = this;
 		var found = 0; // we may look through multiple fields with the same class
@@ -102,7 +102,7 @@ function projectDetails(id, target, buildingcount = 10, reload = 0) {
 		}else{
 			var tempdiv = '<tr id="audit-r-'+target+'-buildings" class="rowinset"><td colspan="10">';
 		}
-    	
+
     	if(buildingcount){
     		var tempdivheight = 150 * buildingcount;
     		tempdiv = tempdiv + '<div style="height:'+tempdivheight+'px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
@@ -116,10 +116,10 @@ function projectDetails(id, target, buildingcount = 10, reload = 0) {
         	'context' : 'audits',
             'target' : target
             }, function(data) {
-                if(data=='0'){ 
+                if(data=='0'){
                     UIkit.modal.alert("There was a problem getting the buildings' information.");
                 } else {
-                	
+
 					$('#audit-r-'+target+'-buildings').html(data);
             	}
 	    });
@@ -203,7 +203,7 @@ function buildingDetails(id, auditid, target, targetaudit, detailcount=10, conte
             'targetaudit' : targetaudit,
             'context' : context
             }, function(data) {
-                if(data=='0'){ 
+                if(data=='0'){
                     UIkit.modal.alert("There was a problem getting the building details' information.");
                 } else {
                 	console.log('loading details in new divs '+'#building-'+context+'-r-'+target);
@@ -231,7 +231,7 @@ console.log(data);
 		unitOrBuildingOrProjectId = data.detail.project_id;
 		unitOrBuildingOrProject = 'project';
 	}
-	
+
 	var addAmenityButton = '<button class="uk-button tool-add-area uk-link" onclick="addAmenity(\'tplId\', \'tplBuildingOrUnit\');"><i class="a-circle-plus"></i> AREA</button>';
 
 	addAmenityButton = addAmenityButton.replace(/tplId/g, unitOrBuildingOrProjectId);
@@ -285,7 +285,7 @@ function loadInspectionTools(data, id, context='audits', level = '') {
 	    // Animation complete
 	    loadInspectionComments(data.comments, id, context, level);
 	});
-	
+
 }
 
 function loadInspectionMain(data, id, context='audits', level = '') {
@@ -309,7 +309,7 @@ function loadInspectionMain(data, id, context='audits', level = '') {
 			newarea = newarea.replace(/areaAuditorId/g, area.auditor_id);  // missing
 			newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);  // missing
 			newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);  // missing
-			newarea = newarea.replace(/areaCompletedIcon/g, area.completed_icon);  
+			newarea = newarea.replace(/areaCompletedIcon/g, area.completed_icon);
 			newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);  // missing
 			newarea = newarea.replace(/areaLTStatus/g, area.finding_lt_status);
 			newarea = newarea.replace(/areaSDStatus/g, area.finding_sd_status);
@@ -326,7 +326,7 @@ function loadInspectionMain(data, id, context='audits', level = '') {
 			newarea = newarea.replace(/areaAuditorColor/g, area.auditor_color);
 			areas = areas + newarea.replace(/areaDataHasFindings/g, area.has_findings);
 
-			
+
 		});
 
 	}
@@ -373,7 +373,7 @@ function formatCommentType(item, type) {
 	        var categories = '';
 	        var newcategory = '';
 	        var file = '';
-	        
+
 	        var doc = JSON.parse(item.document_json);
 
 	        doc.categories.forEach(function(cat) {
@@ -480,13 +480,13 @@ function loadInspectionComments(data, id, context='audits', level = '') {
 		}else{
 			comments = comments + newcomment.replace(/tplCommentContent/g, comment.content);
 		}
-		
+
 	});
-	
+
 	$(".inspec-tools-tab-findings-container").html(comments);
 	//$('.inspec-tools-tab-finding').replaceWith(comments);
 //	$('#inspection-'+context+'-tools-'+id).html(inspectionCommentTemplate);
-	
+
 	// $('#inspection-'+context+'-'+level+'comments-'+id+' .inspection-comments').html(comments);
 	// $('#inspection-'+context+'-'+level+'comments-'+id+'-container').fadeIn( "slow", function() {
 	    // Animation complete
@@ -542,14 +542,14 @@ function inspectionDetailsFromBuilding(buildingid, auditid, target, targetaudit,
 			// unblur other building inspection rows
 			$('div[id^="building-'+context+'-r-"]').removeClass('blur');
 		 });
-		
-		
+
+
 	}else{
 
 		// blur all other building rows
 		$('div[id^="building-'+context+'-r-"]').not( 'div[id="building-'+context+'-r-'+target+'"]' ).addClass('blur');
 		$('div[id^="building-'+context+'-r-"]').not( 'div[id="building-'+context+'-r-'+target+'"]' ).slideUp();
-	
+
     	// open the expanded div early based on expected number of buildings
     	var tempdiv = '<div>';
     	tempdiv = tempdiv + '<div style="height:1000px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
@@ -566,7 +566,7 @@ function inspectionDetailsFromBuilding(buildingid, auditid, target, targetaudit,
             'rowid' : rowid,
             'targetaudit' : targetaudit
             }, function(data) {
-                if(data=='0'){ 
+                if(data=='0'){
                     UIkit.modal.alert("There was a problem getting the building details' information.");
                 } else {
 					// $('#building-detail-r-'+target+'-inspect').html(data);
@@ -574,10 +574,10 @@ function inspectionDetailsFromBuilding(buildingid, auditid, target, targetaudit,
 					loadInspectionMenu(data, target, context);
 					loadInspectionMain(data.amenities, target, context);
 					loadInspectionTools(data, target, context);
-					// 
+					//
 					// //loadInspectionComments(data.comments, target, context);
-					
-					
+
+
 
 
 				}
@@ -615,12 +615,12 @@ function inspectionDetails(id, buildingid, auditid, target, targetaudit, rowid, 
 			$('div[id^="building-'+context+'-detail-r-"]').removeClass('blur');
 		 });
 
-		
+
 	}else{
 		// blur all other building detail rows
 		$('div[id^="building-'+context+'-detail-r-"]').not( 'div[id="building-'+context+'-detail-r-'+target+'"]' ).addClass('blur');
 		$('div[id^="building-'+context+'-detail-r-"]').not( 'div[id="building-'+context+'-detail-r-'+target+'"]' ).slideUp();
-	
+
     	// open the expanded div early based on expected number of buildings
     	var tempdiv = '<div>';
     	tempdiv = tempdiv + '<div style="height:1000px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
@@ -637,7 +637,7 @@ function inspectionDetails(id, buildingid, auditid, target, targetaudit, rowid, 
             'rowid' : rowid,
             'targetaudit' : targetaudit
             }, function(data) {
-                if(data=='0'){ 
+                if(data=='0'){
                     UIkit.modal.alert("There was a problem getting the building details' information.");
                 } else {
 					// $('#building-detail-r-'+target+'-inspect').html(data);
@@ -661,7 +661,7 @@ function applyFilter(filter, value) {
 	// hide tab
 	$("#detail-tab-1-content").children().fadeOut();
 	// set session value
-	$.get( '/session/filters/'+filter+'/'+value, function( data ) {  
+	$.get( '/session/filters/'+filter+'/'+value, function( data ) {
        // reload
 		$('#detail-tab-1').trigger("click");
 		// UIkit.switcher('#top-tabs').show(0);
@@ -680,9 +680,9 @@ function switchInspectionMenu(action, context, level='', audit_id, building_id, 
 	}else if(action == 'complete'){
 		console.log(audit_id+'-'+building_id+'-'+unit_id);
 		markAmenityComplete(audit_id, building_id, unit_id, 0, '');
-		
+
 	}
-	
+
 	// $('#inspection-'+context+'-'+level+'main-'+id).html("Switching menu "+action+level);
 	// $('#inspection-'+context+'-'+level+'main-'+id+' .inspection-areas').html('areas');
 	// $('#inspection-'+context+'-'+level+'main-'+id+'-container').fadeIn( "slow", function() {
@@ -724,7 +724,7 @@ var quicklookupbox = new autoComplete({
 	    output = output + item[1]+', '+item[2]+' '+item[3]+'<br />';
 		output = output + '<span class="hideImport'+item[6]+'">';
 	    output = output + '</div>';
-	    
+
 	    return output;
 	},
     onSelect: function(e, term, item){
@@ -767,7 +767,7 @@ var quicklookupbox = new autoComplete({
 	    output = output + item[1]+', '+item[2]+' '+item[3]+'<br />';
 		output = output + '<span class="hideImport'+item[6]+'">';
 	    output = output + '</div>';
-	    
+
 	    return output;
 	},
     onSelect: function(e, term, item){
@@ -810,7 +810,7 @@ var quicklookupbox = new autoComplete({
 	    output = output + item[1]+', '+item[2]+' '+item[3]+'<br />';
 		output = output + '<span class="hideImport'+item[6]+'">';
 	    output = output + '</div>';
-	    
+
 	    return output;
 	},
     onSelect: function(e, term, item){
@@ -827,10 +827,10 @@ var endIndex;
 
 function reorder(classname, childclassname) {
 	var currentIndex;
-	$(classname+" > div").each(function () { 
+	$(classname+" > div").each(function () {
 		// console.log(this.id);
 		currentIndex = $(childclassname).index(this) + 1;
-		$("#"+this.id).find(".rowindex").each(function () { 
+		$("#"+this.id).find(".rowindex").each(function () {
 			$(this).html(currentIndex);
 		});
 	});
@@ -848,7 +848,7 @@ function reorderBuildings(auditId, projectId, buildingId, amenityId, endIndex) {
         'project' : projectId,
         'index' : endIndex
         }, function(data) {
-            if(data=='0'){ 
+            if(data=='0'){
                 UIkit.modal.alert("There was a problem reordering the buildings.");
             } else {
 				console.log("reordering completed");
@@ -857,12 +857,12 @@ function reorderBuildings(auditId, projectId, buildingId, amenityId, endIndex) {
 }
 
 function reorderUnits(auditId, buildingId, unitId, endIndex) {
-	var url = 'dashboard/audits/'+auditId+'/building/'+buildingId+'/units/reorder'; 
+	var url = 'dashboard/audits/'+auditId+'/building/'+buildingId+'/units/reorder';
 	$.get(url, {
         'unit' : unitId,
         'index' : endIndex
         }, function(data) {
-            if(data=='0'){ 
+            if(data=='0'){
                 UIkit.modal.alert("There was a problem reordering the units.");
             } else {
 				console.log("reordering completed");
@@ -872,14 +872,14 @@ function reorderUnits(auditId, buildingId, unitId, endIndex) {
 
 function reorderAmenities(auditId, buildingId, unitId, amenityId, endIndex) {
 	// console.log(auditId+" "+buildingId+" "+unitId+" "+amenityId+" "+endIndex);
-	var url = 'dashboard/audits/'+auditId+'/amenities/reorder'; 
+	var url = 'dashboard/audits/'+auditId+'/amenities/reorder';
 	$.get(url, {
         'amenity_id' : amenityId,
         'building_id' : buildingId,
         'unit_id' : unitId,
         'index' : endIndex
         }, function(data) {
-            if(data=='0'){ 
+            if(data=='0'){
                 UIkit.modal.alert("There was a problem reordering the amenities.");
             } else {
 				console.log("reordering completed");
@@ -898,7 +898,7 @@ $(function () {
 			startIndex = $( ".building" ).index( listItem );
 		}else if($('#'+item.detail[1].id).hasClass('inspection-area')){
 			startIndex = $( ".inspection-area" ).index( listItem );
-		} 				
+		}
 		//console.log( item.detail[1].id + " started at index: " + startIndex );
 	});
 	$(document).on('moved', '.sortablebuildings', function (item) {
@@ -925,7 +925,7 @@ $(function () {
 			reorder(".buildings > .sortable", '.building');
 
 			reorderBuildings(auditId, projectId, buildingId, amenityId, endIndex);
-			
+
 			//console.log("endIndex "+endIndex+' '+item.detail[1].id);
 			// update journey icons
 			var length = $('.building').length;
@@ -957,7 +957,7 @@ $(function () {
 			// console.log( item.detail[1].id + " ended at index: " + endIndex );
 			// UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
 			// reorder(".inspection-main-list > .sortable", '.inspection-area');
-			
+
 			reorderAmenities(auditId, buildingId, unitId, amenityId, endIndex);
 		}
 	});
@@ -972,7 +972,7 @@ function loadProjectDetailsBuildings(id, target) {
         'context' : 'project-details',
          'target' : target
         }, function(data) {
-            if(data=='0'){ 
+            if(data=='0'){
                 UIkit.modal.alert("There was a problem getting the buildings' information.");
             } else {
             	var newdiv = '<div uk-grid><div id="auditstable" class="uk-width-1-1 uk-overflow-auto"><table class="uk-table uk-table-striped uk-table-hover uk-table-small uk-table-divider" style="min-width: 1440px;"><tr>';
@@ -994,10 +994,10 @@ function projectDetailsInfo(id, type, target) {
 	var url = '/projects/'+id+'/details/'+type;
     $.get(url, {
         }, function(data) {
-            if(data=='0'){ 
+            if(data=='0'){
                 UIkit.modal.alert("There was a problem getting the project information.");
             } else {
-            	
+
 				$('#project-details-info-container').html(data);
         	}
     });
@@ -1014,10 +1014,10 @@ function assignmentDay(id, dateid, target) {
 	var url = '/projects/'+id+'/details/assignment/date/'+dateid;
     $.get(url, {
         }, function(data) {
-            if(data=='0'){ 
+            if(data=='0'){
                 UIkit.modal.alert("There was a problem getting the assignment information.");
             } else {
-            	
+
 				$('.project-details-info-assignment-schedule').html(data);
         	}
     });
@@ -1027,7 +1027,7 @@ function fillSpacers() {
 	var TotalRows = 60;
 	var i = 0;
 	var spacers = '';
-	for (i = 0; i < TotalRows; i++) { 
+	for (i = 0; i < TotalRows; i++) {
 	    spacers = spacers+"<div></div>";
 	}
 	$('.day-spacer').html(spacers);
@@ -1038,6 +1038,42 @@ function addAmenity(id, type) {
 	console.log("adding an amenity for "+type+" "+id);
 	dynamicModalLoad('amenities/add/'+type+'/'+id, 0, 0, 0);
 }
+
+//documents loading
+function documentsDocuware(project_id) {
+	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+	$('#docuware-documents').html(tempdiv);
+	$('#project-documents-button-2').removeClass('uk-button-success green-button');
+	$('#project-documents-button-1').addClass('uk-button-success green-button active');
+	$('#allita-documents').empty();
+	var url = '/projects/'+project_id+'/docuware-documents';
+    $.get(url, {
+        }, function(data) {
+            if(data=='0'){
+                UIkit.modal.alert("There was a problem getting the project information.");
+            } else {
+				$('#docuware-documents').html(data);
+        	}
+    });
+}
+
+function documentsAllita(project_id) {
+	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+	$('#allita-documents').html(tempdiv);
+	$('#project-documents-button-1').removeClass('uk-button-success green-button');
+	$('#project-documents-button-2').addClass('uk-button-success green-button active');
+	$('#docuware-documents').empty();
+	var url = '/projects/'+project_id+'/allita-documents';
+    $.get(url, {
+        }, function(data) {
+            if(data=='0'){
+                UIkit.modal.alert("There was a problem getting the project information.");
+            } else {
+				$('#allita-documents').html(data);
+        	}
+    });
+}
+
 
 
 

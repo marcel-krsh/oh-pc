@@ -15,7 +15,9 @@ use DB;
 use App\Models\SyncDocuware;
 use App\Models\DocumentCategory;
 use App\Models\DocumentDocumentCategory;
+use App\Models\LocalDocumentCategory;
 use App\Models\Project;
+use App\Models\Document;
 use App\Models\Audit;
 
 use App\Services\AuthService;
@@ -44,20 +46,39 @@ class DocumentController extends Controller
     }
 
     public function getProjectDocuments(Project $project,Request $request){
+       return view('projects.partials.documents', compact('project'));
+    }
+
+    public function getProjectAllitaDocuments(Project $project,Request $request)
+    {
+    	//return 'allita';
+    	//Change this to documents instead of SyncDocuware
+        $documents = Document::where('project_id',$project->id)->with('assigned_categories')->get();
+        $document_categories = DocumentCategory::where('parent_id','<>',0)->orderBy('parent_id')->orderBy('document_category_name')->get();
+        return view('projects.partials.allita-documents', compact('project', 'documents', 'document_categories'));
+    }
+
+    public function getProjectDocuwareDocuments(Project $project,Request $request){
         //dd($project);
+        $documents = SyncDocuware::where('project_id',$project->id)->orderBy('document_class')->orderby('document_description')->get()->all();
+        $document_categories = DocumentCategory::where('parent_id','<>',0)->orderBy('parent_id')->orderBy('document_category_name')->get()->all();
+        return view('projects.partials.docuware-documents', compact('project', 'documents', 'document_categories'));
+
+
+
         $apiConnect = new DevcoService();
         $searchString = null;
         $deviceId = null;
         $deviceName = null;
         $documentList = $apiConnect->getProjectDocuments($project->project_number, $searchString, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
-        
+
 
         //dd($documentList,'Third doc id:'.$documentList->included[2]->id,'Page count:'.$documentList->meta->totalPageCount,'File type of third doc:'.$documentList->included[2]->attributes->fields->DWEXTENSION,'Document Class/Category:'.$documentList->included[2]->attributes->fields->DOCUMENTCLASS,'Userid passed:'. Auth::user()->id,'User email passed:'.Auth::user()->email,'Username Passed:'.Auth::user()->name,'Device id and Device name:'.$deviceId.','.$deviceName);
 
         // compare the list to what is in the sync table:
             if(count($documentList->included) > 0){
                 $currentDocuwareProjectDocs = $documentList->included;
-                
+
                 foreach ($currentDocuwareProjectDocs as $cd) {
                     //check if the document is in our database:
                     //dd($cd, $cd->attributes->docId);
@@ -69,7 +90,7 @@ class DocumentController extends Controller
                         // compare mod date:
                         if(strtotime($checkAD->dw_mod_date_time) < strtotime($cd->attributes->fields->DWMODDATETIME)){
                             // update the record - this one is older
-                            
+
                             SyncDocuware::where('id',$checkAD->id)->update([
                                 'docuware_doc_id'=>$cd->attributes->docId,
                                 'type'=>$cd->attributes->docType,
@@ -134,7 +155,7 @@ class DocumentController extends Controller
                                         'docuware_document_class'=>1
                                     ]);
                                 }
-                                
+
                         }
 
 
@@ -205,21 +226,21 @@ class DocumentController extends Controller
                                 'docuware_document_class'=>1
                             ]);
                         }
-                        
+
                     }
 
                 }
 
                 $documents = SyncDocuware::where('project_id',$project->id)->orderBy('document_class')->orderby('document_description')->get()->all();
-            
+
             } else {
                 $documents = null;
             }
             $document_categories = DocumentCategory::where('parent_id','<>',0)->orderBy('parent_id')->orderBy('document_category_name')->get()->all();
-            
+
 
             return view('projects.partials.documents', compact('project', 'documents', 'document_categories'));
-        
+
 
     }
     public function showTabFromParcelId(Parcel $parcel, Request $request)
@@ -247,7 +268,7 @@ class DocumentController extends Controller
             // create an associative array to simplify category references for each document
             foreach ($documents as $document) {
                 $categories = []; // store the new associative array cat id, cat name
-                 
+
                 if ($document->categories) {
                     $categories_decoded = json_decode($document->categories, true); // cats used by the doc
 
@@ -366,7 +387,7 @@ class DocumentController extends Controller
                     "categories" => $categories_json
                 ]);
 
-                
+
                 if ($is_retainage) {
                     // if only one retainage in database, then no need to display the modal with the select form
                     if ($parcel->retainages) {
@@ -445,7 +466,7 @@ class DocumentController extends Controller
             foreach ($files as $file) {
                 // Create filepath
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
-                
+
                 // sanitize filename
                 $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
@@ -475,7 +496,7 @@ class DocumentController extends Controller
                 $document->update([
                     'file_path' => $filepath,
                 ]);
-                
+
                 // store original file
                 Storage::put($filepath, File::get($file));
 
@@ -503,7 +524,7 @@ class DocumentController extends Controller
                         }
                     }
                 }
-                
+
 
                 $uploadcount++;
             }
@@ -542,6 +563,64 @@ class DocumentController extends Controller
         }
     }
 
+    public function localUpload(Project $project, Request $request)
+    {
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
+        //return $request->all();
+        //return $project;
+        if ($request->hasFile('files')) {
+          $file = $request->file('files')[0];
+          $user = Auth::user();
+          $selected_audit = $project->selected_audit();
+          $categories = DocumentCategory::with('parent')->find($request->categories);
+          //document_category_name
+          $parent_cat_folder = snake_case(strtolower($categories->parent->document_category_name));
+          $cat_folder = snake_case(strtolower($categories->document_category_name)) ;
+          $folderpath = 'documents/project_'. $project->project_number . '/audit_' . $selected_audit->audit_id . '/class_' . $parent_cat_folder . '/description_' . $cat_folder . '/';
+          // snakeCase({{file_name_{{document_id}}.{{fileExtension}})to avoid overwriting same named files.
+          $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
+          $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
+          $file_extension = $file->getClientOriginalExtension();
+					$filename = pathinfo($original_filename, PATHINFO_FILENAME);
+          $document = new Document([
+              'user_id' => $user->id,
+              'project_id' => $project->id,
+              'audit_id' => $selected_audit->id,
+              'comment' => $request->comment
+          ]);
+          $document->save();
+          //Parent
+          $document_categories = new LocalDocumentCategory;
+          $document_categories->document_id = $document->id;
+          $document_categories->document_category_id = $categories->parent->id;
+          $document_categories->project_id = $project->id;
+          $document_categories->save();
+          //Category
+          $document_categories = new LocalDocumentCategory;
+          $document_categories->document_id = $document->id;
+          $document_categories->document_category_id = $categories->id;
+          $document_categories->project_id = $project->id;
+          $document_categories->save();
+          // Sanitize filename and append document id to make it unique
+          $filename = snake_case(strtolower($filename)) . '_' . $document->id . '.' . $file_extension;
+          $filepath = $folderpath . $filename;
+          $document->update([
+              'file_path' => $filepath,
+              'filename' => $filename,
+          ]);
+          // store original file
+          Storage::put($filepath, File::get($file));
+          $data = [];
+          $data['document_ids'] = [$document->id];
+          return json_encode($data);
+        } else {
+            // shouldn't happen - UIKIT shouldn't send empty files
+            // nothing to do here
+        }
+    }
+
     /**
      * Add comments to the documents uploaded.
      *
@@ -566,7 +645,7 @@ class DocumentController extends Controller
                 $document->update([
                     'comment' => $comment,
                 ]);
-                
+
             }
             return 1;
         } else {
@@ -604,7 +683,7 @@ class DocumentController extends Controller
                 $document_info_array[$document->id]['categories'][] = $category->document_category_name;
             }
         }
-        
+
         return $document_info_array;
     }
 
@@ -621,7 +700,7 @@ class DocumentController extends Controller
 
         // remove files
         Storage::delete($document->file_path);
-        
+
 
 
         // remove database record
@@ -645,7 +724,7 @@ class DocumentController extends Controller
 
         if (Storage::exists($filepath)) {
             $file = Storage::get($filepath);
-            
+
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
             header('Content-Disposition: attachment; filename='.$document->filename);
@@ -654,7 +733,7 @@ class DocumentController extends Controller
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
             header('Pragma: public');
             header('Content-Length: '. Storage::size($filepath));
-            
+
             return $file;
         } else {
             // Error
@@ -690,7 +769,7 @@ class DocumentController extends Controller
         } else {
             $current_notapproval_array = [];
         }
-        
+
         // if already "notapproved", remove from notapproved array
         if (in_array($catid, $current_notapproval_array)) {
             unset($current_notapproval_array[array_search($catid, $current_notapproval_array)]);
@@ -734,7 +813,7 @@ class DocumentController extends Controller
 
         $catid = $request->get('catid');
         $document = Document::where('id', $request->get('id'))->first();
-        
+
         if ($document->approved) {
             $current_approval_array = json_decode($document->approved, true);
         } else {
@@ -753,7 +832,7 @@ class DocumentController extends Controller
             unset($current_approval_array[array_search($catid, $current_approval_array)]);
             $current_approval_array = array_values($current_approval_array);
             $approval = json_encode($current_approval_array);
-            
+
             $document->update([
                 'approved' => $approval,
             ]);

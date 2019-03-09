@@ -171,7 +171,27 @@
         Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');
         Route::get('/communications/{project}.json', 'CommunicationController@communicationsFromProjectIdJson')->name('communications.loadjson');
         Route::get('/projects/{project}/communications/title', 'AuditController@getProjectCommunicationsTitle')->name('project.communications.title');
+
+
+
+//allita documents!
         Route::get('/projects/{project}/documents', 'DocumentController@getProjectDocuments')->name('project.documents');
+        Route::get('/projects/{project}/docuware-documents', 'DocumentController@getProjectDocuwareDocuments')->name('project.docuware-documents');
+        Route::get('/projects/{project}/allita-documents', 'DocumentController@getProjectAllitaDocuments')->name('project.allita-documents');
+				Route::post('/documents/project/{project}/upload', 'DocumentController@localUpload')->name('documents.allita-upload');
+
+				Route::post('/documents/parcel/{parcel}/comment', 'DocumentController@uploadComment')->name('documents.uploadComment');
+				Route::post('/documents/parcel/{parcel}/deletedocument', 'DocumentController@deleteDocument')->name('documents.deleteDocument');
+				Route::get('/documents/parcel/{parcel}/downloaddocument/{document}', 'DocumentController@downloadDocument')->name('documents.downloadDocument');
+				Route::post('/documents/parcel/{parcel}/approve', 'DocumentController@approveDocument')->name('documents.approve');
+				Route::post('/documents/parcel/{parcel}/clearReview', 'DocumentController@clearReview')->name('documents.clearReview');
+				Route::post('/documents/parcel/{parcel}/notapprove', 'DocumentController@notApproveDocument')->name('documents.notapprove');
+
+
+
+
+
+
         Route::get('/projects/{project}/documents/title', 'AuditController@getProjectDocumentsTitle')->name('project.documents.title');
         Route::get('/projects/{project_id}/notes', 'NoteController@showTabFromProjectId')->name('project.notes');
         // Route::get('/projects/{project}/notes/title', 'AuditController@getProjectNotesTitle')->name('project.notes.title');

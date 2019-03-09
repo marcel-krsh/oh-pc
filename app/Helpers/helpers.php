@@ -15,14 +15,14 @@ function formatTime($time, $format="g:i A", $from_format="H:i:s")
     return Carbon\Carbon::createFromFormat($from_format , $time)->format($format);
 }
 
-function timeToSlot($time) 
+function timeToSlot($time)
 {
     $hour =  \Carbon\Carbon::createFromFormat('H:i:s', $time)->format('H');
     $min =  \Carbon\Carbon::createFromFormat('H:i:s', $time)->format('i');
     return ($hour - 6)*4 + 1 + $min / 15;
 }
 
-function slotToTime($slot) 
+function slotToTime($slot)
 {
     $hours = sprintf("%02d",  floor(($slot - 1) * 15 / 60) + 6);
     $minutes = sprintf("%02d", ($slot - 1) * 15 % 60);
@@ -69,7 +69,7 @@ function check_file_name($fn)
     if ($new != $fn) {
         return false;
     }
-    
+
     // ALLOWABLE EXTENSIONS
     $exts = ['PNG', 'GIF', 'JPG', 'JPEG', 'XLS', 'XLSX'];
     $tmp = explode('.', $fn);
@@ -78,7 +78,7 @@ function check_file_name($fn)
     if (!in_array($ext, $exts)) {
         return false;
     }
-    
+
     return true;
 }
 
@@ -141,4 +141,17 @@ function system_message($message, $action_link = null, $action_text = null, $rec
     // \Mail::to($admins)->send($emailNotification);
 
     return true;
+}
+
+function camelCase($str, array $noStrip = [])
+{
+    // non-alpha and non-numeric characters become spaces
+    $str = preg_replace('/[^a-z0-9' . implode("", $noStrip) . ']+/i', ' ', $str);
+    $str = trim($str);
+    // uppercase the first character of each word
+    $str = ucwords(strtolower($str));
+    $str = str_replace(" ", "", $str);
+    $str = lcfirst($str);
+
+    return $str;
 }
