@@ -236,11 +236,6 @@ class DocumentController extends Controller
 
     public function getProjectDocuwareDocuments(Project $project, Request $request)
     {
-        //dd($project);
-        $documents = SyncDocuware::where('project_id', $project->id)->orderBy('document_class')->orderby('document_description')->get()->all();
-        $document_categories = DocumentCategory::where('parent_id', '<>', 0)->orderBy('parent_id')->orderBy('document_category_name')->get()->all();
-        return view('projects.partials.docuware-documents', compact('project', 'documents', 'document_categories'));
-
         $apiConnect = new DevcoService();
         $searchString = null;
         $deviceId = null;
