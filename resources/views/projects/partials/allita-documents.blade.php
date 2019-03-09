@@ -233,32 +233,10 @@
 									completeAll: function (response) {
 										var data = jQuery.parseJSON(response.response);
 										var documentids = data['document_ids'];
-										var is_retainage = data['is_retainage'];
-										var is_advance = data['is_advance'];
 										setTimeout(function () {
 											bar.setAttribute('hidden', 'hidden');
 										}, 250);
-										if(is_retainage == 0 && is_advance == 0){
-											UIkit.modal.prompt("I uploaded and categorized the document(s) accordingly. Please add your comment for the history record.",'').then(function(val){
-												$.post('{{ URL::route("documents.uploadComment", $project->id) }}', {
-													'postvars' : documentids,
-													'comment' : val,
-													'_token' : '{{ csrf_token() }}'
-												}, function(data) {
-													if(data!='1'){
-														UIkit.modal.alert(data);
-													} else {
-														UIkit.modal.alert('Your comment has been saved.');
-														loadParcelSubTab('documents',{{ $project->id }});
-													}
-												});
-											});
-										}else if(is_retainage == 1){
-											dynamicModalLoad('document-retainage-form/{{ $project->id }}/'+documentids);
-										} else if(is_advance == 1){
-											dynamicModalLoad('document-advance-form/{{ $project->id }}/'+documentids);
-										}
-										loadParcelSubTab('documents',{{ $project->id }});
+										documentsAllita('{{$project->id}}');
 									}
 								};
 								var select = UIkit.upload('.js-upload', settings);
