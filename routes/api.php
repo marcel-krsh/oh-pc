@@ -1618,12 +1618,20 @@ Route::get('/users/verify_user', function (Request $request) {
         Route::get('/get_unit_amenities', function (Request $request) {
 
             try {
-                set_time_limit(300);
+                //set_time_limit(300);
+                
+                $user_key = $request->query("user_key");
+                
+                $audit_ids = AuditAuditor::where("user_key",$user_key)->select('audit_id')->get();
+
+                $units = CachedUnits::whereIn('audit_id', $audit_ids)->select('unit_id')->get();
+                                
                 $lastEdited = $request->query("last_edited");
+
                 if($lastEdited != null)
-                    $results = UnitAmenity::where('last_edited', '>', $lastEdited)->paginate(100);
+                    $results = UnitAmenity::where('last_edited', '>', $lastEdited)->get();
                 else
-                    $results = UnitAmenity::get()->paginate(100);
+                    $results = UnitAmenity::whereIn('unit_id', $units)->get();
 
                 if ($results) {
                     $reply = $results;
