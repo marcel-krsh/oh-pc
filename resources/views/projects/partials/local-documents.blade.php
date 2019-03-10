@@ -16,6 +16,11 @@
 					<td style="vertical-align: middle;">
 						<ul class="uk-list document-category-menu">
 		    			@foreach ($document->assigned_categories as $document_category)
+		    			@if(!is_null($document->ohfa_file_path))
+		    				<li>
+		    					<a>{{ $document_category->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}</a>
+		    				</li>
+		    			@else
 		    			<li class="{{ ($document->notapproved == 1) ? "declined-category s" : "" }} {{ ($document->approved == 1) ? "approved-category" : "" }}">
 		    				<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}" class="">
 		    					<span id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes" : "check-received-no received-no" }}"></span>
@@ -47,6 +52,7 @@
 		    					</ul>
 		    				</div>
 		    			</li>
+		    			@endif
 		    			@endforeach
 		    		</ul>
 		    	</td>
