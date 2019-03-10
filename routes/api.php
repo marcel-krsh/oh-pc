@@ -1624,7 +1624,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 
                 $audit_ids = AuditAuditor::where("user_key",$user_key)->select('audit_id')->get();
 
-                $units = CachedUnits::whereIn('audit_id', $audit_ids)->select('unit_id')->get();
+                $units = CachedUnit::whereIn('audit_id', $audit_ids)->select('unit_id')->get();
                                 
                 $lastEdited = $request->query("last_edited");
 
