@@ -1623,7 +1623,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 if($lastEdited != null)
                     $results = UnitAmenity::where('last_edited', '>', $lastEdited)->paginate(100);
                 else
-                    $results = UnitAmenity::paginate(100);
+                    $results = UnitAmenity::get()->paginate(100);
 
                 if ($results) {
                     $reply = $results;
