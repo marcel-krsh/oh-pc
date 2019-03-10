@@ -16,6 +16,7 @@ use File;
 use Storage;
 use DB;
 use App\Models\SyncDocuware;
+use App\Models\Document;
 use App\Models\DocumentCategory;
 use App\Mail\EmailNotification;
 use App\Models\Communication;
@@ -57,7 +58,7 @@ class CommunicationController extends Controller
                     ->with('recipients')
                     ->orderBy('created_at', 'desc')
                     ->pluck('id')->toArray();
-            
+
             $messages = Communication::where(function ($query) use ($search_messages) {
                 $query->whereIn('parent_id', $search_messages)
                               ->orWhereIn('id', $search_messages);
@@ -72,7 +73,7 @@ class CommunicationController extends Controller
                     ->where('parent_id', null)
                     ->with('owner')
                     ->orderBy('created_at', 'desc')
-                    ->get(); 
+                    ->get();
 
             //dd('Project based: ',$messages, $project);
         }
@@ -125,13 +126,13 @@ class CommunicationController extends Controller
                 $message->replies = Communication::where('parent_id', $message->id)
                 ->orWhere('id', $message->id)
                 ->count();
-                
+
                 $message_id_array = Communication::where('project_id', $project->id)
                     ->where('id', $message->id)
                     ->orWhere('parent_id', $message->id)
                     ->pluck('id')->toArray();
             }
-               
+
             $message->unseen = CommunicationRecipient::whereIn('communication_id', $message_id_array)
                 ->where('user_id', $current_user->id)
                 ->where('seen', 0)
@@ -146,16 +147,18 @@ class CommunicationController extends Controller
     public function newCommunicationEntry($project_id = null)
     {
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
-
         if ($project_id !== null) {
             $project = Project::where('id', '=', $project_id)->first();
-
-            $documents = SyncDocuware::where('project_id', $project->id)
+            $docuware_documents = SyncDocuware::where('project_id', $project->id)
+            		->with('assigned_categories')
                 ->orderBy('created_at', 'desc')
                 ->get();
-
+            $local_documents = Document::where('project_id', $project->id)
+            		->with('assigned_categories')
+                ->orderBy('created_at', 'desc')
+                ->get();
             $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
-
+            $documents = $docuware_documents->merge($local_documents);
             // build a list of all categories used for uploaded documents in this project
             $categories_used = [];
             // category keys for name reference ['id' => 'name']
@@ -165,7 +168,7 @@ class CommunicationController extends Controller
                 // create an associative array to simplify category references for each document
                 foreach ($documents as $document) {
                     $categories = []; // store the new associative array cat id, cat name
-                     
+
                     if ($document->categories) {
                         $categories_decoded = json_decode($document->categories, true); // cats used by the doc
                             $categories_used = array_merge($categories_used, $categories_decoded); // merge document categories
@@ -237,7 +240,7 @@ class CommunicationController extends Controller
                     ->where('active', 1)
                     ->orderBy('last_name', 'asc')
                     ->get();
-           
+
             // $recipients = User::where('organization_id', '!=', $ohfa_id)
             //     ->orWhereNull('organization_id')
             //     ->where('active', 1)
@@ -345,7 +348,7 @@ class CommunicationController extends Controller
             $documents = null;
             $document_categories = null;
         }
-        
+
         $owner_name_trimmed = rtrim($message->owner->name);
         $words = explode(" ", $owner_name_trimmed);
         $initials = "";
@@ -438,7 +441,7 @@ class CommunicationController extends Controller
             // create an associative array to simplify category references for each document
             foreach ($documents as $document) {
                 $categories = []; // store the new associative array cat id, cat name
-                 
+
                 if ($document->categories) {
                     $categories_decoded = json_decode($document->categories, true); // cats used by the doc
                     $categories_used = array_merge($categories_used, $categories_decoded); // merge document categories
@@ -465,7 +468,7 @@ class CommunicationController extends Controller
                 ->where('user_id', $current_user->id)
                 ->where('seen', 0)
                 ->update(['seen' => 1]);
-                
+
         return view('modals.communication-replies', compact('message', 'replies', 'audit', 'documents', 'document_categories', 'noaudit'));
     }
 
@@ -548,7 +551,7 @@ class CommunicationController extends Controller
             if ($is_reply) {
                 // get existing recipients if a reply
                 $message_recipients_array = CommunicationRecipient::where('communication_id', $original_message->id)->pluck('user_id')->toArray();
-                 
+
                 foreach ($message_recipients_array as $recipient_id) {
                     if ($recipient_id == $user->id) {
                         $recipient = new CommunicationRecipient([
@@ -590,7 +593,7 @@ class CommunicationController extends Controller
                     }
                 }
             }
-            
+
             // save documents
             // UPDATE TO USE DOCUWARE
             // if (isset($forminputs['documents'])) {
@@ -741,7 +744,7 @@ class CommunicationController extends Controller
         $current_user = Auth::user();
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
 
-        
+
 
         //Search (in session)
         if (Session::has('communications-search') && Session::get('communications-search') != '') {
@@ -751,7 +754,7 @@ class CommunicationController extends Controller
                         if($project){
                             $query->orWhere('project_id',$project->id );
                         }
-                        
+
             })
                     ->where(function ($query) use ($current_user) {
                         $query->where('owner_id', '=', $current_user->id);
@@ -776,7 +779,7 @@ class CommunicationController extends Controller
                     })
                     //->orderBy('created_at', 'desc')
                     ->pluck('id')->toArray();
-            
+
             $all_messages = Communication::where(function ($query) use ($search_messages) {
                 $query->whereIn('parent_id', $search_messages)
                               ->orWhereIn('id', $search_messages);
@@ -831,7 +834,7 @@ class CommunicationController extends Controller
                 $messages = $messages->where('project_id', $project->id);
 
             }
-            
+
 
             $messages = $messages
                         ->with('owner')
@@ -839,7 +842,7 @@ class CommunicationController extends Controller
                         ->skip($skip)->take($number_per_page)
                         ->get();
 
-            
+
 
             $messages = $messages->reverse();
         }
@@ -907,12 +910,12 @@ class CommunicationController extends Controller
                     // $message->replies = Communication::where('parent_id', $message->id)
                     // ->orWhere('id', $message->id)
                     // ->count();
-                    
+
                     $message_id_array = Communication::where('id', $message->id)
                         ->orWhere('parent_id', $message->id)
                         ->pluck('id')->toArray();
                 }
-                   
+
                 $message->unseen = CommunicationRecipient::whereIn('communication_id', $message_id_array)
                     ->where('user_id', $current_user->id)
                     ->where('seen', 0)
@@ -925,7 +928,7 @@ class CommunicationController extends Controller
                     $unseen = 0;
                     $communication_unread_class = '';
                 }
-                
+
                 // combine all documents from main message and its replies
                 $all_docs = [];
                 if ($message->documents) {
@@ -966,13 +969,13 @@ class CommunicationController extends Controller
                     } else {
                         $organization_name = '';
                     }
-     
+
                     $organization_address = $message->audit->address.', '.$message->audit->city.', ';
                     if ($message->audit->state) {
                         $organization_address = $organization_address.$message->audit->state;
                     }
                     $organization_address = $organization_address.' '.$message->audit->zip;
-                    
+
                     // if($message->audit->county){
                     //     $organization_address = $organization_address. '<br />'.$message->audit->county->county_name;
                     // }
@@ -1022,7 +1025,7 @@ class CommunicationController extends Controller
         }
 
         $owners_array = collect($owners_array)->sortBy('name')->toArray();
-        
+
 
         if ($page>0) {
             return response()->json($data);

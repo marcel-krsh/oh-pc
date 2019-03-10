@@ -46,8 +46,6 @@ class DocumentController extends Controller
 
     public function getProjectLocalDocuments(Project $project, Request $request)
     {
-        //return 'allita';
-        //Change this to documents instead of SyncDocuware
         $documents = Document::where('project_id', $project->id)->with('assigned_categories.parent')->get();
         $document_categories = DocumentCategory::where('parent_id', '<>', 0)->orderBy('parent_id')->orderBy('document_category_name')->get();
         return view('projects.partials.local-documents', compact('project', 'documents', 'document_categories'));
@@ -93,10 +91,19 @@ class DocumentController extends Controller
             // Sanitize filename and append document id to make it unique
             $filename = snake_case(strtolower($filename)) . '_' . $document->id . '.' . $file_extension;
             $filepath = $folderpath . $filename;
-            $document->update([
-                'file_path' => $filepath,
-                'filename' => $filename,
-            ]);
+            if($request->has('ohfa_file')) {
+            	$document->update([
+	                'file_path' => $filepath,
+	                'filename' => $filename,
+	                'ohfa_file_path' => $filepath
+	            ]);
+            } else {
+            	$document->update([
+	                'file_path' => $filepath,
+	                'filename' => $filename,
+	            ]);
+            }
+
             // store original file
             Storage::put($filepath, File::get($file));
             $data = [];
@@ -762,31 +769,26 @@ class DocumentController extends Controller
      * @param  int  $parcel_id
      * @return Response
      */
-    public function documentInfo(Parcel $parcel, Request $request)
+    public function documentInfo(Project $project, Request $request)
     {
-        if (!$request->get('postvars') || !$request->get('categories')) {
+        if (!$request->get('postvars')) {
             return 'Something went wrong';
         }
-
         // get document ids
-        $documentids = explode(",", $request->get('postvars'));
-
+        //$documentids = explode(",", $request->get('postvars'));
+        $documentids = $request->get('postvars');
         $documents = Document::whereIn('id', $documentids)
+        		->with('assigned_categories.parent')
             ->orderBy('created_at', 'desc')
             ->get();
-
-        $category_array = $request->get('categories');
-        $document_categories = DocumentCategory::whereIn('id', $category_array)->where('active', '1')->orderby('document_category_name', 'asc')->get();
-
         $document_info_array = [];
-
         foreach ($documents as $document) {
             $document_info_array[$document->id]['filename'] = $document->filename;
-            foreach ($document_categories as $category) {
-                $document_info_array[$document->id]['categories'][] = $category->document_category_name;
+            foreach ($document->assigned_categories as $category) {
+                $document_info_array[$document->id]['categories']['category_name'] = $category->document_category_name;
+                $document_info_array[$document->id]['categories']['category_parent_name'] = $category->parent->document_category_name;
             }
         }
-
         return $document_info_array;
     }
 
@@ -834,7 +836,7 @@ class DocumentController extends Controller
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
             header('Pragma: public');
             header('Content-Length: ' . Storage::size($filepath));
-
+            return response()->download($file);
             return $file;
         } else {
             // Error

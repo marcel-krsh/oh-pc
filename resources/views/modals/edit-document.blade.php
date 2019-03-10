@@ -1,44 +1,41 @@
 <div id="dynamic-modal-content">
 	<script>
-	$('#modal-size').css('width', '60%');
+		$('#modal-size').css('width', '70%');
 	</script>
-
-
 	<div class="uk-container uk-container-center"> <!-- start form container -->
 		<div class="uk-grid">
 			<div class="uk-width-1-1@m uk-width-1-1@s">
 				<H3>EDIT Document {{$document->filename}}</H3>
 				<form id='editDocumentForm' class="uk-form-horizontal" role="form">
 					<input type="hidden" name="document" value="{{$document->id}}">
+					<div class="uk-form-row">
+						<label class="uk-form-label" for="status_id">Categories</label>
+						<div class="uk-form-controls">
+							<div id="category-list">
+								<ul class="uk-list document-category-menu" style="margin-left: 20px">
+									@foreach ($document_categories as $category)
+									@if($category->active == 1)
+									<li>
+										<input class="uk-radio" name="category-id-checkbox" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="radio" {{ $category->id == $categories_used->id ? 'checked=checked' : '' }}>
+										<label for="category-id-{{ $category->id }}">
+											{{ $category->document_category_name }}
+										</label>
+									</li>
+									@endif
+									@endforeach
+								</ul>
+							</div>
+						</div>
+					</div>
 
 					<div class="uk-form-row">
-                        <label class="uk-form-label" for="status_id">Categories</label>
-                        <div class="uk-form-controls">
-                            <div id="category-list">
-				                    <ul class="uk-subnav document-category-menu" style="margin-left: 20px">
-				                        @foreach ($document_categories as $category)
-																@if($category->active == 1)
-				                        <li>
-				                            <input class="uk-radio" name="category-id-checkbox" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="radio" {{ $category->id == $categories_used->id ? 'checked=checked' : '' }}>
-				                            <label for="category-id-{{ $category->id }}">
-				                                {{ $category->document_category_name }}
-				                            </label>
-				                        </li>
-				                        @endif
-				                        @endforeach
-				                    </ul>
-				            </div>
-                        </div>
-                    </div>
-
-                    <div class="uk-form-row">
-                        <label class="uk-form-label" for="transaction_note">Comments</label>
-                        <div class="uk-form-controls">
+						<label class="uk-form-label" for="transaction_note">Comments</label>
+						<div class="uk-form-controls">
 
 							<textarea id="comments" name="comments" class="uk-textarea  uk-width-1-1">{{$document->comment}}</textarea>
 
-                        </div>
-                    </div>
+						</div>
+					</div>
 
 				</form>
 			</div>
@@ -62,29 +59,29 @@
 	</div>
 	<script type="text/javascript">
 
-	function editdocument(id) {
-		var form = $('#editDocumentForm');
-		var categoryArray = [];
-		$("input:radio[name=category-id-checkbox]:checked").each(function(){
-			categoryArray.push($(this).val());
-		});
-		$.post('/modals/edit-local-document/{{ $document->id }}', {
-			'inputs' : form.serialize(),
-			'cats' : categoryArray,
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			if(data != 1){
-				UIkit.modal.alert(data);
-			} else {
-				documentsLocal('{{$project->id}}');
-				dynamicModalClose();
-			}
-		} );
+		function editdocument(id) {
+			var form = $('#editDocumentForm');
+			var categoryArray = [];
+			$("input:radio[name=category-id-checkbox]:checked").each(function(){
+				categoryArray.push($(this).val());
+			});
+			$.post('/modals/edit-local-document/{{ $document->id }}', {
+				'inputs' : form.serialize(),
+				'cats' : categoryArray,
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				if(data != 1){
+					UIkit.modal.alert(data);
+				} else {
+					documentsLocal('{{$project->id}}');
+					dynamicModalClose();
+				}
+			} );
 
 		//location.reload();
 
 
 
 	}
-	</script>
+</script>
 </div>
