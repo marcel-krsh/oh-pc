@@ -1618,7 +1618,7 @@ Route::get('/users/verify_user', function (Request $request) {
         Route::get('/get_unit_amenities', function (Request $request) {
 
             try {
-
+                set_time_limit(300);
                 $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
                     $results = UnitAmenity::where('last_edited', '>', $lastEdited)->get();
