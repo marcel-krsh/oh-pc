@@ -1621,9 +1621,9 @@ Route::get('/users/verify_user', function (Request $request) {
                 set_time_limit(300);
                 $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
-                    $results = UnitAmenity::where('last_edited', '>', $lastEdited)->get();
+                    $results = UnitAmenity::where('last_edited', '>', $lastEdited)->paginate(100);
                 else
-                    $results = UnitAmenity::get();
+                    $results = UnitAmenity::paginate(100)->paginate(100);
 
                 if ($results) {
                     $reply = $results;
