@@ -836,7 +836,7 @@ class DocumentController extends Controller
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
             header('Pragma: public');
             header('Content-Length: ' . Storage::size($filepath));
-            return response()->download($file);
+
             return $file;
         } else {
             // Error
