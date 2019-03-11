@@ -65,9 +65,8 @@
                 //$response = response()->make($document_contents);
 
 
-
             return response()->streamDownload(function () use ($document_contents) {
-                echo file_get_contents($document_contents);
+                echo $document_contents;
             }, "{$docRecord->project_number}-".str_replace("\\",'',str_replace('/','',$docRecord->document_class))."-".str_replace("\\",'',str_replace('/','',$docRecord->document_description))."{$docRecord->dw_extension}");
 
             //$response->header('Content-Type', 'application/pdf'); // change this to the download content type.
