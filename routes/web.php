@@ -53,6 +53,7 @@
             // @todo: Add the log entry for the access request
             $doc_service = new \App\Services\DocumentService;
             $document_contents = $doc_service->getDocument($documentId,Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
+            return $document_contents;
 
                 //\Illuminate\Support\Facades\Storage::put('test.pdf', $document_contents);
 
@@ -65,25 +66,10 @@
                 //$response = response()->make($document_contents);
 
 
-            // return response()
-            // ->withHeaders([
-            //     'Content-Type' => 'application/octet-stream',
-            //     'Content-Transfer-Encoding' => 'binary',
-            //     'Expires' => 0,
-            //     'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            //     'Pragma' => 'public'
-            // ])->streamDownload(function () use ($document_contents) {
-            //     echo $document_contents;
-            // }, "{$docRecord->project_number}-".str_replace("\\",'',str_replace('/','',$docRecord->document_class))."-".str_replace("\\",'',str_replace('/','',$docRecord->document_description))."{$docRecord->dw_extension}");
-            return response()->stream(function () use ($document_contents) {
-						      //Can add logic to chunk the file here if you want but the point is to stream data
-						      readfile($document_contents);
-						 },200, [ 'Content-Type' => 'application/octet-stream',
-                'Content-Transfer-Encoding' => 'binary',
-                'Expires' => 0,
-                'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-                'Pragma' => 'public'
-						]);
+            return response()->streamDownload(function () use ($document_contents) {
+                echo $document_contents;
+            }, "{$docRecord->project_number}-".str_replace("\\",'',str_replace('/','',$docRecord->document_class))."-".str_replace("\\",'',str_replace('/','',$docRecord->document_description))."{$docRecord->dw_extension}");
+
             //$response->header('Content-Type', 'application/pdf'); // change this to the download content type.
 
             //return $response;
