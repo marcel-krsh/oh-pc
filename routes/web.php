@@ -64,7 +64,7 @@
                 //$response = response()->make($document_contents, 200);
                 //$response = response()->make($document_contents);
 
-              $name = $docRecord->project_number}-".str_replace("\\",'',str_replace('/','',$docRecord->document_class))."-".str_replace("\\",'',str_replace('/','',$docRecord->document_description))."{$docRecord->dw_extension};
+              $name = "{$docRecord->project_number}-".str_replace("\\",'',str_replace('/','',$docRecord->document_class))."-".str_replace("\\",'',str_replace('/','',$docRecord->document_description))."{$docRecord->dw_extension}";
 							$headers = [
 							    'Content-Disposition' => 'attachment; filename='. $name,
 							];
