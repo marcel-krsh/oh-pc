@@ -163,7 +163,6 @@
 							<script>
 								$(function(){
 									var bar = document.getElementById('js-progressbar');
-									debugger;
 									settings    = {
 										url: '{{ URL::route("documents.local-upload", $project->id) }}',
 										allow : '*.(jpg|gif|png|pdf|doc|docx|xls|xlsx)',
