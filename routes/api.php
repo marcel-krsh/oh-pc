@@ -1594,12 +1594,18 @@ Route::get('/users/verify_user', function (Request $request) {
         Route::get('/get_project_amenities', function (Request $request) {
 
             try {
+            
+                $user_key = $request->query("user_key");
+                
+                $audit_ids = AuditAuditor::where("user_key",$user_key)->select('audit_id')->get();
+
+                $projects = CachedAudit::whereIn('audit_id', $audit_ids)->select('project_key')->get();
 
                 $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
-                    $results = ProjectAmenity::where('last_edited', '>', $lastEdited)->get();
+                    $results = ProjectAmenity::whereIn('project_key', $projects)->where('last_edited', '>', $lastEdited)->get();
                 else
-                    $results = ProjectAmenity::get();
+                    $results = ProjectAmenity::whereIn('project_key', $projects)->get();
 
                 if ($results) {
                     $reply = $results;
@@ -1613,6 +1619,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 throw $e;
             }
         });
+
 
 
         Route::get('/get_unit_amenities', function (Request $request) {
@@ -1629,7 +1636,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 $lastEdited = $request->query("last_edited");
 
                 if($lastEdited != null)
-                    $results = UnitAmenity::where('last_edited', '>', $lastEdited)->get();
+                    $results = UnitAmenity::whereIn('unit_id', $units)->where('last_edited', '>', $lastEdited)->get();
                 else
                     $results = UnitAmenity::whereIn('unit_id', $units)->get();
 
@@ -1650,12 +1657,18 @@ Route::get('/users/verify_user', function (Request $request) {
         Route::get('/get_building_amenities', function (Request $request) {
 
             try {
+                          
+                $user_key = $request->query("user_key");
+                
+                $audit_ids = AuditAuditor::where("user_key",$user_key)->select('audit_id')->get();
+
+                $buildings = CachedBuilding::where('building_key','!=',null)->whereIn('audit_id', $audit_ids)->select('building_key')->get();
 
                 $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
-                    $results = BuildingAmenity::where('last_edited', '>', $lastEdited)->get();
+                    $results = BuildingAmenity::whereIn('building_key', $buildings)->where('last_edited', '>', $lastEdited)->get();
                 else
-                    $results = BuildingAmenity::get();
+                    $results = BuildingAmenity::whereIn('building_key', $buildings)->get();
 
                 if ($results) {
                     $reply = $results;
