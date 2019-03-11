@@ -64,18 +64,10 @@
                 //$response = response()->make($document_contents, 200);
                 //$response = response()->make($document_contents);
 
-              $name = "{$docRecord->project_number}-".str_replace("\\",'',str_replace('/','',$docRecord->document_class))."-".str_replace("\\",'',str_replace('/','',$docRecord->document_description))."{$docRecord->dw_extension}";
-							$headers = [
-							    'Content-Disposition' => 'attachment; filename='. $name,
-							];
-							return response()->headers->set('Content-Disposition', 'attachment; filename='. $name)
-									->stream(function() use ($document_contents) {
-							    echo $document_contents;
-							}, 200);
 
 
             return response()->streamDownload(function () use ($document_contents) {
-                echo $document_contents;
+                echo file_get_contents($document_contents);
             }, "{$docRecord->project_number}-".str_replace("\\",'',str_replace('/','',$docRecord->document_class))."-".str_replace("\\",'',str_replace('/','',$docRecord->document_description))."{$docRecord->dw_extension}");
 
             //$response->header('Content-Type', 'application/pdf'); // change this to the download content type.
