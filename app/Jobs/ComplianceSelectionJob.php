@@ -753,6 +753,7 @@ class ComplianceSelectionJob implements ShouldQueue
         })->get();
         $this->processes++;
 
+        // total for all programs combined
         $total = count($units);
 
         if($total){
@@ -808,8 +809,9 @@ class ComplianceSelectionJob implements ShouldQueue
                 $audit->save();
                 $this->processes++;
 
-            $number_of_units_required = ceil($total/5);
+           // $number_of_units_required = ceil($total/5);
 
+            // are there units with HTC funding?
             if (!$has_htc_funding) {
                 $comments[] = 'By checking each unit and associated programs with HTC funding, we determined that no HTC funding exists for this pool';
                 $audit->comment = $audit->comment.' | By checking each unit and associated programs with HTC funding, we determined that no HTC funding exists for this pool';
@@ -886,10 +888,12 @@ class ComplianceSelectionJob implements ShouldQueue
                     // check project for least purchase
                     $leaseProgramKeys = explode(',', SystemSetting::get('lease_purchase'));
                     $this->processes++;
-                    $comments[] = 'Check if the programs associated with the project correspond to lease purchase using program keys: '.SystemSetting::get('lease_purchase').'.';
-                    $audit->comment = $audit->comment.' | Check if the programs associated with the project correspond to lease purchase using program keys: '.SystemSetting::get('lease_purchase').'.';
-                    $audit->save();
-                    $this->processes++;
+                    // $comments[] = 'Check if the programs associated with the project correspond to lease purchase using program keys: '.SystemSetting::get('lease_purchase').'.';
+                    // $audit->comment = $audit->comment.' | Check if the programs associated with the project correspond to lease purchase using program keys: '.SystemSetting::get('lease_purchase').'.';
+                    // $audit->save();
+                    // $this->processes++;
+
+                /*    
                     foreach ($project->programs as $program) {
                         $this->processes++;
                         if (in_array($program->program_key, $leaseProgramKeys)) {
@@ -905,13 +909,15 @@ class ComplianceSelectionJob implements ShouldQueue
 
 
                     if ($isLeasePurchase) {
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 20);
+                        $required_units = $this->adjustedLimit($audit, count($units));
+
+                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $required_units);
 
                         //$required_units = count($units_selected);
-                        $required_units = $number_of_units_required;
+                        //$required_units = $number_of_units_required;
 
-                        $comments[] = '20% of the pool is randomly selected. Total selected: '.count($units_selected);
-                        $audit->comment = $audit->comment.' | 20% of the pool is randomly selected. Total selected: '.count($units_selected);
+                        $comments[] = $required_units.' must be randomly selected. Total selected: '.count($units_selected);
+                        $audit->comment = $audit->comment.' | '.$required_units.' must be randomly selected. Total selected: '.count($units_selected);
                             $audit->save();
                             $this->processes++;
             
@@ -929,45 +935,104 @@ class ComplianceSelectionJob implements ShouldQueue
                         ];
                         $this->processes++;
                     } else {
-                        $is_multi_building_project = 0;
+                */
+                    $is_multi_building_project = 0;
 
-                        // eventually we will also be checking for building grouping...
+                    // eventually we will also be checking for building grouping...
 
-                        // for each of the current programs+project, check if multiple_building_election_key is 2 for multi building project
-                        $comments[] = 'Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
-                        $audit->comment = $audit->comment.' | Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
-                            $audit->save();
-                            $this->processes++;
+                    // for each of the current programs+project, check if multiple_building_election_key is 2 for multi building project
+                    $comments[] = 'Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
+                    $audit->comment = $audit->comment.' | Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
+                        $audit->save();
+                        $this->processes++;
 
-                        foreach ($project->programs as $program) {
-                            $this->processes++;
-                            if (in_array($program->program_key, $program_bundle_ids)) {
-                                if ($program->multiple_building_election_id == 6) {
-                                    $is_multi_building_project = 1;
-                                    $comments[] = 'Program key '.$program->program_key.' showed that the project is a multi building project.';
-                                    $audit->comment = $audit->comment.' | Program key '.$program->program_key.' showed that the project is a multi building project.';
-                                    $audit->save();
-                                    $this->processes++;
-                                }
+                    foreach ($project->programs as $program) {
+                        $this->processes++;
+                        if (in_array($program->program_key, $program_bundle_ids)) {
+                            if ($program->multiple_building_election_id == 6) {
+                                $is_multi_building_project = 1;
+                                $comments[] = 'Program key '.$program->program_key.' showed that the project is a multi building project.';
+                                $audit->comment = $audit->comment.' | Program key '.$program->program_key.' showed that the project is a multi building project.';
+                                $audit->save();
+                                $this->processes++;
                             }
                         }
+                    }
 
-                        if ($is_multi_building_project) {
-                            $units_selected = $this->randomSelection($audit, $units->pluck('unit_key')->toArray(), 20);
+                    if ($is_multi_building_project) {
+                        $required_units = $this->adjustedLimit($audit, count($units));
+
+                        $units_selected = $this->randomSelection($audit, $units->pluck('unit_key')->toArray(), 0, $required_units);
+                        $this->processes++;
+
+                        //$required_units = count($units_selected);
+                        // $required_units = $number_of_units_required;
+
+                        $comments[] = $required_units.' must be randomly selected. Total selected: '.count($units_selected);
+
+                        $audit->comment = $audit->comment.' | '.$required_units.' must be randomly selected. Total selected: '.count($units_selected);
+                                $audit->save();
+                                $this->processes++;
+        
+                        $selection[] = [
+                            "group_id" => 1,
+                            "building_key" => "",
+                            "program_name" => "FAF NSP TCE RTCAP 811",
+                            "program_ids" => SystemSetting::get('program_bundle'),
+                            "pool" => count($units),
+                            "units" => $units_selected,
+                            "totals" => count($units_selected),
+                            "required_units" => $required_units,
+                            "use_limiter" => $has_htc_funding, // used to trigger limiter
+                            "comments" => $comments
+                        ];
+                        $this->processes++;
+                    } else {
+                        $use_limiter = 0; // we apply the limiter for each building
+
+                        $comments[] = 'The project is not a multi building project.';
+                        $audit->comment = $audit->comment.' | The project is not a multi building project.';
+                                $audit->save();
+                                $this->processes++;
+                        // group units by building, then proceed with the random selection
+                        // create a new list of units based on building and project key
+                        $units_selected = [];
+
+                        $first_building_done = 0; // this is to control the comments to only keep the ones we care about after the first building information is displayed.
+
+                        foreach ($buildings as $building) {
                             $this->processes++;
+                            if($first_building_done){
+                                $comments = array(); // clear the comments.
+                            }else{
+                                $first_building_done = 1;
+                            }
 
-                            //$required_units = count($units_selected);
-                            $required_units = $number_of_units_required;
+                            $units_for_that_building = Unit::where('building_key', '=', $building->building_key)
+                                            ->whereHas('programs', function ($query) use ($audit, $program_bundle_ids) {
+                                                $query->where('monitoring_key', '=', $audit->monitoring_key);
+                                                $query->whereIn('program_key', $program_bundle_ids);
+                                            })
+                                            ->pluck('unit_key')
+                                            ->toArray();
 
-                            $comments[] = '20% of the pool is randomly selected. Total selected: '.count($units_selected);
+                            // $required_units_for_that_building = ceil(count($units_for_that_building)/5);
+                            $required_units_for_that_building = $this->adjustedLimit($audit, count($units_for_that_building));
 
-                            $audit->comment = $audit->comment.' | 20% of the pool is randomly selected. Total selected: '.count($units_selected);
-                                    $audit->save();
-                                    $this->processes++;
-            
+                            $required_units = $required_units_for_that_building;
+                            
+                            $new_building_selection = $this->randomSelection($audit,$units_for_that_building, 0, $required_units);
+                            $units_selected = $new_building_selection;
+                            $units_selected_count = count($new_building_selection);
+
+                            $comments[] = $required_units.' of building key '.$building->building_key.' must be randomly selected. Total selected: '.count($new_building_selection).'.';
+                            $audit->comment = $audit->comment.' | '.$required_units.' of building key '.$building->building_key.' must be randomly selected. Total selected: '.count($new_building_selection).'.';
+                                $audit->save();
+                                $this->processes++;
+
                             $selection[] = [
                                 "group_id" => 1,
-                                "building_key" => "",
+                                "building_key" => $building->building_key,
                                 "program_name" => "FAF NSP TCE RTCAP 811",
                                 "program_ids" => SystemSetting::get('program_bundle'),
                                 "pool" => count($units),
@@ -978,71 +1043,19 @@ class ComplianceSelectionJob implements ShouldQueue
                                 "comments" => $comments
                             ];
                             $this->processes++;
-                        } else {
-                            $use_limiter = 0; // we apply the limiter for each building
-
-                            $comments[] = 'The project is not a multi building project.';
-                            $audit->comment = $audit->comment.' | The project is not a multi building project.';
-                                    $audit->save();
-                                    $this->processes++;
-                            // group units by building, then proceed with the random selection
-                            // create a new list of units based on building and project key
-                            $units_selected = [];
-
-                            $first_building_done = 0; // this is to control the comments to only keep the ones we care about after the first building information is displayed.
-
-                            foreach ($buildings as $building) {
-                                $this->processes++;
-                                if($first_building_done){
-                                    $comments = array(); // clear the comments.
-                                }else{
-                                    $first_building_done = 1;
-                                }
-
-                                $units_for_that_building = Unit::where('building_key', '=', $building->building_key)
-                                                ->whereHas('programs', function ($query) use ($audit, $program_bundle_ids) {
-                                                    $query->where('monitoring_key', '=', $audit->monitoring_key);
-                                                    $query->whereIn('program_key', $program_bundle_ids);
-                                                })
-                                                ->pluck('unit_key')
-                                                ->toArray();
-
-                                $required_units_for_that_building = ceil(count($units_for_that_building)/5);
-                                
-                                $required_units = $required_units_for_that_building;
-                                
-                                $new_building_selection = $this->randomSelection($audit,$units_for_that_building, 20);
-                                $units_selected = $new_building_selection;
-                                $units_selected_count = count($new_building_selection);
-
-                                $comments[] = '20% of building key '.$building->building_key.' is randomly selected. Total selected: '.count($new_building_selection).'.';
-                                $audit->comment = $audit->comment.' | 20% of building key '.$building->building_key.' is randomly selected. Total selected: '.count($new_building_selection).'.';
-                                    $audit->save();
-                                    $this->processes++;
-
-                                $selection[] = [
-                                    "group_id" => 1,
-                                    "building_key" => $building->building_key,
-                                    "program_name" => "FAF NSP TCE RTCAP 811",
-                                    "program_ids" => SystemSetting::get('program_bundle'),
-                                    "pool" => count($units),
-                                    "units" => $units_selected,
-                                    "totals" => count($units_selected),
-                                    "required_units" => $required_units,
-                                    "use_limiter" => $has_htc_funding, // used to trigger limiter
-                                    "comments" => $comments
-                                ];
-                                $this->processes++;
-                            }
                         }
                     }
+                    //}
                 } else {
-                    $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 20);
+                    // get required units using limiter
+                    $required_units = $this->adjustedLimit($audit, count($units));
 
-                    $required_units = count($units_selected);
+                    $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $required_units);
+
+                    // $required_units = count($units_selected);
                     
-                    $comments[] = '20% of the pool is randomly selected. Total selected: '.count($units_selected);
-                    $audit->comment = $audit->comment.' | 20% of the pool is randomly selected. Total selected: '.count($units_selected);
+                    $comments[] = $required_units.' must be randomly selected. Total selected: '.count($units_selected);
+                    $audit->comment = $audit->comment.' | '.$required_units.' units must be randomly selected. Total selected: '.count($units_selected);
                                     $audit->save();
                                     $this->processes++;
 
@@ -1815,8 +1828,8 @@ class ComplianceSelectionJob implements ShouldQueue
             $htc_units_subset = array_merge($htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
             $this->processes++;
 
-            $number_of_htc_units_required = ceil($total_htc_units/5);
-            $required_units = $number_of_htc_units_required; // that's it, in all cases, that number is 20% of units
+            //$number_of_htc_units_required = ceil($total_htc_units/5);
+            //$required_units = $number_of_htc_units_required; // that's it, in all cases, that number is 20% of units
 
             $units_selected = [];
             $units_selected_count = 0;
@@ -1859,123 +1872,59 @@ class ComplianceSelectionJob implements ShouldQueue
             }
             
             if ($first_fifteen_years) {
-                // check project for least purchase
-                $leaseProgramKeys = explode(',', SystemSetting::get('lease_purchase'));
-                $this->processes++;
-                $comments[] = 'Check if the programs associated with the project correspond to lease purchase using program keys: '.SystemSetting::get('lease_purchase').'.';
+                /*
+                    // check project for least purchase
+                    $leaseProgramKeys = explode(',', SystemSetting::get('lease_purchase'));
+                    $this->processes++;
+                    $comments[] = 'Check if the programs associated with the project correspond to lease purchase using program keys: '.SystemSetting::get('lease_purchase').'.';
 
-                $audit->comment = $audit->comment.' | Select Process Check if the programs associated with the project correspond to lease purchase using program keys: '.SystemSetting::get('lease_purchase').'.';
-                    $audit->save();
-                    $this->processes++;
-                    $leasePurchaseFound = 0;
-                    $isLeasePurchase = 0;
-                foreach ($project->programs as $program) {
-                    $this->processes++;
-                    if (in_array($program->program_key, $leaseProgramKeys)) {
-                        $isLeasePurchase = 1;
-                        $comments[] = 'A program key '.$program->program_key.' confirms that this is a lease purchase.';
-                        $audit->comment = $audit->comment.' | Select Process A program key '.$program->program_key.' confirms that this is a lease purchase.';
+                    $audit->comment = $audit->comment.' | Select Process Check if the programs associated with the project correspond to lease purchase using program keys: '.SystemSetting::get('lease_purchase').'.';
                         $audit->save();
                         $this->processes++;
-                        $leasePurchaseFound = 1;
-                    } 
-                }
-
-                if(!$leasePurchaseFound){
-                    $comments[] = 'No lease purchase programs found.';
-                    $audit->comment = $audit->comment.' | Select Process No lease purchase programs found.';
-                        $audit->save();
-                        $this->processes++;
-                }
-
-                if ($isLeasePurchase) {
-
-                    $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_only_ids) {
-                                                    $query->where('audit_id', '=', $audit->id);
-                                                    $query->whereIn('program_key', $program_htc_only_ids);
-                                                })->pluck('unit_key')->toArray();
-
-                    if($number_of_htc_units_required <= count($htc_units_subset)){
-                        $number_of_htc_units_needed = 0;
-                    }else{
-                        $number_of_htc_units_needed = $number_of_htc_units_required - count($htc_units_subset);
-                    }
-
-                    $units_selected = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
-                    
-                    $units_selected_count = count($units_selected);
-
-                    $comments[] = 'It is a lease purchase. Total selected: '.count($units_selected);
-                    $audit->comment = $audit->comment.' | Select Process It is a lease purchase. Total selected: '.count($units_selected);
-                        $audit->save();
-                        $this->processes++;
-
-                    $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
-                    $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
-                    $this->processes++;
-
-                    // $units_selected_count isn't using the array_merge to keep the duplicate
-
-                    $selection[] = [
-                        "group_id" => 7,
-                        "program_name" => "HTC",
-                        "building_key" => "",
-                        "program_ids" => SystemSetting::get('program_htc'),
-                        // "pool" => count($units),
-                        "pool" => $total_htc_units,
-                        "units" => $units_selected,
-                        "totals" => $units_selected_count,
-                        "required_units" => $required_units,
-                        "use_limiter" => $use_limiter,
-                        "comments" => $comments
-                    ];
-                    $this->processes++;
-                } else {
-                    $is_multi_building_project = 0;
-                    $comments[] = 'It is not a lease purchase.';
-                    $audit->comment = $audit->comment.' | Select Process It is not a lease purchase.';
-                        $audit->save();
-                        $this->processes++;
-                    // for each of the current programs+project, check if multiple_building_election_key is 2 for multi building project
-                    $comments[] = 'Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
-                    $audit->comment = $audit->comment.' | Select Process Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
-                    $audit->save();
-                    $this->processes++;
-
+                        $leasePurchaseFound = 0;
+                        $isLeasePurchase = 0;
                     foreach ($project->programs as $program) {
                         $this->processes++;
-                        if (in_array($program->program_key, $program_bundle_ids)) {
-                            if ($program->multiple_building_election_id == 6) {
-                                $is_multi_building_project = 1;
-                                $comments[] = 'Program key '.$program->program_key.' showed that the project is a multi building project.';
-                                $audit->comment = $audit->comment.' | Select Process Program key '.$program->program_key.' showed that the project is a multi building project.';
-                                $audit->save();
-                                $this->processes++;
-                            }
-                        }
+                        if (in_array($program->program_key, $leaseProgramKeys)) {
+                            $isLeasePurchase = 1;
+                            $comments[] = 'A program key '.$program->program_key.' confirms that this is a lease purchase.';
+                            $audit->comment = $audit->comment.' | Select Process A program key '.$program->program_key.' confirms that this is a lease purchase.';
+                            $audit->save();
+                            $this->processes++;
+                            $leasePurchaseFound = 1;
+                        } 
                     }
 
-                    if ($is_multi_building_project) {
+                    if(!$leasePurchaseFound){
+                        $comments[] = 'No lease purchase programs found.';
+                        $audit->comment = $audit->comment.' | Select Process No lease purchase programs found.';
+                            $audit->save();
+                            $this->processes++;
+                    }
+
+                    if ($isLeasePurchase) {
 
                         $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_only_ids) {
-                                                    $query->where('audit_id', '=', $audit->id);
-                                                    $query->whereIn('program_key', $program_htc_only_ids);
-                                                })->pluck('unit_key')->toArray();
+                                                        $query->where('audit_id', '=', $audit->id);
+                                                        $query->whereIn('program_key', $program_htc_only_ids);
+                                                    })->pluck('unit_key')->toArray();
 
-                        if($number_of_htc_units_required <= count($htc_units_subset)){
+                        $required_units = $this->adjustedLimit($audit, $total_htc_units);
+
+                        if($required_units <= count($htc_units_subset)){
                             $number_of_htc_units_needed = 0;
                         }else{
-                            $number_of_htc_units_needed = $number_of_htc_units_required - count($htc_units_subset);
+                            $number_of_htc_units_needed = $required_units - count($htc_units_subset);
                         }
 
                         $units_selected = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
                         
                         $units_selected_count = count($units_selected);
 
-                        $comments[] = 'The project is a multi building project. Total selected: '.count($units_selected);
-                        $audit->comment = $audit->comment.' | Select Process The project is a multi building project. Total selected: '.count($units_selected);
-                                $audit->save();
-                                $this->processes++;
+                        $comments[] = 'It is a lease purchase. Total selected: '.count($units_selected);
+                        $audit->comment = $audit->comment.' | Select Process It is a lease purchase. Total selected: '.count($units_selected);
+                            $audit->save();
+                            $this->processes++;
 
                         $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
                         $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
@@ -1998,160 +1947,236 @@ class ComplianceSelectionJob implements ShouldQueue
                         ];
                         $this->processes++;
                     } else {
-                        $use_limiter = 0; // we apply the limiter for each building
+                */
+               
+                // we don't check for lease purchases anymore
 
-                        $comments[] = 'The project is not a multi building project.';
-                        $audit->comment = $audit->comment.' | Select Process The project is not a multi building project.';
-                                $audit->save();
-                                $this->processes++;
-                        // group units by building, then proceed with the random selection
-                        // create a new list of units based on building and project key
-                        $units_selected = [];
-                        $units_selected_count = 0;
+                $is_multi_building_project = 0;
+                $comments[] = 'It is not a lease purchase.';
+                $audit->comment = $audit->comment.' | Select Process It is not a lease purchase.';
+                    $audit->save();
+                    $this->processes++;
+                // for each of the current programs+project, check if multiple_building_election_key is 2 for multi building project
+                $comments[] = 'Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
+                $audit->comment = $audit->comment.' | Select Process Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
+                $audit->save();
+                $this->processes++;
 
-                        $required_units = 0; // in the case of buildings, we need to sum each totals because of the rounding
-                        
-                        $first_building_done = 0; // this is to control the comments to only keep the ones we care about after the first building information is displayed.
-
-                        foreach ($buildings as $building) {
+                foreach ($project->programs as $program) {
+                    $this->processes++;
+                    if (in_array($program->program_key, $program_bundle_ids)) {
+                        if ($program->multiple_building_election_id == 6) {
+                            $is_multi_building_project = 1;
+                            $comments[] = 'Program key '.$program->program_key.' showed that the project is a multi building project.';
+                            $audit->comment = $audit->comment.' | Select Process Program key '.$program->program_key.' showed that the project is a multi building project.';
+                            $audit->save();
                             $this->processes++;
-                            if ($building->units) {
-
-                                if($first_building_done){
-                                    $comments = array(); // clear the comments.
-                                }else{
-                                    $first_building_done = 1;
-                                }
-
-                                // how many units from the overlap are in that building
-                                // list all the units not in the overlap for that building
-                                // 
-                                // if the 20% of all building's unit is less than the building's units that are in the overlap, done
-                                // otherwise get the missing units
-
-                                // we keep the selection and overlaps UP TO the required number for each building
-                                // then we apply the limiter for EACH building
-
-                                // $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf
-
-                                $htc_units_for_building = Unit::where('building_key', '=', $building->building_key)
-                                                ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
-                                                    $query->where('audit_id', '=', $audit->id);
-                                                    $query->whereIn('program_key', $program_htc_ids);
-                                                })
-                                                ->pluck('unit_key')
-                                                ->toArray();
-
-                                $htc_units_without_overlap = Unit::where('building_key', '=', $building->building_key)
-                                                ->whereNotIn('unit_key', $htc_units_subset)
-                                                ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
-                                                    $query->where('audit_id', '=', $audit->id);
-                                                    $query->whereIn('program_key', $program_htc_ids);
-                                                })
-                                                ->pluck('unit_key')
-                                                ->toArray();
-
-                                $htc_units_with_overlap = Unit::where('building_key', '=', $building->building_key)
-                                                ->whereIn('unit_key', $htc_units_subset)
-                                                ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
-                                                    $query->where('audit_id', '=', $audit->id);
-                                                    $query->whereIn('program_key', $program_htc_ids);
-                                                })
-                                                ->pluck('unit_key')
-                                                ->toArray();
-
-                                $required_units_for_that_building = ceil(count($htc_units_for_building)/5);
-                                //$required_units = $required_units + $required_units_for_that_building;
-                                
-                                $required_units = $required_units_for_that_building;
-
-                                // $htc_units_with_overlap_for_that_building = count($htc_units_for_building) - count($htc_units_without_overlap);
-                                $htc_units_with_overlap_for_that_building = count($htc_units_with_overlap);
-
-                                // TEST
-                                // $overlap_list = '';
-                                // foreach($htc_units_subset as $htc_units_subset_key){
-                                //     $overlap_list = $overlap_list . $htc_units_subset_key . ',';
-                                // }
-                                // $comments[] = 'Overlap: '.$overlap_list;
-                                // $audit->comment = $audit->comment.' | Overlap: '.$overlap_list;
-                                // $audit->save();
-
-                                // $htc_units_for_building_list = '';
-                                // foreach($htc_units_for_building as $htc_units_for_building_key){
-                                //     $htc_units_for_building_list = $htc_units_for_building_list . $htc_units_for_building_key. ',';
-                                // }
-                                // $comments[] = 'htc_units_for_building_list: '.$htc_units_for_building_list;
-                                // $audit->comment = $audit->comment.' | htc_units_for_building_list: '.$htc_units_for_building_list;
-                                // $audit->save();
-
-                                // $htc_units_with_overlap_list = '';
-                                // foreach($htc_units_with_overlap as $htc_units_with_overlap_key){
-                                //     $htc_units_with_overlap_list = $htc_units_with_overlap_list . $htc_units_with_overlap_key. ',';
-                                // }
-                                // $comments[] = 'htc_units_with_overlap_list: '.$htc_units_with_overlap_list;
-                                // $audit->comment = $audit->comment.' | htc_units_with_overlap_list: '.$htc_units_with_overlap_list;
-                                // $audit->save();
-                                // END TEST
-
-                                if($required_units_for_that_building >= $htc_units_with_overlap_for_that_building){
-                                    // we are missing some units
-                                    $number_of_htc_units_needed_for_that_building = $required_units_for_that_building - $htc_units_with_overlap_for_that_building;
-                                }else{
-                                    // we have enough units
-                                    $number_of_htc_units_needed_for_that_building = 0;
-                                }
-                                
-                                $new_building_selection = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed_for_that_building);
-                                
-                                //$units_selected_count = $units_selected_count + count($new_building_selection);
-                                $units_selected_count = count($new_building_selection);
-
-                                // if(count($new_building_selection)){
-                                //     $units_selected = array_merge($units_selected, $new_building_selection);
-                                // }
-                                
-                                $units_selected = $new_building_selection;
-                                
-                                $comments[] = 'The total of HTC units for building key '.$building->building_key.' is '.count($htc_units_for_building).'. Required units: '.$required_units_for_that_building.'. Overlap units: '.$htc_units_with_overlap_for_that_building.'. Missing units: '.$number_of_htc_units_needed_for_that_building;
-
-                                $audit->comment = $audit->comment.' | Select Process The total of HTC units for building key '.$building->building_key.' is '.count($htc_units_for_building).'. Required units: '.$required_units_for_that_building.'. Overlap units: '.$htc_units_with_overlap_for_that_building.'. Missing units: '.$number_of_htc_units_needed_for_that_building;
-
-                                $audit->save();
-                                $this->processes++;
-
-                                $comments[] = 'Randomly selected units in building '.$building->building_key.'. Total selected: '.count($new_building_selection).'.';
-
-                                $audit->comment = $audit->comment.' | Select Process Randomly selected units in building '.$building->building_key.'. Total selected: '.count($new_building_selection).'.';
-                                $audit->save();
-                                $this->processes++;
-
-
-                                $units_selected = array_merge($units_selected, $htc_units_with_overlap);
-                                $units_selected = array_slice($units_selected, 0, $required_units_for_that_building); // cap selection to required number
-                                $units_selected_count = $units_selected_count + count($htc_units_with_overlap);
-                                $this->processes++;
-
-                                // $units_selected_count isn't using the array_merge to keep the duplicate
-
-                                $selection[] = [
-                                    "group_id" => 7,
-                                    "program_name" => "HTC",
-                                    "building_key" => $building->building_key,
-                                    "program_ids" => SystemSetting::get('program_htc'),
-                                    // "pool" => count($units),
-                                    "pool" => $total_htc_units,
-                                    "units" => $units_selected,
-                                    "totals" => $units_selected_count,
-                                    "required_units" => $required_units,
-                                    "use_limiter" => $use_limiter,
-                                    "comments" => $comments
-                                ];
-                                $this->processes++;
-                            }
                         }
                     }
                 }
+
+                if ($is_multi_building_project) {
+
+                    $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_only_ids) {
+                                                $query->where('audit_id', '=', $audit->id);
+                                                $query->whereIn('program_key', $program_htc_only_ids);
+                                            })->pluck('unit_key')->toArray();
+
+                    $number_of_htc_units_required = $this->adjustedLimit($audit, $total_htc_units);
+                    $required_units = $number_of_htc_units_required;
+                    //ceil($total_htc_units/10);
+
+                    if($number_of_htc_units_required <= count($htc_units_subset)){
+                        $number_of_htc_units_needed = 0;
+                    }else{
+                        $number_of_htc_units_needed = $number_of_htc_units_required - count($htc_units_subset);
+                    }
+
+                    $units_selected = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
+                    
+                    $units_selected_count = count($units_selected);
+
+                    $comments[] = 'The project is a multi building project. Total selected: '.count($units_selected);
+                    $audit->comment = $audit->comment.' | Select Process The project is a multi building project. Total selected: '.count($units_selected);
+                            $audit->save();
+                            $this->processes++;
+
+                    $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
+                    $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
+                    $this->processes++;
+
+                    // $units_selected_count isn't using the array_merge to keep the duplicate
+
+                    $selection[] = [
+                        "group_id" => 7,
+                        "program_name" => "HTC",
+                        "building_key" => "",
+                        "program_ids" => SystemSetting::get('program_htc'),
+                        // "pool" => count($units),
+                        "pool" => $total_htc_units,
+                        "units" => $units_selected,
+                        "totals" => $units_selected_count,
+                        "required_units" => $required_units,
+                        "use_limiter" => $use_limiter,
+                        "comments" => $comments
+                    ];
+                    $this->processes++;
+                } else {
+                    $use_limiter = 0; // we apply the limiter for each building
+
+                    $comments[] = 'The project is not a multi building project.';
+                    $audit->comment = $audit->comment.' | Select Process The project is not a multi building project.';
+                            $audit->save();
+                            $this->processes++;
+                    // group units by building, then proceed with the random selection
+                    // create a new list of units based on building and project key
+                    $units_selected = [];
+                    $units_selected_count = 0;
+
+                    $required_units = 0; // in the case of buildings, we need to sum each totals because of the rounding
+                    
+                    $first_building_done = 0; // this is to control the comments to only keep the ones we care about after the first building information is displayed.
+
+                    foreach ($buildings as $building) {
+                        $this->processes++;
+                        if ($building->units) {
+
+                            if($first_building_done){
+                                $comments = array(); // clear the comments.
+                            }else{
+                                $first_building_done = 1;
+                            }
+
+                            // how many units from the overlap are in that building
+                            // list all the units not in the overlap for that building
+                            // 
+                            // if the 20% of all building's unit is less than the building's units that are in the overlap, done
+                            // otherwise get the missing units
+
+                            // we keep the selection and overlaps UP TO the required number for each building
+                            // then we apply the limiter for EACH building
+
+                            // $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf
+
+                            $htc_units_for_building = Unit::where('building_key', '=', $building->building_key)
+                                            ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
+                                                $query->where('audit_id', '=', $audit->id);
+                                                $query->whereIn('program_key', $program_htc_ids);
+                                            })
+                                            ->pluck('unit_key')
+                                            ->toArray();
+
+                            $htc_units_without_overlap = Unit::where('building_key', '=', $building->building_key)
+                                            ->whereNotIn('unit_key', $htc_units_subset)
+                                            ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
+                                                $query->where('audit_id', '=', $audit->id);
+                                                $query->whereIn('program_key', $program_htc_ids);
+                                            })
+                                            ->pluck('unit_key')
+                                            ->toArray();
+
+                            $htc_units_with_overlap = Unit::where('building_key', '=', $building->building_key)
+                                            ->whereIn('unit_key', $htc_units_subset)
+                                            ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
+                                                $query->where('audit_id', '=', $audit->id);
+                                                $query->whereIn('program_key', $program_htc_ids);
+                                            })
+                                            ->pluck('unit_key')
+                                            ->toArray();
+
+                            //$required_units_for_that_building = ceil(count($htc_units_for_building)/5);
+                            $required_units_for_that_building = $this->adjustedLimit($audit, count($htc_units_for_building));
+                            //$required_units = $required_units + $required_units_for_that_building;
+                            
+                            $required_units = $required_units_for_that_building;
+
+                            // $htc_units_with_overlap_for_that_building = count($htc_units_for_building) - count($htc_units_without_overlap);
+                            $htc_units_with_overlap_for_that_building = count($htc_units_with_overlap);
+
+                            // TEST
+                            // $overlap_list = '';
+                            // foreach($htc_units_subset as $htc_units_subset_key){
+                            //     $overlap_list = $overlap_list . $htc_units_subset_key . ',';
+                            // }
+                            // $comments[] = 'Overlap: '.$overlap_list;
+                            // $audit->comment = $audit->comment.' | Overlap: '.$overlap_list;
+                            // $audit->save();
+
+                            // $htc_units_for_building_list = '';
+                            // foreach($htc_units_for_building as $htc_units_for_building_key){
+                            //     $htc_units_for_building_list = $htc_units_for_building_list . $htc_units_for_building_key. ',';
+                            // }
+                            // $comments[] = 'htc_units_for_building_list: '.$htc_units_for_building_list;
+                            // $audit->comment = $audit->comment.' | htc_units_for_building_list: '.$htc_units_for_building_list;
+                            // $audit->save();
+
+                            // $htc_units_with_overlap_list = '';
+                            // foreach($htc_units_with_overlap as $htc_units_with_overlap_key){
+                            //     $htc_units_with_overlap_list = $htc_units_with_overlap_list . $htc_units_with_overlap_key. ',';
+                            // }
+                            // $comments[] = 'htc_units_with_overlap_list: '.$htc_units_with_overlap_list;
+                            // $audit->comment = $audit->comment.' | htc_units_with_overlap_list: '.$htc_units_with_overlap_list;
+                            // $audit->save();
+                            // END TEST
+
+                            if($required_units_for_that_building >= $htc_units_with_overlap_for_that_building){
+                                // we are missing some units
+                                $number_of_htc_units_needed_for_that_building = $required_units_for_that_building - $htc_units_with_overlap_for_that_building;
+                            }else{
+                                // we have enough units
+                                $number_of_htc_units_needed_for_that_building = 0;
+                            }
+                            
+                            $new_building_selection = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed_for_that_building);
+                            
+                            //$units_selected_count = $units_selected_count + count($new_building_selection);
+                            $units_selected_count = count($new_building_selection);
+
+                            // if(count($new_building_selection)){
+                            //     $units_selected = array_merge($units_selected, $new_building_selection);
+                            // }
+                            
+                            $units_selected = $new_building_selection;
+                            
+                            $comments[] = 'The total of HTC units for building key '.$building->building_key.' is '.count($htc_units_for_building).'. Required units: '.$required_units_for_that_building.'. Overlap units: '.$htc_units_with_overlap_for_that_building.'. Missing units: '.$number_of_htc_units_needed_for_that_building;
+
+                            $audit->comment = $audit->comment.' | Select Process The total of HTC units for building key '.$building->building_key.' is '.count($htc_units_for_building).'. Required units: '.$required_units_for_that_building.'. Overlap units: '.$htc_units_with_overlap_for_that_building.'. Missing units: '.$number_of_htc_units_needed_for_that_building;
+
+                            $audit->save();
+                            $this->processes++;
+
+                            $comments[] = 'Randomly selected units in building '.$building->building_key.'. Total selected: '.count($new_building_selection).'.';
+
+                            $audit->comment = $audit->comment.' | Select Process Randomly selected units in building '.$building->building_key.'. Total selected: '.count($new_building_selection).'.';
+                            $audit->save();
+                            $this->processes++;
+
+
+                            $units_selected = array_merge($units_selected, $htc_units_with_overlap);
+                            $units_selected = array_slice($units_selected, 0, $required_units_for_that_building); // cap selection to required number
+                            $units_selected_count = $units_selected_count + count($htc_units_with_overlap);
+                            $this->processes++;
+
+                            // $units_selected_count isn't using the array_merge to keep the duplicate
+
+                            $selection[] = [
+                                "group_id" => 7,
+                                "program_name" => "HTC",
+                                "building_key" => $building->building_key,
+                                "program_ids" => SystemSetting::get('program_htc'),
+                                // "pool" => count($units),
+                                "pool" => $total_htc_units,
+                                "units" => $units_selected,
+                                "totals" => $units_selected_count,
+                                "required_units" => $required_units,
+                                "use_limiter" => $use_limiter,
+                                "comments" => $comments
+                            ];
+                            $this->processes++;
+                        }
+                    }
+                }
+                //}
             } else {
                 // how many $overlap
                 // if required <= $overlap we don't need to select anymore unit
@@ -2161,6 +2186,10 @@ class ComplianceSelectionJob implements ShouldQueue
                                                     $query->where('audit_id', '=', $audit->id);
                                                     $query->whereIn('program_key', $program_htc_only_ids);
                                                 })->pluck('unit_key')->toArray();
+
+                // 10% of units
+                $number_of_units_required = ceil($total_htc_units/10);
+                $required_units = $number_of_units_required;
 
                 if($number_of_htc_units_required <= count($overlap)){
                     $number_of_htc_units_needed = 0;
