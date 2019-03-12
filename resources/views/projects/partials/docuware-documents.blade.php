@@ -1,7 +1,5 @@
-
 	<div class="uk-grid uk-margin-top uk-animation-fade">
-		<div class="uk-width-3-5@m uk-width-1-1 uk-scrollable-box" style="height:400px;">
-
+		<div class="uk-width-5-5@m uk-width-1-1 uk-scrollable-box" style="height:400px;">
 			<table class="uk-table uk-table-striped uk-table-condensed uk-table-hover gray-link-table" id="">
 				<thead >
 					<tr class="uk-text-small" style="color:#fff;background-color:#555;">
@@ -59,7 +57,7 @@
 
 		</div><!--4-10-->
 
-		<div class="uk-width-2-5@m uk-width-1-1">
+		{{-- <div class="uk-width-2-5@m uk-width-1-1">
 			<div class="uk-grid-collapse" uk-grid>
 				<div class="uk-width-1-1">
 
@@ -217,7 +215,7 @@
 	      </div>
 	      <p>Knowingly submitting incorrect documentation constitutes fraud and will be prosecuted to the fullest extent of the law.</p>
 	    </div>
-	  </div><!--6-10-->
+	  </div> --}}<!--6-10-->
 
 	</div>
 

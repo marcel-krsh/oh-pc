@@ -241,6 +241,25 @@ class DocumentController extends Controller
         return 1;
     }
 
+    public function downloadLocalDocument(Document $document)
+    {
+        $filepath = $document->file_path;
+        if (Storage::exists($filepath)) {
+            $file = Storage::get($filepath);
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename=' . $document->filename);
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+            header('Pragma: public');
+            header('Content-Length: ' . Storage::size($filepath));
+            return $file;
+        } else {
+            exit('Requested file does not exist on our server! ' . $filepath);
+        }
+    }
+
     public function getProjectDocuwareDocuments(Project $project, Request $request)
     {
         $apiConnect = new DevcoService();

@@ -13,76 +13,80 @@
 			<tbody id="sent-document-list">
 				@foreach ($documents as $document)
 				<tr>
-					<td style="vertical-align: middle;">
-						<ul class="uk-list document-category-menu">
-		    			@foreach ($document->assigned_categories as $document_category)
-		    			@if(!is_null($document->ohfa_file_path))
-		    				<li>
-		    					<a>{{ $document_category->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}</a>
-		    				</li>
-		    			@else
-		    			<li class="{{ ($document->notapproved == 1) ? "declined-category s" : "" }} {{ ($document->approved == 1) ? "approved-category" : "" }}">
-		    				<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}" class="">
-		    					<span id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes" : "check-received-no received-no" }}"></span>
-		    					<span id="sent-id-{{ $document->id }}category-id-1-not-received-icon" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }}"></span>
-		    					{{ $document_category->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}
-		    				</a>
-		    				<div uk-dropdown="toggle: #sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}">
-		    					<ul class="uk-nav uk-nav-dropdown">
-		    						<li>
-		    							<a onclick="resetDocTabCategoryListVars();selectCategory('{{ $document_category->id }}');">
-		    								Select this category on right
-		    							</a>
-		    						</li>
-		    						<li>
-		    							<a onclick="markApproved({{ $document->id }},{{ $document_category->id }});">
-		    								Mark as approved
-		    							</a>
-		    						</li>
-		    						<li>
-		    							<a onclick="markNotApproved({{ $document->id }},{{ $document_category->id }});">
-		    								Mark as declined
-		    							</a>
-		    						</li>
-		    						<li>
-		    							<a onclick="markUnreviewed({{ $document->id }},{{ $document_category->id }});">
-		    								Clear review status
-		    							</a>
-		    						</li>
-		    					</ul>
-		    				</div>
-		    			</li>
-		    			@endif
-		    			@endforeach
-		    		</ul>
-		    	</td>
-		    	<td><span uk-tooltip title="{{ $document->created_at->format('h:i a') }}">{{ date('m/d/Y', strtotime($document->created_at)) }}</span>
-		    	</td>
-		    	<td><span uk-tooltip title="{{ date('h:i a', strtotime($document->updated_at)) }}">{{ date('m/d/Y', strtotime($document->updated_at)) }}</span>
-		    	</td>
-		    	<td>
-		    		<a class="uk-link-muted " uk-tooltip="@foreach($document->assigned_categories as $document_category){{ $document_category->parent->document_category_name }}/{{ $document_category->document_category_name }}@endforeach">
-              <span class="a-info-circle"  style="color: #56b285;"></span>
-            </a>
-            &nbsp;|&nbsp;
-            <a class="uk-link-muted " onclick="dynamicModalLoad('edit-local-document/{{$document->id}}')" uk-tooltip="Edit this file">
-             		<span class="a-pencil-2" style="color: rgb(0, 193, 247);"></span>
-            </a>
-            &nbsp;|&nbsp;
-		    	 @can('access_admin')
-		    		<a class="uk-link-muted " onclick="deleteFile({{ $document->id }});" uk-tooltip="Delete this file">
-		    			<span class="a-trash-4" style="color: #da328a;"></span>
-		    		</a>
-		    		&nbsp;|&nbsp;
-		    	 @endcan
-		    		<a href="storage/app/{{ $document->file_path }}" target="_blank"  uk-tooltip="Download file." download>
-		    			<span class="a-lower"></span>
-		    		</a>
-		    		@if($document->comment)&nbsp;|&nbsp;<a class="uk-link-muted " uk-tooltip="{{ $document->comment }}">
-		    			<span class="a-file-info" style="color: #00538a;"></span>
-		    		</a>
-		    		@endif
-		    	</td>
+					<span uk-grid>
+						<td class="uk-width-1-2" style="vertical-align: middle;">
+							<ul class="uk-list document-category-menu">
+			    			@foreach ($document->assigned_categories as $document_category)
+			    			@if(!is_null($document->ohfa_file_path))
+			    				<li>
+			    					<a>{{ $document_category->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}</a>
+			    				</li>
+			    			@else
+			    			<li class="{{ ($document->notapproved == 1) ? "declined-category s" : "" }} {{ ($document->approved == 1) ? "approved-category" : "" }}">
+			    				<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}" class="">
+			    					<span id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes" : "check-received-no received-no" }}"></span>
+			    					<span id="sent-id-{{ $document->id }}category-id-1-not-received-icon" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }}"></span>
+			    					{{ $document_category->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}
+			    				</a>
+			    				<div uk-dropdown="toggle: #sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}">
+			    					<ul class="uk-nav uk-nav-dropdown">
+			    						<li>
+			    							<a onclick="resetDocTabCategoryListVars();selectCategory('{{ $document_category->id }}');">
+			    								Select this category on right
+			    							</a>
+			    						</li>
+			    						<li>
+			    							<a onclick="markApproved({{ $document->id }},{{ $document_category->id }});">
+			    								Mark as approved
+			    							</a>
+			    						</li>
+			    						<li>
+			    							<a onclick="markNotApproved({{ $document->id }},{{ $document_category->id }});">
+			    								Mark as declined
+			    							</a>
+			    						</li>
+			    						<li>
+			    							<a onclick="markUnreviewed({{ $document->id }},{{ $document_category->id }});">
+			    								Clear review status
+			    							</a>
+			    						</li>
+			    					</ul>
+			    				</div>
+			    			</li>
+			    			@endif
+			    			@endforeach
+			    		</ul>
+			    	</td>
+			    	<span class="uk-width-2-2">
+			    	<td><span uk-tooltip title="{{ $document->created_at->format('h:i a') }}">{{ date('m/d/Y', strtotime($document->created_at)) }}</span>
+			    	</td>
+			    	<td><span uk-tooltip title="{{ date('h:i a', strtotime($document->updated_at)) }}">{{ date('m/d/Y', strtotime($document->updated_at)) }}</span>
+			    	</td>
+			    	<td>
+			    		<a class="uk-link-muted " uk-tooltip="@foreach($document->assigned_categories as $document_category){{ $document_category->parent->document_category_name }}/{{ $document_category->document_category_name }}@endforeach">
+	              <span class="a-info-circle"  style="color: #56b285;"></span>
+	            </a>
+	            &nbsp;|&nbsp;
+	            <a class="uk-link-muted " onclick="dynamicModalLoad('edit-local-document/{{$document->id}}')" uk-tooltip="Edit this file">
+	             		<span class="a-pencil-2" style="color: rgb(0, 193, 247);"></span>
+	            </a>
+	            &nbsp;|&nbsp;
+			    	 {{-- @can('access_admin') --}}
+			    		<a class="uk-link-muted " onclick="deleteFile({{ $document->id }});" uk-tooltip="Delete this file">
+			    			<span class="a-trash-4" style="color: #da328a;"></span>
+			    		</a>
+			    		&nbsp;|&nbsp;
+			    	 {{-- @endcan --}}
+			    		<a href="download-local-document/{{ $document->id }}" target="_blank"  uk-tooltip="Download file." download>
+			    			<span class="a-lower"></span>
+			    		</a>
+			    		@if($document->comment)&nbsp;|&nbsp;<a class="uk-link-muted " uk-tooltip="{{ $document->comment }}">
+			    			<span class="a-file-info" style="color: #00538a;"></span>
+			    		</a>
+			    		@endif
+			    	</td>
+			    	</span>
+		    	</span>
 		    </tr>
 		    @endforeach
 		  </tbody>

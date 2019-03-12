@@ -476,153 +476,151 @@ class CommunicationController extends Controller
 
     public function create(Request $request)
     {
-        $forminputs = $request->get('inputs');
-        parse_str($forminputs, $forminputs);
+      $forminputs = $request->get('inputs');
+      parse_str($forminputs, $forminputs);
+      if (isset($forminputs['communication']) && $forminputs['communication'] > 0) {
+          $is_reply = $forminputs['communication'];
+      } else {
+          $is_reply = 0;
+      }
+      if ($forminputs['messageBody']) {
+          if (isset($forminputs['audit'])) {
+              try {
+                  $audit_id = (int) $forminputs['audit'];
+                  $audit = CachedAudit::where('id', $audit_id)->first();
+              } catch (\Illuminate\Database\QueryException $ex) {
+                  dd($ex->getMessage());
+              }
+              $audit_id = $audit->id;
+          } else {
+              $audit_id = null;
+          }
 
-        if (isset($forminputs['communication']) && $forminputs['communication'] > 0) {
-            $is_reply = $forminputs['communication'];
-        } else {
-            $is_reply = 0;
-        }
+          if (isset($forminputs['project_id'])) {
+              try {
+                  $project_id = (int) $forminputs['project_id'];
+                  $project = Project::where('id', $project_id)->first();
+              } catch (\Illuminate\Database\QueryException $ex) {
+                  dd($ex->getMessage());
+              }
+              $project_id = $project->id;
+          } else {
+              $project_id = null;
+          }
 
-        if ($forminputs['messageBody']) {
-            if (isset($forminputs['audit'])) {
-                try {
-                    $audit_id = (int) $forminputs['audit'];
-                    $audit = CachedAudit::where('id', $audit_id)->first();
-                } catch (\Illuminate\Database\QueryException $ex) {
-                    dd($ex->getMessage());
-                }
-                $audit_id = $audit->id;
-            } else {
-                $audit_id = null;
-            }
+          $user = Auth::user();
 
-            if (isset($forminputs['project_id'])) {
-                try {
-                    $project_id = (int) $forminputs['project_id'];
-                    $project = Project::where('id', $project_id)->first();
-                } catch (\Illuminate\Database\QueryException $ex) {
-                    dd($ex->getMessage());
-                }
-                $project_id = $project->id;
-            } else {
-                $project_id = null;
-            }
+          // create message
+          $message_posted = (string) $forminputs['messageBody'];
+          if ($is_reply) {
+              $original_message = Communication::where('id', $is_reply)->first();
+              /// CHECK IF REPLY HAS A PARENT.. IF SO, WE NEED TO SET THE ORIGINAL MESSAGE TO THAT.
+              /// EVENTUALLY THIS SHOULD BECOME INDENTED IN THE VIEW
+              if (!is_null($original_message->parent_id)) {
+                  //orginal message has a parent id
+                  $originalMessageId = $original_message->parent_id;
+              } else {
+                  $originalMessageId = $original_message->id;
+              }
+              $message = new Communication([
+                  'owner_id' => $user->id,
+                  'audit_id' => $audit_id,
+                  'project_id' => $project_id,
+                  'parent_id' => $originalMessageId,
+                  'message' => $message_posted
+              ]);
+              //$lc = new LogConverter('communication', 'create');
+              //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
+          } else {
+              $subject = (string) $forminputs['subject'];
+              $message = new Communication([
+                  'owner_id' => $user->id,
+                  'audit_id' => $audit_id,
+                  'project_id' => $project_id,
+                  'message' => $message_posted,
+                  'subject' => $subject
+              ]);
+              //$lc = new LogConverter('communication', 'create');
+              //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
+          }
+          $message->save();
 
-            $user = Auth::user();
+          // save recipients
+          if ($is_reply) {
+              // get existing recipients if a reply
+              $message_recipients_array = CommunicationRecipient::where('communication_id', $original_message->id)->pluck('user_id')->toArray();
 
-            // create message
-            $message_posted = (string) $forminputs['messageBody'];
-            if ($is_reply) {
-                $original_message = Communication::where('id', $is_reply)->first();
-                /// CHECK IF REPLY HAS A PARENT.. IF SO, WE NEED TO SET THE ORIGINAL MESSAGE TO THAT.
-                /// EVENTUALLY THIS SHOULD BECOME INDENTED IN THE VIEW
-                if (!is_null($original_message->parent_id)) {
-                    //orginal message has a parent id
-                    $originalMessageId = $original_message->parent_id;
-                } else {
-                    $originalMessageId = $original_message->id;
-                }
-                $message = new Communication([
-                    'owner_id' => $user->id,
-                    'audit_id' => $audit_id,
-                    'project_id' => $project_id,
-                    'parent_id' => $originalMessageId,
-                    'message' => $message_posted
-                ]);
-                //$lc = new LogConverter('communication', 'create');
-                //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
-            } else {
-                $subject = (string) $forminputs['subject'];
-                $message = new Communication([
-                    'owner_id' => $user->id,
-                    'audit_id' => $audit_id,
-                    'project_id' => $project_id,
-                    'message' => $message_posted,
-                    'subject' => $subject
-                ]);
-                //$lc = new LogConverter('communication', 'create');
-                //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
-            }
-            $message->save();
+              foreach ($message_recipients_array as $recipient_id) {
+                  if ($recipient_id == $user->id) {
+                      $recipient = new CommunicationRecipient([
+                          'communication_id' => $message->id,
+                          'user_id' => (int) $recipient_id,
+                          'seen' => 1
+                      ]);
+                      $recipient->save();
+                  } else {
+                      $recipient = new CommunicationRecipient([
+                          'communication_id' => $message->id,
+                          'user_id' => (int) $recipient_id
+                      ]);
+                      $recipient->save();
+                  }
+              }
+              // add reply author
+              if (!in_array($original_message->owner_id, $message_recipients_array)) {
+                  $recipient = new CommunicationRecipient([
+                      'communication_id' => $message->id,
+                      'user_id' => (int) $original_message->owner_id,
+                      'seen' => 1
+                  ]);
+                  $recipient->save();
+              }
+          } else {
+              if (isset($forminputs['recipients'])) {
+                  $message_recipients_array = $forminputs['recipients'];
+                  foreach ($message_recipients_array as $recipient_id) {
+                      if($recipient_id > 0){
+                          $recipient = new CommunicationRecipient([
+                              'communication_id' => $message->id,
+                              'user_id' => (int) $recipient_id
+                          ]);
+                          $recipient->save();
+                      } else {
+                          dd('Recipient id failed to pass - value received:'.$recipient_id,$message_recipients_array);
+                      }
+                  }
+              }
+          }
 
-            // save recipients
-            if ($is_reply) {
-                // get existing recipients if a reply
-                $message_recipients_array = CommunicationRecipient::where('communication_id', $original_message->id)->pluck('user_id')->toArray();
+          // save documents
+          // UPDATE TO USE DOCUWARE
+          // if (isset($forminputs['documents'])) {
+          //     foreach ($forminputs['documents'] as $document_id) {
+          //         $document = new CommunicationDocument([
+          //             'communication_id' => $message->id,
+          //             'document_id' => (int) $document_id
+          //         ]);
+          //         $document->save();
+          //     }
+          // }
 
-                foreach ($message_recipients_array as $recipient_id) {
-                    if ($recipient_id == $user->id) {
-                        $recipient = new CommunicationRecipient([
-                            'communication_id' => $message->id,
-                            'user_id' => (int) $recipient_id,
-                            'seen' => 1
-                        ]);
-                        $recipient->save();
-                    } else {
-                        $recipient = new CommunicationRecipient([
-                            'communication_id' => $message->id,
-                            'user_id' => (int) $recipient_id
-                        ]);
-                        $recipient->save();
-                    }
-                }
-                // add reply author
-                if (!in_array($original_message->owner_id, $message_recipients_array)) {
-                    $recipient = new CommunicationRecipient([
-                        'communication_id' => $message->id,
-                        'user_id' => (int) $original_message->owner_id,
-                        'seen' => 1
-                    ]);
-                    $recipient->save();
-                }
-            } else {
-                if (isset($forminputs['recipients'])) {
-                    $message_recipients_array = $forminputs['recipients'];
-                    foreach ($message_recipients_array as $recipient_id) {
-                        if($recipient_id > 0){
-                            $recipient = new CommunicationRecipient([
-                                'communication_id' => $message->id,
-                                'user_id' => (int) $recipient_id
-                            ]);
-                            $recipient->save();
-                        } else {
-                            dd('Recipient id failed to pass - value received:'.$recipient_id,$message_recipients_array);
-                        }
-                    }
-                }
-            }
+          // send emails
+          try {
+              foreach ($message_recipients_array as $userToNotify) {
+                  if ($userToNotify != $user->id) { // don't send an email to sender
+                      $current_recipient = User::where('id', '=', $userToNotify)->get()->first();
+                      $emailNotification = new EmailNotification($userToNotify, $message->id);
+                      \Mail::to($current_recipient->email)->send($emailNotification);
+                  }
+              }
+          } catch (\Illuminate\Database\QueryException $ex) {
+              dd($ex->getMessage());
+          }
 
-            // save documents
-            // UPDATE TO USE DOCUWARE
-            // if (isset($forminputs['documents'])) {
-            //     foreach ($forminputs['documents'] as $document_id) {
-            //         $document = new CommunicationDocument([
-            //             'communication_id' => $message->id,
-            //             'document_id' => (int) $document_id
-            //         ]);
-            //         $document->save();
-            //     }
-            // }
-
-            // send emails
-            try {
-                foreach ($message_recipients_array as $userToNotify) {
-                    if ($userToNotify != $user->id) { // don't send an email to sender
-                        $current_recipient = User::where('id', '=', $userToNotify)->get()->first();
-                        $emailNotification = new EmailNotification($userToNotify, $message->id);
-                        \Mail::to($current_recipient->email)->send($emailNotification);
-                    }
-                }
-            } catch (\Illuminate\Database\QueryException $ex) {
-                dd($ex->getMessage());
-            }
-
-            return 1;
-        } else {
-            return "Something went wrong. We couldn't save your message. Make sure you have at least one recipient and that your message isn't empty.";
-        }
+          return 1;
+      } else {
+          return "Something went wrong. We couldn't save your message. Make sure you have at least one recipient and that your message isn't empty.";
+      }
     }
 
     public function getUnseenMessages()

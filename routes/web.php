@@ -186,6 +186,7 @@
 				Route::get('/modals/edit-local-document/{document}', 'DocumentController@editLocalDocument')->name('document.local-edit');
 				Route::post('/modals/edit-local-document/{document}', 'DocumentController@saveEditedLocalDocument')->name('document.local-saveedit');
 				Route::post('/documents/project/{project}/local-deletedocument', 'DocumentController@deleteLocalDocument')->name('documents.local-deleteDocument');
+				Route::get('/download-local-document/{document}', 'DocumentController@downloadLocalDocument')->name('document.local-download');
 
 
 
