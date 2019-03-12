@@ -128,7 +128,9 @@ class ComplianceSelectionJob implements ShouldQueue
                                             'project_id'    =>  $audit->project_id,
                                             'development_key'=> $audit->development_key,
                                             'created_at'    =>  date("Y-m-d g:h:i", time()),
-                                            'updated_at'    =>  date("Y-m-d g:h:i", time())
+                                            'updated_at'    =>  date("Y-m-d g:h:i", time()),
+                                            'project_program_key' => $pp->developmentProgramKey,
+                                            'project_program_id' => $program->id
                                         ]);
 
                                         if(count($program->program->groups())){
