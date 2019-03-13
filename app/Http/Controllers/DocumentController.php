@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\DocumentTrait;
 use App\Models\Document;
 use App\Models\DocumentCategory;
-use App\Models\DocumentDocumentCategory;
 use App\Models\LocalDocumentCategory;
 use App\Models\Project;
-use App\Models\SyncDocuware;
 use App\Models\User;
-use App\Services\DevcoService;
 use Auth;
+use Carbon\Carbon;
 use File;
 use Illuminate\Http\Request;
 use Storage;
-use Carbon\Carbon;
 
 class DocumentController extends Controller
 {
+    use DocumentTrait;
+
     public function __construct(Request $request)
     {
         // $this->middleware('auth');
@@ -91,17 +91,17 @@ class DocumentController extends Controller
             // Sanitize filename and append document id to make it unique
             $filename = snake_case(strtolower($filename)) . '_' . $document->id . '.' . $file_extension;
             $filepath = $folderpath . $filename;
-            if($request->has('ohfa_file')) {
-            	$document->update([
-	                'file_path' => $filepath,
-	                'filename' => $filename,
-	                'ohfa_file_path' => $filepath
-	            ]);
+            if ($request->has('ohfa_file')) {
+                $document->update([
+                    'file_path' => $filepath,
+                    'filename' => $filename,
+                    'ohfa_file_path' => $filepath,
+                ]);
             } else {
-            	$document->update([
-	                'file_path' => $filepath,
-	                'filename' => $filename,
-	            ]);
+                $document->update([
+                    'file_path' => $filepath,
+                    'filename' => $filename,
+                ]);
             }
 
             // store original file
@@ -123,17 +123,17 @@ class DocumentController extends Controller
         $catid = $request->get('catid');
         $document = Document::where('id', $request->get('id'))->first();
         // if already "notapproved", remove from notapproved
-        if(!is_null($document->notapproved)) {
-        	$document->update([
+        if (!is_null($document->notapproved)) {
+            $document->update([
                 'notapproved' => null,
-                'document_decliner_id' => Auth::user()->id
+                'document_decliner_id' => Auth::user()->id,
             ]);
         }
         // if not already approved, add to approved array
-        if(is_null($document->approved)) {
-        	$document->update([
+        if (is_null($document->approved)) {
+            $document->update([
                 'approved' => 1,
-                'document_approver_id' => Auth::user()->id
+                'document_approver_id' => Auth::user()->id,
             ]);
         }
         return 1;
@@ -147,17 +147,17 @@ class DocumentController extends Controller
         $catid = $request->get('catid');
         $document = Document::where('id', $request->get('id'))->first();
         // if already approved, remove from approved array
-        if(!is_null($document->approved)) {
-        	$document->update([
+        if (!is_null($document->approved)) {
+            $document->update([
                 'approved' => null,
-                'document_approver_id' => Auth::user()->id
+                'document_approver_id' => Auth::user()->id,
             ]);
         }
         // if not already notapproved  --confused yet? :), add to notapproved array
-        if(is_null($document->notapproved)) {
-        	$document->update([
+        if (is_null($document->notapproved)) {
+            $document->update([
                 'notapproved' => 1,
-                'document_decliner_id' => Auth::user()->id
+                'document_decliner_id' => Auth::user()->id,
             ]);
         }
         return 1;
@@ -170,16 +170,16 @@ class DocumentController extends Controller
         }
         $catid = $request->get('catid');
         $document = Document::where('id', $request->get('id'))->first();
-        if(!is_null($document->approved)) {
-        	$document->update([
+        if (!is_null($document->approved)) {
+            $document->update([
                 'approved' => null,
-                'document_approver_id' => Auth::user()->id
+                'document_approver_id' => Auth::user()->id,
             ]);
         }
-        if(!is_null($document->notapproved)) {
-        	$document->update([
+        if (!is_null($document->notapproved)) {
+            $document->update([
                 'notapproved' => null,
-                'document_decliner_id' => Auth::user()->id
+                'document_decliner_id' => Auth::user()->id,
             ]);
         }
         return 1;
@@ -187,16 +187,16 @@ class DocumentController extends Controller
 
     public function editLocalDocument($id, Request $request)
     {
-    		$document = Document::with('assigned_categories.parent')->find($id);
-    		$project = Project::find($document->project_id);
-        $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
+        $document = Document::with('assigned_categories.parent')->find($id);
+        $project = Project::find($document->project_id);
+        $document_categories = DocumentCategory::where('parent_id', '<>', 0)->where('active', '1')->orderby('document_category_name', 'asc')->get();
         $categories_used = $document->assigned_categories->first();
         return view('modals.edit-document', compact('document', 'document_categories', 'categories_used', 'project'));
     }
 
     public function saveEditedLocalDocument($document_id, Request $request)
     {
-    		$document = Document::with('assigned_categories.parent')->find($document_id);
+        $document = Document::with('assigned_categories.parent')->find($document_id);
         $project = Project::where('id', '=', $document->project_id)->first();
         $forminputs = $request->get('inputs');
         parse_str($forminputs, $forminputs);
@@ -207,24 +207,24 @@ class DocumentController extends Controller
         }
         $document->update([
             "comment" => $comments,
-            'last_edited' => Carbon::now()
+            'last_edited' => Carbon::now(),
         ]);
         $user = Auth::user();
         $categories = $request->get('cats')[0];
         $categories = DocumentCategory::with('parent')->find($categories);
-        if($categories->id != $document->assigned_categories->first()->id) {
-        	$assigned_categories = LocalDocumentCategory::where('document_id', $document->id)->delete();
-        	$document_categories = new LocalDocumentCategory;
-	        $document_categories->document_id = $document->id;
-	        $document_categories->document_category_id = $categories->parent->id;
-	        $document_categories->project_id = $project->id;
-	        $document_categories->save();
-	        //Category
-	        $document_categories = new LocalDocumentCategory;
-	        $document_categories->document_id = $document->id;
-	        $document_categories->document_category_id = $categories->id;
-	        $document_categories->project_id = $project->id;
-	        $document_categories->save();
+        if ($categories->id != $document->assigned_categories->first()->id) {
+            $assigned_categories = LocalDocumentCategory::where('document_id', $document->id)->delete();
+            $document_categories = new LocalDocumentCategory;
+            $document_categories->document_id = $document->id;
+            $document_categories->document_category_id = $categories->parent->id;
+            $document_categories->project_id = $project->id;
+            $document_categories->save();
+            //Category
+            $document_categories = new LocalDocumentCategory;
+            $document_categories->document_id = $document->id;
+            $document_categories->document_category_id = $categories->id;
+            $document_categories->project_id = $project->id;
+            $document_categories->save();
         }
         return 1;
     }
@@ -262,178 +262,13 @@ class DocumentController extends Controller
 
     public function getProjectDocuwareDocuments(Project $project, Request $request)
     {
-        $apiConnect = new DevcoService();
-        $searchString = null;
-        $deviceId = null;
-        $deviceName = null;
-        $documentList = $apiConnect->getProjectDocuments($project->project_number, $searchString, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
-
-        //dd($documentList,'Third doc id:'.$documentList->included[2]->id,'Page count:'.$documentList->meta->totalPageCount,'File type of third doc:'.$documentList->included[2]->attributes->fields->DWEXTENSION,'Document Class/Category:'.$documentList->included[2]->attributes->fields->DOCUMENTCLASS,'Userid passed:'. Auth::user()->id,'User email passed:'.Auth::user()->email,'Username Passed:'.Auth::user()->name,'Device id and Device name:'.$deviceId.','.$deviceName);
-
-        // compare the list to what is in the sync table:
-        if (count($documentList->included) > 0) {
-            $currentDocuwareProjectDocs = $documentList->included;
-
-            foreach ($currentDocuwareProjectDocs as $cd) {
-                //check if the document is in our database:
-                //dd($cd, $cd->attributes->docId);
-                $checkAD = SyncDocuware::where('docuware_doc_id', $cd->attributes->docId)->first();
-                //dd($checkAD);
-                if (!is_null($checkAD)) {
-                    // there is a record - check to make sure it hasn't changed
-
-                    // compare mod date:
-                    if (strtotime($checkAD->dw_mod_date_time) < strtotime($cd->attributes->fields->DWMODDATETIME)) {
-                        // update the record - this one is older
-
-                        SyncDocuware::where('id', $checkAD->id)->update([
-                            'docuware_doc_id' => $cd->attributes->docId,
-                            'type' => $cd->attributes->docType,
-                            'cabinet_name' => $cd->attributes->cabinetName,
-                            'cabinet_id' => $cd->attributes->cabinetId,
-                            'project_number' => $cd->attributes->fields->PROJECTNUMBER,
-                            'document_class' => $cd->attributes->fields->DOCUMENTCLASS,
-                            'document_description' => $cd->attributes->fields->DOCUMENTDESCRIPTION,
-                            'document_date' => date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DOCUMENTDATE)),
-                            'notes' => $cd->attributes->fields->NOTES,
-                            'email_to' => $cd->attributes->fields->EMAILTO,
-                            'email_from' => $cd->attributes->fields->EMAILFROM,
-                            'email_subject' => $cd->attributes->fields->EMAILSUBJECT,
-                            'image_file_name' => $cd->attributes->fields->IMAGEFILENAME,
-                            'retention_sched_code' => $cd->attributes->fields->RETENTIONSCHEDCODE,
-                            'dw_page_count' => $cd->attributes->fields->DWPAGECOUNT,
-                            'dw_stored_date_time' => date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DWSTOREDATETIME)),
-                            'dw_mod_date_time' => date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DWMODDATETIME)),
-                            'dw_extension' => $cd->attributes->fields->DWEXTENSION,
-                            'dw_flags' => $cd->attributes->fields->DWFLAGS,
-                            'dw_doc_size' => $cd->attributes->fields->DWDOCSIZE,
-                            'dw_flag_sex' => $cd->attributes->fields->DWFLAGSEX,
-                            'project_id' => $project->id,
-                        ]);
-                        //dd($doc,$doc->id);
-                        if (!is_null($cd->attributes->fields->DOCUMENTCLASS)) {
-                            //check if the categories are in the database
-                            $primaryCat = DocumentCategory::where('document_category_name', $cd->attributes->fields->DOCUMENTCLASS)->where('parent_id', 0)->first();
-                            if (is_null($primaryCat)) {
-                                //needs category entered
-                                $primaryCat = DocumentCategory::create([
-                                    'document_category_name' => $cd->attributes->fields->DOCUMENTCLASS,
-                                    'from_docuware' => 1,
-                                    'from_allita' => 0,
-                                    'parent_id' => 0,
-                                    'active' => 1,
-                                ]);
-                            }
-                            DocumentDocumentCategory::where('sync_docuware_id', $checkAD->id)->where('docuware_document_class', 1)->delete();
-                            DocumentDocumentCategory::create([
-                                'sync_docuware_id' => $checkAD->id,
-                                'document_category_id' => $primaryCat->id,
-                                'docuware_document_class' => 1,
-                            ]);
-                        }
-                        if (!is_null($cd->attributes->fields->DOCUMENTDESCRIPTION)) {
-                            $secondaryCat = DocumentCategory::where('document_category_name', $cd->attributes->fields->DOCUMENTDESCRIPTION)->where('parent_id', $primaryCat->id)->first();
-                            if (is_null($secondaryCat)) {
-                                //needs category entered
-                                $secondaryCat = DocumentCategory::create([
-                                    'document_category_name' => $cd->attributes->fields->DOCUMENTDESCRIPTION,
-                                    'from_docuware' => 1,
-                                    'parent_id' => $primaryCat->id,
-                                    'active' => 1,
-                                ]);
-                            }
-
-                            DocumentDocumentCategory::where('sync_docuware_id', $checkAD->id)->where('docuware_document_description', 1)->delete();
-                            DocumentDocumentCategory::create([
-                                'sync_docuware_id' => $checkAD->id,
-                                'document_category_id' => $secondaryCat->id,
-                                'docuware_document_class' => 1,
-                            ]);
-                        }
-
-                    }
-
-                } else {
-                    // there is not a record - add it to the document list.
-                    $doc = SyncDocuware::create([
-                        'docuware_doc_id' => $cd->attributes->docId,
-                        'type' => $cd->attributes->docType,
-                        'cabinet_name' => $cd->attributes->cabinetName,
-                        'cabinet_id' => $cd->attributes->cabinetId,
-                        'project_number' => $cd->attributes->fields->PROJECTNUMBER,
-                        'document_class' => $cd->attributes->fields->DOCUMENTCLASS,
-                        'document_description' => $cd->attributes->fields->DOCUMENTDESCRIPTION,
-                        'document_date' => date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DOCUMENTDATE)),
-                        'notes' => $cd->attributes->fields->NOTES,
-                        'email_to' => $cd->attributes->fields->EMAILTO,
-                        'email_from' => $cd->attributes->fields->EMAILFROM,
-                        'email_subject' => $cd->attributes->fields->EMAILSUBJECT,
-                        'image_file_name' => $cd->attributes->fields->IMAGEFILENAME,
-                        'retention_sched_code' => $cd->attributes->fields->RETENTIONSCHEDCODE,
-                        'dw_page_count' => $cd->attributes->fields->DWPAGECOUNT,
-                        'dw_stored_date_time' => date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DWSTOREDATETIME)),
-                        'dw_mod_date_time' => date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DWMODDATETIME)),
-                        'dw_extension' => $cd->attributes->fields->DWEXTENSION,
-                        'dw_flags' => $cd->attributes->fields->DWFLAGS,
-                        'dw_doc_size' => $cd->attributes->fields->DWDOCSIZE,
-                        'dw_flag_sex' => $cd->attributes->fields->DWFLAGSEX,
-                        'project_id' => $project->id,
-                    ]);
-                    //dd($doc,$doc->id);
-                    if (!is_null($cd->attributes->fields->DOCUMENTCLASS)) {
-                        //check if the categories are in the database
-                        $primaryCat = DocumentCategory::where('document_category_name', $cd->attributes->fields->DOCUMENTCLASS)->where('parent_id', 0)->first();
-                        if (is_null($primaryCat)) {
-                            //needs category entered
-                            $primaryCat = DocumentCategory::create([
-                                'document_category_name' => $cd->attributes->fields->DOCUMENTCLASS,
-                                'from_docuware' => 1,
-                                'from_allita' => 0,
-                                'parent_id' => 0,
-                                'active' => 1,
-                            ]);
-                        }
-                        DocumentDocumentCategory::where('sync_docuware_id', $doc->id)->where('docuware_document_class', 1)->delete();
-                        DocumentDocumentCategory::create([
-                            'sync_docuware_id' => $doc->id,
-                            'document_category_id' => $primaryCat->id,
-                            'docuware_document_class' => 1,
-                        ]);
-                    }
-                    if (!is_null($cd->attributes->fields->DOCUMENTDESCRIPTION)) {
-                        $secondaryCat = DocumentCategory::where('document_category_name', $cd->attributes->fields->DOCUMENTDESCRIPTION)->where('parent_id', $primaryCat->id)->first();
-                        if (is_null($secondaryCat)) {
-                            //needs category entered
-                            $secondaryCat = DocumentCategory::create([
-                                'document_category_name' => $cd->attributes->fields->DOCUMENTDESCRIPTION,
-                                'from_docuware' => 1,
-                                'parent_id' => $primaryCat->id,
-                                'active' => 1,
-                            ]);
-                        }
-
-                        DocumentDocumentCategory::where('sync_docuware_id', $doc->id)->where('docuware_document_description', 1)->delete();
-                        DocumentDocumentCategory::create([
-                            'sync_docuware_id' => $doc->id,
-                            'document_category_id' => $secondaryCat->id,
-                            'docuware_document_class' => 1,
-                        ]);
-                    }
-
-                }
-
-            }
-
-            $documents = SyncDocuware::where('project_id', $project->id)->orderBy('document_class')->orderby('document_description')->get()->all();
-
-        } else {
-            $documents = null;
-        }
+        $documents = $this->projectDocuwareDocumets($project);
         $document_categories = DocumentCategory::where('parent_id', '<>', 0)->orderBy('parent_id')->orderBy('document_category_name')->get()->all();
 
         return view('projects.partials.docuware-documents', compact('project', 'documents', 'document_categories'));
 
     }
+
     public function showTabFromParcelId(Parcel $parcel, Request $request)
     {
 
@@ -797,7 +632,7 @@ class DocumentController extends Controller
         //$documentids = explode(",", $request->get('postvars'));
         $documentids = $request->get('postvars');
         $documents = Document::whereIn('id', $documentids)
-        		->with('assigned_categories.parent')
+            ->with('assigned_categories.parent')
             ->orderBy('created_at', 'desc')
             ->get();
         $document_info_array = [];
