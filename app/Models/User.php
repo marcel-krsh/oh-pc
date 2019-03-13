@@ -468,7 +468,8 @@ class User extends Authenticatable
 
             $address = urlencode($address);
 
-            $googleAPI = 'AIzaSyCIXStIobkIUMeRCH-nwikznhFc39pAf9Q'; //env('GOOGLE_API_KEY');
+            //$googleAPI = 'AIzaSyCIXStIobkIUMeRCH-nwikznhFc39pAf9Q'; //env('GOOGLE_API_KEY');
+            $googleAPI = SystemSetting::get('google_api_key');
             $project_address = urlencode($project_address);
             $url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=".$address."&destinations=".$project_address."&key=".$googleAPI;
             $ch      = curl_init();
