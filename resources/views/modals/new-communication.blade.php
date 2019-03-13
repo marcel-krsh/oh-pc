@@ -13,17 +13,17 @@
 			</div>
 			<hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
 			<div uk-grid class="uk-grid-collapse">
-				<div class="uk-width-1-6 " style="padding:18px;"><div style="width:25px; display: inline-block;"><i uk-icon="user"></i></div> &nbsp;FROM:</div>
-				<div class="uk-width-5-6 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{Auth::user()->full_name()}}</div>
-				<div class="uk-width-1-6 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
-				<div class="uk-width-5-6 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
+				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px; display: inline-block;"><i uk-icon="user"></i></div> &nbsp;FROM:</div>
+				<div class="uk-width-4-5 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{Auth::user()->full_name()}}</div>
+				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
+				<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
 					<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
 					<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
 						'recipient-name'></span>
 					</div>
 				</div>
-				<div class="uk-width-1-6 recipient-list" style="display: none;"></div>
-				<div class="uk-width-5-6 recipient-list" id='recipients' style="border-left: 1px #111 dashed; border-right: 1px #111 dashed; border-bottom: 1px #111 dashed; padding:18px; padding-left:25px; position: relative;top:0px; display: none">
+				<div class="uk-width-1-5 recipient-list" style="display: none;"></div>
+				<div class="uk-width-4-5 recipient-list" id='recipients' style="border-left: 1px #111 dashed; border-right: 1px #111 dashed; border-bottom: 1px #111 dashed; padding:18px; padding-left:25px; position: relative;top:0px; display: none">
 					<!-- RECIPIENT LISTING -->
 					<div class="communication-selector uk-scrollable-box">
 						<ul class="uk-list document-menu">
@@ -87,17 +87,15 @@
           </script>
           <!-- END RECIPIENT LISTING -->
         </div>
-        <div class="uk-width-1-6 " style="padding:18px;"><div style="width:20px;display: inline-block;" onClick="showDocuments"><i class="a-paperclip-2 "></i></div> DOCUMENTS:</div>
-        <div class="uk-width-5-6" id="documents-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
+        <div class="uk-width-1-5 " style="padding:18px;"><div style="width:20px;display: inline-block;" onClick="showDocuments"><i class="a-paperclip-2 "></i></div> DOCUMENTS:</div>
+        <div class="uk-width-4-5" id="documents-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
 					<div id="add-documents-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showDocuments()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD DOCUMENTS </div><div id="done-adding-documents-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showDocuments()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING DOCUMENTS</div>
 					<div id='documents-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox documents-selector"><span class=
 						'documents-name'></span>
 					</div>
 				</div>
-
-				@if(true)
-				<div class="uk-width-1-6 documents-list" style="display: none;"></div>
-				<div class="uk-width-6-6 uk-grid documents-list" id='recipients' style="border-top: 1px #111 dashed; border-left: 1px #111 dashed; border-right: 1px #111 dashed; border-bottom: 1px #111 dashed; padding:10px 2px 2px 2px; position: relative;top:0px; display: none">
+				<div class="uk-width-1-5 documents-list" style="display: none;"></div>
+				<div class="uk-width-5-5 uk-grid documents-list" id='recipients' style="border-top: 1px #111 dashed; border-left: 1px #111 dashed; border-right: 1px #111 dashed; border-bottom: 1px #111 dashed; padding:10px 2px 2px 2px; position: relative;top:0px; display: none">
 					<div class="uk-width-1-2@m uk-width-1-1@s">
 						<h4>Select exising documents</h4>
 						<div class="communication-selector  uk-scrollable-box">
@@ -105,12 +103,12 @@
 								@foreach ($documents as $document)
 								<li class="uk-margin-small-bottom">
 									@if(get_class($document) == 'App\Models\SyncDocuware')
-									<input name="documents[]" id="docuware-document-id-{{ $document->id }}" value="{{ $document->id }}" type="checkbox"  class="uk-checkbox">
+									<input name="docuware_documents[]" id="list-document-id-docuware-{{ $document->id }}" value="docuware-{{ $document->id }}" type="checkbox"  class="uk-checkbox" onClick="addDocuwareDocument(this.value,'{{ $document->document_class }} {{ $document->document_description }}')">
 									<label for="docuware-document-id-{{ $document->id }}">
 										{{ $document->document_class }} {{ $document->document_description }}
 									</label>
 									@else
-									<input name="documents[]" id="local-document-id-{{ $document->id }}" value="{{ $document->id }}" type="checkbox"  class="uk-checkbox">
+									<input name="local_documents[]" id="list-document-id-local-{{ $document->id }}" value="local-{{ $document->id }}" type="checkbox"  class="uk-checkbox" onClick="addLocalDocument(this.value,'{{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}')">
 									<label for="local-document-id-{{ $document->id }}">
 										{{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}
 									</label>
@@ -157,9 +155,7 @@
 									<span class="uk-link">by browsing and selecting it here.</span>
 								</div>
 							</div>
-
 							<progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
-
 							<script>
 								$(function(){
 									var bar = document.getElementById('js-progressbar');
@@ -175,7 +171,7 @@
 											});
 											settings.params.categories = categoryArray;
 											settings.params.ohfa_file = 1;
-											settings.params.comment = $("#local-comment").val();
+											settings.params.comment = $("input[name=local-comment]").val();
 											settings.params._token = '{{ csrf_token() }}';
 											if(categoryArray.length > 0){
 												console.log('Categories selected: '+categoryArray);
@@ -224,8 +220,10 @@
 					            		var documentid_array = documentids.split(',');
 					            		for (var i = 0; i < documentid_array.length; i++) {
 					            			did = documentid_array[i];
+					            			docnameActual = document_info_array[did]['categories']['category_name'] + ' : ' + document_info_array[did]['filename'];
+					            			docname = "'"+docnameActual+"'";
 					            			newinput = '<li>'+
-					            			'<input name="documents[]" id="local-document-id-'+did+'" value="'+did+'" type="checkbox" checked  class="uk-checkbox">'+
+					            			'<input name="local_documents[]" id="list-document-id-local-'+did+'" value="local-'+did+'" type="checkbox" checked  class="uk-checkbox" onClick="addLocalDocument(this.value,'+docname+')">'+
 					            			'<label for="local-document-id-'+did+'">'+
 					            			'    ' +document_info_array[did]['categories']['category_name']+
 					            			' : ' +document_info_array[did]['filename']+
@@ -242,7 +240,9 @@
 					            			'</ul>'+
 					            			'</li>';
 					            			$("#existing-documents").append(newinput);
+					            			var newid = 'local-'+did;
 					            		}
+					            		addLocalDocument(newid, docnameActual);
 					            	}
 					            });
 					          }
@@ -252,16 +252,63 @@
 					    </script>
 					  </div>
 					</div>
+					<script>
+            // CLONE RECIPIENTS
+            function addDocuwareDocument(formValue,name){
+              //alert(formValue+' '+name);
+              if($("#list-document-id-"+formValue).is(':checked')){
+              	var documentClone = $('#documents-template').clone();
+              	documentClone.attr("id", "document-id-"+formValue+"-holder");
+              	documentClone.prependTo('#documents-box');
+              	$("#document-id-"+formValue+"-holder").slideDown();
+              	$("#document-id-"+formValue+"-holder input[type=checkbox]").attr("id","document-id-"+formValue);
+              	$("#document-id-"+formValue+"-holder input[type=checkbox]").attr("name","docuware_documents[]");
+              	$("#document-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeDocuwareDocument('"+formValue+"');");
+              	$("#document-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
+              	$("#document-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
+              } else {
+              	$("#document-id-"+formValue+"-holder").slideUp();
+              	$("#document-id-"+formValue+"-holder").remove();
+              }
+            }
+            function removeDocuwareDocument(id){
+            	$("#document-id-"+id+"-holder").slideUp();
+            	$("#document-id-"+id+"-holder").remove();
+            	$("#list-document-id-"+id).prop("checked",false)
+            }
+
+            function addLocalDocument(formValue,name){
+              //alert(formValue+' '+name);
+              if($("#list-document-id-"+formValue).is(':checked')){
+              	var documentClone = $('#documents-template').clone();
+              	documentClone.attr("id", "document-id-"+formValue+"-holder");
+              	documentClone.prependTo('#documents-box');
+              	$("#document-id-"+formValue+"-holder").slideDown();
+              	$("#document-id-"+formValue+"-holder input[type=checkbox]").attr("id","document-id-"+formValue);
+              	$("#document-id-"+formValue+"-holder input[type=checkbox]").attr("name","local_documents[]");
+              	$("#document-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeLocalDocument('"+formValue+"');");
+              	$("#document-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
+              	$("#document-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
+              } else {
+              	$("#document-id-"+formValue+"-holder").slideUp();
+              	$("#document-id-"+formValue+"-holder").remove();
+              }
+            }
+            function removeLocalDocument(id){
+            	$("#document-id-"+id+"-holder").slideUp();
+            	$("#document-id-"+id+"-holder").remove();
+            	$("#list-document-id-"+id).prop("checked",false)
+            }
+          </script>
 				</div>
-				@endif
 {{--
         <div class="uk-width-1-6 " style="padding:18px;"><div style="width:25px;display: inline-block;" onClick="showDocuments"><i class="a-paperclip-2 "></i></div> DOCUMENTS:</div>
         <div class="uk-width-5-6 "  id="attachments-box" style="border-bottom:1px #111 dashed; padding:18px; padding-left:25px;">
         	<div class="uk-button uk-button-small" style="padding-top: 2px;"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD DOCUMENT</div><div class="uk-button uk-button-small" style="padding-top: 2px; display:none"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;Class:Description [Date]</div>
         </div> --}}
 
-        <div class="uk-width-1-6 " style="padding:18px;padding-top:27px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;SUBJECT:</div>
-        <div class="uk-width-5-6"  style="padding:18px; border-bottom:1px #111 dashed;">
+        <div class="uk-width-1-5 " style="padding:18px;padding-top:27px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;SUBJECT:</div>
+        <div class="uk-width-4-5"  style="padding:18px; border-bottom:1px #111 dashed;">
         	<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
         		<div uk-grid class="uk-grid-collapse">
         			<div class="uk-width-1-1">
@@ -271,8 +318,8 @@
         	</fieldset>
         </div>
 
-        <div class="uk-width-1-6 " style="padding:18px; padding-top:40px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;MESSAGE:</div>
-        <div class="uk-width-5-6 " style="padding:18px;">
+        <div class="uk-width-1-5 " style="padding:18px; padding-top:40px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;MESSAGE:</div>
+        <div class="uk-width-4-5 " style="padding:18px;">
         	<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
         		<div uk-grid class="uk-grid-collapse">
         			<div class="uk-width-1-1">

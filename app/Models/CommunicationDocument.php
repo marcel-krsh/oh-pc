@@ -15,7 +15,8 @@ class CommunicationDocument extends Model
 {
     protected $fillable = [
         'communication_id',
-        'document_id'
+        'document_id',
+        'sync_docuware_id'
     ];
 
     public $timestamps = false;
