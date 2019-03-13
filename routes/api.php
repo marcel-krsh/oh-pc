@@ -1754,7 +1754,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 throw $e;
             }
         });
-
+        
         Route::get('/get_amenity_inspections', function (Request $request) {
 
             try {
@@ -1764,6 +1764,29 @@ Route::get('/users/verify_user', function (Request $request) {
                     $results = AmenityInspection::where('last_edited', '>', $lastEdited)->get();
                 else
                     $results = AmenityInspection::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+        Route::get('/get_amenity_types', function (Request $request) {
+
+            try {
+
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = AmenityType::where('last_edited', '>', $lastEdited)->get();
+                else
+                    $results = AmenityType::get();
 
                 if ($results) {
                     $reply = $results;
