@@ -28,6 +28,11 @@ class UnitProgram extends Model
         return $this->hasOne(\App\Models\Audit::class, 'monitoring_key', 'monitoring_key');
     }
 
+    public function project_program(): HasOne
+    {
+        return $this->hasOne(\App\Models\ProjectProgram::class, 'project_program_key', 'project_program_key');
+    }
+
     // public function unit_inspections()
     // {
     //     // there may be one record for site and one for file in there...

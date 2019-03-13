@@ -33,7 +33,7 @@
 	@foreach($unitprogram as $each_program)
 
 		@php
-		dd($each_program);
+		dd($each_program->project_program->multiple_building_election_key);
 		$program_selected = $unit_selected->where('program_key', $each_program->program_key);
 		$all_groups_count = $each_program->program->relatedGroups->count();
 		$htc_groups = $each_program->program->relatedGroups->where('id', $htc_group_id);
