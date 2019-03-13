@@ -13,7 +13,8 @@
 							<td class="uk-text-center" style="padding-bottom:15px;"><i class="a-folder iheader"></i></td>
 						</tr>
 						@foreach($data['programs'] as $prog)
-						<tr style="border-top: 1px solid">
+
+						<tr style="border-top: 1px solid" @if($prog['building_name'])id="program-selection-{{ $prog['id'] }}-{{ $prog['building_key'] }}" @else id="program-selection-{{ $prog['id'] }}" @endIf>
 							<td style="padding-top:10px;">
 								<div uk-leader><strong>{{ $prog['name'] }} @if($prog['building_name']) | <a onClick="filterBuilding('building-{{$prog['building_key']}}')">{{$prog['building_name']}}</a> @endif
 
