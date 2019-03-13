@@ -175,7 +175,7 @@ trait DocumentTrait
 
             }
 
-            $documents = SyncDocuware::where('project_id', $project->id)->orderBy('document_class')->orderby('document_description')->get()->all();
+            $documents = SyncDocuware::where('project_id', $project->id)->orderBy('document_class')->orderby('document_description')->get();
 
         } else {
             $documents = null;
