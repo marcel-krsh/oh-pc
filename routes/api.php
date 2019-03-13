@@ -1778,15 +1778,15 @@ Route::get('/users/verify_user', function (Request $request) {
             }
         });
 
-        Route::get('/get_amenity_types', function (Request $request) {
+        Route::get('/get_finding_types', function (Request $request) {
 
             try {
 
                 $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
-                    $results = AmenityType::where('last_edited', '>', $lastEdited)->get();
+                    $results = FindingType::where('last_edited', '>', $lastEdited)->get();
                 else
-                    $results = AmenityType::get();
+                    $results = FindingType::get();
 
                 if ($results) {
                     $reply = $results;
