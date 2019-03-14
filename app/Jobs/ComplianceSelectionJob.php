@@ -2194,8 +2194,8 @@ class ComplianceSelectionJob implements ShouldQueue
                                                 })->pluck('unit_key')->toArray();
 
                 // 10% of units
-                $number_of_units_required = ceil($total_htc_units/10);
-                $required_units = $number_of_units_required;
+                $number_of_htc_units_required = ceil($total_htc_units/10);
+                $required_units = $number_of_htc_units_required;
 
                 if($number_of_htc_units_required <= count($overlap)){
                     $number_of_htc_units_needed = 0;
