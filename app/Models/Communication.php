@@ -122,4 +122,14 @@ class Communication extends Model
     {
         return $this->hasMany(\App\Models\CommunicationRecipient::class);
     }
+
+    public function local_documents()
+		{
+		    return $this->belongsToMany('App\Models\Document', 'communication_documents', 'communication_id', 'document_id')->whereNull('sync_docuware_id');
+		}
+
+		public function docuware_documents()
+		{
+		    return $this->belongsToMany('App\Models\SyncDocuware', 'communication_documents', 'communication_id', 'sync_docuware_id')->whereNull('document_id');
+		}
 }

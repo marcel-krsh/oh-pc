@@ -149,7 +149,11 @@ class CommunicationController extends Controller
                 ->with('assigned_categories')
                 ->orderBy('created_at', 'desc')
                 ->get();
-            $document_categories = DocumentCategory::where('parent_id', '<>', 0)->where('active', '1')->orderby('document_category_name', 'asc')->get();
+            $document_categories = DocumentCategory::where('parent_id', '<>', 0)
+            		->active()
+                ->orderby('document_category_name', 'asc')
+                ->with('parent')
+                ->get();
             $documents = $docuware_documents->merge($local_documents);
             // build a list of all categories used for uploaded documents in this project
             $categories_used = [];
@@ -744,16 +748,15 @@ class CommunicationController extends Controller
         $skip = $number_per_page * $page;
         $current_user = Auth::user();
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
-
         //Search (in session)
         if (Session::has('communications-search') && Session::get('communications-search') != '') {
             $search = Session::get('communications-search');
-            $search_messages = Communication::where(function ($query) use ($search, $project) {
+            $search_messages = Communication::with('docuware_documents', 'local_documents')
+            		->where(function ($query) use ($search, $project) {
                 $query->where('message', 'LIKE', '%' . $search . '%');
                 if ($project) {
                     $query->orWhere('project_id', $project->id);
                 }
-
             })
                 ->where(function ($query) use ($current_user) {
                     $query->where('owner_id', '=', $current_user->id);
@@ -761,10 +764,8 @@ class CommunicationController extends Controller
                         $query->where('user_id', '=', $current_user->id);
                     });
                 });
-
             if ($project) {
                 $search_messages = $search_messages->where('project_id', $project->id);
-
             }
 
             $search_messages = $search_messages->with('owner')
@@ -818,7 +819,8 @@ class CommunicationController extends Controller
                 $user_eval = "=";
                 $user_spec = Auth::user()->id;
             }
-            $messages = Communication::where(function ($query) use ($current_user, $user_eval, $user_spec) {
+            $messages = Communication::with('docuware_documents', 'local_documents')
+            		->where(function ($query) use ($current_user, $user_eval, $user_spec) {
                 $query->where(function ($query) use ($current_user) {
                     $query->where('owner_id', '=', $current_user->id);
                     $query->whereHas('replies');
@@ -826,12 +828,10 @@ class CommunicationController extends Controller
                 $query->orWhereHas('recipients', function ($query) use ($current_user, $user_eval, $user_spec) {
                     $query->where('user_id', "$user_eval", $user_spec);
                 });
-            })
-                ->where('parent_id', '=', null);
+            })->whereNull('parent_id');
 
             if ($project) {
                 $messages = $messages->where('project_id', $project->id);
-
             }
 
             $messages = $messages
@@ -839,7 +839,6 @@ class CommunicationController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->skip($skip)->take($number_per_page)
                 ->get();
-
             $messages = $messages->reverse();
         }
 

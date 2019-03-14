@@ -13,6 +13,9 @@ trait DocumentTrait
 {
     public function projectDocuwareDocumets($project)
     {
+
+        //return $documents = SyncDocuware::where('project_id', $project->id)->orderBy('document_class')->orderby('document_description')->get();
+
         $apiConnect = new DevcoService();
         $searchString = null;
         $deviceId = null;
