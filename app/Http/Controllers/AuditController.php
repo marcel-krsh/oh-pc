@@ -1729,8 +1729,8 @@ class AuditController extends Controller
                 $summary_needed = max($summary_required - $summary_selected, 0);
                 $summary_needed_file = max($summary_required_file - $summary_selected_file, 0);
 
-                $summary_to_be_inspected = $summary_required - $summary_inspected;
-                $summary_to_be_inspected_file = $summary_required_file - $summary_inspected_file;
+                $summary_to_be_inspected = $summary_selected - $summary_inspected;
+                $summary_to_be_inspected_file = $summary_selected_file - $summary_inspected_file;
 
                 $summary_optimized_sample_size = $summary_optimized_required;
                 $summary_optimized_completed_inspections = $summary_optimized_inspected;
