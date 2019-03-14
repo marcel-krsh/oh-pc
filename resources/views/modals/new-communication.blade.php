@@ -87,6 +87,7 @@
           </script>
           <!-- END RECIPIENT LISTING -->
         </div>
+        @if(!is_null($project))
         <div class="uk-width-1-5 " style="padding:18px;"><div style="width:20px;display: inline-block;" onClick="showDocuments"><i class="a-paperclip-2 "></i></div> DOCUMENTS:</div>
         <div class="uk-width-4-5" id="documents-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
 					<div id="add-documents-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showDocuments()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD DOCUMENTS </div><div id="done-adding-documents-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showDocuments()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING DOCUMENTS</div>
@@ -97,20 +98,27 @@
 				<div class="uk-width-1-5 documents-list" style="display: none;"></div>
 				<div class="uk-width-5-5 uk-grid documents-list" id='recipients' style="border-top: 1px #111 dashed; border-left: 1px #111 dashed; border-right: 1px #111 dashed; border-bottom: 1px #111 dashed; padding:10px 2px 2px 2px; position: relative;top:0px; display: none">
 					<div class="uk-width-1-2@m uk-width-1-1@s">
-						<h4>Select exising documents</h4>
+						<h4>Select from exising documents</h4>
 						<div class="communication-selector  uk-scrollable-box">
 							<ul class="uk-list document-menu" id="existing-documents">
 								@foreach ($documents as $document)
 								<li class="uk-margin-small-bottom">
 									@if(get_class($document) == 'App\Models\SyncDocuware')
-									<input name="docuware_documents[]" id="list-document-id-docuware-{{ $document->id }}" value="docuware-{{ $document->id }}" type="checkbox"  class="uk-checkbox" onClick="addDocuwareDocument(this.value,'{{ $document->document_class }} {{ $document->document_description }}')">
-									<label for="docuware-document-id-{{ $document->id }}">
-										{{ $document->document_class }} {{ $document->document_description }}
+									<input style="float: left; margin-top: 3px" name="docuware_documents[]" id="list-document-id-docuware-{{ $document->id }}" value="docuware-{{ $document->id }}" type="checkbox"  class="uk-checkbox" onClick="addDocuwareDocument(this.value,'{{ $document->document_class }} {{ $document->document_description }}')">
+									<label style="display: block; margin-left: 20px" for="docuware-document-id-{{ $document->id }}">
+										{{ucwords(strtolower($document->document_class))}} :
+										{{ucwords(strtolower($document->document_description))}}
+										<span uk-tooltip title=" Created at: {{ date('m/d/Y', strtotime($document->created_at)) }} {{ $document->created_at->format('h:i a') }} <br>Extension: {{ $document->dw_extension }}">
+				            <span class="a-info-circle"  style="color: #56b285;"></span>
+				            </span>
 									</label>
 									@else
-									<input name="local_documents[]" id="list-document-id-local-{{ $document->id }}" value="local-{{ $document->id }}" type="checkbox"  class="uk-checkbox" onClick="addLocalDocument(this.value,'{{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}')">
-									<label for="local-document-id-{{ $document->id }}">
-										{{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}
+									<input style="float: left; margin-top: 3px" name="local_documents[]" id="list-document-id-local-{{ $document->id }}" value="local-{{ $document->id }}" type="checkbox"  class="uk-checkbox" onClick="addLocalDocument(this.value,'{{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}')">
+									<label style="display: block; margin-left: 20px" for="local-document-id-{{ $document->id }}">
+										{{ $document->assigned_categories->first()->parent->document_category_name }} : {{ ucwords(strtolower($document->assigned_categories->first()->document_category_name)) }}
+										<span uk-tooltip title=" Created at: {{ date('m/d/Y', strtotime($document->created_at)) }} {{ $document->created_at->format('h:i a') }} @if($document->comment)<br>Comment: {{ $document->comment }}@endif">
+				            <span class="a-info-circle"  style="color: #56b285;"></span>
+				            </span>
 									</label>
 									@endif
 									{{-- <br />
@@ -130,14 +138,16 @@
 						</div>
 					</div>
 					<div class="uk-width-1-2@m uk-width-1-1@s">
-						<h4>Upload new documents</h4>
-						<div class="communication-selector" style="height: 150px;">
+						<h4 class="uk-text-primary uk-text-uppercase">Upload new documents</h4>
+						<div class="communication-selector uk-scrollable-box" >
 							<ul class="uk-list document-category-menu">
+								<li class="recipient-list-item  ohfa limited partnership"><strong>Select Category</strong></li>
+								<hr class="recipient-list-item dashed-hr uk-margin-bottom">
 								@foreach ($document_categories as $category)
 								<li>
-									<input name="category-id-checkbox" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="radio"  class="uk-radio">
-									<label for="category-id-{{ $category->id }}">
-										{{ $category->document_category_name }}
+									<input style="float: left; margin-top: 3px" name="category-id-checkbox" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="radio"  class="uk-radio">
+									<label style="display: block; margin-left: 20px" for="category-id-{{ $category->id }}">
+										{{ $category->parent->document_category_name }} : {{ $category->document_category_name }}
 									</label>
 								</li>
 								@endforeach
@@ -152,7 +162,7 @@
 								<span class="uk-text-middle"> Please upload your document by dropping it here or</span>
 								<div uk-form-custom>
 									<input type="file" multiple>
-									<span class="uk-link">by browsing and selecting it here.</span>
+									<span class="uk-link uk-text-success">by browsing and selecting it here.</span>
 								</div>
 							</div>
 							<progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
@@ -301,11 +311,7 @@
             }
           </script>
 				</div>
-{{--
-        <div class="uk-width-1-6 " style="padding:18px;"><div style="width:25px;display: inline-block;" onClick="showDocuments"><i class="a-paperclip-2 "></i></div> DOCUMENTS:</div>
-        <div class="uk-width-5-6 "  id="attachments-box" style="border-bottom:1px #111 dashed; padding:18px; padding-left:25px;">
-        	<div class="uk-button uk-button-small" style="padding-top: 2px;"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD DOCUMENT</div><div class="uk-button uk-button-small" style="padding-top: 2px; display:none"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;Class:Description [Date]</div>
-        </div> --}}
+        @endif
 
         <div class="uk-width-1-5 " style="padding:18px;padding-top:27px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;SUBJECT:</div>
         <div class="uk-width-4-5"  style="padding:18px; border-bottom:1px #111 dashed;">

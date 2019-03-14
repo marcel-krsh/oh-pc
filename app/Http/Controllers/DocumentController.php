@@ -47,7 +47,12 @@ class DocumentController extends Controller
     public function getProjectLocalDocuments(Project $project, Request $request)
     {
         $documents = Document::where('project_id', $project->id)->with('assigned_categories.parent')->get();
-        $document_categories = DocumentCategory::where('parent_id', '<>', 0)->orderBy('parent_id')->orderBy('document_category_name')->get();
+        $document_categories = DocumentCategory::with('parent')
+            ->where('parent_id', '<>', 0)
+            ->active()
+            ->orderBy('parent_id')
+            ->orderBy('document_category_name')
+            ->get();
         return view('projects.partials.local-documents', compact('project', 'documents', 'document_categories'));
     }
 
