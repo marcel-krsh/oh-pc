@@ -89,7 +89,7 @@
 															@endif
 														</div>
 														<div class="building-status">
-															<span class="uk-badge colored" uk-tooltip="pos:top-left;title:# finding icon;" title="" aria-expanded="false">2</span>
+															<span class="uk-badge colored" uk-tooltip="pos:top-left;title:# finding icon;" title="" aria-expanded="false">{{$detail->unit->finding_total}}</span>
 														</div>
 													</div>
 												</div>

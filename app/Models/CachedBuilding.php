@@ -92,6 +92,74 @@ class CachedBuilding extends Model
         }
     }
 
+    public function recount_findings()
+    {
+        // fix total
+        $this->findingstotal();
+
+        // fix finding type totals
+        $total_nlt = \App\Models\Finding::where('audit_id','=',$this->audit_id)
+                                            ->where('building_id','=',$building_id)
+                                            ->whereHas('finding_type', function($query) {
+                                                $query->where('type', '=', 'nlt');
+                                            })->count();
+        // fix the count
+        if($this->finding_nlt_total != $total_nlt){
+            $this->finding_nlt_total = $total_nlt;
+            $this->save();
+        }
+
+        $total_file = \App\Models\Finding::where('audit_id','=',$this->audit_id)
+                                            ->where('building_id','=',$building_id)
+                                            ->whereHas('finding_type', function($query) {
+                                                $query->where('type', '=', 'file');
+                                            })->count();
+
+        if($this->finding_file_total != $total_file){
+            $this->finding_file_total = $total_file;
+            $this->save();
+        }
+
+        $total_lt = \App\Models\Finding::where('audit_id','=',$this->audit_id)
+                                            ->where('building_id','=',$building_id)
+                                            ->whereHas('finding_type', function($query) {
+                                                $query->where('type', '=', 'lt');
+                                            })->count();
+
+        if($this->finding_lt_total != $total_lt){
+            $this->finding_lt_total = $total_lt;
+            $this->save();
+        }
+    }
+
+    public function findingstotal()
+    {
+        $current_finding_total = $this->finding_total;
+
+        $building_id = $this->building_id;
+        $unit_ids = $this->units()->pluck('units.id')->toArray();
+
+        // is it a building?
+        if($building_id){
+            $building_findings = \App\Models\Finding::where('audit_id','=',$this->audit_id)->where('building_id','=',$building_id)->count();
+            $unit_findings = \App\Models\Finding::where('audit_id','=',$this->audit_id)->whereIn('unit_id',$unit_ids)->count();
+
+            $total = $building_findings + $unit_findings;
+        }else{
+            // it is an amenity
+            $total = $this->amenity()->findings_total();
+        }
+
+        // fix the count
+        if($current_finding_total != $total){
+            $this->finding_total = $total;
+            $this->save();
+        }
+
+        return $total;
+        
+    }
+
     public function amenity()
     {
         // this only applies when working with a project-level amenity listed along other buildings in the cache

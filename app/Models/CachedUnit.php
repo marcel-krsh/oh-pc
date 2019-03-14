@@ -146,4 +146,68 @@ class CachedUnit extends Model
 
         return $output;
     }
+
+    public function recount_findings()
+    {
+        // fix total
+        $this->findingstotal();
+
+        // fix finding type totals
+        $total_nlt = \App\Models\Finding::where('audit_id','=',$this->audit_id)
+                                            ->where('unit_id','=',$this->unit_id)
+                                            ->whereHas('finding_type', function($query) {
+                                                $query->where('type', '=', 'nlt');
+                                            })->count();
+        // fix the count
+        if($this->finding_nlt_total != $total_nlt){
+            $this->finding_nlt_total = $total_nlt;
+            $this->save();
+        }
+
+        $total_file = \App\Models\Finding::where('audit_id','=',$this->audit_id)
+                                            ->where('unit_id','=',$this->unit_id)
+                                            ->whereHas('finding_type', function($query) {
+                                                $query->where('type', '=', 'file');
+                                            })->count();
+
+        if($this->finding_file_total != $total_file){
+            $this->finding_file_total = $total_file;
+            $this->save();
+        }
+
+        $total_lt = \App\Models\Finding::where('audit_id','=',$this->audit_id)
+                                            ->where('unit_id','=',$this->unit_id)
+                                            ->whereHas('finding_type', function($query) {
+                                                $query->where('type', '=', 'lt');
+                                            })->count();
+
+        if($this->finding_lt_total != $total_lt){
+            $this->finding_lt_total = $total_lt;
+            $this->save();
+        }
+    }
+
+    public function findingstotal()
+    {
+        $current_finding_total = $this->finding_total;
+
+        $unit_id = $this->unit_id;
+
+        // is it a unit?
+        if($unit_id){
+            $total = \App\Models\Finding::where('audit_id','=',$this->audit_id)->where('unit_id','=',$unit_id)->count();
+        }else{
+            // it is an amenity
+            $total = $this->amenity_inspections()->findings_total();
+        }
+
+        // fix the count
+        if($current_finding_total != $total){
+            $this->finding_total = $total;
+            $this->save();
+        }
+
+        return $total;
+        
+    }
 }
