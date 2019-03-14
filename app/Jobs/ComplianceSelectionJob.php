@@ -2188,9 +2188,9 @@ class ComplianceSelectionJob implements ShouldQueue
                 // if required <= $overlap we don't need to select anymore unit
                 // otherwise we need to take all the units NOT in the overlap and randomly pick required - count(overlap)
                 
-                $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_only_ids) {
+                $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
                                                     $query->where('audit_id', '=', $audit->id);
-                                                    $query->whereIn('program_key', $program_htc_only_ids);
+                                                    $query->whereIn('program_key', $program_htc_ids);
                                                 })->pluck('unit_key')->toArray();
 
                 // 10% of units
