@@ -17,18 +17,18 @@
 						<td class="uk-width-1-2" style="vertical-align: middle;">
 							<ul class="uk-list document-category-menu">
 			    			@foreach ($document->assigned_categories as $document_category)
-			    			@if(!is_null($document->ohfa_file_path))
+			    			{{-- @if(!is_null($document->ohfa_file_path))
 			    				<li>
 			    					<a>{{ $document_category->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}</a>
 			    				</li>
-			    			@else
+			    			@else --}}
 			    			<li class="{{ ($document->notapproved == 1) ? "declined-category s" : "" }} {{ ($document->approved == 1) ? "approved-category" : "" }}">
 			    				<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}" class="">
-			    					<span id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes" : "check-received-no received-no" }}"></span>
-			    					<span id="sent-id-{{ $document->id }}category-id-1-not-received-icon" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }}"></span>
-			    					{{ $document_category->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}
+			    					<span  id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes uk-float-left" : "check-received-no received-no" }}"></span>
+			    					<span style="float: left;" id="sent-id-{{ $document->id }}category-id-1-not-received-icon" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }}"></span>
+			    					<span style="display: block; margin-left: 30px">{{ $document_category->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}</span>
 			    				</a>
-			    				<div uk-dropdown="toggle: #sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}">
+			    				<div uk-dropdown="mode: click" id="#sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}">
 			    					<ul class="uk-nav uk-nav-dropdown">
 			    						<li>
 			    							<a onclick="resetDocTabCategoryListVars();selectCategory('{{ $document_category->id }}');">
@@ -53,7 +53,7 @@
 			    					</ul>
 			    				</div>
 			    			</li>
-			    			@endif
+			    			{{-- @endif --}}
 			    			@endforeach
 			    		</ul>
 			    	</td>
@@ -100,14 +100,12 @@
 					<div class="uk-width-1-1 uk-margin-small-bottom">
 						<ul class="uk-list document-category-menu">
 							@foreach ($document_categories as $category)
-							@if($category->active == 1)
 							<li>
-								<input name="category-id-checkbox" class="uk-radio" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="radio">
-								<label for="category-id-{{ $category->id }}">
-									{{ $category->document_category_name }}
+								<input style="float: left; margin-top: 3px" name="category-id-checkbox" class="uk-radio" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="radio">
+								<label style="display: block; margin-left: 30px" for="category-id-{{ $category->id }}">
+									{{ $category->parent->document_category_name }} : {{ $category->document_category_name }}
 								</label>
 							</li>
-							@endif
 							@endforeach
 						</ul>
 						<div>

@@ -130,4 +130,5 @@ class Document extends Model
 		{
 		    return $this->belongsToMany('App\Models\DocumentCategory', 'local_document_categories', 'document_id', 'document_category_id')->where('parent_id','<>',0);
 		}
+
 }
