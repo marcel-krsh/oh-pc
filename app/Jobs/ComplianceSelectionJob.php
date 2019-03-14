@@ -778,36 +778,32 @@ class ComplianceSelectionJob implements ShouldQueue
             $this->processes++;
             $program_htc_names = implode(',', $program_htc_names);
             $this->processes++;
-            $program_htc_overlap = array_intersect($program_htc_ids, $program_bundle_ids);
-            $this->processes++;
-            $program_htc_overlap_names = Program::whereIn('program_key', $program_htc_overlap)->get()->pluck('program_name')->toArray(); // 30001,30043
-            $this->processes++;
-            $program_htc_overlap_names = implode(',', $program_htc_overlap_names);
-            $this->processes++;
-            $comments[] = 'Identified the program keys that have HTC funding: '.$program_htc_overlap_names;
-            $audit->comment = $audit->comment.' | Identified the program keys that have HTC funding: '.$program_htc_overlap_names;
-            
-                $audit->save();
-                $this->processes++;
+
+            // cannot use overlap like this anymore
+            // instead for each unit, check if a HTC program is associated
+            // $program_htc_overlap = array_intersect($program_htc_ids, $program_bundle_ids);
+            // $this->processes++;
+            // $program_htc_overlap_names = Program::whereIn('program_key', $program_htc_overlap)->get()->pluck('program_name')->toArray(); // 30001,30043
+            // $this->processes++;
+            // $program_htc_overlap_names = implode(',', $program_htc_overlap_names);
+            // $this->processes++;
+            // $comments[] = 'Identified the program keys that have HTC funding: '.$program_htc_overlap_names;
+            // $audit->comment = $audit->comment.' | Identified the program keys that have HTC funding: '.$program_htc_overlap_names;
+            // $audit->save();
+            // $this->processes++;
 
             $has_htc_funding = 0;
             $unitProcessCount = 0;
             foreach ($units as $unit) {
                 $this->processes++;
-                foreach ($unit->programs as $unit_program) {
-                    $this->processes++;
-                    $unitProcessCount++;
-                    if (in_array($unit_program->program_key, $program_htc_overlap)) {
-                        $has_htc_funding = 1;
-                        $comments[] = 'The unit key '.$unit->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
-                        $audit->save();
-                $this->processes++;
-                    }
+
+                if($unit->has_program_from_array($program_htc_ids, $audit->id)){
+                    $has_htc_funding = 1;
+                    $comments[] = 'The unit key '.$unit->unit_key.' belongs to a program with HTC funding';
+                    $audit->save();
                 }
             }
-            $audit->comment = $audit->comment.' | Select Process Made '.$unitProcessCount.' Units for HTC';
-                $audit->save();
-                $this->processes++;
+           
 
            // $number_of_units_required = ceil($total/5);
 
@@ -819,7 +815,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 20);
 
                 //$required_units = count($units_selected);
-                $required_units = $number_of_units_required;
+                $required_units = ceil($total/5);
 
                 $comments[] = '20% of the pool is randomly selected. Total selected: '.count($units_selected);
                  $audit->comment = $audit->comment.' | 20% of the pool is randomly selected. Total selected: '.count($units_selected);
@@ -893,49 +889,49 @@ class ComplianceSelectionJob implements ShouldQueue
                     // $audit->save();
                     // $this->processes++;
 
-                /*    
-                    foreach ($project->programs as $program) {
-                        $this->processes++;
-                        if (in_array($program->program_key, $leaseProgramKeys)) {
-                            $isLeasePurchase = 1;
-                            $comments[] = 'A program key '.$program->program_key.' confirms that this is a lease purchase.';
-                            $audit->comment = $audit->comment.' | A program key '.$program->program_key.' confirms that this is a lease purchase.';
-                            $audit->save();
-
-                        } else {
-                            $isLeasePurchase = 0;
-                        }
-                    }
-
-
-                    if ($isLeasePurchase) {
-                        $required_units = $this->adjustedLimit($audit, count($units));
-
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $required_units);
-
-                        //$required_units = count($units_selected);
-                        //$required_units = $number_of_units_required;
-
-                        $comments[] = $required_units.' must be randomly selected. Total selected: '.count($units_selected);
-                        $audit->comment = $audit->comment.' | '.$required_units.' must be randomly selected. Total selected: '.count($units_selected);
-                            $audit->save();
+                    /*    
+                        foreach ($project->programs as $program) {
                             $this->processes++;
-            
-                        $selection[] = [
-                            "group_id" => 1,
-                            "building_key" => "",
-                            "program_name" => "FAF NSP TCE RTCAP 811",
-                            "program_ids" => SystemSetting::get('program_bundle'),
-                            "pool" => count($units),
-                            "units" => $units_selected,
-                            "totals" => count($units_selected),
-                            "required_units" => $required_units,
-                            "use_limiter" => $has_htc_funding, // used to trigger limiter
-                            "comments" => $comments
-                        ];
-                        $this->processes++;
-                    } else {
-                */
+                            if (in_array($program->program_key, $leaseProgramKeys)) {
+                                $isLeasePurchase = 1;
+                                $comments[] = 'A program key '.$program->program_key.' confirms that this is a lease purchase.';
+                                $audit->comment = $audit->comment.' | A program key '.$program->program_key.' confirms that this is a lease purchase.';
+                                $audit->save();
+
+                            } else {
+                                $isLeasePurchase = 0;
+                            }
+                        }
+
+
+                        if ($isLeasePurchase) {
+                            $required_units = $this->adjustedLimit($audit, count($units));
+
+                            $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $required_units);
+
+                            //$required_units = count($units_selected);
+                            //$required_units = $number_of_units_required;
+
+                            $comments[] = $required_units.' must be randomly selected. Total selected: '.count($units_selected);
+                            $audit->comment = $audit->comment.' | '.$required_units.' must be randomly selected. Total selected: '.count($units_selected);
+                                $audit->save();
+                                $this->processes++;
+                
+                            $selection[] = [
+                                "group_id" => 1,
+                                "building_key" => "",
+                                "program_name" => "FAF NSP TCE RTCAP 811",
+                                "program_ids" => SystemSetting::get('program_bundle'),
+                                "pool" => count($units),
+                                "units" => $units_selected,
+                                "totals" => count($units_selected),
+                                "required_units" => $required_units,
+                                "use_limiter" => $has_htc_funding, // used to trigger limiter
+                                "comments" => $comments
+                            ];
+                            $this->processes++;
+                        } else {
+                    */
                     $is_multi_building_project = 0;
 
                     // eventually we will also be checking for building grouping...
@@ -1048,14 +1044,16 @@ class ComplianceSelectionJob implements ShouldQueue
                     //}
                 } else {
                     // get required units using limiter
-                    $required_units = $this->adjustedLimit($audit, count($units));
+                    // $required_units = $this->adjustedLimit($audit, count($units));
 
-                    $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $required_units);
+                    $required_units = ceil($total/10); // 10% of units
+
+                    $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 10);
 
                     // $required_units = count($units_selected);
                     
-                    $comments[] = $required_units.' must be randomly selected. Total selected: '.count($units_selected);
-                    $audit->comment = $audit->comment.' | '.$required_units.' units must be randomly selected. Total selected: '.count($units_selected);
+                    $comments[] = ' 10% are randomly selected. Total selected: '.count($units_selected);
+                    $audit->comment = $audit->comment.' | 10% are randomly selected. Total selected: '.count($units_selected);
                                     $audit->save();
                                     $this->processes++;
 
@@ -1210,173 +1208,176 @@ class ComplianceSelectionJob implements ShouldQueue
         // 4 - HOME
         //
         //
-        //
-        // TBD 
-        // multiple instances of a home program by award number can exist
-        // apply same logic for each award number!!
-        // duplicate groups...
-        // only for home
         
 
         $units_to_check_for_overlap = [];
         
 
         $program_home_ids = explode(',', SystemSetting::get('program_home'));
-        $program_home_names = Program::whereIn('program_key', $program_home_ids)->get()->pluck('program_name')->toArray();
-        $this->processes++;
-        $program_home_names = implode(',', $program_home_names);
-        $this->processes++;
-        $comments = [];
 
-        $required_units = 0;
+        $home_award_numbers = ProjectProgram::whereIn('program_key', $program_home_ids)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
 
-        $total_units_with_program = Unit::whereHas('programs', function ($query) use ($audit) {
-                            $query->where('audit_id', '=', $audit->id);
-        })->count();
-        $this->processes++;
-
-        $units = Unit::whereHas('programs', function ($query) use ($audit, $program_home_ids) {
-                            $query->where('audit_id', '=', $audit->id);
-                            $query->whereIn('program_key', $program_home_ids);
-        })->get();
-        $this->processes++;
-
-        if(count($units)){
-            $audit->comment = $audit->comment.' | Select Process starting Home selection ';
-            $audit->save();
-            $this->processes++;
-
-            $comments[] = 'Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_home_names;
-
-            $audit->comment = $audit->comment.' | Select Process Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_home_names;
-            $audit->save();
-            $this->processes++;
-
-            $total_units = count($units);
-            $this->processes++;
-
-
-            $program_htc_overlap = array_intersect($program_htc_ids, $program_home_ids);
-            $this->processes++;
-            $program_htc_overlap_names = Program::whereIn('program_key', $program_htc_overlap)->get()->pluck('program_name')->toArray();
-            $this->processes++;
-            $program_htc_overlap_names = implode(',', $program_htc_overlap_names);
-            $this->processes++;
-
-            $units_selected = [];
-            $htc_units_subset_for_all = [];
-            $htc_units_subset = [];
+        foreach($home_award_numbers as $home_award_number){
+            // for each award_number, create a different HOME group
             
-            $comments[] = 'Total units with HOME funding is '.$total_units;
-            $comments[] = 'Total units in the project with a program is '.$total_units_with_program;
-            $audit->comment = $audit->comment.' | Select Process Total units with HOME fundng is '.$total_units.' | Select Process Total units in the project with a program is '.$total_units_with_program;
+            // programs with that award_number
+            $program_keys_with_award_number = ProjectProgram::where('award_number','=',$home_award_number->award_number)->pluck('program_key')->toArray(); 
+
+            $program_home_names = Program::whereIn('program_key', $program_home_ids)
+                                            ->whereIn('program_key', $program_keys_with_award_number)
+                                            ->get()
+                                            ->pluck('program_name')->toArray();
+            $this->processes++;
+            $program_home_names = implode(',', $program_home_names);
+            $this->processes++;
+            $comments = [];
+
+            $required_units = 0;
+
+            $total_project_units = Project::where('id', '=', $audit->project_id)->first()->units()->count();
+            $this->processes++;
+
+            $units = Unit::whereHas('programs', function ($query) use ($audit, $program_home_ids, $program_keys_with_award_number) {
+                                $query->where('audit_id', '=', $audit->id);
+                                $query->whereIn('program_key', $program_keys_with_award_number);
+                                $query->whereIn('program_key', $program_home_ids);
+            })->get();
+            $this->processes++;
+
+            if(count($units)){
+                $audit->comment = $audit->comment.' | Select Process starting Home selection for award number '.$home_award_number;
                 $audit->save();
                 $this->processes++;
 
+                $comments[] = 'Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_home_names.', award number '.$home_award_number;
 
-            if (count($units) <= 4) {
-
-                $required_units = count($units);
-
-                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 100);
-                $this->processes++;
-                $comments[] = 'Because there are less than 4 HOME units, the selection is 100%. Total selected: '.count($units_selected);
-                $audit->comment = $audit->comment.' | Select Process Because there are less than 4 HOME units, the selection is 100%. Total selected: '.count($units_selected);
+                $audit->comment = $audit->comment.' | Select Process Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_home_names.', award number '.$home_award_number;
                 $audit->save();
                 $this->processes++;
 
-            } else {
-                if (ceil($total_units/2) >= ceil($total_units_with_program/5)) {
+                $total_units = count($units);
+                $this->processes++;
 
-                    $required_units = ceil($total_units/2);
 
-                    $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
+                // $program_htc_overlap = array_intersect($program_htc_ids, $program_home_ids);
+                // $this->processes++;
+                // $program_htc_overlap_names = Program::whereIn('program_key', $program_htc_overlap)->get()->pluck('program_name')->toArray();
+                // $this->processes++;
+                // $program_htc_overlap_names = implode(',', $program_htc_overlap_names);
+                // $this->processes++;
+
+                $units_selected = [];
+                $htc_units_subset_for_all = [];
+                $htc_units_subset = [];
+                
+                $comments[] = 'Total units with HOME funding and award number '.$home_award_number.' is '.$total_units;
+                $comments[] = 'Total units in the project is '.$total_project_units;
+                $audit->comment = $audit->comment.' | Select Process Total units with HOME fundng is '.$total_units.' | Select Process Total units in the project is '.$total_project_units;
+                    $audit->save();
                     $this->processes++;
 
-                    $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of HOME units, the total selected is '.ceil($total_units/2);
-                    $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of HOME units, the total selected is '.ceil($total_units/2);
+
+                if (count($units) <= 4) {
+
+                    $required_units = count($units);
+
+                    $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 100);
+                    $this->processes++;
+                    $comments[] = 'Because there are less than 4 HOME units, the selection is 100%. Total selected: '.count($units_selected);
+                    $audit->comment = $audit->comment.' | Select Process Because there are less than 4 HOME units, the selection is 100%. Total selected: '.count($units_selected);
                     $audit->save();
                     $this->processes++;
 
                 } else {
+                    if (ceil($total_units/2) >= ceil($total_project_units/5)) {
 
-                    if(ceil($total_units_with_program/5) > $total_units){
-                        $required_units = $total_units;
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
+                        $required_units = ceil($total_units/2);
+
+                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
                         $this->processes++;
-                        $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.$total_units.' which is the total number of units';
 
-                        $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.$total_units.' which is the total number of units';
+                        $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of HOME units, the total selected is '.ceil($total_units/2);
+                        $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of HOME units, the total selected is '.ceil($total_units/2);
                         $audit->save();
-                    }else{
-                        $required_units = ceil($total_units_with_program/5);
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units_with_program/5));$this->processes++;
-                        $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_units_with_program/5);
+                        $this->processes++;
 
-                        $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_units_with_program/5);
-                        $audit->save();
+                    } else {
+
+                        if(ceil($total_project_units/5) > $total_units){
+                            $required_units = $total_units;
+                            $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
+                            $this->processes++;
+                            $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.$total_units.' which is the total number of units';
+
+                            $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.$total_units.' which is the total number of units';
+                            $audit->save();
+                        }else{
+                            $required_units = ceil($total_project_units/5);
+                            $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));$this->processes++;
+                            $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_project_units/5);
+
+                            $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_project_units/5);
+                            $audit->save();
+                        }
+
+                        
+                        $this->processes++;
                     }
-
-                    
-                    $this->processes++;
                 }
-            }
 
-            foreach ($units_selected as $unit_key) {
-                $has_htc_funding = 0;
+                foreach ($units_selected as $unit_key) {
+                    $has_htc_funding = 0;
 
-                $unit_selected = Unit::where('unit_key', '=', $unit_key)->first();
+                    $unit_selected = Unit::where('unit_key', '=', $unit_key)->first();
 
-                $comments[] = 'Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs: '.$program_htc_overlap_names;
+                    $comments[] = 'Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
 
-                    $audit->comment = $audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs: '.$program_htc_overlap_names;
+                    $audit->comment = $audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
                     $audit->save();
                     $this->processes++;
-                
-                // if units have HTC funding add to subset
-                $this->processes++;
-                foreach ($unit_selected->programs as $unit_program) {
+                    
+                    // if units have HTC funding add to subset
                     $this->processes++;
-                    if (in_array($unit_program->program_key, $program_htc_overlap)) {
+                    
+                    if($unit_selected->has_program_from_array($program_htc_ids, $audit->id)){
                         $has_htc_funding = 1;
-                        $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
-
-                        $audit->comment = $audit->comment.' | Select Process The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
+                        $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding';
                         $audit->save();
+                    }
+                    
+                    if ($has_htc_funding) {
                         $this->processes++;
+                        $comments[] = 'We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
+                        $audit->comment = $audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
+                            $audit->save();
+                            $this->processes++;
+                        $htc_units_subset[] = $unit_selected->unit_key;
                     }
                 }
-                if ($has_htc_funding) {
-                    $this->processes++;
-                    $comments[] = 'We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
-                    $audit->comment = $audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
-                        $audit->save();
-                        $this->processes++;
-                    $htc_units_subset[] = $unit_selected->unit_key;
-                }
+
+
+                $htc_units_subset_for_home = $htc_units_subset;
+                $units_to_check_for_overlap = array_merge($units_to_check_for_overlap, $units_selected);
+                $this->processes++;
+
+                $selection[] = [
+                    "group_id" => 4,
+                    "program_name" => "HOME",
+                    "program_ids" => SystemSetting::get('program_home'),
+                    "pool" => count($units),
+                    "units" => $units_selected,
+                    "totals" => count($units_selected),
+                    "required_units" => $required_units,
+                    'htc_subset' => $htc_units_subset,
+                    "use_limiter" => 0,
+                    "comments" => $comments
+                ];
+                $this->processes++;
+            }else{
+                $htc_units_subset_for_home = array();
+                $audit->comment_system = $audit->comment_system.' | Select Process is not working with HOME.';
+                $audit->save();
             }
-
-            $htc_units_subset_for_home = $htc_units_subset;
-            $units_to_check_for_overlap = array_merge($units_to_check_for_overlap, $units_selected);
-            $this->processes++;
-
-            $selection[] = [
-                "group_id" => 4,
-                "program_name" => "HOME",
-                "program_ids" => SystemSetting::get('program_home'),
-                "pool" => count($units),
-                "units" => $units_selected,
-                "totals" => count($units_selected),
-                "required_units" => $required_units,
-                'htc_subset' => $htc_units_subset,
-                "use_limiter" => 0,
-                "comments" => $comments
-            ];
-            $this->processes++;
-        }else{
-            $htc_units_subset_for_home = array();
-            $audit->comment_system = $audit->comment_system.' | Select Process is not working with HOME.';
-            $audit->save();
         }
 
 
@@ -1388,172 +1389,179 @@ class ComplianceSelectionJob implements ShouldQueue
         
 
         $program_ohtf_ids = explode(',', SystemSetting::get('program_ohtf'));
-        $this->processes++;
-        $program_ohtf_names = Program::whereIn('program_key', $program_ohtf_ids)->get()->pluck('program_name')->toArray();
-        $this->processes++;
-        $program_ohtf_names = implode(',', $program_ohtf_names);
-        $this->processes++;
-        $comments = [];
 
-        $required_units = 0;
+        $ohtf_award_numbers = ProjectProgram::whereIn('program_key', $program_ohtf_ids)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
 
-        // total units with programs already computed in HOME
-        // $total_units_with_program
+        foreach($ohtf_award_numbers as $ohtf_award_number){
 
-        $units = Unit::whereHas('programs', function ($query) use ($audit, $program_ohtf_ids) {
-                            $query->where('audit_id', '=', $audit->id);
-                            $query->whereIn('program_key', $program_ohtf_ids);
-        })->get();
-        $this->processes++;
+            // programs with that award_number
+            $program_keys_with_award_number = ProjectProgram::where('award_number','=',$ohtf_award_number->award_number)->pluck('program_key')->toArray(); 
 
+            $program_ohtf_names = Program::whereIn('program_key', $program_ohtf_ids)
+                                            ->whereIn('program_key', $program_keys_with_award_number)
+                                            ->get()
+                                            ->pluck('program_name')
+                                            ->toArray();
+            $this->processes++;
+            $program_ohtf_names = implode(',', $program_ohtf_names);
+            $this->processes++;
+            $comments = [];
 
-        if(count($units)){
-            $audit->comment = $audit->comment.' | Select Process Starting OHTF Selection';
-            $audit->save();
+            $required_units = 0;
+
+            $total_project_units = Project::where('id', '=', $audit->project_id)->first()->units()->count();
             $this->processes++;
 
-            $comments[] = 'Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_ohtf_names;
-            $audit->comment = $audit->comment.' | Select Process Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_ohtf_names;
-            $audit->save();
+            $units = Unit::whereHas('programs', function ($query) use ($audit, $program_ohtf_ids, $program_keys_with_award_number) {
+                                $query->where('audit_id', '=', $audit->id);
+                                $query->whereIn('program_key', $program_keys_with_award_number);
+                                $query->whereIn('program_key', $program_ohtf_ids);
+            })->get();
             $this->processes++;
 
-            $total_units = count($units);
-            $this->processes++;
 
-            $program_htc_overlap = array_intersect($program_htc_ids, $program_ohtf_ids);
-            $this->processes++;
-            $program_htc_overlap_names = Program::whereIn('program_key', $program_htc_overlap)->get()->pluck('program_name')->toArray();
-            $this->processes++;
-            $program_htc_overlap_names = implode(',', $program_htc_overlap_names);
-            $this->processes++;
-
-            $units_selected = [];
-            $htc_units_subset = [];
-
-            $comments[] = 'Total units with OHTF funding is '.$total_units;
-            $comments[] = 'Total units in the project with a program is '.$total_units_with_program;
-
-            $audit->comment = $audit->comment.' | Select Process Total units with OHTF funding is '.$total_units;
-            $audit->save();
-            $this->processes++;
-
-            $audit->comment = $audit->comment.' | Select Process Total units in the project with a program is '.$total_units_with_program;
-            $audit->save();
-            $this->processes++;
-
-            if (count($units) <= 4) {
-
-                $required_units = count($units);
-
-                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 100);
-                $this->processes++;
-                $comments[] = 'Because there are less than 4 OHTF units, the selection is 100%. Total selected: '.count($units_selected);
-
-                $audit->comment = $audit->comment.' | Select Process Because there are less than 4 OHTF units, the selection is 100%. Total selected: '.count($units_selected);
+            if(count($units)){
+                $audit->comment = $audit->comment.' | Select Process Starting OHTF for award number '.$ohtf_award_number;
                 $audit->save();
                 $this->processes++;
 
-            } else {
-                if (ceil($total_units/2) >= ceil($total_units_with_program/5)) {
-
-                    $required_units = ceil($total_units/2);
-
-                     $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
-                     $this->processes++;
-                     $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of OHTF units, the total selected is '.ceil($total_units/2);
-
-                    $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of OHTF units, the total selected is '.ceil($total_units/2);
-                    $audit->save();
-                    $this->processes++;
-                } else {
-
-                    if(ceil($total_units_with_program/5) > $total_units){
-                        $required_units = $total_units;
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
-                        $this->processes++;
-                        $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.$total_units. 'which is the total number of units';
-
-                        $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.$total_units. 'which is the total number of units';
-                    }else{
-                        $required_units = ceil($total_units_with_program/5);
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units_with_program/5));
-                        $this->processes++;
-                        $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.ceil($total_units_with_program/5);
-
-                        $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.ceil($total_units_with_program/5);
-
-                    }
-
-                    
-                    $audit->save();
-                    $this->processes++;
-                }
-            }
-
-            foreach ($units_selected as $unit_key) {
-                $unit_selected = Unit::where('unit_key','=',$unit_key)->first();
+                $comments[] = 'Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_ohtf_names.', award number '.$ohtf_award_number;
+                $audit->comment = $audit->comment.' | Select Process Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_ohtf_names.', award number '.$ohtf_award_number;
+                $audit->save();
                 $this->processes++;
-                if($unit_selected){
-                    $has_htc_funding = 0;
 
-                    $comments[] = 'Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs: '.$program_htc_overlap_names;
+                $total_units = count($units);
+                $this->processes++;
 
-                    $audit->comment = $audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs: '.$program_htc_overlap_names;
+                // $program_htc_overlap = array_intersect($program_htc_ids, $program_ohtf_ids);
+                // $this->processes++;
+                // $program_htc_overlap_names = Program::whereIn('program_key', $program_htc_overlap)->get()->pluck('program_name')->toArray();
+                // $this->processes++;
+                // $program_htc_overlap_names = implode(',', $program_htc_overlap_names);
+                // $this->processes++;
+
+                $units_selected = [];
+                $htc_units_subset = [];
+
+                $comments[] = 'Total units with OHTF funding and award number '.$ohtf_award_number.' is '.$total_units;
+                $comments[] = 'Total units in the project with a program is '.$total_project_units;
+
+                $audit->comment = $audit->comment.' | Select Process Total units with OHTF funding is '.$total_units;
+                $audit->save();
+                $this->processes++;
+
+                $audit->comment = $audit->comment.' | Select Process Total units in the project is '.$total_project_units;
+                $audit->save();
+                $this->processes++;
+
+                if (count($units) <= 4) {
+
+                    $required_units = count($units);
+
+                    $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 100);
+                    $this->processes++;
+                    $comments[] = 'Because there are less than 4 OHTF units, the selection is 100%. Total selected: '.count($units_selected);
+
+                    $audit->comment = $audit->comment.' | Select Process Because there are less than 4 OHTF units, the selection is 100%. Total selected: '.count($units_selected);
+                    $audit->save();
+                    $this->processes++;
+
+                } else {
+                    if (ceil($total_units/2) >= ceil($total_project_units/5)) {
+
+                        $required_units = ceil($total_units/2);
+
+                         $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
+                         $this->processes++;
+                         $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of OHTF units, the total selected is '.ceil($total_units/2);
+
+                        $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of OHTF units, the total selected is '.ceil($total_units/2);
                         $audit->save();
                         $this->processes++;
+                    } else {
 
-                    // if units have HTC funding add to subset
-                    foreach ($unit_selected->programs as $unit_program) {
-                        $this->processes++;
-                        if (in_array($unit_program->program_key, $program_htc_overlap)) {
-                            $has_htc_funding = 1;
-                            $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
-                            $audit->comment = $audit->comment.' | Select Process The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
-
-                            $audit->save();
+                        if(ceil($total_project_units/5) > $total_units){
+                            $required_units = $total_units;
+                            $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
                             $this->processes++;
+                            $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.$total_units. 'which is the total number of units';
+
+                            $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.$total_units. 'which is the total number of units';
+                        }else{
+                            $required_units = ceil($total_project_units/5);
+                            $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
+                            $this->processes++;
+                            $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.ceil($total_project_units/5);
+
+                            $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.ceil($total_project_units/5);
+
                         }
-                    }
-                    if ($has_htc_funding) {
-                        $htc_units_subset[] = $unit_selected->unit_key;
+
+                        
+                        $audit->save();
                         $this->processes++;
-                        $comments[] = 'We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
-                        $audit->comment = $audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
-                            
-                            $audit->save();
-                            $this->processes++;
                     }
-                } else {
-                    $audit->comment = $audit->comment.' | Select Process A unit came up null in its values. We recommend checking the completeness of the data in Devco for your units, update any that may be missing data, and then re-run the selection.';
-                            
+                }
+
+                foreach ($units_selected as $unit_key) {
+                    $unit_selected = Unit::where('unit_key','=',$unit_key)->first();
+                    $this->processes++;
+                    if($unit_selected){
+                        $has_htc_funding = 0;
+
+                        $comments[] = 'Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
+
+                        $audit->comment = $audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
                             $audit->save();
                             $this->processes++;
+
+                        // if units have HTC funding add to subset
+                        if($unit_selected->has_program_from_array($program_htc_ids, $audit->id)){
+                            $has_htc_funding = 1;
+                            $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding';
+                            $audit->save();
+                        }
+
+                        if ($has_htc_funding) {
+                            $htc_units_subset[] = $unit_selected->unit_key;
+                            $this->processes++;
+                            $comments[] = 'We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
+                            $audit->comment = $audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
+                                
+                                $audit->save();
+                                $this->processes++;
+                        }
+                    } else {
+                        $audit->comment = $audit->comment.' | Select Process A unit came up null in its values. We recommend checking the completeness of the data in Devco for your units, update any that may be missing data, and then re-run the selection.';
+                                
+                                $audit->save();
+                                $this->processes++;
+                    }
                 }
+
+                $htc_units_subset_for_ohtf = $htc_units_subset;
+                $units_to_check_for_overlap = array_merge($units_to_check_for_overlap, $units_selected);
+                $this->processes++;
+
+                $selection[] = [
+                    "group_id" => 5,
+                    "program_name" => "OHTF",
+                    "program_ids" => SystemSetting::get('program_ohtf'),
+                    "pool" => count($units),
+                    "units" => $units_selected,
+                    "totals" => count($units_selected),
+                    "required_units" => $required_units,
+                    'htc_subset' => $htc_units_subset,
+                    "use_limiter" => 0,
+                    "comments" => $comments
+                ];
+                $this->processes++;
+            }else{
+                $htc_units_subset_for_ohtf = array();
+                $audit->comment_system = $audit->comment_system.' | Select Process is not working with OHTF.';
+                $audit->save();
             }
-
-            $htc_units_subset_for_ohtf = $htc_units_subset;
-            $units_to_check_for_overlap = array_merge($units_to_check_for_overlap, $units_selected);
-            $this->processes++;
-
-            $selection[] = [
-                "group_id" => 5,
-                "program_name" => "OHTF",
-                "program_ids" => SystemSetting::get('program_ohtf'),
-                "pool" => count($units),
-                "units" => $units_selected,
-                "totals" => count($units_selected),
-                "required_units" => $required_units,
-                'htc_subset' => $htc_units_subset,
-                "use_limiter" => 0,
-                "comments" => $comments
-            ];
-            $this->processes++;
-        }else{
-            $htc_units_subset_for_ohtf = array();
-            $audit->comment_system = $audit->comment_system.' | Select Process is not working with OHTF.';
-            $audit->save();
         }
-
 
 
         //
@@ -1563,163 +1571,169 @@ class ComplianceSelectionJob implements ShouldQueue
         //
 
         $program_nhtf_ids = explode(',', SystemSetting::get('program_nhtf'));
-        $this->processes++;
-        $program_nhtf_names = Program::whereIn('program_key', $program_nhtf_ids)->get()->pluck('program_name')->toArray();
-        $this->processes++;
-        $program_nhtf_names = implode(',', $program_nhtf_names);
-        $this->processes++;
-        $comments = [];
 
-        $required_units = 0;
+        $nhtf_award_numbers = ProjectProgram::whereIn('program_key', $program_nhtf_ids)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
 
-        $units = Unit::whereHas('programs', function ($query) use ($audit, $program_nhtf_ids) {
-                            $query->where('audit_id', '=', $audit->id);
-                            $query->whereIn('program_key', $program_nhtf_ids);
-        })->get();
-        $this->processes++;
+        foreach($nhtf_award_numbers as $nhtf_award_number){
 
-        if(count($units)){
-            $audit->comment = $audit->comment.' | Select Process Starting NHTF.';
-            $audit->save();
+            // programs with that award_number
+            $program_keys_with_award_number = ProjectProgram::where('award_number','=',$nhtf_award_number->award_number)->pluck('program_key')->toArray(); 
+
+            $program_nhtf_names = Program::whereIn('program_key', $program_nhtf_ids)
+                                            ->whereIn('program_key', $program_keys_with_award_number)
+                                            ->get()
+                                            ->pluck('program_name')->toArray();
+            $this->processes++;
+            $program_nhtf_names = implode(',', $program_nhtf_names);
+            $this->processes++;
+            $comments = [];
+
+            $required_units = 0;
+
+            $total_project_units = Project::where('id', '=', $audit->project_id)->first()->units()->count();
             $this->processes++;
 
-            $comments[] = 'Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_nhtf_names;
-
-            $audit->comment = $audit->comment.' | Select Process Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_nhtf_names;
-            $audit->save();
+            $units = Unit::whereHas('programs', function ($query) use ($audit, $program_nhtf_ids, $program_keys_with_award_number) {
+                                $query->where('audit_id', '=', $audit->id);
+                                $query->whereIn('program_key', $program_keys_with_award_number);
+                                $query->whereIn('program_key', $program_nhtf_ids);
+            })->get();
             $this->processes++;
 
-            $program_htc_overlap = array_intersect($program_htc_ids, $program_nhtf_ids);
-            $program_htc_overlap_names = Program::whereIn('program_key', $program_htc_overlap)->get()->pluck('program_name')->toArray();
-            $this->processes++;
-            $program_htc_overlap_names = implode(',', $program_htc_overlap_names);
-            $this->processes++;
-
-            $units_selected = [];
-            $htc_units_subset = [];
-            
-            $total_units = count($units);
-            $this->processes++;
-
-            $comments[] = 'Total units with NHTF funding is '.$total_units;
-            $comments[] = 'Total units in the project with a program is '.$total_units_with_program;
-
-            $audit->comment = $audit->comment.' | Select Process Total units with NHTF funding is '.$total_units;
-            $audit->save();
-            $this->processes++;
-            $audit->comment = $audit->comment.' | Select Process Total units in the project with a program is '.$total_units_with_program;
-            $audit->save();
-            $this->processes++;
-
-
-            if (count($units) <= 4) {
-
-                $required_units = count($units); // 100%
-
-                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 100);
-                $this->processes++;
-                $comments[] = 'Because there are less than 4 NHTF units, the selection is 100%. Total selected: '.count($units_selected);
-
-                $audit->comment = $audit->comment.' | Select Process Because there are less than 4 NHTF units, the selection is 100%. Total selected: '.count($units_selected);
+            if(count($units)){
+                $audit->comment = $audit->comment.' | Select Process Starting NHTF for award number '.$nhtf_award_number;
                 $audit->save();
                 $this->processes++;
 
-            } else {
-                if (ceil($total_units/2) >= ceil($total_units_with_program/5)) {
+                $comments[] = 'Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_nhtf_names.', award number '.$nhtf_award_number;
 
-                    $required_units = ceil($total_units/2);
+                $audit->comment = $audit->comment.' | Select Process Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_nhtf_names.', award number '.$nhtf_award_number;;
+                $audit->save();
+                $this->processes++;
 
-                     $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
-                     $this->processes++;
-                     $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of NHTF units, the total selected is '.ceil($total_units/2);
-                     $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of NHTF units, the total selected is '.ceil($total_units/2);
+                $units_selected = [];
+                $htc_units_subset = [];
+                
+                $total_units = count($units);
+                $this->processes++;
 
+                $comments[] = 'Total units with NHTF funding is '.$total_units;
+                $comments[] = 'Total units in the project with a program is '.$total_project_units;
+
+                $audit->comment = $audit->comment.' | Select Process Total units with NHTF funding is '.$total_units;
+                $audit->save();
+                $this->processes++;
+                $audit->comment = $audit->comment.' | Select Process Total units in the project with a program is '.$total_project_units;
+                $audit->save();
+                $this->processes++;
+
+
+                if (count($units) <= 4) {
+
+                    $required_units = count($units); // 100%
+
+                    $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 100);
+                    $this->processes++;
+                    $comments[] = 'Because there are less than 4 NHTF units, the selection is 100%. Total selected: '.count($units_selected);
+
+                    $audit->comment = $audit->comment.' | Select Process Because there are less than 4 NHTF units, the selection is 100%. Total selected: '.count($units_selected);
                     $audit->save();
                     $this->processes++;
+
                 } else {
+                    if (ceil($total_units/2) >= ceil($total_project_units/5)) {
 
-                    if(ceil($total_units_with_program/5) > $total_units){
-                        $required_units = $total_units;
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
+                        $required_units = ceil($total_units/2);
+
+                         $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
+                         $this->processes++;
+                         $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of NHTF units, the total selected is '.ceil($total_units/2);
+                         $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of NHTF units, the total selected is '.ceil($total_units/2);
+
+                        $audit->save();
                         $this->processes++;
-                        $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$total_units. 'which is the total number of units';
+                    } else {
 
-                        $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$total_units. 'which is the total number of units';
-                    }else{
-                        $required_units = ceil($total_units_with_program/5);
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units_with_program/5));
+                        if(ceil($total_project_units/5) > $total_units){
+                            $required_units = $total_units;
+                            $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
+                            $this->processes++;
+                            $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$total_units. 'which is the total number of units';
+
+                            $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$total_units. 'which is the total number of units';
+                        }else{
+                            $required_units = ceil($total_project_units/5);
+                            $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
+                            $this->processes++;
+                            $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.ceil($total_project_units/5);
+
+                            $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.ceil($total_project_units/5);
+
+                        }
+                        $audit->save();
                         $this->processes++;
-                        $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.ceil($total_units_with_program/5);
-
-                        $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.ceil($total_units_with_program/5);
-
                     }
-                    $audit->save();
-                    $this->processes++;
                 }
-            }
 
-            foreach ($units_selected as $unit_key) {
-                $unit_selected = Unit::where('unit_key','=',$unit_key)->first();
-                $this->processes++;
-                $has_htc_funding = 0;
-
-                $comments[] = 'Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs: '.$program_htc_overlap_names;
-
-                $audit->comment = $audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs: '.$program_htc_overlap_names;
-                    $audit->save();
+                foreach ($units_selected as $unit_key) {
+                    $unit_selected = Unit::where('unit_key','=',$unit_key)->first();
                     $this->processes++;
+                    $has_htc_funding = 0;
 
-                // if units have HTC funding add to subset
-                //$unit = Unit::where('unit_key', '=', $unit_selected)->first();
-                $this->processes++;
-                foreach ($unit_selected->programs as $unit_program) {
+                    $comments[] = 'Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
+
+                    $audit->comment = $audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
+                        $audit->save();
+                        $this->processes++;
+
+                    // if units have HTC funding add to subset
+                    //$unit = Unit::where('unit_key', '=', $unit_selected)->first();
                     $this->processes++;
-                    if (in_array($unit_program->program_key, $program_htc_overlap)) {
+                    
+                    if($unit_selected->has_program_from_array($program_htc_ids, $audit->id)){
                         $has_htc_funding = 1;
-                        $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
-                        $audit->comment = $audit->comment.' | Select Process The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding '.$unit_program->program_name;
+                        $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding';
                         $audit->save();
-                        $this->processes++;
+                    }
 
+                    if ($has_htc_funding) {
+                        $comments[] = 'We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
+
+                        $audit->comment = $audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
+                            $audit->save();
+                            $this->processes++;
+
+                        $htc_units_subset[] = $unit_selected->unit_key;
                     }
                 }
-                if ($has_htc_funding) {
-                    $comments[] = 'We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
 
-                    $audit->comment = $audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
-                        $audit->save();
-                        $this->processes++;
+                $htc_units_subset_for_nhtf = $htc_units_subset;
+                $units_to_check_for_overlap = array_merge($units_to_check_for_overlap, $units_selected);
+                $this->processes++;
 
-                    $htc_units_subset[] = $unit_selected->unit_key;
-                }
+                $selection[] = [
+                    "group_id" => 6,
+                    "program_name" => "NHTF",
+                    "program_ids" => SystemSetting::get('program_nhtf'),
+                    "pool" => count($units),
+                    "units" => $units_selected,
+                    "totals" => count($units_selected),
+                    "required_units" => $required_units,
+                    'htc_subset' => $htc_units_subset,
+                    "use_limiter" => 0,
+                    "comments" => $comments
+                ];
+                $this->processes++;
+
+                
+            }else{
+                
+                $htc_units_subset_for_nhtf = array();
+                $audit->comment_system = $audit->comment_system.' | Select Process is not working with NHTF.';
+                $audit->save();
             }
-
-            $htc_units_subset_for_nhtf = $htc_units_subset;
-            $units_to_check_for_overlap = array_merge($units_to_check_for_overlap, $units_selected);
-            $this->processes++;
-
-            $selection[] = [
-                "group_id" => 6,
-                "program_name" => "NHTF",
-                "program_ids" => SystemSetting::get('program_nhtf'),
-                "pool" => count($units),
-                "units" => $units_selected,
-                "totals" => count($units_selected),
-                "required_units" => $required_units,
-                'htc_subset' => $htc_units_subset,
-                "use_limiter" => 0,
-                "comments" => $comments
-            ];
-            $this->processes++;
-
-            
-        }else{
-            
-            $htc_units_subset_for_nhtf = array();
-            $audit->comment_system = $audit->comment_system.' | Select Process is not working with NHTF.';
-            $audit->save();
         }
+
 
         // check for HOME, OHTF, NHTF overlap and send to analyst
         // overlap contains the keys of units
@@ -1775,51 +1789,40 @@ class ComplianceSelectionJob implements ShouldQueue
             $this->processes++;
 
             $comments[] = 'The total of HTC units is '.$total_htc_units.'.';
-
             $audit->comment = $audit->comment.' | Select Process The total of HTC units is '.$total_htc_units.'.';
                         $audit->save();
                         $this->processes++;
 
             // HTC without HOME, OHTF, NHTF
-            $program_htc_only_ids = array_diff($program_htc_ids, $program_home_ids, $program_ohtf_ids, $program_nhtf_ids);
-            $this->processes++;
+            // $program_htc_only_ids = array_diff($program_htc_ids, $program_home_ids, $program_ohtf_ids, $program_nhtf_ids);
+            // $this->processes++;
 
-            $program_htc_only_names = Program::whereIn('program_key', $program_htc_only_ids)->get()->pluck('program_name')->toArray();
-            $this->processes++;
-            $program_htc_only_names = implode(',', $program_htc_only_names);
-            $this->processes++;
+            // $program_htc_only_names = Program::whereIn('program_key', $program_htc_only_ids)->get()->pluck('program_name')->toArray();
+            // $this->processes++;
+            // $program_htc_only_names = implode(',', $program_htc_only_names);
+            // $this->processes++;
 
-            $comments[] = 'Pool of units chosen among units belonging to HTC programs associated with this audit id '.$audit->id.' excluding HOME, OHTF and NHTF. Programs: '.$program_htc_only_names;
-            $this->processes++;
+            // $comments[] = 'Pool of units chosen among units belonging to HTC programs associated with this audit id '.$audit->id.' excluding HOME, OHTF and NHTF. Programs: '.$program_htc_only_names;
+            // $this->processes++;
 
-            $audit->comment = $audit->comment.' | Select Process Pool of units chosen among units belonging to HTC programs associated with this audit id '.$audit->id.' excluding HOME, OHTF and NHTF. Programs: '.$program_htc_only_names;
-             $audit->save();
-             $this->processes++;
+            // $audit->comment = $audit->comment.' | Select Process Pool of units chosen among units belonging to HTC programs associated with this audit id '.$audit->id.' excluding HOME, OHTF and NHTF. Programs: '.$program_htc_only_names;
+            //  $audit->save();
+            //  $this->processes++;
 
             $units = [];
             foreach ($all_htc_units as $all_htc_unit) {
-                $do_not_add = 0;
-                $this->processes++;
-                foreach ($all_htc_unit->programs as $all_htc_unit_program) {
-                    $this->processes++;
-                    if (in_array($all_htc_unit_program->program_key, $program_home_ids) ||
-                        in_array($all_htc_unit_program->program_key, $program_ohtf_ids) ||
-                        in_array($all_htc_unit_program->program_key, $program_nhtf_ids)) {
-                        $do_not_add = 1;
-                    }
-                }
-
-                if (!$do_not_add) {
+                if($all_htc_unit->has_program_from_array($program_home_ids, $audit->id) || 
+                    $all_htc_unit->has_program_from_array($program_ohtf_ids, $audit->id) || 
+                    $all_htc_unit->has_program_from_array($program_nhtf_ids, $audit->id)){
                     $units[] = $all_htc_unit->unit_key;
                     $this->processes++;
                 }
             }
 
             $comments[] = 'The total of HTC units excluding HOME, OHTF and NHTF is '.count($units).'.';
-
             $audit->comment = $audit->comment.' | Select Process The total of HTC units excluding HOME, OHTF and NHTF is '.count($units).'.';
-             $audit->save();
-             $this->processes++;
+            $audit->save();
+            $this->processes++;
 
             // check in project_program->first_year_award_claimed date for the 15 year test
             
@@ -1846,7 +1849,8 @@ class ComplianceSelectionJob implements ShouldQueue
 
             foreach ($project->programs as $program) {
                 $this->processes++;
-                if (in_array($program->program_key, $program_htc_only_ids)) {
+                // only select HTC project programs
+                if (in_array($program->program_key, $program_htc_ids)) {
                     if ($first_year == null || $first_year < $program->first_year_award_claimed) {
                         $first_year = $program->first_year_award_claimed;
                         $comments[] = 'Program key '.$program->program_key.' has the year '.$program->first_year_award_claimed.'.';
@@ -1952,10 +1956,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 // we don't check for lease purchases anymore
 
                 $is_multi_building_project = 0;
-                $comments[] = 'It is not a lease purchase.';
-                $audit->comment = $audit->comment.' | Select Process It is not a lease purchase.';
-                    $audit->save();
-                    $this->processes++;
+                
                 // for each of the current programs+project, check if multiple_building_election_key is 2 for multi building project
                 $comments[] = 'Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
                 $audit->comment = $audit->comment.' | Select Process Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
@@ -1964,7 +1965,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                 foreach ($project->programs as $program) {
                     $this->processes++;
-                    if (in_array($program->program_key, $program_bundle_ids)) {
+                    if (in_array($program->program_key, $program_htc_ids)) {
                         if ($program->multiple_building_election_id == 6) {
                             $is_multi_building_project = 1;
                             $comments[] = 'Program key '.$program->program_key.' showed that the project is a multi building project.';
@@ -1977,9 +1978,12 @@ class ComplianceSelectionJob implements ShouldQueue
 
                 if ($is_multi_building_project) {
 
-                    $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_only_ids) {
+                    $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_ids, $program_home_ids, $program_ohtf_ids, $program_nhtf_ids) {
                                                 $query->where('audit_id', '=', $audit->id);
-                                                $query->whereIn('program_key', $program_htc_only_ids);
+                                                $query->whereIn('program_key', $program_htc_ids);
+                                                $query->whereNotIn('program_key', $program_home_ids);
+                                                $query->whereNotIn('program_key', $program_ohtf_ids);
+                                                $query->whereNotIn('program_key', $program_nhtf_ids);
                                             })->pluck('unit_key')->toArray();
 
                     $number_of_htc_units_required = $this->adjustedLimit($audit, $total_htc_units);

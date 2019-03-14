@@ -73,6 +73,24 @@ class Unit extends Model
         return true;
     }
 
+    public function has_program($program_key, $audit_id) : bool
+    {
+        if($this->programs()->where('audit_id', '=', $audit_id)->where('program_key','=', $program_key)->count()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function has_program_from_array($program_key_array, $audit_id) : bool
+    {
+        if($this->programs()->where('audit_id', '=', $audit_id)->whereIn('program_key',$program_key_array)->count()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public function most_recent_event()
     {
         // SystemSetting::get('household_move_in_type_id')
