@@ -1215,13 +1215,13 @@ class ComplianceSelectionJob implements ShouldQueue
 
         $program_home_ids = explode(',', SystemSetting::get('program_home'));
 
-        $home_award_numbers = ProjectProgram::whereIn('program_key', $program_home_ids)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
+        $home_award_numbers = ProjectProgram::whereIn('program_key', $program_home_ids)->where('project_id', '=', $audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
 
         foreach($home_award_numbers as $home_award_number){
             // for each award_number, create a different HOME group
             
             // programs with that award_number
-            $program_keys_with_award_number = ProjectProgram::where('award_number','=',$home_award_number->award_number)->pluck('program_key')->toArray(); 
+            $program_keys_with_award_number = ProjectProgram::where('award_number','=',$home_award_number->award_number)->where('project_id', '=', $audit->project_id)->pluck('program_key')->toArray(); 
 
             $program_home_names = Program::whereIn('program_key', $program_home_ids)
                                             ->whereIn('program_key', $program_keys_with_award_number)
@@ -1390,12 +1390,12 @@ class ComplianceSelectionJob implements ShouldQueue
 
         $program_ohtf_ids = explode(',', SystemSetting::get('program_ohtf'));
 
-        $ohtf_award_numbers = ProjectProgram::whereIn('program_key', $program_ohtf_ids)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
+        $ohtf_award_numbers = ProjectProgram::whereIn('program_key', $program_ohtf_ids)->where('project_id', '=', $audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
 
         foreach($ohtf_award_numbers as $ohtf_award_number){
 
             // programs with that award_number
-            $program_keys_with_award_number = ProjectProgram::where('award_number','=',$ohtf_award_number->award_number)->pluck('program_key')->toArray(); 
+            $program_keys_with_award_number = ProjectProgram::where('award_number','=',$ohtf_award_number->award_number)->where('project_id', '=', $audit->project_id)->pluck('program_key')->toArray(); 
 
             $program_ohtf_names = Program::whereIn('program_key', $program_ohtf_ids)
                                             ->whereIn('program_key', $program_keys_with_award_number)
@@ -1572,12 +1572,12 @@ class ComplianceSelectionJob implements ShouldQueue
 
         $program_nhtf_ids = explode(',', SystemSetting::get('program_nhtf'));
 
-        $nhtf_award_numbers = ProjectProgram::whereIn('program_key', $program_nhtf_ids)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
+        $nhtf_award_numbers = ProjectProgram::whereIn('program_key', $program_nhtf_ids)->where('project_id', '=', $audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
 
         foreach($nhtf_award_numbers as $nhtf_award_number){
 
             // programs with that award_number
-            $program_keys_with_award_number = ProjectProgram::where('award_number','=',$nhtf_award_number->award_number)->pluck('program_key')->toArray(); 
+            $program_keys_with_award_number = ProjectProgram::where('award_number','=',$nhtf_award_number->award_number)->where('project_id', '=', $audit->project_id)->pluck('program_key')->toArray(); 
 
             $program_nhtf_names = Program::whereIn('program_key', $program_nhtf_ids)
                                             ->whereIn('program_key', $program_keys_with_award_number)
@@ -1689,7 +1689,7 @@ class ComplianceSelectionJob implements ShouldQueue
                     // if units have HTC funding add to subset
                     //$unit = Unit::where('unit_key', '=', $unit_selected)->first();
                     $this->processes++;
-                    
+
                     if($unit_selected->has_program_from_array($program_htc_ids, $audit->id)){
                         $has_htc_funding = 1;
                         $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding';
