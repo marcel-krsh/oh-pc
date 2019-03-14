@@ -33,7 +33,7 @@
 	@foreach($unitprogram as $each_program)
 
 		@php
-		dd($each_program->project_program->multiple_building_election_key);
+		//dd($each_program->project_program->multiple_building_election_key);
 		$program_selected = $unit_selected->where('program_key', $each_program->program_key);
 		$all_groups_count = $each_program->program->relatedGroups->count();
 		$htc_groups = $each_program->program->relatedGroups->where('id', $htc_group_id);
@@ -47,28 +47,29 @@
 		//		If selected send this program id and comma seperated group ids
 		if($htc_groups_count > 0 && ($all_groups_count > $htc_groups_count)) {
 			$split = true;
-			$htc_program_selected = $program_selected->where('group_id', $htc_group_id);
-			//$htc_unit_program_selected_count = $htc_program_selected->where('is_site_visit', 1)->where('is_file_audit', 1)->count();
-			$htc_site_program_selected_count = $htc_program_selected->where('is_site_visit', 1)->count();
-			$htc_file_program_selected_count = $htc_program_selected->where('is_file_audit', 1)->count();
-			$htc_group_ids = json_encode([$htc_group_id]);
-			if($htc_site_program_selected_count > 0 && $htc_file_program_selected_count > 0) {
-				$htc_unit_program_selected_count = 1;
-			} else {
-				$htc_unit_program_selected_count = 0;
-			}
-			$program_selected = $program_selected->where('group_id','!=', $htc_group_id);
-			//$unit_program_selected_count = $program_selected->where('is_site_visit', 1)->where('is_file_audit', 1)->count();
-			$site_program_selected_count = $program_selected->where('is_site_visit', 1)->count();
-			$file_program_selected_count = $program_selected->where('is_file_audit', 1)->count();
-			$group_ids = $other_groups->pluck('id')->toJson();
+			// $htc_program_selected = $program_selected->where('group_id', $htc_group_id);
+			// //$htc_unit_program_selected_count = $htc_program_selected->where('is_site_visit', 1)->where('is_file_audit', 1)->count();
+			// $htc_site_program_selected_count = $htc_program_selected->where('is_site_visit', 1)->count();
+			// $htc_file_program_selected_count = $htc_program_selected->where('is_file_audit', 1)->count();
+			// $htc_group_ids = json_encode([$htc_group_id]);
+			// if($htc_site_program_selected_count > 0 && $htc_file_program_selected_count > 0) {
+			// 	$htc_unit_program_selected_count = 1;
+			// } else {
+			// 	$htc_unit_program_selected_count = 0;
+			// }
+			// $program_selected = $program_selected->where('group_id','!=', $htc_group_id);
+			// //$unit_program_selected_count = $program_selected->where('is_site_visit', 1)->where('is_file_audit', 1)->count();
+			// $site_program_selected_count = $program_selected->where('is_site_visit', 1)->count();
+			// $file_program_selected_count = $program_selected->where('is_file_audit', 1)->count();
+			// $group_ids = $other_groups->pluck('id')->toJson();
 		} else {
 			$split = false;
+		}
 			//$unit_program_selected_count = $program_selected->where('is_site_visit', 1)->where('is_file_audit', 1)->count();
 			$site_program_selected_count = $program_selected->where('is_site_visit', 1)->count();
 			$file_program_selected_count = $program_selected->where('is_file_audit', 1)->count();
 			$group_ids = $each_program->program->relatedGroups->pluck('id')->toJson();
-		}
+		
 		if($site_program_selected_count > 0 && $file_program_selected_count > 0) {
 			$unit_program_selected_count = 1;
 		} else {
@@ -77,54 +78,20 @@
 		// if($each_program->program_key == 30004)
 		// dd($htc_program_selected);
 		@endphp
-		@if($split)
-		<div class="unit-group modal-project-summary-unit-programs uk-margin-remove uk-width-1-1  summary-unit-programs-{{ $each_program->unit_id }} {{ $selected_units_count > 0 ? 'has-selected' : 'no-selection' }} building-{{$unit->unit->building_key}}">
-			<div class="modal-project-summary-unit-program uk-visible-toggle">
-				<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle {{ $htc_unit_program_selected_count > 0 ? 'inspectable-selected' : '' }}" data-unitid="{{ $each_program->unit_id }}">
-					@if($htc_unit_program_selected_count > 0)
-					<i class="a-circle-checked" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $htc_group_ids }},'both',@if($unit->unit->building_key) {{$unit->unit->building_key}} @else 'none' @endif );"></i>
-					@else
-					<i class="a-circle" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $htc_group_ids }},'both',@if($unit->unit->building_key) {{$unit->unit->building_key}} @else 'none' @endif);"></i>
-					@endif
-				</div>
-				<div class="modal-project-summary-unit-program-info">
-					<div class="modal-project-summary-unit-program-icon {{ $htc_site_program_selected_count > 0 ? 'inspectable-selected': '' }}" data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $htc_group_ids }}, 'physical',@if($unit->unit->building_key) {{$unit->unit->building_key}} @else 'none' @endif );">
-						<i class="a-mobile"></i>
-						<div class="modal-project-summary-unit-program-icon-status">
-							@if($htc_site_program_selected_count > 0)
-							<i class="a-circle-checked"></i>
-							@else
-							<i class="a-circle"></i>
-							@endif
-						</div>
-					</div>
-					<div class="modal-project-summary-unit-program-icon {{ $htc_file_program_selected_count > 0 ? 'inspectable-selected': '' }}"  data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $htc_group_ids }}, 'file', ,@if($unit->unit->building_key) {{$unit->unit->building_key}} @else 'none' @endif);">
-						<i class="a-folder"></i>
-						<div class="modal-project-summary-unit-program-icon-status">
-							@if( $htc_file_program_selected_count > 0 )
-							<i class="a-circle-checked"></i>
-							@else
-							<i class="a-circle"></i>
-							@endif
-						</div>
-					</div>
-					{{ $each_program->program->program_name }} ({{ implode(', ', $htc_groups->pluck('group_name')->toArray()) }})
-				</div>
-			</div>
-		</div>
-		@endif
-
+		
+		
+		
 		<div class="unit-group modal-project-summary-unit-programs uk-margin-remove uk-width-1-1  summary-unit-programs-{{ $each_program->unit_id }} {{ $selected_units_count > 0 ? 'has-selected' : 'no-selection' }} building-{{$unit->unit->building_key}}">
 			<div class="modal-project-summary-unit-program uk-visible-toggle">
 				<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle {{ $unit_program_selected_count > 0 ? 'inspectable-selected' : '' }}" data-unitid="{{ $each_program->unit_id }}">
 					@if($unit_program_selected_count > 0)
-					<i class="a-circle-checked" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }},'both',@if($unit->unit->building_key) {{$unit->unit->building_key}} @else 'none' @endif);"></i>
+					<i class="a-circle-checked" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }},'both',@if($unit->unit->building_key && $htc_groups->count() > 0 && $each_program->project_program->multiple_building_election_key != 2) {{$unit->unit->building_key}} @else 'none' @endif);"></i>
 					@else
-					<i class="a-circle" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }},'both',@if($unit->unit->building_key) {{$unit->unit->building_key}} @else 'none' @endif);"></i>
+					<i class="a-circle" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }},'both',@if($unit->unit->building_key && $htc_groups->count() > 0 && $each_program->project_program->multiple_building_election_key != 2) {{$unit->unit->building_key}} @else 'none' @endif);"></i>
 					@endif
 				</div>
 				<div class="modal-project-summary-unit-program-info">
-					<div class="modal-project-summary-unit-program-icon {{ $site_program_selected_count > 0 ? 'inspectable-selected': '' }}" data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }}, 'physical',@if($unit->unit->building_key) {{$unit->unit->building_key}} @else 'none' @endif);">
+					<div class="modal-project-summary-unit-program-icon {{ $site_program_selected_count > 0 ? 'inspectable-selected': '' }}" data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }}, 'physical',@if($unit->unit->building_key && $htc_groups->count() > 0 && $each_program->project_program->multiple_building_election_key != 2) {{$unit->unit->building_key}} @else 'none' @endif);">
 						<i class="a-mobile"></i>
 						<div class="modal-project-summary-unit-program-icon-status">
 							@if($site_program_selected_count > 0)
@@ -134,7 +101,7 @@
 							@endif
 						</div>
 					</div>
-					<div class="modal-project-summary-unit-program-icon {{ $file_program_selected_count > 0 ? 'inspectable-selected': '' }}"  data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }}, 'file',@if($unit->unit->building_key) {{$unit->unit->building_key}} @else 'none' @endif);">
+					<div class="modal-project-summary-unit-program-icon {{ $file_program_selected_count > 0 ? 'inspectable-selected': '' }}"  data-unitid="{{ $each_program->unit_id }}" onclick="projectSummarySelection(this, {{ $each_program->unit_id }}, {{ $each_program->program_key }}, {{ $group_ids }}, 'file',@if($unit->unit->building_key && $htc_groups->count() > 0 && $each_program->project_program->multiple_building_election_key != 2) {{$unit->unit->building_key}} @else 'none' @endif);">
 						<i class="a-folder"></i>
 						<div class="modal-project-summary-unit-program-icon-status">
 							@if( $file_program_selected_count > 0 )
@@ -144,7 +111,7 @@
 							@endif
 						</div>
 					</div>
-					{{ $each_program->program->program_name }}
+					@if($each_program->is_substitute) Substitute for: @endIf {{ $each_program->program->program_name }}
 					@if($split)
 						({{ implode(', ', $other_groups->pluck('group_name')->toArray()) }})
 					@else
