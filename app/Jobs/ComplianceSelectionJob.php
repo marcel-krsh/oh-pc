@@ -1211,7 +1211,7 @@ class ComplianceSelectionJob implements ShouldQueue
         
 
         $units_to_check_for_overlap = [];
-        
+        $htc_units_subset_for_home = array();
 
         $program_home_ids = explode(',', SystemSetting::get('program_home'));
 
@@ -1389,6 +1389,7 @@ class ComplianceSelectionJob implements ShouldQueue
         
 
         $program_ohtf_ids = explode(',', SystemSetting::get('program_ohtf'));
+        $htc_units_subset_for_ohtf = array();
 
         $ohtf_award_numbers = ProjectProgram::whereIn('program_key', $program_ohtf_ids)->where('project_id', '=', $audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
 
@@ -1571,7 +1572,8 @@ class ComplianceSelectionJob implements ShouldQueue
         //
 
         $program_nhtf_ids = explode(',', SystemSetting::get('program_nhtf'));
-
+        $htc_units_subset_for_nhtf = array();
+        
         $nhtf_award_numbers = ProjectProgram::whereIn('program_key', $program_nhtf_ids)->where('project_id', '=', $audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
 
         foreach($nhtf_award_numbers as $nhtf_award_number){
