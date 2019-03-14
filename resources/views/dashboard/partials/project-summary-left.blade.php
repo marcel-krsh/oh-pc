@@ -23,21 +23,21 @@
 							<td class="uk-text-center border-right"></td>
 							<td class="uk-text-center"></td>
 						</tr>
-						<tr>
+						<tr @if($prog['building_name'])class="program-selection-{{ $prog['id'] }}-{{ $prog['building_key'] }}" @else class="program-selection-{{ $prog['id'] }}" @endIf>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-required"></i> Required Units</div>
 							</td>
 							<td class="uk-text-center border-right">{{$prog['required_units']}}</td>
 							<td class="uk-text-center">{{$prog['required_units_file']}}</td>
 						</tr>
-						<tr>
+						<tr @if($prog['building_name'])class="program-selection-{{ $prog['id'] }}-{{ $prog['building_key'] }}" @else class="program-selection-{{ $prog['id'] }}" @endIf>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-needed"></i> Needed Units</div>
 							</td>
 							<td class="uk-text-center border-right">{{$prog['needed_units']}}</td>
 							<td class="uk-text-center">{{$prog['needed_units_file']}}</td>
 						</tr>
-						<tr>
+						<tr @if($prog['building_name'])class="program-selection-{{ $prog['id'] }}-{{ $prog['building_key'] }}" @else class="program-selection-{{ $prog['id'] }}" @endIf>
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Selected Units</div>
 							</td>

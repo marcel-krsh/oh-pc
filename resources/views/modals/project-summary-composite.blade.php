@@ -109,15 +109,18 @@
 
 	function projectSummarySelection(element, unitid, programid=null, grouptypes=null, type="both", buildingkey="none"){
 		// ajax call here
-		var spinner = '<div style="height:200px;width: 100%;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+		var spinner = '<div style="height:127px;width: 100%;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
 
 		if(buildingkey != 'none') {
 			var targetRow = '#program-selection-'+grouptypes+'-'+buildingkey;
+			var targetClass = '.program-selection-'+grouptypes+'-'+buildingkey;
 		} else {
 			var targetRow = '#program-selection-'+grouptypes;
+			var targetClass = '.program-selection-'+grouptypes;
 		}
 		console.log('Updating target row '+targetRow);
 		$(targetRow).html(spinner);
+		$(targetClass).remove();
 		$.post('/modals/projects/{{$data["project"]["id"]}}/programs/save-program-unit-inspections', {
 			'unit_id' : unitid,
 			'program_key' : programid,
@@ -126,7 +129,7 @@
 			'_token' : '{{ csrf_token() }}'
 		}, function(data) {
 			$(targetRow).fadeOut( "slow", function() {
-				$(targetRow).html(data).fadeIn();
+				$(targetRow).replaceWith(data).fadeIn();
 			});
 			//filterProgramSummary();
 		}

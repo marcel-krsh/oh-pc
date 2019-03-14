@@ -5369,9 +5369,12 @@ class AuditController extends Controller
 		$project = Project::where('id', '=', $project_id)->first();
       	$audit = $project->selected_audit()->audit;
 
+
         //dd($unit_id, $program_key, $group_ids, $type, $project->id, $audit->id);
 
       	$unit = Unit::with('building')->find($unit_id);
+
+        $building_key = $unit->building_key;
 		
 		//Consider one program any type, no nulls, maybe nulls for groups
 		// This is for existing programs!
@@ -5396,9 +5399,11 @@ class AuditController extends Controller
 										->where('project_id', $project->id)
         								->get()
         								->count();
+            
 
             $new_program = false;
             if($unitprograms == 0) {
+                /// this means we are adding this as a substitute
                 $add_unit_program = new UnitProgram;
                 //unit_key
                 //unit_id
@@ -5416,9 +5421,16 @@ class AuditController extends Controller
                 $add_unit_program->audit_id = $audit->id;
                 $add_unit_program->monitoring_key = $audit->monitoring_key;
                 $add_unit_program->development_key = $audit->development_key;
+                $add_unit_program->is_substitute = 1;
                 $add_unit_program->save();
                 $new_program = true;
             }
+
+            $unitprogram = UnitProgram::where('audit_id', $audit->id)
+                                        ->where('program_key', $program->program_key)
+                                        ->where('unit_id', $unit->id)
+                                        ->where('project_id', $project->id)
+                                        ->first();
             if($type == 'file') {
               $this->inspectionsUpdate($unit, $program, $audit, $group_ids, $project, 'is_file_audit', $new_program);
             } elseif($type == 'physical') {
@@ -5441,7 +5453,8 @@ class AuditController extends Controller
                                         ->where('unit_id', $unit->id)
                                         ->where('project_id', $project->id)
                                         ->get();
-            // dd($unitprograms);
+             //dd($unitprograms);
+
             
             foreach($unitprograms as $unitprogram){
                 $program = $unitprogram->program;
@@ -5471,12 +5484,22 @@ class AuditController extends Controller
 
 
 	    $get_project_details = $this->projectSummaryComposite($project_id);
-        $audit = $get_project_details['audit'];
         $data = $get_project_details['data'];
-        $datasets = $get_project_details['datasets'];
-        $project = $get_project_details['project'];
-        $programs = $get_project_details['programs'];
-        return view('dashboard.partials.project-summary-left', compact('data', 'project', 'audit', 'programs', 'datasets'));
+        //dd($unitprogram->project_program);
+        if($unitprogram->project_program && $unitprogram->project_program->multiple_building_election_key == 2){
+            //dd($building_key,$unit->building_key);
+
+            $program = collect($data['programs'])->where('building_key',$building_key)->first();
+
+        } else {
+            $programGroup = $program->groups();
+            $programGroup = $programGroup[0];
+            $program = collect($data['programs'])->where('id',$programGroup)->first();
+            //dd($program, $unitprogram->project_program->multiple_building_election_key);
+        }
+        
+        
+        return view('dashboard.partials.project-summary-left-row', compact('data', 'project', 'audit', 'program', 'datasets'));
     }
 
     private function inspectionsUpdate($unit, $program, $audit, $group_ids, $project, $type, $new_program = false, $force_select = false)
