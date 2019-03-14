@@ -67,7 +67,7 @@ class UnitToProjectProgram extends Command
 
         $this->line('PROCESSING '.count($projects).' PROJECTS'.PHP_EOL.PHP_EOL);
 
-        $go = 1; /// set this to 0 if you need to skip to a unit.
+        $go = 0; /// set this to 0 if you need to skip to a unit.
         $projectCount = 0;
         foreach($projects as $project){
             $projectCount++;
@@ -131,7 +131,7 @@ class UnitToProjectProgram extends Command
                         $projectUnits = $this->output->createProgressBar(count($units));
                         $this->line(PHP_EOL);
                         foreach($units as $unit){
-                            if($unit->unit_key == '404633'){
+                            if($unit->unit_key == '348056'){
                                 $go = 1;
                                 $this->line('SKIPPING '.$unit->unit_key);
                             }
