@@ -67,7 +67,7 @@ class UnitToProjectProgram extends Command
 
         $this->line('PROCESSING '.count($projects).' PROJECTS'.PHP_EOL.PHP_EOL);
 
-        $go = 0;
+        $go = 1; /// set this to 0 if you need to skip to a unit.
         $projectCount = 0;
         foreach($projects as $project){
             $projectCount++;
