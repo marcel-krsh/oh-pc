@@ -44,6 +44,7 @@ use App\Models\People;
 use App\Models\AmenityInspection;
 use App\Models\Finding;
 use App\Models\Comment;
+use App\Models\FindingType;
 
 /*
 |--------------------------------------------------------------------------
