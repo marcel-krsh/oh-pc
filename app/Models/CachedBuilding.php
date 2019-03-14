@@ -99,7 +99,7 @@ class CachedBuilding extends Model
 
         // fix finding type totals
         $total_nlt = \App\Models\Finding::where('audit_id','=',$this->audit_id)
-                                            ->where('building_id','=',$building_id)
+                                            ->where('building_id','=',$this->building_id)
                                             ->whereHas('finding_type', function($query) {
                                                 $query->where('type', '=', 'nlt');
                                             })->count();
@@ -110,7 +110,7 @@ class CachedBuilding extends Model
         }
 
         $total_file = \App\Models\Finding::where('audit_id','=',$this->audit_id)
-                                            ->where('building_id','=',$building_id)
+                                            ->where('building_id','=',$this->building_id)
                                             ->whereHas('finding_type', function($query) {
                                                 $query->where('type', '=', 'file');
                                             })->count();
@@ -121,7 +121,7 @@ class CachedBuilding extends Model
         }
 
         $total_lt = \App\Models\Finding::where('audit_id','=',$this->audit_id)
-                                            ->where('building_id','=',$building_id)
+                                            ->where('building_id','=',$this->building_id)
                                             ->whereHas('finding_type', function($query) {
                                                 $query->where('type', '=', 'lt');
                                             })->count();
