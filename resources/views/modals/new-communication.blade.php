@@ -1,6 +1,7 @@
 <div id="dynamic-modal-content">
 	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
 		@if(!is_null($project))<input type="hidden" name="project_id" value="{{$project->id}}">@endif
+		@if(!is_null($audit))<input type="hidden" name="audit" value="{{$audit}}">@endif
 		<div class="uk-container uk-container-center"> <!-- start form container -->
 			<div uk-grid class="uk-grid-small ">
 				<div class="uk-width-1-1 uk-padding-small">

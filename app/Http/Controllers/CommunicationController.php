@@ -141,6 +141,7 @@ class CommunicationController extends Controller
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
         if ($project_id !== null) {
             $project = Project::where('id', '=', $project_id)->first();
+            $audit_details = $project->selected_audit();
             // $docuware_documents = SyncDocuware::where('project_id', $project->id)
             //     ->orderBy('created_at', 'desc')
             //     ->get();
@@ -215,8 +216,9 @@ class CommunicationController extends Controller
                     ->orderBy('last_name', 'asc')
                     ->get();
             }
+            $audit = $audit_details->audit_id;
 
-            return view('modals.new-communication', compact('project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id'));
+            return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id'));
         } else {
             $project = null;
             $document_categories = DocumentCategory::where('parent_id', '<>', 0)->where('active', '1')->orderby('document_category_name', 'asc')->get();
@@ -460,7 +462,6 @@ class CommunicationController extends Controller
             ->where('user_id', $current_user->id)
             ->where('seen', 0)
             ->update(['seen' => 1]);
-
         return view('modals.communication-replies', compact('message', 'replies', 'audit', 'documents', 'document_categories', 'noaudit'));
     }
 
@@ -479,7 +480,7 @@ class CommunicationController extends Controller
             if (isset($forminputs['audit'])) {
                 try {
                     $audit_id = (int) $forminputs['audit'];
-                    $audit = CachedAudit::where('id', $audit_id)->first();
+                    $audit = CachedAudit::where('audit_id', $audit_id)->first();
                 } catch (\Illuminate\Database\QueryException $ex) {
                     dd($ex->getMessage());
                 }
@@ -819,6 +820,7 @@ class CommunicationController extends Controller
                 $user_eval = "=";
                 $user_spec = Auth::user()->id;
             }
+
             $messages = Communication::with('docuware_documents', 'local_documents')
             		->where(function ($query) use ($current_user, $user_eval, $user_spec) {
                 $query->where(function ($query) use ($current_user) {
