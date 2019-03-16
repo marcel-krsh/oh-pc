@@ -13,7 +13,9 @@ class RemoveParcelRelaitionOnCommunicationsTable extends Migration
      */
     public function up()
     {
-        //
+        Schema::table('communications', function (Blueprint $table) {
+            $table->dropForeign('communications_parce_id_foreign');
+        });
     }
 
     /**
@@ -23,6 +25,6 @@ class RemoveParcelRelaitionOnCommunicationsTable extends Migration
      */
     public function down()
     {
-        //
+        $table->foreign('audit_id')->references('id')->on('parcels');
     }
 }

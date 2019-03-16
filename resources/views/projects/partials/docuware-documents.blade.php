@@ -15,7 +15,6 @@
 					@php $documentReset = $documents; @endphp
 					@foreach ($documents as $document)
 					<tr class="{{strtolower(str_replace(' ','-',$document->document_class))}} {{str_replace(' ','-',strtolower($document->document_description))}}">
-
 						<td>
 							{{ucwords(strtolower($document->document_class))}} :
 							{{ucwords(strtolower($document->document_description))}}

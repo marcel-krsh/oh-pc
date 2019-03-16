@@ -30,7 +30,7 @@ class CommunicationRecipient extends Model
         /* @todo: move to observer class */
 
         static::created(function ($communication_recipient) {
-            Event::fire('communication.recipient.created', $communication_recipient);
+            //Event::fire('communication.recipient.created', $communication_recipient);
             Log::info('Fired event?');
         });
 
