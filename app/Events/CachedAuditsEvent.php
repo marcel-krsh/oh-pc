@@ -161,16 +161,15 @@ class CachedAuditsEvent
                     $zip = $building->building->address->zip;
                     
                 } else {
-                    $address = null;
-                    $city = null;
-                    $state = null;
-                    $zip = null;
-                    
+                    $address = $building->project->address->line_1;
+                    $city = $building->project->address->city;
+                    $state = $building->project->address->state;
+                    $zip = $building->project->address->zip;
                 }
             }else{
                 $building_name = 'NOT SET IN DEVCO';
-                $building_id = 0;
-                $building_key = 0;
+                $building_id = $building->building_id;
+                $building_key = $building->building_key;
                 $project_id = $cached_audit->project_id;
                 $project_key = $cached_audit->project_key;
                 $lead_id = $cached_audit->lead_id;
