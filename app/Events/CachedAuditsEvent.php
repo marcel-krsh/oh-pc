@@ -162,7 +162,7 @@ class CachedAuditsEvent
                     
                 } else {
                     $address = 'DEFAULT: '.$building->building->project->address->line_1;
-                    $city = 'DEFAULT: '.$building->building->project->address->city;
+                    $city = $building->building->project->address->city;
                     $state = $building->building->project->address->state;
                     $zip = $building->building->project->address->zip;
                 }
