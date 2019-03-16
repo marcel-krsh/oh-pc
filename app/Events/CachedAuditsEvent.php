@@ -161,10 +161,10 @@ class CachedAuditsEvent
                     $zip = $building->building->address->zip;
                     
                 } else {
-                    $address = 'DEFAULT: '.$building->project->address->line_1;
-                    $city = 'DEFAULT: '.$building->project->address->city;
-                    $state = $building->project->address->state;
-                    $zip = $building->project->address->zip;
+                    $address = 'DEFAULT: '.$building->building->project->address->line_1;
+                    $city = 'DEFAULT: '.$building->building->project->address->city;
+                    $state = $building->building->project->address->state;
+                    $zip = $building->building->project->address->zip;
                 }
             }else{
                 $building_name = 'NOT SET IN DEVCO';
