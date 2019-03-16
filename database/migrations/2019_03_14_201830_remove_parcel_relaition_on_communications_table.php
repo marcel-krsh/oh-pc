@@ -14,7 +14,7 @@ class RemoveParcelRelaitionOnCommunicationsTable extends Migration
     public function up()
     {
         Schema::table('communications', function (Blueprint $table) {
-            $table->dropForeign('communications_parce_id_foreign');
+            $table->dropForeign('communications_parcel_id_foreign');
         });
     }
 
