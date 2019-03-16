@@ -216,7 +216,7 @@ class CommunicationController extends Controller
                     ->orderBy('last_name', 'asc')
                     ->get();
             }
-            $audit = $audit_details->audit_id;
+            $audit = $audit_details->id;
 
             return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id'));
         } else {
@@ -300,9 +300,14 @@ class CommunicationController extends Controller
      */
     public function viewReplies($audit_id = null, $message_id)
     {
-        $message = Communication::where('id', $message_id)
-            ->with('owner')
+        $message = Communication::with('docuware_documents.assigned_categories.parent', 'local_documents.assigned_categories.parent', 'owner')
+        		->where('id', $message_id)
             ->firstOrFail();
+
+            foreach ($message->docuware_documents as $key => $value) {
+            	//return $value;
+            }
+
 
         if ($audit_id === null || $audit_id == 0) {
             // used to redirect to dashboard communications
@@ -318,8 +323,8 @@ class CommunicationController extends Controller
         //     throw new \Exception('Parcel not found.');
         // }
 
-        $replies = Communication::where('parent_id', $message->id)
-            ->with('owner')
+        $replies = Communication::with('docuware_documents.assigned_categories.parent', 'local_documents.assigned_categories.parent', 'owner')
+        		->where('parent_id', $message->id)
             ->orderBy('created_at', 'asc')
             ->get();
 
@@ -334,11 +339,18 @@ class CommunicationController extends Controller
         $user_needs_to_read_more = CommunicationRecipient::whereIn('communication_id', $message_id_array)->where('user_id', $current_user->id)->where('seen', 0)->update(['seen' => 1]);
 
         if ($audit) {
-            // fetch documents and categories
-            $documents = SyncDocuware::where('project_id', $project->id)
-                ->orderBy('created_at', 'desc')
-                ->get();
-            $document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
+        	$project = Project::find($audit->project_id);
+          $docuware_documents = $this->projectDocuwareDocumets($project);
+          $local_documents = Document::where('project_id', $project->id)
+              ->with('assigned_categories')
+              ->orderBy('created_at', 'desc')
+              ->get();
+          $document_categories = DocumentCategory::where('parent_id', '<>', 0)
+          		->active()
+              ->orderby('document_category_name', 'asc')
+              ->with('parent')
+              ->get();
+          $documents = $docuware_documents->merge($local_documents);
         } else {
             $documents = null;
             $document_categories = null;
@@ -462,7 +474,7 @@ class CommunicationController extends Controller
             ->where('user_id', $current_user->id)
             ->where('seen', 0)
             ->update(['seen' => 1]);
-        return view('modals.communication-replies', compact('message', 'replies', 'audit', 'documents', 'document_categories', 'noaudit'));
+        return view('modals.communication-replies', compact('message', 'replies', 'audit', 'documents', 'document_categories', 'noaudit', 'project'));
     }
 
     public function create(Request $request)
@@ -480,7 +492,7 @@ class CommunicationController extends Controller
             if (isset($forminputs['audit'])) {
                 try {
                     $audit_id = (int) $forminputs['audit'];
-                    $audit = CachedAudit::where('audit_id', $audit_id)->first();
+                    $audit = CachedAudit::where('id', $audit_id)->first();
                 } catch (\Illuminate\Database\QueryException $ex) {
                     dd($ex->getMessage());
                 }
@@ -543,10 +555,9 @@ class CommunicationController extends Controller
                 $unique_docs = array_unique($local_documents);
                 foreach ($unique_docs as $document_id) {
                     $doc_id = explode("-", $document_id);
-                    $document = new CommunicationDocument([
-                        'communication_id' => $message->id,
-                        'document_id' => $doc_id[1],
-                    ]);
+                    $document = new CommunicationDocument;
+                    $document->communication_id = $message->id;
+                    $document->document_id = $doc_id[1];
                     $document->save();
                 }
             }
@@ -568,7 +579,6 @@ class CommunicationController extends Controller
             if ($is_reply) {
                 // get existing recipients if a reply
                 $message_recipients_array = CommunicationRecipient::where('communication_id', $original_message->id)->pluck('user_id')->toArray();
-
                 foreach ($message_recipients_array as $recipient_id) {
                     if ($recipient_id == $user->id) {
                         $recipient = new CommunicationRecipient([
@@ -622,7 +632,7 @@ class CommunicationController extends Controller
                     }
                 }
             } catch (\Illuminate\Database\QueryException $ex) {
-                dd($ex->getMessage());
+                $error = $ex->getMessage();
             }
 
             return 1;
