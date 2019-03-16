@@ -60,7 +60,7 @@ class CachedAuditsEvent
         
         $jsonRun = 0;
         // get buildings from cached_audit
-        $buildings = BuildingInspection::where('audit_id', '=', $cached_audit->audit_id)->with('building','building.address')->get();
+        $buildings = BuildingInspection::where('audit_id', '=', $cached_audit->audit_id)->with('building','building.address','project')->get();
         //dd($buildings);
 
         // get the auditors' list from audit_auditors table
@@ -161,8 +161,8 @@ class CachedAuditsEvent
                     $zip = $building->building->address->zip;
                     
                 } else {
-                    $address = $building->project->address->line_1;
-                    $city = $building->project->address->city;
+                    $address = 'DEFAULT: '.$building->project->address->line_1;
+                    $city = 'DEFAULT: '.$building->project->address->city;
                     $state = $building->project->address->state;
                     $zip = $building->project->address->zip;
                 }
