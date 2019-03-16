@@ -60,7 +60,7 @@ class CachedAuditsEvent
         
         $jsonRun = 0;
         // get buildings from cached_audit
-        $buildings = BuildingInspection::where('audit_id', '=', $cached_audit->audit_id)->with('building','building.address','project')->get();
+        $buildings = BuildingInspection::where('audit_id', '=', $cached_audit->audit_id)->with('building','building.address','building.project','building.project.address')->get();
         //dd($buildings);
 
         // get the auditors' list from audit_auditors table
