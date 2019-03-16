@@ -264,6 +264,10 @@ class AuditController extends Controller
         foreach ($buildings as $building) {
             // for each orderingbuilding
             
+            // fix total findings if needed
+            $building->building->recount_findings();
+
+
             if ($building->building_id === null && $building->amenity_inspection_id === null) {
                 // this is an amenity with no link ti the amenity inspection -> there might be issues in case of duplicates.
                 
@@ -439,6 +443,9 @@ class AuditController extends Controller
             $new_ordering = [];
 
             foreach ($details as $detail) {
+                // fix total findings if needed
+                $detail->recount_findings();
+
                 $ordering = new OrderingUnit([
                     'user_id' => Auth::user()->id,
                     'audit_id' => $audit,
@@ -459,6 +466,8 @@ class AuditController extends Controller
             $new_ordering = $last_ordering;
 
             foreach ($details as $detail) {
+                // fix total findings if needed
+                $detail->recount_findings();
 
                 //dd(OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $detail->building_id)->where('user_id', '=', Auth::user()->id)->where('unit_id','=',$detail->id)->count());
 
@@ -484,6 +493,10 @@ class AuditController extends Controller
         }
 
         $details = OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->with('unit')->get();
+        foreach($details as $detail){
+            // fix total findings if needed... the brutal way
+            $detail->unit->recount_findings();
+        }
 
         // swap needs project_id
         $project_id = CachedAudit::where('audit_id', '=', $audit)->first()->project_id;
@@ -1729,8 +1742,8 @@ class AuditController extends Controller
                 $summary_needed = max($summary_required - $summary_selected, 0);
                 $summary_needed_file = max($summary_required_file - $summary_selected_file, 0);
 
-                $summary_to_be_inspected = $summary_required - $summary_inspected;
-                $summary_to_be_inspected_file = $summary_required_file - $summary_inspected_file;
+                $summary_to_be_inspected = $summary_selected - $summary_inspected;
+                $summary_to_be_inspected_file = $summary_selected_file - $summary_inspected_file;
 
                 $summary_optimized_sample_size = $summary_optimized_required;
                 $summary_optimized_completed_inspections = $summary_optimized_inspected;

@@ -1211,7 +1211,7 @@ class ComplianceSelectionJob implements ShouldQueue
         
 
         $units_to_check_for_overlap = [];
-        
+        $htc_units_subset_for_home = array();
 
         $program_home_ids = explode(',', SystemSetting::get('program_home'));
 
@@ -1389,6 +1389,7 @@ class ComplianceSelectionJob implements ShouldQueue
         
 
         $program_ohtf_ids = explode(',', SystemSetting::get('program_ohtf'));
+        $htc_units_subset_for_ohtf = array();
 
         $ohtf_award_numbers = ProjectProgram::whereIn('program_key', $program_ohtf_ids)->where('project_id', '=', $audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
 
@@ -1571,7 +1572,8 @@ class ComplianceSelectionJob implements ShouldQueue
         //
 
         $program_nhtf_ids = explode(',', SystemSetting::get('program_nhtf'));
-
+        $htc_units_subset_for_nhtf = array();
+        
         $nhtf_award_numbers = ProjectProgram::whereIn('program_key', $program_nhtf_ids)->where('project_id', '=', $audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
 
         foreach($nhtf_award_numbers as $nhtf_award_number){
@@ -2186,14 +2188,14 @@ class ComplianceSelectionJob implements ShouldQueue
                 // if required <= $overlap we don't need to select anymore unit
                 // otherwise we need to take all the units NOT in the overlap and randomly pick required - count(overlap)
                 
-                $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_only_ids) {
+                $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
                                                     $query->where('audit_id', '=', $audit->id);
-                                                    $query->whereIn('program_key', $program_htc_only_ids);
+                                                    $query->whereIn('program_key', $program_htc_ids);
                                                 })->pluck('unit_key')->toArray();
 
                 // 10% of units
-                $number_of_units_required = ceil($total_htc_units/10);
-                $required_units = $number_of_units_required;
+                $number_of_htc_units_required = ceil($total_htc_units/10);
+                $required_units = $number_of_htc_units_required;
 
                 if($number_of_htc_units_required <= count($overlap)){
                     $number_of_htc_units_needed = 0;
