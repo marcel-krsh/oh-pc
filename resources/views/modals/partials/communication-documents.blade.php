@@ -56,7 +56,7 @@
 					@foreach ($document_categories as $category)
 					<li>
 						<input style="float: left; margin-top: 3px" name="category-id-checkbox" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="radio"  class="uk-radio">
-						<label style="display: block; margin-left: 20px" for="category-id-{{ $category->id }}">
+						<label style="display: block; margin-left: 20px; font-size: 13px" for="category-id-{{ $category->id }}">
 							{{ $category->parent->document_category_name }} : {{ $category->document_category_name }}
 						</label>
 					</li>
@@ -72,7 +72,7 @@
 					<span class="uk-text-middle"> Please upload your document by dropping it here or</span>
 					<div uk-form-custom>
 						<input type="file" multiple>
-						<span class="uk-link uk-text-success">by browsing and selecting it here.</span>
+						<span class="uk-link uk-text-primary">by browsing and selecting it here.</span>
 					</div>
 				</div>
 				<progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>

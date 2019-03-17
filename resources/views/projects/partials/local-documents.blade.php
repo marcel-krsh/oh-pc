@@ -10,7 +10,7 @@
 					<th width="110">ACTIONS</th>
 				</tr>
 			</thead>
-			<tbody id="sent-document-list">
+			<tbody id="sent-document-list" style="font-size: 13px">
 				@foreach ($documents as $document)
 				<tr>
 					<span uk-grid>
@@ -98,7 +98,7 @@
 				<p class="blue-text">Click on the <span class="a-higher"></span> icon in the document listed to the left to automatically select categories for that document.</p>
 				<div uk-grid id="category-list">
 					<div class="uk-width-1-1 uk-margin-small-bottom">
-						<ul class="uk-list document-category-menu">
+						<ul class="uk-list document-category-menu"  style="font-size: 13px">
 							@foreach ($document_categories as $category)
 							<li>
 								<input style="float: left; margin-top: 3px" name="category-id-checkbox" class="uk-radio" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="radio">
@@ -134,7 +134,7 @@
 							<span class="uk-text-middle"> Please upload your document by dropping it here or</span>
 							<div uk-form-custom>
 								<input type="file">
-								<span class="uk-link">by browsing and selecting it here.</span>
+								<span class="uk-link uk-text-primary">by browsing and selecting it here.</span>
 							</div>
 						</div>
 						<progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>

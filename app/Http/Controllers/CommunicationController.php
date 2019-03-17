@@ -11,7 +11,6 @@ use App\Models\CommunicationRecipient;
 use App\Models\Document;
 use App\Models\DocumentCategory;
 use App\Models\Project;
-use App\Models\SyncDocuware;
 use App\Models\SystemSetting;
 use App\Models\User;
 //use App\LogConverter;
@@ -43,7 +42,6 @@ class CommunicationController extends Controller
      */
     public function showTabFromProjectId(Project $project)
     {
-        //dd($project);
         //Search (in session)
         if (Session::has('communications-search') && Session::get('communications-search') != '') {
             $search = Session::get('communications-search');
@@ -62,21 +60,15 @@ class CommunicationController extends Controller
                 ->with('recipients')
                 ->orderBy('created_at', 'desc')
                 ->get();
-
         } else {
             $messages = Communication::where('project_id', $project->id)
                 ->where('parent_id', null)
                 ->with('owner')
                 ->orderBy('created_at', 'desc')
                 ->get();
-
-            //dd('Project based: ',$messages, $project);
         }
-
         //$document_categories = DocumentCategory::where('active', '1')->orderby('document_category_name', 'asc')->get();
-
         $current_user = Auth::user();
-
         $owners_array = [];
         foreach ($messages as $message) {
             // create initials
@@ -86,7 +78,6 @@ class CommunicationController extends Controller
                 $initials .= $w[0];
             }
             $message->initials = $initials;
-
             // create associative arrays for initials and names
             if (!array_key_exists($message->owner->id, $owners_array)) {
                 $owners_array[$message->owner->id]['initials'] = $initials;
@@ -94,7 +85,6 @@ class CommunicationController extends Controller
                 $owners_array[$message->owner->id]['color'] = $message->owner->badge_color;
                 $owners_array[$message->owner->id]['id'] = $message->owner->id;
             }
-
             // get recipients details
             // could be a better query... TBD
             $recipients_array = [];
@@ -102,16 +92,13 @@ class CommunicationController extends Controller
                 $recipients_array[$recipient->id] = User::find($recipient->user_id);
             }
             $message->recipient_details = $recipients_array;
-
             $message->summary = strlen($message->message) > 400 ? substr($message->message, 0, 200) . "..." : $message->message;
-
             // in case of a search result with replies, the parent message isn't listed
             // if there is parent_id then use it, otherwise use id
             if ($message->parent_id) {
                 $message->replies = Communication::where('parent_id', $message->parent_id)
                     ->orWhere('id', $message->parent_id)
                     ->count();
-
                 $message_id_array = Communication::where('project_id', $project->id)
                     ->where('id', $message->parent_id)
                     ->orWhere('parent_id', $message->parent_id)
@@ -120,13 +107,11 @@ class CommunicationController extends Controller
                 $message->replies = Communication::where('parent_id', $message->id)
                     ->orWhere('id', $message->id)
                     ->count();
-
                 $message_id_array = Communication::where('project_id', $project->id)
                     ->where('id', $message->id)
                     ->orWhere('parent_id', $message->id)
                     ->pluck('id')->toArray();
             }
-
             $message->unseen = CommunicationRecipient::whereIn('communication_id', $message_id_array)
                 ->where('user_id', $current_user->id)
                 ->where('seen', 0)
@@ -142,16 +127,13 @@ class CommunicationController extends Controller
         if ($project_id !== null) {
             $project = Project::where('id', '=', $project_id)->first();
             $audit_details = $project->selected_audit();
-            // $docuware_documents = SyncDocuware::where('project_id', $project->id)
-            //     ->orderBy('created_at', 'desc')
-            //     ->get();
             $docuware_documents = $this->projectDocuwareDocumets($project);
             $local_documents = Document::where('project_id', $project->id)
                 ->with('assigned_categories')
                 ->orderBy('created_at', 'desc')
                 ->get();
             $document_categories = DocumentCategory::where('parent_id', '<>', 0)
-            		->active()
+                ->active()
                 ->orderby('document_category_name', 'asc')
                 ->with('parent')
                 ->get();
@@ -165,17 +147,14 @@ class CommunicationController extends Controller
                 // create an associative array to simplify category references for each document
                 foreach ($documents as $document) {
                     $categories = []; // store the new associative array cat id, cat name
-
                     if ($document->categories) {
                         $categories_decoded = json_decode($document->categories, true); // cats used by the doc
                         $categories_used = array_merge($categories_used, $categories_decoded); // merge document categories
                     } else {
                         $categories_decoded = [];
                     }
-
                     foreach ($document_categories as $document_category) {
                         $document_categories_key[$document_category->id] = $document_category->document_category_name;
-
                         // sub key for each document's categories for quick reference
                         if (in_array($document_category->id, $categories_decoded)) {
                             $categories[$document_category->id] = $document_category->document_category_name;
@@ -301,13 +280,12 @@ class CommunicationController extends Controller
     public function viewReplies($audit_id = null, $message_id)
     {
         $message = Communication::with('docuware_documents.assigned_categories.parent', 'local_documents.assigned_categories.parent', 'owner')
-        		->where('id', $message_id)
+            ->where('id', $message_id)
             ->firstOrFail();
 
-            foreach ($message->docuware_documents as $key => $value) {
-            	//return $value;
-            }
-
+        foreach ($message->docuware_documents as $key => $value) {
+            //return $value;
+        }
 
         if ($audit_id === null || $audit_id == 0) {
             // used to redirect to dashboard communications
@@ -324,7 +302,7 @@ class CommunicationController extends Controller
         // }
 
         $replies = Communication::with('docuware_documents.assigned_categories.parent', 'local_documents.assigned_categories.parent', 'owner')
-        		->where('parent_id', $message->id)
+            ->where('parent_id', $message->id)
             ->orderBy('created_at', 'asc')
             ->get();
 
@@ -339,18 +317,18 @@ class CommunicationController extends Controller
         $user_needs_to_read_more = CommunicationRecipient::whereIn('communication_id', $message_id_array)->where('user_id', $current_user->id)->where('seen', 0)->update(['seen' => 1]);
 
         if ($audit) {
-        	$project = Project::find($audit->project_id);
-          $docuware_documents = $this->projectDocuwareDocumets($project);
-          $local_documents = Document::where('project_id', $project->id)
-              ->with('assigned_categories')
-              ->orderBy('created_at', 'desc')
-              ->get();
-          $document_categories = DocumentCategory::where('parent_id', '<>', 0)
-          		->active()
-              ->orderby('document_category_name', 'asc')
-              ->with('parent')
-              ->get();
-          $documents = $docuware_documents->merge($local_documents);
+            $project = Project::find($audit->project_id);
+            $docuware_documents = $this->projectDocuwareDocumets($project);
+            $local_documents = Document::where('project_id', $project->id)
+                ->with('assigned_categories')
+                ->orderBy('created_at', 'desc')
+                ->get();
+            $document_categories = DocumentCategory::where('parent_id', '<>', 0)
+                ->active()
+                ->orderby('document_category_name', 'asc')
+                ->with('parent')
+                ->get();
+            $documents = $docuware_documents->merge($local_documents);
         } else {
             $documents = null;
             $document_categories = null;
@@ -487,7 +465,6 @@ class CommunicationController extends Controller
         } else {
             $is_reply = 0;
         }
-
         if ($forminputs['messageBody']) {
             if (isset($forminputs['audit'])) {
                 try {
@@ -546,7 +523,6 @@ class CommunicationController extends Controller
                 //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
             }
             $message->save();
-
             //save documents
             //Here we have 2 types of docs, local and docuware
             //Saving local documents
@@ -634,7 +610,6 @@ class CommunicationController extends Controller
             } catch (\Illuminate\Database\QueryException $ex) {
                 $error = $ex->getMessage();
             }
-
             return 1;
         } else {
             return "Something went wrong. We couldn't save your message. Make sure you have at least one recipient and that your message isn't empty.";
@@ -759,16 +734,17 @@ class CommunicationController extends Controller
         $skip = $number_per_page * $page;
         $current_user = Auth::user();
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
+        //return $project;
         //Search (in session)
         if (Session::has('communications-search') && Session::get('communications-search') != '') {
             $search = Session::get('communications-search');
             $search_messages = Communication::with('docuware_documents', 'local_documents')
-            		->where(function ($query) use ($search, $project) {
-                $query->where('message', 'LIKE', '%' . $search . '%');
-                if ($project) {
-                    $query->orWhere('project_id', $project->id);
-                }
-            })
+                ->where(function ($query) use ($search, $project) {
+                    $query->where('message', 'LIKE', '%' . $search . '%');
+                    if ($project) {
+                        $query->orWhere('project_id', $project->id);
+                    }
+                })
                 ->where(function ($query) use ($current_user) {
                     $query->where('owner_id', '=', $current_user->id);
                     $query->orWhereHas('recipients', function ($query) use ($current_user) {
@@ -831,27 +807,28 @@ class CommunicationController extends Controller
                 $user_spec = Auth::user()->id;
             }
 
-            $messages = Communication::with('docuware_documents', 'local_documents')
-            		->where(function ($query) use ($current_user, $user_eval, $user_spec) {
-                $query->where(function ($query) use ($current_user) {
-                    $query->where('owner_id', '=', $current_user->id);
-                    $query->whereHas('replies');
-                });
-                $query->orWhereHas('recipients', function ($query) use ($current_user, $user_eval, $user_spec) {
-                    $query->where('user_id', "$user_eval", $user_spec);
-                });
-            })->whereNull('parent_id');
+            $messages = Communication::with('docuware_documents', 'local_documents', 'owner')
+                ->where(function ($query) use ($current_user, $user_eval, $user_spec) {
+                    $query->where(function ($query) use ($current_user) {
+                        $query->where('owner_id', '=', $current_user->id);
+                        $query->whereHas('replies');
+                    });
+                    $query->orWhereHas('recipients', function ($query) use ($current_user, $user_eval, $user_spec) {
+                        $query->where('user_id', "$user_eval", $user_spec);
+                    });
+                })->whereNull('parent_id');
 
             if ($project) {
-                $messages = $messages->where('project_id', $project->id);
+                $audit = $project->selected_audit();
+                $messages = $messages->where('project_id', $project->id)
+                    ->where('audit_id', $audit->id);
             }
 
             $messages = $messages
-                ->with('owner')
                 ->orderBy('created_at', 'desc')
                 ->skip($skip)->take($number_per_page)
                 ->get();
-            $messages = $messages->reverse();
+            //$messages = $messages->reverse();
         }
 
         $owners_array = [];
@@ -1037,7 +1014,7 @@ class CommunicationController extends Controller
             if ($project) {
                 // get the project
                 $project = Project::where('id', '=', $project->id)->first();
-                return view('projects.partials.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project'));
+                return view('projects.partials.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project', 'audit'));
             } else {
                 return view('dashboard.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project'));
             }

@@ -58,7 +58,7 @@ class User extends Authenticatable
         'organization_id',
         'badge_color'
     ];
-    
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -100,7 +100,7 @@ class User extends Authenticatable
                 $output = $output.', '.$role->role->name;
             }
 
-            
+
         }
         if($output == ''){
             $output = 'NO ACCESS';
@@ -198,6 +198,14 @@ class User extends Authenticatable
         return 0;
     }
 
+        public function isFromEntity($id) : int
+    {
+        if ($id == $this->entity_id) {
+            return 1;
+        }
+        return 0;
+    }
+
     public function isOhfa() : bool
     {
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
@@ -216,7 +224,7 @@ class User extends Authenticatable
         }
         return false;
     }
-    
+
     /**
      * Has PM level access
      *
@@ -427,7 +435,7 @@ class User extends Authenticatable
     public function timeAvailableOnDay($day_id)
     {
         // availability after taking into account the schedules
-        $availabilityOnDay = $this->availabilityOnDay($day_id); 
+        $availabilityOnDay = $this->availabilityOnDay($day_id);
         if($availabilityOnDay){
             $span = $availabilityOnDay[3] - $availabilityOnDay[2];
 
@@ -438,7 +446,7 @@ class User extends Authenticatable
         }else{
             return null;
         }
-        
+
     }
 
     public function default_address()
@@ -489,10 +497,10 @@ class User extends Authenticatable
             } else {
                 return 0;
             }
-            
+
         }else{
             return null;
         }
-        
+
     }
 }

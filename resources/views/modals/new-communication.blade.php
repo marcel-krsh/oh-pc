@@ -1,3 +1,6 @@
+<script>
+	resizeModal(80);
+</script>
 <div id="dynamic-modal-content">
 	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
 		@if(!is_null($project))<input type="hidden" name="project_id" value="{{$project->id}}">@endif
@@ -137,31 +140,30 @@
     		$('.recipient-list-item').show();
     	}
     });
+
     function showRecipients() {
     	$('.recipient-list').slideToggle();
     	$('#add-recipients-button').toggle();
     	$('#done-adding-recipients-button').toggle();
     }
+
     function showDocuments() {
     	$('.documents-list').slideToggle();
     	$('#add-documents-button').toggle();
     	$('#done-adding-documents-button').toggle();
     }
-    function submitNewCommunication() {
 
+    function submitNewCommunication() {
     	var form = $('#newOutboundEmailForm');
     	var no_alert = 1;
-
     	var recipients_array = [];
     	$("input[name='recipients[]']:checked").each(function (){
     		recipients_array.push(parseInt($(this).val()));
     	});
-
     	if(recipients_array.length === 0){
     		no_alert = 0;
     		UIkit.modal.alert('You must select a recipient.',{stack: true});
     	}
-
     	if(no_alert){
     		$.post('{{ URL::route("communication.create") }}', {
     			'inputs' : form.serialize(),
@@ -176,11 +178,11 @@
 
     		@if($project)
     		var id = {{$project->id}};
+        loadTab('/projects/'+{{$project->id}}+'/communications/', '2', 0, 0, 'project-', 1);
         //loadParcelSubTab('communications',id);
         @else
         //loadDashBoardSubTab('dashboard','communications');
         @endif
-
         dynamicModalClose();
       }
     }
