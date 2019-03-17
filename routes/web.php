@@ -54,7 +54,15 @@
             $doc_service = new \App\Services\DocumentService;
             $document_contents = $doc_service->getDocument($documentId,Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
 
-                //\Illuminate\Support\Facades\Storage::put('test.pdf', $document_contents);
+            //Store the document in local storage
+            //Download it from local storage
+            //Delete the document from local storage
+            //Need to test this
+
+                \Illuminate\Support\Facades\Storage::put('test.pdf', $document_contents);
+               // $file = \Illuminate\Support\Facades\Storage::get($filepath);
+		            ob_end_clean();
+		            return response()->download(storage_path('test.pdf'));
 
 
                 // Faking in a local test document
