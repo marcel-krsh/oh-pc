@@ -26,7 +26,7 @@
 			    				<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}" class="">
 			    					<span  id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes uk-float-left" : "check-received-no received-no" }}"></span>
 			    					<span style="float: left;" id="sent-id-{{ $document->id }}category-id-1-not-received-icon" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }}"></span>
-			    					<span style="display: block; margin-left: 30px">{{ $document_category->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}</span>
+			    					<span style="display: block; margin-left: 30px">{{ $document_category->parent->document_category_name }} : {{ $document_category->document_category_name }} </span>
 			    				</a>
 			    				<div uk-dropdown="mode: click" id="#sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}">
 			    					<ul class="uk-nav uk-nav-dropdown">

@@ -62,7 +62,8 @@
                 \Illuminate\Support\Facades\Storage::put('temp/test.pdf', $document_contents);
                // $file = \Illuminate\Support\Facades\Storage::get($filepath);
 		            ob_end_clean();
-		            return response()->download(storage_path('app/temp/test.pdf'));
+		            $filename = "{$docRecord->project_number}-".str_replace("\\",'',str_replace('/','',$docRecord->document_class))."-".str_replace("\\",'',str_replace('/','',$docRecord->document_description))."{$docRecord->dw_extension}";
+		            return response()->download(storage_path('app/temp/test.pdf'), $filename);
 
 
                 // Faking in a local test document
