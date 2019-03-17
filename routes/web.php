@@ -59,10 +59,10 @@
             //Delete the document from local storage
             //Need to test this
 
-                \Illuminate\Support\Facades\Storage::put('test.pdf', $document_contents);
+                \Illuminate\Support\Facades\Storage::put('temp/test.pdf', $document_contents);
                // $file = \Illuminate\Support\Facades\Storage::get($filepath);
 		            ob_end_clean();
-		            return response()->download(storage_path('app/test.pdf'));
+		            return response()->download(storage_path('app/temp/test.pdf'));
 
 
                 // Faking in a local test document
