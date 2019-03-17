@@ -62,7 +62,7 @@
                 \Illuminate\Support\Facades\Storage::put('test.pdf', $document_contents);
                // $file = \Illuminate\Support\Facades\Storage::get($filepath);
 		            ob_end_clean();
-		            return response()->download(storage_path('test.pdf'));
+		            return response()->download(storage_path('app/test.pdf'));
 
 
                 // Faking in a local test document
