@@ -1,7 +1,8 @@
 <script>
-	resizeModal(95);
+	resizeModal(85);
 	reloadUnseenMessages();
 </script>
+<?php if(!isset($project)){$project = null; } ?>
 <div class="uk-container">
 	<div uk-grid class="uk-grid-collapse">
 		<div class="uk-width-1-1">
