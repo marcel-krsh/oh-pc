@@ -251,15 +251,19 @@ class DocumentController extends Controller
         $filepath = $document->file_path;
         if (Storage::exists($filepath)) {
             $file = Storage::get($filepath);
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename=' . $document->filename);
-            header('Content-Transfer-Encoding: binary');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-            header('Pragma: public');
-            header('Content-Length: ' . Storage::size($filepath));
-            return $file;
+            ob_end_clean();
+            return response()->download('storage/app/'. $filepath);
+
+
+            // header('Content-Description: File Transfer');
+            // header('Content-Type: application/octet-stream');
+            // header('Content-Disposition: attachment; filename=' . $document->filename);
+            // header('Content-Transfer-Encoding: binary');
+            // header('Expires: 0');
+            // header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+            // header('Pragma: public');
+            // header('Content-Length: ' . Storage::size($filepath));
+            // return $file;
         } else {
             exit('Requested file does not exist on our server! ' . $filepath);
         }

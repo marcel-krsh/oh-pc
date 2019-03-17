@@ -118,6 +118,7 @@ class Communication extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
+
     public function recipients() : HasMany
     {
         return $this->hasMany(\App\Models\CommunicationRecipient::class);

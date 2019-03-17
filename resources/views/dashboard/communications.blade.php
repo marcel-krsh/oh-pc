@@ -8,7 +8,7 @@
 </script>
 <div id="communications_tab">
     <div uk-grid class="uk-margin-top" id="message-filters" data-uk-button-radio="">
-        
+
                 <div uk-grid class="uk-grid-collapse uk-visible@m">
                     <a class="uk-button uk-button-default filter_link uk-margin-right" data-filter="all">
                         ALL
@@ -19,7 +19,7 @@
                     <a style="display:none" class="uk-button uk-button-default" aria-checked="false" uk-tooltip="pos:top-left;title:Show sent messages">
                     <i uk-icon="send" style="font-size:16px; line-height: 17px;"></i>
                     </a>
-                   
+
                 </div>
                 <div class="uk-width-1-1@s uk-hidden@m">
                     <a class="uk-button uk-button-default filter_link" data-filter="all">
@@ -31,30 +31,30 @@
                     <a style="display:none" class="uk-button uk-button-default" aria-checked="false" uk-tooltip="pos:top-left;title:Show sent messages">
                     <i uk-icon="send" style="font-size:16px; line-height: 17px;"></i>
                     </a>
-                   
+
                 </div>
                 <div class=" uk-width-1-1@s  uk-width-1-5@m">
-                    <input id="communications-search" name="communications-search" type="text" value="{{ Session::get('communications-search') }}" class="uk-width-1-1 uk-input" placeholder="Search Within Messages Or By Audit ID (press enter)">                                
+                    <input id="communications-search" name="communications-search" type="text" value="{{ Session::get('communications-search') }}" class="uk-width-1-1 uk-input" placeholder="Search Within Messages Or By Audit ID (press enter)">
                 </div>
-                
+
                 <div class="uk-width-1-1@s uk-width-1-4@m" id="recipient-dropdown" style="vertical-align: top;">
                     <select id="filter-by-owner" class="uk-select filter-drops uk-width-1-1" onchange="filterByOwner();">
                         <option value="all" selected="">
-                            FILTER BY RECIPIENT 
+                            FILTER BY RECIPIENT
                         </option>
                         @foreach ($owners_array as $owner)
-                        <option value="staff-{{$owner['id']}}"><a class="uk-dropdown-close">{{$owner['name']}}</a></option>    
+                        <option value="staff-{{$owner['id']}}"><a class="uk-dropdown-close">{{$owner['name']}}</a></option>
                         @endforeach
                     </select>
-                    
+
                 </div>
-                
+
                 <div class="uk-width-1-1@s uk-width-1-5@m" style="vertical-align:top">
                     <a class="uk-button uk-button-success green-button uk-width-1-1" onclick="dynamicModalLoad('new-outbound-email-entry/')">
-                        <span class="a-envelope-4"></span> 
+                        <span class="a-envelope-4"></span>
                         <span>NEW MESSAGE</span>
-                    </a>    
-                </div> 
+                    </a>
+                </div>
     </div>
 
     @if(count((array)$messages))
@@ -109,7 +109,7 @@ The following div is defined in this particular tab and pushed to the main layou
                 'communications-search' : $("#communications-search").val(),
                 '_token' : '{{ csrf_token() }}'
             }, function(data) {
-                if(data!=1){ 
+                if(data!=1){
                     UIkit.modal.alert(data);
                 } else {
                     $('#detail-tab-2').trigger('click');
@@ -137,12 +137,12 @@ The following div is defined in this particular tab and pushed to the main layou
           if (e.keyCode == 13) {
             searchMessages();
             e.preventDefault();
-            return false; 
+            return false;
           }
         });
 
         @if (session()->has('dynamicModalLoad') && session('dynamicModalLoad') != '' )
-        
+
         var dynamicModalLoadid = '';
         $.get( "/session/dynamicModalLoad", function( data ) {
                 dynamicModalLoadid = data;
@@ -168,13 +168,13 @@ The following div is defined in this particular tab and pushed to the main layou
                 $('#filter-by-program').prop('selectedIndex',0);
                 @endif
                });
-            
+
         });
 
 
 @if(Auth::user()->auditor_access())
-    
-@endif 
+
+@endif
 
 function filterElement(filterVal, filter_element){
     if (filterVal === 'all') {
@@ -201,7 +201,7 @@ function filterByOwner(){
     // filter grid items
     //myGrid.filter(textinput);
     filterElement(textinput, '.filter_element');
-}   
+}
 
 </script>
 
@@ -209,7 +209,7 @@ function filterByOwner(){
 
         new Vue({
             el: '#communication-list',
-            
+
             data: function() {
                  return {
                     messages: {!! json_encode($data) !!},
@@ -231,7 +231,7 @@ function filterByOwner(){
 
                     setTimeout(() => {
                         axios.get('dashboard/communications/'+this.page)
-                            .then((response) => {   
+                            .then((response) => {
                                 $('#spinner').html('');
                                 $.each(response.data, function(index, value) {
                                     duplicate = 0;
@@ -310,7 +310,7 @@ function filterByOwner(){
                         // }
                     }
                 });
-               
+
             }
         });
 
