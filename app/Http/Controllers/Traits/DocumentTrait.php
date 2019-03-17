@@ -155,7 +155,7 @@ trait DocumentTrait
                             'docuware_document_class' => 1,
                         ]);
                     }
-                    if (!is_null($cd->attributes->fields->DOCUMENTDESCRIPTION && !is_null($primaryCat)) {
+                    if (!is_null($cd->attributes->fields->DOCUMENTDESCRIPTION) && !is_null($primaryCat)) {
                         $secondaryCat = DocumentCategory::where('document_category_name', $cd->attributes->fields->DOCUMENTDESCRIPTION)->where('parent_id', $primaryCat->id)->first();
                         if (is_null($secondaryCat)) {
                             //needs category entered
