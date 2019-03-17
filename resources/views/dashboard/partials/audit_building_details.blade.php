@@ -134,7 +134,7 @@
 												<div uk-grid>
 									            	<div class="uk-width-1-1 findings-icons"  style="margin-top: 0px;" uk-grid> 
 									            		<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_file_status}}">
-									            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'file');">
+									            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'file',null,'0');">
 																<i class="a-folder"></i>
 																<div class="findings-icon-status">
 																	@if($detail->unit->finding_file_completed == 0)
@@ -147,7 +147,7 @@
 														</div>
 														
 														<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_nlt_status}}">
-															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'nlt');">
+															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'nlt',null,'0');">
 																<i class="a-booboo"></i>
 																<div class="findings-icon-status">
 																	@if($detail->unit->finding_nlt_completed == 0)
@@ -160,7 +160,7 @@
 														</div>
 
 														<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_lt_status}}">
-															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'lt');">
+															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'lt',null,'0');">
 																<i class="a-skull"></i>
 																<div class="findings-icon-status">
 																	@if($detail->unit->finding_lt_completed == 0)
