@@ -252,7 +252,7 @@ class DocumentController extends Controller
         if (Storage::exists($filepath)) {
             $file = Storage::get($filepath);
             ob_end_clean();
-            return response()->download('storage/app/'. $filepath);
+            return response()->download(storage_path('app/'. $filepath));
 
 
             // header('Content-Description: File Transfer');
