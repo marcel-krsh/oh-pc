@@ -105,7 +105,7 @@
   				<div class="communication-item-date-time">
   					<small>{{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }}</small>
   				</div>
-  				{{ $message->owner->full_name }} @if(count($message->recipient_details)) @foreach ($message->recipient_details as $recipient) @if($recipient != $current_user && $message->owner != $recipient && $recipient->name != '') {{ $recipient->full_name() }} @elseif($recipient == $current_user) , Me @endif @endforeach @endif
+  				{{ $message->owner->full_name() }} @if(count($message->recipient_details)) @foreach ($message->recipient_details as $recipient) @if($recipient != $current_user && $message->owner != $recipient && $recipient->name != '') {{ $recipient->full_name() }} @elseif($recipient == $current_user) , Me @endif @endforeach @endif
   				@if($message->unseen > 0)
   				<div class="uk-label no-text-shadow user-badge-{{ Auth::user()->badge_color }}" uk-tooltip="pos:top-left;title:{{ $message->unseen }} unread messages">{{ $message->unseen }}</div>
   				@endif
