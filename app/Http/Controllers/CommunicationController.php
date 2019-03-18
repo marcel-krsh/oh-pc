@@ -598,17 +598,19 @@ class CommunicationController extends Controller
             }
 
             // send emails
-            try {
-                foreach ($message_recipients_array as $userToNotify) {
-                    if ($userToNotify != $user->id) {
-                        // don't send an email to sender
-                        $current_recipient = User::where('id', '=', $userToNotify)->get()->first();
-                        $emailNotification = new EmailNotification($userToNotify, $message->id);
-                        \Mail::to($current_recipient->email)->send($emailNotification);
-                    }
-                }
-            } catch (\Illuminate\Database\QueryException $ex) {
-                $error = $ex->getMessage();
+            if(env('APP_ENV') != 'local') {
+	            try {
+	                foreach ($message_recipients_array as $userToNotify) {
+	                    if ($userToNotify != $user->id) {
+	                        // don't send an email to sender
+	                        $current_recipient = User::where('id', '=', $userToNotify)->get()->first();
+	                        $emailNotification = new EmailNotification($userToNotify, $message->id);
+	                        \Mail::to($current_recipient->email)->send($emailNotification);
+	                    }
+	                }
+	            } catch (\Illuminate\Database\QueryException $ex) {
+	                $error = $ex->getMessage();
+	            }
             }
             return 1;
         } else {
