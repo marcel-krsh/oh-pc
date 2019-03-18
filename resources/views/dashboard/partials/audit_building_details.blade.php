@@ -125,7 +125,7 @@
 									            	<div class="uk-width-1-1 uk-padding-remove">
 									            		<h3 class="uk-margin-bottom-remove colored">
 									            			{{$detail->unit->unit_name}}</h3>
-										            	<small class="colored">{{$detail->unit->address}}, {{$detail->unit->city}}, {{$detail->unit->state}} {{$detail->unit->zip}}</small><br />
+										            	<small class="colored">@if($detail->unit->address){{$detail->unit->address}}, {{$detail->unit->city}}, {{$detail->unit->state}} {{$detail->unit->zip}}@else NO BUILDING ADDRESS IN DEVCO @endIf</small><br />
 										            	<small class="colored"><span id="unit-amenity-count-{{$audit}}{{$building}}{{$detail->unit->unit_id}}" class="uk-text-middle">{{$detail->unit->amenity_totals()}} @if($detail->unit->amenity_totals() > 1) {{$detail->unit->type_text_plural}} @else {{$detail->unit->type_text}} @endif</span></small>
 									            	</div>
 									            </div>
@@ -134,7 +134,7 @@
 												<div uk-grid>
 									            	<div class="uk-width-1-1 findings-icons"  style="margin-top: 0px;" uk-grid> 
 									            		<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_file_status}}">
-									            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'file');">
+									            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'file',null,'0');">
 																<i class="a-folder"></i>
 																<div class="findings-icon-status">
 																	@if($detail->unit->finding_file_completed == 0)
@@ -147,7 +147,7 @@
 														</div>
 														
 														<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_nlt_status}}">
-															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'nlt');">
+															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'nlt',null,'0');">
 																<i class="a-booboo"></i>
 																<div class="findings-icon-status">
 																	@if($detail->unit->finding_nlt_completed == 0)
@@ -160,7 +160,7 @@
 														</div>
 
 														<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_lt_status}}">
-															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'lt');">
+															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'lt',null,'0');">
 																<i class="a-skull"></i>
 																<div class="findings-icon-status">
 																	@if($detail->unit->finding_lt_completed == 0)

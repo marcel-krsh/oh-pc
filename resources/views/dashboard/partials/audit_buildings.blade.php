@@ -246,18 +246,21 @@
 											</div>
 											@else
 											<div class="uk-inline uk-padding-remove uk-float-right" style="margin-top: 7px;">	
-												<div class="findings-icon toplevel uk-inline uk-margin-right" onclick="copyAmenity('', {{$audit}}, 0, 0, {{$building->building->amenity()->id}}, 1);">
-													<i class="a-file-copy-2"></i>
-													<div class="findings-icon-status toplevel plus">
-														<span class="uk-badge">+</span>
+												@if($building->building->amenity())
+													<div class="findings-icon toplevel uk-inline uk-margin-right" onclick="copyAmenity('', {{$audit}}, 0, 0, {{$building->building->amenity()->id}}, 1);">
+														<i class="a-file-copy-2"></i>
+														<div class="findings-icon-status toplevel plus">
+															<span class="uk-badge">+</span>
+														</div>
 													</div>
-												</div>
-												<div class="findings-icon toplevel uk-inline  uk-margin-right" onclick="deleteAmenity('building-{{$context}}-r-{{$key}}', {{$audit}}, 0, 0, {{$building->building->amenity_inspection_id}}, 0, 1);">
-													<i class="a-trash-4"></i>
-													<div class="findings-icon-status toplevel plus">
-														<span class="uk-badge">-</span>
+												@endIf
+													<div class="findings-icon toplevel uk-inline  uk-margin-right" onclick="deleteAmenity('building-{{$context}}-r-{{$key}}', {{$audit}}, 0, 0, {{$building->building->amenity_inspection_id}}, 0, 1);">
+														<i class="a-trash-4"></i>
+														<div class="findings-icon-status toplevel plus">
+															<span class="uk-badge">-</span>
+														</div>
 													</div>
-												</div>
+												
 											</div>
 											@endif
 

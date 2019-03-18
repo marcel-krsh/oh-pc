@@ -439,12 +439,22 @@
 					} elseif($passedAmenity->building_id){
 						// is a building
 						$locationType = 'b-'.$passedAmenity->building_id;
-						$locationText = "Building BIN: ".$passedAmenity->building_id.", NAME: ".addslashes($buildingName).", ADDRESS: ".addslashes($passedAmenity->building->address->line_1);
+						$locationText = "Building BIN: ".$passedAmenity->building_id.", NAME: ".addslashes($buildingName);
+						if($passedAmenity->building->address){
+							$locationText .=", ADDRESS: ".addslashes($passedAmenity->building->address->line_1);
+						} else {
+							$locationText .=", NO ADDRESSS SET IN DEVCO.";
+						}
 						echo "console.log('Passed amenity is a building type');";
 					} else {
 						// is a unit
 						$locationType = 'u-'.$passedAmenity->unit_id;
-						$locationText = "Unit Name: ".$passedAmenity->cached_unit()->unit_name.", in BIN: ".$passedAmenity->building_key." at ADDRESS: ".$passedAmenity->unit->building->address->line_1;
+						$locationText = "Unit Name: ".$passedAmenity->cached_unit()->unit_name.", in BIN: ".$passedAmenity->building_key;
+						if($passedAmenity->unit->building->address) {
+							$locationText .=" at ADDRESS: ".$passedAmenity->unit->building->address->line_1;
+						} else {
+							$locationText .=", NO ADDRESSS SET IN DEVCO.";
+						}
 					}
 				?>
 				// set filter text for drop lists
@@ -465,7 +475,7 @@
 				?>
 				// set filter text for type
 				window.findingModalSelectedLocationType = '{{$locationType}}';
-				filterAmenities('u-{{$passedUnit->unit_id}}', 'Unit NAME: {{$passedUnit->unit_name}} in Building BIN:{{$passedUnit->building_key}} ADDRESS: {{$passedUnit->building->address->line_1}}',0);
+				filterAmenities('u-{{$passedUnit->unit_id}}', 'Unit NAME: {{$passedUnit->unit_name}} in Building BIN:{{$passedUnit->building_key}} ADDRESS: @if($passedUnit->building->address) {{$passedUnit->building->address->line_1}} @else NO ADDRESS SET IN DEVCO @endIf',0);
         		// filter to type and allita type (nlt, lt, file)
 
         	@else 
@@ -485,7 +495,7 @@
 
         		// set filter test for type
         		@if($passedBuilding->building)
-        		filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}} NAME: {{$passedBuilding->building_name}}, ADDRESS:{{$passedBuilding->building->address->line_1}}',0,1);
+        		filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}} NAME: {{$passedBuilding->building_name}}, ADDRESS: @if($passedBuilding->building->address){{$passedBuilding->building->address->line_1}} @else NO ADDRESS SET IN DEVCO @endIf',0,1);
         		@else 
         		filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}} NAME: {{$passedBuilding->building_name}}',0,1);
         		@endif

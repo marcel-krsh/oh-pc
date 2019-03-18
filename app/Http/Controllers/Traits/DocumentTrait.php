@@ -21,6 +21,7 @@ trait DocumentTrait
         $deviceId = null;
         $deviceName = null;
         $documentList = $apiConnect->getProjectDocuments($project->project_number, $searchString, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
+        $primaryCat = null;
 
         //dd($documentList,'Third doc id:'.$documentList->included[2]->id,'Page count:'.$documentList->meta->totalPageCount,'File type of third doc:'.$documentList->included[2]->attributes->fields->DWEXTENSION,'Document Class/Category:'.$documentList->included[2]->attributes->fields->DOCUMENTCLASS,'Userid passed:'. Auth::user()->id,'User email passed:'.Auth::user()->email,'Username Passed:'.Auth::user()->name,'Device id and Device name:'.$deviceId.','.$deviceName);
 
@@ -154,7 +155,7 @@ trait DocumentTrait
                             'docuware_document_class' => 1,
                         ]);
                     }
-                    if (!is_null($cd->attributes->fields->DOCUMENTDESCRIPTION)) {
+                    if (!is_null($cd->attributes->fields->DOCUMENTDESCRIPTION) && !is_null($primaryCat)) {
                         $secondaryCat = DocumentCategory::where('document_category_name', $cd->attributes->fields->DOCUMENTDESCRIPTION)->where('parent_id', $primaryCat->id)->first();
                         if (is_null($secondaryCat)) {
                             //needs category entered

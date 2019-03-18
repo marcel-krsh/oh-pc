@@ -60,7 +60,7 @@ class CachedAuditsEvent
         
         $jsonRun = 0;
         // get buildings from cached_audit
-        $buildings = BuildingInspection::where('audit_id', '=', $cached_audit->audit_id)->with('building','building.address')->get();
+        $buildings = BuildingInspection::where('audit_id', '=', $cached_audit->audit_id)->with('building','building.address','building.project','building.project.address')->get();
         //dd($buildings);
 
         // get the auditors' list from audit_auditors table
@@ -161,16 +161,15 @@ class CachedAuditsEvent
                     $zip = $building->building->address->zip;
                     
                 } else {
-                    $address = null;
-                    $city = null;
-                    $state = null;
-                    $zip = null;
-                    
+                    $address = 'DEFAULT: '.$building->building->project->address->line_1;
+                    $city = $building->building->project->address->city;
+                    $state = $building->building->project->address->state;
+                    $zip = $building->building->project->address->zip;
                 }
             }else{
                 $building_name = 'NOT SET IN DEVCO';
-                $building_id = 0;
-                $building_key = 0;
+                $building_id = $building->building_id;
+                $building_key = $building->building_key;
                 $project_id = $cached_audit->project_id;
                 $project_key = $cached_audit->project_key;
                 $lead_id = $cached_audit->lead_id;
@@ -207,11 +206,11 @@ class CachedAuditsEvent
                 'finding_file_status' => '',
                 'finding_nlt_status' => '',
                 'finding_lt_status' => '',
-                'finding_file_total' => $finding_file_count,
+                'finding_file_total' => $finding_file_total,
                 'finding_file_completed' => 0,
-                'finding_nlt_total' => $finding_nlt_count,
+                'finding_nlt_total' => $finding_nlt_total,
                 'finding_nlt_completed' => 0,
-                'finding_lt_total' => $finding_lt_count,
+                'finding_lt_total' => $finding_lt_total,
                 'finding_lt_completed' => 0,
                 'address' => $address,
                 'city' => $city,

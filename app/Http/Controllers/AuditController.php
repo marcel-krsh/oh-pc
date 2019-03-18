@@ -4873,23 +4873,30 @@ class AuditController extends Controller
                     }
 
                     foreach ($amenities as $amenity) {
+                        if($amenity->amenity_inspection){
+                            if ($amenity->amenity_inspection->auditor_id !== null) {
+                                $auditor_initials = $amenity->amenity_inspection->user->initials();
+                                $auditor_name = $amenity->amenity_inspection->user->full_name();
+                                $auditor_id = $amenity->amenity_inspection->user->id;
+                                $auditor_color = $amenity->amenity_inspection->user->badge_color;
+                            } else {
+                                $auditor_initials = '<i class="a-avatar-plus_1"></i>';
+                                $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
+                                $auditor_color = '';
+                                $auditor_id = 0;
+                            }
 
-                        if ($amenity->amenity_inspection->auditor_id !== null) {
-                            $auditor_initials = $amenity->amenity_inspection->user->initials();
-                            $auditor_name = $amenity->amenity_inspection->user->full_name();
-                            $auditor_id = $amenity->amenity_inspection->user->id;
-                            $auditor_color = $amenity->amenity_inspection->user->badge_color;
+                            if ($amenity->amenity_inspection->completed_date_time == null) {
+                                $completed_icon = "a-circle";
+                            } else {
+                                $completed_icon = "a-circle-checked ok-actionable";
+                            }
                         } else {
                             $auditor_initials = '<i class="a-avatar-plus_1"></i>';
-                            $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
-                            $auditor_color = '';
-                            $auditor_id = 0;
-                        }
-
-                        if ($amenity->amenity_inspection->completed_date_time == null) {
-                            $completed_icon = "a-circle";
-                        } else {
-                            $completed_icon = "a-circle-checked ok-actionable";
+                                $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
+                                $auditor_color = '';
+                                $auditor_id = 0;
+                                $completed_icon = "a-circle-checked ok-actionable";
                         }
 
                         if ($amenity->amenity->file == 1) {

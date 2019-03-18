@@ -95,19 +95,30 @@ class AmenityInspection extends Model
     public function address()
     {
         if($this->unit_id){
-
-            $address = $this->unit->building->address->formatted_address();
-            return $address;
+            if($this->unit->building->address){
+                $address = $this->unit->building->address->formatted_address();
+                return $address;
+            } else {
+                return "NO ADDRESS IN DEVCO";
+            }
 
         }elseif($this->building_id){
-
-            $address = $this->building->address->formatted_address();
-            return $address;
+            if($this->building->address){
+                $address = $this->building->address->formatted_address();
+                return $address;
+            } else {
+                return "NO ADDRESS IN DEVCO";
+            }
 
         }elseif($this->project_id){
 
-            $address = $this->project->address->formatted_address();
-            return $address;
+            if($this->project->address){
+                $address = $this->project->address->formatted_address();
+            
+                return $address;
+            }else{
+                return "NO ADDRESS IN DEVCO";
+            }
 
         }
 
