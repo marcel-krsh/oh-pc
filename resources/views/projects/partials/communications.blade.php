@@ -164,113 +164,15 @@
 
   </div>
   <script>
-    //loadCommunications(window.currentDetailId);
-
-    // function searchMessages(){
-    // 	$.post('{{ URL::route("communications.search") }}', {
-    // 		'communications-search' : $("#communications-search").val(),
-    // 		'_token' : '{{ csrf_token() }}'
-    // 	}, function(data) {
-    // 		if(data!='1'){
-    // 			UIkit.modal.alert(data);
-    // 		} else {
-    // 			$('#dash-subtab-10').trigger('click');
-    // 		}
-    // 	} );
-    // }
-
-    // process search
-    // $(document).ready(function() {
-    // 	$('#communications-search').keydown(function (e) {
-    // 		if (e.keyCode == 13) {
-    // 			searchMessages();
-    // 			e.preventDefault();
-    // 			return false;
-    // 		}
-    // 	});
-    // 	@if (session()->has('dynamicModalLoad') && session('dynamicModalLoad') != '' )
-    // 	var dynamicModalLoadid = '';
-    // 	$.get( "/session/dynamicModalLoad", function( data ) {
-    // 		dynamicModalLoadid = data;
-    // 		console.log('Loading Message Id: '+dynamicModalLoadid);
-
-    // 		if(dynamicModalLoadid != ''){
-    // 			dynamicModalLoad("communication/0/replies/"+dynamicModalLoadid);
-    // 		}
-    // 	});
-
-    // 	@endif
-
-    // 	var $filteredElements = $('.filter_element');
-    // 	$('.filter_link').click(function (e) {
-    // 		e.preventDefault();
-    //         // get the category from the attribute
-    //         var filterVal = $(this).data('filter');
-    //         filterElement(filterVal, '.filter_element');
-
-    //         // reset dropdowns
-    //         $('#filter-by-owner').prop('selectedIndex',0);
-    //         @if(Auth::user()->isFromEntity(1))
-    //         $('#filter-by-program').prop('selectedIndex',0);
-    //         @endif
-    //       });
-
-    // });
-
-    // function filterElement(filterVal, filter_element){
-    // 	if (filterVal === 'all') {
-    // 		$(filter_element).show();
-    // 	}
-    // 	else {
-    //      // hide all then filter the ones to show
-    //      $(filter_element).hide().filter('.' + filterVal).show();
-    //    }
-    //    UIkit.update(event = 'update');
-    //  }
-
-    //  function filterByOwner(){
-    //  	var myGrid = UIkit.grid($('#communication-list'), {
-    //  		controls: '#message-filters',
-    //  		animation: false
-    //  	});
-    //  	var textinput = $("#filter-by-owner").val();
-
-    //  	@if(Auth::user()->isFromEntity(1))
-    //  	$('#filter-by-program').prop('selectedIndex',0);
-    //  	@endif
-
-    //     // filter grid items
-    //     //myGrid.filter(textinput);
-    //     filterElement(textinput, '.filter_element');
-    //   }
-
-    //   @if(Auth::user()->isFromEntity(1))
-    //   function filterByProgram(){
-    //   	var myGrid = UIkit.grid($('#communication-list'), {
-    //   		controls: '#message-filters',
-    //   		animation: false
-    //   	});
-    //   	var textinput = $("#filter-by-program").val();
-
-    //   	$('#filter-by-owner').prop('selectedIndex',0);
-
-    //     // filter grid items
-    //     //myGrid.filter(textinput);
-    //     filterElement(textinput, '.filter_element');
-    //   }
-    //   @endif
-
-      function closeOpenMessage(){
-      	$('.communication-list-item').removeClass('communication-open');
-      	$('.communication-details').addClass('uk-hidden');
-      	$('.communication-summary').removeClass('uk-hidden');
-      }
-      function openMessage(communicationId){
-      	closeOpenMessage();
-      	$("#communication-"+communicationId).addClass('communication-open');
-      	$("#communication-"+communicationId+"-details").removeClass('uk-hidden');
-      	$("#communication-"+communicationId+"-summary").addClass('uk-hidden');
-      }
-
-
-    </script>
+  	function closeOpenMessage(){
+  		$('.communication-list-item').removeClass('communication-open');
+  		$('.communication-details').addClass('uk-hidden');
+  		$('.communication-summary').removeClass('uk-hidden');
+  	}
+  	function openMessage(communicationId){
+  		closeOpenMessage();
+  		$("#communication-"+communicationId).addClass('communication-open');
+  		$("#communication-"+communicationId+"-details").removeClass('uk-hidden');
+  		$("#communication-"+communicationId+"-summary").addClass('uk-hidden');
+  	}
+  </script>

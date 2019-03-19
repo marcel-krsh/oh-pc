@@ -813,7 +813,7 @@ class CommunicationController extends Controller
                 ->where(function ($query) use ($current_user, $user_eval, $user_spec) {
                     $query->where(function ($query) use ($current_user) {
                         $query->where('owner_id', '=', $current_user->id);
-                        $query->whereHas('replies');
+                        //$query->whereHas('replies');
                     });
                     $query->orWhereHas('recipients', function ($query) use ($current_user, $user_eval, $user_spec) {
                         $query->where('user_id', "$user_eval", $user_spec);
