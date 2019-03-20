@@ -296,6 +296,20 @@
         Route::post('/communications/audit/{audit?}', 'CommunicationController@searchCommunications')->name('communications.search');
         Route::get('/communications/unseen', 'CommunicationController@getUnseenMessages');
         Route::get('/view_message/{message}', 'CommunicationController@goToMessage');
+        Route::get('communication/session/{trigger?}', 'CommunicationController@setFilterSession');
+
+        Route::get('/session/communication_switch_inbox', function()
+				{
+				    session(['communication_sent'=>0]);
+				    $communication_sent = 0;
+				    return 1;
+				});
+				Route::get('/session/communication_switch_sent', function()
+				{
+				    session(['communication_sent'=>1]);
+				    $communication_sent = 1;
+				    return 1;
+				});
 
 
         Route::post('/documents/audit/{audit}/upload', 'DocumentController@upload')->name('documents.upload');
