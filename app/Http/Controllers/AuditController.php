@@ -265,7 +265,9 @@ class AuditController extends Controller
             // for each orderingbuilding
             
             // fix total findings if needed
-            $building->building->recount_findings();
+            if($building->building){
+                $building->building->recount_findings();
+            }
 
 
             if ($building->building_id === null && $building->amenity_inspection_id === null) {
