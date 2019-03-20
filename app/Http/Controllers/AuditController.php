@@ -295,7 +295,7 @@ class AuditController extends Controller
             }
 
             
-            if ($building->building_id === null){
+            if ($building->building_id === null && $building->building){
                 // naming duplicates should only apply to amenities
                 if(!array_key_exists($building->building->building_name, $previous_name)){
                     $previous_name[$building->building->building_name]['counter'] = 1; // counter
