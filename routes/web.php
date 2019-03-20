@@ -138,7 +138,8 @@
         Route::get('dashboard/audits/{audit}/building/{building}/details', 'AuditController@detailsFromBuilding')->name('audit.building.details');
         Route::get('dashboard/audits/{audit_id}/building/{building_id}/inspection', 'AuditController@inspectionFromBuilding')->name('audit.inspection');
         Route::get('dashboard/audits/{audit_id}/building/{building_id}/details/{detail_id}/inspection', 'AuditController@inspectionFromBuildingDetail')->name('audit.building.inspection');
-        Route::get('dashboard/reports', 'DashboardController@reports')->name('dashboard.reports');
+        Route::get('dashboard/reports', 'ReportsController@reports')->name('dashboard.reports');
+        Route::get('project/{project}/reports', 'ReportsController@reports')->name('project.reports');
 
         Route::get('autocomplete/all', 'DashboardController@autocomplete');
         Route::get('autocomplete/auditproject', 'DashboardController@autocomplete');

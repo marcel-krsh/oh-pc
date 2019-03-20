@@ -363,12 +363,7 @@ class DashboardController extends Controller
         }
     }
 
-    public function reports(Request $request)
-    {
-        $reports = null;
-        //return \view('dashboard.index'); //, compact('user')
-        return view('dashboard.reports', compact('reports'));
-    }
+    
 
     public function autocomplete(Request $request)
     {

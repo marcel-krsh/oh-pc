@@ -49,6 +49,11 @@ class Audit extends Model
     {
         return $this->hasOne(\App\Models\ProjectDetails::class, 'project_id', 'project_id')->where('audit_id',$this->id);
     }
+    public function lead() : HasOne
+    {
+        
+        return $this->hasOne(\App\Models\User::class, 'devco_key', 'user_key');
+    }
     public function project(): HasOne
     {
         return $this->hasOne(\App\Models\Project::class, 'project_key','development_key');
