@@ -166,21 +166,20 @@
                             //ACTION OPTIONS BASED ON STATUS AND USER ROLE
                         ?>
                         @can('access_auditor')
-                            @if($report->crr_approval_type_id == 1)
-                                <a class="uk-muted uk-button uk-button-success uk-button-small" onClick="loadTab('/dashboard/reports?action=2', '3','','','',1);">SEND TO MANAGER</a>
-                            @elseIf($report->crr_approval_type_id == 2)
-                                @can('access_manager')
-                                <select onchange="loadTab('/dashboard/reports?action='+this.value, '3','','','',1);">
-                                    <option >APPROVE?</option>
-                                    <option value="3">DECLINE</option>
-                                    <option value="4">APPROVE WITH CHANGES</option>
-                                    <option value="5">APPROVED</option>
-                                </select>
-                                @else
-                                    <a class="uk-muted" onClick="loadTab('/dashboard/reports?action=2', '3','','','',1);">RESEND TO MANAGER</a>
-                                @endCan
-                            @endIf
-
+                           
+                                    <select onchange="loadTab('/dashboard/reports?id={{$report->id}}&action='+this.value, '3','','','',1);">
+                                        <option >ACTION</option>
+                                        <option value="1">DRAFT</option>
+                                        <option value="2">SEND TO MANAGER REVIEW</option>
+                                        @can('access_manager')
+                                        <option value="3">DECLINE</option>
+                                        <option value="4">APPROVE WITH CHANGES</option>
+                                        <option value="5">APPROVE</option>
+                                        @endCan
+                                        <option value="6">SEND TO PM</option>
+                                        <option value="7">PM VIEWED IN PERSON</option>
+                                        
+                                    </select>
                         @endCan
 
                     </td>
@@ -211,7 +210,7 @@
                 @if($report->report_history)
 
                 <tr id="report-{{$report->id}}-history" hidden>
-                    <td  bgcolor="#3c3c3c"></td>
+                    <td  ></td>
                     
                     
                         <td colspan="10">    
@@ -219,25 +218,27 @@
                         <table class="uk-table uk-table-striped">
                             
                             <thead>
-                                <th width="80px">DATE</th>
+                                <th width="80px"> DATE</th>
                                 <th width="120px">USER</th>
                                 <th>NOTE</th>
                             </thead>
                                
-                                
-                            @forEach($report->report_history as $h)
+                            <?php 
+                            $history = collect($report->report_history)->sortByDesc('date');
+                            ?>
+                            @forEach($history as $h)
                                 <tr>
-                                    <td>{{$h['date']}}</td>
+                                    <td> {{$h['date']}}</td>
                                     <td>{{$h['user_name']}} @can('access_admin')<i class="a-info-circle uk-link"  onClick="openUserPreferences({{$h['user_id']}});"></i>@endCan</td>
                                     <td>{{$h['note']}}</td>
                                 </tr>
                             @endForEach
-                            @can('access_admin')
-                                <tr >
-                                    <td height="40px" valign="middle" colspan="3" bgcolor="#8a8998"><span class="uk-contrast"> ADMINS: Information presented was current at time of recording the record. Click the <i class="a-info-circle"></i> icon to view a user's current information.</span></td>
-                                </tr>
-                            @endCan
+                            
                         </table>
+                        @can('access_admin')
+                                
+                                    <div class="uk-width-1-1 uk-margin-top uk-margin-bottom"><small> ADMINS: Information presented was current at time of recording the record. Click the <i class="a-info-circle"></i> icon to view a user's current information.</small></div>
+                            @endCan
                     </td>
 
                 </tr>

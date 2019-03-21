@@ -165,8 +165,16 @@ if(Auth::check()){
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	<script>
-		function openUserPreferences(){
-			dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);
+		function openUserPreferences(@can('access_manager') user_id = null @endCan){
+			@can('access_manager')
+				if(user_id != null){
+					dynamicModalLoad('auditors/'+user_id+'/preferences',0,0,1);
+				}else{
+					dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);
+				}
+			@else
+				dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);
+			@endCan
 		}
 	    window.Laravel = <?php echo json_encode([
 	        'csrfToken' => csrf_token(),

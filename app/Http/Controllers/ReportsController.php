@@ -42,13 +42,13 @@ class ReportsController extends Controller
                 $updated = $report->update(['response_due_date' =>$dateY.'-'.$dateM.'-'.$dateD.' 18:00:00']);
                 if($updated){
                     // Record Historical Record.
-                    $history = ['date'=>date('Y-m-d g:i:a'),'user_id'=>Auth::user()->id,'user_name'=>Auth::user()->full_name(),'note'=>'Updated Due Date FROM '.$oldDate.' to '.$dateY.'-'.$dateM.'-'.$dateD.' 18:00:00 '];
+                    $history = ['date'=>date('m-d-Y g:i a'),'user_id'=>Auth::user()->id,'user_name'=>Auth::user()->full_name(),'note'=>'Updated Due Date FROM '.$oldDate.' to '.$dateY.'-'.$dateM.'-'.$dateD.' 18:00:00 '];
                     $this->reportHistory($report,$history);
                     return 'Due Date Updated for Report '.intval($data['id']).' to '.$dateM.'/'.$dateD.'/'.$dateY;
 
                 } else {
                     // Record Historical Record.
-                    $history = ['date'=>date('Y-m-d g:i:a'),'user_id'=>Auth::user()->id,'user_name'=>Auth::user()->full_name(),'note'=>'Attempted update to due date failed - value submitted: '.$data['due']];
+                    $history = ['date'=>date('m/d/Y g:i a'),'user_id'=>Auth::user()->id,'user_name'=>Auth::user()->full_name(),'note'=>'Attempted update to due date failed - value submitted: '.$data['due']];
                     $this->reportHistory($report,$history);
                     return 'I was not able to update Report #'.intval($data['id']).' due date to '.$dateY.'-'.$dateM.'-'.$dateD.' 18:00:00';
                 }
@@ -58,6 +58,85 @@ class ReportsController extends Controller
         } else {
             return 'Sorry, you do not have permission to do this action.';
         }
+    }
+
+    public function reportAction(CrrReport $report, $data){
+        $note = 'Attempted an Action, but no action was taken.';
+        if(Auth::user()->can('access_auditor')){
+            switch ($data['action']) {
+                case 1:
+                    # DRAFT
+                    //send manager notification
+                    $note = "Changed report status from ".$report->status_name()." to Draft.";
+                    $report->update(['crr_approval_type_id'=>1]);
+                    break;
+                case 2:
+                    # Pending Manager Review...
+                    $note = "Changed report status from ".$report->status_name()." to Pending Manger Review.";
+
+                    $report->update(['crr_approval_type_id'=>2]);
+                    break;
+                case 3:
+                    # Declined By Manager...
+                    if(Auth::user()->can('access_manager')){
+                        $note = "Changed report status from ".$report->status_name()." to Declined by Manager.";
+                        $report->update(['crr_approval_type_id'=>3]);
+                    } else {
+                        $note = "Attempted change to Declined by Manger can only be done by a manager or higher.";
+                    }
+                    break;
+                case 4:
+                    # Approved with Changes...
+                    if(Auth::user()->can('access_manager')){
+                        $note = "Changed report status from ".$report->status_name()." to Approved with Changes.";
+                        $report->update(['crr_approval_type_id'=>4]);
+                    } else {
+                        $note = "Attempted change to Approved with Changes can only be done by a manager or higher.";
+                    }
+                    break;
+                case 5:
+                    # Approved...
+                    if(Auth::user()->can('access_manager')){
+                        $note = "Changed report status from ".$report->status_name()." to Approved.";
+                        $report->update(['crr_approval_type_id'=>5]);
+                    } else {
+                        $note = "Attempted change to Approved can only be done by a manager or higher.";
+                    }
+                    break;
+                case 6:
+                    # Sent...
+                    if($report->project->pm() && strlen($report->project->pm()['email'])>3){
+                        // send notification that report is ready to be viewed.
+                        $note = "Changed report status from ".$report->status_name()." to Sent and sent notification to ".$report->project->pm()['email'].".";
+                        $report->update(['crr_approval_type_id'=>6]);
+                    } else {
+                        $note = "Unable to send report. There is no default email for a property manager on this project. Status will remain:".$report->status_name().".";
+                    }
+                    
+                    break;
+                case 7:
+                    # Viewed by PM...
+                    if(!Auth::user()->isOhfa()){
+                        $note = "Changed report status from ".$report->status_name()." to Viewed by PM.";
+                        $report->update(['crr_approval_type_id'=>7]);
+                    } else {
+                        $note = "Viewed by OHFA staff.";
+                    }
+                    break;
+                case 8:
+                    # code...
+                    break;
+                
+                default:
+                    # code...
+                    break;
+            }
+        }
+
+        $history = ['date'=>date('m-d-Y g:i a'),'user_id'=>Auth::user()->id,'user_name'=>Auth::user()->full_name(),'note'=>$note];
+        $this->reportHistory($report,$history);
+        return $note;
+
     }
 
     public function reports(Request $request, $project=null)
@@ -77,6 +156,16 @@ class ReportsController extends Controller
             $data['id'] = $request->get('report_id');
             //dd($data);
             $messages[] = $this->dueDate($data);
+            //dd($messages);
+        }
+
+        if(!is_null($request->get('action'))){
+            $data= array();
+            $data['action'] = intval($request->get('action'));
+            
+            //dd($data);
+            $report = CrrReport::find($request->get('id'));
+            $messages[] = $this->reportAction($report,$data);
             //dd($messages);
         }  
         // Search

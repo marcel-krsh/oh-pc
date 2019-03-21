@@ -26,6 +26,11 @@ class CrrReport extends Model
     	return $this->hasOne('App\Models\User','id','manager_id');
     }
 
+    public function status_name(): string {
+        $statusName = CrrApprovalType::find($this->crr_approval_type_id);
+        return $statusName->name;
+    }
+
     public function crr_approval_type(): HasOne{
         return $this->hasOne('App\Models\CrrApprovalType','id','crr_approval_type_id');
     }
