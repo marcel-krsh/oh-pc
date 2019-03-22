@@ -183,6 +183,9 @@
         Route::get('/communications/{project}.json', 'CommunicationController@communicationsFromProjectIdJson')->name('communications.loadjson');
         Route::get('/projects/{project}/communications/title', 'AuditController@getProjectCommunicationsTitle')->name('project.communications.title');
 
+//allita reports!
+        Route::get('/modals/new-report','ReportsController@newReportForm');
+        Route::post('/new-report','ReportsController@createNewReport')->name('report.create');
 
 
 //allita documents!

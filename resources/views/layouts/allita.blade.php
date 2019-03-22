@@ -391,7 +391,14 @@ if(Auth::check()){
 		<div id="footer-content" class="uk-width-1-3">
 			<div id="footer-actions-tpl"  class="uk-text-right"></div>
 		</div>
-	</div>
+	</div><!-- 
+	Hidden inputs that ensure checks do not double up on each other for each of the tabs. 
+	We set them to a value of 1, to allow the tab to load first before it tries to update.
+	-->
+	<input type="hidden" id='report-checking' name="report-checking" value="1">
+	<input type="hidden" id='audit-checking' name="audit-checking" value="1">
+	<input type="hidden" id='communication-checking' name="communication-checking" value="1">
+	<input type="hidden" id='stream-checking' name="stream-checking" value="1">
 	<script>
 	flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
 	flatpickr(".flatpickr");
@@ -492,6 +499,51 @@ if(Auth::check()){
 	    $( document ).ready(function() {
 	    	$('.uk-sticky-placeholder:last').remove();
 	    	$("html, body").animate({ scrollTop: 0 }, "slow");
+
+	    	// Put in page refresh scripts here - we do this on the main template to ensure we don't create multiple instances of intervals:
+
+	    	// REPORTS ROW CHECKS
+	    	setInterval(function(){ 
+	    		// ensure the tab is active to run updates on it.
+                if($('#detail-tab-3').hasClass('uk-active') && $('#report-checking').val() === '0'){
+                    //console.log("Checking for updated reports. "+$('#report-checking').val()); 
+                    $('#report-checking').val('1');
+                    //$('#report-refreshing').html('<div uk-spinner></div> UPDATING...');
+                    $.get('/dashboard/reports', {
+                                'check' : 1,
+                                'newer_than' : $('#crr-newest').val()
+                                }, function(data) {
+                                    if(data==1){ 
+                                        $('#report-checking').val('0');
+                                        $('#report-refreshing').html('');
+                                    } else {
+                                        //UIkit.modal.alert('updated'+data1);
+                                        $('#report-checking').val('0');
+                                        $('#report-refreshing').html('');
+                                        var data = JSON.parse(data);
+                                        //alert(data.data[0].updated_at);
+                                         
+                                         data.data.forEach( function(report){
+                                         	$('#crr-report-row-'+report.id).remove();
+                                         	$('#report-'+report.id+'-history').remove();
+                                         });
+
+                                         $.get('/dashboard/reports', {
+			                                 'rows_only' : 1,
+			                                'newer_than' : $('#crr-newest').val()
+			                                 }, function(data2) {
+			                             	$('#crr-report-list').prepend(data2);
+											$('#crr-newest').val(data.data[0].updated_at);
+			                             });
+                                        
+                                    }
+					});
+
+                }
+                            
+                
+            }, 10000);
+
 	    });
 
 	</script>

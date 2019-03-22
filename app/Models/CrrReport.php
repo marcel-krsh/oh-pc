@@ -36,7 +36,7 @@ class CrrReport extends Model
     }
 
     public function audit(): HasOne{
-    	return $this->hasOne('App\Models\Audit');
+    	return $this->hasOne('App\Models\Audit','id','audit_id');
     }
 
     public function template(){
@@ -50,6 +50,8 @@ class CrrReport extends Model
     public function project(): HasOne{
     	return $this->hasOne('App\Models\Project','id','project_id');
     }
+
+    
 
     public function comments(): HasMany{
     	return $this->hasMany('App\Models\CrrComment');

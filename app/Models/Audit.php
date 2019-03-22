@@ -302,5 +302,16 @@ class Audit extends Model
 
         return $checks;
     }
+    public function cached_audit() : HasOne
+    {
+        return $this->hasOne(\App\Models\CachedAudit::class)->where('audit_id',$this->id);
+    }
+    public function is_archived() : bool {
+        if($this->cached_audit->step_id !== 67){
+            return false;
+        } else {
+            return true;
+        }
+    }
 
 }

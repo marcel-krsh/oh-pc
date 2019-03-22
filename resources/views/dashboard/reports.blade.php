@@ -80,7 +80,7 @@
 
         <div class="uk-width-1-1">
             <div class="uk-align-right uk-label  uk-margin-top uk-margin-right">{{$reports->total()}} @if($reports->total() == 1) REPORT @else REPORTS @endif</div>
-            <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter" style="background-color:#d8eefa"><a class=" " onclick="dynamicModalLoad('new-report/')">
+            <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter" style="background-color:#d8eefa"><a class=" " onclick="dynamicModalLoad('new-report')">
                         <span class="a-file-plus"></span> 
                         <span>NEW REPORT</span>
                     </a>
@@ -114,8 +114,11 @@
                 
             </div>
             @endIf
+            <div style="display:inline-block" id="report-refreshing"></div>
+            
         </div>
         <hr class="dashed-hr uk-width-1-1 uk-margin-bottom">
+        <input type="hidden" id="crr-newest" value="{{date('Y-m-d g:h:i',time())}}">
     @if(count($reports))
         <style type="text/css">
             .calendar-button {
@@ -125,7 +128,7 @@
             }
         </style>
         <div class="uk-width-1-1">
-            <table class="uk-table uk-table-striped">
+            <table class="uk-table " id="crr-report-list">
                 <thead>
 
                     
@@ -152,99 +155,9 @@
                     @endCan
                
             </thead>
-            @forEach($reports as $report)
-                <tr>
-                    
-                    <td><a href="/report/{{$report->id}}" target="report-{{$report->id}}" class="uk-mute"><i class="a-file-chart-3"></i> #{{$report->id}}</a></td>
-                    <td><a onclick="loadTab('/projects/{{$report->project->project_key}}', '4', 1, 1,'',1);" class="uk-mute"> {{$report->project->project_number}} : {{$report->project->project_name}}</a></td>
-                    <td>{{$report->audit_id}}</td>
-                    <td>{{$report->lead->person->first_name}} {{$report->lead->person->last_name}}</td>
-                    <td>{{$report->template()->template_name}}</td>
-                    <td>{{$report->crr_approval_type->name}}</td>
-                    <td>
-                       <?php
-                            //ACTION OPTIONS BASED ON STATUS AND USER ROLE
-                        ?>
-                        @can('access_auditor')
-                           
-                                    <select onchange="loadTab('/dashboard/reports?id={{$report->id}}&action='+this.value, '3','','','',1);">
-                                        <option >ACTION</option>
-                                        <option value="1">DRAFT</option>
-                                        <option value="2">SEND TO MANAGER REVIEW</option>
-                                        @can('access_manager')
-                                        <option value="3">DECLINE</option>
-                                        <option value="4">APPROVE WITH CHANGES</option>
-                                        <option value="5">APPROVE</option>
-                                        @endCan
-                                        <option value="6">SEND TO PM</option>
-                                        <option value="7">PM VIEWED IN PERSON</option>
-                                        
-                                    </select>
-                        @endCan
-
-                    </td>
-                    <td>{{ date('M d, Y',strtotime($report->created_at)) }}</td>
-                    <td>{{ ucfirst($report->updated_at->diffForHumans()) }}</td>
-                    <td>@if(!is_null($report->response_due_date))  @if(strtotime($report->response_due_date) < time()) <span class="attention" style="color:darkred"> <i class="a-warning"></i> @endIf {{date('M d, Y',strtotime($report->response_due_date)) }} @if(strtotime($report->response_due_date) < time()) </span> @endIf<a class=" flatpickr selectday{{$report->id}} flatpickr-input "><input type="text" placeholder="Edit Due Date.." data-input="" style="display:none" ><i class="a-pencil " ></i></a>@else <a class="uk-button uk-button-small uk-button-success flatpickr selectday{{$report->id}} flatpickr-input"><input type="text" placeholder="Select Due Date.." data-input="" style="display:none" ><i class="a-calendar-pencil calendar-button " ></i></a> @endIf
-                         <script>
-                            flatpickr(".selectday{{$report->id}}", {
-                                weekNumbers: true,
-                                defaultDate:"today",
-                                altFormat: "F j, Y",
-                                dateFormat: "Ymd",
-                                "locale": {
-                                    "firstDayOfWeek": 1 // start week on Monday
-                                    }
-                            });
-                            $('.flatpickr.selectday{{$report->id}}').change(function(){
-                                console.log('New Due Date for report {{$report->id}} of '+this.value);
-                                loadTab('/dashboard/reports?report_id={{$report->id}}&due='+encodeURIComponent(this.value), '3','','','',1);
-                            });
-                    </script>
-                    </td>
-                    @can('access_auditor')
-                    <td><i @if($report->report_history) class="a-person-clock uk-link"  uk-toggle="target: #report-{{$report->id}}-history;" @else class="a-clock-not" @endIf></i></td>
-                    @endCan
-                </tr>
-                @can('access_auditor')
-                @if($report->report_history)
-
-                <tr id="report-{{$report->id}}-history" hidden>
-                    <td  ></td>
-                    
-                    
-                        <td colspan="10">    
-                   
-                        <table class="uk-table uk-table-striped">
-                            
-                            <thead>
-                                <th width="80px"> DATE</th>
-                                <th width="120px">USER</th>
-                                <th>NOTE</th>
-                            </thead>
-                               
-                            <?php 
-                            $history = collect($report->report_history)->sortByDesc('date');
-                            ?>
-                            @forEach($history as $h)
-                                <tr>
-                                    <td> {{$h['date']}}</td>
-                                    <td>{{$h['user_name']}} @can('access_admin')<i class="a-info-circle uk-link"  onClick="openUserPreferences({{$h['user_id']}});"></i>@endCan</td>
-                                    <td>{{$h['note']}}</td>
-                                </tr>
-                            @endForEach
-                            
-                        </table>
-                        @can('access_admin')
-                                
-                                    <div class="uk-width-1-1 uk-margin-top uk-margin-bottom"><small> ADMINS: Information presented was current at time of recording the record. Click the <i class="a-info-circle"></i> icon to view a user's current information.</small></div>
-                            @endCan
-                    </td>
-
-                </tr>
-                @endIf
-                @endCan
-            @endForEach
+            
+                @include('dashboard.partials.reports-row')
+            
         </table>
         {{$reports->links()}}
         <script>
@@ -256,6 +169,10 @@
                window.current_finding_type_page = $('#detail-tab-3-content').load($(this).attr('href'));
                return false;
            });
+           
+        // on doc ready we allow updates to start:
+        $('#report-checking').val('0');
+            
         });
     
         function searchReports(){
@@ -277,7 +194,20 @@
               }
             });
         });
-
+        @can('access_auditor')
+        function reportAction(reportId,action){
+            window.crrActionReportId = reportId;
+            if(action != 8){
+                loadTab('/dashboard/reports?id='+reportId+'&action='+action, '3','','','',1);
+            }else if(action == 8){
+                UIkit.modal.confirm('Refreshing the dynamic data will set the report back to Draft status - are you sure you want to do this?').then(function(){
+                    loadTab('/dashboard/reports?id='+window.crrActionReportId+'&action=8', '3','','','',1);
+                },function(){
+                    //nope
+                });
+            }
+        }
+        @endCan
         @if(count($messages))
             @forEach($messages as $message)
                 UIkit.notification({
