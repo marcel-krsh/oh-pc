@@ -166,6 +166,8 @@ class ReportsController extends Controller
             $project = Project::find($project);
             session(['crr_report_project_id'=>$project->id]);
         }
+        
+
         // Perform Actions First.
         if(!is_null($request->get('due'))){
             $data= array();
@@ -186,18 +188,50 @@ class ReportsController extends Controller
             //dd($messages);
         } 
 
+        // Set default filters for first view of page:
+        if(session('crr_first_load') !== 1){
+                // set some default parameters
+                if(Auth::user()->can('access_manager')){
+                    session(['crr_report_status_id'=>2]);
+                    // pending manager review
+                }elseif(Auth::user()->can('access_auditor')){
+                    session(['crr_report_lead_id'=>Auth::user()->id]);
+                    // show this auditors reports
 
-        // Search
+                }elseif(Auth::user()->can('access_pm')){
+                    // @todo
+                }
+                session(['crr_first_load => 1']);
+                // makes sure if they override or clear the default filter it doesn't get overrideen.
+            }
+        // Search Number
         if($request->get('search')){
-            session(['crr_search'=>$request->get('search')]);
+                session(['crr_search'=>$request->get('search')]);
+        }elseIf(is_null(session('crr_search'))){
+            session(['crr_search'=>'all']);
         }
-        if(session('crr_search') !== '%%clear-search%%'){
-            $approvalTypeEval = 'LIKE';
-            $approvalTypeVal = "%".session('crr_search')."%";
-        }else{
-            $request->session()->forget('crr_search');
-            $approvalTypeEval = 'LIKE';
-            $approvalTypeVal = "%%";
+        if( session('crr_search') !== 'all'){
+            $searchEval = '=';
+            $searchVal = intval(session('crr_search'));
+        } else {
+            session(['crr_search'=>'all']);
+            $searchEval = '>';
+            $searchVal = '0';
+        }
+
+        // Report Type
+        if($request->get('crr_report_type')){
+                session(['crr_report_type'=>$request->get('crr_report_type')]);
+        }elseIf(is_null(session('crr_report_type'))){
+            session(['crr_report_type'=>'all']);
+        }
+        if( session('crr_report_type') !== 'all'){
+            $typeEval = '=';
+            $typeVal = intval(session('crr_report_type'));
+        } else {
+            session(['crr_report_type'=>'all']);
+            $typeEval = '>';
+            $typeVal = '0';
         }
 
         // Report Status
@@ -258,13 +292,13 @@ class ReportsController extends Controller
             // if this is just a check - we do not need this information.
             $auditLeads = Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
             $auditProjects = CrrReport::select('*')->with('project')->groupBy('project_id')->get();
+            $crr_types_array = CrrReport::select('id','template_name')->groupBy('template_name')->whereNotNull('template')->get()->all();
             $hfa_users_array = array();
             $projects_array = array();
             foreach ($auditLeads as $hfa) {
                 if($hfa->lead_user_id){
                     $hfa_users_array[] = $hfa->lead;
                 }
-                
             }
             foreach ($auditProjects as $hfa) {
                 
@@ -279,14 +313,21 @@ class ReportsController extends Controller
                 return $value['project_name'];
             }));
             $crrApprovalTypes = CrrApprovalType::orderBy('order')->get();
+
+            
         }
         //dd($hfa_users_array);
+        //dd($searchVal,$searchEval,session('crr_search'),intval($request->get('search')));
         $reports = CrrReport::where('crr_approval_type_id',$approvalTypeEval,$approvalTypeVal)
                             ->whereNull('template')
                             ->where('project_id',$projectEval,$projectVal)
                             ->where('lead_id',$leadEval,$leadVal)
                             ->where('updated_at','>', $newerThan)
-                            ->paginate(150);
+                            ->where('from_template_id',$typeEval,$typeVal)
+                            ->where('id',$searchEval, $searchVal)
+                            
+                            ->orderBy('updated_at','desc')
+                            ->paginate(100);
 
         if(count($reports)){
             $newest = $reports->sortByDesc('updated_at');
@@ -305,7 +346,7 @@ class ReportsController extends Controller
         }else if($request->get('rows_only')){
             return view('dashboard.partials.reports-row', compact('reports'));
         }else{
-            return view('dashboard.reports', compact('reports','project','hfa_users_array','crrApprovalTypes','projects_array','messages','newest'));
+            return view('dashboard.reports', compact('reports','project','hfa_users_array','crrApprovalTypes','projects_array','crr_types_array','messages','newest'));
         }
     }
 

@@ -4,13 +4,14 @@
     $crrStatusSelection = 'all';
     $crrProjectSelection = 'all';
     $crrLeadSelection = 'all';
+    $crrTypeSelection = 'all';
     ?>
 
 <div id="reports_tab">
     <div uk-grid class="uk-margin-top" id="message-filters" data-uk-button-radio="">
 
         
-                <div uk-grid class="uk-width-1-4">
+                <div uk-grid class="uk-width-1-5">
                 	@can('access_auditor')
 
                     <select id="filter-by-owner" class="uk-select filter-drops uk-width-1-1" onchange="loadTab('/dashboard/reports?crr_report_status_id='+this.value, '3','','','',1);">
@@ -35,7 +36,7 @@
                 
                 
                 @can('access_auditor')
-                <div class="uk-width-1-4" id="recipient-dropdown" style="vertical-align: top;">
+                <div class="uk-width-1-5" id="recipient-dropdown" style="vertical-align: top;">
                     <select id="filter-by-owner" class="uk-select filter-drops uk-width-1-1" onchange="loadTab('/dashboard/reports?crr_report_project_id='+this.value, '3','','','',1);">
                         <option value="all" selected="">
                             FILTER BY PROJECT 
@@ -52,7 +53,7 @@
                     </select>
                     
                 </div>
-                <div class="uk-width-1-4" style="vertical-align: top;">
+                <div class="uk-width-1-5" style="vertical-align: top;">
                     <select id="filter-by-program" class="uk-select filter-drops uk-width-1-1" onchange="loadTab('/dashboard/reports?crr_report_lead_id='+this.value, '3','','','',1);">
                         <option value="all" selected="">
                             FILTER BY LEAD 
@@ -67,15 +68,31 @@
 	                        @endIf      
                         </select>
                 </div>
+                <div class="uk-width-1-5" style="vertical-align: top;">
+                    <select id="filter-by-type" class="uk-select filter-drops uk-width-1-1" onchange="loadTab('/dashboard/reports?crr_report_type='+encodeURIComponent(this.value), '3','','','',1);">
+                        <option value="all" selected="">
+                            FILTER BY TYPE 
+                            </option>
+                            <option value="all" @if(session('crr_report_type') == 'all')  @endIf>
+                            ALL TYPES
+                        </option>
+                            @if(!is_null($crr_types_array))
+                                @foreach ($crr_types_array as $type)
+                                <option value="{{$type->id}}">@if(session('crr_report_type') == $type->id)<?php $crrTypeSelection = $type->template_name; ?>  @endIf<a  class="uk-dropdown-close">{{$type->template_name}}</a></option>    
+                                @endforeach 
+                            @endIf      
+                        </select>
+                </div>
                 
-                <div class="uk-width-1-4" >
-                    <input id="reports-search" name="reports-search" type="text" value="" class=" uk-input" placeholder="Search report content (press enter)">
+                <div class="uk-width-1-5" >
+                    <input id="reports-search" name="reports-search" type="text" value="" class=" uk-input" placeholder="REPORT #">
                         
                 </div>
                 
                 @endCan
     </div>
     <hr class="dashed-hr">
+    <input type="hidden" id="reports-current-page" value="{{$reports->currentPage()}}">
     <div uk-grid class="uk-margin-top ">
 
         <div class="uk-width-1-1">
@@ -85,10 +102,10 @@
                         <span>NEW REPORT</span>
                     </a>
                 </div>
-            @if(session('crr_search') && session('crr_search') !== '%%clear-search%%')
+            @if(session('crr_search') && session('crr_search') !== 'all')
 
             <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter">
-                <a onClick="loadTab('/dashboard/reports?search=%%clear-search%%', '3','','','',1);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>SEARCH " {{ session('crr_search') }} "</span></a>
+                <a onClick="loadTab('/dashboard/reports?search=all', '3','','','',1);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>REPORT #:{{ session('crr_search') }}</span></a>
                 
             </div>
             @endIf
@@ -110,7 +127,15 @@
             @if(session('crr_report_lead_id') && session('crr_report_lead_id') !== 'all')
 
             <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter">
-                <a onClick="loadTab('/dashboard/reports?crr_report_lead_id=all', '3','','','',1);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>{{ $crrLeadSelection }}</span></a>
+                <a onClick="loadTab('/dashboard/reports?crr_report_lead_id=all', '3','','','',1);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>@if($crrLeadSelection == Auth::user()->full_name()) Mine @else {{ $crrLeadSelection }} @endIf</span></a>
+                
+            </div>
+            @endIf
+
+            @if(session('crr_report_type') && session('crr_report_type') !== 'all')
+
+            <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter">
+                <a onClick="loadTab('/dashboard/reports?crr_report_type=all', '3','','','',1);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>{{ $crrTypeSelection }}</span></a>
                 
             </div>
             @endIf
@@ -118,7 +143,7 @@
             
         </div>
         <hr class="dashed-hr uk-width-1-1 uk-margin-bottom">
-        <input type="hidden" id="crr-newest" value="{{date('Y-m-d g:h:i',time())}}">
+        
     @if(count($reports))
         <style type="text/css">
             .calendar-button {
@@ -171,7 +196,13 @@
            });
            
         // on doc ready we allow updates to start:
-        $('#report-checking').val('0');
+        
+
+        $('#crr-newest').val('{{$newest}}');
+        console.log('Loaded Reports Tab - set crr-newest to {{$newest}}.');
+        $('#report-checking').val('0');  
+        
+        
             
         });
     
@@ -198,10 +229,21 @@
         function reportAction(reportId,action){
             window.crrActionReportId = reportId;
             if(action != 8){
-                loadTab('/dashboard/reports?id='+reportId+'&action='+action, '3','','','',1);
+                $.get('/dashboard/reports', {
+                                            'id' : reportId,
+                                            'action' : action
+                                             }, function(data2) {
+
+                                         });
+                //loadTab('/dashboard/reports?id='+reportId+'&action='+action, '3','','','',1);
             }else if(action == 8){
                 UIkit.modal.confirm('Refreshing the dynamic data will set the report back to Draft status - are you sure you want to do this?').then(function(){
-                    loadTab('/dashboard/reports?id='+window.crrActionReportId+'&action=8', '3','','','',1);
+                    $.get('/dashboard/reports', {
+                                            'id' : window.crrActionReportId,
+                                            'action' : 8
+                                             }, function(data2) {
+
+                                         });
                 },function(){
                     //nope
                 });

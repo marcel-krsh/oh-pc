@@ -311,7 +311,7 @@ if(Auth::check()){
 										</a>
 									</li>
 									@if(env('APP_ENV') == 'local')
-									<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}', '3','','','',1);}">
+									<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}?page='+$('#reports-current-page').val(), '3','','','',1);}">
 										<a href=""><span class="list-tab-text"><span class="uk-badge" v-if="statsReportsTotal" v-cloak>@{{statsReportsTotal}}</span></span> <i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
 									</li>
 									@endif
@@ -396,6 +396,7 @@ if(Auth::check()){
 	We set them to a value of 1, to allow the tab to load first before it tries to update.
 	-->
 	<input type="hidden" id='report-checking' name="report-checking" value="1">
+	<input type="hidden" id="crr-newest" value="">
 	<input type="hidden" id='audit-checking' name="audit-checking" value="1">
 	<input type="hidden" id='communication-checking' name="communication-checking" value="1">
 	<input type="hidden" id='stream-checking' name="stream-checking" value="1">
@@ -503,46 +504,7 @@ if(Auth::check()){
 	    	// Put in page refresh scripts here - we do this on the main template to ensure we don't create multiple instances of intervals:
 
 	    	// REPORTS ROW CHECKS
-	    	setInterval(function(){ 
-	    		// ensure the tab is active to run updates on it.
-                if($('#detail-tab-3').hasClass('uk-active') && $('#report-checking').val() === '0'){
-                    //console.log("Checking for updated reports. "+$('#report-checking').val()); 
-                    $('#report-checking').val('1');
-                    //$('#report-refreshing').html('<div uk-spinner></div> UPDATING...');
-                    $.get('/dashboard/reports', {
-                                'check' : 1,
-                                'newer_than' : $('#crr-newest').val()
-                                }, function(data) {
-                                    if(data==1){ 
-                                        $('#report-checking').val('0');
-                                        $('#report-refreshing').html('');
-                                    } else {
-                                        //UIkit.modal.alert('updated'+data1);
-                                        $('#report-checking').val('0');
-                                        $('#report-refreshing').html('');
-                                        var data = JSON.parse(data);
-                                        //alert(data.data[0].updated_at);
-                                         
-                                         data.data.forEach( function(report){
-                                         	$('#crr-report-row-'+report.id).remove();
-                                         	$('#report-'+report.id+'-history').remove();
-                                         });
-
-                                         $.get('/dashboard/reports', {
-			                                 'rows_only' : 1,
-			                                'newer_than' : $('#crr-newest').val()
-			                                 }, function(data2) {
-			                             	$('#crr-report-list').prepend(data2);
-											$('#crr-newest').val(data.data[0].updated_at);
-			                             });
-                                        
-                                    }
-					});
-
-                }
-                            
-                
-            }, 10000);
+	    	
 
 	    });
 
@@ -588,7 +550,7 @@ if(Auth::check()){
 	<script src="/js/pace.min.js">{{session('disablePacer')}}</script>
 	@endif
 
-	<!-- <script type="text/javascript" src="https://devco.ohiohome.org/AuthorityOnlineALT/Unified/UnifiedHeader.aspx"></script> -->
+	
 	<script>
 		new Vue({
 		  el: '#top-tabs',
@@ -601,53 +563,13 @@ if(Auth::check()){
 		    mounted: function() {
 		    	console.log("Tabs Working");
 
-		    	//Echo.join('communications.'+uid+'.'+sid);
-		    	Echo.private('updates.{{Auth::user()->id}}')
-				    .listen('UpdateEvent', (payload) => {
-				    	@if(env('APP_DEBUG'))
-					    	console.log('Update received with:');
-					    	console.log(payload);
-				    	@endIf
-
-				    	if(payload.data.event == 'tab'){
-					        console.log("Tab event received.");
-					        this.statsCommunicationTotal = payload.data.communicationTotal;
-					    }
-			    });
-
-		            // console.log("new total "+data.communicationTotal);
-
-
-		        // socket.on('communications.'+uid+'.'+sid+':NewRecipient', function(data){
-		        //     // console.log("user " + data.userId + " is getting a message because a new message has been sent.");
-		        //     // console.log("new total "+data.communicationTotal);
-		        //     this.statsCommunicationTotal = data.communicationTotal;
 
 
 
 		}
 	});
 	</script>
-	<!-- <script>
-    	function openWebsocket(url){
-		    try {
-		        socket = new WebSocket(url);
-		        socket.onopen = function(){
-		            console.log('Socket is now open.');
-		        };
-		        socket.onerror = function (error) {
-		            console.error('There was an un-identified Web Socket error');
-		        };
-		        socket.onmessage = function (message) {
-		            console.info("Message: %o", message.data);
-		        };
-		    } catch (e) {
-		        console.error('Sorry, the web socket at "%s" is un-available', url);
-		    }
-		}
-
-		openWebsocket("http://192.168.10.10:6001");
-	</script> -->
+	
 
 
 </body>

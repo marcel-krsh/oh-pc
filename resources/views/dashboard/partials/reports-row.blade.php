@@ -50,8 +50,22 @@
                             });
                             $('.flatpickr.selectday{{$report->id}}').change(function(){
                                 console.log('New Due Date for report {{$report->id}} of '+this.value);
-                                loadTab('/dashboard/reports?report_id={{$report->id}}&due='+encodeURIComponent(this.value), '3','','','',1);
+                                $.get('/dashboard/reports',{'report_id':{{$report->id}},'due':encodeURIComponent(this.value)});
+                                $('#crr-report-row-{{$report->id}}').slideUp();
+                                if($('#reports-current-page').val() !== '1') {
+                                	UIkit.modal.confirm('<h1>Due Date Updated</h1><p>Your new due date was updated, would you like to go to the first page of the results?</p>').then(function(){
+                                			$('#reports-current-page').val(1);
+                                			$('#detail-tab-3').trigger("click");
+                                		
+                                		}, function() {
+                                			$('#detail-tab-3').trigger("click");
+                                		});
+                                } else {
+                                	$('#detail-tab-3').trigger("click");
+                                }
                             });
+
+                            
                     </script>
                     </td>
                     @can('access_auditor')
