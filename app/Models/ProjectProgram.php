@@ -16,4 +16,7 @@ class ProjectProgram extends Model
     {
         return $this->hasOne(\App\Models\Program::class, 'program_key', 'program_key');
     }
+    public function status() : HasOne {
+		return $this->hasOne(\App\Models\ProjectProgramStatusType::class, 'project_program_status_type_key', 'project_program_status_type_key');
+	}
 }

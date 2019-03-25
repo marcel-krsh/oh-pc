@@ -61,5 +61,13 @@ class CrrReport extends Model
     	return $this->hasMany('App\Models\CrrView');
     }
 
+    public function sections(): HasMany{
+
+        return $this->hasMany('App\Models\CrrSection')
+        ->join('crr_section_orders','crr_sections.id','=','crr_section_orders.crr_section_id')
+        ->orderBy('order','asc')
+        ;
+    }
+
 
 }

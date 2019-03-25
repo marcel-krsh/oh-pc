@@ -188,6 +188,7 @@
         Route::post('/new-report','ReportsController@createNewReport')->name('report.create');
 
 
+
 //allita documents!
         Route::get('/projects/{project}/documents', 'DocumentController@getProjectDocuments')->name('project.documents');
         Route::get('/projects/{project}/docuware-documents', 'DocumentController@getProjectDocuwareDocuments')->name('project.docuware-documents');
@@ -221,6 +222,8 @@
         Route::get('/projects/{project}/reports/title', 'AuditController@getProjectReportsTitle')->name('project.reports.title');
 
         Route::get('/report/{report}', 'ReportsController@getReport');
+        Route::get('/report/{report}/generate','ReportsController@generateReport');
+        Route::get('/report/{report}/reset','ReportsController@resetToTemplate');
         Route::get('/report/{report}/comments', 'ReportsController@getComments');
         Route::get('/report/{report}/{section}','ReportsController@getSection');
         Route::get('/report/{report}/download/{type}','ReportsController@download');

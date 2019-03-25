@@ -310,11 +310,12 @@ class Project extends Model
                 
                 ->whereIn('program_key',$programKeys)
                 ->where(function ($query) {
-                    $query->where('program_status_type_id', 246 );
-                    $query->orWhere('program_status_type_id', 206);
-                    $query->orWhere('program_status_type_id', 210);
-                    $query->orWhere('program_status_type_id', 211);
-                });
+                    $query->orWhere('project_program_status_type_key', 30012);
+                    $query->orWhere('project_program_status_type_key', 30004);
+                    $query->orWhere('project_program_status_type_key', 30009);
+                    $query->orWhere('project_program_status_type_key', 30010);
+                })
+                ;
     }
     public function all_other_programs() : HasMany
     {
