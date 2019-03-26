@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\UnitProgram;
+use App\Models\UnitGroup;
 use App\Models\Building;
 use App\Models\Audit;
 use App\Models\Unit;
