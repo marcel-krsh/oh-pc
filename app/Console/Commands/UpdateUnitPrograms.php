@@ -67,6 +67,7 @@ class UpdateUnitPrograms extends Command
         $newInserts = 0;
         $recordsSkipped = 0;
         $noProjectPrograms = array();
+        $inserts = array();
         if(!is_null($audit)){
             $this->line(PHP_EOL.'Checking audit '.$audit->id);
             $projectUnits = $audit->project->units;
@@ -198,6 +199,7 @@ class UpdateUnitPrograms extends Command
                                                     }
                                                     $this->line(PHP_EOL.' • unit_key : '.$unit->unit_key.PHP_EOL.' • program_key : '.$program->program_key.PHP_EOL.' • audit_id : '.$audit->id.PHP_EOL.' • development_key : '.$audit->development_key.PHP_EOL.' • project_program_key : '.$pp->developmentProgramKey);
                                                     $newInserts++;
+                                                    $inserts[] = $unit->unit_key;
                                                     //$audit->comment = //$audit->comment.' | Inserting missing unit program data';
                                                     //$audit->comment_system = //$audit->comment_system.' | Inserting missing unit program data';
                                                     //$audit->save();
@@ -302,6 +304,11 @@ class UpdateUnitPrograms extends Command
                                             
                 }
                 $this->line($newInserts.' Unit Program Records Inserted'.PHP_EOL.$recordsSkipped.' Units skipped that were already loaded');
+                $this->line('=============================================');
+                $this->line('UNITS INSERTED');
+                forEach($inserts as $n){
+                    $this->line('   • UnitKey: '.$n);
+                }
                 $this->line('=============================================');
                 $this->line('UNITS THAT HAVE NO UNIT PROGRAM DATA IN DEVCO');
                 forEach($noProjectPrograms as $n){
