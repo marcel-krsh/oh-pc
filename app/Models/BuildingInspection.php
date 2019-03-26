@@ -25,4 +25,5 @@ class BuildingInspection extends Model
 
     //
     protected $guarded = ['id'];
+
 }

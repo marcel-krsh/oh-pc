@@ -247,7 +247,12 @@
         Route::post('/findings/{findingid}/restore', 'FindingController@restoreFinding');
         Route::post('/findings/{findingid}/resolve', 'FindingController@resolveFinding');
         Route::get('/modals/addreply/{id}/{fromtype}/{type}','FindingController@replyFindingForm');
-        Route::get('/modals/updatestream/{type}/{auditid}/{buildingid?}/{unitid?}/{amenityid?}/{refresh}', 'FindingController@modalFindings');
+        Route::get('/modals/updatestream/{type}/{auditid}/{buildingid?}/{unitid?}/{amenityid?}/{toplevel?}/{refresh}', 'FindingController@modalFindings');
+
+        Route::get('/findings/modals/locations/{auditid}', 'FindingController@findingLocations');
+        Route::get('/findings/modals/site-amenities/{auditid}/{project_ref?}', 'FindingController@findingSiteAmenities');
+        Route::get('/findings/modals/building-amenities/{auditid}/{buildingid?}', 'FindingController@findingBuildingAmenities');
+        Route::get('/findings/modals/unit-amenities/{auditid}/{buildingid?}', 'FindingController@findingUnitAmenities');
 
 
         Route::get('/findings/{findingid}/items/{type?}/{typeid?}', 'FindingController@findingItems');
