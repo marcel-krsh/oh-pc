@@ -64,6 +64,7 @@ class UpdateUnitPrograms extends Command
         $audit = null;
         $auditApproved = 0;
         $audit = $this->getAudit();
+        $newInserts = 0;
         if(!is_null($audit)){
             $this->line(PHP_EOL.'Checking audit '.$audit->id);
             $projectUnits = $audit->project->units;
@@ -150,7 +151,7 @@ class UpdateUnitPrograms extends Command
                                     //dd($unitProgramData['data'][0]['attributes']['programKey']);
                                     if(!is_array($projectPrograms) || count($projectPrograms)< 1){
                                         $this->error(PHP_EOL.'NO PROJECT PROGRAM DATA ACTUALLY RETURNED FOR UNIT KEY '.$unit->unit_key);
-                                        dd($projectPrograms);
+                                        //dd($projectPrograms);
                                         //$audit->comment_system = //$audit->comment_system.' | !!! NO PROJECT PROGRAM DATA RETURNED from DEVCO for unit key:'.$unit->unit_key.':'.$unit->unit_name.'.';
                                         //$audit->comment = //$audit->comment.' | !!! NO PROJECT PROGRAM DATA RETURNED from DEVCO for unit key:'.$unit->unit_key.':'.$unit->unit_name.'.';
                                         //$audit->save(); 
@@ -188,6 +189,7 @@ class UpdateUnitPrograms extends Command
 
                                                 if (!is_null($program) && is_null($check)) {
                                                     $this->line(PHP_EOL.'Unit Program does not exist - inserting record.');
+                                                    $newInserts++;
                                                     //$audit->comment = //$audit->comment.' | Inserting missing unit program data';
                                                     //$audit->comment_system = //$audit->comment_system.' | Inserting missing unit program data';
                                                     //$audit->save();
@@ -290,6 +292,7 @@ class UpdateUnitPrograms extends Command
                                             //$audit->save();
                                             
                 }
+                $this->line($newInserts.' Unit Program Records Inserted');
 
             }
         }
