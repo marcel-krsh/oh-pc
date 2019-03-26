@@ -101,6 +101,8 @@ class UpdateUnitPrograms extends Command
                     //$audit->save();
                     foreach ($buildings as $building) {
 
+                        $this->line('=======================================================================================');
+                        $this->line('=======================================================================================');
                         $this->line(PHP_EOL.'Processing '.$building->building_key.': '.$building->building_name.' building');
                         //$audit->comment_system = //$audit->comment_system.' | Processing '.$building->building_key.': '.$building->building_name.' building';
                         //$audit->save();
@@ -113,14 +115,16 @@ class UpdateUnitPrograms extends Command
                                 //$audit->save();
                             // Process each unit
                             foreach ($buildingUnits as $unit) {
-                                $this->line(PHP_EOL.'Processing unit key:'.$unit->unit_key.':'.$unit->unit_name.' unit.');
+
+                                $this->line('===============================================');
+                                $this->line(PHP_EOL.'120 Processing unit key:'.$unit->unit_key.':'.$unit->unit_name.' unit.');
                                 //$audit->comment_system = //$audit->comment_system.' | Processing unit key:'.$unit->unit_key.':'.$unit->unit_name.' unit.';
                                 //$audit->save();
                                 // Get the unit's current program designation from DevCo
                                 try {
                                     $unitProjectPrograms = $apiConnect->getUnitProjectPrograms($unit->unit_key, 1, 'admin@allita.org', 'Getting Project Unit Program Data', 1, 'SystemServer');
                                     if(!is_null($unitProjectPrograms)){
-                                       $this->line(PHP_EOL.'Successfully pulled project program data from DEVCO for unit key:'.$unit->unit_key.':'.$unit->unit_name.' unit.');
+                                       $this->line(PHP_EOL.'127 Successfully pulled project program data from DEVCO for unit key:'.$unit->unit_key.':'.$unit->unit_name.' unit.');
                                         //$audit->comment_system = //$audit->comment_system.' | Successfully pulled project program data from DEVCO unit key:'.$unit->unit_key.':'.$unit->unit_name.' unit.';
                                         //$audit->save(); 
                                     } else {
@@ -144,6 +148,12 @@ class UpdateUnitPrograms extends Command
                                     //
                                     //dd($unitProgramData['data']);
                                     //dd($unitProgramData['data'][0]['attributes']['programKey']);
+                                    if(!is_array($projectPrograms) && count($projectPrograms)< 1){
+                                        $this->error(PHP_EOL.'NO PROJECT PROGRAM DATA ACTUALLY RETURNED FOR UNIT KEY '.$unit->unit_key);
+                                        //$audit->comment_system = //$audit->comment_system.' | !!! NO PROJECT PROGRAM DATA RETURNED from DEVCO for unit key:'.$unit->unit_key.':'.$unit->unit_name.'.';
+                                        //$audit->comment = //$audit->comment.' | !!! NO PROJECT PROGRAM DATA RETURNED from DEVCO for unit key:'.$unit->unit_key.':'.$unit->unit_name.'.';
+                                        //$audit->save(); 
+                                    }
                                     foreach ($projectPrograms as $pp) {
                                         
 
