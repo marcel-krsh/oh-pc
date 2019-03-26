@@ -109,7 +109,7 @@ class UpdateUnitPrograms extends Command
                                 $this->line(PHP_EOL.'Processing '.count($buildingUnits).' units in this building.');
                                 //$audit->comment_system = //$audit->comment_system.' | Processing '.count($buildingUnits).' units in this building.';
                                 //$audit->save();
-                        // Process each unit
+                            // Process each unit
                             foreach ($buildingUnits as $unit) {
                                 $this->line(PHP_EOL.'Processing unit key:'.$unit->unit_key.':'.$unit->unit_name.' unit.');
                                 //$audit->comment_system = //$audit->comment_system.' | Processing unit key:'.$unit->unit_key.':'.$unit->unit_name.' unit.';
@@ -225,7 +225,7 @@ class UpdateUnitPrograms extends Command
                                             // market rate?
                                             $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->with('program')->first();
                                             if($is_market_rate){
-                                                $this->line(PHP_EOL."MARKET RATE, CANCELLED:".$program->program->program_name.' '.$program->program_id.', Start Date:'.date('m/d/Y',strtotime($pp->startDate)).', End Date: '.date('m/d/Y',strtotime($pp->endDate))')';
+                                                $this->line(PHP_EOL."MARKET RATE, CANCELLED:".$program->program->program_name.' '.$program->program_id.', Start Date:'.date('m/d/Y',strtotime($pp->startDate)).', End Date: '.date('m/d/Y',strtotime($pp->endDate)));
 
                                                 //$audit->comment_system = //$audit->comment_system." | MARKET RATE, CANCELLED:<del>".$program->program->program_name.' '.$program->program_id.'</del>, Start Date:'.date('m/d/Y',strtotime($pp->startDate)).', End Date: '.date('m/d/Y',strtotime($pp->endDate));
                                                 //$audit->save();
@@ -241,7 +241,7 @@ class UpdateUnitPrograms extends Command
                                 } catch (Exception $e) {
                                     
                                     //dd('Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key);
-                                    $this->error(PHP_EOL." | Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key);
+                                    $this->error(PHP_EOL." | Unable to get the unit programs on unit_key".$unit->unit_key.' for audit'.$audit->monitoring_key);
 
                                     //$audit->comment = //$audit->comment.' | Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key;
                                     //$audit->comment_system = //$audit->comment_system.' | Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key;
@@ -275,6 +275,7 @@ class UpdateUnitPrograms extends Command
                                             //$audit->save();
                                             
                 }
+
             }
         }
     }
