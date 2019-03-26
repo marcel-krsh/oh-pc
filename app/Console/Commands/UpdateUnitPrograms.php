@@ -197,7 +197,7 @@ class UpdateUnitPrograms extends Command
                                                     $this->line(PHP_EOL.'Unit Program does not exist - inserting record.');
                                                     if(!is_null($nearMatch)) {
                                                         $this->line('!!!!!!!!!!!!!!!! THERE IS A NEAR MATCH THOUGH...');
-                                                        $inserts[] = 'unit_key: '.$unit->unit_key.' | program_key: '.$program->key.' | development_key: '.$audit->development_key.' | project_prgram_key: '.$pp->developmentProgramKey;
+                                                        $inserts[] = 'unit_key: '.$unit->unit_key.' | program_key: '.$program->program_key.' | development_key: '.$audit->development_key.' | project_prgram_key: '.$pp->developmentProgramKey;
                                                         $nearMatches++;
                                                     }
                                                     $this->line(PHP_EOL.' • unit_key : '.$unit->unit_key.PHP_EOL.' • program_key : '.$program->program_key.PHP_EOL.' • audit_id : '.$audit->id.PHP_EOL.' • development_key : '.$audit->development_key.PHP_EOL.' • project_program_key : '.$pp->developmentProgramKey);
