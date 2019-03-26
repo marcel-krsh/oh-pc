@@ -192,6 +192,7 @@ class UpdateUnitPrograms extends Command
 
                                                 if (!is_null($program) && is_null($check)) {
                                                     $this->line(PHP_EOL.'Unit Program does not exist - inserting record.');
+                                                    $this->line(PHP_EOL.' • unit_key : '.$unit->key.PHP_EOL.' • program_key : '.$program->program_key.PHP_EOL.' • audit_id : '.$audit->id.PHP_EOL.' • development_key : '.$audit->development_key.PHP_EOL.' • project_program_key : '.$pp->developmentProgramKey);
                                                     $newInserts++;
                                                     //$audit->comment = //$audit->comment.' | Inserting missing unit program data';
                                                     //$audit->comment_system = //$audit->comment_system.' | Inserting missing unit program data';
