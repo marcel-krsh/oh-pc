@@ -153,10 +153,12 @@ class UpdateUnitPrograms extends Command
                                         //$audit->comment_system = //$audit->comment_system.' | !!! NO PROJECT PROGRAM DATA RETURNED from DEVCO for unit key:'.$unit->unit_key.':'.$unit->unit_name.'.';
                                         //$audit->comment = //$audit->comment.' | !!! NO PROJECT PROGRAM DATA RETURNED from DEVCO for unit key:'.$unit->unit_key.':'.$unit->unit_name.'.';
                                         //$audit->save(); 
+                                    } else {
+                                        $this->line(PHP_EOL.'There are '.count($projectPrograms).' project programs for this unit.');
                                     }
                                     foreach ($projectPrograms as $pp) {
                                         
-
+                                        $this->line(PHP_EOL.'159 Initializing loop of projectPrograms');
                                         $pp = $pp->attributes;
                                         if(is_null($pp->endDate) && !$is_market_rate){
                                             $this->line(PHP_EOL.'Unit Key:'.$pp->unitKey.', Development Program Key:'.$pp->developmentProgramKey.', Start Date:'.date('m/d/Y',strtotime($pp->startDate)));
