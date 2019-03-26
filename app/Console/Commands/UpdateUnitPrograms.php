@@ -199,7 +199,7 @@ class UpdateUnitPrograms extends Command
                                                         $this->line('Update missing project program key...');
                                                         $inserts[] = 'unit_key: '.$unit->unit_key.' | program_key: '.$program->program_key.' | development_key: '.$audit->development_key.' | project_prgram_key: '.$pp->developmentProgramKey;
                                                         $updateProjectProgramKeys++;
-                                                        
+
                                                         //$updateProjectProgramKey->unpdate(['project_program_key'=> $pp->$pp->developmentProgramKey]);
                                                         //$audit->comment = //$audit->comment.' | Updating missing project program data';
                                                         //$audit->comment_system = //$audit->comment_system.' | Updating missing project program data';
@@ -312,9 +312,9 @@ class UpdateUnitPrograms extends Command
                                             //$audit->save();
                                             
                 }
-                $this->line($newInserts.' Unit Program Records Inserted'.PHP_EOL.$recordsSkipped.' Units skipped that were already loaded'.PHP_EOL.$updateProjectProgramKeys.' Records inserted that are near matches.');
+                $this->line($newInserts.' Unit Program Records Inserted'.PHP_EOL.$recordsSkipped.' Units skipped that were already loaded'.PHP_EOL.$updateProjectProgramKeys.' Records Updated with Missing Project Program Keys.');
                 $this->line('=============================================');
-                $this->line('NEAR MATCH UNITS INSERTED');
+                $this->line('UPDATED PROJECT PROGRAM KEYS ON');
                 forEach($inserts as $n){
                     $this->line('   • UnitKey: '.$n);
                 }
