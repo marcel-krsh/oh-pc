@@ -68,7 +68,7 @@ class UpdateUnitPrograms extends Command
         $recordsSkipped = 0;
         $noProjectPrograms = array();
         $inserts = array();
-        $nearMatches = 0;
+        $updateProjectProgramKeys = 0;
         if(!is_null($audit)){
             $this->line(PHP_EOL.'Checking audit '.$audit->id);
             $projectUnits = $audit->project->units;
@@ -191,51 +191,57 @@ class UpdateUnitPrograms extends Command
                                                 // ];
                                                 $this->line(PHP_EOL.'Checking if this exists in the records...');
                                                 $check = UnitProgram::where('unit_key',$unit->unit_key)->where('program_key',$program->program_key)->where('audit_id',$audit->id)->where('development_key',$audit->development_key)->where('project_program_key',$pp->developmentProgramKey)->first();
-                                                $nearMatch = UnitProgram::where('unit_key',$unit->unit_key)->where('program_key',$program->program_key)->where('audit_id',$audit->id)->first();
+                                                $updateProjectProgramKey = UnitProgram::where('unit_key',$unit->unit_key)->where('program_key',$program->program_key)->where('audit_id',$audit->id)->first();
 
                                                 if (!is_null($program) && is_null($check)) {
                                                     $this->line(PHP_EOL.'Unit Program does not exist - inserting record.');
-                                                    if(!is_null($nearMatch)) {
-                                                        $this->line('!!!!!!!!!!!!!!!! THERE IS A NEAR MATCH THOUGH...');
+                                                    if(!is_null($updateProjectProgramKey)) {
+                                                        $this->line('Update missing project program key...');
                                                         $inserts[] = 'unit_key: '.$unit->unit_key.' | program_key: '.$program->program_key.' | development_key: '.$audit->development_key.' | project_prgram_key: '.$pp->developmentProgramKey;
-                                                        $nearMatches++;
-                                                    }
-                                                    $this->line(PHP_EOL.' • unit_key : '.$unit->unit_key.PHP_EOL.' • program_key : '.$program->program_key.PHP_EOL.' • audit_id : '.$audit->id.PHP_EOL.' • development_key : '.$audit->development_key.PHP_EOL.' • project_program_key : '.$pp->developmentProgramKey);
-                                                    $newInserts++;
+                                                        $updateProjectProgramKeys++;
+                                                        
+                                                        //$updateProjectProgramKey->unpdate(['project_program_key'=> $pp->$pp->developmentProgramKey]);
+                                                        //$audit->comment = //$audit->comment.' | Updating missing project program data';
+                                                        //$audit->comment_system = //$audit->comment_system.' | Updating missing project program data';
+                                                        //$audit->save();
+                                                    } else {
+                                                        $this->line(PHP_EOL.' • unit_key : '.$unit->unit_key.PHP_EOL.' • program_key : '.$program->program_key.PHP_EOL.' • audit_id : '.$audit->id.PHP_EOL.' • development_key : '.$audit->development_key.PHP_EOL.' • project_program_key : '.$pp->developmentProgramKey);
+                                                        $newInserts++;
                                                     
-                                                    //$audit->comment = //$audit->comment.' | Inserting missing unit program data';
-                                                    //$audit->comment_system = //$audit->comment_system.' | Inserting missing unit program data';
-                                                    //$audit->save();
-                                                    // UnitProgram::insert([
-                                                    //     'unit_key'      =>  $unit->unit_key,
-                                                    //     'unit_id'       =>  $unit->id,
-                                                    //     'program_key'   =>  $program->program_key,
-                                                    //     'program_id'    =>  $program->program_id,
-                                                    //     'audit_id'      =>  $audit->id,
-                                                    //     'monitoring_key'=>  $audit->monitoring_key,
-                                                    //     'project_id'    =>  $audit->project_id,
-                                                    //     'development_key'=> $audit->development_key,
-                                                    //     'created_at'    =>  date("Y-m-d g:h:i", time()),
-                                                    //     'updated_at'    =>  date("Y-m-d g:h:i", time()),
-                                                    //     'project_program_key' => $pp->developmentProgramKey,
-                                                    //     'project_program_id' => $program->id
-                                                    // ]);
+                                                        //$audit->comment = //$audit->comment.' | Inserting missing unit program data';
+                                                        //$audit->comment_system = //$audit->comment_system.' | Inserting missing unit program data';
+                                                        //$audit->save();
+                                                        // UnitProgram::insert([
+                                                        //     'unit_key'      =>  $unit->unit_key,
+                                                        //     'unit_id'       =>  $unit->id,
+                                                        //     'program_key'   =>  $program->program_key,
+                                                        //     'program_id'    =>  $program->program_id,
+                                                        //     'audit_id'      =>  $audit->id,
+                                                        //     'monitoring_key'=>  $audit->monitoring_key,
+                                                        //     'project_id'    =>  $audit->project_id,
+                                                        //     'development_key'=> $audit->development_key,
+                                                        //     'created_at'    =>  date("Y-m-d g:h:i", time()),
+                                                        //     'updated_at'    =>  date("Y-m-d g:h:i", time()),
+                                                        //     'project_program_key' => $pp->developmentProgramKey,
+                                                        //     'project_program_id' => $program->id
+                                                        // ]);
 
-                                                    // if(count($program->program->groups())){
-                                                    //     foreach($program->program->groups() as $group){
-                                                    //         UnitGroup::insert([
-                                                    //             'unit_key'      =>  $unit->unit_key,
-                                                    //             'unit_id'       =>  $unit->id,
-                                                    //             'group_id'      =>  $group,
-                                                    //             'audit_id'      =>  $audit->id,
-                                                    //             'monitoring_key'=>  $audit->monitoring_key,
-                                                    //             'project_id'    =>  $audit->project_id,
-                                                    //             'development_key'=> $audit->development_key,
-                                                    //             'created_at'    =>  date("Y-m-d g:h:i", time()),
-                                                    //             'updated_at'    =>  date("Y-m-d g:h:i", time())
-                                                    //         ]);
-                                                    //     }
-                                                    // }
+                                                        // if(count($program->program->groups())){
+                                                        //     foreach($program->program->groups() as $group){
+                                                        //         UnitGroup::insert([
+                                                        //             'unit_key'      =>  $unit->unit_key,
+                                                        //             'unit_id'       =>  $unit->id,
+                                                        //             'group_id'      =>  $group,
+                                                        //             'audit_id'      =>  $audit->id,
+                                                        //             'monitoring_key'=>  $audit->monitoring_key,
+                                                        //             'project_id'    =>  $audit->project_id,
+                                                        //             'development_key'=> $audit->development_key,
+                                                        //             'created_at'    =>  date("Y-m-d g:h:i", time()),
+                                                        //             'updated_at'    =>  date("Y-m-d g:h:i", time())
+                                                        //         ]);
+                                                        //     }
+                                                        // }
+                                                    }
                                                 } else {
                                                     $recordsSkipped ++;
                                                     $this->error(PHP_EOL.'Unit Program Record Exists:');
@@ -306,7 +312,7 @@ class UpdateUnitPrograms extends Command
                                             //$audit->save();
                                             
                 }
-                $this->line($newInserts.' Unit Program Records Inserted'.PHP_EOL.$recordsSkipped.' Units skipped that were already loaded'.PHP_EOL.$nearMatches.' Records inserted that are near matches.');
+                $this->line($newInserts.' Unit Program Records Inserted'.PHP_EOL.$recordsSkipped.' Units skipped that were already loaded'.PHP_EOL.$updateProjectProgramKeys.' Records inserted that are near matches.');
                 $this->line('=============================================');
                 $this->line('NEAR MATCH UNITS INSERTED');
                 forEach($inserts as $n){
