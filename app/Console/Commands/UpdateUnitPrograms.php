@@ -68,6 +68,7 @@ class UpdateUnitPrograms extends Command
         $recordsSkipped = 0;
         $noProjectPrograms = array();
         $inserts = array();
+        $nearMatches = 0;
         if(!is_null($audit)){
             $this->line(PHP_EOL.'Checking audit '.$audit->id);
             $projectUnits = $audit->project->units;
@@ -197,6 +198,7 @@ class UpdateUnitPrograms extends Command
                                                     if(!is_null($nearMatch)) {
                                                         $this->line('!!!!!!!!!!!!!!!! THERE IS A NEAR MATCH THOUGH...');
                                                         $inserts[] = 'unit_key: '.$unit->unit_key.' | program_key: '.$program->key.' | development_key: '.$audit->development_key.' | project_prgram_key: '.$pp->developmentProgramKey;
+                                                        $nearMatches++;
                                                     }
                                                     $this->line(PHP_EOL.' • unit_key : '.$unit->unit_key.PHP_EOL.' • program_key : '.$program->program_key.PHP_EOL.' • audit_id : '.$audit->id.PHP_EOL.' • development_key : '.$audit->development_key.PHP_EOL.' • project_program_key : '.$pp->developmentProgramKey);
                                                     $newInserts++;
