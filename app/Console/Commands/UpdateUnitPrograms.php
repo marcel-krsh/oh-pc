@@ -188,11 +188,11 @@ class UpdateUnitPrograms extends Command
                                                 //     'program_id' => $program->program_id
                                                 // ];
                                                 $this->line(PHP_EOL.'Checking if this exists in the records...');
-                                                $check = UnitProgram::where('unit_key',$unit->key)->where('program_key',$program->program_key)->where('audit_id',$audit->id)->where('development_key',$audit->development_key)->where('project_program_key',$pp->developmentProgramKey)->first();
+                                                $check = UnitProgram::where('unit_key',$unit->unit_key)->where('program_key',$program->program_key)->where('audit_id',$audit->id)->where('development_key',$audit->development_key)->where('project_program_key',$pp->developmentProgramKey)->first();
 
                                                 if (!is_null($program) && is_null($check)) {
                                                     $this->line(PHP_EOL.'Unit Program does not exist - inserting record.');
-                                                    $this->line(PHP_EOL.' • unit_key : '.$unit->key.PHP_EOL.' • program_key : '.$program->program_key.PHP_EOL.' • audit_id : '.$audit->id.PHP_EOL.' • development_key : '.$audit->development_key.PHP_EOL.' • project_program_key : '.$pp->developmentProgramKey);
+                                                    $this->line(PHP_EOL.' • unit_key : '.$unit->unit_key.PHP_EOL.' • program_key : '.$program->program_key.PHP_EOL.' • audit_id : '.$audit->id.PHP_EOL.' • development_key : '.$audit->development_key.PHP_EOL.' • project_program_key : '.$pp->developmentProgramKey);
                                                     $newInserts++;
                                                     //$audit->comment = //$audit->comment.' | Inserting missing unit program data';
                                                     //$audit->comment_system = //$audit->comment_system.' | Inserting missing unit program data';
