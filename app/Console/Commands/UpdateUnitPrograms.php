@@ -65,6 +65,8 @@ class UpdateUnitPrograms extends Command
         $auditApproved = 0;
         $audit = $this->getAudit();
         $newInserts = 0;
+        $recordsSkipped = 0;
+        $noProjectPrograms = array();
         if(!is_null($audit)){
             $this->line(PHP_EOL.'Checking audit '.$audit->id);
             $projectUnits = $audit->project->units;
@@ -150,6 +152,7 @@ class UpdateUnitPrograms extends Command
                                     //dd($unitProgramData['data']);
                                     //dd($unitProgramData['data'][0]['attributes']['programKey']);
                                     if(!is_array($projectPrograms) || count($projectPrograms)< 1){
+                                        $noProjectPrograms[] = $unit->unit_key;
                                         $this->error(PHP_EOL.'NO PROJECT PROGRAM DATA ACTUALLY RETURNED FOR UNIT KEY '.$unit->unit_key);
                                         //dd($projectPrograms);
                                         //$audit->comment_system = //$audit->comment_system.' | !!! NO PROJECT PROGRAM DATA RETURNED from DEVCO for unit key:'.$unit->unit_key.':'.$unit->unit_name.'.';
@@ -224,6 +227,7 @@ class UpdateUnitPrograms extends Command
                                                     //     }
                                                     // }
                                                 } else {
+                                                    $recordsSkipped ++;
                                                     $this->error(PHP_EOL.'Unit Program Record Exists:');
                                                     //$audit->comment = //$audit->comment.' | Unit Program Record Exists. Skipping insertion.';
                                                     //$audit->comment_system = //$audit->comment_system.' | Unit Program Record Exists. Skipping insertion.';
@@ -292,7 +296,12 @@ class UpdateUnitPrograms extends Command
                                             //$audit->save();
                                             
                 }
-                $this->line($newInserts.' Unit Program Records Inserted');
+                $this->line($newInserts.' Unit Program Records Inserted'.PHP_EOL.$recordsSkipped.' Units skipped that were already loaded');
+                $this->line('=============================================');
+                $this->line('UNITS THAT HAVE NO UNIT PROGRAM DATA IN DEVCO');
+                forEach($noProjectPrograms as $n){
+                    $this->line('   • UnitKey: '.$n);
+                }
 
             }
         }
