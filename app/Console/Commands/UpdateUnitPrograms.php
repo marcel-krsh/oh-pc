@@ -148,8 +148,9 @@ class UpdateUnitPrograms extends Command
                                     //
                                     //dd($unitProgramData['data']);
                                     //dd($unitProgramData['data'][0]['attributes']['programKey']);
-                                    if(!is_array($projectPrograms) && count($projectPrograms)< 1){
+                                    if(!is_array($projectPrograms) || count($projectPrograms)< 1){
                                         $this->error(PHP_EOL.'NO PROJECT PROGRAM DATA ACTUALLY RETURNED FOR UNIT KEY '.$unit->unit_key);
+                                        dd($projectPrograms);
                                         //$audit->comment_system = //$audit->comment_system.' | !!! NO PROJECT PROGRAM DATA RETURNED from DEVCO for unit key:'.$unit->unit_key.':'.$unit->unit_name.'.';
                                         //$audit->comment = //$audit->comment.' | !!! NO PROJECT PROGRAM DATA RETURNED from DEVCO for unit key:'.$unit->unit_key.':'.$unit->unit_name.'.';
                                         //$audit->save(); 
