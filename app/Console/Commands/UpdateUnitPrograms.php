@@ -201,7 +201,7 @@ class UpdateUnitPrograms extends Command
                                                         $inserts[] = 'unit_key: '.$unit->unit_key.' | program_key: '.$program->program_key.' | development_key: '.$audit->development_key.' | project_prgram_key: '.$pp->developmentProgramKey;
                                                         $updateProjectProgramKeys++;
 
-                                                        $updateProjectProgramKey->project_program_key = $pp->$pp->developmentProgramKey;
+                                                        $updateProjectProgramKey->project_program_key = inval($pp->$pp->developmentProgramKey);
                                                         $updateProjectProgramKey->save();
                                                         $audit->comment = $audit->comment.' | Updating missing project program data';
                                                         $audit->comment_system = $audit->comment_system.' | Updating missing project program data';
