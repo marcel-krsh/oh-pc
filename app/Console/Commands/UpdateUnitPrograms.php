@@ -196,10 +196,11 @@ class UpdateUnitPrograms extends Command
                                                     $this->line(PHP_EOL.'Unit Program does not exist - inserting record.');
                                                     if(!is_null($nearMatch) {
                                                         $this->line('!!!!!!!!!!!!!!!! THERE IS A NEAR MATCH THOUGH...');
+                                                        $inserts[] = 'unit_key: '.$unit->unit_key.' | program_key: '.$program->key.' | development_key: '.$audit->development_key.' | project_prgram_key: '.$pp->developmentProgramKey;
                                                     }
                                                     $this->line(PHP_EOL.' • unit_key : '.$unit->unit_key.PHP_EOL.' • program_key : '.$program->program_key.PHP_EOL.' • audit_id : '.$audit->id.PHP_EOL.' • development_key : '.$audit->development_key.PHP_EOL.' • project_program_key : '.$pp->developmentProgramKey);
                                                     $newInserts++;
-                                                    $inserts[] = $unit->unit_key;
+                                                    
                                                     //$audit->comment = //$audit->comment.' | Inserting missing unit program data';
                                                     //$audit->comment_system = //$audit->comment_system.' | Inserting missing unit program data';
                                                     //$audit->save();
@@ -303,9 +304,9 @@ class UpdateUnitPrograms extends Command
                                             //$audit->save();
                                             
                 }
-                $this->line($newInserts.' Unit Program Records Inserted'.PHP_EOL.$recordsSkipped.' Units skipped that were already loaded');
+                $this->line($newInserts.' Unit Program Records Inserted'.PHP_EOL.$recordsSkipped.' Units skipped that were already loaded'.PHP_EOL.$nearMatches.' Records inserted that are near matches.');
                 $this->line('=============================================');
-                $this->line('UNITS INSERTED');
+                $this->line('NEAR MATCH UNITS INSERTED');
                 forEach($inserts as $n){
                     $this->line('   • UnitKey: '.$n);
                 }
