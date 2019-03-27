@@ -122,7 +122,9 @@
 				    				<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description"  style="z-index:auto">
 					    				<p>{{formatDate($finding->date_of_finding)}}: FN#{{$finding->id}}<br />
 					    					By {{$finding->auditor->full_name()}}<br>
-					    					{!!$finding->amenity_inspection->address()!!} 
+					    					@if($finding->amenity_inspection)
+					    						{!!$finding->amenity_inspection->address()!!}
+					    					@endIf 
 					    				</p>
 					    				<p>{{$finding->amenity_inspection->building_unit_amenity_names()}}<br />{{$finding->finding_type->name}}</p>
 					    				@can('access_auditor')
