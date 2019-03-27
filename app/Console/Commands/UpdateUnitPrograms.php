@@ -11,6 +11,7 @@ use App\Models\Unit;
 use App\Models\Program;
 use App\Models\ProjectProgram;
 use App\Services\DevcoService;
+use App\Models\CachedAudit;
 
 class UpdateUnitPrograms extends Command
 {
@@ -60,11 +61,8 @@ class UpdateUnitPrograms extends Command
             return null;
         }
     }
-    public function handle()
-    {
-        $audit = null;
-        $auditApproved = 0;
-        $audit = $this->getAudit();
+
+    public function updateAudit($audit){
         $newInserts = 0;
         $recordsSkipped = 0;
         $noProjectPrograms = array();
@@ -328,6 +326,25 @@ class UpdateUnitPrograms extends Command
 
             }
         }
+    }
+
+    public function handle()
+    {
+        $audit = null;
+        $auditApproved = 0;
+        if($this->confirm('Would you like to check all the audits?')){
+            $audits = CachedAudit::get();
+            foreach($audits as $audit){
+                updateAudit($audit);
+            }
+        } else {
+            $audit = $this->getAudit();
+            updateAudit($audit);
+        }
+        
+
+
+        
     }
 
 
