@@ -335,11 +335,11 @@ class UpdateUnitPrograms extends Command
         if($this->confirm('Would you like to check all the audits?')){
             $audits = CachedAudit::get();
             foreach($audits as $audit){
-                updateAudit($audit);
+                $this->updateAudit($audit);
             }
         } else {
             $audit = $this->getAudit();
-            updateAudit($audit);
+            $this->updateAudit($audit);
         }
         
 
