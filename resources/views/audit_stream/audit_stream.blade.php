@@ -126,7 +126,12 @@
 					    						{!!$finding->amenity_inspection->address()!!}
 					    					@endIf 
 					    				</p>
-					    				<p>{{$finding->amenity_inspection->building_unit_amenity_names()}}<br />{{$finding->finding_type->name}}</p>
+					    				<p>@if($finding->amenity_inspection)
+					    					{{$finding->amenity_inspection->building_unit_amenity_names()}}<br />
+					    					@endIf
+					    					@if($finding->finding_type)
+					    						{{$finding->finding_type->name}}
+					    					@endIf</p>
 					    				@can('access_auditor')
 					    				<div class="inspec-tools-tab-finding-actions">
 					    					@if(!$finding->cancelled_at)
