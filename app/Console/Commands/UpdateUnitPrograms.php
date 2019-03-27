@@ -200,8 +200,9 @@ class UpdateUnitPrograms extends Command
                                                         $this->line('Update missing project program key...');
                                                         $inserts[] = 'unit_key: '.$unit->unit_key.' | program_key: '.$program->program_key.' | development_key: '.$audit->development_key.' | project_prgram_key: '.$pp->developmentProgramKey;
                                                         $updateProjectProgramKeys++;
-
-                                                        UnitProgram::where('unit_key',$unit->unit_key)->where('program_key',$program->program_key)->where('audit_id',$audit->id)->update(['project_program_key' => intval($pp->$pp->developmentProgramKey)]);
+                                                        $ppk = intval($pp->$pp->developmentProgramKey);
+                                                        dd($ppk, ($ppk+0));
+                                                        UnitProgram::where('unit_key',$unit->unit_key)->where('program_key',$program->program_key)->where('audit_id',$audit->id)->update(['project_program_key' => $ppk]);
                                                         $updateProjectProgramKey->save();
                                                         $audit->comment = $audit->comment.' | Updating missing project program data';
                                                         $audit->comment_system = $audit->comment_system.' | Updating missing project program data';
