@@ -282,7 +282,7 @@
 						</div>
 					</div>
 					@else
-					<div><hr class="dashed-hr uk-width-1-1"> <h3>!!! Missing data for this building is preventing it from being able to be viewed.</h3><a class="uk-button uk-button-small" onclick="$('#building-cache-{{$building->id}}').slideToggle();"> View record data:</a><div class="uk-width-1-1" id="building-cache-{{$building->id}}" style="display: none;">{{print_r($building)}}</div><p>Please click to view the record data and send a copy of this to your support team and they should be able to fix the missing data.</p>
+					<div><hr class="dashed-hr uk-width-1-1"> <h3>!!! Missing data for this building is preventing it from being able to be viewed.</h3><a class="uk-button uk-button-small" onclick="$('#building-cache-{{$building->id}}').slideToggle();"> View record data:</a><div class="uk-width-1-1" id="building-cache-{{$building->id}}" style="display: none;"><small><pre>{{print_r($building)}}</pre></small></div><p>Please click to view the record data and send a copy of this to your support team and they should be able to fix the missing data.</p>
 						<hr class="dashed-hr uk-width-1-1">
 
 					</div>
