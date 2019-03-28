@@ -1,5 +1,5 @@
-<div class="modal-findings-right" uk-filter="target: .js-findings" id="modal-findings-right" >
-
+<div class="modal-findings-right" uk-filter="target: .js-findings">
+	
 		<div class="modal-findings-right-top">
 		    <div class="uk-width-1-1 filter-button-set-right js-findings-buttons" uk-grid>
 		        <div class="uk-width-1-5 uk-active findinggroup" uk-filter-control="filter: [data-finding-filter*='my-finding']; group: findingfilter; " onclick="clickingOnFindingFilter(this);">
@@ -8,7 +8,7 @@
 						<a class="sort-asc"></a>
 					</span>
 	            </div>
-	            <div class="uk-width-1-5 findinggroup" uk-filter-control="filter: [data-finding-filter*='all']; group: findingfilter;" onclick="clickingOnFindingFilter(this);">
+	            <div class="uk-width-1-5 findinggroup" uk-filter-control="filter: [data-finding-filter*='all']; group: findingfilter;" onclick="clickingOnFindingFilter(this);">    
 	            	<button class="uk-button uk-button-default button-filter" style="padding-left: 5px; padding-right: 5px;">All findings</button>
 		        	<span style="display:none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
 						<a class="sort-asc"></a>
@@ -27,12 +27,12 @@
 					</span>
 		        </div>
 		        <div class="uk-width-1-5 auditgroup">
-	                <button id="finding-modal-audit-stream-refresh" class="uk-button uk-button-default button-filter"  onclick="refreshFindingStream('{{$type}}',{{$auditid}},{{$buildingid}},{{$unitid}},{{$amenityid}}, 0);">REFRESH</button>
-
+	                <button id="finding-modal-audit-stream-refresh" class="uk-button uk-button-default button-filter"  onclick="refreshFindingStream('{{$type}}',{{$auditid}},{{$buildingid}},{{$unitid}},{{$amenityid}});">REFRESH</button>
+	                
 		        </div>
 		    </div>
 		</div>
-
+		   
 	    <div class="modal-findings-right-bottom-container">
 			<div class="modal-findings-right-bottom">
 				<div class="inspec-tools-tab-findings-container uk-panel uk-panel-scrollable uk-padding-remove js-findings">
@@ -71,7 +71,7 @@
 									   	@else
 									   	<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{strtoupper(formatDate($finding->auditor_last_approved_resolution_at))}};" onclick="resolveFinding({{$finding->id}})"><span class="a-circle-checked">
 									    	 &nbsp; </span>RESOLVED</button>
-
+									   	
 									    @endif
 									    @endif
 									@else
@@ -122,9 +122,16 @@
 				    				<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description"  style="z-index:auto">
 					    				<p>{{formatDate($finding->date_of_finding)}}: FN#{{$finding->id}}<br />
 					    					By {{$finding->auditor->full_name()}}<br>
-					    					{!!$finding->amenity_inspection->address()!!}
+					    					@if($finding->amenity_inspection)
+					    						{!!$finding->amenity_inspection->address()!!}
+					    					@endIf 
 					    				</p>
-					    				<p>{{$finding->amenity_inspection->building_unit_amenity_names()}}<br />{{$finding->finding_type->name}}</p>
+					    				<p>@if($finding->amenity_inspection)
+					    					{{$finding->amenity_inspection->building_unit_amenity_names()}}<br />
+					    					@endIf
+					    					@if($finding->finding_type)
+					    						{{$finding->finding_type->name}}
+					    					@endIf</p>
 					    				@can('access_auditor')
 					    				<div class="inspec-tools-tab-finding-actions">
 					    					@if(!$finding->cancelled_at)
@@ -174,13 +181,13 @@
 	}
 
 	function cancelFinding(findingid){
-
+    	
     	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Cancel Finding #'+findingid+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to cancel this finding? All its comments/photos/documents/followups will remain and the cancelled finding will be displayed at the bottom of the list.</h3></div>', {stack:1}).then(function() {
-
+		    	
 		    	$.post('/findings/'+findingid+'/cancel', {
 		            '_token' : '{{ csrf_token() }}'
 		        }, function(data) {
-		            if(data==0){
+		            if(data==0){ 
 		                UIkit.modal.alert(data,{stack: true});
 		            } else {
 		            	UIkit.notification('<span uk-icon="icon: check"></span> Finding Canceled', {pos:'top-right', timeout:1000, status:'success'});
@@ -188,20 +195,20 @@
 		            }
 		        } );
 
-
+		    	
 		}, function () {
 		    console.log('Rejected.')
 		});
     }
 
 	function restoreFinding(findingid){
-
+    	
     	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Restore Finding #'+findingid+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to restore this finding?</h3></div>', {stack:1}).then(function() {
-
+		    	
 		    	$.post('/findings/'+findingid+'/restore', {
 		            '_token' : '{{ csrf_token() }}'
 		        }, function(data) {
-		            if(data==0){
+		            if(data==0){ 
 		                UIkit.modal.alert(data,{stack: true});
 		            } else {
 		            	UIkit.notification('<span uk-icon="icon: check"></span> Finding Restored', {pos:'top-right', timeout:1000, status:'success'});
@@ -209,7 +216,7 @@
 		            }
 		        } );
 
-
+		    	
 		}, function () {
 		    console.log('Rejected.')
 		});
@@ -218,7 +225,7 @@
 
 	$(".inspec-tools-tab-findings-container").on( 'scroll', function(){
 
-	    var offset = $(".inspec-tools-tab-findings-container").scrollTop();
+	    var offset = $(".inspec-tools-tab-findings-container").scrollTop(); 
 
 	    var currentFinding ="";
 	    var currentFindingId ="";
@@ -282,7 +289,7 @@
 				//console.log('hiding #inspec-tools-tab-finding-sticky-'+findingId+'');
 				$('#inspec-tools-tab-finding-sticky-'+findingId).hide();
 			}
-
+			
 			// if($(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-item-'+itemId).attr('expanded')){
 		 //        $(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).show();
 		 //        $(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).css("margin-top", $(".inspec-tools-tab-findings-container").scrollTop());
@@ -298,5 +305,5 @@
 	    	$('div[id^="inspec-tools-tab-finding-sticky-"]').hide();
 	    }
 
-	});
+	});  
 </script>
