@@ -1,3 +1,9 @@
+<script>
+	$('#amenity-list').scroll(function(){
+	    scrollPosAmenity = $('#amenity-list').scrollTop();
+	    console.log(scrollPosAmenity);
+	});
+</script>
 <div id="amenity-list" class="uk-width-1-1 uk-margin uk-panel uk-panel-scrollable uk-height-large">
 	<h3 class="uk-text-uppercase uk-text-emphasis">Select Amenity</h3>
 	<div class="uk-width-1-1 ">

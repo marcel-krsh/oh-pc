@@ -609,6 +609,7 @@ $locationType = 'b-' . $passedBuilding->building_id;
 		}
 
 		function filterFindingTypes(){
+			debugger;
 			var searchString = $('#finding-description').val();
 				// load into the div
 				console.log('loading /modals/findings_list/'+window.findingModalSelectedType+'/'+window.selectedAmenityInspection+'?search='+searchString);

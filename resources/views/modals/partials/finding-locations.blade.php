@@ -1,3 +1,9 @@
+<script>
+	$('#type-list').scroll(function(){
+	    scrollPosType = $('#type-list').scrollTop();
+	    console.log(scrollPosType);
+	});
+</script>
 <div id="type-list" class="uk-width-1-1 uk-margin uk-panel uk-panel-scrollable uk-height-large">
 	<h3 class="uk-text-uppercase uk-text-emphasis">Select Location</h3>
 	<div class="uk-column-1-3@m uk-column-1-2@s ">
