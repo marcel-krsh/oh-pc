@@ -3,6 +3,7 @@
 			<div class="buildings uk-overflow-auto" style="">
 				<div class="sortablebuildings sortable" uk-sortable="handle: .uk-sortable-handle-{{$context}}">
 					@foreach($buildings as $key=>$building)
+					@if($building->building)
 					<div id="building-{{$context}}-r-{{$key}}" class="uk-margin-remove building @if($building->building) building-{{$building->building->status}} {{$building->building->status}} @endif @if($building->building->status != 'critical') notcritical @endif uk-grid-match" style=" @if(session('audit-hidenoncritical') == 1 && $building->building->status != 'critical') display:none; @endif " data-audit="{{$building->building->audit_id}}" data-project="{{$building->project_id}}" data-building="{{$building->building->building_id}}" data-amenity="{{$building->building->amenity_id}}" data-amenityinspection="{{$building->building->amenity_inspection_id}}" uk-grid>
 						<div class="uk-width-1-6 uk-padding-remove">
 							<div class="uk-padding-remove uk-flex">
@@ -279,6 +280,9 @@
 								</div>
 							</div>
 						</div>
+					</div>
+					@else
+					<div> <h2>!!! Missing data for this building is preventing it from being able to be viewed.</h2><a class="uk-button uk-button-small" onclick="$('#building-cache-{{$building->id}}).slideToggle();"> View record data:</a><div class="uk-width-1-1" id="building-cache-{{$building->id}}" style="display: none;">{{print_r($building)}}</div><p>Please click to view the record data and send a copy of this to your support team and they should be able to fix the missing data.</p>
 					</div>
 					@endforeach
 				</div>
