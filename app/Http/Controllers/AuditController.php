@@ -33,6 +33,7 @@ use App\Models\UnitAmenity;
 use App\Models\UnitInspection;
 use App\Models\UnitProgram;
 use App\Models\User;
+use DB;
 use Auth;
 use Carbon;
 use Illuminate\Http\Request;
@@ -147,6 +148,47 @@ class AuditController extends Controller
         }
 
         // count buildings & count ordering_buildings
+
+        // we need to do a few checks to fix incorrect data
+        // 1) when amenity_inspection_id has duplicates, rebuild with correct references
+        // 2) when amenity_inspection_id is null, make sure we get the next amenity_inspection reference and not a duplicate
+
+        // are there duplicates in amenity_inspection_id?
+        $check_ordering_buildings = OrderingBuilding::whereNull('building_id')
+                                        ->where('audit_id', '=', $audit)
+                                        ->where('user_id', '=', Auth::user()->id)
+                                        ->pluck('amenity_inspection_id')
+                                        ->toArray();
+
+        if(count($check_ordering_buildings) !== count(array_unique($check_ordering_buildings))){
+            // rebuild with correct references
+            // each orderingbuilding should corresponds to a cachedbuilding that has a correct amenity_inspection_id
+            $ordering_buildings = OrderingBuilding::whereNull('building_id')
+                                        ->where('audit_id', '=', $audit)
+                                        ->where('user_id', '=', Auth::user()->id)
+                                        ->get();
+
+            $already_in_there_array = array();
+            foreach($ordering_buildings as $ordering_building){
+                if( in_array($ordering_building->amenity_inspection_id, $already_in_there_array) ){
+
+                    // get a corresponding cachedbuilding record that has a different amenity_inspection_id (and not already in there)
+                    $checked_cached_building = CachedBuilding::where('audit_id', '=', $audit)->where('amenity_id', '=', $ordering_building->amenity_id)->whereNotIn('amenity_inspection_id',$already_in_there_array)->first();
+
+                    // update record
+                    if($checked_cached_building){
+                        $ordering_building->amenity_inspection_id = $checked_cached_building->amenity_inspection_id;
+                        $ordering_building->save();
+                    }
+
+                    $already_in_there_array[] = $ordering_building->amenity_inspection_id;
+                }else{
+
+                    $already_in_there_array[] = $ordering_building->amenity_inspection_id;
+                
+                }
+            }
+        }
 
         if (CachedBuilding::where('audit_id', '=', $audit)->count() != OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->count() && CachedBuilding::where('audit_id', '=', $audit)->count() != 0) {
             // this case shouldn't happen
