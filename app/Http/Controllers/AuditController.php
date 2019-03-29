@@ -4772,6 +4772,7 @@ class AuditController extends Controller
                         'building_id' => null,
                         'project_id' => $audit->project_id,
                         'amenity_id' => $amenity_type->id,
+                        'amenity_inspection_id' => $amenity->id,
                         'order' => $latest_ordering + 1,
                     ]);
                     $ordering->save();
