@@ -854,7 +854,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 $this->processes++;
                 foreach ($project->programs as $program) {
                     $this->processes++;
-                    if (in_array($program->program_key, $program_htc_overlap)) {
+                    if (isset($program_htc_overlap) && in_array($program->program_key, $program_htc_overlap)) {
                         if ($first_year == null || $first_year < $program->first_year_award_claimed) {
                             $first_year = $program->first_year_award_claimed;
                             $comments[] = 'Program key '.$program->program_key.' has the year '.$program->first_year_award_claimed.'.';

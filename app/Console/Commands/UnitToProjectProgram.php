@@ -50,6 +50,16 @@ class UnitToProjectProgram extends Command
         $canRun = '';
         $canRunCount = 0;
         $output = '';
+        $go = 1;
+        $project_key = $this->ask('Enter project_key or just press return to run all.');
+
+        if($project_key){
+            $projectKeyEval = '=';
+            $projectKeyVal = $project_key;
+        } else {
+            $projectKeyEval = '>';
+            $projectKeyVal = 0;
+        }
         
         $this->line(PHP_EOL.PHP_EOL."ASSIGN PROJECT PROGRAM KEYS TO UNITS".PHP_EOL.PHP_EOL);
 
@@ -63,11 +73,12 @@ class UnitToProjectProgram extends Command
         ->where('id','!=','45803')
         ->where('id','!=','45920')
         ->where('id','!=','45920')
+        ->where('project_key',$projectKeyEval, $projectKeyVal)
         ->get();
 
         $this->line('PROCESSING '.count($projects).' PROJECTS'.PHP_EOL.PHP_EOL);
 
-        $go = 0; /// set this to 0 if you need to skip to a unit.
+        
         $projectCount = 0;
         foreach($projects as $project){
             $projectCount++;
@@ -131,11 +142,6 @@ class UnitToProjectProgram extends Command
                         $projectUnits = $this->output->createProgressBar(count($units));
                         $this->line(PHP_EOL);
                         foreach($units as $unit){
-                            if($unit->unit_key == '348056'){
-                                $go = 1;
-                                $this->line('SKIPPING '.$unit->unit_key);
-                            }
-
                             if($go == 1){
                                 //$projectUnits->advance();
                                 $this->line("UNIT KEY: {$unit->unit_key} || ");
