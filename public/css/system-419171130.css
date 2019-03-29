@@ -687,7 +687,7 @@ stickynav {
 		margin-top: -1px !important;
 	}
 	#main-window {
-		padding-top: 40px !important;
+		
 		padding-left: 4px;
 		padding-right: 4px;
 	}
@@ -1428,7 +1428,7 @@ margin-top:10px;
 }
 #auditstable table td.hasdivider > div.fullwidthleftpad {
   margin-right: -4px;
-  width: 90%;
+  width: 84%;
 }
 #auditstable table tr .divider {
     border-style: solid;
@@ -1762,6 +1762,11 @@ margin-top:10px;
     font-size: 28px !important;
     padding-top: 6px;
     display:inline-block;
+}
+.completion-icon-big {
+    margin-top: 21px;
+    display: block;
+    font-size: 25px !important;
 }
 .inspection-area .area-name {
   padding-left: 10px;
@@ -2447,6 +2452,18 @@ margin-top:10px;
     bottom:1px;
     top: unset;
 }
+#auditstable .building .findings-icon-status.toplevel span {
+    font-size: 17px;
+    bottom: -4px;
+    right: -8px;
+    line-height: 7px;
+}
+#auditstable .building:not([expanded="true"]) .findings-icon.toplevel, #auditstable .building .findings-icon.toplevel{
+    opacity: 0.4;
+}
+#auditstable .building:hover .findings-icon.toplevel {
+    opacity:1;
+}
 #auditstable .building .findings-icon-status i {
     position: absolute;
     right: -1px;
@@ -2624,7 +2641,7 @@ margin-top:10px;
 }
 .inspec-tools-tab-finding-reply-sticky {
   position: absolute;
-  top: 50px;
+  top: 0px;
   left: 0;
   width: 100%;
   z-index: 10;
@@ -2675,6 +2692,8 @@ margin-top:10px;
   top: 0;*/
   float: right;
     text-align: right;
+    /*z-index:1000;
+    position:relative;*/
 }
 .inspec-tools-tab-finding .inspec-tools-tab-finding-actions {
   /*position: absolute;*/
@@ -3556,6 +3575,14 @@ span.indented, div.indented {
 #project-details-info-container {
     margin-bottom: 20px;
 }
+.project-details-info-compliance-programs ul li {
+      margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #ccc;
+}
+.project-details-info-compliance-program {
+  margin-bottom:20px;
+}
 #project-details-info-container .no-action { color: #3a3a3a; border-color:#939598;  }
 #project-details-info-container .no-action hr { color: #939598 border-top: 3px solid;  }
 #project-details-info-container .no-action .project-details-info-compliance-summary {
@@ -3982,6 +4009,9 @@ i.fa-square.chart-color-to-be-inspected { background-color:#e0e0df; }
       border-right: 1px dotted #3a3a3a;
     padding-right: 25px;
     height: 95%;
+}
+.modal-findings-items-container {
+  position:relative;
 }
 .modal-findings-right {
   width: 44%;

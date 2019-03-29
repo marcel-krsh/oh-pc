@@ -250,7 +250,7 @@ function saveBoilerplaceAndNewFinding(){
 
 }
 
-function expandFindingItems(element) {
+function expandFindingItems(element, type=null, typeid=null) {
 
 	// is element a grandchild of a finding? if so add witin child
 
@@ -301,7 +301,12 @@ function expandFindingItems(element) {
 		}
 
 		// fetch and display new details
-		var url = 'findings/'+findingId+'/items';
+		if(type && typeid){
+			var url = 'findings/'+findingId+'/items/'+type+'/'+typeid;
+		}else{
+			var url = 'findings/'+findingId+'/items';
+		}
+
 	    $.get(url, {
             }, function(data) {
                 if(data=='0'){ 
@@ -406,7 +411,7 @@ function expandFindingItems(element) {
 							stats = stats + newstat;
 						});
 						if(statcount > 0){
-							stats = stats + '<i class="a-menu" onclick="expandFindingItems(this);"></i>';
+							stats = stats + '<i class="a-menu" onclick="expandFindingItems(this,\''+item.type+'\',\''+item.id+'\');"></i>';
 						}
 
 						newitem = newitem.replace(/tplStats/g, stats);
@@ -448,8 +453,8 @@ function expandFindingItems(element) {
 	
 }
 
-function addChildItem(findingId, type) {
-	console.log("adding a child item to this finding");
+function addChildItem(id, type, fromtype='finding') {
+	dynamicModalLoad('addreply/'+id+'/'+fromtype+'/'+type, 0, 0, 0, 2);
 }
 
 function openFindingPhoto(findingid, itemid, id) {

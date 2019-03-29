@@ -30,6 +30,7 @@
 					Current Project Score : N/A
 				</div>
 				<div class="uk-width-1-2 uk-padding-remove">
+					@if($project->owner())
 					<h5 class="uk-margin-remove"><strong>OWNER: {{$project->owner()['organization']}}</strong></h5>
 					<div class="address">
 						<i class="a-avatar"></i> {{$project->owner()['name']}}<br />
@@ -37,9 +38,11 @@
 						<i class="a-mail-send"></i> {{$project->owner()['email']}}<br />
 						@if($project->owner()['address'])<i class="a-mailbox"></i> {{$project->owner()['address']}} @endif
 					</div>
+					@endif
 				</div>
 
 				<div class="uk-width-1-2">
+					@if($project->pm())
 					<h5 class="uk-margin-remove"><strong>Managed By: {{$project->pm()['organization']}}</strong></h5>
 					<div class="address">
 						<i class="a-avatar"></i> {{$project->pm()['name']}}<br />
@@ -47,6 +50,7 @@
 						<i class="a-mail-send"></i> {{$project->pm()['email']}}<br />
 						@if($project->pm()['address'])<i class="a-mailbox"></i> {{$project->pm()['address']}} @endif
 					</div>
+					@endif
 				</div>
 			</div>
 		</div>

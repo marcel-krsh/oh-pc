@@ -1,5 +1,5 @@
 ﻿<?php session(['disablePacer'=>1]); ?>
-<?php setlocale(LC_MONETARY, 'en_US'); 
+<?php setlocale(LC_MONETARY, 'en_US');
 /// protect against inactive users.
 $allowPageLoad = false;
 
@@ -20,7 +20,7 @@ if(Auth::check()){
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<title>
-	@if(Auth::check() && Auth::user()->entity_type == 'hfa') 
+	@if(Auth::check() && Auth::user()->entity_type == 'hfa')
 	Allita Program Compliance
 	@else
 	Dev|Co Inspect
@@ -38,9 +38,9 @@ if(Auth::check()){
 
 	@if (Auth::guest())
 	@else
-
+	<link rel="stylesheet" href="/css/documents-tab.css">
 	<!-- <link rel="stylesheet" href="/css/cdfs-tab.css">
-	
+
 	<link rel="stylesheet" href="/css/documents-tab.css">
 	<link rel="stylesheet" href="/css/funding-tab.css">
 	<link rel="stylesheet" href="/css/history-tab.css">
@@ -61,15 +61,16 @@ if(Auth::check()){
 	  		opacity:1 !important;
 		}
 		/*Universal header styles*/
-		
+
 		#apcsv-logo {
-		    margin: 0 auto;
-		    display: inline-block;
-		    width: auto;
-		    height: 100%;
-		    vertical-align: middle;
-		    float: left;
+		    position: relative; top: -9px; padding-left: 10px; display: inline-block;
 		}
+		@media only screen and (max-width: 1310px) {
+			#apcsv-logo {
+		    display: none;
+			}
+		}
+
 		#apcsv-list-left {
 		    float: left;
 		    display: inline-block;
@@ -148,7 +149,16 @@ if(Auth::check()){
 		#main-tabs {
 			padding-top:0px !important;
 		}
-		
+
+		#phone {
+			height: 100%;
+			width: 100%;
+			position: absolute;
+			top:0;
+			left:0;
+			background: #000;
+		}
+
 	</style>
 	<?php /* session(['disablePacer'=>0]); */ ?>
 	@endif
@@ -170,7 +180,7 @@ if(Auth::check()){
 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
-	
+
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>  -->
@@ -193,7 +203,7 @@ if(Auth::check()){
 	<link rel="stylesheet" href="/css/system-419171130.css">
 
 	@yield('head')
-	
+
     <style>
 	  [v-cloak] {
 	    display: none;
@@ -209,22 +219,58 @@ if(Auth::check()){
 	    var uid = "{{$current_user->id}}";
 	    var sid = "{{$current_user->socket_id}}";
 	</script>
-	
+
 </head>
 <body >
-	
 	<a name="top"></a>
+	<!-- MOBILE -->
+	<div id="phone" class="uk-visible-touch uk-hidden@s">
+		<div id="phone-app" class="uk-container uk-align-center" >
+			<div class="uk-padding-small" style="background-color:#3c3c3c; margin-bottom: 200px; z-index: 980;" uk-sticky="width-element: #phone; show-on-up: true">
+					<a class="uk-contrast" uk-toggle="target: #offcanvas-phone"><h2><i class="a-menu uk-text-muted uk-contrast"></i> DEV|CO INSPECT</h2></a>
+				</div>
+				<div uk-grid>
+
+				<div id="mobile-content" class="uk-width-1-1" style="height: 1600px;">
+				</div>
+				<script type="text/javascript">
+					isMobile = function(){
+    							var isMobile = window.matchMedia("only screen and (max-width: 640px)");
+					    return isMobile.matches ? true : false
+					}
+					if(isMobile){
+						//load mobile content
+					}
+				</script>
+			</div>
+		</div>
+	</div>
+
+	<div id="offcanvas-phone" uk-offcanvas="overlay: true">
+    	<div class="uk-offcanvas-bar" style="background-color: #0d0d23">
+
+	        <button class="uk-offcanvas-close" type="button" uk-close></button>
+
+
+	        <h3>Use Your Phone Instead?</h3>
+
+	        <p>If you want to access Allita's PC Inspect tools on your phone... tell your manager you found this easter egg, and want it to use it instead of a tablet.</p>
+
+	    </div>
+	</div>
+
+
 	<!-- MAIN VIEW -->
 
-	<div id="app" class="uk-container uk-align-center" >
+	<div id="app" class="uk-container uk-align-center uk-visible@s" >
 		<div uk-grid class="uk-grid-collapse">
 			<div id="main-window" class=" uk-margin-large-bottom" uk-scrollspy="cls:uk-animation-fade; delay: 900">
-			
+
 				<div id="main-tabs" uk-sticky style="max-width: 1519px; ">
 					<div uk-grid>
 						<div class="uk-width-1-1">
-							<img src="/images/devco_logo.png" alt="DEV|CO Inspection powered by Allita PC" style="position: relative; top: -9px; padding-left: 10px; display: inline-block;">
-						
+							<img id="apcsv-logo" src="/images/devco_logo.png" alt="DEV|CO Inspection powered by Allita PC" >
+
 					        @can('access_auditor')
 					        <div class="menu-search uk-margin-large-left uk-padding-bottom" style="display: inline-block; position: relative;top:-5px;" class="uk-margin-large-left">
 								<div class="uk-autocomplete quick-lookup-box uk-inline">
@@ -235,7 +281,7 @@ if(Auth::check()){
 							@else
 							<div style="width: 20px; display: inline-block;"></div>
 							@endCan
-					    
+
 					    	<div id="top-tabs-container" style="display: inline-block; overflow: visible; padding-top:15px; min-height: 26px;">
 						        @can('access_pm')
 						        <ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m" style="background-color: transparent;">
@@ -243,22 +289,24 @@ if(Auth::check()){
 					    				<a href="" style="">
 					    					<span class="list-tab-text">
 					    						<span class="uk-badge" v-if="statsAuditsTotal" v-cloak>@{{statsAuditsTotal}}
-					    						</span> 
+					    						</span>
 					    						<i class="a-mobile-home"></i> AUDITS
 					    					</span>
 					    				</a>
 					    			</li>
 									<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
-										<a href=""> 
+										<a href="">
 											<span class="list-tab-text">
-												<span class="uk-badge" v-if="statsCommunicationTotal" v-cloak v-html="statsCommunicationTotal"></span> 
+												<span class="uk-badge" v-if="statsCommunicationTotal" v-cloak v-html="statsCommunicationTotal"></span>
 												 <i class="a-envelope-3"></i> COMMUNICATIONS
 											</span>
 										</a>
 									</li>
+									@if(env('APP_ENV') == 'local')
 									<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}', '3','','','',1);}">
 										<a href=""><span class="list-tab-text"><span class="uk-badge" v-if="statsReportsTotal" v-cloak>@{{statsReportsTotal}}</span></span> <i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
 									</li>
+									@endif
 									@can('access_admin')
 									<li id="detail-tab-5" class="detail-tab-5" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-5').hasClass('uk-active')  || window.adminLoaded != 1){loadTab('{{ route('dashboard.admin') }}', '5','','','',1);}" >
 										<a href=""><span class="list-tab-text">ADMIN</span></a>
@@ -267,15 +315,15 @@ if(Auth::check()){
 								</ul>
 								@endcan
 							</div>
-				    	
+
 				    		<div id="apcsv-avatar" class="" title="{{Auth::user()->full_name()}} - User ID:{{Auth::user()->id}} @if(Auth::user()->root_access()) Root Access @elseIf(Auth::user()->admin_access()) Admin Access @elseIf(Auth::user()->auditor_access()) Auditor Access @elseIf(Auth::user()->pm_access()) Property Manager @endIf" onclick="openUserPreferences();" style="cursor: pointer; margin-top:15px">
 							{{Auth::user()->initials()}}
 							</div>
 							<div id="apcsv-menu-icon" class="hvr-grow uk-inline" style="margin-top:15px">
-								<button id="apcsv-toggle" class="pcsv-toggle" style="background-color: transparent; border: none; cursor: pointer; 0" >APPS</button>    
+								<button id="apcsv-toggle" class="pcsv-toggle" style="background-color: transparent; border: none; cursor: pointer; 0" >APPS</button>
 								<div uk-dropdown="mode: click">
-									<div class="apcsv-menu-item"> 
-										<a href="https://devco.ohiohome.org/AuthorityOnlineALT/" style="font-weight: 400">DEV|CO Compliance</a>
+									<div class="apcsv-menu-item">
+										<a href="https://devco.ohiohome.org/AuthorityOnline/" style="font-weight: 400">DEV|CO Compliance</a>
 									</div>
 									<div class="apcsv-menu-item">
 										<a href="/" style="font-weight: 400">DEV|CO Inspection</a>
@@ -290,17 +338,19 @@ if(Auth::check()){
 				    	</div>
 					</div>
 				</div>
-				
-				<ul id="tabs" class="maintabs uk-switcher" > 
+
+				<ul id="tabs" class="maintabs uk-switcher" >
 					<li>
 						<div id="detail-tab-1-content"></div>
 					</li>
 					<li>
 						<div id="detail-tab-2-content"></div>
 					</li>
+					@if(env('APP_ENV') == 'local')
 					<li>
 						<div id="detail-tab-3-content"></div>
 					</li>
+					@endIf
 					@if(Auth::user()->admin_access())
 					<li>
 						<div id="detail-tab-5-content" style="padding-top:20px;"></div>
@@ -310,7 +360,7 @@ if(Auth::check()){
 
 				<a id="smoothscrollLink" href="#top" uk-scroll="{offset: 90}"></a>
 				<div id="dynamic-modal" uk-modal>
-					<div id="modal-size" class="uk-modal-dialog uk-modal-body uk-modal-content"> 
+					<div id="modal-size" class="uk-modal-dialog uk-modal-body uk-modal-content">
 						<a class="uk-modal-close-default" uk-close></a>
 						<div id="dynamic-modal-content"></div>
 					</div>
@@ -320,11 +370,11 @@ if(Auth::check()){
 		</div>
 	</div>
 
-	<div id="mainfooter" uk-grid>
+	<div id="mainfooter"  class="uk-visible@s" uk-grid>
 		<div class="uk-width-1-3">
 			<p class="uk-dark uk-light" style="position: absolute; bottom: 20px;"><a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light"><i class="a-mobile-home"></i>
-			@if(Auth::check() && Auth::user()->auditor_access()) 
-			Allita Program Compliance 
+			@if(Auth::check() && Auth::user()->auditor_access())
+			Allita Program Compliance
 			@else
 			Dev|Co Inspect
 			@endif
@@ -344,17 +394,17 @@ if(Auth::check()){
 	    }
 	}
 
-	
+
 
 		$(".uk-modal").on("hide", function() {
 		    $("html").removeClass("uk-modal-page");
 		});
 
-	
+
 
 	</script>
 
-	
+
 	<!-- <script src="/js/app.js"></script> -->
 	@if (Auth::guest())
 	@else
@@ -373,6 +423,8 @@ if(Auth::check()){
 	<script type="text/javascript" src="/js/systems/findings.js"></script>
 	<script type="text/javascript" src="/js/systems/communications.js"></script>
 
+
+	<script type="text/javascript" src="/js/systems/documents-tab.js"></script>
 	<!-- <script type="text/javascript" src="/js/systems/cdfs-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/communications-tab.js"></script>
 	<script type="text/javascript" src="/js/systems/documents-tab.js"></script>
@@ -418,7 +470,7 @@ if(Auth::check()){
 			    output = output + item[0]+'<br />';
 			    output = output + item[1]+', '+item[2]+' '+item[3]+'<br />';
 			    output = output + '</div>';
-			    
+
 			    return output;
 			},
 		    onSelect: function(e, term, item){
@@ -439,18 +491,22 @@ if(Auth::check()){
 
 	@if($tab !== null)
 	<script>
-		setTimeout(function(){
-			$('#{{$tab}}').trigger("click");
+
+			setTimeout(function(){
+				$('#{{$tab}}').trigger("click");
 			},100);
+
 			window.currentSite='allita_pc';
 	</script>
 	@else
 	<script >
-		setTimeout(function(){
-			$('#detail-tab-1').trigger("click");
-		},100);
+
+			setTimeout(function(){
+				$('#detail-tab-1').trigger("click");
+			},100);
+
 		window.currentSite='allita_pc';
-		
+
 	</script>
 	@endif
 
@@ -473,7 +529,7 @@ if(Auth::check()){
 	@endif
 
 	<!-- <script type="text/javascript" src="https://devco.ohiohome.org/AuthorityOnlineALT/Unified/UnifiedHeader.aspx"></script> -->
-	<script>		
+	<script>
 		new Vue({
 		  el: '#top-tabs',
 		  data: {
@@ -498,17 +554,17 @@ if(Auth::check()){
 					        this.statsCommunicationTotal = payload.data.communicationTotal;
 					    }
 			    });
-		    	
+
 		            // console.log("new total "+data.communicationTotal);
-		            
+
 
 		        // socket.on('communications.'+uid+'.'+sid+':NewRecipient', function(data){
 		        //     // console.log("user " + data.userId + " is getting a message because a new message has been sent.");
 		        //     // console.log("new total "+data.communicationTotal);
 		        //     this.statsCommunicationTotal = data.communicationTotal;
-		        
-			
-		    
+
+
+
 		}
 	});
 	</script>
@@ -533,7 +589,7 @@ if(Auth::check()){
 		openWebsocket("http://192.168.10.10:6001");
 	</script> -->
 
-       
+
 </body>
 </html>
 
@@ -603,25 +659,25 @@ if(Auth::check()){
 	<div class="uk-vertical-align uk-text-center uk-height-1-1">
         <div class="uk-vertical-align-middle uk-margin-top" style="width: 250px;">
 
-            
+
 
             <form class="uk-panel uk-panel-box">
                 <div class="uk-form-row">
                     <h2 align="center">Inactive User</h2>
                     <p align="center">{{Auth::user()->name}}</p>
                 </div>
-                
+
                 <div class="uk-form-row">
                     <a class="uk-width-1-1 uk-button uk-button-primary uk-button-large" href="/login">Return to Login</a>
                 </div>
-                
+
             </form>
 
         </div>
-    </div> 
+    </div>
 
 </body>
 </html>
-<?php  
+<?php
 Auth::logout();
 }  ?>

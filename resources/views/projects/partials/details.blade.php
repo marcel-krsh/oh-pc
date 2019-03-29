@@ -44,8 +44,13 @@
 						            			<i class="{{$selected_audit->inspection_icon}} {{$selected_audit->inspection_status}}" uk-tooltip="title:{{$selected_audit->inspection_status_text}};"></i>
 						            		</div>
 						            		<div class="uk-width-2-3 uk-padding-remove">
-							            		<h3 class="uk-link uk-margin-remove" uk-tooltip="title:Click to reschedule audits;">12/21</h3>
-							            		<div class="dateyear">2018</div>
+						            			@if(!is_null($selected_audit->inspection_schedule_date))
+							            		<h3 class="uk-link uk-margin-remove" uk-tooltip="title:{{$selected_audit->inspection_schedule_text}};">{{date('m/d',strtotime($selected_audit->inspection_schedule_date))}}</h3>
+							            		<div class="dateyear">{{date('Y',strtotime($selected_audit->inspection_schedule_date))}}</div>
+							            		@else
+							            		<i class="a-calendar-pencil" uk-tooltip="title:Schedule Using Assignment Below;"></i>
+							            		@endif
+
 						            		</div>
 						            	</div> 
 						            	<div class="uk-width-1-6 iconpadding uk-text-right" uk-tooltip="title:{{$selected_audit->auditor_items()}} INSPECTABLE ITEMS;">{{$selected_audit->auditor_items()}}@if($selected_audit->lead == Auth::user()->id)*@endif /</div> 
@@ -59,10 +64,15 @@
 									<div class="divider"></div>
 									<div class="uk-text-center hasdivider uk-margin-small-top" uk-grid>
 						            	<div class="uk-width-1-3">
-						            		<i class="a-bell-2" uk-tooltip="title:No followups;"></i>
+						            		<i class="a-bell-2" uk-tooltip="title:{{$selected_audit->followup_status_text}};"></i>
 						            	</div> 
 						            	<div class="uk-width-2-3">
+						            		@if(is_null($selected_audit->followup_date))
 						            		<i class="a-calendar-pencil" uk-tooltip="title:New followup;"></i>
+						            		@else
+						            		<h3 class="uk-link uk-margin-remove" uk-tooltip="title:{{$selected_audit->inspection_schedule_text}};">{{date('m/d',strtotime($selected_audit->followup_date))}}</h3>
+							            		<div class="dateyear">{{date('Y',strtotime($selected_audit->followup_date))}}</div>
+							            	@endif
 						            	</div> 
 						            </div>
 								</div>
@@ -71,16 +81,19 @@
 						<div class="uk-width-1-2 uk-padding-remove">
 							<div uk-grid>
 								<div class="uk-width-2-5 uk-padding-remove">
+									@if(env('APP_ENV') == 'local')
 									<div class="divider"></div>
 									<div class="uk-text-center hasdivider uk-margin-small-top" uk-grid>
 						            	<div uk-tooltip="title:ADD FINDING" class="uk-width-1-3 use-hand-cursor ok-actionable uk-first-column" title="" aria-expanded="false"><i class="a-folder"></i></div>
 						            	<div uk-tooltip="title:ADD FINDING" class="uk-width-1-3 use-hand-cursor action-required" title="" aria-expanded="false"><i class="a-booboo"></i></div>
 						            	<div uk-tooltip="title:ADD FINDING" class="uk-width-1-3 use-hand-cursor in-progress" title="" aria-expanded="false"><i class="a-skull"></i></div>
 						            </div>
+						            @endIf
 								</div>
 								<div class="uk-width-2-5 uk-padding-remove">
 									<div class="divider"></div>
 									<div class="uk-text-center hasdivider uk-margin-small-top" uk-grid>
+										@if(env('APP_ENV') == 'local')
 						            	<div class="uk-width-1-4">
 						            		<i class="a-avatar action-needed" uk-tooltip="title:Auditors / schedule conflicts / unasigned items;"></i>
 						            	</div> 
@@ -93,10 +106,13 @@
 						            	<div class="uk-width-1-4">
 						            		<i class="a-person-clock" uk-tooltip="title:NO/VIEW HISTORY;"></i>
 						            	</div> 
+						            	@endIF
 						            </div>
 								</div>
 								<div class="uk-width-1-5 iconpadding">
+									@if(env('APP_ENV') == 'local')
 									<i class="a-calendar-7"></i>
+									@endIf
 								</div>
 							</div>
 						</div>
@@ -125,10 +141,10 @@
 			<div class="uk-width-2-3">
 				<ul class="leaders" style="margin-right:30px;">
 					<li><span>Total Buildings</span> <span>{{$details->total_building}}</span></li>
-					<li><span class="indented">Total Building Common Areas</span> <span>{{$details->total_building_common_areas}}</span></li>
-					<li><span class="indented">Total Building Systems</span> <span>{{$details->total_building_systems}}</span></li>
-					<li><span class="indented">Total Building Exteriors</span> <span>{{$details->total_building_exteriors}}</span></li>
-					<li><span>Total Project Common Areas</span> <span></span></li>
+					<li style="display:none"><span class="indented">Total Building Common Areas</span> <span>{{$details->total_building_common_areas}}</span></li>
+					<li style="display:none"><span class="indented">Total Building Systems</span> <span>{{$details->total_building_systems}}</span></li>
+					<li style="display:none"><span class="indented">Total Building Exteriors</span> <span>{{$details->total_building_exteriors}}</span></li>
+					<li style="display:none"><span>Total Project Common Areas</span> <span></span></li>
 					<li><span>Total Units</span> <span>{{$details->total_units}}</span></li>
 					<li><span class="indented">• Market Rate Units</span> <span>{{$details->market_rate}}</span></li>
 					<li><span class="indented">• Program Units</span> <span>{{$details->subsidized}}</span></li>

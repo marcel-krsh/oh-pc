@@ -1,9 +1,10 @@
 		<td colspan="10">
-			<div class="rowinset-top">PROJECT LEVEL INSPECTION AREAS AND BUILDINGS <span class="uk-link" style="color:#ffffff;" onclick="$('#audit-r-{{$target}}-buildings').remove();"><i class="a-circle-cross"></i></span></div>
+			<!-- <div class="rowinset-top">PROJECT LEVEL INSPECTION AREAS AND BUILDINGS <span class="uk-link" style="color:#ffffff;" onclick="$('#audit-r-{{$target}}-buildings').remove();$('tr[id^=\'audit-r-\']').show();"><i class="a-circle-cross"></i></span></div> -->
 			<div class="buildings uk-overflow-auto" style="">
 				<div class="sortablebuildings sortable" uk-sortable="handle: .uk-sortable-handle-{{$context}}">
 					@foreach($buildings as $key=>$building)
-					<div id="building-{{$context}}-r-{{$key}}" class="uk-margin-remove building @if($building->building) building-{{$building->building->status}} {{$building->building->status}} @endif @if($building->building->status != 'critical') notcritical @endif uk-grid-match" style=" @if(session('audit-hidenoncritical') == 1 && $building->building->status != 'critical') display:none; @endif " data-audit="{{$building->building->audit_id}}" data-project="{{$building->project_id}}" data-building="{{$building->building->building_id}}" data-amenity="{{$building->building->amenity_id}}" uk-grid>
+					@if($building->building)
+					<div id="building-{{$context}}-r-{{$key}}" class="uk-margin-remove building @if($building->building) building-{{$building->building->status}} {{$building->building->status}} @endif @if($building->building->status != 'critical') notcritical @endif uk-grid-match" style=" @if(session('audit-hidenoncritical') == 1 && $building->building->status != 'critical') display:none; @endif " data-audit="{{$building->building->audit_id}}" data-project="{{$building->project_id}}" data-building="{{$building->building->building_id}}" data-amenity="{{$building->building->amenity_id}}" data-amenityinspection="{{$building->building->amenity_inspection_id}}" uk-grid>
 						<div class="uk-width-1-6 uk-padding-remove">
 							<div class="uk-padding-remove uk-flex">
 								<div id="building-{{$context}}-{{$target}}-c-1-{{$key}}" class="uk-inline uk-sortable-handle-{{$context}}" style="min-width: 16px; padding: 0 3px;">
@@ -95,14 +96,9 @@
 															</div>
 															<div class="building-status">
 																
-																<span class="uk-badge colored" uk-tooltip="pos:top-left;" title="@if(!is_null($building->building->findings_json))
-																	<?php 
-																	foreach($building->building->findings_json as $finding){
-																		echo strtoupper($finding->finding_type).' : '.$finding->finding_description.'<br/>';
-																		//echo 'hello';
-																	}
-																	?>@else NO FINDINGS @endIf">{{$building->building->finding_total}}</span>
-																
+																<span class="uk-badge colored" uk-tooltip="pos:top-left;" title="@if($building->building->findingstotal() > 0)
+																	{{$building->building->findingstotal()}} FINDINGS
+																	@else NO FINDINGS @endIf">{{$building->building->findingstotal()}}</span>
 															</div>
 														</div>
 													</div>
@@ -159,7 +155,7 @@
 										            		
 											            	@if($building->building->type != "pool")
 											            	<br />
-											            	@if($building->building->building_id != '')
+											            	@if($building->building->building_id != '' && $building->building->type_total > 0)
 											            	<small class="colored use-hand-cursor" onclick="buildingDetails({{$building->building->building_id}},{{$audit}},{{$key}},{{$target}},10,'{{$context}}');" uk-tooltip="pos:top-left;title:Building details;" ><i class="a-menu colored uk-text-middle"></i> 
 											            		@if($building->building->type_total > 0)
 											            		<span class="uk-text-middle uk-text-uppercase">{{$building->building->type_total}} @if($building->building->type_total > 1) {{$building->building->type_text_plural}} @else {{$building->building->type_text}} @endif</span>
@@ -174,7 +170,8 @@
 													<div uk-grid>
 														<div class="uk-width-1-1 findings-icons" uk-grid style="margin-top: 0px;"> 
 										            		<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$building->building->finding_file_status}} action-needed">
-										            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'file');">
+										            			@if($building->building_id)
+										            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'file', null, @if($building->building_id) '0' @else '1' @endif);">
 																	<i class="a-folder"></i>
 																	<div class="findings-icon-status">
 																		@if($building->building->finding_file_completed == 0)
@@ -184,10 +181,12 @@
 																		@endif
 																	</div>
 																</div>
-																
+																@else
+																<i id="completed-building-amenity-{{$audit}}{{$building->building->amenity()->id}}" class="@if($building->building->amenity()->completed_date_time) a-circle-checked @else a-circle @endif completion-icon completion-icon-big use-hand-cursor" uk-tooltip="title:CLICK TO COMPLETE" onclick="markAmenityComplete({{$audit}}, null, null, {{$building->building->amenity()->id}}, 'completed-building-amenity-{{$audit}}{{$building->building->amenity()->id}}',1)" title="" aria-expanded="false"></i>
+																@endif
 															</div>
 															<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$building->building->finding_nlt_status}}">
-																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'nlt');">
+																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'nlt', null, @if($building->building_id) '0' @else '1' @endif);">
 																	<i class="a-booboo"></i>
 																	<div class="findings-icon-status">
 																		@if($building->building->finding_nlt_completed == 0)
@@ -199,7 +198,7 @@
 																</div>
 															</div>
 															<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$building->building->finding_lt_status}}">
-																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'lt');">
+																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'lt', null, @if($building->building_id) '0' @else '1' @endif);">
 																	<i class="a-skull" uk-tooltip="pos:top-left;title:Reason;"></i>
 																	<div class="findings-icon-status">
 																		@if($building->building->finding_lt_completed == 0)
@@ -246,6 +245,24 @@
 												    @endif
 												@endforeach
 											</div>
+											@else
+											<div class="uk-inline uk-padding-remove uk-float-right" style="margin-top: 7px;">	
+												@if($building->building->amenity())
+													<div class="findings-icon toplevel uk-inline uk-margin-right" onclick="copyAmenity('', {{$audit}}, 0, 0, {{$building->building->amenity()->id}}, 1);">
+														<i class="a-file-copy-2"></i>
+														<div class="findings-icon-status toplevel plus">
+															<span class="uk-badge">+</span>
+														</div>
+													</div>
+												@endIf
+													<div class="findings-icon toplevel uk-inline  uk-margin-right" onclick="deleteAmenity('building-{{$context}}-r-{{$key}}', {{$audit}}, 0, 0, {{$building->building->amenity_inspection_id}}, 0, 1);">
+														<i class="a-trash-4"></i>
+														<div class="findings-icon-status toplevel plus">
+															<span class="uk-badge">-</span>
+														</div>
+													</div>
+												
+											</div>
 											@endif
 
 										</div>
@@ -264,6 +281,12 @@
 							</div>
 						</div>
 					</div>
+					@else
+					<div style="display: none;"><hr class="dashed-hr uk-width-1-1"> <h3>!!! It appears the ordering data has extra records.</h3><a class="uk-button uk-button-small" onclick="$('#building-cache-{{$building->id}}').slideToggle();"> View record data:</a><div class="uk-width-1-1" id="building-cache-{{$building->id}}" style="display: none;"><small><pre>{{print_r($building)}}</pre></small></div><p>Please contact Holly at hswisher@ohiohome.org .</p>
+						<hr class="dashed-hr uk-width-1-1">
+
+					</div>
+					@endIf
 					@endforeach
 				</div>
 			</div>

@@ -74,34 +74,35 @@
 										$projectAmenities = $projectAmenities->sortBy('amenity_id')->sortBy('id');
 
 										$currentAmenityId = 0;
-										$amenityIncrement = 1;
+										$amenityIncrement = array();
 
 					        		@endphp
 					        
 					        		@foreach($projectAmenities as $amenity)
 					        			@php 
-					        				if($currentAmenityId != $amenity->amenity_id) { 
+					        				if(!array_key_exists($amenity->amenity_id, $amenityIncrement)){
+					        				//if($currentAmenityId != $amenity->amenity_id) { 
 				        						// new amenity
 				        						$currentAmenityId = $amenity->amenity_id;
 				        						if($amenity->project_has_multiple()){ 
-				        							$amenityIncrement = 1;
+				        							$amenityIncrement[$currentAmenityId] = 1;
 				        						} else {
-				        							$amenityIncrement = '';
+				        							$amenityIncrement[$currentAmenityId] = 0;
 				        						}
 				        					} else {
 				        						// same amenity - increment it.
-				        						$amenityIncrement++; 
+				        						$amenityIncrement[$amenity->amenity_id]++; 
 				        					}
 					        			@endphp
 					        		<li id="amenity-inspection-{{$amenity->id}}" class=" s-{{$audit->project_ref}} aa-{{$amenity->amenity_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items uid-{{$amenity->auditor_id}}" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">
-					        			<a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','@if($amenity->auditor_id) {{$amenity->user->initials()}} @else NA @endIf : {{$amenity->amenity->amenity_description}} {{$amenityIncrement}}',{{$amenityIncrement}})" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">@if(is_null($amenity->completed_date_time)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id) <div class="amenity-auditor uk-margin-remove">
+					        			<a onClick="selectAmenity('{{$amenity->amenity_id}}','amenity-inspection-{{$amenity->id}}','{{$amenity->id}}','@if($amenity->auditor_id) {{$amenity->user->initials()}} @else NA @endIf : {{$amenity->amenity->amenity_description}} @if($amenityIncrement[$amenity->amenity_id] != 0){{$amenityIncrement[$amenity->amenity_id]}} @endif',{{$amenityIncrement[$amenity->amenity_id]}})" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">@if(is_null($amenity->completed_date_time)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id) <div class="amenity-auditor uk-margin-remove">
 					        											<div class="amenity-auditor uk-margin-remove">
 					        												<div uk-tooltip="pos:top-left;title:{{$amenity->user->full_name()}};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float">
 					        													{{$amenity->user->initials()}}
 					        												</div>
 					        											</div>
 					        										</div> @else 
-					        										<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED"></i>  @endif {{$amenity->amenity->amenity_description}} {{$amenityIncrement}}</a></li>
+					        										<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED"></i>  @endif {{$amenity->amenity->amenity_description}} @if($amenityIncrement[$amenity->amenity_id] != 0){{$amenityIncrement[$amenity->amenity_id]}} @endif</a></li>
 					        		@endforeach
 
 					        		@php // get the building level amenities
@@ -164,11 +165,15 @@
 										$currentUnitId = 0;
 										$currentAmenityId = 0;
 										$amenityIncrement = 1;
+
 					        		@endphp
 
 					        		@foreach($unitAmenities as $amenity)
 					        			@if($currentUnitId != $amenity->unit_id)
-					        				<li class="u-{{$amenity->unit_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items @if($audit->hasAmenityInspectionAssigned(null, $amenity->unit_id)) uid-{{Auth::user()->id}} @endif"><strong>Unit : {{$amenity->cached_unit()->unit_name}} in BIN: {{$amenity->cached_unit()->building_key}} ADDRESS: {{$amenity->cached_unit()->address}}</strong></li>
+					        				<li class="u-{{$amenity->unit_id}} amenity-inspection-{{$amenity->id}} amenity-list-item finding-modal-list-items @if($audit->hasAmenityInspectionAssigned(null, $amenity->unit_id)) uid-{{Auth::user()->id}} @endif">
+					        					@if($amenity->cached_unit())
+					        					<strong>Unit : {{$amenity->cached_unit()->unit_name}} in BIN: {{$amenity->cached_unit()->building_key}} ADDRESS: {{$amenity->cached_unit()->address}}</strong>
+					        				@endif</li>
 					        				@php $currentUnitId = $amenity->unit_id; @endphp
 					        			@endif
 					        			@php if($currentAmenityId != $amenity->amenity_id) { 
@@ -228,7 +233,7 @@
 									@endphp
 
 
-					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('s-{{$audit->project_ref}}','Site: '.{{$audit->project->address->basic_address()}})" style="color : @if($siteComplete == 1) #000 @else #50b8ec @endIf " >@if($siteComplete == 1) <i class="a-circle-checked"></i> @else <i class="a-circle"></i>@endIf Site: {{$audit->project->address->basic_address()}}</li>
+					        		<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterAmenities('s-{{$audit->project_ref}}','Site: {{$audit->project->address->basic_address()}}')" style="color : @if($siteComplete == 1) #000 @else #50b8ec @endIf " >@if($siteComplete == 1) <i class="a-circle-checked"></i> @else <i class="a-circle"></i>@endIf Site: {{$audit->project->address->basic_address()}}</li>
 
 					        		<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
 					 
@@ -292,7 +297,7 @@
 		        </div>
 		        <div class="uk-margin-remove" uk-grid>
             		<div class="uk-width-1-1 uk-padding-remove">
-            			<button class="uk-button uk-button-primary button-finding-filter uk-width-1-1 @if(!$checkDoneAddingFindings) uk-modal-close @endif" @if($checkDoneAddingFindings) onclick="completionCheck();return false;" @endif>DONE ADDING FINDINGS</button>
+            			<button class="uk-button uk-button-primary button-finding-filter uk-width-1-1 @if(!$checkDoneAddingFindings) uk-modal-close @endif" <?php /* @if($checkDoneAddingFindings) onclick="completionCheck();return false;" @endif */ ?> onClick="dynamicModalClose()">DONE ADDING FINDINGS</button>
             		</div>
             	</div>
 			</div>
@@ -434,12 +439,22 @@
 					} elseif($passedAmenity->building_id){
 						// is a building
 						$locationType = 'b-'.$passedAmenity->building_id;
-						$locationText = "Building BIN: ".$passedAmenity->building_id.", NAME: ".addslashes($buildingName).", ADDRESS: ".addslashes($passedAmenity->building->address->line_1);
+						$locationText = "Building BIN: ".$passedAmenity->building_id.", NAME: ".addslashes($buildingName);
+						if($passedAmenity->building->address){
+							$locationText .=", ADDRESS: ".addslashes($passedAmenity->building->address->line_1);
+						} else {
+							$locationText .=", NO ADDRESSS SET IN DEVCO.";
+						}
 						echo "console.log('Passed amenity is a building type');";
 					} else {
 						// is a unit
 						$locationType = 'u-'.$passedAmenity->unit_id;
-						$locationText = "Unit Name: ".$passedAmenity->cached_unit()->unit_name.", in BIN: ".$passedAmenity->building_key." at ADDRESS: ".$passedAmenity->unit->building->address->line_1;
+						$locationText = "Unit Name: ".$passedAmenity->cached_unit()->unit_name.", in BIN: ".$passedAmenity->building_key;
+						if($passedAmenity->unit->building->address) {
+							$locationText .=" at ADDRESS: ".$passedAmenity->unit->building->address->line_1;
+						} else {
+							$locationText .=", NO ADDRESSS SET IN DEVCO.";
+						}
 					}
 				?>
 				// set filter text for drop lists
@@ -452,7 +467,7 @@
 
 			
         @elseif(!is_null($passedUnit))
-
+        	@if($toplevel != 1)
         		console.log('Filtering to unit id:u-{{$passedUnit->unit_id}}');
         		// set filter test for type
         		<?php 
@@ -460,11 +475,17 @@
 				?>
 				// set filter text for type
 				window.findingModalSelectedLocationType = '{{$locationType}}';
-				filterAmenities('u-{{$passedUnit->unit_id}}', 'Unit NAME: {{$passedUnit->unit_name}} in Building BIN:{{$passedUnit->building_key}} ADDRESS: {{$passedUnit->building->address->line_1}}',0);
+				filterAmenities('u-{{$passedUnit->unit_id}}', 'Unit NAME: {{$passedUnit->unit_name}} in Building BIN:{{$passedUnit->building_key}} ADDRESS: @if($passedUnit->building->address) {{$passedUnit->building->address->line_1}} @else NO ADDRESS SET IN DEVCO @endIf',0);
         		// filter to type and allita type (nlt, lt, file)
 
+        	@else 
+        		console.log('Filtering building-level amenities {{$passedBuilding->building_id}}}');
+        		filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}} NAME: {{$passedBuilding->building_name}}',0,1);
+        	@endif
+
         @elseif(!is_null($passedBuilding))
-       			console.log('Filtering to building id:b-{{$passedBuilding->building_id}}');
+        	@if($toplevel != 1)
+        		console.log('Filtering to building id:b-{{$passedBuilding->building_id}}');
         		<?php 
 						$locationType = 'b-'.$passedBuilding->building_id;
 				?>
@@ -474,15 +495,19 @@
 
         		// set filter test for type
         		@if($passedBuilding->building)
-        		filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}} NAME: {{$passedBuilding->building_name}}, ADDRESS:{{$passedBuilding->building->address->line_1}}',0,1);
+        		filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}} NAME: {{$passedBuilding->building_name}}, ADDRESS: @if($passedBuilding->building->address){{$passedBuilding->building->address->line_1}} @else NO ADDRESS SET IN DEVCO @endIf',0,1);
         		@else 
         		filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}} NAME: {{$passedBuilding->building_name}}',0,1);
         		@endif
         		//filterAmenities('b-16713','Building BIN: 93670, NAME: OH-11-00214, ADDRESS: ')
 
         		// filter to type and allita type (nlt, lt, file)
+        	@else 
+        		console.log('Filtering project-level amenities {{$audit->project_ref}}');
+        		filterAmenities('s-{{$audit->project_ref}}', 'Site: {{$audit->project->address->basic_address()}}',0,1);
+        	@endif
         @else
-        		// console.log('Open type listing - opened from the audit list');
+        		//console.log('filtering by project-level');
         		// setTimeout(function() {
         		// 	typeList();
         		// }, .7);

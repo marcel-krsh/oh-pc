@@ -1,90 +1,110 @@
 <script>
-resizeModal(95);
-reloadUnseenMessages();
+	resizeModal(85);
+	reloadUnseenMessages();
 </script>
+<?php if(!isset($project)){$project = null; } ?>
 <div class="uk-container">
-	<div uk-grid class="uk-grid-collapse open-communication-bottom-rules ">
+	<div uk-grid class="uk-grid-collapse">
 		<div class="uk-width-1-1">
-			<span class="communication-direction-text uk-margin-bottom">Message</span> @if($audit)&nbsp;&nbsp;&nbsp;Audit: {{$audit->id}}@endif
+			<h3 class="communication-direction-text uk-text-lead uk-text-center">
+				<span class="uk-float-left">MESSAGE</span>
+				<span class="uk-text-emphasis">@if($audit)&nbsp;&nbsp;&nbsp;{{ $audit->project->project_number }}:{{ $audit->project->project_name }} | Audit: {{ $audit->id }}@endif </span>
+			</h3>
 		</div>
+		<hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
 	</div>
-	
+
 	<div uk-grid class="uk-grid-collapse open-communication-bottom-rules uk-margin-small-top uk-margin-bottom">
-		<div class="uk-width-1-1 uk-width-1-5@s communication-type-and-who ">
+		<div class="uk-width-1-5 uk-width-1-5@s communication-type-and-who ">
 			<span class=" communication-item-date-time">
+				<span class="uk-text-muted">Date: </span>  <br>
 				{{ date('F d, Y h:i', strtotime($message->created_at)) }}
 			</span>
 		</div>
-		<div class="uk-width-1-1 uk-width-1-5@s communication-item-excerpt">
-			From: 
-			<span uk-tooltip="pos:top-left">
-				<div class="user-badge user-badge-communication-item user-badge-{{ $message->owner->badge_color}} no-float">
-					{{ $message->initials}}
-				</div>
-			</span>
-
-			{{$message->owner->name}}
-			
+		<div class="uk-width-1-5 uk-width-1-5@s communication-item-excerpt uk-margin-bottom">
+			<span class="uk-text-muted">From: </span> <br>
+			{{-- <div style="margin-top: -5px" class="user-badge user-badge-communication-item user-badge-{{ $message->owner->badge_color }} no-float">
+				{{ $message->initials }}
+			</div> --}}
+			{{ $message->owner->full_name() }}
 		</div>
-		<div class="uk-width-1-1 uk-width-3-5@s communication-item-tt-to-from">
+		<div class="uk-width-1-5 uk-width-1-5@s communication-item-tt-to-from">
 			@if(count($message->recipient_details))
-			To: 
+			<span class="uk-text-muted">To: </span> <br>
 			@foreach ($message->recipient_details as $recipient)
-			{{ $recipient->name }}@if(!$loop->last), @endif
+			{{ $recipient->full_name() }}@if(!$loop->last), @endif <br>
 			@endforeach
 			@endif
-			
-
-			@if(isset($message->documents))
-			@if(count($message->documents))
-			@foreach($message->documents as $document)
-			<a href="{{ URL::route('documents.downloadDocument', [$audit->id, $document->document->id]) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-margin-left" uk-tooltip="Download file<br />{{$document->document->filename}}<br />in @foreach($document->categoriesarray as $category){{$category}}@if(!$loop->last), @endif @endforeach">
-				<i class="a-paperclip-2"></i> {{$document->document->filename}}
+		</div>
+		{{-- Dcouments section --}}
+		<div class="uk-width-2-5 uk-width-2-5@s">
+			<span class="uk-text-muted">Documents: </span> <br>
+			@foreach($message->local_documents as $document)
+			<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file<br />{{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}">
+				<i class="a-paperclip-2"></i> {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}
 			</a>
-			
+			<br>
 			@endforeach
-			@endif
-			
-			@endif
-			
+			@foreach($message->docuware_documents as $document)
+			<a href="{{ url('/document', $document->docuware_doc_id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file<br />{{ ucwords(strtolower($document->document_class)) }} : {{ ucwords(strtolower($document->document_description)) }}">
+				<i class="a-paperclip-2"></i> {{ ucwords(strtolower($document->document_class)) }} : {{ ucwords(strtolower($document->document_description)) }}
+			</a>
+			<br>
+			@endforeach
 		</div>
 	</div>
 	<!-- Start content of communication -->
 	<div class="uk-width-1-1"><!--used to be uk-width-9-10, but Linda changed it-->
-		<div uk-grid class="uk-grid-collapse">
-			<div class="uk-width-1-1 uk-margin-bottom">
-				@if($message->subject)<strong>{{$message->subject}}</strong><br /> @endif
-				<div>{{$message->message}}</div>
-				<hr />
-			</div>		
+		<div uk-grid class="uk-grid-collapse uk-grid">
+			<div class="uk-width-1-6 uk-margin-bottom">
+				<span class="uk-text-muted">Subject: </span>
+			</div>
+			<div class="uk-width-5-6 uk-text-left uk-margin-bottom">
+				@if($message->subject)<strong>{{ $message->subject }}</strong><br /> @endif
+			</div>
+			<div class="uk-width-1-6 uk-margin-bottom">
+				<span class="uk-text-muted">Message: </span>
+			</div>
+			<div class="uk-width-5-6">
+				<div>{{ $message->message }}</div>
+			</div>
 		</div>
 	</div>
 </div>
+
 @if(count($replies))
+<hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
+<h3 class="uk-text-primary">REPLIES</h3>
 <div class="uk-container uk-margin-top" id="communication-list" style="position: relative; height: 222.5px; margin-left:5px;">
 	@foreach ($replies as $reply)
 	<div class="uk-width-1-1 communication-list-item normal-cursor" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1;">
 		<div uk-grid class="communication-summary">
 			<div class="uk-width-1-1 uk-width-1-5@s communication-type-and-who ">
-				<span uk-tooltip="pos:top-left;title:{{ $reply->owner->name}};">
-					<div class="user-badge user-badge-communication-item user-badge-{{ $reply->owner->badge_color}} no-float">
-						{{ $reply->initials}}
+				<span uk-tooltip="pos:top-left;title:{{ $reply->owner->full_name() }};">
+					<div style="margin-top: -3px" class="user-badge user-badge-communication-item user-badge-{{ $reply->owner->badge_color }} no-float">
+						{{ $reply->initials }}
 					</div>
 				</span>
 				<span class=" communication-item-date-time">
 					{{ date('F d, Y h:i', strtotime($reply->created_at)) }}
 				</span>
 			</div>
-			<div class="uk-width-1-1 uk-width-3-5@s communication-item-excerpt">
-				{{ $reply->message}}
+			<div class="uk-width-1-1 uk-width-2-5@s communication-item-excerpt">
+				{{ $reply->message }}
 			</div>
-			<div class="uk-width-1-1 uk-width-1-5@s">
-				@if(count($reply->documents))
-				@foreach($reply->documents as $document) 
-				<a href="{{ URL::route('documents.downloadDocument', [$audit->id, $document->document->id]) }}" target="_blank"  uk-tooltip="Download file<br />{{$document->document->filename}}<br />in @foreach($document->categoriesarray as $category){{$category}}@if(!$loop->last), @endif @endforeach">
-	                <i uk-icon="download"></i></a>@if(!$loop->last), @endif
+			<div class="uk-width-1-1 uk-width-2-5@s">
+				@foreach($reply->local_documents as $document)
+				<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-margin-left uk-margin-small-bottom" uk-tooltip title="Download file<br />{{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}">
+					<i class="a-paperclip-2"></i> {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}
+				</a>
+				<br>
 				@endforeach
-				@endif
+				@foreach($reply->docuware_documents as $document)
+				<a href="{{ url('/document', $document->docuware_doc_id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-margin-left uk-margin-small-bottom" uk-tooltip title="Download file<br />{{ ucwords(strtolower($document->document_class)) }} : {{ ucwords(strtolower($document->document_description)) }}">
+					<i class="a-paperclip-2"></i> {{ ucwords(strtolower($document->document_class)) }} : {{ ucwords(strtolower($document->document_description)) }}
+				</a>
+				<br>
+				@endforeach
 			</div>
 		</div>
 	</div>
@@ -92,239 +112,46 @@ reloadUnseenMessages();
 </div>
 @endif
 
-
+<hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
 <div class="uk-container uk-grid-collapse uk-margin-top" id="communication-list" uk-grid style="position: relative; height: 222.5px; border-bottom:0px;">
 	<button class="uk-button uk-button-success uk-width-1-3@m uk-width-1-1@s toggle-form" onclick="this.style.visibility = 'hidden';" uk-toggle="target: #newOutboundEmailForm">Write a reply</button>
-
 	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post" class="uk-margin-top toggle-form uk-width-1-1" hidden>
-		@if($audit)<input type="hidden" name="audit" value="{{$audit->id}}">@endif
-		<input type="hidden" name="communication" value="{{$message->id}}">
+		@if($audit)<input type="hidden" name="audit" value="{{ $audit->id }}">@endif
+		@if(!is_null($project))<input type="hidden" name="project_id" value="{{ $project->id }}">@endif
+		<input type="hidden" name="communication" value="{{ $message->id }}">
 		<div class="uk-container uk-container-center"> <!-- start form container -->
-			
 			<div uk-grid class="uk-grid-collapse">
-				<div class="uk-width-1-1">
-					<h4>Reply message body</h4>
-
-					<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
-						<div uk-grid class="uk-grid-collapse">
-							<div class="uk-width-1-1">
-								<textarea id="message-body" class="uk-input" style="min-height:100px;" rows="11" name="messageBody" value=""></textarea>
+				<div class="uk-width-1-1" uk-grid>
+					<div class="uk-width-1-5">
+						<h4>Reply Message:</h4>
+					</div>
+					<div class="uk-width-4-5">
+						<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
+							<div uk-grid class="uk-grid-collapse">
+								<div class="uk-width-1-1">
+									<textarea id="message-body" style="min-height: 100px; border:none;" rows="11" class=" uk-form-large uk-input uk-form-blank uk-resize-vertical" name="messageBody" value="" placeholder="Recipients will have to log-in to view your message."></textarea>
+								</div>
 							</div>
-						</div>
-					</fieldset>
+						</fieldset>
+					</div>
 				</div>
 			</div>
 			@if($audit)
-			<div uk-grid class="uk-grid-collapse uk-grid-small uk-margin-top">
-				<div class="uk-width-1-2@m uk-width-1-1@s">
-					<h4>Select exising documents</h4>
-					<div class="communication-selector">
-			            <ul class="uk-list document-menu" id="existing-documents">
-	                        @foreach ($documents as $document)
-	                        <li>
-	                            <input name="documents[]" id="document-id-{{ $document->id }}" value="{{ $document->id }}" type="checkbox" class="uk-checkbox">
-	                            <label for="document-id-{{ $document->id }}">
-	                                {{ $document->filename }}
-	                            </label>
-	                            <br />
-	                            <ul class="document-category-menu">
-		                            @foreach ($document->categoriesarray as $documentcategory_id => $documentcategory_name)
-		                            <li>
-										{{ $documentcategory_name }}
-		                            </li>
-		                            @endforeach
-		                        </ul>
-	                        </li>
-	                        @endforeach
-	                    </ul>
-	                </div>
-				</div>
-				<div class="uk-width-1-2@m uk-width-1-1@s">
-					<h4>Upload new documents</h4>
-					<div class="communication-selector" style="height: 150px;">
-						<ul class="uk-list document-category-menu">
-	                        @foreach ($document_categories as $category)
-	                        <li>
-	                            <input class="uk-checkbox" name="category-id-checkbox" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="checkbox">
-	                            <label for="category-id-{{ $category->id }}">
-	                                {{ $category->document_category_name }}
-	                            </label>
-	                        </li>
-	                        @endforeach
-	                    </ul>
-					</div>
-					<div class="uk-form-row" id="list-item-upload-box">
-
-						<div class="js-upload uk-placeholder uk-text-center">
-	                        <span class="a-higher"></span>
-	                        <span class="uk-text-middle"> Please upload your document by dropping it here or</span>
-	                        <div uk-form-custom>
-	                            <input type="file" multiple>
-	                            <span class="uk-link">by browsing and selecting it here.</span>
-	                        </div>
-	                    </div>
-
-	                    <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
-
-	                    <script>
-		                    $(function(){
-		                        var bar = document.getElementById('js-progressbar');
-
-		                        settings    = {
-
-		                            url: '{{ URL::route("documents.upload", $audit->id) }}',
-		                            multiple: true,
-		                            allow : '*.(jpg|gif|png|pdf|doc|docx|xls|xlsx)',
-
-		                            headers : {
-		                                'enctype' : 'multipart/form-data'
-		                            },
-
-		                            beforeSend: function () {
-		                                // console.log('beforeSend', arguments);
-		                            },
-		                            beforeAll: function (settings) {
-		                                // console.log('beforeAll', arguments);
-		                                var categoryArray = [];
-	                                    $("input:checkbox[name=category-id-checkbox]:checked").each(function(){
-	                                            categoryArray.push($(this).val());
-	                                        });
-	                                    settings.params.categories = categoryArray;
-                                		settings.params._token = '{{ csrf_token() }}';
-	                                    categories = categoryArray;
-	                                    if(categoryArray.length > 0){
-	                                        console.log('Categories selected: '+categoryArray);
-	                                    }else{
-	                                        UIkit.modal.alert('You must select at least one category.',{
-	                                                stack: true});
-	                                        return false;
-	                                    }
-		                            },
-		                            load: function () {
-		                                // console.log('load', arguments);
-		                            },
-		                            error: function () {
-		                                // console.log('error', arguments);
-		                            },
-		                            complete: function () {
-		                                // console.log('complete', arguments);
-		                            },
-
-		                            loadStart: function (e) {
-		                                // console.log('loadStart', arguments);
-
-		                                bar.removeAttribute('hidden');
-		                                bar.max = e.total;
-		                                bar.value = e.loaded;
-		                            },
-
-		                            progress: function (e) {
-		                                // console.log('progress', arguments);
-
-		                                bar.max = e.total;
-		                                bar.value = e.loaded;
-		                            },
-
-		                            loadEnd: function (e) {
-		                                // console.log('loadEnd', arguments);
-
-		                                bar.max = e.total;
-		                                bar.value = e.loaded;
-		                            },
-
-		                            completeAll: function (response) {
-		                                var data = jQuery.parseJSON(response.response);
-                                        var documentids = data['document_ids'];
-                                        var is_retainage = data['is_retainage'];
-                                        var is_advance = data['is_advance'];
-
-	                                 //    setTimeout(function () {
-		                                //     bar.setAttribute('hidden', 'hidden');
-		                                // }, 250);
-
-	                                    // Submit form and make sure it responds back with 1 - otherwise it will output the response to a browser alert box.
-	                                    UIkit.modal.prompt("I uploaded and categorized the document(s) accordingly. Please add your comment for the history record.",'',{
-	                                                stack: true}).then(function(val){
-	                                        $.post('{{ URL::route("documents.uploadComment", $audit->id) }}', {
-	                                                'postvars' : documentids,
-	                                                'comment' : val,
-	                                                '_token' : '{{ csrf_token() }}'
-	                                                }, function(data) {
-	                                                    if(data!='1'){ 
-	                                                        UIkit.modal.alert(data,{
-	                                                stack: true});
-	                                                    } else {
-	                                                        UIkit.modal.alert('Your comment has been saved.',{
-	                                                stack: true});          
-	                                                    }
-	                                        });
-	                                    });
-
-	                                    console.log("docids: "+documentids);
-	                                    //update existing doc list
-	                                    // get document filename and categories
-	                                    var document_info_array = [];
-	                                    $.post('{{ URL::route("documents.documentInfo", $audit->id) }}', {
-	                                                'postvars' : documentids,
-	                                                'categories' : categories,
-	                                                '_token' : '{{ csrf_token() }}'
-	                                                }, function(data) {
-	                                                    if(data=='0'){ 
-	                                                        UIkit.modal.alert("There was a problem getting the documents' information.",{
-	                                                stack: true});
-	                                                    } else {
-
-	                                                        document_info_array = data; 
-	                                                        documentids = documentids + '';
-	                                                        var documentid_array = documentids.split(',');
-					                                        for (var i = 0; i < documentid_array.length; i++) {
-					                                        	did = documentid_array[i];
-
-					                                        	newinput = '<li>'+
-									                                '<input name="documents[]" id="document-id-'+did+'" value="'+did+'" type="checkbox" checked>'+
-									                                '<label for="document-id-'+did+'">'+
-									                                '    '+document_info_array[did]['filename']+
-									                                '</label>'+
-									                                '<br />'+
-									                                '<ul class="document-category-menu">';
-									                            for(var j = 0; j < document_info_array[did]['categories'].length; j++){
-									                            	newinput = newinput + 
-									                            	'    <li>'+
-																	'		'+document_info_array[did]['categories'][j]+
-											                        '    </li>';
-									                            }
-											                        
-
-											                    newinput = newinput +   
-											                        '</ul>'+
-									                            	'</li>';
-															  	$("#existing-documents").append(newinput); 
-															} 
-	                                                    }
-	                                        });
-		                            }
-
-		                        };
-
-		                        var select = UIkit.upload('.js-upload', settings);
-		                        
-		                    });
-		                    </script>
-	            	</div>
-		        </div> 
+			<div uk-grid>
+				@include('modals.partials.communication-documents')
 			</div>
 			@endif
-		</div> 
+		</div>
 		<hr>
 		<div uk-grid>
 			<div class="uk-width-1-1">
 				<div id="applicant-info-update">
 					<div uk-grid class="uk-margin">
 						<div class="uk-width-1-3 uk-push-1-3">
-							<a class="uk-button uk-button-primary blue-button uk-width-1-1" onclick="dynamicModalClose();"> <i uk-icon="close" class="uk-margin-left"></i> CANCEL</a>
+							<a class="uk-button uk-width-1-1" onclick="dynamicModalClose();"> <i class="a-circle-cross"></i> CANCEL</a>
 						</div>
 						<div class="uk-width-1-3 uk-push-1-3">
-							<a class="uk-button uk-button-primary blue-button uk-width-1-1" onclick="submitNewCommunication()"> <i uk-icon="mail" class="uk-margin-left"></i> SEND &nbsp;</a>
+							<a class="uk-button uk-button-success uk-width-1-1@m uk-width-1-1" onclick="submitNewCommunication()"> <i uk-icon="mail" class="uk-margin-left"></i> SEND &nbsp;</a>
 						</div>
 					</div>
 				</div>
@@ -333,38 +160,40 @@ reloadUnseenMessages();
 	</form>
 	<div id="dialog-comment-modal" style="display:none;">
 		<p>I uploaded and categorized the document(s) accordingly. Please add your comment for the history record.</p>
-	    <input name="comment" type="text" value=""/>
-	    <input type="submit" class="submit" value="Add comment" />
+		<input name="comment" type="text" value=""/>
+		<input type="submit" class="submit" value="Add comment" />
 	</div>
 	<script type="text/javascript">
-	function submitNewCommunication() {
-		var form = $('#newOutboundEmailForm');
+		function submitNewCommunication() {
+			var form = $('#newOutboundEmailForm');
 
-		$.post('{{ URL::route("communication.create") }}', {
-			'inputs' : form.serialize(),
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			if(data!=1){ 
-				UIkit.modal.alert(data);
-			} else {
-				UIkit.modal.alert('Your message has been saved.');
-			}
-		} );
+			$.post('{{ URL::route("communication.create") }}', {
+				'inputs' : form.serialize(),
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				if(data!=1){
+					UIkit.modal.alert(data);
+				} else {
+					UIkit.modal.alert('Your message has been saved.');
+				}
+			} );
 
 
-		@if($audit)
-        // var id = {{$audit->id}};
+				@if($audit)
+        // var id = {{ $audit->id }};
         // if (typeof loadAuditSubTab === "function"){
         // 	loadAuditSubTab('communications',id);
         // }
+        debugger;
+        loadTab('/projects/'+{{$project->id}}+'/communications/', '2', 0, 0, 'project-', 1);
         @else
-        // $('#dash-subtab-10').trigger('click'); 
+        // $('#dash-subtab-10').trigger('click');
         // loadDashBoardSubTab('dashboard','communications');
         @endif
 
-		dynamicModalClose();
+        dynamicModalClose();
 
-		
-	}	
-	</script>
-</div>
+
+      }
+    </script>
+  </div>

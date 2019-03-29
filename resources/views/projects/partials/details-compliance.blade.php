@@ -1,10 +1,10 @@
 @include('projects.templates.details-compliance')
 <div class="project-details-info-compliance uk-overflow-auto ok-actionable" style="" uk-grid>
-	
-	<div class="uk-width-1-1">		
+
+	<div class="uk-width-1-1">
 		<div class=" uk-margin-left uk-margin-right ">
 			<hr>
-			
+
 		</div>
 		<div class="project-details-info-compliance-summary uk-margin-top uk-margin-left uk-margin-right uk-grid-match" uk-grid>
 			<div class="uk-width-1-5">
@@ -104,22 +104,22 @@
 			</div>
 		</div>
 
-		<div class="project-details-info-compliance-programs uk-position-relative uk-visible-toggle uk-margin-top"  uk-slider="finite: true">
-    		<ul class="uk-slider-items uk-child-width-1-2 uk-margin-top">
+		<div class="project-details-info-compliance-programs uk-position-relative uk-visible-toggle uk-margin-top"  >
+    		<ul class="uk-list uk-margin-top">
         		@foreach($data['programs'] as $program)
         		@if($program['required_units'] != 0)
 		        <li>
 					<div class="project-details-info-compliance-program uk-panel uk-grid-match" style="height:180px" uk-grid>
-						<div class="uk-width-1-3 uk-padding-remove">
-							<canvas id="chartjs-{{$program['id']}}" class="chartjs" style="height:100%"></canvas>
+						<div class="uk-width-1-5 uk-padding-remove" style="min-height:165px;">
+							<canvas id="chartjs-{{$program['id']}}{{$program['building_key']}}" class="chartjs" ></canvas>
 						</div>
-						<div class="uk-width-2-3">
+						<div class="uk-width-2-5">
 							<table class="uk-table uk-table-small noline small-padding">
 								<tbody>
 									<tr>
-										<td><strong>{{$program['name']}} INSPECTION</strong></td>
-										<td class="uk-text-center"><i class="a-mobile-home iheader"></i></td>
-										<td class="uk-text-center"><i class="a-folder iheader"></i></td>
+										<td><strong>{{$program['name']}} INSPECTION @if($program['building_name']!='') | BUILDING {{$program['building_name']}}@endif</strong></td>
+										<td class="uk-text-center" style="min-width: 30px;"><i class="a-mobile-home iheader"></i></td>
+										<td class="uk-text-center" style="min-width: 30px;"><i class="a-folder iheader"></i></td>
 									</tr>
 									<tr>
 										<td>
@@ -158,10 +158,21 @@
 									</tr>
 								</tbody>
 							</table>
+							<button class="uk-button uk-button-default expandcomment" onclick="$(this).find( 'span' ).toggleClass('a-arrow-small-down a-arrow-small-up'); $('#comment-{{$program['id']}}{{$program['building_key']}}').toggleClass('uk-hidden');"><span class="a-arrow-small-down uk-text-small uk-vertical-align-middle"></span> VIEW COMPLIANCE SELECTION PROCESS</button>
+						</div>
+						<div class="uk-width-2-5">
 						</div>
 					</div>
+					<div id="comment-{{$program['id']}}{{$program['building_key']}}" class="uk-column-1-2 uk-padding uk-hidden">
+
+						<p><strong>{{$program['name']}} COMPLIANCE SELECTION NOTES:</strong></p>
+
+						@foreach($program['comments'] as $comment)
+						<p>{{$comment}}</p>
+						@endforeach
+					</div>
 					<script>
-						new Chart(document.getElementById("chartjs-{{$program['id']}}"),{
+						new Chart(document.getElementById("chartjs-{{$program['id']}}{{$program['building_key']}}"),{
 							"type":"doughnut",
 							"options": summaryOptions,
 							"data":{
@@ -239,9 +250,7 @@
 				@endif
 		        @endforeach
     		</ul>
-		    <a class="uk-position-center-left uk-position-small uk-hidden-hover" style="width:20px" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
-		    <a class="uk-position-center-right uk-position-small uk-hidden-hover" style="width:20px" href="#" uk-slidenav-next uk-slider-item="next"></a>
-		</div>
+    	</div>
 
 	</div>
 
@@ -269,7 +278,7 @@
 	// 	  });
 
 	// }
-	// 
+	//
 	var chartColors = {
 		  required: '#191818',
 		  selected: '#0099d5',
@@ -336,7 +345,7 @@
 	var mainSummaryChart = new Chart(document.getElementById("chartjs-summary"),{
 		"type":"doughnut",
 		"options": summaryOptions,
-		
+
 		"data":{
 			"labels": ["Required","Selected","Needed","Inspected", "To Be Inspected"],
 			"datasets":[
@@ -402,19 +411,19 @@
 	   switch (color) {
 	   		case 'rgb(24, 22, 22)':
 	         // alert(label + ' / required');
-	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);
 	         break;
 	   		case 'rgb(0, 139, 194)':
-	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);
 	         break;
 	   		case 'rgb(209, 0, 105)':
-	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);
 	         break;
 	   		case 'rgb(1, 173, 104)':
-	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);
 	         break;
 	   		case 'rgb(203, 203, 200)':
-	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);
 	         break;
 	   }
 	}

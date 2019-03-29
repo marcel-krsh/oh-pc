@@ -14,10 +14,28 @@
 
     Route::get('/check', function(){ return '1';});
 
+    Route::get('/ping', function () {
+        echo 'pong';
+        return 'pong';
+    });
+
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
+        // Route::get('/testProject/{project}', function($project){
+        //     $project = App\Models\Project::where('id',$project)->with('programs.program')->first();
+        //     //dd($project->programs);
+        //     $content = $project->id."<br />";
+        //     forEach($project->programs as $program){
+        //         $content.= $program->program->program_name."<br />";
+        //     }
+        //     return $content;
+        // });
         // rerun compliance run
         Route::get('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
+        Route::post('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
+
+        // run compliance run
+        Route::get('/project/{project}/runselection', 'AuditController@runCompliance');
 
         Route::get('/cached_audit/{cached_audit}/caches','ComplianceGenerator@createCaches');
 
@@ -36,7 +54,16 @@
             $doc_service = new \App\Services\DocumentService;
             $document_contents = $doc_service->getDocument($documentId,Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
 
-                //\Illuminate\Support\Facades\Storage::put('test.pdf', $document_contents);
+            //Store the document in local storage
+            //Download it from local storage
+            //Delete the document from local storage
+            //Need to test this
+
+                \Illuminate\Support\Facades\Storage::put('temp/test.pdf', $document_contents);
+               // $file = \Illuminate\Support\Facades\Storage::get($filepath);
+		            ob_end_clean();
+		            $filename = "{$docRecord->project_number}-".str_replace("\\",'',str_replace('/','',$docRecord->document_class))."-".str_replace("\\",'',str_replace('/','',$docRecord->document_description))."{$docRecord->dw_extension}";
+		            return response()->download(storage_path('app/temp/test.pdf'), $filename);
 
 
                 // Faking in a local test document
@@ -45,6 +72,7 @@
                 // Respond Back
                 //$response = response()->make($document_contents, 200);
                 //$response = response()->make($document_contents);
+
 
             return response()->streamDownload(function () use ($document_contents) {
                 echo $document_contents;
@@ -132,8 +160,8 @@
                         session()->forget($type);
                     }
                 }
-                
-                
+
+
                 return 1;
             }
         })->name('session.setfilter');
@@ -153,7 +181,26 @@
         Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');
         Route::get('/communications/{project}.json', 'CommunicationController@communicationsFromProjectIdJson')->name('communications.loadjson');
         Route::get('/projects/{project}/communications/title', 'AuditController@getProjectCommunicationsTitle')->name('project.communications.title');
+
+
+
+//allita documents!
         Route::get('/projects/{project}/documents', 'DocumentController@getProjectDocuments')->name('project.documents');
+        Route::get('/projects/{project}/docuware-documents', 'DocumentController@getProjectDocuwareDocuments')->name('project.docuware-documents');
+        Route::get('/projects/{project}/local-documents', 'DocumentController@getProjectLocalDocuments')->name('project.local-documents');
+				Route::post('/documents/project/{project}/upload', 'DocumentController@localUpload')->name('documents.local-upload');
+				Route::post('/documents/project/{project}/local-approve', 'DocumentController@approveLocalDocument')->name('documents.local-approve');
+				Route::post('/documents/project/{project}/local-notapprove', 'DocumentController@notApproveLocalDocument')->name('documents.local-notapprove');
+				Route::post('/documents/project/{project}/local-clearReview', 'DocumentController@clearLocalReview')->name('documents.local-clearReview');
+				Route::get('/modals/edit-local-document/{document}', 'DocumentController@editLocalDocument')->name('document.local-edit');
+				Route::post('/modals/edit-local-document/{document}', 'DocumentController@saveEditedLocalDocument')->name('document.local-saveedit');
+				Route::post('/documents/project/{project}/local-deletedocument', 'DocumentController@deleteLocalDocument')->name('documents.local-deleteDocument');
+				Route::get('/download-local-document/{document}', 'DocumentController@downloadLocalDocument')->name('document.local-download');
+
+
+
+
+
         Route::get('/projects/{project}/documents/title', 'AuditController@getProjectDocumentsTitle')->name('project.documents.title');
         Route::get('/projects/{project_id}/notes', 'NoteController@showTabFromProjectId')->name('project.notes');
         // Route::get('/projects/{project}/notes/title', 'AuditController@getProjectNotesTitle')->name('project.notes.title');
@@ -188,18 +235,22 @@
 
         Route::get('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummary');
         Route::post('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummaryFilterProgram');
-        Route::get('/modals/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}', 'FindingController@modalFindings');
+        Route::post('/modals/projects/{project_id}/programs/save-program-unit-inspections', 'AuditController@saveProgramUnitInspection');
+
+        Route::get('/modals/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}/{toplevel?}', 'FindingController@modalFindings');
         Route::get('/modals/add/finding/{findingtypeid?}/amenity_inspection/{amenityinspectionid?}','FindingController@addFindingForm');
         Route::get('/modals/edit/finding/{findingtypeid}','FindingController@editFindingForm');
         Route::post('/findings/create', 'FindingController@addFinding');
         Route::post('/findings/edit', 'FindingController@editFinding');
+        Route::post('/findings/reply','FindingController@saveReplyFinding');
         Route::post('/findings/{findingid}/cancel', 'FindingController@cancelFinding');
         Route::post('/findings/{findingid}/restore', 'FindingController@restoreFinding');
         Route::post('/findings/{findingid}/resolve', 'FindingController@resolveFinding');
+        Route::get('/modals/addreply/{id}/{fromtype}/{type}','FindingController@replyFindingForm');
         Route::get('/modals/updatestream/{type}/{auditid}/{buildingid?}/{unitid?}/{amenityid?}/{refresh}', 'FindingController@modalFindings');
 
 
-        Route::get('/findings/{id}/items', 'FindingController@findingItems');
+        Route::get('/findings/{findingid}/items/{type?}/{typeid?}', 'FindingController@findingItems');
         Route::get('/modals/findings_list/{type}/{amenityinspectionid}','FindingController@findingList');
         Route::get('/modals/findings/{id}/items/{itemid}/photos/{photoid}', 'FindingController@findingItemPhoto');
 
@@ -224,14 +275,14 @@
         Route::post('/modals/amenities/save', 'AuditController@saveAmenity')->name('amenities.save');
         Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/assign/{element}', 'AuditController@assignAuditorToAmenity')->name('amenities.assign.auditor');
         Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/assign', 'AuditController@saveAssignAuditorToAmenity')->name('amenities.assign.auditor.save');
-        Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/complete', 'AuditController@markCompleted')->name('amenities.mark.completed');
+        Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/{toplevel}/complete', 'AuditController@markCompleted')->name('amenities.mark.completed');
         Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}/{element}', 'AuditController@swapAuditorToAmenity')->name('amenities.swap.auditor');
         Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}', 'AuditController@saveSwapAuditorToAmenity')->name('amenities.swap.auditor.save');
 
-        Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/delete/{element}', 'AuditController@deleteAmenity')->name('amenities.delete');
+        Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/delete/{element?}', 'AuditController@deleteAmenity')->name('amenities.delete');
         Route::post('/modals/amenities/delete', 'AuditController@saveDeleteAmenity')->name('amenities.delete');
-        
-      
+
+
 
 
         Route::post('/autosave', 'DataController@autosave');
@@ -245,6 +296,20 @@
         Route::post('/communications/audit/{audit?}', 'CommunicationController@searchCommunications')->name('communications.search');
         Route::get('/communications/unseen', 'CommunicationController@getUnseenMessages');
         Route::get('/view_message/{message}', 'CommunicationController@goToMessage');
+        Route::get('communication/session/{trigger?}', 'CommunicationController@setFilterSession');
+
+        Route::get('/session/communication_switch_inbox', function()
+				{
+				    session(['communication_sent'=>0]);
+				    $communication_sent = 0;
+				    return 1;
+				});
+				Route::get('/session/communication_switch_sent', function()
+				{
+				    session(['communication_sent'=>1]);
+				    $communication_sent = 1;
+				    return 1;
+				});
 
 
         Route::post('/documents/audit/{audit}/upload', 'DocumentController@upload')->name('documents.upload');
@@ -270,9 +335,9 @@
         });
 
         // Admin tabs
-        
+
         Route::group(['prefix'=>'tabs','middleware'=>'can:access_admin'], function ()  {
-            
+
                 Route::get('organization', 'AdminToolController@organizationIndex');
                 Route::post('organization', 'AdminToolController@searchOrganizations')->name('organizations.search');
                 Route::get('amenity', 'AdminToolController@amenityIndex');
@@ -287,9 +352,9 @@
                 Route::get('document_category', 'AdminToolController@documentIndex');
                 Route::get('county', 'AdminToolController@countyIndex');
                 Route::get('emails', 'PagesController@emailsTab');
-            
+
         });
-        
+
 
         // Admin store
         Route::group(['prefix'=>'admin'], function () {
@@ -301,6 +366,10 @@
             Route::post('hud_area/store/{id?}', 'AdminToolController@hudAreaStore');
             Route::post('amenity/store/{id?}', 'AdminToolController@amenityStore');
             Route::post('users/{id}/saveroles', 'AdminToolController@userSaveRoles');
+
+            Route::get('groups-data', 'GroupController@getGroupsJson');
+            Route::get('update-group-programs', 'GroupController@udateGroupProgramRelations');
+
         });
 
         //Project
@@ -506,7 +575,7 @@ Route::post('/purchase_orders/{po}/parcels', 'PurchaseOrderController@getParcels
 // Expense Categories Modal
 Route::get('/modals/expense-categories-details/{output}/{category}/{program}/{parcel?}/{zero_values?}', 'ExpenseCategoriesController@showDetails');
 Route::get('/modals/expense-categories-vendor-details/{vendor}/{parcel?}/{program?}/{zero_values?}', 'ExpenseCategoriesController@showVendorExpenses');
-// Dispositions 
+// Dispositions
 Route::get('/dispositions/{parcel}/{disposition?}/{format?}', 'DispositionController@getDispositionFromParcelId')->name('export.disposition');
 Route::get('/session/next_step', function () {
     $next_step = session('next_step');
@@ -738,7 +807,7 @@ Route::get('/notices/images/{notice}', 'HomeController@NoticeImageTrack');
 
         // POC routes for 2FA using Twilio SMS, voice and fax
         Route::get('tfa/makecall', 'TwoFAController@makeVoiceCall');
-    
+
         Route::post('tfa/getsms', 'TwoFAController@getsms')->name('device.receive.sms');
         Route::post('tfa/getsms/failed', 'TwoFAController@getsmsfailed');
         Route::post('tfa/getvoice', 'TwoFAController@getvoice')->name('device.receive.voice');

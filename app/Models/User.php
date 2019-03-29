@@ -58,7 +58,7 @@ class User extends Authenticatable
         'organization_id',
         'badge_color'
     ];
-    
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -100,7 +100,7 @@ class User extends Authenticatable
                 $output = $output.', '.$role->role->name;
             }
 
-            
+
         }
         if($output == ''){
             $output = 'NO ACCESS';
@@ -198,6 +198,14 @@ class User extends Authenticatable
         return 0;
     }
 
+        public function isFromEntity($id) : int
+    {
+        if ($id == $this->entity_id) {
+            return 1;
+        }
+        return 0;
+    }
+
     public function isOhfa() : bool
     {
         $ohfa_id = SystemSetting::get('ohfa_organization_id');
@@ -216,7 +224,7 @@ class User extends Authenticatable
         }
         return false;
     }
-    
+
     /**
      * Has PM level access
      *
@@ -427,7 +435,7 @@ class User extends Authenticatable
     public function timeAvailableOnDay($day_id)
     {
         // availability after taking into account the schedules
-        $availabilityOnDay = $this->availabilityOnDay($day_id); 
+        $availabilityOnDay = $this->availabilityOnDay($day_id);
         if($availabilityOnDay){
             $span = $availabilityOnDay[3] - $availabilityOnDay[2];
 
@@ -438,7 +446,7 @@ class User extends Authenticatable
         }else{
             return null;
         }
-        
+
     }
 
     public function default_address()
@@ -464,11 +472,14 @@ class User extends Authenticatable
         if($address != ''){
             $audit = Audit::where('id','=',$audit_id)->first();
             $project_address = $audit->project->address->formatted_address();
-//dd("https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$address."&destinations=".$project_address."&key=AIzaSyCL8rFkhcyFrEV-sA8EXs5TOpw8tD7Dsvg");
+
 
             $address = urlencode($address);
+
+            //$googleAPI = 'AIzaSyCIXStIobkIUMeRCH-nwikznhFc39pAf9Q'; //env('GOOGLE_API_KEY');
+            $googleAPI = SystemSetting::get('google_api_key');
             $project_address = urlencode($project_address);
-            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=".$address."&destinations=".$project_address."&key=AIzaSyCL8rFkhcyFrEV-sA8EXs5TOpw8tD7Dsvg";
+            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=".$address."&destinations=".$project_address."&key=".$googleAPI;
             $ch      = curl_init();
             $timeout = 0;
             curl_setopt( $ch, CURLOPT_URL, $url );
@@ -480,12 +491,16 @@ class User extends Authenticatable
             // send request and wait for response
             $response = json_decode( $data, true );
             curl_close( $ch );
-            
-            return [$response['rows'][0]['elements'][0]['distance']['text'], $response['rows'][0]['elements'][0]['duration']['text'], $response['rows'][0]['elements'][0]['duration']['value']]; // array with 10 miles, 10 hours 36 mins, and the value in seconds
-            
+            //dd($response,env('GOOGLE_API_KEY'),$googleAPI,env('OHIOGEOCODE_LOGIN'),env('APP_URL'));
+            if(count($response)){
+                return [$response['rows'][0]['elements'][0]['distance']['text'], $response['rows'][0]['elements'][0]['duration']['text'], $response['rows'][0]['elements'][0]['duration']['value']]; // array with 10 miles, 10 hours 36 mins, and the value in seconds
+            } else {
+                return 0;
+            }
+
         }else{
             return null;
         }
-        
+
     }
 }

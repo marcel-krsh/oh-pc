@@ -114,8 +114,8 @@ class AuthTracker extends Model
                 $user = User::where('id', '=', $this->user_id)->first();
                 if ($user) {
                     $emailNotification = new EmailFailedLogin($user->id);
-                    \Mail::to('jotassin@gmail.com')->send($emailNotification);
-                    // \Mail::to($user->email)->send($emailNotification);
+                //    \Mail::to('jotassin@gmail.com')->send($emailNotification);
+                     \Mail::to($user->email)->send($emailNotification);
                 }
             }
         }

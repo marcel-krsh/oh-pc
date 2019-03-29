@@ -73,7 +73,7 @@ resizeModal(95);
 						$current_unitid = $unitprogram->unit_id;
 						//$current_programkey = $unitprogram->program_key;
 					@endphp
-					<div class="modal-project-summary-unit summary-unit-{{$unitprogram->unit_id}} @if($unitprogram->unitHasSelection()) has-selected @else no-selection @endif">
+					<div class="modal-project-summary-unit summary-unit-{{$unitprogram->unit_id}} @if($unitprogram->unitHasSelection()) has-selected @else no-selection @endif {{$unitprogram->unit->building->building_key}}">
 						<div class="modal-project-summary-unit-status">
 							<i class="a-circle" uk-tooltip="title:SELECT ALL ELIGIBLE PROGRAMS FOR BOTH INSPECTIONS;" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}});"></i>
 						</div>
@@ -213,6 +213,15 @@ resizeModal(95);
 		$('#summary-btn-selected').addClass('button-filter-selected');
 		$('.no-selection').fadeOut( "slow", function() {
 			$('.has-selected').fadeIn( "slow", function() {});
+		});
+	}
+
+	function filterBuilding(buildingKey){
+		// remove all and then display only selected
+		$('[id^=summary-btn-]').removeClass('button-filter-selected');
+		
+		$('.has-selected, .no-selection').fadeOut( "slow", function() {
+			$('.'+buildingKey).fadeIn( "slow", function() {});
 		});
 	}
 

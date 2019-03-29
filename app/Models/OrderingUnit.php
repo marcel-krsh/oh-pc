@@ -17,8 +17,14 @@ class OrderingUnit extends Model
         'project_id',
         'building_id',
         'unit_id',
-        'order'
-    ];
+        'order',
+        'amenity_inspection_id'
+    ];  
+
+    public function amenity_inspection() : HasOne
+    {
+        return $this->hasOne(\App\Models\AmenityInspection::class, 'id', 'amenity_inspection_id');
+    }
 
     /**
      * Building
@@ -74,12 +80,16 @@ class OrderingUnit extends Model
     {
         // $this->building_id is the cachedbuilding id
 
-        //dd($this->audit_id, $this->building_id, $this->id);
-        // get all the auditors for that building/units in the building
-        $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('unit_id','=',$this->unit->unit_id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+        if($this->unit){
 
-        $auditors = User::whereIn('id', $auditor_ids)->get();
+            //dd($this->audit_id, $this->building_id, $this->id);
+            // get all the auditors for that building/units in the building
+            $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('unit_id','=',$this->unit->unit_id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
 
+            $auditors = User::whereIn('id', $auditor_ids)->get();
+        }else{
+            $auditors = null;
+        }
         return $auditors;
     }
 

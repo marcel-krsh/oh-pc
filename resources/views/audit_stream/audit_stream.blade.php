@@ -50,7 +50,6 @@
 								<div class="uk-width-3-4 uk-padding-remove-top uk-padding-remove-right">
 									<div>
 										{{formatDate($finding->date_of_finding)}}: FN#{{$finding->id}}
-										<div class="uk-float-right"><i class="a-circle-plus use-hand-cursor"></i></div>
 									</div>
 								</div>
 			        		</div>
@@ -83,10 +82,14 @@
 									@endcan
 									</div>
 									<div class="inspec-tools-tab-finding-stats" style="margin: 0 0 15px 0;">
+										@if(env('APP_ENV') == 'local')
 										<i class="a-bell"></i> <span id="inspec-tools-tab-finding-stat-reminders">{{count($finding->followups)}}</span><br />
+										@endIf
 										<i class="a-comment"></i> {{count($finding->comments)}}<br />
+										@if(env('APP_ENV') == 'local')
 										<i class="a-file"></i> {{count($finding->documents)}}<br />
 										<i class="a-picture"></i> {{count($finding->photos)}}<br />
+										@endIf
 										@if(count($finding->followups) || count($finding->comments) || count($finding->documents) || count($finding->photos))
 										<i class="a-menu" onclick="expandFindingItems(this);"></i>
 										@endif
@@ -94,15 +97,19 @@
 				    			</div>
 				    			<div class="uk-width-3-4 uk-padding-remove-right uk-padding-remove">
 				    					@if(!$finding->cancelled_at)
-					    				<div class="inspec-tools-tab-finding-top-actions">
+					    				<div class="inspec-tools-tab-finding-top-actions" style="z-index:auto">
 					    					<i class="a-circle-plus use-hand-cursor"></i>
-										    <div uk-drop="mode: click" style="min-width: 315px; background-color: #fff; z-index: auto;">
+										    <div uk-drop="mode: click" style="min-width: 315px; background-color: #ffffff;  ">
 										        <div class="uk-card uk-card-body uk-card-default uk-card-small">
 										    	 	<div class="uk-drop-grid uk-child-width-1-4" uk-grid>
+										    	 		@if(env('APP_ENV') == 'local')
 										    	 		<div class="icon-circle use-hand-cursor" onclick="addChildItem({{$finding->id}}, 'followup')"><i class="a-bell-plus"></i></div>
+										    	 		@endIf
 										    	 		<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{$finding->id}}, 'comment')"><i class="a-comment-plus"></i></div>
+										    	 		@if(env('APP_ENV') == 'local')
 										    	 		<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{$finding->id}}, 'document')"><i class="a-file-plus"></i></div>
 										    	 		<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{$finding->id}}, 'photo')"><i class="a-picture"></i></div>
+										    	 		@endIf
 										    	 	</div>
 										        </div>
 										    </div>
@@ -112,12 +119,19 @@
 					    					CANCELLED
 					    				</div>
 					    				@endif
-				    				<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description">
+				    				<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description"  style="z-index:auto">
 					    				<p>{{formatDate($finding->date_of_finding)}}: FN#{{$finding->id}}<br />
 					    					By {{$finding->auditor->full_name()}}<br>
-					    					{!!$finding->amenity_inspection->address()!!}
+					    					@if($finding->amenity_inspection)
+					    						{!!$finding->amenity_inspection->address()!!}
+					    					@endIf 
 					    				</p>
-					    				<p>{{$finding->amenity_inspection->building_unit_amenity_names()}}<br />{{$finding->finding_type->name}}</p>
+					    				<p>@if($finding->amenity_inspection)
+					    					{{$finding->amenity_inspection->building_unit_amenity_names()}}<br />
+					    					@endIf
+					    					@if($finding->finding_type)
+					    						{{$finding->finding_type->name}}
+					    					@endIf</p>
 					    				@can('access_auditor')
 					    				<div class="inspec-tools-tab-finding-actions">
 					    					@if(!$finding->cancelled_at)
@@ -168,7 +182,7 @@
 
 	function cancelFinding(findingid){
     	
-    	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Cancel Finding #{{$finding->id}}</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to cancel this finding? All its comments/photos/documents/followups will remain and the cancelled finding will be displayed at the bottom of the list.</h3></div>', {stack:1}).then(function() {
+    	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Cancel Finding #'+findingid+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to cancel this finding? All its comments/photos/documents/followups will remain and the cancelled finding will be displayed at the bottom of the list.</h3></div>', {stack:1}).then(function() {
 		    	
 		    	$.post('/findings/'+findingid+'/cancel', {
 		            '_token' : '{{ csrf_token() }}'
@@ -189,7 +203,7 @@
 
 	function restoreFinding(findingid){
     	
-    	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Restore Finding #{{$finding->id}}</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to restore this finding?</h3></div>', {stack:1}).then(function() {
+    	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Restore Finding #'+findingid+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to restore this finding?</h3></div>', {stack:1}).then(function() {
 		    	
 		    	$.post('/findings/'+findingid+'/restore', {
 		            '_token' : '{{ csrf_token() }}'
@@ -245,12 +259,16 @@
 
 		    	currentItem = $(item).closest("[data-parent-id], .inspec-tools-tab-finding-item");
 			    currentItemId = currentItem.data('parent-id');
+			    currentFindingId = currentItem.data('finding-id');
+			    //console.log("currentItemId "+currentItemId, $('#inspec-tools-tab-finding-'+currentFindingId).offset().top);
+			    //console.log("currentItem offset "+$(currentItem).offset().top+" offsetparent "+$(currentItem).offsetParent().offset().top);
 			    positionItem = $(currentItem).offset().top - $(currentItem).offsetParent().offset().top;
-				// console.log("currentItemId "+currentItemId+" | positionItem "+positionItem+" | tmpPositionItem "+tmpPositionItem);
+				//console.log("currentItemId "+currentItemId+" | positionItem "+positionItem+" | tmpPositionItem "+tmpPositionItem);
 		        if(positionItem < 40){
 		        	if(positionItem >= tmpPositionItem) {
 		        		tmpPositionItem = positionItem;
 		        		itemId = currentItemId;
+		        		//console.log("SETTING itemid "+itemId+" tmpPositionItem "+tmpPositionItem);
 		        	}
 		        }
 		    });
@@ -272,15 +290,14 @@
 				$('#inspec-tools-tab-finding-sticky-'+findingId).hide();
 			}
 			
-			if($(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-item-'+itemId).attr('expanded')){
-		    	
-		        $(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).show();
-		        $(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).css("margin-top", $(".inspec-tools-tab-findings-container").scrollTop());
-			}else{
-				// hide that sticky
-				//console.log('hiding #inspec-tools-tab-finding-sticky-'+findingId+'');
-				$(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).hide();
-			}
+			// if($(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-item-'+itemId).attr('expanded')){
+		 //        $(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).show();
+		 //        $(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).css("margin-top", $(".inspec-tools-tab-findings-container").scrollTop());
+			// }else{
+			// 	// hide that sticky
+			// 	//console.log('hiding #inspec-tools-tab-finding-sticky-'+findingId+'');
+			// 	$(".inspec-tools-tab-findings-container").find('#inspec-tools-tab-finding-reply-sticky-'+itemId).hide();
+			// }
 	    } else {
 	    	// hide the sticky for all findings
 	    	// console.log('scrolltop <= 40');

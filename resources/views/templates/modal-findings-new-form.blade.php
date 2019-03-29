@@ -8,16 +8,20 @@
 	<hr class="dashed-hr uk-margin-bottom">
 	<div class="uk-form">
 		<div class="uk-form-row">
-			@if($findingtypeid->one) <label class="use-hand-cursor"><input type="radio" name="level" class="uk-radio" value="1" @if(!$findingtypeid->two && !$findingtypeid->three) checked @endif onClick="$('#finding-comment').focus();"> LEVEL 1</label> &nbsp; &nbsp;@endif
-			@if($findingtypeid->two) <label class="use-hand-cursor"><input type="radio" name="level" class="uk-radio" value="2" @if(!$findingtypeid->one && !$findingtypeid->three) checked @endif onClick="$('#finding-comment').focus();"> LEVEL 2</label>  &nbsp; &nbsp;@endif
-			@if($findingtypeid->three) <label class="use-hand-cursor" ><input type="radio" name="level" class="uk-radio" value="3" @if(!$findingtypeid->two && !$findingtypeid->one) checked @endif onClick="$('#finding-comment').focus();"> LEVEL 3</label>  &nbsp; &nbsp;@endif
+			@if($findingtypeid->one) <label class="use-hand-cursor"><input type="radio" name="level" class="uk-radio" value="1" @if(!$findingtypeid->two && !$findingtypeid->three) checked @endif onClick="$('#finding-comment').focus();"> LEVEL 1 </label>
+			<span class=" uk-margin-small-top">{{$findingtypeid->one_description}}  <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top">
+			</span> &nbsp; &nbsp;@endif
+
+			@if($findingtypeid->two) <label class="use-hand-cursor"><input type="radio" name="level" class="uk-radio" value="2" @if(!$findingtypeid->one && !$findingtypeid->three) checked @endif onClick="$('#finding-comment').focus();"> LEVEL 2  </label>  &nbsp; &nbsp;<span class=" uk-margin-small-top">{{$findingtypeid->two_description}}  <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top"></span>@endif
+
+			@if($findingtypeid->three) <label class="use-hand-cursor" ><input type="radio" name="level" class="uk-radio" value="3" @if(!$findingtypeid->two && !$findingtypeid->one) checked @endif onClick="$('#finding-comment').focus();"> LEVEL 3   </label>  &nbsp; &nbsp;<span class=" uk-margin-small-top">{{$findingtypeid->three_description}} </span>@endif
 		</div>
 	</div>
 	<hr class="dashed-hr uk-margin-bottom">
 	<p>COMMENT:</p>
 	<div class="findings-new-add-comment" data-finding-id="tplFindingId">
 	    <div class="findings-new-add-comment-textarea">
-	    	<textarea class="uk-textarea" id="finding-comment" name="comment" placeholder="Enter your comment here. If you leave it blank, no comment will be added."> </textarea><!-- 
+	    	<textarea class="uk-textarea" id="finding-comment" name="comment" placeholder="Enter your comment here. If you leave it blank, no comment will be added."></textarea><!-- 
 	    	<div class="textarea-status">SAVED</div> -->
 	    </div>
 	    <div class="findings-new-add-comment-boilerplate-action" uk-grid>
@@ -25,7 +29,7 @@
 	    	<a class="uk-width-1-3" onclick="clearComment();" style="color:#fff"><i class="a-file-minus"></i> Clear</a>
 	    	<!-- <button class="uk-width-1-3" onclick="appendBoilerplate();"><i class="a-file-plus"></i> Append a boilerplate</button> -->
 	    </div>
-	    <div class="findings-new-add-comment-quick-entry-list">
+	    <div class="findings-new-add-comment-quick-entry-list uk-hidden">
 	    	<span class="uk-badge findings-quick-entry" onclick="insertTag(this);" data-tag="property-manager-contact-name">PROPERTY MANAGER CONTACT NAME</span>
 	    	<span class="uk-badge findings-quick-entry" onclick="insertTag(this);" data-tag="address-of-this-building">ADDRESS OF THIS BUILDING</span>
 	    	<span class="uk-badge findings-quick-entry" onclick="insertTag(this);" data-tag="date-in-7-days">DATE IN 7 DAYS</span>
@@ -40,11 +44,12 @@
 	    	</div> -->
 	    	
 	    	<div class="uk-width-1-2">
-	    		
+	    		<a onClick="dynamicModalClose(2);" class="uk-button uk-button-primary uk-width-1-1"> CLOSE</a>
 	    	</div>
+	    	
 	    	<div class="uk-width-1-2">
 	    		<input type="hidden" id="add-finding-form-finding_date" name="date" value="" />
-	    		<button class="uk-button uk-button-success uk-width-1-1" onclick="saveFinding(event);"><i class="a-file-pen"></i> SAVE FINDING</button>
+	    		<button class="uk-button uk-button-success uk-width-1-1" onclick="saveFinding(event);"><i class="a-file-pen"></i> SAVE AND CLOSE</button>
 	    	</div>
 	    </div>
 	</div>
@@ -75,11 +80,12 @@
             '_token' : '{{ csrf_token() }}'
         }, function(data) {
             if(data!=1){ 
-                UIkit.modal.alert(data,{stack: true});
+                UIkit.modal.alert(data+'DUDE!',{stack: true});
             } else {
-                dynamicModalClose(2);
-	            UIkit.notification('<span uk-icon="icon: check"></span> Finding Saved', {pos:'top-right', timeout:1000, status:'success'});
+                
+	            
 	            $('#finding-modal-audit-stream-refresh').trigger('click');
+	            dynamicModalClose(2);
             
             }
         } );

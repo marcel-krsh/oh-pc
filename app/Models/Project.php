@@ -60,6 +60,10 @@ class Project extends Model
         $pm_city = '';
         $pm_state = '';
         $pm_zip = '';
+        $pm_name = '';
+        $pm_email = '';
+        $pm_phone = '';
+        $pm_fax = '';
 
         if ($pm_contact) { 
             if ($pm_contact->organization) {
@@ -199,7 +203,7 @@ class Project extends Model
 
         $last_audit = $this->lastAudit();
         if(is_null($audit_id)){
-            $audit_id = $this->selected_audit()->id;
+            $audit_id = $this->selected_audit()->audit_id;
         }
 
         if($this->complianceContacts()->first()){
@@ -301,8 +305,17 @@ class Project extends Model
         // $test = ProjectProgram::where('project_id','45055')->where('program_status_type_id', SystemSetting::get('active_program_status_type_id'))
         //         ->whereIn('program_key',$programKeys)->get();
         // dd($test,$programKeys);
-        return $this->hasMany(\App\Models\ProjectProgram::class, 'project_id')->where('program_status_type_id', SystemSetting::get('active_program_status_type_id'))
-                ->whereIn('program_key',$programKeys);
+        // need to make this read from system settings (not hard code) for program statuses
+        return $this->hasMany(\App\Models\ProjectProgram::class, 'project_id')
+                
+                ->whereIn('program_key',$programKeys)
+                ->where(function ($query) {
+                    $query->orWhere('project_program_status_type_key', 30012);
+                    $query->orWhere('project_program_status_type_key', 30004);
+                    $query->orWhere('project_program_status_type_key', 30009);
+                    $query->orWhere('project_program_status_type_key', 30010);
+                })
+                ;
     }
     public function all_other_programs() : HasMany
     {

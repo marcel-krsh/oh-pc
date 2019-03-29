@@ -13,7 +13,7 @@ class Program extends Model
 
     /*
 	// 1 - FAF || NSP || TCE || RTCAP || 811 units
-    $program_bundle_ids = explode(',', SystemSetting::get('program_bundle')); 
+    $program_bundle_ids = explode(',', SystemSetting::get('program_bundle'));
 
     // 2 - 811 units
     $program_811_ids = explode(',', SystemSetting::get('program_811'));
@@ -39,7 +39,7 @@ class Program extends Model
     	$groups = array();
 
     	// 1 - FAF || NSP || TCE || RTCAP || 811 units
-	    $program_bundle_ids = explode(',', SystemSetting::get('program_bundle')); 
+	    $program_bundle_ids = explode(',', SystemSetting::get('program_bundle'));
 	    if(in_array($this->program_key, $program_bundle_ids)) $groups[] = 1;
 
 	    // 2 - 811 units
@@ -75,7 +75,7 @@ class Program extends Model
 	    switch ($group) {
 		    case 1:
 		    	// 1 - FAF || NSP || TCE || RTCAP || 811 units
-	    		$program_bundle_ids = explode(',', SystemSetting::get('program_bundle')); 
+	    		$program_bundle_ids = explode(',', SystemSetting::get('program_bundle'));
 	    		if(in_array($this->id, $program_bundle_ids)) return true;
 		        break;
 		    case 2:
@@ -111,5 +111,10 @@ class Program extends Model
 		}
 
 	    return false;
+	}
+
+	public function relatedGroups()
+	{
+		return $this->belongsToMany('App\Models\Group', 'program_groups', 'program_id', 'group_id');
 	}
 }

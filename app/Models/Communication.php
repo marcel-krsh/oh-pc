@@ -3,12 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
-use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Event;
 
 /**
  * Communication Model
@@ -25,7 +22,7 @@ class Communication extends Model
         'owner_type',
         'message',
         'subject',
-        'project_id'
+        'project_id',
     ];
 
     use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
@@ -58,7 +55,7 @@ class Communication extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function owner() : HasOne
+    public function owner(): HasOne
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'owner_id');
     }
@@ -68,7 +65,7 @@ class Communication extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function parent() : BelongsTo
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(\App\Models\Communication::class, 'parent_id');
     }
@@ -78,7 +75,7 @@ class Communication extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function replies() : HasMany
+    public function replies(): HasMany
     {
         return $this->hasMany(\App\Models\Communication::class, 'parent_id');
     }
@@ -88,7 +85,7 @@ class Communication extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function audit() : HasOne
+    public function audit(): HasOne
     {
         return $this->hasOne(\App\Models\CachedAudit::class, 'id', 'audit_id');
     }
@@ -98,7 +95,7 @@ class Communication extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function project() : HasOne
+    public function project(): HasOne
     {
         return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
     }
@@ -108,7 +105,7 @@ class Communication extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function documents() : HasMany
+    public function documents(): HasMany
     {
         return $this->hasMany(\App\Models\SyncDocuware::class, 'communication_id->communication_id');
     }
@@ -118,8 +115,24 @@ class Communication extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function recipients() : HasMany
+
+    public function recipients(): HasMany
     {
         return $this->hasMany(\App\Models\CommunicationRecipient::class);
+    }
+
+    public function message_recipients()
+    {
+        return $this->belongsToMany('App\Models\User', 'communication_recipients', 'communication_id', 'user_id');
+    }
+
+    public function local_documents()
+    {
+        return $this->belongsToMany('App\Models\Document', 'communication_documents', 'communication_id', 'document_id')->whereNull('sync_docuware_id');
+    }
+
+    public function docuware_documents()
+    {
+        return $this->belongsToMany('App\Models\SyncDocuware', 'communication_documents', 'communication_id', 'sync_docuware_id')->whereNull('document_id');
     }
 }

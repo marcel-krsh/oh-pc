@@ -43,7 +43,15 @@ class Unit extends Model
     {
         return $this->hasMany(\App\Models\HouseholdEvent::class, 'unit_id', 'id');
     }
-
+    
+    public function is_market_rate() : int
+    {
+        if($this->unit_identity_id == 22){
+            return true;
+        } else {
+            return false;
+        }
+    }
     public function isAssistedUnit() : bool
     {
         foreach ($this->household_events()->get() as $event) {
@@ -63,6 +71,24 @@ class Unit extends Model
     {
         // TBD
         return true;
+    }
+
+    public function has_program($program_key, $audit_id) : bool
+    {
+        if($this->programs()->where('audit_id', '=', $audit_id)->where('program_key','=', $program_key)->count()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function has_program_from_array($program_key_array, $audit_id) : bool
+    {
+        if($this->programs()->where('audit_id', '=', $audit_id)->whereIn('program_key',$program_key_array)->count()){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     public function most_recent_event()

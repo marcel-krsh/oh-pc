@@ -161,7 +161,6 @@
     	</div>
     </div>
 </template>
-
 <div id="audits" class="uk-no-margin-top" uk-grid>
 	<div class="uk-margin-remove-top uk-width-1-1" uk-grid>
 		<div id="auditsfilters" class="uk-width-2-3 uk-margin-top">
@@ -220,8 +219,8 @@
 		</div>
 	</div>
 
-	<div id="auditstable" class="uk-width-1-1 uk-overflow-auto">
-		<table class="uk-table uk-table-striped uk-table-hover uk-table-small uk-table-divider" style="min-width: 1420px;">
+	<div id="auditstable" class="uk-width-1-1 uk-overflow-auto" style="min-height: 700px;">
+		<table class="uk-table uk-table-striped uk-table-hover uk-table-small uk-table-divider" style="min-width: 1320px;">
 		    <thead>
 		        <tr>
 		            <th class="uk-table-shrink">
@@ -404,15 +403,15 @@
 							</span> 
 						</div>
 					</th>
-		            <th  @can('access_auditor') style="min-width: 120px;" @else style="max-width: 70px;" @endcan >
+		            <th  @can('access_auditor') style="min-width: 80px;" @else style="max-width: 70px;" @endcan >
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid> 
 			            		@can('access_auditor')
-			            		<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
+			            		<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-avatar"></i>
 								</span>
 								@endcan
-								<span class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
+								<span class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-envelope-4"></i>
 									<div class="uk-dropdown uk-dropdown-bottom" uk-dropdown="flip: false; pos: bottom-right; animation: uk-animation-slide-top-small; mode: click" style="top: 26px; left: 0px;">
 				                        <ul class="uk-nav uk-nav-dropdown uk-text-small uk-list">
@@ -466,17 +465,13 @@
 					                    </ul>
 				                    </div>
 								</span>
-								<span class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
+								<span class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-files"></i>
 								</span>
-								 @can('access_auditor')
-								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i class="a-person-clock"></i>
-								</span> 
-								@endcan
+								
 							</div>
 							@can('access_auditor')
-								<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY AUDITOR ASSIGNMENT STATUS">
+								<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY AUDITOR ASSIGNMENT STATUS">
 				            		@if($sort_by == 'audit-sort-status-auditor')
 				            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-auditor',  @php echo 1-$sort_order; @endphp);"></a>
 				            		@else
@@ -484,30 +479,24 @@
 				            		@endif
 								</span> 
 							@endif
-							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS">
+							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS">
 			            		@if($sort_by == 'audit-sort-status-message')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-message',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-message', 1);"></a>
 			            		@endif
 							</span> 
-							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY DOCUMENT STATUS">
+							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY DOCUMENT STATUS">
 			            		@if($sort_by == 'audit-sort-status-document')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-document',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-document', 1);"></a>
 			            		@endif
 							</span> 
-							 @can('access_auditor')
-							<span data-uk-tooltip="{pos:'bottom-right'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY HISTORY STATUS">
-			            		@if($sort_by == 'audit-sort-status-history')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-history',  @php echo 1-$sort_order; @endphp);"></a>
-			            		@else
-			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-history', 1);"></a>
-			            		@endif
-							</span>
+							
+							
 						</div>
-						@endcan
+						
 		            </th>
 		            @can('access_auditor')
 		            <th >
@@ -554,6 +543,7 @@
 
 			            </div>
 		            </th>@endcan
+		            @if(1==0)
 		            <th style="vertical-align:top;">
 		            	<div uk-grid>
 			            	<div class="uk-link uk-width-1-1 archived-icon" onclick="toggleArchivedAudits();" data-uk-tooltip="{pos:'bottom'}" title="Click to Hide Archived Audits">
@@ -564,6 +554,7 @@
 							</div>
 						</div>
 		            </th>
+		            @endif
 		        </tr>
 		    </thead>
 		    <tbody>
@@ -745,8 +736,19 @@ The following div is defined in this particular tab and pushed to the main layou
 
     	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>RERUN COMPLIANCE SELECTION?</h2></div><div class="uk-width-2-3"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to rerun the automated compliance selection? <br /><br />Depending on how many are currently being processed, this could take up to 10 minutes to complete.</h3><p><strong>Why does it take up to 10 minutes?</strong> When a compliance selection is run, it performs all the unit selections based on the criteria for each program used by the project. Because each selection process uses an element of randomness, the total number of units that need inspected may be different each time it is run due to overlaps of programs to units. So, we run the process 10 times, and pick the one that has the highest amount of program overlap to units. This keeps the audit federally compliant while also making the most efficient use of your time.</p></div><div class="uk-width-1-3"><hr class="dashed-hr uk-margin-bottom"><h3><em style="color:#ca3a8d">WARNING!</em></h3><p style="color:#ca3a8d"> While this will not affect the days and times you have auditors scheduled for your audit, it will remove any auditor assignments to inspect specific areas and units.<br /><br /><small>PLEASE NOTE THAT THIS WILL NOT RUN ON AUDITS WITH FINDINGS RECORDED. YOU WILL NEED TO DO YOUR SELECTION MANUALY.</small></p></div><div class="uk-width-1-1"></div></div>').then(function() {
 		    	console.log('Re-running Audit.');
-		    	dynamicModalLoad('/audit/'+audit+'/rerun');
-		    	$('#audit-r-'+audit).remove();
+
+		    	$.post('/audit/'+audit+'/rerun', {
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					if(data == 1){
+						UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection In Progress', {pos:'top-right', timeout:1000, status:'success'});
+
+			    		$('#audit-r-'+audit).remove();
+			    	}else{
+			    		UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection Failed. Findings were found.', {pos:'top-right', timeout:5000, status:'warning'});
+			    	}
+				});
+
 		}, function () {
 		    console.log('Rejected.')
 		});
@@ -762,7 +764,7 @@ The following div is defined in this particular tab and pushed to the main layou
     	dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/swap/'+auditor_id+'/'+element);
     }
 
-    function deleteAmenity(element, audit_id, building_id, unit_id, amenity_id, has_findings = 0){
+    function deleteAmenity(element, audit_id, building_id, unit_id, amenity_id, has_findings = 0, toplevel=0){
     	if(has_findings){
     		UIkit.modal.alert('<p class="uk-modal-body">This amenity has some findings and cannot be deleted.</p>').then(function () {  });
     	}else{
@@ -771,7 +773,7 @@ The following div is defined in this particular tab and pushed to the main layou
     	}
     	
     }
-    function copyAmenity(element, audit_id, building_id, unit_id, amenity_id){
+    function copyAmenity(element, audit_id, building_id, unit_id, amenity_id, toplevel=0){
     	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>MAKE A DUPLICATE?</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to make a duplicate?</h3></div>').then(function() {
 		    	
 		    	var newAmenities = [];
@@ -783,141 +785,150 @@ The following div is defined in this particular tab and pushed to the main layou
 					'unit_id' : unit_id,
 					'new_amenities' : newAmenities,
 					'amenity_id' : amenity_id,
+					'toplevel': toplevel,
 					'_token' : '{{ csrf_token() }}'
 				}, function(data) {
 
-					console.log('unit or building');
-					// locate where to update data
-					var mainDivId = '';
-					if(unit_id != ''){
-						mainDivId = $('.inspection-detail-main-list .inspection-areas').parent().attr("id"); 
+					if(toplevel == 1){
+
+						projectDetails(audit_id, audit_id, 10, 1);
+
 					}else{
-						mainDivId = $('.inspection-areas').parent().attr("id");
-					}
-					
-					var mainDivContainerId = $('#'+mainDivId).parent().attr("id"); 
 
-					// also get context
-					var context = $('.inspection-areas').first().attr("data-context");
+						console.log('unit or building');
+						// locate where to update data
+						var mainDivId = '';
+						if(unit_id != ''){
+							mainDivId = $('.inspection-detail-main-list .inspection-areas').parent().attr("id"); 
+						}else{
+							mainDivId = $('.inspection-areas').parent().attr("id");
+						}
+						
+						var mainDivContainerId = $('#'+mainDivId).parent().attr("id"); 
 
-					// show spinner
-					var spinner = '<div style="height:200px;width: 100%;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
-					$('#'+mainDivId).html(spinner);
-					
-					// add a row in .inspection-areas
-					var inspectionMainTemplate = $('#inspection-areas-template').html();
-					var inspectionAreaTemplate = $('#inspection-area-template').html();
+						// also get context
+						var context = $('.inspection-areas').first().attr("data-context");
 
-					var areas = '';
-					var newarea = '';
+						// show spinner
+						var spinner = '<div style="height:200px;width: 100%;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+						$('#'+mainDivId).html(spinner);
+						
+						// add a row in .inspection-areas
+						var inspectionMainTemplate = $('#inspection-areas-template').html();
+						var inspectionAreaTemplate = $('#inspection-area-template').html();
 
-					data.amenities.forEach(function(area) {
-						newarea = inspectionAreaTemplate;
-						newarea = newarea.replace(/areaContext/g, context);
-						newarea = newarea.replace(/areaRowId/g, area.id);
-						newarea = newarea.replace(/areaName/g, area.name); // missing
-						newarea = newarea.replace(/areaStatus/g, area.status);  // missing
-						newarea = newarea.replace(/areaAuditorId/g, area.auditor_id);  // missing
-						newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);  // missing
-						newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);  // missing
-						newarea = newarea.replace(/areaCompletedIcon/g, area.completed_icon);  
-						newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);  // missing
-						newarea = newarea.replace(/areaLTStatus/g, area.finding_lt_status);
-						newarea = newarea.replace(/areaSDStatus/g, area.finding_sd_status);
-						newarea = newarea.replace(/areaPicStatus/g, area.finding_photo_status);
-						newarea = newarea.replace(/areaCommentStatus/g, area.finding_comment_status);
-						newarea = newarea.replace(/areaCopyStatus/g, area.finding_copy_status);
-						newarea = newarea.replace(/areaTrashStatus/g, area.finding_trash_status);
+						var areas = '';
+						var newarea = '';
 
-						newarea = newarea.replace(/areaDataAudit/g, area.audit_id);
-						newarea = newarea.replace(/areaDataBuilding/g, area.building_id);
-						newarea = newarea.replace(/areaDataArea/g, area.unit_id);
-						newarea = newarea.replace(/areaDataAmenity/g, area.id);
+						data.amenities.forEach(function(area) {
+							newarea = inspectionAreaTemplate;
+							newarea = newarea.replace(/areaContext/g, context);
+							newarea = newarea.replace(/areaRowId/g, area.id);
+							newarea = newarea.replace(/areaName/g, area.name); // missing
+							newarea = newarea.replace(/areaStatus/g, area.status);  // missing
+							newarea = newarea.replace(/areaAuditorId/g, area.auditor_id);  // missing
+							newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);  // missing
+							newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);  // missing
+							newarea = newarea.replace(/areaCompletedIcon/g, area.completed_icon);  
+							newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);  // missing
+							newarea = newarea.replace(/areaLTStatus/g, area.finding_lt_status);
+							newarea = newarea.replace(/areaSDStatus/g, area.finding_sd_status);
+							newarea = newarea.replace(/areaPicStatus/g, area.finding_photo_status);
+							newarea = newarea.replace(/areaCommentStatus/g, area.finding_comment_status);
+							newarea = newarea.replace(/areaCopyStatus/g, area.finding_copy_status);
+							newarea = newarea.replace(/areaTrashStatus/g, area.finding_trash_status);
 
-						newarea = newarea.replace(/areaAuditorColor/g, area.auditor_color);
-						areas = areas + newarea.replace(/areaDataHasFindings/g, area.has_findings);
+							newarea = newarea.replace(/areaDataAudit/g, area.audit_id);
+							newarea = newarea.replace(/areaDataBuilding/g, area.building_id);
+							newarea = newarea.replace(/areaDataArea/g, area.unit_id);
+							newarea = newarea.replace(/areaDataAmenity/g, area.id);
 
-						//console.log("unit id "+area.unit_id+" - building_id "+area.building_id);
-						// update building auditor's list
-						if(area.unit_id == null && area.building_id != null){
-		                	console.log('updating building auditors ');
+							newarea = newarea.replace(/areaAuditorColor/g, area.auditor_color);
+							areas = areas + newarea.replace(/areaDataHasFindings/g, area.has_findings);
 
-		                	if($('#building-auditors-'+area.building_id).hasClass('hasAuditors')){
-		                		
-		                		// we don't know if/which unit is open
-			                	var unitelement = 'div[id^=unit-auditors-]  .uk-slideshow-items li.uk-active > div';
+							//console.log("unit id "+area.unit_id+" - building_id "+area.building_id);
+							// update building auditor's list
+							if(area.unit_id == null && area.building_id != null){
+			                	console.log('updating building auditors ');
 
-				                $(unitelement).html('');
-				                $.each(data.unit_auditors, function(index, value){
-				                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
-				                	$(unitelement).append(newcontent);
+			                	if($('#building-auditors-'+area.building_id).hasClass('hasAuditors')){
+			                		
+			                		// we don't know if/which unit is open
+				                	var unitelement = 'div[id^=unit-auditors-]  .uk-slideshow-items li.uk-active > div';
+
+					                $(unitelement).html('');
+					                $.each(data.unit_auditors, function(index, value){
+					                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
+					                	$(unitelement).append(newcontent);
+					                });
+			                	}else{
+			                		// we don't know if/which unit is open
+				                	var unitelement = 'div[id^=unit-auditors-]';
+
+					                $(unitelement).html('');
+					                $.each(data.auditor.unit_auditors, function(index, value){
+					                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
+					                	$(unitelement).append(newcontent);
+					                });
+			                	}       
+
+				                var buildingelement = '#building-auditors-'+area.building_id+' .uk-slideshow-items li.uk-active > div';
+				               
+				                $(buildingelement).html('');
+				                $.each(data.auditor.building_auditors, function(index, value){
+				                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', 0, \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
+				                	$(buildingelement).append(newcontent);
 				                });
-		                	}else{
-		                		// we don't know if/which unit is open
-			                	var unitelement = 'div[id^=unit-auditors-]';
+				            }else{
+							// update unit auditor's list
+								console.log('units auditor list update');
+
+			                	var unitelement = '#unit-auditors-'+area.unit_id+' .uk-slideshow-items li.uk-active > div';
 
 				                $(unitelement).html('');
+				                //console.log(unitelement);
 				                $.each(data.auditor.unit_auditors, function(index, value){
 				                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
 				                	$(unitelement).append(newcontent);
+
+				                	if($('#unit-auditors-'+area.unit_id).hasClass('hasAuditors')){
+				                		$(buildingelement).append(newcontent);
+				                	}else{
+				                		$(buildingelement).html(newcontent);
+				                	}
 				                });
-		                	}       
 
-			                var buildingelement = '#building-auditors-'+area.building_id+' .uk-slideshow-items li.uk-active > div';
-			               
-			                $(buildingelement).html('');
-			                $.each(data.auditor.building_auditors, function(index, value){
-			                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', 0, \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
-			                	$(buildingelement).append(newcontent);
-			                });
-			            }else{
-						// update unit auditor's list
-							console.log('units auditor list update');
+				                var buildingelement = '#building-auditors-'+area.building_id+' .uk-slideshow-items li.uk-active > div';
+				               //console.log(buildingelement);
+				                $(buildingelement).html('');
+				                $.each(data.auditor.building_auditors, function(index, value){
+				                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', 0, \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
 
-		                	var unitelement = '#unit-auditors-'+area.unit_id+' .uk-slideshow-items li.uk-active > div';
+				                	if($('#building-auditors-'+area.building_id).hasClass('hasAuditors')){
+				                		//$('#building-auditors-'+area.building_id).append(newcontent);
+				                		$(buildingelement).append(newcontent);
+				                	}else{
+				                		//$('#building-auditors-'+area.building_id).html(newcontent);
+				                		$(buildingelement).html(newcontent);
+				                	}
+				                	
+				                });
 
-			                $(unitelement).html('');
-			                //console.log(unitelement);
-			                $.each(data.auditor.unit_auditors, function(index, value){
-			                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
-			                	$(unitelement).append(newcontent);
+				            }
 
-			                	if($('#unit-auditors-'+area.unit_id).hasClass('hasAuditors')){
-			                		$(buildingelement).append(newcontent);
-			                	}else{
-			                		$(buildingelement).html(newcontent);
-			                	}
-			                });
+							
+						});
 
-			                var buildingelement = '#building-auditors-'+area.building_id+' .uk-slideshow-items li.uk-active > div';
-			               //console.log(buildingelement);
-			                $(buildingelement).html('');
-			                $.each(data.auditor.building_auditors, function(index, value){
-			                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', 0, \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
+						$('#unit-amenity-count-'+audit_id+building_id+unit_id).html(data.amenities.length + ' AMENITIES');
 
-			                	if($('#building-auditors-'+area.building_id).hasClass('hasAuditors')){
-			                		//$('#building-auditors-'+area.building_id).append(newcontent);
-			                		$(buildingelement).append(newcontent);
-			                	}else{
-			                		//$('#building-auditors-'+area.building_id).html(newcontent);
-			                		$(buildingelement).html(newcontent);
-			                	}
-			                	
-			                });
-
-			            }
-
-						
-					});
-
-					$('#unit-amenity-count-'+audit_id+building_id+unit_id).html(data.amenities.length + ' AMENITIES');
-
-					$('#'+mainDivId).html(inspectionMainTemplate);
-					$('#'+mainDivId+' .inspection-areas').html(areas);
-					$('#'+mainDivContainerId).fadeIn( "slow", function() {
-					    // Animation complete
-					    console.log("Area list updated");
-					  });
+						$('#'+mainDivId).html(inspectionMainTemplate);
+						$('#'+mainDivId+' .inspection-areas').html(areas);
+						$('#'+mainDivContainerId).fadeIn( "slow", function() {
+						    // Animation complete
+						    console.log("Area list updated");
+						  });
+					}
+					
 
 
 		        } );
@@ -930,26 +941,36 @@ The following div is defined in this particular tab and pushed to the main layou
     @endcan
 
 
-    function markAmenityComplete(audit_id, building_id, unit_id, amenity_id, element){
+    function markAmenityComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel = 0){
     	
-    	if($('#'+element).hasClass('a-circle-checked')){
-	    	var title = 'MARK THIS INCOMPLETE?';
-	    	var message = 'Are you sure you want to mark this incomplete?';
+    	if(element){
+    		if($('#'+element).hasClass('a-circle-checked')){
+		    	var title = 'MARK THIS INCOMPLETE?';
+		    	var message = 'Are you sure you want to mark this incomplete?';
+	    	}else{
+		    	var title = 'MARK THIS COMPLETE?';
+		    	var message = 'Are you sure you want to mark this complete?';
+	    	}
     	}else{
-	    	var title = 'MARK THIS COMPLETE?';
-	    	var message = 'Are you sure you want to mark this complete?';
+    		var title = 'MARK THIS COMPLETE?';
+		    var message = 'Are you sure you want to mark this complete?';
     	}
+    	
     	
     	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>'+title+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>'+message+'</h3></div>').then(function() {
 		    	
-		    	$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/complete', {
+		    	$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/'+toplevel+'/complete', {
 		            '_token' : '{{ csrf_token() }}'
 		        }, function(data) {
 		            if(data==0){ 
 		                UIkit.modal.alert(data,{stack: true});
 		            } else {console.log(data.status);
 		            	if(data.status == 'complete'){
-		            		if(amenity_id == 0){
+		            		if(toplevel == 1){
+		            			UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+			            		$('#'+element).toggleClass('a-circle');
+			            		$('#'+element).toggleClass('a-circle-checked');
+		            		}else if(amenity_id == 0){
 		            			UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
 		            			$('[id^=completed-'+audit_id+building_id+']').removeClass('a-circle');
 		            			$('[id^=completed-'+audit_id+building_id+']').addClass('a-circle-checked');
@@ -961,7 +982,11 @@ The following div is defined in this particular tab and pushed to the main layou
 
 		            	}else{
 		            		
-		            		if(amenity_id == 0){
+		            		if(toplevel == 1){
+		            			UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+			            		$('#'+element).toggleClass('a-circle');
+			            		$('#'+element).toggleClass('a-circle-checked');
+		            		}else if(amenity_id == 0){
 		            			UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
 		            			$('[id^=completed-'+audit_id+building_id+']').removeClass('a-circle-checked');
 		            			$('[id^=completed-'+audit_id+building_id+']').addClass('a-circle');
@@ -1094,3 +1119,5 @@ The following div is defined in this particular tab and pushed to the main layou
     });
 
 </script>
+
+	<script>window.auditsLoaded = 1; </script>

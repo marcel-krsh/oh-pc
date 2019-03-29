@@ -15,7 +15,6 @@ use App\DocumentCategory;
 use App\Helpers\GeoData;
 use App\Http\Controllers;
 use App\Photo;
-use App\Comment;
 use App\Correction;
 use App\State;
 use App\County;
@@ -44,6 +43,8 @@ use App\Models\CachedAmenity;
 use App\Models\People;
 use App\Models\AmenityInspection;
 use App\Models\Finding;
+use App\Models\Comment;
+use App\Models\FindingType;
 
 /*
 |--------------------------------------------------------------------------
@@ -1390,13 +1391,13 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $cached_audits = CachedAudit::where('step_id','61')->select('audit_id')->get();
+                $cached_audits = CachedAudit::select('audit_id')->get();
 
                 $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
-                    $results = Audit::whereIn('audit_id', $cached_audits)->where('last_edited', '>', $lastEdited)->get();
+                    $results = Audit::whereIn('id', $cached_audits)->where('last_edited', '>', $lastEdited)->get();
                 else
-                    $results = Audit::whereIn('audit_id', $cached_audits)->get();
+                    $results = Audit::whereIn('id', $cached_audits)->get();
 
                 if ($results) {
                     $reply = $results;
@@ -1550,9 +1551,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
-                    $results = AuditAuditor::whereIn('last_edited', '>', $lastEdited)->get();
+                    $results = AuditAuditor::where('updated_at', '>', $lastEdited)->get();
                 else
-                    $results = AuditAuditor::whereIn('id', $auditors)->get();
+                    $results = AuditAuditor::get();
 
                 if ($results) {
                     $reply = $results;
@@ -1594,12 +1595,18 @@ Route::get('/users/verify_user', function (Request $request) {
         Route::get('/get_project_amenities', function (Request $request) {
 
             try {
+            
+                $user_key = $request->query("user_key");
+                
+                $audit_ids = AuditAuditor::where("user_key",$user_key)->select('audit_id')->get();
+
+                $projects = CachedAudit::whereIn('audit_id', $audit_ids)->select('project_key')->get();
 
                 $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
-                    $results = ProjectAmenity::where('last_edited', '>', $lastEdited)->get();
+                    $results = ProjectAmenity::whereIn('project_key', $projects)->where('last_edited', '>', $lastEdited)->get();
                 else
-                    $results = ProjectAmenity::get();
+                    $results = ProjectAmenity::whereIn('project_key', $projects)->get();
 
                 if ($results) {
                     $reply = $results;
@@ -1615,15 +1622,24 @@ Route::get('/users/verify_user', function (Request $request) {
         });
 
 
+
         Route::get('/get_unit_amenities', function (Request $request) {
 
             try {
+                //set_time_limit(300);
+                
+                $user_key = $request->query("user_key");
+                
+                $audit_ids = AuditAuditor::where("user_key",$user_key)->select('audit_id')->get();
 
+                $units = CachedUnit::whereIn('audit_id', $audit_ids)->select('unit_id')->get();
+                                
                 $lastEdited = $request->query("last_edited");
+
                 if($lastEdited != null)
-                    $results = UnitAmenity::where('last_edited', '>', $lastEdited)->get();
+                    $results = UnitAmenity::whereIn('unit_id', $units)->where('last_edited', '>', $lastEdited)->get();
                 else
-                    $results = UnitAmenity::get();
+                    $results = UnitAmenity::whereIn('unit_id', $units)->get();
 
                 if ($results) {
                     $reply = $results;
@@ -1642,12 +1658,18 @@ Route::get('/users/verify_user', function (Request $request) {
         Route::get('/get_building_amenities', function (Request $request) {
 
             try {
+                          
+                $user_key = $request->query("user_key");
+                
+                $audit_ids = AuditAuditor::where("user_key",$user_key)->select('audit_id')->get();
+
+                $buildings = CachedBuilding::where('building_key','!=',null)->whereIn('audit_id', $audit_ids)->select('building_key')->get();
 
                 $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
-                    $results = BuildingAmenity::where('last_edited', '>', $lastEdited)->get();
+                    $results = BuildingAmenity::whereIn('building_key', $buildings)->where('last_edited', '>', $lastEdited)->get();
                 else
-                    $results = BuildingAmenity::get();
+                    $results = BuildingAmenity::whereIn('building_key', $buildings)->get();
 
                 if ($results) {
                     $reply = $results;
@@ -1733,7 +1755,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 throw $e;
             }
         });
-
+        
         Route::get('/get_amenity_inspections', function (Request $request) {
 
             try {
@@ -1743,6 +1765,29 @@ Route::get('/users/verify_user', function (Request $request) {
                     $results = AmenityInspection::where('last_edited', '>', $lastEdited)->get();
                 else
                     $results = AmenityInspection::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+			catch (\Exception $e) {
+                throw $e;
+            }
+        });
+
+        Route::get('/get_finding_types', function (Request $request) {
+
+            try {
+
+                $lastEdited = $request->query("last_edited");
+                if($lastEdited != null)
+                    $results = FindingType::where('last_edited', '>', $lastEdited)->get();
+                else
+                    $results = FindingType::get();
 
                 if ($results) {
                     $reply = $results;
