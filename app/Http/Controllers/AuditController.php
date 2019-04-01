@@ -143,6 +143,10 @@ class AuditController extends Controller
                     //dd($building, $amenity_inspection);
 
                     
+                }elseif($building->building_id === null && $building->amenity_inspection_id !== null && $building->amenity() === null){
+                    // we had a case where a amenity_inspection_id was referring to a record on the wrong audit
+                     $building->amenity_inspection_id = NULL;
+                     $building->save();
                 }
             }
         }
@@ -308,7 +312,13 @@ class AuditController extends Controller
             
             // fix total findings if needed
             if($building->building){
-                $building->building->recount_findings();
+                //if($building->building->amenity() !== null){
+                    $building->building->recount_findings();
+                //}else{
+                    // the wrong amenity_inspection_id & audit_id combination
+                    // not sure what caused that issue in the first place yet
+                    //dd($building->building);
+                //}
             }
 
 
@@ -338,6 +348,7 @@ class AuditController extends Controller
 
             
             if ($building->building_id === null && $building->building){
+                
                 // naming duplicates should only apply to amenities
                 if(!array_key_exists($building->building->building_name, $previous_name)){
                     $previous_name[$building->building->building_name]['counter'] = 1; // counter
