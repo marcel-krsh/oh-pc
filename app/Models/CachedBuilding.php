@@ -159,6 +159,9 @@ class CachedBuilding extends Model
             $total = $building_findings + $unit_findings;
         }else{
             // it is an amenity
+            if($this->amenity() === null) {
+                //dd($this);
+            }
             $total = $this->amenity()->findings_total();
         }
 
@@ -175,7 +178,7 @@ class CachedBuilding extends Model
     public function amenity()
     {
         // this only applies when working with a project-level amenity listed along other buildings in the cache
-        return \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('amenity_id','=',$this->amenity_id)->where('cachedbuilding_id','=',$this->id)->first();
+        return \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('id','=',$this->amenity_inspection_id)->first();
     }
 
     public function amenity_inspections()

@@ -827,14 +827,18 @@ var quicklookupbox = new autoComplete({
 var startIndex;
 var endIndex;
 
+// reorder(".buildings > .sortable", '.building');
 function reorder(classname, childclassname) {
+	// console.log("classname "+classname+" childclassname "+ childclassname);
 	var currentIndex;
 	$(classname+" > div").each(function () {
-		// console.log(this.id);
-		currentIndex = $(childclassname).index(this) + 1;
-		$("#"+this.id).find(".rowindex").each(function () {
-			$(this).html(currentIndex);
-		});
+		if(this.id != ''){
+			//console.log(this.id);
+			currentIndex = $(childclassname).index(this) + 1;
+			$("#"+this.id).find(".rowindex").each(function () {
+				$(this).html(currentIndex);
+			});
+		}
 	});
 }
 //onclick="openFindings(this, 6659, 23057, 1005319, 'file');"
@@ -914,6 +918,7 @@ $(function () {
 		var projectId = $(listItem).data('project');
 
 		if($('#'+item.detail[1].id).hasClass('building-detail')){
+			console.log("moving building detail ....");
 			var unitId = $(listItem).data('area');
 			endIndex = $( ".building-detail" ).index( listItem );
 			console.log( item.detail[1].id + " ended at index: " + endIndex );
@@ -923,14 +928,15 @@ $(function () {
 			reorderUnits(auditId, buildingId, unitId, endIndex);
 
 		}else if($('#'+item.detail[1].id).hasClass('building')){
+			console.log("moving building ....");
 			endIndex = $( ".building" ).index( listItem );
 			//console.log( item.detail[1].id + " ended at index: " + endIndex );
 			//UIkit.notification("You moved " + item.detail[1].id + " from " + startIndex + " to " + endIndex);
 			reorder(".buildings > .sortable", '.building');
-
+			console.log("reordered");
 			reorderBuildings(auditId, projectId, buildingId, amenityId, amenityInspectionId, endIndex);
 
-			//console.log("endIndex "+endIndex+' '+item.detail[1].id);
+			console.log("endIndex "+endIndex+' '+item.detail[1].id);
 			// update journey icons
 			var length = $('.building').length;
 			$('.building').each(function(index, element) {
@@ -954,7 +960,9 @@ $(function () {
 					$(element).find( ".a-marker-basic" ).removeClass('a-marker-basic');
 			    }
 			});
+			console.log("done ....");
 		}else if($('#'+item.detail[1].id).hasClass('inspection-area')){
+			console.log("moving inspection area ....");
 			var unitId = $(listItem).data('unit');
 			var amenityId = $(listItem).data('amenity');
 			endIndex = $( ".inspection-area" ).index( listItem );
