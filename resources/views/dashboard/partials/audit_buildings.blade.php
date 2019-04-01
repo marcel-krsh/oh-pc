@@ -1,5 +1,5 @@
 		<td colspan="10">
-			<div class="rowinset-top">PROJECT LEVEL INSPECTION AREAS AND BUILDINGS <span class="uk-link" style="color:#ffffff;" onclick="$('#audit-r-{{$target}}-buildings').remove();$('tr[id^=\'audit-r-\']').show();"><i class="a-circle-cross"></i></span></div>
+			<!-- <div class="rowinset-top">PROJECT LEVEL INSPECTION AREAS AND BUILDINGS <span class="uk-link" style="color:#ffffff;" onclick="$('#audit-r-{{$target}}-buildings').remove();$('tr[id^=\'audit-r-\']').show();"><i class="a-circle-cross"></i></span></div> -->
 			<div class="buildings uk-overflow-auto" style="">
 				<div class="sortablebuildings sortable" uk-sortable="handle: .uk-sortable-handle-{{$context}}">
 					@foreach($buildings as $key=>$building)
@@ -282,7 +282,7 @@
 						</div>
 					</div>
 					@else
-					<div><hr class="dashed-hr uk-width-1-1"> <h3>!!! Missing data for this building is preventing it from being able to be viewed.</h3><a class="uk-button uk-button-small" onclick="$('#building-cache-{{$building->id}}').slideToggle();"> View record data:</a><div class="uk-width-1-1" id="building-cache-{{$building->id}}" style="display: none;">{{print_r($building)}}</div><p>Please click to view the record data and send a copy of this to your support team and they should be able to fix the missing data.</p>
+					<div style="display: none;"><hr class="dashed-hr uk-width-1-1"> <h3>!!! It appears the ordering data has extra records.</h3><a class="uk-button uk-button-small" onclick="$('#building-cache-{{$building->id}}').slideToggle();"> View record data:</a><div class="uk-width-1-1" id="building-cache-{{$building->id}}" style="display: none;"><small><pre>{{print_r($building)}}</pre></small></div><p>Please contact Holly at hswisher@ohiohome.org .</p>
 						<hr class="dashed-hr uk-width-1-1">
 
 					</div>

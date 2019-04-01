@@ -1,4 +1,4 @@
-  
+
 
 function completionCheck() {
 	UIkit.modal('#modal-findings-completion-check', {center: true, bgclose: false, keyboard:false,  stack:true}).show();
@@ -7,7 +7,7 @@ function completionCheck() {
 function getCurrentFilter() {
 	var activeFilterButton = $('.button-filter.uk-active').attr('uk-filter-control');
     var regexFilter = "data-finding='(.*)'"; //[data-finding='sd']
-   
+
     var activeFilter = activeFilterButton.match(regexFilter);
 
     if(activeFilter !== null){
@@ -34,17 +34,17 @@ function searchFilterTerm(valThis) {
   	}
   	sortableElements.each(function(){
      	var text = this.getAttribute('data-title-finding').toLowerCase();
-        (text.indexOf(valThis) >= 0) ? $(this).show() : $(this).hide(); 
+        (text.indexOf(valThis) >= 0) ? $(this).show() : $(this).hide();
     });
 }
 
 $('#finding-description').keyup(function(){
    var valThis = $(this).val().toLowerCase();
-   searchFilterTerm(valThis); 
+   searchFilterTerm(valThis);
 });
 
 function newFinding(id){
-	
+
 	// scroll to row early
     $('html, body').animate({
 		scrollTop: $('#filter-checkbox-list-item-'+id).offset().top - 59
@@ -58,7 +58,7 @@ function newFinding(id){
 
 			// reapply search
 			var valThis = $('#finding-description').val();
-   			searchFilterTerm(valThis); 
+   			searchFilterTerm(valThis);
 		 });
 	}else{
 
@@ -82,14 +82,13 @@ function newFinding(id){
 		});
 
 	}
-	
+
 }
 
-function refreshFindingStream(type,auditid,buildingid,unitid,amenityid) {
-
+function refreshFindingStream(type,auditid,buildingid,unitid,amenityid,toplevel) {
 	tempdiv = '<div style="height:200px;text-align:center;width: 44%;padding-left: 53%;"><div uk-spinner style="margin: 10% 0;"></div></div>';
 	$('#modal-findings-items-container').html(tempdiv);
-	$('#modal-findings-items-container').load('/modals/updatestream/'+type+'/'+auditid+'/'+buildingid+'/'+unitid+'/'+amenityid+'/1');
+	$('#modal-findings-items-container').load('/modals/updatestream/'+type+'/'+auditid+'/'+buildingid+'/'+unitid+'/'+amenityid+'/'+toplevel+'/1');
 }
 
 function clickingOnFindingFilter(element) {
@@ -105,7 +104,7 @@ function clickingOnFindingFilter(element) {
 	  	// switch the span data and the visual
 	  	if(currentOrdering == "sort-asc"){
 	  		var sortableElementParent = $('.js-findings');
-		  	var sortableElements = sortableElementParent.children(); 
+		  	var sortableElements = sortableElementParent.children();
 		  	//console.log(sortableElements.length);
 		  	sortableElements.sort(function(a,b){
 				var an = a.getAttribute('data-ordering-finding'),
@@ -155,7 +154,7 @@ function clickingOnFindingFilter(element) {
 }
 
 $('.filter-button-set').find('button.button-filter').click(function() {
-  
+
   $('#finding-description').val('');
   // check if selected span is already visible, if so switch the order
   if($(this).closest('div').find('span').is(':visible')){
@@ -215,9 +214,9 @@ $('.filter-button-set').find('button.button-filter').click(function() {
   // is there a search term?
   var searchTerm = $('#finding-description').val();
   if(searchTerm.length > 0){
-  	searchFilterTerm(searchTerm); 
+  	searchFilterTerm(searchTerm);
   }
-  
+
 });
 
 function useBoilerplate(){
@@ -281,7 +280,7 @@ function expandFindingItems(element, type=null, typeid=null) {
 				$('#inspec-tools-tab-finding-sticky-'+findingId).show();
 			 });
 		}
-		
+
 	}else{
 
 		if(parentitemid !== undefined){
@@ -309,7 +308,7 @@ function expandFindingItems(element, type=null, typeid=null) {
 
 	    $.get(url, {
             }, function(data) {
-                if(data=='0'){ 
+                if(data=='0'){
                     UIkit.modal.alert("There was a problem getting the finding's replies.");
                 } else {
 					var findingsItemsTemplate = $('#inspec-tools-tab-finding-items-template').html();
@@ -407,7 +406,7 @@ function expandFindingItems(element, type=null, typeid=null) {
 							newstat = newstat.replace(/tplStatCount/g, stat.count);
 
 							statcount = statcount + stat.count;
-							
+
 							stats = stats + newstat;
 						});
 						if(statcount > 0){
@@ -426,7 +425,7 @@ function expandFindingItems(element, type=null, typeid=null) {
 					});
 
 					if(parentitemid !== undefined){
-						console.log("opening replies "+'#inspec-tools-tab-finding-item-replies-'+parentitemid);			
+						console.log("opening replies "+'#inspec-tools-tab-finding-item-replies-'+parentitemid);
 
 						$('#inspec-tools-tab-finding-item-replies-'+parentitemid).html(findingsItemRepliesTemplate);
 						$('#inspec-tools-tab-finding-item-replies-'+parentitemid).find('.inspec-tools-tab-finding-item-replies-list').html(items);
@@ -444,13 +443,13 @@ function expandFindingItems(element, type=null, typeid=null) {
 						$('#inspec-tools-tab-finding-items-'+findingId).find('.inspec-tools-tab-finding-items').slideDown("slow");
 						parentFindingContainer.attr( "expanded", true );
 					}
-					
+
 				}
 	    });
 
-	}	
+	}
 
-	
+
 }
 
 function addChildItem(id, type, fromtype='finding') {
