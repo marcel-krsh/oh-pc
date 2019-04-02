@@ -1,7 +1,7 @@
 <script>
 	$('#type-list').scroll(function(){
 	    scrollPosType = $('#type-list').scrollTop();
-	    console.log(scrollPosType);
+	    //console.log(scrollPosType);
 	});
 </script>
 <div id="type-list" class="uk-width-1-1 uk-margin uk-panel uk-panel-scrollable uk-height-large">

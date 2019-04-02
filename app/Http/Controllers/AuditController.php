@@ -112,7 +112,7 @@ class AuditController extends Controller
                 if($building->building_id === null && $building->amenity_inspection_id === null){
                     // this is a building-level amenity without a clear link to the amenity inspection
                     // we need to add amenity_inspection_id
-                    
+
                     // first there may already be an amenity_inspection with cachedbuilding_id
                     $amenity_inspection = AmenityInspection::where('audit_id', '=', $audit)
                                                                 ->where('amenity_id', '=', $building->amenity_id)
@@ -141,7 +141,7 @@ class AuditController extends Controller
                     }
                     //dd($building, $amenity_inspection);
 
-                    
+
                 }
             }
         }
@@ -258,12 +258,12 @@ class AuditController extends Controller
         $buildings = OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->get();
 
         // in the case of an amenity at the building level (like a parking lot), there won't be a clear link between the amenityinspection and the cachedbuilding
-        
+
         $duplicates = array(); // to store amenity_inspection_ids for each amenity_id to see when we have duplicates
         $previous_name = array(); // used in case we have building-level amenity duplicates
         foreach ($buildings as $building) {
             // for each orderingbuilding
-            
+
             // fix total findings if needed
             if($building->building){
                 $building->building->recount_findings();
@@ -272,7 +272,7 @@ class AuditController extends Controller
 
             if ($building->building_id === null && $building->amenity_inspection_id === null) {
                 // this is an amenity with no link ti the amenity inspection -> there might be issues in case of duplicates.
-                
+
                 $amenity_id = $building->amenity_id;
                 $audit_id = $building->audit_id;
 
@@ -291,10 +291,10 @@ class AuditController extends Controller
                     $building->amenity_inspection_id = $cached_building->amenity_inspection_id;
                     $building->save();
                 }
-                
+
             }
 
-            
+
             if ($building->building_id === null && $building->building){
                 // naming duplicates should only apply to amenities
                 if(!array_key_exists($building->building->building_name, $previous_name)){
@@ -310,8 +310,8 @@ class AuditController extends Controller
                     $building->building->building_name = $building->building->building_name." ".$previous_name[$building->building->building_name]['counter'];
                 }
             }
-            
-            
+
+
         }
 
         return view('dashboard.partials.audit_buildings', compact('audit', 'target', 'buildings', 'context'));
@@ -459,7 +459,7 @@ class AuditController extends Controller
                 $i++;
             }
         } elseif(OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->count() != CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count()){
-            
+
             // there is a mismatch, go through each cachedunit and add the missing ones at the end of the ordering
             $details = CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->orderBy('id', 'desc')->get();
 
@@ -485,12 +485,12 @@ class AuditController extends Controller
                     ]);
                     $ordering->save();
                 }
-                
+
             }
 
 
         } elseif (CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count() != OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->count() && CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count() != 0) {
-            
+
             $details = null;
         }
 
@@ -4963,7 +4963,7 @@ class AuditController extends Controller
             // we are copying the amenity
             //
             //dd($amenity_id);//13299
-            
+
             $auditor_color = '';
             $auditor_initials = '';
             $auditor_name = '';
@@ -5397,7 +5397,7 @@ class AuditController extends Controller
       	$unit = Unit::with('building')->find($unit_id);
 
         $building_key = $unit->building_key;
-		
+
 		//Consider one program any type, no nulls, maybe nulls for groups
 		// This is for existing programs!
 
@@ -5421,7 +5421,7 @@ class AuditController extends Controller
 										->where('project_id', $project->id)
         								->get()
         								->count();
-            
+
 
             $new_program = false;
             if($unitprograms == 0) {
@@ -5477,7 +5477,7 @@ class AuditController extends Controller
                                         ->get();
              //dd($unitprograms);
 
-            
+
             foreach($unitprograms as $unitprogram){
                 $program = $unitprogram->program;
                 $group_ids = ProgramGroup::where('program_id','=',$program->id)->get()->pluck('group_id')->toArray();
@@ -5485,7 +5485,7 @@ class AuditController extends Controller
 
                 $check_if_file_exists = UnitInspection::where('unit_id', $unit->id)->where('program_key', $program->program_key)->where('audit_id', $audit->id)->whereIn('group_id', $group_ids)->where('is_file_audit', 1)->get()->count();
                 $check_if_site_exists = UnitInspection::where('unit_id', $unit->id)->where('program_key', $program->program_key)->where('audit_id', $audit->id)->whereIn('group_id', $group_ids)->where('is_site_visit', 1)->get()->count();
-                
+
                 //dd($program, $group_ids, $check_if_file_exists, $check_if_site_exists);
 
                 if(($check_if_file_exists > 0 && $check_if_site_exists > 0) || ($check_if_file_exists == 0 && $check_if_site_exists == 0)) {
@@ -5497,10 +5497,10 @@ class AuditController extends Controller
                     $this->inspectionsUpdate($unit, $program, $audit, $group_ids, $project, 'is_file_audit', $new_program, 1);
                 }
             }
-        
+
         }
 
-        
+
 
 		//Substitute programs
 
@@ -5519,8 +5519,8 @@ class AuditController extends Controller
             $program = collect($data['programs'])->where('id',$programGroup)->first();
             //dd($program, $unitprogram->project_program->multiple_building_election_key);
         }
-        
-        
+
+
         return view('dashboard.partials.project-summary-left-row', compact('data', 'project', 'audit', 'program', 'datasets'));
     }
 
@@ -5572,7 +5572,7 @@ class AuditController extends Controller
 				if($new_program && $group_id == $this->htc_group_id) {
 
 				} else {
-                    
+
 					$group = Group::find($group_id);
 					$insert_new = new UnitInspection;
     					$insert_new->program_id = $program->id;
@@ -5601,7 +5601,7 @@ class AuditController extends Controller
 
                     // update cached_building, cached_units
                     $insert_new->swap_add($audit); // only adds once
-                
+
 				}
 			}
 		}
