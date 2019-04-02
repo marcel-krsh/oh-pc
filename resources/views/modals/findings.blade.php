@@ -224,7 +224,6 @@ if ($amenity && $passedAmenity->building_id) {
 
 	{{-- Selecting one of the type/location would trigger this. Opens amenities and change both button icons --}}
 	function amenityList() {
-		debugger;
 		// If locations is active, make it inactive
 		if($('#type-selection-icon').hasClass('a-arrow-small-up ok-actionable')){
 			$('#type-selection-icon').removeClass('a-arrow-small-up ok-actionable');
@@ -244,7 +243,7 @@ if ($amenity && $passedAmenity->building_id) {
 			if($('#type_selected').val() == 'unit') {
 				filterUnitAmenities($('#type_selected_value').val());
 			}
-			if($('#type_selected').val() = '') {
+			if($('#type_selected').val() == '') {
 				filterAmenities();
 			}
 		} else {
@@ -260,6 +259,24 @@ if ($amenity && $passedAmenity->building_id) {
 
 		$('#type-selection-icon').removeClass('a-arrow-small-up ok-actionable');
 		$('#type-selection-icon').addClass('a-grid');
+	}
+
+	function filterAmenities(display = null) {
+		loadAnimation();
+		var url = '/findings/modals/amenities/{{ $audit->audit_id }}';
+		$.get(url, {
+		}, function(data, display) {
+			if(data=='0'){
+				UIkit.modal.alert("There was a problem getting the project information.");
+			} else {
+				$('#dynamic-data').html(data);
+				scrollTo('amenities');
+			}
+		});
+		if(display != null) {
+			$('#select-type-text').text(display);
+		}
+		updateAmenitiesIcon();
 	}
 
 	function filterSiteAmenities(project_ref, display = null) {
@@ -353,7 +370,7 @@ if ($amenity && $passedAmenity->building_id) {
 	}
 
 	function scrollTo(element = null) {
-		if(element = 'type') {
+		if(element == 'type') {
 			$('#type-list').scrollTop(scrollPosType);
 		} else {
 			$('#amenity-list').scrollTop(scrollPosAmenity);

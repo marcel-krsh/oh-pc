@@ -1,6 +1,5 @@
 <script>
 	$('#amenity-list').scroll(function(){
-		debugger;
 	    scrollPosAmenity = $('#amenity-list').scrollTop();
 	    console.log(scrollPosAmenity);
 	});
