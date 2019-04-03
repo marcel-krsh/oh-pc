@@ -965,9 +965,15 @@ class ComplianceSelectionJob implements ShouldQueue
                     }
 
                     if ($is_multi_building_project) {
+                        $audit->comment = $audit->comment.' | This is a multi-building elected project setting the adjusted limit accordingly.';
+                        $audit->save();
                         $required_units = $this->adjustedLimit($audit, count($units));
+                        $audit->comment = $audit->comment.' | Set the adjusted limit based on the chart to '.$required_units.'.';
+                        $audit->save();
 
                         $units_selected = $this->randomSelection($audit, $units->pluck('unit_key')->toArray(), 0, $required_units);
+                        $audit->comment = $audit->comment.' | Performed the random selection from the audit.';
+                        $audit->save();
                         $this->processes++;
 
                         //$required_units = count($units_selected);
