@@ -622,6 +622,15 @@ class ComplianceSelectionJob implements ShouldQueue
             $audit->save();
             $this->processes++;
 
+        if(!$project) {
+            Log::error('Audit '.$audit->id.' does not have a project somehow...');
+            $audit->comment_system = $audit->comment_system.' | Error, this audit isn\'t associated with a project somehow...';
+            $audit->comment = $audit->comment.' | Error, this audit isn\'t associated with a project somehow...';
+            $audit->save();
+            $this->processes++;
+            return "Error, this audit isn't associated with a project somehow...";
+        }
+
         if (!$project->programs) {
             Log::error('Error, the project does not have a program.');
             $audit->comment = $audit->comment.' | Error, the project does not have a program.';
