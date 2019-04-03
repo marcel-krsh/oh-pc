@@ -762,7 +762,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
         /////// DO NOT DO ANY OF THE FOLLOWING IF THE PROJECT DOES NOT HAVE ONE OF THESE PROGRAMS....
 
-        if(in_array($projectProgramIds, $program_bundle_ids)) {
+        if(!empty(array_intersect($projectProgramIds, $program_bundle_ids)) {
             $audit->comment_system = $audit->comment_system.' | Project has one of the program bundle ids.';
             $audit->save();
 
@@ -1135,7 +1135,7 @@ class ComplianceSelectionJob implements ShouldQueue
         $this->processes++;
 
         ///// DO NOT DO ANY OF THE FOLLOWING IF THE PROJECT DOES NOT HAVE 811
-        if(in_array($projectProgramIds, $program_811_ids)) {
+        if(!empty(array_intersect($projectProgramIds, $program_811_ids)) {
             $program_811_names = Program::whereIn('program_key', $program_811_ids)->get()->pluck('program_name')->toArray();
             $this->processes++;
             $program_811_names = implode(',', $program_811_names);
@@ -1203,7 +1203,7 @@ class ComplianceSelectionJob implements ShouldQueue
         $program_medicaid_ids = explode(',', SystemSetting::get('program_medicaid'));
         $this->processes++;
 
-        if(in_array($projectProgramIds, $program_medicaid_ids)) {
+        if(!empty(array_intersect($projectProgramIds, $program_medicaid_ids)) {
             $program_medicaid_names = Program::whereIn('program_key', $program_medicaid_ids)->get()->pluck('program_name')->toArray();
             $this->processes++;
             $program_medicaid_names = implode(',', $program_medicaid_names);
@@ -1271,7 +1271,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
         $program_home_ids = explode(',', SystemSetting::get('program_home'));
 
-        if(in_array($projectProgramIds, $program_home_ids)) {
+        if(!empty(array_intersect($projectProgramIds, $program_home_ids)) {
             $audit->comment_system = $audit->comment_system.' | Started HOME, got ids from system settings.';
             $audit->save();
 
@@ -1475,7 +1475,7 @@ class ComplianceSelectionJob implements ShouldQueue
         
 
         $program_ohtf_ids = explode(',', SystemSetting::get('program_ohtf'));
-        if(in_array($projectProgramIds, $program_ohtf_ids)) {
+        if(!empty(array_intersect($projectProgramIds, $program_ohtf_ids)) {
             $htc_units_subset_for_ohtf = array();
 
             $ohtf_award_numbers = ProjectProgram::whereIn('program_key', $program_ohtf_ids)->where('project_id', '=', $audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
@@ -1664,7 +1664,7 @@ class ComplianceSelectionJob implements ShouldQueue
         //
 
         $program_nhtf_ids = explode(',', SystemSetting::get('program_nhtf'));
-        if(in_array($projectProgramIds, $program_nhtf_ids)) {
+        if(!empty(array_intersect($projectProgramIds, $program_nhtf_ids)) {
             $htc_units_subset_for_nhtf = array();
             
             $nhtf_award_numbers = ProjectProgram::whereIn('program_key', $program_nhtf_ids)->where('project_id', '=', $audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
