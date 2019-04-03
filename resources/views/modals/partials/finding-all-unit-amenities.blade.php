@@ -4,7 +4,7 @@
 		console.log(scrollPosAmenity);
 	});
 </script>
-<div id="amenity-list" class="uk-width-1-1 uk-margin uk-panel uk-panel-scrollable uk-height-large">
+<div id="amenity-list" class="uk-width-1-1 uk-panel">
 	<div class="uk-width-1-1 ">
 		<ul class="uk-list uk-list-divider uk-margin-left uk-margin-top">
 			<li class="s-{{$audit->project_ref}} amenity-list-item finding-modal-list-items @if($audit->hasAmenityInspectionAssigned()) uid-{{Auth::user()->id}} @endif"><strong>Site : {{$audit->address}}</strong>
