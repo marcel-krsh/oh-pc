@@ -737,7 +737,8 @@ class ComplianceSelectionJob implements ShouldQueue
         $selection = [];
 
         $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
-
+        $audit->comment_system = $audit->comment_system.' | Line 740 run.';
+            $audit->save();
         //
         //
         // 1 - FAF || NSP || TCE || RTCAP || 811 units
@@ -751,19 +752,28 @@ class ComplianceSelectionJob implements ShouldQueue
         $required_units = 0;
 
         $program_bundle_ids = explode(',', SystemSetting::get('program_bundle'));
+        $audit->comment_system = $audit->comment_system.' | Line 755 run.';
+            $audit->save();
         $this->processes++;
         $program_bundle_names = Program::whereIn('program_key', $program_bundle_ids)->get()->pluck('program_name')->toArray();
+        $audit->comment_system = $audit->comment_system.' | Line 758 run.';
+            $audit->save();
         $this->processes++;
         $program_bundle_names = implode(',', $program_bundle_names);
-        
+        $audit->comment_system = $audit->comment_system.' | Line 762 run.';
+            $audit->save();
         $units = Unit::whereHas('programs', function ($query) use ($audit, $program_bundle_ids) {
                             $query->where('monitoring_key', '=', $audit->monitoring_key);
                             $query->whereIn('program_key', $program_bundle_ids);
         })->get();
+        $audit->comment_system = $audit->comment_system.' | Line 765 run.';
+            $audit->save();
         $this->processes++;
 
         // total for all programs combined
         $total = count($units);
+        $audit->comment_system = $audit->comment_system.' | Line 775 run: Total set to '.$total;
+            $audit->save();
 
         if($total){
             $audit->comment = $audit->comment.' | Select Process starting Group 1 selection ';
@@ -805,11 +815,12 @@ class ComplianceSelectionJob implements ShouldQueue
             $unitProcessCount = 0;
             foreach ($units as $unit) {
                 $this->processes++;
-
+                $audit->comment_system = $audit->comment_system.' | Line 818 run (loop).';
+                $audit->save();
                 if($unit->has_program_from_array($program_htc_ids, $audit->id)){
                     $has_htc_funding = 1;
                     $comments[] = 'The unit key '.$unit->unit_key.' belongs to a program with HTC funding';
-                    $audit->save();
+                    $audit->comment_system = $audit->comment_system.'The unit key '.$unit->unit_key.' belongs to a program with HTC funding';
                 }
             }
            
@@ -1267,6 +1278,9 @@ class ComplianceSelectionJob implements ShouldQueue
             $audit->save();
             $this->processes++;
 
+            $audit->comment_system = $audit->comment_system.' | Selecting Units using audit: '.$audit->id.' program_keys_with_award_number: '.$program_keys_with_award_number.' progam_home_ids : '.$program_home_ids;
+            $audit->save();
+            
             $units = Unit::whereHas('programs', function ($query) use ($audit, $program_home_ids, $program_keys_with_award_number) {
                                 $query->where('audit_id', '=', $audit->id);
                                 $query->whereIn('program_key', $program_keys_with_award_number);
