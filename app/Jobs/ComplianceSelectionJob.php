@@ -1923,8 +1923,8 @@ class ComplianceSelectionJob implements ShouldQueue
                     }
                 }
 
-                $comments[] = 'The total of HTC units excluding HOME, OHTF and NHTF is '.count($units).'.';
-                $audit->comment = $audit->comment.' | Select Process The total of HTC units excluding HOME, OHTF and NHTF is '.count($units).'.';
+                $comments[] = 'The total of HTC units that have HOME, OHTF and NHTF is '.count($units).'.';
+                $audit->comment = $audit->comment.' | Select Process The total of HTC units that have HOME, OHTF and NHTF is '.count($units).'.';
                 $audit->save();
                 $this->processes++;
 
@@ -2098,20 +2098,26 @@ class ComplianceSelectionJob implements ShouldQueue
                             $number_of_htc_units_needed = 0;
                         }else{
                             $number_of_htc_units_needed = $number_of_htc_units_required - count($htc_units_subset);
+                            $audit->comment = $audit->comment.' | There are '.count($htc_units_subset).' that are from the previous selection that are automatically included in the HTC selection. We need to select '.$number_of_htc_units_needed.' more units';
+                                $audit->save();
                         }
 
                         $units_selected = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
                         
                         $units_selected_count = count($units_selected);
 
-                        $comments[] = 'The project is a multi building project. Total selected: '.count($units_selected);
-                        $audit->comment = $audit->comment.' | Select Process The project is a multi building project. Total selected: '.count($units_selected);
+                        $comments[] = 'The project is a multi building project. Total additional units randomly selected: '.count($units_selected);
+                        $audit->comment = $audit->comment.' | Select Process The project is a multi building project. Additional units selected randomly : '.count($units_selected);
                                 $audit->save();
                                 $this->processes++;
 
                         $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
                         $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
                         $this->processes++;
+
+                        $audit->comment = $audit->comment.' | Total units selected including overlap : '.count($units_selected_count);
+                                $audit->save();
+                                $this->processes++;
 
                         // $units_selected_count isn't using the array_merge to keep the duplicate
 
