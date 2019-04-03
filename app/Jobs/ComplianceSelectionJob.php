@@ -1223,19 +1223,31 @@ class ComplianceSelectionJob implements ShouldQueue
         $htc_units_subset_for_home = array();
 
         $program_home_ids = explode(',', SystemSetting::get('program_home'));
+        $audit->comment_system = $audit->comment_system.' | Started HOME, got ids from system settings.';
+        $audit->save();
 
         $home_award_numbers = ProjectProgram::whereIn('program_key', $program_home_ids)->where('project_id', '=', $audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
+        $audit->comment_system = $audit->comment_system.' | Got home award numbers.';
+        $audit->save();
 
         foreach($home_award_numbers as $home_award_number){
             // for each award_number, create a different HOME group
+            $audit->comment_system = $audit->comment_system.' | Home award number '.$home_award_number.' being processed.';
+            $audit->save();
             
             // programs with that award_number
             $program_keys_with_award_number = ProjectProgram::where('award_number','=',$home_award_number->award_number)->where('project_id', '=', $audit->project_id)->pluck('program_key')->toArray(); 
+            $audit->comment_system = $audit->comment_system.' | Select programs with that award number.';
+            $audit->save();
 
             $program_home_names = Program::whereIn('program_key', $program_home_ids)
                                             ->whereIn('program_key', $program_keys_with_award_number)
                                             ->get()
                                             ->pluck('program_name')->toArray();
+
+            $audit->comment_system = $audit->comment_system.' | Selected program names.';
+            $audit->save();
+
             $this->processes++;
             $program_home_names = implode(',', $program_home_names);
             $this->processes++;
@@ -1244,6 +1256,9 @@ class ComplianceSelectionJob implements ShouldQueue
             $required_units = 0;
 
             $total_project_units = Project::where('id', '=', $audit->project_id)->first()->units()->count();
+
+            $audit->comment_system = $audit->comment_system.' | Counting project units: '.$total_project_units;
+            $audit->save();
             $this->processes++;
 
             $units = Unit::whereHas('programs', function ($query) use ($audit, $program_home_ids, $program_keys_with_award_number) {
@@ -1251,6 +1266,9 @@ class ComplianceSelectionJob implements ShouldQueue
                                 $query->whereIn('program_key', $program_keys_with_award_number);
                                 $query->whereIn('program_key', $program_home_ids);
             })->get();
+
+            $audit->comment_system = $audit->comment_system.' | Selected units.';
+            $audit->save();
             $this->processes++;
 
             if(count($units)){
