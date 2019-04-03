@@ -764,7 +764,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
         /////// DO NOT DO ANY OF THE FOLLOWING IF THE PROJECT DOES NOT HAVE ONE OF THESE PROGRAMS....
 
-        if(!empty(array_intersect($projectProgramIds, $program_bundle_ids)) {
+        if(!empty(array_intersect($projectProgramIds, $program_bundle_ids))) {
             $audit->comment_system = $audit->comment_system.' | Project has one of the program bundle ids.';
             $audit->save();
 
