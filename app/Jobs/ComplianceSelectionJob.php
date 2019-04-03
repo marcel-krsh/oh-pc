@@ -622,6 +622,15 @@ class ComplianceSelectionJob implements ShouldQueue
             $audit->save();
             $this->processes++;
 
+        if(!$project) {
+            Log::error('Audit '.$audit->id.' does not have a project somehow...');
+            $audit->comment_system = $audit->comment_system.' | Error, this audit isn\'t associated with a project somehow...';
+            $audit->comment = $audit->comment.' | Error, this audit isn\'t associated with a project somehow...';
+            $audit->save();
+            $this->processes++;
+            return "Error, this audit isn't associated with a project somehow...";
+        }
+
         if (!$project->programs) {
             Log::error('Error, the project does not have a program.');
             $audit->comment = $audit->comment.' | Error, the project does not have a program.';
@@ -945,7 +954,7 @@ class ComplianceSelectionJob implements ShouldQueue
                     foreach ($project->programs as $program) {
                         $this->processes++;
                         if (in_array($program->program_key, $program_bundle_ids)) {
-                            if ($program->multiple_building_election_id == 6) {
+                            if ($program->multiple_building_election_key == 2) {
                                 $is_multi_building_project = 1;
                                 $comments[] = 'Program key '.$program->program_key.' showed that the project is a multi building project.';
                                 $audit->comment = $audit->comment.' | Program key '.$program->program_key.' showed that the project is a multi building project.';
@@ -2350,10 +2359,7 @@ class ComplianceSelectionJob implements ShouldQueue
         $estimated_time_needed = null;
 
 
-        if($audit->lead_user_id){
-            $lead_user = User::where('id', '=', $audit->lead_user_id)->first();
-            $this->processes++;
-        }elseif ($audit->user_key) {
+        if ($audit->user_key) {
             $lead_user = User::where('devco_key', '=', $audit->user_key)->first();
             $this->processes++;
         }else{

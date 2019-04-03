@@ -141,7 +141,7 @@ class AuditController extends Controller
                         }
                     }
                     //dd($building, $amenity_inspection);
-\
+
 
                 }elseif($building->building_id === null && $building->amenity_inspection_id !== null && $building->amenity() === null){
                     // we had a case where a amenity_inspection_id was referring to a record on the wrong audit
