@@ -2115,7 +2115,7 @@ class ComplianceSelectionJob implements ShouldQueue
                         $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
                         $this->processes++;
 
-                        $audit->comment = $audit->comment.' | Total units selected including overlap : '.count($units_selected_count);
+                        $audit->comment = $audit->comment.' | Total units selected including overlap : '.$units_selected_count;
                                 $audit->save();
                                 $this->processes++;
 
