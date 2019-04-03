@@ -1995,7 +1995,7 @@ class ComplianceSelectionJob implements ShouldQueue
                 foreach ($project->programs as $program) {
                     $this->processes++;
                     if (in_array($program->program_key, $program_htc_ids)) {
-                        if ($program->multiple_building_election_id == 6) {
+                        if ($program->multiple_building_election_key == 2) {
                             $is_multi_building_project = 1;
                             $comments[] = 'Program key '.$program->program_key.' showed that the project is a multi building project.';
                             $audit->comment = $audit->comment.' | Select Process Program key '.$program->program_key.' showed that the project is a multi building project.';
