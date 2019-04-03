@@ -2096,11 +2096,13 @@ class ComplianceSelectionJob implements ShouldQueue
 
                         if($number_of_htc_units_required <= count($htc_units_subset)){
                             $number_of_htc_units_needed = 0;
-                            $audit->comment = $audit->comment.' | There are enough HTC units in the previous selections ('.count($htc_units_subset).') to meet the required number of '.$required_units.' units.';
+                            $comments[] ='There are enough HTC units in the previous selections ('.count($htc_units_subset).') to meet the required number of '.$required_units.' units.';
+                            $audit->comment = $audit->comment.'There are enough HTC units in the previous selections ('.count($htc_units_subset).') to meet the required number of '.$required_units.' units.';
                             $audit->save();
                         }else{
                             $number_of_htc_units_needed = $number_of_htc_units_required - count($htc_units_subset);
-                            $audit->comment = $audit->comment.' | There are '.count($htc_units_subset).' that are from the previous selection that are automatically included in the HTC selection. We need to select '.$number_of_htc_units_needed.' more units.';
+                            $comments[] = 'There are '.count($htc_units_subset).' that are from the previous selection that are automatically included in the HTC selection. We need to select '.$number_of_htc_units_needed.' more units.';
+                            $audit->comment = $audit->comment.'There are '.count($htc_units_subset).' that are from the previous selection that are automatically included in the HTC selection. We need to select '.$number_of_htc_units_needed.' more units.';
                                 $audit->save();
                         }
 
@@ -2113,7 +2115,7 @@ class ComplianceSelectionJob implements ShouldQueue
                         $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
                         $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
                         $this->processes++;
-
+                        $comments[] = 'Total units selected including overlap : '.$units_selected_count;
                         $audit->comment = $audit->comment.' | Total units selected including overlap : '.$units_selected_count;
                                 $audit->save();
                                 $this->processes++;
