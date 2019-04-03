@@ -760,13 +760,13 @@ class ComplianceSelectionJob implements ShouldQueue
             $audit->save();
         $this->processes++;
         $program_bundle_names = implode(',', $program_bundle_names);
-        $audit->comment_system = $audit->comment_system.' | Line 762 run.';
+        $audit->comment_system = $audit->comment_system.' | Line 762 run at '.date('g:h:i a',time());
             $audit->save();
         $units = Unit::whereHas('programs', function ($query) use ($audit, $program_bundle_ids) {
                             $query->where('monitoring_key', '=', $audit->monitoring_key);
                             $query->whereIn('program_key', $program_bundle_ids);
         })->get();
-        $audit->comment_system = $audit->comment_system.' | Line 765 run.';
+        $audit->comment_system = $audit->comment_system.' | Line 765 run at '.date('g:h:i a',time());
             $audit->save();
         $this->processes++;
 
@@ -1278,16 +1278,16 @@ class ComplianceSelectionJob implements ShouldQueue
             $audit->save();
             $this->processes++;
 
-            $audit->comment_system = $audit->comment_system.' | Selecting Units using audit: '.$audit->id.' program_keys_with_award_number: '.$program_keys_with_award_number.' progam_home_ids : '.$program_home_ids;
+            $audit->comment_system = $audit->comment_system.' | Selecting Units using using settings at '.date('g:h:i a',time());
             $audit->save();
-            
+
             $units = Unit::whereHas('programs', function ($query) use ($audit, $program_home_ids, $program_keys_with_award_number) {
                                 $query->where('audit_id', '=', $audit->id);
                                 $query->whereIn('program_key', $program_keys_with_award_number);
                                 $query->whereIn('program_key', $program_home_ids);
             })->get();
 
-            $audit->comment_system = $audit->comment_system.' | Selected units.';
+            $audit->comment_system = $audit->comment_system.' | Finished selectin units at '.date('g:h:i a',time()).'.';
             $audit->save();
             $this->processes++;
 
@@ -1459,7 +1459,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
             $total_project_units = Project::where('id', '=', $audit->project_id)->first()->units()->count();
             $this->processes++;
-
+            
             $units = Unit::whereHas('programs', function ($query) use ($audit, $program_ohtf_ids, $program_keys_with_award_number) {
                                 $query->where('audit_id', '=', $audit->id);
                                 $query->whereIn('program_key', $program_keys_with_award_number);
