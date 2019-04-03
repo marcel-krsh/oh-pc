@@ -1874,6 +1874,8 @@ class ComplianceSelectionJob implements ShouldQueue
         $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
          if(!empty(array_intersect($projectProgramIds, $program_htc_ids))) {
             // total HTC funded units (71)
+            $audit->comment = $audit->comment.' | Selecting units with HTC at '.date('g:h:i a',time());
+            $audit->save();
             $all_htc_units = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
                                 $query->where('audit_id', '=', $audit->id);
                                 $query->whereIn('program_key', $program_htc_ids);
@@ -2794,14 +2796,14 @@ class ComplianceSelectionJob implements ShouldQueue
             $timesToRun = $timesToRun->value;
 
             for ($i=0; $i<$timesToRun; $i++) {
-                $audit->comment_system = $audit->comment_system.' | Running the selectionProcess for the '.$i.'time';
+                $audit->comment_system = $audit->comment_system.' | Running the selectionProcess for the '.$i.' time';
                                     $audit->save();
                 $summary = $this->selectionProcess($audit);
                 $this->processes++;
                 //Log::info('audit '.$i.' run;');
 
                 
-                $audit->comment_system = $audit->comment_system.' | Finished Selection Process for the '.$i.'time';
+                $audit->comment_system = $audit->comment_system.' | Finished Selection Process for the '.$i.' time';
                                     $audit->save();
                                     $this->processes++;
 
