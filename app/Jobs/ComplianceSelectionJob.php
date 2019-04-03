@@ -643,8 +643,8 @@ class ComplianceSelectionJob implements ShouldQueue
         $projectProgramIds = array();
 
         foreach ($project->programs as $program) {
-            $projectProgramIds[] = $program->id;
-            $audit->comment_system = $audit->comment_system.' | Program ID: '.$program->id.' Program Name: '.$program->program_name;
+            $projectProgramIds[] = $program->program_key;
+            $audit->comment_system = $audit->comment_system.' | Program ID: '.$program->program_key.' Program Name: '.$program->program->program_name;
             $audit->save();
         }
         $audit->comment_system = $audit->comment_system.' | Select Process Checked the Programs and that there are Programs';
