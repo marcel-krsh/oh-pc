@@ -506,11 +506,7 @@
 			  filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}')
 		  @endif
 	  @else
-  		//console.log('filtering by project-level');
-  		// setTimeout(function() {
-  		// 	typeList();
-  		// }, .7);
-
+	  	filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}');
 		@endif
 		toggleMine();
 

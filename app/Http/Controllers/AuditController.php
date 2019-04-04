@@ -266,6 +266,7 @@ class AuditController extends Controller
 
             // use the default ordering
             if ($default_ordering_needed) {
+
                 $buildings = CachedBuilding::where('audit_id', '=', $audit)->orderBy('id', 'desc')->get();
 
                 $i = 1;
@@ -323,6 +324,7 @@ class AuditController extends Controller
 
 
             if ($building->building_id === null && $building->amenity_inspection_id === null) {
+
                 // this is an amenity with no link ti the amenity inspection -> there might be issues in case of duplicates.
 
                 $amenity_id = $building->amenity_id;
@@ -366,6 +368,7 @@ class AuditController extends Controller
 
 
         }
+
 
         return view('dashboard.partials.audit_buildings', compact('audit', 'target', 'buildings', 'context'));
     }
