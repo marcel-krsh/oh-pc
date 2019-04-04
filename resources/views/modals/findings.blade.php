@@ -117,16 +117,7 @@
 					<div class="uk-inline uk-width-1-2">
 						<div uk-grid>
 							<div class="uk-width-1-4">
-								<button id="mine-filter-button" uk-tooltip="title:SHOW MY AMENITIES AND LOCATIONS;" class="uk-button uk-button-default button-filter" style="border-left: 1px solid;border-right: 0px;" onclick=" console.log(window.findingModalSelectedMine);
-								if(window.findingModalSelectedMine == 'true'){
-									window.findingModalSelectedMine='false';
-									$('.amenity-list-item.finding-modal-list-items:not(.uid-{{ Auth::user()->id }}').addClass('notmine');
-									$('#mine-filter-button').addClass('uk-active');
-								}else{
-									window.findingModalSelectedMine='true';
-									$('.amenity-list-item.finding-modal-list-items:not(.uid-{{ Auth::user()->id }}').removeClass('notmine');
-									$('#mine-filter-button').removeClass('uk-active');
-								}">MINE</button>
+								<button id="mine-filter-button" uk-tooltip="title:SHOW MY AMENITIES AND LOCATIONS;" class="uk-button uk-button-default button-filter" style="border-left: 1px solid;border-right: 0px;" onclick=" console.log(window.findingModalSelectedMine); toggleMine();">MINE</button>
 							</div>
 							<div class="uk-width-3-4">
 								<input type='text' name="finding-description" id="finding-description" class="uk-input button-filter" placeholder="ENTER FINDING DESCRIPTION" type="text">
@@ -437,7 +428,6 @@
 
 	//Need to check this ..not sure about the responsibility!
 	function clickDefault() {
-		debugger;
 		passedAmenity = {{ is_null($passedAmenity) ? 'null' : $passedAmenity->id }} // this was null by default
 		passedUnit = {{ is_null($passedUnit) ? 'null' : $passedUnit->id }} // this was null by default
 		passedBuilding = {{ is_null($passedBuilding) ? 'null' : $passedBuilding->id }} // this was null by default
@@ -522,8 +512,12 @@
   		// }, .7);
 
 		@endif
+		toggleMine();
 
-  		window.findingModalSelectedAmenityDate = $('#finding-date').val();
+		}
+
+		function toggleMine() {
+			window.findingModalSelectedAmenityDate = $('#finding-date').val();
   		$('#'+window.findingModalSelectedType+'-filter-button').trigger('click');
   		console.log("select mine: "+window.findingModalSelectedMine);
   		if(window.findingModalSelectedMine == 'true'){
@@ -546,6 +540,15 @@
 			console.log( "Modal Loaded!" );
 			clickDefault();
 		});
+
+		// filter findings based on class
+    $('#finding-description').on('keyup', function () {
+    	if($('#finding-description').val().length > 2 && window.findingModalSelectedAmenity != ''){
+    		filterFindingTypes();
+    	}else if($('#finding-description').val().length == 0 && window.findingModalSelectedAmenity != ''){
+    		filterFindingTypes();
+    	}
+    });
 
 
 
