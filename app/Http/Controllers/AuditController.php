@@ -554,6 +554,7 @@ class AuditController extends Controller
         }
 
         // swap needs project_id
+
         $project_id = CachedAudit::where('audit_id', '=', $audit)->first()->project_id;
 
         return view('dashboard.partials.audit_building_details', compact('audit', 'target', 'building', 'details', 'targetaudit', 'context', 'project_id'));
