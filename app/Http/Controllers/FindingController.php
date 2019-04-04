@@ -266,8 +266,8 @@ class FindingController extends Controller
                         return '1';
                     } else {
                         return '<h2>I added the finding but...</h2>
-                                    <p>One or more of the default follow-ups had erors- please see below and send this information to your admin.</p>
-                            ' . $errors;
+                          	<p>One or more of the default follow-ups had erors- please see below and send this information to your admin.</p>
+                          	' . $errors;
                     }
                 }
             }
@@ -366,14 +366,13 @@ class FindingController extends Controller
     public function findingList($type, $amenityinspection, Request $request)
     {
         if (Auth::user()->auditor_access()) {
-
             $allFindingTypes = null;
             $ai = null;
             $search = $request->search;
-            if (is_null($search)) {$search = '';}
-
+            if (is_null($search)) {
+                $search = '';
+            }
             $ai = AmenityInspection::where('id', $amenityinspection)->with('amenity')->first();
-
             if ($ai) {
                 $amenityInspectionId = $ai->id;
                 // determine the amenity type
@@ -385,63 +384,47 @@ class FindingController extends Controller
                     $amenityLocationType = "u";
                 }
                 if ($type != 'all') {
-
                     $allFindingTypes = $ai->amenity->finding_types();
-
                 } else {
-
                     $allFindingTypes = FindingType::select('*')->get();
-
                 }
-
                 $allFindingTypes = $allFindingTypes->filter(function ($findingType) use ($type, $search, $amenityLocationType) {
-
                     if ($findingType->type == $type || $type == 'all') {
-
                         switch ($amenityLocationType) {
                             case 'b':
                                 if (!$findingType->building_exterior && !$findingType->building_system && !$findingType->common_area) {
                                     return false;
                                 }
                                 break;
-
                             case 'p':
                                 if (!$findingType->site && !$findingType->common_area) {
                                     return false;
                                 }
                                 break;
-
                             case 'u':
                                 if (!$findingType->unit) {
                                     return false;
                                 }
                                 break;
-
                             default:
                                 return false;
                                 break;
                         }
-
                         if ($search != '') {
                             if (strpos(strtolower($findingType->name), strtolower($search)) !== false) {
                                 return true;
                             } else {
                                 return false;
                             }
-
                         }
                         return true;
-
                     } else {
                         return false;
                     }
                 });
             } else {
-
                 return 'I was not able to find that amenity... it appears to have been delted. Perhaps it was deleted by another auditor? Try closing this inspection and reopening it to view an updated amenity list.';
-
             }
-
             //->orderBy('type','asc')->orderBy('name','asc')->get();
 
             //dd($type,$amenityinspection,$request,$allFindingTypes,$ai,$request->search);
@@ -497,7 +480,7 @@ class FindingController extends Controller
             }
             if ($buildingid > 0) {
                 // always use the audit id as a selector to ensure you get the correct one
-                $building = CachedBuilding::where('audit_id', $auditid)->where('id', $buildingid)->with('building.address')->first();
+                $building = CachedBuilding::where('audit_id', $auditid)->where('building_id', $buildingid)->with('building.address')->first();
 
                 //dd($buildingid, $building,$auditid);
             }
@@ -562,7 +545,7 @@ class FindingController extends Controller
             if ($refresh_stream) {
                 return view('audit_stream.audit_stream', compact('audit', 'checkDoneAddingFindings', 'type', 'comments', 'findings', 'documents', 'unit', 'building', 'amenity', 'project', 'followups', 'audits', 'units', 'buildings', 'amenities', 'allFindingTypes', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel'));
             } else {
-                return view('modals.findings', compact('audit', 'checkDoneAddingFindings', 'type', 'findings', 'unit', 'building', 'amenity',  'audits', 'units', 'buildings', 'amenities', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel', 'site'));
+                return view('modals.findings', compact('audit', 'checkDoneAddingFindings', 'type', 'findings', 'unit', 'building', 'amenity', 'audits', 'units', 'buildings', 'amenities', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel', 'site'));
             }
 
         } else {
@@ -572,37 +555,37 @@ class FindingController extends Controller
 
     public function findingAmenities($auditid)
     {
-    	if (Auth::user()->auditor_access()) {
-          $audit = null;
-          $building = null;
-          $unit = null;
-          $amenity = null;
+        if (Auth::user()->auditor_access()) {
+            $audit = null;
+            $building = null;
+            $unit = null;
+            $amenity = null;
 
-          $buildings = null;
-          $units = null;
-          $amenities = null;
-          $allFindings = null;
+            $buildings = null;
+            $units = null;
+            $amenities = null;
+            $allFindings = null;
 
-          if ($auditid > 0) {
-              $audit = CachedAudit::where('audit_id', $auditid)->with('inspection_items')->first();
-          }
-          $audits = CachedAudit::where('project_id', $audit->project_id)->get()->all();
-          $buildings = BuildingInspection::where('audit_id', $auditid)->get();
-          $units = UnitInspection::select('unit_id', 'unit_key', 'unit_name', 'building_id', 'building_key', 'audit_id', 'complete')
-              ->where('audit_id', $auditid)
-              ->where('complete', 0)
-              ->orWhereNull('complete')
-              ->groupBy('unit_id')
-              ->get();
-          $checkDoneAddingFindings  = 1;
+            if ($auditid > 0) {
+                $audit = CachedAudit::where('audit_id', $auditid)->with('inspection_items')->first();
+            }
+            $audits = CachedAudit::where('project_id', $audit->project_id)->get()->all();
+            $buildings = BuildingInspection::where('audit_id', $auditid)->get();
+            $units = UnitInspection::select('unit_id', 'unit_key', 'unit_name', 'building_id', 'building_key', 'audit_id', 'complete')
+                ->where('audit_id', $auditid)
+                ->where('complete', 0)
+                ->orWhereNull('complete')
+                ->groupBy('unit_id')
+                ->get();
+            $checkDoneAddingFindings = 1;
 
-          // always use the audit id as a selector to ensure you get the correct one
-          $amenities_query = AmenityInspection::where('audit_id', $auditid)->with('amenity');
-          $amenities = $amenities_query->get();
-          return view('modals.partials.finding-all-unit-amenities', compact('amenities', 'audit', 'buildings', 'units', 'checkDoneAddingFindings'));
-      } else {
-          return "Sorry, you do not have permission to access this page.";
-      }
+            // always use the audit id as a selector to ensure you get the correct one
+            $amenities_query = AmenityInspection::where('audit_id', $auditid)->with('amenity');
+            $amenities = $amenities_query->get();
+            return view('modals.partials.finding-all-unit-amenities', compact('amenities', 'audit', 'buildings', 'units', 'checkDoneAddingFindings'));
+        } else {
+            return "Sorry, you do not have permission to access this page.";
+        }
     }
 
     public function findingLocations($auditid)
@@ -675,7 +658,7 @@ class FindingController extends Controller
      */
     public function findingUnitAmenities($auditid, $unit_id)
     {
-    	if ($auditid > 0) {
+        if ($auditid > 0) {
             $audit = CachedAudit::where('audit_id', $auditid)->with('inspection_items')->first();
         }
         if (is_null($audit)) {

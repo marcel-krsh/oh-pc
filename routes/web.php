@@ -251,6 +251,7 @@
 
         Route::get('/findings/modals/locations/{auditid}', 'FindingController@findingLocations');
         Route::get('/findings/modals/amenities/{auditid}', 'FindingController@findingAmenities');
+        Route::get('/findings/modals/site-amenities/{auditid}/{siteid?}', 'FindingController@findingSiteAmenities');
         Route::get('/findings/modals/building-amenities/{auditid}/{buildingid?}', 'FindingController@findingBuildingAmenities');
         Route::get('/findings/modals/unit-amenities/{auditid}/{buildingid?}', 'FindingController@findingUnitAmenities');
 

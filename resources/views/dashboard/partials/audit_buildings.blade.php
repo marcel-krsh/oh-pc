@@ -49,13 +49,13 @@
 																			</div>
 															            </li>
 															        </ul>
-															        
+
 															    </div>
 
 															    <ul class="uk-slideshow-nav uk-dotnav uk-flex-center"></ul>
 
 															</div>
-															
+
 															@else
 
 															<div uk-slideshow="animation: slide; min-height:90;">
@@ -78,7 +78,7 @@
 																			</div>
 															            </li>
 															        </ul>
-															        
+
 															    </div>
 
 															    <ul class="uk-slideshow-nav uk-dotnav uk-flex-center"></ul>
@@ -95,7 +95,7 @@
 																@endif
 															</div>
 															<div class="building-status">
-																
+
 																<span class="uk-badge colored" uk-tooltip="pos:top-left;" title="@if($building->building->findingstotal() > 0)
 																	{{$building->building->findingstotal()}} FINDINGS
 																	@else NO FINDINGS @endIf">{{$building->building->findingstotal()}}</span>
@@ -113,7 +113,7 @@
 							            		<i class="@if($loop->last) a-home-marker @elseif($loop->first) a-home-marker @else a-marker-basic @endif colored"></i>
 							            		@if($building->building->followup_date !== null)
 							            		<div class="alert-icon {{$building->building->status}}">
-								            		<?php $today = date('m/d/Y',time()); 
+								            		<?php $today = date('m/d/Y',time());
 								            			  $dueDate = \Carbon\Carbon::createFromFormat('Y-m-d',$building->building->followup_date)->format('m/d/Y');
 								            			?>
 								            		@if($dueDate < $today)
@@ -129,7 +129,7 @@
 								            		<i class="a-bell" uk-tooltip="pos:top-left;title:NO INCOMPLETE FOLLOWUPS;"></i>
 												</div>
 												@endif
-							            	</div> 
+							            	</div>
 										</div>
 									</div>
 								</div>
@@ -152,11 +152,11 @@
 										            		<h3 class="uk-margin-bottom-remove colored">{{$building->building->address}}</h3>
 											            	<small class="colored">{{$building->building->city}}, {{$building->building->state}} {{$building->building->zip}}</small>
 										            		@endif
-										            		
+
 											            	@if($building->building->type != "pool")
 											            	<br />
 											            	@if($building->building->building_id != '' && $building->building->type_total > 0)
-											            	<small class="colored use-hand-cursor" onclick="buildingDetails({{$building->building->building_id}},{{$audit}},{{$key}},{{$target}},10,'{{$context}}');" uk-tooltip="pos:top-left;title:Building details;" ><i class="a-menu colored uk-text-middle"></i> 
+											            	<small class="colored use-hand-cursor" onclick="buildingDetails({{$building->building->building_id}},{{$audit}},{{$key}},{{$target}},10,'{{$context}}');" uk-tooltip="pos:top-left;title:Building details;" ><i class="a-menu colored uk-text-middle"></i>
 											            		@if($building->building->type_total > 0)
 											            		<span class="uk-text-middle uk-text-uppercase">{{$building->building->type_total}} @if($building->building->type_total > 1) {{$building->building->type_text_plural}} @else {{$building->building->type_text}} @endif</span>
 											            		@endif
@@ -168,7 +168,7 @@
 										        </div>
 										        <div class="uk-width-2-5 uk-padding-remove uk-margin-small-top">
 													<div uk-grid>
-														<div class="uk-width-1-1 findings-icons" uk-grid style="margin-top: 0px;"> 
+														<div class="uk-width-1-1 findings-icons" uk-grid style="margin-top: 0px;">
 										            		<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$building->building->finding_file_status}} action-needed">
 										            			@if($building->building_id)
 										            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'file', null, @if($building->building_id) '0' @else '1' @endif);">
@@ -230,7 +230,7 @@
 											@if($building->building->amenities_and_findings() && count($building->building->amenities_and_findings()) > 0)
 		    								<div uk-grid class="area-status-list">
 											    @foreach($building->building->amenities_and_findings() as $amenity)
-									
+
 													@if($loop->iteration < 9)
 												    <div class="uk-width-1-3 use-hand-cursor uk-padding-remove-top uk-margin-remove-top area-status colored @if($amenity['status'] != '') area-status-{{$amenity['status']}} @endif "  onclick="openFindings(this, {{$audit}}, {{$building->building_id}}, 0, 'all', {{$amenity['id']}});">
 												    	<span class="uk-badge">@if($amenity['completed'] == 1) <i class="a-check"></i> @else {{$amenity['findings_total']}} @endif</span>
@@ -246,7 +246,7 @@
 												@endforeach
 											</div>
 											@else
-											<div class="uk-inline uk-padding-remove uk-float-right" style="margin-top: 7px;">	
+											<div class="uk-inline uk-padding-remove uk-float-right" style="margin-top: 7px;">
 												@if($building->building->amenity())
 													<div class="findings-icon toplevel uk-inline uk-margin-right" onclick="copyAmenity('', {{$audit}}, 0, 0, {{$building->building->amenity()->id}}, 1);">
 														<i class="a-file-copy-2"></i>
@@ -261,7 +261,7 @@
 															<span class="uk-badge">-</span>
 														</div>
 													</div>
-												
+
 											</div>
 											@endif
 
@@ -294,6 +294,6 @@
 				<span class="uk-link" onclick="addAmenity('{{$audit}}', 'project');">+ ADD INSPECTABLE AREA TO PROJECT</span>
 			</div>
 			<script>
-				
+
 			</script>
 		</td>
