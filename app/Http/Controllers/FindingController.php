@@ -481,6 +481,9 @@ class FindingController extends Controller
             if ($buildingid > 0) {
                 // always use the audit id as a selector to ensure you get the correct one
                 $building = CachedBuilding::where('audit_id', $auditid)->where('building_id', $buildingid)->with('building.address')->first();
+                if(!$building) {
+                	$building = CachedBuilding::where('audit_id', $auditid)->where('id', $buildingid)->with('building.address')->first();
+                }
 
                 //dd($buildingid, $building,$auditid);
             }

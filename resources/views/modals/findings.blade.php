@@ -428,6 +428,7 @@
 
 	//Need to check this ..not sure about the responsibility!
 	function clickDefault() {
+		debugger;
 		passedAmenity = {{ is_null($passedAmenity) ? 'null' : $passedAmenity->id }} // this was null by default
 		passedUnit = {{ is_null($passedUnit) ? 'null' : $passedUnit->id }} // this was null by default
 		passedBuilding = {{ is_null($passedBuilding) ? 'null' : $passedBuilding->id }} // this was null by default
@@ -506,7 +507,11 @@
 			  filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}')
 		  @endif
 	  @else
-	  	filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}');
+  		//console.log('filtering by project-level');
+  		// setTimeout(function() {
+  		// 	typeList();
+  		// }, .7);
+
 		@endif
 		toggleMine();
 
