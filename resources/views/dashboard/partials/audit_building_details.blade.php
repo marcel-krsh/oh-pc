@@ -44,13 +44,13 @@
 																		</div>
 														            </li>
 														        </ul>
-														        
+
 														    </div>
 
 														    <ul class="uk-slideshow-nav uk-dotnav uk-flex-center"></ul>
 
 														</div>
-														
+
 														@else
 														<div uk-slideshow="animation: slide; min-height:90;">
 														    <div class="uk-position-relative uk-visible-toggle">
@@ -68,7 +68,7 @@
 																		</div>
 														            </li>
 														        </ul>
-														        
+
 														    </div>
 
 														    <ul class="uk-slideshow-nav uk-dotnav uk-flex-center"></ul>
@@ -76,7 +76,7 @@
 														</div>
 
 
-														
+
 														@endif
 
 													</div>
@@ -108,8 +108,8 @@
 												</div>
 											@endif
 										</div>
-					            	</div> 	
-					            </div>		
+					            	</div>
+					            </div>
 							</div>
 						</div>
 					</div>
@@ -121,7 +121,7 @@
 										<div uk-grid>
 											<div class="uk-width-3-5 uk-padding-remove">
 												<div uk-grid class="building-address">
-													
+
 									            	<div class="uk-width-1-1 uk-padding-remove">
 									            		<h3 class="uk-margin-bottom-remove colored">
 									            			{{$detail->unit->unit_name}}</h3>
@@ -132,9 +132,9 @@
 								            </div>
 											<div class="uk-width-2-5 uk-padding-remove uk-margin-small-top">
 												<div uk-grid>
-									            	<div class="uk-width-1-1 findings-icons"  style="margin-top: 0px;" uk-grid> 
+									            	<div class="uk-width-1-1 findings-icons"  style="margin-top: 0px;" uk-grid>
 									            		<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_file_status}}">
-									            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'file',null,'0');">
+									            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->unit_id}}, 'file',null,'0');">
 																<i class="a-folder"></i>
 																<div class="findings-icon-status">
 																	@if($detail->unit->finding_file_completed == 0)
@@ -145,9 +145,9 @@
 																</div>
 															</div>
 														</div>
-														
+
 														<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_nlt_status}}">
-															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'nlt',null,'0');">
+															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->unit_id}}, 'nlt',null,'0');">
 																<i class="a-booboo"></i>
 																<div class="findings-icon-status">
 																	@if($detail->unit->finding_nlt_completed == 0)
@@ -160,7 +160,7 @@
 														</div>
 
 														<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$detail->unit->finding_lt_status}}">
-															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'lt',null,'0');">
+															<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->unit_id}}, 'lt',null,'0');">
 																<i class="a-skull"></i>
 																<div class="findings-icon-status">
 																	@if($detail->unit->finding_lt_completed == 0)
@@ -192,7 +192,7 @@
 										<div uk-grid class="area-status-list">
 										    @foreach($detail->unit->amenities_and_findings() as $amenity)
 												@if($loop->iteration < 9)
-											    <div class="uk-width-1-3 use-hand-cursor uk-padding-remove-top uk-margin-remove-top area-status colored @if($amenity['status'] != '') area-status-{{$amenity['status']}} @endif "  onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->id}}, 'all', {{$amenity['id']}});">
+											    <div class="uk-width-1-3 use-hand-cursor uk-padding-remove-top uk-margin-remove-top area-status colored @if($amenity['status'] != '') area-status-{{$amenity['status']}} @endif "  onclick="openFindings(this, {{$audit}}, {{$building}}, {{$detail->unit->unit_id}}, 'all', {{$amenity['id']}});">
 											    	<span class="uk-badge">@if($amenity['completed'] == 1) <i class="a-check"></i> @else {{$amenity['findings_total']}} @endif</span>
 											    	{{$amenity['name']}}
 											    </div>
@@ -224,7 +224,7 @@
 								</div>
 							</div>
 						</div>
-					</div>					
+					</div>
 				</div>
 				@endforeach
 				@endif
