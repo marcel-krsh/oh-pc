@@ -428,7 +428,6 @@
 
 	//Need to check this ..not sure about the responsibility!
 	function clickDefault() {
-		debugger;
 		passedAmenity = {{ is_null($passedAmenity) ? 'null' : $passedAmenity->id }} // this was null by default
 		passedUnit = {{ is_null($passedUnit) ? 'null' : $passedUnit->id }} // this was null by default
 		passedBuilding = {{ is_null($passedBuilding) ? 'null' : $passedBuilding->id }} // this was null by default
