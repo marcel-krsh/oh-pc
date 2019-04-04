@@ -560,14 +560,49 @@ class FindingController extends Controller
             $checkDoneAddingFindings = 1;
 
             if ($refresh_stream) {
-                return view('audit_stream.audit_stream', compact('audit', 'checkDoneAddingFindings', 'type', 'photos', 'comments', 'findings', 'documents', 'unit', 'building', 'amenity', 'project', 'followups', 'audits', 'units', 'buildings', 'amenities', 'allFindingTypes', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel'));
+                return view('audit_stream.audit_stream', compact('audit', 'checkDoneAddingFindings', 'type', 'comments', 'findings', 'documents', 'unit', 'building', 'amenity', 'project', 'followups', 'audits', 'units', 'buildings', 'amenities', 'allFindingTypes', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel'));
             } else {
-                return view('modals.findings', compact('audit', 'checkDoneAddingFindings', 'type', 'photos', 'comments', 'findings', 'documents', 'unit', 'building', 'amenity', 'project', 'followups', 'audits', 'units', 'buildings', 'amenities', 'allFindingTypes', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel', 'site'));
+                return view('modals.findings', compact('audit', 'checkDoneAddingFindings', 'type', 'findings', 'unit', 'building', 'amenity',  'audits', 'units', 'buildings', 'amenities', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel', 'site'));
             }
 
         } else {
             return "Sorry, you do not have permission to access this page.";
         }
+    }
+
+    public function findingAmenities($auditid)
+    {
+    	if (Auth::user()->auditor_access()) {
+          $audit = null;
+          $building = null;
+          $unit = null;
+          $amenity = null;
+
+          $buildings = null;
+          $units = null;
+          $amenities = null;
+          $allFindings = null;
+
+          if ($auditid > 0) {
+              $audit = CachedAudit::where('audit_id', $auditid)->with('inspection_items')->first();
+          }
+          $audits = CachedAudit::where('project_id', $audit->project_id)->get()->all();
+          $buildings = BuildingInspection::where('audit_id', $auditid)->get();
+          $units = UnitInspection::select('unit_id', 'unit_key', 'unit_name', 'building_id', 'building_key', 'audit_id', 'complete')
+              ->where('audit_id', $auditid)
+              ->where('complete', 0)
+              ->orWhereNull('complete')
+              ->groupBy('unit_id')
+              ->get();
+          $checkDoneAddingFindings  = 1;
+
+          // always use the audit id as a selector to ensure you get the correct one
+          $amenities_query = AmenityInspection::where('audit_id', $auditid)->with('amenity');
+          $amenities = $amenities_query->get();
+          return view('modals.partials.finding-all-unit-amenities', compact('amenities', 'audit', 'buildings', 'units', 'checkDoneAddingFindings'));
+      } else {
+          return "Sorry, you do not have permission to access this page.";
+      }
     }
 
     public function findingLocations($auditid)

@@ -34,14 +34,16 @@
 <script>
 	window.findingModalSelectedType = '{{$type}}';
 	<?php $passedAmenity = $amenity;
-	$passedBuilding = $building;
-	$passedUnit = $unit;
-	if ($amenity && $passedAmenity->building_id) {
-		$buildingName = $passedAmenity->building_inspection()->building_name;
-	}
-	?>
+$passedBuilding = $building;
+$passedUnit = $unit;
+if ($amenity && $passedAmenity->building_id) {
+    $buildingName = $passedAmenity->building_inspection()->building_name;
+}
+?>
 	window.findingModalSelectedAmenity = '';
 	var loadTypeView = '';
+	var scrollPosType = 0;
+	var scrollPosAmenity = 0;
 </script>
 <div id="modal-findings" class="uk-margin-top" style="height: 90%" >
 	<div id="modal-findings-items-container">
@@ -89,6 +91,7 @@
 		</div>
 
 		<!-- FINDING TYPE LISTS -->
+
 
 		<div class="modal-findings-left-main-container">
 			<div class="modal-findings-left-main">
@@ -240,6 +243,9 @@
 			if($('#type_selected').val() == 'unit') {
 				filterUnitAmenities($('#type_selected_value').val());
 			}
+			if($('#type_selected').val() == '') {
+				filterAmenities();
+			}
 		} else {
 			$('#amenity-selection-icon').addClass('a-grid');
 			$('#amenity-selection-icon').removeClass('a-arrow-small-up ok-actionable');
@@ -253,6 +259,24 @@
 
 		$('#type-selection-icon').removeClass('a-arrow-small-up ok-actionable');
 		$('#type-selection-icon').addClass('a-grid');
+	}
+
+	function filterAmenities(display = null) {
+		loadAnimation();
+		var url = '/findings/modals/amenities/{{ $audit->audit_id }}';
+		$.get(url, {
+		}, function(data, display) {
+			if(data=='0'){
+				UIkit.modal.alert("There was a problem getting the project information.");
+			} else {
+				$('#dynamic-data').html(data);
+				scrollTo('amenities');
+			}
+		});
+		if(display != null) {
+			$('#select-type-text').text(display);
+		}
+		updateAmenitiesIcon();
 	}
 
 	function filterSiteAmenities(project_ref, display = null) {
@@ -336,7 +360,7 @@
 				} else {
 					loadTypeView = data;
 					$('#dynamic-data').html(data);
-					scrollTo(type);
+					scrollTo('type');
 				}
 			});
 		} else {
@@ -346,7 +370,7 @@
 	}
 
 	function scrollTo(element = null) {
-		if(element = 'type') {
+		if(element == 'type') {
 			$('#type-list').scrollTop(scrollPosType);
 		} else {
 			$('#amenity-list').scrollTop(scrollPosAmenity);
@@ -414,31 +438,30 @@
 			window.findingModalSelectedAmenityInspection = 'amenity-inspection-{{$passedAmenity->id}}';
 			window.selectedAmenityInspection = '{{$passedAmenity->id}}';
 			<?php
-			if ($passedAmenity->project_id) {
-				// is a project type
-				$locationType = 's-' . $passedAmenity->project_ref;
-				$locationText = "Site picked";
-
-			} elseif ($passedAmenity->building_id) {
-				// is a building
-				$locationType = 'b-' . $passedAmenity->building_id;
-				$locationText = "Building BIN: " . $passedAmenity->building_id . ", NAME: " . addslashes($buildingName);
-				if ($passedAmenity->building->address) {
-					$locationText .= ", ADDRESS: " . addslashes($passedAmenity->building->address->line_1);
-				} else {
-					$locationText .= ", NO ADDRESSS SET IN DEVCO.";
+					if ($passedAmenity->project_id) {
+			    // is a project type
+			    $locationType = 's-' . $passedAmenity->project_ref;
+			    $locationText = "Site picked";
+					} elseif ($passedAmenity->building_id) {
+			    // is a building
+			    $locationType = 'b-' . $passedAmenity->building_id;
+			    $locationText = "Building BIN: " . $passedAmenity->building_id . ", NAME: " . addslashes($buildingName);
+			    if ($passedAmenity->building->address) {
+			        $locationText .= ", ADDRESS: " . addslashes($passedAmenity->building->address->line_1);
+			    } else {
+			        $locationText .= ", NO ADDRESSS SET IN DEVCO.";
+			    }
+			    echo "console.log('Passed amenity is a building type');";
+					} else {
+			    // is a unit
+			    $locationType = 'u-' . $passedAmenity->unit_id;
+			    $locationText = "Unit Name: " . $passedAmenity->cached_unit()->unit_name . ", in BIN: " . $passedAmenity->building_key;
+			    if ($passedAmenity->unit->building->address) {
+			        $locationText .= " at ADDRESS: " . $passedAmenity->unit->building->address->line_1;
+			    } else {
+			        $locationText .= ", NO ADDRESSS SET IN DEVCO.";
+			    }
 				}
-				echo "console.log('Passed amenity is a building type');";
-			} else {
-				// is a unit
-				$locationType = 'u-' . $passedAmenity->unit_id;
-				$locationText = "Unit Name: " . $passedAmenity->cached_unit()->unit_name . ", in BIN: " . $passedAmenity->building_key;
-				if ($passedAmenity->unit->building->address) {
-					$locationText .= " at ADDRESS: " . $passedAmenity->unit->building->address->line_1;
-				} else {
-					$locationText .= ", NO ADDRESSS SET IN DEVCO.";
-				}
-			}
 			?>
 			// set filter text for drop lists
 			filterAmenities('{{$locationType}}','{!!$locationText!!}',0,0,$('#amenity-inspection-{{$passedAmenity->id}}').text());
@@ -450,8 +473,8 @@
 				console.log('Filtering to unit id:u-{{$passedUnit->unit_id}}');
 	    	// set filter test for type
 	    	<?php
-	    	$locationType = 'u-' . $passedUnit->unit_id;
-	    	?>
+				$locationType = 'u-' . $passedUnit->unit_id;
+				?>
 				// set filter text for type
 				window.findingModalSelectedLocationType = '{{$locationType}}';
 				filterAmenities('u-{{$passedUnit->unit_id}}', 'Unit NAME: {{$passedUnit->unit_name}} in Building BIN:{{$passedUnit->building_key}} ADDRESS: @if($passedUnit->building->address) {{$passedUnit->building->address->line_1}} @else NO ADDRESS SET IN DEVCO @endIf',0);
@@ -464,8 +487,8 @@
 		    @if($toplevel != 1)
 		    console.log('Filtering to building id:b-{{$passedBuilding->building_id}}');
 		    <?php
-		    $locationType = 'b-' . $passedBuilding->building_id;
-		    ?>
+				$locationType = 'b-' . $passedBuilding->building_id;
+				?>
 				// set filter text for type
 				window.findingModalSelectedLocationType = '{{$locationType}}';
 	    	// set filter test for type
@@ -504,7 +527,6 @@
 				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{Auth::user()->id}}').removeClass('notmine');
 				$('#mine-filter-button').removeClass('uk-active');
 			}
-
 		}
 
 
@@ -512,8 +534,6 @@
 		$( document ).ready(function() {
 			console.log( "Modal Loaded!" );
 			clickDefault();
-			var scrollPosType = 0;
-			var scrollPosAmenity = 0;
 		});
 
 

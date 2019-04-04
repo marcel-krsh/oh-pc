@@ -257,7 +257,7 @@
         Route::get('/modals/updatestream/{type}/{auditid}/{buildingid?}/{unitid?}/{amenityid?}/{toplevel?}/{refresh}', 'FindingController@modalFindings');
 
         Route::get('/findings/modals/locations/{auditid}', 'FindingController@findingLocations');
-        Route::get('/findings/modals/site-amenities/{auditid}/{project_ref?}', 'FindingController@findingSiteAmenities');
+        Route::get('/findings/modals/amenities/{auditid}', 'FindingController@findingAmenities');
         Route::get('/findings/modals/building-amenities/{auditid}/{buildingid?}', 'FindingController@findingBuildingAmenities');
         Route::get('/findings/modals/unit-amenities/{auditid}/{buildingid?}', 'FindingController@findingUnitAmenities');
 

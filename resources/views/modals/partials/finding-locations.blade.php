@@ -1,13 +1,13 @@
 <script>
 	$('#type-list').scroll(function(){
 	    scrollPosType = $('#type-list').scrollTop();
-	    console.log(scrollPosType);
+	    //console.log(scrollPosType);
 	});
 </script>
-<div id="type-list" class="uk-width-1-1 uk-margin uk-panel uk-panel-scrollable uk-height-large">
+<div id="type-list" class="uk-width-1-1 uk-panel">
 	<h3 class="uk-text-uppercase uk-text-emphasis">Select Location</h3>
 	<div class="uk-column-1-3@m uk-column-1-2@s ">
-		<ul >
+		<ul class="uk-list uk-list-divider uk-margin-left uk-margin-top">
 			<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}')" style="color : @if(count($site) == 0) #000 @else #50b8ec @endIf " >@if(count($site) == 0) <i class="a-circle-checked"></i> @else <i class="a-circle"></i>@endIf Site: {{ $audit->project->address->basic_address() }}
 			</li>
 			<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
