@@ -99,7 +99,7 @@ resizeModal(95);
 		            		<div class="modal-project-summary-unit-program-info">
 		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasSiteInspection()) inspectable-selected @endif" data-unitid="{{$unitprogram->unit_id}}" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'physical');">
 		            				<i class="a-mobile"></i>
-		            				<div class="modal-project-summary-unit-program-icon-status">	
+		            				<div class="modal-project-summary-unit-program-icon-status">
 	            						@if($unitprogram->hasSiteInspection())
 				            			<i class="a-circle-checked"></i>
 				            			@else
@@ -134,7 +134,7 @@ resizeModal(95);
 		            		<div class="modal-project-summary-unit-program-info">
 		            			<div class="modal-project-summary-unit-program-icon @if($unitprogram->hasSiteInspection()) inspectable-selected @endif"  data-unitid="{{$unitprogram->unit_id}}" onclick="projectSummarySelection(this, {{$unitprogram->unit_id}}, {{$unitprogram->program_id}}, 'physical');">
 		            				<i class="a-mobile"></i>
-		            				<div class="modal-project-summary-unit-program-icon-status">	
+		            				<div class="modal-project-summary-unit-program-icon-status">
 	            						@if($unitprogram->hasSiteInspection())
 				            			<i class="a-circle-checked"></i>
 				            			@else
@@ -160,7 +160,7 @@ resizeModal(95);
 
 					@endforeach
 
-					
+
 				</div>
 			</div>
 		</div>
@@ -219,7 +219,7 @@ resizeModal(95);
 	function filterBuilding(buildingKey){
 		// remove all and then display only selected
 		$('[id^=summary-btn-]').removeClass('button-filter-selected');
-		
+
 		$('.has-selected, .no-selection').fadeOut( "slow", function() {
 			$('.'+buildingKey).fadeIn( "slow", function() {});
 		});
@@ -247,16 +247,16 @@ resizeModal(95);
 	        });
 
 			$.post('/modals/projects/{{$data["project"]["id"]}}/programs/{{$data["project"]["selected_program"]}}/summary', {
-					'programs' : programsSelected, 
+					'programs' : programsSelected,
 					'_token' : '{{ csrf_token() }}'
 				}, function(data) {
 					$('#modal-project-summary-units').fadeOut( "slow", function() {
-					    $('#modal-project-summary-units').html(data).fadeIn();	
+					    $('#modal-project-summary-units').html(data).fadeIn();
 					});
-				} 
+				}
 			);
 		});
-		
+
 	}
 
 	function projectSummarySelection(element, unitid, programid=null, type="both"){
@@ -264,7 +264,7 @@ resizeModal(95);
 
 		// we know which project {{$data["project"]["id"]}}
 		// we need to know which unit, which program, if file or physical audit and whether it is checked or unchecked
-		
+
 		// icon clicked at the unit level to toggle all inspectable programs on/off
 		if(programid == null){
 			// change element's color and icon
@@ -348,7 +348,7 @@ resizeModal(95);
 				}
 
 				// AJAX CALL HERE
-				
+
 			}
 		}
 
@@ -359,7 +359,7 @@ resizeModal(95);
 	var modalSummaryChart = new Chart(document.getElementById("chartjs-modal-summary"),{
 		"type":"doughnut",
 		"options": summaryOptions,
-		
+
 		"data":{
 			"labels": ["Required","Selected","Needed","Inspected", "To Be Inspected"],
 			"datasets":[

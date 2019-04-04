@@ -254,7 +254,6 @@ function expandFindingItems(element, type=null, typeid=null) {
 	// is element a grandchild of a finding? if so add witin child
 
 	// var parentitemid = '';
-
 	var parentFindingContainer = $(element).closest("[data-finding-id], .inspec-tools-tab-finding");
 	var findingId = parentFindingContainer.data('finding-id');
 	//console.log("finding id: "+findingId);

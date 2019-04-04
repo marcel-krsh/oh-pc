@@ -4,10 +4,10 @@
 	    console.log(scrollPosAmenity);
 	});
 </script>
-<div id="amenity-list" class="uk-width-1-1 uk-margin uk-panel uk-panel-scrollable uk-height-large">
+<div id="amenity-list" class="uk-width-1-1 uk-panel">
 	<h3 class="uk-text-uppercase uk-text-emphasis">Select Amenity</h3>
 	<div class="uk-width-1-1 ">
-		<ul class="uk-list uk-list-divider uk-margin-left uk-margin-top">
+		<ul class="uk-list uk-margin-left uk-margin-top">
 			@php
 			$currentBuildingId = 0;
   		$currentAmenityId = 0;

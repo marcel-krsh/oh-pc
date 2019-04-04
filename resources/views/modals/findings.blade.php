@@ -32,8 +32,9 @@
 	}
 </style>
 <script>
-	window.findingModalSelectedType = '{{$type}}';
-	<?php $passedAmenity = $amenity;
+	window.findingModalSelectedType = '{{ $type }}';
+	<?php
+	$passedAmenity = $amenity;
 	$passedBuilding = $building;
 	$passedUnit = $unit;
 	if ($amenity && $passedAmenity->building_id) {
@@ -41,7 +42,10 @@
 	}
 	?>
 	window.findingModalSelectedAmenity = '';
+	window.findingModalSelectedLocationType = '';
 	var loadTypeView = '';
+	var scrollPosType = 0;
+	var scrollPosAmenity = 0;
 </script>
 <div id="modal-findings" class="uk-margin-top" style="height: 90%" >
 	<div id="modal-findings-items-container">
@@ -73,7 +77,7 @@
 									altInput: true,
 									altFormat: "F j, Y",
 									dateFormat: "Y-m-d",
-									defaultDate: "{{date('Y-m-d',time())}}",
+									defaultDate: "{{ date('Y-m-d',time()) }}",
 								});
 							</script>
 
@@ -89,6 +93,7 @@
 		</div>
 
 		<!-- FINDING TYPE LISTS -->
+
 
 		<div class="modal-findings-left-main-container">
 			<div class="modal-findings-left-main">
@@ -112,16 +117,7 @@
 					<div class="uk-inline uk-width-1-2">
 						<div uk-grid>
 							<div class="uk-width-1-4">
-								<button id="mine-filter-button" uk-tooltip="title:SHOW MY AMENITIES AND LOCATIONS;" class="uk-button uk-button-default button-filter" style="border-left: 1px solid;border-right: 0px;" onclick=" console.log(window.findingModalSelectedMine);
-								if(window.findingModalSelectedMine == 'true'){
-									window.findingModalSelectedMine='false';
-									$('.amenity-list-item.finding-modal-list-items:not(.uid-{{Auth::user()->id}}').addClass('notmine');
-									$('#mine-filter-button').addClass('uk-active');
-								}else{
-									window.findingModalSelectedMine='true';
-									$('.amenity-list-item.finding-modal-list-items:not(.uid-{{Auth::user()->id}}').removeClass('notmine');
-									$('#mine-filter-button').removeClass('uk-active');
-								}">MINE</button>
+								<button id="mine-filter-button" uk-tooltip="title:SHOW MY AMENITIES AND LOCATIONS;" class="uk-button uk-button-default button-filter" style="border-left: 1px solid;border-right: 0px;" onclick=" console.log(window.findingModalSelectedMine); toggleMine();">MINE</button>
 							</div>
 							<div class="uk-width-3-4">
 								<input type='text' name="finding-description" id="finding-description" class="uk-input button-filter" placeholder="ENTER FINDING DESCRIPTION" type="text">
@@ -220,7 +216,11 @@
 	}
 
 	{{-- Selecting one of the type/location would trigger this. Opens amenities and change both button icons --}}
-	function amenityList() {
+	function amenityList(locationType = '') {
+		//check if locationType is set thorugh Location selection
+		if(window.findingModalSelectedLocationType != '') {
+			locationType = window.findingModalSelectedLocationType;
+		}
 		// If locations is active, make it inactive
 		if($('#type-selection-icon').hasClass('a-arrow-small-up ok-actionable')){
 			$('#type-selection-icon').removeClass('a-arrow-small-up ok-actionable');
@@ -231,14 +231,17 @@
 			$('#amenity-selection-icon').removeClass('a-grid');
 			$('#amenity-selection-icon').addClass('a-arrow-small-up ok-actionable');
 			$('#select-amenity-text').text('Select Amenity');
-			if($('#type_selected').val() == 'site') {
+			if($('#type_selected').val() == 'site' || locationType == 'site') {
 				filterSiteAmenities($('#type_selected_value').val());
 			}
-			if($('#type_selected').val() == 'building') {
+			if($('#type_selected').val() == 'building' || locationType == 'building') {
 				filterBuildingAmenities($('#type_selected_value').val());
 			}
-			if($('#type_selected').val() == 'unit') {
+			if($('#type_selected').val() == 'unit' || locationType == 'unit') {
 				filterUnitAmenities($('#type_selected_value').val());
+			}
+			if($('#type_selected').val() == '' || locationType == '') {
+				filterAmenities();
 			}
 		} else {
 			$('#amenity-selection-icon').addClass('a-grid');
@@ -247,12 +250,31 @@
 		}
 	}
 
-	function updateAmenitiesIcon() {
+	function updateAmenitiesIcon(locationType = '') {
 		$('#amenity-selection-icon').removeClass('a-grid');
 		$('#amenity-selection-icon').addClass('a-arrow-small-up ok-actionable');
-
+		$('#select-amenity-text').text('Select Amenity'); // Replace the text in Select Amenity button to default text
 		$('#type-selection-icon').removeClass('a-arrow-small-up ok-actionable');
 		$('#type-selection-icon').addClass('a-grid');
+		window.findingModalSelectedLocationType = locationType; //Used to determine the type of location chosen
+	}
+
+	function filterAmenities(display = null) {
+		loadAnimation();
+		var url = '/findings/modals/amenities/{{ $audit->audit_id }}';
+		$.get(url, {
+		}, function(data, display) {
+			if(data=='0'){
+				UIkit.modal.alert("There was a problem getting the project information.");
+			} else {
+				$('#dynamic-data').html(data);
+				scrollTo('amenities');
+			}
+		});
+		if(display != null) {
+			$('#select-type-text').text(display);
+		}
+		updateAmenitiesIcon();
 	}
 
 	function filterSiteAmenities(project_ref, display = null) {
@@ -271,7 +293,7 @@
 		}
 		$('#type_selected').val('site');
 		$('#type_selected_value').val(project_ref);
-		updateAmenitiesIcon();
+		updateAmenitiesIcon('site');
 	}
 
 	function filterBuildingAmenities(building_id, display = null) {
@@ -290,7 +312,7 @@
 		}
 		$('#type_selected').val('building');
 		$('#type_selected_value').val(building_id);
-		updateAmenitiesIcon();
+		updateAmenitiesIcon('building');
 	}
 
 	function filterUnitAmenities(unit_id, display = null) {
@@ -310,7 +332,7 @@
 		}
 		$('#type_selected').val('unit');
 		$('#type_selected_value').val(unit_id);
-		updateAmenitiesIcon();
+		updateAmenitiesIcon('unit');
 	}
 
 	function loadAnimation() {
@@ -336,7 +358,7 @@
 				} else {
 					loadTypeView = data;
 					$('#dynamic-data').html(data);
-					scrollTo(type);
+					scrollTo('type');
 				}
 			});
 		} else {
@@ -346,7 +368,7 @@
 	}
 
 	function scrollTo(element = null) {
-		if(element = 'type') {
+		if(element == 'type') {
 			$('#type-list').scrollTop(scrollPosType);
 		} else {
 			$('#amenity-list').scrollTop(scrollPosAmenity);
@@ -369,9 +391,9 @@
 	// 	});
 	// }
 
-	function selectAmenity(amenity_id,amenity_inspection_class,amenity_inspection_id,display='selected',amenity_increment='') {
+	function selectAmenity(amenity_id, amenity_inspection_class, amenity_inspection_id, display = 'selected', amenity_increment = '') {
 		//$('.modal-findings-left-main-container').slideDown();
-		amenityList();
+		// amenityList();
 		// filter the findings to the selection
 		$('#select-amenity-text').text(display);
 		console.log('Selected '+amenity_id);
@@ -379,6 +401,7 @@
 		window.findingModalSelectedAmenityIncrement = amenity_increment;
 		window.findingModalSelectedAmenityInspection = amenity_inspection_class;
 		window.selectedAmenityInspection = amenity_inspection_id;
+		loadAnimation();
 		filterFindingTypes();
 	}
 
@@ -405,92 +428,98 @@
 
 	//Need to check this ..not sure about the responsibility!
 	function clickDefault() {
-		passedAmenity = {{ is_null($passedAmenity) ? 'null' : $passedAmenity }} // this was null by default
-		passedUnit = {{ is_null($passedUnit) ? 'null' : $passedUnit }} // this was null by default
+		debugger;
+		passedAmenity = {{ is_null($passedAmenity) ? 'null' : $passedAmenity->id }} // this was null by default
+		passedUnit = {{ is_null($passedUnit) ? 'null' : $passedUnit->id }} // this was null by default
+		passedBuilding = {{ is_null($passedBuilding) ? 'null' : $passedBuilding->id }} // this was null by default
 		toplevel = {{ $toplevel }}
 		@if(!is_null($passedAmenity))
 			// set filter text for amenity
-			window.findingModalSelectedAmenity = 'a-{{$passedAmenity->amenity_id}}';
-			window.findingModalSelectedAmenityInspection = 'amenity-inspection-{{$passedAmenity->id}}';
-			window.selectedAmenityInspection = '{{$passedAmenity->id}}';
+			window.findingModalSelectedAmenity = 'a-{{ $passedAmenity->amenity_id }}';
+			window.findingModalSelectedAmenityInspection = 'amenity-inspection-{{ $passedAmenity->id }}';
+			window.selectedAmenityInspection = '{{ $passedAmenity->id }}';
 			<?php
-			if ($passedAmenity->project_id) {
-				// is a project type
-				$locationType = 's-' . $passedAmenity->project_ref;
-				$locationText = "Site picked";
-
-			} elseif ($passedAmenity->building_id) {
-				// is a building
-				$locationType = 'b-' . $passedAmenity->building_id;
-				$locationText = "Building BIN: " . $passedAmenity->building_id . ", NAME: " . addslashes($buildingName);
-				if ($passedAmenity->building->address) {
-					$locationText .= ", ADDRESS: " . addslashes($passedAmenity->building->address->line_1);
-				} else {
-					$locationText .= ", NO ADDRESSS SET IN DEVCO.";
+				if ($passedAmenity->project_id) { // is a project type
+					$locationType = 's-' . $passedAmenity->project_ref;
+					$locationText = "Site picked";
+				} elseif ($passedAmenity->building_id) { // is a building
+					$locationType = 'b-' . $passedAmenity->building_id;
+					$locationText = "Building BIN: " . $passedAmenity->building_id . ", NAME: " . addslashes($buildingName);
+					if ($passedAmenity->building->address) {
+						$locationText .= ", ADDRESS: " . addslashes($passedAmenity->building->address->line_1);
+					} else {
+						$locationText .= ", NO ADDRESSS SET IN DEVCO.";
+					}
+					echo "console.log('Passed amenity is a building type');";
+				} else { // is a unit
+					$locationType = 'u-' . $passedAmenity->unit_id;
+					$locationText = "Unit Name: " . $passedAmenity->cached_unit()->unit_name . ", in BIN: " . $passedAmenity->building_key;
+					if ($passedAmenity->unit->building->address) {
+						$locationText .= " at ADDRESS: " . $passedAmenity->unit->building->address->line_1;
+					} else {
+						$locationText .= ", NO ADDRESSS SET IN DEVCO.";
+					}
 				}
-				echo "console.log('Passed amenity is a building type');";
-			} else {
-				// is a unit
-				$locationType = 'u-' . $passedAmenity->unit_id;
-				$locationText = "Unit Name: " . $passedAmenity->cached_unit()->unit_name . ", in BIN: " . $passedAmenity->building_key;
-				if ($passedAmenity->unit->building->address) {
-					$locationText .= " at ADDRESS: " . $passedAmenity->unit->building->address->line_1;
-				} else {
-					$locationText .= ", NO ADDRESSS SET IN DEVCO.";
-				}
-			}
 			?>
-			// set filter text for drop lists
-			filterAmenities('{{$locationType}}','{!!$locationText!!}',0,0,$('#amenity-inspection-{{$passedAmenity->id}}').text());
-			window.findingModalSelectedLocationType = '{{$locationType}}';
-			//filterFindingTypes();
-			console.log('Filtering to amenity id:a-{{$passedAmenity->amenity_id}} ({{$passedAmenity->amenity->amenity_description}}) for amenity inspection {{$passedAmenity->id}} with a location type target of '+window.findingModalSelectedLocationType+' further filtered to show '+window.findingModalSelectedType+' findings.');
+			// load the findings of selected amenities
+			@if(!is_null($passedUnit))
+				filterUnitAmenities({{ $passedUnit->unit_id }} ,'Unit {{ $passedUnit->unit_name }} in BIN:{{ $passedUnit->building_key }}');
+			@elseif(!is_null($passedBuilding))
+				filterBuildingAmenities('{{ $passedBuilding->building_id }}','Building BIN: {{ $passedBuilding->building_key }}, NAME: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf');
+			@endif
+			selectAmenity(window.findingModalSelectedAmenity, window.findingModalSelectedAmenityInspection, window.selectedAmenityInspection, '@if($passedAmenity->auditor_id) {{ $passedAmenity->user->initials() }} @else NA @endIf : {{ $passedAmenity->amenity->amenity_description }}', amenity_increment = '')
+			// Set the building name in selected type button
+			console.log('Filtering to amenity id:a-{{ $passedAmenity->amenity_id }} ({{ $passedAmenity->amenity->amenity_description }}) for amenity inspection {{ $passedAmenity->id }} with a location type target of '+window.findingModalSelectedLocationType+' further filtered to show '+window.findingModalSelectedType+' findings.');
 		@elseif(!is_null($passedUnit))
 			@if($toplevel != 1)
-				console.log('Filtering to unit id:u-{{$passedUnit->unit_id}}');
+				console.log('Filtering to unit id:u-{{ $passedUnit->unit_id }}');
 	    	// set filter test for type
 	    	<?php
 	    	$locationType = 'u-' . $passedUnit->unit_id;
 	    	?>
 				// set filter text for type
-				window.findingModalSelectedLocationType = '{{$locationType}}';
-				filterAmenities('u-{{$passedUnit->unit_id}}', 'Unit NAME: {{$passedUnit->unit_name}} in Building BIN:{{$passedUnit->building_key}} ADDRESS: @if($passedUnit->building->address) {{$passedUnit->building->address->line_1}} @else NO ADDRESS SET IN DEVCO @endIf',0);
-		    // filter to type and allita type (nlt, lt, file)
-		   @else
-		    console.log('Filtering building-level amenities {{$passedBuilding->building_id}}}');
-		    filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}} NAME: {{$passedBuilding->building_name}}',0,1);
-		   @endif
-	   @elseif(!is_null($passedBuilding))
-		    @if($toplevel != 1)
-		    console.log('Filtering to building id:b-{{$passedBuilding->building_id}}');
-		    <?php
-		    $locationType = 'b-' . $passedBuilding->building_id;
-		    ?>
+				window.findingModalSelectedLocationType = '{{ $locationType }}';
+				// filterAmenities('u-{{ $passedUnit->unit_id }}', 'Unit NAME: {{ $passedUnit->unit_name }} in Building BIN:{{ $passedUnit->building_key }} ADDRESS: @if($passedUnit->building->address) {{ $passedUnit->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf',0);
+				filterUnitAmenities({{ $passedUnit->unit_id }} ,'Unit {{ $passedUnit->unit_name }} in BIN:{{ $passedUnit->building_key }}');
+		    	// filter to type and allita type (nlt, lt, file)
+    	@else
+	    	console.log('Filtering building-level amenities {{ $passedBuilding->building_id }}}');
+	    	filterBuildingAmenities('{{ $passedBuilding->building_id }}','Building BIN: {{ $passedBuilding->building_key }}, NAME: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf');
+    	@endif
+  	@elseif(!is_null($passedBuilding))
+    	@if($toplevel != 1)
+	    	console.log('Filtering to building id: Building BIN: {{ $passedBuilding->building_key }}, NAME: {{ $passedBuilding->building_name }}, ADDRESS: {{ $passedBuilding->address }}');
+	    	<?php
+	    		$locationType = 'b-' . $passedBuilding->building_id;
+	    	?>
 				// set filter text for type
-				window.findingModalSelectedLocationType = '{{$locationType}}';
+				window.findingModalSelectedLocationType = '{{ $locationType }}';
 	    	// set filter test for type
-		    	@if($passedBuilding->building)
-		    	filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}} NAME: {{$passedBuilding->building_name}}, ADDRESS: @if($passedBuilding->building->address){{$passedBuilding->building->address->line_1}} @else NO ADDRESS SET IN DEVCO @endIf',0,1);
-		    	@else
-		    	filterAmenities('b-{{$passedBuilding->building_id}}', 'Building BIN:{{$passedBuilding->building_key}} NAME: {{$passedBuilding->building_name}}',0,1);
-		    	@endif
-			  // filter to type and allita type (nlt, lt, file)
-			  @else
-			  console.log('Filtering project-level amenities {{$audit->project_ref}}');
-			  filterAmenities('s-{{$audit->project_ref}}', 'Site: {{$audit->project->address->basic_address()}}',0,1);
-			  @endif
-		  @else
+		  	@if($passedBuilding->building)
+		  		filterBuildingAmenities('{{ $passedBuilding->building_id }}','Building BIN: {{ $passedBuilding->building_key }}, NAME: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf');
+		  	@else
+		  		//need to check when this condition will be true - Div 20190403, not seeing much difference from true and false
+		  		filterAmenities('b-{{ $passedBuilding->building_id }}', 'Building BIN:{{ $passedBuilding->building_key }} NAME: {{ $passedBuilding->building_name }}',0,1);
+		  	@endif
+	  		// filter to type and allita type (nlt, lt, file)
+	  	@else
+			  console.log('Filtering project-level amenities {{ $audit->project_ref }}');
+			  filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}')
+		  @endif
+	  @else
   		//console.log('filtering by project-level');
   		// setTimeout(function() {
   		// 	typeList();
   		// }, .7);
 
-  		@endif
+		@endif
+		toggleMine();
 
-  		window.findingModalSelectedAmenityDate = $('#finding-date').val();
+		}
 
+		function toggleMine() {
+			window.findingModalSelectedAmenityDate = $('#finding-date').val();
   		$('#'+window.findingModalSelectedType+'-filter-button').trigger('click');
-
   		console.log("select mine: "+window.findingModalSelectedMine);
   		if(window.findingModalSelectedMine == 'true'){
   			window.findingModalSelectedMine = 'false';
@@ -498,13 +527,12 @@
 
 				// only already visible elements?
 
-				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{Auth::user()->id}}').addClass('notmine');
+				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ Auth::user()->id }}').addClass('notmine');
 			} else {
 				window.findingModalSelectedMine = 'true';
-				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{Auth::user()->id}}').removeClass('notmine');
+				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ Auth::user()->id }}').removeClass('notmine');
 				$('#mine-filter-button').removeClass('uk-active');
 			}
-
 		}
 
 
@@ -512,9 +540,16 @@
 		$( document ).ready(function() {
 			console.log( "Modal Loaded!" );
 			clickDefault();
-			var scrollPosType = 0;
-			var scrollPosAmenity = 0;
 		});
+
+		// filter findings based on class
+    $('#finding-description').on('keyup', function () {
+    	if($('#finding-description').val().length > 2 && window.findingModalSelectedAmenity != ''){
+    		filterFindingTypes();
+    	}else if($('#finding-description').val().length == 0 && window.findingModalSelectedAmenity != ''){
+    		filterFindingTypes();
+    	}
+    });
 
 
 
