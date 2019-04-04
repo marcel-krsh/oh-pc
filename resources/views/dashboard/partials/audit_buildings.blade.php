@@ -171,7 +171,7 @@
 														<div class="uk-width-1-1 findings-icons" uk-grid style="margin-top: 0px;">
 										            		<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$building->building->finding_file_status}} action-needed">
 										            			@if($building->building_id)
-										            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'file', null, @if($building->building_id) '0' @else '1' @endif);">
+										            			<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building_id}}, null, 'file', null, @if($building->building_id) '0' @else '1' @endif);">
 																	<i class="a-folder"></i>
 																	<div class="findings-icon-status">
 																		@if($building->building->finding_file_completed == 0)
@@ -198,7 +198,7 @@
 																</div>
 															</div>
 															<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{$building->building->finding_lt_status}}">
-																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building->id}}, null, 'lt', null, @if($building->building_id) '0' @else '1' @endif);">
+																<div class="findings-icon" onclick="openFindings(this, {{$audit}}, {{$building->building_id}}, null, 'lt', null, @if($building->building_id) '0' @else '1' @endif);">
 																	<i class="a-skull" uk-tooltip="pos:top-left;title:Reason;"></i>
 																	<div class="findings-icon-status">
 																		@if($building->building->finding_lt_completed == 0)
@@ -230,7 +230,6 @@
 											@if($building->building->amenities_and_findings() && count($building->building->amenities_and_findings()) > 0)
 		    								<div uk-grid class="area-status-list">
 											    @foreach($building->building->amenities_and_findings() as $amenity)
-
 													@if($loop->iteration < 9)
 												    <div class="uk-width-1-3 use-hand-cursor uk-padding-remove-top uk-margin-remove-top area-status colored @if($amenity['status'] != '') area-status-{{$amenity['status']}} @endif "  onclick="openFindings(this, {{$audit}}, {{$building->building_id}}, 0, 'all', {{$amenity['id']}});">
 												    	<span class="uk-badge">@if($amenity['completed'] == 1) <i class="a-check"></i> @else {{$amenity['findings_total']}} @endif</span>
