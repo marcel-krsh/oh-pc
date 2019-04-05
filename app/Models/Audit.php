@@ -65,10 +65,10 @@ class Audit extends Model
        return $this->hasMany('\App\Models\AmenityInspection')->whereNull('building_id')->whereNull('unit_id');
     }
     public function unit_inspections() : HasMany {
-       return $this->hasMany('\App\Models\UnitInspection');
+       return $this->hasMany('\App\Models\UnitInspection')->with('program')->with('building')->orderBy('building_id')->orderBy('unit_id');
     }
     public function unique_unit_inspections() : HasMany {
-        return $this->hasMany('\App\Models\UnitInspection')->select('unit_id')->groupBy('unit_id');
+        return $this->hasMany('\App\Models\UnitInspection')->with('building')->groupBy('unit_id')->orderBy('building_id');
     
     }
     public function nlts() : HasMany
@@ -86,6 +86,9 @@ class Audit extends Model
     public function findings() : HasMany
     {
         return $this->hasMany('\App\Models\Finding');
+    }
+    public function reportableFindings() : HasMany {
+        return $this->hasMany('\App\Models\Finding')->whereNull('cancelled_at')->with('amenity_inspection')->with('auditor')->with('amenity')->with('finding_type')->with('building')->with('unit')->with('unit.building.address')->with('building.address')->with('amenity_inspection.unit_programs')->with('amenity_inspection.unit_programs.program')->with('comments')->orderBy('building_id','desc')->orderBy('unit_id');
     }
     public function ranCompliance(){
         $this->update(['compliance_run'=>1,'rerun_compliance'=>null]);

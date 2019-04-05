@@ -514,6 +514,11 @@ class ReportsController extends Controller
 
 
     }
+    public function getComments(CrrReport $report, $part){
+        $comments = null;
+        
+        return view('crr_parts.crr_comments', compact('report','part','comments'));
+    }
     public function setCrrData(CrrReport $template, $reportId = null, $audit = null){
         //get the report parts
         $audit = Audit::find($audit);
@@ -682,7 +687,13 @@ class ReportsController extends Controller
 
                $history = ['date'=>date('m/d/Y g:i a'),'user_id'=>Auth::user()->id,'user_name'=>Auth::user()->full_name(),'note'=>'Opened and viewed report'];
                     $this->reportHistory($report,$history);
-               return view('crr.crr',compact('report','data','version','print'));
+
+                if($request->get('print') != 1){
+                    return view('crr.crr',compact('report','data','version','print'));
+                }else{
+                    return view('crr.crr_print',compact('report','data','version','print'));
+                }
+            
                 
             }
         }else{
@@ -769,7 +780,97 @@ class ReportsController extends Controller
         $response['part_id'] = $part->id;
         return $response;
     }
-    
+    public function propertyFindings (CrrReport $report, CrrPart $part){
+        // calculate data for the header.
+        //dd($part);
+        //get findings
+        $originalData = json_decode($part->data);
+        $data[] = $originalData[0];
+        $data[] = $report->audit->reportableFindings;
+        //dd($data);
+        $response = array();
+        $response['content'] = '';
+        $response['blade'] = $part->crr_part_type->blade;
+        $response['data'] = json_encode($data);
+        $response['name'] = $part->crr_part_type->name;
+        $response['part_id'] = $part->id;
+        //$test=json_decode($response['data']);
+        //dd($response,$test[1]);
+        return $response;
+    }
+    public function propertyInspections (CrrReport $report, CrrPart $part){
+        // calculate data for the header.
+        //dd($part);
+        //get findings
+        $originalData = json_decode($part->data);
+        $data[] = $originalData[0];
+        $data[] = $report->audit->unit_inspections;
+        //dd($data);
+        $response = array();
+        $response['content'] = '';
+        $response['blade'] = $part->crr_part_type->blade;
+        $response['data'] = json_encode($data);
+        $response['name'] = $part->crr_part_type->name;
+        $response['part_id'] = $part->id;
+        //$test=json_decode($response['data']);
+        //dd($response,$test[1]);
+        return $response;
+    }
+    public function freeText (CrrReport $report, CrrPart $part){
+        // calculate data for the header.
+        //dd($part);
+        $response = array();
+        $response['content'] = $this->freeTextPlaceHolders($report->audit, $part->crr_part_type->content, $report);
+        $response['blade'] = $part->crr_part_type->blade;
+        $response['data'] = $part->data;
+        $response['name'] = $part->crr_part_type->name;
+        $response['part_id'] = $part->id;
+        return $response;
+    }
+    public function signDigitally (CrrReport $report, CrrPart $part){
+        // calculate data for the header.
+        //dd($part);
+        $response = array();
+        $response['content'] = $this->freeTextPlaceHolders($report->audit, $part->crr_part_type->content, $report);
+        $response['blade'] = $part->crr_part_type->blade;
+        $response['data'] = $part->data;
+        $response['name'] = $part->crr_part_type->name;
+        $response['part_id'] = $part->id;
+        return $response;
+    }
+    public function signViaClick (CrrReport $report, CrrPart $part){
+        // calculate data for the header.
+        //dd($part);
+        $response = array();
+        $response['content'] = $this->freeTextPlaceHolders($report->audit, $part->crr_part_type->content, $report);
+        $response['blade'] = $part->crr_part_type->blade;
+        $response['data'] = $part->data;
+        $response['name'] = $part->crr_part_type->name;
+        $response['part_id'] = $part->id;
+        return $response;
+    }
+    public function ehsHeader (CrrReport $report, CrrPart $part){
+        // calculate data for the header.
+        //dd($part);
+        $response = array();
+        $response['content'] = $this->freeTextPlaceHolders($report->audit, $part->crr_part_type->content, $report);
+        $response['blade'] = $part->crr_part_type->blade;
+        $response['data'] = $part->data;
+        $response['name'] = $part->crr_part_type->name;
+        $response['part_id'] = $part->id;
+        return $response;
+    }
+    public function ltFindings (CrrReport $report, CrrPart $part){
+        // calculate data for the header.
+        //dd($part);
+        $response = array();
+        $response['content'] = $this->freeTextPlaceHolders($report->audit, $part->crr_part_type->content, $report);
+        $response['blade'] = $part->crr_part_type->blade;
+        $response['data'] = $part->data;
+        $response['name'] = $part->crr_part_type->name;
+        $response['part_id'] = $part->id;
+        return $response;
+    }
     
 
 }

@@ -20,6 +20,17 @@
 	    .then(function(){$('#comment-list').html('');},function(){})
 	    //LOAD IN COMMENTS
 	    .then(function(){$('#comment-list').html('<div style="margin-left:164px;" uk-spinner></div><p align="center"><small>LOADING COMMENTS</small></p>');})
+	    .then(function(){$.get('/report/{{$report->id}}/comments/'+partId, function(data) {
+                                    if(data==1){ 
+                                        
+                                        $('#comment-list').html('No Comments');
+                                    } else {
+                                        //UIkit.modal.alert('updated'+data1);
+                                        $('#comment-list').html(data);
+                                    }    
+                                        
+                                    
+					});})
 	    .then(function(){$('#comment-list').fadeIn();});
 
 	    
@@ -30,7 +41,7 @@
 		$('#comment-list').html('');
 		$('#close-comments').slideUp();
 		$('.crr-thumbs').fadeIn();
-		$('#section-thumbnails').css({'max-width':'100px','min-width':'90px','width':'100px','padding-top':'30px','padding-right':'5px','padding-left':'5px'}); 
+		$('#section-thumbnails').css({'max-width':'130px','min-width':'90px','width':'113px','padding-top':'30px','padding-right':'5px','padding-left':'5px'}); 
 		$('#main-report-view').width('1248px');
 	    $('#main-report-view').css({'min-width':'1248px','width':'1248px'});
 	    $('.crr-sections').css({'min-width':'996px','padding':'72px','width':'1142px'});
@@ -159,13 +170,13 @@
             	<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-thumbs" style="width:85px; magin-left:auto; margin-right:auto; padding:15px; min-height: 110px;"> 
             		<?php $thumbNavPartCount = 1; ?>
             		@foreach($section->parts as $part)
-            		<a href="#part-{{$part->id}}" class="uk-link-mute" onmouseover="$('.crr-part-{{$part->id}}').addClass('crr-part-commenting');" onmouseout="$('.crr-part-{{$part->id}}').removeClass('crr-part-commenting');"><small>PART {{$thumbNavPartCount}}</small></a><hr class="dashed-hr uk-margin-bottom">
+            		<a href="#part-{{$part->id}}" class="uk-link-mute" onmouseover="$('.crr-part-{{$part->id}}').addClass('crr-part-commenting');" onmouseout="$('.crr-part-{{$part->id}}').removeClass('crr-part-commenting');"><small>{{$part->title}}</small></a><hr class="dashed-hr uk-margin-bottom">
             		<?php $thumbNavPartCount ++; ?>
             	@endForeach</div>
             	
             	<div align="center" class="uk-align-center uk-margin-large-bottom use-handcursor crr-thumbs" style="max-width: 85px;"><a href="#{{str_replace(' ','',$section->id)}}" class="uk-link-mute">{{strtoupper($section->title)}}</a></div>
             	@endForEach
-            	<div id="close-comments" style="display: none" onclick="closeComments();" class="uk-link"><i class="a-circle-cross uk-contrast"></i> CLOSE COMMENTS<hr class="hr-dashed uk-margin-small-bottom"><span id="comments-title">SECTION:PART</span></div>
+            	<div id="close-comments" style="display: none" onclick="closeComments();" class="uk-link"><i class="a-circle-cross uk-contrast"></i> CLOSE COMMENTS<hr class="hr-dashed uk-margin-small-bottom"></div>
             	<div id="comment-list" style="display: none;"></div>
             </div>
             <div id="main-report-view" class=" uk-panel-scrollable" style=" min-height: 100vh; min-width: 1248px; padding:0px; background-color: currentColor;">
@@ -173,7 +184,7 @@
             	
             	<a name="{{str_replace(' ','',$section->crr_section_id)}}" ></a>
             	<hr class="dashed-hr" style="margin-bottom: 60px; margin-top: 0px; padding:0px; border-color: #3a3a3a;">
-            	<small style="position: relative;top: -55px; left:15px; color:lightblue">VERSION: {{$report->version}}  @can('access_auditor') | <a onClick="UIkit.modal.confirm('<h1>Refresh report {{$report->id}}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{$report->id}}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute" style="color:lightblue">REFRESH REPORT CONTENT</a>@endCan</small>
+            	<small style="position: relative;top: -55px; left:15px; color:lightblue">VERSION: {{$report->version}}  @can('access_auditor') | <a onClick="UIkit.modal.confirm('<h1>Refresh report {{$report->id}}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{$report->id}}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute" style="color:lightblue">REFRESH REPORT CONTENT</a>@endCan | <a href="/report/{{$report->id}}?print=1" target="_blank" class="uk-contrast uk-link-mute"> <i class="a-print"></i> PRINT</a></small>
             	
             	<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-sections" style="">
             		@if(property_exists($section,'parts'))
@@ -189,10 +200,23 @@
 	            						$totalComments = count($comments);
 	            					}
 	            					?>
-	            				<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{$piece->part_id}});" >#{{$pieceCount}}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{$totalComments}} @else 0 @endIf</a> @can('access_admin')<hr class="dashed-hr uk-margin-bottom"><a class="uk-contrast"><i class="a-pencil" style="font-size: 19px;"></i></a>@endCan
+	            				<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{$piece->part_id}});" >#{{$pieceCount}}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{$totalComments}} @else 0 @endIf</a> @can('access_auditor')<hr class="dashed-hr uk-margin-bottom"><a class="uk-contrast"><i class="a-pencil" style="font-size: 19px;"></i></a>@endCan
 	            				</div>
 	            				<div class="crr-part-{{$piece->part_id}} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{$piece->part_id}}"></a>
-	            				{!!$piece->content!!}
+	            					<?php $pieceData = json_decode($piece->data);?>
+	            					@if($pieceData[0]->type =='free-text')
+	            						{!!$piece->content!!}
+	            					@endIf
+	            					@if($pieceData[0]->type == 'blade')
+	            						<?php 
+	            							if(array_key_exists(1,$pieceData)){
+	            								$bladeData = $pieceData[1];
+	            							}else{
+	            								$bladeData = null;
+	            							}
+	            						?>
+	            						@include($piece->blade)
+	            					@endIf
 	            				</div>
 	            				<?php $pieceCount ++; ?>
 	            			@endForEach

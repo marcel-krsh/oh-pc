@@ -224,7 +224,7 @@
         Route::get('/report/{report}', 'ReportsController@getReport');
         Route::get('/report/{report}/generate','ReportsController@generateReport');
         Route::get('/report/{report}/reset','ReportsController@resetToTemplate');
-        Route::get('/report/{report}/comments', 'ReportsController@getComments');
+        Route::get('/report/{report}/comments/{part}', 'ReportsController@getComments');
         Route::get('/report/{report}/{section}','ReportsController@getSection');
         Route::get('/report/{report}/download/{type}','ReportsController@download');
         Route::post('/report/{report}/status','ReportsController@changeStatus');
