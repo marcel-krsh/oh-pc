@@ -135,8 +135,9 @@ class AuditController extends Controller
                         if($amenity_inspection){
                             $building->amenity_inspection_id = $amenity_inspection->id;
                             $building->save();
-
-                            $amenity_inspection->cachedbuilding_id = $building->id;
+                            
+                            $amenity_inspection->cachedbuilding_id = $building->building->id;
+                            //$amenity_inspection->cachedbuilding_id = $building->id;
                             $amenity_inspection->save();
                         }
                     }
