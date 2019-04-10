@@ -47,7 +47,7 @@ function updateStatus($type = 'parcel', $item, $field, $status, $withCheck = 0, 
                 $lc->setFrom(Auth::user())->setTo($item)->setDesc('Parcel '.$item->parcel_id.' had a status updated. '.$comment.' Made visible via '.$explanation)->save();
                 return $item;
             }
-                    
+
             break;
         case "request":
             if ($item) {

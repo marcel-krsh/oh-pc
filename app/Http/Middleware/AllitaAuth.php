@@ -60,9 +60,9 @@ class AllitaAuth
 
             $this->authenticate($request);
         }
-            
 
-             
+
+
 
             // temporary solution
             // if($request->has('user_id')){
@@ -145,9 +145,9 @@ class AllitaAuth
                             $failedLoginReason = 'Invalid Cookie Used:'.$e;
                 }
 
-                
+
                 $credentials = explode('|', $rememberMeCookieValueDecrypted);
-                
+
                 // make sure this is not double encrypted:
                 if (count($credentials)>2) {
                     $explodedCredentials = true;
@@ -288,7 +288,7 @@ class AllitaAuth
                 $newTracker->save();
             } else {
                 //update the current tracking ip:
-                
+
                 //check that the last login fail for this ip was within the last 5 minutes
                 if ($currentlyBlocked->last_failed_time > (time() - 300)) {
                     $loginTries = $currentlyBlocked->tries + 1;
@@ -338,7 +338,7 @@ class AllitaAuth
             }
         }
 
-        
+
 
         ////////////////////////////////////////////////////////
         //// check if the authorized person is trying to unlock the ip
@@ -420,7 +420,7 @@ class AllitaAuth
         $token = str_random(10);
         $current_user->socket_id = $token;
         $current_user->save();
-        
+
 
         //////////////// OLD STUFF ///////////////////
 
@@ -431,7 +431,7 @@ class AllitaAuth
         //         // make sure life span of cookie to 20 minutes...
 
         //         $rememberMeCookieValue = $request->cookie($name);
-                
+
         //         if(!is_null($rememberMeCookieValue)){
         //             $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
 
@@ -501,7 +501,7 @@ class AllitaAuth
 
         //         // we have user_id and token, check credentials with Devco
         //          $check_credentials = $this->_auth_service->userAuthenticateToken($credentials['user_id'], $credentials['token'], $ip, $user_agent);
-                
+
         //         //dd($check_credentials);
         //         if(!$check_credentials->data->attributes->{'authenticated'} || !$check_credentials->data->attributes->{'user-activated'} || !$check_credentials->data->attributes->{'user-exists'}){
 
@@ -513,7 +513,7 @@ class AllitaAuth
 
         //         }
 
-            
+
 
 
         //         // if($auth_tracker){
@@ -553,7 +553,7 @@ class AllitaAuth
         //     //dd('User is logged in already'.$user);
         //     // make sure the user corresponds to the Devco user
         //     ///login user by user id
-        
+
         //     //
         // }
     }

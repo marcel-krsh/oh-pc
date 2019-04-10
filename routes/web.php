@@ -342,6 +342,14 @@
 
         // Admin tabs
 
+
+				Route::get('/modals/createuser', 'PagesController@createUser');
+				Route::post('/modals/createuser', 'PagesController@createUserSave')->name('admin.createuser');
+				Route::get('/user/complete-registration/{userId}', 'PagesController@getUserCompleteRegistration');
+				Route::post('/user/complete-registration', 'PagesController@postUserCompleteRegistration')->name('user.complete-registration');
+
+
+
         Route::group(['prefix'=>'tabs','middleware'=>'can:access_admin'], function ()  {
 
                 Route::get('organization', 'AdminToolController@organizationIndex');
@@ -353,7 +361,10 @@
                 Route::get('defaultfollowup', 'AdminToolController@defaultfollowupIndex');
                 Route::get('boilerplate', 'AdminToolController@boilerplateIndex');
                 Route::get('program', 'AdminToolController@programIndex');
+
                 Route::get('users', 'AdminToolController@usersIndex');
+
+
                 Route::post('users', 'AdminToolController@searchUsers')->name('users.search');
                 Route::get('document_category', 'AdminToolController@documentIndex');
                 Route::get('county', 'AdminToolController@countyIndex');

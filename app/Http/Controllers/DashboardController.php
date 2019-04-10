@@ -28,8 +28,8 @@ class DashboardController extends Controller
         if (env('APP_DEBUG_NO_DEVCO') == 'true') {
             //Auth::onceUsingId(1); // TEST BRIAN
             //Auth::onceUsingId(286); // TEST BRIAN
-            Auth::onceUsingId(env('USER_ID_IMPERSONATION'));    
-            
+            Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
+
             // this is normally setup upon login
             $current_user = Auth::user();
             if ($current_user->socket_id === null) {
@@ -76,14 +76,14 @@ class DashboardController extends Controller
                     ->count();
 
         $stats_reports_total = Report::where('user_id', '=', Auth::user()->id)->count();
-
+        echo '121';
         //return \view('dashboard.index'); //, compact('user')
         return view('dashboard.index', compact('tab', 'loadDetailTab', 'stats_audits_total', 'stats_communication_total', 'stats_reports_total', 'current_user'));
     }
 
     public function adminTools()
     {
-        
+
         if (Auth::user()->admin_access()) {
             $sumStatData = [];
             $stats = [];
@@ -95,7 +95,7 @@ class DashboardController extends Controller
 
     public function audits(Request $request, $page = 0)
     {
-        
+
         // TEST EVENT
         // $testaudit = Audit::where('development_key','=', 247660)->where('monitoring_status_type_key', '=', 4)->orderBy('start_date','desc')->first();
         // Event::fire('audit.created', $testaudit);
@@ -203,7 +203,7 @@ class DashboardController extends Controller
             $sort_order_query = "desc";
         }
 
-        
+
         $audits = CachedAudit::with('auditors');
 
         // load to list steps filtering and check for session variables
@@ -251,7 +251,7 @@ class DashboardController extends Controller
                 $inspectionScheduleDate = null;
                 $inspectionScheduleDateYear = null;
             }
-            
+
             if ($audit['followup_date']) {
                 $followupDate = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('m/d');
                 $followupDateYear = \Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('Y');
@@ -259,7 +259,7 @@ class DashboardController extends Controller
                 $followupDate = null;
                 $followupDateYear = null;
             }
-            
+
             if(!Auth::user()->auditor_access()){
                 // PM - blank out some values
                 $audit['inspection_status'] = '';
@@ -449,8 +449,8 @@ class DashboardController extends Controller
                         $data->project_key
                     ];
         }
-                    
-                    
+
+
         // // search for primary address (project), project #, audit#
         // $results[] = [
         //                 '123 Street Name',
@@ -491,7 +491,7 @@ class DashboardController extends Controller
         //                 'John Manager',
         //                 'Project Name 2'
         //             ];
-        
+
         $results = json_encode($results);
         return $results;
     }

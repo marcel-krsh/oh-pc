@@ -65,4 +65,10 @@ class Organization extends Model
     {
         return $this->hasOne(\App\Models\People::class, 'person_key', 'default_contact_person_key');
     }
+
+
+	  public function scopeActive($query)
+	  {
+	    return $query->where('is_active', 1);
+	  }
 }

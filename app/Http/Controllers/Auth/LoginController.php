@@ -57,4 +57,9 @@ class LoginController extends Controller
             return redirect()->intended('login');
         }
     }
+
+    public function login(Request $request)
+    {
+
+    }
 }
