@@ -348,6 +348,12 @@
 				Route::get('/user/complete-registration/{userId}', 'PagesController@getUserCompleteRegistration');
 				Route::post('/user/complete-registration', 'PagesController@postUserCompleteRegistration')->name('user.complete-registration');
 
+				Route::get('/ip', 'Auth\LoginController@getUserIpAddr');
+				Route::get('/code', 'Auth\LoginController@getCode');
+				Route::post('/code', 'Auth\LoginController@postCode');
+				Route::get('/verification', 'Auth\LoginController@getVerification');
+				Route::post('/verification', 'Auth\LoginController@postVerification');
+
 
 
         Route::group(['prefix'=>'tabs','middleware'=>'can:access_admin'], function ()  {

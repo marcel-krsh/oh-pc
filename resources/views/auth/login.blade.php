@@ -5,7 +5,17 @@
 <div class="uk-vertical-align uk-text-center uk-height-1-1 uk-margin-top" uk-scrollspy="target:#login-panel;cls:uk-animation-slide-top-small uk-transform-origin-bottom; delay: 1300">
 	<div class="uk-vertical-align-middle login-panel"  id="login-panel">
 		<p>NEIGHBORHOOD INITIATIVE PROGRAM</p>
+		<p>LOGIN</p>
 		<form class="uk-panel uk-panel-box uk-form" role="form" method="POST" action="{{ url('/login') }}">
+			@if (count($errors) > 0)
+			<div class="alert alert-danger uk-text-danger">
+			  <ul>
+			    @foreach ($errors->all() as $error)
+			    {{ $error }}<br>
+			    @endforeach
+			  </ul>
+			</div>
+			@endif
 			{{ csrf_field() }}
 			<div class="uk-form-row {{ $errors->has('email') ? ' uk-form-danger' : '' }}" uk-scrollspy="target:.uk-input;cls:uk-animation-slide-top-small; delay: 1500">
 				<input class="uk-input uk-width-1-1 uk-form-large" type="text" placeholder="Email" id="email" type="email" name="email" value="{{ old('email') }}" required autofocus >

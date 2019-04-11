@@ -40,16 +40,16 @@ class PagesController extends Controller
 {
   public function __construct()
   {
-    Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
+    // Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
 
-    // this is normally setup upon login
-    $current_user = Auth::user();
-    if (null === $current_user->socket_id) {
-      // create a socket id and store in user table
-      $token                   = str_random(10);
-      $current_user->socket_id = $token;
-      $current_user->save();
-    }
+    // // this is normally setup upon login
+    // $current_user = Auth::user();
+    // if (null === $current_user->socket_id) {
+    //   // create a socket id and store in user table
+    //   $token                   = str_random(10);
+    //   $current_user->socket_id = $token;
+    //   $current_user->save();
+    // }
   }
 
   public function parcel_next_step(Parcel $parcel)
@@ -2220,7 +2220,7 @@ class PagesController extends Controller
         'role'                  => 'required',
         'business_phone_number' => 'required|min:12',
         'zip'                   => 'nullable|min:5',
-        'state_id' => 'required'
+        'state_id'              => 'required',
       ], [
         'business_phone_number.min' => 'Enter valid Business Phone Number',
       ]);
@@ -2303,7 +2303,7 @@ class PagesController extends Controller
         $user_role->save();
         //Trigger email to User to create password, save it in HistoricEmail - look into Mail/EmailNotification
         $email_notification = new EmailCreateNewUser($current_user, $user);
-        //\Mail::to($user->email)->send($email_notification);
+        \Mail::to($user->email)->send($email_notification);
         DB::commit();
         return 1;
       } catch (\Exception $e) {
@@ -2341,8 +2341,8 @@ class PagesController extends Controller
       'password' => ['required', 'string', 'min:8', 'confirmed'],
     ]);
     if ($validator->fails()) {
-    	$errors = $validator->errors()->all();
-    	return redirect()->back()->withErrors(['errors' => $validator->errors()->all()]);
+      $errors = $validator->errors()->all();
+      return redirect()->back()->withErrors(['errors' => $validator->errors()->all()]);
       //return response()->json(['errors' => $validator->errors()->all()]); //used for ajax submit
     }
     $email_token = $request->email_token;
@@ -2352,7 +2352,7 @@ class PagesController extends Controller
       $validator->getMessageBag()->add('error', 'Something went wrong. Try again later or contact Admin');
       return response()->json(['errors' => $validator->errors()->all()]);
     } else {
-    	// use verify() and activate() methods at the time of resetting
+      // use verify() and activate() methods at the time of resetting
       $user->activate();
       $user->verify();
       $user->password = bcrypt($request->password);

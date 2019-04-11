@@ -161,3 +161,17 @@ function alpha_numeric_random($length = 16)
     $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     return substr(str_shuffle(str_repeat($pool, $length)), 0, $length);
 }
+
+function mask_email($email)
+{
+	$mail_segments = explode("@", $email);
+	$mail_segments[0] = substr($mail_segments[0], 0, 1) . str_repeat("*", strlen($mail_segments[0]) - 2) . substr($mail_segments[0], -1);
+	$pos = strpos($mail_segments[1], '.');
+	$mail_segments[1] = substr($mail_segments[1], 0, 1) . str_repeat("*", strlen($mail_segments[1]) - $pos+1) . substr($mail_segments[1], $pos-1);
+	return implode("@", $mail_segments);
+}
+
+function mask_phone_number($phone)
+{
+	return substr($phone, 0, 2) . '******' . substr($phone,  -2);
+}
