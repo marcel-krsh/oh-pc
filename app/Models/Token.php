@@ -34,7 +34,13 @@ class Token extends Model
    */
   public function generateCode($codeLength = 9)
   {
-    return mt_rand(100000000, 999999999);
+    $num  = mt_rand(100, 999);
+    $code = $num;
+    $num  = mt_rand(100, 999);
+    $code = $code . '-' . $num;
+    $num  = mt_rand(100, 999);
+    $code = $code . '-' . $num;
+    return $code;
   }
 
   /**
@@ -112,9 +118,13 @@ class Token extends Model
     }
   }
 
-  public function sendCodeByVoice($to_number, $code, $loop = 5)
+  public function sendCodeByVoice($to_number, $code, $loop = 3)
   {
-    $message = "Your Allita verification code is: " . $code;
+    //slow down the voice for number
+    $code_text       = (string) (str_replace('-', '', $code)); // convert into a string
+    $code_text       = str_split($code_text, "1"); // break string in 3 character sets
+    $code_voice_text = implode(". ", $code_text);
+    $message         = "Your verification code is: " . $code_voice_text . '. ';
     try {
       Twilio::call($to_number, function ($msg) use ($message, $loop) {
         $msg->say($message, ['loop' => $loop]);
@@ -129,7 +139,7 @@ class Token extends Model
   {
     $message = "Your Allita verification code is: " . $code;
     try {
-      Twilio::message($to_number, $message);
+      //Twilio::message($to_number, $message);
       return true;
     } catch (\Exception $ex) {
       return false; //enable to send sms

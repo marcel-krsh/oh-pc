@@ -79,6 +79,7 @@ class LoginController extends Controller
     }
     if ($user = app('auth')->getProvider()->retrieveByCredentials($request->only('email', 'password'))) {
       $device = Cookie::get('device_' . $user->id);
+
       // check device already registered
       $is_device_verifed = Token::where('user_id', $user->id)
         ->where('used', 1)
@@ -87,8 +88,12 @@ class LoginController extends Controller
       //if true login with id & return to intended url else create toke
       if ($is_device_verifed) {
         Auth::loginUsingId($user->id, 1);
+        $token          = new Token;
+        $token->user_id = $user->id;
+        $token->save();
+        $this->saveToken($token);
         //flash('Login successful')->success();
-        return redirect()->intended('/home');
+        return redirect()->intended('/');
       } else {
         session(["user_id" => $user->id]);
         session(["remember" => $request->get('remember')]);
@@ -139,40 +144,51 @@ class LoginController extends Controller
       ->first();
     if ($token->isValid()) {
       Auth::loginUsingId($user_id, 1);
-      $ip               = $this->getUserIpAddr();
-      $location         = GeoIP::getLocation($ip);
-      $agent            = Agent::all();
-      $token->device    = $agent->device->family;
-      $token->isMobile  = $agent->device->isMobile;
-      $token->isTablet  = $agent->device->isTablet;
-      $token->isDesktop = $agent->device->isDesktop;
-      $token->isBot     = $agent->device->isBot;
-      $token->browser   = $agent->browser->family;
-      $token->platform  = $agent->platform->family;
-
-      $token->iso_code    = $location->iso_code;
-      $token->country     = $location->country;
-      $token->city        = $location->city;
-      $token->state       = $location->state;
-      $token->state_name  = $location->state_name;
-      $token->postal_code = $location->postal_code;
-      $token->lat         = $location->lat;
-      $token->lon         = $location->lon;
-      $token->timezone    = $location->timezone;
-      $token->continent   = $location->continent;
-      $token->currency    = $location->currency;
-      $token->save();
-
-      if (!empty($request->device)) {
-        $token->device = $request->device;
-        Cookie::queue('device_' . $user_id, $request->device);
+      $token = $this->saveToken($token);
+      //if (!empty($request->device)) {
+      //$token->device = $request->device;
+      $user = Auth::user();
+      if (0 == $user->verified) {
+        $user->activate();
+        $user->verify();
+        $user->save();
       }
+      $cookie = Cookie::forever('device_' . $user_id, $token->device);
+      // }
       $token->used = 1;
       $token->save();
-      return redirect()->intended('/');
+      return redirect()->intended('/')->withCookie($cookie);
     }
     flash('Token Expired')->error();
     return redirect()->back();
+  }
+
+  public function saveToken($token)
+  {
+    $ip               = $this->getUserIpAddr();
+    $location         = GeoIP::getLocation($ip);
+    $agent            = Agent::all();
+    $token->device    = $agent->device->family;
+    $token->isMobile  = $agent->device->isMobile;
+    $token->isTablet  = $agent->device->isTablet;
+    $token->isDesktop = $agent->device->isDesktop;
+    $token->isBot     = $agent->device->isBot;
+    $token->browser   = $agent->browser->name;
+    $token->platform  = $agent->platform->name;
+
+    $token->iso_code    = $location->iso_code;
+    $token->country     = $location->country;
+    $token->city        = $location->city;
+    $token->state       = $location->state;
+    $token->state_name  = $location->state_name;
+    $token->postal_code = $location->postal_code;
+    $token->lat         = $location->lat;
+    $token->lon         = $location->lon;
+    $token->timezone    = $location->timezone;
+    $token->continent   = $location->continent;
+    $token->currency    = $location->currency;
+    $token->save();
+    return $token;
   }
 
   public function getVerification()
@@ -208,7 +224,7 @@ class LoginController extends Controller
       $status = false;
       if (2 == $request->delivery_method) {
         // send voice request
-        $status = $token->sendCode("voice");
+        $status = $token->sendCode("voice", $phone_number);
       } elseif (1 == $request->delivery_method) {
         // send sms request
         $status = $token->sendCode("sms", $phone_number);

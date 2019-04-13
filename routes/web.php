@@ -348,6 +348,7 @@
 				Route::get('/user/complete-registration/{userId}', 'PagesController@getUserCompleteRegistration');
 				Route::post('/user/complete-registration', 'PagesController@postUserCompleteRegistration')->name('user.complete-registration');
 
+				Route::post('register-user', 'Auth\RegisterController@postRegister');
 				Route::get('/ip', 'Auth\LoginController@getUserIpAddr');
 				Route::get('/code', 'Auth\LoginController@getCode');
 				Route::post('/code', 'Auth\LoginController@postCode');

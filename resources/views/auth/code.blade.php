@@ -19,10 +19,10 @@
 			{{ csrf_field() }}
 			<input type="hidden" name="user_id" id="user_id" value="{{ $user_id }}">
 			<?php
-				$phonenumber = $user->person->allita_phone->area_code . $user->person->allita_phone->phone_number;
-				$mask_phonenumber =  mask_phone_number($phonenumber);
-				$mask_email =  mask_email($user->email);
-			?>
+$phonenumber      = $user->person->allita_phone->area_code . $user->person->allita_phone->phone_number;
+$mask_phonenumber = mask_phone_number($phonenumber);
+$mask_email       = mask_email($user->email);
+?>
 
 			<h4 class="uk-align-center">Phone</h4>
 			<div class="uk-grid-small uk-grid" uk-grid="">
@@ -54,9 +54,11 @@
 				{{-- <a class="uk-width-1-1 uk-button uk-button-primary uk-button-large" onclick="submitCompleteRegistration()">Create Password</a> --}}
 			</div>
 		</form>
+		@if(env('USER_REGISTRATION'))
 		<div uk-scrollspy="cls:uk-animation-fade; delay: 1600">
 			<a href="{{ url('/register') }}" class="uk-button uk-button-default uk-button-small uk-width-1-1 uk-margin-top">Not Registered?</a>
 		</div>
+		@endif
 
 	</div>
 </div>
