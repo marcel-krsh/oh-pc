@@ -91,7 +91,7 @@ class LoginController extends Controller
         $token          = new Token;
         $token->user_id = $user->id;
         $token->save();
-        $this->saveToken($token);
+        $this->saveToken($token, 'login');
         //flash('Login successful')->success();
         return redirect()->intended('/');
       } else {
@@ -153,7 +153,7 @@ class LoginController extends Controller
         $user->verify();
         $user->save();
       }
-      $cookie = Cookie::forever('device_' . $user_id, $token->device);
+      $cookie = Cookie::forever('device_' . $user_id, $token->device.$token->browser.$token->platform);
       // }
       $token->used = 1;
       $token->save();
@@ -163,11 +163,16 @@ class LoginController extends Controller
     return redirect()->back();
   }
 
-  public function saveToken($token)
+  public function saveToken($token, $trigger = 'code')
   {
     $ip               = $this->getUserIpAddr();
     $location         = GeoIP::getLocation($ip);
     $agent            = Agent::all();
+    if($trigger == 'login') {
+    	$token->used = 2;
+    	$token->code = '000-000-0000';
+    }
+    $token->ip = $ip;
     $token->device    = $agent->device->family;
     $token->isMobile  = $agent->device->isMobile;
     $token->isTablet  = $agent->device->isTablet;
