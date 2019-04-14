@@ -15,6 +15,7 @@ class AlterTokens extends Migration
     {
         Schema::table('tokens', function (Blueprint $table) {
             $table->string('ip')->nullable();
+            $table->string('user_device_name')->nullable();
             $table->string('device')->nullable();
             $table->string('browser')->nullable();
             $table->string('platform')->nullable();

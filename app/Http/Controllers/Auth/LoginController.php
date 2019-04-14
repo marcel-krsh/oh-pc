@@ -79,7 +79,6 @@ class LoginController extends Controller
     }
     if ($user = app('auth')->getProvider()->retrieveByCredentials($request->only('email', 'password'))) {
       $device = Cookie::get('device_' . $user->id);
-
       // check device already registered
       $is_device_verifed = Token::where('user_id', $user->id)
         ->where('used', 1)
@@ -124,7 +123,10 @@ class LoginController extends Controller
       $type    = "danger";
       return view('errors.error', compact('error', 'message', 'type'));
     } else {
-      return view('auth.code', compact('user', 'user_id'));
+      $phone_number     = $user->person->allita_phone->area_code . $user->person->allita_phone->phone_number;
+      $mask_phonenumber = mask_phone_number($phone_number);
+      $mask_email       = mask_email($user->email);
+      return view('auth.code', compact('user', 'user_id', 'phone_number', 'mask_phonenumber', 'mask_email'));
     }
   }
 
@@ -153,9 +155,12 @@ class LoginController extends Controller
         $user->verify();
         $user->save();
       }
-      $cookie = Cookie::forever('device_' . $user_id, $token->device.$token->browser.$token->platform);
+      $cookie = Cookie::forever('device_' . $user_id, $token->device);
       // }
       $token->used = 1;
+      if ($request->has('device_name')) {
+        $token->user_device_name = $request->device_name;
+      }
       $token->save();
       return redirect()->intended('/')->withCookie($cookie);
     }
@@ -165,21 +170,21 @@ class LoginController extends Controller
 
   public function saveToken($token, $trigger = 'code')
   {
-    $ip               = $this->getUserIpAddr();
-    $location         = GeoIP::getLocation($ip);
-    $agent            = Agent::all();
-    if($trigger == 'login') {
-    	$token->used = 2;
-    	$token->code = '000-000-0000';
+    $ip       = $this->getUserIpAddr();
+    $location = GeoIP::getLocation($ip);
+    $agent    = Agent::all();
+    if ('login' == $trigger) {
+      $token->used = 2;
+      $token->code = '000-000-0000';
     }
-    $token->ip = $ip;
-    $token->device    = $agent->device->family;
+    $token->ip        = $ip;
     $token->isMobile  = $agent->device->isMobile;
     $token->isTablet  = $agent->device->isTablet;
     $token->isDesktop = $agent->device->isDesktop;
     $token->isBot     = $agent->device->isBot;
     $token->browser   = $agent->browser->name;
     $token->platform  = $agent->platform->name;
+    $token->device    = $agent->device->family . $token->browser . $token->platform;
 
     $token->iso_code    = $location->iso_code;
     $token->country     = $location->country;

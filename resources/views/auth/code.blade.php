@@ -18,12 +18,6 @@
 			@endif
 			{{ csrf_field() }}
 			<input type="hidden" name="user_id" id="user_id" value="{{ $user_id }}">
-			<?php
-$phonenumber      = $user->person->allita_phone->area_code . $user->person->allita_phone->phone_number;
-$mask_phonenumber = mask_phone_number($phonenumber);
-$mask_email       = mask_email($user->email);
-?>
-
 			<h4 class="uk-align-center">Phone</h4>
 			<div class="uk-grid-small uk-grid" uk-grid="">
 				<div class="uk-margin uk-align-center">

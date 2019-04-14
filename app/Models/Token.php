@@ -139,7 +139,7 @@ class Token extends Model
   {
     $message = "Your Allita verification code is: " . $code;
     try {
-      //Twilio::message($to_number, $message);
+      Twilio::message($to_number, $message);
       return true;
     } catch (\Exception $ex) {
       return false; //enable to send sms
