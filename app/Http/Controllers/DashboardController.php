@@ -17,21 +17,21 @@ class DashboardController extends Controller
 {
   public function __construct()
   {
-    // $this->middleware('allita.auth');
-    // if (env('APP_DEBUG_NO_DEVCO') == 'true') {
-    //     //Auth::onceUsingId(1); // TEST BRIAN
-    //     //Auth::onceUsingId(286); // TEST BRIAN
-    //     Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
+    $this->middleware('allita.auth');
+    if (env('APP_DEBUG_NO_DEVCO') == 'true') {
+        //Auth::onceUsingId(1); // TEST BRIAN
+        //Auth::onceUsingId(286); // TEST BRIAN
+        Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
 
-    //     // this is normally setup upon login
-    //     $current_user = Auth::user();
-    //     if ($current_user->socket_id === null) {
-    //         // create a socket id and store in user table
-    //         $token = str_random(10);
-    //         $current_user->socket_id = $token;
-    //         $current_user->save();
-    //     }
-    // }
+        // this is normally setup upon login
+        $current_user = Auth::user();
+        if ($current_user->socket_id === null) {
+            // create a socket id and store in user table
+            $token = str_random(10);
+            $current_user->socket_id = $token;
+            $current_user->save();
+        }
+    }
   }
 
   public function login()

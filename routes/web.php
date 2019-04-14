@@ -127,6 +127,10 @@
         Route::post('/session/{name?}/{value?}', 'DataController@setSession');
 
         Route::get('/', 'DashboardController@index');
+        Route::get('/home', function () {
+                return redirect('/');
+        });
+
         //Route::get('/', function(){dd(\Auth::user(),session('brian'));});
         Route::get('dashboard/audits', 'DashboardController@audits')->name('dashboard.audits');
         Route::get('dashboard/audits/{audit}/buildings', 'AuditController@buildingsFromAudit')->name('audit.buildings');
