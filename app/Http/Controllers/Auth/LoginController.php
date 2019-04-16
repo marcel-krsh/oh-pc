@@ -77,7 +77,8 @@ class LoginController extends Controller
       $errors = $validator->errors()->all();
       return redirect()->back()->withInput($request->except('password'))->withErrors($validator);
     }
-    if ($user = app('auth')->getProvider()->retrieveByCredentials($request->only('email', 'password'))) {
+    if (Auth::validate($request->only('email', 'password'))) {
+      $user   = User::where('email', $request->email)->first();
       $device = Cookie::get('device_' . $user->id);
       // check device already registered
       $is_device_verifed = Token::where('user_id', $user->id)
@@ -161,6 +162,7 @@ class LoginController extends Controller
       if ($request->has('device_name')) {
         $token->user_device_name = $request->device_name;
       }
+
       $token->save();
       return redirect()->intended('/')->withCookie($cookie);
     }

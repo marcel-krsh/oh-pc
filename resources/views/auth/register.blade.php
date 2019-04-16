@@ -1,6 +1,6 @@
 @extends('layouts.plain-allita')
 @section('content')
-<div class="uk-vertical-align uk-text-center uk-height-1-1">
+<div class="uk-vertical-align uk-text-center">
 	<div class="uk-vertical-align-middle" id="login-panel">
 		<h2>JOIN THE MISSION</h2>
 		<form class="uk-panel uk-panel-box uk-form" role="form" method="POST" action="{{ url('/register-user') }}">

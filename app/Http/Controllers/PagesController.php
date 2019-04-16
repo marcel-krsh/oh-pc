@@ -40,16 +40,16 @@ class PagesController extends Controller
 {
   public function __construct()
   {
-    Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
+    // Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
 
-    // this is normally setup upon login
-    $current_user = Auth::user();
-    if (null === $current_user->socket_id) {
-      // create a socket id and store in user table
-      $token                   = str_random(10);
-      $current_user->socket_id = $token;
-      $current_user->save();
-    }
+    // // this is normally setup upon login
+    // $current_user = Auth::user();
+    // if (null === $current_user->socket_id) {
+    //   // create a socket id and store in user table
+    //   $token                   = str_random(10);
+    //   $current_user->socket_id = $token;
+    //   $current_user->save();
+    // }
   }
 
   public function parcel_next_step(Parcel $parcel)

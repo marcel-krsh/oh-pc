@@ -19,25 +19,25 @@
 	<link rel="stylesheet" href="/css/auto-complete.css">
 	<style type="text/css">
 		#plain-main-window {
-	    max-width: 1450px;
-	    min-height:80vh;
-	    background-color: white;
-	    -webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
-	    -moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
-	    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
-	    margin-left: auto;
-	    margin-right: auto;
-	    padding-top: 78px;
-	    padding-left: 15px;
-	    padding-right: 15px;
-	    padding-bottom: 40px;
-	    margin-bottom: 15px;
-	}
+			max-width: 1450px;
+			min-height:80vh;
+			background-color: white;
+			-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+			-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+			box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+			margin-left: auto;
+			margin-right: auto;
+			padding-top: 78px;
+			padding-left: 15px;
+			padding-right: 15px;
+			padding-bottom: 40px;
+			margin-bottom: 15px;
+		}
 	</style>
 	<script>
 		window.Laravel = <?php echo json_encode([
-			'csrfToken' => csrf_token(),
-			]); ?>
+  'csrfToken' => csrf_token(),
+]); ?>
 		</script>
 		<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js"></script>
 		<script src="/js/jquery.js"></script>
@@ -56,27 +56,21 @@
 	</head>
 	<body >
 		<!-- BEGIN STICKY HEADER -->
-		<stickynav>
-			<div style="width:100%; max-width:1450px; margin:auto; padding:0,35px" class="no-print">
-				<div style="margin-top:2px;">
-					<div class="uk-grid " >
-						<div class="uk-width-1-1">
-							<p align="center"><img src="{{url('/Allita-Blight-Icon.png')}}" width="50" height="48"></p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</stickynav>
+
 		<!-- END STICKY HEADER -->
 		<a name="top"></a>
 		<!-- MAIN VIEW -->
 		<div class="uk-container uk-align-center">
 			<div class="uk-grid uk-grid-collapse">
-				<div id="plain-main-window" class="uk-width-1-1">
+				<div id="plain-main-window" class="uk-width-1-1" style="padding-top:20px">
+					<div class="uk-grid " >
+						<div class="uk-width-1-1">
+							<a href="{{ url('/') }}"><img class="uk-align-center" src="{{url('/Allita-Blight-Icon.png')}}" width="70" height="48"></a>
+						</div>
+					</div>
 					@yield('content')
 				</div>
 			</div>
-
 		</div>
 		<div class="uk-width-1-1 uk-margin-large-bottom"><p class="uk-text-center uk-dark uk-text-small uk-light">Powered by <a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light">Allita</a> for <a href="http://ohiohome.org" class="uk-link-muted uk-dark uk-light" target="_blank">Allita Program Compliance:</a> &copy;2018 — 2019.</p></div>
 	</div>
