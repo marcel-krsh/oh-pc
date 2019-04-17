@@ -533,7 +533,7 @@ class ReportsController extends Controller
                 $report->lead_id = $audit->lead_user_id;
                 $report->project_id = $audit->project_id;
                 $report->version = 1;
-                $report->crr_approval_type_id = 8; //draft
+                $report->crr_approval_type_id = 1; //draft
                 $report->from_template_id = $template->id;
                 $report->last_updated_by = Auth::user()->id;
                 $report->created_by = Auth::user()->id;
@@ -654,7 +654,7 @@ class ReportsController extends Controller
             //dd($request->input('template_id'), $request->input('audit_id'));
             $template = CrrReport::find($request->input('template_id'));
             if(!is_null($template)){
-                if($template->id == 3 ||$template->id == 5 || $template->id == 6  || $template->id == 8 ){
+                if($template->id == 1 ||$template->id == 2 ){
                     // these are document style reports
                     $message = $this->setCrrData($template,null,$request->input('audit_id'));
                 } else {

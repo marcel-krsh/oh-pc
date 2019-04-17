@@ -15,7 +15,7 @@ class AddPinToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
 
-            $table->varchar('pin')->nullable();
+            $table->string('pin')->nullable();
             //
         });
     }

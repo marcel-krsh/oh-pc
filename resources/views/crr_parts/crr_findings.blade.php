@@ -7,8 +7,9 @@
 	@forEach($findings as $f)
 		<?php //dd($f); ?>
 		<div class="uk-width-1-3 crr-blocks" style="border-bottom:1px dotted #3c3c3c; padding-top:12px; padding-bottom: 18px; page-break-inside: avoid;">
-			<div style="min-height: 105px;"><small >
-			{{date('m/d/y', strtotime($f->date_of_finding))}} Finding # {{$f->id}} by {{$f->auditor->name}} <br />
+			<div style="min-height: 105px;">
+			<hr><strong>Finding # {{$f->id}}</strong><hr />
+			{{date('m/d/y', strtotime($f->date_of_finding))}} | AID:{{$f->auditor->id}} <br />
 
 			@if(!is_null($f->building_id))
 				<strong>{{$f->building->building_name}}</strong> <br />
@@ -18,15 +19,15 @@
 			   	@endIf
 			
 			@elseIf(!is_null($f->unit_id))
-				@if(!is_null($f->unit->building->address))
 				{{$f->unit->building->building_name}} <br />
+				@if(!is_null($f->unit->building->address))
 			   	{{$f->unit->building->address->line_1}} {{$f->unit->building->address->line_2}}<br />
 			   	{{$f->unit->building->address->city}}, {{$f->unit->building->address->state}} {{$f->unit->building->address->zip}}
 			   	@endIf
 			   	<br /><strong>Unit {{$f->unit->unit_name}}</strong>
 			@endIf
 
-			</small>
+			
 			</div>
 			<hr class="dashed-hr">
 				<h2>@if($f->finding_type->type == 'nlt')

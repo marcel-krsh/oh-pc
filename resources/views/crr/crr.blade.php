@@ -203,9 +203,10 @@
 	            				<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{$piece->part_id}});" >#{{$pieceCount}}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{$totalComments}} @else 0 @endIf</a> @can('access_auditor')<hr class="dashed-hr uk-margin-bottom"><a class="uk-contrast"><i class="a-pencil" style="font-size: 19px;"></i></a>@endCan
 	            				</div>
 	            				<div class="crr-part-{{$piece->part_id}} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{$piece->part_id}}"></a>
-	            					<?php $pieceData = json_decode($piece->data);?>
+	            					<?php $pieceData = json_decode($piece->data); ?>
 	            					@if($pieceData[0]->type =='free-text')
 	            						{!!$piece->content!!}
+
 	            					@endIf
 	            					@if($pieceData[0]->type == 'blade')
 	            						<?php 

@@ -52,7 +52,7 @@
 	
 	<script type="text/javascript">
 	function showOptions(templateId){
-		if(templateId == 3 || templateId == 5 || templateId == 6 || templateId == 8  ){
+		if(templateId == 1 || templateId == 2  ){
 			$('.audit-list').slideDown();
 			$('#new-report-errors').html('');
 		}else{
@@ -61,7 +61,8 @@
 		}
 	}
 
-	function submitNewReport(id) {
+	function submitNewReport() {
+		console.log('Submitting Request for New Report.');
 		var form = $('#newReportForm');
 
 		data = form.serialize(); 
