@@ -12,6 +12,14 @@ function toggleCritical() {
 
 }
 
+function filterMyAudits(){
+	$.get( '/session/filters/audit-my-audits/', function( data ) {
+       loadTab("dashboard/audits", "1", 0, 0, '', 1);
+    });
+
+
+}
+
 function sortAuditList(sortBy, sortOrder, inputClass='') {
 	// 'audit-sort-by'
     // 'audit-sort-order'

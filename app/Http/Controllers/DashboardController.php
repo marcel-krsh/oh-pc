@@ -124,7 +124,11 @@ class DashboardController extends Controller
             $sort_order = 1;
         }
 
-        $auditFilterMineOnly = 1;
+        if (session()->has('audit-my-audits')) {
+            $auditFilterMineOnly = 1;
+        }else{
+            $auditFilterMineOnly = 0;
+        }
 
         switch ($sort_by) {
             case "audit-sort-lead":
@@ -205,6 +209,16 @@ class DashboardController extends Controller
 
         
         $audits = CachedAudit::with('auditors');
+
+        if($auditFilterMineOnly){
+            $current_user_id = Auth::user()->id;
+            $audits = $audits->where(function ($query) use ( $current_user_id ){
+                            $query->where('lead','=',$current_user_id)
+                                    ->orWhereHas('auditors', function( $query2 ) use ( $current_user_id ){
+                                        $query2->where('user_id', '=', $current_user_id );
+                                    });
+                        });
+        }
 
         // load to list steps filtering and check for session variables
         $steps = GuideStep::where('guide_step_type_id','=',1)->orderBy('order','asc')->get();

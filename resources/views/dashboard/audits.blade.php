@@ -164,13 +164,13 @@
 <div id="audits" class="uk-no-margin-top" uk-grid>
 	<div class="uk-margin-remove-top uk-width-1-1" uk-grid>
 		<div id="auditsfilters" class="uk-width-2-3 uk-margin-top">
-			@if(isset($auditFilterMineOnly))
-			<!-- <div id="audit-filter-mine" class="uk-badge uk-text-right@s badge-filter">
+			@if(isset($auditFilterMineOnly) && $auditFilterMineOnly == 1)
+			<div id="audit-filter-mine" class="uk-badge uk-text-right@s badge-filter">
 				@can('access_auditor')
-				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'no']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>MY AUDITS ONLY</span></a>
+				<a onClick="filterMyAudits();" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>MY AUDITS ONLY</span></a>
 				@else
 				@endcan
-			</div> -->
+			</div>
 			@endif
 			<div id="audit-filter-project" class="uk-badge uk-text-right@s badge-filter" hidden>
 				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'yes']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>FILTER PROJECT</span></a>
@@ -226,7 +226,7 @@
 		            <th class="uk-table-shrink">
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-text-center uk-width-1-1 uk-link">
-			            		<i class="a-avatar-star"></i>
+			            		<i class="a-avatar-star" onclick="filterMyAudits()"></i>
 			            	</div>
 			            	<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LEAD AUDITOR">
 			            		@if($sort_by == 'audit-sort-lead')
