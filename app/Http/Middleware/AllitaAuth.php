@@ -55,6 +55,9 @@ class AllitaAuth
 
         //if(!$request->user()){
         if (env('APP_DEBUG_NO_DEVCO') != 'true') { // allows for local testing
+        		if(Auth::check()) {
+        			return $next($request);
+        		}
             $this->_auth_service = new AuthService;
             $this->_devco_service = new DevcoService;
 
@@ -407,7 +410,8 @@ class AllitaAuth
         // user false // not logged in and/or no credentials
         if ($user == false) {
             //dd('User login failed: '.$failedLoginReason);
-            exit('<script>alert(\'Uh oh, looks like your login expired. Let me take you to DevCo to get you logged in.\'); window.location=\''.$devcoLoginUrl.'?redirect='.urlencode($request->fullUrl())   .'\';</script>');
+            return redirect('login');
+            // exit('<script>alert(\'Uh oh, looks like your login expired. Let me take you to DevCo to get you logged in.\'); window.location=\''.$devcoLoginUrl.'?redirect='.urlencode($request->fullUrl())   .'\';</script>');
         }
 
         // 2fa redirect

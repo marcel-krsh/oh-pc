@@ -40,16 +40,16 @@ class PagesController extends Controller
 {
   public function __construct()
   {
-    // Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
+    Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
 
-    // // this is normally setup upon login
-    // $current_user = Auth::user();
-    // if (null === $current_user->socket_id) {
-    //   // create a socket id and store in user table
-    //   $token                   = str_random(10);
-    //   $current_user->socket_id = $token;
-    //   $current_user->save();
-    // }
+    // this is normally setup upon login
+    $current_user = Auth::user();
+    if (null === $current_user->socket_id) {
+      // create a socket id and store in user table
+      $token                   = str_random(10);
+      $current_user->socket_id = $token;
+      $current_user->save();
+    }
   }
 
   public function parcel_next_step(Parcel $parcel)
@@ -2170,21 +2170,41 @@ class PagesController extends Controller
   public function createUser()
   {
     if (Auth::user()->admin_access()) {
-      $hfa_roles     = Role::where('role_parent_id', '=', 1)->orderBy('role_name', 'ASC')->where('active', '=', 1)->get();
-      $lb_roles      = Role::where('role_parent_id', '=', 2)->orderBy('role_name', 'ASC')->where('active', '=', 1)->get();
       $roles         = Role::active()->orderBy('role_name', 'ASC')->get();
       $organizations = Organization::active()->orderBy('organization_name', 'ASC')->get();
       $states        = State::get();
-      // get entities
-      // $entities = Entity::where('active', '=', 1)->orderBy('entity_name', 'ASC')->get();
-
-      $tuser = Auth::user();
-      //$lc = new LogConverter('user', 'createuser');
-      //$lc->setDesc($tuser->email . ' Started to create a new user ')->setFrom($tuser)->setTo($tuser)->save();
       return view('modals.new-user', compact('roles', 'organizations', 'states'));
     } else {
-      return $tuser = Auth::user();
-      $lc           = new LogConverter('user', 'unauthorized createuser');
+      $tuser = Auth::user();
+      $lc    = new LogConverter('user', 'unauthorized createuser');
+      $lc->setDesc($tuser->email . ' Attempted to create a new user ')->setFrom($tuser)->setTo($tuser)->save();
+      return 'Sorry you do not have access to this page.';
+    }
+  }
+
+  public function editUser($id)
+  {
+    if (Auth::user()->admin_access()) {
+      $roles           = Role::active()->orderBy('role_name', 'ASC')->get();
+      $organizations   = Organization::active()->orderBy('organization_name', 'ASC')->get();
+      $states          = State::get();
+      $user            = User::with('person.allita_phone', 'roles', 'organization_details', 'addresses')->find($id);
+      $default_address = $user->addresses->where('default', 1)->first();
+      if (count($user->roles) > 0) {
+        $user_role = $user->roles->first()->role_id;
+      } else {
+        $user_role = null;
+      }
+      $user_phone = $user->person->allita_phone->area_code . '-' . $user->person->allita_phone->phone_number;
+      if ($user->organization_details) {
+        $user_organization = $user->organization_details->id;
+      } else {
+        $user_organization = null;
+      }
+      return view('modals.edit-user', compact('roles', 'organizations', 'states', 'user', 'user_role', 'user_phone', 'user_organization', 'default_address'));
+    } else {
+      $tuser = Auth::user();
+      $lc    = new LogConverter('user', 'unauthorized createuser');
       $lc->setDesc($tuser->email . ' Attempted to create a new user ')->setFrom($tuser)->setTo($tuser)->save();
       return 'Sorry you do not have access to this page.';
     }
@@ -2274,7 +2294,7 @@ class PagesController extends Controller
         $selected_role     = Role::find($input_role);
         $user->email_token = alpha_numeric_random(60);
         if (in_array($selected_role->role_name, ['Auditor', 'Manager', 'Admin', 'Root'])) {
-          $user->api_token = alpha_numeric_random(1024);
+          //$user->api_token = alpha_numeric_random(1024); //Currently disabled, need to understand more
         }
         $user->person_id = $people->id;
         $user->save();
@@ -2285,7 +2305,7 @@ class PagesController extends Controller
         $address->line_2 = $request->address_line_2;
         $address->city   = $request->city;
         $input_state_id  = $request->state_id;
-        if (is_null($input_state_id)) {
+        if (!is_null($input_state_id)) {
           $state_selected    = State::find($input_state_id);
           $address->state_id = $input_state_id;
           $address->state    = $state_selected->state_acronym;
@@ -2293,6 +2313,7 @@ class PagesController extends Controller
         $address->zip     = $request->zip;
         $address->zip_4   = $request->zip_4;
         $address->user_id = $user->id;
+        $address->default = 1;
         $address->save();
 
         // User role table
@@ -2303,6 +2324,148 @@ class PagesController extends Controller
         //Trigger email to User to create password, save it in HistoricEmail - look into Mail/EmailNotification
         $email_notification = new EmailCreateNewUser($current_user, $user);
         \Mail::to($user->email)->send($email_notification);
+        DB::commit();
+        return 1;
+      } catch (\Exception $e) {
+        DB::rollBack();
+        $data_insert_error = $e->getMessage();
+      }
+      $validator->getMessageBag()->add('error', 'Something went wrong. Try again later or contact Technical Team');
+      return response()->json(['errors' => $validator->errors()->all()]);
+    } else {
+      $tuser = Auth::user();
+      $lc    = new LogConverter('user', 'unauthorized edituser');
+      $lc->setDesc($tuser->email . ' attempted to create user.')->setFrom($tuser)->setTo($tuser)->save();
+      $msg = ['message' => 'Sorry you do not have access to create a user', 'status' => 0];
+      return json_encode($msg);
+    }
+  }
+
+  public function editUserSave($id, Request $request)
+  {
+    if (Auth::user()->admin_access()) {
+      //return $request;
+      $validator = \Validator::make($request->all(), [
+        'first_name'            => 'required|max:255',
+        'last_name'             => 'required|max:255',
+        //'password'              => ['required', 'string', 'min:8', 'confirmed'],
+        'role'                  => 'required',
+        'business_phone_number' => 'required|min:12',
+        'zip'                   => 'nullable|min:5',
+        'state_id'              => 'required',
+      ], [
+        'business_phone_number.min' => 'Enter valid Business Phone Number',
+      ]);
+      if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()->all()]);
+      }
+      $user = User::with('person.allita_phone', 'roles', 'organization_details', 'addresses')->find($id);
+      if ($id != $request->user_id || !($user)) {
+        $validator->getMessageBag()->add('error', 'Something went wrong. Try again later or contact Admin');
+        return response()->json(['errors' => $validator->errors()->all()]);
+      }
+
+      $roles           = Role::active()->orderBy('role_name', 'ASC')->get();
+      $organizations   = Organization::active()->orderBy('organization_name', 'ASC')->get();
+      $states          = State::get();
+      $default_address = $user->addresses->where('default', 1)->first();
+      $user_phone      = $user->person->allita_phone->area_code . '-' . $user->person->allita_phone->phone_number;
+      DB::beginTransaction();
+      try {
+        $current_user = Auth::user();
+        //Check if phone number is changed and if changed, save it
+        $input_phone_number                 = $request->business_phone_number;
+        $split_number                       = explode('-', $input_phone_number);
+        $phone_number_type                  = PhoneNumberType::where('phone_number_type_name', 'Business')->first();
+        $phone_number                       = new PhoneNumber;
+        $phone_number->phone_number_type_id = $phone_number_type->id;
+        $phone_number->area_code            = $split_number[0];
+        $phone_number->phone_number         = $split_number[1] . $split_number[2];
+        $phone_number->extension            = $request->phone_extension;
+        $old_number                         = $user->person->allita_phone->area_code . $user->person->allita_phone->phone_number;
+        $new_number                         = $phone_number->area_code . $phone_number->phone_number;
+        if ($old_number == $new_number && $user->person->allita_phone->extension == $request->extension) {
+          $phone_number = $user->person->allita_phone;
+        } else {
+          $phone_number->save();
+        }
+
+        // Email address table, Editing email is not allowed for now!
+
+        // People table, check if first name, last name and default phone number id are changed, if so, remove old people and new record
+        if ($user->person->last_name != $request->last_name ||
+          $user->person->first_name != $request->first_name ||
+          $user->person->default_phone_number_id != $phone_number->id) {
+          $people                          = $user->person->replicate();
+          $people->last_name               = $request->last_name;
+          $people->first_name              = $request->first_name;
+          $people->default_phone_number_id = $phone_number->id;
+          $people->is_active               = 1;
+          $people->save();
+          $user->person->delete();
+        } else {
+          $people = $user->person;
+        }
+
+        // User table - There are numerous fileds, so just update the user records irrespective of changes made or not
+        $user->name  = $people->first_name . ' ' . $people->last_name;
+        //$user->email = $email_address->email_address;
+        //$user->active        = 1;
+        $user->badge_color  = $request->badge_color;
+        $input_organization = $request->organization;
+        if (!is_null($input_organization)) {
+          $organization_selected = Organization::find($input_organization);
+          $user->organization    = $organization_selected->organization_name;
+          $user->organization_id = $organization_selected->id;
+        }
+        $input_role    = $request->role;
+        $selected_role = Role::find($input_role);
+        if ($input_role > 2) {
+          $user->api_token = $request->api_token;
+        }
+        $user->person_id = $people->id;
+        $user->save();
+
+        // Address table
+        if ($default_address) {
+          $address = $default_address;
+        } else {
+          $address = new Address;
+        }
+        $address->line_1 = $request->address_line_1;
+        $address->line_2 = $request->address_line_2;
+        $address->city   = $request->city;
+        $input_state_id  = $request->state_id;
+        if (!is_null($input_state_id)) {
+          $state_selected    = State::find($input_state_id);
+          $address->state_id = $input_state_id;
+          $address->state    = $state_selected->state_acronym;
+        }
+        $address->zip     = $request->zip;
+        $address->zip_4   = $request->zip_4;
+        $address->user_id = $user->id;
+        $address->default = 1;
+        $address->save();
+
+        // If there is change in role, save that and remove old one
+        if (count($user->roles) > 0) {
+          if ($user->roles->first()->id != $input_role) {
+            $del_user_role = $user->roles->first();
+            $delete_role = UserRole::where('role_id', $del_user_role->role_id)->where('user_id', $del_user_role->user_id)->delete();
+            $insert_role = true;
+          } else {
+            $user_role   = $user->roles->first();
+            $insert_role = false;
+          }
+        } else {
+          $insert_role = true;
+        }
+        if ($insert_role) {
+          $user_role          = new UserRole;
+          $user_role->role_id = $input_role;
+          $user_role->user_id = $user->id;
+          $user_role->save();
+        }
         DB::commit();
         return 1;
       } catch (\Exception $e) {

@@ -351,6 +351,8 @@
 				Route::post('/modals/createuser', 'PagesController@createUserSave')->name('admin.createuser');
 				Route::get('/user/complete-registration/{userId}', 'PagesController@getUserCompleteRegistration');
 				Route::post('/user/complete-registration', 'PagesController@postUserCompleteRegistration')->name('user.complete-registration');
+				Route::get('/modals/edituser/{id}', 'PagesController@editUser');
+				Route::post('/modals/edituser/{id}', 'PagesController@editUserSave');
 
 				Route::post('register-user', 'Auth\RegisterController@postRegister');
 				Route::get('/ip', 'Auth\LoginController@getUserIpAddr');

@@ -1,5 +1,4 @@
 @extends('layouts.plain-allita')
-
 @section('content')
 @if(Auth::guest())
 <div class="uk-vertical-align uk-text-center" uk-scrollspy="target:#login-panel;cls:uk-animation-slide-top-small uk-transform-origin-bottom; delay: 1300">
@@ -52,4 +51,10 @@
 	</div>
 </div>
 @endif
+
+<script type="text/javascript">
+	$( document ).ready(function() {
+	    //alert('Uh oh, looks like your login expired. You can login again or can go to DevCo and login.');
+	});
+</script>
 @endsection

@@ -1,3 +1,15 @@
+<script type="text/javascript">
+  // Auditor(2) and above roles would have API Key
+  // $('#role').change(function() {
+  //   var value = $("#role").val();
+  //   if(value >= 2){
+  //     document.getElementById('api_token_block').style.display='block';
+  //   } else {
+  //     document.getElementById('api_token_block').style.display='none';
+  //     $('#api_token').val('');
+  //   }
+  // });
+</script>
 @if (count($errors) > 0)
 <div class="uk-panel uk-margin-top uk-margin-bottom">
   <ul>
@@ -17,7 +29,7 @@
       <div class="uk-width-1-2">
         <div class="uk-width-1-1">
           <label for="role">Role<span class="uk-text-danger uk-text-bold">*</span> : <br /></label>
-          <select name="role" class="uk-width-1-1 uk-select">
+          <select id="role" name="role" class="uk-width-1-1 uk-select">
             <option value="">Select Role</option>
             @foreach($roles as $role)
             <option value="{{ $role->id }}" >{{ $role->role_name }}</option>
@@ -88,7 +100,7 @@
           <input type="text" class="uk-input uk-width-1-1" name="city" placeholder="Enter City">
         </div>
         <div class="uk-width-1-1 uk-margin-top">
-          <label for="role">State : <br /></label>
+          <label for="role">State* : <br /></label>
           <select name="state_id" class="uk-width-1-1 uk-select">
             <option value="">Select State</option>
             @foreach($states as $state)
@@ -102,6 +114,13 @@
           <input id="zip_4" type="number" class="uk-input uk-width-1-3" name="zip_4" placeholder="xxxx">
         </div>
       </div>
+
+      {{-- <div class="uk-width-1-1" id="api_token_block" style="display: none">
+        <div class="uk-width-1-1 uk-margin-top">
+          <label for="name">API Token :</label>
+          <input type="text" class="uk-input uk-width-1-1" id="api_token" name="api_token" placeholder="API Token">
+        </div>
+      </div> --}}
     </div>
     <div class="uk-grid">
       <div class="uk-width-1-4">
@@ -211,6 +230,7 @@
       'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
     }
   });
+
    var form = $('#userForm');
 
    var data = { };
@@ -237,6 +257,7 @@
       zip: data['zip'],
       zip_4: data['zip_4'],
       phone_extension: data['phone_extension'],
+      api_token: data['api_token'],
       '_token' : '{{ csrf_token() }}'
     },
     success: function(data){
