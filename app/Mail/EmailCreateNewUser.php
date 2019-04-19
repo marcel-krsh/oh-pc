@@ -67,9 +67,9 @@ class EmailCreateNewUser extends Mailable
         "subject" => $this->subject,
         "body"    => $body,
       ]);
-      //$email_saved_in_db->save();
+      $email_saved_in_db->save();
     }
 
-    return $this->view('emails.create_new_user', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'actionText2', 'actionUrl2', 'level2'));
+    return $this->view('emails.create_new_user', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'actionText2', 'actionUrl2', 'level2', 'email_saved_in_db'));
   }
 }

@@ -100,7 +100,7 @@
           <input type="text" class="uk-input uk-width-1-1" name="city" placeholder="Enter City">
         </div>
         <div class="uk-width-1-1 uk-margin-top">
-          <label for="role">State* : <br /></label>
+          <label for="role">State<span class="uk-text-danger uk-text-bold">*</span> : <br /></label>
           <select name="state_id" class="uk-width-1-1 uk-select">
             <option value="">Select State</option>
             @foreach($states as $state)

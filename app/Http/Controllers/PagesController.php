@@ -2169,7 +2169,7 @@ class PagesController extends Controller
 
   public function createUser()
   {
-    if (Auth::user()->admin_access()) {
+    if (Auth::user()->manager_access()) {
       $roles         = Role::active()->orderBy('role_name', 'ASC')->get();
       $organizations = Organization::active()->orderBy('organization_name', 'ASC')->get();
       $states        = State::get();
@@ -2184,7 +2184,7 @@ class PagesController extends Controller
 
   public function editUser($id)
   {
-    if (Auth::user()->admin_access()) {
+    if (Auth::user()->manager_access()) {
       $roles           = Role::active()->orderBy('role_name', 'ASC')->get();
       $organizations   = Organization::active()->orderBy('organization_name', 'ASC')->get();
       $states          = State::get();
@@ -2202,6 +2202,19 @@ class PagesController extends Controller
         $user_organization = null;
       }
       return view('modals.edit-user', compact('roles', 'organizations', 'states', 'user', 'user_role', 'user_phone', 'user_organization', 'default_address'));
+    } else {
+      $tuser = Auth::user();
+      $lc    = new LogConverter('user', 'unauthorized createuser');
+      $lc->setDesc($tuser->email . ' Attempted to create a new user ')->setFrom($tuser)->setTo($tuser)->save();
+      return 'Sorry you do not have access to this page.';
+    }
+  }
+
+  public function resetPassword($id)
+  {
+    if (Auth::user()->manager_access()) {
+      $user = User::find($id);
+      return view('modals.reset-password', compact('user'));
     } else {
       $tuser = Auth::user();
       $lc    = new LogConverter('user', 'unauthorized createuser');
@@ -2230,8 +2243,7 @@ class PagesController extends Controller
    */
   public function createUserSave(Request $request)
   {
-    if (Auth::user()->admin_access()) {
-      //return $request;
+    if (Auth::user()->manager_access()) {
       $validator = \Validator::make($request->all(), [
         'first_name'            => 'required|max:255',
         'last_name'             => 'required|max:255',
@@ -2239,7 +2251,7 @@ class PagesController extends Controller
         //'password'              => ['required', 'string', 'min:8', 'confirmed'],
         'role'                  => 'required',
         'business_phone_number' => 'required|min:12',
-        'zip'                   => 'nullable|min:5',
+        'zip'                   => 'nullable|min:5|max:5',
         'state_id'              => 'required',
       ], [
         'business_phone_number.min' => 'Enter valid Business Phone Number',
@@ -2325,6 +2337,7 @@ class PagesController extends Controller
         $email_notification = new EmailCreateNewUser($current_user, $user);
         \Mail::to($user->email)->send($email_notification);
         DB::commit();
+        //$some = $email_notification->render(); // For some reason, email histories was not saving until this is being rendered
         return 1;
       } catch (\Exception $e) {
         DB::rollBack();
@@ -2343,15 +2356,14 @@ class PagesController extends Controller
 
   public function editUserSave($id, Request $request)
   {
-    if (Auth::user()->admin_access()) {
-      //return $request;
+    if (Auth::user()->manager_access()) {
       $validator = \Validator::make($request->all(), [
         'first_name'            => 'required|max:255',
         'last_name'             => 'required|max:255',
         //'password'              => ['required', 'string', 'min:8', 'confirmed'],
         'role'                  => 'required',
         'business_phone_number' => 'required|min:12',
-        'zip'                   => 'nullable|min:5',
+        'zip'                   => 'nullable|min:5|max:5',
         'state_id'              => 'required',
       ], [
         'business_phone_number.min' => 'Enter valid Business Phone Number',
@@ -2408,7 +2420,7 @@ class PagesController extends Controller
         }
 
         // User table - There are numerous fileds, so just update the user records irrespective of changes made or not
-        $user->name  = $people->first_name . ' ' . $people->last_name;
+        $user->name = $people->first_name . ' ' . $people->last_name;
         //$user->email = $email_address->email_address;
         //$user->active        = 1;
         $user->badge_color  = $request->badge_color;
@@ -2451,8 +2463,8 @@ class PagesController extends Controller
         if (count($user->roles) > 0) {
           if ($user->roles->first()->id != $input_role) {
             $del_user_role = $user->roles->first();
-            $delete_role = UserRole::where('role_id', $del_user_role->role_id)->where('user_id', $del_user_role->user_id)->delete();
-            $insert_role = true;
+            $delete_role   = UserRole::where('role_id', $del_user_role->role_id)->where('user_id', $del_user_role->user_id)->delete();
+            $insert_role   = true;
           } else {
             $user_role   = $user->roles->first();
             $insert_role = false;
@@ -2466,6 +2478,43 @@ class PagesController extends Controller
           $user_role->user_id = $user->id;
           $user_role->save();
         }
+        DB::commit();
+        return 1;
+      } catch (\Exception $e) {
+        DB::rollBack();
+        $data_insert_error = $e->getMessage();
+      }
+      $validator->getMessageBag()->add('error', 'Something went wrong. Try again later or contact Technical Team');
+      return response()->json(['errors' => $validator->errors()->all()]);
+    } else {
+      $tuser = Auth::user();
+      $lc    = new LogConverter('user', 'unauthorized edituser');
+      $lc->setDesc($tuser->email . ' attempted to create user.')->setFrom($tuser)->setTo($tuser)->save();
+      $msg = ['message' => 'Sorry you do not have access to create a user', 'status' => 0];
+      return json_encode($msg);
+    }
+  }
+
+  public function resetPasswordSave($id, Request $request)
+  {
+    if (Auth::user()->manager_access()) {
+      $validator = \Validator::make($request->all(), [
+        'password' => ['required', 'string', 'min:8', 'confirmed'],
+      ]);
+      if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()->all()]);
+      }
+      $user = User::find($id);
+      if (!($user)) {
+        $validator->getMessageBag()->add('error', 'Something went wrong. Try again later or contact Admin');
+        return response()->json(['errors' => $validator->errors()->all()]);
+      }
+      DB::beginTransaction();
+      try {
+        $current_user = Auth::user();
+        // User table - Password reset
+        $user->password = bcrypt($request->password);
+        $user->save();
         DB::commit();
         return 1;
       } catch (\Exception $e) {

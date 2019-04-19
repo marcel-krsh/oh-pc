@@ -53,8 +53,14 @@
  				<td><small><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></small></td>
 				{{--  				<td class="use-hand-cursor" uk-tooltip="title:CLICK TO SET ROLES" onclick="setRoles({{ $user->id }})"><small>@if($user->role_name){{ $user->role_name }}@else <i class="a-circle-plus"></i>@endif</small></td>
 				 --}}
-				 <td class="use-hand-cursor" data-uk-tooltip title="Edit User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editUser({{ $user->id }})"><small><i class="a-edit"></i>
+				 <td class="use-hand-cursor">
+				 	<span data-uk-tooltip title="Edit User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editUser({{ $user->id }})"><small><i class="a-edit"></i></small>
+				 	</span>
+				 	<span data-uk-tooltip title="Reset Password <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editPassword({{ $user->id }})"><small><i class="a-password"></i></small>
+				 	</span>
 				 </td>
+				 {{-- <td class="use-hand-cursor" data-uk-tooltip title="Edit User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editUser({{ $user->id }})"><small><i class="a-edit"></i></small>
+				 </td> --}}
 			</tr>
 			@endforeach
 		</tbody>
@@ -91,6 +97,10 @@
 
 	function editUser(id) {
 		dynamicModalLoad('edituser/'+id);
+	}
+
+	function editPassword(id) {
+		dynamicModalLoad('resetpassword/'+id);
 	}
 
     // process search

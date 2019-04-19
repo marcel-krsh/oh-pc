@@ -353,6 +353,9 @@
 				Route::post('/user/complete-registration', 'PagesController@postUserCompleteRegistration')->name('user.complete-registration');
 				Route::get('/modals/edituser/{id}', 'PagesController@editUser');
 				Route::post('/modals/edituser/{id}', 'PagesController@editUserSave');
+				Route::get('/modals/resetpassword/{id}', 'PagesController@resetPassword');
+				Route::post('/modals/resetpassword/{id}', 'PagesController@resetPasswordSave');
+
 
 				Route::post('register-user', 'Auth\RegisterController@postRegister');
 				Route::get('/ip', 'Auth\LoginController@getUserIpAddr');
