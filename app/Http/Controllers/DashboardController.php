@@ -124,12 +124,6 @@ class DashboardController extends Controller
             $sort_order = 1;
         }
 
-        if (session()->has('audit-my-audits')) {
-            $auditFilterMineOnly = 1;
-        }else{
-            $auditFilterMineOnly = 0;
-        }
-
         switch ($sort_by) {
             case "audit-sort-lead":
                 $sort_by_field = 'lead';
@@ -210,7 +204,8 @@ class DashboardController extends Controller
         
         $audits = CachedAudit::with('auditors');
 
-        if($auditFilterMineOnly){
+        if(session()->has('audit-my-audits')) {
+            $auditFilterMineOnly = 1;
             $current_user_id = Auth::user()->id;
             $audits = $audits->where(function ($query) use ( $current_user_id ){
                             $query->where('lead','=',$current_user_id)
@@ -218,6 +213,40 @@ class DashboardController extends Controller
                                         $query2->where('user_id', '=', $current_user_id );
                                     });
                         });
+        }else{
+            $auditFilterMineOnly = 0;
+        }
+
+        if(session()->has('filter-search-project')){
+            $auditFilterProjectId = session('filter-search-project');
+            $audits = $audits->where(function ($query) use ( $auditFilterProjectId ){
+                            $query->where('audit_id','like', '%'.$auditFilterProjectId.'%')
+                                    ->orWhere('project_ref','like', '%'.$auditFilterProjectId.'%');
+                        });
+        }else{
+            $auditFilterProjectId = 0;
+        }
+
+        if(session()->has('filter-search-pm') && session('filter-search-pm') != ''){
+            $auditFilterProjectName = session('filter-search-pm');
+            $audits = $audits->where(function ($query) use ( $auditFilterProjectName ){
+                            $query->where('title','like', '%'.$auditFilterProjectName.'%')
+                                    ->orWhere('pm','like', '%'.$auditFilterProjectName.'%');
+                        });
+        }else{
+            $auditFilterProjectName = '';
+        }
+
+        if(session()->has('filter-search-address') && session('filter-search-address') != ''){
+            $auditFilterAddress = session('filter-search-address');
+            $audits = $audits->where(function ($query) use ( $auditFilterAddress ){
+                            $query->where('address','like', '%'.$auditFilterAddress.'%')
+                                    ->orWhere('city','like', '%'.$auditFilterAddress.'%')
+                                    ->orWhere('state','like', '%'.$auditFilterAddress.'%')
+                                    ->orWhere('zip','like', '%'.$auditFilterAddress.'%');
+                        });
+        }else{
+            $auditFilterAddress = '';
         }
 
         // load to list steps filtering and check for session variables
@@ -373,7 +402,7 @@ class DashboardController extends Controller
         if ($page>0) {
             return response()->json($data);
         } else {
-            return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'audits', 'sort_by', 'sort_order', 'steps'));
+            return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'audits', 'sort_by', 'sort_order', 'steps'));
         }
     }
 

@@ -167,20 +167,26 @@
 			@if(isset($auditFilterMineOnly) && $auditFilterMineOnly == 1)
 			<div id="audit-filter-mine" class="uk-badge uk-text-right@s badge-filter">
 				@can('access_auditor')
-				<a onClick="filterMyAudits();" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>MY AUDITS ONLY</span></a>
+				<a onClick="filterAudits('audit-my-audits');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>MY AUDITS ONLY</span></a>
 				@else
 				@endcan
 			</div>
 			@endif
-			<div id="audit-filter-project" class="uk-badge uk-text-right@s badge-filter" hidden>
-				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'yes']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>FILTER PROJECT</span></a>
+			@if(isset($auditFilterProjectId) && $auditFilterProjectId != 0)
+			<div id="audit-filter-project" class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('filter-search-project');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>PROJECT/AUDIT ID "{{$auditFilterProjectId}}"</span></a>
 			</div>
-			<div id="audit-filter-name" class="uk-badge uk-text-right@s badge-filter" hidden>
-				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'yes']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>FILTER PROJECT NAME</span></a>
+			@endif
+			@if(isset($auditFilterProjectName) && $auditFilterProjectName != '')
+			<div id="audit-filter-name" class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('filter-search-pm', '');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>PROJECT/PM NAME "{{$auditFilterProjectName}}"</span></a>
 			</div>
-			<div id="audit-filter-address" class="uk-badge uk-text-right@s badge-filter" hidden>
-				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'yes']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>FILTER ADDRESS</span></a>
+			@endif
+			@if(isset($auditFilterAddress) && $auditFilterAddress != '')
+			<div id="audit-filter-address" class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('filter-search-address', '');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>ADDRESS "{{$auditFilterAddress}}"</span></a>
 			</div>
+			@endif
 			<div id="audit-filter-date" class="uk-badge uk-text-right@s badge-filter" hidden>
 				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'yes']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>FILTER HERE</span></a>
 			</div>
@@ -226,7 +232,7 @@
 		            <th class="uk-table-shrink">
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-text-center uk-width-1-1 uk-link">
-			            		<i class="a-avatar-star" onclick="filterMyAudits()"></i>
+			            		<i class="a-avatar-star" onclick="filterAudits('audit-my-audits')"></i>
 			            	</div>
 			            	<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LEAD AUDITOR">
 			            		@if($sort_by == 'audit-sort-lead')
@@ -240,13 +246,13 @@
 		            <th class="uk-table-small" style="width:130px;">
 		            	<div uk-grid>
 		            		<div class="filter-box uk-width-1-1">
-								<input id="filter-by-project" class="filter-box filter-search-project-input" type="text" placeholder="PROJECT & AUDIT" onkeyup="filterAuditList(this, 'filter-search-project')" value="@if(session()->has('filter-search-project-input')){{session('filter-search-project-input')}}@endif">
+								<input id="filter-by-project" class="filter-box filter-search-project-input" type="text" placeholder="PROJECT & AUDIT" value="@if(session()->has('filter-search-project')){{session('filter-search-project')}}@endif">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROJECT ID">
 			            		@if($sort_by == 'audit-sort-project')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-project', @php echo 1-$sort_order; @endphp, 'filter-search-project-input');"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-project', @php echo 1-$sort_order; @endphp, 'filter-search-project');"></a>
 			            		@else
-			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-project', 1, 'filter-search-project-input');"></a>
+			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-project', 1, 'filter-search-project');"></a>
 			            		@endif
 							</span> 
 							<div class="uk-dropdown" aria-expanded="false"></div>
@@ -255,7 +261,7 @@
 		            <th>
 		            	<div uk-grid>
 			            	<div class="filter-box uk-width-1-1">
-								<input id="filter-by-name" class="filter-box filter-search-pm-input" type="text" placeholder="PROJECT / PM NAME" onkeyup="filterAuditList(this, 'filter-search-pm')" value="@if(session()->has('filter-search-pm-input')){{session('filter-search-pm-input')}}@endif">
+								<input id="filter-by-name" class="filter-box filter-search-pm-input" type="text" placeholder="PROJECT / PM NAME" value="@if(session()->has('filter-search-pm')){{session('filter-search-pm')}}@endif">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROJECT NAME">
 			            		@if($sort_by == 'audit-sort-project-name')
@@ -277,7 +283,7 @@
 		            <th >
 		            	<div uk-grid>
 			            	<div class="filter-box uk-width-1-1">
-								<input id="filter-by-address" class="filter-box filter-search-address-input" type="text" placeholder="PRIMARY ADDRESS" onkeyup="filterAuditList(this, 'filter-search-address')" value="@if(session()->has('filter-search-address-input')){{session('filter-search-address-input')}}@endif">
+								<input id="filter-by-address" class="filter-box filter-search-address-input" type="text" placeholder="PRIMARY ADDRESS" value="@if(session()->has('filter-search-address')){{session('filter-search-address')}}@endif">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY STREET ADDRESS">
 			            		@if($sort_by == 'audit-sort-address')
@@ -729,6 +735,27 @@ The following div is defined in this particular tab and pushed to the main layou
 			}
 	    });
 	    @endcan
+
+	    $("#filter-by-project").keypress(function(event) {
+		    if (event.which == 13) {
+		        event.preventDefault();
+		        filterAuditList(this, 'filter-search-project')
+		    }
+		});
+
+		$("#filter-by-name").keypress(function(event) {
+		    if (event.which == 13) {
+		        event.preventDefault();
+		        filterAuditList(this, 'filter-search-pm')
+		    }
+		});
+
+		$("#filter-by-address").keypress(function(event) {
+		    if (event.which == 13) {
+		        event.preventDefault();
+		        filterAuditList(this, 'filter-search-address')
+		    }
+		});
     });
 
 	@can('access_auditor')
