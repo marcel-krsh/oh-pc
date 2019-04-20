@@ -187,6 +187,15 @@
 				<a onClick="filterAudits('filter-search-address', '');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>ADDRESS "{{$auditFilterAddress}}"</span></a>
 			</div>
 			@endif
+
+			@foreach($steps as $step)
+				@if(session($step->session_name) == 1)
+				<div id="audit-filter-step" class="uk-badge uk-text-right@s badge-filter">
+					<a onClick="filterAudits('{{$step->session_name}}', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>STEP "{{$step->name}}"</span></a>
+				</div>
+				@endif
+			@endforeach
+
 			<div id="audit-filter-date" class="uk-badge uk-text-right@s badge-filter" hidden>
 				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'yes']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>FILTER HERE</span></a>
 			</div>
