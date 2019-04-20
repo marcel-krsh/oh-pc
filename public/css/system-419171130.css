@@ -1320,6 +1320,12 @@ margin-top:10px;
 }
 #auditstable table td {
     padding: 8px 0 0px;
+    position: relative;
+}
+#auditstable table td span[id^='audit-rid-'] {
+  position: absolute !important;
+    top: 37px !important;
+    left: 10px !important;
 }
 #auditstable table td h3 {
   padding: 0;
