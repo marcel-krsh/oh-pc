@@ -2620,6 +2620,7 @@ class PagesController extends Controller
         $user->deactivate();
         DB::commit();
         Auth::setUser($current_user);
+        Auth::loginUsingId($current_user->id);
         return 1;
       } catch (\Exception $e) {
         DB::rollBack();
