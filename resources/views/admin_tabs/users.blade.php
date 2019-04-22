@@ -9,7 +9,7 @@
  	</div>
  	<hr>
  	{{ $users->links() }} <a onClick="dynamicModalLoad('createuser');" class="uk-badge uk-margin-top uk-badge-success"><i class="a-circle-plus"></i> CREATE USER</a> <a href="#userbottom" id="user-scroll-to-top" class="uk-badge uk-overlay-background uk-margin-top"><i class="a-circle-down"></i> BOTTOM OF LIST</a>
- 	<table class="uk-table uk-table-hover uk-table-striped uk-table-condensed small-table-text">
+ 	<table class="uk-table uk-table-hover uk-table-striped uk-overflow-container small-table-text">
  		<thead>
  			<th>
  				<small>NAME</small>
@@ -32,7 +32,7 @@
  		</thead>
  		<tbody>
  			@foreach($users as $user)
- 			<tr>
+ 			<tr class="{{ !$user->active ? 'uk-text-muted' : '' }}">
  				<td><small>{{ $user->first_name }} {{ $user->last_name }}</small></td>
  				<td><small>@if($user->organization_name)
  					{{ $user->organization_details->organization_name }}@else NA @endif</small></td>
@@ -50,14 +50,21 @@
  					{{ $user->organization_details->phone_number_formatted() }}
  					@endif
  				@endif</small></td>
- 				<td><small><a href="mailto:{{ $user->email }}">{{ $user->email }}</a></small></td>
+ 				<td><small><a class="{{ !$user->active ? 'uk-text-muted' : '' }}" href="mailto:{{ $user->email }}">{{ $user->email }}</a></small></td>
 				{{--  				<td class="use-hand-cursor" uk-tooltip="title:CLICK TO SET ROLES" onclick="setRoles({{ $user->id }})"><small>@if($user->role_name){{ $user->role_name }}@else <i class="a-circle-plus"></i>@endif</small></td>
 				 --}}
 				 <td class="use-hand-cursor">
-				 	<span data-uk-tooltip title="Edit User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editUser({{ $user->id }})"><small><i class="a-edit"></i></small>
+				 	<span data-uk-tooltip title="Edit User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editUser({{ $user->id }})"><small><i class="a-edit uk-text-primary"></i></small>
 				 	</span>
-				 	<span data-uk-tooltip title="Reset Password <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editPassword({{ $user->id }})"><small><i class="a-password"></i></small>
+				 	<span data-uk-tooltip title="Reset Password <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="resetPassword({{ $user->id }})"><small><i class="a-password uk-text-warning"></i></small>
 				 	</span>
+				 	@if($user->active)
+				 	<span data-uk-tooltip title="Deactivate User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="deactivateUser({{ $user->id }})"><small><i class="a-avatar-minus uk-text-danger"></i></small>
+				 	</span>
+				 	@else
+				 	<span data-uk-tooltip title="Activate User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="activateUser({{ $user->id }})"><small><i class="a-avatar-plus_1 uk-text-success"></i></small>
+				 	</span>
+				 	@endif
 				 </td>
 				 {{-- <td class="use-hand-cursor" data-uk-tooltip title="Edit User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editUser({{ $user->id }})"><small><i class="a-edit"></i></small>
 				 </td> --}}
@@ -99,8 +106,16 @@
 		dynamicModalLoad('edituser/'+id);
 	}
 
-	function editPassword(id) {
+	function resetPassword(id) {
 		dynamicModalLoad('resetpassword/'+id);
+	}
+
+	function deactivateUser(id) {
+		dynamicModalLoad('deactivateuser/'+id);
+	}
+
+	function activateUser(id) {
+		dynamicModalLoad('activateuser/'+id);
 	}
 
     // process search

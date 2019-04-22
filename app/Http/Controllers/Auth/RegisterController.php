@@ -106,6 +106,7 @@ class RegisterController extends Controller
       $user->email_token = alpha_numeric_random(60);
       $user->person_id   = $people->id;
       $user->save();
+      $user->activate();
 
       // User role table
       $user_role          = new UserRole;

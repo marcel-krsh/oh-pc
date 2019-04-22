@@ -355,6 +355,10 @@
 				Route::post('/modals/edituser/{id}', 'PagesController@editUserSave');
 				Route::get('/modals/resetpassword/{id}', 'PagesController@resetPassword');
 				Route::post('/modals/resetpassword/{id}', 'PagesController@resetPasswordSave');
+				Route::get('/modals/deactivateuser/{id}', 'PagesController@deactivateUser');
+				Route::post('/modals/deactivateuser/{id}', 'PagesController@deactivateUserSave');
+				Route::get('/modals/activateuser/{id}', 'PagesController@activateUser');
+				Route::post('/modals/activateuser/{id}', 'PagesController@activateUserSave');
 
 
 				Route::post('register-user', 'Auth\RegisterController@postRegister');

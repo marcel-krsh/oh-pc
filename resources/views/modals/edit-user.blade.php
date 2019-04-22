@@ -1,6 +1,5 @@
 <script type="text/javascript">
   // Auditor(2) and above roles would have API Key
-
   $('#role').change(function() {
   	var value = $("#role").val();
   	if(value >= 2){
@@ -10,7 +9,6 @@
   		$('#api_token').val('');
   	}
   });
-
 </script>
 
 @if (count($errors) > 0)
@@ -23,7 +21,7 @@
 	</div>
 @endif
 <div id="dynamic-modal-content">
-	<h3 class="uk-text-uppercase uk-text-emphasis">Edit User: {{ $user->name }}</h3>
+	<h3 class="uk-text-uppercase">Edit User: <span class="uk-text-primary">{{ $user->name }}</span></h3>
 	<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
 	<div class="alert alert-danger uk-text-danger" style="display:none"></div>
 	<form id="userForm" action="{{ url('modals/edituser', $user->id) }}" method="post" role="userForm">
@@ -103,7 +101,7 @@
       		<input value="{{ ($default_address) ? $default_address->city : '' }}" type="text" class="uk-input uk-width-1-1" name="city" placeholder="Enter City">
       	</div>
       	<div class="uk-width-1-1 uk-margin-top">
-      		<label for="role">State<span class="uk-text-danger uk-text-bold">*</span> : <br /></label>
+      		<label for="role">State : <br /></label>
       		<select name="state_id" class="uk-width-1-1 uk-select">
       			<option value="">Select State</option>
       			@foreach($states as $state)

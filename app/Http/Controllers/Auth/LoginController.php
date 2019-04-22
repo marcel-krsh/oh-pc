@@ -80,6 +80,10 @@ class LoginController extends Controller
     if (Auth::validate($request->only('email', 'password'))) {
       $user   = User::where('email', $request->email)->first();
       $device = Cookie::get('device_' . $user->id);
+      if(!$user->isActive()) {
+      	$validator->getMessageBag()->add('error', 'User is not active');
+    		return redirect()->back()->withInput($request->except('password'))->withErrors($validator);
+      }
       // check device already registered
       $is_device_verifed = Token::where('user_id', $user->id)
         ->where('used', 1)
@@ -87,7 +91,7 @@ class LoginController extends Controller
         ->first();
       //if true login with id & return to intended url else create toke
       if ($is_device_verifed) {
-        Auth::loginUsingId($user->id, 1);
+        $user = Auth::loginUsingId($user->id, 1);
         $token          = new Token;
         $token->user_id = $user->id;
         $token->save();
@@ -152,7 +156,7 @@ class LoginController extends Controller
       //$token->device = $request->device;
       $user = Auth::user();
       if (0 == $user->verified) {
-        $user->activate();
+        //$user->activate();
         $user->verify();
         $user->save();
       }
