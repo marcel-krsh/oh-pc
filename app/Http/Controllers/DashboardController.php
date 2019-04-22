@@ -274,27 +274,6 @@ class DashboardController extends Controller
                             
                         });
         }
-        
-        // if(session()->has('compliance-status-rr') && session('compliance-status-rr') != 0){
-        //     $auditFilterComplianceRR = session('compliance-status-rr');
-        //     $audits = $audits->where('audit_compliance_status_text', '=', 'UNITS REQUIRE REVIEW');
-        // }else{
-        //     $auditFilterComplianceRR = 0;
-        // }
-
-        // if(session()->has('compliance-status-nc') && session('compliance-status-nc') != 0){
-        //     $auditFilterComplianceNC = session('compliance-status-nc');
-        //     $audits = $audits->where('audit_compliance_status_text', '=', 'AUDIT NOT COMPLIANT');
-        // }else{
-        //     $auditFilterComplianceNC = 0;
-        // }
-
-        // if(session()->has('compliance-status-c') && session('compliance-status-c') != 0){
-        //     $auditFilterComplianceC = session('compliance-status-c');
-        //     $audits = $audits->where('audit_compliance_status_text', '=', 'AUDIT COMPLIANT');
-        // }else{
-        //     $auditFilterComplianceC = 0;
-        // }
 
         // load to list steps filtering and check for session variables
         $steps = GuideStep::where('guide_step_type_id','=',1)->orderBy('order','asc')->get();
@@ -305,11 +284,52 @@ class DashboardController extends Controller
                 $audits = $audits->orWhere('step_id','=',$step->id);
             }
         }
+
         $audits = $audits->orderBy($sort_by_field, $sort_order_query)->get();
 
         $data = [];
 
+        $audits_to_remove = array(); // ids of audits to remove after filtering by auditor
+        $auditors_array = array();
+        $auditor_ids = array(); // to prevent duplicates when building the auditors list
+            
         foreach ($audits as $audit) {
+            // list all auditors based on previous filters
+            if($audit->auditors){
+                $keep_audit_based_on_auditor_filter = 0;
+                foreach($audit->auditors as $auditor){
+                    if(!in_array($auditor->user_id, $auditor_ids)){
+                        $auditor_ids[] = $auditor->user_id;
+                        $auditors_array[] = [ "user_id" => $auditor->user_id, "name" => strtoupper($auditor->user->full_name())];
+                    }
+
+                    if(session()->has('assignment-auditor') && is_array(session('assignment-auditor'))){
+                        // there is a filter to select audits with specific auditors
+                        if(in_array($auditor->user_id, session('assignment-auditor'))){
+                            // the auditor is in this audit, we keep it
+                            $keep_audit_based_on_auditor_filter = 1; 
+                        }
+                    }else{
+                        // no auditor filters, we keep all audits
+                        $keep_audit_based_on_auditor_filter = 1; 
+                    }
+
+                }
+
+                if(!$keep_audit_based_on_auditor_filter){
+                    $audits_to_remove[] = $audit->id;
+                }
+            }
+        }
+
+        $filtered_audits = $audits->reject(function ($value, $key) use ($audits_to_remove) {
+            return in_array($value->id, $audits_to_remove);
+        });
+
+        $audits = $filtered_audits->all();
+
+        foreach ($audits as $audit) {
+
             if ($audit['status'] == 'critical' && Auth::user()->auditor_access()) {
                 $notcritical = 'critical';
             } else {
@@ -446,10 +466,17 @@ class DashboardController extends Controller
             ];
         }
 
+        $auditor_names = array();
+        foreach ($auditors_array as $key => $row)
+        {
+            $auditor_names[$key] = $row['name'];
+        }
+        array_multisort($auditor_names, SORT_ASC, $auditors_array);
+
         if ($page>0) {
             return response()->json($data);
         } else {
-            return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceALL','auditFilterComplianceRR','auditFilterComplianceNC','auditFilterComplianceC', 'audits', 'sort_by', 'sort_order', 'steps'));
+            return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceALL','auditFilterComplianceRR','auditFilterComplianceNC','auditFilterComplianceC', 'auditors_array', 'audits', 'sort_by', 'sort_order', 'steps'));
         }
     }
 

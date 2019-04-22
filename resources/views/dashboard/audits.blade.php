@@ -250,6 +250,38 @@
 				</div>
 			@endif
 			@endif
+
+			@if(is_array(session('assignment-auditor')))
+			@php
+			$assigned_auditors = '';
+			$assigned_auditors_hover_text = '';
+			$counter = 0;
+			foreach($auditors_array as $auditor){
+				if(in_array($auditor['user_id'], session('assignment-auditor'))){
+				 	$counter++;
+				 	if($counter < 3){
+				 		if($assigned_auditors == ''){
+							$assigned_auditors = $auditor['name'];
+						}else{
+							$assigned_auditors = $assigned_auditors.", ".$auditor['name'];
+						}
+				 	}
+				 	if($assigned_auditors_hover_text == ''){
+						$assigned_auditors_hover_text = $auditor['name'];
+					}else{
+						$assigned_auditors_hover_text = $assigned_auditors_hover_text.", ".$auditor['name'];
+					}
+				}
+			}
+			if($counter > 2){
+				$counter = $counter - 2;
+				$assigned_auditors = $assigned_auditors." +".$counter." MORE";
+			}
+			@endphp
+			<div id="audit-filter-address" class="uk-badge uk-text-right@s badge-filter" uk-tooltip="title:{{$assigned_auditors_hover_text}}">
+				<a onClick="filterAudits('assignment-auditor', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>@if(count(session('assignment-auditor')) > 1)AUDITORS ASSIGNED: @else AUDITOR ASSIGNED:@endif {{$assigned_auditors}}</span></a>
+			</div>
+			@endif
 		</div>
 	</div>
 
@@ -346,7 +378,29 @@
 								</span>
 								@can('access_auditor')
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
-									<i class="a-avatar-home"></i> / <i class="a-home-2"></i>
+									<i id="assignmentselectionbutton" class="a-avatar-home"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+										<form id="audit_assignment_selection" method="post">
+				            				<fieldset class="uk-fieldset">
+				            					<div class="uk-margin uk-child-width-auto uk-grid">
+
+												@foreach($auditors_array as $auditor)
+													<input id="assignment-auditor-{{$auditor['user_id']}}" user-id="{{$auditor['user_id']}}" class="assignmentauditor" type="checkbox" @if(is_array(session('assignment-auditor'))) @if(in_array($auditor['user_id'], session('assignment-auditor')) == 1) checked @endif @endif/>
+													<label for="assignment-auditor-{{$auditor['user_id']}}">{{$auditor['name']}}</label>
+												@endforeach
+										        </div>
+										        <div class="uk-margin-remove" uk-grid>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="updateAuditAssignment(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+				                            		</div>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="$('#assignmentselectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+				                            		</div>
+				                            	</div>
+				            				</fieldset>
+				                        </form>
+				            			
+				                    </div> / <i class="a-home-2"></i>
 								</span>
 								<span class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top uk-text-center uk-link">
 									<i id="complianceselectionbutton" class="a-circle-checked"></i>
@@ -1099,6 +1153,25 @@ The following div is defined in this particular tab and pushed to the main layou
 		}, function () {
 		    console.log('Rejected.')
 		});
+    }
+
+    function updateAuditAssignment(e){
+    	e.preventDefault();
+    	var form = $('#audit_assignment_selection');
+
+		var selected = [];
+		$('#audit_assignment_selection input:checked').each(function() {
+		    selected.push($(this).attr('user-id'));
+		});
+		
+        $.post("/session/", {
+            'data' : [['assignment-auditor', selected]],
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            $('#assignmentselectionbutton').trigger( 'click' );
+            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+        } );
+
     }
 
     function updateAuditComplianceStatus(e){
