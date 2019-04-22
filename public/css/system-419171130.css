@@ -2302,6 +2302,12 @@ margin-top:10px;
 .ok-actionable, .ok-actionable.uk-badge { color:#56b285; border-color:#56b285; }
 .in-progress, .in-progress.uk-badge { color:#49ade9; border-color:#49ade9; }
 
+.filter-dropdown label i.no-action, .filter-dropdown label i.no-action.uk-badge { color:#939598; border-color:#939598; }
+.filter-dropdown label i.action-needed, .filter-dropdown label i.action-needed.uk-badge { color:#76338b; border-color:#76338b; }
+.filter-dropdown label i.action-required, .filter-dropdown label i.critical, .filter-dropdown label i.critical.uk-badge, .filter-dropdown label i.action-required.uk-badge { color:#da328a; border-color:#da328a; }
+.filter-dropdown label i.ok-actionable, .filter-dropdown label i.ok-actionable.uk-badge { color:#56b285; border-color:#56b285; }
+.filter-dropdown label i.in-progress, .filter-dropdown label i.in-progress.uk-badge { color:#49ade9; border-color:#49ade9; }
+
 .no-action .findings-icon-status i { background-color: #939598; color: #ffffff; }
 .action-needed .findings-icon-status i { background-color: #76338b; color: #ffffff; }
 .action-required .findings-icon-status i, .critical .findings-icon-status i { background-color: #da328a; color: #ffffff; }

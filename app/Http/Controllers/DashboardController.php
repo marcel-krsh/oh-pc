@@ -249,6 +249,53 @@ class DashboardController extends Controller
             $auditFilterAddress = '';
         }
 
+        if(session()->has('compliance-status-all') && session('compliance-status-all') != 0){
+            $auditFilterComplianceRR = 0;
+            $auditFilterComplianceNC = 0;
+            $auditFilterComplianceC = 0;
+        }else{
+            $auditFilterComplianceRR = session('compliance-status-rr');
+            $auditFilterComplianceNC = session('compliance-status-nc');
+            $auditFilterComplianceC = session('compliance-status-c');
+
+            $audits = $audits->where(function ($query) use ( $auditFilterComplianceRR, $auditFilterComplianceNC, $auditFilterComplianceC ){
+                            if(session()->has('compliance-status-rr') && session('compliance-status-rr') != 0){
+                                
+                                $query->OrWhere('audit_compliance_status_text', '=', 'UNITS REQUIRE REVIEW');
+                            }
+                            if(session()->has('compliance-status-nc') && session('compliance-status-nc') != 0){
+                                
+                                $query->OrWhere('audit_compliance_status_text', '=', 'AUDIT NOT COMPLIANT');
+                            }
+                            if(session()->has('compliance-status-c') && session('compliance-status-c') != 0){
+                                
+                                $query->OrWhere('audit_compliance_status_text', '=', 'AUDIT COMPLIANT');
+                            }
+                            
+                        });
+        }
+        
+        // if(session()->has('compliance-status-rr') && session('compliance-status-rr') != 0){
+        //     $auditFilterComplianceRR = session('compliance-status-rr');
+        //     $audits = $audits->where('audit_compliance_status_text', '=', 'UNITS REQUIRE REVIEW');
+        // }else{
+        //     $auditFilterComplianceRR = 0;
+        // }
+
+        // if(session()->has('compliance-status-nc') && session('compliance-status-nc') != 0){
+        //     $auditFilterComplianceNC = session('compliance-status-nc');
+        //     $audits = $audits->where('audit_compliance_status_text', '=', 'AUDIT NOT COMPLIANT');
+        // }else{
+        //     $auditFilterComplianceNC = 0;
+        // }
+
+        // if(session()->has('compliance-status-c') && session('compliance-status-c') != 0){
+        //     $auditFilterComplianceC = session('compliance-status-c');
+        //     $audits = $audits->where('audit_compliance_status_text', '=', 'AUDIT COMPLIANT');
+        // }else{
+        //     $auditFilterComplianceC = 0;
+        // }
+
         // load to list steps filtering and check for session variables
         $steps = GuideStep::where('guide_step_type_id','=',1)->orderBy('order','asc')->get();
 
@@ -402,7 +449,7 @@ class DashboardController extends Controller
         if ($page>0) {
             return response()->json($data);
         } else {
-            return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'audits', 'sort_by', 'sort_order', 'steps'));
+            return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceALL','auditFilterComplianceRR','auditFilterComplianceNC','auditFilterComplianceC', 'audits', 'sort_by', 'sort_order', 'steps'));
         }
     }
 

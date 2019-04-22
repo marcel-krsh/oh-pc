@@ -196,6 +196,25 @@
 				@endif
 			@endforeach
 
+			@if(isset($auditFilterComplianceRR) && $auditFilterComplianceRR != '0')
+			<div id="audit-filter-address" class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('compliance-status-rr', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>UNITS REQUIRE REVIEW</span></a>
+			</div>
+			@endif
+
+			@if(isset($auditFilterComplianceNC) && $auditFilterComplianceNC != '0')
+			<div id="audit-filter-address" class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('compliance-status-nc', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>NOT COMPLIANT</span></a>
+			</div>
+			@endif
+
+			@if(isset($auditFilterComplianceC) && $auditFilterComplianceC != '0')
+			<div id="audit-filter-address" class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('compliance-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>COMPLIANT</span></a>
+			</div>
+			@endif
+			
+
 			<div id="audit-filter-date" class="uk-badge uk-text-right@s badge-filter" hidden>
 				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'yes']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>FILTER HERE</span></a>
 			</div>
@@ -330,7 +349,37 @@
 									<i class="a-avatar-home"></i> / <i class="a-home-2"></i>
 								</span>
 								<span class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top uk-text-center uk-link">
-									<i class="a-circle-checked"></i>
+									<i id="complianceselectionbutton" class="a-circle-checked"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+				            			<form id="audit_compliance_status_selection" method="post">
+				            				<fieldset class="uk-fieldset">
+				            					<div class="uk-margin uk-child-width-auto uk-grid">
+
+												<input id="compliance-status-all" class="" type="checkbox" @if(session('compliance-status-all') == 1) checked @endif/>
+												<label for="compliance-status-all">ALL COMPLIANCE STATUSES</label>
+												
+												<input id="compliance-status-rr" class=" complianceselector" type="checkbox" @if(session('compliance-status-rr') == 1) checked @endif/>
+												<label for="compliance-status-rr"><i class="a-circle-ellipsis action-required"></i> <span class="action-required">UNITS REQUIRE REVIEW</span></label>
+												
+												<input id="compliance-status-nc" class=" complianceselector" type="checkbox" @if(session('compliance-status-nc') == 1) checked @endif/>
+												<label for="compliance-status-nc"><i class="a-circle-cross action-required"></i> <span class="action-required">NOT COMPLIANT</span></label>
+												
+												<input id="compliance-status-c" class=" complianceselector" type="checkbox" @if(session('compliance-status-c') == 1) checked @endif/>
+												<label for="compliance-status-c"><i class="a-circle-checked ok-actionable"></i><span class="ok-actionable">IS COMPLIANT</span></label>
+												
+										        </div>
+										        <div class="uk-margin-remove" uk-grid>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="updateAuditComplianceStatus(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+				                            		</div>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="$('#complianceselectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+				                            		</div>
+				                            	</div>
+				            				</fieldset>
+				                        </form>
+				            			
+				                    </div>
 								</span>
 								@endcan
 							</div>
@@ -765,6 +814,17 @@ The following div is defined in this particular tab and pushed to the main layou
 		        filterAuditList(this, 'filter-search-address')
 		    }
 		});
+		$('#compliance-status-all').click(function() {
+			if($('#compliance-status-all').prop('checked')){
+				$('input.complianceselector').prop('checked', false);
+			}
+	    });
+		$(".complianceselector").click(function() {
+			// compliance-status-all, compliance-status-nc, compliance-status-c, compliance-status-rr
+			if($(this).prop('checked') && $('#compliance-status-all').prop('checked')){ 
+		    	$('#compliance-status-all').prop('checked', false);
+			}
+		});
     });
 
 	@can('access_auditor')
@@ -1039,6 +1099,34 @@ The following div is defined in this particular tab and pushed to the main layou
 		}, function () {
 		    console.log('Rejected.')
 		});
+    }
+
+    function updateAuditComplianceStatus(e){
+    	e.preventDefault();
+    	var form = $('#audit_compliance_status_selection');
+
+    	var alloptions = [];
+		$('#audit_compliance_status_selection input').each(function() {
+		    alloptions.push([$(this).attr('id'), 0]);
+		});
+
+		var selected = [];
+		$('#audit_compliance_status_selection input:checked').each(function() {
+		    selected.push([$(this).attr('id'), 1]);
+		});
+
+		$.post("/session/", {
+            'data' : alloptions,
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            $.post("/session/", {
+	            'data' : selected,
+	            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+	            $('#checklist-button').trigger( 'click' );
+	            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+	        } );
+        } );
     }
 
     @can('access_auditor')
