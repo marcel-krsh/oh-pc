@@ -71,7 +71,7 @@
           </select>
         </div>
         <div class="uk-width-1-1 uk-margin-top">
-          <label for="name">Business Phone Number<span class="uk-text-danger uk-text-bold">*</span> :</label><br>
+          <label for="name">Business Phone Number :</label><br>
           <input id="business_phone_number" type="text" class="uk-input uk-width-1-3" name="business_phone_number" placeholder="Format: xxx-xxx-xxxx">
           <input id="phone_extension" type="number" class="uk-input uk-width-1-3" name="phone_extension" placeholder="xxxx">
         </div>
