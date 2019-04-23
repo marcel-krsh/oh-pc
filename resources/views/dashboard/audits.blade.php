@@ -197,20 +197,26 @@
 			@endforeach
 
 			@if(isset($auditFilterComplianceRR) && $auditFilterComplianceRR != '0')
-			<div id="audit-filter-address" class="uk-badge uk-text-right@s badge-filter">
+			<div class="uk-badge uk-text-right@s badge-filter">
 				<a onClick="filterAudits('compliance-status-rr', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>UNITS REQUIRE REVIEW</span></a>
 			</div>
 			@endif
 
 			@if(isset($auditFilterComplianceNC) && $auditFilterComplianceNC != '0')
-			<div id="audit-filter-address" class="uk-badge uk-text-right@s badge-filter">
+			<div class="uk-badge uk-text-right@s badge-filter">
 				<a onClick="filterAudits('compliance-status-nc', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>NOT COMPLIANT</span></a>
 			</div>
 			@endif
 
 			@if(isset($auditFilterComplianceC) && $auditFilterComplianceC != '0')
-			<div id="audit-filter-address" class="uk-badge uk-text-right@s badge-filter">
+			<div class="uk-badge uk-text-right@s badge-filter">
 				<a onClick="filterAudits('compliance-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>COMPLIANT</span></a>
+			</div>
+			@endif
+
+			@if(isset($auditFilterInspection) && $auditFilterInspection != '')
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('total_inspection_amount', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>{{$auditFilterInspection}}</span></a>
 			</div>
 			@endif
 			
@@ -400,7 +406,30 @@
 				            				</fieldset>
 				                        </form>
 				            			
-				                    </div> / <i class="a-home-2"></i>
+				                    </div> / <i id="totalinspectionbutton" class="a-home-2"></i>
+				                    <div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+										<form id="total_inspection_filter" method="post">
+				            				<fieldset class="uk-fieldset">
+				            					<div class="uk-margin uk-child-width-auto uk-grid">
+													<input id="total_inspection_more" class="totalinspectionfilter" type="checkbox" @if(session('total_inspection_filter') != 1) checked @endif/>
+													<label for="total_inspection_more">MORE THAN OR EQUAL TO</label>
+													<input id="total_inspection_less" class="totalinspectionfilter" type="checkbox" @if(session('total_inspection_filter') == 1) checked @endif/>
+													<label for="total_inspection_less">LESS THAN OR EQUAL TO</label>
+													<input id="total_inspection_amount" class="uk-input" value="{{session('total_inspection_amount')}}" type="number" min="0" >
+													
+										        </div>
+										        <div class="uk-margin-remove" uk-grid>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="updateAuditInspection(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+				                            		</div>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="$('#totalinspectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+				                            		</div>
+				                            	</div>
+				            				</fieldset>
+				                        </form>
+				            			
+				                    </div>
 								</span>
 								<span class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top uk-text-center uk-link">
 									<i id="complianceselectionbutton" class="a-circle-checked"></i>
@@ -879,6 +908,14 @@ The following div is defined in this particular tab and pushed to the main layou
 		    	$('#compliance-status-all').prop('checked', false);
 			}
 		});
+
+
+		$('.totalinspectionfilter').click(function() {
+			$('.totalinspectionfilter').prop('checked', false);
+			$(this).prop('checked', true);
+	    });
+
+		
     });
 
 	@can('access_auditor')
@@ -1153,6 +1190,27 @@ The following div is defined in this particular tab and pushed to the main layou
 		}, function () {
 		    console.log('Rejected.')
 		});
+    }
+
+    function updateAuditInspection(e){
+    	e.preventDefault();
+    	var form = $('#total_inspection_filter');
+
+    	if($('#total_inspection_more').prop('checked')){
+    		var total_inspection_filter = 0;
+    	}else{
+    		var total_inspection_filter = 1;
+    	}
+    	
+    	var amount = $('#total_inspection_amount').val();
+
+		$.post("/session/", {
+            'data' : [['total_inspection_amount', amount], ['total_inspection_filter', total_inspection_filter]],
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            $('#totalinspectionbutton').trigger( 'click' );
+            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+        } );
     }
 
     function updateAuditAssignment(e){

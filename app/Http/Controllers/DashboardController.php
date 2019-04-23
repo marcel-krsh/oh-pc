@@ -113,14 +113,14 @@ class DashboardController extends Controller
             if (session()->has('audit-sort-order') && session('audit-sort-order') != 'undefined') {
                 $sort_order = session('audit-sort-order');
             } else {
-                session(['audit-sort-order', 0]);
+                session(['audit-sort-order' => 0]);
                 $sort_order = 0;
             }
         } else {
-            session(['audit-sort-by', 'audit-sort-project']);
+            session(['audit-sort-by' => 'audit-sort-project']);
             $sort_by = 'audit-sort-project';
 
-            session(['audit-sort-order', 1]);
+            session(['audit-sort-order' => 1]);
             $sort_order = 1;
         }
 
@@ -247,6 +247,25 @@ class DashboardController extends Controller
                         });
         }else{
             $auditFilterAddress = '';
+        }
+
+        if(session()->has('total_inspection_amount') && session('total_inspection_amount') > 0){
+
+            $total_inspection_amount = session('total_inspection_amount');
+            
+            if(session('total_inspection_filter') != 1){
+
+                $auditFilterInspection = "MORE THAN ".$total_inspection_amount." INSPECTABLE ITEMS";
+                $audits = $audits->where('inspectable_items', '>=', $total_inspection_amount);
+            }else{
+
+                $auditFilterInspection = "LESS THAN ".$total_inspection_amount." INSPECTABLE ITEMS";
+                $audits = $audits->where('inspectable_items', '<=', $total_inspection_amount);
+            }
+        }else{
+            session(['total_inspection_amount' => 0]);
+            session(['total_inspection_filter' => 0]);
+            $auditFilterInspection = "";
         }
 
         if(session()->has('compliance-status-all') && session('compliance-status-all') != 0){
@@ -476,7 +495,7 @@ class DashboardController extends Controller
         if ($page>0) {
             return response()->json($data);
         } else {
-            return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceALL','auditFilterComplianceRR','auditFilterComplianceNC','auditFilterComplianceC', 'auditors_array', 'audits', 'sort_by', 'sort_order', 'steps'));
+            return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceALL','auditFilterComplianceRR','auditFilterComplianceNC','auditFilterComplianceC', 'auditFilterInspection', 'auditors_array', 'audits', 'sort_by', 'sort_order', 'steps'));
         }
     }
 
