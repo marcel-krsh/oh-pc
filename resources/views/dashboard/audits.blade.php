@@ -214,6 +214,30 @@
 			</div>
 			@endif
 
+			@if(session('file-audit-status-r') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('file-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS RESOLVED FILE AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('file-audit-status-ar') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('file-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ACTION REQUIRED FILE AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('file-audit-status-c') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('file-audit-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS CRITICAL FILE AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('file-audit-status-nf') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('file-audit-status-nf', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOES NOT HAVE FILE AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
 			@if(isset($auditFilterInspection) && $auditFilterInspection != '')
 			<div class="uk-badge uk-text-right@s badge-filter">
 				<a onClick="filterAudits('total_inspection_amount', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>{{$auditFilterInspection}}</span></a>
@@ -518,7 +542,40 @@
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid> 
 			            		<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i class="a-folder"></i>
+									<i id="file_audit_status_button" class="a-folder"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
+				            			<form id="file_audit_status_selection" method="post">
+				            				<fieldset class="uk-fieldset">
+				            					<div class="uk-margin uk-child-width-auto uk-grid">
+
+												<input id="file-audit-status-all" class="" type="checkbox" @if(session('file-audit-status-all') == 1) checked @endif/>
+												<label for="file-audit-status-all"><i class="a-folder"></i> <span>ALL FILE AUDIT FINDING STATUSES</span></label>
+												
+												<input id="file-audit-status-r" class="fileauditselector" type="checkbox" @if(session('file-audit-status-r') == 1) checked @endif/>
+												<label for="file-audit-status-r"><i class="a-folder ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED FILE AUDIT FINDINGS</span></label>
+												
+												<input id="file-audit-status-ar" class=" fileauditselector" type="checkbox" @if(session('file-audit-status-ar') == 1) checked @endif/>
+												<label for="file-audit-status-ar"><i class="a-folder action-needed divider dividericon"></i> <span class="action-needed">HAS ACTION REQUIRED FILE AUDIT FINDINGS</span></label>
+												
+												<input id="file-audit-status-c" class=" fileauditselector" type="checkbox" @if(session('file-audit-status-c') == 1) checked @endif/>
+												<label for="file-audit-status-c"><i class="a-folder action-required divider dividericon"></i> <span class="action-required">HAS CRITICAL FILE AUDIT FINDINGS</span></label>
+												
+												<input id="file-audit-status-nf" class=" fileauditselector" type="checkbox" @if(session('file-audit-status-nf') == 1) checked @endif/>
+												<label for="file-audit-status-nf"><i class="a-folder"></i> <span class="">DOES NOT HAVE FILE AUDIT FINDINGS</span></label>
+												
+										        </div>
+										        <div class="uk-margin-remove" uk-grid>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="updateFileAuditStatus(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+				                            		</div>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="$('#file_audit_status_button').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+				                            		</div>
+				                            	</div>
+				            				</fieldset>
+				                        </form>
+				            			
+				                    </div>
 								</span>
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-booboo"></i>
@@ -880,21 +937,33 @@ The following div is defined in this particular tab and pushed to the main layou
 	    $("#filter-by-project").keypress(function(event) {
 		    if (event.which == 13) {
 		        event.preventDefault();
-		        filterAuditList(this, 'filter-search-project')
+		        if($(this).val() != ''){
+		        	filterAuditList(this, 'filter-search-project');
+		        }else{
+		        	filterAudits('filter-search-project', '');
+		        }
 		    }
 		});
 
 		$("#filter-by-name").keypress(function(event) {
 		    if (event.which == 13) {
 		        event.preventDefault();
-		        filterAuditList(this, 'filter-search-pm')
+		        if($(this).val() != ''){
+		        	filterAuditList(this, 'filter-search-pm');
+		        }else{
+		        	filterAudits('filter-search-pm', '');
+		        }
 		    }
 		});
 
 		$("#filter-by-address").keypress(function(event) {
 		    if (event.which == 13) {
 		        event.preventDefault();
-		        filterAuditList(this, 'filter-search-address')
+		        if($(this).val() != ''){
+		        	filterAuditList(this, 'filter-search-address');
+		        }else{
+		        	filterAudits('filter-search-address', '');
+		        }
 		    }
 		});
 		$('#compliance-status-all').click(function() {
@@ -909,6 +978,18 @@ The following div is defined in this particular tab and pushed to the main layou
 			}
 		});
 
+
+		$('#file-audit-status-all').click(function() {
+			if($('#file-audit-status-all').prop('checked')){
+				$('input.fileauditselector').prop('checked', false);
+			}
+	    });
+		$(".fileauditselector").click(function() {
+			// compliance-status-all, compliance-status-nc, compliance-status-c, compliance-status-rr
+			if($(this).prop('checked') && $('#file-audit-status-all').prop('checked')){ 
+		    	$('#file-audit-status-all').prop('checked', false);
+			}
+		});
 
 		$('.totalinspectionfilter').click(function() {
 			$('.totalinspectionfilter').prop('checked', false);
@@ -1230,6 +1311,34 @@ The following div is defined in this particular tab and pushed to the main layou
             loadTab('{{ route('dashboard.audits') }}','1','','','',1);
         } );
 
+    }
+
+    function updateFileAuditStatus(e){
+    	e.preventDefault();
+    	var form = $('#file_audit_status_selection');
+
+    	var alloptions = [];
+		$('#file_audit_status_selection input').each(function() {
+		    alloptions.push([$(this).attr('id'), 0]);
+		});
+
+		var selected = [];
+		$('#file_audit_status_selection input:checked').each(function() {
+		    selected.push([$(this).attr('id'), 1]);
+		});
+
+		$.post("/session/", {
+            'data' : alloptions,
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            $.post("/session/", {
+	            'data' : selected,
+	            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+	            $('#file_audit_status_button').trigger( 'click' );
+	            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+	        } );
+        } );
     }
 
     function updateAuditComplianceStatus(e){

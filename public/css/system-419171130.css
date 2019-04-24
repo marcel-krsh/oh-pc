@@ -1510,6 +1510,50 @@ margin-top:10px;
 #auditstable table tr.critical td.audit-td-scheduled {}
 #auditstable table tr.critical td.audit-td-due {}
 
+#auditstable table .divider.dividericon {
+    border-style: solid;
+    border-width: 0;
+    border-right-width: 2px;
+    border-color: #000;
+    display: inline-block;
+    height: 48px;
+    /*float: right;*/
+    margin-right: 2px;
+    padding-right: 6px;
+}
+#auditstable table .divider.dividericon.dotted {
+    border-style: dotted;
+    padding-right: 6px;
+}
+#auditstable table .divider.dividericon.action-required {
+    border-color: #da328a;
+    border-style: double;
+    border-right-width: 6px;
+    margin-right: 8px;
+    height: 27px;
+    float: none;
+    /*-webkit-animation: pulsate 2s ease-out;
+    -webkit-animation-iteration-count: infinite;*/
+    /*opacity: 0.0;*/
+}
+#auditstable table .divider.dividericon.action-needed {
+    border-color: #76338b;
+    border-style: dashed;
+    border-right-width: 2px;
+    margin-right: 8px;
+    height: 27px;
+    float: none;
+}
+#auditstable table .divider.dividericon.ok-actionable  {
+    border-color: #56b285;
+    border-style: solid;
+    border-right-width: 2px;
+    margin-right: 8px;
+    height: 27px;
+    float: none;
+    padding-right: 6px;
+}
+
 .buildings > div > div.building:nth-of-type(odd),
 .buildings > div > div > div.building-details > div > div.building:nth-of-type(odd),
 .buildings > div > div.building:nth-of-type(odd) .findings-icon-status span.uk-badge {
@@ -3508,7 +3552,7 @@ span.indented, div.indented {
     float: right;
     margin-right: 2px;
 }
-#project-details-main-row .divider.dotted {
+#project-details-main-row .divider.dotted, .divider.dotted {
     border-style: dotted;
 }
 #project-details-main-row .hasdivider {
@@ -3556,7 +3600,6 @@ span.indented, div.indented {
     -webkit-animation-iteration-count: infinite;
     opacity: 0.0;
 }
-
 #project-details-main-row.action-needed h3,
 #project-details-main-row.action-needed small,
 #project-details-main-row.action-needed i.a-marker-basic,
@@ -3566,7 +3609,7 @@ span.indented, div.indented {
 #project-details-main-row.action-needed .dateyear {
   background-color: #76338b;
 }
-#project-details-main-row.action-needed .divider {
+#project-details-main-row.action-needed .divider, .divider.action-needed {
     border-color: #76338b;
     border-style: dashed;
     border-right-width: 2px;
@@ -3577,13 +3620,14 @@ span.indented, div.indented {
 #project-details-main-row.ok-actionable .dateyear {
   background-color: #56b285;
 }
-#project-details-main-row.ok-actionable .divider {
+#project-details-main-row.ok-actionable .divider, .divider.ok-actionable  {
     border-color: #56b285;
     border-style: solid;
     border-right-width: 2px;
     margin-right: 0px;
     height: 52px;
 }
+
 #project-details-info-container {
     margin-bottom: 20px;
 }

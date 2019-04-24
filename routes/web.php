@@ -146,17 +146,25 @@
         Route::get('autocomplete/auditaddress', 'DashboardController@autocomplete');
 
         Route::get('/session/filters/{type}/{value?}', function ($type, $value = null) {
-            
+
             if ($value !== null) {
                 session([$type => $value]);
                 $new_filter = session($type);
                 return $new_filter;
             } else {
                 if (!session()->has($type)) {
-                    session([$type => 1]);
+                    if($value != ''){
+                        session([$type => 1]);
+                    }else{
+                        session([$type => '']);
+                    }
                 } else {
                     if (session($type) == 0 || session($type) === null) {
-                        session([$type => 1]);
+                        if($value != ''){
+                            session([$type => 1]);
+                        }else{
+                            session([$type => '']);
+                        }
                     } else {
                         session()->forget($type);
                     }

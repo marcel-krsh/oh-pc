@@ -57,6 +57,8 @@ function filterAuditList(element, searchClass){
 
 	var value = $(element).val().toLowerCase();
 
+	// if(value == '') {value = 0;}
+
 	$.get( '/session/filters/'+searchClass+'/'+value, function( data ) {
        loadTab("dashboard/audits", "1", 0, 0, '', 1);
     });

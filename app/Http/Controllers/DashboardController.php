@@ -224,17 +224,17 @@ class DashboardController extends Controller
                                     ->orWhere('project_ref','like', '%'.$auditFilterProjectId.'%');
                         });
         }else{
-            $auditFilterProjectId = 0;
+            $auditFilterProjectId = '';
         }
-
-        if(session()->has('filter-search-pm') && session('filter-search-pm') != ''){
+//dd($auditFilterProjectId);
+        if(session()->has('filter-search-pm')){
             $auditFilterProjectName = session('filter-search-pm');
             $audits = $audits->where(function ($query) use ( $auditFilterProjectName ){
                             $query->where('title','like', '%'.$auditFilterProjectName.'%')
                                     ->orWhere('pm','like', '%'.$auditFilterProjectName.'%');
                         });
         }else{
-            $auditFilterProjectName = '';
+            $auditFilterProjectName = 0;
         }
 
         if(session()->has('filter-search-address') && session('filter-search-address') != ''){
