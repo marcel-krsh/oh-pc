@@ -226,7 +226,7 @@ class DashboardController extends Controller
         }else{
             $auditFilterProjectId = '';
         }
-//dd($auditFilterProjectId);
+
         if(session()->has('filter-search-pm')){
             $auditFilterProjectName = session('filter-search-pm');
             $audits = $audits->where(function ($query) use ( $auditFilterProjectName ){
@@ -235,6 +235,39 @@ class DashboardController extends Controller
                         });
         }else{
             $auditFilterProjectName = 0;
+        }
+
+        if(session()->has('file-audit-status-r') && session('file-audit-status-r') == 1){
+            $audits = $audits->whereHas('audit', function( $query ) {
+                                $query->whereHas('files', function( $query ) {
+                                    $query->where('auditor_approved_resolution', '>=', 0 );
+                                });
+                            });
+        }
+
+        if(session()->has('file-audit-status-ar') && session('file-audit-status-ar') == 1){
+            $audits = $audits->whereHas('audit', function( $query ) {
+                                $query->whereHas('files', function( $query ) {
+                                    $query->where('auditor_approved_resolution', '>=', 0 );
+                                    $query->where('pm_submitted_resolution', '<', 'auditor_approved_resolution' );
+                                });
+                            });
+        }
+
+        if(session()->has('file-audit-status-c') && session('file-audit-status-c') == 1){
+            $audits = $audits->whereHas('audit', function( $query ) {
+                                $query->whereHas('files', function( $query ) {
+                                    $query->whereHas('followups', function( $query ) {
+                                        $query->whereDate('date_due','<=', \Carbon\Carbon::today()->addHours(24))->whereDate('date_due','>=',\Carbon\Carbon::today());
+                                    });
+                                });
+                            });
+        }
+
+        if(session()->has('file-audit-status-nf') && session('file-audit-status-nf') == 1){
+            $audits = $audits->whereHas('audit', function( $query ) {
+                                $query->whereDoesntHave('files');
+                            });
         }
 
         if(session()->has('filter-search-address') && session('filter-search-address') != ''){
