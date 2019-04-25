@@ -2,7 +2,8 @@
 @section('content')
 <div class="uk-vertical-align uk-text-center">
 	<div class="uk-vertical-align-middle" id="login-panel">
-		<h2>JOIN THE MISSION</h2>
+		<p>Program Compliance Inspection</p>
+		<p>REGISTER</p>
 		<form class="uk-panel uk-panel-box uk-form" role="form" method="POST" action="{{ url('/register-user') }}">
 			@if (count($errors) > 0)
 			<div class="alert alert-danger uk-text-danger">
@@ -77,8 +78,17 @@
 				<button type="submit" class="uk-width-1-1 uk-button uk-button-primary uk-button-large">Register</button>
 			</div>
 		</form>
-		<div uk-scrollspy="cls:uk-animation-fade;">
-			<a href="{{ url('/login') }}" class="uk-button uk-button-default uk-button-small uk-width-1-1 uk-margin-top">Go to Login</a>
+		<div class="uk-grid">
+			<div class="{{ env('USER_REGISTRATION') ? 'uk-width-1-2' : 'uk-width-1-1' }}">
+				<div uk-scrollspy="cls:uk-animation-fade;">
+					<a href="https://devco.ohiohome.org/AuthorityOnlineALTTEST/default.aspx?ReturnUrl=%2fAuthorityOnlineALTTest%3fredirect%3dhttps%253A%252F%252Fpcinspecttrain.ohiohome.org&redirect=https%3A%2F%2Fpcinspecttrain.ohiohome.org" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
+				</div>
+			</div>
+			<div class="uk-width-1-2">
+				<div uk-scrollspy="cls:uk-animation-fade;">
+					<a href="{{ url('/login') }}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Login</a>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

@@ -367,7 +367,10 @@
 				Route::post('/code', 'Auth\LoginController@postCode');
 				Route::get('/verification', 'Auth\LoginController@getVerification');
 				Route::post('/verification', 'Auth\LoginController@postVerification');
-
+				Route::get('/request-access', 'Auth\LoginController@getRequestAccess');
+				Route::post('/request-access', 'Auth\LoginController@postRequestAccess');
+				Route::get('user/approve-access/{user_id}', 'Auth\LoginController@getApproveAccess');
+				Route::post('user/approve-access/{user_id}', 'Auth\LoginController@postApproveAccess');
 
 
         Route::group(['prefix'=>'tabs','middleware'=>'can:access_admin'], function ()  {

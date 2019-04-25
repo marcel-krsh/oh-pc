@@ -10,7 +10,6 @@ use App\Models\PhoneNumber;
 use App\Models\PhoneNumberType;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\UserRole;
 use DB;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
@@ -109,10 +108,10 @@ class RegisterController extends Controller
       $user->activate();
 
       // User role table
-      $user_role          = new UserRole;
-      $user_role->role_id = $selected_role->id;
-      $user_role->user_id = $user->id;
-      $user_role->save();
+      // $user_role          = new UserRole;
+      // $user_role->role_id = $selected_role->id;
+      // $user_role->user_id = $user->id;
+      // $user_role->save();
       DB::commit();
       return redirect()->to('login');
     } catch (\Exception $e) {

@@ -31,7 +31,7 @@
 				<div class="uk-width-1-1">
 					<label for="role">Role<span class="uk-text-danger uk-text-bold">*</span> : <br /></label>
 					<select id="role" name="role" class="uk-width-1-1 uk-select">
-						<option value="">Select Role</option>
+            <option value="0" {{ !($user_role) ? 'selected=selected':'' }}>No Access</option>
 						@foreach($roles as $role)
 							<option {{ $user_role == $role->id ? 'selected=selected':'' }} value="{{ $role->id }}" >{{ $role->role_name }}</option>
 						@endforeach

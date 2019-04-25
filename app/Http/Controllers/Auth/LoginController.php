@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\EmailApproveUserAccess;
+use App\Models\Role;
 use App\Models\Token;
 use App\Models\User;
+use App\Models\UserRole;
 use Auth;
 use Cookie;
 use GeoIP;
@@ -80,9 +83,9 @@ class LoginController extends Controller
     if (Auth::validate($request->only('email', 'password'))) {
       $user   = User::where('email', $request->email)->first();
       $device = Cookie::get('device_' . $user->id);
-      if(!$user->isActive()) {
-      	$validator->getMessageBag()->add('error', 'User is not active');
-    		return redirect()->back()->withInput($request->except('password'))->withErrors($validator);
+      if (!$user->isActive()) {
+        $validator->getMessageBag()->add('error', 'User is not active');
+        return redirect()->back()->withInput($request->except('password'))->withErrors($validator);
       }
       // check device already registered
       $is_device_verifed = Token::where('user_id', $user->id)
@@ -91,13 +94,21 @@ class LoginController extends Controller
         ->first();
       //if true login with id & return to intended url else create toke
       if ($is_device_verifed) {
-        $user = Auth::loginUsingId($user->id, 1);
+        session(["user_id" => $user->id]);
+        if (count($user->roles) == 0) {
+          return redirect('request-access');
+        }
+        $user           = Auth::loginUsingId($user->id, 1);
         $token          = new Token;
         $token->user_id = $user->id;
         $token->save();
         $this->saveToken($token, 'login');
         //flash('Login successful')->success();
-        return redirect()->intended('/');
+        if (count($user->roles) > 0) {
+          return redirect()->intended('/');
+        } else {
+          return redirect('request-access');
+        }
       } else {
         session(["user_id" => $user->id]);
         session(["remember" => $request->get('remember')]);
@@ -128,10 +139,45 @@ class LoginController extends Controller
       $type    = "danger";
       return view('errors.error', compact('error', 'message', 'type'));
     } else {
-      $phone_number     = $user->person->allita_phone->area_code . $user->person->allita_phone->phone_number;
-      $mask_phonenumber = mask_phone_number($phone_number);
-      $mask_email       = mask_email($user->email);
+      if ($user->person->allita_phone) {
+        $phone_number     = $user->person->allita_phone->number;
+        $mask_phonenumber = mask_phone_number($phone_number);
+      } else {
+        $mask_phonenumber = null;
+      }
+      $mask_email = mask_email($user->email);
       return view('auth.code', compact('user', 'user_id', 'phone_number', 'mask_phonenumber', 'mask_email'));
+    }
+  }
+
+  public function getVerification()
+  {
+    $user_id = session()->get('user_id');
+    $user    = User::with('person.allita_phone')->find($user_id);
+    if ($user && session()->get('user_id_validation') == $user_id + $this->verification_number && session()->has('code_sent')) {
+      return view('auth.verification', compact('user', 'user_id'));
+    } else {
+      $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
+      $error   = "Looks like the user doesn't exist with the provided information";
+      $type    = "danger";
+      return view('errors.error', compact('error', 'message', 'type'));
+    }
+  }
+
+  public function getRequestAccess(Request $request)
+  {
+    $user_id = session()->get('user_id');
+    $user    = User::with('person.allita_phone')->find($user_id);
+    if (is_null($user)) {
+      $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
+      $error   = "Looks like the user doesn't exist with the provided information";
+      $type    = "danger";
+      return view('errors.error', compact('error', 'message', 'type'));
+    } else {
+      if (count($user->roles) > 0) {
+        return redirect()->intended('/');
+      }
+      return view('auth.request-access', compact('user', 'user_id'));
     }
   }
 
@@ -149,11 +195,18 @@ class LoginController extends Controller
       ->where('user_id', $user_id)
       ->orderBy('id', 'DESC')
       ->first();
+    $user = User::find($user_id);
     if ($token->isValid()) {
+      if (count($user->roles) == 0) {
+        return redirect('request-access');
+      }
       Auth::loginUsingId($user_id, 1);
       $token = $this->saveToken($token);
       //if (!empty($request->device)) {
       //$token->device = $request->device;
+      //Issue here
+      //  if user with no role is verified, still need to redirect to request access
+      //  If a user with tole is verified, need to redirect to homepage
       $user = Auth::user();
       if (0 == $user->verified) {
         //$user->activate();
@@ -207,20 +260,6 @@ class LoginController extends Controller
     return $token;
   }
 
-  public function getVerification()
-  {
-    $user_id = session()->get('user_id');
-    $user    = User::with('person.allita_phone')->find($user_id);
-    if ($user && session()->get('user_id_validation') == $user_id + $this->verification_number && session()->has('code_sent')) {
-      return view('auth.verification', compact('user', 'user_id'));
-    } else {
-      $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
-      $error   = "Looks like the user doesn't exist with the provided information";
-      $type    = "danger";
-      return view('errors.error', compact('error', 'message', 'type'));
-    }
-  }
-
   public function postCode(Request $request)
   {
     $validator = \Validator::make($request->all(), [
@@ -230,9 +269,13 @@ class LoginController extends Controller
       $errors = $validator->errors()->all();
       return redirect()->back()->withInput($request->except('password'))->withErrors($validator);
     }
-    $user_id      = session()->get('user_id');
-    $user         = User::with('person.allita_phone')->find($user_id);
-    $phone_number = $user->person->allita_phone->area_code . $user->person->allita_phone->phone_number;
+    $user_id = session()->get('user_id');
+    $user    = User::with('person.allita_phone')->find($user_id);
+    if ($user->person->allita_phone) {
+      $phone_number = $user->person->allita_phone->number;
+    } else {
+      $phone_number = null;
+    }
     if ($user && session()->get('user_id_validation') == $user_id + $this->verification_number) {
       $token = Token::create([
         'user_id' => $user->id,
@@ -259,6 +302,91 @@ class LoginController extends Controller
       $validator->getMessageBag()->add('error', 'Something went wrong, please contact admin');
       return redirect()->back()->withErrors($validator);
     }
+  }
+
+  public function postRequestAccess(Request $request)
+  {
+    $user_id      = session()->get('user_id');
+    $current_user = User::with('person.allita_phone')->find($user_id);
+    //Send email to all admins
+    $admin_ids = UserRole::where('role_id', 4)->pluck('user_id');
+    $admins    = User::whereIn('id', $admin_ids)->get();
+    if (count($admins) == 0) {
+      return 'Something went wrong. Try again later or contact Technical Team';
+    }
+    foreach ($admins as $key => $admin) {
+      $email_notification_to_admins = new EmailApproveUserAccess($admin, $current_user);
+      \Mail::to($admin->email)->send($email_notification_to_admins); //enable this in live
+    }
+    return 1;
+  }
+
+  public function getApproveAccess($user_id)
+  {
+    // Check if user is logged in, taken care by middleware
+    // Check if the person accessing this page is admin
+    // Get the roles based on hierarchy
+    // get user and show details
+    $current_user = Auth::user();
+    //$current_user = Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
+    $user = User::find($user_id);
+    if (!$user) {
+      $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
+      $error   = "Looks like the user doesn't exist with the provided information";
+      $type    = "danger";
+      return view('errors.error', compact('error', 'message', 'type'));
+    } elseif (count($user->roles) > 0) {
+      $message = "<h2>ACCESS GRANTED!</h2><p>This user has been already given access</p>";
+      $error   = "Looks like the user has been already given access";
+      $type    = "message";
+      return view('errors.error', compact('error', 'message', 'type'));
+    }
+    session(["user_id" => $user->id]);
+    $current_user_role_id = $current_user->roles->first()->role_id;
+    $roles                = Role::where('id', '<', $current_user_role_id)->active()->orderBy('role_name', 'ASC')->get();
+    if ($current_user->admin_access()) {
+      return view('auth.approve-access', compact('user', 'user_id', 'roles'));
+    }
+  }
+
+  public function postApproveAccess(Request $request)
+  {
+    $validator = \Validator::make($request->all(), [
+      'role' => 'required',
+    ]);
+    if ($validator->fails()) {
+      return 2;
+    }
+    $user_id      = session()->get('user_id');
+    $current_user = Auth::user();
+    //$current_user = Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
+    $user = User::find($user_id);
+    if (!$user) {
+      $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
+      $error   = "Looks like the user doesn't exist with the provided information";
+      $type    = "danger";
+      return view('errors.error', compact('error', 'message', 'type'));
+    } elseif (count($user->roles) > 0) {
+      $message = "<h2>ACCESS GRANTED!</h2><p>This user has been already given access</p>";
+      $error   = "Looks like the user has been already given access";
+      $type    = "message";
+      return view('errors.error', compact('error', 'message', 'type'));
+    }
+    $current_user_role_id = $current_user->roles->first()->role_id;
+    if ($request->role >= $current_user_role_id) {
+      return 'Something went wrong';
+    }
+    $user_role          = new UserRole;
+    $user_role->role_id = $request->role;
+    $user_role->user_id = $user->id;
+    $user_role->save();
+    return 1;
+  }
+
+  protected function extraCheckErrors($validator)
+  {
+    $validator->getMessageBag()->add('error', 'Something went wrong. Try again later or contact Technical Team');
+    return response()->json(['errors' => $validator->errors()->all()]);
   }
 
   public function getUserIpAddr()

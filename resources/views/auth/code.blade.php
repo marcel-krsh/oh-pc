@@ -19,6 +19,7 @@
 			{{ csrf_field() }}
 			<input type="hidden" name="user_id" id="user_id" value="{{ $user_id }}">
 			<h4 class="uk-align-center">Phone</h4>
+			@if($mask_phonenumber)
 			<div class="uk-grid-small uk-grid" uk-grid="">
 				<div class="uk-margin uk-align-center">
 					<div class="uk-form-row" uk-scrollspy="target:.uk-input;cls:uk-animation-slide-top-small; delay: 1550">
@@ -33,6 +34,9 @@
 					</div>
 				</div>
 			</div>
+			@else
+			<p class="uk-text-danger">Not available</p>
+			@endif
 
 			<h4 class="uk-align-center">Email</h4>
 			<div class="uk-grid-small uk-grid" uk-grid="">
@@ -48,11 +52,20 @@
 				{{-- <a class="uk-width-1-1 uk-button uk-button-primary uk-button-large" onclick="submitCompleteRegistration()">Create Password</a> --}}
 			</div>
 		</form>
-		@if(env('USER_REGISTRATION'))
-		<div uk-scrollspy="cls:uk-animation-fade; delay: 1600">
-			<a href="{{ url('/register') }}" class="uk-button uk-button-default uk-button-small uk-width-1-1 uk-margin-top">Not Registered?</a>
+		<div class="uk-grid">
+			<div class="{{ env('USER_REGISTRATION') ? 'uk-width-1-2' : 'uk-width-1-1' }}">
+				<div uk-scrollspy="cls:uk-animation-fade;">
+					<a href="https://devco.ohiohome.org/AuthorityOnlineALTTEST/default.aspx?ReturnUrl=%2fAuthorityOnlineALTTest%3fredirect%3dhttps%253A%252F%252Fpcinspecttrain.ohiohome.org&redirect=https%3A%2F%2Fpcinspecttrain.ohiohome.org" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
+				</div>
+			</div>
+			@if(env('USER_REGISTRATION'))
+			<div class="uk-width-1-2">
+				<div uk-scrollspy="cls:uk-animation-fade;">
+					<a href="{{ url('/register') }}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Register</a>
+				</div>
+			</div>
+			@endif
 		</div>
-		@endif
 
 	</div>
 </div>

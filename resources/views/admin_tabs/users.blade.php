@@ -54,16 +54,20 @@
 				{{--  				<td class="use-hand-cursor" uk-tooltip="title:CLICK TO SET ROLES" onclick="setRoles({{ $user->id }})"><small>@if($user->role_name){{ $user->role_name }}@else <i class="a-circle-plus"></i>@endif</small></td>
 				 --}}
 				 <td class="use-hand-cursor">
-				 	<span data-uk-tooltip title="Edit User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editUser({{ $user->id }})"><small><i class="a-edit uk-text-primary"></i></small>
-				 	</span>
-				 	<span data-uk-tooltip title="Reset Password <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="resetPassword({{ $user->id }})"><small><i class="a-password uk-text-warning"></i></small>
-				 	</span>
-				 	@if($user->active)
-				 	<span data-uk-tooltip title="Deactivate User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="deactivateUser({{ $user->id }})"><small><i class="a-avatar-minus uk-text-danger"></i></small>
-				 	</span>
+				 	@if(is_null($user->role_id) || $user->role_id < $user_role)
+					 	<span data-uk-tooltip title="Edit User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editUser({{ $user->id }})"><small><i class="a-edit uk-text-primary"></i></small>
+					 	</span>
+					 	<span data-uk-tooltip title="Reset Password <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="resetPassword({{ $user->id }})"><small><i class="a-password uk-text-warning"></i></small>
+					 	</span>
+					 	@if($user->active)
+						 	<span data-uk-tooltip title="Deactivate User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="deactivateUser({{ $user->id }})"><small><i class="a-avatar-minus uk-text-danger"></i></small>
+						 	</span>
+					 	@else
+						 	<span data-uk-tooltip title="Activate User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="activateUser({{ $user->id }})"><small><i class="a-avatar-plus_1 uk-text-success"></i></small>
+						 	</span>
+					 	@endif
 				 	@else
-				 	<span data-uk-tooltip title="Activate User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="activateUser({{ $user->id }})"><small><i class="a-avatar-plus_1 uk-text-success"></i></small>
-				 	</span>
+				 		<span> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}</span>
 				 	@endif
 				 </td>
 				 {{-- <td class="use-hand-cursor" data-uk-tooltip title="Edit User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editUser({{ $user->id }})"><small><i class="a-edit"></i></small>

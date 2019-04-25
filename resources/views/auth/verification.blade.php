@@ -37,11 +37,20 @@
 				{{-- <a class="uk-width-1-1 uk-button uk-button-primary uk-button-large" onclick="submitCompleteRegistration()">Create Password</a> --}}
 			</div>
 		</form>
-		@if(env('USER_REGISTRATION'))
-		<div uk-scrollspy="cls:uk-animation-fade; delay: 2200">
-			<a href="{{ url('/register') }}" class="uk-button uk-button-default uk-button-small uk-width-1-1 uk-margin-top">Not Registered?</a>
+		<div class="uk-grid">
+			<div class="{{ env('USER_REGISTRATION') ? 'uk-width-1-2' : 'uk-width-1-1' }}">
+				<div uk-scrollspy="cls:uk-animation-fade;">
+					<a href="https://devco.ohiohome.org/AuthorityOnlineALTTEST/default.aspx?ReturnUrl=%2fAuthorityOnlineALTTest%3fredirect%3dhttps%253A%252F%252Fpcinspecttrain.ohiohome.org&redirect=https%3A%2F%2Fpcinspecttrain.ohiohome.org" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
+				</div>
+			</div>
+			@if(env('USER_REGISTRATION'))
+			<div class="uk-width-1-2">
+				<div uk-scrollspy="cls:uk-animation-fade;">
+					<a href="{{ url('/register') }}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Register</a>
+				</div>
+			</div>
+			@endif
 		</div>
-		@endif
 	</div>
 </div>
 
