@@ -238,6 +238,58 @@
 			</div>
 			@endif
 
+
+
+			@if(session('nlt-audit-status-r') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('nlt-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS RESOLVED NLT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('nlt-audit-status-ar') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('nlt-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ACTION REQUIRED NLT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('nlt-audit-status-c') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('nlt-audit-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS CRITICAL NLT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('nlt-audit-status-nf') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('nlt-audit-status-nf', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOES NOT HAVE NLT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+
+
+			@if(session('lt-audit-status-r') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('lt-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS RESOLVED LT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('lt-audit-status-ar') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('lt-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ACTION REQUIRED LT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('lt-audit-status-c') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('lt-audit-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS CRITICAL LT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('lt-audit-status-nf') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('lt-audit-status-nf', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOES NOT HAVE LT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
 			@if(isset($auditFilterInspection) && $auditFilterInspection != '')
 			<div class="uk-badge uk-text-right@s badge-filter">
 				<a onClick="filterAudits('total_inspection_amount', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>{{$auditFilterInspection}}</span></a>
@@ -578,10 +630,76 @@
 				                    </div>
 								</span>
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i class="a-booboo"></i>
+									<i id="nlt_audit_status_button" class="a-booboo"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
+				            			<form id="nlt_audit_status_selection" method="post">
+				            				<fieldset class="uk-fieldset">
+				            					<div class="uk-margin uk-child-width-auto uk-grid">
+
+												<input id="nlt-audit-status-all" class="" type="checkbox" @if(session('nlt-audit-status-all') == 1) checked @endif/>
+												<label for="nlt-audit-status-all"><i class="a-booboo"></i> <span>ALL NLT AUDIT FINDING STATUSES</span></label>
+												
+												<input id="nlt-audit-status-r" class="nltauditselector" type="checkbox" @if(session('nlt-audit-status-r') == 1) checked @endif/>
+												<label for="nlt-audit-status-r"><i class="a-booboo ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED NLT AUDIT FINDINGS</span></label>
+												
+												<input id="nlt-audit-status-ar" class=" nltauditselector" type="checkbox" @if(session('nlt-audit-status-ar') == 1) checked @endif/>
+												<label for="nlt-audit-status-ar"><i class="a-booboo action-needed divider dividericon"></i> <span class="action-needed">HAS ACTION REQUIRED NLT AUDIT FINDINGS</span></label>
+												
+												<input id="nlt-audit-status-c" class=" nltauditselector" type="checkbox" @if(session('nlt-audit-status-c') == 1) checked @endif/>
+												<label for="nlt-audit-status-c"><i class="a-booboo action-required divider dividericon"></i> <span class="action-required">HAS CRITICAL NLT AUDIT FINDINGS</span></label>
+												
+												<input id="nlt-audit-status-nf" class=" nltauditselector" type="checkbox" @if(session('nlt-audit-status-nf') == 1) checked @endif/>
+												<label for="nlt-audit-status-nf"><i class="a-booboo"></i> <span class="">DOES NOT HAVE NLT AUDIT FINDINGS</span></label>
+												
+										        </div>
+										        <div class="uk-margin-remove" uk-grid>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="updateNLTAuditStatus(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+				                            		</div>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="$('#nlt_audit_status_button').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+				                            		</div>
+				                            	</div>
+				            				</fieldset>
+				                        </form>
+				            			
+				                    </div>
 								</span>
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i class="a-skull"></i>
+									<i id="lt_audit_status_button" class="a-skull"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
+				            			<form id="lt_audit_status_selection" method="post">
+				            				<fieldset class="uk-fieldset">
+				            					<div class="uk-margin uk-child-width-auto uk-grid">
+
+												<input id="lt-audit-status-all" class="" type="checkbox" @if(session('lt-audit-status-all') == 1) checked @endif/>
+												<label for="lt-audit-status-all"><i class="a-skull"></i> <span>ALL LT AUDIT FINDING STATUSES</span></label>
+												
+												<input id="lt-audit-status-r" class="ltauditselector" type="checkbox" @if(session('lt-audit-status-r') == 1) checked @endif/>
+												<label for="lt-audit-status-r"><i class="a-skull ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED LT AUDIT FINDINGS</span></label>
+												
+												<input id="lt-audit-status-ar" class=" ltauditselector" type="checkbox" @if(session('lt-audit-status-ar') == 1) checked @endif/>
+												<label for="lt-audit-status-ar"><i class="a-skull action-needed divider dividericon"></i> <span class="action-needed">HAS ACTION REQUIRED LT AUDIT FINDINGS</span></label>
+												
+												<input id="lt-audit-status-c" class=" ltauditselector" type="checkbox" @if(session('lt-audit-status-c') == 1) checked @endif/>
+												<label for="lt-audit-status-c"><i class="a-skull action-required divider dividericon"></i> <span class="action-required">HAS CRITICAL LT AUDIT FINDINGS</span></label>
+												
+												<input id="lt-audit-status-nf" class=" ltauditselector" type="checkbox" @if(session('lt-audit-status-nf') == 1) checked @endif/>
+												<label for="lt-audit-status-nf"><i class="a-skull"></i> <span class="">DOES NOT HAVE LT AUDIT FINDINGS</span></label>
+												
+										        </div>
+										        <div class="uk-margin-remove" uk-grid>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="updateLTAuditStatus(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+				                            		</div>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="$('#lt_audit_status_button').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+				                            		</div>
+				                            	</div>
+				            				</fieldset>
+				                        </form>
+				            			
+				                    </div>
 								</span>
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY FILE FINDING COUNT">
@@ -990,6 +1108,28 @@ The following div is defined in this particular tab and pushed to the main layou
 		    	$('#file-audit-status-all').prop('checked', false);
 			}
 		});
+		$('#nlt-audit-status-all').click(function() {
+			if($('#nlt-audit-status-all').prop('checked')){
+				$('input.nltauditselector').prop('checked', false);
+			}
+	    });
+		$(".nltauditselector").click(function() {
+			// compliance-status-all, compliance-status-nc, compliance-status-c, compliance-status-rr
+			if($(this).prop('checked') && $('#nlt-audit-status-all').prop('checked')){ 
+		    	$('#nlt-audit-status-all').prop('checked', false);
+			}
+		});
+		$('#lt-audit-status-all').click(function() {
+			if($('#lt-audit-status-all').prop('checked')){
+				$('input.ltauditselector').prop('checked', false);
+			}
+	    });
+		$(".ltauditselector").click(function() {
+			// compliance-status-all, compliance-status-nc, compliance-status-c, compliance-status-rr
+			if($(this).prop('checked') && $('#lt-audit-status-all').prop('checked')){ 
+		    	$('#lt-audit-status-all').prop('checked', false);
+			}
+		});
 
 		$('.totalinspectionfilter').click(function() {
 			$('.totalinspectionfilter').prop('checked', false);
@@ -1336,6 +1476,62 @@ The following div is defined in this particular tab and pushed to the main layou
 	            '_token' : '{{ csrf_token() }}'
 	        }, function(data) {
 	            $('#file_audit_status_button').trigger( 'click' );
+	            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+	        } );
+        } );
+    }
+
+    function updateNLTAuditStatus(e){
+    	e.preventDefault();
+    	var form = $('#nlt_audit_status_selection');
+
+    	var alloptions = [];
+		$('#nlt_audit_status_selection input').each(function() {
+		    alloptions.push([$(this).attr('id'), 0]);
+		});
+
+		var selected = [];
+		$('#nlt_audit_status_selection input:checked').each(function() {
+		    selected.push([$(this).attr('id'), 1]);
+		});
+
+		$.post("/session/", {
+            'data' : alloptions,
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            $.post("/session/", {
+	            'data' : selected,
+	            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+	            $('#nlt_audit_status_button').trigger( 'click' );
+	            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+	        } );
+        } );
+    }
+
+    function updateLTAuditStatus(e){
+    	e.preventDefault();
+    	var form = $('#lt_audit_status_selection');
+
+    	var alloptions = [];
+		$('#lt_audit_status_selection input').each(function() {
+		    alloptions.push([$(this).attr('id'), 0]);
+		});
+
+		var selected = [];
+		$('#lt_audit_status_selection input:checked').each(function() {
+		    selected.push([$(this).attr('id'), 1]);
+		});
+
+		$.post("/session/", {
+            'data' : alloptions,
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            $.post("/session/", {
+	            'data' : selected,
+	            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+	            $('#lt_audit_status_button').trigger( 'click' );
 	            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
 	        } );
         } );

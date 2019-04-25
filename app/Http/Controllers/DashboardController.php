@@ -270,6 +270,72 @@ class DashboardController extends Controller
                             });
         }
 
+        if(session()->has('nlt-audit-status-r') && session('nlt-audit-status-r') == 1){
+            $audits = $audits->whereHas('audit', function( $query ) {
+                                $query->whereHas('nlts', function( $query ) {
+                                    $query->where('auditor_approved_resolution', '>=', 0 );
+                                });
+                            });
+        }
+
+        if(session()->has('nlt-audit-status-ar') && session('nlt-audit-status-ar') == 1){
+            $audits = $audits->whereHas('audit', function( $query ) {
+                                $query->whereHas('nlts', function( $query ) {
+                                    $query->where('auditor_approved_resolution', '>=', 0 );
+                                    $query->where('pm_submitted_resolution', '<', 'auditor_approved_resolution' );
+                                });
+                            });
+        }
+
+        if(session()->has('nlt-audit-status-c') && session('nlt-audit-status-c') == 1){
+            $audits = $audits->whereHas('audit', function( $query ) {
+                                $query->whereHas('nlts', function( $query ) {
+                                    $query->whereHas('followups', function( $query ) {
+                                        $query->whereDate('date_due','<=', \Carbon\Carbon::today()->addHours(24))->whereDate('date_due','>=',\Carbon\Carbon::today());
+                                    });
+                                });
+                            });
+        }
+
+        if(session()->has('nlt-audit-status-nf') && session('nlt-audit-status-nf') == 1){
+            $audits = $audits->whereHas('audit', function( $query ) {
+                                $query->whereDoesntHave('nlts');
+                            });
+        }
+
+        if(session()->has('lt-audit-status-r') && session('lt-audit-status-r') == 1){
+            $audits = $audits->whereHas('audit', function( $query ) {
+                                $query->whereHas('lts', function( $query ) {
+                                    $query->where('auditor_approved_resolution', '>=', 0 );
+                                });
+                            });
+        }
+
+        if(session()->has('lt-audit-status-ar') && session('lt-audit-status-ar') == 1){
+            $audits = $audits->whereHas('audit', function( $query ) {
+                                $query->whereHas('lts', function( $query ) {
+                                    $query->where('auditor_approved_resolution', '>=', 0 );
+                                    $query->where('pm_submitted_resolution', '<', 'auditor_approved_resolution' );
+                                });
+                            });
+        }
+
+        if(session()->has('lt-audit-status-c') && session('lt-audit-status-c') == 1){
+            $audits = $audits->whereHas('audit', function( $query ) {
+                                $query->whereHas('lts', function( $query ) {
+                                    $query->whereHas('followups', function( $query ) {
+                                        $query->whereDate('date_due','<=', \Carbon\Carbon::today()->addHours(24))->whereDate('date_due','>=',\Carbon\Carbon::today());
+                                    });
+                                });
+                            });
+        }
+
+        if(session()->has('lt-audit-status-nf') && session('lt-audit-status-nf') == 1){
+            $audits = $audits->whereHas('audit', function( $query ) {
+                                $query->whereDoesntHave('lts');
+                            });
+        }
+
         if(session()->has('filter-search-address') && session('filter-search-address') != ''){
             $auditFilterAddress = session('filter-search-address');
             $audits = $audits->where(function ($query) use ( $auditFilterAddress ){
