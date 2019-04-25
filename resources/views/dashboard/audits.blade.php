@@ -333,6 +333,39 @@
 			@endif
 			@endif
 
+
+			@if(is_array(session('inspection-assignment-auditor')))
+			@php
+			$inspection_assigned_auditors = '';
+			$inspection_assigned_auditors_hover_text = '';
+			$counter = 0;
+			foreach($inspection_auditors_array as $inspection_auditor){
+				if(in_array($inspection_auditor['user_id'], session('inspection-assignment-auditor'))){
+				 	$counter++;
+				 	if($counter < 3){
+				 		if($inspection_assigned_auditors == ''){
+							$inspection_assigned_auditors = $inspection_auditor['name'];
+						}else{
+							$inspection_assigned_auditors = $inspection_assigned_auditors.", ".$inspection_auditor['name'];
+						}
+				 	}
+				 	if($inspection_assigned_auditors_hover_text == ''){
+						$inspection_assigned_auditors_hover_text = $inspection_auditor['name'];
+					}else{
+						$inspection_assigned_auditors_hover_text = $inspection_assigned_auditors_hover_text.", ".$inspection_auditor['name'];
+					}
+				}
+			}
+			if($counter > 2){
+				$counter = $counter - 2;
+				$inspection_assigned_auditors = $inspection_assigned_auditors." +".$counter." MORE";
+			}
+			@endphp
+			<div id="audit-filter-inspection-auditor" class="uk-badge uk-text-right@s badge-filter" uk-tooltip="title:{{$inspection_assigned_auditors_hover_text}}">
+				<a onClick="filterAudits('inspection-assignment-auditor', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>@if(count(session('inspection-assignment-auditor')) > 1)INSPECTION AUDITORS ASSIGNED: @else INSPECTION AUDITOR ASSIGNED:@endif {{$inspection_assigned_auditors}}</span></a>
+			</div>
+			@endif
+
 			@if(is_array(session('assignment-auditor')))
 			@php
 			$assigned_auditors = '';
@@ -460,23 +493,23 @@
 								</span>
 								@can('access_auditor')
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
-									<i id="assignmentselectionbutton" class="a-avatar-home"></i>
+									<i id="inspectionassignmentselectionbutton" class="a-avatar-home"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
-										<form id="audit_assignment_selection" method="post">
+										<form id="audit_inspection_assignment_selection" method="post">
 				            				<fieldset class="uk-fieldset">
-				            					<div class="uk-margin uk-child-width-auto uk-grid">
-
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
+				            						<h5>INSPECTION ASSIGNMENTS</h5>
 												@foreach($auditors_array as $auditor)
-													<input id="assignment-auditor-{{$auditor['user_id']}}" user-id="{{$auditor['user_id']}}" class="assignmentauditor" type="checkbox" @if(is_array(session('assignment-auditor'))) @if(in_array($auditor['user_id'], session('assignment-auditor')) == 1) checked @endif @endif/>
-													<label for="assignment-auditor-{{$auditor['user_id']}}">{{$auditor['name']}}</label>
+													<input id="inspection-assignment-auditor-{{$auditor['user_id']}}" user-id="{{$auditor['user_id']}}" class="inspectionassignmentauditor" type="checkbox" @if(is_array(session('inspection-assignment-auditor'))) @if(in_array($auditor['user_id'], session('inspection-assignment-auditor')) == 1) checked @endif @endif/>
+													<label for="inspection-assignment-auditor-{{$auditor['user_id']}}">{{$auditor['name']}}</label>
 												@endforeach
 										        </div>
 										        <div class="uk-margin-remove" uk-grid>
 				                            		<div class="uk-width-1-2">
-				                            			<button onclick="updateAuditAssignment(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+				                            			<button onclick="updateAuditInspectionAssignment(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
 				                            		</div>
 				                            		<div class="uk-width-1-2">
-				                            			<button onclick="$('#assignmentselectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+				                            			<button onclick="$('#inspectionassignmentselectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
 				                            		</div>
 				                            	</div>
 				            				</fieldset>
@@ -486,7 +519,7 @@
 				                    <div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="total_inspection_filter" method="post">
 				            				<fieldset class="uk-fieldset">
-				            					<div class="uk-margin uk-child-width-auto uk-grid">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 													<input id="total_inspection_more" class="totalinspectionfilter" type="checkbox" @if(session('total_inspection_filter') != 1) checked @endif/>
 													<label for="total_inspection_more">MORE THAN OR EQUAL TO</label>
 													<input id="total_inspection_less" class="totalinspectionfilter" type="checkbox" @if(session('total_inspection_filter') == 1) checked @endif/>
@@ -512,7 +545,7 @@
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 				            			<form id="audit_compliance_status_selection" method="post">
 				            				<fieldset class="uk-fieldset">
-				            					<div class="uk-margin uk-child-width-auto uk-grid">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 
 												<input id="compliance-status-all" class="" type="checkbox" @if(session('compliance-status-all') == 1) checked @endif/>
 												<label for="compliance-status-all">ALL COMPLIANCE STATUSES</label>
@@ -598,7 +631,7 @@
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
 				            			<form id="file_audit_status_selection" method="post">
 				            				<fieldset class="uk-fieldset">
-				            					<div class="uk-margin uk-child-width-auto uk-grid">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 
 												<input id="file-audit-status-all" class="" type="checkbox" @if(session('file-audit-status-all') == 1) checked @endif/>
 												<label for="file-audit-status-all"><i class="a-folder"></i> <span>ALL FILE AUDIT FINDING STATUSES</span></label>
@@ -634,7 +667,7 @@
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
 				            			<form id="nlt_audit_status_selection" method="post">
 				            				<fieldset class="uk-fieldset">
-				            					<div class="uk-margin uk-child-width-auto uk-grid">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 
 												<input id="nlt-audit-status-all" class="" type="checkbox" @if(session('nlt-audit-status-all') == 1) checked @endif/>
 												<label for="nlt-audit-status-all"><i class="a-booboo"></i> <span>ALL NLT AUDIT FINDING STATUSES</span></label>
@@ -670,7 +703,7 @@
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
 				            			<form id="lt_audit_status_selection" method="post">
 				            				<fieldset class="uk-fieldset">
-				            					<div class="uk-margin uk-child-width-auto uk-grid">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 
 												<input id="lt-audit-status-all" class="" type="checkbox" @if(session('lt-audit-status-all') == 1) checked @endif/>
 												<label for="lt-audit-status-all"><i class="a-skull"></i> <span>ALL LT AUDIT FINDING STATUSES</span></label>
@@ -730,7 +763,32 @@
 			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid> 
 			            		@can('access_auditor')
 			            		<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i class="a-avatar"></i>
+									<i id="assignmentselectionbutton" class="a-avatar"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+										<form id="audit_assignment_selection" method="post">
+				            				<fieldset class="uk-fieldset">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
+				            						<h5>AUDITS FOR</h5>
+				            						<input id="assignment-auditor-all" class="" type="checkbox" @if(!is_array(session('assignment-auditor'))) checked @endif/>
+													<label for="assignment-auditor-all">ALL AUDITORS</label>
+
+												@foreach($auditors_array as $auditor)
+													<input id="assignment-auditor-{{$auditor['user_id']}}" user-id="{{$auditor['user_id']}}" class="assignmentauditor" type="checkbox" @if(is_array(session('assignment-auditor'))) @if(in_array($auditor['user_id'], session('assignment-auditor')) == 1) checked @endif @endif/>
+													<label for="assignment-auditor-{{$auditor['user_id']}}">{{$auditor['name']}}</label>
+												@endforeach
+										        </div>
+										        <div class="uk-margin-remove" uk-grid>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="updateAuditAssignment(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+				                            		</div>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="$('#assignmentselectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+				                            		</div>
+				                            	</div>
+				            				</fieldset>
+				                        </form>
+				            			
+				                    </div>
 								</span>
 								@endcan
 								<span class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
@@ -828,7 +886,7 @@
 			            		<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px;">
 			            			<form id="audit_steps_selection" method="post">
 			            				<fieldset class="uk-fieldset">
-			            					<div class="uk-margin uk-child-width-auto uk-grid">
+			            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 			            					@if(session('step-all') == 0)
 									            <input id="step-all" type="checkbox" />
 												<label for="step-all">ALL STEPS (CLICK TO SELECT ALL)</label>
@@ -1050,6 +1108,19 @@ The following div is defined in this particular tab and pushed to the main layou
 		    	$('#step-all').prop('checked', false);
 			}
 	    });
+
+	    $('#assignment-auditor-all').click(function() {
+			if($('#assignment-auditor-all').prop('checked')){
+				$('input.assignmentauditor').prop('checked', false);
+			}
+	    });
+		$(".assignmentauditor").click(function() {
+			// compliance-status-all, compliance-status-nc, compliance-status-c, compliance-status-rr
+			if($(this).prop('checked') && $('#assignment-auditor-all').prop('checked')){ 
+		    	$('#assignment-auditor-all').prop('checked', false);
+			}
+		});
+
 	    @endcan
 
 	    $("#filter-by-project").keypress(function(event) {
@@ -1438,16 +1509,45 @@ The following div is defined in this particular tab and pushed to the main layou
     	e.preventDefault();
     	var form = $('#audit_assignment_selection');
 
+    	if($('#assignment-auditor-all').prop('checked')){
+    		$.post("/session/", {
+	            'data' : [['assignment-auditor', 0]],
+	            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+	            $('#assignmentselectionbutton').trigger( 'click' );
+	            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+	        } );
+    	}else{
+    		var selected = [];
+			$('#audit_assignment_selection input:checked').each(function() {
+			    selected.push($(this).attr('user-id'));
+			});
+			
+	        $.post("/session/", {
+	            'data' : [['assignment-auditor', selected]],
+	            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+	            $('#assignmentselectionbutton').trigger( 'click' );
+	            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+	        } );
+    	}
+
+    }
+
+    function updateAuditInspectionAssignment(e){
+    	e.preventDefault();
+    	var form = $('#audit_inspection_assignment_selection');
+
 		var selected = [];
-		$('#audit_assignment_selection input:checked').each(function() {
+		$('#audit_inspection_assignment_selection input:checked').each(function() {
 		    selected.push($(this).attr('user-id'));
 		});
 		
         $.post("/session/", {
-            'data' : [['assignment-auditor', selected]],
+            'data' : [['inspection-assignment-auditor', selected]],
             '_token' : '{{ csrf_token() }}'
         }, function(data) {
-            $('#assignmentselectionbutton').trigger( 'click' );
+            $('#inspectionassignmentselectionbutton').trigger( 'click' );
             loadTab('{{ route('dashboard.audits') }}','1','','','',1);
         } );
 
