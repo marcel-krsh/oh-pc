@@ -542,7 +542,6 @@ class FindingController extends Controller
                 // default filter is all
                 $type = 'all';
             }
-
             $checkDoneAddingFindings = 1;
 
             if ($refresh_stream) {

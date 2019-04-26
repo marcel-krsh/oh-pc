@@ -55,14 +55,17 @@ class AllitaAuth
 
         //if(!$request->user()){
         if (env('APP_DEBUG_NO_DEVCO') != 'true') { // allows for local testing
+        		if(Auth::check()) {
+        			return $next($request);
+        		}
             $this->_auth_service = new AuthService;
             $this->_devco_service = new DevcoService;
 
             $this->authenticate($request);
         }
-            
 
-             
+
+
 
             // temporary solution
             // if($request->has('user_id')){
@@ -145,9 +148,9 @@ class AllitaAuth
                             $failedLoginReason = 'Invalid Cookie Used:'.$e;
                 }
 
-                
+
                 $credentials = explode('|', $rememberMeCookieValueDecrypted);
-                
+
                 // make sure this is not double encrypted:
                 if (count($credentials)>2) {
                     $explodedCredentials = true;
@@ -288,7 +291,7 @@ class AllitaAuth
                 $newTracker->save();
             } else {
                 //update the current tracking ip:
-                
+
                 //check that the last login fail for this ip was within the last 5 minutes
                 if ($currentlyBlocked->last_failed_time > (time() - 300)) {
                     $loginTries = $currentlyBlocked->tries + 1;
@@ -338,7 +341,7 @@ class AllitaAuth
             }
         }
 
-        
+
 
         ////////////////////////////////////////////////////////
         //// check if the authorized person is trying to unlock the ip
@@ -407,7 +410,8 @@ class AllitaAuth
         // user false // not logged in and/or no credentials
         if ($user == false) {
             //dd('User login failed: '.$failedLoginReason);
-            exit('<script>alert(\'Uh oh, looks like your login expired. Let me take you to DevCo to get you logged in.\'); window.location=\''.$devcoLoginUrl.'?redirect='.urlencode($request->fullUrl())   .'\';</script>');
+            return redirect('login');
+            // exit('<script>alert(\'Uh oh, looks like your login expired. Let me take you to DevCo to get you logged in.\'); window.location=\''.$devcoLoginUrl.'?redirect='.urlencode($request->fullUrl())   .'\';</script>');
         }
 
         // 2fa redirect
@@ -420,7 +424,7 @@ class AllitaAuth
         $token = str_random(10);
         $current_user->socket_id = $token;
         $current_user->save();
-        
+
 
         //////////////// OLD STUFF ///////////////////
 
@@ -431,7 +435,7 @@ class AllitaAuth
         //         // make sure life span of cookie to 20 minutes...
 
         //         $rememberMeCookieValue = $request->cookie($name);
-                
+
         //         if(!is_null($rememberMeCookieValue)){
         //             $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
 
@@ -501,7 +505,7 @@ class AllitaAuth
 
         //         // we have user_id and token, check credentials with Devco
         //          $check_credentials = $this->_auth_service->userAuthenticateToken($credentials['user_id'], $credentials['token'], $ip, $user_agent);
-                
+
         //         //dd($check_credentials);
         //         if(!$check_credentials->data->attributes->{'authenticated'} || !$check_credentials->data->attributes->{'user-activated'} || !$check_credentials->data->attributes->{'user-exists'}){
 
@@ -513,7 +517,7 @@ class AllitaAuth
 
         //         }
 
-            
+
 
 
         //         // if($auth_tracker){
@@ -553,7 +557,7 @@ class AllitaAuth
         //     //dd('User is logged in already'.$user);
         //     // make sure the user corresponds to the Devco user
         //     ///login user by user id
-        
+
         //     //
         // }
     }
