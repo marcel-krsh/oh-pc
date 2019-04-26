@@ -23,7 +23,9 @@
         "renatomarinho/laravel-page-speed": "^1.8",
         "staudenmeir/eloquent-json-relations": "^1.1",
         "tremby/laravel-git-version": "^1.1",
-        "yajra/laravel-datatables": "^1.0"
+        "yajra/laravel-datatables": "^1.0",
+        "soumen-dey/laravel-user-agent": "^1.0",
+        "torann/geoip": "^1.0"
     },
     "require-dev": {
         "aloha/twilio": "^4.0",

@@ -43,4 +43,9 @@ class People extends Model
     {
         return $this->hasOne(\App\Models\EmailAddress::class, 'email_address_key', 'default_email_address_key');
     }
+
+    public function allita_phone() : HasOne
+    {
+        return $this->hasOne(\App\Models\PhoneNumber::class, 'id', 'default_phone_number_id');
+    }
 }

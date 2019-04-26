@@ -167,6 +167,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        \Torann\GeoIP\GeoIPServiceProvider::class,
+        Soumen\Agent\AgentServiceProvider::class,
+
     ],
 
     /*
@@ -220,6 +223,8 @@ return [
         'GeoData' => App\Helpers\GeoData::class,
         'Zipper' => 'Chumper\Zipper\Zipper',
         'PDF' => Barryvdh\DomPDF\Facade::class,
+        'GeoIP' => \Torann\GeoIP\Facades\GeoIP::class,
+        'Agent' => Soumen\Agent\Facades\Agent::class,
 
     ],
 

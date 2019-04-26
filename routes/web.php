@@ -127,6 +127,10 @@
         Route::post('/session/{name?}/{value?}', 'DataController@setSession');
 
         Route::get('/', 'DashboardController@index');
+        Route::get('/home', function () {
+                return redirect('/');
+        });
+
         //Route::get('/', function(){dd(\Auth::user(),session('brian'));});
         Route::get('dashboard/audits', 'DashboardController@audits')->name('dashboard.audits');
         Route::get('dashboard/audits/{audit}/buildings', 'AuditController@buildingsFromAudit')->name('audit.buildings');
@@ -351,6 +355,33 @@
 
         // Admin tabs
 
+
+				Route::get('/modals/createuser', 'PagesController@createUser');
+				Route::post('/modals/createuser', 'PagesController@createUserSave')->name('admin.createuser');
+				Route::get('/user/complete-registration/{userId}', 'PagesController@getUserCompleteRegistration');
+				Route::post('/user/complete-registration', 'PagesController@postUserCompleteRegistration')->name('user.complete-registration');
+				Route::get('/modals/edituser/{id}', 'PagesController@editUser');
+				Route::post('/modals/edituser/{id}', 'PagesController@editUserSave');
+				Route::get('/modals/resetpassword/{id}', 'PagesController@resetPassword');
+				Route::post('/modals/resetpassword/{id}', 'PagesController@resetPasswordSave');
+				Route::get('/modals/deactivateuser/{id}', 'PagesController@deactivateUser');
+				Route::post('/modals/deactivateuser/{id}', 'PagesController@deactivateUserSave');
+				Route::get('/modals/activateuser/{id}', 'PagesController@activateUser');
+				Route::post('/modals/activateuser/{id}', 'PagesController@activateUserSave');
+
+
+				Route::post('register-user', 'Auth\RegisterController@postRegister');
+				Route::get('/ip', 'Auth\LoginController@getUserIpAddr');
+				Route::get('/code', 'Auth\LoginController@getCode');
+				Route::post('/code', 'Auth\LoginController@postCode');
+				Route::get('/verification', 'Auth\LoginController@getVerification');
+				Route::post('/verification', 'Auth\LoginController@postVerification');
+				Route::get('/request-access', 'Auth\LoginController@getRequestAccess');
+				Route::post('/request-access', 'Auth\LoginController@postRequestAccess');
+				Route::get('user/approve-access/{user_id}', 'Auth\LoginController@getApproveAccess');
+				Route::post('user/approve-access/{user_id}', 'Auth\LoginController@postApproveAccess');
+
+
         Route::group(['prefix'=>'tabs','middleware'=>'can:access_admin'], function ()  {
 
                 Route::get('organization', 'AdminToolController@organizationIndex');
@@ -362,7 +393,10 @@
                 Route::get('defaultfollowup', 'AdminToolController@defaultfollowupIndex');
                 Route::get('boilerplate', 'AdminToolController@boilerplateIndex');
                 Route::get('program', 'AdminToolController@programIndex');
+
                 Route::get('users', 'AdminToolController@usersIndex');
+
+
                 Route::post('users', 'AdminToolController@searchUsers')->name('users.search');
                 Route::get('document_category', 'AdminToolController@documentIndex');
                 Route::get('county', 'AdminToolController@countyIndex');
