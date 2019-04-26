@@ -1,4 +1,4 @@
-﻿<?php session(['disablePacer'=>1]); ?>
+<?php session(['disablePacer'=>1]); ?>
 <?php setlocale(LC_MONETARY, 'en_US');
 /// protect against inactive users.
 $allowPageLoad = false;
@@ -11,34 +11,34 @@ if(Auth::check()){
 	/// user is not logged in -- the auth middleware will protect against that access.
 	$allowPageLoad = true;
 }
-	if($allowPageLoad){
-?>
-<!DOCTYPE html>
-<html lang="en" dir="ltr" id="parentHTML" class="no-js">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="csrf-token" content="{{ csrf_token() }}">
-	<title>
-	@if(Auth::check() && Auth::user()->entity_type == 'hfa')
-	Allita Program Compliance
-	@else
-	Dev|Co Inspect
-	@endif
-	</title>
+if($allowPageLoad){
+	?>
+	<!DOCTYPE html>
+	<html lang="en" dir="ltr" id="parentHTML" class="no-js">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="csrf-token" content="{{ csrf_token() }}">
+		<title>
+			@if(Auth::check() && Auth::user()->entity_type == 'hfa')
+			Allita Program Compliance
+			@else
+			Dev|Co Inspect
+			@endif
+		</title>
 
-	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-	<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
-	<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
-	<link rel="manifest" href="/manifest.json">
-	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+		<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+		<link rel="manifest" href="/manifest.json">
+		<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
-	<meta name="theme-color" content="#ffffff">
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+		<meta name="theme-color" content="#ffffff">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 
-	@if (Auth::guest())
-	@else
-	<link rel="stylesheet" href="/css/documents-tab.css">
+		@if (Auth::guest())
+		@else
+		<link rel="stylesheet" href="/css/documents-tab.css">
 	<!-- <link rel="stylesheet" href="/css/cdfs-tab.css">
 
 	<link rel="stylesheet" href="/css/documents-tab.css">
@@ -58,93 +58,93 @@ if(Auth::check()){
 	@if(session('disablePacer')==1)
 	<style type="text/css">
 		body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-done):after {
-	  		opacity:1 !important;
+			opacity:1 !important;
 		}
 		/*Universal header styles*/
 
 		#apcsv-logo {
-		    position: relative; top: -9px; padding-left: 10px; display: inline-block;
+			position: relative; top: -9px; padding-left: 10px; display: inline-block;
 		}
 		@media only screen and (max-width: 1310px) {
 			#apcsv-logo {
-		    display: none;
+				display: none;
 			}
 		}
 
 		#apcsv-list-left {
-		    float: left;
-		    display: inline-block;
-		    margin-top: 3px;
+			float: left;
+			display: inline-block;
+			margin-top: 3px;
 		}
 		#apcsv-avatar {
-		    float: right;
-		    margin-right: 25px;
-		    border-radius: 15px;
-		    width: 20px;
-		    height: 20px;
-		    padding: 5px;
-		    font-size: 14px;
-		    background: #123458;
-		    text-align: center;
-		    -webkit-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.22);
-		    -moz-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.22);
-		    box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.22);
-		    color: white;
+			float: right;
+			margin-right: 25px;
+			border-radius: 15px;
+			width: 20px;
+			height: 20px;
+			padding: 5px;
+			font-size: 14px;
+			background: #123458;
+			text-align: center;
+			-webkit-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.22);
+			-moz-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.22);
+			box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.22);
+			color: white;
 		}
 		#apcsv-menu-icon {
-		    float: right;
-		    position: relative;
-		    top: 3px;
-		    text-decoration: none;
-		    padding: 1px 5px;
-		    margin-right: 15px;
-		    border: 1px solid #123458;
+			float: right;
+			position: relative;
+			top: 3px;
+			text-decoration: none;
+			padding: 1px 5px;
+			margin-right: 15px;
+			border: 1px solid #123458;
 		}
 		#apcsv-list-right {
-		    float: right;
-		    display: inline-block;
-		    margin-top: 3px;
+			float: right;
+			display: inline-block;
+			margin-top: 3px;
 		}
 		.pcsv-toggle {
-		    color: #123458 ;
-		    text-decoration: none;
+			color: #123458 ;
+			text-decoration: none;
 		}
 		#apcsv-menu-items.hidden {
-		    visibility: hidden;
-		    opacity: 0;
+			visibility: hidden;
+			opacity: 0;
 		}
 		#apcsv-menu-items {
-		    display: block;
-		    position: absolute;
-		    top: 35px;
-		    right: -55px;
-		    width: 200px;
-		    padding: 15px;
-		    background: #fbfbfb;
-		    border-radius: 3px;
-		    box-shadow: 0px 8px 10px 0px rgba(0,0,0,0.22);
-		    transition: opacity 600ms, visibility 600ms;
+			display: block;
+			position: absolute;
+			top: 35px;
+			right: -55px;
+			width: 200px;
+			padding: 15px;
+			background: #fbfbfb;
+			border-radius: 3px;
+			box-shadow: 0px 8px 10px 0px rgba(0,0,0,0.22);
+			transition: opacity 600ms, visibility 600ms;
 		}
 		.apcsv-menu-item:first-of-type {
-		    border-radius: 6px 6px 0 0;
+			border-radius: 6px 6px 0 0;
 		}
 		.apcsv-menu-item {
-		    display: block;
-		    border-bottom: 1px solid lightgray;
-		    padding-top: 15px;
-		    padding-bottom: 15px;
-		    transition: background-color 400ms;
+			display: block;
+			border-bottom: 1px solid lightgray;
+			padding-top: 15px;
+			padding-bottom: 15px;
+			transition: background-color 400ms;
 		}
 		.apcsv-menu-item:last-of-type {
-		    border-bottom: none;
-		    border-radius: 0 0 6px 6px;
+			border-bottom: none;
+			border-radius: 0 0 6px 6px;
 		}
 		.apcsv-menu-item a {
-		    color: #123458;
-		    text-decoration: none;
-		    display: block;
-		    text-align: center;
-		    font-weight: 100;
+			color: #123458;
+			text-decoration: none;
+			display: block;
+			text-align: center;
+			font-weight: 100;
 		}
 		#main-tabs {
 			padding-top:0px !important;
@@ -176,25 +176,25 @@ if(Auth::check()){
 				dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);
 			@endCan
 		}
-	    window.Laravel = <?php echo json_encode([
-	        'csrfToken' => csrf_token(),
-	    ]); ?>
-	</script>
+		window.Laravel = <?php echo json_encode([
+			'csrfToken' => csrf_token(),
+			]); ?>
+		</script>
 
-	<script src="/js/jquery.js"></script>
-	<script src="/js/uikit.js"></script>
-	<script src="/js/uikit-icons.min.js"></script>
-	<script src="/js/handsontable.full.min.js"></script>
+		<script src="/js/jquery.js"></script>
+		<script src="/js/uikit.js"></script>
+		<script src="/js/uikit-icons.min.js"></script>
+		<script src="/js/handsontable.full.min.js"></script>
 
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
 
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>  -->
-	<script src="{{ mix('js/app.js') }}"></script>
+		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script> -->
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>  -->
+		<script src="{{ mix('js/app.js') }}"></script>
 
-	<script>
+		<script>
 		// $('select').multipleSelect();
 	</script>
 
@@ -212,20 +212,20 @@ if(Auth::check()){
 
 	@yield('head')
 
-    <style>
-	  [v-cloak] {
-	    display: none;
-	  }
-	  .uk-notification {z-index: 1060;}
+	<style>
+		[v-cloak] {
+			display: none;
+		}
+		.uk-notification {z-index: 1060;}
 	</style>
 
 	<script>
 		// initial values
-	    var statsAuditsTotal = "{{$stats_audits_total}}";
-	    var statsCommunicationTotal = "{{$stats_communication_total}}";
-	    var statsReportsTotal = "{{$stats_reports_total}}";
-	    var uid = "{{$current_user->id}}";
-	    var sid = "{{$current_user->socket_id}}";
+		var statsAuditsTotal = "{{$stats_audits_total}}";
+		var statsCommunicationTotal = "{{$stats_communication_total}}";
+		var statsReportsTotal = "{{$stats_reports_total}}";
+		var uid = "{{$current_user->id}}";
+		var sid = "{{$current_user->socket_id}}";
 	</script>
 
 </head>
@@ -235,16 +235,16 @@ if(Auth::check()){
 	<div id="phone" class="uk-visible-touch uk-hidden@s">
 		<div id="phone-app" class="uk-container uk-align-center" >
 			<div class="uk-padding-small" style="background-color:#3c3c3c; margin-bottom: 200px; z-index: 980;" uk-sticky="width-element: #phone; show-on-up: true">
-					<a class="uk-contrast" uk-toggle="target: #offcanvas-phone"><h2><i class="a-menu uk-text-muted uk-contrast"></i> DEV|CO INSPECT</h2></a>
-				</div>
-				<div uk-grid>
+				<a class="uk-contrast" uk-toggle="target: #offcanvas-phone"><h2><i class="a-menu uk-text-muted uk-contrast"></i> DEV|CO INSPECT</h2></a>
+			</div>
+			<div uk-grid>
 
 				<div id="mobile-content" class="uk-width-1-1" style="height: 1600px;">
 				</div>
 				<script type="text/javascript">
 					isMobile = function(){
-    							var isMobile = window.matchMedia("only screen and (max-width: 640px)");
-					    return isMobile.matches ? true : false
+						var isMobile = window.matchMedia("only screen and (max-width: 640px)");
+						return isMobile.matches ? true : false
 					}
 					if(isMobile){
 						//load mobile content
@@ -255,16 +255,16 @@ if(Auth::check()){
 	</div>
 
 	<div id="offcanvas-phone" uk-offcanvas="overlay: true">
-    	<div class="uk-offcanvas-bar" style="background-color: #0d0d23">
+		<div class="uk-offcanvas-bar" style="background-color: #0d0d23">
 
-	        <button class="uk-offcanvas-close" type="button" uk-close></button>
+			<button class="uk-offcanvas-close" type="button" uk-close></button>
 
 
-	        <h3>Use Your Phone Instead?</h3>
+			<h3>Use Your Phone Instead?</h3>
 
-	        <p>If you want to access Allita's PC Inspect tools on your phone... tell your manager you found this easter egg, and want it to use it instead of a tablet.</p>
+			<p>If you want to access Allita's PC Inspect tools on your phone... tell your manager you found this easter egg, and want it to use it instead of a tablet.</p>
 
-	    </div>
+		</div>
 	</div>
 
 
@@ -279,8 +279,8 @@ if(Auth::check()){
 						<div class="uk-width-1-1">
 							<img id="apcsv-logo" src="/images/devco_logo.png" alt="DEV|CO Inspection powered by Allita PC" >
 
-					        @can('access_auditor')
-					        <div class="menu-search uk-margin-large-left uk-padding-bottom" style="display: inline-block; position: relative;top:-5px;" class="uk-margin-large-left">
+							@can('access_auditor')
+							<div class="menu-search uk-margin-large-left uk-padding-bottom" style="display: inline-block; position: relative;top:-5px;" class="uk-margin-large-left">
 								<div class="uk-autocomplete quick-lookup-box uk-inline">
 									<span class="uk-form-icon a-magnify-2"></span>
 									<input class="uk-input" id="quick-lookup-box" type="text" placeholder="QUICK LOOK UP..." style="width: 250px;">
@@ -290,23 +290,23 @@ if(Auth::check()){
 							<div style="width: 20px; display: inline-block;"></div>
 							@endCan
 
-					    	<div id="top-tabs-container" style="display: inline-block; overflow: visible; padding-top:15px; min-height: 26px;">
-						        @can('access_pm')
-						        <ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m" style="background-color: transparent;">
-					    			<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
-					    				<a href="" style="">
-					    					<span class="list-tab-text">
-					    						<span class="uk-badge" v-if="statsAuditsTotal" v-cloak>@{{statsAuditsTotal}}
-					    						</span>
-					    						<i class="a-mobile-home"></i> AUDITS
-					    					</span>
-					    				</a>
-					    			</li>
+							<div id="top-tabs-container" style="display: inline-block; overflow: visible; padding-top:15px; min-height: 26px;">
+								@can('access_pm')
+								<ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m" style="background-color: transparent;">
+									<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
+										<a href="" style="">
+											<span class="list-tab-text">
+												<span class="uk-badge" v-if="statsAuditsTotal" v-cloak>@{{statsAuditsTotal}}
+												</span>
+												<i class="a-mobile-home"></i> AUDITS
+											</span>
+										</a>
+									</li>
 									<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
 										<a href="">
 											<span class="list-tab-text">
 												<span class="uk-badge" v-if="statsCommunicationTotal" v-cloak v-html="statsCommunicationTotal"></span>
-												 <i class="a-envelope-3"></i> COMMUNICATIONS
+												<i class="a-envelope-3"></i> COMMUNICATIONS
 											</span>
 										</a>
 									</li>
@@ -324,8 +324,8 @@ if(Auth::check()){
 								@endcan
 							</div>
 
-				    		<div id="apcsv-avatar" class="" title="{{Auth::user()->full_name()}} - User ID:{{Auth::user()->id}} @if(Auth::user()->root_access()) Root Access @elseIf(Auth::user()->admin_access()) Admin Access @elseIf(Auth::user()->auditor_access()) Auditor Access @elseIf(Auth::user()->pm_access()) Property Manager @endIf" onclick="openUserPreferences();" style="cursor: pointer; margin-top:15px">
-							{{Auth::user()->initials()}}
+							<div id="apcsv-avatar" class="" title="{{Auth::user()->full_name()}} - User ID:{{Auth::user()->id}} @if(Auth::user()->root_access()) Root Access @elseIf(Auth::user()->admin_access()) Admin Access @elseIf(Auth::user()->auditor_access()) Auditor Access @elseIf(Auth::user()->pm_access()) Property Manager @endIf" onclick="openUserPreferences();" style="cursor: pointer; margin-top:15px">
+								{{Auth::user()->initials()}}
 							</div>
 							<div id="apcsv-menu-icon" class="hvr-grow uk-inline" style="margin-top:15px">
 								<button id="apcsv-toggle" class="pcsv-toggle" style="background-color: transparent; border: none; cursor: pointer; 0" >APPS</button>
@@ -343,7 +343,7 @@ if(Auth::check()){
 									@endif
 								</div>
 							</div>
-				    	</div>
+						</div>
 					</div>
 				</div>
 
@@ -450,52 +450,52 @@ if(Auth::check()){
 	<script type="text/javascript" src="/js/systems/outcomes-tab.js"></script> -->
 	<script type="text/javascript" src="/js/systems/processing-tab.js"></script>
 	<script>
-	    var quicklookupbox = new autoComplete({
-	    	selector: '#quick-lookup-box',
-	        minChars: 3,
-	        cache: 1,
-	        delay: 150,
+		var quicklookupbox = new autoComplete({
+			selector: '#quick-lookup-box',
+			minChars: 3,
+			cache: 1,
+			delay: 150,
 			offsetLeft: 0,
 			offsetTop: 1,
 			menuClass: '',
 
-	        source: function(term, suggest){
-	        	console.log('Looking up... '+term);
-	        	$.get( "/autocomplete/all", {
+			source: function(term, suggest){
+				console.log('Looking up... '+term);
+				$.get( "/autocomplete/all", {
 					'search' : term,
 					'_token' : '{{ csrf_token() }}'
 				},
 				function(data) {
 					var output = eval(data);
 					term = term.toLowerCase();
-		            var suggestions = [];
-		            for (i=0;i<output.length;i++)
-		            	suggestions.push(output[i]);
-			        suggest(suggestions);
+					var suggestions = [];
+					for (i=0;i<output.length;i++)
+						suggestions.push(output[i]);
+					suggest(suggestions);
 				},
 				'json' );
-	        },
-	        renderItem: function (item, search){
-			    search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-			    var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-
-			    var output = '<div class="autocomplete-suggestion" data-item-id="'+item[8]+'" data-val="'+search+'">';
-			    output = output + item[4]+'<br />';
-			    output = output + 'Project ID: '+item[7]+'<br />';
-				output = output + 'PM: '+item[6]+'<br />';
-			    output = output + item[0]+'<br />';
-			    output = output + item[1]+', '+item[2]+' '+item[3]+'<br />';
-			    output = output + '</div>';
-
-			    return output;
 			},
-		    onSelect: function(e, term, item){
-		    	e.preventDefault();
-		    	loadTab('/projects/'+item.getAttribute('data-item-id'), '4', 1, 1, '', 1);
+			renderItem: function (item, search){
+				search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+				var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+
+				var output = '<div class="autocomplete-suggestion" data-item-id="'+item[8]+'" data-val="'+search+'">';
+				output = output + item[4]+'<br />';
+				output = output + 'Project ID: '+item[7]+'<br />';
+				output = output + 'PM: '+item[6]+'<br />';
+				output = output + item[0]+'<br />';
+				output = output + item[1]+', '+item[2]+' '+item[3]+'<br />';
+				output = output + '</div>';
+
+				return output;
+			},
+			onSelect: function(e, term, item){
+				e.preventDefault();
+				loadTab('/projects/'+item.getAttribute('data-item-id'), '4', 1, 1, '', 1);
 		    	//loadDetailTab('/parcel/',item.getAttribute('data-item-id'),'1',0,0);
 		    	$('#quick-lookup-box').val('');
 		    }
-	    });
+		  });
 
 	    $( document ).ready(function() {
 	    	$('.uk-sticky-placeholder:last').remove();
@@ -514,18 +514,18 @@ if(Auth::check()){
 	@if($tab !== null)
 	<script>
 
-			setTimeout(function(){
-				$('#{{$tab}}').trigger("click");
-			},100);
+		setTimeout(function(){
+			$('#{{$tab}}').trigger("click");
+		},100);
 
-			window.currentSite='allita_pc';
+		window.currentSite='allita_pc';
 	</script>
 	@else
 	<script >
 
-			setTimeout(function(){
-				$('#detail-tab-1').trigger("click");
-			},100);
+		setTimeout(function(){
+			$('#detail-tab-1').trigger("click");
+		},100);
 
 		window.currentSite='allita_pc';
 
@@ -538,14 +538,14 @@ if(Auth::check()){
 
 		// universal header:
 
-        function ToggleMenu() {
-            var menu = document.getElementById("apcsv-menu-items");
-            if ( menu.classList.contains('hidden') ) {
-                menu.classList.remove('hidden');
-            } else {
-                menu.classList.add('hidden');
-            }
-        }
+		function ToggleMenu() {
+			var menu = document.getElementById("apcsv-menu-items");
+			if ( menu.classList.contains('hidden') ) {
+				menu.classList.remove('hidden');
+			} else {
+				menu.classList.add('hidden');
+			}
+		}
 	</script>
 	<script src="/js/pace.min.js">{{session('disablePacer')}}</script>
 	@endif
@@ -553,15 +553,15 @@ if(Auth::check()){
 	
 	<script>
 		new Vue({
-		  el: '#top-tabs',
-		  data: {
-		    statsAuditsTotal: statsAuditsTotal,
-		    statsCommunicationTotal: statsCommunicationTotal,
-		    statsReportsTotal: statsReportsTotal
-		  	},
+			el: '#top-tabs',
+			data: {
+				statsAuditsTotal: statsAuditsTotal,
+				statsCommunicationTotal: statsCommunicationTotal,
+				statsReportsTotal: statsReportsTotal
+			},
 
-		    mounted: function() {
-		    	console.log("Tabs Working");
+			mounted: function() {
+				console.log("Tabs Working");
 
 
 
@@ -595,15 +595,15 @@ if(Auth::check()){
 	<link rel="stylesheet" href="/css/system-419171130.css">
 
 	<script>
-        window.Laravel = <?php echo json_encode([
-            'csrfToken' => csrf_token(),
-        ]); ?>
-    </script>
-	@if(session('disablePacer') != 1)
-	<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js">{{session('disablePacer')}}</script>
-	@endif
-	<script src="/js/jquery.js"></script>
-	<script src="/js/uikit.min.js"></script>
+		window.Laravel = <?php echo json_encode([
+			'csrfToken' => csrf_token(),
+			]); ?>
+		</script>
+		@if(session('disablePacer') != 1)
+		<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js">{{session('disablePacer')}}</script>
+		@endif
+		<script src="/js/jquery.js"></script>
+		<script src="/js/uikit.min.js"></script>
 	<!-- <script src="/js/components/autocomplete.js"></script>
 	<script src="/js/core/modal.js"></script>
 	<script src="/js/components/lightbox.js"></script>
@@ -639,24 +639,24 @@ if(Auth::check()){
 		UIkit.modal.alert('Sorry your user has been deactivated. You can contact your administrator to reactivate your user and then we can work together again.');
 	</script>
 	<div class="uk-vertical-align uk-text-center uk-height-1-1">
-        <div class="uk-vertical-align-middle uk-margin-top" style="width: 250px;">
+		<div class="uk-vertical-align-middle uk-margin-top" style="width: 250px;">
 
 
 
-            <form class="uk-panel uk-panel-box">
-                <div class="uk-form-row">
-                    <h2 align="center">Inactive User</h2>
-                    <p align="center">{{Auth::user()->name}}</p>
-                </div>
+			<form class="uk-panel uk-panel-box">
+				<div class="uk-form-row">
+					<h2 align="center">Inactive User</h2>
+					<p align="center">{{Auth::user()->name}}</p>
+				</div>
 
-                <div class="uk-form-row">
-                    <a class="uk-width-1-1 uk-button uk-button-primary uk-button-large" href="/login">Return to Login</a>
-                </div>
+				<div class="uk-form-row">
+					<a class="uk-width-1-1 uk-button uk-button-primary uk-button-large" href="/login">Return to Login</a>
+				</div>
 
-            </form>
+			</form>
 
-        </div>
-    </div>
+		</div>
+	</div>
 
 </body>
 </html>

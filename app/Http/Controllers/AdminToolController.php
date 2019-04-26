@@ -42,9 +42,9 @@ class AdminToolController extends Controller
         }
     }
 
-   
-    
-    
+
+
+
 
     /**
      * Document Category Create
@@ -70,7 +70,7 @@ class AdminToolController extends Controller
         }
     }
 
-    
+
 
     /**
      * County Create
@@ -104,7 +104,7 @@ class AdminToolController extends Controller
      */
     public function amenityCreate($id = null)
     {
-        
+
         $amenity = Amenity::where('id', '=', $id)->first();
         $huds = HudInspectableArea::orderBy('name')->get()->all();
 
@@ -232,7 +232,7 @@ class AdminToolController extends Controller
         } else {
             $organizations = Organization::with(['address','person'])->orderBy('organization_name', 'asc')->paginate(40);
         }
-        
+
         return view('admin_tabs.organizations', compact('organizations'));
     }
 
@@ -261,7 +261,7 @@ class AdminToolController extends Controller
                                 leftJoin('organizations','users.organization_id','organizations.id')->
                                 leftJoin('phone_numbers','organizations.default_phone_number_id','phone_numbers.id')->
                                 leftJoin('addresses','organizations.default_address_id','addresses.id')->
-                                select('users.*','line_1','line_2','city','state','zip','organization_name','role_name','area_code','phone_number','extension','last_name','first_name')->
+                                select('users.*','line_1','line_2','city','state','zip','organization_name', 'role_id', 'role_name','area_code','phone_number','extension','last_name','first_name')->
                                 where('first_name','LIKE','%'.$search.'%')->
                                 orWhere('last_name','LIKE','%'.$search.'%')->
                                 orWhere('organization_name','LIKE','%'.$search.'%')->
@@ -276,13 +276,18 @@ class AdminToolController extends Controller
                             leftJoin('organizations','users.organization_id','organizations.id')->
                             leftJoin('addresses','organizations.default_address_id','addresses.id')->
                             leftJoin('phone_numbers','organizations.default_phone_number_id','phone_numbers.id')->
-                            select('users.*','line_1','line_2','city','state','zip','organization_name','role_name','area_code','phone_number','extension','last_name','first_name')->
+                            select('users.*','line_1','line_2','city','state','zip','organization_name','role_id', 'role_name','area_code','phone_number','extension','last_name','first_name')->
                             orderBy('last_name', 'asc')->
                             paginate(25);
         }
         //dd($users);
-        
-        return view('admin_tabs.users', compact('users'));
+        if(Auth::user()->roles) {
+        	$user_role = Auth::user()->roles->first()->role_id;
+        } else{
+        	$user_role = 0;
+        }
+
+        return view('admin_tabs.users', compact('users', 'user_role'));
     }
 
     /**
@@ -334,7 +339,7 @@ class AdminToolController extends Controller
         } else {
             $findingtypes = FindingType::orderBy('name', 'asc')->paginate(25);
         }
-        
+
         return view('admin_tabs.findingtypes', compact('findingtypes'));
     }
 
@@ -371,7 +376,7 @@ class AdminToolController extends Controller
         return view('admin_tabs.program', compact('programs'));
     }
 
-    
+
 
     /**
      * Document Index
@@ -384,9 +389,9 @@ class AdminToolController extends Controller
         return view('admin_tabs.document_categories', compact('documents'));
     }
 
-    
 
-    
+
+
 
     /**
      * County Index
@@ -401,7 +406,7 @@ class AdminToolController extends Controller
 
     //store form data.
 
-    
+
     /**
      * Program Store
      *
@@ -455,7 +460,7 @@ class AdminToolController extends Controller
         }
     }
 
-    
+
 
     /**
      * Document Category Store
@@ -597,7 +602,7 @@ class AdminToolController extends Controller
             return response('<h2>Success!</h2><p>I created the HUD area.</p>');
         } else {
             $hud = HudInspectableArea::where('id', '=', $id)->first();
-            
+
             if ($hud) {
                 $hud->update([
                 'name' => $inputs['name'],
@@ -702,11 +707,11 @@ class AdminToolController extends Controller
                 }
 
                 return response('<h2>Success!</h2><p>I created the amenity.</p>');
-             
+
 
         }else{
             $amenity = Amenity::where('id', '=', $id)->first();
-           
+
             if ($amenity) {
                 $amenity->update([
                     'amenity_description' => $inputs['amenity_description'],
@@ -807,7 +812,7 @@ class AdminToolController extends Controller
                     ]);
                 }
             }
-            
+
             // add followups
             if (count($followups)) {
                 foreach ($followups as $followup) {
@@ -853,7 +858,7 @@ class AdminToolController extends Controller
 
                 // remove boilerplates
                 // remove followups
-                
+
                 FindingTypeBoilerplate::where('finding_type_id', '=', $finding_type->id)->delete();
                 HudFindingType::where('finding_type_id', '=', $finding_type->id)->delete();
                 DefaultFollowup::where('finding_type_id', '=', $finding_type->id)->delete();
@@ -877,7 +882,7 @@ class AdminToolController extends Controller
                         ]);
                     }
                 }
-                
+
                 // add followups
                 if (count($followups)) {
                     foreach ($followups as $followup) {
@@ -941,8 +946,8 @@ class AdminToolController extends Controller
                 ]);
                 $new_role->save();
             }
-        
-     
+
+
         return 1;
     }
 

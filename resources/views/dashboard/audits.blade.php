@@ -163,24 +163,158 @@
 </template>
 <div id="audits" class="uk-no-margin-top" uk-grid>
 	<div class="uk-margin-remove-top uk-width-1-1" uk-grid>
-		<div id="auditsfilters" class="uk-width-2-3 uk-margin-top">
-			@if(isset($auditFilterMineOnly))
-			<!-- <div id="audit-filter-mine" class="uk-badge uk-text-right@s badge-filter">
+		<div id="auditsfilters" class="uk-width-1-1 uk-margin-top">
+			@if(isset($auditFilterMineOnly) && $auditFilterMineOnly == 1)
+			<div id="audit-filter-mine" class="uk-badge uk-text-right@s badge-filter">
 				@can('access_auditor')
-				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'no']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>MY AUDITS ONLY</span></a>
+				<a onClick="filterAudits('audit-my-audits');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>MY AUDITS ONLY</span></a>
 				@else
 				@endcan
-			</div> -->
+			</div>
 			@endif
-			<div id="audit-filter-project" class="uk-badge uk-text-right@s badge-filter" hidden>
-				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'yes']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>FILTER PROJECT</span></a>
+			@if(isset($auditFilterProjectId) && $auditFilterProjectId != 0)
+			<div id="audit-filter-project" class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('filter-search-project');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>PROJECT/AUDIT ID "{{$auditFilterProjectId}}"</span></a>
 			</div>
-			<div id="audit-filter-name" class="uk-badge uk-text-right@s badge-filter" hidden>
-				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'yes']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>FILTER PROJECT NAME</span></a>
+			@endif
+			@if(isset($auditFilterProjectName) && $auditFilterProjectName != '')
+			<div id="audit-filter-name" class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('filter-search-pm', '');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>PROJECT/PM NAME "{{$auditFilterProjectName}}"</span></a>
 			</div>
-			<div id="audit-filter-address" class="uk-badge uk-text-right@s badge-filter" hidden>
-				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'yes']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>FILTER ADDRESS</span></a>
+			@endif
+			@if(isset($auditFilterAddress) && $auditFilterAddress != '')
+			<div id="audit-filter-address" class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('filter-search-address', '');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>ADDRESS "{{$auditFilterAddress}}"</span></a>
 			</div>
+			@endif
+
+			@foreach($steps as $step)
+				@if(session($step->session_name) == 1)
+				<div id="audit-filter-step" class="uk-badge uk-text-right@s badge-filter">
+					<a onClick="filterAudits('{{$step->session_name}}', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>STEP "{{$step->name}}"</span></a>
+				</div>
+				@endif
+			@endforeach
+
+			@if(isset($auditFilterComplianceRR) && $auditFilterComplianceRR != '0')
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('compliance-status-rr', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>UNITS REQUIRE REVIEW</span></a>
+			</div>
+			@endif
+
+			@if(isset($auditFilterComplianceNC) && $auditFilterComplianceNC != '0')
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('compliance-status-nc', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>NOT COMPLIANT</span></a>
+			</div>
+			@endif
+
+			@if(isset($auditFilterComplianceC) && $auditFilterComplianceC != '0')
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('compliance-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>COMPLIANT</span></a>
+			</div>
+			@endif
+
+			@if(session('file-audit-status-r') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('file-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS RESOLVED FILE AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('file-audit-status-ar') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('file-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ACTION REQUIRED FILE AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('file-audit-status-c') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('file-audit-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS CRITICAL FILE AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('file-audit-status-nf') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('file-audit-status-nf', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOES NOT HAVE FILE AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+
+
+			@if(session('nlt-audit-status-r') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('nlt-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS RESOLVED NLT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('nlt-audit-status-ar') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('nlt-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ACTION REQUIRED NLT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('nlt-audit-status-c') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('nlt-audit-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS CRITICAL NLT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('nlt-audit-status-nf') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('nlt-audit-status-nf', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOES NOT HAVE NLT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+
+
+			@if(session('lt-audit-status-r') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('lt-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS RESOLVED LT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('lt-audit-status-ar') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('lt-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ACTION REQUIRED LT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('lt-audit-status-c') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('lt-audit-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS CRITICAL LT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(session('lt-audit-status-nf') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('lt-audit-status-nf', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOES NOT HAVE LT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
+			@if(isset($auditFilterInspection) && $auditFilterInspection != '')
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('total_inspection_amount', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>{{$auditFilterInspection}}</span></a>
+			</div>
+			@endif
+
+			@if(session('schedule_assignment_unassigned') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('schedule_assignment_unassigned', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH UNASSIGNED AMENITIES</span></a>
+			</div>
+			@endif
+
+			@if(session('schedule_assignment_not_enough') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('schedule_assignment_not_enough', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH NOT ENOUGH HOURS SCHEDULED</span></a>
+			</div>
+			@endif
+
+			@if(session('schedule_assignment_too_many') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('schedule_assignment_too_many', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH TOO MANY HOURS SCHEDULED</span></a>
+			</div>
+			@endif
+			
+
 			<div id="audit-filter-date" class="uk-badge uk-text-right@s badge-filter" hidden>
 				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'yes']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>FILTER HERE</span></a>
 			</div>
@@ -216,6 +350,38 @@
 				</div>
 			@endif
 			@endif
+
+			@if(is_array(session('assignment-auditor')))
+			@php
+			$assigned_auditors = '';
+			$assigned_auditors_hover_text = '';
+			$counter = 0;
+			foreach($auditors_array as $auditor){
+				if(in_array($auditor['user_id'], session('assignment-auditor'))){
+				 	$counter++;
+				 	if($counter < 3){
+				 		if($assigned_auditors == ''){
+							$assigned_auditors = $auditor['name'];
+						}else{
+							$assigned_auditors = $assigned_auditors.", ".$auditor['name'];
+						}
+				 	}
+				 	if($assigned_auditors_hover_text == ''){
+						$assigned_auditors_hover_text = $auditor['name'];
+					}else{
+						$assigned_auditors_hover_text = $assigned_auditors_hover_text.", ".$auditor['name'];
+					}
+				}
+			}
+			if($counter > 2){
+				$counter = $counter - 2;
+				$assigned_auditors = $assigned_auditors." +".$counter." MORE";
+			}
+			@endphp
+			<div id="audit-filter-address" class="uk-badge uk-text-right@s badge-filter" uk-tooltip="title:{{$assigned_auditors_hover_text}}">
+				<a onClick="filterAudits('assignment-auditor', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>@if(count(session('assignment-auditor')) > 1)AUDITORS ASSIGNED: @else AUDITOR ASSIGNED:@endif {{$assigned_auditors}}</span></a>
+			</div>
+			@endif
 		</div>
 	</div>
 
@@ -226,7 +392,7 @@
 		            <th class="uk-table-shrink">
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-text-center uk-width-1-1 uk-link">
-			            		<i class="a-avatar-star"></i>
+			            		<i class="a-avatar-star" onclick="filterAudits('audit-my-audits')"></i>
 			            	</div>
 			            	<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LEAD AUDITOR">
 			            		@if($sort_by == 'audit-sort-lead')
@@ -240,13 +406,13 @@
 		            <th class="uk-table-small" style="width:130px;">
 		            	<div uk-grid>
 		            		<div class="filter-box uk-width-1-1">
-								<input id="filter-by-project" class="filter-box filter-search-project-input" type="text" placeholder="PROJECT & AUDIT" onkeyup="filterAuditList(this, 'filter-search-project')" value="@if(session()->has('filter-search-project-input')){{session('filter-search-project-input')}}@endif">
+								<input id="filter-by-project" class="filter-box filter-search-project-input" type="text" placeholder="PROJECT & AUDIT" value="@if(session()->has('filter-search-project')){{session('filter-search-project')}}@endif">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROJECT ID">
 			            		@if($sort_by == 'audit-sort-project')
-			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-project', @php echo 1-$sort_order; @endphp, 'filter-search-project-input');"></a>
+			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-project', @php echo 1-$sort_order; @endphp, 'filter-search-project');"></a>
 			            		@else
-			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-project', 1, 'filter-search-project-input');"></a>
+			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-project', 1, 'filter-search-project');"></a>
 			            		@endif
 							</span> 
 							<div class="uk-dropdown" aria-expanded="false"></div>
@@ -255,7 +421,7 @@
 		            <th>
 		            	<div uk-grid>
 			            	<div class="filter-box uk-width-1-1">
-								<input id="filter-by-name" class="filter-box filter-search-pm-input" type="text" placeholder="PROJECT / PM NAME" onkeyup="filterAuditList(this, 'filter-search-pm')" value="@if(session()->has('filter-search-pm-input')){{session('filter-search-pm-input')}}@endif">
+								<input id="filter-by-name" class="filter-box filter-search-pm-input" type="text" placeholder="PROJECT / PM NAME" value="@if(session()->has('filter-search-pm')){{session('filter-search-pm')}}@endif">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROJECT NAME">
 			            		@if($sort_by == 'audit-sort-project-name')
@@ -277,7 +443,7 @@
 		            <th >
 		            	<div uk-grid>
 			            	<div class="filter-box uk-width-1-1">
-								<input id="filter-by-address" class="filter-box filter-search-address-input" type="text" placeholder="PRIMARY ADDRESS" onkeyup="filterAuditList(this, 'filter-search-address')" value="@if(session()->has('filter-search-address-input')){{session('filter-search-address-input')}}@endif">
+								<input id="filter-by-address" class="filter-box filter-search-address-input" type="text" placeholder="PRIMARY ADDRESS" value="@if(session()->has('filter-search-address')){{session('filter-search-address')}}@endif">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY STREET ADDRESS">
 			            		@if($sort_by == 'audit-sort-address')
@@ -312,10 +478,85 @@
 								</span>
 								@can('access_auditor')
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
-									<i class="a-avatar-home"></i> / <i class="a-home-2"></i>
+									<i id="assignmentselectionbutton" class="a-avatar-home"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+										<form id="audit_assignment_selection" method="post">
+				            				<fieldset class="uk-fieldset">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
+				            						<h5>AUDITS FOR:</h5>
+												@foreach($auditors_array as $auditor)
+													<input id="assignment-auditor-{{$auditor['user_id']}}" user-id="{{$auditor['user_id']}}" class="assignmentauditor" type="checkbox" @if(is_array(session('assignment-auditor'))) @if(in_array($auditor['user_id'], session('assignment-auditor')) == 1) checked @endif @endif/>
+													<label for="assignment-auditor-{{$auditor['user_id']}}">{{$auditor['name']}}</label>
+												@endforeach
+										        </div>
+										        <div class="uk-margin-remove" uk-grid>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="updateAuditAssignment(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+				                            		</div>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="$('#assignmentselectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+				                            		</div>
+				                            	</div>
+				            				</fieldset>
+				                        </form>
+				            			
+				                    </div> / <i id="totalinspectionbutton" class="a-home-2"></i>
+				                    <div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+										<form id="total_inspection_filter" method="post">
+				            				<fieldset class="uk-fieldset">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
+													<input id="total_inspection_more" class="totalinspectionfilter" type="checkbox" @if(session('total_inspection_filter') != 1) checked @endif/>
+													<label for="total_inspection_more">MORE THAN OR EQUAL TO</label>
+													<input id="total_inspection_less" class="totalinspectionfilter" type="checkbox" @if(session('total_inspection_filter') == 1) checked @endif/>
+													<label for="total_inspection_less">LESS THAN OR EQUAL TO</label>
+													<input id="total_inspection_amount" class="uk-input" value="{{session('total_inspection_amount')}}" type="number" min="0" >
+													
+										        </div>
+										        <div class="uk-margin-remove" uk-grid>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="updateAuditInspection(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+				                            		</div>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="$('#totalinspectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+				                            		</div>
+				                            	</div>
+				            				</fieldset>
+				                        </form>
+				            			
+				                    </div>
 								</span>
 								<span class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top uk-text-center uk-link">
-									<i class="a-circle-checked"></i>
+									<i id="complianceselectionbutton" class="a-circle-checked"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+				            			<form id="audit_compliance_status_selection" method="post">
+				            				<fieldset class="uk-fieldset">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
+
+												<input id="compliance-status-all" class="" type="checkbox" @if(session('compliance-status-all') == 1) checked @endif/>
+												<label for="compliance-status-all">ALL COMPLIANCE STATUSES</label>
+												
+												<input id="compliance-status-rr" class=" complianceselector" type="checkbox" @if(session('compliance-status-rr') == 1) checked @endif/>
+												<label for="compliance-status-rr"><i class="a-circle-ellipsis action-required"></i> <span class="action-required">UNITS REQUIRE REVIEW</span></label>
+												
+												<input id="compliance-status-nc" class=" complianceselector" type="checkbox" @if(session('compliance-status-nc') == 1) checked @endif/>
+												<label for="compliance-status-nc"><i class="a-circle-cross action-required"></i> <span class="action-required">NOT COMPLIANT</span></label>
+												
+												<input id="compliance-status-c" class=" complianceselector" type="checkbox" @if(session('compliance-status-c') == 1) checked @endif/>
+												<label for="compliance-status-c"><i class="a-circle-checked ok-actionable"></i><span class="ok-actionable">IS COMPLIANT</span></label>
+												
+										        </div>
+										        <div class="uk-margin-remove" uk-grid>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="updateAuditComplianceStatus(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+				                            		</div>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="$('#complianceselectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+				                            		</div>
+				                            	</div>
+				            				</fieldset>
+				                        </form>
+				            			
+				                    </div>
 								</span>
 								@endcan
 							</div>
@@ -371,13 +612,112 @@
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid> 
 			            		<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i class="a-folder"></i>
+									<i id="file_audit_status_button" class="a-folder"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
+				            			<form id="file_audit_status_selection" method="post">
+				            				<fieldset class="uk-fieldset">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
+
+												<input id="file-audit-status-all" class="" type="checkbox" @if(session('file-audit-status-all') == 1) checked @endif/>
+												<label for="file-audit-status-all"><i class="a-folder"></i> <span>ALL FILE AUDIT FINDING STATUSES</span></label>
+												
+												<input id="file-audit-status-r" class="fileauditselector" type="checkbox" @if(session('file-audit-status-r') == 1) checked @endif/>
+												<label for="file-audit-status-r"><i class="a-folder ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED FILE AUDIT FINDINGS</span></label>
+												
+												<input id="file-audit-status-ar" class=" fileauditselector" type="checkbox" @if(session('file-audit-status-ar') == 1) checked @endif/>
+												<label for="file-audit-status-ar"><i class="a-folder action-needed divider dividericon"></i> <span class="action-needed">HAS ACTION REQUIRED FILE AUDIT FINDINGS</span></label>
+												
+												<input id="file-audit-status-c" class=" fileauditselector" type="checkbox" @if(session('file-audit-status-c') == 1) checked @endif/>
+												<label for="file-audit-status-c"><i class="a-folder action-required divider dividericon"></i> <span class="action-required">HAS CRITICAL FILE AUDIT FINDINGS</span></label>
+												
+												<input id="file-audit-status-nf" class=" fileauditselector" type="checkbox" @if(session('file-audit-status-nf') == 1) checked @endif/>
+												<label for="file-audit-status-nf"><i class="a-folder"></i> <span class="">DOES NOT HAVE FILE AUDIT FINDINGS</span></label>
+												
+										        </div>
+										        <div class="uk-margin-remove" uk-grid>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="updateFileAuditStatus(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+				                            		</div>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="$('#file_audit_status_button').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+				                            		</div>
+				                            	</div>
+				            				</fieldset>
+				                        </form>
+				            			
+				                    </div>
 								</span>
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i class="a-booboo"></i>
+									<i id="nlt_audit_status_button" class="a-booboo"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
+				            			<form id="nlt_audit_status_selection" method="post">
+				            				<fieldset class="uk-fieldset">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
+
+												<input id="nlt-audit-status-all" class="" type="checkbox" @if(session('nlt-audit-status-all') == 1) checked @endif/>
+												<label for="nlt-audit-status-all"><i class="a-booboo"></i> <span>ALL NLT AUDIT FINDING STATUSES</span></label>
+												
+												<input id="nlt-audit-status-r" class="nltauditselector" type="checkbox" @if(session('nlt-audit-status-r') == 1) checked @endif/>
+												<label for="nlt-audit-status-r"><i class="a-booboo ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED NLT AUDIT FINDINGS</span></label>
+												
+												<input id="nlt-audit-status-ar" class=" nltauditselector" type="checkbox" @if(session('nlt-audit-status-ar') == 1) checked @endif/>
+												<label for="nlt-audit-status-ar"><i class="a-booboo action-needed divider dividericon"></i> <span class="action-needed">HAS ACTION REQUIRED NLT AUDIT FINDINGS</span></label>
+												
+												<input id="nlt-audit-status-c" class=" nltauditselector" type="checkbox" @if(session('nlt-audit-status-c') == 1) checked @endif/>
+												<label for="nlt-audit-status-c"><i class="a-booboo action-required divider dividericon"></i> <span class="action-required">HAS CRITICAL NLT AUDIT FINDINGS</span></label>
+												
+												<input id="nlt-audit-status-nf" class=" nltauditselector" type="checkbox" @if(session('nlt-audit-status-nf') == 1) checked @endif/>
+												<label for="nlt-audit-status-nf"><i class="a-booboo"></i> <span class="">DOES NOT HAVE NLT AUDIT FINDINGS</span></label>
+												
+										        </div>
+										        <div class="uk-margin-remove" uk-grid>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="updateNLTAuditStatus(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+				                            		</div>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="$('#nlt_audit_status_button').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+				                            		</div>
+				                            	</div>
+				            				</fieldset>
+				                        </form>
+				            			
+				                    </div>
 								</span>
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i class="a-skull"></i>
+									<i id="lt_audit_status_button" class="a-skull"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
+				            			<form id="lt_audit_status_selection" method="post">
+				            				<fieldset class="uk-fieldset">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
+
+												<input id="lt-audit-status-all" class="" type="checkbox" @if(session('lt-audit-status-all') == 1) checked @endif/>
+												<label for="lt-audit-status-all"><i class="a-skull"></i> <span>ALL LT AUDIT FINDING STATUSES</span></label>
+												
+												<input id="lt-audit-status-r" class="ltauditselector" type="checkbox" @if(session('lt-audit-status-r') == 1) checked @endif/>
+												<label for="lt-audit-status-r"><i class="a-skull ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED LT AUDIT FINDINGS</span></label>
+												
+												<input id="lt-audit-status-ar" class=" ltauditselector" type="checkbox" @if(session('lt-audit-status-ar') == 1) checked @endif/>
+												<label for="lt-audit-status-ar"><i class="a-skull action-needed divider dividericon"></i> <span class="action-needed">HAS ACTION REQUIRED LT AUDIT FINDINGS</span></label>
+												
+												<input id="lt-audit-status-c" class=" ltauditselector" type="checkbox" @if(session('lt-audit-status-c') == 1) checked @endif/>
+												<label for="lt-audit-status-c"><i class="a-skull action-required divider dividericon"></i> <span class="action-required">HAS CRITICAL LT AUDIT FINDINGS</span></label>
+												
+												<input id="lt-audit-status-nf" class=" ltauditselector" type="checkbox" @if(session('lt-audit-status-nf') == 1) checked @endif/>
+												<label for="lt-audit-status-nf"><i class="a-skull"></i> <span class="">DOES NOT HAVE LT AUDIT FINDINGS</span></label>
+												
+										        </div>
+										        <div class="uk-margin-remove" uk-grid>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="updateLTAuditStatus(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+				                            		</div>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="$('#lt_audit_status_button').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+				                            		</div>
+				                            	</div>
+				            				</fieldset>
+				                        </form>
+				            			
+				                    </div>
 								</span>
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY FILE FINDING COUNT">
@@ -408,7 +748,31 @@
 			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid> 
 			            		@can('access_auditor')
 			            		<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i class="a-avatar"></i>
+									<i id="scheduleassignmentfilterbutton" class="a-avatar"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+										<form id="schedule_assignment_filter" method="post">
+				            				<fieldset class="uk-fieldset">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
+													<input id="schedule_assignment_unassigned" class="" type="checkbox" @if(session('schedule_assignment_unassigned') == 1) checked @endif/>
+													<label for="schedule_assignment_unassigned">UNASSIGNED AMENITIES</label>
+													<input id="schedule_assignment_not_enough" class="" type="checkbox" @if(session('schedule_assignment_not_enough') == 1) checked @endif/>
+													<label for="schedule_assignment_not_enough">NOT ENOUGH HOURS SCHEDULED</label>
+													<input id="schedule_assignment_too_many" class="" type="checkbox" @if(session('schedule_assignment_too_many') == 1) checked @endif/>
+													<label for="schedule_assignment_too_many">TOO MANY HOURS SCHEDULED</label>
+													
+										        </div>
+										        <div class="uk-margin-remove" uk-grid>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="updateAuditScheduleAssignment(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+				                            		</div>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="$('#scheduleassignmentfilterbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+				                            		</div>
+				                            	</div>
+				            				</fieldset>
+				                        </form>
+				            			
+				                    </div>
 								</span>
 								@endcan
 								<span class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
@@ -503,10 +867,10 @@
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-link">
 			            		<i class="a-checklist" id="checklist-button"></i>
-			            		<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px;">
+			            		<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px;">
 			            			<form id="audit_steps_selection" method="post">
 			            				<fieldset class="uk-fieldset">
-			            					<div class="uk-margin uk-child-width-auto uk-grid">
+			            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 			            					@if(session('step-all') == 0)
 									            <input id="step-all" type="checkbox" />
 												<label for="step-all">ALL STEPS (CLICK TO SELECT ALL)</label>
@@ -729,6 +1093,92 @@ The following div is defined in this particular tab and pushed to the main layou
 			}
 	    });
 	    @endcan
+
+	    $("#filter-by-project").keypress(function(event) {
+		    if (event.which == 13) {
+		        event.preventDefault();
+		        if($(this).val() != ''){
+		        	filterAuditList(this, 'filter-search-project');
+		        }else{
+		        	filterAudits('filter-search-project', '');
+		        }
+		    }
+		});
+
+		$("#filter-by-name").keypress(function(event) {
+		    if (event.which == 13) {
+		        event.preventDefault();
+		        if($(this).val() != ''){
+		        	filterAuditList(this, 'filter-search-pm');
+		        }else{
+		        	filterAudits('filter-search-pm', '');
+		        }
+		    }
+		});
+
+		$("#filter-by-address").keypress(function(event) {
+		    if (event.which == 13) {
+		        event.preventDefault();
+		        if($(this).val() != ''){
+		        	filterAuditList(this, 'filter-search-address');
+		        }else{
+		        	filterAudits('filter-search-address', '');
+		        }
+		    }
+		});
+		$('#compliance-status-all').click(function() {
+			if($('#compliance-status-all').prop('checked')){
+				$('input.complianceselector').prop('checked', false);
+			}
+	    });
+		$(".complianceselector").click(function() {
+			// compliance-status-all, compliance-status-nc, compliance-status-c, compliance-status-rr
+			if($(this).prop('checked') && $('#compliance-status-all').prop('checked')){ 
+		    	$('#compliance-status-all').prop('checked', false);
+			}
+		});
+
+
+		$('#file-audit-status-all').click(function() {
+			if($('#file-audit-status-all').prop('checked')){
+				$('input.fileauditselector').prop('checked', false);
+			}
+	    });
+		$(".fileauditselector").click(function() {
+			// compliance-status-all, compliance-status-nc, compliance-status-c, compliance-status-rr
+			if($(this).prop('checked') && $('#file-audit-status-all').prop('checked')){ 
+		    	$('#file-audit-status-all').prop('checked', false);
+			}
+		});
+		$('#nlt-audit-status-all').click(function() {
+			if($('#nlt-audit-status-all').prop('checked')){
+				$('input.nltauditselector').prop('checked', false);
+			}
+	    });
+		$(".nltauditselector").click(function() {
+			// compliance-status-all, compliance-status-nc, compliance-status-c, compliance-status-rr
+			if($(this).prop('checked') && $('#nlt-audit-status-all').prop('checked')){ 
+		    	$('#nlt-audit-status-all').prop('checked', false);
+			}
+		});
+		$('#lt-audit-status-all').click(function() {
+			if($('#lt-audit-status-all').prop('checked')){
+				$('input.ltauditselector').prop('checked', false);
+			}
+	    });
+		$(".ltauditselector").click(function() {
+			// compliance-status-all, compliance-status-nc, compliance-status-c, compliance-status-rr
+			if($(this).prop('checked') && $('#lt-audit-status-all').prop('checked')){ 
+		    	$('#lt-audit-status-all').prop('checked', false);
+			}
+		});
+
+		$('.totalinspectionfilter').click(function() {
+			$('.totalinspectionfilter').prop('checked', false);
+			$(this).prop('checked', true);
+	    });
+
+		
     });
 
 	@can('access_auditor')
@@ -1003,6 +1453,190 @@ The following div is defined in this particular tab and pushed to the main layou
 		}, function () {
 		    console.log('Rejected.')
 		});
+    }
+
+    function updateAuditInspection(e){
+    	e.preventDefault();
+    	var form = $('#total_inspection_filter');
+
+    	if($('#total_inspection_more').prop('checked')){
+    		var total_inspection_filter = 0;
+    	}else{
+    		var total_inspection_filter = 1;
+    	}
+    	
+    	var amount = $('#total_inspection_amount').val();
+
+		$.post("/session/", {
+            'data' : [['total_inspection_amount', amount], ['total_inspection_filter', total_inspection_filter]],
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            $('#totalinspectionbutton').trigger( 'click' );
+            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+        } );
+    }
+
+    function updateAuditAssignment(e){
+    	e.preventDefault();
+    	var form = $('#audit_assignment_selection');
+
+		var selected = [];
+		$('#audit_assignment_selection input:checked').each(function() {
+		    selected.push($(this).attr('user-id'));
+		});
+
+		if(selected.length == 0){
+			selected = 0;
+		}
+
+        $.post("/session/", {
+            'data' : [['assignment-auditor', selected]],
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            $('#assignmentselectionbutton').trigger( 'click' );
+            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+        } );
+
+    }
+
+    function updateAuditScheduleAssignment(e){
+    	e.preventDefault();
+    	var form = $('#schedule_assignment_filter');
+
+    	var alloptions = [];
+		$('#schedule_assignment_filter input').each(function() {
+		    alloptions.push([$(this).attr('id'), 0]);
+		});
+
+		var selected = [];
+		$('#schedule_assignment_filter input:checked').each(function() {
+		    selected.push([$(this).attr('id'), 1]);
+		});
+
+		$.post("/session/", {
+            'data' : alloptions,
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            $.post("/session/", {
+	            'data' : selected,
+	            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+	            $('#scheduleassignmentfilterbutton').trigger( 'click' );
+	            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+	        } );
+        } );
+    }
+
+    function updateFileAuditStatus(e){
+    	e.preventDefault();
+    	var form = $('#file_audit_status_selection');
+
+    	var alloptions = [];
+		$('#file_audit_status_selection input').each(function() {
+		    alloptions.push([$(this).attr('id'), 0]);
+		});
+
+		var selected = [];
+		$('#file_audit_status_selection input:checked').each(function() {
+		    selected.push([$(this).attr('id'), 1]);
+		});
+
+		$.post("/session/", {
+            'data' : alloptions,
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            $.post("/session/", {
+	            'data' : selected,
+	            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+	            $('#file_audit_status_button').trigger( 'click' );
+	            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+	        } );
+        } );
+    }
+
+    function updateNLTAuditStatus(e){
+    	e.preventDefault();
+    	var form = $('#nlt_audit_status_selection');
+
+    	var alloptions = [];
+		$('#nlt_audit_status_selection input').each(function() {
+		    alloptions.push([$(this).attr('id'), 0]);
+		});
+
+		var selected = [];
+		$('#nlt_audit_status_selection input:checked').each(function() {
+		    selected.push([$(this).attr('id'), 1]);
+		});
+
+		$.post("/session/", {
+            'data' : alloptions,
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            $.post("/session/", {
+	            'data' : selected,
+	            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+	            $('#nlt_audit_status_button').trigger( 'click' );
+	            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+	        } );
+        } );
+    }
+
+    function updateLTAuditStatus(e){
+    	e.preventDefault();
+    	var form = $('#lt_audit_status_selection');
+
+    	var alloptions = [];
+		$('#lt_audit_status_selection input').each(function() {
+		    alloptions.push([$(this).attr('id'), 0]);
+		});
+
+		var selected = [];
+		$('#lt_audit_status_selection input:checked').each(function() {
+		    selected.push([$(this).attr('id'), 1]);
+		});
+
+		$.post("/session/", {
+            'data' : alloptions,
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            $.post("/session/", {
+	            'data' : selected,
+	            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+	            $('#lt_audit_status_button').trigger( 'click' );
+	            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+	        } );
+        } );
+    }
+
+    function updateAuditComplianceStatus(e){
+    	e.preventDefault();
+    	var form = $('#audit_compliance_status_selection');
+
+    	var alloptions = [];
+		$('#audit_compliance_status_selection input').each(function() {
+		    alloptions.push([$(this).attr('id'), 0]);
+		});
+
+		var selected = [];
+		$('#audit_compliance_status_selection input:checked').each(function() {
+		    selected.push([$(this).attr('id'), 1]);
+		});
+
+		$.post("/session/", {
+            'data' : alloptions,
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            $.post("/session/", {
+	            'data' : selected,
+	            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+	            $('#checklist-button').trigger( 'click' );
+	            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+	        } );
+        } );
     }
 
     @can('access_auditor')

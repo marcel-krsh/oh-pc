@@ -1,4 +1,4 @@
-<?php setlocale(LC_MONETARY, 'en_US'); 
+<?php setlocale(LC_MONETARY, 'en_US');
 /// protect against inactive users.
 $allowPageLoad = false;
 
@@ -36,14 +36,14 @@ if(Auth::check()){
 <link rel="stylesheet" href="/css/system-419171130.css">
 @if (Auth::guest())
 @else
-<!-- <link rel="stylesheet" href="/css/cdfs-tab.css">
+<link rel="stylesheet" href="/css/cdfs-tab.css">
 <link rel="stylesheet" href="/css/communications-tab.css">
 <link rel="stylesheet" href="/css/documents-tab.css">
 <link rel="stylesheet" href="/css/funding-tab.css">
 <link rel="stylesheet" href="/css/history-tab.css">
 <link rel="stylesheet" href="/css/notes-tab.css">
 <link rel="stylesheet" href="/css/outcomes-tab.css">
-<link rel="stylesheet" href="/css/processing-tab.css"> -->
+<link rel="stylesheet" href="/css/processing-tab.css">
 @endif
 <script>
         window.Laravel = <?php echo json_encode([
@@ -96,18 +96,18 @@ if(Auth::check()){
 		#releaseformpanel textarea {width:100%;}
 		#releaseformpanel .property-summary {margin-top:0;}
 
-		
+
 		.guidesteps .uk-panel {
 			font-size: small;
 			opacity: 0.6;
-		}	
+		}
 		.guidesteps .uk-panel.active {
 			opacity: 1;
 
 		}
 		.guidesteps .uk-panel .doubleheight {
 			min-height: 40px;
-		}	
+		}
 		.guidesteps .uk-panel .uk-panel-title {
 			font-size: small;
 			background-color: #a4bed3;
@@ -129,18 +129,18 @@ if(Auth::check()){
 <div class="uk-container uk-align-center">
 <div class="uk-grid uk-grid-collapse">
 <div id="main-window" class="uk-width-1-1 " style="padding-top: 15px;">
-		
-		
+
+
 		<div id="main-offcanvas" uk-offcanvas="overlay:true; flip:true">
 		    <div class="uk-offcanvas-bar">
 		    	<ul class="uk-nav uk-nav-default" uk-nav >
 					@if (Auth::guest())
     			<li class="list-tab" style="display: none"><a><span class="list-tab-text"> Welcome Back!</span></a></li>
-    			
+
 				@else
 				<li class="list-tab" onClick="$('#list-tab').trigger('click');$('#main-option-text').html($('.list-tab-text').html());$('#main-option-icon').attr('uk-icon','');
 $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="display: none"><a><span class="list-tab-text"><span class="a-home-2"></span>  My Dashboard</span></a></li>
-    			
+
 				<li class="detail-tab-1" onClick="$('#detail-tab-1').trigger('click');$('#main-option-text').html($('.detail-tab-1-text').html());UIkit.offcanvas.hide();" style="display: none"><a><span class="detail-tab-1-text"></span></a></li>
 				<li class="detail-tab-2" onClick="$('#detail-tab-2').trigger('click');$('#main-option-text').html($('.detail-tab-2-text').html());UIkit.offcanvas.hide();" style="display: none"><a><span class="detail-tab-2-text"></span></a></li>
 				<li class="detail-tab-3" onClick="$('#detail-tab-3').trigger('click');$('#main-option-text').html($('.detail-tab-3-text').html());UIkit.offcanvas.hide();" style="display: none"><a><span class="detail-tab-3-text"></span></a></li>
@@ -150,11 +150,11 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 				</ul>
 		    </div>
 		</div>
-		
+
 					@yield('content')
-			
-		
-		
+
+
+
 <div id="filters" uk-offcanvas="overlay:true">
 	<div class="uk-offcanvas-bar">
 			@if (Auth::guest())
@@ -165,7 +165,7 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 			<div id="user-logged-in ">
 				<div id="logged-in-user-badge" class="user-badge-green uk-margin-left" style="font-weight: 200">{{ userInitials(Auth::user()->name) }}</div>
 				<div id="logged-in-user-info" class="uk-visible@s" style="font-size: 1rem; line-height: 1.2rem; font-weight: 300"><span style="font-size: .8rem;">Why hello there,</span><br/>{{ Auth::user()->name }}</div>
-				
+
 				<form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
                             {{ csrf_field() }}
                         </form>
@@ -173,12 +173,12 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 		</div>
 		<hr class="" style="margin-top:30px;clear:both;">
 
-		
+
 		<ul class="uk-nav uk-nav-default uk-nav-parent-icon" uk-nav="">
 			<li><a href="#" onClick="logout()" class="uk-dark uk-link-muted uk-light"><span class="a-locked-2 uk-icon-justify"></span> Logout</a>
 			</li>
 			<li><a class="uk-dark uk-link-muted uk-light" href="#" onclick="loadListTab('/lists/activity_log')"><span class="a-list uk-icon-justify"></span> View Activity Log</a></li>
-			
+
 			<li class="uk-parent">
 				<a href="#"><span class="a-tools-3 uk-icon-justify"></span> Tools</a>
 				<ul class="uk-nav uk-nav-sub">
@@ -194,12 +194,12 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
                     <li><a onclick="loadListTab('/lists/reimbursement_invoices')">Reimbursement Invoices</a></li>
                     <li class="uk-nav-divider"></li>
                     <li><a onclick="loadListTab('/lists/dispostion_invoices')">Disposition Invoices</a></li>
-                    
+
                     <li class="uk-nav-divider"></li>
                     <li><a onclick="loadListTab('/lists/accounting')">Full Accounting</a></li>
                     <li class="uk-nav-divider"></li>
                     <li><a onclick="loadListTab('lists/users')">User Management</a></li>
-                    
+
                 </ul>
              </li>
              <li class="uk-parent">
@@ -253,7 +253,7 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 
 	                                        <li id="filter6" class="" ><a href="#" onClick="loadListTab('/lists/parcels/disposition_released');"><span class="a-list"></span> Dispostion Released: <span id="parcels-diposition-released" class="uk-text-right">XXX</span></a></li>
 
-	                                        
+
 	                </ul>
 	            </li>
 	    	</ul>
@@ -266,7 +266,7 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 @if (Auth::guest())
 @else
 
-<script type="text/javascript" src="/js/systems/system.js"></script><!-- 
+<script type="text/javascript" src="/js/systems/system.js"></script><!--
 <script type="text/javascript" src="/js/systems/cdfs-tab.js"></script>
 <script type="text/javascript" src="/js/systems/communications-tab.js"></script>
 <script type="text/javascript" src="/js/systems/documents-tab.js"></script>
@@ -279,12 +279,12 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 
 <a id="smoothscrollLink" href="#top" uk-scroll="{offset: 90}"></a>
 	<div id="dynamic-modal" uk-modal>
-		<div id="modal-size" class="uk-modal-dialog uk-modal-body uk-modal-content"> 
+		<div id="modal-size" class="uk-modal-dialog uk-modal-body uk-modal-content">
 			<a class="uk-modal-close-default" uk-close></a>
 			<div id="dynamic-modal-content"></div>
 		</div>
 	</div>
-		
+
 </div>
 </div>
 
@@ -370,25 +370,25 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 <div class="uk-vertical-align uk-text-center uk-height-1-1">
             <div class="uk-vertical-align-middle uk-margin-top" style="width: 250px;">
 
-                
+
 
                 <form class="uk-panel uk-panel-box">
                     <div class="uk-form-row">
                         <h2 align="center">Inactive User</h2>
                         <p align="center">{{Auth::user()->name}}</p>
                     </div>
-                    
+
                     <div class="uk-form-row">
                         <a class="uk-width-1-1 uk-button uk-button-primary uk-button-large" href="/login">Return to Login</a>
                     </div>
-                    
+
                 </form>
 
             </div>
         </div>
 </body>
 </html>
-<?php  
+<?php
 
 Auth::logout();
 

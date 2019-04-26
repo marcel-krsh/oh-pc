@@ -50,10 +50,10 @@
                     </div>
             	</div> 
                 
-                	<div class="uk-width-1-6 uk-text-right uk-padding-remove" uk-tooltip="0 UNITS ASSIGNED TO YOU" v-html="audit.inspectableItems+' /'" v-if="audit.auditor_access && audit.inspectableItems < 1 "></div>
-                    <div class="uk-width-1-6 uk-text-right uk-padding-remove" :uk-tooltip="audit.tooltipInspectableItems" v-html="audit.inspectableItems+' /'" v-if="audit.auditor_access && audit.inspectableItems > 0"></div> 
+                	<div class="uk-width-1-6 uk-text-right uk-padding-remove" style="margin-top: -4px;" uk-tooltip="0 UNITS ASSIGNED TO YOU" v-html="audit.inspectableItems+' /'" v-if="audit.auditor_access && audit.inspectableItems < 1 "></div>
+                    <div class="uk-width-1-6 uk-text-right uk-padding-remove" style="margin-top: -4px;" :uk-tooltip="audit.tooltipInspectableItems" v-html="audit.inspectableItems+' /'" v-if="audit.auditor_access && audit.inspectableItems > 0"></div> 
 
-                	<div v-if="audit.auditor_access" class="uk-width-1-6 uk-text-left uk-padding-remove" :uk-tooltip="audit.totalItems + ' TOTAL BUILDINGS PROJECT AMENITIES AND UNITS THAT WILL BE INSPECTED'" v-html="audit.totalItems"></div> 
+                	<div v-if="audit.auditor_access" class="uk-width-1-6 uk-text-left uk-padding-top-remove" style="margin-top: -4px;" :uk-tooltip="audit.totalItems + ' TOTAL BUILDINGS PROJECT AMENITIES AND UNITS THAT WILL BE INSPECTED'" v-html="audit.totalItems"></div> 
                 	<div v-if="audit.auditor_access" class="uk-width-1-6 uk-text-left">
                 		<i :class="{[audit.complianceIconClass]:true, [audit.complianceStatusClass]:true}" :uk-tooltip="audit.tooltipComplianceStatus" v-on:click="rerunCompliance"></i>
                 	</div>
