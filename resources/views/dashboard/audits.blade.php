@@ -167,7 +167,7 @@
 			@if(isset($auditFilterMineOnly) && $auditFilterMineOnly == 1)
 			<div id="audit-filter-mine" class="uk-badge uk-text-right@s badge-filter">
 				@can('access_auditor')
-				<a onClick="filterAudits('audit-my-audits');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>MY AUDITS ONLY</span></a>
+				<a onClick="filterAudits('audit-my-audits',0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>MY AUDITS ONLY</span></a>
 				@else
 				@endcan
 			</div>
