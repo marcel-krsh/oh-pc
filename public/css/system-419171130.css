@@ -1554,16 +1554,6 @@ margin-top:10px;
     padding-right: 6px;
 }
 
-.dropdown-max-height {
-    max-height: 300px;
-    overflow-y: auto;
-}
-.dropdown-max-height h5 {
-      padding-left: 6px;
-    font-weight: bold;
-    padding-top: 10px;
-    padding-bottom: 5px;
-}
 .buildings > div > div.building:nth-of-type(odd),
 .buildings > div > div > div.building-details > div > div.building:nth-of-type(odd),
 .buildings > div > div.building:nth-of-type(odd) .findings-icon-status span.uk-badge {

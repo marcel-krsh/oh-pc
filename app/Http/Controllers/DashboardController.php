@@ -403,13 +403,6 @@ class DashboardController extends Controller
             }
         }
 
-        if(session()->has('assignment-auditor') && is_array(session('assignment-auditor'))){
-            $assignment_auditors_array = session('assignment-auditor');
-            $audits = $audits->whereHas('auditors', function( $query ) use ($assignment_auditors_array) {
-                                $query->whereIn('user_id', $assignment_auditors_array);
-                            });
-        }
-
         $audits = $audits->orderBy($sort_by_field, $sort_order_query)->get();
 
         $data = [];
@@ -417,7 +410,7 @@ class DashboardController extends Controller
         $audits_to_remove = array(); // ids of audits to remove after filtering by auditor
         $auditors_array = array();
         $auditor_ids = array(); // to prevent duplicates when building the auditors list
-  /*          
+            
         foreach ($audits as $audit) {
             // list all auditors based on previous filters
             if($audit->auditors){
@@ -428,9 +421,9 @@ class DashboardController extends Controller
                         $auditors_array[] = [ "user_id" => $auditor->user_id, "name" => strtoupper($auditor->user->full_name())];
                     }
 
-                    if(session()->has('inspection-assignment-auditor') && is_array(session('inspection-assignment-auditor'))){
-                        // there is a filter to select audits with specific inspection assignemnts
-                        if(in_array($auditor->user_id, session('inspection-assignment-auditor'))){
+                    if(session()->has('assignment-auditor') && is_array(session('assignment-auditor'))){
+                        // there is a filter to select audits with specific auditors
+                        if(in_array($auditor->user_id, session('assignment-auditor'))){
                             // the auditor is in this audit, we keep it
                             $keep_audit_based_on_auditor_filter = 1; 
                         }
@@ -452,17 +445,8 @@ class DashboardController extends Controller
         });
 
         $audits = $filtered_audits->all();
-*/
-        foreach ($audits as $audit) {
 
-            if($audit->auditors){
-                foreach($audit->auditors as $auditor){
-                    if(!in_array($auditor->user_id, $auditor_ids)){
-                        $auditor_ids[] = $auditor->user_id;
-                        $auditors_array[] = [ "user_id" => $auditor->user_id, "name" => strtoupper($auditor->user->full_name())];
-                    }
-                }
-            }
+        foreach ($audits as $audit) {
 
             if ($audit['status'] == 'critical' && Auth::user()->auditor_access()) {
                 $notcritical = 'critical';
