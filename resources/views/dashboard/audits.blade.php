@@ -163,7 +163,7 @@
 </template>
 <div id="audits" class="uk-no-margin-top" uk-grid>
 	<div class="uk-margin-remove-top uk-width-1-1" uk-grid>
-		<div id="auditsfilters" class="uk-width-2-3 uk-margin-top">
+		<div id="auditsfilters" class="uk-width-1-1 uk-margin-top">
 			@if(isset($auditFilterMineOnly) && $auditFilterMineOnly == 1)
 			<div id="audit-filter-mine" class="uk-badge uk-text-right@s badge-filter">
 				@can('access_auditor')
@@ -293,6 +293,24 @@
 			@if(isset($auditFilterInspection) && $auditFilterInspection != '')
 			<div class="uk-badge uk-text-right@s badge-filter">
 				<a onClick="filterAudits('total_inspection_amount', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>{{$auditFilterInspection}}</span></a>
+			</div>
+			@endif
+
+			@if(session('schedule_assignment_unassigned') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('schedule_assignment_unassigned', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH UNASSIGNED AMENITIES</span></a>
+			</div>
+			@endif
+
+			@if(session('schedule_assignment_not_enough') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('schedule_assignment_not_enough', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH NOT ENOUGH HOURS SCHEDULED</span></a>
+			</div>
+			@endif
+
+			@if(session('schedule_assignment_too_many') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('schedule_assignment_too_many', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH TOO MANY HOURS SCHEDULED</span></a>
 			</div>
 			@endif
 			
@@ -461,11 +479,11 @@
 								@can('access_auditor')
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
 									<i id="assignmentselectionbutton" class="a-avatar-home"></i>
-									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="audit_assignment_selection" method="post">
 				            				<fieldset class="uk-fieldset">
-				            					<div class="uk-margin uk-child-width-auto uk-grid">
-
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
+				            						<h5>AUDITS FOR:</h5>
 												@foreach($auditors_array as $auditor)
 													<input id="assignment-auditor-{{$auditor['user_id']}}" user-id="{{$auditor['user_id']}}" class="assignmentauditor" type="checkbox" @if(is_array(session('assignment-auditor'))) @if(in_array($auditor['user_id'], session('assignment-auditor')) == 1) checked @endif @endif/>
 													<label for="assignment-auditor-{{$auditor['user_id']}}">{{$auditor['name']}}</label>
@@ -483,10 +501,10 @@
 				                        </form>
 				            			
 				                    </div> / <i id="totalinspectionbutton" class="a-home-2"></i>
-				                    <div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+				                    <div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="total_inspection_filter" method="post">
 				            				<fieldset class="uk-fieldset">
-				            					<div class="uk-margin uk-child-width-auto uk-grid">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 													<input id="total_inspection_more" class="totalinspectionfilter" type="checkbox" @if(session('total_inspection_filter') != 1) checked @endif/>
 													<label for="total_inspection_more">MORE THAN OR EQUAL TO</label>
 													<input id="total_inspection_less" class="totalinspectionfilter" type="checkbox" @if(session('total_inspection_filter') == 1) checked @endif/>
@@ -509,10 +527,10 @@
 								</span>
 								<span class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top uk-text-center uk-link">
 									<i id="complianceselectionbutton" class="a-circle-checked"></i>
-									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 				            			<form id="audit_compliance_status_selection" method="post">
 				            				<fieldset class="uk-fieldset">
-				            					<div class="uk-margin uk-child-width-auto uk-grid">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 
 												<input id="compliance-status-all" class="" type="checkbox" @if(session('compliance-status-all') == 1) checked @endif/>
 												<label for="compliance-status-all">ALL COMPLIANCE STATUSES</label>
@@ -595,10 +613,10 @@
 			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid> 
 			            		<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i id="file_audit_status_button" class="a-folder"></i>
-									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
 				            			<form id="file_audit_status_selection" method="post">
 				            				<fieldset class="uk-fieldset">
-				            					<div class="uk-margin uk-child-width-auto uk-grid">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 
 												<input id="file-audit-status-all" class="" type="checkbox" @if(session('file-audit-status-all') == 1) checked @endif/>
 												<label for="file-audit-status-all"><i class="a-folder"></i> <span>ALL FILE AUDIT FINDING STATUSES</span></label>
@@ -631,10 +649,10 @@
 								</span>
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i id="nlt_audit_status_button" class="a-booboo"></i>
-									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
 				            			<form id="nlt_audit_status_selection" method="post">
 				            				<fieldset class="uk-fieldset">
-				            					<div class="uk-margin uk-child-width-auto uk-grid">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 
 												<input id="nlt-audit-status-all" class="" type="checkbox" @if(session('nlt-audit-status-all') == 1) checked @endif/>
 												<label for="nlt-audit-status-all"><i class="a-booboo"></i> <span>ALL NLT AUDIT FINDING STATUSES</span></label>
@@ -667,10 +685,10 @@
 								</span>
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i id="lt_audit_status_button" class="a-skull"></i>
-									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
 				            			<form id="lt_audit_status_selection" method="post">
 				            				<fieldset class="uk-fieldset">
-				            					<div class="uk-margin uk-child-width-auto uk-grid">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 
 												<input id="lt-audit-status-all" class="" type="checkbox" @if(session('lt-audit-status-all') == 1) checked @endif/>
 												<label for="lt-audit-status-all"><i class="a-skull"></i> <span>ALL LT AUDIT FINDING STATUSES</span></label>
@@ -730,7 +748,31 @@
 			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid> 
 			            		@can('access_auditor')
 			            		<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i class="a-avatar"></i>
+									<i id="scheduleassignmentfilterbutton" class="a-avatar"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+										<form id="schedule_assignment_filter" method="post">
+				            				<fieldset class="uk-fieldset">
+				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
+													<input id="schedule_assignment_unassigned" class="" type="checkbox" @if(session('schedule_assignment_unassigned') == 1) checked @endif/>
+													<label for="schedule_assignment_unassigned">UNASSIGNED AMENITIES</label>
+													<input id="schedule_assignment_not_enough" class="" type="checkbox" @if(session('schedule_assignment_not_enough') == 1) checked @endif/>
+													<label for="schedule_assignment_not_enough">NOT ENOUGH HOURS SCHEDULED</label>
+													<input id="schedule_assignment_too_many" class="" type="checkbox" @if(session('schedule_assignment_too_many') == 1) checked @endif/>
+													<label for="schedule_assignment_too_many">TOO MANY HOURS SCHEDULED</label>
+													
+										        </div>
+										        <div class="uk-margin-remove" uk-grid>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="updateAuditScheduleAssignment(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+				                            		</div>
+				                            		<div class="uk-width-1-2">
+				                            			<button onclick="$('#scheduleassignmentfilterbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+				                            		</div>
+				                            	</div>
+				            				</fieldset>
+				                        </form>
+				            			
+				                    </div>
 								</span>
 								@endcan
 								<span class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
@@ -825,10 +867,10 @@
 		            	<div uk-grid>
 			            	<div class="filter-box filter-icons uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-link">
 			            		<i class="a-checklist" id="checklist-button"></i>
-			            		<div class="uk-dropdown uk-dropdown-bottom filter-dropdown" uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px;">
+			            		<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px;">
 			            			<form id="audit_steps_selection" method="post">
 			            				<fieldset class="uk-fieldset">
-			            					<div class="uk-margin uk-child-width-auto uk-grid">
+			            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 			            					@if(session('step-all') == 0)
 									            <input id="step-all" type="checkbox" />
 												<label for="step-all">ALL STEPS (CLICK TO SELECT ALL)</label>
@@ -1442,7 +1484,11 @@ The following div is defined in this particular tab and pushed to the main layou
 		$('#audit_assignment_selection input:checked').each(function() {
 		    selected.push($(this).attr('user-id'));
 		});
-		
+
+		if(selected.length == 0){
+			selected = 0;
+		}
+
         $.post("/session/", {
             'data' : [['assignment-auditor', selected]],
             '_token' : '{{ csrf_token() }}'
@@ -1451,6 +1497,34 @@ The following div is defined in this particular tab and pushed to the main layou
             loadTab('{{ route('dashboard.audits') }}','1','','','',1);
         } );
 
+    }
+
+    function updateAuditScheduleAssignment(e){
+    	e.preventDefault();
+    	var form = $('#schedule_assignment_filter');
+
+    	var alloptions = [];
+		$('#schedule_assignment_filter input').each(function() {
+		    alloptions.push([$(this).attr('id'), 0]);
+		});
+
+		var selected = [];
+		$('#schedule_assignment_filter input:checked').each(function() {
+		    selected.push([$(this).attr('id'), 1]);
+		});
+
+		$.post("/session/", {
+            'data' : alloptions,
+            '_token' : '{{ csrf_token() }}'
+        }, function(data) {
+            $.post("/session/", {
+	            'data' : selected,
+	            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+	            $('#scheduleassignmentfilterbutton').trigger( 'click' );
+	            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+	        } );
+        } );
     }
 
     function updateFileAuditStatus(e){

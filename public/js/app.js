@@ -43747,6 +43747,7 @@ var render = function() {
           _vm.audit.auditor_access && _vm.audit.inspectableItems < 1
             ? _c("div", {
                 staticClass: "uk-width-1-6 uk-text-right uk-padding-remove",
+                staticStyle: { "margin-top": "-4px" },
                 attrs: { "uk-tooltip": "0 UNITS ASSIGNED TO YOU" },
                 domProps: {
                   innerHTML: _vm._s(_vm.audit.inspectableItems + " /")
@@ -43757,6 +43758,7 @@ var render = function() {
           _vm.audit.auditor_access && _vm.audit.inspectableItems > 0
             ? _c("div", {
                 staticClass: "uk-width-1-6 uk-text-right uk-padding-remove",
+                staticStyle: { "margin-top": "-4px" },
                 attrs: { "uk-tooltip": _vm.audit.tooltipInspectableItems },
                 domProps: {
                   innerHTML: _vm._s(_vm.audit.inspectableItems + " /")
@@ -43766,7 +43768,8 @@ var render = function() {
           _vm._v(" "),
           _vm.audit.auditor_access
             ? _c("div", {
-                staticClass: "uk-width-1-6 uk-text-left uk-padding-remove",
+                staticClass: "uk-width-1-6 uk-text-left uk-padding-top-remove",
+                staticStyle: { "margin-top": "-4px" },
                 attrs: {
                   "uk-tooltip":
                     _vm.audit.totalItems +
@@ -56169,8 +56172,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/briangreenwood/allita_pcsv/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/briangreenwood/allita_pcsv/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/flip/Documents/Work/Allita/allita-pcsv/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/flip/Documents/Work/Allita/allita-pcsv/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

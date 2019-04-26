@@ -393,6 +393,20 @@ class DashboardController extends Controller
                         });
         }
 
+        if(session('schedule_assignment_unassigned') == 1){
+            $audits = $audits->whereHas('inspection_items', function( $query ) {
+                            $query->whereNull('auditor_id');
+                        });
+        }
+
+        if(session('schedule_assignment_not_enough') == 1){
+            $audits = $audits->whereDate('estimated_time_needed', '>', 0);
+        }
+
+        if(session('schedule_assignment_too_many') == 1){
+            $audits = $audits->whereDate('estimated_time_needed', '=', 0)->orWhereNull('estimated_time_needed');
+        }
+
         // load to list steps filtering and check for session variables
         $steps = GuideStep::where('guide_step_type_id','=',1)->orderBy('order','asc')->get();
 
