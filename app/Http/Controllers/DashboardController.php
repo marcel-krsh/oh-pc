@@ -120,8 +120,6 @@ class DashboardController extends Controller
       $sort_order = 1;
     }
 
-    $auditFilterMineOnly = 1;
-
     switch ($sort_by) {
       case "audit-sort-lead":
         $sort_by_field = 'lead';
@@ -201,7 +199,7 @@ class DashboardController extends Controller
 
     $audits = CachedAudit::with('auditors');
 
-    if(session()->has('audit-my-audits')) {
+    if(session()->has('audit-my-audits') && session('audit-my-audits') == 1) {
         $auditFilterMineOnly = 1;
         $current_user_id = Auth::user()->id;
         $audits = $audits->where(function ($query) use ( $current_user_id ){
