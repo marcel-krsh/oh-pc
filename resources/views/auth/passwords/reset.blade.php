@@ -2,7 +2,7 @@
 @section('content')
 <div class="uk-vertical-align uk-text-center">
 	<div class="uk-vertical-align-middle login-panel" id="login-panel">
-		<p>NEIGHBORHOOD INITIATIVE PROGRAM</p>
+		<p>Program Compliance Inspection</p>
 		<p>RESET PASSWORD</p>
 		<form class="uk-panel uk-panel-box uk-form" role="registrationForm" method="POST" action="{{ url('/password/reset') }}">
 			<div class="alert alert-danger uk-text-danger" style="display:none"></div>
