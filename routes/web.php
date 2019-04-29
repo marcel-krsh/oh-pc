@@ -20,7 +20,7 @@
     });
 
     Route::group(['middleware' => 'web'], function () {
-        app('debugbar')->disable();
+        //app('debugbar')->disable();
         // Route::get('/testProject/{project}', function($project){
         //     $project = App\Models\Project::where('id',$project)->with('programs.program')->first();
         //     //dd($project->programs);
