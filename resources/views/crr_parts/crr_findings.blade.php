@@ -17,7 +17,7 @@
 			   	{{$f->building->address->line_1}} {{$f->building->address->line_2}}<br />
 			   	{{$f->building->address->city}}, {{$f->building->address->state}} {{$f->building->address->zip}}
 			   	@endIf
-			
+
 			@elseIf(!is_null($f->unit_id))
 				{{$f->unit->building->building_name}} <br />
 				@if(!is_null($f->unit->building->address))
@@ -27,17 +27,17 @@
 			   	<br /><strong>Unit {{$f->unit->unit_name}}</strong>
 			@endIf
 
-			
+
 			</div>
 			<hr class="dashed-hr">
 				<h2>@if($f->finding_type->type == 'nlt')
-					<i class="a-booboo"></i> 
-				@endIf 
+					<i class="a-booboo"></i>
+				@endIf
 				@if($f->finding_type->type == 'lt')
-					<i class="a-skull"></i> 
-				@endIf 
+					<i class="a-skull"></i>
+				@endIf
 				@if($f->finding_type->type == 'file')
-					<i class="a-folder"></i>  
+					<i class="a-folder"></i>
 				@endIf  {{$f->amenity->amenity_description}}</h2>
 			   	<strong>{{$f->finding_type->name}}</strong><br>
 			   	@if($f->level == 1)
@@ -50,7 +50,7 @@
 			   		{{$f->finding_type->three_description}}
 			   	@endIf
 			   	@if(!is_null($f->comments))
-			   	
+
 			   	@forEach($f->comments as $c)
 				   	@if(is_null($c->deleted_at))
 					   	<hr class="dashed-hr uk-margin-bottom">
@@ -60,18 +60,18 @@
 			   	@endIf
 			<hr class="dashed-hr uk-margin-bottom">
 			<div style="min-height: 80px;">
-				<?php $piecePrograms = collect($f->amenity_inspection->unit_programs)->where('audit_id',$report->audit_id); 
+				<?php $piecePrograms = collect($f->amenity_inspection->unit_programs)->where('audit_id',$report->audit_id);
 						//dd($piecePrograms);
 				?>
 				@if(count($piecePrograms)>0)
-				<span class="uk-margin-bottom"><strong >PROGRAMS:</strong></span><ul > @forEach($piecePrograms as $p) 
-					<li>@if(!is_null($p->is_substitute))SUBSTITUTED FOR:@endIf 
+				<span class="uk-margin-bottom"><strong >PROGRAMS:</strong></span><ul > @forEach($piecePrograms as $p)
+					<li>@if(!is_null($p->is_substitute))SUBSTITUTED FOR:@endIf
 					{{$p->program->program_name}}</li>
 					@endForEach
 				</ul>
 				@endIf
 			</div>
-		
+
 
 		</div>
 	@endForEach

@@ -10,12 +10,13 @@ class CrrReport extends Model
 {
     protected $casts = [
         'report_history' => 'array',
+        //'crr_data' => 'array'
     ];
-    
+
 
     public $timestamps = true;
     //protected $dateFormat = 'Y-m-d G:i:s.u';
-    
+
     protected $guarded = ['id'];
 
     public function lead(): HasOne{
@@ -40,7 +41,7 @@ class CrrReport extends Model
     }
 
     public function template(){
-        
+
         $template = CrrReport::whereId($this->from_template_id)->first();
         //dd($template);
         //dd($this, $this->from_template_id,$template);
@@ -51,7 +52,7 @@ class CrrReport extends Model
     	return $this->hasOne('App\Models\Project','id','project_id');
     }
 
-    
+
 
     public function comments(): HasMany{
     	return $this->hasMany('App\Models\CrrComment');

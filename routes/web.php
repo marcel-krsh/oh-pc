@@ -250,6 +250,8 @@
         Route::post('/report/{report}/section/{section}/part/{part}','ReportsController@modifySectionPart');
         Route::post('/report/{report}/section/{section}/part/{part}/order','ReportsController@modifySectionPartOrder');
 
+        Route::post('/report/{report}/digital-signature','ReportsController@postDigitalSignature');
+
         Route::get('/projects/{project}/stream', 'AuditController@getProjectStream')->name('project.stream');
         Route::get('/modals/projects/{project}/contact', 'AuditController@getProjectContact')->name('project.contact');
 
