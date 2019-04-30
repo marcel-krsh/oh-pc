@@ -293,6 +293,8 @@ if($allowPageLoad){
 											</span>
 										</a>
 									</li>
+								@endCan
+								@can('access_pm')
 									<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
 										<a href="">
 											<span class="list-tab-text">
