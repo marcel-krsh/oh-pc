@@ -49,6 +49,11 @@ class Audit extends Model
     {
         return $this->hasOne(\App\Models\ProjectDetails::class, 'project_id', 'project_id')->where('audit_id',$this->id);
     }
+    public function lead() : HasOne
+    {
+        
+        return $this->hasOne(\App\Models\User::class, 'devco_key', 'user_key');
+    }
     public function project(): HasOne
     {
         return $this->hasOne(\App\Models\Project::class, 'project_key','development_key');
@@ -60,10 +65,10 @@ class Audit extends Model
        return $this->hasMany('\App\Models\AmenityInspection')->whereNull('building_id')->whereNull('unit_id');
     }
     public function unit_inspections() : HasMany {
-       return $this->hasMany('\App\Models\UnitInspection');
+       return $this->hasMany('\App\Models\UnitInspection')->with('program')->with('building')->orderBy('building_id')->orderBy('unit_id');
     }
     public function unique_unit_inspections() : HasMany {
-        return $this->hasMany('\App\Models\UnitInspection')->select('unit_id')->groupBy('unit_id');
+        return $this->hasMany('\App\Models\UnitInspection')->with('building')->groupBy('unit_id')->orderBy('building_id');
     
     }
     public function nlts() : HasMany
@@ -87,6 +92,15 @@ class Audit extends Model
     public function findings() : HasMany
     {
         return $this->hasMany('\App\Models\Finding');
+    }
+    public function reportableFindings() : HasMany {
+        return $this->hasMany('\App\Models\Finding')->whereNull('cancelled_at')->with('amenity_inspection')->with('auditor')->with('amenity')->with('finding_type')
+                ->with('building')->with('unit')->with('unit.building.address')->with('building.address')->with('amenity_inspection.unit_programs')->with('amenity_inspection.unit_programs.program')->with('comments')->with('project.address')->orderBy('building_id','desc')->orderBy('unit_id');
+    }
+    public function reportableLtFindings() : HasMany {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
+            $query->where('type', '=', 'lt');
+        })->whereNull('cancelled_at')->with('amenity_inspection')->with('auditor')->with('amenity')->with('finding_type')->with('building')->with('unit')->with('unit.building.address')->with('building.address')->with('amenity_inspection.unit_programs')->with('amenity_inspection.unit_programs.program')->with('comments')->with('project.address')->orderBy('building_id','desc')->orderBy('unit_id');
     }
     public function ranCompliance(){
         $this->update(['compliance_run'=>1,'rerun_compliance'=>null]);
@@ -302,6 +316,21 @@ class Audit extends Model
         }
 
         return $checks;
+    }
+    public function cached_audit() : HasOne
+    {
+        return $this->hasOne(\App\Models\CachedAudit::class)->where('audit_id',$this->id);
+    }
+    public function is_archived() : bool {
+        if($this->cached_audit){
+            if($this->cached_audit->step_id !== 67){
+                return false;
+            } else {
+                return true;
+            }
+        }else{
+            return false;
+        }
     }
 
 }

@@ -6,13 +6,18 @@
 	  				<div class="uk-width-1-1 uk-padding-remove-left">
 			  			<h3><span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$data['summary']['name']}};" class="user-badge user-badge-{{$data['summary']['color']}} user-badge-bigger no-float uk-link">
 										{{$data['summary']['initials']}}
-									</span> {{$data['summary']['name']}} <br /><small>{{$data['summary']['email']}} | {{$data['summary']['phone']}}</small><a href="javascript:logout()" class="uk-button uk-button-small uk-padding-small-top uk-align-right"><i class="a-circle-keyhole"></i> LOGOUT</a></h3>
+									</span> {{$data['summary']['name']}} <br /><small>{{$data['summary']['email']}} | {{$data['summary']['phone']}}</small>
+									@if(Auth::user()->id == $data['summary']['id'])
+										<a href="javascript:logout()" class="uk-button uk-button-small uk-padding-small-top uk-align-right"><i class="a-circle-keyhole"></i> LOGOUT</a></h3>
 									
-									<form id="logout-form" action="/logout" method="POST" style="display: none;" siq_id="autopick_1705">
+										<form id="logout-form" action="/logout" method="POST" style="display: none;" siq_id="autopick_1705">
                                             <input type="hidden" name="_token" value="{{csrf_token()}}">
                                         </form>
+                                    @endIf
 					</div>
 					@can('access_auditor')
+
+					@if(Auth::user()->id == $data['summary']['id'])
 	  				<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
 	  					<hr />
 
@@ -132,14 +137,15 @@
 					            </select>
 	  						</div>
 	  					</div>
+	  					@endIf
 	  					@endcan
 	  				</div>
 
 	  				<div class="uk-width-1-1 uk-margin-remove uk-padding-remove-left">
 	  					<hr />
-	  					<h3 class="uk-margin-small-top">Addresses <i class="a-circle-plus use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="auditorAddAddress();"></i></h3>
+	  					<h3 class="uk-margin-small-top">Addresses @if(Auth::user()->id == $data['summary']['id'])<i class="a-circle-plus use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="auditorAddAddress();"></i>@endIf</h3>
 	  					<div class="uk-grid-small uk-margin-remove" uk-grid>
-	  						<form id="auditor-add-address" method="post" class="uk-width-1-1 uk-margin-bottom" style="display:none;">
+	  						@if(Auth::user()->id == $data['summary']['id']) <form id="auditor-add-address" method="post" class="uk-width-1-1 uk-margin-bottom" style="display:none;">
 	  							<div class="uk-grid-small" uk-grid>
 	  								<div class="uk-width-1-1 uk-padding-remove">
 	  									<label class="uk-text-small">Add a new address below</label>
@@ -162,6 +168,7 @@
 			  						</div>
 			  					</div>
 		  					</form>
+		  					@endIf
 	  						@if($data['summary']['organization']['address1'])
 	  						<div class="uk-width-1-1">
 	  							<div class="address">
@@ -177,14 +184,18 @@
 	  						</div>
 	  					</div>
 	  					<div class="uk-grid-small" style="margin-top:30px;" uk-grid>
+	  						@if(Auth::user()->id == $data['summary']['id'])
 	  						<label>Default address</label>
-	  						<select id="default_address" class="uk-select" style="margin-left: 10px;">
+	  						 <select id="default_address" class="uk-select" style="margin-left: 10px;">
 	  							<option value="{{$data['summary']['organization']['id']}}" @if($user->default_address_id == $data['summary']['organization']['id']) selected @endif>{{$data['summary']['organization']['address1']}}, @if($data['summary']['organization']['address2']){{$data['summary']['organization']['address2']}}@endif
 									@if($data['summary']['organization']['city']) {{$data['summary']['organization']['city']}}, {{$data['summary']['organization']['state']}} {{$data['summary']['organization']['zip']}} @endif</option>
 	  							@foreach($data['summary']['addresses'] as $address)
 	  							<option value="{{$address['address_id']}}" @if($user->default_address_id == $address['address_id']) selected @endif>{{$address['address']}}</option>
 	  							@endforeach
 	  						</select>
+	  						
+
+	  						@endIf
 	  					</div>
 	  				</div>
 	  				@endcan
@@ -389,6 +400,7 @@
 	}
 	
 </style>
+@can('access_auditor')
  <script>
  	$( document ).ready(function() {
  		loadCalendar();
@@ -553,7 +565,7 @@
  	}
 
  	$('.uk-modal-body').animate({
- 			width: "70%"
+ 			@if(Auth::user()->id == $data['summary']['id']) width: "70%" @else width:"30%" @endIf
  	});
 
  	$(document).on('beforehide', '.uk-modal-body', function (item) {
@@ -634,6 +646,7 @@
 	}
 
  </script>
+ @endCan
 
  <script>
 
@@ -646,21 +659,27 @@
                 }
             },
             methods: {
+            	@if(Auth::user()->id == $data['summary']['id'])
                  removeAddress: function(index) {
                  	this.$delete(this.addresses, index)
                  }
+                 @else
+                 removeAddress: function(index) {
+                 	UIkit.modal.alert('<h2>Sorry!</h2><p>You need to be logged in as this user to delete their addresses.</p>');
+                 }
+                 @endIf
             },
 
-            created() {
-		        Echo.channel('auditors.'+uid+'.'+sid)
-		              .listen('AuditorAddressEvent', (e) => {
-		                this.addresses.push({
-		                  address_id: e.address_id,	
-		                  address: e.address
-		                });
-		            // console.log("receiving address");
-		        });
-		    }
+      //       created() {
+		    //     Echo.channel('auditors.'+uid+'.'+sid)
+		    //           .listen('AuditorAddressEvent', (e) => {
+		    //             this.addresses.push({
+		    //               address_id: e.address_id,	
+		    //               address: e.address
+		    //             });
+		    //         // console.log("receiving address");
+		    //     });
+		    // }
         });
 
     </script>

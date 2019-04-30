@@ -35,6 +35,12 @@ class AmenityInspection extends Model
         return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
     }
 
+    public function unit_programs(): HasMany
+    {
+
+        return $this->hasMany(\App\Models\UnitProgram::class, 'unit_id', 'unit_id');
+    }  
+
     public function cached_unit() : ?object
     {
         $cachedUnit = CachedUnit::where('unit_id',$this->unit_id)->where('audit_id',$this->audit_id)->first();

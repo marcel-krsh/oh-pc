@@ -164,6 +164,7 @@
 <div id="audits" class="uk-no-margin-top" uk-grid>
 	<div class="uk-margin-remove-top uk-width-1-1" uk-grid>
 		<div id="auditsfilters" class="uk-width-1-1 uk-margin-top">
+			<div class="uk-align-right uk-label  uk-margin-top uk-margin-right">{{count($audits)}}  Audits </div>
 			@if(isset($auditFilterMineOnly) && $auditFilterMineOnly == 1)
 			<div id="audit-filter-mine" class="uk-badge uk-text-right@s badge-filter">
 				@can('access_auditor')

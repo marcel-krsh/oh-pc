@@ -14,12 +14,23 @@ class UpdateCrrCommentStructure extends Migration
     public function up()
     {
         //
-        Schema::table('crr_comments', function (Blueprint $table) {
+        Schema::create('crr_comments', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('crr_part_id');
-            $table->integer('last_completed_by_id');
-            $table->integer('last_declined_by_id');
-            $table->timestamp('last_completed_date');
-            $table->timestamp('last_declined_date');
+            $table->integer('crr_report_id');
+            $table->integer('audit_id');
+            $table->integer('author_id');
+            $table->integer('version');
+            $table->integer('last_completed_by_id')->nullable();
+            $table->integer('last_declined_by_id')->nullable();
+            $table->integer('last_approved_by_id')->nullable();
+            $table->timestamp('last_completed_date')->nullable();
+            $table->timestamp('last_declined_date')->nullable();
+            $table->timestamp('last_approved_date')->nullable();
+            $table->boolean('completed')->nullable();
+            $table->boolean('declined')->nullable();
+            $table->boolean('approved')->nullable();
+            $table->timestamps();
         });
     }
 

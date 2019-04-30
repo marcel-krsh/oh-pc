@@ -25,6 +25,13 @@ class UserController extends Controller
     }
 
     public function saveAuditorAddress(Request $request, $user){
+        if(Auth::user()->can('access_manager')){
+            $user = $user;
+            $userObj = User::find($user);
+        } else {
+            $user = Auth::user()->id;
+            $userObj = Auth::user();
+        }
         $forminputs = $request->get('inputs');
         parse_str($forminputs, $forminputs);
 
@@ -44,7 +51,7 @@ class UserController extends Controller
         if($forminputs['state']){ $formatted_address = $formatted_address.", ".$forminputs['state']; }
         if($forminputs['zip']){ $formatted_address = $formatted_address." ".$forminputs['zip']; }
 
-        broadcast(new AuditorAddressEvent(Auth::user(), $address->id, $formatted_address));
+        broadcast(new AuditorAddressEvent($userObj, $address->id, $formatted_address));
 
         return 1;
     }
@@ -443,12 +450,12 @@ class UserController extends Controller
     public function preferences($id)
     {
 
-        if ($id != Auth::user()->id) {
-            $output['message'] = 'You can only edit your own preferences.';
+        if ($id != Auth::user()->id && !Auth::user()->can('access_manager')) {
+            $output['message'] = 'You can only edit and view your own preferences.';
             return $output;
         }
 
-        $user = Auth::user();
+        $user = User::find($id);
 
         $phone_number = '';
         if($user->person){

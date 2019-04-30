@@ -142,7 +142,8 @@
         Route::get('dashboard/audits/{audit}/building/{building}/details', 'AuditController@detailsFromBuilding')->name('audit.building.details');
         Route::get('dashboard/audits/{audit_id}/building/{building_id}/inspection', 'AuditController@inspectionFromBuilding')->name('audit.inspection');
         Route::get('dashboard/audits/{audit_id}/building/{building_id}/details/{detail_id}/inspection', 'AuditController@inspectionFromBuildingDetail')->name('audit.building.inspection');
-        Route::get('dashboard/reports', 'DashboardController@reports')->name('dashboard.reports');
+        Route::get('dashboard/reports', 'ReportsController@reports')->name('dashboard.reports');
+        Route::get('project/{project}/reports', 'ReportsController@reports')->name('project.reports');
 
         Route::get('autocomplete/all', 'DashboardController@autocomplete');
         Route::get('autocomplete/auditproject', 'DashboardController@autocomplete');
@@ -195,6 +196,10 @@
         Route::get('/communications/{project}.json', 'CommunicationController@communicationsFromProjectIdJson')->name('communications.loadjson');
         Route::get('/projects/{project}/communications/title', 'AuditController@getProjectCommunicationsTitle')->name('project.communications.title');
 
+//allita reports!
+        Route::get('/modals/new-report','ReportsController@newReportForm');
+        Route::post('/new-report','ReportsController@createNewReport')->name('report.create');
+
 
 
 //allita documents!
@@ -230,7 +235,9 @@
         Route::get('/projects/{project}/reports/title', 'AuditController@getProjectReportsTitle')->name('project.reports.title');
 
         Route::get('/report/{report}', 'ReportsController@getReport');
-        Route::get('/report/{report}/comments', 'ReportsController@getComments');
+        Route::get('/report/{report}/generate','ReportsController@generateReport');
+        Route::get('/report/{report}/reset','ReportsController@resetToTemplate');
+        Route::get('/report/{report}/comments/{part}', 'ReportsController@getComments');
         Route::get('/report/{report}/{section}','ReportsController@getSection');
         Route::get('/report/{report}/download/{type}','ReportsController@download');
         Route::post('/report/{report}/status','ReportsController@changeStatus');
@@ -242,6 +249,8 @@
         Route::post('/report/{report}/section/{section}/part','ReportsController@addSectionPart');
         Route::post('/report/{report}/section/{section}/part/{part}','ReportsController@modifySectionPart');
         Route::post('/report/{report}/section/{section}/part/{part}/order','ReportsController@modifySectionPartOrder');
+
+        Route::post('/report/{report}/digital-signature','ReportsController@postDigitalSignature');
 
         Route::get('/projects/{project}/stream', 'AuditController@getProjectStream')->name('project.stream');
         Route::get('/modals/projects/{project}/contact', 'AuditController@getProjectContact')->name('project.contact');

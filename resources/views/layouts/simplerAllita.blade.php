@@ -17,7 +17,11 @@ if(Auth::check()){
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/signature-pad.css">
 
+  <!--[if IE]>
+    <link rel="stylesheet" type="text/css" href="css/ie9.css">
+  <![endif]-->
 
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
@@ -32,14 +36,6 @@ if(Auth::check()){
 <link rel="stylesheet" href="/css/system-419171130.css">
 @if (Auth::guest())
 @else
-<link rel="stylesheet" href="/css/cdfs-tab.css">
-<link rel="stylesheet" href="/css/communications-tab.css">
-<link rel="stylesheet" href="/css/documents-tab.css">
-<link rel="stylesheet" href="/css/funding-tab.css">
-<link rel="stylesheet" href="/css/history-tab.css">
-<link rel="stylesheet" href="/css/notes-tab.css">
-<link rel="stylesheet" href="/css/outcomes-tab.css">
-<link rel="stylesheet" href="/css/processing-tab.css">
 @endif
 <script>
         window.Laravel = <?php echo json_encode([

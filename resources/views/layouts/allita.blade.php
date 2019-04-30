@@ -1,6 +1,5 @@
-﻿<?php session(['disablePacer'=>1]);  
-
-setlocale(LC_MONETARY, 'en_US');
+﻿<?php session(['disablePacer'=>1]); ?>
+<?php setlocale(LC_MONETARY, 'en_US');
 /// protect against inactive users.
 $allowPageLoad = false;
 
@@ -13,7 +12,8 @@ if(Auth::check()){
 	$allowPageLoad = true;
 }
 if($allowPageLoad){
-	?><!DOCTYPE html>
+	?>
+	<!DOCTYPE html>
 	<html lang="en" dir="ltr" id="parentHTML" class="no-js">
 	<head>
 		<meta charset="utf-8">
@@ -194,7 +194,7 @@ if($allowPageLoad){
 	@else
 	<script src="/js/taffy.js"></script>
 	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script> -->
-	<script type="text/javascript" src="/js/Chart.bundle.js"></script> <!--section 197 -->
+	<script type="text/javascript" src="/js/Chart.bundle.js"></script> 
 	@endif
 
 	<link rel="stylesheet" href="/css/allita-font.css">
@@ -288,8 +288,7 @@ if($allowPageLoad){
 									<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
 										<a href="" style="">
 											<span class="list-tab-text">
-												<span class="uk-badge" v-if="statsAuditsTotal" v-cloak>@{{statsAuditsTotal}}
-												</span>
+												
 												<i class="a-mobile-home"></i> AUDITS
 											</span>
 										</a>
@@ -297,14 +296,13 @@ if($allowPageLoad){
 									<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
 										<a href="">
 											<span class="list-tab-text">
-												<span class="uk-badge" v-if="statsCommunicationTotal" v-cloak v-html="statsCommunicationTotal"></span>
 												<i class="a-envelope-3"></i> COMMUNICATIONS
 											</span>
 										</a>
 									</li>
 									@if(env('APP_ENV') == 'local')
-									<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}', '3','','','',1);}">
-										<a href=""><span class="list-tab-text"><span class="uk-badge" v-if="statsReportsTotal" v-cloak>@{{statsReportsTotal}}</span></span> <i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
+									<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000"  onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}', '3','','','',1);}">
+										<a href=""><span class="list-tab-text"><i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
 									</li>
 									@endif
 									@can('access_admin')
@@ -348,7 +346,7 @@ if($allowPageLoad){
 					</li>
 					@if(env('APP_ENV') == 'local')
 					<li>
-						<div id="detail-tab-3-content"></div>
+						<div id="detail-tab-3-content" style=" margin-top: 70px;"></div>
 					</li>
 					@endIf
 					@if(Auth::user()->admin_access())

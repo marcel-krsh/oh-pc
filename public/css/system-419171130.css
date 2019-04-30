@@ -4828,6 +4828,7 @@ table.uk-table tr:first-child {
     /*padding-right: 25px;*/
     /*position: relative;
     top: 60px;*/
+    margin-top: 48px;
 }
 .uk-grid-divider>:not(.uk-first-column)::before {
     left: 0px;

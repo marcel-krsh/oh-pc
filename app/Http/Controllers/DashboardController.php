@@ -72,7 +72,6 @@ class DashboardController extends Controller
       ->count();
 
     $stats_reports_total = Report::where('user_id', '=', Auth::user()->id)->count();
-    echo '121';
     //return \view('dashboard.index'); //, compact('user')
     return view('dashboard.index', compact('tab', 'loadDetailTab', 'stats_audits_total', 'stats_communication_total', 'stats_reports_total', 'current_user'));
   }
