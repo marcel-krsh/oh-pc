@@ -20,7 +20,7 @@
     });
 
     Route::group(['middleware' => 'web'], function () {
-        //app('debugbar')->disable();
+        app('debugbar')->disable();
         // Route::get('/testProject/{project}', function($project){
         //     $project = App\Models\Project::where('id',$project)->with('programs.program')->first();
         //     //dd($project->programs);
@@ -377,6 +377,8 @@
 				Route::post('/modals/deactivateuser/{id}', 'PagesController@deactivateUserSave');
 				Route::get('/modals/activateuser/{id}', 'PagesController@activateUser');
 				Route::post('/modals/activateuser/{id}', 'PagesController@activateUserSave');
+
+				Route::post('user/notification-preference/{id}', 'Notifications\UserNotificationController@postNotificationPreference');
 
 
 				Route::post('register-user', 'Auth\RegisterController@postRegister');

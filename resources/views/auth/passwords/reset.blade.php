@@ -18,6 +18,7 @@
 			{{ csrf_field() }}
 			<div class="uk-form-row {{ $errors->has('email') ? ' uk-form-danger' : '' }}" uk-scrollspy="target:.uk-input;cls:uk-animation-slide-top-small; delay: 1500">
 				<input class="uk-input uk-width-1-1 uk-form-large" type="text" placeholder="Email" id="email" type="email" name="email" value="{{ old('email') }}" required autofocus >
+				<input type="hidden" name="token" value="{{ $token }}">
 				@if ($errors->has('email'))
 				<span class="uk-block-primary">
 					<strong class="uk-dark uk-light">{{ $errors->first('email') }}</strong>
