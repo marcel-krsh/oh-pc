@@ -1,11 +1,13 @@
 <?php $signature = $bladeData ?>
-@if(!is_null($signature))
+@if(!is_null($report->signature))
 <div uk-grid>
-	Output saved signature - path to file should be saved in the data for this report version
-	<img src="{{$signature->path}}">
-	<hr >
-	{{date('m/d/Y g:h a', strtotime($signature->date))}}
-	@can('access_auditor')<button onClick="jsFunctionToDelete"><i class="a-trash-can"></i> DELETE SIGNATURE </button>@endCan
+	<div class="uk-width-1-1">
+		<img src="{{$report->signature}}">
+		<hr >
+		<p>Signed: {{date('m/d/Y g:h a', strtotime($report->date_signed))}} By {{$report->signed_by}}</p>
+	</div>
+	
+	@can('access_root')<button onClick="jsFunctionToDelete"><i class="a-trash-can"></i> DELETE SIGNATURE </button>@endCan
 </div>
 @else
 
@@ -23,6 +25,7 @@
 	<div class="signature-pad--body">
 		<canvas></canvas>
 	</div>
+
 	<div class="signature-pad--footer">
 		<div class="description">BY SIGNING ABOVE I CERTIFY I HAVE REVIEWED THIS DOCUMENT.</div>
 		<form id="singnatureForm">
@@ -37,7 +40,7 @@
 						<select  id="signing_user" name="signing_user" class="uk-select" style="width: 500px">
 							<option value="">Who is Signing?</option>
 							@foreach($users as $user)
-							<option value="{{ $user->id }}">{{ $user->name }}</option>
+							<option value="{{ $user->person_id }}">{{ $user->person->first_name }} {{ $user->person->last_name }}</option>
 							@endforeach
 							<option value="other">Other</option>
 						</select>
@@ -80,7 +83,7 @@ $('#signing_user').change(function() {
 function submitSignature() {
 	jQuery.ajaxSetup({
 		headers: {
-			'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+			'X-CSRF-TOKEN': '{{ csrf_token() }}'
 		}
 	});
 
@@ -90,6 +93,7 @@ function submitSignature() {
 
 	var data = { };
 	var signing_user = $('#signing_user').val();
+	var signed_version = '{{$report->version}}';
 	var other_name = $('#other_name').val();
 	if (signaturePad.isEmpty()) {
 		UIkit.modal.alert('Please provide a signature first.',{stack: true});
@@ -114,6 +118,7 @@ function submitSignature() {
 		data: {
 			signature: data['signature'],
 			signing_user: data['signing_user'],
+			date_signed: '{{date('Y-m-d',time())}}',
 			other_name: data['other_name'],
       '_token' : '{{ csrf_token() }}'
     },
@@ -121,6 +126,7 @@ function submitSignature() {
     	$('.alert-danger' ).empty();
     	if(data == 1) {
     		UIkit.modal.alert('Signature has been saved.',{stack: true});
+    		location.reload();
     	}
     	jQuery.each(data.errors, function(key, value){
     		jQuery('.alert-danger').show();

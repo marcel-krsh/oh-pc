@@ -1,15 +1,74 @@
 <?php $findings = $bladeData;?>
 @if(!is_null($findings))
+	
+	<?php 
+		// count them up...
+		$fileCount = 0;
+		$nltCount = 0;
+		$ltCount = 0;
+		forEach($findings as $fc){
+
+			switch ($fc->finding_type->type) {
+				case 'file':
+					$fileCount++;
+					break;
+				case 'nlt':
+					$nltCount++;
+					break;
+				case 'lt':
+					$ltCount++;
+					break;
+				default:
+					# code...
+					break;
+			}
+		}
+
+	?>
+
 	<div uk-grid>
 		<div class="uk-width-1-1">
-			<h2>Findings: </h2><small><i class="a-folder"></i> : FILE FINDING &nbsp;|  &nbsp;<i class="a-booboo"></i> : NON LIFE THREATENING FINDING  &nbsp;|  &nbsp;<i class="a-skull"></i> : LIFE THREATENING FINDING </small><hr class="dashed-hr">
+			<h2>Findings: </h2> <small>
+					@if($fileCount > 0)
+						<i class="a-folder"></i> : {{$fileCount}} FILE 
+							@if($fileCount != 1)
+							 FINDINGS 
+							@else
+							 FINDING 
+							@endIf 
+						&nbsp;|  &nbsp;
+					@endIf 
+					@if($nltCount > 0)
+						<i class="a-booboo"></i> : {{$nltCount}}  NON LIFE THREATENING 
+							@if($nltCount != 1) 
+								FINDINGS 
+							@else
+							 FINDING 
+							@endIf  
+						&nbsp;|  &nbsp; 
+					@endIf 
+					@if($ltCount > 0) 
+						<i class="a-skull"></i> : {{$ltCount}} LIFE THREATENING 
+						@if($ltCount != 1)
+						 FINDINGS 
+						@else
+						 FINDING 
+						@endIf
+					@endIf</small><hr class="dashed-hr">
 		</div>
+		<?php $columnCount = 1; ?>
 	@forEach($findings as $f)
-		<?php //dd($f); ?>
-		<div class="uk-width-1-3 crr-blocks" style="border-bottom:1px dotted #3c3c3c; padding-top:12px; padding-bottom: 18px; page-break-inside: avoid;">
+		<div class="uk-width-1-3 crr-blocks" style="border-bottom:1px dotted #3c3c3c; @if($columnCount < 3) border-right:1px dotted #3c3c3c; @endIf padding-top:12px; padding-bottom: 18px; page-break-inside: avoid;">
+			<?php
+				// using column count to put in center lines rather than rely on css which breaks.
+				$columnCount++;
+				if($columnCount > 3){
+					$columnCount = 1;
+				}
+			?>
 			<div style="min-height: 105px;">
-			<hr><strong>Finding # {{$f->id}}</strong><hr />
-			{{date('m/d/y', strtotime($f->date_of_finding))}} | AID:{{$f->auditor->id}} <br />
+			<strong>Finding # {{$f->id}}</strong><hr />
+			{{date('m/d/y', strtotime($f->date_of_finding))}} <br />
 
 			@if(!is_null($f->building_id))
 				<strong>{{$f->building->building_name}}</strong> <br />
@@ -25,6 +84,10 @@
 			   	{{$f->unit->building->address->city}}, {{$f->unit->building->address->state}} {{$f->unit->building->address->zip}}
 			   	@endIf
 			   	<br /><strong>Unit {{$f->unit->unit_name}}</strong>
+			@else
+				<strong>Site Finding</strong><br />
+				{{$f->project->address->line_1}} {{$f->project->address->line_2}}<br />
+				{{$f->project->address->city}}, {{$f->project->address->state}} {{$f->project->address->zip}}<br /><br />
 			@endIf
 
 

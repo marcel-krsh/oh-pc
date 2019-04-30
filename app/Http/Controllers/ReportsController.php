@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Audit;
+use App\Models\People;
+use App\Models\CachedAudit;
 use App\Models\CrrApprovalType;
 use App\Models\CrrPart;
 use App\Models\CrrPartOrder;
@@ -376,7 +378,7 @@ class ReportsController extends Controller
   {
 
     // list out templates
-    $audits    = Audit::where('compliance_run', 1)->orderBy('updated_at', 'desc')->get();
+    $audits    = CachedAudit::where('step_id','>', 59)->where('step_id','<',67)->orderBy('updated_at', 'asc')->get();
     $templates = CrrReport::where('template', 1)->where('active_template', 1)->get();
 
     return view('modals.new-report', compact('templates', 'audits'));
@@ -385,6 +387,8 @@ class ReportsController extends Controller
   public function freeTextPlaceHolders(Audit $audit, $string, CrrReport $report)
   {
     //replace string value with current audit values.
+     $string = str_replace("||REPORT ID||", $report->id, $string);
+      $string = str_replace("||VERSION||", $report->version, $string);
     $string = str_replace("||PROJECT NAME||", $audit->project->project_name, $string);
     $string = str_replace("||AUDIT ID||", $audit->id, $string);
     $string = str_replace("||PROJECT NUMBER||", $audit->project->project_number, $string);
@@ -502,8 +506,7 @@ class ReportsController extends Controller
     return view('crr_parts.crr_comments', compact('report', 'part', 'comments'));
   }
 
-  public function setCrrData(CrrReport $template, $reportId = null, $audit = null)
-  {
+  public function setCrrData(CrrReport $template, $reportId = null, $audit = null){
     //get the report parts
     $audit  = Audit::find($audit);
     $report = CrrReport::find($reportId);
@@ -649,10 +652,11 @@ class ReportsController extends Controller
   {
     if ($report) {
      // $cr = CrrReport::with('audit', 'project.contactRoles','sections.parts.crr_part_type')->find($report->id);
-    	$users = User::get()->take(20); //change this to actual audit users (auditors, owner, pm, and all managers)
+    	$users = $report->signators(); //change this to actual audit users (auditors, owner, pm, and all managers)
       if (is_null($report->crr_data)) {
         //return 'This report has no data.';
         $this->generateReport($report, 1);
+        redirect('/report/'.$report->id);
       } else {
         $data    = json_decode($report->crr_data);
         $version = $report->version;
@@ -702,7 +706,7 @@ class ReportsController extends Controller
           //make magic happen.
           $method = $part->crr_part_type->method_name;
 
-          $partValue                                                                                      = $this->$method($report, $part);
+          $partValue = $this->$method($report, $part);
           $data[$index]['version-' . $version]['section-' . $sectionOrder]['parts']['part-' . $partOrder] = [$partValue];
           $partOrder++;
         }
@@ -715,13 +719,15 @@ class ReportsController extends Controller
         $approvalId = $report->crr_approval_type_id;
       }
 
-      $report->update(['crr_data' => json_encode($data), 'version' => $version, 'crr_approval_type_id' => $approvalId]);
+      $report->update(['crr_data' => json_encode($data), 'version' => $version, 'crr_approval_type_id' => $approvalId, 'signature' => null]);
+      $history = ['date' => date('m/d/Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => 'Generated version '.$version.' of the report'];
+        $this->reportHistory($report, $history);
       //dd($data);
-      if ($goToView) {
+      //if ($goToView) {
         //dd($goToView);
 
         return redirect('/report/' . $report->id);
-      }
+      //}
     } else {
       return 'I was unable to find the requested report to process. Did it get deleted?';
     }
@@ -851,10 +857,16 @@ class ReportsController extends Controller
   {
     // calculate data for the header.
     //dd($part);
+    $originalData = json_decode($part->data);
+    $data[]       = $originalData[0];
+    $data[]       = $report->audit->reportableLtFindings;
+
+    //dd($data);
+
     $response            = [];
-    $response['content'] = $this->freeTextPlaceHolders($report->audit, $part->crr_part_type->content, $report);
+    $response['content'] = '';
     $response['blade']   = $part->crr_part_type->blade;
-    $response['data']    = $part->data;
+    $response['data']    = json_encode($data);
     $response['name']    = $part->crr_part_type->name;
     $response['part_id'] = $part->id;
     return $response;
@@ -873,17 +885,26 @@ class ReportsController extends Controller
   	//Data insert in crr reports
   	if($report) {
   		$user = Auth::user();
+
   		$report->last_updated_by = $user->id;
   		$report->signature = $request->signature;
+        $report->signed_version = $report->version;
+        $report->date_signed = date('Y-m-d H:i:s',time());
+        $report->response_due_date = date('Y-m-d H:i:s', time()+86400);
+        $report->crr_approval_type_id = 7;
   		if($request->signing_user == 'other') {
   			$report->signed_by = $request->other_name;
   			$report->signed_by_id = null;
+            $name = $request->other_name;
   		} else {
+            $signing_user = People::where('id',$request->signing_user)->first();
+            //dd($signing_user);
   			$report->signed_by_id = $request->signing_user;
-  			$report->signed_by = null;
+  			$report->signed_by = $signing_user->first_name.' '.$signing_user->last_name;
+            $name = $signing_user->first_name.' '.$signing_user->last_name;
   		}
   		$report->save();
-  		$history = ['date' => date('m-d-Y g:i a'), 'user_id' => $user->id, 'user_name' => $user->full_name(), 'note' => 'Signed the document'];
+  		$history = ['date' => date('m-d-Y g:i a'), 'user_id' => $user->id, 'user_name' => $user->full_name(), 'note' => $name.' signed the report and their response is due '.date('m-d-Y g:i a', strtotime($report->response_due_date)).'.'];
   		 $this->reportHistory($report, $history);
   		 return 1;
   	} else{

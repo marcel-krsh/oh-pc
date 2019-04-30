@@ -36,14 +36,6 @@ if(Auth::check()){
 <link rel="stylesheet" href="/css/system-419171130.css">
 @if (Auth::guest())
 @else
-<link rel="stylesheet" href="/css/cdfs-tab.css">
-<link rel="stylesheet" href="/css/communications-tab.css">
-<link rel="stylesheet" href="/css/documents-tab.css">
-<link rel="stylesheet" href="/css/funding-tab.css">
-<link rel="stylesheet" href="/css/history-tab.css">
-<link rel="stylesheet" href="/css/notes-tab.css">
-<link rel="stylesheet" href="/css/outcomes-tab.css">
-<link rel="stylesheet" href="/css/processing-tab.css">
 @endif
 <script>
         window.Laravel = <?php echo json_encode([

@@ -53,7 +53,6 @@ class CrrReport extends Model
     }
 
 
-
     public function comments(): HasMany{
     	return $this->hasMany('App\Models\CrrComment');
     }
@@ -68,6 +67,11 @@ class CrrReport extends Model
         ->join('crr_section_orders','crr_sections.id','=','crr_section_orders.crr_section_id')
         ->orderBy('order','asc')
         ;
+    }
+
+    public function signators() {
+
+        return $this->project->contactRoles;
     }
 
 

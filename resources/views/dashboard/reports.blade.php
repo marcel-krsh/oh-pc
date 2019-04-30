@@ -7,7 +7,7 @@
     $crrTypeSelection = 'all';
     ?>
 
-<div id="reports_tab">
+<div id="reports_tab" class="uk-margin-large-top">
     <div uk-grid class="uk-margin-top" id="message-filters" data-uk-button-radio="">
 
         
