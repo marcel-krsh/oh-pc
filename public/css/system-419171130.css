@@ -2758,8 +2758,8 @@ margin-top:10px;
   top: 0;*/
   float: right;
     text-align: right;
-    /*z-index:1000;
-    position:relative;*/
+    z-index:10;
+    /*position:relative;*/
 }
 .inspec-tools-tab-finding .inspec-tools-tab-finding-actions {
   /*position: absolute;*/
@@ -4828,6 +4828,7 @@ table.uk-table tr:first-child {
     /*padding-right: 25px;*/
     /*position: relative;
     top: 60px;*/
+    margin-top: 48px;
 }
 .uk-grid-divider>:not(.uk-first-column)::before {
     left: 0px;

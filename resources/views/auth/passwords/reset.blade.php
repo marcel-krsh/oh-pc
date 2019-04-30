@@ -2,9 +2,11 @@
 @section('content')
 <div class="uk-vertical-align uk-text-center">
 	<div class="uk-vertical-align-middle login-panel" id="login-panel">
-		<p>NEIGHBORHOOD INITIATIVE PROGRAM</p>
+		<a href="{{env('DEVCO_LOGIN_URL')}}"><img src="/images/Logo.jpg"> </a>
+		<p>Program Compliance Inspection</p>
 		<p>RESET PASSWORD</p>
 		<form class="uk-panel uk-panel-box uk-form" role="registrationForm" method="POST" action="{{ url('/password/reset') }}">
+			 <input type="hidden" name="token" id="token" value="{{ $token }}">
 			<div class="alert alert-danger uk-text-danger" style="display:none"></div>
 			@if (count($errors) > 0)
 			<div class="alert alert-danger uk-text-danger">
@@ -72,7 +74,7 @@
 			url: "{{ URL::route("user.complete-registration") }}",
 			method: 'post',
 			data: {
-				email_token: $('#email_token').val(),
+				token: $('#token').val(),
 				user_id: $('#user_id').val(),
 				password: data['password'],
 				password_confirmation: data['password_confirmation'],

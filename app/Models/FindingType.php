@@ -48,7 +48,7 @@ class FindingType extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function huds() : object
+    public function huds() 
     {
         $huds = HudInspectableArea::select('hud_inspectable_areas.*')->join('hud_finding_type','hud_inspectable_area_id', '=', 'hud_inspectable_areas.id')->where('hud_finding_type.finding_type_id',$this->id)->get();
         return $huds;

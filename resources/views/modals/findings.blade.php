@@ -30,6 +30,10 @@
 		line-height: 21px;
 		margin: 3px 3px 3px 3px;
 	}
+	#modal-size {
+		height: 100%;
+		width:100%;
+	}
 </style>
 <script>
 	window.findingModalSelectedType = '{{ $type }}';

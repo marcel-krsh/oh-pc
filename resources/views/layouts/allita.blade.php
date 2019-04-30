@@ -1,4 +1,4 @@
-<?php session(['disablePacer'=>1]); ?>
+﻿<?php session(['disablePacer'=>1]); ?>
 <?php setlocale(LC_MONETARY, 'en_US');
 /// protect against inactive users.
 $allowPageLoad = false;
@@ -165,16 +165,8 @@ if($allowPageLoad){
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	<script>
-		function openUserPreferences(@can('access_manager') user_id = null @endCan){
-			@can('access_manager')
-				if(user_id != null){
-					dynamicModalLoad('auditors/'+user_id+'/preferences',0,0,1);
-				}else{
-					dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);
-				}
-			@else
-				dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);
-			@endCan
+		function openUserPreferences(){
+			dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);
 		}
 		window.Laravel = <?php echo json_encode([
 			'csrfToken' => csrf_token(),
@@ -202,7 +194,7 @@ if($allowPageLoad){
 	@else
 	<script src="/js/taffy.js"></script>
 	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script> -->
-	<script type="text/javascript" src="/js/Chart.bundle.js"></script>
+	<script type="text/javascript" src="/js/Chart.bundle.js"></script> 
 	@endif
 
 	<link rel="stylesheet" href="/css/allita-font.css">
@@ -291,28 +283,28 @@ if($allowPageLoad){
 							@endCan
 
 							<div id="top-tabs-container" style="display: inline-block; overflow: visible; padding-top:15px; min-height: 26px;">
-								@can('access_pm')
+								@can('access_auditor')
 								<ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m" style="background-color: transparent;">
 									<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
 										<a href="" style="">
 											<span class="list-tab-text">
-												<span class="uk-badge" v-if="statsAuditsTotal" v-cloak>@{{statsAuditsTotal}}
-												</span>
+												
 												<i class="a-mobile-home"></i> AUDITS
 											</span>
 										</a>
 									</li>
+								@endCan
+								@can('access_pm')
 									<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
 										<a href="">
 											<span class="list-tab-text">
-												<span class="uk-badge" v-if="statsCommunicationTotal" v-cloak v-html="statsCommunicationTotal"></span>
 												<i class="a-envelope-3"></i> COMMUNICATIONS
 											</span>
 										</a>
 									</li>
 									
-									<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}?page='+$('#reports-current-page').val(), '3','','','',1);}">
-										<a href=""><span class="list-tab-text"><span class="uk-badge" v-if="statsReportsTotal" v-cloak>@{{statsReportsTotal}}</span></span> <i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
+									<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000"  onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}', '3','','','',1);}">
+										<a href=""><span class="list-tab-text"><i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
 									</li>
 									
 									@can('access_admin')
@@ -348,17 +340,19 @@ if($allowPageLoad){
 				</div>
 
 				<ul id="tabs" class="maintabs uk-switcher" >
-					<li>
+					@can('access_auditor')<li>
 						<div id="detail-tab-1-content"></div>
 					</li>
+					@endCan
+					@can('access_pm')
 					<li>
 						<div id="detail-tab-2-content"></div>
 					</li>
 					
 					<li>
-						<div id="detail-tab-3-content"></div>
+						<div id="detail-tab-3-content" style=" margin-top: 70px;"></div>
 					</li>
-					
+					@endCan
 					@if(Auth::user()->admin_access())
 					<li>
 						<div id="detail-tab-5-content" style="padding-top:20px;"></div>
@@ -381,50 +375,42 @@ if($allowPageLoad){
 	<div id="mainfooter"  class="uk-visible@s" uk-grid>
 		<div class="uk-width-1-3">
 			<p class="uk-dark uk-light" style="position: absolute; bottom: 20px;"><a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light"><i class="a-mobile-home"></i>
-			@if(Auth::check() && Auth::user()->auditor_access())
-			Allita Program Compliance
-			@else
-			Dev|Co Inspect
-			@endif
-			&copy; 2018<?php if(date('Y',time()) != '2018') echo " — ".date('Y',time()); ?>: @include('git-version::version-comment')</a> </p>
+				@if(Auth::check() && Auth::user()->auditor_access())
+				Allita Program Compliance
+				@else
+				Dev|Co Inspect
+				@endif
+				&copy; 2018<?php if(date('Y',time()) != '2018') echo " — ".date('Y',time()); ?>: @include('git-version::version-comment')</a> </p>
+			</div>
+			<div id="footer-content" class="uk-width-1-3">
+				<div id="footer-actions-tpl"  class="uk-text-right"></div>
+			</div>
 		</div>
-		<div id="footer-content" class="uk-width-1-3">
-			<div id="footer-actions-tpl"  class="uk-text-right"></div>
-		</div>
-	</div><!-- 
-	Hidden inputs that ensure checks do not double up on each other for each of the tabs. 
-	We set them to a value of 1, to allow the tab to load first before it tries to update.
-	-->
-	<input type="hidden" id='report-checking' name="report-checking" value="1">
-	<input type="hidden" id="crr-newest" value="">
-	<input type="hidden" id='audit-checking' name="audit-checking" value="1">
-	<input type="hidden" id='communication-checking' name="communication-checking" value="1">
-	<input type="hidden" id='stream-checking' name="stream-checking" value="1">
-	<script>
-	flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
-	flatpickr(".flatpickr");
+		<script>
+			flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
+			flatpickr(".flatpickr");
 
-	var configs = {
-	    dateformat: {
-	        dateFormat: "m/d/Y",
-	    }
-	}
+			var configs = {
+				dateformat: {
+					dateFormat: "m/d/Y",
+				}
+			}
 
 
 
-		$(".uk-modal").on("hide", function() {
-		    $("html").removeClass("uk-modal-page");
-		});
+			$(".uk-modal").on("hide", function() {
+				$("html").removeClass("uk-modal-page");
+			});
 
 
 
-	</script>
+		</script>
 
 
-	<!-- <script src="/js/app.js"></script> -->
-	@if (Auth::guest())
-	@else
-	<script type="text/javascript">
+		<!-- <script src="/js/app.js"></script> -->
+		@if (Auth::guest())
+		@else
+		<script type="text/javascript">
 		// $('.list-tab').slideToggle();
 		//$('#detail-tab-1').slideToggle();
 		//$('#detail-tab-2').slideToggle();
@@ -497,16 +483,10 @@ if($allowPageLoad){
 		    }
 		  });
 
-	    $( document ).ready(function() {
-	    	$('.uk-sticky-placeholder:last').remove();
-	    	$("html, body").animate({ scrollTop: 0 }, "slow");
-
-	    	// Put in page refresh scripts here - we do this on the main template to ensure we don't create multiple instances of intervals:
-
-	    	// REPORTS ROW CHECKS
-	    	
-
-	    });
+		$( document ).ready(function() {
+			$('.uk-sticky-placeholder:last').remove();
+			$("html, body").animate({ scrollTop: 0 }, "slow");
+		});
 
 	</script>
 	@endif
@@ -550,7 +530,7 @@ if($allowPageLoad){
 	<script src="/js/pace.min.js">{{session('disablePacer')}}</script>
 	@endif
 
-	
+	<!-- <script type="text/javascript" src="https://devco.ohiohome.org/AuthorityOnlineALT/Unified/UnifiedHeader.aspx"></script> -->
 	<script>
 		new Vue({
 			el: '#top-tabs',
@@ -563,13 +543,53 @@ if($allowPageLoad){
 			mounted: function() {
 				console.log("Tabs Working");
 
+		    	//Echo.join('communications.'+uid+'.'+sid);
+		    	Echo.private('updates.{{Auth::user()->id}}')
+		    	.listen('UpdateEvent', (payload) => {
+		    		@if(env('APP_DEBUG'))
+		    		console.log('Update received with:');
+		    		console.log(payload);
+		    		@endIf
+
+		    		if(payload.data.event == 'tab'){
+		    			console.log("Tab event received.");
+		    			this.statsCommunicationTotal = payload.data.communicationTotal;
+		    		}
+		    	});
+
+		            // console.log("new total "+data.communicationTotal);
+
+
+		        // socket.on('communications.'+uid+'.'+sid+':NewRecipient', function(data){
+		        //     // console.log("user " + data.userId + " is getting a message because a new message has been sent.");
+		        //     // console.log("new total "+data.communicationTotal);
+		        //     this.statsCommunicationTotal = data.communicationTotal;
 
 
 
+		      }
+		    });
+		  </script>
+	<!-- <script>
+    	function openWebsocket(url){
+		    try {
+		        socket = new WebSocket(url);
+		        socket.onopen = function(){
+		            console.log('Socket is now open.');
+		        };
+		        socket.onerror = function (error) {
+		            console.error('There was an un-identified Web Socket error');
+		        };
+		        socket.onmessage = function (message) {
+		            console.info("Message: %o", message.data);
+		        };
+		    } catch (e) {
+		        console.error('Sorry, the web socket at "%s" is un-available', url);
+		    }
 		}
-	});
-	</script>
-	
+
+		openWebsocket("http://192.168.10.10:6001");
+	</script> -->
 
 
 </body>
