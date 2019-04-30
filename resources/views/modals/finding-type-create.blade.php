@@ -127,11 +127,11 @@
                 <div class="uk-form-row">
                     <div class="uk-grid">
                         
-                        <label class="uk-width-1-6 uk-margin-small-top"><input class="uk-checkbox uk-margin-small-right" type="checkbox" name="one" value="1" @if($finding_type) @if($finding_type->one) checked @endif @endif> Level One</label> <input class="uk-width-5-6 uk-input" type="text" name="one_description" placeholder="Enter Level 1 Description" value="{{$finding_type->one_description}}">
+                        <label class="uk-width-1-6 uk-margin-small-top"><input class="uk-checkbox uk-margin-small-right" type="checkbox" name="one" value="1" @if($finding_type) @if($finding_type->one) checked @endif @endif> Level One</label> <input class="uk-width-5-6 uk-input" type="text" name="one_description" placeholder="Enter Level 1 Description" @if($finding_type) @if($finding_type->one_description)  value="{{$finding_type->one_description}}" @endif @endif>
                         <hr class="uk-width-1-1 dashed-hr">
-                        <label class="uk-width-1-6 uk-margin-top"><input class="uk-checkbox uk-margin-small-right" type="checkbox" name="two" value="1" @if($finding_type) @if($finding_type->two) checked @endif @endif> Level Two</label> <input class="uk-width-5-6 uk-input uk-margin-top" type="text" name="two_description" placeholder="Enter Level 2 Description" value="{{$finding_type->two_description}}">
+                        <label class="uk-width-1-6 uk-margin-top"><input class="uk-checkbox uk-margin-small-right" type="checkbox" name="two" value="1" @if($finding_type) @if($finding_type->two) checked @endif @endif> Level Two</label> <input class="uk-width-5-6 uk-input uk-margin-top" type="text" name="two_description" placeholder="Enter Level 2 Description" @if($finding_type) @if($finding_type->two_description) value="{{$finding_type->two_description}}" @endif @endif>
                         <hr class="uk-width-1-1 dashed-hr">
-                        <label class="uk-width-1-6  uk-margin-top"><input class="uk-checkbox uk-margin-small-right" type="checkbox" name="three" value="1" @if($finding_type) @if($finding_type->three) checked @endif @endif> Level Three</label> <input class="uk-width-5-6 uk-input uk-margin-top" type="text" name="three_description" placeholder="Enter Level 3 Description" value="{{$finding_type->three_description}}">
+                        <label class="uk-width-1-6  uk-margin-top"><input class="uk-checkbox uk-margin-small-right" type="checkbox" name="three" value="1" @if($finding_type) @if($finding_type->three) checked @endif @endif> Level Three</label> <input class="uk-width-5-6 uk-input uk-margin-top" type="text" name="three_description" placeholder="Enter Level 3 Description" @if($finding_type) @if($finding_type->three_description) value="{{$finding_type->three_description}}" @endif @endif>
                     </div>
                     
                 </div>
