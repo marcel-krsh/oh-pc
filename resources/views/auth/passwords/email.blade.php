@@ -4,9 +4,19 @@
 @if(Auth::guest())
 <div class="uk-vertical-align uk-text-center" uk-scrollspy="target:#login-panel;cls:uk-animation-slide-top-small uk-transform-origin-bottom; delay: 1300">
 	<div class="uk-vertical-align-middle login-panel"  id="login-panel">
-		<a href="https://devco.ohiohome.org/AuthorityOnlineALTTEST/default.aspx?ReturnUrl=%2fAuthorityOnlineALTTest%3fredirect%3dhttps%253A%252F%252Fpcinspecttrain.ohiohome.org&redirect=https%3A%2F%2Fpcinspecttrain.ohiohome.org"><img src="https://devco.ohiohome.org/AuthorityOnlineALTTEST/images/Logo.jpg"> {{-- Login through DevCo --}}</a>
+		<a href="{{env('DEVCO_LOGIN_URL')}}"><img src="https://devco.ohiohome.org/AuthorityOnline/images/Logo.jpg"> </a>
+		
+		
 		<p>Program Compliance Inspection</p>
 		<p>FORGOT PASSWORD</p>
+
+		@if(session('status'))
+			<hr class="dashed-hr">
+				<p>{{session('status')}}</p>
+			<hr class="dashed-hr">
+				
+		@endIf
+
 		<form class="uk-panel uk-panel-box uk-form" role="form" method="POST" action="{{ url('/password/email') }}">
 			@if (count($errors) > 0)
 			<div class="alert alert-danger uk-text-danger">
@@ -48,6 +58,7 @@
 			@endif
 		</div>
 	</div>
+</div>
 </div>
 @endif
 @endsection

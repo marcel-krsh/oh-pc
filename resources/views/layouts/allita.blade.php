@@ -1,5 +1,6 @@
-<?php session(['disablePacer'=>1]); ?>
-<?php setlocale(LC_MONETARY, 'en_US');
+<?php session(['disablePacer'=>1]);  
+
+setlocale(LC_MONETARY, 'en_US');
 /// protect against inactive users.
 $allowPageLoad = false;
 
@@ -12,8 +13,7 @@ if(Auth::check()){
 	$allowPageLoad = true;
 }
 if($allowPageLoad){
-	?>
-	<!DOCTYPE html>
+	?><!DOCTYPE html>
 	<html lang="en" dir="ltr" id="parentHTML" class="no-js">
 	<head>
 		<meta charset="utf-8">
@@ -202,7 +202,7 @@ if($allowPageLoad){
 	@else
 	<script src="/js/taffy.js"></script>
 	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script> -->
-	<script type="text/javascript" src="/js/Chart.bundle.js"></script>
+	<script type="text/javascript" src="/js/Chart.bundle.js"></script> <!--section 197 -->
 	@endif
 
 	<link rel="stylesheet" href="/css/allita-font.css">

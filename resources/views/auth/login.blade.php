@@ -3,9 +3,21 @@
 @if(Auth::guest())
 <div class="uk-vertical-align uk-text-center" uk-scrollspy="target:#login-panel;cls:uk-animation-slide-top-small uk-transform-origin-bottom; delay: 1300">
 	<div class="uk-vertical-align-middle login-panel"  id="login-panel">
-		<a href="https://devco.ohiohome.org/AuthorityOnlineALTTEST/default.aspx?ReturnUrl=%2fAuthorityOnlineALTTest%3fredirect%3dhttps%253A%252F%252Fpcinspecttrain.ohiohome.org&redirect=https%3A%2F%2Fpcinspecttrain.ohiohome.org"><img src="https://devco.ohiohome.org/AuthorityOnlineALTTEST/images/Logo.jpg"> {{-- Login through DevCo --}}</a>
+		<a href="{{env('DEVCO_LOGIN_URL')}}"><img src="https://devco.ohiohome.org/AuthorityOnlineALTTEST/images/Logo.jpg"> {{-- Login through DevCo --}}</a>
 		<p>Program Compliance Inspection</p>
 		<p>LOGIN</p>
+		@if(session('loginMessage'))
+		<hr class="dashed-hr">
+			{{session('loginMessage')}}
+		<hr class="dashed-hr margin-bottom">
+			<?php session()->forget('loginMessage'); ?>
+		@endIf
+		@if(session('status'))
+		<hr class="dashed-hr">
+			{{session('status')}}
+		<hr class="dashed-hr margin-bottom">
+			
+		@endIf
 		<form class="uk-panel uk-panel-box uk-form" role="form" method="POST" action="{{ url('/login') }}">
 			@if (count($errors) > 0)
 			<div class="alert alert-danger uk-text-danger">
@@ -44,7 +56,7 @@
 		<div class="uk-grid">
 			<div class="{{ env('USER_REGISTRATION') ? 'uk-width-1-2' : 'uk-width-1-1' }}">
 				<div uk-scrollspy="cls:uk-animation-fade;">
-					<a href="https://devco.ohiohome.org/AuthorityOnlineALTTEST/default.aspx?ReturnUrl=%2fAuthorityOnlineALTTest%3fredirect%3dhttps%253A%252F%252Fpcinspecttrain.ohiohome.org&redirect=https%3A%2F%2Fpcinspecttrain.ohiohome.org" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
+					<a href="{{env('DEVCO_LOGIN_URL')}}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
 				</div>
 			</div>
 			@if(env('USER_REGISTRATION'))
