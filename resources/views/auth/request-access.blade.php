@@ -2,7 +2,7 @@
 @section('content')
 <div class="uk-vertical-align uk-text-center">
 	<h3>Access to Program Compliace Inspection</h3>
-	<h5>We need to verify your identity. You can request access below</h5>
+	<h5>You currenlty do not have permission to access this site. You can request access by clicking the button below.</h5>
 	<div class="uk-vertical-align-middle login-panel" id="login-panel">
 		<form id="requestAccessForm" class="uk-panel uk-panel-box uk-form" role="verificationForm" method="POST" action="{{ url('/request-access') }}">
 			{{ csrf_field() }}
@@ -16,7 +16,7 @@
 		<div class="uk-grid">
 			<div class="{{ env('USER_REGISTRATION') ? 'uk-width-1-2' : 'uk-width-1-1' }}">
 				<div uk-scrollspy="cls:uk-animation-fade;">
-					<a href="https://devco.ohiohome.org/AuthorityOnlineALTTEST/default.aspx?ReturnUrl=%2fAuthorityOnlineALTTest%3fredirect%3dhttps%253A%252F%252Fpcinspecttrain.ohiohome.org&redirect=https%3A%2F%2Fpcinspecttrain.ohiohome.org" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
+					<a href="{{env('DEVCO_LOGIN_URL')}}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
 				</div>
 			</div>
 			@if(env('USER_REGISTRATION'))

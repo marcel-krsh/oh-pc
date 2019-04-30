@@ -323,29 +323,44 @@ class LoginController extends Controller
 
   public function getApproveAccess($user_id)
   {
-    // Check if user is logged in, taken care by middleware
-    // Check if the person accessing this page is admin
-    // Get the roles based on hierarchy
-    // get user and show details
     $current_user = Auth::user();
-    //$current_user = Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
-    $user = User::find($user_id);
-    if (!$user) {
-      $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
-      $error   = "Looks like the user doesn't exist with the provided information";
-      $type    = "danger";
-      return view('errors.error', compact('error', 'message', 'type'));
-    } elseif (count($user->roles) > 0) {
-      $message = "<h2>ACCESS GRANTED!</h2><p>This user has been already given access</p>";
-      $error   = "Looks like the user has been already given access";
-      $type    = "message";
-      return view('errors.error', compact('error', 'message', 'type'));
-    }
-    session(["user_id" => $user->id]);
-    $current_user_role_id = $current_user->roles->first()->role_id;
-    $roles                = Role::where('id', '<', $current_user_role_id)->active()->orderBy('role_name', 'ASC')->get();
-    if ($current_user->admin_access()) {
-      return view('auth.approve-access', compact('user', 'user_id', 'roles'));
+   
+
+    if(!is_null($current_user) && $current_user->can('access_admin')){
+      // Check if user is logged in, taken care by middleware
+      // Check if the person accessing this page is admin
+      // Get the roles based on hierarchy
+      // get user and show details
+      
+      //$current_user = Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
+      $user = User::find($user_id);
+      if (!$user) {
+        $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
+        $error   = "Looks like the user doesn't exist with the provided information";
+        $type    = "danger";
+        return view('errors.error', compact('error', 'message', 'type'));
+      } elseif (count($user->roles) > 0) {
+        $message = "<h2>ACCESS GRANTED!</h2><p>This user has been already given access</p>";
+        $error   = "Looks like the user has been already given access";
+        $type    = "message";
+        return view('errors.error', compact('error', 'message', 'type'));
+      }
+      session(["user_id" => $user->id]);
+      $current_user_role_id = $current_user->roles->first()->role_id;
+      $roles                = Role::where('id', '<', $current_user_role_id)->active()->orderBy('role_name', 'ASC')->get();
+      if ($current_user->admin_access()) {
+        return view('auth.approve-access', compact('user', 'user_id', 'roles'));
+      }
+    } else {
+      if(is_null($current_user)){
+        if(!session()->has('url.intended'))
+        {
+            session(['url.intended' => url()->previous()]);
+        }
+        return view('auth.login');
+      }else{
+        return 'Sorry, you do not have sufficient priveledges to access this page.';
+      }
     }
   }
 
