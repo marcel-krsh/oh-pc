@@ -283,7 +283,7 @@ if($allowPageLoad){
 							@endCan
 
 							<div id="top-tabs-container" style="display: inline-block; overflow: visible; padding-top:15px; min-height: 26px;">
-								@can('access_pm')
+								@can('access_auditor')
 								<ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m" style="background-color: transparent;">
 									<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
 										<a href="" style="">
@@ -300,11 +300,11 @@ if($allowPageLoad){
 											</span>
 										</a>
 									</li>
-									@if(env('APP_ENV') == 'local')
+									
 									<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000"  onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}', '3','','','',1);}">
 										<a href=""><span class="list-tab-text"><i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
 									</li>
-									@endif
+									
 									@can('access_admin')
 									<li id="detail-tab-5" class="detail-tab-5" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-5').hasClass('uk-active')  || window.adminLoaded != 1){loadTab('{{ route('dashboard.admin') }}', '5','','','',1);}" >
 										<a href=""><span class="list-tab-text">ADMIN</span></a>
