@@ -92,7 +92,7 @@
 							</div>
 							<div class="uk-width-3-4 uk-padding-remove-right uk-padding-remove">
 								@if(!$finding->cancelled_at)
-								<div class="inspec-tools-tab-finding-top-actions" style="z-index:auto">
+								<div class="inspec-tools-tab-finding-top-actions" style="z-index:10">
 									<i class="a-circle-plus use-hand-cursor"></i>
 									<div uk-drop="mode: click" style="min-width: 315px; background-color: #ffffff;  ">
 										<div class="uk-card uk-card-body uk-card-default uk-card-small">
