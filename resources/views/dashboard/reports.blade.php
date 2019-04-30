@@ -10,7 +10,7 @@
 <div id="reports_tab" class="uk-margin-large-top">
     <div uk-grid class="uk-margin-top" id="message-filters" data-uk-button-radio="">
 
-        
+        <input type="hidden" id="crr-newest" name="crr-newest">
                 <div uk-grid class="uk-width-1-5">
                 	@can('access_auditor')
 
