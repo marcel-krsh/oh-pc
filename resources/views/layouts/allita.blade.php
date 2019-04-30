@@ -340,17 +340,19 @@ if($allowPageLoad){
 				</div>
 
 				<ul id="tabs" class="maintabs uk-switcher" >
-					<li>
+					@can('access_auditor')<li>
 						<div id="detail-tab-1-content"></div>
 					</li>
+					@endCan
+					@can('access_pm')
 					<li>
 						<div id="detail-tab-2-content"></div>
 					</li>
-					@if(env('APP_ENV') == 'local')
+					
 					<li>
 						<div id="detail-tab-3-content" style=" margin-top: 70px;"></div>
 					</li>
-					@endIf
+					@endCan
 					@if(Auth::user()->admin_access())
 					<li>
 						<div id="detail-tab-5-content" style="padding-top:20px;"></div>
