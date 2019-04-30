@@ -6,6 +6,18 @@
 		<a href="{{env('DEVCO_LOGIN_URL')}}"><img src="https://devco.ohiohome.org/AuthorityOnlineALTTEST/images/Logo.jpg"> {{-- Login through DevCo --}}</a>
 		<p>Program Compliance Inspection</p>
 		<p>LOGIN</p>
+		@if(session('loginMessage'))
+		<hr class="dashed-hr">
+			{{session('loginMessage')}}
+		<hr class="dashed-hr margin-bottom">
+			<?php session()->forget('loginMessage'); ?>
+		@endIf
+		@if(session('status'))
+		<hr class="dashed-hr">
+			{{session('status')}}
+		<hr class="dashed-hr margin-bottom">
+			
+		@endIf
 		<form class="uk-panel uk-panel-box uk-form" role="form" method="POST" action="{{ url('/login') }}">
 			@if (count($errors) > 0)
 			<div class="alert alert-danger uk-text-danger">
