@@ -17,8 +17,8 @@
 	<div class="uk-form">
 		<div class="uk-form-row">
 			@if($finding->finding_type->one) <label class="use-hand-cursor"><input type="radio" name="level" class="uk-radio" value="1" @if(!$finding->finding_type->two && !$finding->finding_type->three) checked @endif > LEVEL 1</label> &nbsp; &nbsp; {{$finding->finding_type->one_description}}@endif
-			@if($finding->finding_type->two) <label class="use-hand-cursor"><input type="radio" name="level" class="uk-radio" value="2" @if(!$finding->finding_type->one && !$finding->finding_type->three) checked @endif > LEVEL 2</label>  &nbsp; &nbsp; {{$finding->finding_type->two_description}}@endif
-			@if($finding->finding_type->three) <label class="use-hand-cursor" ><input type="radio" name="level" class="uk-radio" value="3" @if(!$finding->finding_type->two && !$finding->finding_type->one) checked @endif "> LEVEL 3</label>  &nbsp; &nbsp; {{$finding->finding_type->three_description}}@endif
+			@if($finding->finding_type->two)<hr class="dashed-hr"> <label class="use-hand-cursor"><input type="radio" name="level" class="uk-radio" value="2" @if(!$finding->finding_type->one && !$finding->finding_type->three) checked @endif > LEVEL 2</label>  &nbsp; &nbsp; {{$finding->finding_type->two_description}}@endif
+			@if($finding->finding_type->three)<hr class="dashed-hr">  <label class="use-hand-cursor" ><input type="radio" name="level" class="uk-radio" value="3" @if(!$finding->finding_type->two && !$finding->finding_type->one) checked @endif "> LEVEL 3</label>  &nbsp; &nbsp; {{$finding->finding_type->three_description}}@endif
 		</div>
 	</div>
 	 <hr class="dashed-hr uk-margin-bottom">
