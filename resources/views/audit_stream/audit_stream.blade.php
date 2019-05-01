@@ -115,8 +115,9 @@
 								</div>
 								@endif
 								<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description"  style="z-index:auto">
-									<p>{{ formatDate($finding->date_of_finding) }}: FN#{{ $finding->id }}<br />
-										By {{ $finding->auditor->full_name() }}<br>
+									<p><small>{{ formatDate($finding->date_of_finding) }}: FN#{{ $finding->id }}</small><br />
+										<small>By {{ $finding->auditor->full_name() }}</small><br>
+										@if($finding->amenity_inspection)<strong>{{ $finding->amenity_inspection->building_unit_name()}}</strong>@endif<br />
 										@if($finding->amenity_inspection)
 										{!! $finding->amenity_inspection->address() !!}
 										@endIf
@@ -127,6 +128,9 @@
 										@if($finding->finding_type)
 										{{ $finding->finding_type->name }}
 									@endIf
+								</p>
+								<p>
+									{{$finding->level_description()}}
 								</p>
 									@can('access_auditor')
 									<div class="inspec-tools-tab-finding-actions">

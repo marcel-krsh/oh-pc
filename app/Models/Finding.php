@@ -68,6 +68,18 @@ class Finding extends Model
         return $this->hasOne(\App\Models\FindingType::class, 'id', 'finding_type_id');
     }
 
+    public function level_description()
+    {
+        if($this->level == 1){
+            return $this->finding_type()->first()->one_description;
+        }elseif($this->level == 2){
+            return $this->finding_type()->first()->two_description;
+        }elseif($this->level == 3){
+            return $this->finding_type()->first()->three_description;
+        }
+        
+    }
+
     public function finding_types()
     {
         // list all finding_types related to the amenity 
