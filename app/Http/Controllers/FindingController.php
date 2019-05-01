@@ -406,6 +406,11 @@ class FindingController extends Controller
                                     return false;
                                 }
                                 break;
+                            case 'f':
+                                if (!$findingType->file) {
+                                    return false;
+                                }
+                                break;
                             default:
                                 return false;
                                 break;
