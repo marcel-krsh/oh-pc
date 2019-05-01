@@ -82,6 +82,8 @@ class Finding extends Model
             return FindingType::where('building_exterior','=',1)->orwhere('building_system','=',1)->orwhere('common_area','=',1)->orderBy('name','asc')->get();
         }elseif($amenity->project){
             return FindingType::where('site','=',1)->orwhere('common_area','=',1)->orderBy('name','asc')->get();
+        }}elseif($amenity->file){
+            return FindingType::where('file','=',1)->orderBy('name','asc')->get();
         }
         
         return null;
