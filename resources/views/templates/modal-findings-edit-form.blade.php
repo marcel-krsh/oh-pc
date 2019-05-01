@@ -5,6 +5,7 @@
 	<form id="edit-finding-form" method="post">
 		Change finding type:<br /><br />
 		<select class="uk-select" id="finding_type_id" name="finding_type_id">
+			<?php dd($finding); ?>
 			@foreach($finding->finding_types() as $finding_type)
 			<option value="{{$finding_type->id}}" @if($finding_type->id == $finding->finding_type->id) selected @endif>{{$finding_type->name}}</option>
 			@endforeach	
