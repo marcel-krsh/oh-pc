@@ -1,11 +1,11 @@
 	<div class="uk-modal-header">
 		<div class="uk-modal-title uk-remove-margin"> <i class=" a-circle-plus"></i> {{$finding->finding_type->name}} (FN#{{$finding->id}}) <small><i class="uk-margin-left a-info-circle" uk-tooltip="title:Tied to HUD Areas<br > @foreach($finding->finding_type->huds() as $hud) {{$hud->name}} @endforeach <br >Nominal Item Weight {{$finding->finding_type->nominal_item_weight}} <br >Criticality {{$finding->finding_type->criticality}}; pos:bottom"></i></small><h4 style="line-height: 0px; margin-top: 10px; margin-left: 35px;">ON {{strtoupper($finding->amenity_inspection->amenity->amenity_description)}}</h4></div>
-		<?php dd($finding); ?>
+		<?php //dd($finding); ?>
 	</div>
 	<form id="edit-finding-form" method="post">
 		Change finding type:<br /><br />
 		<select class="uk-select" id="finding_type_id" name="finding_type_id">
-			
+
 			@foreach($finding->finding_types() as $finding_type)
 			<option value="{{$finding_type->id}}" @if($finding_type->id == $finding->finding_type->id) selected @endif>{{$finding_type->name}}</option>
 			@endforeach	
