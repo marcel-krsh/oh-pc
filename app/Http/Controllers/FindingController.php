@@ -390,31 +390,27 @@ class FindingController extends Controller
                 }
                 $allFindingTypes = $allFindingTypes->filter(function ($findingType) use ($type, $search, $amenityLocationType) {
                     if ($findingType->type == $type || $type == 'all') {
-                        // switch ($amenityLocationType) {
-                        //     case 'b':
-                        //         if (!$findingType->building_exterior && !$findingType->building_system && !$findingType->common_area) {
-                        //             return false;
-                        //         }
-                        //         break;
-                        //     case 'p':
-                        //         if (!$findingType->site && !$findingType->common_area) {
-                        //             return false;
-                        //         }
-                        //         break;
-                        //     case 'u':
-                        //         if (!$findingType->unit && !$findingType->file) {
-                        //             return false;
-                        //         }
-                        //         break;
-                        //     case 'f':
-                        //         if (!$findingType->file) {
-                        //             return false;
-                        //         }
-                        //         break;
-                        //     default:
-                        //         return false;
-                        //         break;
-                        // }
+                        
+                        switch ($amenityLocationType) {
+                            case 'b':
+                                if (!$findingType->building_exterior && !$findingType->building_system && !$findingType->common_area) {
+                                    return false;
+                                }
+                                break;
+                            case 'p':
+                                if (!$findingType->site && !$findingType->common_area) {
+                                    return false;
+                                }
+                                break;
+                            case 'u':
+                                if (!$findingType->unit && !$findingType->file) {
+                                    return false;
+                                }
+                                break;
+                            default:
+                                return false;
+                                break;
+                        }
                         if ($search != '') {
                             if (strpos(strtolower($findingType->name), strtolower($search)) !== false) {
                                 return true;
