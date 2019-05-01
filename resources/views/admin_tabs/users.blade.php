@@ -55,22 +55,22 @@
 				 --}}
 				 <td class="use-hand-cursor">
 				 	@if(is_null($user->role_id) || $user->role_id < $user_role)
-					 	<span data-uk-tooltip title="Edit User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editUser({{ $user->id }})"><i class="a-edit uk-text-primary"></i><
+					 	<span data-uk-tooltip title="Edit User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editUser({{ $user->id }})"><i class="a-edit "></i>
 					 	</span>
 					 	<span data-uk-tooltip title="Reset Password <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="resetPassword({{ $user->id }})"><i class="a-password "></i>
 					 	</span>
 					 	@if($user->active)
-						 	<span data-uk-tooltip title="Deactivate User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="deactivateUser({{ $user->id }})"><small><i class="a-avatar-minus "></i></small>
+						 	<span data-uk-tooltip title="Deactivate User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="deactivateUser({{ $user->id }})"><i class="a-avatar-minus "></i>
 						 	</span>
 					 	@else
-						 	<span data-uk-tooltip title="Activate User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="activateUser({{ $user->id }})"><small><i class="a-avatar-plus_1 uk-text-success"></i></small>
+						 	<span data-uk-tooltip title="Activate User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="activateUser({{ $user->id }})"><i class="a-avatar-plus_1 uk-text-success"></i>
 						 	</span>
 					 	@endif
 				 	@else
 				 		<span> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}</span>
 				 	@endif
 				 </td>
-				 {{-- <td class="use-hand-cursor" data-uk-tooltip title="Edit User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editUser({{ $user->id }})"><small><i class="a-edit"></i></small>
+				 {{-- <td class="use-hand-cursor" data-uk-tooltip title="Edit User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editUser({{ $user->id }})"><i class="a-edit"></i>
 				 </td> --}}
 			</tr>
 			@endforeach
