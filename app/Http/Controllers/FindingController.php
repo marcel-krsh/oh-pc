@@ -402,7 +402,7 @@ class FindingController extends Controller
                                 }
                                 break;
                             case 'u':
-                                if (!$findingType->unit) {
+                                if (!$findingType->unit && !$findingType->file) {
                                     return false;
                                 }
                                 break;
