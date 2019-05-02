@@ -158,7 +158,7 @@
 									<select class="uk-select" id="delivery_time" name="delivery_time">
 										<option value="">Select Time</option>
 										@for($i = 0; $i < 24; $i++)
-										<option value="{{ $i }}:00:00" {{ ($unp && $unp->deliver_time)? (explode(":", $unp->deliver_time)[0] == $i ? 'selected=selected': '') : ''}}>{{ $i }}:00</option>
+										<option value="{{ $i }}:00:00" {{ ($unp && $unp->deliver_time)? (explode(":", $unp->deliver_time)[0] == $i ? 'selected=selected': '') : ''}}> {{ $i < 10 ? '0' : '' }}{{ ($i > 12 && ($i -12) < 10) ? '0' : '' }}{{ $i < 13 ? $i : $i - 12 }}:00 {{ $i < 12 ? 'AM' : 'PM' }}</option>
 										@endfor
 									</select>
 								</div>

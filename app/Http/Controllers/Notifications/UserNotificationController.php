@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserNotificationPreferences;
 use Auth;
 use Illuminate\Http\Request;
+use Log;
 
 class UserNotificationController extends Controller
 {
@@ -46,6 +47,46 @@ class UserNotificationController extends Controller
       return 1;
     }
     return $this->extraCheckErrors($validator);
+  }
+
+  public function communicationNotifications(Request $request)
+  {
+    /**
+     * For new communication or a reply, the following information is created
+     * New enrty in Communication
+     * New entry in CommunicationRecepient
+     * If Documents are attached, new entry into CommunicationDocument
+     *
+     */
+    /**
+     * CREATE A QUEUE TO SEND EMAIL/SMS/CALL
+     * This queue table should work for all types of notifications
+     *   So store message data as Json
+     *   Have a subject
+     *   Time when to deliver(Listening to Queues)
+     *   How to tackle immediate emails (Recommends still should go into queue, but dispatch immediately)
+     *     Immediate tasks can be handled through queues -
+     *     like each email would have only one type of communication and a link that works for 24 hrs?
+     *   Maybe have notification type
+     *   Delayed Notification Handling!
+     *     Still through Queues? Fetch the current queue and append data? ::::XXXX
+     * Figureout what and how to do with documents!
+     * Should we include all these in historic_emails? AB
+     *
+     */
+    /**
+     * Implementation Plan
+     * -Store notifications to a table, notifications_triggered
+     *   Do a scheduled task every minute?/1 hour? like 56th minute
+     *     Fetch the notifications from notifications_triggered table grouped by user_id
+     *     then combine those into single email, in blade
+     *
+     *BETTER DO IN SEPERATE PROJECT anc integrate in allita here!
+     */
+    Log::info("Request Cycle with Queues Begins");
+    // $this->dispatch(new SendNotificationEmail());
+    // $this->dispatch((new SendNotificationEmail())->delay(60 * 5));
+    Log::info("Request Cycle with Queues Ends");
   }
 
   protected function extraCheckErrors($validator)

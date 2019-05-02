@@ -379,6 +379,7 @@
 				Route::post('/modals/activateuser/{id}', 'PagesController@activateUserSave');
 
 				Route::post('user/notification-preference/{id}', 'Notifications\UserNotificationController@postNotificationPreference');
+				Route::get('send/notification', 'Notifications\UserNotificationController@communicationNotifications');
 
 
 				Route::post('register-user', 'Auth\RegisterController@postRegister');

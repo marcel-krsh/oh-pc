@@ -40,7 +40,11 @@ $style = [
 
   'anchor'              => 'color: #3869D4;',
   'header-1'            => 'margin-top: 0; color: #2F3133; font-size: 19px; font-weight: bold; text-align: left;',
+  'header-2'            => 'margin-top: 0; color: #2F3133; font-size: 18px; font-weight: bold; text-align: left;',
+
+  'header-3'            => 'margin-top: 0; font-size: 16px; font-weight: bold; text-align: left;',
   'paragraph'           => 'margin-top: 0; color: #74787E; font-size: 16px; line-height: 1.5em;',
+  'paragraph-text'           => 'margin-top: 0; color: #74787E; font-size: 16px; margin-block-end: 0em;',
   'paragraph-sub'       => 'margin-top: 0; color: #74787E; font-size: 12px; line-height: 1.5em;',
   'paragraph-center'    => 'text-align: center;',
 
@@ -94,6 +98,18 @@ $style = [
 										</p>
 										@endforeach
 
+										{{-- Notifications --}}
+										@foreach($notifications as $alert)
+										<p style="{{ $style['header-3'] }}">{{ $alert['notification_type'] }}</p>
+										<table>
+											@foreach($alert['type'] as $messages)
+												<tr><a href="{{ $messages['link'] }}" style="" target="_blank"> {{ $messages['heading'] }}</a></tr>
+												<p style="{{ $style['paragraph-text'] }}">Message: {{ $messages['message'] }} </p>
+												<p style="{{ $style['paragraph-text'] }}">From: {{ $messages['from'] }}</p>
+												<p style="{{ $style['paragraph-text'] }}">At: {{ $messages['time'] }}</p> <br>
+											@endforeach
+										</table>
+										@endforeach
 										<!-- Action Button 1-->
 										@if (isset($action_text) && $action_text != '')
 										<table style="{{ $style['body_action'] }}" align="center" width="100%" cellpadding="0" cellspacing="0">

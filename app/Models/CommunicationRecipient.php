@@ -28,11 +28,15 @@ class CommunicationRecipient extends Model
         parent::boot();
 
         /* @todo: move to observer class */
+       static::created(function($cr) {
+	        Event::fire('communication.created', $cr);
+	        Log::info('Fired event?');
+	     });
 
-        static::created(function ($communication_recipient) {
-            //Event::fire('communication.recipient.created', $communication_recipient);
-            Log::info('Fired event?');
-        });
+        // static::created(function ($communication_recipient) {
+        //     //Event::fire('communication.recipient.created', $communication_recipient);
+        //     Log::info('Fired event?');
+        // });
 
         // static::updated(function ($transaction) {
         //     Event::fire('transactions.updated', $transaction);
@@ -41,6 +45,7 @@ class CommunicationRecipient extends Model
         // static::deleted(function ($transaction) {
         //     Event::fire('transactions.deleted', $transaction);
         // });
+
     }
 
     /**
@@ -57,4 +62,5 @@ class CommunicationRecipient extends Model
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
     }
+
 }
