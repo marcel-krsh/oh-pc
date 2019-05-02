@@ -41,7 +41,7 @@
 					    </div>
     				</div>
 				<div class="uk-width-1-1 uk-display-inline-block uk-padding-remove inspec-tools-tab-finding-description">
-    				<p>tplDate: tplType#tplRef<br />
+    				<p><small>tplDate: tplType#tplRef</small><br />
     					By tplName</p>
     				<p>tplContent</p>
     				

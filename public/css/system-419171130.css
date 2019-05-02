@@ -2750,7 +2750,7 @@ margin-top:10px;
 .inspec-tools-tab-finding .inspec-tools-tab-finding-description {
   /*position: relative;*/
   margin-bottom: 30px;
-  margin-top: -20px;
+  /*margin-top: -20px;*/
 }
 .inspec-tools-tab-finding .inspec-tools-tab-finding-top-actions {
  /* position: absolute;

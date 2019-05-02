@@ -77,9 +77,7 @@
 									@endcan
 								</div>
 								<div class="inspec-tools-tab-finding-stats" style="margin: 0 0 15px 0;">
-									@if(env('APP_ENV') == 'local')
 									<i class="a-bell"></i> <span id="inspec-tools-tab-finding-stat-reminders">{{ count($finding->followups) }}</span><br />
-									@endIf
 									<i class="a-comment"></i> {{ count($finding->comments) }}<br />
 									@if(env('APP_ENV') == 'local')
 									<i class="a-file"></i> {{ count($finding->documents) }}<br />

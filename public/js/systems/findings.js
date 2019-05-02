@@ -339,7 +339,10 @@ function expandFindingItems(element, type=null, typeid=null) {
 						var itemstickycontent = item.comment;
 						switch(item.type) {
 						    case 'followup':
-						        itemauditorname = item.auditor.name+'<br />Assigned To: '+item.assigned.name;
+						    	if(item.assigned.name != ''){
+						        	itemauditorname = item.auditor.name+'<br />Assigned To: '+item.assigned.name;
+						    	}
+						    	itemcontent = item.description;
 						        itemtype = 'FLWUP';
 						        break;
 						    case 'comment':
