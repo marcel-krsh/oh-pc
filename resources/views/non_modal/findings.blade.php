@@ -56,7 +56,7 @@
     width: auto;
 	}
 	.inspec-tools-tab-findings-container {
-		height: 400px;
+		height: 600px;
 	}
 </style>
 <script>
