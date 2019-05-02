@@ -93,9 +93,7 @@
 									<div uk-drop="mode: click" style="min-width: 315px; background-color: #ffffff;  ">
 										<div class="uk-card uk-card-body uk-card-default uk-card-small">
 											<div class="uk-drop-grid uk-child-width-1-4" uk-grid>
-												@if(env('APP_ENV') == 'local')
 												<div class="icon-circle use-hand-cursor" onclick="addChildItem({{ $finding->id }}, 'followup')"><i class="a-bell-plus"></i></div>
-												@endIf
 												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $finding->id }}, 'comment')"><i class="a-comment-plus"></i></div>
 												@if(env('APP_ENV') == 'local')
 												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $finding->id }}, 'document')"><i class="a-file-plus"></i></div>
