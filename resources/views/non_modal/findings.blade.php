@@ -34,8 +34,31 @@
 		margin: 3px 3px 3px 3px;
 	}
 	#modal-size {
-		height: 100%;
-		width:100%;
+		/*height: 100%;
+		width:100%;*/
+	}
+	.modal-findings-left {
+		width: auto;
+	    position: inherit;
+	    top: auto;
+	    border-right: 1px dotted #3a3a3a;
+	    padding-right: 25px;
+	    height: 95%;
+	}
+	.modal-findings-right-bottom-container {
+    position: inherit;
+    top: 100px;
+    height: auto;
+    width: auto;
+	}
+	.modal-findings-right-bottom {
+    height: auto;
+    overflow-y: auto;
+    position: inherit;
+    width: auto;
+	}
+	.inspec-tools-tab-findings-container {
+		height: 400px;
 	}
 </style>
 <script>
@@ -53,156 +76,162 @@
 	var loadTypeView = '';
 	var scrollPosType = 0;
 	var scrollPosAmenity = 0;
+
 </script>
 
 @stop
 @section('content')
-<div id="modal-findings" class="uk-margin-top" style="height: 90%" >
-	<div id="modal-findings-items-container">
-		@include('audit_stream.audit_stream')
-	</div>
-
-	<div class="modal-findings-left" uk-filter="target: .js-filter-findings">
-		<div class="modal-findings-left-bottom-container">
-			<div class="modal-findings-left-bottom">
-				<div id="modal-findings-filters" class="uk-margin uk-child-width-auto" uk-grid>
-					<div class="uk-width-1-1 uk-padding-remove uk-inline">
-						<button id="amenity-selection" class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="amenityList()"><i id="amenity-selection-icon" class="a-grid"></i> <span id="select-amenity-text">Select Amenity</span></button>
-					</div>
-					<div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
-						<button id="type-selection"  class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="typeList()"><i id="type-selection-icon" class="a-grid"></i> <span id="select-type-text">Select Location</span></button>
-					</div>
-					<input type="text" name="type_selected" id="type_selected" value="" hidden="hidden">
-					<input type="text" name="type_selected_value" id="type_selected_value" value="" hidden="hidden">
-					<div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
-						<div class="uk-width-1-1 uk-padding-remove uk-first-column">
-							<div class="uk-inline uk-button button-finding-filter ">
-								<span class="uk-form-icon" ><i class="a-calendar-pencil" style="color:#000"></i></span>
-								<input type="text" id="finding-date" name="date" class=" flatpickr flatpickr-input calendar-selection-input uk-width-1-1"  readonly="readonly">
+<div uk-grid>
+	<div class="uk-width-1-1">
+		<div id="modal-findings" class="uk-margin-top"  >
+			
+			<div uk-grid>
+				<div class="uk-width-1-2">
+					<div uk-grid >
+						<!-- 		TOP LEFT BAR FILTERS -->
+						<div class="uk-width-1-1">
+							<div class="" uk-grid>
+								<div class="uk-width-1-1 filter-button-set">
+									<div uk-grid>
+										<div class="uk-inline uk-width-1-2">
+											<div uk-grid>
+												<div class="uk-width-1-4">
+													<button id="mine-filter-button" uk-tooltip="title:SHOW MY AMENITIES AND LOCATIONS;" class="uk-button uk-button-default button-filter" style="border-left: 1px solid;border-right: 0px;" onclick=" console.log(window.findingModalSelectedMine); toggleMine();">MINE</button>
+												</div>
+												<div class="uk-width-3-4">
+													<input type='text' name="finding-description" id="finding-description" class="uk-input button-filter" placeholder="ENTER FINDING DESCRIPTION" type="text" style="width:100%">
+												</div>
+											</div>
+										</div>
+										<div class="uk-inline uk-width-1-2">
+											<div uk-grid>
+												<div class="uk-width-1-4">
+													<button id="all-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter uk-active"  title="Show All Findings (Unfiltered)" onclick="window.findingModalSelectedType='all'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } $('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#all-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#all-filter-button').addClass('uk-active');"><i class="uk-icon-asterisk"></i></button>
+													<span id="all-findings-filter"  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false" @if($type != 'all') style="display: none;" @endIf>
+														<a  class="sort-desc"></a>
+													</span>
+												</div>
+												<div class="uk-width-1-4">
+													<button id="file-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show File Findings Only" onclick="window.findingModalSelectedType='file'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } setTimeout(function(){$('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#file-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#file-filter-button').addClass('uk-active');},.85);"><i class="a-folder"></i></button>
+													<span id="file-findings-filter" @if($type != 'file') style="display: none;" @endIf  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
+														<a  class="sort-desc"></a>
+													</span>
+												</div>
+												<div class="uk-width-1-4">
+													<button id="nlt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show Non-life Threatning Findings Only" onclick="window.findingModalSelectedType='nlt'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } setTimeout(function(){$('#all-findings-filter').fadeOut();  $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#nlt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#nlt-filter-button').addClass('uk-active');},.85);"><i class="a-booboo"></i></button>
+													<span id="nlt-findings-filter" @if($type != 'nlt') style="display: none;" @endIf class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
+														<a  class="sort-desc"></a>
+													</span>
+												</div>
+												<div class="uk-width-1-4">
+													<button id="lt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show Life Threatning Findings Only" onclick="window.findingModalSelectedType='lt'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } setTimeout(function(){$('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#lt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#lt-filter-button').addClass('uk-active');},.85);"><i class="a-skull"></i></button>
+													<span id="lt-findings-filter" @if($type != 'lt') style="display: none;" @endIf  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
+														<a  class="sort-desc"></a>
+													</span>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
+						</div>
+						<div class="uk-width-1-1" style="min-height:400px; max-height: 400px; overflow-y: scroll;">	
 
-							<script type="text/javascript">
-								flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
-								flatpickr("#finding-date", {
-									altInput: true,
-									altFormat: "F j, Y",
-									dateFormat: "Y-m-d",
-									defaultDate: "{{ date('Y-m-d',time()) }}",
-								});
-							</script>
+							<!-- FINDING TYPE LISTS -->
+							
+									<div id="dynamic-data" class="uk-margin uk-child-width-auto uk-grid">
+										{{-- Locations --}}
+										{{-- @include('modals.partials.finding-locations') --}}
+										{{-- Amenities --}}
+										{{-- @include('modals.partials.finding-amenities') --}}
+									</div>
+								
 
 						</div>
+
+						<div class="uk-width-1-1" cuk-filter="target: .js-filter-findings">
+						
+								<div id="modal-findings-filters" class="uk-margin uk-child-width-auto" uk-grid>
+									<div class="uk-width-1-1 uk-padding-remove uk-inline">
+										<button id="amenity-selection" class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="amenityList()"><i id="amenity-selection-icon" class="a-grid"></i> <span id="select-amenity-text">Select Amenity</span></button>
+									</div>
+									<div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
+										<button id="type-selection"  class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="typeList()"><i id="type-selection-icon" class="a-grid"></i> <span id="select-type-text">Select Location</span></button>
+									</div>
+									<input type="text" name="type_selected" id="type_selected" value="" hidden="hidden">
+									<input type="text" name="type_selected_value" id="type_selected_value" value="" hidden="hidden">
+									<div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
+										<div class="uk-width-1-1 uk-padding-remove uk-first-column">
+											<div class="uk-inline uk-button button-finding-filter ">
+												<span class="uk-form-icon" ><i class="a-calendar-pencil" style="color:#000"></i></span>
+												<input type="text" id="finding-date" name="date" class=" flatpickr flatpickr-input calendar-selection-input uk-width-1-1"  readonly="readonly">
+											</div>
+
+											<script type="text/javascript">
+												flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
+												flatpickr("#finding-date", {
+													altInput: true,
+													altFormat: "F j, Y",
+													dateFormat: "Y-m-d",
+													defaultDate: "{{ date('Y-m-d',time()) }}",
+												});
+											</script>
+
+										</div>
+									</div>
+								</div>
+								<div class="uk-margin-remove" uk-grid>
+									<div class="uk-width-1-1 uk-padding-remove">
+										<button class="uk-button uk-button-primary button-finding-filter uk-width-1-1 @if(!$checkDoneAddingFindings) uk-modal-close @endif" onClick="dynamicModalClose()">DONE ADDING FINDINGS</button>
+									</div>
+								</div>
+						</div>
+
 					</div>
 				</div>
-				<div class="uk-margin-remove" uk-grid>
-					<div class="uk-width-1-1 uk-padding-remove">
-						<button class="uk-button uk-button-primary button-finding-filter uk-width-1-1 @if(!$checkDoneAddingFindings) uk-modal-close @endif" onClick="dynamicModalClose()">DONE ADDING FINDINGS</button>
-					</div>
+				<div id="modal-findings-items-container" class="uk-width-1-2">
+					
+						@include('audit_stream.audit_stream')
+					
 				</div>
-			</div>
 		</div>
 
-		<!-- FINDING TYPE LISTS -->
-
-
-		<div class="modal-findings-left-main-container">
-			<div class="modal-findings-left-main">
-				<div id="dynamic-data" class="uk-margin uk-child-width-auto uk-grid">
-					{{-- Locations --}}
-					{{-- @include('modals.partials.finding-locations') --}}
-					{{-- Amenities --}}
-					{{-- @include('modals.partials.finding-amenities') --}}
-				</div>
-			</div>
-		</div>
-
-		<!-- END FINDING TYPE LISTS -->
-
-
-		<!-- 		TOP LEFT BAR FILTERS -->
-
-		<div class="modal-findings-left-top" uk-grid>
-			<div class="uk-width-1-1 filter-button-set">
+		@include('templates.modal-findings-items')
+		<div id="modal-findings-completion-check" uk-modal>
+			<div class="uk-modal-dialog uk-modal-body uk-modal-content" uk-overflow-auto>
+				<a class="uk-modal-close-default" uk-close></a>
 				<div uk-grid>
-					<div class="uk-inline uk-width-1-2">
-						<div uk-grid>
-							<div class="uk-width-1-4">
-								<button id="mine-filter-button" uk-tooltip="title:SHOW MY AMENITIES AND LOCATIONS;" class="uk-button uk-button-default button-filter" style="border-left: 1px solid;border-right: 0px;" onclick=" console.log(window.findingModalSelectedMine); toggleMine();">MINE</button>
+					<div class="uk-width-1-2  uk-margin-medium-top">
+						<p>Have you finished inspecting all items for that building/unit/common area?</p>
+						<div class="uk-padding-remove" uk-grid>
+							<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
+								<button class="uk-button uk-button-primary uk-margin-left uk-margin-right uk-padding-remove uk-margin-remove uk-width-1-1">Yes, Mark as Complete and Submit to Lead.</button>
 							</div>
-							<div class="uk-width-3-4">
-								<input type='text' name="finding-description" id="finding-description" class="uk-input button-filter" placeholder="ENTER FINDING DESCRIPTION" type="text">
+							<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
+								<button class="uk-button uk-button-primary uk-padding-remove uk-margin-remove uk-width-1-1">Just the Items I have Findings For.</button>
+							</div>
+							<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
+								<button class="uk-button uk-button-default uk-padding-remove uk-margin-remove uk-width-1-1 uk-modal-close">No, I am still working on it.</button>
 							</div>
 						</div>
 					</div>
-					<div class="uk-inline uk-width-1-2">
-						<div uk-grid>
-							<div class="uk-width-1-4">
-								<button id="all-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter uk-active"  title="Show All Findings (Unfiltered)" onclick="window.findingModalSelectedType='all'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } $('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#all-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#all-filter-button').addClass('uk-active');"><i class="uk-icon-asterisk"></i></button>
-								<span id="all-findings-filter"  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false" @if($type != 'all') style="display: none;" @endIf>
-									<a  class="sort-desc"></a>
-								</span>
-							</div>
-							<div class="uk-width-1-4">
-								<button id="file-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show File Findings Only" onclick="window.findingModalSelectedType='file'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } setTimeout(function(){$('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#file-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#file-filter-button').addClass('uk-active');},.85);"><i class="a-folder"></i></button>
-								<span id="file-findings-filter" @if($type != 'file') style="display: none;" @endIf  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
-									<a  class="sort-desc"></a>
-								</span>
-							</div>
-							<div class="uk-width-1-4">
-								<button id="nlt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show Non-life Threatning Findings Only" onclick="window.findingModalSelectedType='nlt'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } setTimeout(function(){$('#all-findings-filter').fadeOut();  $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#nlt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#nlt-filter-button').addClass('uk-active');},.85);"><i class="a-booboo"></i></button>
-								<span id="nlt-findings-filter" @if($type != 'nlt') style="display: none;" @endIf class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
-									<a  class="sort-desc"></a>
-								</span>
-							</div>
-							<div class="uk-width-1-4">
-								<button id="lt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show Life Threatning Findings Only" onclick="window.findingModalSelectedType='lt'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } setTimeout(function(){$('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#lt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#lt-filter-button').addClass('uk-active');},.85);"><i class="a-skull"></i></button>
-								<span id="lt-findings-filter" @if($type != 'lt') style="display: none;" @endIf  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
-									<a  class="sort-desc"></a>
-								</span>
-							</div>
+					<div class="uk-width-1-2  uk-margin-medium-top">
+						<div>bulleted list of items that have not had any findings here<br />
+							<ul class="uk-list">
+								<li>item</li>
+								<li>item</li>
+							</ul>
 						</div>
 					</div>
 				</div>
 			</div>
+
+			<style>
+				.notmine{display:none;}
+			</style>
 		</div>
 	</div>
 </div>
-
-@include('templates.modal-findings-items')
-<div id="modal-findings-completion-check" uk-modal>
-	<div class="uk-modal-dialog uk-modal-body uk-modal-content" uk-overflow-auto>
-		<a class="uk-modal-close-default" uk-close></a>
-		<div uk-grid>
-			<div class="uk-width-1-2  uk-margin-medium-top">
-				<p>Have you finished inspecting all items for that building/unit/common area?</p>
-				<div class="uk-padding-remove" uk-grid>
-					<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
-						<button class="uk-button uk-button-primary uk-margin-left uk-margin-right uk-padding-remove uk-margin-remove uk-width-1-1">Yes, Mark as Complete and Submit to Lead.</button>
-					</div>
-					<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
-						<button class="uk-button uk-button-primary uk-padding-remove uk-margin-remove uk-width-1-1">Just the Items I have Findings For.</button>
-					</div>
-					<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
-						<button class="uk-button uk-button-default uk-padding-remove uk-margin-remove uk-width-1-1 uk-modal-close">No, I am still working on it.</button>
-					</div>
-				</div>
-			</div>
-			<div class="uk-width-1-2  uk-margin-medium-top">
-				<div>bulleted list of items that have not had any findings here<br />
-					<ul class="uk-list">
-						<li>item</li>
-						<li>item</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<style>
-		.notmine{display:none;}
-	</style>
-</div>
-
 <script>
 
 	{{-- This is to open locations and if amenities are open make the icon to close --}}

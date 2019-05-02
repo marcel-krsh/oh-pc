@@ -1,5 +1,5 @@
-<div class="modal-findings-right" uk-filter="target: .js-findings">
-	<div class="modal-findings-right-top">
+<div class="" uk-filter="target: .js-findings">
+	<div uk-grid>
 		<div class="uk-width-1-1 filter-button-set-right js-findings-buttons" uk-grid>
 			<div class="uk-width-1-5 uk-active findinggroup" uk-filter-control="filter: [data-finding-filter*='my-finding']; group: findingfilter; " onclick="clickingOnFindingFilter(this);">
 				<button class="uk-button uk-button-default button-filter button-filter-border-left" >My finding</button>
@@ -29,11 +29,9 @@
 				<button id="finding-modal-audit-stream-refresh" class="uk-button uk-button-default button-filter"  onclick="refreshFindingStream('{{ $type }}',{{ $auditid }},{{ $buildingid }},{{ $unitid }},{{ $amenityid }});">REFRESH</button>
 			</div>
 		</div>
-	</div>
-
-	<div class="modal-findings-right-bottom-container">
-		<div class="modal-findings-right-bottom">
-			<div class="inspec-tools-tab-findings-container uk-panel uk-panel-scrollable uk-padding-remove js-findings">
+	
+		<div class="uk-width-1-1 mmodal-findings-right-bottom">
+			<div class="inspec-tools-tab-findings-container uk-panel uk-panel-scrollable uk-padding-remove js-findings" style="    height: 400px;">
 				@if(count($findings))
 				@foreach($findings as $finding)
 				<div id="inspec-tools-tab-finding-{{ $finding->id }}" class="inspec-tools-tab-finding @if($finding->cancelled_at) cancelled @endif" @if($finding->cancelled_at) data-ordering-finding="x{{ $finding->id }}" @else data-ordering-finding="{{ $finding->id }}" @endif data-finding-id="{{ $finding->id }}" data-audit-filter="@if($finding->is_current_audit()) this-audit @endif all" data-finding-filter="@if(Auth::user()->id == $finding->user_id) my-finding @endif all" @if(!$finding->is_current_audit() || Auth::user()->id != $finding->user_id) style="display:none" @endif uk-grid>
