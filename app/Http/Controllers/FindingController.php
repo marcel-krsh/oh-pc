@@ -618,6 +618,126 @@ class FindingController extends Controller
         }
     }
 
+    public function nonModalFindings($type, $auditid, $buildingid = null, $unitid = null, $amenityid = null, $toplevel = 0, $refresh_stream = 0)
+    {
+        // $toplevel is to detect top level amenities
+        // a project-level amenity will appear like a building, toplevel will be set to 1 to differentiate
+        // a building-level amenity will appear like a unit, toplevel will be set to 1 to differentiate
+
+        // get user's audits, projects, buildings, areas, units, based on click
+        /*
+
+        • Clicking on the finding icon from the audit list level will default to the project name - project common areas - and the first common area of that project.
+        • Clicking on an amenity item listed on a building or unit will filter to that item, and use the "*" finding type (the auditor should select a specific type to shorten the list).
+        • Clicking on the finding icon from the building level list will default to the building address, the building,
+        and the first amenity on the building.
+        • Clicking on the finding icon at the unit level will default to unit's building address, the unit number, and the first amenity on the unit.
+        • Clicking on the finding icon in the program expansion screen will automatically select that specific item.
+
+         */
+
+        /*
+        if the auditor did not open the add findings window from
+        the program detail expansion of a building or unit, and they click the "Done Adding Findings" button or they change to a different building, unit or common area set checkDoneAddingFindings to 1 otherwise 0.
+         */
+
+        //dd('type:'.$type.' auditid:'.$auditid.' buildingid:'.$buildingid.' unitid:'.$unitid.' amenityid:'.$amenityid);
+        //// "type:nlt auditid:6410 buildingid:16721 unitid:1005379 amenityid:"
+
+        // the selected one that opened this modal
+
+        if (Auth::user()->auditor_access()) {
+            $audit = null;
+            $building = null;
+            $unit = null;
+            $amenity = null;
+
+            $buildings = null;
+            $units = null;
+            $amenities = null;
+            $allFindings = null;
+
+            if ($auditid > 0) {
+                //$audit = CachedAudit::where('audit_id',$auditid)->with('inspection_items')->with('inspection_items.amenity.finding_types')->with('inspection_items.amenity.finding_types.boilerplates()')->first();
+                $audit = CachedAudit::where('audit_id', $auditid)->with('inspection_items')->first();
+            }
+            if ($buildingid > 0) {
+                // always use the audit id as a selector to ensure you get the correct one
+                $building = CachedBuilding::where('audit_id', $auditid)->where('building_id', $buildingid)->with('building.address')->first();
+                if(!$building) {
+                    $building = CachedBuilding::where('audit_id', $auditid)->where('id', $buildingid)->with('building.address')->first();
+                }
+
+                //dd($buildingid, $building,$auditid);
+            }
+            if ($unitid > 0) {
+                // always use the audit id as a selector to ensure you get the correct one
+                $unit = CachedUnit::where('audit_id', $auditid)->where('unit_id', $unitid)->with('building')->with('building.address')->first();
+                //dd($unit, $unitid);
+            }
+            if ($amenityid > 0) {
+                // we use the inspection id to make sure we get the one associated that they clicked on (in case of duplicate amenities)
+                $amenity = AmenityInspection::where('id', $amenityid)->first();
+            }
+            //dd($amenity->cached_unit()->unit_name);
+            if (is_null($audit)) {
+                return "alert('No audit found for ID:" . $auditid . "');";
+            }
+
+            //dd($audit);
+            /// All of them for switching
+            $audits = CachedAudit::where('project_id', $audit->project_id)->get()->all();
+
+            // always use the audit id as a selector to ensure you get the correct one
+            $buildings = BuildingInspection::where('audit_id', $auditid)->get();
+
+            // foreach ($buildings as $key => $value) {
+            //     return $value->units->where('building_id', $value->building_id);
+            // }
+            // return $buildings->first();
+
+            // always use the audit id as a selector to ensure you get the correct one
+            $units = UnitInspection::select('unit_id', 'unit_key', 'unit_name', 'building_id', 'building_key', 'audit_id', 'complete')
+                ->where('audit_id', $auditid)
+                ->where('complete', 0)
+                ->orWhereNull('complete')
+                ->groupBy('unit_id')
+                ->get();
+
+            // always use the audit id as a selector to ensure you get the correct one
+            $amenities_query = AmenityInspection::where('audit_id', $auditid)->with('amenity');
+            $amenities = $amenities_query->get();
+            $site = $amenities_query->whereNotNull('project_id')->whereNull('completed_date_time')->get();
+
+            $findings = Finding::where('project_id', $audit->project_id)
+                ->whereNull('cancelled_at')
+                ->orderBy('updated_at', 'desc')
+                ->get();
+            $cancelled_findings = Finding::where('project_id', $audit->project_id)
+                ->whereNotNull('cancelled_at')
+                ->orderBy('updated_at', 'desc')
+                ->get();
+            foreach ($cancelled_findings as $cancelled_finding) {
+                $findings->add($cancelled_finding);
+            }
+
+            if (is_null($type)) {
+                // default filter is all
+                $type = 'all';
+            }
+            $checkDoneAddingFindings = 1;
+
+            if ($refresh_stream) {
+                return view('audit_stream.audit_stream', compact('audit', 'checkDoneAddingFindings', 'type', 'comments', 'findings', 'documents', 'unit', 'building', 'amenity', 'project', 'followups', 'audits', 'units', 'buildings', 'amenities', 'allFindingTypes', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel'));
+            } else {
+                return view('non_modal.findings', compact('audit', 'checkDoneAddingFindings', 'type', 'findings', 'unit', 'building', 'amenity', 'audits', 'units', 'buildings', 'amenities', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel', 'site'));
+            }
+
+        } else {
+            return "Sorry, you do not have permission to access this page.";
+        }
+    }
+
     public function findingAmenities($auditid)
     {
         if (Auth::user()->auditor_access()) {

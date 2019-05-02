@@ -260,6 +260,7 @@
         Route::post('/modals/projects/{project_id}/programs/save-program-unit-inspections', 'AuditController@saveProgramUnitInspection');
 
         Route::get('/modals/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}/{toplevel?}', 'FindingController@modalFindings');
+        Route::get('/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}/{toplevel?}', 'FindingController@nonModalFindings');
         Route::get('/modals/add/finding/{findingtypeid?}/amenity_inspection/{amenityinspectionid?}','FindingController@addFindingForm');
         Route::get('/modals/edit/finding/{findingtypeid}','FindingController@editFindingForm');
         Route::post('/findings/create', 'FindingController@addFinding');
