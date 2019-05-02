@@ -554,7 +554,7 @@
 
 		function toggleMine() {
 			window.findingModalSelectedAmenityDate = $('#finding-date').val();
-  		$('#'+window.findingModalSelectedType+'-filter-button').trigger('click');
+  		//$('#'+window.findingModalSelectedType+'-filter-button').trigger('click');
   		console.log("select mine: "+window.findingModalSelectedMine);
   		if(window.findingModalSelectedMine == 'true'){
   			window.findingModalSelectedMine = 'false';
