@@ -1,6 +1,4 @@
-@extends('layouts.simplerAllita')
-@section('head')
-<title>FINDINGS FOR {{$audit->id}}</title>
+
 <style>
 	.finding-modal-list-items {
 		padding-top: 4px;
@@ -79,8 +77,7 @@
 
 </script>
 
-@stop
-@section('content')
+
 <div uk-grid>
 	<div class="uk-width-1-1">
 		<div id="modal-findings" class="uk-margin-top"  >
@@ -592,4 +589,3 @@
 
 
 	</script>
-	@stop
