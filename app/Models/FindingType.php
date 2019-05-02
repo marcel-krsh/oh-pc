@@ -30,7 +30,8 @@ class FindingType extends Model
         'building_exterior',
         'building_system',
         'common_area',
-        'unit'
+        'unit',
+        'file'
     ];
 
     /**
