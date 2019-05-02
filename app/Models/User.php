@@ -89,6 +89,16 @@ class User extends Authenticatable
         return $this->hasMany(UserRole::class);
     }
 
+    public function role() : string
+    {
+        $role = $this->roles()->first();
+        if(!is_null($role)){
+            return $role->role_name;
+        } else {
+            return "No Access";
+        }
+    }
+
     public function roles_list()
     {
         $roles = $this->roles()->get();
