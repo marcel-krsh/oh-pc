@@ -465,7 +465,7 @@ class Kernel extends ConsoleKernel
         }
 
         //Email scheduling every hour
-        $schedule->command('run:hourly_notifications')->everyMinute();
+        $schedule->command('run:hourly_notifications')->hourley();
 
 
     }
