@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Amenity;
 use App\Models\AmenityInspection;
+use App\Models\AuditAuditor;
 use App\Models\BuildingInspection;
 use App\Models\CachedAudit;
 use App\Models\CachedBuilding;
 use App\Models\CachedUnit;
 use App\Models\Comment;
 use App\Models\Document;
+use App\Models\DocumentCategory;
 use App\Models\Finding;
 use App\Models\FindingType;
 use App\Models\Followup;
@@ -292,6 +294,27 @@ class FindingController extends Controller
                 $from = Photo::where('id', '=', $id)->first();
             } elseif ($fromtype == 'document') {
                 $from = Document::where('id', '=', $id)->first();
+            } elseif ($fromtype == 'followup') {
+                $from = Followup::where('id', '=', $id)->first();
+            }
+
+            if($type == 'followup'){
+                // $auditors = $from->audit->auditors(); 
+
+                $auditors = AuditAuditor::where('audit_id', '=', $from->audit_id)->with('user')->get();
+                $project = Project::where('id', '=', $from->project_id)->first();
+                $owner = $project->owner();
+                $pm = $project->pm();
+
+                $owner_name = $owner['name'];
+                $owner_id = $owner['owner_id'];
+                $pm_name = $pm['name'];
+                $pm_id = $pm['pm_id'];
+
+                $document_categories = DocumentCategory::where('active', '=', 1)->get();
+                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'document_categories', 'auditors', 'owner_id', 'owner_name', 'pm_id', 'pm_name'));
+            }elseif($type == 'comment'){
+
             }
 
             return view('modals.finding-reply-' . $type, compact('from', 'fromtype'));
@@ -354,6 +377,45 @@ class FindingController extends Controller
 
             } elseif ($inputs['type'] == 'followup') {
 
+                $due = $inputs['due'];
+                $duration = $inputs['duration'];
+                // due date
+                $due_date = Carbon\Carbon::now();
+                if($duration == "hours"){
+                    $due_date->addHours($due);
+                }elseif($duration == "days"){
+                    $due_date->addDays($due);
+                }elseif($duration == "weeks"){
+                    $due_date->addWeeks($due);
+                }elseif($duration == "months"){
+                    $due_date->addMonths($due);
+                }
+
+                if($inputs['assignee']){
+                    $assignee = $inputs['assignee'];
+                }else{
+                    $assignee = null;
+                }
+                $description = $inputs['description'];
+                $comment = (array_key_exists('comment', $inputs)) ? 1 : 0;
+                $photo = (array_key_exists('photo', $inputs)) ? 1 : 0;
+                $doc = (array_key_exists('doc', $inputs)) ? 1 : 0;
+                $categories = $inputs['categories'];
+
+                Followup::create([
+                    'created_by_user_id' => Auth::user()->id,
+                    'assigned_to_user_id' => $assignee,
+                    'date_due' => $due_date,
+                    'finding_id' => $finding_id,
+                    'project_id' => $from->project_id,
+                    'audit_id' => $from->audit_id,
+                    'comment_type' => $comment,
+                    'document_type' => $doc,
+                    'document_categories' => json_encode($categories),
+                    'photo_type' => $photo,
+                    'description' => $description
+                ]);
+                return 1;
             } elseif ($inputs['type'] == 'document') {
 
             }
@@ -746,7 +808,7 @@ class FindingController extends Controller
                     ->where('document_id', $typeid)
                     ->orderBy('updated_at', 'desc')
                     ->get();
-            } elseif ($type == 'followup') {
+            } elseif ($type == 'followup') { 
                 // comment, photo, document
                 $followups = null;
 
@@ -800,6 +862,13 @@ class FindingController extends Controller
         if ($followups) {
             foreach ($followups as $followup) {
                 // 'parentitemid' => $itemid,
+                
+                if($followup->assigned_user){
+                    $assigned_user_name = $followup->assigned_user->full_name();
+                }else{
+                    $assigned_user_name = '';
+                }
+
                 $data['items'][] = [
                     'id' => $followup->id,
                     'ref' => $followup->id,
@@ -813,8 +882,9 @@ class FindingController extends Controller
                     'date' => formatDate($followup->created_at),
                     'assigned' => [
                         'id' => $followup->assigned_to_user_id,
-                        'name' => $followup->assigned_user->full_name(),
+                        'name' => $assigned_user_name,
                     ],
+                    'description' => $followup->description,
                     'auditor' => [
                         'id' => $followup->created_by_user_id,
                         'name' => $followup->auditor->full_name(),

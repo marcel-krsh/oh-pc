@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Document Model
@@ -35,6 +36,21 @@ class Document extends Model
     public function photos() : HasMany
     {
         return $this->hasMany(\App\Models\Photo::class, 'document_id', 'id')->orderBy('id','asc');
+    }
+
+    public function followup() : HasOne
+    {
+        return $this->hasOne(\App\Models\Followup::class, 'id', 'followup_id');
+    }
+
+    public function photo() : HasOne 
+    {
+        return $this->hasOne(\App\Models\Photo::class, 'id', 'photo_id');
+    }
+
+    public function comment() : HasOne 
+    {
+        return $this->hasOne(\App\Models\Comment::class, 'id', 'comment_id');
     }
 
     // OLD METHODS.
