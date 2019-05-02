@@ -34,7 +34,7 @@
  			@foreach($users as $user)
  			<tr class="{{ !$user->active ? 'uk-text-muted' : '' }}">
  				<td>{{ $user->first_name }} {{ $user->last_name }}<br /><small>
- 					@if($user->role){{str_to_upper($user->role->role->role_name)}}@else NO ACCESS @endIf</small></td>
+ 					@if($user->role){{strtoupper($user->role->role->role_name)}}@else NO ACCESS @endIf</small></td>
  				<td><small>@if($user->organization_name)
  					{{ $user->organization_details->organization_name }}@else NA @endif</small></td>
  					<td><small>@if($user->has_address())
