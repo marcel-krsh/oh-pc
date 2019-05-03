@@ -2,7 +2,7 @@
 	resizeModal(85);
 	reloadUnseenMessages();
 </script>
-<?php if(!isset($project)){$project = null; } ?>
+<?php if (!isset($project)) {$project = null;}?>
 <div class="uk-container">
 	<div uk-grid class="uk-grid-collapse">
 		<div class="uk-width-1-1">
@@ -184,7 +184,7 @@
         // if (typeof loadAuditSubTab === "function"){
         // 	loadAuditSubTab('communications',id);
         // }
-        debugger;
+        //debugger;
         loadTab('/projects/'+{{$project->id}}+'/communications/', '2', 0, 0, 'project-', 1);
         @else
         // $('#dash-subtab-10').trigger('click');

@@ -127,9 +127,13 @@ class CommunicationController extends Controller
     if (null !== $project_id) {
       $project       = Project::where('id', '=', $project_id)->first();
       $audit_details = $project->selected_audit();
-      //$docuware_documents = $this->projectDocuwareDocumets($project);
-      $docuware_documents = Document::where('id', -100)->get();
-      $local_documents    = Document::where('project_id', $project->id)
+      if (local()) {
+        $docuware_documents = Document::where('id', -100)->get();
+      } else {
+        $docuware_documents = $this->projectDocuwareDocumets($project);
+      }
+
+      $local_documents = Document::where('project_id', $project->id)
         ->with('assigned_categories')
         ->orderBy('created_at', 'desc')
         ->get();
@@ -318,9 +322,13 @@ class CommunicationController extends Controller
     $user_needs_to_read_more = CommunicationRecipient::whereIn('communication_id', $message_id_array)->where('user_id', $current_user->id)->where('seen', 0)->update(['seen' => 1]);
 
     if ($audit) {
-      $project            = Project::find($audit->project_id);
-      $docuware_documents = $this->projectDocuwareDocumets($project);
-      $local_documents    = Document::where('project_id', $project->id)
+      $project = Project::find($audit->project_id);
+      if (local()) {
+        $docuware_documents = Document::where('id', -100)->get();
+      } else {
+        $docuware_documents = $this->projectDocuwareDocumets($project);
+      }
+      $local_documents = Document::where('project_id', $project->id)
         ->with('assigned_categories')
         ->orderBy('created_at', 'desc')
         ->get();
@@ -334,7 +342,6 @@ class CommunicationController extends Controller
       $documents           = null;
       $document_categories = null;
     }
-
     $owner_name_trimmed = rtrim($message->owner->name);
     $words              = explode(" ", $owner_name_trimmed);
     $initials           = "";
@@ -863,15 +870,18 @@ class CommunicationController extends Controller
             ->whereNull('parent_id')
             ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit', 'message_recipients');
         } else {
-          $messages = Communication::where(function ($query) use ($current_user) {
+          $messages = Communication::where(function ($query) use ($current_user, $project) {
             $query->where('owner_id', '=', $current_user->id);
-            $query->whereHas('replies');
+            if (!$project) {
+              $query->whereHas('replies');
+            }
           })
             ->orWhereHas('recipients', function ($query) use ($current_user) {
               $query->where('user_id', '=', $current_user->id);
             })
             ->whereNull('parent_id')
             ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit', 'message_recipients');
+          //$messages = $messages->whereHas('replies');
         }
       }
       // if (session('communication_sent') == 1) {
@@ -900,7 +910,6 @@ class CommunicationController extends Controller
       //         })->whereNull('parent_id');
 
       // }
-
       if ($project) {
         $audit    = $project->selected_audit();
         $messages = $messages->where('project_id', $project->id)

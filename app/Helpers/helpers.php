@@ -206,3 +206,11 @@ function notificationDeliverTime($deliver_hour = '17:00:00')
   }
   return $delivert_time;
 }
+
+function local()
+{
+  if (env('APP_ENV') == 'local') {
+    return true;
+  }
+  return false;
+}
