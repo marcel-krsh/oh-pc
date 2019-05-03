@@ -2626,6 +2626,7 @@ margin-top:10px;
 .inspec-tools-tab-finding .inspec-tools-findings-resolve span {
     font-size: 19px;
     vertical-align: sub;
+    padding-right: 5px;
 }
 .inspec-tools-tab-finding .inspec-tools-findings-resolve, #auditstable .inspec-tools-tab-finding .inspec-tools-findings-resolve {
   background-color: transparent;
