@@ -46,14 +46,14 @@
         <div class="uk-width-1-2  uk-margin-top">Actions Required</div>
         <div class="uk-width-1-2  uk-margin-top"><span class="doc-cats" >Document Categories</span></div>
         <div class="uk-width-1-6  uk-margin-small-top">
-            <label><input class="uk-checkbox followup-reply" name="comment" type="checkbox" value="1" > Comment</label><br /><br />
+            <label id="followup-reply-label"><input id="followup-reply" class="uk-checkbox followup-reply" name="comment" type="checkbox" value="1" > Comment</label><br /><br />
             
         </div>
         <div class="uk-width-1-6  uk-margin-small-top">
-            <label><input class="uk-checkbox followup-photo" name="photo" type="checkbox" value="1" > Upload Photo</label>
+            <label id="followup-photo-label" ><input id="followup-photo" class="uk-checkbox followup-photo" name="photo" type="checkbox" value="1" > Upload Photo</label>
         </div>
         <div class="uk-width-1-6  uk-margin-small-top">
-            <label><input id="followup-doc" class="uk-checkbox followup-doc" name="doc" type="checkbox" value="1" > Upload a Doc</label>
+            <label id="followup-doc-label"><input id="followup-doc" class="uk-checkbox followup-doc" name="doc" type="checkbox" value="1" > Upload a Doc</label>
         </div>
         <div class="uk-width-1-2  uk-margin-small-top doc-cats">
             @if(count($document_categories))
@@ -106,6 +106,16 @@
 		        thereAreErrors = 1;
 		}else{
 			$("#followup-description").removeClass('uk-form-danger');
+		}
+		if(!$("#followup-doc").prop('checked') && !$("#followup-reply").prop('checked') && !$("#followup-photo").prop('checked')){
+			thereAreErrors = 1;
+			$("#followup-doc-label").addClass('uk-form-danger');
+			$("#followup-reply-label").addClass('uk-form-danger');
+			$("#followup-photo-label").addClass('uk-form-danger');
+		}else{
+			$("#followup-doc-label").removeClass('uk-form-danger');
+			$("#followup-reply-label").removeClass('uk-form-danger');
+			$("#followup-photo-label").removeClass('uk-form-danger');
 		}
 		if($("#followup-doc").prop('checked')){
 			console.log('doc selected');
