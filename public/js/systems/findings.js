@@ -342,11 +342,15 @@ function expandFindingItems(element, type=null, typeid=null) {
 						    	if(item.assigned.name != ''){
 						        	itemauditorname = item.auditor.name+'<br />Assigned To: '+item.assigned.name;
 						    	}
+						    	itemcontent = '';
 						    	if(item.duedate){
-						    		itemcontent = 'Due Date: '+item.duedate+'<br /><br />'+item.description;
-						    	}else{
-						    		itemcontent = item.description;
+						    		itemcontent = itemcontent + 'Due Date: '+item.duedate+'<br />';
 						    	}
+						    	if(item.requested_action){
+						    		itemcontent = itemcontent + 'Requested Action: '+item.requested_action+'<br />';
+						    	}
+						    	itemcontent = itemcontent + item.description;
+						    	
 
 						        itemtype = 'FLWUP';
 						        break;

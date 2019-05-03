@@ -1002,6 +1002,32 @@ class FindingController extends Controller
                     $assigned_user_name = '';
                 }
 
+                $requested_action = '';
+                if($followup->photo_type){
+                    $requested_action = $requested_action.'upload a photo';
+                }
+                if($followup->comment_type){
+                    if($requested_action != ''){
+                        $requested_action = $requested_action.', ';
+                    }
+                    $requested_action = $requested_action.'add a comment';
+                }
+                if($followup->document_type){
+                    if($requested_action != ''){
+                        $requested_action = $requested_action.', ';
+                    }
+                    $categories_decoded = json_decode($followup->document_categories, true);
+                    $categories = DocumentCategory::whereIn('id', $categories_decoded)->get();
+                    $document_categories = "";
+                    foreach($categories as $category){
+                        if($document_categories != ''){
+                            $document_categories = $document_categories.", ";
+                        }
+                        $document_categories = strtolower($document_categories.$category->document_category_name);
+                    }
+                    $requested_action = $requested_action.'upload a document ('.$document_categories.')';
+                }
+
                 $data['items'][] = [
                     'id' => $followup->id,
                     'ref' => $followup->id,
@@ -1022,6 +1048,7 @@ class FindingController extends Controller
                         'id' => $followup->created_by_user_id,
                         'name' => $followup->auditor->full_name(),
                     ],
+                    'requested_action' => $requested_action,
                     'stats' => [
                         ['type' => 'comment', 'icon' => 'a-comment', 'count' => count($followup->comments)],
                         ['type' => 'file', 'icon' => 'a-file', 'count' => count($followup->documents)],
