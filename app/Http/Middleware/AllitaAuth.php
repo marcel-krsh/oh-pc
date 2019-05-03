@@ -62,7 +62,7 @@ class AllitaAuth
             $this->_devco_service = new DevcoService;
             $this->authenticate($request);
         } else {
-            //$this->auth->loginUsingId(env('USER_ID_IMPERSONATION'));
+            $this->auth->loginUsingId(env('USER_ID_IMPERSONATION'));
         }
 
 
