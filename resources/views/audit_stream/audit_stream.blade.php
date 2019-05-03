@@ -60,17 +60,14 @@
 									@can('access_auditor')
 									@if(!$finding->cancelled_at)
 									@if($finding->auditor_approved_resolution != 1)
-									<button class="uk-button inspec-tools-findings-resolve uk-link" onclick="resolveFinding({{ $finding->id }})"><span class="a-circle">
-									&nbsp; </span>RESOLVE</button>
+									<button class="uk-button inspec-tools-findings-resolve uk-link" onclick="resolveFinding({{ $finding->id }})"><span class="a-circle"></span> RESOLVE</button>
 									@else
-									<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($finding->auditor_last_approved_resolution_at)) }};" onclick="resolveFinding({{ $finding->id }})"><span class="a-circle-checked">
-									&nbsp; </span>RESOLVED</button>
+									<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($finding->auditor_last_approved_resolution_at)) }};" onclick="resolveFinding({{ $finding->id }})"><span class="a-circle-checked"></span> RESOLVED</button>
 									@endif
 									@endif
 									@else
 									@if($finding->auditor_approved_resolution == 1)
-									<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($finding->auditor_last_approved_resolution_at)) }};"><span class="a-circle-checked">
-									&nbsp; </span>RESOLVED</button>
+									<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($finding->auditor_last_approved_resolution_at)) }};"><span class="a-circle-checked"></span> RESOLVED</button>
 									@endif
 									@endcan
 								</div>
