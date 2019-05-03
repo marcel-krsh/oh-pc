@@ -113,6 +113,7 @@ class Project extends Model
         $owner_city = '';
         $owner_state = '';
         $owner_zip = '';
+        $owner_id = '';
 
         if ($owner_contact) { 
             if ($owner_contact->organization) {
