@@ -303,13 +303,21 @@ class FindingController extends Controller
 
                 $auditors = AuditAuditor::where('audit_id', '=', $from->audit_id)->with('user')->get();
                 $project = Project::where('id', '=', $from->project_id)->first();
-                $owner = $project->owner();
-                $pm = $project->pm();
+                if($project){
+                    $owner = $project->owner();
+                    $pm = $project->pm();
 
-                $owner_name = $owner['name'];
-                $owner_id = $owner['owner_id'];
-                $pm_name = $pm['name'];
-                $pm_id = $pm['pm_id'];
+                    $owner_name = $owner['name'];
+                    $owner_id = $owner['owner_id'];
+                    $pm_name = $pm['name'];
+                    $pm_id = $pm['pm_id'];
+                }else{
+                    $owner_name = '';
+                    $owner_id = null;
+                    $pm_name = '';
+                    $pm_id = null;
+                }
+                
 
                 $document_categories = DocumentCategory::where('active', '=', 1)->get();
                 return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'document_categories', 'auditors', 'owner_id', 'owner_name', 'pm_id', 'pm_name'));
