@@ -323,15 +323,15 @@ class LoginController extends Controller
 
   public function getApproveAccess($user_id)
   {
-    $current_user = Auth::user();
-   
+    return $current_user = Auth::user();
+
 
     if(!is_null($current_user) && $current_user->can('access_admin')){
       // Check if user is logged in, taken care by middleware
       // Check if the person accessing this page is admin
       // Get the roles based on hierarchy
       // get user and show details
-      
+
       //$current_user = Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
       $user = User::find($user_id);
       if (!$user) {
