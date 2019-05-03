@@ -400,7 +400,12 @@ class FindingController extends Controller
                 $comment = (array_key_exists('comment', $inputs)) ? 1 : 0;
                 $photo = (array_key_exists('photo', $inputs)) ? 1 : 0;
                 $doc = (array_key_exists('doc', $inputs)) ? 1 : 0;
-                $categories = $inputs['categories'];
+                
+                if(array_key_exists('categories', $inputs)){
+                    $categories = $inputs['categories'];
+                }else{
+                    $categories = null;
+                }
 
                 Followup::create([
                     'created_by_user_id' => Auth::user()->id,

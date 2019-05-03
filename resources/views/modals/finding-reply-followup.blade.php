@@ -14,12 +14,12 @@
            
         
             
-                <input type="number" name="due" min="1" max="31" value="1" class="uk-form-small followup-number " style="height: 20px; width:36%; border-width: 1px; border-style: solid; border-color: rgb(229, 229, 229);"></label>
+                <input type="number" name="due" min="1" max="31" value="24" pattern="[0-9]*"  class="uk-form-small followup-number " style="height: 20px; width:36%; border-width: 1px; border-style: solid; border-color: rgb(229, 229, 229);"></label>
            
         </div>
         <div class="uk-width-1-6 uk-margin-small-top uk-margin-small-bottom">
             <select class="uk-select uk-form-small followup-duration" name="duration">
-                <option value="hours">Hours</option>
+                <option value="hours" selected>Hours</option>
                 <option value="days">Days</option>
                 <option value="weeks">Weeks</option>
                 <option value="months">Months</option>
