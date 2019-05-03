@@ -26,8 +26,8 @@
             </select>
         </div>
         <div class="uk-width-1-6 uk-margin-small-top uk-margin-small-bottom">
-            <select class="uk-select uk-form-small followup-assignment" name="assignee">
-                <option>Select Assignee</option>
+            <select id="followup-assignee" class="uk-select uk-form-small followup-assignment" name="assignee">
+                <option value="">Select Assignee</option>
                 @if($owner_id)
                 <option value="{{$owner_id}}">{{$owner_name}} (Owner)</option>
                 @endif
@@ -40,7 +40,7 @@
             </select>
         </div>
         <div class="uk-width-1-2  uk-margin-small-top uk-margin-small-bottom">
-            <input type="text" value="" name="description" placeholder="Follow-up Description" class="uk-input uk-form-small followup-description">
+            <input type="text" value="" name="description" placeholder="Follow-up Description" class="uk-input uk-form-small followup-description" id="followup-description">
         </div>
         
         <div class="uk-width-1-2  uk-margin-top">Actions Required</div>
@@ -53,11 +53,11 @@
             <label><input class="uk-checkbox followup-photo" name="photo" type="checkbox" value="1" > Upload Photo</label>
         </div>
         <div class="uk-width-1-6  uk-margin-small-top">
-            <label><input class="uk-checkbox followup-doc" name="doc" type="checkbox" value="1" > Upload a Doc</label>
+            <label><input id="followup-doc" class="uk-checkbox followup-doc" name="doc" type="checkbox" value="1" > Upload a Doc</label>
         </div>
         <div class="uk-width-1-2  uk-margin-small-top doc-cats">
             @if(count($document_categories))
-            <div class="uk-width-1-1 uk-width-2-3@m uk-scrollable-box" style="width:100%; height:100px;">
+            <div class="uk-width-1-1 uk-width-2-3@m uk-scrollable-box" style="width:100%; height:300px;">
                 <ul class="uk-list">
                     @foreach($document_categories as $cat)
                     <li><label><input class="uk-checkbox followup-cat" type="checkbox" name="categories[]" value="{{$cat->id}}"> {{ucwords($cat->document_category_name)}}</label></li>
@@ -91,6 +91,41 @@
 	function saveFindingFollowup(e){
 		e.preventDefault();
 		var form = $('#add-followup-finding-form');
+
+		var thereAreErrors = 0;
+
+		// checks
+		if($("#followup-assignee").val() == '') {
+		    $("#followup-assignee").addClass('uk-form-danger');
+		        thereAreErrors = 1;
+		}else{
+			$("#followup-assignee").removeClass('uk-form-danger');
+		}
+		if($("#followup-description").val().length === 0) {
+		    $("#followup-description").addClass('uk-form-danger');
+		        thereAreErrors = 1;
+		}else{
+			$("#followup-description").removeClass('uk-form-danger');
+		}
+		if($("#followup-doc").prop('checked')){
+			console.log('doc selected');
+			var noDocSelection = 1;
+			$('.followup-cat').each(function() {
+    			if($(this).prop('checked')){
+    				noDocSelection = 0;
+    			}
+    		});
+    		if(noDocSelection == 1){
+    			$(".doc-cats").addClass('uk-form-danger');
+    			thereAreErrors = 1;
+    		}else{
+    			$(".doc-cats").removeClass('uk-form-danger');
+    		}
+		}
+
+		if(thereAreErrors == 1){
+			return false;
+		}
 
 		$.post("/findings/reply", {
             'inputs' : form.serialize(),
