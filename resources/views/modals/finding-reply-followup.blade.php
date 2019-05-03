@@ -28,11 +28,11 @@
         <div class="uk-width-1-6 uk-margin-small-top uk-margin-small-bottom">
             <select class="uk-select uk-form-small followup-assignment" name="assignee">
                 <option>Select Assignee</option>
-                @if($owner_id && $owner)
-                <option value="{{$owner->id}}">{{$owner->name}} (Owner)</option>
+                @if($owner_id)
+                <option value="{{$owner_id}}">{{$owner_name}} (Owner)</option>
                 @endif
-                @if($pm_id && $pm)
-                <option value="{{$pm->id}}">{{$pm->name}} (Property Manager)</option>
+                @if($pm_id)
+                <option value="{{$pm_id}}">{{$pm_name}} (Property Manager)</option>
                 @endif
                 @foreach($auditors as $auditor)
                 <option value="{{$auditor->user_id}}">{{$auditor->user->full_name()}}</option>
