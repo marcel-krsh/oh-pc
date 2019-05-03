@@ -342,7 +342,12 @@ function expandFindingItems(element, type=null, typeid=null) {
 						    	if(item.assigned.name != ''){
 						        	itemauditorname = item.auditor.name+'<br />Assigned To: '+item.assigned.name;
 						    	}
-						    	itemcontent = item.description;
+						    	if(item.duedate){
+						    		itemcontent = 'Due Date: '+item.duedate+'<br /><br />'+item.description;
+						    	}else{
+						    		itemcontent = item.description;
+						    	}
+
 						        itemtype = 'FLWUP';
 						        break;
 						    case 'comment':
