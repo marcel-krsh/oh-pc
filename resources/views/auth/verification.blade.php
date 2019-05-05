@@ -40,7 +40,7 @@
 		<div class="uk-grid">
 			<div class="{{ env('USER_REGISTRATION') ? 'uk-width-1-2' : 'uk-width-1-1' }}">
 				<div uk-scrollspy="cls:uk-animation-fade;">
-					<a href="https://devco.ohiohome.org/AuthorityOnlineALTTEST/default.aspx?ReturnUrl=%2fAuthorityOnlineALTTest%3fredirect%3dhttps%253A%252F%252Fpcinspecttrain.ohiohome.org&redirect=https%3A%2F%2Fpcinspecttrain.ohiohome.org" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
+					<a href="{{env('DEVCO_LOGIN_URL')}}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
 				</div>
 			</div>
 			@if(env('USER_REGISTRATION'))

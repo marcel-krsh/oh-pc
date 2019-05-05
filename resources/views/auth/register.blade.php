@@ -7,11 +7,7 @@
 		<form class="uk-panel uk-panel-box uk-form" role="form" method="POST" action="{{ url('/register-user') }}">
 			@if (count($errors) > 0)
 			<div class="alert alert-danger uk-text-danger">
-			  <ul>
-			    @foreach ($errors->all() as $error)
-			    {{ $error }}<br>
-			    @endforeach
-			  </ul>
+				<p>Check the errors below</p>
 			</div>
 			@endif
 			{{ csrf_field() }}
@@ -59,7 +55,7 @@
 			</div>
 
 			<div class="uk-form-row">
-				<input id="phone_number" type="text" class="uk-input uk-width-1-1 uk-form-large {{ $errors->has('phone_number') ? ' uk-form-danger uk-animation-shake' : '' }}" name="phone_number" value="{{ old('phone_number') }}" required placeholder="Phone Number: xxx-xxx-xxxx">
+				<input id="phone_number" type="text" class="uk-input uk-width-1-1 uk-form-large {{ $errors->has('phone_number') ? ' uk-form-danger uk-animation-shake' : '' }}" name="phone_number" value="{{ old('phone_number') }}" required placeholder="Phone Number *: xxx-xxx-xxxx">
 				@if ($errors->has('phone_number'))
 				<span class="uk-align-left uk-alert uk-alert-danger uk-width-1-1 uk-margin-top-remove uk-animation-fade">
 					<strong>{{ $errors->first('phone_number') }}</strong>
@@ -81,7 +77,7 @@
 		<div class="uk-grid">
 			<div class="{{ env('USER_REGISTRATION') ? 'uk-width-1-2' : 'uk-width-1-1' }}">
 				<div uk-scrollspy="cls:uk-animation-fade;">
-					<a href="https://devco.ohiohome.org/AuthorityOnlineALTTEST/default.aspx?ReturnUrl=%2fAuthorityOnlineALTTest%3fredirect%3dhttps%253A%252F%252Fpcinspecttrain.ohiohome.org&redirect=https%3A%2F%2Fpcinspecttrain.ohiohome.org" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
+					<a href="{{env('DEVCO_LOGIN_URL')}}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
 				</div>
 			</div>
 			<div class="uk-width-1-2">

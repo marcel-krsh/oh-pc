@@ -7,6 +7,7 @@ use App\Mail\EmailCommunicationNotification;
 use App\Models\CommunicationRecipient;
 use App\Models\NotificationsTriggered;
 use Carbon\Carbon;
+use Config;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Mail\Mailer;
@@ -38,6 +39,7 @@ class CommunicationReceipientEvent
       $cr_details = CommunicationRecipient::with('communication.owner', 'user.notification_preference')->find($cr->id);
       //insert data into notifications_triggered table
       if ($cr_details->communication) {
+        $config             = config('notification');
         $np                 = $cr_details->user->notification_preference;
         $communication      = $cr_details->communication;
         $owner              = $cr_details->communication->owner;
@@ -55,10 +57,10 @@ class CommunicationReceipientEvent
         if ($np) {
           //1 -> Immediately, 2 -> Hourley, 3->Daily
           if (1 == $np->frequency) {
-            $email_notification = new EmailCommunicationNotification($cr_details, $token);
-            $nt->deliver_time   = Carbon::now();
-            $nt->data           = $this->buildData($communication, $owner, $user);
-            $nt->active         = 0; //since this is immediate notification
+            //$email_notification = new EmailCommunicationNotification($cr_details, $token);
+            $nt->deliver_time = Carbon::now();
+            $nt->data         = $this->buildData($communication, $owner, $user);
+            $nt->active       = 0; //since this is immediate notification
             $nt->save();
             $queued_job = dispatch(new SendNotificationEmail($user, $email_notification));
           } elseif (2 == $np->frequency) {

@@ -43,6 +43,7 @@ class SendNotificationsHourly extends Command
   {
     $to                    = Carbon::now()->addMinutes(30);
     $from                  = Carbon::now()->subMinutes(300);
+    $config                = config('notification');
     $hourley_notifications = NotificationsTriggered::whereBetween('deliver_time', [$from, $to])
       ->with('to_user', 'from_user')
       ->active()
@@ -54,19 +55,19 @@ class SendNotificationsHourly extends Command
       $token              = generateToken();
       $data               = [];
       foreach ($user_notifications as $key => $notification_types) {
-        if (1 == $notification_types->first()->type_id) {
-          $data[$key]['notification_type'] = 'Messages';
-          foreach ($notification_types as $noti_key => $notification) {
-            $data[$key]['type'][$noti_key]['heading'] = $notification->data['heading'];
-            $data[$key]['type'][$noti_key]['link']    = $notification->data['base_url'] . $token;
-            $data[$key]['type'][$noti_key]['message'] = $notification->data['message'];
-            $data[$key]['type'][$noti_key]['from']    = $notification->from_user->name;
-            $data[$key]['type'][$noti_key]['time']    = $notification->created_at;
-            $notification->token                      = $token;
-            $notification->active                     = 0;
-            $notification->save();
-          }
+        // if (1 == $notification_types->first()->type_id) {
+        $data[$key]['notification_type'] = $config['type'][$notification_types->first()->type_id];
+        foreach ($notification_types as $noti_key => $notification) {
+          $data[$key]['type'][$noti_key]['heading'] = $notification->data['heading'];
+          $data[$key]['type'][$noti_key]['link']    = $notification->data['base_url'] . $token;
+          $data[$key]['type'][$noti_key]['message'] = $notification->data['message'];
+          $data[$key]['type'][$noti_key]['from']    = $notification->from_user->name;
+          $data[$key]['type'][$noti_key]['time']    = $notification->created_at;
+          $notification->token                      = $token;
+          $notification->active                     = 0;
+          $notification->save();
         }
+        //}
       }
       $email_notification = new EmailBulkNotification($data, $user);
       $queued_job         = dispatch(new SendNotificationEmail($user, $email_notification));
