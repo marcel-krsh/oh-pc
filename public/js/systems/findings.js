@@ -397,7 +397,7 @@ function expandFindingItems(element, type=null, typeid=null) {
 						        	categories = categories + newcategory;
 						        });
 
-						        file = categories+"<div class='finding-file use-hand-cursor' onclick='openFindingFile();'><i class='a-down-arrow-circle'></i> "+item.file.name+"<br />"+item.file.size+" MB "+item.file.type+"</div>";
+						        file = categories+"<a href=\"download-local-document/"+item.file.id+"\" target=\"_blank\"  uk-tooltip=\"Download file.\" download class='finding-file use-hand-cursor'><i class='a-down-arrow-circle'></i> "+item.file.name+"<br />"+item.file.size+" MB "+item.file.type+"</a>";
 
 						        itemcontent = findingsFileTemplate.replace(/tplFileContent/g, file);
 						        break;
