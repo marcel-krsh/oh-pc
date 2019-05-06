@@ -74,8 +74,9 @@
 								<div class="inspec-tools-tab-finding-stats" style="margin: 0 0 15px 0;">
 									<i class="a-bell"></i> <span id="inspec-tools-tab-finding-stat-reminders">{{ count($finding->followups) }}</span><br />
 									<i class="a-comment"></i> {{ count($finding->comments) }}<br />
-									@if(env('APP_ENV') == 'local')
+									
 									<i class="a-file"></i> {{ count($finding->documents) }}<br />
+									@if(env('APP_ENV') == 'local')
 									<i class="a-picture"></i> {{ count($finding->photos) }}<br />
 									@endIf
 									@if(count($finding->followups) || count($finding->comments) || count($finding->documents) || count($finding->photos))
@@ -92,8 +93,9 @@
 											<div class="uk-drop-grid uk-child-width-1-4" uk-grid>
 												<div class="icon-circle use-hand-cursor" onclick="addChildItem({{ $finding->id }}, 'followup')"><i class="a-bell-plus"></i></div>
 												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $finding->id }}, 'comment')"><i class="a-comment-plus"></i></div>
-												@if(env('APP_ENV') == 'local')
+												
 												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $finding->id }}, 'document')"><i class="a-file-plus"></i></div>
+												@if(env('APP_ENV') == 'local')
 												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $finding->id }}, 'photo')"><i class="a-picture"></i></div>
 												@endIf
 											</div>
