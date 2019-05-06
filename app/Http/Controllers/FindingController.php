@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+// use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\DocumentTrait;
+use App\Models\Audit;
 use App\Models\Amenity;
 use App\Models\AmenityInspection;
 use App\Models\AuditAuditor;
@@ -18,6 +20,7 @@ use App\Models\FindingType;
 use App\Models\Followup;
 use App\Models\Photo;
 use App\Models\Project;
+use App\Models\SystemSetting;
 use App\Models\UnitInspection;
 use App\Models\User;
 use Auth;
@@ -26,6 +29,8 @@ use Illuminate\Http\Request;
 
 class FindingController extends Controller
 {
+    use DocumentTrait;
+
     public function __construct()
     {
         // $this->middleware('auth');
@@ -284,6 +289,7 @@ class FindingController extends Controller
     {
 
         // $type: followup, photo, document, comment
+        //dd($id, $fromtype, $type);
 
         if (Auth::user()->auditor_access()) {
             if ($fromtype == 'finding') {
@@ -323,6 +329,50 @@ class FindingController extends Controller
                 return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'document_categories', 'auditors', 'owner_id', 'owner_name', 'pm_id', 'pm_name'));
             }elseif($type == 'comment'){
 
+            }elseif($type == 'document'){
+                if($from->project_id){
+                    $project = Project::where('id', '=', $from->project_id)->first();
+                }elseif($from->audit_id){
+                    $audit = Audit::where('id', '=', $from->audit_id)->first();
+                    if($audit){
+                        $project = $audit->project;
+                    }
+                }else{
+                    $project = null;
+                }
+                
+                if ($project) {
+                    $audit_details = $project->selected_audit();
+                    
+                    $document_categories = DocumentCategory::where('parent_id', '<>', 0)
+                        ->active()
+                        ->orderby('document_category_name', 'asc')
+                        ->with('parent')
+                        ->get();
+                    
+                    // build a list of all categories used for uploaded documents in this project
+                    $categories_used = [];
+                    // category keys for name reference ['id' => 'name']
+                    $document_categories_key = [];
+                    $audit = $audit_details->id;
+                }
+
+                // list the requested categories to help the user
+                if($fromtype == 'followup'){
+                    $categories_decoded = json_decode($from->document_categories, true);
+                    $categories = DocumentCategory::whereIn('id', $categories_decoded)->get();
+                    $requested_categories = "";
+                    foreach($categories as $category){
+                        if($requested_categories != ''){
+                            $requested_categories = $requested_categories.", ";
+                        }
+                        $requested_categories = strtolower($requested_categories.$category->document_category_name);
+                    }
+                }else{
+                    $requested_categories = '';
+                }
+
+                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'project', 'document_categories', 'requested_categories'));
             }
 
             return view('modals.finding-reply-' . $type, compact('from', 'fromtype'));
@@ -349,7 +399,7 @@ class FindingController extends Controller
             } elseif ($fromtype == 'photo') {
                 $from = Photo::where('id', '=', $inputs['id'])->first();
                 $finding_id = $from->finding_id;
-            } elseif ($fromtype == 'document') {
+            } elseif ($fromtype == 'document') { 
                 $from = Document::where('id', '=', $inputs['id'])->first();
                 $finding_id = $from->finding_id;
             } elseif ($fromtype == 'followup') {
@@ -430,6 +480,40 @@ class FindingController extends Controller
                 ]);
                 return 1;
             } elseif ($inputs['type'] == 'document') {
+
+                if(array_key_exists('local_documents', $inputs)){
+                    $local_documents = $inputs['local_documents'];
+                }else{
+                    $local_documents = null;
+                }
+
+                // foreach local document, save finding_id and followup_id
+                if($local_documents){
+                    if(array_key_exists('local-comment', $inputs)){
+                        $localcomment = $inputs['local-comment'];
+                    }else{
+                        $localcomment = null;
+                    }
+                    if($fromtype == 'followup'){ 
+                        foreach($local_documents as $local_document_id){
+                            Document::where('id', '=', $local_document_id)->update([
+                                'followup_id' => $from->id,
+                                'finding_id' => $finding_id,
+                                'comment' => $localcomment
+                            ]);
+                        }
+                        
+                    }elseif($fromtype == 'finding'){ 
+                        foreach($local_documents as $local_document_id){
+                            Document::where('id', '=', $local_document_id)->update([
+                                'finding_id' => $finding_id,
+                                'comment' => $localcomment
+                            ]);
+                        }
+                        
+                    }
+                }
+                return 1;
 
             }
 
@@ -892,6 +976,7 @@ class FindingController extends Controller
             $photos = Photo::where('finding_id', $findingid)
                 ->orderBy('updated_at', 'desc')
                 ->get();
+
         } else {
 
             if ($type == 'comment') {
@@ -927,7 +1012,7 @@ class FindingController extends Controller
                     ->orderBy('updated_at', 'desc')
                     ->get();
 
-            } elseif ($type == 'document') {
+            } elseif ($type == 'document' || $type == 'file') {
                 // comment, photo
                 $followups = null;
 
@@ -936,11 +1021,12 @@ class FindingController extends Controller
                     ->get();
 
                 $documents = null;
+                $photos = null;
 
-                $photos = Photo::where('finding_id', $findingid)
-                    ->where('document_id', $typeid)
-                    ->orderBy('updated_at', 'desc')
-                    ->get();
+                // $photos = Photo::where('finding_id', $findingid)
+                //     ->where('document_id', $typeid)
+                //     ->orderBy('updated_at', 'desc')
+                //     ->get();
             } elseif ($type == 'followup') { 
                 // comment, photo, document
                 $followups = null;
@@ -958,6 +1044,11 @@ class FindingController extends Controller
                     ->where('followup_id', $typeid)
                     ->orderBy('updated_at', 'desc')
                     ->get();
+            }else{
+                $comments = null;
+                $documents = null;
+                $photos = null;
+                $followups = null;
             }
         }
 
@@ -1064,8 +1155,10 @@ class FindingController extends Controller
             foreach ($documents as $document) {
                 $categories = array();
 
-                $category_array = json_decode($document->categories, true);
-                $document_categories = DocumentCategory::whereIn('id', $category_array)->where('active', '1')->orderby('document_category_name', 'asc')->get();
+                // $category_array = json_decode($document->categories, true);
+                // $document_categories = DocumentCategory::whereIn('id', $category_array)->where('active', '1')->orderby('document_category_name', 'asc')->get();
+                // 
+                $document_categories = $document->document_categories();
 
                 foreach ($document_categories as $category) {
                     $categories[] = [
@@ -1098,10 +1191,9 @@ class FindingController extends Controller
                         'size' => '',
                     ],
                     'stats' => [
-                        ['type' => 'comment', 'icon' => 'a-comment', 'count' => count($document->comments)],
-                        ['type' => 'photo', 'icon' => 'a-picture', 'count' => count($document->photos)],
+                        ['type' => 'comment', 'icon' => 'a-comment', 'count' => count($document->comments)]
                     ],
-                    'actions' => '<div class="icon-circle use-hand-cursor"  onclick="addChildItem(' . $document->id . ', \'comment\',\'document\')"><i class="a-comment-plus"></i></div><div class="icon-circle use-hand-cursor"  onclick="addChildItem(' . $document->id . ', \'photo\',\'document\')"><i class="a-picture"></i></div>',
+                    'actions' => '<div class="icon-circle use-hand-cursor"  onclick="addChildItem(' . $document->id . ', \'comment\',\'document\')"><i class="a-comment-plus"></i></div>',
                 ];
             }
         }
