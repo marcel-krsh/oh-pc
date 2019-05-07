@@ -2927,6 +2927,11 @@ margin-top:10px;
 .finding-file-category {
     padding: 3px 0;
     font-size: 15px;
+    display: inline-block;
+    width: 90%;
+    vertical-align: top;
+    margin-left:2px;
+    margin-bottom: 20px;
 }
 .finding-file-category i {
     vertical-align: sub;
