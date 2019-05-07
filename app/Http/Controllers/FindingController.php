@@ -489,25 +489,18 @@ class FindingController extends Controller
 
                 // foreach local document, save finding_id and followup_id
                 if($local_documents){
-                    if(array_key_exists('local-comment', $inputs)){
-                        $localcomment = $inputs['local-comment'];
-                    }else{
-                        $localcomment = null;
-                    }
                     if($fromtype == 'followup'){ 
                         foreach($local_documents as $local_document_id){
                             Document::where('id', '=', $local_document_id)->update([
                                 'followup_id' => $from->id,
-                                'finding_id' => $finding_id,
-                                'comment' => $localcomment
+                                'finding_id' => $finding_id
                             ]);
                         }
                         
                     }elseif($fromtype == 'finding'){ 
                         foreach($local_documents as $local_document_id){
                             Document::where('id', '=', $local_document_id)->update([
-                                'finding_id' => $finding_id,
-                                'comment' => $localcomment
+                                'finding_id' => $finding_id
                             ]);
                         }
                         
@@ -1187,6 +1180,7 @@ class FindingController extends Controller
                         'id' => $document->id,
                         'name' => $document->filename,
                         'url' => $document->file_path,
+                        'comment' => $document->comment,
                         'type' => '',
                         'size' => '',
                     ],
