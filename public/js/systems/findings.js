@@ -376,7 +376,7 @@ function expandFindingItems(element, type=null, typeid=null) {
 						        break;
 						    case 'file':
 						        itemtype = 'DOC';
-						        var categoryTemplate = "<div class='finding-file-category'><i class='tplCatIcon'></i> tplCatName</div>";
+						        var categoryTemplate = "<div class='finding-file-category'>tplCatName</div>";
 						        var categories = '';
 						        var newcategory = '';
 						        var file = '';

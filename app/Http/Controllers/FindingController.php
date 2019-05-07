@@ -1153,12 +1153,27 @@ class FindingController extends Controller
                 // 
                 $document_categories = $document->document_categories();
 
+                // we should only have one category and its parent
+
+                $parent_cat_id = null;
+                $parent_cat_name = '';
+
                 foreach ($document_categories as $category) {
-                    $categories[] = [
-                        'id' => $category->id,
-                        'name' => $category->document_category_name,
-                        'status' => '',
-                    ];
+                    if($category->parent_id !== null && $category->parent_id != 0){
+                        $category_parent = DocumentCategory::where('id','=',$category->parent_id)->first();
+                        if($category_parent){
+                            $cat_name = $category_parent->document_category_name . ": <br />" . $category->document_category_name;
+                        }else{
+                            $cat_name = $category->document_category_name;
+                        }
+
+                        $categories[] = [
+                            'id' => $category->id,
+                            'name' => $cat_name,
+                            'status' => '',
+                        ];
+                    }
+                    
                 }
 
                 $data['items'][] = [
