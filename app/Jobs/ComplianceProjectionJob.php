@@ -2522,19 +2522,19 @@ class ComplianceProjectionJob implements ShouldQueue
 
 
             $planning->update([
-                $$program_name =>$program->program->program_name,
-                $$program_multibuilding_election => $program->_multiple_building_election_key,
-                $$program_status => $program->status->status_name,
-                $$program_award_number => $program->award_number,
-                $$program_guide_year => $program->guide_l_year,
-                $$project_program_key => $program->project_program_key,
-                $$funding_program_key => $program->program->funding_program_key,
-                $$project_program_id => $program->program_id,
-                $$program_keyed_in_count => $program->program->total_unit_count,
-                $$program_calculated_count => $this_program_calculated_count,
-                $$program_extended_use => $program->first_year_award_claimed,
-                $$program_site_count => $this_program_site_count,
-                $$program_file_count => $this_program_file_count,
+                $program_name =>$program->program->program_name,
+                $program_multibuilding_election => $program->_multiple_building_election_key,
+                $program_status => $program->status->status_name,
+                $program_award_number => $program->award_number,
+                $program_guide_year => $program->guide_l_year,
+                $project_program_key => $program->project_program_key,
+                $funding_program_key => $program->program->funding_program_key,
+                $project_program_id => $program->program_id,
+                $program_keyed_in_count => $program->program->total_unit_count,
+                $program_calculated_count => $this_program_calculated_count,
+                $program_extended_use => $program->first_year_award_claimed,
+                $program_site_count => $this_program_site_count,
+                $program_file_count => $this_program_file_count,
             ]);
 
             $p++;
