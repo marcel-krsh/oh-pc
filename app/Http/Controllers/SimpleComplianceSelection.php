@@ -2572,13 +2572,13 @@ class SimpleComplianceSelection extends Controller
                    
                 
             } else if(!is_null($this->planning)) {
-
+            	dd('Planning set but running is not 0');
             } else {
-
+            	dd('Planning came back null');
             }
 
         if($this->planning && $this->planning->run == 0){
-            $this->audit;
+            
             //LOG HERE if it is a brand new audit run
 
             //LOG HERE if it is a rerun audit and who asked for it
