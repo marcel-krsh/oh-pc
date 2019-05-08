@@ -464,24 +464,24 @@ class Kernel extends ConsoleKernel
                 //Log::info('Sync Job Already Started.');
             }
 
-            //RunProjections
-            $test = DB::table('jobs')->where('payload', 'like', '%ComplianceProjectionJob%')->first();
-            if (is_null($test)) {
-                $planning = Planning::whereNull('run')->first();
-                if(!is_null($planning) && is_null($planning->run)){
-                    $planning->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
-                    ComplianceProjectionJob::dispatch($planning)->onQueue('compliance');
-                } else if(!is_null($planning)) {
+            // //RunProjections
+            // $test = DB::table('jobs')->where('payload', 'like', '%ComplianceProjectionJob%')->first();
+            // if (is_null($test)) {
+            //     $planning = Planning::whereNull('run')->first();
+            //     if(!is_null($planning) && is_null($planning->run)){
+            //         $planning->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
+            //         ComplianceProjectionJob::dispatch($planning)->onQueue('compliance');
+            //     } else if(!is_null($planning)) {
 
-                    $planning->failed_run = 1;
-                    $planning->run = 1;
-                    $planning->save();
-                } else {
-                    // no planning record ready.
-                }
-            } else {
-                //Log::info('Sync Job Already Started.');
-            }
+            //         $planning->failed_run = 1;
+            //         $planning->run = 1;
+            //         $planning->save();
+            //     } else {
+            //         // no planning record ready.
+            //     }
+            // } else {
+            //     //Log::info('Sync Job Already Started.');
+            // }
         }
     }
 
