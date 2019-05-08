@@ -58,6 +58,8 @@ class ComplianceProjectionJob implements ShouldQueue
                 $planning->save();
                 $this->planning = $planning;
                 $this->audit = $audit;
+
+                dd($this->planning,$this->audit);
             }
                 $planning->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
                 $this->planning = $planning;
