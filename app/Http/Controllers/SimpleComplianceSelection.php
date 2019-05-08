@@ -64,7 +64,7 @@ class SimpleComplianceSelection extends Controller
         
                                     
         UnitProgram::where('audit_id', $audit->id)->delete();
-        UnitInspections::where('audit_id', $audit->id)->delete();
+        UnitInspection::where('audit_id', $audit->id)->delete();
         
         
         $apiConnect = new DevcoService();
