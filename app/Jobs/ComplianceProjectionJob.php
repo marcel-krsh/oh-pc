@@ -42,31 +42,39 @@ class ComplianceProjectionJob implements ShouldQueue
         //make a new audit for this
 
         $planning = Planning::where('run',0)->first();
-        if(!is_null($planning) && $planning->running == 0){
-            $planning->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
+        $this->planning = $planning;
+        if(!is_null($this->planning) && $this->planning->running == 0){
+            if(!is_null($this->planning->audit_id)){
+                $this->audit = Audit::find($this->planning->audit_id);
+            }else{
+                $audit = New Audit;
+                $audit->project_id = $this->project->id;
+                $audit->development_key = $this->project->project_key;
+                $audit->monitoring_status_type_key = 10;
+                $audit->save();
+                $planning->audit_id = $audit->id;
+                $planning->save();
+                $this->planning = $planning;
+                $this->audit = $audit;
+            }
+                $planning->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
+                $this->planning = $planning;
             
         } else if(!is_null($planning)) {
 
             $planning->failed_run = 1;
             $planning->run = 1;
             $planning->save();
+        } else {
+
         }
-        $this->planning = $planning;
+        
         $this->project = Project::where('project_key',$this->planning->development_key)->first();
         $this->extended_use = 0;
 
 
 
-        if(!is_null($this->planning->audit_id)){
-            $this->audit = Audit::find($this->planning->audit_id);
-        }else{
-            $audit = New Audit;
-            $audit->project_id = $this->project->id;
-            $audit->development_key = $this->project->project_key;
-            $audit->monitoring_status_type_key = 10;
-            $audit->save();
-            $this->audit = $audit;
-        }
+        
     }
 
     public function fetchAuditUnits(Audit $audit)
