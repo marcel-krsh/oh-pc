@@ -2793,11 +2793,16 @@ class ComplianceProjectionJob implements ShouldQueue
                 $this->audit->save();
             }
         }else{
-                $this->audit->comment_system = "Running must be null to run this compliance check.";
-                $this->audit->comment = "Running must be null to run this compliance check.";
-                $this->audit->compliance_run = 0;
-                $this->audit->rerun_compliance = 0;
-                $this->audit->save();
+                if(!is_null($this->audit)){
+                    $this->audit->comment_system = "Run must be 0 to run this compliance check.";
+                    $this->audit->comment = "Run must be 0 to run this compliance check.";
+                    $this->audit->compliance_run = 0;
+                    $this->audit->rerun_compliance = 0;
+                    $this->audit->save();
+                } else if(!is_null($this->planning)) {
+                    $this->planning->project_name = 'Failed to attach audit, and run was not set to 0.';
+                    $this->planning->save();
+                }
         }
         
              
