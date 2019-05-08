@@ -2522,7 +2522,7 @@ class ComplianceProjectionJob implements ShouldQueue
 
         if ($project) {
                 $project_id = $project->id;
-                $development_key = $project->project_key
+                $development_key = $project->project_key;
                 $project_ref = $project->project_number;
                 $project_name = $project->project_name;
                 $total_buildings = $project->total_building_count;
