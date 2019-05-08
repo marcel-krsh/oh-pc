@@ -94,7 +94,7 @@ class Kernel extends ConsoleKernel
         ////// SYNC JOBS
         ////
 
-        if(!env('APP_DEBUG_NO_DEVCO') && intval(date('G',time())) < 21 && intval(date('G',time()) > 3)){
+        if(!env('APP_DEBUG_NO_DEVCO') && intval(date('G',time())) < 22 && intval(date('G',time()) > 3)){
             $test = DB::table('jobs')->where('payload', 'like', '%SyncAddresses%')->first();
             if (is_null($test)) {
                 $schedule->job(new SyncAddressesJob)->everyMinute();
