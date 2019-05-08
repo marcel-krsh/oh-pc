@@ -467,8 +467,8 @@ class Kernel extends ConsoleKernel
             //RunProjections
             $test = DB::table('jobs')->where('payload', 'like', '%ComplianceProjectionJob%')->first();
             if (is_null($test)) {
-                $planning = Planning::whereNull('run')->first();
-                if(!is_null($planning) && is_null($planning->run)){
+                $planning = Planning::where('run',0)->first();
+                if(!is_null($planning) && $planning->running == 0)){
                     $planning->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
                     ComplianceProjectionJob::dispatch($planning)->onQueue('compliance');
                 } else if(!is_null($planning)) {
