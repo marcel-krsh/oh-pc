@@ -22,7 +22,7 @@
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
         
-        Route::get('/simple_compliance_test', 'SimplerComplianceSelection@runSimpleCompliance');
+        Route::get('/simple_compliance_test', 'SimpleComplianceSelection@runSimpleCompliance');
 
         
         // Route::get('/testProject/{project}', function($project){
