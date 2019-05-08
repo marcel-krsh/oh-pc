@@ -37,11 +37,20 @@ class ComplianceProjectionJob implements ShouldQueue
 
     public $audit;
 
-    public function __construct(Planning $planning)
+    public function __construct()
     {
         //make a new audit for this
 
-        
+        $planning = Planning::where('run',0)->first();
+        if(!is_null($planning) && $planning->running == 0){
+            $planning->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
+            $schedule->job(new ComplianceProjectionJob($planning))->onQueue('compliance')->everyMinute();
+        } else if(!is_null($planning)) {
+
+            $planning->failed_run = 1;
+            $planning->run = 1;
+            $planning->save();
+        }
         $this->planning = $planning;
         $this->project = Project::where('project_key',$this->planning->development_key)->first();
         $this->extended_use = 0;
