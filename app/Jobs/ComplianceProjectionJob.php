@@ -44,11 +44,13 @@ class ComplianceProjectionJob implements ShouldQueue
     {
         //make a new audit for this
 
-        $test = DB::table('jobs')->where('payload', 'like', '%ComplianceProjectionJob%')->first();
-        if (!is_null($test)) {
+        // $test = DB::table('jobs')->where('payload', 'like', '%ComplianceProjectionJob%')->first();
+        // if (!is_null($test)) {
 
             $planning = Planning::where('run',0)->first();
             $this->planning = $planning;
+            $this->planning->project_name = date('m/d/Y g:h a', time())." line 52";
+            $this->planning->save();
             $this->project = Project::where('project_key',$planning->development_key)->first();
             $this->extended_use = 0;
             if(!is_null($this->planning) && $this->planning->running == 0){
@@ -82,7 +84,7 @@ class ComplianceProjectionJob implements ShouldQueue
 
             }
         
-       }
+       //}
 
 
 
