@@ -70,6 +70,7 @@ class CreatePlanningTable extends Migration
             $table->integer('optimized_site_count')->nullable();
             $table->integer('optimized_file_count')->nullable();
             $table->integer('projection_year')->nullable();
+            $table->integer('audit_id')->nullable();
 
             $table->timestamps();
         });
