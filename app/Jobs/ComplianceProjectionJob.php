@@ -2515,12 +2515,8 @@ class ComplianceProjectionJob implements ShouldQueue
 
             // set values
             // get the project program
-            $program_collection = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id);
-            if(!is_null($program_collection)){
-                $this_program_calculated_count = $program_collection->count();
-                $this_program_site_count = $program_collection->where('is_site_visit',1)->count();
-                $this_program_file_count = $program_collection->where('is_file_audit',1)->count();
-            }
+            $this_program_site_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->where('is_site_visit',1)->count();
+            $this_program_site_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->where('is_file_audit',1)->count();
 
 
             $planning->update([
@@ -2550,8 +2546,8 @@ class ComplianceProjectionJob implements ShouldQueue
                 $project_ref = $project->project_number;
                 $project_name = $project->project_name;
                 $total_buildings = $project->total_building_count;
-                $total_units = $project->stats_total_units;
-                $total_program_units = $project->program_units_total;
+                $total_units = $project->stats_total_units();
+                $total_program_units = $project->program_units_total();
                 $total_market_rate_units = $project->stats_total_market_rate_units;
 
             

@@ -36,7 +36,7 @@ class CreatePlanningTable extends Migration
             $table->integer('program_1_project_program_id')->nullable();
             $table->integer('program_1_keyed_in_count')->nullable();
             $table->integer('program_1_calculated_count')->nullable();
-            $table->boolean('program_1_first_year_award_claimed')->nullable();
+            $table->string('program_1_first_year_award_claimed')->nullable();
             $table->integer('program_1_site_count')->nullable();
             $table->integer('program_1_file_count')->nullable();
             $table->string('program_2_name')->nullable();
@@ -49,7 +49,7 @@ class CreatePlanningTable extends Migration
             $table->integer('program_2_project_program_id')->nullable();
             $table->integer('program_2_keyed_in_count')->nullable();
             $table->integer('program_2_calculated_count')->nullable();
-            $table->boolean('program_2_first_year_award_claimed')->nullable();
+            $table->string('program_2_first_year_award_claimed')->nullable();
             $table->integer('program_2_site_count')->nullable();
             $table->integer('program_2_file_count')->nullable();
             $table->string('program_3_name')->nullable();
@@ -62,7 +62,7 @@ class CreatePlanningTable extends Migration
             $table->integer('program_3_project_program_id')->nullable();
             $table->integer('program_3_keyed_in_count')->nullable();
             $table->integer('program_3_calculated_count')->nullable();
-            $table->boolean('program_3_first_year_award_claimed')->nullable();
+            $table->string('program_3_first_year_award_claimed')->nullable();
             $table->integer('program_3_site_count')->nullable();
             $table->integer('program_3_file_count')->nullable();
             $table->integer('total_site_count')->nullable();
