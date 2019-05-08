@@ -35,8 +35,8 @@ use DB;
 
 class SimpleComplianceSelection extends Controller
 {
-    public $this->audit;
-    public $this->planning;
+    public $audit;
+    public $planning;
     public $project;
     public $unitPrograms;
 
