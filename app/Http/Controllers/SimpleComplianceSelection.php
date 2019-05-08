@@ -1023,7 +1023,7 @@ class SimpleComplianceSelection extends Controller
                                 }
 
                                 $units_for_that_building = Unit::where('building_key', '=', $building->building_key)
-                                                ->whereHas('programs', function ($query) use ($this->audit, $program_bundle_ids) {
+                                                ->whereHas('programs', function ($query) use ( $program_bundle_ids) {
                                                     $query->where('monitoring_key', '=', $this->audit->monitoring_key);
                                                     $query->whereIn('program_key', $program_bundle_ids);
                                                 })
@@ -1124,7 +1124,7 @@ class SimpleComplianceSelection extends Controller
 
             $required_units = 0;
 
-            $units = Unit::whereHas('programs', function ($query) use ($this->audit, $program_811_ids) {
+            $units = Unit::whereHas('programs', function ($query) use ($program_811_ids) {
                                 $query->where('audit_id', '=', $this->audit->id);
                                 $query->whereIn('program_key', $program_811_ids);
             })->get();
@@ -1192,7 +1192,7 @@ class SimpleComplianceSelection extends Controller
 
             $required_units = 0;
 
-            $units = Unit::whereHas('programs', function ($query) use ($this->audit, $program_medicaid_ids) {
+            $units = Unit::whereHas('programs', function ($query) use ($program_medicaid_ids) {
                                 $query->where('audit_id', '=', $this->audit->id);
                                 $query->whereIn('program_key', $program_medicaid_ids);
             })->get();
@@ -1293,7 +1293,7 @@ class SimpleComplianceSelection extends Controller
                 $this->audit->comment_system = $this->audit->comment_system.' | Selecting Units using using settings at '.date('g:h:i a',time());
                 $this->audit->save();
 
-                $units = Unit::whereHas('programs', function ($query) use ($this->audit, $program_home_ids, $program_keys_with_award_number) {
+                $units = Unit::whereHas('programs', function ($query) use ($program_home_ids, $program_keys_with_award_number) {
                                     $query->where('audit_id', '=', $this->audit->id);
                                     $query->whereIn('program_key', $program_keys_with_award_number);
                                     $query->whereIn('program_key', $program_home_ids);
@@ -1480,7 +1480,7 @@ class SimpleComplianceSelection extends Controller
                 $total_project_units = Project::where('id', '=', $this->audit->project_id)->first()->units()->count();
                 
 
-                $units = Unit::whereHas('programs', function ($query) use ($this->audit, $program_ohtf_ids, $program_keys_with_award_number) {
+                $units = Unit::whereHas('programs', function ($query) use ($program_ohtf_ids, $program_keys_with_award_number) {
                                     $query->where('audit_id', '=', $this->audit->id);
                                     $query->whereIn('program_key', $program_keys_with_award_number);
                                     $query->whereIn('program_key', $program_ohtf_ids);
@@ -1668,7 +1668,7 @@ class SimpleComplianceSelection extends Controller
                 $total_project_units = Project::where('id', '=', $this->audit->project_id)->first()->units()->count();
                 
 
-                $units = Unit::whereHas('programs', function ($query) use ($this->audit, $program_nhtf_ids, $program_keys_with_award_number) {
+                $units = Unit::whereHas('programs', function ($query) use ($program_nhtf_ids, $program_keys_with_award_number) {
                                     $query->where('audit_id', '=', $this->audit->id);
                                     $query->whereIn('program_key', $program_keys_with_award_number);
                                     $query->whereIn('program_key', $program_nhtf_ids);
@@ -2061,7 +2061,7 @@ class SimpleComplianceSelection extends Controller
 
                     if ($is_multi_building_project) {
 
-                        $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($this->audit, $program_htc_ids, $program_home_ids, $program_ohtf_ids, $program_nhtf_ids) {
+                        $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($program_htc_ids, $program_home_ids, $program_ohtf_ids, $program_nhtf_ids) {
                                                     $query->where('audit_id', '=', $this->audit->id);
                                                     $query->whereIn('program_key', $program_htc_ids);
                                                     $query->whereNotIn('program_key', $program_home_ids);
@@ -2153,7 +2153,7 @@ class SimpleComplianceSelection extends Controller
                                 // $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf
 
                                 $htc_units_for_building = Unit::where('building_key', '=', $building->building_key)
-                                                ->whereHas('programs', function ($query) use ($this->audit, $program_htc_ids) {
+                                                ->whereHas('programs', function ($query) use ($program_htc_ids) {
                                                     $query->where('audit_id', '=', $this->audit->id);
                                                     $query->whereIn('program_key', $program_htc_ids);
                                                 })
@@ -2162,7 +2162,7 @@ class SimpleComplianceSelection extends Controller
 
                                 $htc_units_without_overlap = Unit::where('building_key', '=', $building->building_key)
                                                 ->whereNotIn('unit_key', $htc_units_subset)
-                                                ->whereHas('programs', function ($query) use ($this->audit, $program_htc_ids) {
+                                                ->whereHas('programs', function ($query) use ($program_htc_ids) {
                                                     $query->where('audit_id', '=', $this->audit->id);
                                                     $query->whereIn('program_key', $program_htc_ids);
                                                 })
@@ -2171,7 +2171,7 @@ class SimpleComplianceSelection extends Controller
 
                                 $htc_units_with_overlap = Unit::where('building_key', '=', $building->building_key)
                                                 ->whereIn('unit_key', $htc_units_subset)
-                                                ->whereHas('programs', function ($query) use ($this->audit, $program_htc_ids) {
+                                                ->whereHas('programs', function ($query) use ($program_htc_ids) {
                                                     $query->where('audit_id', '=', $this->audit->id);
                                                     $query->whereIn('program_key', $program_htc_ids);
                                                 })
@@ -2276,7 +2276,7 @@ class SimpleComplianceSelection extends Controller
                     // if required <= $overlap we don't need to select anymore unit
                     // otherwise we need to take all the units NOT in the overlap and randomly pick required - count(overlap)
                     
-                    $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($this->audit, $program_htc_ids) {
+                    $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($program_htc_ids) {
                                                         $query->where('audit_id', '=', $this->audit->id);
                                                         $query->whereIn('program_key', $program_htc_ids);
                                                     })->pluck('unit_key')->toArray();
