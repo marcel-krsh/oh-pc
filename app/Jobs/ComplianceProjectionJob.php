@@ -43,6 +43,8 @@ class ComplianceProjectionJob implements ShouldQueue
     {
         //make a new audit for this
 
+
+
         $planning = Planning::where('run',0)->first();
         $this->planning = $planning;
         $this->project = Project::where('project_key',$planning->development_key)->first();
@@ -2509,7 +2511,7 @@ class ComplianceProjectionJob implements ShouldQueue
 
             // set values
             // get the project program
-            $program_collection = UnitProgram::where('audit_id',$this->audit->id)->where('program_id',$program->program_id);
+            $program_collection = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id);
             if(!is_null($program_collection)){
                 $this_program_calculated_count = $program_collection->count();
                 $this_program_site_count = $program_collection->where('is_site_visit',1)->count();
