@@ -43,6 +43,8 @@ class ComplianceProjectionJob implements ShouldQueue
 
         $planning = Planning::where('run',0)->first();
         $this->planning = $planning;
+        $this->project = Project::where('project_key',$planning->development_key)->first();
+        $this->extended_use = 0;
         if(!is_null($this->planning) && $this->planning->running == 0){
             if(!is_null($this->planning->audit_id)){
                 $this->audit = Audit::find($this->planning->audit_id);
@@ -69,8 +71,7 @@ class ComplianceProjectionJob implements ShouldQueue
 
         }
         
-        $this->project = Project::where('project_key',$this->planning->development_key)->first();
-        $this->extended_use = 0;
+       
 
 
 
