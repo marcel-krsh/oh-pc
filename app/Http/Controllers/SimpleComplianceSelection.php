@@ -754,7 +754,7 @@ class SimpleComplianceSelection extends Controller
             $program_bundle_names = implode(',', $program_bundle_names);
             $this->audit->comment_system = $this->audit->comment_system.' | Line 762 run at '.date('g:h:i a',time());
             $this->audit->save();
-            $units = Unit::whereHas('programs', function ($query) use ($this->audit, $program_bundle_ids) {
+            $units = Unit::whereHas('programs', function ($query) use ($program_bundle_ids) {
                             $query->where('monitoring_key', '=', $this->audit->monitoring_key);
                             $query->whereIn('program_key', $program_bundle_ids);
             })->get();
