@@ -2527,7 +2527,7 @@ class ComplianceProjectionJob implements ShouldQueue
                 $program_award_number => $program->award_number,
                 $program_guide_year => $program->guide_l_year,
                 $project_program_key => $program->project_program_key,
-                $funding_program_key => $program->funding_program_key,
+                $funding_program_key => $program->program->funding_program_key,
                 $project_program_id => $program->program_id,
                 $program_keyed_in_count => $program->total_unit_count,
                 $program_calculated_count => $this_program_calculated_count,
