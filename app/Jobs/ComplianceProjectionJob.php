@@ -2522,14 +2522,14 @@ class ComplianceProjectionJob implements ShouldQueue
 
             $planning->update([
                 $program_name =>$program->program->program_name,
-                $program_multibuilding_election => $program->_multiple_building_election_key,
+                $program_multibuilding_election => $program->multiple_building_election_key,
                 $program_status => $program->status->status_name,
                 $program_award_number => $program->award_number,
                 $program_guide_year => $program->guide_l_year,
                 $project_program_key => $program->project_program_key,
-                $funding_program_key => $program->program->funding_program_key,
+                $funding_program_key => $program->funding_program_key,
                 $project_program_id => $program->program_id,
-                $program_keyed_in_count => $program->program->total_unit_count,
+                $program_keyed_in_count => $program->total_unit_count,
                 $program_calculated_count => $this_program_calculated_count,
                 $program_extended_use => $program->first_year_award_claimed,
                 $program_site_count => $this_program_site_count,
@@ -2547,9 +2547,9 @@ class ComplianceProjectionJob implements ShouldQueue
                 $project_ref = $project->project_number;
                 $project_name = $project->project_name;
                 $total_buildings = $project->total_building_count;
-                $total_units = $project->stats_total_units();
+                $total_units = $project->total_unit_count;
                 $total_program_units = $project->program_units_total();
-                $total_market_rate_units = $project->stats_total_market_rate_units;
+                $total_market_rate_units = $project->stats_total_market_rate_units();
 
             
         
@@ -2557,18 +2557,17 @@ class ComplianceProjectionJob implements ShouldQueue
 
         //get optimized counts
 
-        $optimized_site = UnitProgram::where('audit_id',$this->audit->id)->where('site',1)->groupBy('unit_key')->count();
-        $optimized_file = UnitProgram::where('audit_id',$this->audit->id)->where('file',1)->groupBy('unit_key')->count();
+        $optimized_site = UnitInspection::where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('unit_key')->count();
+        $optimized_file = UnitInspection::where('audit_id',$this->audit->id)->where('is_file_audit',1)->groupBy('unit_key')->count();
         
 
-        if($planning){
-            // when updating a Planning, run the status test
+        
            
 
             $planning->update([
                 'audit_id' => $audit->id,
                 'project_id' => $project->id,
-                'development_key' => $audit->development_key,
+                'development_key' => $project->project_key,
                 'project_name' => $project->project_name,
                 'project_number' => $project_ref,
                 'total_building_count' => $total_buildings,
@@ -2580,10 +2579,7 @@ class ComplianceProjectionJob implements ShouldQueue
                 'run' => 1
 
             ]);
-        }else{
-
-            $audit->comment .= ' | 2584: FAILED TO ENTER BASE PROJECT DATA |';
-        }
+        
 
         // $data = [
         //     'event' => 'NewMessage',
