@@ -860,7 +860,7 @@ class ComplianceProjectionJob implements ShouldQueue
                     
                     $audit->comment_system = $audit->comment_system.' | Line 818 run (loop).';
                     $audit->save();
-                    if($unit->unit->has_program_from_array($program_htc_ids, $audit->id)){
+                    if($unit->has_program_from_array($program_htc_ids, $audit->id)){
                         $has_htc_funding = 1;
                         $comments[] = 'The unit key '.$unit->unit_key.' belongs to a program with HTC funding';
                         $audit->comment_system = $audit->comment_system.'The unit key '.$unit->unit_key.' belongs to a program with HTC funding';
@@ -1945,9 +1945,9 @@ class ComplianceProjectionJob implements ShouldQueue
 
                 $units = [];
                 foreach ($all_htc_units as $all_htc_unit) {
-                    if($all_htc_unit->has_program_from_array($program_home_ids, $audit->id) || 
-                        $all_htc_unit->has_program_from_array($program_ohtf_ids, $audit->id) || 
-                        $all_htc_unit->has_program_from_array($program_nhtf_ids, $audit->id)){
+                    if($all_htc_unit->unit->has_program_from_array($program_home_ids, $audit->id) || 
+                        $all_htc_unit->unit->has_program_from_array($program_ohtf_ids, $audit->id) || 
+                        $all_htc_unit->unit->has_program_from_array($program_nhtf_ids, $audit->id)){
                         $units[] = $all_htc_unit->unit_key;
                         
                     }
