@@ -59,7 +59,7 @@ class SimpleComplianceSelection extends Controller
         
     }
 
-    public function fetchAuditUnits(Audit $this->audit)
+    public function fetchAuditUnits()
     {
         
                                     
