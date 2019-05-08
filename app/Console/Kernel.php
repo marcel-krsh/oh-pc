@@ -468,15 +468,9 @@ class Kernel extends ConsoleKernel
             $test = DB::table('jobs')->where('payload', 'like', '%ComplianceProjectionJob%')->first();
             if (is_null($test)) {
                 $planning = Planning::where('run',0)->first();
-                if(!is_null($planning) && $planning->running == 0){
-                    $planning->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
-                    $schedule->job(new ComplianceProjectionJob($planning))->onQueue('compliance')->everyMinute();
-                } else if(!is_null($planning)) {
-
-                    $planning->failed_run = 1;
-                    $planning->run = 1;
-                    $planning->save();
-                } else {
+               
+                    $schedule->job(new ComplianceProjectionJob, 'compliance')->everyMinute();
+                }  else {
                     // no planning record ready.
                 }
             } else {
