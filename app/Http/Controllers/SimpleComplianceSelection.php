@@ -180,157 +180,157 @@ class SimpleComplianceSelection extends Controller
             
     }
 
-    public function adjustedLimit($this->audit, $n)
+    public function adjustedLimit($n)
     {
-        $audit->comment = $audit->comment.' | Running Adjusted Limiter.';
-                                    $audit->save();
+        $this->audit->comment = $this->audit->comment.' | Running Adjusted Limiter.';
+                                    $this->audit->save();
                                     
         // based on $n units, return the corresponding adjusted sample size
         switch (true) {
             case ($n >= 1 && $n <=4):
                 
-                $audit->comment = $audit->comment.' | Limiter Count is >= 1 and <=4 - adjusted minimum is '.$n.' of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is >= 1 and <=4 - adjusted minimum is '.$n.' of '.$n.'.';
+                $this->audit->save();
                 
                 return $n;
             break;
             case ($n == 5 || $n == 6):
-                $audit->comment = $audit->comment.' | Limiter Count is = 5 or 6 - adjusted minimum is '.$n.' of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 5 or 6 - adjusted minimum is '.$n.' of '.$n.'.';
+                $this->audit->save();
                 
                 return 5;
             break;
             case ($n == 7):
                 
-                $audit->comment = $audit->comment.' | Limiter Count is = 7 - adjusted minimum is 6 of 7.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 7 - adjusted minimum is 6 of 7.';
+                $this->audit->save();
                 
                 return 6;
             break;
             case ($n == 8 || $n == 9):
-                $audit->comment = $audit->comment.' | Limiter Count is = 8 or 9 - adjusted minimum is 7 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 8 or 9 - adjusted minimum is 7 of '.$n.'.';
+                $this->audit->save();
                 
                 return 7;
 
             break;
             case ($n == 10 || $n == 11):
-                $audit->comment = $audit->comment.' | Limiter Count is = 10 or 11 - adjusted minimum is 8 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 10 or 11 - adjusted minimum is 8 of '.$n.'.';
+                $this->audit->save();
                 
                 return 8;
             break;
             case ($n == 12 || $n == 13):
-                $audit->comment = $audit->comment.' | Limiter Count is = 12 or 13 - adjusted minimum is 9 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 12 or 13 - adjusted minimum is 9 of '.$n.'.';
+                $this->audit->save();
                 
                 return 9;
             break;
             case ($n >= 14 && $n <= 16):
-                $audit->comment = $audit->comment.' | Limiter Count is = 14 or up to 16 - adjusted minimum is 10 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 14 or up to 16 - adjusted minimum is 10 of '.$n.'.';
+                $this->audit->save();
                 
                 return 10;
             break;
             case ($n >= 17 && $n <= 18):
-                $audit->comment = $audit->comment.' | Limiter Count is = 17 or up to 18 - adjusted minimum is 11 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 17 or up to 18 - adjusted minimum is 11 of '.$n.'.';
+                $this->audit->save();
                 
                 return 11;
             break;
             case ($n >= 19 && $n <= 21):
-                $audit->comment = $audit->comment.' | Limiter Count is = 19 or up to 21 - adjusted minimum is 12 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 19 or up to 21 - adjusted minimum is 12 of '.$n.'.';
+                $this->audit->save();
                 
                 return 12;
             break;
             case ($n >= 22 && $n <= 25):
-                $audit->comment = $audit->comment.' | Limiter Count is = 22 or up to 25 - adjusted minimum is 13 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 22 or up to 25 - adjusted minimum is 13 of '.$n.'.';
+                $this->audit->save();
                 
                 return 13;
             break;
             case ($n >= 26 && $n <= 29):
-                $audit->comment = $audit->comment.' | Limiter Count is = 26 or up to 29 - adjusted minimum is 14 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 26 or up to 29 - adjusted minimum is 14 of '.$n.'.';
+                $this->audit->save();
                 
                 return 14;
             break;
             case ($n >= 30 && $n <= 34):
-                $audit->comment = $audit->comment.' | Limiter Count is = 30 or up to 34 - adjusted minimum is 15 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 30 or up to 34 - adjusted minimum is 15 of '.$n.'.';
+                $this->audit->save();
                 
                 return 15;
             break;
             case ($n >= 35 && $n <= 40):
-                $audit->comment = $audit->comment.' | Limiter Count is = 35 or up to 40 - adjusted minimum is 16 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 35 or up to 40 - adjusted minimum is 16 of '.$n.'.';
+                $this->audit->save();
                 
                 return 16;
             break;
             case ($n >= 41 && $n <= 47):
-                $audit->comment = $audit->comment.' | Limiter Count is = 41 or up to 47 - adjusted minimum is 17 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 41 or up to 47 - adjusted minimum is 17 of '.$n.'.';
+                $this->audit->save();
                 
                 return 17;
             break;
             case ($n >= 48 && $n <= 56):
-                $audit->comment = $audit->comment.' | Limiter Count is = 48 or up to 56 - adjusted minimum is 18 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 48 or up to 56 - adjusted minimum is 18 of '.$n.'.';
+                $this->audit->save();
                 
                 return 18;
             break;
             case ($n >= 57 && $n <= 67):
-                $audit->comment = $audit->comment.' | Limiter Count is = 57 or up to 67 - adjusted minimum is 19 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 57 or up to 67 - adjusted minimum is 19 of '.$n.'.';
+                $this->audit->save();
                 
                 return 19;
             break;
             case ($n >= 68 && $n <= 81):
-                $audit->comment = $audit->comment.' | Limiter Count is = 68 or up to 81 - adjusted minimum is 20 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 68 or up to 81 - adjusted minimum is 20 of '.$n.'.';
+                $this->audit->save();
                 
                 return 20;
             break;
             case ($n >= 82 && $n <= 101):
-                $audit->comment = $audit->comment.' | Limiter Count is = 82 or up to 101 - adjusted minimum is 21 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 82 or up to 101 - adjusted minimum is 21 of '.$n.'.';
+                $this->audit->save();
                 
                 return 21;
             break;
             case ($n >= 102 && $n <= 130):
-                $audit->comment = $audit->comment.' | Limiter Count is = 102 or up to 130 - adjusted minimum is 22 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 102 or up to 130 - adjusted minimum is 22 of '.$n.'.';
+                $this->audit->save();
                 
                 return 22;
             break;
             case ($n >= 131 && $n <= 175):
-                $audit->comment = $audit->comment.' | Limiter Count is = 131 or up to 175 - adjusted minimum is 23 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 131 or up to 175 - adjusted minimum is 23 of '.$n.'.';
+                $this->audit->save();
                 
                 return 23;
             break;
             case ($n >= 176 && $n <= 257):
-                $audit->comment = $audit->comment.' | Limiter Count is = 176 or up to 257 - adjusted minimum is 24 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 176 or up to 257 - adjusted minimum is 24 of '.$n.'.';
+                $this->audit->save();
                 
                 return 24;
             break;
             case ($n >= 258 && $n <= 449):
-                $audit->comment = $audit->comment.' | Limiter Count is = 258 or up to 449 - adjusted minimum is 25 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 258 or up to 449 - adjusted minimum is 25 of '.$n.'.';
+                $this->audit->save();
                 
                 return 25;
             break;
             case ($n >= 450 && $n <= 1461):
-                $audit->comment = $audit->comment.' | Limiter Count is = 450 or up to 1461 - adjusted minimum is 26 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is = 450 or up to 1461 - adjusted minimum is 26 of '.$n.'.';
+                $this->audit->save();
                 
                 return 26;
             break;
             case ($n >= 1462):
-                $audit->comment = $audit->comment.' | Limiter Count is >= 1462 - adjusted minimum is 27 of '.$n.'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Limiter Count is >= 1462 - adjusted minimum is 27 of '.$n.'.';
+                $this->audit->save();
                 
                 return 27;
             break;
@@ -339,9 +339,9 @@ class SimpleComplianceSelection extends Controller
                 
                  return 0;
         }
-this->    }
+	}
 
-    public function randomSelection($this->audit, $units, $percentage = 20, $min = 0, $max = 0)
+    public function randomSelection($units, $percentage = 20, $min = 0, $max = 0)
     {
         $this->audit->comment = $this->audit->comment.' | Starting randomSelection.';
                 $this->audit->save();
@@ -397,7 +397,7 @@ this->    }
         }
     }
 
-    public function combineOptimize($this->audit, $selection)
+    public function combineOptimize($selection)
     {
         //dd($selection);
         // $adjusted_units_count = $this->adjustedLimit(count($units_selected)); dd($adjusted_units_count);
@@ -424,8 +424,8 @@ this->    }
         $array_to_compare = [];
         $array_to_compare_with = [];
         $intersect = [];
-        $audit->comment = $audit->comment.' | Combine and optimize starting.';
-        $audit->save();
+        $this->audit->comment = $this->audit->comment.' | Combine and optimize starting.';
+        $this->audit->save();
         
 
         for ($i=0; $i < count($selection); $i++) {
@@ -451,19 +451,19 @@ this->    }
                 }
             }
         }
-        $audit->comment = $audit->comment.' | Combine and optimize created priority table.';
-                $audit->save();
+        $this->audit->comment = $this->audit->comment.' | Combine and optimize created priority table.';
+                $this->audit->save();
                 
        // now we have unit_keys in a priority table
         arsort($priority);
-        $audit->comment = $audit->comment.' | Combine and optimize sorted the table by priority - highest overlap';
-                $audit->save();
+        $this->audit->comment = $this->audit->comment.' | Combine and optimize sorted the table by priority - highest overlap';
+                $this->audit->save();
                 
         for ($i=0; $i < count($selection); $i++) {
             $summary['programs'][$i]['name'] = $selection[$i]['program_name'];
             $summary['programs'][$i]['group'] = $selection[$i]['group_id'];
-            $audit->comment = $audit->comment.' | DEBUG COMPLIANCE SELECTION LINE 348: Combine and optimize created the group $summary[\'programs\']['.$i.'][\'group\'] = '.($i + 1);
-                $audit->save();
+            $this->audit->comment = $this->audit->comment.' | DEBUG COMPLIANCE SELECTION LINE 348: Combine and optimize created the group $summary[\'programs\']['.$i.'][\'group\'] = '.($i + 1);
+                $this->audit->save();
             $summary['programs'][$i]['pool'] = $selection[$i]['pool'];
             $summary['programs'][$i]['program_keys'] = $selection[$i]['program_ids'];
             $summary['programs'][$i]['totals_before_optimization'] = $selection[$i]['totals'];
@@ -486,10 +486,10 @@ this->    }
             $tmp_program_output_total_not_merged = 0;
 
             if ($selection[$i]['use_limiter'] == 1) {
-                $audit->comment = $audit->comment.' | Combine and optimize used limiter on selection['.$i.'].';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Combine and optimize used limiter on selection['.$i.'].';
+                $this->audit->save();
                 
-                $needed = $this->adjustedLimit($audit,count($selection[$i]['units']));
+                $needed = $this->adjustedLimit($this->audit,count($selection[$i]['units']));
 
                 $summary['programs'][$i]['required_units'] = $needed;
 
@@ -502,20 +502,20 @@ this->    }
 
                 // check if we need more
                 if (count($tmp_selection) < $needed) {
-                    $audit->comment = $audit->comment.' | Combine and optimize determined the '.count($tmp_selection).' temporary selection is < '.$needed.' needed.';
-                    $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Combine and optimize determined the '.count($tmp_selection).' temporary selection is < '.$needed.' needed.';
+                    $this->audit->save();
                     
                     for ($j=0; $j<count($selection[$i]['units']); $j++) {
                         
                         if (!in_array($selection[$i]['units'][$j], $tmp_selection) && count($tmp_selection) < $needed) {
                             $tmp_selection[] = $selection[$i]['units'][$j];
-                            $audit->comment = $audit->comment.' | Combine and optimize added $selection['.$i.'][\'units\']['.$j.'] to list.';
-                            $audit->save();
+                            $this->audit->comment = $this->audit->comment.' | Combine and optimize added $selection['.$i.'][\'units\']['.$j.'] to list.';
+                            $this->audit->save();
                             
                         }
                     }
-                    $audit->comment = $audit->comment.' | Combine and optimize finished adding to the list to meet compliance.';
-                            $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Combine and optimize finished adding to the list to meet compliance.';
+                            $this->audit->save();
                             
                 }
 
@@ -533,8 +533,8 @@ this->    }
 
               $summary['programs'][$i]['totals_after_optimization'] = count($tmp_program_output);
               $summary['programs'][$i]['totals_after_optimization_not_merged'] = $tmp_program_output_total_not_merged;
-              $audit->comment = $audit->comment.' | Combine and optimize total after optimization is '.count($tmp_program_output).'.';
-              $audit->save();
+              $this->audit->comment = $this->audit->comment.' | Combine and optimize total after optimization is '.count($tmp_program_output).'.';
+              $this->audit->save();
               $summary['programs'][$i]['units_after_optimization'] = $tmp_program_output;
               
         }
@@ -544,13 +544,13 @@ this->    }
         $summary['ungrouped'] = $output;
         $summary['grouped'] = array_unique($output);
 
-        $audit->comment = $audit->comment.' | Combine and optimize finished process returning to selection process.';
-         $audit->save();
+        $this->audit->comment = $this->audit->comment.' | Combine and optimize finished process returning to selection process.';
+         $this->audit->save();
          
         return $summary;
-this->    }
+    }
 
-    public function selectionProcess(Audit $this->audit)
+    public function selectionProcess()
     {
         // Summary stats vs Program stats
         // file # is before overlap and optimization
@@ -2359,71 +2359,71 @@ this->    }
                                 
         return [$optimized_selection, $overlap, $project, $organization_id];
     }
-    public function createNewProjectDetails($this->audit){
+    public function createNewProjectDetails(){
         //$project = \App\Models\Project::find($this->audit->project_id);
         
-        //$this->audit->project->set_project_defaults($this->audit->id);
+        $this->audit->project->set_project_defaults($this->audit->id);
         
     }
-    public function addAmenityInspections(Audit $this->audit){
+    public function addAmenityInspections(){
         //Project
-        // AmenityInspection::where('audit_id',$audit->id)->delete();
+        AmenityInspection::where('audit_id',$this->audit->id)->delete();
 
         
 
         // // make sure we don't have name duplicates
-        // foreach ($audit->project->amenities as $pa) {
-        //     AmenityInspection::insert([
-        //         //'name'=>$pa->amenity->amenity_description,
-        //         'audit_id'=>$audit->id,
-        //         'monitoring_key'=>$audit->monitoring_key,
-        //         'project_id'=>$audit->project_id,
-        //         'development_key'=>$audit->development_key,
-        //         'amenity_id'=>$pa->amenity_id,
-        //         'amenity_key'=>$pa->amenity->amenity_key,
+        foreach ($this->audit->project->amenities as $pa) {
+            AmenityInspection::insert([
+                //'name'=>$pa->amenity->amenity_description,
+                'audit_id'=>$this->audit->id,
+                'monitoring_key'=>$this->audit->monitoring_key,
+                'project_id'=>$this->audit->project_id,
+                'development_key'=>$this->audit->development_key,
+                'amenity_id'=>$pa->amenity_id,
+                'amenity_key'=>$pa->amenity->amenity_key,
 
-        //     ]);
+            ]);
             
-        // }
-        // foreach ($audit->project->buildings as $b) {
-        //     foreach($b->amenities as $ba){
-        //        AmenityInspection::insert([
-        //             'audit_id'=>$audit->id,
-        //             'monitoring_key'=>$audit->monitoring_key,
-        //             'building_key'=>$b->building_key,
-        //             'building_id'=>$b->id,
-        //             'amenity_id'=>$ba->amenity->id,
-        //             'amenity_key'=>$ba->amenity->amenity_key,
+        }
+        foreach ($this->audit->project->buildings as $b) {
+            foreach($b->amenities as $ba){
+               AmenityInspection::insert([
+                    'audit_id'=>$this->audit->id,
+                    'monitoring_key'=>$this->audit->monitoring_key,
+                    'building_key'=>$b->building_key,
+                    'building_id'=>$b->id,
+                    'amenity_id'=>$ba->amenity->id,
+                    'amenity_key'=>$ba->amenity->amenity_key,
 
-        //        ]);
+               ]);
                
-        //     }
-        // }
-        // foreach ($audit->unique_unit_inspections as $u) {
-        //     foreach($u->amenities as $ua){
-        //        AmenityInspection::insert([
-        //             'audit_id'=>$audit->id,
-        //             'monitoring_key'=>$audit->monitoring_key,
-        //             'unit_key'=>$u->unit_key,
-        //             'unit_id'=>$u->unit_id,
-        //             'amenity_id'=>$ua->amenity_id,
-        //             'amenity_key'=>$ua->amenity->amenity_key,
+            }
+        }
+        foreach ($this->audit->unique_unit_inspections as $u) {
+            foreach($u->amenities as $ua){
+               AmenityInspection::insert([
+                    'audit_id'=>$this->audit->id,
+                    'monitoring_key'=>$this->audit->monitoring_key,
+                    'unit_key'=>$u->unit_key,
+                    'unit_id'=>$u->unit_id,
+                    'amenity_id'=>$ua->amenity_id,
+                    'amenity_key'=>$ua->amenity->amenity_key,
 
-        //        ]);
+               ]);
                
-        //     }
-        // }
+            }
+        }
 
         //Building
 
         //Unit
-this->    }
+   }
     public function updatePlanning($summary = null)
     {
         // create cached audit
         //
         $planning = $this->planning;
-        $audit = $this->audit;
+        $this->audit = $this->audit;
         $project = $this->project;
         $project_id = null;
         $development_key = null;
@@ -2532,7 +2532,7 @@ this->    }
         // ];
 
         // Redis::publish('communications', json_encode($data));this->
-this->    }
+   }
 
     /**
      * Execute the job.
@@ -2614,8 +2614,10 @@ this->    }
                 $organization_id = null;
                 
 
-                $timesToRun = SystemSetting::where('key','times_to_run_compliance_selection')->first();
-                $timesToRun = $timesToRun->value;
+                //$timesToRun = SystemSetting::where('key','times_to_run_compliance_selection')->first();
+
+                //$timesToRun = $timesToRun->value;
+                $timesToRun = 1;
 
                 for ($i=0; $i<$timesToRun; $i++) {
                     $this->audit->comment_system = $this->audit->comment_system.' | Running the selectionProcess for the '.$i.' time';
