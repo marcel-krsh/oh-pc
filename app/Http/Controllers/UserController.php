@@ -513,7 +513,6 @@ class UserController extends Controller
     }
 
     $calendar = $this->getCalendar($d); //dd($calendar);
-
     $unp = UserNotificationPreferences::where('user_id', $user->id)->first();
 
     $data = collect([

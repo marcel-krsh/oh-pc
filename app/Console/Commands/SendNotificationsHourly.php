@@ -42,10 +42,10 @@ class SendNotificationsHourly extends Command
   public function handle()
   {
     $to                    = Carbon::now()->addMinutes(30);
-    $from                  = Carbon::now()->subMinutes(300);
+    $from                  = Carbon::now()->subMinutes(30);
     $config                = config('notification');
     $hourley_notifications = NotificationsTriggered::whereBetween('deliver_time', [$from, $to])
-      ->with('to_user', 'from_user')
+      ->with('to_user.person', 'from_user')
       ->active()
       ->get()
       ->groupBy('to_id');

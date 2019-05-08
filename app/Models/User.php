@@ -506,6 +506,6 @@ class User extends Authenticatable
 
     public function notification_preference() : HasOne
     {
-        return $this->hasOne(UserNotificationPreferences::class, 'id', 'user_id');
+        return $this->hasOne(UserNotificationPreferences::class, 'user_id', 'id');
     }
 }

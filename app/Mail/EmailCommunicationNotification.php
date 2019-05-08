@@ -41,19 +41,22 @@ class EmailCommunicationNotification extends Mailable
     $owner         = $this->cr->communication->owner;
     $user          = $this->cr->user;
     $communication = $this->communication;
-    $greeting      = "Hello " . $user->name . ',';
+    $greeting      = "Hello " . $user->person->first_name . ',';
     $action_text   = "VIEW MESSAGE";
     $action_url    = secure_url('/communication/view-message', $communication->id) . "/" . $user->id . "?t=" . $this->token;
     $level         = "success";
     $level2        = "error";
-    $introLines[]  = "A new message has been posted";
-    $introLines[]  = 'Use below link to view the message.';
-    $introLines[]  = $communication->message;
+    $introLines[]  = "NEW MESSAGE:";
+    // $introLines[]  = 'Use below link to view the message.';
+    $introLines[]  =  date('M d, Y h:i', strtotime($communication->created_at));
+    $introLines[]  = 'FROM: ' . $owner->name;
+    $introLines[]  = $communication->subject;
+
     $outroLines    = [];
     // save in database
 
     if ($owner) {
-      $body              = \view('emails.new_communication', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'actionText2', 'actionUrl2', 'level2'));
+      $body              = \view('emails.new_communication', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'level2'));
       $email_saved_in_db = new HistoricEmail([
         "user_id" => $user->id,
         "type"    => 'users',
@@ -63,6 +66,6 @@ class EmailCommunicationNotification extends Mailable
       ]);
       $email_saved_in_db->save();
     }
-    return $this->view('emails.new_communication', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'actionText2', 'actionUrl2', 'level2', 'email_saved_in_db'));
+    return $this->view('emails.new_communication', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'level2', 'email_saved_in_db'));
   }
 }

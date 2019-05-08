@@ -13,6 +13,9 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Log;
+use Illuminate\Support\Facades\Mail;
+
 
 class CommunicationReceipientEvent
 {
@@ -36,7 +39,7 @@ class CommunicationReceipientEvent
   public function communicationCreated(CommunicationRecipient $cr)
   {
     try {
-      $cr_details = CommunicationRecipient::with('communication.owner', 'user.notification_preference')->find($cr->id);
+      $cr_details = CommunicationRecipient::with('communication.owner', 'user.notification_preference', 'user.person')->find($cr->id);
       //insert data into notifications_triggered table
       if ($cr_details->communication) {
         $config             = config('notification');
@@ -51,9 +54,9 @@ class CommunicationReceipientEvent
         $nt->type_id        = 1;
         $nt->token          = $token;
         $email_notification = new EmailCommunicationNotification($cr_details, $token);
-        $nt->deliver_time   = '2019-05-02 18:00:00'; //notificationDeliverTime();
-        $nt->data           = $this->buildData($communication, $owner, $user);
-        $nt->save();
+        //$nt->deliver_time   = notificationDeliverTime(); //'2019-05-02 18:00:00'; //
+        //$nt->data           = $this->buildData($communication, $owner, $user);
+        //$nt->save();
         if ($np) {
           //1 -> Immediately, 2 -> Hourley, 3->Daily
           if (1 == $np->frequency) {
@@ -62,13 +65,14 @@ class CommunicationReceipientEvent
             $nt->data         = $this->buildData($communication, $owner, $user);
             $nt->active       = 0; //since this is immediate notification
             $nt->save();
+            //Mail::to($user->email)->queue($email_notification);
             $queued_job = dispatch(new SendNotificationEmail($user, $email_notification));
           } elseif (2 == $np->frequency) {
             $nt->deliver_time = closestNextHour();
             $nt->data         = $this->buildData($communication, $owner, $user);
             $nt->save();
           } elseif (3 == $np->frequency) {
-            $nt->deliver_time = notificationDeliverTime();
+            $nt->deliver_time = notificationDeliverTime($np->deliver_time);
             $nt->data         = $this->buildData($communication, $owner, $user);
             $nt->save();
           }

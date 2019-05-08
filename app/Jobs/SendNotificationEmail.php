@@ -8,6 +8,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Mail\Mailer;
+use Log;
+use App\Models\User;
 
 
 class SendNotificationEmail implements ShouldQueue
@@ -22,7 +24,7 @@ class SendNotificationEmail implements ShouldQueue
     public $user;
     public $message;
 
-    public function __construct($user, $message)
+    public function __construct(User $user, $message)
     {
         $this->user = $user;
         $this->message = $message;
@@ -35,6 +37,7 @@ class SendNotificationEmail implements ShouldQueue
      */
     public function handle(Mailer $mailer)
     {
+    	//Log::info($this->user);
         $mailer->to($this->user->email)->send($this->message);
     }
 }

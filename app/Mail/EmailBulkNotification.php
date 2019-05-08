@@ -37,19 +37,18 @@ class EmailBulkNotification extends Mailable
     $owner         = '';
     $user          = $this->user;
     $data          = $this->data;
-    $greeting      = "Hello " . $user->name . ',';
+    $greeting      = "Hello " . $user->person->first_name . ',';
     $action_text   = "";
     $action_url    = '';
     $level         = "success";
     $level2        = "error";
-    $introLines[]  = "You have received new notifications";
-    $introLines[]  = 'Use below links to view the message.';
+    $introLines[]  = "Here are your recent notifications:";
     $notifications = $data;
     $outroLines    = [];
     // save in database
 
     if ($owner) {
-      $body              = \view('emails.bulk_notifications', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'actionText2', 'actionUrl2', 'level2', 'notifications'));
+      $body              = \view('emails.bulk_notifications', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'level2', 'notifications'));
       $email_saved_in_db = new HistoricEmail([
         "user_id" => $user->id,
         "type"    => 'users',
@@ -59,6 +58,6 @@ class EmailBulkNotification extends Mailable
       ]);
       $email_saved_in_db->save();
     }
-    return $this->view('emails.bulk_notifications', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'actionText2', 'actionUrl2', 'level2', 'email_saved_in_db', 'notifications'));
+    return $this->view('emails.bulk_notifications', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'level2', 'notifications'));
   }
 }

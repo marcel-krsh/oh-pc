@@ -15,7 +15,6 @@
 						@endIf
 					</div>
 					@can('access_auditor')
-
 					@if(Auth::user()->id == $data['summary']['id'])
 					<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
 						<hr />
@@ -140,6 +139,8 @@
 						@endcan
 					</div>
 
+					@endcan
+
 					<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
 						<form class="uk-form">
 							<hr />
@@ -153,7 +154,7 @@
 										<option value="3" {{ $unp ? ($unp->frequency == 3 ? 'selected=selected': '') : ''}}>Daily</option>
 									</select>
 								</div>
-								<div class="uk-width-1-3  {{ $unp ? ($unp->frequency != 3 ? 'uk-hidden': '') : ''}}" id="delivery_time_select">
+								<div class="uk-width-1-3  {{ $unp ? ($unp->frequency != 3 ? 'uk-hidden': '') : 'uk-hidden'}}" id="delivery_time_select">
 									<label class="uk-text-small">Choose Deliver Time</label>
 									<select class="uk-select" id="delivery_time" name="delivery_time">
 										<option value="">Select Time</option>
@@ -166,7 +167,7 @@
 							</div>
 						</form>
 					</div>
-
+					@can('access_auditor')
 					<div class="uk-width-1-1 uk-margin-remove uk-padding-remove-left">
 						<hr />
 						<h3 class="uk-margin-small-top">Addresses @if(Auth::user()->id == $data['summary']['id'])<i class="a-circle-plus use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="auditorAddAddress();"></i>@endIf</h3>
@@ -671,7 +672,14 @@
 		}
 	}
 
-	//Form notification preference ,
+
+
+</script>
+@endCan
+
+<script>
+
+		//Form notification preference ,
 	$('#notification_setting').change(function() {
 		var value = $("#notification_setting").val();
 		if(value == 3){
@@ -682,7 +690,8 @@
 			$('#delivery_time_select').addClass('uk-hidden');
 		}
 	});
-	function submitNotificationPreference() {
+
+		function submitNotificationPreference() {
 		jQuery.ajaxSetup({
 			headers: {
 				'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -710,9 +719,7 @@
 			}
 		});
 	}
-
 </script>
-@endCan
 
 <script>
 
