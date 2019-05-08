@@ -36,6 +36,8 @@ class ComplianceProjectionJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $audit;
+    public $planning;
+    public $project;
 
     public function __construct()
     {
@@ -48,6 +50,7 @@ class ComplianceProjectionJob implements ShouldQueue
         if(!is_null($this->planning) && $this->planning->running == 0){
             if(!is_null($this->planning->audit_id)){
                 $this->audit = Audit::find($this->planning->audit_id);
+                $this->audit->comment .= '| Loaded the audit from a previous run. ';
             }else{
                 $audit = New Audit;
                 $audit->project_id = $this->project->id;
@@ -58,8 +61,10 @@ class ComplianceProjectionJob implements ShouldQueue
                 $planning->save();
                 $this->planning = $planning;
                 $this->audit = $audit;
+                $this->audit->comment .= 'Created the audit';
+                $this->audit->save();
 
-                
+
             }
                 $planning->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
                 $this->planning = $planning;
@@ -2590,6 +2595,7 @@ class ComplianceProjectionJob implements ShouldQueue
      *
      * @return void
      */
+
     public function handle()
     {
         $planning = $this->planning;
