@@ -2778,26 +2778,26 @@ class ComplianceProjectionJob implements ShouldQueue
                 //$this->createNewProjectDetails($audit); // create the project details
                 
                 // LOG SUCCESS HERE
-                $audit->compliance_run = 1;
-                $audit->rerun_compliance = 0;
-                $audit->comment .= 'Audit process finished at '.date('m/d/Y h:i:s A',time()).'.';
-                $audit->comment_system .= 'Audit process finished at '.date('m/d/Y h:i:s A',time()).'after '.number_format($this->processes).' processes (not counting sub processes on the framework functions.)';
+                $this->audit->compliance_run = 1;
+                $this->audit->rerun_compliance = 0;
+                $this->audit->comment .= 'Audit process finished at '.date('m/d/Y h:i:s A',time()).'.';
+                $this->audit->comment_system .= 'Audit process finished at '.date('m/d/Y h:i:s A',time()).'after '.number_format($this->processes).' processes (not counting sub processes on the framework functions.)';
 
             $audit->save();
 
             } else {
-                $audit->comment_system = "Unable to get program units from devco. Cannot run compliance run and generate the audit.";
-                $audit->comment = "Unable to get program units from devco. Cannot run compliance run and generate the audit.";
-                $audit->compliance_run = 0;
-                $audit->rerun_compliance = 0;
-                $audit->save();
+                $this->audit->comment_system = "Unable to get program units from devco. Cannot run compliance run and generate the audit.";
+                $this->audit->comment = "Unable to get program units from devco. Cannot run compliance run and generate the audit.";
+                $this->audit->compliance_run = 0;
+                $this->audit->rerun_compliance = 0;
+                $this->audit->save();
             }
         }else{
-            $audit->comment_system = "Running must be null to run this compliance check.";
-                $audit->comment = "Running must be null to run this compliance check.";
-                $audit->compliance_run = 0;
-                $audit->rerun_compliance = 0;
-                $audit->save();
+                $this->audit->comment_system = "Running must be null to run this compliance check.";
+                $this->audit->comment = "Running must be null to run this compliance check.";
+                $this->audit->compliance_run = 0;
+                $this->audit->rerun_compliance = 0;
+                $this->audit->save();
         }
         
              
