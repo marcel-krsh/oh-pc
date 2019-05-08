@@ -860,7 +860,7 @@ class ComplianceProjectionJob implements ShouldQueue
                     
                     $audit->comment_system = $audit->comment_system.' | Line 818 run (loop).';
                     $audit->save();
-                    if($unit->has_program_from_array($program_htc_ids, $audit->id)){
+                    if($unit->unit->has_program_from_array($program_htc_ids, $audit->id)){
                         $has_htc_funding = 1;
                         $comments[] = 'The unit key '.$unit->unit_key.' belongs to a program with HTC funding';
                         $audit->comment_system = $audit->comment_system.'The unit key '.$unit->unit_key.' belongs to a program with HTC funding';
