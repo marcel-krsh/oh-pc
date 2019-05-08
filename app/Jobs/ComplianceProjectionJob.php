@@ -2600,7 +2600,7 @@ class ComplianceProjectionJob implements ShouldQueue
     {
         $planning = $this->planning;
 
-        if(is_null($planning->running)){
+        if($planning->run == 0){
             $audit = $this->audit;
             //LOG HERE if it is a brand new audit run
 
