@@ -35,8 +35,8 @@ use DB;
 
 class SimpleComplianceSelection extends Controller
 {
-    public $audit;
-    public $planning;
+    public $this->audit;
+    public $this->planning;
     public $project;
     public $unitPrograms;
 
@@ -59,22 +59,22 @@ class SimpleComplianceSelection extends Controller
         
     }
 
-    public function fetchAuditUnits(Audit $audit)
+    public function fetchAuditUnits(Audit $this->audit)
     {
         
                                     
-        UnitProgram::where('audit_id', $audit->id)->delete();
-        UnitInspection::where('audit_id', $audit->id)->delete();
+        UnitProgram::where('audit_id', $this->audit->id)->delete();
+        UnitInspection::where('audit_id', $this->audit->id)->delete();
         
         
         $apiConnect = new DevcoService();
-        // paths to the info we need: dd($audit, $audit->project, $audit->project->buildings);
+        // paths to the info we need: dd($this->audit, $this->audit->project, $this->audit->project->buildings);
         
 
         // Get all the units we need to get programs for:
 
         
-                    foreach ($audit->project->units as $unit) {
+                    foreach ($this->audit->project->units as $unit) {
                         
                         // Get the unit's current program designation from DevCo
                         try {
@@ -101,16 +101,16 @@ class SimpleComplianceSelection extends Controller
                                 $pp = $pp->attributes;
                                 if(is_null($pp->endDate) && !$is_market_rate){
                                     
-                                    $audit->comment = $audit->comment.' | Unit Key:'.$pp->unitKey.', Development Program Key:'.$pp->developmentProgramKey.', Start Date:'.date('m/d/Y',strtotime($pp->startDate));
-                                    $audit->comment_system = $audit->comment_system.' | Unit Key:'.$pp->unitKey.', Development Program Key:'.$pp->developmentProgramKey.', Start Date:'.date('m/d/Y',strtotime($pp->startDate));
-                                    $audit->save();
+                                    $this->audit->comment = $this->audit->comment.' | Unit Key:'.$pp->unitKey.', Development Program Key:'.$pp->developmentProgramKey.', Start Date:'.date('m/d/Y',strtotime($pp->startDate));
+                                    $this->audit->comment_system = $this->audit->comment_system.' | Unit Key:'.$pp->unitKey.', Development Program Key:'.$pp->developmentProgramKey.', Start Date:'.date('m/d/Y',strtotime($pp->startDate));
+                                    $this->audit->save();
 
                                     //get the matching program from the developmentProgramKey
                                     $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->with('program')->first();
                                     
-                                    $audit->comment = $audit->comment.' | '.$program->program->program_name.' '.$program->program_id;
-                                    $audit->comment_system = $audit->comment_system.' | '.$program->program->program_name.' '.$program->program_id;
-                                    $audit->save();
+                                    $this->audit->comment = $this->audit->comment.' | '.$program->program->program_name.' '.$program->program_id;
+                                    $this->audit->comment_system = $this->audit->comment_system.' | '.$program->program->program_name.' '.$program->program_id;
+                                    $this->audit->save();
 
                                     if (!is_null($program)) {
                                         UnitProgram::insert([
@@ -118,10 +118,10 @@ class SimpleComplianceSelection extends Controller
                                             'unit_id'       =>  $unit->id,
                                             'program_key'   =>  $program->program_key,
                                             'program_id'    =>  $program->program_id,
-                                            'audit_id'      =>  $audit->id,
-                                            'monitoring_key'=>  $audit->monitoring_key,
-                                            'project_id'    =>  $audit->project_id,
-                                            'development_key'=> $audit->development_key,
+                                            'audit_id'      =>  $this->audit->id,
+                                            'monitoring_key'=>  $this->audit->monitoring_key,
+                                            'project_id'    =>  $this->audit->project_id,
+                                            'development_key'=> $this->audit->development_key,
                                             'created_at'    =>  date("Y-m-d g:h:i", time()),
                                             'updated_at'    =>  date("Y-m-d g:h:i", time()),
                                             'project_program_key' => $pp->developmentProgramKey,
@@ -134,10 +134,10 @@ class SimpleComplianceSelection extends Controller
                                                     'unit_key'      =>  $unit->unit_key,
                                                     'unit_id'       =>  $unit->id,
                                                     'group_id'      =>  $group,
-                                                    'audit_id'      =>  $audit->id,
-                                                    'monitoring_key'=>  $audit->monitoring_key,
-                                                    'project_id'    =>  $audit->project_id,
-                                                    'development_key'=> $audit->development_key,
+                                                    'audit_id'      =>  $this->audit->id,
+                                                    'monitoring_key'=>  $this->audit->monitoring_key,
+                                                    'project_id'    =>  $this->audit->project_id,
+                                                    'development_key'=> $this->audit->development_key,
                                                     'created_at'    =>  date("Y-m-d g:h:i", time()),
                                                     'updated_at'    =>  date("Y-m-d g:h:i", time())
                                                 ]);
@@ -145,42 +145,42 @@ class SimpleComplianceSelection extends Controller
                                         }
                                         
                                     } else {
-                                        $audit->comment = $audit->comment.' | Unable to find program with key '.$pp->developmentProgramKey.' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key;
-                                        $audit->comment_system = $audit->comment_system.' | Unable to find program with key '.$pp->developmentProgramKey.' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key;
-                                        $audit->save();
-                                        //Log::info('Unable to find program with key of '.$unitProgram['attributes']['programKey'].' on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key);
+                                        $this->audit->comment = $this->audit->comment.' | Unable to find program with key '.$pp->developmentProgramKey.' on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key;
+                                        $this->audit->comment_system = $this->audit->comment_system.' | Unable to find program with key '.$pp->developmentProgramKey.' on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key;
+                                        $this->audit->save();
+                                        //Log::info('Unable to find program with key of '.$unitProgram['attributes']['programKey'].' on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key);
                                     }
                                 } else {
                                     // market rate?
                                     $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->with('program')->first();
                                     if($is_market_rate){
                                         
-                                        $audit->comment_system = $audit->comment_system." | MARKET RATE, CANCELLED:<del>".$program->program->program_name.' '.$program->program_id.'</del>, Start Date:'.date('m/d/Y',strtotime($pp->startDate)).', End Date: '.date('m/d/Y',strtotime($pp->endDate));
-                                        $audit->save();
+                                        $this->audit->comment_system = $this->audit->comment_system." | MARKET RATE, CANCELLED:<del>".$program->program->program_name.' '.$program->program_id.'</del>, Start Date:'.date('m/d/Y',strtotime($pp->startDate)).', End Date: '.date('m/d/Y',strtotime($pp->endDate));
+                                        $this->audit->save();
                                     }else{
                                         
-                                        $audit->comment_system = $audit->comment_system." | CANCELLED:<del>".$program->program->program_name.' '.$program->program_id.'</del>, Start Date:'.date('m/d/Y',strtotime($pp->startDate)).', End Date: '.date('m/d/Y',strtotime($pp->endDate));
-                                        $audit->save();
+                                        $this->audit->comment_system = $this->audit->comment_system." | CANCELLED:<del>".$program->program->program_name.' '.$program->program_id.'</del>, Start Date:'.date('m/d/Y',strtotime($pp->startDate)).', End Date: '.date('m/d/Y',strtotime($pp->endDate));
+                                        $this->audit->save();
                                     }
                                     
                                 }
                             }
                         } catch (Exception $e) {
                             
-                            //dd('Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key);
-                            $audit->comment = $audit->comment.' | Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key;
-                            $audit->comment_system = $audit->comment_system.' | Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$audit->monitoring_key;
-                                    $audit->save();
+                            //dd('Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key);
+                            $this->audit->comment = $this->audit->comment.' | Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key;
+                            $this->audit->comment_system = $this->audit->comment_system.' | Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key;
+                                    $this->audit->save();
                         }
                     }
-                    $audit->comment_system = $audit->comment_system.' | Finished Loop of Units';
-                                    $audit->save();
+                    $this->audit->comment_system = $this->audit->comment_system.' | Finished Loop of Units';
+                                    $this->audit->save();
                                     
                 
             
     }
 
-    public function adjustedLimit($audit, $n)
+    public function adjustedLimit($this->audit, $n)
     {
         $audit->comment = $audit->comment.' | Running Adjusted Limiter.';
                                     $audit->save();
@@ -339,12 +339,12 @@ class SimpleComplianceSelection extends Controller
                 
                  return 0;
         }
-    }
+this->    }
 
-    public function randomSelection($audit, $units, $percentage = 20, $min = 0, $max = 0)
+    public function randomSelection($this->audit, $units, $percentage = 20, $min = 0, $max = 0)
     {
-        $audit->comment = $audit->comment.' | Starting randomSelection.';
-                $audit->save();
+        $this->audit->comment = $this->audit->comment.' | Starting randomSelection.';
+                $this->audit->save();
                 
         if (count($units)) {
             $total = count($units);
@@ -352,8 +352,8 @@ class SimpleComplianceSelection extends Controller
             $needed = ceil($total * $percentage / 100);
 
             if($needed){
-                $audit->comment = $audit->comment.' | Random selection calculated total '.$total.' versus '.$needed.' needed.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Random selection calculated total '.$total.' versus '.$needed.' needed.';
+                $this->audit->save();
             }
 
             if ($min > $total) {
@@ -367,8 +367,8 @@ class SimpleComplianceSelection extends Controller
             }
             
 
-            $audit->comment = $audit->comment.' | Random selection adjusted totals based on '.$percentage.'%: total '.$total.', min '.$min.' and '.$needed.' needed.';
-                $audit->save();
+            $this->audit->comment = $this->audit->comment.' | Random selection adjusted totals based on '.$percentage.'%: total '.$total.', min '.$min.' and '.$needed.' needed.';
+                $this->audit->save();
                 
             $output = [];
 
@@ -386,8 +386,8 @@ class SimpleComplianceSelection extends Controller
                 }
             }
             
-            $audit->comment = $audit->comment.' | Random selection randomized list and returning output to selection process.';
-                $audit->save();
+            $this->audit->comment = $this->audit->comment.' | Random selection randomized list and returning output to selection process.';
+                $this->audit->save();
                 
 
             return $output;
@@ -397,7 +397,7 @@ class SimpleComplianceSelection extends Controller
         }
     }
 
-    public function combineOptimize($audit, $selection)
+    public function combineOptimize($this->audit, $selection)
     {
         //dd($selection);
         // $adjusted_units_count = $this->adjustedLimit(count($units_selected)); dd($adjusted_units_count);
@@ -548,9 +548,9 @@ class SimpleComplianceSelection extends Controller
          $audit->save();
          
         return $summary;
-    }
+this->    }
 
-    public function selectionProcess(Audit $audit)
+    public function selectionProcess(Audit $this->audit)
     {
         // Summary stats vs Program stats
         // file # is before overlap and optimization
@@ -574,46 +574,46 @@ class SimpleComplianceSelection extends Controller
         - to be inspected (this is counted in the db)
          */
 
-        $audit->comment = $audit->comment.' | Select Process Started';
-        $audit->comment_system = $audit->comment_system.' | Select Process Started for audit '.$audit->id;
-            $audit->save();
+        $this->audit->comment = $this->audit->comment.' | Select Process Started';
+        $this->audit->comment_system = $this->audit->comment_system.' | Select Process Started for audit '.$this->audit->id;
+            $this->audit->save();
             
         // is the project processing all the buildings together? or do we have a combination of grouped buildings and single buildings?
-        if ($audit->id) {
-            //dd($audit);
-            $project = Project::where('id', '=', $audit->project_id)->with('programs')->first();
+        if ($this->audit->id) {
+            //dd($this->audit);
+            $project = Project::where('id', '=', $this->audit->project_id)->with('programs')->first();
             
-            $audit->comment_system = $audit->comment_system.' | project selected in selection process';
+            $this->audit->comment_system = $this->audit->comment_system.' | project selected in selection process';
             
-            $audit->save();
+            $this->audit->save();
         } else {
-            Log::error('Audit '.$audit->id.' does not have a project somehow...');
-            $audit->comment_system = $audit->comment_system.' | Error, this audit isn\'t associated with a project somehow...';
-            $audit->comment = $audit->comment.' | Error, this audit isn\'t associated with a project somehow...';
-            $audit->save();
+            Log::error('Audit '.$this->audit->id.' does not have a project somehow...');
+            $this->audit->comment_system = $this->audit->comment_system.' | Error, this audit isn\'t associated with a project somehow...';
+            $this->audit->comment = $this->audit->comment.' | Error, this audit isn\'t associated with a project somehow...';
+            $this->audit->save();
             
             return "Error, this audit isn't associated with a project somehow...";
             
 
         }
-        $audit->comment_system = $audit->comment_system.' | Select Process Has Selected Project ID '.$audit->project_id;
-            $audit->save();
+        $this->audit->comment_system = $this->audit->comment_system.' | Select Process Has Selected Project ID '.$this->audit->project_id;
+            $this->audit->save();
             
 
         if(!$project) {
-            Log::error('Audit '.$audit->id.' does not have a project somehow...');
-            $audit->comment_system = $audit->comment_system.' | Error, this audit isn\'t associated with a project somehow...';
-            $audit->comment = $audit->comment.' | Error, this audit isn\'t associated with a project somehow...';
-            $audit->save();
+            Log::error('Audit '.$this->audit->id.' does not have a project somehow...');
+            $this->audit->comment_system = $this->audit->comment_system.' | Error, this audit isn\'t associated with a project somehow...';
+            $this->audit->comment = $this->audit->comment.' | Error, this audit isn\'t associated with a project somehow...';
+            $this->audit->save();
             
             return "Error, this audit isn't associated with a project somehow...";
         }
 
         if (!$project->programs) {
             Log::error('Error, the project does not have a program.');
-            $audit->comment = $audit->comment.' | Error, the project does not have a program.';
-            $audit->comment_system = $audit->comment_system.' | Error, the project does not have a program.';
-            $audit->save();
+            $this->audit->comment = $this->audit->comment.' | Error, the project does not have a program.';
+            $this->audit->comment_system = $this->audit->comment_system.' | Error, the project does not have a program.';
+            $this->audit->save();
             
             return "Error, this project doesn't have a program.";
             
@@ -622,40 +622,40 @@ class SimpleComplianceSelection extends Controller
 
         foreach ($project->programs as $program) {
             $projectProgramIds[] = $program->program_key;
-            $audit->comment_system = $audit->comment_system.' | Program ID: '.$program->program_key.' Program Name: '.$program->program->program_name;
-            $audit->save();
+            $this->audit->comment_system = $this->audit->comment_system.' | Program ID: '.$program->program_key.' Program Name: '.$program->program->program_name;
+            $this->audit->save();
         }
-        $audit->comment_system = $audit->comment_system.' | Select Process Checked the Programs and that there are Programs';
-            $audit->save();
+        $this->audit->comment_system = $this->audit->comment_system.' | Select Process Checked the Programs and that there are Programs';
+            $this->audit->save();
             
 
         $total_buildings = $project->total_building_count;
         $total_units = $project->total_unit_count;
 
-        $audit->comment_system = $audit->comment_system.' | Select Process Found '.$total_buildings.' Total Buildings and '.$total_units.' Total Units';
-            $audit->save();
+        $this->audit->comment_system = $this->audit->comment_system.' | Select Process Found '.$total_buildings.' Total Buildings and '.$total_units.' Total Units';
+            $this->audit->save();
             
         //Log::info('509:: total buildings and units '.$total_buildings.', '.$total_units.' respectively.');
-        $pm_contact = ProjectContactRole::where('project_id', '=', $audit->project_id)
+        $pm_contact = ProjectContactRole::where('project_id', '=', $this->audit->project_id)
                                 ->where('project_role_key', '=', 21)
                                 ->with('organization')
                                 ->first();
                                 
         //Log::info('514:: pm contact found');
 
-        $audit->comment_system = $audit->comment_system.' | Select Process Selected the PM Contact';
-            $audit->save();
+        $this->audit->comment_system = $this->audit->comment_system.' | Select Process Selected the PM Contact';
+            $this->audit->save();
             
         $organization_id = null;
         if ($pm_contact) {
-            $audit->comment_system = $audit->comment_system.' | Select Process Confirmed PM Contact';
-            $audit->save();
+            $this->audit->comment_system = $this->audit->comment_system.' | Select Process Confirmed PM Contact';
+            $this->audit->save();
             
             if ($pm_contact->organization) {
                 $organization_id = $pm_contact->organization->id;
                 //Log::info('519:: pm organization identified');
-                $audit->comment_system = $audit->comment_system.' | Select Process Updated the Organization ID';
-                $audit->save();
+                $this->audit->comment_system = $this->audit->comment_system.' | Select Process Updated the Organization ID';
+                $this->audit->save();
                 
             }
         }
@@ -665,11 +665,11 @@ class SimpleComplianceSelection extends Controller
         $buildings = $project->buildings;
         //Log::info('526:: buildings saved.');
         // remove any data
-        BuildingInspection::where('audit_id', '=', $audit->id)->delete();
+        BuildingInspection::where('audit_id', '=', $this->audit->id)->delete();
         
         //Log::info('529:: building inspections deleted');
-        $audit->comment_system = $audit->comment_system.' | Select Process Deleted all the current building cache for this audit id.';
-            $audit->save();
+        $this->audit->comment_system = $this->audit->comment_system.' | Select Process Deleted all the current building cache for this audit id.';
+            $this->audit->save();
             
             $buildingCount = 0;
         if ($buildings) {
@@ -696,8 +696,8 @@ class SimpleComplianceSelection extends Controller
                     'city' => $city,
                     'state' => $state,
                     'zip' => $zip,
-                    'audit_id' => $audit->id,
-                    'audit_key' => $audit->monitoring_key,
+                    'audit_id' => $this->audit->id,
+                    'audit_key' => $this->audit->monitoring_key,
                     'project_id' => $project->id,
                     'project_key' => $project->project_key,
                     'pm_organization_id' => $organization_id,
@@ -712,17 +712,17 @@ class SimpleComplianceSelection extends Controller
                 
                 //Log::info('565:: '.$b->id.' building inspection added');
             }
-            $audit->comment = $audit->comment.' | Select Process Put in '.$buildingCount.' Buildings';
-            $audit->comment_system = $audit->comment_system.' | Select Process Put in '.$buildingCount.' Buildings';
-            $audit->save();
+            $this->audit->comment = $this->audit->comment.' | Select Process Put in '.$buildingCount.' Buildings';
+            $this->audit->comment_system = $this->audit->comment_system.' | Select Process Put in '.$buildingCount.' Buildings';
+            $this->audit->save();
             
         }
 
         $selection = [];
 
         $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
-        $audit->comment_system = $audit->comment_system.' | Line 740 run.';
-            $audit->save();
+        $this->audit->comment_system = $this->audit->comment_system.' | Line 740 run.';
+            $this->audit->save();
         //
         //
         // 1 - FAF || NSP || TCE || RTCAP || 811 units
@@ -736,52 +736,52 @@ class SimpleComplianceSelection extends Controller
         $required_units = 0;
 
         $program_bundle_ids = explode(',', SystemSetting::get('program_bundle'));
-        $audit->comment_system = $audit->comment_system.' | Got the program bundle.';
-            $audit->save();
+        $this->audit->comment_system = $this->audit->comment_system.' | Got the program bundle.';
+            $this->audit->save();
         
 
         /////// DO NOT DO ANY OF THE FOLLOWING IF THE PROJECT DOES NOT HAVE ONE OF THESE PROGRAMS....
 
         if(!empty(array_intersect($projectProgramIds, $program_bundle_ids))) {
-            $audit->comment_system = $audit->comment_system.' | Project has one of the program bundle ids.';
-            $audit->save();
+            $this->audit->comment_system = $this->audit->comment_system.' | Project has one of the program bundle ids.';
+            $this->audit->save();
 
 
             $program_bundle_names = Program::whereIn('program_key', $program_bundle_ids)->get()->pluck('program_name')->toArray();
-            $audit->comment_system = $audit->comment_system.' | Line 758 run.';
-            $audit->save();
+            $this->audit->comment_system = $this->audit->comment_system.' | Line 758 run.';
+            $this->audit->save();
             
             $program_bundle_names = implode(',', $program_bundle_names);
-            $audit->comment_system = $audit->comment_system.' | Line 762 run at '.date('g:h:i a',time());
-            $audit->save();
-            $units = Unit::whereHas('programs', function ($query) use ($audit, $program_bundle_ids) {
-                            $query->where('monitoring_key', '=', $audit->monitoring_key);
+            $this->audit->comment_system = $this->audit->comment_system.' | Line 762 run at '.date('g:h:i a',time());
+            $this->audit->save();
+            $units = Unit::whereHas('programs', function ($query) use ($this->audit, $program_bundle_ids) {
+                            $query->where('monitoring_key', '=', $this->audit->monitoring_key);
                             $query->whereIn('program_key', $program_bundle_ids);
             })->get();
-            $audit->comment_system = $audit->comment_system.' | Line 765 run at '.date('g:h:i a',time());
-            $audit->save();
+            $this->audit->comment_system = $this->audit->comment_system.' | Line 765 run at '.date('g:h:i a',time());
+            $this->audit->save();
             
 
             // total for all programs combined
             $total = count($units);
-            $audit->comment_system = $audit->comment_system.' | Line 775 run: Total set to '.$total;
-            $audit->save();
+            $this->audit->comment_system = $this->audit->comment_system.' | Line 775 run: Total set to '.$total;
+            $this->audit->save();
 
             if($total){
-                $audit->comment = $audit->comment.' | Select Process starting Group 1 selection ';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Select Process starting Group 1 selection ';
+                $this->audit->save();
                 
 
-                $comments[] = 'Pool of units chosen using audit id '.$audit->id.' and a list of programs: '.$program_bundle_names;
-                $audit->comment = $audit->comment.' | Pool of units chosen using audit id '.$audit->id.' and a list of programs: '.$program_bundle_names;
+                $comments[] = 'Pool of units chosen using audit id '.$this->audit->id.' and a list of programs: '.$program_bundle_names;
+                $this->audit->comment = $this->audit->comment.' | Pool of units chosen using audit id '.$this->audit->id.' and a list of programs: '.$program_bundle_names;
             
-                $audit->save();
+                $this->audit->save();
                 
 
                 $comments[] = 'Total units in the pool is '.count($units);
-                $audit->comment = $audit->comment. ' | Total units in the pool is '.$total;
-                $audit->comment_system = $audit->comment_system. ' | Total units in the pool is '.$total;
-                $audit->save();
+                $this->audit->comment = $this->audit->comment. ' | Total units in the pool is '.$total;
+                $this->audit->comment_system = $this->audit->comment_system. ' | Total units in the pool is '.$total;
+                $this->audit->save();
                 
                 $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
                 
@@ -799,20 +799,20 @@ class SimpleComplianceSelection extends Controller
                 // $program_htc_overlap_names = implode(',', $program_htc_overlap_names);
                 // 
                 // $comments[] = 'Identified the program keys that have HTC funding: '.$program_htc_overlap_names;
-                // $audit->comment = $audit->comment.' | Identified the program keys that have HTC funding: '.$program_htc_overlap_names;
-                // $audit->save();
+                // $this->audit->comment = $this->audit->comment.' | Identified the program keys that have HTC funding: '.$program_htc_overlap_names;
+                // $this->audit->save();
                 // 
 
                 $has_htc_funding = 0;
                 $unitProcessCount = 0;
                 foreach ($units as $unit) {
                     
-                    $audit->comment_system = $audit->comment_system.' | Line 818 run (loop).';
-                    $audit->save();
-                    if($unit->has_program_from_array($program_htc_ids, $audit->id)){
+                    $this->audit->comment_system = $this->audit->comment_system.' | Line 818 run (loop).';
+                    $this->audit->save();
+                    if($unit->has_program_from_array($program_htc_ids, $this->audit->id)){
                         $has_htc_funding = 1;
                         $comments[] = 'The unit key '.$unit->unit_key.' belongs to a program with HTC funding';
-                        $audit->comment_system = $audit->comment_system.'The unit key '.$unit->unit_key.' belongs to a program with HTC funding';
+                        $this->audit->comment_system = $this->audit->comment_system.'The unit key '.$unit->unit_key.' belongs to a program with HTC funding';
                     }
                 }
            
@@ -822,17 +822,17 @@ class SimpleComplianceSelection extends Controller
                 // are there units with HTC funding?
                 if (!$has_htc_funding) {
                     $comments[] = 'By checking each unit and associated programs with HTC funding, we determined that no HTC funding exists for this pool';
-                    $audit->comment = $audit->comment.' | By checking each unit and associated programs with HTC funding, we determined that no HTC funding exists for this pool';
+                    $this->audit->comment = $this->audit->comment.' | By checking each unit and associated programs with HTC funding, we determined that no HTC funding exists for this pool';
 
-                    $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 20);
+                    $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 20);
                     dd('Random Unit Selection output:'.$units_selected);
                     //$required_units = count($units_selected);
                     $required_units = ceil($total/5);
 
                     $comments[] = '20% of the pool is randomly selected. Total selected: '.count($units_selected);
-                     $audit->comment = $audit->comment.' | 20% of the pool is randomly selected. Total selected: '.count($units_selected);
+                     $this->audit->comment = $this->audit->comment.' | 20% of the pool is randomly selected. Total selected: '.count($units_selected);
                      
-                    $audit->save();
+                    $this->audit->save();
                     
                 
                     $selection[] = [
@@ -851,8 +851,8 @@ class SimpleComplianceSelection extends Controller
 
                 } else {
                     $comments[] = 'By checking each unit and associated programs with HTC funding, we determined that there is HTC funding for this pool';
-                    $audit->comment = $audit->comment.' | By checking each unit and associated programs with HTC funding, we determined that there is HTC funding for this pool';
-                    $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | By checking each unit and associated programs with HTC funding, we determined that there is HTC funding for this pool';
+                    $this->audit->save();
                     
 
                     // check in project_program->first_year_award_claimed date for the 15 year test
@@ -861,8 +861,8 @@ class SimpleComplianceSelection extends Controller
 
                     // look at HTC programs, get the most recent year for the check
                     $comments[] = 'Going through the HTC programs, we look for the most recent year in the first_year_award_claimed field.';
-                    $audit->comment = $audit->comment.' | Going through the HTC programs, we look for the most recent year in the first_year_award_claimed field.';
-                    $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Going through the HTC programs, we look for the most recent year in the first_year_award_claimed field.';
+                    $this->audit->save();
                     
                     foreach ($project->programs as $program) {
                         
@@ -870,8 +870,8 @@ class SimpleComplianceSelection extends Controller
                             if ($first_year == null || $first_year < $program->first_year_award_claimed) {
                                 $first_year = $program->first_year_award_claimed;
                                 $comments[] = 'Program key '.$program->program_key.' has the year '.$program->first_year_award_claimed.'.';
-                                $audit->comment = $audit->comment.' | Program key '.$program->program_key.' has the year '.$program->first_year_award_claimed.'.';
-                                $audit->save();
+                                $this->audit->comment = $this->audit->comment.' | Program key '.$program->program_key.' has the year '.$program->first_year_award_claimed.'.';
+                                $this->audit->save();
                                 
                             }
                         }
@@ -880,15 +880,15 @@ class SimpleComplianceSelection extends Controller
                     if (idate("Y")-15 > $first_year && $first_year != null) {
                         $first_fifteen_years = 0;
                         $comments[] = 'Based on the year, we determined that the program is not within the first 15 years.';
-                        $audit->comment = $audit->comment.' | Based on the year, we determined that the program is not within the first 15 years.';
-                        $audit->save();
+                        $this->audit->comment = $this->audit->comment.' | Based on the year, we determined that the program is not within the first 15 years.';
+                        $this->audit->save();
                         
 
                     } else {
                         $first_fifteen_years = 1;
                         $comments[] = 'Based on the year,'.$first_year.' we determined that the program is within the first 15 years.';
-                        $audit->comment = $audit->comment.' | Based on the year '.$first_year.', we determined that the program is within the first 15 years.';
-                        $audit->save();
+                        $this->audit->comment = $this->audit->comment.' | Based on the year '.$first_year.', we determined that the program is within the first 15 years.';
+                        $this->audit->save();
                         
                     }
                     
@@ -897,8 +897,8 @@ class SimpleComplianceSelection extends Controller
                         $leaseProgramKeys = explode(',', SystemSetting::get('lease_purchase'));
                         
                         // $comments[] = 'Check if the programs associated with the project correspond to lease purchase using program keys: '.SystemSetting::get('lease_purchase').'.';
-                        // $audit->comment = $audit->comment.' | Check if the programs associated with the project correspond to lease purchase using program keys: '.SystemSetting::get('lease_purchase').'.';
-                        // $audit->save();
+                        // $this->audit->comment = $this->audit->comment.' | Check if the programs associated with the project correspond to lease purchase using program keys: '.SystemSetting::get('lease_purchase').'.';
+                        // $this->audit->save();
                         // 
 
                         /*    
@@ -907,8 +907,8 @@ class SimpleComplianceSelection extends Controller
                                 if (in_array($program->program_key, $leaseProgramKeys)) {
                                     $isLeasePurchase = 1;
                                     $comments[] = 'A program key '.$program->program_key.' confirms that this is a lease purchase.';
-                                    $audit->comment = $audit->comment.' | A program key '.$program->program_key.' confirms that this is a lease purchase.';
-                                    $audit->save();
+                                    $this->audit->comment = $this->audit->comment.' | A program key '.$program->program_key.' confirms that this is a lease purchase.';
+                                    $this->audit->save();
 
                                 } else {
                                     $isLeasePurchase = 0;
@@ -917,16 +917,16 @@ class SimpleComplianceSelection extends Controller
 
 
                             if ($isLeasePurchase) {
-                                $required_units = $this->adjustedLimit($audit, count($units));
+                                $required_units = $this->adjustedLimit($this->audit, count($units));
 
-                                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $required_units);
+                                $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, $required_units);
 
                                 //$required_units = count($units_selected);
                                 //$required_units = $number_of_units_required;
 
                                 $comments[] = $required_units.' must be randomly selected. Total selected: '.count($units_selected);
-                                $audit->comment = $audit->comment.' | '.$required_units.' must be randomly selected. Total selected: '.count($units_selected);
-                                    $audit->save();
+                                $this->audit->comment = $this->audit->comment.' | '.$required_units.' must be randomly selected. Total selected: '.count($units_selected);
+                                    $this->audit->save();
                                     
                     
                                 $selection[] = [
@@ -950,8 +950,8 @@ class SimpleComplianceSelection extends Controller
 
                         // for each of the current programs+project, check if multiple_building_election_key is 2 for multi building project
                         $comments[] = 'Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
-                        $audit->comment = $audit->comment.' | Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
-                            $audit->save();
+                        $this->audit->comment = $this->audit->comment.' | Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
+                            $this->audit->save();
                             
 
                         foreach ($project->programs as $program) {
@@ -960,23 +960,23 @@ class SimpleComplianceSelection extends Controller
                                 if ($program->multiple_building_election_key == 2) {
                                     $is_multi_building_project = 1;
                                     $comments[] = 'Program key '.$program->program_key.' showed that the project is a multi building project.';
-                                    $audit->comment = $audit->comment.' | Program key '.$program->program_key.' showed that the project is a multi building project.';
-                                    $audit->save();
+                                    $this->audit->comment = $this->audit->comment.' | Program key '.$program->program_key.' showed that the project is a multi building project.';
+                                    $this->audit->save();
                                     
                                 }
                             }
                         }
 
                         if ($is_multi_building_project) {
-                            $audit->comment = $audit->comment.' | This is a multi-building elected project setting the adjusted limit accordingly.';
-                            $audit->save();
-                            $required_units = $this->adjustedLimit($audit, count($units));
-                            $audit->comment = $audit->comment.' | Set the adjusted limit based on the chart to '.$required_units.'.';
-                            $audit->save();
+                            $this->audit->comment = $this->audit->comment.' | This is a multi-building elected project setting the adjusted limit accordingly.';
+                            $this->audit->save();
+                            $required_units = $this->adjustedLimit($this->audit, count($units));
+                            $this->audit->comment = $this->audit->comment.' | Set the adjusted limit based on the chart to '.$required_units.'.';
+                            $this->audit->save();
 
-                            $units_selected = $this->randomSelection($audit, $units->pluck('unit_key')->toArray(), 0, $required_units);
-                            $audit->comment = $audit->comment.' | Performed the random selection from the audit.';
-                            $audit->save();
+                            $units_selected = $this->randomSelection($this->audit, $units->pluck('unit_key')->toArray(), 0, $required_units);
+                            $this->audit->comment = $this->audit->comment.' | Performed the random selection from the audit.';
+                            $this->audit->save();
                             
 
                             //$required_units = count($units_selected);
@@ -984,8 +984,8 @@ class SimpleComplianceSelection extends Controller
 
                             $comments[] = $required_units.' must be randomly selected. Total selected: '.count($units_selected);
 
-                            $audit->comment = $audit->comment.' | '.$required_units.' must be randomly selected. Total selected: '.count($units_selected);
-                                    $audit->save();
+                            $this->audit->comment = $this->audit->comment.' | '.$required_units.' must be randomly selected. Total selected: '.count($units_selected);
+                                    $this->audit->save();
                                     
             
                             $selection[] = [
@@ -1005,8 +1005,8 @@ class SimpleComplianceSelection extends Controller
                             $use_limiter = 0; // we apply the limiter for each building
 
                             $comments[] = 'The project is not a multi building project.';
-                            $audit->comment = $audit->comment.' | The project is not a multi building project.';
-                                    $audit->save();
+                            $this->audit->comment = $this->audit->comment.' | The project is not a multi building project.';
+                                    $this->audit->save();
                                     
                             // group units by building, then proceed with the random selection
                             // create a new list of units based on building and project key
@@ -1023,25 +1023,25 @@ class SimpleComplianceSelection extends Controller
                                 }
 
                                 $units_for_that_building = Unit::where('building_key', '=', $building->building_key)
-                                                ->whereHas('programs', function ($query) use ($audit, $program_bundle_ids) {
-                                                    $query->where('monitoring_key', '=', $audit->monitoring_key);
+                                                ->whereHas('programs', function ($query) use ($this->audit, $program_bundle_ids) {
+                                                    $query->where('monitoring_key', '=', $this->audit->monitoring_key);
                                                     $query->whereIn('program_key', $program_bundle_ids);
                                                 })
                                                 ->pluck('unit_key')
                                                 ->toArray();
 
                                 // $required_units_for_that_building = ceil(count($units_for_that_building)/5);
-                                $required_units_for_that_building = $this->adjustedLimit($audit, count($units_for_that_building));
+                                $required_units_for_that_building = $this->adjustedLimit($this->audit, count($units_for_that_building));
 
                                 $required_units = $required_units_for_that_building;
                                 
-                                $new_building_selection = $this->randomSelection($audit,$units_for_that_building, 0, $required_units);
+                                $new_building_selection = $this->randomSelection($this->audit,$units_for_that_building, 0, $required_units);
                                 $units_selected = $new_building_selection;
                                 $units_selected_count = count($new_building_selection);
 
                                 $comments[] = $required_units.' of building key '.$building->building_key.' must be randomly selected. Total selected: '.count($new_building_selection).'.';
-                                $audit->comment = $audit->comment.' | '.$required_units.' of building key '.$building->building_key.' must be randomly selected. Total selected: '.count($new_building_selection).'.';
-                                    $audit->save();
+                                $this->audit->comment = $this->audit->comment.' | '.$required_units.' of building key '.$building->building_key.' must be randomly selected. Total selected: '.count($new_building_selection).'.';
+                                    $this->audit->save();
                                     
 
                                 $selection[] = [
@@ -1062,17 +1062,17 @@ class SimpleComplianceSelection extends Controller
                         //}
                     } else {
                         // get required units using limiter
-                        // $required_units = $this->adjustedLimit($audit, count($units));
+                        // $required_units = $this->adjustedLimit($this->audit, count($units));
 
                         $required_units = ceil($total/10); // 10% of units
 
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 10);
+                        $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 10);
 
                         // $required_units = count($units_selected);
                         
                         $comments[] = ' 10% are randomly selected. Total selected: '.count($units_selected);
-                        $audit->comment = $audit->comment.' | 10% are randomly selected. Total selected: '.count($units_selected);
-                                        $audit->save();
+                        $this->audit->comment = $this->audit->comment.' | 10% are randomly selected. Total selected: '.count($units_selected);
+                                        $this->audit->save();
                                         
 
                         $selection[] = [
@@ -1092,12 +1092,12 @@ class SimpleComplianceSelection extends Controller
                 }
             }else{
 
-                $audit->comment_system = $audit->comment_system.' | Select Process is not working with group 1.';
-                $audit->save();
+                $this->audit->comment_system = $this->audit->comment_system.' | Select Process is not working with group 1.';
+                $this->audit->save();
             }
         } else {
-            $audit->comment_system = $audit->comment_system.' | This project does not have any in project group.';
-            $audit->save();
+            $this->audit->comment_system = $this->audit->comment_system.' | This project does not have any in project group.';
+            $this->audit->save();
 
         }
 
@@ -1124,8 +1124,8 @@ class SimpleComplianceSelection extends Controller
 
             $required_units = 0;
 
-            $units = Unit::whereHas('programs', function ($query) use ($audit, $program_811_ids) {
-                                $query->where('audit_id', '=', $audit->id);
+            $units = Unit::whereHas('programs', function ($query) use ($this->audit, $program_811_ids) {
+                                $query->where('audit_id', '=', $this->audit->id);
                                 $query->whereIn('program_key', $program_811_ids);
             })->get();
             
@@ -1134,18 +1134,18 @@ class SimpleComplianceSelection extends Controller
 
                 $required_units = count($units);
 
-                $audit->comment = $audit->comment.' | Select Process starting 811 selection ';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Select Process starting 811 selection ';
+                $this->audit->save();
                 
 
                 $units_selected = $units->pluck('unit_key')->toArray();
                 
 
-                $comments[] = 'Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_811_names;
+                $comments[] = 'Pool of units chosen among units belonging to programs associated with this audit id '.$this->audit->id.'. Programs: '.$program_811_names;
                 $comments[] = 'Total units in the pool is '.count($units);
                 $comments[] = '100% of units selected:'.count($units_selected);
-                $audit->comment = $audit->comment.' | Select Process Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_811_names.' | Select Process Total units in the pool is '.count($units).' | Select Process 100% of units selected:'.count($units_selected);
-                    $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Select Process Pool of units chosen among units belonging to programs associated with this audit id '.$this->audit->id.'. Programs: '.$program_811_names.' | Select Process Total units in the pool is '.count($units).' | Select Process 100% of units selected:'.count($units_selected);
+                    $this->audit->save();
                     
                 $selection[] = [
                     "group_id" => 2,
@@ -1162,12 +1162,12 @@ class SimpleComplianceSelection extends Controller
 
             }else{
 
-                $audit->comment_system = $audit->comment_system.' | Select Process is not working with 811.';
-                $audit->save();
+                $this->audit->comment_system = $this->audit->comment_system.' | Select Process is not working with 811.';
+                $this->audit->save();
             }
         }else{
-            $audit->comment_system = $audit->comment_system.' | Select Process is not working with 811.';
-            $audit->save();
+            $this->audit->comment_system = $this->audit->comment_system.' | Select Process is not working with 811.';
+            $this->audit->save();
         }
 
 
@@ -1192,15 +1192,15 @@ class SimpleComplianceSelection extends Controller
 
             $required_units = 0;
 
-            $units = Unit::whereHas('programs', function ($query) use ($audit, $program_medicaid_ids) {
-                                $query->where('audit_id', '=', $audit->id);
+            $units = Unit::whereHas('programs', function ($query) use ($this->audit, $program_medicaid_ids) {
+                                $query->where('audit_id', '=', $this->audit->id);
                                 $query->whereIn('program_key', $program_medicaid_ids);
             })->get();
             
 
             if(count($units)){
-                $audit->comment = $audit->comment.' | Select Process starting Medicaid selection ';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Select Process starting Medicaid selection ';
+                $this->audit->save();
                 
 
                 $required_units = count($units);
@@ -1208,12 +1208,12 @@ class SimpleComplianceSelection extends Controller
                 $units_selected = $units->pluck('unit_key')->toArray();
                 
 
-                $comments[] = 'Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_medicaid_names;
+                $comments[] = 'Pool of units chosen among units belonging to programs associated with this audit id '.$this->audit->id.'. Programs: '.$program_medicaid_names;
                 $comments[] = 'Total units in the pool is '.count($units);
                 $comments[] = '100% of units selected:'.count($units_selected);
 
-                $audit->comment = $audit->comment.' | Select Process Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_medicaid_names.' | Select Process Total units in the pool is '.count($units).' | Select Process 100% of units selected:'.count($units_selected);
-                    $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Select Process Pool of units chosen among units belonging to programs associated with this audit id '.$this->audit->id.'. Programs: '.$program_medicaid_names.' | Select Process Total units in the pool is '.count($units).' | Select Process 100% of units selected:'.count($units_selected);
+                    $this->audit->save();
                     
 
                 $selection[] = [
@@ -1230,12 +1230,12 @@ class SimpleComplianceSelection extends Controller
                 
 
             }else{
-                $audit->comment_system = $audit->comment_system.' | Select Process is not working with Medicaid.';
-                $audit->save();
+                $this->audit->comment_system = $this->audit->comment_system.' | Select Process is not working with Medicaid.';
+                $this->audit->save();
             }
         }else{
-            $audit->comment_system = $audit->comment_system.' | Select Process is not working with Medicaid.';
-            $audit->save();
+            $this->audit->comment_system = $this->audit->comment_system.' | Select Process is not working with Medicaid.';
+            $this->audit->save();
         }
 
 
@@ -1252,30 +1252,30 @@ class SimpleComplianceSelection extends Controller
         $program_home_ids = explode(',', SystemSetting::get('program_home'));
 
         if(!empty(array_intersect($projectProgramIds, $program_home_ids))) {
-            $audit->comment_system = $audit->comment_system.' | Started HOME, got ids from system settings.';
-            $audit->save();
+            $this->audit->comment_system = $this->audit->comment_system.' | Started HOME, got ids from system settings.';
+            $this->audit->save();
 
-            $home_award_numbers = ProjectProgram::whereIn('program_key', $program_home_ids)->where('project_id', '=', $audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
-            $audit->comment_system = $audit->comment_system.' | Got home award numbers.';
-            $audit->save();
+            $home_award_numbers = ProjectProgram::whereIn('program_key', $program_home_ids)->where('project_id', '=', $this->audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
+            $this->audit->comment_system = $this->audit->comment_system.' | Got home award numbers.';
+            $this->audit->save();
 
             foreach($home_award_numbers as $home_award_number){
                 // for each award_number, create a different HOME group
-                $audit->comment_system = $audit->comment_system.' | Home award number '.$home_award_number.' being processed.';
-                $audit->save();
+                $this->audit->comment_system = $this->audit->comment_system.' | Home award number '.$home_award_number.' being processed.';
+                $this->audit->save();
                 
                 // programs with that award_number
-                $program_keys_with_award_number = ProjectProgram::where('award_number','=',$home_award_number->award_number)->where('project_id', '=', $audit->project_id)->pluck('program_key')->toArray(); 
-                $audit->comment_system = $audit->comment_system.' | Select programs with that award number.';
-                $audit->save();
+                $program_keys_with_award_number = ProjectProgram::where('award_number','=',$home_award_number->award_number)->where('project_id', '=', $this->audit->project_id)->pluck('program_key')->toArray(); 
+                $this->audit->comment_system = $this->audit->comment_system.' | Select programs with that award number.';
+                $this->audit->save();
 
                 $program_home_names = Program::whereIn('program_key', $program_home_ids)
                                                 ->whereIn('program_key', $program_keys_with_award_number)
                                                 ->get()
                                                 ->pluck('program_name')->toArray();
 
-                $audit->comment_system = $audit->comment_system.' | Selected program names.';
-                $audit->save();
+                $this->audit->comment_system = $this->audit->comment_system.' | Selected program names.';
+                $this->audit->save();
 
                 
                 $program_home_names = implode(',', $program_home_names);
@@ -1284,36 +1284,36 @@ class SimpleComplianceSelection extends Controller
 
                 $required_units = 0;
 
-                $total_project_units = Project::where('id', '=', $audit->project_id)->first()->units()->count();
+                $total_project_units = Project::where('id', '=', $this->audit->project_id)->first()->units()->count();
 
-                $audit->comment_system = $audit->comment_system.' | Counting project units: '.$total_project_units;
-                $audit->save();
+                $this->audit->comment_system = $this->audit->comment_system.' | Counting project units: '.$total_project_units;
+                $this->audit->save();
                 
 
-                $audit->comment_system = $audit->comment_system.' | Selecting Units using using settings at '.date('g:h:i a',time());
-                $audit->save();
+                $this->audit->comment_system = $this->audit->comment_system.' | Selecting Units using using settings at '.date('g:h:i a',time());
+                $this->audit->save();
 
-                $units = Unit::whereHas('programs', function ($query) use ($audit, $program_home_ids, $program_keys_with_award_number) {
-                                    $query->where('audit_id', '=', $audit->id);
+                $units = Unit::whereHas('programs', function ($query) use ($this->audit, $program_home_ids, $program_keys_with_award_number) {
+                                    $query->where('audit_id', '=', $this->audit->id);
                                     $query->whereIn('program_key', $program_keys_with_award_number);
                                     $query->whereIn('program_key', $program_home_ids);
                 })->get();
 
-                $audit->comment_system = $audit->comment_system.' | Finished selecting units at '.date('g:h:i a',time()).'.';
-                $audit->save();
+                $this->audit->comment_system = $this->audit->comment_system.' | Finished selecting units at '.date('g:h:i a',time()).'.';
+                $this->audit->save();
                 
-                $audit->comment_system = $audit->comment_system.' | Total selected units '.count($units);
-                $audit->save();
+                $this->audit->comment_system = $this->audit->comment_system.' | Total selected units '.count($units);
+                $this->audit->save();
 
                 if(count($units)){
-                    $audit->comment = $audit->comment.' | Select Process starting Home selection for award number '.$home_award_number;
-                    $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Select Process starting Home selection for award number '.$home_award_number;
+                    $this->audit->save();
                     
 
-                    $comments[] = 'Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_home_names.', award number '.$home_award_number;
+                    $comments[] = 'Pool of units chosen among units belonging to programs associated with this audit id '.$this->audit->id.'. Programs: '.$program_home_names.', award number '.$home_award_number;
 
-                    $audit->comment = $audit->comment.' | Select Process Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_home_names.', award number '.$home_award_number;
-                    $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Select Process Pool of units chosen among units belonging to programs associated with this audit id '.$this->audit->id.'. Programs: '.$program_home_names.', award number '.$home_award_number;
+                    $this->audit->save();
                     
 
                     $total_units = count($units);
@@ -1333,8 +1333,8 @@ class SimpleComplianceSelection extends Controller
                     
                     $comments[] = 'Total units with HOME funding and award number '.$home_award_number.' is '.$total_units;
                     $comments[] = 'Total units in the project is '.$total_project_units;
-                    $audit->comment = $audit->comment.' | Select Process Total units with HOME fundng is '.$total_units.' | Select Process Total units in the project is '.$total_project_units;
-                        $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Select Process Total units with HOME fundng is '.$total_units.' | Select Process Total units in the project is '.$total_project_units;
+                        $this->audit->save();
                         
 
 
@@ -1342,11 +1342,11 @@ class SimpleComplianceSelection extends Controller
 
                         $required_units = count($units);
 
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 100);
+                        $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 100);
                         
                         $comments[] = 'Because there are less than 4 HOME units, the selection is 100%. Total selected: '.count($units_selected);
-                        $audit->comment = $audit->comment.' | Select Process Because there are less than 4 HOME units, the selection is 100%. Total selected: '.count($units_selected);
-                        $audit->save();
+                        $this->audit->comment = $this->audit->comment.' | Select Process Because there are less than 4 HOME units, the selection is 100%. Total selected: '.count($units_selected);
+                        $this->audit->save();
                         
 
                     } else {
@@ -1354,31 +1354,31 @@ class SimpleComplianceSelection extends Controller
 
                             $required_units = ceil($total_units/2);
 
-                            $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
+                            $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
                             
 
                             $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of HOME units, the total selected is '.ceil($total_units/2);
-                            $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of HOME units, the total selected is '.ceil($total_units/2);
-                            $audit->save();
+                            $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of HOME units, the total selected is '.ceil($total_units/2);
+                            $this->audit->save();
                             
 
                         } else {
 
                             if(ceil($total_project_units/5) > $total_units){
                                 $required_units = $total_units;
-                                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
+                                $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
                                 
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.$total_units.' which is the total number of units';
 
-                                $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.$total_units.' which is the total number of units';
-                                $audit->save();
+                                $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.$total_units.' which is the total number of units';
+                                $this->audit->save();
                             }else{
                                 $required_units = ceil($total_project_units/5);
-                                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
+                                $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_project_units/5);
 
-                                $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_project_units/5);
-                                $audit->save();
+                                $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_project_units/5);
+                                $this->audit->save();
                             }
 
                             
@@ -1393,24 +1393,24 @@ class SimpleComplianceSelection extends Controller
 
                         $comments[] = 'Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
 
-                        $audit->comment = $audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
-                        $audit->save();
+                        $this->audit->comment = $this->audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
+                        $this->audit->save();
                         
                         
                         // if units have HTC funding add to subset
                         
                         
-                        if($unit_selected->has_program_from_array($program_htc_ids, $audit->id)){
+                        if($unit_selected->has_program_from_array($program_htc_ids, $this->audit->id)){
                             $has_htc_funding = 1;
                             $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding';
-                            $audit->save();
+                            $this->audit->save();
                         }
                         
                         if ($has_htc_funding) {
                             
                             $comments[] = 'We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
-                            $audit->comment = $audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
-                                $audit->save();
+                            $this->audit->comment = $this->audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
+                                $this->audit->save();
                                 
                             $htc_units_subset[] = $unit_selected->unit_key;
                         }
@@ -1436,14 +1436,14 @@ class SimpleComplianceSelection extends Controller
                     
                 }else{
                     $htc_units_subset_for_home = array();
-                    $audit->comment_system = $audit->comment_system.' | 1455 Select Process is not working with HOME.';
-                    $audit->save();
+                    $this->audit->comment_system = $this->audit->comment_system.' | 1455 Select Process is not working with HOME.';
+                    $this->audit->save();
                 }
             }
         }else {
             $htc_units_subset_for_home = array();
-            $audit->comment_system = $audit->comment_system.' | 1461 Select Process is not working with Home.';
-            $audit->save();
+            $this->audit->comment_system = $this->audit->comment_system.' | 1461 Select Process is not working with Home.';
+            $this->audit->save();
         }
 
 
@@ -1458,12 +1458,12 @@ class SimpleComplianceSelection extends Controller
         if(!empty(array_intersect($projectProgramIds, $program_ohtf_ids))) {
             $htc_units_subset_for_ohtf = array();
 
-            $ohtf_award_numbers = ProjectProgram::whereIn('program_key', $program_ohtf_ids)->where('project_id', '=', $audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
+            $ohtf_award_numbers = ProjectProgram::whereIn('program_key', $program_ohtf_ids)->where('project_id', '=', $this->audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
 
             foreach($ohtf_award_numbers as $ohtf_award_number){
 
                 // programs with that award_number
-                $program_keys_with_award_number = ProjectProgram::where('award_number','=',$ohtf_award_number->award_number)->where('project_id', '=', $audit->project_id)->pluck('program_key')->toArray(); 
+                $program_keys_with_award_number = ProjectProgram::where('award_number','=',$ohtf_award_number->award_number)->where('project_id', '=', $this->audit->project_id)->pluck('program_key')->toArray(); 
 
                 $program_ohtf_names = Program::whereIn('program_key', $program_ohtf_ids)
                                                 ->whereIn('program_key', $program_keys_with_award_number)
@@ -1477,11 +1477,11 @@ class SimpleComplianceSelection extends Controller
 
                 $required_units = 0;
 
-                $total_project_units = Project::where('id', '=', $audit->project_id)->first()->units()->count();
+                $total_project_units = Project::where('id', '=', $this->audit->project_id)->first()->units()->count();
                 
 
-                $units = Unit::whereHas('programs', function ($query) use ($audit, $program_ohtf_ids, $program_keys_with_award_number) {
-                                    $query->where('audit_id', '=', $audit->id);
+                $units = Unit::whereHas('programs', function ($query) use ($this->audit, $program_ohtf_ids, $program_keys_with_award_number) {
+                                    $query->where('audit_id', '=', $this->audit->id);
                                     $query->whereIn('program_key', $program_keys_with_award_number);
                                     $query->whereIn('program_key', $program_ohtf_ids);
                 })->get();
@@ -1489,13 +1489,13 @@ class SimpleComplianceSelection extends Controller
 
 
                 if(count($units)){
-                    $audit->comment = $audit->comment.' | Select Process Starting OHTF for award number '.$ohtf_award_number;
-                    $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Select Process Starting OHTF for award number '.$ohtf_award_number;
+                    $this->audit->save();
                     
 
-                    $comments[] = 'Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_ohtf_names.', award number '.$ohtf_award_number;
-                    $audit->comment = $audit->comment.' | Select Process Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_ohtf_names.', award number '.$ohtf_award_number;
-                    $audit->save();
+                    $comments[] = 'Pool of units chosen among units belonging to programs associated with this audit id '.$this->audit->id.'. Programs: '.$program_ohtf_names.', award number '.$ohtf_award_number;
+                    $this->audit->comment = $this->audit->comment.' | Select Process Pool of units chosen among units belonging to programs associated with this audit id '.$this->audit->id.'. Programs: '.$program_ohtf_names.', award number '.$ohtf_award_number;
+                    $this->audit->save();
                     
 
                     $total_units = count($units);
@@ -1514,24 +1514,24 @@ class SimpleComplianceSelection extends Controller
                     $comments[] = 'Total units with OHTF funding and award number '.$ohtf_award_number.' is '.$total_units;
                     $comments[] = 'Total units in the project with a program is '.$total_project_units;
 
-                    $audit->comment = $audit->comment.' | Select Process Total units with OHTF funding is '.$total_units;
-                    $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Select Process Total units with OHTF funding is '.$total_units;
+                    $this->audit->save();
                     
 
-                    $audit->comment = $audit->comment.' | Select Process Total units in the project is '.$total_project_units;
-                    $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Select Process Total units in the project is '.$total_project_units;
+                    $this->audit->save();
                     
 
                     if (count($units) <= 4) {
 
                         $required_units = count($units);
 
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 100);
+                        $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 100);
                         
                         $comments[] = 'Because there are less than 4 OHTF units, the selection is 100%. Total selected: '.count($units_selected);
 
-                        $audit->comment = $audit->comment.' | Select Process Because there are less than 4 OHTF units, the selection is 100%. Total selected: '.count($units_selected);
-                        $audit->save();
+                        $this->audit->comment = $this->audit->comment.' | Select Process Because there are less than 4 OHTF units, the selection is 100%. Total selected: '.count($units_selected);
+                        $this->audit->save();
                         
 
                     } else {
@@ -1539,34 +1539,34 @@ class SimpleComplianceSelection extends Controller
 
                             $required_units = ceil($total_units/2);
 
-                             $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
+                             $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
                              
                              $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of OHTF units, the total selected is '.ceil($total_units/2);
 
-                            $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of OHTF units, the total selected is '.ceil($total_units/2);
-                            $audit->save();
+                            $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of OHTF units, the total selected is '.ceil($total_units/2);
+                            $this->audit->save();
                             
                         } else {
 
                             if(ceil($total_project_units/5) > $total_units){
                                 $required_units = $total_units;
-                                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
+                                $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
                                 
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.$total_units. 'which is the total number of units';
 
-                                $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.$total_units. 'which is the total number of units';
+                                $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.$total_units. 'which is the total number of units';
                             }else{
                                 $required_units = ceil($total_project_units/5);
-                                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
+                                $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
                                 
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.ceil($total_project_units/5);
 
-                                $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.ceil($total_project_units/5);
+                                $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.ceil($total_project_units/5);
 
                             }
 
                             
-                            $audit->save();
+                            $this->audit->save();
                             
                         }
                     }
@@ -1579,30 +1579,30 @@ class SimpleComplianceSelection extends Controller
 
                             $comments[] = 'Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
 
-                            $audit->comment = $audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
-                                $audit->save();
+                            $this->audit->comment = $this->audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
+                                $this->audit->save();
                                 
 
                             // if units have HTC funding add to subset
-                            if($unit_selected->has_program_from_array($program_htc_ids, $audit->id)){
+                            if($unit_selected->has_program_from_array($program_htc_ids, $this->audit->id)){
                                 $has_htc_funding = 1;
                                 $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding';
-                                $audit->save();
+                                $this->audit->save();
                             }
 
                             if ($has_htc_funding) {
                                 $htc_units_subset[] = $unit_selected->unit_key;
                                 
                                 $comments[] = 'We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
-                                $audit->comment = $audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
+                                $this->audit->comment = $this->audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
                                     
-                                    $audit->save();
+                                    $this->audit->save();
                                     
                             }
                         } else {
-                            $audit->comment = $audit->comment.' | Select Process A unit came up null in its values. We recommend checking the completeness of the data in Devco for your units, update any that may be missing data, and then re-run the selection.';
+                            $this->audit->comment = $this->audit->comment.' | Select Process A unit came up null in its values. We recommend checking the completeness of the data in Devco for your units, update any that may be missing data, and then re-run the selection.';
                                     
-                                    $audit->save();
+                                    $this->audit->save();
                                     
                         }
                     }
@@ -1626,14 +1626,14 @@ class SimpleComplianceSelection extends Controller
                     
                 }else{
                     $htc_units_subset_for_ohtf = array();
-                    $audit->comment_system = $audit->comment_system.' | Select Process is not working with OHTF.';
-                    $audit->save();
+                    $this->audit->comment_system = $this->audit->comment_system.' | Select Process is not working with OHTF.';
+                    $this->audit->save();
                 }
             }
         }else{
             $htc_units_subset_for_ohtf = array();
-            $audit->comment_system = $audit->comment_system.' | Select Process is not working with OHTF.';
-            $audit->save();
+            $this->audit->comment_system = $this->audit->comment_system.' | Select Process is not working with OHTF.';
+            $this->audit->save();
         }
 
 
@@ -1647,12 +1647,12 @@ class SimpleComplianceSelection extends Controller
         if(!empty(array_intersect($projectProgramIds, $program_nhtf_ids))) {
             $htc_units_subset_for_nhtf = array();
             
-            $nhtf_award_numbers = ProjectProgram::whereIn('program_key', $program_nhtf_ids)->where('project_id', '=', $audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
+            $nhtf_award_numbers = ProjectProgram::whereIn('program_key', $program_nhtf_ids)->where('project_id', '=', $this->audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
 
             foreach($nhtf_award_numbers as $nhtf_award_number){
 
                 // programs with that award_number
-                $program_keys_with_award_number = ProjectProgram::where('award_number','=',$nhtf_award_number->award_number)->where('project_id', '=', $audit->project_id)->pluck('program_key')->toArray(); 
+                $program_keys_with_award_number = ProjectProgram::where('award_number','=',$nhtf_award_number->award_number)->where('project_id', '=', $this->audit->project_id)->pluck('program_key')->toArray(); 
 
                 $program_nhtf_names = Program::whereIn('program_key', $program_nhtf_ids)
                                                 ->whereIn('program_key', $program_keys_with_award_number)
@@ -1665,25 +1665,25 @@ class SimpleComplianceSelection extends Controller
 
                 $required_units = 0;
 
-                $total_project_units = Project::where('id', '=', $audit->project_id)->first()->units()->count();
+                $total_project_units = Project::where('id', '=', $this->audit->project_id)->first()->units()->count();
                 
 
-                $units = Unit::whereHas('programs', function ($query) use ($audit, $program_nhtf_ids, $program_keys_with_award_number) {
-                                    $query->where('audit_id', '=', $audit->id);
+                $units = Unit::whereHas('programs', function ($query) use ($this->audit, $program_nhtf_ids, $program_keys_with_award_number) {
+                                    $query->where('audit_id', '=', $this->audit->id);
                                     $query->whereIn('program_key', $program_keys_with_award_number);
                                     $query->whereIn('program_key', $program_nhtf_ids);
                 })->get();
                 
 
                 if(count($units)){
-                    $audit->comment = $audit->comment.' | Select Process Starting NHTF for award number '.$nhtf_award_number;
-                    $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Select Process Starting NHTF for award number '.$nhtf_award_number;
+                    $this->audit->save();
                     
 
-                    $comments[] = 'Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_nhtf_names.', award number '.$nhtf_award_number;
+                    $comments[] = 'Pool of units chosen among units belonging to programs associated with this audit id '.$this->audit->id.'. Programs: '.$program_nhtf_names.', award number '.$nhtf_award_number;
 
-                    $audit->comment = $audit->comment.' | Select Process Pool of units chosen among units belonging to programs associated with this audit id '.$audit->id.'. Programs: '.$program_nhtf_names.', award number '.$nhtf_award_number;;
-                    $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Select Process Pool of units chosen among units belonging to programs associated with this audit id '.$this->audit->id.'. Programs: '.$program_nhtf_names.', award number '.$nhtf_award_number;;
+                    $this->audit->save();
                     
 
                     $units_selected = [];
@@ -1695,11 +1695,11 @@ class SimpleComplianceSelection extends Controller
                     $comments[] = 'Total units with NHTF funding is '.$total_units;
                     $comments[] = 'Total units in the project with a program is '.$total_project_units;
 
-                    $audit->comment = $audit->comment.' | Select Process Total units with NHTF funding is '.$total_units;
-                    $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Select Process Total units with NHTF funding is '.$total_units;
+                    $this->audit->save();
                     
-                    $audit->comment = $audit->comment.' | Select Process Total units in the project with a program is '.$total_project_units;
-                    $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Select Process Total units in the project with a program is '.$total_project_units;
+                    $this->audit->save();
                     
 
 
@@ -1707,12 +1707,12 @@ class SimpleComplianceSelection extends Controller
 
                         $required_units = count($units); // 100%
 
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 100);
+                        $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 100);
                         
                         $comments[] = 'Because there are less than 4 NHTF units, the selection is 100%. Total selected: '.count($units_selected);
 
-                        $audit->comment = $audit->comment.' | Select Process Because there are less than 4 NHTF units, the selection is 100%. Total selected: '.count($units_selected);
-                        $audit->save();
+                        $this->audit->comment = $this->audit->comment.' | Select Process Because there are less than 4 NHTF units, the selection is 100%. Total selected: '.count($units_selected);
+                        $this->audit->save();
                         
 
                     } else {
@@ -1720,32 +1720,32 @@ class SimpleComplianceSelection extends Controller
 
                             $required_units = ceil($total_units/2);
 
-                             $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
+                             $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
                              
                              $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of NHTF units, the total selected is '.ceil($total_units/2);
-                             $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of NHTF units, the total selected is '.ceil($total_units/2);
+                             $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of NHTF units, the total selected is '.ceil($total_units/2);
 
-                            $audit->save();
+                            $this->audit->save();
                             
                         } else {
 
                             if(ceil($total_project_units/5) > $total_units){
                                 $required_units = $total_units;
-                                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
+                                $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
                                 
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$total_units. 'which is the total number of units';
 
-                                $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$total_units. 'which is the total number of units';
+                                $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$total_units. 'which is the total number of units';
                             }else{
                                 $required_units = ceil($total_project_units/5);
-                                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
+                                $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
                                 
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.ceil($total_project_units/5);
 
-                                $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.ceil($total_project_units/5);
+                                $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.ceil($total_project_units/5);
 
                             }
-                            $audit->save();
+                            $this->audit->save();
                             
                         }
                     }
@@ -1757,25 +1757,25 @@ class SimpleComplianceSelection extends Controller
 
                         $comments[] = 'Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
 
-                        $audit->comment = $audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
-                            $audit->save();
+                        $this->audit->comment = $this->audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
+                            $this->audit->save();
                             
 
                         // if units have HTC funding add to subset
                         //$unit = Unit::where('unit_key', '=', $unit_selected)->first();
                         
 
-                        if($unit_selected->has_program_from_array($program_htc_ids, $audit->id)){
+                        if($unit_selected->has_program_from_array($program_htc_ids, $this->audit->id)){
                             $has_htc_funding = 1;
                             $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding';
-                            $audit->save();
+                            $this->audit->save();
                         }
 
                         if ($has_htc_funding) {
                             $comments[] = 'We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
 
-                            $audit->comment = $audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
-                                $audit->save();
+                            $this->audit->comment = $this->audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
+                                $this->audit->save();
                                 
 
                             $htc_units_subset[] = $unit_selected->unit_key;
@@ -1804,14 +1804,14 @@ class SimpleComplianceSelection extends Controller
                 }else{
                     
                     $htc_units_subset_for_nhtf = array();
-                    $audit->comment_system = $audit->comment_system.' | Select Process is not working with NHTF.';
-                    $audit->save();
+                    $this->audit->comment_system = $this->audit->comment_system.' | Select Process is not working with NHTF.';
+                    $this->audit->save();
                 }
             }
         }else{
             $htc_units_subset_for_nhtf = array();
-            $audit->comment_system = $audit->comment_system.' | Select Process is not working with NHTF.';
-            $audit->save();
+            $this->audit->comment_system = $this->audit->comment_system.' | Select Process is not working with NHTF.';
+            $this->audit->save();
         }
 
 
@@ -1832,8 +1832,8 @@ class SimpleComplianceSelection extends Controller
         }
 
         $comments[] = 'Overlap list to send to analyst: '.$overlap_list;
-        $audit->comment = $audit->comment.' | Overlap list to send to analyst: '.$overlap_list;
-        $audit->save();
+        $this->audit->comment = $this->audit->comment.' | Overlap list to send to analyst: '.$overlap_list;
+        $this->audit->save();
 
         //
         //
@@ -1852,13 +1852,13 @@ class SimpleComplianceSelection extends Controller
         $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
          if(!empty(array_intersect($projectProgramIds, $program_htc_ids))) {
             // total HTC funded units (71)
-            $audit->comment = $audit->comment.' | Selecting units with HTC at '.date('g:h:i a',time());
-            $audit->save();
-            // $all_htc_units = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
-            //                     $query->where('audit_id', '=', $audit->id);
+            $this->audit->comment = $this->audit->comment.' | Selecting units with HTC at '.date('g:h:i a',time());
+            $this->audit->save();
+            // $all_htc_units = Unit::whereHas('programs', function ($query) use ($this->audit, $program_htc_ids) {
+            //                     $query->where('audit_id', '=', $this->audit->id);
             //                     $query->whereIn('program_key', $program_htc_ids);
             // })->get();
-            $all_htc_units = UnitProgram::whereIn('program_key',$program_htc_ids)->where('audit_id',$audit->id)->get();
+            $all_htc_units = UnitProgram::whereIn('program_key',$program_htc_ids)->where('audit_id',$this->audit->id)->get();
             
 
             $total_htc_units = count($all_htc_units);
@@ -1867,13 +1867,13 @@ class SimpleComplianceSelection extends Controller
             if($total_htc_units){
                 $use_limiter = 1;
 
-                $audit->comment = $audit->comment.' | Select Process Starting HTC.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Select Process Starting HTC.';
+                $this->audit->save();
                 
 
                 $comments[] = 'The total of HTC units is '.$total_htc_units.'.';
-                $audit->comment = $audit->comment.' | Select Process The total of HTC units is '.$total_htc_units.'.';
-                            $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Select Process The total of HTC units is '.$total_htc_units.'.';
+                            $this->audit->save();
                             
 
                 // HTC without HOME, OHTF, NHTF
@@ -1885,26 +1885,26 @@ class SimpleComplianceSelection extends Controller
                 // $program_htc_only_names = implode(',', $program_htc_only_names);
                 // 
 
-                // $comments[] = 'Pool of units chosen among units belonging to HTC programs associated with this audit id '.$audit->id.' excluding HOME, OHTF and NHTF. Programs: '.$program_htc_only_names;
+                // $comments[] = 'Pool of units chosen among units belonging to HTC programs associated with this audit id '.$this->audit->id.' excluding HOME, OHTF and NHTF. Programs: '.$program_htc_only_names;
                 // 
 
-                // $audit->comment = $audit->comment.' | Select Process Pool of units chosen among units belonging to HTC programs associated with this audit id '.$audit->id.' excluding HOME, OHTF and NHTF. Programs: '.$program_htc_only_names;
-                //  $audit->save();
+                // $this->audit->comment = $this->audit->comment.' | Select Process Pool of units chosen among units belonging to HTC programs associated with this audit id '.$this->audit->id.' excluding HOME, OHTF and NHTF. Programs: '.$program_htc_only_names;
+                //  $this->audit->save();
                 //  
 
                 $units = [];
                 foreach ($all_htc_units as $all_htc_unit) {
-                    if($all_htc_unit->unit->has_program_from_array($program_home_ids, $audit->id) || 
-                        $all_htc_unit->unit->has_program_from_array($program_ohtf_ids, $audit->id) || 
-                        $all_htc_unit->unit->has_program_from_array($program_nhtf_ids, $audit->id)){
+                    if($all_htc_unit->unit->has_program_from_array($program_home_ids, $this->audit->id) || 
+                        $all_htc_unit->unit->has_program_from_array($program_ohtf_ids, $this->audit->id) || 
+                        $all_htc_unit->unit->has_program_from_array($program_nhtf_ids, $this->audit->id)){
                         $units[] = $all_htc_unit->unit_key;
                         
                     }
                 }
 
                 $comments[] = 'The total of HTC units that have HOME, OHTF and NHTF is '.count($units).'.';
-                $audit->comment = $audit->comment.' | Select Process The total of HTC units that have HOME, OHTF and NHTF is '.count($units).'.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Select Process The total of HTC units that have HOME, OHTF and NHTF is '.count($units).'.';
+                $this->audit->save();
                 
 
                 // check in project_program->first_year_award_claimed date for the 15 year test
@@ -1926,8 +1926,8 @@ class SimpleComplianceSelection extends Controller
                 // look at HTC programs, get the most recent year for the check
                 $comments[] = 'Going through the HTC programs, we look for the most recent year in the first_year_award_claimed field.';
 
-                $audit->comment = $audit->comment.' | Select Process Going through the HTC programs, we look for the most recent year in the first_year_award_claimed field.';
-                $audit->save();
+                $this->audit->comment = $this->audit->comment.' | Select Process Going through the HTC programs, we look for the most recent year in the first_year_award_claimed field.';
+                $this->audit->save();
                 
 
                 foreach ($project->programs as $program) {
@@ -1937,8 +1937,8 @@ class SimpleComplianceSelection extends Controller
                         if ($first_year == null || $first_year < $program->first_year_award_claimed) {
                             $first_year = $program->first_year_award_claimed;
                             $comments[] = 'Program key '.$program->program_key.' has the year '.$program->first_year_award_claimed.'.';
-                            $audit->comment = $audit->comment.' | Select Process Program key '.$program->program_key.' has the year '.$program->first_year_award_claimed.'.';
-                            $audit->save();
+                            $this->audit->comment = $this->audit->comment.' | Select Process Program key '.$program->program_key.' has the year '.$program->first_year_award_claimed.'.';
+                            $this->audit->save();
                             
                         }
                     }
@@ -1947,14 +1947,14 @@ class SimpleComplianceSelection extends Controller
                 if (idate("Y")-15 > $first_year && $first_year != null) {
                     $first_fifteen_years = 0;
                     $comments[] = 'Based on the year, we determined that the program is not within the first 15 years.';
-                    $audit->comment = $audit->comment.' | Select Process Based on the year, we determined that the program is not within the first 15 years.';
-                        $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Select Process Based on the year, we determined that the program is not within the first 15 years.';
+                        $this->audit->save();
                         
                 } else {
                     $first_fifteen_years = 1;
                     $comments[] = 'Based on the year, we determined that the program is within the first 15 years.';
-                    $audit->comment = $audit->comment.' | Select Process Based on the year, we determined that the program is within the first 15 years.';
-                        $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Select Process Based on the year, we determined that the program is within the first 15 years.';
+                        $this->audit->save();
                         
                 }
                 
@@ -1965,8 +1965,8 @@ class SimpleComplianceSelection extends Controller
                         
                         $comments[] = 'Check if the programs associated with the project correspond to lease purchase using program keys: '.SystemSetting::get('lease_purchase').'.';
 
-                        $audit->comment = $audit->comment.' | Select Process Check if the programs associated with the project correspond to lease purchase using program keys: '.SystemSetting::get('lease_purchase').'.';
-                            $audit->save();
+                        $this->audit->comment = $this->audit->comment.' | Select Process Check if the programs associated with the project correspond to lease purchase using program keys: '.SystemSetting::get('lease_purchase').'.';
+                            $this->audit->save();
                             
                             $leasePurchaseFound = 0;
                             $isLeasePurchase = 0;
@@ -1975,8 +1975,8 @@ class SimpleComplianceSelection extends Controller
                             if (in_array($program->program_key, $leaseProgramKeys)) {
                                 $isLeasePurchase = 1;
                                 $comments[] = 'A program key '.$program->program_key.' confirms that this is a lease purchase.';
-                                $audit->comment = $audit->comment.' | Select Process A program key '.$program->program_key.' confirms that this is a lease purchase.';
-                                $audit->save();
+                                $this->audit->comment = $this->audit->comment.' | Select Process A program key '.$program->program_key.' confirms that this is a lease purchase.';
+                                $this->audit->save();
                                 
                                 $leasePurchaseFound = 1;
                             } 
@@ -1984,19 +1984,19 @@ class SimpleComplianceSelection extends Controller
 
                         if(!$leasePurchaseFound){
                             $comments[] = 'No lease purchase programs found.';
-                            $audit->comment = $audit->comment.' | Select Process No lease purchase programs found.';
-                                $audit->save();
+                            $this->audit->comment = $this->audit->comment.' | Select Process No lease purchase programs found.';
+                                $this->audit->save();
                                 
                         }
 
                         if ($isLeasePurchase) {
 
-                            $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_only_ids) {
-                                                            $query->where('audit_id', '=', $audit->id);
+                            $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($this->audit, $program_htc_only_ids) {
+                                                            $query->where('audit_id', '=', $this->audit->id);
                                                             $query->whereIn('program_key', $program_htc_only_ids);
                                                         })->pluck('unit_key')->toArray();
 
-                            $required_units = $this->adjustedLimit($audit, $total_htc_units);
+                            $required_units = $this->adjustedLimit($this->audit, $total_htc_units);
 
                             if($required_units <= count($htc_units_subset)){
                                 $number_of_htc_units_needed = 0;
@@ -2004,13 +2004,13 @@ class SimpleComplianceSelection extends Controller
                                 $number_of_htc_units_needed = $required_units - count($htc_units_subset);
                             }
 
-                            $units_selected = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
+                            $units_selected = $this->randomSelection($this->audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
                             
                             $units_selected_count = count($units_selected);
 
                             $comments[] = 'It is a lease purchase. Total selected: '.count($units_selected);
-                            $audit->comment = $audit->comment.' | Select Process It is a lease purchase. Total selected: '.count($units_selected);
-                                $audit->save();
+                            $this->audit->comment = $this->audit->comment.' | Select Process It is a lease purchase. Total selected: '.count($units_selected);
+                                $this->audit->save();
                                 
 
                             $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
@@ -2042,8 +2042,8 @@ class SimpleComplianceSelection extends Controller
                     
                     // for each of the current programs+project, check if multiple_building_election_key is 2 for multi building project
                     $comments[] = 'Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
-                    $audit->comment = $audit->comment.' | Select Process Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
-                    $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Select Process Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
+                    $this->audit->save();
                     
 
                     foreach ($project->programs as $program) {
@@ -2052,8 +2052,8 @@ class SimpleComplianceSelection extends Controller
                             if ($program->multiple_building_election_key == 2) {
                                 $is_multi_building_project = 1;
                                 $comments[] = 'Program key '.$program->program_key.' showed that the project is a multi building project.';
-                                $audit->comment = $audit->comment.' | Select Process Program key '.$program->program_key.' showed that the project is a multi building project.';
-                                $audit->save();
+                                $this->audit->comment = $this->audit->comment.' | Select Process Program key '.$program->program_key.' showed that the project is a multi building project.';
+                                $this->audit->save();
                                 
                             }
                         }
@@ -2061,31 +2061,31 @@ class SimpleComplianceSelection extends Controller
 
                     if ($is_multi_building_project) {
 
-                        $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_ids, $program_home_ids, $program_ohtf_ids, $program_nhtf_ids) {
-                                                    $query->where('audit_id', '=', $audit->id);
+                        $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($this->audit, $program_htc_ids, $program_home_ids, $program_ohtf_ids, $program_nhtf_ids) {
+                                                    $query->where('audit_id', '=', $this->audit->id);
                                                     $query->whereIn('program_key', $program_htc_ids);
                                                     $query->whereNotIn('program_key', $program_home_ids);
                                                     $query->whereNotIn('program_key', $program_ohtf_ids);
                                                     $query->whereNotIn('program_key', $program_nhtf_ids);
                                                 })->pluck('unit_key')->toArray();
 
-                        $number_of_htc_units_required = $this->adjustedLimit($audit, $total_htc_units);
+                        $number_of_htc_units_required = $this->adjustedLimit($this->audit, $total_htc_units);
                         $required_units = $number_of_htc_units_required;
                         //ceil($total_htc_units/10);
 
                         if($number_of_htc_units_required <= count($htc_units_subset)){
                             $number_of_htc_units_needed = 0;
                             $comments[] ='There are enough HTC units in the previous selections ('.count($htc_units_subset).') to meet the required number of '.$required_units.' units.';
-                            $audit->comment = $audit->comment.'There are enough HTC units in the previous selections ('.count($htc_units_subset).') to meet the required number of '.$required_units.' units.';
-                            $audit->save();
+                            $this->audit->comment = $this->audit->comment.'There are enough HTC units in the previous selections ('.count($htc_units_subset).') to meet the required number of '.$required_units.' units.';
+                            $this->audit->save();
                         }else{
                             $number_of_htc_units_needed = $number_of_htc_units_required - count($htc_units_subset);
                             $comments[] = 'There are '.count($htc_units_subset).' that are from the previous selection that are automatically included in the HTC selection. We need to select '.$number_of_htc_units_needed.' more units.';
-                            $audit->comment = $audit->comment.'There are '.count($htc_units_subset).' that are from the previous selection that are automatically included in the HTC selection. We need to select '.$number_of_htc_units_needed.' more units.';
-                                $audit->save();
+                            $this->audit->comment = $this->audit->comment.'There are '.count($htc_units_subset).' that are from the previous selection that are automatically included in the HTC selection. We need to select '.$number_of_htc_units_needed.' more units.';
+                                $this->audit->save();
                         }
 
-                        $units_selected = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
+                        $units_selected = $this->randomSelection($this->audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
                         
                         $units_selected_count = count($units_selected);
 
@@ -2095,8 +2095,8 @@ class SimpleComplianceSelection extends Controller
                         $units_selected_count = $units_selected_count + count($htc_units_subset_for_home) + count($htc_units_subset_for_ohtf) + count($htc_units_subset_for_nhtf);
                         
                         $comments[] = 'Total units selected including overlap : '.$units_selected_count;
-                        $audit->comment = $audit->comment.' | Total units selected including overlap : '.$units_selected_count;
-                                $audit->save();
+                        $this->audit->comment = $this->audit->comment.' | Total units selected including overlap : '.$units_selected_count;
+                                $this->audit->save();
                                 
 
                         // $units_selected_count isn't using the array_merge to keep the duplicate
@@ -2119,8 +2119,8 @@ class SimpleComplianceSelection extends Controller
                         $use_limiter = 0; // we apply the limiter for each building
 
                         $comments[] = 'The project is not a multi building project.';
-                        $audit->comment = $audit->comment.' | Select Process The project is not a multi building project.';
-                                $audit->save();
+                        $this->audit->comment = $this->audit->comment.' | Select Process The project is not a multi building project.';
+                                $this->audit->save();
                                 
                         // group units by building, then proceed with the random selection
                         // create a new list of units based on building and project key
@@ -2153,8 +2153,8 @@ class SimpleComplianceSelection extends Controller
                                 // $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf
 
                                 $htc_units_for_building = Unit::where('building_key', '=', $building->building_key)
-                                                ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
-                                                    $query->where('audit_id', '=', $audit->id);
+                                                ->whereHas('programs', function ($query) use ($this->audit, $program_htc_ids) {
+                                                    $query->where('audit_id', '=', $this->audit->id);
                                                     $query->whereIn('program_key', $program_htc_ids);
                                                 })
                                                 ->pluck('unit_key')
@@ -2162,8 +2162,8 @@ class SimpleComplianceSelection extends Controller
 
                                 $htc_units_without_overlap = Unit::where('building_key', '=', $building->building_key)
                                                 ->whereNotIn('unit_key', $htc_units_subset)
-                                                ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
-                                                    $query->where('audit_id', '=', $audit->id);
+                                                ->whereHas('programs', function ($query) use ($this->audit, $program_htc_ids) {
+                                                    $query->where('audit_id', '=', $this->audit->id);
                                                     $query->whereIn('program_key', $program_htc_ids);
                                                 })
                                                 ->pluck('unit_key')
@@ -2171,15 +2171,15 @@ class SimpleComplianceSelection extends Controller
 
                                 $htc_units_with_overlap = Unit::where('building_key', '=', $building->building_key)
                                                 ->whereIn('unit_key', $htc_units_subset)
-                                                ->whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
-                                                    $query->where('audit_id', '=', $audit->id);
+                                                ->whereHas('programs', function ($query) use ($this->audit, $program_htc_ids) {
+                                                    $query->where('audit_id', '=', $this->audit->id);
                                                     $query->whereIn('program_key', $program_htc_ids);
                                                 })
                                                 ->pluck('unit_key')
                                                 ->toArray();
 
                                 //$required_units_for_that_building = ceil(count($htc_units_for_building)/5);
-                                $required_units_for_that_building = $this->adjustedLimit($audit, count($htc_units_for_building));
+                                $required_units_for_that_building = $this->adjustedLimit($this->audit, count($htc_units_for_building));
                                 //$required_units = $required_units + $required_units_for_that_building;
                                 
                                 $required_units = $required_units_for_that_building;
@@ -2193,24 +2193,24 @@ class SimpleComplianceSelection extends Controller
                                 //     $overlap_list = $overlap_list . $htc_units_subset_key . ',';
                                 // }
                                 // $comments[] = 'Overlap: '.$overlap_list;
-                                // $audit->comment = $audit->comment.' | Overlap: '.$overlap_list;
-                                // $audit->save();
+                                // $this->audit->comment = $this->audit->comment.' | Overlap: '.$overlap_list;
+                                // $this->audit->save();
 
                                 // $htc_units_for_building_list = '';
                                 // foreach($htc_units_for_building as $htc_units_for_building_key){
                                 //     $htc_units_for_building_list = $htc_units_for_building_list . $htc_units_for_building_key. ',';
                                 // }
                                 // $comments[] = 'htc_units_for_building_list: '.$htc_units_for_building_list;
-                                // $audit->comment = $audit->comment.' | htc_units_for_building_list: '.$htc_units_for_building_list;
-                                // $audit->save();
+                                // $this->audit->comment = $this->audit->comment.' | htc_units_for_building_list: '.$htc_units_for_building_list;
+                                // $this->audit->save();
 
                                 // $htc_units_with_overlap_list = '';
                                 // foreach($htc_units_with_overlap as $htc_units_with_overlap_key){
                                 //     $htc_units_with_overlap_list = $htc_units_with_overlap_list . $htc_units_with_overlap_key. ',';
                                 // }
                                 // $comments[] = 'htc_units_with_overlap_list: '.$htc_units_with_overlap_list;
-                                // $audit->comment = $audit->comment.' | htc_units_with_overlap_list: '.$htc_units_with_overlap_list;
-                                // $audit->save();
+                                // $this->audit->comment = $this->audit->comment.' | htc_units_with_overlap_list: '.$htc_units_with_overlap_list;
+                                // $this->audit->save();
                                 // END TEST
 
                                 if($required_units_for_that_building >= $htc_units_with_overlap_for_that_building){
@@ -2221,7 +2221,7 @@ class SimpleComplianceSelection extends Controller
                                     $number_of_htc_units_needed_for_that_building = 0;
                                 }
                                 
-                                $new_building_selection = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed_for_that_building);
+                                $new_building_selection = $this->randomSelection($this->audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed_for_that_building);
                                 
                                 //$units_selected_count = $units_selected_count + count($new_building_selection);
                                 $units_selected_count = count($new_building_selection);
@@ -2234,15 +2234,15 @@ class SimpleComplianceSelection extends Controller
                                 
                                 $comments[] = 'The total of HTC units for building key '.$building->building_key.' is '.count($htc_units_for_building).'. Required units: '.$required_units_for_that_building.'. Overlap units: '.$htc_units_with_overlap_for_that_building.'. Missing units: '.$number_of_htc_units_needed_for_that_building;
 
-                                $audit->comment = $audit->comment.' | Select Process The total of HTC units for building key '.$building->building_key.' is '.count($htc_units_for_building).'. Required units: '.$required_units_for_that_building.'. Overlap units: '.$htc_units_with_overlap_for_that_building.'. Missing units: '.$number_of_htc_units_needed_for_that_building;
+                                $this->audit->comment = $this->audit->comment.' | Select Process The total of HTC units for building key '.$building->building_key.' is '.count($htc_units_for_building).'. Required units: '.$required_units_for_that_building.'. Overlap units: '.$htc_units_with_overlap_for_that_building.'. Missing units: '.$number_of_htc_units_needed_for_that_building;
 
-                                $audit->save();
+                                $this->audit->save();
                                 
 
                                 $comments[] = 'Randomly selected units in building '.$building->building_key.'. Total selected: '.count($new_building_selection).'.';
 
-                                $audit->comment = $audit->comment.' | Select Process Randomly selected units in building '.$building->building_key.'. Total selected: '.count($new_building_selection).'.';
-                                $audit->save();
+                                $this->audit->comment = $this->audit->comment.' | Select Process Randomly selected units in building '.$building->building_key.'. Total selected: '.count($new_building_selection).'.';
+                                $this->audit->save();
                                 
 
 
@@ -2276,8 +2276,8 @@ class SimpleComplianceSelection extends Controller
                     // if required <= $overlap we don't need to select anymore unit
                     // otherwise we need to take all the units NOT in the overlap and randomly pick required - count(overlap)
                     
-                    $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
-                                                        $query->where('audit_id', '=', $audit->id);
+                    $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($this->audit, $program_htc_ids) {
+                                                        $query->where('audit_id', '=', $this->audit->id);
                                                         $query->whereIn('program_key', $program_htc_ids);
                                                     })->pluck('unit_key')->toArray();
 
@@ -2291,13 +2291,13 @@ class SimpleComplianceSelection extends Controller
                         $number_of_htc_units_needed = $number_of_htc_units_required - count($overlap);
                     }
 
-                    $units_selected = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
+                    $units_selected = $this->randomSelection($this->audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
                     
                     $units_selected_count = count($units_selected);
                     $comments[] = 'Total selected: '.count($units_selected);
 
-                    $audit->comment = $audit->comment.' | Select Process Total selected: '.count($units_selected);
-                                    $audit->save();
+                    $this->audit->comment = $this->audit->comment.' | Select Process Total selected: '.count($units_selected);
+                                    $this->audit->save();
                                     
 
                     $units_selected = array_merge($units_selected, $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf);
@@ -2327,45 +2327,45 @@ class SimpleComplianceSelection extends Controller
                 //}
 
                 // $comments[] = 'Combining HTC total selected: '.count($units_selected).' + '.count($htc_units_subset_for_home).' + '.count($htc_units_subset_for_ohtf).' + '.count($htc_units_subset_for_nhtf);
-                // $audit->comment = $audit->comment.' | Combining HTC total selected: '.count($units_selected).' + '.count($htc_units_subset_for_home).' + '.count($htc_units_subset_for_ohtf).' + '.count($htc_units_subset_for_nhtf);
-                //         $audit->save();
+                // $this->audit->comment = $this->audit->comment.' | Combining HTC total selected: '.count($units_selected).' + '.count($htc_units_subset_for_home).' + '.count($htc_units_subset_for_ohtf).' + '.count($htc_units_subset_for_nhtf);
+                //         $this->audit->save();
 
                 // $htc_units_from_home_list = '';
                 // foreach($htc_units_subset_for_home as $htc_unit_for_home){
                 //     $htc_units_from_home_list = $htc_units_from_home_list . $htc_unit_for_home;
                 // }
                 // $comments[] = 'HTC units from HOME: '.$htc_units_from_home_list;
-                // $audit->comment = $audit->comment.' | HTC units from HOME: '.$htc_units_from_home_list;
-                //         $audit->save();     
+                // $this->audit->comment = $this->audit->comment.' | HTC units from HOME: '.$htc_units_from_home_list;
+                //         $this->audit->save();     
 
                 
                 
             }else{
-                $audit->comment_system = $audit->comment_system.' | Select Process is not working with HTC.';
-                $audit->save();
+                $this->audit->comment_system = $this->audit->comment_system.' | Select Process is not working with HTC.';
+                $this->audit->save();
             }
         } else {
-            $audit->comment_system = $audit->comment_system.' | 2360 Select Process is not working with HTC.';
-            $audit->save();
+            $this->audit->comment_system = $this->audit->comment_system.' | 2360 Select Process is not working with HTC.';
+            $this->audit->save();
         }
 
         
 
         // combineOptimize returns an array [units, summary]
-        $optimized_selection = $this->combineOptimize($audit,$selection);
+        $optimized_selection = $this->combineOptimize($this->audit,$selection);
         
-        $audit->comment = $audit->comment.' | Select Process Finished - returning results.';
-                                $audit->save();
+        $this->audit->comment = $this->audit->comment.' | Select Process Finished - returning results.';
+                                $this->audit->save();
                                 
         return [$optimized_selection, $overlap, $project, $organization_id];
     }
-    public function createNewProjectDetails($audit){
-        //$project = \App\Models\Project::find($audit->project_id);
+    public function createNewProjectDetails($this->audit){
+        //$project = \App\Models\Project::find($this->audit->project_id);
         
-        //$audit->project->set_project_defaults($audit->id);
+        //$this->audit->project->set_project_defaults($this->audit->id);
         
     }
-    public function addAmenityInspections(Audit $audit){
+    public function addAmenityInspections(Audit $this->audit){
         //Project
         // AmenityInspection::where('audit_id',$audit->id)->delete();
 
@@ -2417,7 +2417,7 @@ class SimpleComplianceSelection extends Controller
         //Building
 
         //Unit
-    }
+this->    }
     public function updatePlanning($summary = null)
     {
         // create cached audit
@@ -2531,8 +2531,8 @@ class SimpleComplianceSelection extends Controller
         //     ]
         // ];
 
-        // Redis::publish('communications', json_encode($data));
-    }
+        // Redis::publish('communications', json_encode($data));this->
+this->    }
 
     /**
      * Execute the job.
@@ -2542,11 +2542,11 @@ class SimpleComplianceSelection extends Controller
 
     public function runSimpleCompliance(Planning $planning)
     {
-        //$planning = Planning::where('run',0)->first();
+        //$this->planning = Planning::where('run',0)->first();
             $this->planning = $planning;
             $this->planning->project_name = date('m/d/Y g:h a', time())." line 2547";
             $this->planning->save();
-            $this->project = Project::where('project_key',$planning->development_key)->first();
+            $this->project = Project::where('project_key',$this->planning->development_key)->first();
             $this->extended_use = 0;
             if(!is_null($this->planning) && $this->planning->running == 0){
 
@@ -2554,15 +2554,15 @@ class SimpleComplianceSelection extends Controller
                     $this->audit = Audit::find($this->planning->audit_id);
                     $this->audit->comment .= '| Loaded the audit from a previous run. ';
                 }else{
-                    $audit = New Audit;
-                    $audit->project_id = $this->project->id;
-                    $audit->development_key = $this->project->project_key;
-                    $audit->monitoring_status_type_key = 10;
-                    $audit->save();
-                    $planning->audit_id = $audit->id;
-                    $planning->save();
-                    $this->planning = $planning;
-                    $this->audit = $audit;
+                    $this->audit = New Audit;
+                    $this->audit->project_id = $this->project->id;
+                    $this->audit->development_key = $this->project->project_key;
+                    $this->audit->monitoring_status_type_key = 10;
+                    $this->audit->save();
+                    $this->planning->audit_id = $this->audit->id;
+                    $this->planning->save();
+                    $this->planning = $this->planning;
+                    $this->audit = $this->audit;
                     $this->audit->comment .= 'Created the audit';
                     $this->audit->save();
 
@@ -2571,40 +2571,40 @@ class SimpleComplianceSelection extends Controller
                     $this->planning->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
                    
                 
-            } else if(!is_null($planning)) {
+            } else if(!is_null($this->planning)) {
 
             } else {
 
             }
 
-        if($planning && $planning->run == 0){
-            $audit = $this->audit;
+        if($this->planning && $this->planning->run == 0){
+            $this->audit;
             //LOG HERE if it is a brand new audit run
 
             //LOG HERE if it is a rerun audit and who asked for it
 
             
-            $audit->comment = 'Audit process starting at '.date('m/d/Y h:i:s A',time());
-            $audit->comment_system = 'Audit process starting at '.date('m/d/Y h:i:s A',time());
-            $audit->save();
+            $this->audit->comment = 'Audit process starting at '.date('m/d/Y h:i:s A',time());
+            $this->audit->comment_system = 'Audit process starting at '.date('m/d/Y h:i:s A',time());
+            $this->audit->save();
             
             
             // //get the current audit units:
-            $audit->comment = $audit->comment.' | Fetching Audit Units';
-            $audit->comment_system = $audit->comment_system.' | Running Fetch Audit Units, build UnitProgram';
-                                        $audit->save();
+            $this->audit->comment = $this->audit->comment.' | Fetching Audit Units';
+            $this->audit->comment_system = $this->audit->comment_system.' | Running Fetch Audit Units, build UnitProgram';
+                                        $this->audit->save();
                                         
-            $this->fetchAuditUnits($audit);
-            $audit->comment_system = $audit->comment_system.' | Finished Fetch Units';
-                                        $audit->save();
+            $this->fetchAuditUnits($this->audit);
+            $this->audit->comment_system = $this->audit->comment_system.' | Finished Fetch Units';
+                                        $this->audit->save();
                                         
-            $check = \App\Models\UnitProgram::where('audit_id',$audit->id)->count();
+            $check = \App\Models\UnitProgram::where('audit_id',$this->audit->id)->count();
             //$check = 1;
             
 
             if ($check > 0) {
-                $audit->comment_system = $audit->comment_system.' | UnitProgram has records, we can start the selection process.';
-                                        $audit->save();
+                $this->audit->comment_system = $this->audit->comment_system.' | UnitProgram has records, we can start the selection process.';
+                                        $this->audit->save();
                                         
                 // run the selection process 10 times and keep the best one
                 $best_run = null;
@@ -2618,15 +2618,15 @@ class SimpleComplianceSelection extends Controller
                 $timesToRun = $timesToRun->value;
 
                 for ($i=0; $i<$timesToRun; $i++) {
-                    $audit->comment_system = $audit->comment_system.' | Running the selectionProcess for the '.$i.' time';
-                                        $audit->save();
-                    $summary = $this->selectionProcess($audit);
+                    $this->audit->comment_system = $this->audit->comment_system.' | Running the selectionProcess for the '.$i.' time';
+                                        $this->audit->save();
+                    $summary = $this->selectionProcess($this->audit);
                     
                     //Log::info('audit '.$i.' run;');
 
                     
-                    $audit->comment_system = $audit->comment_system.' | Finished Selection Process for the '.$i.' time';
-                                        $audit->save();
+                    $this->audit->comment_system = $this->audit->comment_system.' | Finished Selection Process for the '.$i.' time';
+                                        $this->audit->save();
                                         
 
                     if ($summary && (count($summary[0]['grouped']) < $best_total || $best_run == null)) {
@@ -2677,8 +2677,8 @@ class SimpleComplianceSelection extends Controller
                                         'unit_name' => $unit->unit_name,
                                         'building_id' => $unit->building_id,
                                         'building_key' => $unit->building_key,
-                                        'audit_id' => $audit->id,
-                                        'audit_key' => $audit->monitoring_key,
+                                        'audit_id' => $this->audit->id,
+                                        'audit_key' => $this->audit->monitoring_key,
                                         'project_id' => $project->id,
                                         'project_key' => $project->project_key,
                                         'program_key' => $unit_program->program_key,
@@ -2728,8 +2728,8 @@ class SimpleComplianceSelection extends Controller
                                         'unit_name' => $unit->unit_name,
                                         'building_id' => $unit->building_id,
                                         'building_key' => $unit->building_key,
-                                        'audit_id' => $audit->id,
-                                        'audit_key' => $audit->monitoring_key,
+                                        'audit_id' => $this->audit->id,
+                                        'audit_key' => $this->audit->monitoring_key,
                                         'project_id' => $project->id,
                                         'project_key' => $project->project_key,
                                         'program_key' => $unit_program->program_key,
@@ -2750,9 +2750,9 @@ class SimpleComplianceSelection extends Controller
                     }
                 }
                 //LOG::info('unit inspections should be there.');
-                //$this->addAmenityInspections($audit);
+                //$this->addAmenityInspections($this->audit);
                 $this->updatePlanning($best_run);    // finally create the audit
-                //$this->createNewProjectDetails($audit); // create the project details
+                //$this->createNewProjectDetails($this->audit); // create the project details
                 
                 // LOG SUCCESS HERE
                 $this->audit->compliance_run = 1;
@@ -2760,7 +2760,7 @@ class SimpleComplianceSelection extends Controller
                 $this->audit->comment .= 'Audit process finished at '.date('m/d/Y h:i:s A',time()).'.';
                 $this->audit->comment_system .= 'Audit process finished at '.date('m/d/Y h:i:s A',time()).'after '.number_format($this->processes).' processes (not counting sub processes on the framework functions.)';
 
-            $audit->save();
+            $this->audit->save();
 
             } else {
                 $this->audit->comment_system = "Unable to get program units from devco. Cannot run compliance run and generate the audit.";
