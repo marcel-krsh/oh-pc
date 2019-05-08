@@ -2540,15 +2540,16 @@ class SimpleComplianceSelection extends Controller
      * @return void
      */
 
-    public function runSimpleCompliance()
+    public function runSimpleCompliance(Planning $planning)
     {
-        $planning = Planning::where('run',0)->first();
+        //$planning = Planning::where('run',0)->first();
             $this->planning = $planning;
-            $this->planning->project_name = date('m/d/Y g:h a', time())." line 52";
+            $this->planning->project_name = date('m/d/Y g:h a', time())." line 2547";
             $this->planning->save();
             $this->project = Project::where('project_key',$planning->development_key)->first();
             $this->extended_use = 0;
             if(!is_null($this->planning) && $this->planning->running == 0){
+
                 if(!is_null($this->planning->audit_id)){
                     $this->audit = Audit::find($this->planning->audit_id);
                     $this->audit->comment .= '| Loaded the audit from a previous run. ';
