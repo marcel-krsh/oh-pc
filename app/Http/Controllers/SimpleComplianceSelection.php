@@ -2572,7 +2572,8 @@ class SimpleComplianceSelection extends Controller
                    
                 
             } else if(!is_null($this->planning)) {
-            	dd('Planning set but running is not 0');
+            	dd('Planning set but running is not 0 - this is running - do not interrupt a running script!');
+
             } else {
             	dd('Planning came back null');
             }
