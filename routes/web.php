@@ -21,6 +21,10 @@
 
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
+        
+        Route::get('/simple_compliance_test', 'SimplerComplianceSelection@runSimpleCompliance');
+
+        
         // Route::get('/testProject/{project}', function($project){
         //     $project = App\Models\Project::where('id',$project)->with('programs.program')->first();
         //     //dd($project->programs);
