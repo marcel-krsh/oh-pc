@@ -1905,10 +1905,11 @@ class ComplianceProjectionJob implements ShouldQueue
             // total HTC funded units (71)
             $audit->comment = $audit->comment.' | Selecting units with HTC at '.date('g:h:i a',time());
             $audit->save();
-            $all_htc_units = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
-                                $query->where('audit_id', '=', $audit->id);
-                                $query->whereIn('program_key', $program_htc_ids);
-            })->get();
+            // $all_htc_units = Unit::whereHas('programs', function ($query) use ($audit, $program_htc_ids) {
+            //                     $query->where('audit_id', '=', $audit->id);
+            //                     $query->whereIn('program_key', $program_htc_ids);
+            // })->get();
+            $all_htc_units = UnitProgram::whereIn('program_key',$program_htc_ids)->where('audit_id',$audit->id)->get();
             
 
             $total_htc_units = count($all_htc_units);
