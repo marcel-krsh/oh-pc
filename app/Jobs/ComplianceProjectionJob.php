@@ -2469,11 +2469,12 @@ class ComplianceProjectionJob implements ShouldQueue
 
         //Unit
     }
-    public function updatePlanning(Planning $planning, Audit $audit, $summary = null)
+    public function updatePlanning($summary = null)
     {
         // create cached audit
         //
         $planning = $this->planning;
+        $audit = $this->audit;
         $project = $this->project;
         $project_id = null;
         $development_key = null;
@@ -2775,7 +2776,7 @@ class ComplianceProjectionJob implements ShouldQueue
                 }
                 //LOG::info('unit inspections should be there.');
                 //$this->addAmenityInspections($audit);
-                $this->updatePlanning($audit, $best_run);    // finally create the audit
+                $this->updatePlanning($best_run);    // finally create the audit
                 //$this->createNewProjectDetails($audit); // create the project details
                 
                 // LOG SUCCESS HERE
