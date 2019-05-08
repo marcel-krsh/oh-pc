@@ -470,9 +470,7 @@ class Kernel extends ConsoleKernel
                 $planning = Planning::where('run',0)->first();
                
                     $schedule->job(new ComplianceProjectionJob, 'compliance')->everyMinute();
-                }  else {
-                    // no planning record ready.
-                }
+               
             } else {
                 //Log::info('Sync Job Already Started.');
             }
