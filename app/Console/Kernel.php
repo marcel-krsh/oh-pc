@@ -51,8 +51,10 @@ use App\Jobs\SyncUnitAmenitiesJob;
 use App\Jobs\SyncHouseHoldSizesJob;
 use App\Jobs\SyncProjectDatesJob;
 use App\Jobs\SyncUnitIdentitiesJob;
+use App\Jobs\ComplianceProjectionJob;
 
 use App\Jobs\SyncIdsJob;
+use App\Models\Planning;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -92,7 +94,7 @@ class Kernel extends ConsoleKernel
         ////// SYNC JOBS
         ////
 
-        if(!env('APP_DEBUG_NO_DEVCO')){
+        if(!env('APP_DEBUG_NO_DEVCO') && intval(date('G',time)) < 21 && intval(date('G',time) > 3)){
             $test = DB::table('jobs')->where('payload', 'like', '%SyncAddresses%')->first();
             if (is_null($test)) {
                 $schedule->job(new SyncAddressesJob)->everyMinute();
@@ -458,6 +460,25 @@ class Kernel extends ConsoleKernel
             $test = DB::table('jobs')->where('payload', 'like', '%SyncIdsJob%')->first();
             if (is_null($test)) {
                 $schedule->job(new SyncIdsJob)->everyMinute();
+            } else {
+                //Log::info('Sync Job Already Started.');
+            }
+
+            //RunProjections
+            $test = DB::table('jobs')->where('payload', 'like', '%ComplianceProjectionJob%')->first();
+            if (is_null($test)) {
+                $planning = Planning::whereNull('run')->first();
+                if(!is_null($planning) && is_null($planning->run)){
+                    $planning->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
+                    ComplianceProjectionJob::dispatch($planning)->onQueue('compliance');
+                } else if(!is_null($planning)) {
+
+                    $planning->failed_run = 1;
+                    $planning->run = 1;
+                    $planning->save();
+                } else {
+                    // no planning record ready.
+                }
             } else {
                 //Log::info('Sync Job Already Started.');
             }
