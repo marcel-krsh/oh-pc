@@ -2580,7 +2580,7 @@ class SimpleComplianceSelection extends Controller
             if(is_null($this->audit)){
             	dd('Audit is not Set');
             }
-            dd($this->planning,$this->audit,$this->project);
+            //dd($this->planning,$this->audit,$this->project);
 
         if($this->planning && $this->planning->run == 0){
             
