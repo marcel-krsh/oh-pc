@@ -2512,8 +2512,8 @@ class ComplianceProjectionJob implements ShouldQueue
             $program_collection = UnitProgram::where('audit_id',$this->audit->id)->where('program_id',$program->program_id);
             if(!is_null($program_collection)){
                 $this_program_calculated_count = $program_collection->count();
-                $this_program_site_count = $program_collection->where('site',1)->count();
-                $this_program_file_count = $program_collection->where('file',1)->count();
+                $this_program_site_count = $program_collection->where('is_site_visit',1)->count();
+                $this_program_file_count = $program_collection->where('is_file_audit',1)->count();
             }
 
 
