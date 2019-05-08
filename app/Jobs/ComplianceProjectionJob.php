@@ -2540,7 +2540,7 @@ class ComplianceProjectionJob implements ShouldQueue
         }
         
 
-        if ($project) {
+        
                 $project_id = $project->id;
                 $development_key = $project->project_key;
                 $project_ref = $project->project_number;
@@ -2551,7 +2551,7 @@ class ComplianceProjectionJob implements ShouldQueue
                 $total_market_rate_units = $project->stats_total_market_rate_units;
 
             
-        }
+        
         
 
         //get optimized counts
@@ -2581,7 +2581,7 @@ class ComplianceProjectionJob implements ShouldQueue
             ]);
         }else{
 
-            $audit->comment .= ' | FAILED TO ENTER BASE PROJECT DATA |';
+            $audit->comment .= ' | 2584: FAILED TO ENTER BASE PROJECT DATA |';
         }
 
         // $data = [
