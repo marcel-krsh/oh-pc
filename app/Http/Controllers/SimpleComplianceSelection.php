@@ -2787,7 +2787,7 @@ class SimpleComplianceSelection extends Controller
                             $program_keys = explode(',', $program['program_keys']);
                             
 
-                            foreach ($units as $unit_program) {
+                            foreach ($units->where('unit_key',$unit->unit_key) as $unit_program) {
                                 if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < $program['required_units']) {
                                     $u = new UnitInspection([
                                         'group' => $program['name'],
@@ -2837,7 +2837,7 @@ class SimpleComplianceSelection extends Controller
                             
 
                             
-                            foreach ($units as $unit_program) {
+                            foreach ($units->where('unit_key',$unit->unit_key) as $unit_program) {
                                 if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < count($program['units_before_optimization'])) {
 
                                     $u = new UnitInspection([
