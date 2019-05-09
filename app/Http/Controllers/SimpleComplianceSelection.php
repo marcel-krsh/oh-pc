@@ -764,7 +764,7 @@ class SimpleComplianceSelection extends Controller
 	        }
             
 
-            dd('Line 767 - Ran and got program bundles - ',$program_bundle_names);
+            dd('Line 767 - Ran and got program bundles - ',$program_bundle_names,$this->project->programs);
 
             if($total){
                 $this->audit->comment = $this->audit->comment.' | Select Process starting Group 1 selection ';
