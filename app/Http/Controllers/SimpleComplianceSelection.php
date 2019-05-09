@@ -1283,7 +1283,7 @@ class SimpleComplianceSelection extends Controller
             $this->audit->save();
 
             //$home_award_numbers = ProjectProgram::whereIn('program_key', $program_home_ids)->where('project_id', '=', $this->audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
-            $home_award_numbers = $this->project->programs->whereIn('program_key', $program_home_ids)->pluck('program.award_number')->groupBy('program.award_number')->orderBy('program.award_number', 'ASC');
+            $home_award_numbers = $this->project->programs->whereIn('program_key', $program_home_ids)->pluck('program.award_number')->groupBy('program.award_number');
 			dd('1286 - home award time to get new home award numbers.',$home_award_numbers);
 
             $this->audit->comment_system = $this->audit->comment_system.' | Got home award numbers.';
