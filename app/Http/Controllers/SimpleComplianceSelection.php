@@ -1885,7 +1885,7 @@ class SimpleComplianceSelection extends Controller
                 }
             }
         }
-        dd('1888 overlap finished');
+        //dd('1888 overlap finished');
 
         $comments[] = 'Overlap list to send to analyst: '.$overlap_list;
         $this->audit->comment = $this->audit->comment.' | Overlap list to send to analyst: '.$overlap_list;
@@ -1908,7 +1908,7 @@ class SimpleComplianceSelection extends Controller
         $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
          if(!empty(array_intersect($projectProgramIds, $program_htc_ids))) {
 
-         //dd('1907 Entering HTC ');
+         dd('1907 Entering HTC ');
             // total HTC funded units (71)
             $this->audit->comment = $this->audit->comment.' | Selecting units with HTC at '.date('g:h:i a',time());
             //$this->audit->save();
@@ -1923,7 +1923,7 @@ class SimpleComplianceSelection extends Controller
             } else {
             	$total_htc_units = 0;
             }
-            
+            dd('Finished Selecting HTC');
 
             if($total_htc_units){
                 $use_limiter = 1;
