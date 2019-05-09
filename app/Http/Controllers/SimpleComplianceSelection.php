@@ -149,9 +149,7 @@ class SimpleComplianceSelection extends Controller
                                             }
                                         }
                                         
-                                    if(count($projectPrograms) > 1) {
-		                            	dd($this->project->units,$projectPrograms,$upinserts,$uginserts);
-		                            }
+                                    
 
                                     } else {
                                         $this->audit->comment = $this->audit->comment.' | Unable to find program with key '.$pp->developmentProgramKey.' on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key;
@@ -2684,11 +2682,11 @@ class SimpleComplianceSelection extends Controller
             $this->audit->comment_system = $this->audit->comment_system.' | Finished Fetch Units';
                                         $this->audit->save();
                                         
-            $check = \App\Models\UnitProgram::where('audit_id',$this->audit->id)->count();
+            
             //$check = 1;
             
 
-            if ($check > 0) {
+            if ($this->units->count()) {
                 $this->audit->comment_system = $this->audit->comment_system.' | UnitProgram has records, we can start the selection process.';
                                         $this->audit->save();
                                         
@@ -2711,9 +2709,9 @@ class SimpleComplianceSelection extends Controller
                     $summary = $this->selectionProcess($this->audit);
                     
                     //Log::info('audit '.$i.' run;');
-
+                    $timesRun = $i + 1;
                     
-                    $this->audit->comment_system = $this->audit->comment_system.' | Finished Selection Process for the '.$i.' time';
+                    $this->audit->comment_system = $this->audit->comment_system.' | Finished Selection Process Run '.$timesRun.'.';
                                         $this->audit->save();
                                         
 
@@ -2741,7 +2739,7 @@ class SimpleComplianceSelection extends Controller
 
                         $units = Unit::whereIn('unit_key', $unit_keys)->get();
                         
-
+						dd($unit_keys,$units[0]->programs);
                         $unit_inspections_inserted = 0;
 
                         foreach ($units as $unit) {
