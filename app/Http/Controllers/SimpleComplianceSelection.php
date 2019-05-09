@@ -2124,16 +2124,14 @@ class SimpleComplianceSelection extends Controller
                             }
                         
                     }
-                    dd('2127 Finished checking multibuilding');
+                    //dd('2127 Finished checking multibuilding');
                     if ($is_multi_building_project) {
-                    	dd('2119 section needs optimized');
-                        $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($program_htc_ids, $program_home_ids, $program_ohtf_ids, $program_nhtf_ids) {
-                                                    $query->where('audit_id', '=', $this->audit->id);
-                                                    $query->whereIn('program_key', $program_htc_ids);
-                                                    $query->whereNotIn('program_key', $program_home_ids);
-                                                    $query->whereNotIn('program_key', $program_ohtf_ids);
-                                                    $query->whereNotIn('program_key', $program_nhtf_ids);
-                                                })->pluck('unit_key')->toArray();
+                    	//dd('2119 section needs optimized');
+                        $htc_units_without_overlap = $this->project->programs->whereIn('program_key', $program_htc_ids)
+                        							->whereNotIn('program_key', $program_home_ids);
+                                                    ->whereNotIn('program_key', $program_ohtf_ids);
+                                                    ->whereNotIn('program_key', $program_nhtf_ids);
+                                                	->pluck('unit_key')->all();
 
                         $number_of_htc_units_required = $this->adjustedLimit($total_htc_units);
                         $required_units = $number_of_htc_units_required;
@@ -2219,33 +2217,24 @@ class SimpleComplianceSelection extends Controller
                                 // then we apply the limiter for EACH building
 
                                 // $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf
-                                dd('2212 - this section needs optimized!');
-                                $htc_units_for_building = Unit::where('building_key', '=', $building->building_key)
-                                                ->whereHas('programs', function ($query) use ($program_htc_ids) {
-                                                    $query->where('audit_id', '=', $this->audit->id);
-                                                    $query->whereIn('program_key', $program_htc_ids);
-                                                })
-                                                ->pluck('unit_key')
-                                                ->toArray();
+                                //dd('2212 - this section needs optimized!');
+                                $htc_units_for_building = $this->units->where('unit.building_key', $building->building_key)
+                                                	->whereIn('program_key', $program_htc_ids)
+                                                	->pluck('unit_key')
+                                                	->all();
 
-                                $htc_units_without_overlap = Unit::where('building_key', '=', $building->building_key)
+                                $htc_units_without_overlap = $this->units->where('unit.building_key', $building->building_key)
                                                 ->whereNotIn('unit_key', $htc_units_subset)
-                                                ->whereHas('programs', function ($query) use ($program_htc_ids) {
-                                                    $query->where('audit_id', '=', $this->audit->id);
-                                                    $query->whereIn('program_key', $program_htc_ids);
-                                                })
+                                                ->whereIn('program_key', $program_htc_ids)
                                                 ->pluck('unit_key')
-                                                ->toArray();
+                                                ->all();
 
-                                $htc_units_with_overlap = Unit::where('building_key', '=', $building->building_key)
+                                $htc_units_with_overlap = $this->units->where('unit.building_key', '=', $building->building_key)
                                                 ->whereIn('unit_key', $htc_units_subset)
-                                                ->whereHas('programs', function ($query) use ($program_htc_ids) {
-                                                    $query->where('audit_id', '=', $this->audit->id);
-                                                    $query->whereIn('program_key', $program_htc_ids);
-                                                })
+                                                ->whereIn('program_key', $program_htc_ids)
                                                 ->pluck('unit_key')
-                                                ->toArray();
-
+                                                ->all();
+                                dd('2237 Check optimization', $htc_units_for_building, $htc_units_without_overlap, $htc_units_with_overlap );
                                 //$required_units_for_that_building = ceil(count($htc_units_for_building)/5);
                                 $required_units_for_that_building = $this->adjustedLimit(count($htc_units_for_building));
                                 //$required_units = $required_units + $required_units_for_that_building;
@@ -2344,12 +2333,10 @@ class SimpleComplianceSelection extends Controller
                     // how many $overlap
                     // if required <= $overlap we don't need to select anymore unit
                     // otherwise we need to take all the units NOT in the overlap and randomly pick required - count(overlap)
-                    dd('2347 Needs Optimized!');
-                    $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($program_htc_ids) {
-                                                        $query->where('audit_id', '=', $this->audit->id);
-                                                        $query->whereIn('program_key', $program_htc_ids);
-                                                    })->pluck('unit_key')->toArray();
-
+                    
+                    $htc_units_without_overlap = $this->project->programs->whereIn('program_key', $program_htc_ids);
+                                                    })->pluck('unit_key')->all();
+					dd('2350 Optimized!');
                     // 10% of units
                     $number_of_htc_units_required = ceil($total_htc_units/10);
                     $required_units = $number_of_htc_units_required;
