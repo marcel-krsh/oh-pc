@@ -143,7 +143,7 @@ class SimpleComplianceSelection extends Controller
                                                     'development_key'=> $this->audit->development_key,
                                                     'created_at'    =>  date("Y-m-d g:h:i", time()),
                                                     'updated_at'    =>  date("Y-m-d g:h:i", time())
-                                                ]);
+                                                ];
                                             }
                                         }
                                         
