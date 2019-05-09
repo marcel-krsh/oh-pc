@@ -2565,7 +2565,7 @@ class SimpleComplianceSelection extends Controller
            
 
             $planning->update([
-                'audit_id' => $audit->id,
+                'audit_id' => $this->audit->id,
                 'project_id' => $this->project->id,
                 'development_key' => $this->project->project_key,
                 'project_name' => $this->project->project_name,
