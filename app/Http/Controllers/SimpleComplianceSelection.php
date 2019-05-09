@@ -2480,14 +2480,14 @@ class SimpleComplianceSelection extends Controller
         // create cached audit
         //
         $planning = $this->planning;
-        $this->audit = $this->audit;
-        $this->project = $this->project;
-        $this->project_id = null;
+        $audit = $this->audit;
+        $project = $this->project;
+        $project_id = null;
         $development_key = null;
-        $this->project_ref = '';
-        $this->project_name = null;
-        $this->project->total_building_count = 0;
-        $this->project->total_unit_count = 0;
+        $project_ref = '';
+        $project_name = null;
+        $total_building_count = 0;
+        $total_unit_count = 0;
         $total_program_units = 0;
         $total_market_rate_units = 0;
 
@@ -2504,9 +2504,9 @@ class SimpleComplianceSelection extends Controller
             $program_status = 'program_'.$p.'_project_program_status';
             $program_award_number = 'program_'.$p.'_project_program_award_number';
             $program_guide_year = 'program_'.$p.'_project_program_guide_year';
-            $this->project_program_key = 'program_'.$p.'_project_program_key';
+            $project_program_key = 'program_'.$p.'_project_program_key';
             $funding_program_key = 'program_'.$p.'_funding_program_key';
-            $this->project_program_id = 'program_'.$p.'_project_program_id';
+            $project_program_id = 'program_'.$p.'_project_program_id';
             $program_keyed_in_count = 'program_'.$p.'_keyed_in_count';
             $program_calculated_count = 'program_'.$p.'_calculated_count';
             $program_extended_use = 'program_'.$p.'_first_year_award_claimed';
@@ -2526,9 +2526,9 @@ class SimpleComplianceSelection extends Controller
                 $program_status => $program->status->status_name,
                 $program_award_number => $program->award_number,
                 $program_guide_year => $program->guide_l_year,
-                $this->project_program_key => $program->project_program_key,
+                $project_program_key => $program->project_program_key,
                 $funding_program_key => $program->program->funding_program_key,
-                $this->project_program_id => $program->program_id,
+                $project_program_id => $program->program_id,
                 $program_keyed_in_count => $program->total_unit_count,
                 $program_calculated_count => $this_program_calculated_count,
                 $program_extended_use => $program->first_year_award_claimed,
@@ -2542,23 +2542,10 @@ class SimpleComplianceSelection extends Controller
         
 
         
-                $this->project_id = $this->project->id;
-                $development_key = $this->project->project_key;
-                $this->project_ref = $this->project->project_number;
-                $this->project_name = $this->project->project_name;
-                $this->project->total_building_count = $this->project->total_building_count;
-                $this->project->total_unit_count = $this->project->total_unit_count;
-                $total_program_units = $this->units->groupBy('unit_key')->count();
-                $total_market_rate_units = $this->project->stats_total_market_rate_units();
+                
 
-            
-        
-        
-
-        //get optimized counts
-
-        $optimized_site = UnitInspection::where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('unit_key')->count();
-        $optimized_file = UnitInspection::where('audit_id',$this->audit->id)->where('is_file_audit',1)->groupBy('unit_key')->count();
+        	$optimized_site = UnitInspection::where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('unit_key')->count();
+        	$optimized_file = UnitInspection::where('audit_id',$this->audit->id)->where('is_file_audit',1)->groupBy('unit_key')->count();
         
 
         
@@ -2568,12 +2555,12 @@ class SimpleComplianceSelection extends Controller
                 'audit_id' => $this->audit->id,
                 'project_id' => $this->project->id,
                 'development_key' => $this->project->project_key,
-                'project_name' => $this->project->project_name,
-                'project_number' => $this->project_ref,
+                'project_name' =>  $this->project->project_name;,
+                'project_number' =>  $this->project->project_name;,
                 'total_building_count' => $this->project->total_building_count,
                 'total_unit_count' => $this->project->total_unit_count,
-                'total_program_unit_count' => $total_program_units,
-                'total_market_rate_unit_count' => $total_market_rate_units,
+                'total_program_unit_count' => $this->units->groupBy('unit_key')->count();,
+                'total_market_rate_unit_count' => $this->project->stats_total_market_rate_units(),
                 'optimized_site_count' => $optimized_site,
                 'optimized_file_count' => $optimized_file,
                 'run' => 1
