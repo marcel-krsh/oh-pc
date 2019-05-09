@@ -752,7 +752,7 @@ class SimpleComplianceSelection extends Controller
             $program_bundle_names = implode(',', $program_bundle_names);
             
 
-            $units = $this->units->whereIn('program_key',$program_bundle_ids)->where('audit_id',$this->audit->id)->get();
+            $units = $this->units->whereIn('program_key',$program_bundle_ids)->where('audit_id',$this->audit->id);
             dd($this->units,$units);
             if(!is_null($units)){
 	            $total = count($units);
