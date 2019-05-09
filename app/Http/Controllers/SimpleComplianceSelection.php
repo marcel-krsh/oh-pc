@@ -174,7 +174,7 @@ class SimpleComplianceSelection extends Controller
                                     $this->audit->save();
                         }
                     }
-                    $this->units = UnitProgram::where('audit_id',$this->audit->id)
+                    $this->units = UnitProgram::where('audit_id',$this->audit->id)->get();
                     $this->audit->comment_system = $this->audit->comment_system.' | Finished Loop of Units';
                                     $this->audit->save();
                                     
