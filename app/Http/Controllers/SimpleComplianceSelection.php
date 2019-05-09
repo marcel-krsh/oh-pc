@@ -2555,7 +2555,7 @@ class SimpleComplianceSelection extends Controller
                 'audit_id' => $this->audit->id,
                 'project_id' => $this->project->id,
                 'development_key' => $this->project->project_key,
-                'project_name' =>  $this->project->project_name;,
+                'project_name' =>  $this->project->project_name,
                 'project_number' =>  $this->project->project_name;,
                 'total_building_count' => $this->project->total_building_count,
                 'total_unit_count' => $this->project->total_unit_count,
