@@ -2822,7 +2822,7 @@ class SimpleComplianceSelection extends Controller
                 $this->audit->compliance_run = 1;
                 $this->audit->rerun_compliance = 0;
                 $this->audit->comment .= 'Audit process finished at '.date('m/d/Y h:i:s A',time()).'.';
-                $this->audit->comment_system .= 'Audit process finished at '.date('m/d/Y h:i:s A',time()).'after '.number_format($this->processes).' processes (not counting sub processes on the framework functions.)';
+                $this->audit->comment_system .= 'Audit process finished at '.date('m/d/Y h:i:s A',time());
 
             $this->audit->save();
 
