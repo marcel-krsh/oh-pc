@@ -1295,7 +1295,7 @@ class SimpleComplianceSelection extends Controller
                 //$this->audit->save();
                 //dd($home_award_number);
                 // programs with that award_number
-                $program_keys_with_award_number = ProjectProgram::where('award_number','=',$home_award_number)->where('project_id', '=', $this->audit->project_id)->pluck('program_key')->toArray(); 
+                $program_keys_with_award_number = $this->project->programs->where('award_number',$home_award_number)->pluck('program_key')->all(); 
                 $this->audit->comment_system = $this->audit->comment_system.' | Select programs with that award number.';
                 //$this->audit->save();
                 dd('1301 current');
