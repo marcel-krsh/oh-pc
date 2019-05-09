@@ -753,7 +753,7 @@ class SimpleComplianceSelection extends Controller
             
 
             $units = $this->units->whereIn('program_key',$program_bundle_ids)->where('audit_id',$this->audit->id);
-            dd($this->units,$units);
+            dd($this->units,$units,$this->audit->id,$program_bundle_ids);
             if(!is_null($units)){
 	            $total = count($units);
 	            $this->audit->comment_system = $this->audit->comment_system.' | Obtained '.$total.' units within the program bundle. '.date('g:h:i a',time());
