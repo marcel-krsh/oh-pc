@@ -702,11 +702,15 @@ class SimpleComplianceSelection extends Controller
 	            }
 	            // insert the array enmasse to make it faster.
 	            BuildingInspection::insert($b);
-	            dd('made it to line 705 - check building inspection table for '.$buildingCount.' inserts for audit '.$this->audit->id);
+	            
 	            $this->audit->comment = $this->audit->comment.' | Select Process Put in '.$buildingCount.' Buildings';
 	            $this->audit->comment_system = $this->audit->comment_system.' | Select Process Put in '.$buildingCount.' Buildings';
 	            $this->audit->save();
 	            
+	        } else {
+	        	$this->audit->comment = $this->audit->comment.' | Select Process Found 0 Active Buildings';
+	            $this->audit->comment_system = $this->audit->comment_system.' | Select Process Found 0 Active Buildings';
+	            $this->audit->save();
 	        }
 	    } else {
 	    	 $this->audit->comment_system = $this->audit->comment_system.' | Select Process Skipped Building Inspection Creation as this is a simplified audit entry.';
@@ -740,25 +744,27 @@ class SimpleComplianceSelection extends Controller
             $this->audit->save();
 
 
-            $program_bundle_names = Program::whereIn('program_key', $program_bundle_ids)->get()->pluck('program_name')->toArray();
-            $this->audit->comment_system = $this->audit->comment_system.' | Line 758 run.';
+            $program_bundle_names = $this->project->programs->whereIn('program_key', $program_bundle_ids)->get()->pluck('program_name')->toArray();
+            $this->audit->comment_system = $this->audit->comment_system.' | Built Program Names.';
             $this->audit->save();
             
             $program_bundle_names = implode(',', $program_bundle_names);
-            $this->audit->comment_system = $this->audit->comment_system.' | Line 762 run at '.date('g:h:i a',time());
-            $this->audit->save();
-            $units = Unit::whereHas('programs', function ($query) use ($program_bundle_ids) {
-                            $query->where('monitoring_key', '=', $this->audit->monitoring_key);
-                            $query->whereIn('program_key', $program_bundle_ids);
-            })->get();
-            $this->audit->comment_system = $this->audit->comment_system.' | Line 765 run at '.date('g:h:i a',time());
-            $this->audit->save();
             
 
-            // total for all programs combined
-            $total = count($units);
-            $this->audit->comment_system = $this->audit->comment_system.' | Line 775 run: Total set to '.$total;
-            $this->audit->save();
+            $units = UnitProgram::whereIn('program_key',$program_bundle_ids)->where->('audit_id',$this->audit->id)->get();
+            if(!is_null($units)){
+	            $total = count($units);
+	            $this->audit->comment_system = $this->audit->comment_system.' | Obtained '.$total.' units within the program bundle. '.date('g:h:i a',time());
+	            $this->audit->save();
+	        }else{
+	        	$total = 0;
+	        	$this->audit->comment_system = $this->audit->comment_system.' | Obtained '.$total.' units within the program bundle. '.date('g:h:i a',time());
+	            $this->audit->save();
+
+	        }
+            
+
+            dd('Line 767 - Ran and got program bundles - ',$program_bundle_names);
 
             if($total){
                 $this->audit->comment = $this->audit->comment.' | Select Process starting Group 1 selection ';
@@ -1089,7 +1095,7 @@ class SimpleComplianceSelection extends Controller
                 $this->audit->save();
             }
         } else {
-            $this->audit->comment_system = $this->audit->comment_system.' | This project does not have any in project group.';
+            $this->audit->comment_system = $this->audit->comment_system.' | This project does not have any programs in the program bundle group.';
             $this->audit->save();
 
         }
