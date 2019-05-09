@@ -69,7 +69,7 @@ class SimpleComplianceSelection extends Controller
         
         
         $apiConnect = new DevcoService();
-        // paths to the info we need: dd($this->audit, $this->audit->project, $this->audit->project->buildings);
+        // paths to the info we need: //dd($this->audit, $this->audit->project, $this->audit->project->buildings);
         
 
         // Get all the units we need to get programs for:
@@ -94,8 +94,8 @@ class SimpleComplianceSelection extends Controller
                             //$unitProgramData = $apiConnect->getUnitPrograms($unit->unit_key, 1, 'admin@allita.org', 'Updating Unit Program Data', 1, 'Server');
                             //$unitProgramData = json_decode($unitProgramData, true);
                             //
-                            //dd($unitProgramData['data']);
-                            //dd($unitProgramData['data'][0]['attributes']['programKey']);
+                            ////dd($unitProgramData['data']);
+                            ////dd($unitProgramData['data'][0]['attributes']['programKey']);
                             $upinserts = array();
                             $uginserts = array();
                             foreach ($this->projectPrograms as $pp) {
@@ -180,7 +180,7 @@ class SimpleComplianceSelection extends Controller
 
                         } catch (Exception $e) {
                             
-                            //dd('Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key);
+                            ////dd('Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key);
                             $this->audit->comment = $this->audit->comment.' | Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key;
                             $this->audit->comment_system = $this->audit->comment_system.' | Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$this->audit->id;
                                    // $this->audit->save();
@@ -190,7 +190,7 @@ class SimpleComplianceSelection extends Controller
                     $this->audit->comment_system = $this->audit->comment_system.' | Finished Loop of Units';
                     $this->audit->save();
 
-                    //dd($this->units); //on 27 20.32 sec
+                    ////dd($this->units); //on 27 20.32 sec
                                     
                 
             
@@ -417,8 +417,8 @@ class SimpleComplianceSelection extends Controller
 
     public function combineOptimize($selection)
     {
-        //dd($selection);
-        // $adjusted_units_count = $this->adjustedLimit(count($units_selected)); dd($adjusted_units_count);
+        ////dd($selection);
+        // $adjusted_units_count = $this->adjustedLimit(count($units_selected)); //dd($adjusted_units_count);
         // array_slice($input, 0, 3)
         // only applies to the first and the last set
 
@@ -557,7 +557,7 @@ class SimpleComplianceSelection extends Controller
               
         }
 
-        //dd(array_unique($output), $output);
+        ////dd(array_unique($output), $output);
 
         $summary['ungrouped'] = $output;
         $summary['grouped'] = array_unique($output);
@@ -622,7 +622,7 @@ class SimpleComplianceSelection extends Controller
         }
 
         $projectProgramIds = $this->project->programs->pluck('program_key')->all();
-        //dd($projectProgramIds);
+        ////dd($projectProgramIds);
         
         $this->audit->comment_system = $this->audit->comment_system.' | Select Process Checked the Programs and that there are Programs';
             $this->audit->save();
@@ -770,7 +770,7 @@ class SimpleComplianceSelection extends Controller
 
             $units = $this->units->whereIn('program_key',$program_bundle_ids)->where('audit_id',$this->audit->id);
             $unitTest = $this->units->where('unit_key',382905);
-            dd($projectProgramIds,$this->units,$units,$this->audit->id,$program_bundle_ids,$unitTest);
+            //dd($projectProgramIds,$this->units,$units,$this->audit->id,$program_bundle_ids,$unitTest);
             if(!is_null($units)){
 	            $total = count($units);
 	            $this->audit->comment_system = $this->audit->comment_system.' | Obtained '.$total.' units within the program bundle. '.date('g:h:i a',time());
@@ -783,7 +783,7 @@ class SimpleComplianceSelection extends Controller
 	        }
             
 
-            //dd('Line 767 - Ran and got program bundles - ',$program_bundle_names,$this->project->programs);
+            ////dd('Line 767 - Ran and got program bundles - ',$program_bundle_names,$this->project->programs);
 
             if($total){
                 $this->audit->comment = $this->audit->comment.' | Select Process starting Group 1 selection ';
@@ -827,7 +827,7 @@ class SimpleComplianceSelection extends Controller
                 $has_htc_funding = 0;
                 $unitProcessCount = 0;
                 
-                //dd('811 Time to get to the htc funding check',$has_htc_funding);
+                ////dd('811 Time to get to the htc funding check',$has_htc_funding);
                 foreach ($units as $unit) {
                     
                     
@@ -838,7 +838,7 @@ class SimpleComplianceSelection extends Controller
                     }
                 }
 
-                //dd('822 Ran the htc funding check',$has_htc_funding);
+                ////dd('822 Ran the htc funding check',$has_htc_funding);
            
 
                 // $number_of_units_required = ceil($total/5);
@@ -849,7 +849,7 @@ class SimpleComplianceSelection extends Controller
                     $this->audit->comment = $this->audit->comment.' | By checking each unit and associated programs with HTC funding, we determined that no HTC funding exists for this pool';
 
                     $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 20);
-                    dd('852 Random Unit Selection output:',$units_selected);
+                    //dd('852 Random Unit Selection output:',$units_selected);
                     //$required_units = count($units_selected);
                     $required_units = ceil($total/5);
 
@@ -999,7 +999,7 @@ class SimpleComplianceSelection extends Controller
                             $this->audit->save();
 
                             $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, $required_units);
-                            dd('1002 Random Unit Selection output:',$units_selected);
+                            //dd('1002 Random Unit Selection output:',$units_selected);
                             $this->audit->comment = $this->audit->comment.' | Performed the random selection from the audit.';
                             $this->audit->save();
                             
@@ -1061,7 +1061,7 @@ class SimpleComplianceSelection extends Controller
                                 $required_units = $required_units_for_that_building;
                                 
                                 $new_building_selection = $this->randomSelection($units_for_that_building, 0, $required_units);
-                                dd('1064 Random Unit Selection output:'.$new_building_selection);
+                                //dd('1064 Random Unit Selection output:'.$new_building_selection);
                                 $units_selected = $new_building_selection;
                                 $units_selected_count = count($new_building_selection);
 
@@ -1093,7 +1093,7 @@ class SimpleComplianceSelection extends Controller
                         $required_units = ceil($total/10); // 10% of units
 
                         $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 10);
-                        dd('1096 Random Unit Selection output:',$units_selected);
+                        //dd('1096 Random Unit Selection output:',$units_selected);
 
                         // $required_units = count($units_selected);
                         
@@ -1284,7 +1284,7 @@ class SimpleComplianceSelection extends Controller
 
             //$home_award_numbers = ProjectProgram::whereIn('program_key', $program_home_ids)->where('project_id', '=', $this->audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
             $home_award_numbers = $this->project->programs->whereIn('program_key', $program_home_ids)->pluck('award_number');
-			//dd('1286 - home award time to get new home award numbers.');
+			////dd('1286 - home award time to get new home award numbers.');
 
             $this->audit->comment_system = $this->audit->comment_system.' | Got home award numbers.';
             $this->audit->save();
@@ -1293,12 +1293,12 @@ class SimpleComplianceSelection extends Controller
                 // for each award_number, create a different HOME group
                 $this->audit->comment_system = $this->audit->comment_system.' | Home award number '.$home_award_number.' being processed.';
                 //$this->audit->save();
-                //dd($home_award_number);
+                ////dd($home_award_number);
                 // programs with that award_number
                 $program_keys_with_award_number = $this->project->programs->where('award_number',$home_award_number)->pluck('program_key')->all(); 
                 $this->audit->comment_system = $this->audit->comment_system.' | Select programs with that award number.';
                 //$this->audit->save();
-                //dd('1301 current',$program_keys_with_award_number);
+                ////dd('1301 current',$program_keys_with_award_number);
 
                 $program_home_names = $this->project->programs->whereIn('program_key', $program_home_ids)
                                                 ->whereIn('program_key', $program_keys_with_award_number)
@@ -1309,14 +1309,14 @@ class SimpleComplianceSelection extends Controller
 
                 
                 $program_home_names = implode(',', $program_home_names);
-                //dd('1312 current',$program_home_names);
+                ////dd('1312 current',$program_home_names);
                 $comments = [];
 
                 $required_units = 0;
 
                 $total_project_units = $this->project->stats_total_units();
 
-                //dd($total_project_units);
+                ////dd($total_project_units);
 
                 $this->audit->comment_system = $this->audit->comment_system.' | Counting project units: '.$total_project_units;
                 //$this->audit->save();
@@ -1340,7 +1340,7 @@ class SimpleComplianceSelection extends Controller
                 
                 $this->audit->comment_system = $this->audit->comment_system.' | Total selected units '.count($units);
                 //$this->audit->save();
-				//dd('1336', $units);
+				////dd('1336', $units);
                 if((is_array($units) || is_object($units)) && count($units)){
                     $this->audit->comment = $this->audit->comment.' | Select Process starting Home selection for award number '.$home_award_number;
                     //$this->audit->save();
@@ -1379,7 +1379,7 @@ class SimpleComplianceSelection extends Controller
                         $required_units = count($units);
 
                         $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 100);
-                        dd('1373 Random Unit Selection output:',$units_selected);
+                        //dd('1373 Random Unit Selection output:',$units_selected);
                         
                         $comments[] = 'Because there are less than 4 HOME units, the selection is 100%. Total selected: '.count($units_selected);
                         $this->audit->comment = $this->audit->comment.' | Select Process Because there are less than 4 HOME units, the selection is 100%. Total selected: '.count($units_selected);
@@ -1392,7 +1392,7 @@ class SimpleComplianceSelection extends Controller
                             $required_units = ceil($this->project->total_unit_count/2);
 
                             $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($this->project->total_unit_count/2));
-                            dd('1386 Random Unit Selection output:',$units_selected);
+                            //dd('1386 Random Unit Selection output:',$units_selected);
                             
 
                             $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of HOME units, the total selected is '.ceil($this->project->total_unit_count/2);
@@ -1405,7 +1405,7 @@ class SimpleComplianceSelection extends Controller
                             if(ceil($total_project_units/5) > $this->project->total_unit_count){
                                 $required_units = $this->project->total_unit_count;
                                 $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, $this->project->total_unit_count);
-                                dd('1399 Random Unit Selection output:',$units_selected);
+                                //dd('1399 Random Unit Selection output:',$units_selected);
                                 
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.$this->project->total_unit_count.' which is the total number of units';
 
@@ -1415,7 +1415,7 @@ class SimpleComplianceSelection extends Controller
                                 $required_units = ceil($total_project_units/5);
                                 //$units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
                                 $units_selected = $units->random(ceil($total_project_units/5))->pluck('unit_key')->all();
-                                dd('1408 Random Unit Selection output:',$units_selected);
+                                //dd('1408 Random Unit Selection output:',$units_selected);
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_project_units/5);
 
                                 $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_project_units/5);
@@ -1431,32 +1431,34 @@ class SimpleComplianceSelection extends Controller
                     foreach ($units_selected as $unit_key) {
                         $has_htc_funding = 0;
 
-                        $unit_selected = Unit::where('unit_key', '=', $unit_key)->first();
+                        //$unit_selected = Unit::where('unit_key', '=', $unit_key)->first();
+                        $unit_selected = $this->units->whereIn('program_key',$program_htc_ids)->where('unit_key',$unit_key)->count();
 
-                        $comments[] = 'Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
+                        $comments[] = 'Checking if HTC funding applies to this unit '.$unit_key.' by cross checking with HTC programs';
 
                         $this->audit->comment = $this->audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
-                        $this->audit->save();
+                        //$this->audit->save();
                         
                         
                         // if units have HTC funding add to subset
                         
                         
-                        if($unit_selected->has_program_from_array($program_htc_ids, $this->audit->id)){
-                            $has_htc_funding = 1;
-                            $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding';
-                            $this->audit->save();
-                        }
-                        
-                        if ($has_htc_funding) {
+                        // if($unit_selected->has_program_from_array($program_htc_ids, $this->audit->id)){
+                        //     $has_htc_funding = 1;
                             
+                        //     //$this->audit->save();
+                        // }
+                        
+                        if (is_object($unit_selected) && count($unit_selected)) {
+                            $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding';
                             $comments[] = 'We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
                             $this->audit->comment = $this->audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
-                                $this->audit->save();
+                                //$this->audit->save();
                                 
                             $htc_units_subset[] = $unit_selected->unit_key;
                         }
                     }
+                    $this->audit->save();
 
 
                     $htc_units_subset_for_home = $htc_units_subset;
@@ -1569,7 +1571,7 @@ class SimpleComplianceSelection extends Controller
                         $required_units = count($units);
 
                         $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 100);
-                        dd('1561 Random Unit Selection output:',$units_selected);
+                        //dd('1561 Random Unit Selection output:',$units_selected);
                         
                         $comments[] = 'Because there are less than 4 OHTF units, the selection is 100%. Total selected: '.count($units_selected);
 
@@ -1583,7 +1585,7 @@ class SimpleComplianceSelection extends Controller
                             $required_units = ceil($this->project->total_unit_count/2);
 
                              $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($this->project->total_unit_count/2));
-                             dd('1574 Random Unit Selection output:',$units_selected);
+                             //dd('1574 Random Unit Selection output:',$units_selected);
                              
                              $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of OHTF units, the total selected is '.ceil($this->project->total_unit_count/2);
 
@@ -1595,7 +1597,7 @@ class SimpleComplianceSelection extends Controller
                             if(ceil($total_project_units/5) > $this->project->total_unit_count){
                                 $required_units = $this->project->total_unit_count;
                                 $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, $this->project->total_unit_count);
-                                dd('1587 Random Unit Selection output:',$units_selected);
+                                //dd('1587 Random Unit Selection output:',$units_selected);
                                 
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.$this->project->total_unit_count. 'which is the total number of units';
 
@@ -1603,7 +1605,7 @@ class SimpleComplianceSelection extends Controller
                             }else{
                                 $required_units = ceil($total_project_units/5);
                                 $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
-                                dd('1595 Random Unit Selection output:',$units_selected);
+                                //dd('1595 Random Unit Selection output:',$units_selected);
                                 
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.ceil($total_project_units/5);
 
@@ -1754,7 +1756,7 @@ class SimpleComplianceSelection extends Controller
                         $required_units = count($units); // 100%
 
                         $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 100);
-                        dd('1746 Random Unit Selection output:',$units_selected);
+                        //dd('1746 Random Unit Selection output:',$units_selected);
                         
                         $comments[] = 'Because there are less than 4 NHTF units, the selection is 100%. Total selected: '.count($units_selected);
 
@@ -1768,7 +1770,7 @@ class SimpleComplianceSelection extends Controller
                             $required_units = ceil($this->project->total_unit_count/2);
 
                              $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($this->project->total_unit_count/2));
-                             dd('1760 Random Unit Selection output:',$units_selected);
+                             //dd('1760 Random Unit Selection output:',$units_selected);
                              
                              $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of NHTF units, the total selected is '.ceil($this->project->total_unit_count/2);
                              $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of NHTF units, the total selected is '.ceil($this->project->total_unit_count/2);
@@ -1780,7 +1782,7 @@ class SimpleComplianceSelection extends Controller
                             if(ceil($total_project_units/5) > $this->project->total_unit_count){
                                 $required_units = $this->project->total_unit_count;
                                 $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, $this->project->total_unit_count);
-                                dd('1772 Random Unit Selection output:',$units_selected);
+                                //dd('1772 Random Unit Selection output:',$units_selected);
                                 
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$this->project->total_unit_count. 'which is the total number of units';
 
@@ -1788,7 +1790,7 @@ class SimpleComplianceSelection extends Controller
                             }else{
                                 $required_units = ceil($total_project_units/5);
                                 $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
-                                dd('1780 Random Unit Selection output:',$units_selected);
+                                //dd('1780 Random Unit Selection output:',$units_selected);
                                 
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.ceil($total_project_units/5);
 
@@ -2136,7 +2138,7 @@ class SimpleComplianceSelection extends Controller
                         }
 
                         $units_selected = $this->randomSelection($htc_units_without_overlap, 0, $number_of_htc_units_needed);
-                        dd('2128 Random Unit Selection output:',$units_selected);
+                        //dd('2128 Random Unit Selection output:',$units_selected);
                         
                         $units_selected_count = count($units_selected);
 
@@ -2273,7 +2275,7 @@ class SimpleComplianceSelection extends Controller
                                 }
                                 
                                 $new_building_selection = $this->randomSelection($htc_units_without_overlap, 0, $number_of_htc_units_needed_for_that_building);
-                                dd('2265 Random Unit Selection output:'.$new_building_selection);
+                                //dd('2265 Random Unit Selection output:'.$new_building_selection);
                                 
                                 //$units_selected_count = $units_selected_count + count($new_building_selection);
                                 $units_selected_count = count($new_building_selection);
@@ -2344,7 +2346,7 @@ class SimpleComplianceSelection extends Controller
                     }
 
                     $units_selected = $this->randomSelection($htc_units_without_overlap, 0, $number_of_htc_units_needed);
-                    dd('2265 Random Unit Selection output:',$units_selected);
+                    //dd('2265 Random Unit Selection output:',$units_selected);
                     
                     $units_selected_count = count($units_selected);
                     $comments[] = 'Total selected: '.count($units_selected);
@@ -2625,15 +2627,15 @@ class SimpleComplianceSelection extends Controller
                    
                 
             } else if(!is_null($this->planning)) {
-            	dd('Planning set but running is not 0 - this is running - do not interrupt a running script!');
+            	//dd('Planning set but running is not 0 - this is running - do not interrupt a running script!');
 
             } else {
-            	dd('Planning came back null');
+            	//dd('Planning came back null');
             }
             if(is_null($this->audit)){
-            	dd('Audit is not Set');
+            	//dd('Audit is not Set');
             }
-            //dd($this->planning,$this->audit,$this->project);
+            ////dd($this->planning,$this->audit,$this->project);
 
         if($this->planning && $this->planning->run == 0){
             
