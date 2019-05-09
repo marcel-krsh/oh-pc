@@ -818,6 +818,8 @@ class SimpleComplianceSelection extends Controller
                         $this->audit->comment_system = $this->audit->comment_system.'The unit key '.$unit->unit_key.' belongs to a program with HTC funding';
                     }
                 }
+
+                dd('Ran the htc funding check',$has_htc_funding);
            
 
                 // $number_of_units_required = ceil($total/5);
