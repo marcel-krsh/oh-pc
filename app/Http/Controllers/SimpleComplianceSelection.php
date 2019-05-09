@@ -2591,8 +2591,8 @@ class SimpleComplianceSelection extends Controller
                 'total_unit_count' => $this->project->stats_total_units(),
                 'total_program_unit_count' => $this->units->groupBy('unit_key')->count(),
                 'total_market_rate_unit_count' => $this->project->stats_total_market_rate_units(),
-                'optimized_site_count' => $optimized_site,
-                'optimized_file_count' => $optimized_file,
+                'optimized_2019_site_count' => $optimized_site,
+                'optimized_2019_file_count' => $optimized_file,
                 'run' => 1
 
             ]);
