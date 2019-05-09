@@ -2737,9 +2737,9 @@ class SimpleComplianceSelection extends Controller
 
                         
 
-                        $units = Unit::whereIn('unit_key', $unit_keys)->get();
+                        //$units = Unit:->get();
                         
-						dd($unit_keys,$units[0]->programs);
+						//dd($unit_keys,$units[0]->programs->where('audit_id',$this->audit->id));
                         $unit_inspections_inserted = 0;
 
                         foreach ($units as $unit) {
@@ -2753,7 +2753,7 @@ class SimpleComplianceSelection extends Controller
                             $program_keys = explode(',', $program['program_keys']);
                             
 
-                            foreach ($unit->programs as $unit_program) {
+                            foreach ($this->units->whereIn('unit_key', $unit_keys) as $unit_program) {
                                 if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < $program['required_units']) {
                                     $u = new UnitInspection([
                                         'group' => $program['name'],
