@@ -1340,7 +1340,7 @@ class SimpleComplianceSelection extends Controller
                 
                 $this->audit->comment_system = $this->audit->comment_system.' | Total selected units '.count($units);
                 $this->audit->save();
-				dd('1336');
+				dd('1336', $units);
                 if(count($units)){
                     $this->audit->comment = $this->audit->comment.' | Select Process starting Home selection for award number '.$home_award_number;
                     //$this->audit->save();
