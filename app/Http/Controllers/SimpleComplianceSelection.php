@@ -751,7 +751,7 @@ class SimpleComplianceSelection extends Controller
             $program_bundle_names = implode(',', $program_bundle_names);
             
 
-            $units = UnitProgram::whereIn('program_key',$program_bundle_ids)->where->('audit_id',$this->audit->id)->get();
+            $units = UnitProgram::whereIn('program_key',$program_bundle_ids)->where('audit_id',$this->audit->id)->get();
             if(!is_null($units)){
 	            $total = count($units);
 	            $this->audit->comment_system = $this->audit->comment_system.' | Obtained '.$total.' units within the program bundle. '.date('g:h:i a',time());
