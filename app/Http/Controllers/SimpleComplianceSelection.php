@@ -1869,6 +1869,7 @@ class SimpleComplianceSelection extends Controller
 
         // check for HOME, OHTF, NHTF overlap and send to analyst
         // overlap contains the keys of units
+        dd('1872 - Overlap check');
         $overlap = array();
         $overlap_list = '';
         for ($i=0; $i<count($units_to_check_for_overlap); $i++) {
@@ -1904,7 +1905,7 @@ class SimpleComplianceSelection extends Controller
         $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
          if(!empty(array_intersect($projectProgramIds, $program_htc_ids))) {
 
-         dd('1907 Entering HTC ');
+         //dd('1907 Entering HTC ');
             // total HTC funded units (71)
             $this->audit->comment = $this->audit->comment.' | Selecting units with HTC at '.date('g:h:i a',time());
             //$this->audit->save();
