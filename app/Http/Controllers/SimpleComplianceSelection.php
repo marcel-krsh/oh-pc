@@ -100,7 +100,7 @@ class SimpleComplianceSelection extends Controller
                             $uginserts = array();
 
                             if(count($projectPrograms) > 1) {
-                            	dd($units,$projectPrograms);
+                            	dd($this->project->units,$projectPrograms);
                             }
                             foreach ($projectPrograms as $pp) {
                                 
