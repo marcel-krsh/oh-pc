@@ -2547,9 +2547,9 @@ class SimpleComplianceSelection extends Controller
         	$optimized_site = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('unit_key')->count();
         	$optimized_file = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_file_audit',1)->groupBy('unit_key')->count();
         
-        	$test = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->count();
+        	// $test = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->count();
 			        
-           	dd($optimized_site,$test,$this->project->stats_total_units,);
+         //   	dd($optimized_site,$test,$this->project->stats_total_units);
 
             $planning->update([
                 'audit_id' => $this->audit->id,
