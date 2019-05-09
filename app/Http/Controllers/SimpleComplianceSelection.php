@@ -1293,7 +1293,7 @@ class SimpleComplianceSelection extends Controller
                 // for each award_number, create a different HOME group
                 $this->audit->comment_system = $this->audit->comment_system.' | Home award number '.$home_award_number.' being processed.';
                 //$this->audit->save();
-                
+                dd($home_award_number);
                 // programs with that award_number
                 $program_keys_with_award_number = ProjectProgram::where('award_number','=',$home_award_number->award_number)->where('project_id', '=', $this->audit->project_id)->pluck('program_key')->toArray(); 
                 $this->audit->comment_system = $this->audit->comment_system.' | Select programs with that award number.';
