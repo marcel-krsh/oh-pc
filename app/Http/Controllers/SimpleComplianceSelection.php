@@ -445,7 +445,7 @@ class SimpleComplianceSelection extends Controller
         $this->audit->comment = $this->audit->comment.' | Combine and optimize starting.';
         $this->audit->save();
         
-
+        dd($selection);
         for ($i=0; $i < count($selection); $i++) {
             $array_to_compare = $selection[$i]['units'];
             
