@@ -1316,7 +1316,7 @@ class SimpleComplianceSelection extends Controller
 
                 $total_project_units = $this->project->stats_total_units();
 
-                dd($total_project_units);
+                //dd($total_project_units);
 
                 $this->audit->comment_system = $this->audit->comment_system.' | Counting project units: '.$total_project_units;
                 //$this->audit->save();
@@ -1333,12 +1333,14 @@ class SimpleComplianceSelection extends Controller
 
                 $units = $this->units->whereIn('program_key',$program_keys_with_award_number)->whereIn('program_key', $program_home_ids);
 
+
+
                 $this->audit->comment_system = $this->audit->comment_system.' | Finished selecting units at '.date('g:h:i a',time()).'.';
                 //$this->audit->save();
                 
                 $this->audit->comment_system = $this->audit->comment_system.' | Total selected units '.count($units);
-                //$this->audit->save();
-
+                $this->audit->save();
+				dd('1336');
                 if(count($units)){
                     $this->audit->comment = $this->audit->comment.' | Select Process starting Home selection for award number '.$home_award_number;
                     //$this->audit->save();
