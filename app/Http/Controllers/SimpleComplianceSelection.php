@@ -2545,7 +2545,7 @@ class SimpleComplianceSelection extends Controller
 
 	            $program_name =>$program->program->program_name,
 	            $program_multibuilding_election =>  $program->multiple_building_status,
-	            $program_status => $program->status->status_name
+	            $program_status => $program->status->status_name,
 	            $program_award_number => $program->award_number,
 	            $program_guide_year => $program->guide_l_year,
 	            $program_extended_use => $program->first_year_award_claimed,
@@ -2560,9 +2560,9 @@ class SimpleComplianceSelection extends Controller
 	            $program_2019_site_difference_percent => 'NA',
 	            $program_2019_buildings_with_unit_inpsections => null,
 
-	            $program_2016_file_count => null;
+	            $program_2016_file_count => null,
 	            $program_2019_file_count => $this_program_file_count,
-	            $program_2019_file_difference_percent => 'NA';
+	            $program_2019_file_difference_percent => 'NA'
 
             ]);
 
