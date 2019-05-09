@@ -1477,7 +1477,7 @@ class SimpleComplianceSelection extends Controller
                         "use_limiter" => 0,
                         "comments" => $comments
                     ];
-                    
+                    dd('1480 Finished Home');
                 }else{
                     $htc_units_subset_for_home = array();
                     $this->audit->comment_system = $this->audit->comment_system.' | 1455 Select Process is not working with HOME.';
@@ -1500,6 +1500,7 @@ class SimpleComplianceSelection extends Controller
 
         $program_ohtf_ids = explode(',', SystemSetting::get('program_ohtf'));
         if(!empty(array_intersect($projectProgramIds, $program_ohtf_ids))) {
+        	dd('1503 Entering OHTF');
             $htc_units_subset_for_ohtf = array();
 
             $ohtf_award_numbers = ProjectProgram::whereIn('program_key', $program_ohtf_ids)->where('project_id', '=', $this->audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
@@ -1693,6 +1694,7 @@ class SimpleComplianceSelection extends Controller
 
         $program_nhtf_ids = explode(',', SystemSetting::get('program_nhtf'));
         if(!empty(array_intersect($projectProgramIds, $program_nhtf_ids))) {
+        	dd('1503 Entering NHTF');
             $htc_units_subset_for_nhtf = array();
             
             $nhtf_award_numbers = ProjectProgram::whereIn('program_key', $program_nhtf_ids)->where('project_id', '=', $this->audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
