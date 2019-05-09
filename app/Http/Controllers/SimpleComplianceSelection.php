@@ -1477,7 +1477,7 @@ class SimpleComplianceSelection extends Controller
                         "use_limiter" => 0,
                         "comments" => $comments
                     ];
-                    dd('1480 Finished Home');
+                    //dd('1480 Finished Home');
                 }else{
                     $htc_units_subset_for_home = array();
                     $this->audit->comment_system = $this->audit->comment_system.' | 1455 Select Process is not working with HOME.';
