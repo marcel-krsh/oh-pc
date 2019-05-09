@@ -362,7 +362,7 @@ class SimpleComplianceSelection extends Controller
         $this->audit->comment = $this->audit->comment.' | Starting random selection.';
                // $this->audit->save();
                 
-        if ($units && count($units)) {
+        if ((is_array($units) || is_object($units)) && count($units)) {
             $total = count($units);
 
             $needed = ceil($total * $percentage / 100);
