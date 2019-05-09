@@ -1908,7 +1908,7 @@ class SimpleComplianceSelection extends Controller
         $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
          if(!empty(array_intersect($projectProgramIds, $program_htc_ids))) {
 
-         dd('1907 Entering HTC ');
+         //dd('1907 Entering HTC '); // 16 seconds! for 27
             // total HTC funded units (71)
             $this->audit->comment = $this->audit->comment.' | Selecting units with HTC at '.date('g:h:i a',time());
             //$this->audit->save();
