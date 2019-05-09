@@ -2544,12 +2544,12 @@ class SimpleComplianceSelection extends Controller
         
                 
 
-        	$optimized_site = UnitInspection::where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('unit_key')->count();
-        	$optimized_file = UnitInspection::where('audit_id',$this->audit->id)->where('is_file_audit',1)->groupBy('unit_key')->count();
+        	$optimized_site = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('unit_key')->count();
+        	$optimized_file = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_file_audit',1)->groupBy('unit_key')->count();
         
-
-        
-           
+        	$test = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->count();
+			        
+           	dd($optimized_site,$test,$this->project->stats_total_units,);
 
             $planning->update([
                 'audit_id' => $this->audit->id,
@@ -2558,7 +2558,7 @@ class SimpleComplianceSelection extends Controller
                 'project_name' =>  $this->project->project_name,
                 'project_number' =>  $this->project->project_name,
                 'total_building_count' => $this->project->total_building_count,
-                'total_unit_count' => $this->project->total_unit_count,
+                'total_unit_count' => $this->project->stats_total_units,
                 'total_program_unit_count' => $this->units->groupBy('unit_key')->count(),
                 'total_market_rate_unit_count' => $this->project->stats_total_market_rate_units(),
                 'optimized_site_count' => $optimized_site,
