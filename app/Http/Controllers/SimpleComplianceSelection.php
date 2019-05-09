@@ -39,7 +39,7 @@ class SimpleComplianceSelection extends Controller
     public $planning;
     public $project;
     public $unitPrograms;
-
+    public $full_audit;
     public function __construct()
     {
         //make a new audit for this
@@ -51,6 +51,7 @@ class SimpleComplianceSelection extends Controller
             $this->planning = null;
             $this->project = null;
             $this->unitPrograms = null;
+            $this->full_audit = 0; // set to 1 to run full audit
         
        //}
 
@@ -79,8 +80,8 @@ class SimpleComplianceSelection extends Controller
                         // Get the unit's current program designation from DevCo
                         try {
                             $unitProjectPrograms = $apiConnect->getUnitProjectPrograms($unit->unit_key, 1, 'admin@allita.org', 'Updating Unit Program Data', 1, 'SystemServer');
-                            $projectPrograms = json_decode($unitProjectPrograms);
-                            $projectPrograms =  $projectPrograms->data;
+                            $this->projectPrograms = json_decode($unitProjectPrograms);
+                            $this->projectPrograms =  $this->projectPrograms->data;
 
                             if($unit->is_market_rate()){
                                 $is_market_rate = 1; 
@@ -95,7 +96,7 @@ class SimpleComplianceSelection extends Controller
                             //
                             //dd($unitProgramData['data']);
                             //dd($unitProgramData['data'][0]['attributes']['programKey']);
-                            foreach ($projectPrograms as $pp) {
+                            foreach ($this->projectPrograms as $pp) {
                                 
 
                                 $pp = $pp->attributes;
@@ -579,28 +580,12 @@ class SimpleComplianceSelection extends Controller
             $this->audit->save();
             
         // is the project processing all the buildings together? or do we have a combination of grouped buildings and single buildings?
-        if ($this->audit->id) {
-            //dd($this->audit);
-            $project = Project::where('id', '=', $this->audit->project_id)->with('programs')->first();
-            
-            $this->audit->comment_system = $this->audit->comment_system.' | project selected in selection process';
-            
-            $this->audit->save();
-        } else {
-            Log::error('Audit '.$this->audit->id.' does not have a project somehow...');
-            $this->audit->comment_system = $this->audit->comment_system.' | Error, this audit isn\'t associated with a project somehow...';
-            $this->audit->comment = $this->audit->comment.' | Error, this audit isn\'t associated with a project somehow...';
-            $this->audit->save();
-            
-            return "Error, this audit isn't associated with a project somehow...";
-            
-
-        }
+        
         $this->audit->comment_system = $this->audit->comment_system.' | Select Process Has Selected Project ID '.$this->audit->project_id;
             $this->audit->save();
             
 
-        if(!$project) {
+        if(!$this->project) {
             Log::error('Audit '.$this->audit->id.' does not have a project somehow...');
             $this->audit->comment_system = $this->audit->comment_system.' | Error, this audit isn\'t associated with a project somehow...';
             $this->audit->comment = $this->audit->comment.' | Error, this audit isn\'t associated with a project somehow...';
@@ -609,7 +594,7 @@ class SimpleComplianceSelection extends Controller
             return "Error, this audit isn't associated with a project somehow...";
         }
 
-        if (!$project->programs) {
+        if (!$this->project->programs) {
             Log::error('Error, the project does not have a program.');
             $this->audit->comment = $this->audit->comment.' | Error, the project does not have a program.';
             $this->audit->comment_system = $this->audit->comment_system.' | Error, the project does not have a program.';
@@ -618,9 +603,9 @@ class SimpleComplianceSelection extends Controller
             return "Error, this project doesn't have a program.";
             
         }
-        $projectProgramIds = array();
-
-        foreach ($project->programs as $program) {
+        $projectProgramIds = $this->project->programs->pluck('program_key')->all();
+        dd($projectProgramIds);
+        foreach ($this->project->programs as $program) {
             $projectProgramIds[] = $program->program_key;
             $this->audit->comment_system = $this->audit->comment_system.' | Program ID: '.$program->program_key.' Program Name: '.$program->program->program_name;
             $this->audit->save();
@@ -629,100 +614,110 @@ class SimpleComplianceSelection extends Controller
             $this->audit->save();
             
 
-        $total_buildings = $project->total_building_count;
-        $total_units = $project->total_unit_count;
+        $total_buildings = $this->project->total_building_count;
+        $total_units = $this->project->total_unit_count;
 
         $this->audit->comment_system = $this->audit->comment_system.' | Select Process Found '.$total_buildings.' Total Buildings and '.$total_units.' Total Units';
             $this->audit->save();
             
         //Log::info('509:: total buildings and units '.$total_buildings.', '.$total_units.' respectively.');
-        $pm_contact = ProjectContactRole::where('project_id', '=', $this->audit->project_id)
-                                ->where('project_role_key', '=', 21)
-                                ->with('organization')
-                                ->first();
-                                
-        //Log::info('514:: pm contact found');
+        if($this->full_audit){
+	        $pm_contact = ProjectContactRole::where('project_id', '=', $this->audit->project_id)
+	                                ->where('project_role_key', '=', 21)
+	                                ->with('organization')
+	                                ->first();
+	                                
+	        //Log::info('514:: pm contact found');
 
-        $this->audit->comment_system = $this->audit->comment_system.' | Select Process Selected the PM Contact';
-            $this->audit->save();
-            
-        $organization_id = null;
-        if ($pm_contact) {
-            $this->audit->comment_system = $this->audit->comment_system.' | Select Process Confirmed PM Contact';
-            $this->audit->save();
-            
-            if ($pm_contact->organization) {
-                $organization_id = $pm_contact->organization->id;
-                //Log::info('519:: pm organization identified');
-                $this->audit->comment_system = $this->audit->comment_system.' | Select Process Updated the Organization ID';
-                $this->audit->save();
-                
-            }
-        }
+	        $this->audit->comment_system = $this->audit->comment_system.' | Select Process Selected the PM Contact';
+	            $this->audit->save();
+	            
+	        $organization_id = null;
+	        if ($pm_contact) {
+	            $this->audit->comment_system = $this->audit->comment_system.' | Select Process Confirmed PM Contact';
+	            $this->audit->save();
+	            
+	            if ($pm_contact->organization) {
+	                $organization_id = $pm_contact->organization->id;
+	                //Log::info('519:: pm organization identified');
+	                $this->audit->comment_system = $this->audit->comment_system.' | Select Process Updated the Organization ID';
+	                $this->audit->save();
+	                
+	            }
+	        }
+    	} else {
+    		$this->audit->comment_system = $this->audit->comment_system.' | Select Process Skipped PM and Organization as this is a simplified audit entry';
+	            $this->audit->save();
+    	}
 
         
-        // save all buildings in building_inspection table
-        $buildings = $project->buildings;
-        //Log::info('526:: buildings saved.');
-        // remove any data
-        BuildingInspection::where('audit_id', '=', $this->audit->id)->delete();
         
-        //Log::info('529:: building inspections deleted');
-        $this->audit->comment_system = $this->audit->comment_system.' | Select Process Deleted all the current building cache for this audit id.';
-            $this->audit->save();
-            
-            $buildingCount = 0;
-        if ($buildings) {
-            foreach ($buildings as $building) {
-                
-                $buildingCount++;
-                if ($building->address) {
-                    $address = $building->address->line_1;
-                    $city = $building->address->city;
-                    $state = $building->address->state;
-                    $zip = $building->address->zip;
-                } else {
-                    $address = '';
-                    $city = '';
-                    $state = '';
-                    $zip = '';
-                }
+        if($this->full_audit){
+        	// save all buildings in building_inspection table
+	        $buildings = $this->project->buildings;
+	        //Log::info('526:: buildings saved.');
+	        // remove any data
+	        BuildingInspection::where('audit_id', '=', $this->audit->id)->delete();
+	        
+	        //Log::info('529:: building inspections deleted');
+	        $this->audit->comment_system = $this->audit->comment_system.' | Select Process Deleted all the current building cache for this audit id.';
+	            $this->audit->save();
+	            
+	            $buildingCount = 0;
+	        if ($buildings) {
+	            foreach ($buildings as $building) {
+	                
+	                $buildingCount++;
+	                if ($building->address) {
+	                    $address = $building->address->line_1;
+	                    $city = $building->address->city;
+	                    $state = $building->address->state;
+	                    $zip = $building->address->zip;
+	                } else {
+	                    $address = '';
+	                    $city = '';
+	                    $state = '';
+	                    $zip = '';
+	                }
 
-                $b = new BuildingInspection([
-                    'building_id' => $building->id,
-                    'building_key' => $building->building_key,
-                    'building_name' => $building->building_name,
-                    'address' => $address,
-                    'city' => $city,
-                    'state' => $state,
-                    'zip' => $zip,
-                    'audit_id' => $this->audit->id,
-                    'audit_key' => $this->audit->monitoring_key,
-                    'project_id' => $project->id,
-                    'project_key' => $project->project_key,
-                    'pm_organization_id' => $organization_id,
-                    'auditors' => null,
-                    'nlt_count' => 0,
-                    'lt_count' => 0,
-                    'followup_count' => 0,
-                    'complete' => 0,
-                    'submitted_date_time' => null
-                ]);
-                $b->save();
-                
-                //Log::info('565:: '.$b->id.' building inspection added');
-            }
-            $this->audit->comment = $this->audit->comment.' | Select Process Put in '.$buildingCount.' Buildings';
-            $this->audit->comment_system = $this->audit->comment_system.' | Select Process Put in '.$buildingCount.' Buildings';
-            $this->audit->save();
-            
-        }
+	                $b = new BuildingInspection([
+	                    'building_id' => $building->id,
+	                    'building_key' => $building->building_key,
+	                    'building_name' => $building->building_name,
+	                    'address' => $address,
+	                    'city' => $city,
+	                    'state' => $state,
+	                    'zip' => $zip,
+	                    'audit_id' => $this->audit->id,
+	                    'audit_key' => $this->audit->monitoring_key,
+	                    'project_id' => $this->project->id,
+	                    'project_key' => $this->project->project_key,
+	                    'pm_organization_id' => $organization_id,
+	                    'auditors' => null,
+	                    'nlt_count' => 0,
+	                    'lt_count' => 0,
+	                    'followup_count' => 0,
+	                    'complete' => 0,
+	                    'submitted_date_time' => null
+	                ]);
+	                $b->save();
+	                
+	                //Log::info('565:: '.$b->id.' building inspection added');
+	            }
+	            $this->audit->comment = $this->audit->comment.' | Select Process Put in '.$buildingCount.' Buildings';
+	            $this->audit->comment_system = $this->audit->comment_system.' | Select Process Put in '.$buildingCount.' Buildings';
+	            $this->audit->save();
+	            
+	        }
+	    } else {
+	    	 $this->audit->comment_system = $this->audit->comment_system.' | Select Process Skipped Building Inspection Creation as this is a simplified audit entry.';
+	            $this->audit->save();
+	    }
 
         $selection = [];
 
         $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
-        $this->audit->comment_system = $this->audit->comment_system.' | Line 740 run.';
-            $this->audit->save();
+        
         //
         //
         // 1 - FAF || NSP || TCE || RTCAP || 811 units
@@ -736,8 +731,7 @@ class SimpleComplianceSelection extends Controller
         $required_units = 0;
 
         $program_bundle_ids = explode(',', SystemSetting::get('program_bundle'));
-        $this->audit->comment_system = $this->audit->comment_system.' | Got the program bundle.';
-            $this->audit->save();
+        
         
 
         /////// DO NOT DO ANY OF THE FOLLOWING IF THE PROJECT DOES NOT HAVE ONE OF THESE PROGRAMS....
@@ -864,7 +858,7 @@ class SimpleComplianceSelection extends Controller
                     $this->audit->comment = $this->audit->comment.' | Going through the HTC programs, we look for the most recent year in the first_year_award_claimed field.';
                     $this->audit->save();
                     
-                    foreach ($project->programs as $program) {
+                    foreach ($this->project->programs as $program) {
                         
                         if (isset($program_htc_overlap) && in_array($program->program_key, $program_htc_overlap)) {
                             if ($first_year == null || $first_year < $program->first_year_award_claimed) {
@@ -902,7 +896,7 @@ class SimpleComplianceSelection extends Controller
                         // 
 
                         /*    
-                            foreach ($project->programs as $program) {
+                            foreach ($this->project->programs as $program) {
                                 
                                 if (in_array($program->program_key, $leaseProgramKeys)) {
                                     $isLeasePurchase = 1;
@@ -954,7 +948,7 @@ class SimpleComplianceSelection extends Controller
                             $this->audit->save();
                             
 
-                        foreach ($project->programs as $program) {
+                        foreach ($this->project->programs as $program) {
                             
                             if (in_array($program->program_key, $program_bundle_ids)) {
                                 if ($program->multiple_building_election_key == 2) {
@@ -1804,13 +1798,13 @@ class SimpleComplianceSelection extends Controller
                 }else{
                     
                     $htc_units_subset_for_nhtf = array();
-                    $this->audit->comment_system = $this->audit->comment_system.' | Select Process is not working with NHTF.';
+                    $this->audit->comment_system = $this->audit->comment_system.' | 1807 Select Process is not working with NHTF.';
                     $this->audit->save();
                 }
             }
         }else{
             $htc_units_subset_for_nhtf = array();
-            $this->audit->comment_system = $this->audit->comment_system.' | Select Process is not working with NHTF.';
+            $this->audit->comment_system = $this->audit->comment_system.' | 1813 Select Process is not working with NHTF.';
             $this->audit->save();
         }
 
@@ -1930,7 +1924,7 @@ class SimpleComplianceSelection extends Controller
                 $this->audit->save();
                 
 
-                foreach ($project->programs as $program) {
+                foreach ($this->project->programs as $program) {
                     
                     // only select HTC project programs
                     if (in_array($program->program_key, $program_htc_ids)) {
@@ -1970,7 +1964,7 @@ class SimpleComplianceSelection extends Controller
                             
                             $leasePurchaseFound = 0;
                             $isLeasePurchase = 0;
-                        foreach ($project->programs as $program) {
+                        foreach ($this->project->programs as $program) {
                             
                             if (in_array($program->program_key, $leaseProgramKeys)) {
                                 $isLeasePurchase = 1;
@@ -2046,7 +2040,7 @@ class SimpleComplianceSelection extends Controller
                     $this->audit->save();
                     
 
-                    foreach ($project->programs as $program) {
+                    foreach ($this->project->programs as $program) {
                         
                         if (in_array($program->program_key, $program_htc_ids)) {
                             if ($program->multiple_building_election_key == 2) {
@@ -2357,10 +2351,10 @@ class SimpleComplianceSelection extends Controller
         $this->audit->comment = $this->audit->comment.' | Select Process Finished - returning results.';
                                 $this->audit->save();
                                 
-        return [$optimized_selection, $overlap, $project, $organization_id];
+        return [$optimized_selection, $overlap, $this->project, $organization_id];
     }
     public function createNewProjectDetails(){
-        //$project = \App\Models\Project::find($this->audit->project_id);
+        //$this->project = \App\Models\Project::find($this->audit->project_id);
         
         $this->audit->project->set_project_defaults($this->audit->id);
         
@@ -2424,11 +2418,11 @@ class SimpleComplianceSelection extends Controller
         //
         $planning = $this->planning;
         $this->audit = $this->audit;
-        $project = $this->project;
-        $project_id = null;
+        $this->project = $this->project;
+        $this->project_id = null;
         $development_key = null;
-        $project_ref = '';
-        $project_name = null;
+        $this->project_ref = '';
+        $this->project_name = null;
         $total_buildings = 0;
         $total_units = 0;
         $total_program_units = 0;
@@ -2436,7 +2430,7 @@ class SimpleComplianceSelection extends Controller
 
         //get program specific details
 
-        $programs = $project->programs;
+        $programs = $this->project->programs;
 
         $p = 1;
 
@@ -2447,9 +2441,9 @@ class SimpleComplianceSelection extends Controller
             $program_status = 'program_'.$p.'_project_program_status';
             $program_award_number = 'program_'.$p.'_project_program_award_number';
             $program_guide_year = 'program_'.$p.'_project_program_guide_year';
-            $project_program_key = 'program_'.$p.'_project_program_key';
+            $this->project_program_key = 'program_'.$p.'_project_program_key';
             $funding_program_key = 'program_'.$p.'_funding_program_key';
-            $project_program_id = 'program_'.$p.'_project_program_id';
+            $this->project_program_id = 'program_'.$p.'_project_program_id';
             $program_keyed_in_count = 'program_'.$p.'_keyed_in_count';
             $program_calculated_count = 'program_'.$p.'_calculated_count';
             $program_extended_use = 'program_'.$p.'_first_year_award_claimed';
@@ -2469,9 +2463,9 @@ class SimpleComplianceSelection extends Controller
                 $program_status => $program->status->status_name,
                 $program_award_number => $program->award_number,
                 $program_guide_year => $program->guide_l_year,
-                $project_program_key => $program->project_program_key,
+                $this->project_program_key => $program->project_program_key,
                 $funding_program_key => $program->program->funding_program_key,
-                $project_program_id => $program->program_id,
+                $this->project_program_id => $program->program_id,
                 $program_keyed_in_count => $program->total_unit_count,
                 $program_calculated_count => $this_program_calculated_count,
                 $program_extended_use => $program->first_year_award_claimed,
@@ -2485,14 +2479,14 @@ class SimpleComplianceSelection extends Controller
         
 
         
-                $project_id = $project->id;
-                $development_key = $project->project_key;
-                $project_ref = $project->project_number;
-                $project_name = $project->project_name;
-                $total_buildings = $project->total_building_count;
-                $total_units = $project->total_unit_count;
-                $total_program_units = $project->program_units_total();
-                $total_market_rate_units = $project->stats_total_market_rate_units();
+                $this->project_id = $this->project->id;
+                $development_key = $this->project->project_key;
+                $this->project_ref = $this->project->project_number;
+                $this->project_name = $this->project->project_name;
+                $total_buildings = $this->project->total_building_count;
+                $total_units = $this->project->total_unit_count;
+                $total_program_units = $this->project->program_units_total();
+                $total_market_rate_units = $this->project->stats_total_market_rate_units();
 
             
         
@@ -2509,10 +2503,10 @@ class SimpleComplianceSelection extends Controller
 
             $planning->update([
                 'audit_id' => $audit->id,
-                'project_id' => $project->id,
-                'development_key' => $project->project_key,
-                'project_name' => $project->project_name,
-                'project_number' => $project_ref,
+                'project_id' => $this->project->id,
+                'development_key' => $this->project->project_key,
+                'project_name' => $this->project->project_name,
+                'project_number' => $this->project_ref,
                 'total_building_count' => $total_buildings,
                 'total_unit_count' => $total_units,
                 'total_program_unit_count' => $total_program_units,
@@ -2540,7 +2534,7 @@ class SimpleComplianceSelection extends Controller
      * @return void
      */
 
-    public function runSimpleCompliance(Planning $planning)
+    public function runSimpleCompliance(Planning $planning)this->
     {
         //$this->planning = Planning::where('run',0)->first();
             $this->planning = $planning;
