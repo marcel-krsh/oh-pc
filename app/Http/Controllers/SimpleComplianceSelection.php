@@ -2534,7 +2534,7 @@ class SimpleComplianceSelection extends Controller
      * @return void
      */
 
-    public function runSimpleCompliance(Planning $planning)this->
+    public function runSimpleCompliance(Planning $planning)
     {
         //$this->planning = Planning::where('run',0)->first();
             $this->planning = $planning;
