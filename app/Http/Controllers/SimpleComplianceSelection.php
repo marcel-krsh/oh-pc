@@ -2336,7 +2336,7 @@ class SimpleComplianceSelection extends Controller
                     
                     $htc_units_without_overlap = $this->project->programs->whereIn('program_key', $program_htc_ids)
                                                     ->pluck('unit_key')->all();
-					dd('2350 Optimized!');
+					//dd('2350 Optimized!');
                     // 10% of units
                     $number_of_htc_units_required = ceil($total_htc_units/10);
                     $required_units = $number_of_htc_units_required;
