@@ -1961,7 +1961,7 @@ class SimpleComplianceSelection extends Controller
                         $units[] = $all_htc_unit->unit_key;
                     }
                 }
-                dd('1964 finished looping units... maybe we convert keys of htc units to be an array and do something there?');
+                //dd('1964 finished looping units... maybe we convert keys of htc units to be an array and do something there?'); 16.26 seconds
 
 
                 $comments[] = 'The total of HTC units that have HOME, OHTF and NHTF is '.count($units).'.';
@@ -1992,19 +1992,20 @@ class SimpleComplianceSelection extends Controller
                 //$this->audit->save();
                 
 
-                foreach ($this->project->programs as $program) {
+                foreach ($this->project->programs->whereIn('program_key', $program_htc_ids) as $program) {
                     
                     // only select HTC project programs
-                    if (in_array($program->program_key, $program_htc_ids)) {
+                    
                         if ($first_year == null || $first_year < $program->first_year_award_claimed) {
                             $first_year = $program->first_year_award_claimed;
                             $comments[] = 'Program key '.$program->program_key.' has the year '.$program->first_year_award_claimed.'.';
                             $this->audit->comment = $this->audit->comment.' | Select Process Program key '.$program->program_key.' has the year '.$program->first_year_award_claimed.'.';
                             //$this->audit->save();
                             
-                        }
-                    }
+                        } 
+                    
                 }
+                dd('finished checking years');
 
                 if (idate("Y")-15 > $first_year && $first_year != null) {
                     $first_fifteen_years = 0;
