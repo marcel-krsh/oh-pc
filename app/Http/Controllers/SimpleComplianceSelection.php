@@ -1284,7 +1284,7 @@ class SimpleComplianceSelection extends Controller
 
             //$home_award_numbers = ProjectProgram::whereIn('program_key', $program_home_ids)->where('project_id', '=', $this->audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
             $home_award_numbers = $this->project->programs->whereIn('program_key', $program_home_ids)->pluck('award_number');
-			dd('1286 - home award time to get new home award numbers.');
+			//dd('1286 - home award time to get new home award numbers.');
 
             $this->audit->comment_system = $this->audit->comment_system.' | Got home award numbers.';
             $this->audit->save();
@@ -1298,6 +1298,7 @@ class SimpleComplianceSelection extends Controller
                 $program_keys_with_award_number = ProjectProgram::where('award_number','=',$home_award_number->award_number)->where('project_id', '=', $this->audit->project_id)->pluck('program_key')->toArray(); 
                 $this->audit->comment_system = $this->audit->comment_system.' | Select programs with that award number.';
                 //$this->audit->save();
+                dd('1301 current');
 
                 $program_home_names = Program::whereIn('program_key', $program_home_ids)
                                                 ->whereIn('program_key', $program_keys_with_award_number)
