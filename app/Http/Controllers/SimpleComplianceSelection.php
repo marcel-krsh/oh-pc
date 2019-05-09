@@ -75,7 +75,7 @@ class SimpleComplianceSelection extends Controller
         // Get all the units we need to get programs for:
 
         
-                    foreach ($this->audit->project->units as $unit) {
+                    foreach ($this->project->units as $unit) {
                         
                         // Get the unit's current program designation from DevCo
                         try {
@@ -99,7 +99,9 @@ class SimpleComplianceSelection extends Controller
                             $upinserts = array();
                             $uginserts = array();
 
-                            dd($projectPrograms);
+                            if(count($projectPrograms) > 1) {
+                            	dd($units,$projectPrograms);
+                            }
                             foreach ($projectPrograms as $pp) {
                                 
 
