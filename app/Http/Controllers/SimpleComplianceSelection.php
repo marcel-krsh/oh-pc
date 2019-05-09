@@ -20,7 +20,7 @@ use App\Models\UnitInspection;
 use App\Models\Organization;
 use App\Models\BuildingInspection;
 use App\Models\ProjectContactRole;
-use App\Models\Planning;
+use App\Models\Projection;
 use App\Models\Program;
 use App\Services\DevcoService;
 use App\Models\UnitProgram;
@@ -36,7 +36,7 @@ use DB;
 class SimpleComplianceSelection extends Controller
 {
     public $audit;
-    public $planning;
+    public $projection;
     public $project;
     public $units;
     public $full_audit;
@@ -48,7 +48,7 @@ class SimpleComplianceSelection extends Controller
         // if (!is_null($test)) {
 
             $this->audit = null;
-            $this->planning = null;
+            $this->projection = null;
             $this->project = null;
             $this->units = null;
             $this->full_audit = 1; // set to 1 to run full audit
@@ -2475,11 +2475,11 @@ class SimpleComplianceSelection extends Controller
 
         //Unit
    }
-    public function updatePlanning($summary = null)
+    public function updateProjection($summary = null)
     {
         // create cached audit
         //
-        $planning = $this->planning;
+        $projection = $this->projection;
         $audit = $this->audit;
         $project = $this->project;
         $project_id = null;
@@ -2499,19 +2499,33 @@ class SimpleComplianceSelection extends Controller
 
         foreach ($programs as $program) {
             //set names of columns to be updated
+            $project_program_key = 'program_'.$p.'_project_program_key';
+			$funding_program_key = 'program_'.$p.'_funding_program_key';
+			$program_key = 'program_'.$p.'_program_key';
+
+			$project_program_id = 'program_'.$p.'_project_program_id';
+			$program_id = 'program_'.$p.'_program_id';
+
             $program_name ='program_'.$p.'_name';
             $program_multibuilding_election = 'program_'.$p.'_multiple_building_election';
             $program_status = 'program_'.$p.'_project_program_status';
             $program_award_number = 'program_'.$p.'_project_program_award_number';
             $program_guide_year = 'program_'.$p.'_project_program_guide_year';
-            $project_program_key = 'program_'.$p.'_project_program_key';
-            $funding_program_key = 'program_'.$p.'_funding_program_key';
-            $project_program_id = 'program_'.$p.'_project_program_id';
-            $program_keyed_in_count = 'program_'.$p.'_keyed_in_count';
-            $program_calculated_count = 'program_'.$p.'_calculated_count';
             $program_extended_use = 'program_'.$p.'_first_year_award_claimed';
-            $program_site_count = 'program_'.$p.'_site_count';
-            $program_file_count = 'program_'.$p.'_file_count';
+            
+            
+            $program_keyed_in_count = 'program_'.$p.'_keyed_in_unit_count';
+            $program_calculated_count = 'program_'.$p.'_calculated_unit_count';
+            $program_2016_percentage_used = 'program_'.$p.'_2016_percentage_used';
+
+            $program_2016_site_count = 'program_'.$p.'_2016_site_count';
+            $program_2019_site_count = 'program_'.$p.'_2019_site_count';
+            $program_2019_site_difference_percent = 'program_'.$p.'_2019_site_difference_percent';
+            $program_2019_buildings_with_unit_inpsections = 'program_'.$p.'_2019_buildings_with_unit_inspections';
+
+            $program_2016_file_count = 'program_'.$p.'_2016_file_count';
+            $program_2019_file_count = 'program_'.$p.'_2019_file_count';
+            $program_2019_file_difference_percent = 'program_'.$p.'_2019_file_difference_percent';
 
             // set values
             // get the project program
@@ -2520,20 +2534,49 @@ class SimpleComplianceSelection extends Controller
             $this_program_file_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->where('is_file_audit',1)->count();
 
 
-            $planning->update([
-                $program_name =>$program->program->program_name,
-                $program_multibuilding_election => $program->multiple_building_election_key,
+            $projection->update([
+                $program_name =>
+                $program_multibuilding_election =>
                 $program_status => $program->status->status_name,
-                $program_award_number => $program->award_number,
-                $program_guide_year => $program->guide_l_year,
+                $program_award_number => 
+                $program_guide_year => 
+                $project_program_key => 
+                $funding_program_key => 
+                $project_program_id => 
+                $program_keyed_in_count => 
+                $program_calculated_count => 
+                $program_extended_use => 
+                $program_site_count => 
+                $program_file_count => 
+
                 $project_program_key => $program->project_program_key,
-                $funding_program_key => $program->program->funding_program_key,
-                $project_program_id => $program->program_id,
-                $program_keyed_in_count => $program->total_unit_count,
-                $program_calculated_count => $this_program_calculated_count,
-                $program_extended_use => $program->first_year_award_claimed,
-                $program_site_count => $this_program_site_count,
-                $program_file_count => $this_program_file_count,
+				$funding_program_key => $program->program->funding_program_key,
+				$program_key => $program->program_key,
+
+				$project_program_id => $program->id,
+				$program_id => $program->program_id,
+
+	            $program_name =>$program->program->program_name,
+	            $program_multibuilding_election =>  $program->multiple_building_status,
+	            $program_status => $program->status->status_name
+	            $program_award_number => $program->award_number,
+	            $program_guide_year => $program->guide_l_year,
+	            $program_extended_use => $program->first_year_award_claimed,
+	            
+	            
+	            $program_keyed_in_count =>  $program->total_unit_count,
+	            $program_calculated_count => $this_program_calculated_count,
+	            $program_2016_percentage_used => null,
+
+	            $program_2016_site_count => null,
+	            $program_2019_site_count => $this_program_site_count,
+	            $program_2019_site_difference_percent => 'NA',
+	            $program_2019_buildings_with_unit_inpsections => null,
+
+	            $program_2016_file_count => null;
+	            $program_2019_file_count => $this_program_file_count,
+	            $program_2019_file_difference_percent => 'NA';
+
             ]);
 
             $p++;
@@ -2547,11 +2590,11 @@ class SimpleComplianceSelection extends Controller
         	$optimized_site = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('unit_key')->count();
         	$optimized_file = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_file_audit',1)->groupBy('unit_key')->count();
         
-        	// $test = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->count();
+        	$test = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->count();
 			        
-         //   	dd($optimized_site,$test,$this->project->stats_total_units);
+         	
 
-            $planning->update([
+            $projection->update([
                 'audit_id' => $this->audit->id,
                 'project_id' => $this->project->id,
                 'development_key' => $this->project->project_key,
@@ -2566,7 +2609,8 @@ class SimpleComplianceSelection extends Controller
                 'run' => 1
 
             ]);
-        
+            
+        	dd($optimized_site,$test,$this->project->stats_total_units);
 
         // $data = [
         //     'event' => 'NewMessage',
@@ -2584,18 +2628,18 @@ class SimpleComplianceSelection extends Controller
      * @return void
      */
 
-    public function runSimpleCompliance(Planning $planning)
+    public function runSimpleCompliance(Projection $projection)
     {
-        //$this->planning = Planning::where('run',0)->first();
-            $this->planning = $planning;
-            $this->planning->project_name = date('m/d/Y g:h a', time())." line 2547";
-            $this->planning->save();
-            $this->project = Project::where('project_key',$this->planning->development_key)->first();
+        //$this->projection = Projection::where('run',0)->first();
+            $this->projection = $projection;
+            $this->projection->project_name = date('m/d/Y g:h a', time())." line 2547";
+            $this->projection->save();
+            $this->project = Project::where('project_key',$this->projection->development_key)->first();
             $this->extended_use = 0;
-            if(!is_null($this->planning) && $this->planning->running == 0){
+            if(!is_null($this->projection) && $this->projection->running == 0){
 
-                if(!is_null($this->planning->audit_id)){
-                    $this->audit = Audit::find($this->planning->audit_id);
+                if(!is_null($this->projection->audit_id)){
+                    $this->audit = Audit::find($this->projection->audit_id);
                     $this->audit->comment .= '| Loaded the audit from a previous run. ';
                 }else{
                     $this->audit = New Audit;
@@ -2603,30 +2647,30 @@ class SimpleComplianceSelection extends Controller
                     $this->audit->development_key = $this->project->project_key;
                     $this->audit->monitoring_status_type_key = 10;
                     $this->audit->save();
-                    $this->planning->audit_id = $this->audit->id;
-                    $this->planning->save();
-                    $this->planning = $this->planning;
+                    $this->projection->audit_id = $this->audit->id;
+                    $this->projection->save();
+                    $this->projection = $this->projection;
                     $this->audit = $this->audit;
                     $this->audit->comment .= 'Created the audit';
                     $this->audit->save();
 
 
                 }
-                    $this->planning->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
+                    $this->projection->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
                    
                 
-            } else if(!is_null($this->planning)) {
-            	//dd('Planning set but running is not 0 - this is running - do not interrupt a running script!');
+            } else if(!is_null($this->projection)) {
+            	//dd('Projection set but running is not 0 - this is running - do not interrupt a running script!');
 
             } else {
-            	//dd('Planning came back null');
+            	//dd('Projection came back null');
             }
             if(is_null($this->audit)){
             	//dd('Audit is not Set');
             }
-            ////dd($this->planning,$this->audit,$this->project);
+            ////dd($this->projection,$this->audit,$this->project);
 
-        if($this->planning && $this->planning->run == 0){
+        if($this->projection && $this->projection->run == 0){
             
             //LOG HERE if it is a brand new audit run
 
@@ -2802,7 +2846,7 @@ class SimpleComplianceSelection extends Controller
                 }
                 //LOG::info('unit inspections should be there.');
                 //$this->addAmenityInspections($this->audit);
-                $this->updatePlanning($best_run);    // finally create the audit
+                $this->updateProjection($best_run);    // finally create the audit
                 //$this->createNewProjectDetails($this->audit); // create the project details
                 
                 // LOG SUCCESS HERE
@@ -2827,9 +2871,9 @@ class SimpleComplianceSelection extends Controller
                     $this->audit->compliance_run = 0;
                     $this->audit->rerun_compliance = 0;
                     $this->audit->save();
-                } else if(!is_null($this->planning)) {
-                    $this->planning->project_name = 'Failed to attach audit, and run was not set to 0.';
-                    $this->planning->save();
+                } else if(!is_null($this->projection)) {
+                    $this->projection->project_name = 'Failed to attach audit, and run was not set to 0.';
+                    $this->projection->save();
                 }
         }
         
