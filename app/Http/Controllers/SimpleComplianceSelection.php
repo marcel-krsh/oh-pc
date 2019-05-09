@@ -2558,7 +2558,7 @@ class SimpleComplianceSelection extends Controller
                 'project_name' =>  $this->project->project_name,
                 'project_number' =>  $this->project->project_name,
                 'total_building_count' => $this->project->total_building_count,
-                'total_unit_count' => $this->project->stats_total_units,
+                'total_unit_count' => $this->project->stats_total_units(),
                 'total_program_unit_count' => $this->units->groupBy('unit_key')->count(),
                 'total_market_rate_unit_count' => $this->project->stats_total_market_rate_units(),
                 'optimized_site_count' => $optimized_site,
