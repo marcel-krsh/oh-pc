@@ -51,7 +51,7 @@ class SimpleComplianceSelection extends Controller
             $this->planning = null;
             $this->project = null;
             $this->unitPrograms = null;
-            $this->full_audit = 0; // set to 1 to run full audit
+            $this->full_audit = 1; // set to 1 to run full audit
         
        //}
 
@@ -603,24 +603,21 @@ class SimpleComplianceSelection extends Controller
             return "Error, this project doesn't have a program.";
             
         }
+
         $projectProgramIds = $this->project->programs->pluck('program_key')->all();
-        dd($projectProgramIds);
-        foreach ($this->project->programs as $program) {
-            $projectProgramIds[] = $program->program_key;
-            $this->audit->comment_system = $this->audit->comment_system.' | Program ID: '.$program->program_key.' Program Name: '.$program->program->program_name;
-            $this->audit->save();
-        }
+        //dd($projectProgramIds);
+        
         $this->audit->comment_system = $this->audit->comment_system.' | Select Process Checked the Programs and that there are Programs';
             $this->audit->save();
             
 
-        $total_buildings = $this->project->total_building_count;
-        $total_units = $this->project->total_unit_count;
+        
+        
 
-        $this->audit->comment_system = $this->audit->comment_system.' | Select Process Found '.$total_buildings.' Total Buildings and '.$total_units.' Total Units';
+        $this->audit->comment_system = $this->audit->comment_system.' | Select Process Found '.$this->project->total_building_count.' Total Buildings and '.$this->project->total_unit_count.' Total Units';
             $this->audit->save();
             
-        //Log::info('509:: total buildings and units '.$total_buildings.', '.$total_units.' respectively.');
+        //Log::info('509:: total buildings and units '.$this->project->total_building_count.', '.$this->project->total_unit_count.' respectively.');
         if($this->full_audit){
 	        $pm_contact = ProjectContactRole::where('project_id', '=', $this->audit->project_id)
 	                                ->where('project_role_key', '=', 21)
@@ -654,7 +651,7 @@ class SimpleComplianceSelection extends Controller
         
         if($this->full_audit){
         	// save all buildings in building_inspection table
-	        $buildings = $this->project->buildings;
+	        
 	        //Log::info('526:: buildings saved.');
 	        // remove any data
 	        BuildingInspection::where('audit_id', '=', $this->audit->id)->delete();
@@ -663,11 +660,10 @@ class SimpleComplianceSelection extends Controller
 	        $this->audit->comment_system = $this->audit->comment_system.' | Select Process Deleted all the current building cache for this audit id.';
 	            $this->audit->save();
 	            
-	            $buildingCount = 0;
-	        if ($buildings) {
-	            foreach ($buildings as $building) {
-	                
-	                $buildingCount++;
+	            $buildingCount = 0; 
+	        if ($this->project->buildings) {
+	        	$buildingCount = count($this->project->buildings);
+	            foreach ($this->project->buildings as $building) {
 	                if ($building->address) {
 	                    $address = $building->address->line_1;
 	                    $city = $building->address->city;
@@ -680,7 +676,7 @@ class SimpleComplianceSelection extends Controller
 	                    $zip = '';
 	                }
 
-	                $b = new BuildingInspection([
+	                $b[] = [
 	                    'building_id' => $building->id,
 	                    'building_key' => $building->building_key,
 	                    'building_name' => $building->building_name,
@@ -699,11 +695,14 @@ class SimpleComplianceSelection extends Controller
 	                    'followup_count' => 0,
 	                    'complete' => 0,
 	                    'submitted_date_time' => null
-	                ]);
-	                $b->save();
+	                ];
+
 	                
 	                //Log::info('565:: '.$b->id.' building inspection added');
 	            }
+	            // insert the array enmasse to make it faster.
+	            BuildingInspection::insert($b);
+	            dd('made it to line 705 - check building inspection table for '.$buildingCount.' inserts for audit '.$this->audit->id);
 	            $this->audit->comment = $this->audit->comment.' | Select Process Put in '.$buildingCount.' Buildings';
 	            $this->audit->comment_system = $this->audit->comment_system.' | Select Process Put in '.$buildingCount.' Buildings';
 	            $this->audit->save();
@@ -1008,7 +1007,7 @@ class SimpleComplianceSelection extends Controller
 
                             $first_building_done = 0; // this is to control the comments to only keep the ones we care about after the first building information is displayed.
 
-                            foreach ($buildings as $building) {
+                            foreach ($this->project->buildings as $building) {
                                 
                                 if($first_building_done){
                                     $comments = array(); // clear the comments.
@@ -1310,7 +1309,7 @@ class SimpleComplianceSelection extends Controller
                     $this->audit->save();
                     
 
-                    $total_units = count($units);
+                    $this->project->total_unit_count = count($units);
                     
 
 
@@ -1325,9 +1324,9 @@ class SimpleComplianceSelection extends Controller
                     $htc_units_subset_for_all = [];
                     $htc_units_subset = [];
                     
-                    $comments[] = 'Total units with HOME funding and award number '.$home_award_number.' is '.$total_units;
+                    $comments[] = 'Total units with HOME funding and award number '.$home_award_number.' is '.$this->project->total_unit_count;
                     $comments[] = 'Total units in the project is '.$total_project_units;
-                    $this->audit->comment = $this->audit->comment.' | Select Process Total units with HOME fundng is '.$total_units.' | Select Process Total units in the project is '.$total_project_units;
+                    $this->audit->comment = $this->audit->comment.' | Select Process Total units with HOME fundng is '.$this->project->total_unit_count.' | Select Process Total units in the project is '.$total_project_units;
                         $this->audit->save();
                         
 
@@ -1344,27 +1343,27 @@ class SimpleComplianceSelection extends Controller
                         
 
                     } else {
-                        if (ceil($total_units/2) >= ceil($total_project_units/5)) {
+                        if (ceil($this->project->total_unit_count/2) >= ceil($total_project_units/5)) {
 
-                            $required_units = ceil($total_units/2);
+                            $required_units = ceil($this->project->total_unit_count/2);
 
-                            $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
+                            $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, ceil($this->project->total_unit_count/2));
                             
 
-                            $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of HOME units, the total selected is '.ceil($total_units/2);
-                            $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of HOME units, the total selected is '.ceil($total_units/2);
+                            $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of HOME units, the total selected is '.ceil($this->project->total_unit_count/2);
+                            $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of HOME units, the total selected is '.ceil($this->project->total_unit_count/2);
                             $this->audit->save();
                             
 
                         } else {
 
-                            if(ceil($total_project_units/5) > $total_units){
-                                $required_units = $total_units;
-                                $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
+                            if(ceil($total_project_units/5) > $this->project->total_unit_count){
+                                $required_units = $this->project->total_unit_count;
+                                $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, $this->project->total_unit_count);
                                 
-                                $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.$total_units.' which is the total number of units';
+                                $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.$this->project->total_unit_count.' which is the total number of units';
 
-                                $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.$total_units.' which is the total number of units';
+                                $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.$this->project->total_unit_count.' which is the total number of units';
                                 $this->audit->save();
                             }else{
                                 $required_units = ceil($total_project_units/5);
@@ -1492,7 +1491,7 @@ class SimpleComplianceSelection extends Controller
                     $this->audit->save();
                     
 
-                    $total_units = count($units);
+                    $this->project->total_unit_count = count($units);
                     
 
                     // $program_htc_overlap = array_intersect($program_htc_ids, $program_ohtf_ids);
@@ -1505,10 +1504,10 @@ class SimpleComplianceSelection extends Controller
                     $units_selected = [];
                     $htc_units_subset = [];
 
-                    $comments[] = 'Total units with OHTF funding and award number '.$ohtf_award_number.' is '.$total_units;
+                    $comments[] = 'Total units with OHTF funding and award number '.$ohtf_award_number.' is '.$this->project->total_unit_count;
                     $comments[] = 'Total units in the project with a program is '.$total_project_units;
 
-                    $this->audit->comment = $this->audit->comment.' | Select Process Total units with OHTF funding is '.$total_units;
+                    $this->audit->comment = $this->audit->comment.' | Select Process Total units with OHTF funding is '.$this->project->total_unit_count;
                     $this->audit->save();
                     
 
@@ -1529,26 +1528,26 @@ class SimpleComplianceSelection extends Controller
                         
 
                     } else {
-                        if (ceil($total_units/2) >= ceil($total_project_units/5)) {
+                        if (ceil($this->project->total_unit_count/2) >= ceil($total_project_units/5)) {
 
-                            $required_units = ceil($total_units/2);
+                            $required_units = ceil($this->project->total_unit_count/2);
 
-                             $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
+                             $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, ceil($this->project->total_unit_count/2));
                              
-                             $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of OHTF units, the total selected is '.ceil($total_units/2);
+                             $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of OHTF units, the total selected is '.ceil($this->project->total_unit_count/2);
 
-                            $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of OHTF units, the total selected is '.ceil($total_units/2);
+                            $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of OHTF units, the total selected is '.ceil($this->project->total_unit_count/2);
                             $this->audit->save();
                             
                         } else {
 
-                            if(ceil($total_project_units/5) > $total_units){
-                                $required_units = $total_units;
-                                $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
+                            if(ceil($total_project_units/5) > $this->project->total_unit_count){
+                                $required_units = $this->project->total_unit_count;
+                                $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, $this->project->total_unit_count);
                                 
-                                $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.$total_units. 'which is the total number of units';
+                                $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.$this->project->total_unit_count. 'which is the total number of units';
 
-                                $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.$total_units. 'which is the total number of units';
+                                $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.$this->project->total_unit_count. 'which is the total number of units';
                             }else{
                                 $required_units = ceil($total_project_units/5);
                                 $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
@@ -1683,13 +1682,13 @@ class SimpleComplianceSelection extends Controller
                     $units_selected = [];
                     $htc_units_subset = [];
                     
-                    $total_units = count($units);
+                    $this->project->total_unit_count = count($units);
                     
 
-                    $comments[] = 'Total units with NHTF funding is '.$total_units;
+                    $comments[] = 'Total units with NHTF funding is '.$this->project->total_unit_count;
                     $comments[] = 'Total units in the project with a program is '.$total_project_units;
 
-                    $this->audit->comment = $this->audit->comment.' | Select Process Total units with NHTF funding is '.$total_units;
+                    $this->audit->comment = $this->audit->comment.' | Select Process Total units with NHTF funding is '.$this->project->total_unit_count;
                     $this->audit->save();
                     
                     $this->audit->comment = $this->audit->comment.' | Select Process Total units in the project with a program is '.$total_project_units;
@@ -1710,26 +1709,26 @@ class SimpleComplianceSelection extends Controller
                         
 
                     } else {
-                        if (ceil($total_units/2) >= ceil($total_project_units/5)) {
+                        if (ceil($this->project->total_unit_count/2) >= ceil($total_project_units/5)) {
 
-                            $required_units = ceil($total_units/2);
+                            $required_units = ceil($this->project->total_unit_count/2);
 
-                             $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
+                             $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, ceil($this->project->total_unit_count/2));
                              
-                             $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of NHTF units, the total selected is '.ceil($total_units/2);
-                             $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of NHTF units, the total selected is '.ceil($total_units/2);
+                             $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of NHTF units, the total selected is '.ceil($this->project->total_unit_count/2);
+                             $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of NHTF units, the total selected is '.ceil($this->project->total_unit_count/2);
 
                             $this->audit->save();
                             
                         } else {
 
-                            if(ceil($total_project_units/5) > $total_units){
-                                $required_units = $total_units;
-                                $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
+                            if(ceil($total_project_units/5) > $this->project->total_unit_count){
+                                $required_units = $this->project->total_unit_count;
+                                $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, $this->project->total_unit_count);
                                 
-                                $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$total_units. 'which is the total number of units';
+                                $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$this->project->total_unit_count. 'which is the total number of units';
 
-                                $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$total_units. 'which is the total number of units';
+                                $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$this->project->total_unit_count. 'which is the total number of units';
                             }else{
                                 $required_units = ceil($total_project_units/5);
                                 $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
@@ -2125,7 +2124,7 @@ class SimpleComplianceSelection extends Controller
                         
                         $first_building_done = 0; // this is to control the comments to only keep the ones we care about after the first building information is displayed.
 
-                        foreach ($buildings as $building) {
+                        foreach ($this->project->buildings as $building) {
                             
                             if ($building->units) {
 
@@ -2423,8 +2422,8 @@ class SimpleComplianceSelection extends Controller
         $development_key = null;
         $this->project_ref = '';
         $this->project_name = null;
-        $total_buildings = 0;
-        $total_units = 0;
+        $this->project->total_building_count = 0;
+        $this->project->total_unit_count = 0;
         $total_program_units = 0;
         $total_market_rate_units = 0;
 
@@ -2483,8 +2482,8 @@ class SimpleComplianceSelection extends Controller
                 $development_key = $this->project->project_key;
                 $this->project_ref = $this->project->project_number;
                 $this->project_name = $this->project->project_name;
-                $total_buildings = $this->project->total_building_count;
-                $total_units = $this->project->total_unit_count;
+                $this->project->total_building_count = $this->project->total_building_count;
+                $this->project->total_unit_count = $this->project->total_unit_count;
                 $total_program_units = $this->project->program_units_total();
                 $total_market_rate_units = $this->project->stats_total_market_rate_units();
 
@@ -2507,8 +2506,8 @@ class SimpleComplianceSelection extends Controller
                 'development_key' => $this->project->project_key,
                 'project_name' => $this->project->project_name,
                 'project_number' => $this->project_ref,
-                'total_building_count' => $total_buildings,
-                'total_unit_count' => $total_units,
+                'total_building_count' => $this->project->total_building_count,
+                'total_unit_count' => $this->project->total_unit_count,
                 'total_program_unit_count' => $total_program_units,
                 'total_market_rate_unit_count' => $total_market_rate_units,
                 'optimized_site_count' => $optimized_site,

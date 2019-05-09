@@ -356,7 +356,7 @@ class Project extends Model
 
     public function buildings() : HasMany
     {
-        return $this->hasMany('\App\Models\Building')->where('building_status_id','=',1);
+        return $this->hasMany('\App\Models\Building')->where('building_status_key','=',1);
     }
 
     public function units() : HasManyThrough {
@@ -405,6 +405,11 @@ class Project extends Model
     public function stats_total_units()
     {
         return count($this->units);
+    }
+
+    public function stats_total_market_rate_units()
+    {
+        return count($this->market_rate_units);
     }
 
     public function stat_program_units()
