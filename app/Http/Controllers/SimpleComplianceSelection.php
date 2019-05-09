@@ -2344,7 +2344,7 @@ class SimpleComplianceSelection extends Controller
                     // how many $overlap
                     // if required <= $overlap we don't need to select anymore unit
                     // otherwise we need to take all the units NOT in the overlap and randomly pick required - count(overlap)
-                    
+                    dd('2347 Needs Optimized!');
                     $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($program_htc_ids) {
                                                         $query->where('audit_id', '=', $this->audit->id);
                                                         $query->whereIn('program_key', $program_htc_ids);
