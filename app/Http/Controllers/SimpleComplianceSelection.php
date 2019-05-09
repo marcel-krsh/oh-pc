@@ -2544,7 +2544,7 @@ class SimpleComplianceSelection extends Controller
 				$program_id => $program->program_id,
 
 	            $program_name =>$program->program->program_name,
-	            $program_multibuilding_election =>  $program->multiple_building_status,
+	            $program_multibuilding_election =>  $program->multiple_building_status->election_description,
 	            $program_status => $program->status->status_name,
 	            $program_award_number => $program->award_number,
 	            $program_guide_year => $program->guide_l_year,
