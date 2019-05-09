@@ -2005,7 +2005,7 @@ class SimpleComplianceSelection extends Controller
                         } 
                     
                 }
-                dd('finished checking years');
+                //dd('finished checking years'); //16.8 seconds
 
                 if (idate("Y")-15 > $first_year && $first_year != null) {
                     $first_fifteen_years = 0;
@@ -2109,19 +2109,22 @@ class SimpleComplianceSelection extends Controller
                     //$this->audit->save();
                     
 
-                    foreach ($this->project->programs as $program) {
+                    foreach ($this->project->programs->whereIn('project_key',$program_htc_ids) as $program) {
                         
-                        if (in_array($program->program_key, $program_htc_ids)) {
+                        
                             if ($program->multiple_building_election_key == 2) {
                                 $is_multi_building_project = 1;
-                                $comments[] = 'Program key '.$program->program_key.' showed that the project is a multi building project.';
-                                $this->audit->comment = $this->audit->comment.' | Select Process Program key '.$program->program_key.' showed that the project is a multi building project.';
+                                $comments[] = 'Program key '.$program->program_key.' showed that the project IS a multi building project.';
+                                $this->audit->comment = $this->audit->comment.' | Select Process Program key '.$program->program_key.' showed that the project IS a multi building project.';
                                 //$this->audit->save();
                                 
+                            } else {
+                            	$comments[] = 'Program key '.$program->program_key.' showed that the project is NOT a multi building project.';
+                                $this->audit->comment = $this->audit->comment.' | Select Process Program key '.$program->program_key.' showed that the project is NOT a multi building project.';
                             }
-                        }
+                        
                     }
-
+                    dd('2127 Finished checking multibuilding');
                     if ($is_multi_building_project) {
                     	dd('2119 section needs optimized');
                         $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($program_htc_ids, $program_home_ids, $program_ohtf_ids, $program_nhtf_ids) {
