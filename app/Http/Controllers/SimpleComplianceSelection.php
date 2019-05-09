@@ -2597,7 +2597,7 @@ class SimpleComplianceSelection extends Controller
 
             ]);
 
-        	dd($optimized_site,$test,$this->project->stats_total_units);
+        	dd($optimized_site,$test,$this->project->stats_total_units());
 
         // $data = [
         //     'event' => 'NewMessage',
