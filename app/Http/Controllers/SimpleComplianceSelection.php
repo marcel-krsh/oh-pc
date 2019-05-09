@@ -190,7 +190,7 @@ class SimpleComplianceSelection extends Controller
                     $this->audit->comment_system = $this->audit->comment_system.' | Finished Loop of Units';
                     $this->audit->save();
 
-                    dd($this->units); //on 27 20.32 sec
+                    //dd($this->units); //on 27 20.32 sec
                                     
                 
             
@@ -199,7 +199,7 @@ class SimpleComplianceSelection extends Controller
     public function adjustedLimit($n)
     {
         $this->audit->comment = $this->audit->comment.' | Running Adjusted Limiter.';
-                                    $this->audit->save();
+                                   //$this->audit->save();
                                     
         // based on $n units, return the corresponding adjusted sample size
         switch (true) {
@@ -359,17 +359,17 @@ class SimpleComplianceSelection extends Controller
 
     public function randomSelection($units, $percentage = 20, $min = 0, $max = 0)
     {
-        $this->audit->comment = $this->audit->comment.' | Starting randomSelection.';
-                $this->audit->save();
+        $this->audit->comment = $this->audit->comment.' | Starting random selection.';
+               // $this->audit->save();
                 
-        if (count($units)) {
+        if ($units && count($units)) {
             $total = count($units);
 
             $needed = ceil($total * $percentage / 100);
 
             if($needed){
                 $this->audit->comment = $this->audit->comment.' | Random selection calculated total '.$total.' versus '.$needed.' needed.';
-                $this->audit->save();
+               // $this->audit->save();
             }
 
             if ($min > $total) {
@@ -384,7 +384,7 @@ class SimpleComplianceSelection extends Controller
             
 
             $this->audit->comment = $this->audit->comment.' | Random selection adjusted totals based on '.$percentage.'%: total '.$total.', min '.$min.' and '.$needed.' needed.';
-                $this->audit->save();
+               // $this->audit->save();
                 
             $output = [];
 
@@ -403,11 +403,13 @@ class SimpleComplianceSelection extends Controller
             }
             
             $this->audit->comment = $this->audit->comment.' | Random selection randomized list and returning output to selection process.';
-                $this->audit->save();
+               $this->audit->save();
                 
 
             return $output;
         } else {
+        	$this->audit->comment = $this->audit->comment.' | No units were passed in for random selection.';
+        	$this->audit->save();
             return [];
             
         }
