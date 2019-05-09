@@ -40,6 +40,24 @@ class SimpleComplianceSelection extends Controller
     public $project;
     public $units;
     public $full_audit;
+    public $program_1_2016_site_count;
+    public $program_1_2016_file_count;
+    public $program_1_2016_percentage_used;
+
+    public $program_2_2016_site_count;
+    public $program_2_2016_file_count;
+    public $program_2_2016_percentage_used;
+
+    public $program_3_2016_site_count;
+    public $program_3_2016_file_count;
+    public $program_3_2016_percentage_used;
+
+    public $program_4_2016_site_count;
+    public $program_4_2016_file_count;
+    public $program_4_2016_percentage_used;
+
+
+
     public function __construct()
     {
         //make a new audit for this
@@ -52,7 +70,23 @@ class SimpleComplianceSelection extends Controller
             $this->project = null;
             $this->units = null;
             $this->full_audit = 1; // set to 1 to run full audit
-        
+
+            $this->program_1_2016_site_count = null;
+		    $this->program_1_2016_file_count = null;
+		    $this->program_1_2016_percentage_used = 'NA';
+
+		    $this->program_2_2016_site_count = null;
+		    $this->program_2_2016_file_count = null;
+		    $this->program_2_2016_percentage_used = 'NA';
+
+		    $this->program_3_2016_site_count = null;
+		    $this->program_3_2016_file_count = null;
+		    $this->program_3_2016_percentage_used = 'NA';
+
+		    $this->program_4_2016_site_count = null;
+		    $this->program_4_2016_file_count = null;
+		    $this->program_4_2016_percentage_used = 'NA';
+		        
        //}
 
 
@@ -2735,7 +2769,7 @@ class SimpleComplianceSelection extends Controller
                         // SITE AUDIT
                         $unit_keys = $program['units_after_optimization'];
 
-                        
+                        $units = $this->units->whereIn('unit_key', $unit_keys);
 
                         //$units = Unit:->get();
                         
@@ -2753,7 +2787,7 @@ class SimpleComplianceSelection extends Controller
                             $program_keys = explode(',', $program['program_keys']);
                             
 
-                            foreach ($this->units->whereIn('unit_key', $unit_keys) as $unit_program) {
+                            foreach ($units as $unit_program) {
                                 if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < $program['required_units']) {
                                     $u = new UnitInspection([
                                         'group' => $program['name'],
@@ -2786,7 +2820,7 @@ class SimpleComplianceSelection extends Controller
 
                         
 
-                        $units = Unit::whereIn('unit_key', $unit_keys)->get();
+                       $units = $this->units->whereIn('unit_key', $unit_keys);
                         
 
                         $unit_inspections_inserted = 0;
@@ -2803,7 +2837,7 @@ class SimpleComplianceSelection extends Controller
                             
 
                             
-                            foreach ($unit->programs as $unit_program) {
+                            foreach ($units as $unit_program) {
                                 if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < count($program['units_before_optimization'])) {
 
                                     $u = new UnitInspection([
