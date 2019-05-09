@@ -1923,7 +1923,7 @@ class SimpleComplianceSelection extends Controller
             } else {
             	$total_htc_units = 0;
             }
-            dd('Finished Selecting HTC');
+            //dd('Finished Selecting HTC'); //16.7 seconds
 
             if($total_htc_units){
                 $use_limiter = 1;
@@ -1961,6 +1961,8 @@ class SimpleComplianceSelection extends Controller
                         $units[] = $all_htc_unit->unit_key;
                     }
                 }
+                dd('1964 finished looping units... maybe we convert keys of htc units to be an array and do something there?');
+
 
                 $comments[] = 'The total of HTC units that have HOME, OHTF and NHTF is '.count($units).'.';
                 $this->audit->comment = $this->audit->comment.' | Select Process The total of HTC units that have HOME, OHTF and NHTF is '.count($units).'.';
