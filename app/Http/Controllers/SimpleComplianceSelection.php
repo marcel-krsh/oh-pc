@@ -445,7 +445,7 @@ class SimpleComplianceSelection extends Controller
         $this->audit->comment = $this->audit->comment.' | Combine and optimize starting.';
         $this->audit->save();
         
-        dd($selection);
+        //dd($selection);
         for ($i=0; $i < count($selection); $i++) {
             $array_to_compare = $selection[$i]['units'];
             
@@ -2409,7 +2409,7 @@ class SimpleComplianceSelection extends Controller
         
 
         // combineOptimize returns an array [units, summary]
-        $optimized_selection = $this->combineOptimize($this->audit,$selection);
+        $optimized_selection = $this->combineOptimize($selection);
         
         $this->audit->comment = $this->audit->comment.' | Select Process Finished - returning results.';
                                 $this->audit->save();
