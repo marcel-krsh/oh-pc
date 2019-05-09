@@ -764,7 +764,7 @@ class SimpleComplianceSelection extends Controller
 	        }
             
 
-            dd('Line 767 - Ran and got program bundles - ',$program_bundle_names,$this->project->programs);
+            //dd('Line 767 - Ran and got program bundles - ',$program_bundle_names,$this->project->programs);
 
             if($total){
                 $this->audit->comment = $this->audit->comment.' | Select Process starting Group 1 selection ';
@@ -777,14 +777,17 @@ class SimpleComplianceSelection extends Controller
                 $this->audit->save();
                 
 
-                $comments[] = 'Total units in the pool is '.count($units);
+                $comments[] = 'Total units in the pool is '.$total;
                 $this->audit->comment = $this->audit->comment. ' | Total units in the pool is '.$total;
                 $this->audit->comment_system = $this->audit->comment_system. ' | Total units in the pool is '.$total;
                 $this->audit->save();
                 
                 $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
                 
-                $program_htc_names = Program::whereIn('program_key', $program_htc_ids)->get()->pluck('program_name')->toArray();
+                //OLD
+                // $program_htc_names = Program::whereIn('program_key', $program_htc_ids)->get()->pluck('program_name')->toArray();
+                //NO NEW QUERY
+                $program_htc_names = $this->project->programs->whereIn('program_key',$program_htc_ids)->pluck('program.program_name')->all();
                 
                 $program_htc_names = implode(',', $program_htc_names);
                 
@@ -804,11 +807,12 @@ class SimpleComplianceSelection extends Controller
 
                 $has_htc_funding = 0;
                 $unitProcessCount = 0;
+                
+
                 foreach ($units as $unit) {
                     
-                    $this->audit->comment_system = $this->audit->comment_system.' | Line 818 run (loop).';
-                    $this->audit->save();
-                    if($unit->has_program_from_array($program_htc_ids, $this->audit->id)){
+                    
+                    if($unit->unit->has_program_from_array($program_htc_ids, $this->audit->id)){
                         $has_htc_funding = 1;
                         $comments[] = 'The unit key '.$unit->unit_key.' belongs to a program with HTC funding';
                         $this->audit->comment_system = $this->audit->comment_system.'The unit key '.$unit->unit_key.' belongs to a program with HTC funding';
