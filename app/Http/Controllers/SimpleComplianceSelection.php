@@ -1413,9 +1413,9 @@ class SimpleComplianceSelection extends Controller
                                 //$this->audit->save();
                             }else{
                                 $required_units = ceil($total_project_units/5);
-                                $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
-                                $units_selected_option = $units->random(ceil($total_project_units/5))->pluck('unit_key')->all();
-                                dd('1408 Random Unit Selection output:',$units_selected,$units_selected_option);
+                                //$units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
+                                $units_selected = $units->random(ceil($total_project_units/5))->pluck('unit_key')->all();
+                                dd('1408 Random Unit Selection output:',$units_selected);
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_project_units/5);
 
                                 $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_project_units/5);
