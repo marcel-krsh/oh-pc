@@ -465,15 +465,15 @@ class Kernel extends ConsoleKernel
             }
 
             //RunProjections
-            $test = DB::table('jobs')->where('payload', 'like', '%ComplianceProjectionJob%')->first();
-            if (is_null($test)) {
-                $planning = Projection::where('run',0)->first();
+            // $test = DB::table('jobs')->where('payload', 'like', '%ComplianceProjectionJob%')->first();
+            // if (is_null($test)) {
+            //     $planning = Projection::where('run',0)->first();
                
-                    $schedule->job(new ComplianceProjectionJob, 'compliance')->everyMinute();
+            //         $schedule->job(new ComplianceProjectionJob, 'compliance')->everyMinute();
                
-            } else {
-                //Log::info('Sync Job Already Started.');
-            }
+            // } else {
+            //     //Log::info('Sync Job Already Started.');
+            // }
         }
     }
 
