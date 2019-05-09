@@ -106,14 +106,14 @@ class SimpleComplianceSelection extends Controller
                                     
                                     $this->audit->comment = $this->audit->comment.' | Unit Key:'.$pp->unitKey.', Development Program Key:'.$pp->developmentProgramKey.', Start Date:'.date('m/d/Y',strtotime($pp->startDate));
                                     $this->audit->comment_system = $this->audit->comment_system.' | Unit Key:'.$pp->unitKey.', Development Program Key:'.$pp->developmentProgramKey.', Start Date:'.date('m/d/Y',strtotime($pp->startDate));
-                                    $this->audit->save();
+                                    //$this->audit->save();
 
                                     //get the matching program from the developmentProgramKey
                                     $program = ProjectProgram::where('project_program_key',$pp->developmentProgramKey)->with('program')->first();
                                     
                                     $this->audit->comment = $this->audit->comment.' | '.$program->program->program_name.' '.$program->program_id;
                                     $this->audit->comment_system = $this->audit->comment_system.' | '.$program->program->program_name.' '.$program->program_id;
-                                    $this->audit->save();
+                                    //$this->audit->save();
 
                                     if (!is_null($program)) {
                                         $upinserts[] =[
@@ -150,7 +150,7 @@ class SimpleComplianceSelection extends Controller
                                     } else {
                                         $this->audit->comment = $this->audit->comment.' | Unable to find program with key '.$pp->developmentProgramKey.' on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key;
                                         $this->audit->comment_system = $this->audit->comment_system.' | Unable to find program with key '.$pp->developmentProgramKey.' on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key;
-                                        $this->audit->save();
+                                        //$this->audit->save();
                                         //Log::info('Unable to find program with key of '.$unitProgram['attributes']['programKey'].' on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key);
                                     }
                                 } else {
@@ -159,11 +159,11 @@ class SimpleComplianceSelection extends Controller
                                     if($is_market_rate){
                                         
                                         $this->audit->comment_system = $this->audit->comment_system." | MARKET RATE, CANCELLED:<del>".$program->program->program_name.' '.$program->program_id.'</del>, Start Date:'.date('m/d/Y',strtotime($pp->startDate)).', End Date: '.date('m/d/Y',strtotime($pp->endDate));
-                                        $this->audit->save();
+                                        //$this->audit->save();
                                     }else{
                                         
                                         $this->audit->comment_system = $this->audit->comment_system." | CANCELLED:<del>".$program->program->program_name.' '.$program->program_id.'</del>, Start Date:'.date('m/d/Y',strtotime($pp->startDate)).', End Date: '.date('m/d/Y',strtotime($pp->endDate));
-                                        $this->audit->save();
+                                        //$this->audit->save();
                                     }
                                     
                                 }
@@ -183,14 +183,14 @@ class SimpleComplianceSelection extends Controller
                             //dd('Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key);
                             $this->audit->comment = $this->audit->comment.' | Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key;
                             $this->audit->comment_system = $this->audit->comment_system.' | Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$this->audit->id;
-                                    $this->audit->save();
+                                   // $this->audit->save();
                         }
                     }
                     $this->units = UnitProgram::where('audit_id',$this->audit->id)->get();
                     $this->audit->comment_system = $this->audit->comment_system.' | Finished Loop of Units';
                     $this->audit->save();
 
-                    dd($this->units);
+                    dd($this->units); //on 27 20.32 sec
                                     
                 
             
