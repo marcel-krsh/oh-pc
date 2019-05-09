@@ -38,7 +38,7 @@ class SimpleComplianceSelection extends Controller
     public $audit;
     public $planning;
     public $project;
-    public $unitPrograms;
+    public $units;
     public $full_audit;
     public function __construct()
     {
@@ -50,7 +50,7 @@ class SimpleComplianceSelection extends Controller
             $this->audit = null;
             $this->planning = null;
             $this->project = null;
-            $this->unitPrograms = null;
+            $this->units = null;
             $this->full_audit = 1; // set to 1 to run full audit
         
        //}
@@ -170,10 +170,11 @@ class SimpleComplianceSelection extends Controller
                             
                             //dd('Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key);
                             $this->audit->comment = $this->audit->comment.' | Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key;
-                            $this->audit->comment_system = $this->audit->comment_system.' | Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key;
+                            $this->audit->comment_system = $this->audit->comment_system.' | Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$this->audit->id;
                                     $this->audit->save();
                         }
                     }
+                    $this->units = UnitProgram::where('audit_id',$this->audit->id)
                     $this->audit->comment_system = $this->audit->comment_system.' | Finished Loop of Units';
                                     $this->audit->save();
                                     
@@ -751,7 +752,8 @@ class SimpleComplianceSelection extends Controller
             $program_bundle_names = implode(',', $program_bundle_names);
             
 
-            $units = UnitProgram::whereIn('program_key',$program_bundle_ids)->where('audit_id',$this->audit->id)->get();
+            $units = $this->units->whereIn('program_key',$program_bundle_ids)->where('audit_id',$this->audit->id)->get();
+            dd($this->units,$units);
             if(!is_null($units)){
 	            $total = count($units);
 	            $this->audit->comment_system = $this->audit->comment_system.' | Obtained '.$total.' units within the program bundle. '.date('g:h:i a',time());
