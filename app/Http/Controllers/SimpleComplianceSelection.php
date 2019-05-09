@@ -507,7 +507,7 @@ class SimpleComplianceSelection extends Controller
                 $this->audit->comment = $this->audit->comment.' | Combine and optimize used limiter on selection['.$i.'].';
                 $this->audit->save();
                 
-                $needed = $this->adjustedLimit(ount($selection[$i]['units']));
+                $needed = $this->adjustedLimit(count($selection[$i]['units']));
 
                 $summary['programs'][$i]['required_units'] = $needed;
 
