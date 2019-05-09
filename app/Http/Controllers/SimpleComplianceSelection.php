@@ -1309,12 +1309,14 @@ class SimpleComplianceSelection extends Controller
 
                 
                 $program_home_names = implode(',', $program_home_names);
-                dd('1312 current',$program_home_names);
+                //dd('1312 current',$program_home_names);
                 $comments = [];
 
                 $required_units = 0;
 
-                $total_project_units = Project::where('id', '=', $this->audit->project_id)->first()->units()->count();
+                $total_project_units = $this->project->stats_total_units();
+
+                dd($total_project_units);
 
                 $this->audit->comment_system = $this->audit->comment_system.' | Counting project units: '.$total_project_units;
                 //$this->audit->save();
