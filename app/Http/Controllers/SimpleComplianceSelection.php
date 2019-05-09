@@ -1436,7 +1436,7 @@ class SimpleComplianceSelection extends Controller
 
                         $comments[] = 'Checking if HTC funding applies to this unit '.$unit_key.' by cross checking with HTC programs';
 
-                        $this->audit->comment = $this->audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
+                        $this->audit->comment = $this->audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_key.' by cross checking with HTC programs';
                         //$this->audit->save();
                         
                         
@@ -1449,7 +1449,7 @@ class SimpleComplianceSelection extends Controller
                         //     //$this->audit->save();
                         // }
                         
-                        if (is_object($unit_selected) && count($unit_selected)) {
+                        if ($unit_selected) {
                             $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding';
                             $comments[] = 'We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
                             $this->audit->comment = $this->audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
