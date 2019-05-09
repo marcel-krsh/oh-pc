@@ -54,7 +54,7 @@ use App\Jobs\SyncUnitIdentitiesJob;
 use App\Jobs\ComplianceProjectionJob;
 
 use App\Jobs\SyncIdsJob;
-use App\Models\Planning;
+use App\Models\Projection;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -467,7 +467,7 @@ class Kernel extends ConsoleKernel
             //RunProjections
             $test = DB::table('jobs')->where('payload', 'like', '%ComplianceProjectionJob%')->first();
             if (is_null($test)) {
-                $planning = Planning::where('run',0)->first();
+                $planning = Projection::where('run',0)->first();
                
                     $schedule->job(new ComplianceProjectionJob, 'compliance')->everyMinute();
                
