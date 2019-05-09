@@ -2776,7 +2776,7 @@ class SimpleComplianceSelection extends Controller
 						//dd($unit_keys,$units[0]->programs->where('audit_id',$this->audit->id));
                         $unit_inspections_inserted = 0;
 
-                        foreach ($units as $unit) {
+                        foreach ($units->groupBy('unit_key') as $unit) {
                             
                             if (in_array($unit->unit_key, $overlap)) {
                                 $has_overlap = 1;
@@ -2806,7 +2806,8 @@ class SimpleComplianceSelection extends Controller
                                         'pm_organization_id' => $organization_id,
                                         'has_overlap' => $has_overlap,
                                         'is_site_visit' => 1,
-                                        'is_file_audit' => 0
+                                        'is_file_audit' => 0,
+                                        'unit_program_id' => $unit_program->id
                                     ]);
                                     $u->save();
                                     $unit_inspections_inserted++;
@@ -2825,7 +2826,7 @@ class SimpleComplianceSelection extends Controller
 
                         $unit_inspections_inserted = 0;
 
-                        foreach ($units as $unit) {
+                        foreach ($units->groupBy('unit_key') as $unit) {
                             
                             if (in_array($unit->unit_key, $overlap)) {
                                 $has_overlap = 1;
@@ -2857,7 +2858,8 @@ class SimpleComplianceSelection extends Controller
                                         'pm_organization_id' => $organization_id,
                                         'has_overlap' => $has_overlap,
                                         'is_site_visit' => 0,
-                                        'is_file_audit' => 1
+                                        'is_file_audit' => 1,
+                                        'unit_program_id' => $unit_program->id
                                     ]);
                                     $u->save();
                                     $unit_inspections_inserted++;
