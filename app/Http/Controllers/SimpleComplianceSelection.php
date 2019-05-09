@@ -808,7 +808,7 @@ class SimpleComplianceSelection extends Controller
                 $has_htc_funding = 0;
                 $unitProcessCount = 0;
                 
-
+                dd('811 Time to get to the htc funding check',$has_htc_funding);
                 foreach ($units as $unit) {
                     
                     
