@@ -1910,10 +1910,13 @@ class SimpleComplianceSelection extends Controller
             //                     $query->where('audit_id', '=', $this->audit->id);
             //                     $query->whereIn('program_key', $program_htc_ids);
             // })->get();
-            $all_htc_units = UnitProgram::whereIn('program_key',$program_htc_ids)->where('audit_id',$this->audit->id)->get();
+            $all_htc_units = $this->units->whereIn('program_key',$program_htc_ids)->where('audit_id',$this->audit->id);
             
-
-            $total_htc_units = count($all_htc_units);
+            if(is_object($all_htc_units) || is_array($all_htc_units)){
+            	$total_htc_units = count($all_htc_units);
+            } else {
+            	$total_htc_units = 0;
+            }
             
 
             if($total_htc_units){
@@ -1946,11 +1949,10 @@ class SimpleComplianceSelection extends Controller
 
                 $units = [];
                 foreach ($all_htc_units as $all_htc_unit) {
-                    if($all_htc_unit->unit->has_program_from_array($program_home_ids, $this->audit->id) || 
-                        $all_htc_unit->unit->has_program_from_array($program_ohtf_ids, $this->audit->id) || 
-                        $all_htc_unit->unit->has_program_from_array($program_nhtf_ids, $this->audit->id)){
+                    if($this->units->whereIn('program_key',$program_home_ids)->where('unit_key',$all_htc_unit->unit_key)->count() || 
+                       $this->units->whereIn('program_key',$program_ohtf_ids)->where('unit_key',$all_htc_unit->unit_key)->count() || 
+                       $this->units->whereIn('program_key',$$program_nhtf_ids)->where('unit_key',$all_htc_unit->unit_key)->count()){
                         $units[] = $all_htc_unit->unit_key;
-                        
                     }
                 }
 
