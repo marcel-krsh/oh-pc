@@ -1450,12 +1450,12 @@ class SimpleComplianceSelection extends Controller
                         // }
                         
                         if ($unit_selected) {
-                            $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding';
+                            $comments[] = 'The unit key '.$unit_key.' belongs to a program with HTC funding';
                             $comments[] = 'We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
                             $this->audit->comment = $this->audit->comment.' | Select Process We determined that there was HTC funding for this unit. The unit was added to the HTC subset.';
                                 //$this->audit->save();
                                 
-                            $htc_units_subset[] = $unit_selected->unit_key;
+                            $htc_units_subset[] = $unit_key;
                         }
                     }
                     $this->audit->save();
