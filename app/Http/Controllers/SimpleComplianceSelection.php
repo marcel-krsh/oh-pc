@@ -490,7 +490,7 @@ class SimpleComplianceSelection extends Controller
                 $this->audit->comment = $this->audit->comment.' | Combine and optimize used limiter on selection['.$i.'].';
                 $this->audit->save();
                 
-                $needed = $this->adjustedLimit($this->audit,count($selection[$i]['units']));
+                $needed = $this->adjustedLimit(ount($selection[$i]['units']));
 
                 $summary['programs'][$i]['required_units'] = $needed;
 
@@ -819,7 +819,7 @@ class SimpleComplianceSelection extends Controller
                     }
                 }
 
-                dd('Ran the htc funding check',$has_htc_funding);
+                dd('822 Ran the htc funding check',$has_htc_funding);
            
 
                 // $number_of_units_required = ceil($total/5);
@@ -922,7 +922,7 @@ class SimpleComplianceSelection extends Controller
 
 
                             if ($isLeasePurchase) {
-                                $required_units = $this->adjustedLimit($this->audit, count($units));
+                                $required_units = $this->adjustedLimit(count($units));
 
                                 $units_selected = $this->randomSelection($this->audit,$units->pluck('unit_key')->toArray(), 0, $required_units);
 
@@ -975,11 +975,11 @@ class SimpleComplianceSelection extends Controller
                         if ($is_multi_building_project) {
                             $this->audit->comment = $this->audit->comment.' | This is a multi-building elected project setting the adjusted limit accordingly.';
                             $this->audit->save();
-                            $required_units = $this->adjustedLimit($this->audit, count($units));
+                            $required_units = $this->adjustedLimit(count($units));
                             $this->audit->comment = $this->audit->comment.' | Set the adjusted limit based on the chart to '.$required_units.'.';
                             $this->audit->save();
 
-                            $units_selected = $this->randomSelection($this->audit, $units->pluck('unit_key')->toArray(), 0, $required_units);
+                            $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, $required_units);
                             $this->audit->comment = $this->audit->comment.' | Performed the random selection from the audit.';
                             $this->audit->save();
                             
@@ -1036,7 +1036,7 @@ class SimpleComplianceSelection extends Controller
                                                 ->toArray();
 
                                 // $required_units_for_that_building = ceil(count($units_for_that_building)/5);
-                                $required_units_for_that_building = $this->adjustedLimit($this->audit, count($units_for_that_building));
+                                $required_units_for_that_building = $this->adjustedLimit(count($units_for_that_building));
 
                                 $required_units = $required_units_for_that_building;
                                 
@@ -1067,7 +1067,7 @@ class SimpleComplianceSelection extends Controller
                         //}
                     } else {
                         // get required units using limiter
-                        // $required_units = $this->adjustedLimit($this->audit, count($units));
+                        // $required_units = $this->adjustedLimit(count($units));
 
                         $required_units = ceil($total/10); // 10% of units
 
@@ -2001,7 +2001,7 @@ class SimpleComplianceSelection extends Controller
                                                             $query->whereIn('program_key', $program_htc_only_ids);
                                                         })->pluck('unit_key')->toArray();
 
-                            $required_units = $this->adjustedLimit($this->audit, $total_htc_units);
+                            $required_units = $this->adjustedLimit($total_htc_units);
 
                             if($required_units <= count($htc_units_subset)){
                                 $number_of_htc_units_needed = 0;
@@ -2074,7 +2074,7 @@ class SimpleComplianceSelection extends Controller
                                                     $query->whereNotIn('program_key', $program_nhtf_ids);
                                                 })->pluck('unit_key')->toArray();
 
-                        $number_of_htc_units_required = $this->adjustedLimit($this->audit, $total_htc_units);
+                        $number_of_htc_units_required = $this->adjustedLimit($total_htc_units);
                         $required_units = $number_of_htc_units_required;
                         //ceil($total_htc_units/10);
 
@@ -2184,7 +2184,7 @@ class SimpleComplianceSelection extends Controller
                                                 ->toArray();
 
                                 //$required_units_for_that_building = ceil(count($htc_units_for_building)/5);
-                                $required_units_for_that_building = $this->adjustedLimit($this->audit, count($htc_units_for_building));
+                                $required_units_for_that_building = $this->adjustedLimit(count($htc_units_for_building));
                                 //$required_units = $required_units + $required_units_for_that_building;
                                 
                                 $required_units = $required_units_for_that_building;
