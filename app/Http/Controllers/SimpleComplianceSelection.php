@@ -2535,19 +2535,6 @@ class SimpleComplianceSelection extends Controller
 
 
             $projection->update([
-                $program_name =>
-                $program_multibuilding_election =>
-                $program_status => $program->status->status_name,
-                $program_award_number => 
-                $program_guide_year => 
-                $project_program_key => 
-                $funding_program_key => 
-                $project_program_id => 
-                $program_keyed_in_count => 
-                $program_calculated_count => 
-                $program_extended_use => 
-                $program_site_count => 
-                $program_file_count => 
 
                 $project_program_key => $program->project_program_key,
 				$funding_program_key => $program->program->funding_program_key,
@@ -2609,7 +2596,7 @@ class SimpleComplianceSelection extends Controller
                 'run' => 1
 
             ]);
-            
+
         	dd($optimized_site,$test,$this->project->stats_total_units);
 
         // $data = [
