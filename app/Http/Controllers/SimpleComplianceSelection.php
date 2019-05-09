@@ -2128,9 +2128,9 @@ class SimpleComplianceSelection extends Controller
                     if ($is_multi_building_project) {
                     	//dd('2119 section needs optimized');
                         $htc_units_without_overlap = $this->project->programs->whereIn('program_key', $program_htc_ids)
-                        							->whereNotIn('program_key', $program_home_ids);
-                                                    ->whereNotIn('program_key', $program_ohtf_ids);
-                                                    ->whereNotIn('program_key', $program_nhtf_ids);
+                        							->whereNotIn('program_key', $program_home_ids)
+                                                    ->whereNotIn('program_key', $program_ohtf_ids)
+                                                    ->whereNotIn('program_key', $program_nhtf_ids)
                                                 	->pluck('unit_key')->all();
 
                         $number_of_htc_units_required = $this->adjustedLimit($total_htc_units);
