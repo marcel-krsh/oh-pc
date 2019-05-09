@@ -66,7 +66,7 @@ class SimpleComplianceSelection extends Controller
                                     
         UnitProgram::where('audit_id', $this->audit->id)->delete();
         UnitInspection::where('audit_id', $this->audit->id)->delete();
-        
+        dd('Deleted!');
         
         $apiConnect = new DevcoService();
         // paths to the info we need: //dd($this->audit, $this->audit->project, $this->audit->project->buildings);
