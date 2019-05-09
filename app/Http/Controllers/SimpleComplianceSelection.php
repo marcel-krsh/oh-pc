@@ -80,8 +80,8 @@ class SimpleComplianceSelection extends Controller
                         // Get the unit's current program designation from DevCo
                         try {
                             $unitProjectPrograms = $apiConnect->getUnitProjectPrograms($unit->unit_key, 1, 'admin@allita.org', 'Updating Unit Program Data', 1, 'SystemServer');
-                            $this->projectPrograms = json_decode($unitProjectPrograms);
-                            $this->projectPrograms =  $this->projectPrograms->data;
+                            $projectPrograms = json_decode($unitProjectPrograms);
+                            $projectPrograms =  $projectPrograms->data;
 
                             if($unit->is_market_rate()){
                                 $is_market_rate = 1; 
@@ -98,7 +98,9 @@ class SimpleComplianceSelection extends Controller
                             ////dd($unitProgramData['data'][0]['attributes']['programKey']);
                             $upinserts = array();
                             $uginserts = array();
-                            foreach ($this->projectPrograms as $pp) {
+
+                            dd($projectPrograms);
+                            foreach ($projectPrograms as $pp) {
                                 
 
                                 $pp = $pp->attributes;
