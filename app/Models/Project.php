@@ -329,7 +329,7 @@ class Project extends Model
                     $query->orWhere('project_program_status_type_key', 30004);
                     $query->orWhere('project_program_status_type_key', 30009);
                     $query->orWhere('project_program_status_type_key', 30010);
-                })
+                })->with('program')
                 ;
     }
     public function all_other_programs() : HasMany
