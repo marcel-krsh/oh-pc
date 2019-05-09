@@ -1871,7 +1871,7 @@ class SimpleComplianceSelection extends Controller
 
         // check for HOME, OHTF, NHTF overlap and send to analyst
         // overlap contains the keys of units
-        dd('1872 - Overlap check');
+        //dd('1872 - Overlap check');
         $overlap = array();
         $overlap_list = '';
         for ($i=0; $i<count($units_to_check_for_overlap); $i++) {
@@ -1885,6 +1885,7 @@ class SimpleComplianceSelection extends Controller
                 }
             }
         }
+        dd('1888 overlap finished');
 
         $comments[] = 'Overlap list to send to analyst: '.$overlap_list;
         $this->audit->comment = $this->audit->comment.' | Overlap list to send to analyst: '.$overlap_list;
