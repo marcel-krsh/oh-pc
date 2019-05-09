@@ -96,6 +96,8 @@ class SimpleComplianceSelection extends Controller
                             //
                             //dd($unitProgramData['data']);
                             //dd($unitProgramData['data'][0]['attributes']['programKey']);
+                            $upinserts = array();
+                            $uginserts = array();
                             foreach ($this->projectPrograms as $pp) {
                                 
 
@@ -114,7 +116,7 @@ class SimpleComplianceSelection extends Controller
                                     $this->audit->save();
 
                                     if (!is_null($program)) {
-                                        UnitProgram::insert([
+                                        $upinserts[] =[
                                             'unit_key'      =>  $unit->unit_key,
                                             'unit_id'       =>  $unit->id,
                                             'program_key'   =>  $program->program_key,
@@ -127,11 +129,11 @@ class SimpleComplianceSelection extends Controller
                                             'updated_at'    =>  date("Y-m-d g:h:i", time()),
                                             'project_program_key' => $pp->developmentProgramKey,
                                             'project_program_id' => $program->id
-                                        ]);
+                                        ];
 
                                         if(count($program->program->groups())){
                                             foreach($program->program->groups() as $group){
-                                                UnitGroup::insert([
+                                                $uginserts[] =[
                                                     'unit_key'      =>  $unit->unit_key,
                                                     'unit_id'       =>  $unit->id,
                                                     'group_id'      =>  $group,
@@ -166,6 +168,16 @@ class SimpleComplianceSelection extends Controller
                                     
                                 }
                             }
+                            // insert here
+                            if(count($upinserts)){
+                            	UnitProgram::insert($upinserts);
+                         	}
+                            if(count($uginserts)){
+                            	UnitGroup::insert($uginserts);
+                            } 
+                             unset($upinserts);
+                             unset($uginserts);
+
                         } catch (Exception $e) {
                             
                             //dd('Unable to get the unit programs on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key);
