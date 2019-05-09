@@ -1903,9 +1903,11 @@ class SimpleComplianceSelection extends Controller
         $required_units = 0; // this is computed, not counted!
         $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
          if(!empty(array_intersect($projectProgramIds, $program_htc_ids))) {
+
+         dd('1907 Entering HTC ');
             // total HTC funded units (71)
             $this->audit->comment = $this->audit->comment.' | Selecting units with HTC at '.date('g:h:i a',time());
-            $this->audit->save();
+            //$this->audit->save();
             // $all_htc_units = Unit::whereHas('programs', function ($query) use ($this->audit, $program_htc_ids) {
             //                     $query->where('audit_id', '=', $this->audit->id);
             //                     $query->whereIn('program_key', $program_htc_ids);
@@ -1923,12 +1925,12 @@ class SimpleComplianceSelection extends Controller
                 $use_limiter = 1;
 
                 $this->audit->comment = $this->audit->comment.' | Select Process Starting HTC.';
-                $this->audit->save();
+                //$this->audit->save();
                 
 
                 $comments[] = 'The total of HTC units is '.$total_htc_units.'.';
                 $this->audit->comment = $this->audit->comment.' | Select Process The total of HTC units is '.$total_htc_units.'.';
-                            $this->audit->save();
+                            //$this->audit->save();
                             
 
                 // HTC without HOME, OHTF, NHTF
@@ -1951,14 +1953,14 @@ class SimpleComplianceSelection extends Controller
                 foreach ($all_htc_units as $all_htc_unit) {
                     if($this->units->whereIn('program_key',$program_home_ids)->where('unit_key',$all_htc_unit->unit_key)->count() || 
                        $this->units->whereIn('program_key',$program_ohtf_ids)->where('unit_key',$all_htc_unit->unit_key)->count() || 
-                       $this->units->whereIn('program_key',$$program_nhtf_ids)->where('unit_key',$all_htc_unit->unit_key)->count()){
+                       $this->units->whereIn('program_key',$program_nhtf_ids)->where('unit_key',$all_htc_unit->unit_key)->count()){
                         $units[] = $all_htc_unit->unit_key;
                     }
                 }
 
                 $comments[] = 'The total of HTC units that have HOME, OHTF and NHTF is '.count($units).'.';
                 $this->audit->comment = $this->audit->comment.' | Select Process The total of HTC units that have HOME, OHTF and NHTF is '.count($units).'.';
-                $this->audit->save();
+                //$this->audit->save();
                 
 
                 // check in project_program->first_year_award_claimed date for the 15 year test
@@ -1981,7 +1983,7 @@ class SimpleComplianceSelection extends Controller
                 $comments[] = 'Going through the HTC programs, we look for the most recent year in the first_year_award_claimed field.';
 
                 $this->audit->comment = $this->audit->comment.' | Select Process Going through the HTC programs, we look for the most recent year in the first_year_award_claimed field.';
-                $this->audit->save();
+                //$this->audit->save();
                 
 
                 foreach ($this->project->programs as $program) {
@@ -1992,7 +1994,7 @@ class SimpleComplianceSelection extends Controller
                             $first_year = $program->first_year_award_claimed;
                             $comments[] = 'Program key '.$program->program_key.' has the year '.$program->first_year_award_claimed.'.';
                             $this->audit->comment = $this->audit->comment.' | Select Process Program key '.$program->program_key.' has the year '.$program->first_year_award_claimed.'.';
-                            $this->audit->save();
+                            //$this->audit->save();
                             
                         }
                     }
@@ -2002,13 +2004,13 @@ class SimpleComplianceSelection extends Controller
                     $first_fifteen_years = 0;
                     $comments[] = 'Based on the year, we determined that the program is not within the first 15 years.';
                     $this->audit->comment = $this->audit->comment.' | Select Process Based on the year, we determined that the program is not within the first 15 years.';
-                        $this->audit->save();
+                        //$this->audit->save();
                         
                 } else {
                     $first_fifteen_years = 1;
                     $comments[] = 'Based on the year, we determined that the program is within the first 15 years.';
                     $this->audit->comment = $this->audit->comment.' | Select Process Based on the year, we determined that the program is within the first 15 years.';
-                        $this->audit->save();
+                        //$this->audit->save();
                         
                 }
                 
@@ -2097,7 +2099,7 @@ class SimpleComplianceSelection extends Controller
                     // for each of the current programs+project, check if multiple_building_election_key is 2 for multi building project
                     $comments[] = 'Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
                     $this->audit->comment = $this->audit->comment.' | Select Process Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
-                    $this->audit->save();
+                    //$this->audit->save();
                     
 
                     foreach ($this->project->programs as $program) {
@@ -2107,14 +2109,14 @@ class SimpleComplianceSelection extends Controller
                                 $is_multi_building_project = 1;
                                 $comments[] = 'Program key '.$program->program_key.' showed that the project is a multi building project.';
                                 $this->audit->comment = $this->audit->comment.' | Select Process Program key '.$program->program_key.' showed that the project is a multi building project.';
-                                $this->audit->save();
+                                //$this->audit->save();
                                 
                             }
                         }
                     }
 
                     if ($is_multi_building_project) {
-
+                    	dd('2119 section needs optimized');
                         $htc_units_without_overlap = Unit::whereHas('programs', function ($query) use ($program_htc_ids, $program_home_ids, $program_ohtf_ids, $program_nhtf_ids) {
                                                     $query->where('audit_id', '=', $this->audit->id);
                                                     $query->whereIn('program_key', $program_htc_ids);
@@ -2131,12 +2133,12 @@ class SimpleComplianceSelection extends Controller
                             $number_of_htc_units_needed = 0;
                             $comments[] ='There are enough HTC units in the previous selections ('.count($htc_units_subset).') to meet the required number of '.$required_units.' units.';
                             $this->audit->comment = $this->audit->comment.'There are enough HTC units in the previous selections ('.count($htc_units_subset).') to meet the required number of '.$required_units.' units.';
-                            $this->audit->save();
+                            //$this->audit->save();
                         }else{
                             $number_of_htc_units_needed = $number_of_htc_units_required - count($htc_units_subset);
                             $comments[] = 'There are '.count($htc_units_subset).' that are from the previous selection that are automatically included in the HTC selection. We need to select '.$number_of_htc_units_needed.' more units.';
                             $this->audit->comment = $this->audit->comment.'There are '.count($htc_units_subset).' that are from the previous selection that are automatically included in the HTC selection. We need to select '.$number_of_htc_units_needed.' more units.';
-                                $this->audit->save();
+                                //$this->audit->save();
                         }
 
                         $units_selected = $this->randomSelection($htc_units_without_overlap, 0, $number_of_htc_units_needed);
@@ -2151,7 +2153,7 @@ class SimpleComplianceSelection extends Controller
                         
                         $comments[] = 'Total units selected including overlap : '.$units_selected_count;
                         $this->audit->comment = $this->audit->comment.' | Total units selected including overlap : '.$units_selected_count;
-                                $this->audit->save();
+                                //$this->audit->save();
                                 
 
                         // $units_selected_count isn't using the array_merge to keep the duplicate
@@ -2169,13 +2171,14 @@ class SimpleComplianceSelection extends Controller
                             "use_limiter" => $use_limiter,
                             "comments" => $comments
                         ];
+                    $this->audit->save();
                         
                     } else {
                         $use_limiter = 0; // we apply the limiter for each building
 
                         $comments[] = 'The project is not a multi building project.';
                         $this->audit->comment = $this->audit->comment.' | Select Process The project is not a multi building project.';
-                                $this->audit->save();
+                               // $this->audit->save();
                                 
                         // group units by building, then proceed with the random selection
                         // create a new list of units based on building and project key
@@ -2206,7 +2209,7 @@ class SimpleComplianceSelection extends Controller
                                 // then we apply the limiter for EACH building
 
                                 // $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf
-
+                                dd('2212 - this section needs optimized!');
                                 $htc_units_for_building = Unit::where('building_key', '=', $building->building_key)
                                                 ->whereHas('programs', function ($query) use ($program_htc_ids) {
                                                     $query->where('audit_id', '=', $this->audit->id);
