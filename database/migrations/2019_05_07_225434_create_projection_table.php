@@ -17,8 +17,8 @@ class CreateProjectionTable extends Migration
             $table->increments('id');
            
             
-            $table->string('project_number');
-            $table->string('project_name');
+            $table->string('project_number')->nullable();
+            $table->string('project_name')->nullable();
             $table->boolean('failed_run')->default(false);
             $table->boolean('running')->default(false);
             $table->boolean('run')->default(false);
@@ -26,7 +26,7 @@ class CreateProjectionTable extends Migration
              
             
             $table->integer('development_key');
-            $table->integer('project_id'); 
+            $table->integer('project_id')->nullable(); 
 
             $table->integer('total_building_count')->nullable();
             $table->integer('total_unit_count')->nullable();
