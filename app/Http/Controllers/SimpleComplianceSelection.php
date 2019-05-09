@@ -99,9 +99,7 @@ class SimpleComplianceSelection extends Controller
                             $upinserts = array();
                             $uginserts = array();
 
-                            if(count($projectPrograms) > 1) {
-                            	dd($this->project->units,$projectPrograms);
-                            }
+                            
                             foreach ($projectPrograms as $pp) {
                                 
 
@@ -151,6 +149,10 @@ class SimpleComplianceSelection extends Controller
                                             }
                                         }
                                         
+                                    if(count($projectPrograms) > 1) {
+		                            	dd($this->project->units,$projectPrograms,$upinserts,$uginserts);
+		                            }
+
                                     } else {
                                         $this->audit->comment = $this->audit->comment.' | Unable to find program with key '.$pp->developmentProgramKey.' on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key;
                                         $this->audit->comment_system = $this->audit->comment_system.' | Unable to find program with key '.$pp->developmentProgramKey.' on unit_key'.$unit->unit_key.' for audit'.$this->audit->monitoring_key;
