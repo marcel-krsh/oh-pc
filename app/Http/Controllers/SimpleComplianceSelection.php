@@ -744,7 +744,7 @@ class SimpleComplianceSelection extends Controller
             $this->audit->save();
 
 
-            $program_bundle_names = $this->project->programs->with('programs')->whereIn('program_key', $program_bundle_ids)->pluck('programs.program_name')->all();
+            $program_bundle_names = $this->project->programs->whereIn('program_key', $program_bundle_ids)->pluck('programs.program_name')->all();
             $this->audit->comment_system = $this->audit->comment_system.' | Built Program Names.';
             $this->audit->save();
             
