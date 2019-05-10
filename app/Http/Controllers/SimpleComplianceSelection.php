@@ -2567,7 +2567,7 @@ class SimpleComplianceSelection extends Controller
 
             // set values
             // get the project program
-            $this_program_calculated_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->count();
+            $this_program_calculated_count = $this->units->where('program_id',$program->program_id)->count();
             $this_program_site_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->where('is_site_visit',1)->count();
             $this_program_file_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->where('is_file_audit',1)->count();
 
