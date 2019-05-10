@@ -2826,7 +2826,7 @@ class SimpleComplianceSelection extends Controller
 
                         $unit_inspections_inserted = 0;
 
-                        foreach ($units->groupBy('unit_key') as $unit) {
+                        foreach ($units as $unit) {
                             
                             if (in_array($unit->unit_key, $overlap)) {
                                 $has_overlap = 1;
