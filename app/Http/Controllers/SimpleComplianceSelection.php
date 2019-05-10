@@ -2610,7 +2610,7 @@ class SimpleComplianceSelection extends Controller
                         "use_limiter" => $use_limiter,
                         "comments" => $comments
                     ];
-                    dd($_2016_total,$required_units,$selection);
+                    dd($_2016_total,$required_units,$selection,$number_of_htc_units_needed,$htc_units_without_overlap,$overlap);
 
                 }
                 //}
