@@ -2783,7 +2783,7 @@ class SimpleComplianceSelection extends Controller
             $this_program_file_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->where('is_file_audit',1)->count();
 
             $percent_difference = ($this_program_site_count * 100) / $this->program_percentages[$program_type]['_2016_count'];
-
+            dd($this->program_percentages[$program_type]);
             $projection->update([
 
                 $project_program_key => $program->project_program_key,
