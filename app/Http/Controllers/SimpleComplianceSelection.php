@@ -1510,7 +1510,7 @@ class SimpleComplianceSelection extends Controller
 				////dd('1336', $units);
 				$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='NA';
             	$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = null;
-            	dd('HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'],$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count']);
+            	dd('HOME'.str_replace(' ','',str_replace('-', '', $home_award_number)),$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count']);
                 if((is_array($units) || is_object($units)) && count($units)){
                     $this->audit->comment = $this->audit->comment.' | Select Process starting Home selection for award number '.$home_award_number;
                     ////$this->audit->save();
