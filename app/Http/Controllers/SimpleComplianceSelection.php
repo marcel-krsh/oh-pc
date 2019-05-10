@@ -2805,6 +2805,11 @@ class SimpleComplianceSelection extends Controller
         	} else {
         		$percent_difference = "NA - NO UNITS";
         	}
+        	if(!is_null($program->multiple_building_status)){
+        		$mbs = $program->multiple_building_status->election_description;
+        	}else{
+        		$mbs = "NOT SET";
+        	}
             //dd($this->program_percentages[$program_type]);
             $projection->update([
 
@@ -2816,7 +2821,7 @@ class SimpleComplianceSelection extends Controller
 				$program_id => $program->program_id,
 
 	            $program_name =>$program->program->program_name,
-	            $program_multibuilding_election =>  $program->multiple_building_status->election_description,
+	            $program_multibuilding_election =>  $mbs,
 	            $program_status => $program->status->status_name,
 	            $program_award_number => $program->award_number,
 	            $program_guide_year => $program->guide_l_year,
