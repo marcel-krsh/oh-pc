@@ -2615,7 +2615,7 @@ class SimpleComplianceSelection extends Controller
         	$optimized_site = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('unit_key')->count();
         	$optimized_file = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_file_audit',1)->groupBy('unit_key')->count();
 
-        	$2019_buildings_with_unit_inpsections = UnitInspection::select('building_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('building_key')->count();      
+        	$_2019_buildings_with_unit_inpsections = UnitInspection::select('building_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('building_key')->count();      
          	
 
             $projection->update([
@@ -2630,7 +2630,7 @@ class SimpleComplianceSelection extends Controller
                 'total_market_rate_unit_count' => $this->project->stats_total_market_rate_units(),
                 'optimized_2019_site_count' => $optimized_site,
                 'optimized_2019_file_count' => $optimized_file,
-                '2019_buildings_with_unit_inpsections' => $2019_buildings_with_unit_inpsections,
+                '2019_buildings_with_unit_inpsections' => $_2019_buildings_with_unit_inpsections,
                 'run' => 1
 
             ]);
