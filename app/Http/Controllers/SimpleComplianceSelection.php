@@ -975,6 +975,10 @@ class SimpleComplianceSelection extends Controller
                     //$required_units = count($units_selected);
                     $required_units = ceil($total/5);
 
+                    $this->program_percentages['BUNDLE'] = ['percent'=>'20% of Bundle Total'];
+        			$this->program_percentages['BUNDLE'] = ['_2016_count'=>$required_units];
+
+
                     $comments[] = '20% of the pool is randomly selected. Total selected: '.count($units_selected);
                      $this->audit->comment = $this->audit->comment.' | 20% of the pool is randomly selected. Total selected: '.count($units_selected);
                      
@@ -1117,6 +1121,11 @@ class SimpleComplianceSelection extends Controller
                             $this->audit->comment = $this->audit->comment.' | This is a multi-building elected project setting the adjusted limit accordingly.';
                             ////$this->audit->save();
                             $required_units = $this->adjustedLimit(count($units));
+
+                            $_2016_total = count($units)/5;
+                            $this->program_percentages['BUNDLE'] = ['percent'=>'20% of Bundle Total'];
+        					$this->program_percentages['BUNDLE'] = ['_2016_count'=>$_2016_total];
+
                             $this->audit->comment = $this->audit->comment.' | Set the adjusted limit based on the chart to '.$required_units.'.';
                             ////$this->audit->save();
 
@@ -1160,6 +1169,7 @@ class SimpleComplianceSelection extends Controller
                             $units_selected = [];
 
                             $first_building_done = 0; // this is to control the comments to only keep the ones we care about after the first building information is displayed.
+                            $_2016_total = 0;
 
                             foreach ($this->project->buildings as $building) {
                                 
@@ -1186,7 +1196,10 @@ class SimpleComplianceSelection extends Controller
                                 $required_units_for_that_building = $this->adjustedLimit(count($units_for_that_building));
 
                                 $required_units = $required_units_for_that_building;
-                                
+                                $_2016_total = $_2016_total + count($units_for_that_building)/5;
+	                            $this->program_percentages['BUNDLE'] = ['percent'=>'20% of Bundle Total Per Building'];
+	        					$this->program_percentages['BUNDLE'] = ['_2016_count'=>$_2016_total];
+
                                 $new_building_selection = $this->randomSelection($units_for_that_building, 0, $required_units);
                                 //dd('1064 Random Unit Selection output:'.$new_building_selection);
                                 $units_selected = $new_building_selection;
@@ -1218,6 +1231,8 @@ class SimpleComplianceSelection extends Controller
                         // $required_units = $this->adjustedLimit(count($units));
 
                         $required_units = ceil($total/10); // 10% of units
+                      	$this->program_percentages['BUNDLE'] = ['percent'=>'10% of HTC'];
+    					$this->program_percentages['BUNDLE'] = ['_2016_count'=>$required_units];
 
                         $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 10);
                         //dd('1096 Random Unit Selection output:',$units_selected);
@@ -1280,10 +1295,11 @@ class SimpleComplianceSelection extends Controller
 
             $required_units = 0;
 
-            $units = Unit::whereHas('programs', function ($query) use ($program_811_ids) {
-                                $query->where('audit_id', '=', $this->audit->id);
-                                $query->whereIn('program_key', $program_811_ids);
-            })->get();
+            // $units = Unit::whereHas('programs', function ($query) use ($program_811_ids) {
+            //                     $query->where('audit_id', '=', $this->audit->id);
+            //                     $query->whereIn('program_key', $program_811_ids);
+            // })->get();
+            $units = $this->units->whereIn('program_key',$program_811_ids);
             
 
             if(count($units)){
@@ -1351,10 +1367,11 @@ class SimpleComplianceSelection extends Controller
 
             $required_units = 0;
 
-            $units = Unit::whereHas('programs', function ($query) use ($program_medicaid_ids) {
-                                $query->where('audit_id', '=', $this->audit->id);
-                                $query->whereIn('program_key', $program_medicaid_ids);
-            })->get();
+            // $units = Unit::whereHas('programs', function ($query) use ($program_medicaid_ids) {
+            //                     $query->where('audit_id', '=', $this->audit->id);
+            //                     $query->whereIn('program_key', $program_medicaid_ids);
+            // })->get();
+            $units = $this->units->whereIn('program_key',$program_medicaid_ids);
             
 
             if(count($units)){
@@ -1363,6 +1380,8 @@ class SimpleComplianceSelection extends Controller
                 
 
                 $required_units = count($units);
+                $this->program_percentages['MEDICAID'] = ['percent'=>'100%'];
+        		$this->program_percentages['MEDICAID'] = ['_2016_count'=>$_2016_total];
 
                 $units_selected = $units->pluck('unit_key')->toArray();
                 
@@ -2422,7 +2441,7 @@ class SimpleComplianceSelection extends Controller
                                 $required_units_for_that_building = $this->adjustedLimit(count($htc_units_for_building));
                                 //$required_units = $required_units + $required_units_for_that_building;
                                 $_2016_total = $_2016_total + ($htc_units_for_building/5);
-		                        $this->program_percentages['HTC'] = ['percent'=>'20% of HTC'];
+		                        $this->program_percentages['HTC'] = ['percent'=>'20% of HTC Per Building'];
 		            			$this->program_percentages['HTC'] = ['_2016_count'=>$_2016_total];
                                 
                                 $required_units = $required_units_for_that_building;
@@ -2688,6 +2707,30 @@ class SimpleComplianceSelection extends Controller
         $p = 1;
 
         foreach ($programs as $program) {
+
+        	// determine program type
+        	if(in_array($program->program_key, $program_bundle_ids){
+        		$program_type = 'BUNDLE';
+        	}
+        	if(in_array($program->program_key, $program_htc_ids){
+        		$program_type = 'HTC';
+        	}
+        	if(in_array($program->program_key, $program_811_ids){
+        		$program_type = '811';
+        	}
+        	if(in_array($program->program_key, $program_home_idse){
+        		$program_type = 'HOME'.$program->award_number;
+        	}
+        	if(in_array($program->program_key, $program_ohtf_ids){
+        		$program_type = 'OHTF'.$program->award_number;
+        	}
+        	if(in_array($program->program_key, $program_nhtf_ids){
+        		$program_type = 'NHTF'.$program->award_number;
+        	}
+        	if(in_array($program->program_key, $program_medicaid_ids){
+        		$program_type = 'MEDICAID';
+        	}
+
             //set names of columns to be updated
             $project_program_key = 'program_'.$p.'_project_program_key';
 			$funding_program_key = 'program_'.$p.'_funding_program_key';
@@ -2723,7 +2766,7 @@ class SimpleComplianceSelection extends Controller
             $this_program_site_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->where('is_site_visit',1)->count();
             $this_program_file_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->where('is_file_audit',1)->count();
 
-
+            $percent_difference = ($this_program_site_count * 100) / $this->program_percentages[$program_type]['_2016_count'];
 
             $projection->update([
 
@@ -2744,15 +2787,15 @@ class SimpleComplianceSelection extends Controller
 	            
 	            $program_keyed_in_count =>  $program->total_unit_count,
 	            $program_calculated_count => $this_program_calculated_count,
-	            $program_2016_percentage_used => null,
+	            $program_2016_percentage_used => $this->program_percentages[$program_type]['percent'],
 
-	            $program_2016_site_count => null,
+	            $program_2016_site_count => $this->program_percentages[$program_type]['_2016_count'],
 	            $program_2019_site_count => $this_program_site_count,
-	            $program_2019_site_difference_percent => 'NA',
+	            $program_2019_site_difference_percent =>  $percent_difference.'%',
 
-	            $program_2016_file_count => null,
+	            $program_2016_file_count => $this->program_percentages[$program_type]['_2016_count'],
 	            $program_2019_file_count => $this_program_file_count,
-	            $program_2019_file_difference_percent => 'NA'
+	            $program_2019_file_difference_percent => $percent_difference.'%'
 
             ]);
 
