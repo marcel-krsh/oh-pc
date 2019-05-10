@@ -2857,7 +2857,8 @@ class SimpleComplianceSelection extends Controller
 
             ]);
 
-        	dd($optimized_site,$optimized_file,$inspections);
+        	//dd($optimized_site,$optimized_file,$inspections);
+        	echo $this->projection->id."<br />";
 
         // $data = [
         //     'event' => 'NewMessage',
@@ -2878,254 +2879,258 @@ class SimpleComplianceSelection extends Controller
     public function runSimpleCompliance(Projection $projection)
     {
         //$this->projection = Projection::where('run',0)->first();
-            $this->projection = $projection;
-            $this->projection->project_name = date('m/d/Y g:h a', time())." line 2547";
-            $this->projection->save();
-            $this->project = Project::where('project_key',$this->projection->development_key)->first();
-            $this->extended_use = 0;
-            if(!is_null($this->projection) && $this->projection->running == 0){
+        $projections = Projection::where('running',0)->where('run',0)->where('failed_run',0)->get();
 
-                if(!is_null($this->projection->audit_id)){
-                    $this->audit = Audit::find($this->projection->audit_id);
-                    $this->audit->comment .= '| Loaded the audit from a previous run. ';
-                }else{
-                    $this->audit = New Audit;
-                    $this->audit->project_id = $this->project->id;
-                    $this->audit->development_key = $this->project->project_key;
-                    $this->audit->monitoring_status_type_key = 10;
-                    //$this->audit->save();
-                    $this->projection->audit_id = $this->audit->id;
-                    $this->projection->save();
-                    $this->projection = $this->projection;
-                    $this->audit = $this->audit;
-                    $this->audit->comment .= 'Created the audit';
-                    $this->audit->save();
-                    dd($this->audit);
+        forEach($projections as $projection){
+	            $this->projection = $projection;
+	            $this->projection->project_name = date('m/d/Y g:h a', time())." line 2547";
+	            $this->projection->save();
+	            $this->project = Project::where('project_key',$this->projection->development_key)->first();
+	            $this->extended_use = 0;
+	            if(!is_null($this->projection) && $this->projection->running == 0){
 
-                }
-                    $this->projection->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
-                   
-                
-            } else if(!is_null($this->projection)) {
-            	//dd('Projection set but running is not 0 - this is running - do not interrupt a running script!');
+	                if(!is_null($this->projection->audit_id)){
+	                    $this->audit = Audit::find($this->projection->audit_id);
+	                    $this->audit->comment .= '| Loaded the audit from a previous run. ';
+	                }else{
+	                    $this->audit = New Audit;
+	                    $this->audit->project_id = $this->project->id;
+	                    $this->audit->development_key = $this->project->project_key;
+	                    $this->audit->monitoring_status_type_key = 10;
+	                    //$this->audit->save();
+	                    $this->projection->audit_id = $this->audit->id;
+	                    $this->projection->save();
+	                    $this->projection = $this->projection;
+	                    $this->audit = $this->audit;
+	                    $this->audit->comment .= 'Created the audit';
+	                    $this->audit->save();
+	                    //dd($this->audit);
 
-            } else {
-            	//dd('Projection came back null');
-            }
-            if(is_null($this->audit)){
-            	//dd('Audit is not Set');
-            }
-            ////dd($this->projection,$this->audit,$this->project);
+	                }
+	                    $this->projection->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
+	                   
+	                
+	            } else if(!is_null($this->projection)) {
+	            	//dd('Projection set but running is not 0 - this is running - do not interrupt a running script!');
 
-        if($this->projection && $this->projection->run == 0){
-            
-            //LOG HERE if it is a brand new audit run
+	            } else {
+	            	//dd('Projection came back null');
+	            }
+	            if(is_null($this->audit)){
+	            	//dd('Audit is not Set');
+	            }
+	            ////dd($this->projection,$this->audit,$this->project);
 
-            //LOG HERE if it is a rerun audit and who asked for it
+	        if($this->projection && $this->projection->run == 0){
+	            
+	            //LOG HERE if it is a brand new audit run
 
-            
-            $this->audit->comment = 'Audit process starting at '.date('m/d/Y h:i:s A',time());
-            $this->audit->comment_system = 'Audit process starting at '.date('m/d/Y h:i:s A',time());
-            //$this->audit->save();
-            
-            
-            // //get the current audit units:
-            $this->audit->comment = $this->audit->comment.' | Fetching Audit Units';
-            $this->audit->comment_system = $this->audit->comment_system.' | Running Fetch Audit Units, build UnitProgram';
-                                        //$this->audit->save();
-                                        
-            $this->fetchAuditUnits($this->audit);
-            $this->audit->comment_system = $this->audit->comment_system.' | Finished Fetch Units';
-                                        //$this->audit->save();
-                                        
-            
-            //$check = 1;
-            
+	            //LOG HERE if it is a rerun audit and who asked for it
 
-            if ($this->units->count()) {
-                $this->audit->comment_system = $this->audit->comment_system.' | UnitProgram has records, we can start the selection process.';
-                                        //$this->audit->save();
-                                        
-                // run the selection process 10 times and keep the best one
-                $best_run = null;
-                $best_total = null;
-                $overlap = null;
-                $project = null;
-                $organization_id = null;
-                
+	            
+	            $this->audit->comment = 'Audit process starting at '.date('m/d/Y h:i:s A',time());
+	            $this->audit->comment_system = 'Audit process starting at '.date('m/d/Y h:i:s A',time());
+	            //$this->audit->save();
+	            
+	            
+	            // //get the current audit units:
+	            $this->audit->comment = $this->audit->comment.' | Fetching Audit Units';
+	            $this->audit->comment_system = $this->audit->comment_system.' | Running Fetch Audit Units, build UnitProgram';
+	                                        //$this->audit->save();
+	                                        
+	            $this->fetchAuditUnits($this->audit);
+	            $this->audit->comment_system = $this->audit->comment_system.' | Finished Fetch Units';
+	                                        //$this->audit->save();
+	                                        
+	            
+	            //$check = 1;
+	            
 
-                //$timesToRun = SystemSetting::where('key','times_to_run_compliance_selection')->first();
+	            if ($this->units->count()) {
+	                $this->audit->comment_system = $this->audit->comment_system.' | UnitProgram has records, we can start the selection process.';
+	                                        //$this->audit->save();
+	                                        
+	                // run the selection process 10 times and keep the best one
+	                $best_run = null;
+	                $best_total = null;
+	                $overlap = null;
+	                $project = null;
+	                $organization_id = null;
+	                
 
-                //$timesToRun = $timesToRun->value;
-                $timesToRun = 1;
+	                //$timesToRun = SystemSetting::where('key','times_to_run_compliance_selection')->first();
 
-                for ($i=0; $i<$timesToRun; $i++) {
-                    $this->audit->comment_system = $this->audit->comment_system.' | Running the selectionProcess for the '.$i.' time';
-                                        //$this->audit->save();
-                    $summary = $this->selectionProcess($this->audit);
-                    
-                    //Log::info('audit '.$i.' run;');
-                    $timesRun = $i + 1;
-                    
-                    $this->audit->comment_system = $this->audit->comment_system.' | Finished Selection Process Run '.$timesRun.'.';
-                                        //$this->audit->save();
-                                        
+	                //$timesToRun = $timesToRun->value;
+	                $timesToRun = 1;
 
-                    if ($summary && (count($summary[0]['grouped']) < $best_total || $best_run == null)) {
-                        $best_run = $summary[0];
-                        $overlap = $summary[1];
-                        $project = $summary[2];
-                        $organization_id = $summary[3];
-                        $best_total = count($summary[0]['grouped']);
-                        
-                    }
-                }
+	                for ($i=0; $i<$timesToRun; $i++) {
+	                    $this->audit->comment_system = $this->audit->comment_system.' | Running the selectionProcess for the '.$i.' time';
+	                                        //$this->audit->save();
+	                    $summary = $this->selectionProcess($this->audit);
+	                    
+	                    //Log::info('audit '.$i.' run;');
+	                    $timesRun = $i + 1;
+	                    
+	                    $this->audit->comment_system = $this->audit->comment_system.' | Finished Selection Process Run '.$timesRun.'.';
+	                                        //$this->audit->save();
+	                                        
 
-                // save all units selected in selection table
-                if ($best_run) {
-                    
-                    
-                    //Log::info('best run is selected');
-                    foreach ($best_run['programs'] as $program) {
+	                    if ($summary && (count($summary[0]['grouped']) < $best_total || $best_run == null)) {
+	                        $best_run = $summary[0];
+	                        $overlap = $summary[1];
+	                        $project = $summary[2];
+	                        $organization_id = $summary[3];
+	                        $best_total = count($summary[0]['grouped']);
+	                        
+	                    }
+	                }
 
-                        // SITE AUDIT
-                        $unit_keys = $program['units_after_optimization'];
+	                // save all units selected in selection table
+	                if ($best_run) {
+	                    
+	                    
+	                    //Log::info('best run is selected');
+	                    foreach ($best_run['programs'] as $program) {
 
-                        $units = $this->project->units->whereIn('unit_key', $unit_keys);
+	                        // SITE AUDIT
+	                        $unit_keys = $program['units_after_optimization'];
 
-                        //$units = Unit:->get();
-                        
-						//dd($unit_keys,$units[0]->programs->where('audit_id',$this->audit->id));
-                        $unit_inspections_inserted = 0;
+	                        $units = $this->project->units->whereIn('unit_key', $unit_keys);
 
-                        foreach ($units as $unit) {
-                            //dd($units->groupBy('unit_key'),$units,$unit);
-                            if (in_array($unit->unit_key, $overlap)) {
-                                $has_overlap = 1;
-                            } else {
-                                $has_overlap = 0;
-                            }
+	                        //$units = Unit:->get();
+	                        
+							//dd($unit_keys,$units[0]->programs->where('audit_id',$this->audit->id));
+	                        $unit_inspections_inserted = 0;
 
-                            $program_keys = explode(',', $program['program_keys']);
-                            
+	                        foreach ($units as $unit) {
+	                            //dd($units->groupBy('unit_key'),$units,$unit);
+	                            if (in_array($unit->unit_key, $overlap)) {
+	                                $has_overlap = 1;
+	                            } else {
+	                                $has_overlap = 0;
+	                            }
 
-                            foreach ($unit->programs->where('audit_id',$this->audit->id) as $unit_program) {
-                                if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < $program['required_units']) {
-                                    $u = new UnitInspection([
-                                        'group' => $program['name'],
-                                        'group_id' => $program['group'],
-                                        'unit_id' => $unit->unit_id,
-                                        'unit_key' => $unit->unit_key,
-                                        'unit_name' => $unit->unit_name,
-                                        'building_id' => $unit->building_id,
-                                        'building_key' => $unit->building_key,
-                                        'audit_id' => $this->audit->id,
-                                        'audit_key' => $this->audit->monitoring_key,
-                                        'project_id' => $project->id,
-                                        'project_key' => $project->project_key,
-                                        'program_key' => $unit_program->program_key,
-                                        'program_id' => $unit_program->program_id,
-                                        'pm_organization_id' => $organization_id,
-                                        'has_overlap' => $has_overlap,
-                                        'is_site_visit' => 1,
-                                        'is_file_audit' => 0,
-                                        'unit_program_id' => $unit_program->id
-                                    ]);
-                                    $u->save();
-                                    $unit_inspections_inserted++;
-                                    
-                                }
-                            }
-                        }
+	                            $program_keys = explode(',', $program['program_keys']);
+	                            
 
-                        // FILE AUDIT
-                        $unit_keys = $program['units_before_optimization'];
+	                            foreach ($unit->programs->where('audit_id',$this->audit->id) as $unit_program) {
+	                                if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < $program['required_units']) {
+	                                    $u = new UnitInspection([
+	                                        'group' => $program['name'],
+	                                        'group_id' => $program['group'],
+	                                        'unit_id' => $unit->unit_id,
+	                                        'unit_key' => $unit->unit_key,
+	                                        'unit_name' => $unit->unit_name,
+	                                        'building_id' => $unit->building_id,
+	                                        'building_key' => $unit->building_key,
+	                                        'audit_id' => $this->audit->id,
+	                                        'audit_key' => $this->audit->monitoring_key,
+	                                        'project_id' => $project->id,
+	                                        'project_key' => $project->project_key,
+	                                        'program_key' => $unit_program->program_key,
+	                                        'program_id' => $unit_program->program_id,
+	                                        'pm_organization_id' => $organization_id,
+	                                        'has_overlap' => $has_overlap,
+	                                        'is_site_visit' => 1,
+	                                        'is_file_audit' => 0,
+	                                        'unit_program_id' => $unit_program->id
+	                                    ]);
+	                                    $u->save();
+	                                    $unit_inspections_inserted++;
+	                                    
+	                                }
+	                            }
+	                        }
 
-                        
+	                        // FILE AUDIT
+	                        $unit_keys = $program['units_before_optimization'];
 
-                       $units = $this->project->units->whereIn('unit_key', $unit_keys);
-                        
+	                        
 
-                        $unit_inspections_inserted = 0;
+	                       $units = $this->project->units->whereIn('unit_key', $unit_keys);
+	                        
 
-                        foreach ($units as $unit) {
-                            
-                            if (in_array($unit->unit_key, $overlap)) {
-                                $has_overlap = 1;
-                            } else {
-                                $has_overlap = 0;
-                            }
+	                        $unit_inspections_inserted = 0;
 
-                            $program_keys = explode(',', $program['program_keys']);
-                            
+	                        foreach ($units as $unit) {
+	                            
+	                            if (in_array($unit->unit_key, $overlap)) {
+	                                $has_overlap = 1;
+	                            } else {
+	                                $has_overlap = 0;
+	                            }
 
-                            
-                            foreach ($unit->programs->where('audit_id',$this->audit->id) as $unit_program) {
-                                if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < count($program['units_before_optimization'])) {
+	                            $program_keys = explode(',', $program['program_keys']);
+	                            
 
-                                    $u = new UnitInspection([
-                                        'group' => $program['name'],
-                                        'group_id' => $program['group'],
-                                        'unit_id' => $unit->unit_id,
-                                        'unit_key' => $unit->unit_key,
-                                        'unit_name' => $unit->unit_name,
-                                        'building_id' => $unit->building_id,
-                                        'building_key' => $unit->building_key,
-                                        'audit_id' => $this->audit->id,
-                                        'audit_key' => $this->audit->monitoring_key,
-                                        'project_id' => $project->id,
-                                        'project_key' => $project->project_key,
-                                        'program_key' => $unit_program->program_key,
-                                        'program_id' => $unit_program->program_id,
-                                        'pm_organization_id' => $organization_id,
-                                        'has_overlap' => $has_overlap,
-                                        'is_site_visit' => 0,
-                                        'is_file_audit' => 1,
-                                        'unit_program_id' => $unit_program->id
-                                    ]);
-                                    $u->save();
-                                    $unit_inspections_inserted++;
-                                    
-                                }
-                            }
-                        }
+	                            
+	                            foreach ($unit->programs->where('audit_id',$this->audit->id) as $unit_program) {
+	                                if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < count($program['units_before_optimization'])) {
 
-                        
-                    }
-                }
-                //LOG::info('unit inspections should be there.');
-                //$this->addAmenityInspections($this->audit);
-                $this->updateProjection($best_run);    // finally create the audit
-                //$this->createNewProjectDetails($this->audit); // create the project details
-                
-                // LOG SUCCESS HERE
-                $this->audit->compliance_run = 1;
-                $this->audit->rerun_compliance = 0;
-                $this->audit->comment .= 'Audit process finished at '.date('m/d/Y h:i:s A',time()).'.';
-                $this->audit->comment_system .= 'Audit process finished at '.date('m/d/Y h:i:s A',time());
+	                                    $u = new UnitInspection([
+	                                        'group' => $program['name'],
+	                                        'group_id' => $program['group'],
+	                                        'unit_id' => $unit->unit_id,
+	                                        'unit_key' => $unit->unit_key,
+	                                        'unit_name' => $unit->unit_name,
+	                                        'building_id' => $unit->building_id,
+	                                        'building_key' => $unit->building_key,
+	                                        'audit_id' => $this->audit->id,
+	                                        'audit_key' => $this->audit->monitoring_key,
+	                                        'project_id' => $project->id,
+	                                        'project_key' => $project->project_key,
+	                                        'program_key' => $unit_program->program_key,
+	                                        'program_id' => $unit_program->program_id,
+	                                        'pm_organization_id' => $organization_id,
+	                                        'has_overlap' => $has_overlap,
+	                                        'is_site_visit' => 0,
+	                                        'is_file_audit' => 1,
+	                                        'unit_program_id' => $unit_program->id
+	                                    ]);
+	                                    $u->save();
+	                                    $unit_inspections_inserted++;
+	                                    
+	                                }
+	                            }
+	                        }
 
-            //$this->audit->save();
+	                        
+	                    }
+	                }
+	                //LOG::info('unit inspections should be there.');
+	                //$this->addAmenityInspections($this->audit);
+	                $this->updateProjection($best_run);    // finally create the audit
+	                //$this->createNewProjectDetails($this->audit); // create the project details
+	                
+	                // LOG SUCCESS HERE
+	                $this->audit->compliance_run = 1;
+	                $this->audit->rerun_compliance = 0;
+	                $this->audit->comment .= 'Audit process finished at '.date('m/d/Y h:i:s A',time()).'.';
+	                $this->audit->comment_system .= 'Audit process finished at '.date('m/d/Y h:i:s A',time());
 
-            } else {
-                $this->audit->comment_system = "Unable to get program units from devco. Cannot run compliance run and generate the audit.";
-                $this->audit->comment = "Unable to get program units from devco. Cannot run compliance run and generate the audit.";
-                $this->audit->compliance_run = 0;
-                $this->audit->rerun_compliance = 0;
-                //$this->audit->save();
-            }
-        }else{
-                if(!is_null($this->audit)){
-                    $this->audit->comment_system = "Run must be 0 to run this compliance check.";
-                    $this->audit->comment = "Run must be 0 to run this compliance check.";
-                    $this->audit->compliance_run = 0;
-                    $this->audit->rerun_compliance = 0;
-                    //$this->audit->save();
-                } else if(!is_null($this->projection)) {
-                    $this->projection->project_name = 'Failed to attach audit, and run was not set to 0.';
-                    $this->projection->save();
-                }
-        }
-        
-         $this->audit->save();    
+	            //$this->audit->save();
+
+	            } else {
+	                $this->audit->comment_system = "Unable to get program units from devco. Cannot run compliance run and generate the audit.";
+	                $this->audit->comment = "Unable to get program units from devco. Cannot run compliance run and generate the audit.";
+	                $this->audit->compliance_run = 0;
+	                $this->audit->rerun_compliance = 0;
+	                //$this->audit->save();
+	            }
+	        }else{
+	                if(!is_null($this->audit)){
+	                    $this->audit->comment_system = "Run must be 0 to run this compliance check.";
+	                    $this->audit->comment = "Run must be 0 to run this compliance check.";
+	                    $this->audit->compliance_run = 0;
+	                    $this->audit->rerun_compliance = 0;
+	                    //$this->audit->save();
+	                } else if(!is_null($this->projection)) {
+	                    $this->projection->project_name = 'Failed to attach audit, and run was not set to 0.';
+	                    $this->projection->save();
+	                }
+	        }
+	        
+	         $this->audit->save();  
+        }  
     }
 }
