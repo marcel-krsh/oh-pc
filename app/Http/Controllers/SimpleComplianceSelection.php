@@ -2899,7 +2899,7 @@ class SimpleComplianceSelection extends Controller
                     $this->projection = $this->projection;
                     $this->audit = $this->audit;
                     $this->audit->comment .= 'Created the audit';
-                    //$this->audit->save();
+                    $this->audit->save();
                     dd($this->audit);
 
                 }
