@@ -1212,7 +1212,7 @@ class SimpleComplianceSelection extends Controller
                                 $required_units_for_that_building = $this->adjustedLimit(count($units_for_that_building));
 
                                 $required_units = $required_units_for_that_building;
-                                $_2016_total = $_2016_total + count($units_for_that_building)/5;
+                                $_2016_total += count($units_for_that_building)/5;
 	                            $this->program_percentages['BUNDLE']['percent'] = '20% of Bundle Total Per Building';
 	        					$this->program_percentages['BUNDLE']['_2016_count'] = $_2016_total;
 
@@ -2456,7 +2456,7 @@ class SimpleComplianceSelection extends Controller
                                 //$required_units_for_that_building = ceil(count($htc_units_for_building)/5);
                                 $required_units_for_that_building = $this->adjustedLimit(count($htc_units_for_building));
                                 //$required_units = $required_units + $required_units_for_that_building;
-                                $_2016_total = $_2016_total + ($htc_units_for_building/5);
+                                $_2016_total += $htc_units_for_building / 5;
 		                        $this->program_percentages['HTC']['percent']='20% of HTC Per Building';
 		            			$this->program_percentages['HTC']['_2016_count'] = $_2016_total;
                                 
