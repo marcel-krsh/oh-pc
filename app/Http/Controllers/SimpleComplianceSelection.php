@@ -1196,7 +1196,7 @@ class SimpleComplianceSelection extends Controller
                                 }
 
                                 $units_for_that_building = Unit::where('building_key', '=', $building->building_key)
-                                                ->whereHas('programs', function ($query) use ( $this->program_bundle_ids) {
+                                                ->whereHas('programs', function ($query) {
                                                     $query->where('monitoring_key', '=', $this->audit->monitoring_key);
                                                     $query->whereIn('program_key', $this->program_bundle_ids);
                                                 })
