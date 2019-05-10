@@ -2018,7 +2018,8 @@ class SimpleComplianceSelection extends Controller
                     }
 
                     foreach ($units_selected as $unit_key) {
-                        $unit_selected = $this->units->where('unit_key','=',$unit_key);
+                    	dd('2021 does optimization work here?');
+                        $unit_selected = $this->units->where('unit_key',$unit_key);
                         
                         $has_htc_funding = 0;
 
