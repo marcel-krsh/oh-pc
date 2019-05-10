@@ -2565,7 +2565,7 @@ class SimpleComplianceSelection extends Controller
 
                     $_2016_total = $required_units;
 
-                    dd($_2016_total,$required_units);
+
 
                     $this->program_percentages['HTC']['percent']='10% of HTC';
         			$this->program_percentages['HTC']['_2016_count'] = $_2016_total;
@@ -2607,7 +2607,7 @@ class SimpleComplianceSelection extends Controller
                         "use_limiter" => $use_limiter,
                         "comments" => $comments
                     ];
-                    
+                    dd($_2016_total,$required_units,$selection);
 
                 }
                 //}
