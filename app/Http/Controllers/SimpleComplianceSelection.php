@@ -1508,6 +1508,9 @@ class SimpleComplianceSelection extends Controller
                 $this->audit->comment_system = $this->audit->comment_system.' | Total selected units '.count($units);
                 ////$this->audit->save();
 				////dd('1336', $units);
+				$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='NA';
+            	$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = null;
+            	dd('HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'],$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count']);
                 if((is_array($units) || is_object($units)) && count($units)){
                     $this->audit->comment = $this->audit->comment.' | Select Process starting Home selection for award number '.$home_award_number;
                     ////$this->audit->save();
@@ -1541,8 +1544,7 @@ class SimpleComplianceSelection extends Controller
                         
                     // $project_program_key = $this->project->programs->whereIn('program_key',$this->program_home_ids)->pluck('project_program_key')->all();
                     // $project_program_key = implode(',', $project_program_key);
-                    $this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='NA';
-            		$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = null;
+                    
                     if (count($units) <= 4) {
 
                         $required_units = count($units);
