@@ -363,7 +363,7 @@ class ComplianceSelectionJob implements ShouldQueue
         }
     }
 
-    public function randomSelection($audit, $units, $percentage = 20, $min = 0, $max = 0)
+    public function randomSelection( $units, $percentage = 20, $min = 0, $max = 0)
     {
         $audit->comment = $audit->comment.' | Starting randomSelection.';
                 $audit->save();
@@ -846,7 +846,7 @@ class ComplianceSelectionJob implements ShouldQueue
                     $comments[] = 'By checking each unit and associated programs with HTC funding, we determined that no HTC funding exists for this pool';
                     $audit->comment = $audit->comment.' | By checking each unit and associated programs with HTC funding, we determined that no HTC funding exists for this pool';
 
-                    $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 20);
+                    $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 20);
 
                     //$required_units = count($units_selected);
                     $required_units = ceil($total/5);
@@ -941,7 +941,7 @@ class ComplianceSelectionJob implements ShouldQueue
                             if ($isLeasePurchase) {
                                 $required_units = $this->adjustedLimit($audit, count($units));
 
-                                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $required_units);
+                                $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, $required_units);
 
                                 //$required_units = count($units_selected);
                                 //$required_units = $number_of_units_required;
@@ -996,7 +996,7 @@ class ComplianceSelectionJob implements ShouldQueue
                             $audit->comment = $audit->comment.' | Set the adjusted limit based on the chart to '.$required_units.'.';
                             $audit->save();
 
-                            $units_selected = $this->randomSelection($audit, $units->pluck('unit_key')->toArray(), 0, $required_units);
+                            $units_selected = $this->randomSelection( $units->pluck('unit_key')->toArray(), 0, $required_units);
                             $audit->comment = $audit->comment.' | Performed the random selection from the audit.';
                             $audit->save();
                             $this->processes++;
@@ -1057,7 +1057,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                                 $required_units = $required_units_for_that_building;
                                 
-                                $new_building_selection = $this->randomSelection($audit,$units_for_that_building, 0, $required_units);
+                                $new_building_selection = $this->randomSelection($units_for_that_building, 0, $required_units);
                                 $units_selected = $new_building_selection;
                                 $units_selected_count = count($new_building_selection);
 
@@ -1088,7 +1088,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                         $required_units = ceil($total/10); // 10% of units
 
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 10);
+                        $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 10);
 
                         // $required_units = count($units_selected);
                         
@@ -1364,7 +1364,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                         $required_units = count($units);
 
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 100);
+                        $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 100);
                         $this->processes++;
                         $comments[] = 'Because there are less than 4 HOME units, the selection is 100%. Total selected: '.count($units_selected);
                         $audit->comment = $audit->comment.' | Select Process Because there are less than 4 HOME units, the selection is 100%. Total selected: '.count($units_selected);
@@ -1376,7 +1376,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                             $required_units = ceil($total_units/2);
 
-                            $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
+                            $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
                             $this->processes++;
 
                             $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of HOME units, the total selected is '.ceil($total_units/2);
@@ -1388,7 +1388,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                             if(ceil($total_project_units/5) > $total_units){
                                 $required_units = $total_units;
-                                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
+                                $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, $total_units);
                                 $this->processes++;
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.$total_units.' which is the total number of units';
 
@@ -1396,7 +1396,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                 $audit->save();
                             }else{
                                 $required_units = ceil($total_project_units/5);
-                                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));$this->processes++;
+                                $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));$this->processes++;
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_project_units/5);
 
                                 $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of HOME units, the total selected is '.ceil($total_project_units/5);
@@ -1548,7 +1548,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                         $required_units = count($units);
 
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 100);
+                        $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 100);
                         $this->processes++;
                         $comments[] = 'Because there are less than 4 OHTF units, the selection is 100%. Total selected: '.count($units_selected);
 
@@ -1561,7 +1561,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                             $required_units = ceil($total_units/2);
 
-                             $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
+                             $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
                              $this->processes++;
                              $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of OHTF units, the total selected is '.ceil($total_units/2);
 
@@ -1572,14 +1572,14 @@ class ComplianceSelectionJob implements ShouldQueue
 
                             if(ceil($total_project_units/5) > $total_units){
                                 $required_units = $total_units;
-                                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
+                                $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, $total_units);
                                 $this->processes++;
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.$total_units. 'which is the total number of units';
 
                                 $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.$total_units. 'which is the total number of units';
                             }else{
                                 $required_units = ceil($total_project_units/5);
-                                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
+                                $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
                                 $this->processes++;
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of OHTF units, the total selected is '.ceil($total_project_units/5);
 
@@ -1729,7 +1729,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                         $required_units = count($units); // 100%
 
-                        $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 100);
+                        $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 100);
                         $this->processes++;
                         $comments[] = 'Because there are less than 4 NHTF units, the selection is 100%. Total selected: '.count($units_selected);
 
@@ -1742,7 +1742,7 @@ class ComplianceSelectionJob implements ShouldQueue
 
                             $required_units = ceil($total_units/2);
 
-                             $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
+                             $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_units/2));
                              $this->processes++;
                              $comments[] = 'Because there are more than 4 units and because 20% of project units is smaller than 50% of NHTF units, the total selected is '.ceil($total_units/2);
                              $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is smaller than 50% of NHTF units, the total selected is '.ceil($total_units/2);
@@ -1753,14 +1753,14 @@ class ComplianceSelectionJob implements ShouldQueue
 
                             if(ceil($total_project_units/5) > $total_units){
                                 $required_units = $total_units;
-                                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, $total_units);
+                                $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, $total_units);
                                 $this->processes++;
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$total_units. 'which is the total number of units';
 
                                 $audit->comment = $audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$total_units. 'which is the total number of units';
                             }else{
                                 $required_units = ceil($total_project_units/5);
-                                $units_selected = $this->randomSelection($audit,$units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
+                                $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
                                 $this->processes++;
                                 $comments[] = 'Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.ceil($total_project_units/5);
 
@@ -2025,7 +2025,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                 $number_of_htc_units_needed = $required_units - count($htc_units_subset);
                             }
 
-                            $units_selected = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
+                            $units_selected = $this->randomSelection($htc_units_without_overlap, 0, $number_of_htc_units_needed);
                             
                             $units_selected_count = count($units_selected);
 
@@ -2106,7 +2106,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                 $audit->save();
                         }
 
-                        $units_selected = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
+                        $units_selected = $this->randomSelection($htc_units_without_overlap, 0, $number_of_htc_units_needed);
                         
                         $units_selected_count = count($units_selected);
 
@@ -2242,7 +2242,7 @@ class ComplianceSelectionJob implements ShouldQueue
                                     $number_of_htc_units_needed_for_that_building = 0;
                                 }
                                 
-                                $new_building_selection = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed_for_that_building);
+                                $new_building_selection = $this->randomSelection($htc_units_without_overlap, 0, $number_of_htc_units_needed_for_that_building);
                                 
                                 //$units_selected_count = $units_selected_count + count($new_building_selection);
                                 $units_selected_count = count($new_building_selection);
@@ -2312,7 +2312,7 @@ class ComplianceSelectionJob implements ShouldQueue
                         $number_of_htc_units_needed = $number_of_htc_units_required - count($overlap);
                     }
 
-                    $units_selected = $this->randomSelection($audit,$htc_units_without_overlap, 0, $number_of_htc_units_needed);
+                    $units_selected = $this->randomSelection($htc_units_without_overlap, 0, $number_of_htc_units_needed);
                     
                     $units_selected_count = count($units_selected);
                     $comments[] = 'Total selected: '.count($units_selected);
