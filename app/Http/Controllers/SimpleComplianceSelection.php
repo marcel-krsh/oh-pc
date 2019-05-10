@@ -2018,13 +2018,13 @@ class SimpleComplianceSelection extends Controller
                     }
 
                     foreach ($units_selected as $unit_key) {
-                        $unit_selected = Unit::where('unit_key','=',$unit_key)->first();
+                        $unit_selected = $this->units->where('unit_key','=',$unit_key);
                         
                         $has_htc_funding = 0;
 
-                        $comments[] = 'Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
+                        $comments[] = 'Checking if HTC funding applies to this unit '.$unit_key.' by cross checking with HTC programs';
 
-                        $this->audit->comment = $this->audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_selected->unit_key.' by cross checking with HTC programs';
+                        $this->audit->comment = $this->audit->comment.' | Select Process Checking if HTC funding applies to this unit '.$unit_key.' by cross checking with HTC programs';
                             //$this->audit->save();
                             
 
@@ -2032,9 +2032,9 @@ class SimpleComplianceSelection extends Controller
                         //$unit = Unit::where('unit_key', '=', $unit_selected)->first();
                         
 
-                        if($unit_selected->has_program_from_array($this->program_htc_ids, $this->audit->id)){
+                        if(count($unit_selected->whereIn('program_key',$this->program_htc_ids))){
                             $has_htc_funding = 1;
-                            $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding';
+                            $comments[] = 'The unit key '.$unit_key.' belongs to a program with HTC funding';
                             //$this->audit->save();
                         }
 
@@ -2045,7 +2045,7 @@ class SimpleComplianceSelection extends Controller
                                 //$this->audit->save();
                                 
 
-                            $htc_units_subset[] = $unit_selected->unit_key;
+                            $htc_units_subset[] = $unit_key;
                         }
                     }
 
