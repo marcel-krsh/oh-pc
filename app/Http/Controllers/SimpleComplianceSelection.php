@@ -2564,6 +2564,9 @@ class SimpleComplianceSelection extends Controller
                     $required_units = $number_of_htc_units_required;
 
                     $_2016_total = $required_units;
+
+                    dd($_2016_total,$required_units);
+
                     $this->program_percentages['HTC']['percent']='10% of HTC';
         			$this->program_percentages['HTC']['_2016_count'] = $_2016_total;
 
