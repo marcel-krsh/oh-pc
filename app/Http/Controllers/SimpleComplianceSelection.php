@@ -2900,7 +2900,7 @@ class SimpleComplianceSelection extends Controller
                     $this->audit = $this->audit;
                     $this->audit->comment .= 'Created the audit';
                     //$this->audit->save();
-
+                    dd($this->audit);
 
                 }
                     $this->projection->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
