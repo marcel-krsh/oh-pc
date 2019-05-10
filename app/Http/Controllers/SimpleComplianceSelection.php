@@ -2341,7 +2341,7 @@ class SimpleComplianceSelection extends Controller
                     //dd('2127 Finished checking multibuilding');
                     if ($is_multi_building_project) {
                     	//dd('2119 section needs optimized');
-                        $htc_units_without_overlap = $this->project->programs->whereIn('program_key', $this->program_htc_ids)
+                        $htc_units_without_overlap = $this->units->whereIn('program_key', $this->program_htc_ids)
                         							->whereNotIn('program_key', $this->program_home_ids)
                                                     ->whereNotIn('program_key', $this->program_ohtf_ids)
                                                     ->whereNotIn('program_key', $this->program_nhtf_ids)
@@ -2610,7 +2610,7 @@ class SimpleComplianceSelection extends Controller
                         "use_limiter" => $use_limiter,
                         "comments" => $comments
                     ];
-                    dd($_2016_total,$required_units,$selection,$number_of_htc_units_needed,$htc_units_without_overlap,$overlap);
+                    //dd($_2016_total,$required_units,$selection,$number_of_htc_units_needed,$htc_units_without_overlap,$overlap);
 
                 }
                 //}
