@@ -2452,7 +2452,7 @@ class SimpleComplianceSelection extends Controller
                                                 ->whereIn('program_key', $this->program_htc_ids)
                                                 ->pluck('unit_key')
                                                 ->all();
-                                dd('2420 Check optimization', $htc_units_for_building, $htc_units_without_overlap, $htc_units_with_overlap );
+                                //dd('2420 Check optimization', $htc_units_for_building, $htc_units_without_overlap, $htc_units_with_overlap );
                                 //$required_units_for_that_building = ceil(count($htc_units_for_building)/5);
                                 $required_units_for_that_building = $this->adjustedLimit(count($htc_units_for_building));
                                 //$required_units = $required_units + $required_units_for_that_building;
