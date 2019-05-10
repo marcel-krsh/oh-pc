@@ -1515,7 +1515,7 @@ class SimpleComplianceSelection extends Controller
                         $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 100);
                         //dd('1373 Random Unit Selection output:',$units_selected);
 
-                        $this->program_percentages[];
+                        
                         
                         $comments[] = 'Because there are less than 4 HOME units, the selection is 100%. Total selected: '.count($units_selected);
                         $this->audit->comment = $this->audit->comment.' | Select Process Because there are less than 4 HOME units, the selection is 100%. Total selected: '.count($units_selected);
