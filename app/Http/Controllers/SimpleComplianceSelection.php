@@ -2709,25 +2709,25 @@ class SimpleComplianceSelection extends Controller
         foreach ($programs as $program) {
 
         	// determine program type
-        	if(in_array($program->program_key, $program_bundle_ids){
+        	if(in_array($program->program_key, $program_bundle_ids)){
         		$program_type = 'BUNDLE';
         	}
-        	if(in_array($program->program_key, $program_htc_ids){
+        	if(in_array($program->program_key, $program_htc_ids)){
         		$program_type = 'HTC';
         	}
-        	if(in_array($program->program_key, $program_811_ids){
+        	if(in_array($program->program_key, $program_811_ids)){
         		$program_type = '811';
         	}
-        	if(in_array($program->program_key, $program_home_idse){
+        	if(in_array($program->program_key, $program_home_ids)){
         		$program_type = 'HOME'.$program->award_number;
         	}
-        	if(in_array($program->program_key, $program_ohtf_ids){
+        	if(in_array($program->program_key, $program_ohtf_ids)){
         		$program_type = 'OHTF'.$program->award_number;
         	}
-        	if(in_array($program->program_key, $program_nhtf_ids){
+        	if(in_array($program->program_key, $program_nhtf_ids)){
         		$program_type = 'NHTF'.$program->award_number;
         	}
-        	if(in_array($program->program_key, $program_medicaid_ids){
+        	if(in_array($program->program_key, $program_medicaid_ids)){
         		$program_type = 'MEDICAID';
         	}
 
