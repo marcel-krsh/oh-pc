@@ -2572,6 +2572,7 @@ class SimpleComplianceSelection extends Controller
             $this_program_file_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->where('is_file_audit',1)->count();
 
 
+
             $projection->update([
 
                 $project_program_key => $program->project_program_key,
@@ -2596,7 +2597,6 @@ class SimpleComplianceSelection extends Controller
 	            $program_2016_site_count => null,
 	            $program_2019_site_count => $this_program_site_count,
 	            $program_2019_site_difference_percent => 'NA',
-	            $program_2019_buildings_with_unit_inpsections => null,
 
 	            $program_2016_file_count => null,
 	            $program_2019_file_count => $this_program_file_count,
@@ -2614,9 +2614,8 @@ class SimpleComplianceSelection extends Controller
 
         	$optimized_site = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('unit_key')->count();
         	$optimized_file = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_file_audit',1)->groupBy('unit_key')->count();
-        
-        	$test = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->count();
-			        
+
+        	$2019_buildings_with_unit_inpsections = UnitInspection::select('building_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('building_key')->count();      
          	
 
             $projection->update([
@@ -2631,6 +2630,7 @@ class SimpleComplianceSelection extends Controller
                 'total_market_rate_unit_count' => $this->project->stats_total_market_rate_units(),
                 'optimized_2019_site_count' => $optimized_site,
                 'optimized_2019_file_count' => $optimized_file,
+                '2019_buildings_with_unit_inpsections' => $2019_buildings_with_unit_inpsections,
                 'run' => 1
 
             ]);
