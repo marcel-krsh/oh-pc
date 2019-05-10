@@ -1660,7 +1660,7 @@ class SimpleComplianceSelection extends Controller
                     $this->audit->comment_system = $this->audit->comment_system.' | 1455 Select Process is not working with HOME.';
                     //$this->audit->save();
                 }
-            }this->
+            }
         }else {
             $htc_units_subset_for_home = array();
             $this->audit->comment_system = $this->audit->comment_system.' | 1461 Select Process is not working with Home.';
