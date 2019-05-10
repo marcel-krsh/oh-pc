@@ -2769,14 +2769,14 @@ class SimpleComplianceSelection extends Controller
                         // SITE AUDIT
                         $unit_keys = $program['units_after_optimization'];
 
-                        $units = $this->units->whereIn('unit_key', $unit_keys);
+                        $units = $this->project->units->whereIn('unit_key', $unit_keys);
 
                         //$units = Unit:->get();
                         
 						//dd($unit_keys,$units[0]->programs->where('audit_id',$this->audit->id));
                         $unit_inspections_inserted = 0;
 
-                        foreach ($units->groupBy('unit_key') as $unit) {
+                        foreach ($units as $unit) {
                             dd($units->groupBy('unit_key'),$units,$unit);
                             if (in_array($unit->unit_key, $overlap)) {
                                 $has_overlap = 1;
@@ -2787,7 +2787,7 @@ class SimpleComplianceSelection extends Controller
                             $program_keys = explode(',', $program['program_keys']);
                             
 
-                            foreach ($units->where('unit_key',$unit->unit_key) as $unit_program) {
+                            foreach ($unit->programs->where('audit_id',$this->audit->id) as $unit_program) {
                                 if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < $program['required_units']) {
                                     $u = new UnitInspection([
                                         'group' => $program['name'],
@@ -2821,7 +2821,7 @@ class SimpleComplianceSelection extends Controller
 
                         
 
-                       $units = $this->units->whereIn('unit_key', $unit_keys);
+                       $units = $this->project->units->whereIn('unit_key', $unit_keys);
                         
 
                         $unit_inspections_inserted = 0;
@@ -2838,7 +2838,7 @@ class SimpleComplianceSelection extends Controller
                             
 
                             
-                            foreach ($units->where('unit_key',$unit->unit_key) as $unit_program) {
+                            foreach ($unit->programs->where('audit_id',$this->audit->id) as $unit_program) {
                                 if (in_array($unit_program->program_key, $program_keys) && $unit_inspections_inserted < count($program['units_before_optimization'])) {
 
                                     $u = new UnitInspection([
