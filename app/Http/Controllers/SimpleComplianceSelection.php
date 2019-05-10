@@ -991,8 +991,8 @@ class SimpleComplianceSelection extends Controller
                     //$required_units = count($units_selected);
                     $required_units = ceil($total/5);
 
-                    $this->program_percentages['BUNDLE'] = ['percent'=>'20% of Bundle Total'];
-        			$this->program_percentages['BUNDLE'] = ['_2016_count'=>$required_units];
+                    $this->program_percentages['BUNDLE']['percent'] = '20% of Bundle Total';
+        			$this->program_percentages['BUNDLE']['_2016_count'] = $required_units;
 
 
                     $comments[] = '20% of the pool is randomly selected. Total selected: '.count($units_selected);
@@ -1139,8 +1139,8 @@ class SimpleComplianceSelection extends Controller
                             $required_units = $this->adjustedLimit(count($units));
 
                             $_2016_total = count($units)/5;
-                            $this->program_percentages['BUNDLE'] = ['percent'=>'20% of Bundle Total'];
-        					$this->program_percentages['BUNDLE'] = ['_2016_count'=>$_2016_total];
+                            $this->program_percentages['BUNDLE']['percent'] = '20% of Bundle Total';
+        					$this->program_percentages['BUNDLE']['_2016_count'] = $_2016_total;
 
                             $this->audit->comment = $this->audit->comment.' | Set the adjusted limit based on the chart to '.$required_units.'.';
                             ////$this->audit->save();
@@ -1213,8 +1213,8 @@ class SimpleComplianceSelection extends Controller
 
                                 $required_units = $required_units_for_that_building;
                                 $_2016_total = $_2016_total + count($units_for_that_building)/5;
-	                            $this->program_percentages['BUNDLE'] = ['percent'=>'20% of Bundle Total Per Building'];
-	        					$this->program_percentages['BUNDLE'] = ['_2016_count'=>$_2016_total];
+	                            $this->program_percentages['BUNDLE']['percent'] = '20% of Bundle Total Per Building';
+	        					$this->program_percentages['BUNDLE']['_2016_count'] = $_2016_total;
 
                                 $new_building_selection = $this->randomSelection($units_for_that_building, 0, $required_units);
                                 //dd('1064 Random Unit Selection output:'.$new_building_selection);
@@ -1247,8 +1247,8 @@ class SimpleComplianceSelection extends Controller
                         // $required_units = $this->adjustedLimit(count($units));
 
                         $required_units = ceil($total/10); // 10% of units
-                      	$this->program_percentages['BUNDLE'] = ['percent'=>'10% of HTC'];
-    					$this->program_percentages['BUNDLE'] = ['_2016_count'=>$required_units];
+                      	$this->program_percentages['BUNDLE']['percent'] = '10% of Bundle';
+    					$this->program_percentages['BUNDLE']['_2016_count'] = $required_units;
 
                         $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 10);
                         //dd('1096 Random Unit Selection output:',$units_selected);
@@ -1321,8 +1321,8 @@ class SimpleComplianceSelection extends Controller
             if(count($units)){
 
                 $required_units = count($units);
-                $this->program_percentages['811'] = ['percent'=>'100%'];
-            	$this->program_percentages['811'] = ['_2016_count'=>$required_units];
+                $this->program_percentages['811']['percent']='100%';
+            	$this->program_percentages['811']['_2016_count']=$required_units;
 
                 $this->audit->comment = $this->audit->comment.' | Select Process starting 811 selection ';
                 //$this->audit->save();
@@ -1396,8 +1396,8 @@ class SimpleComplianceSelection extends Controller
                 
 
                 $required_units = count($units);
-                $this->program_percentages['MEDICAID'] = ['percent'=>'100%'];
-        		$this->program_percentages['MEDICAID'] = ['_2016_count'=>$_2016_total];
+                $this->program_percentages['MEDICAID']['percent']='100%';
+        		$this->program_percentages['MEDICAID']['_2016_count']=$_2016_total;
 
                 $units_selected = $units->pluck('unit_key')->toArray();
                 
@@ -1545,8 +1545,8 @@ class SimpleComplianceSelection extends Controller
                     if (count($units) <= 4) {
 
                         $required_units = count($units);
-                        $this->program_percentages['Home'.$home_award_number] = ['percent'=>'100% of Home'];
-            			$this->program_percentages['Home'.$home_award_number] = ['_2016_count'=>$required_units];
+                        $this->program_percentages['Home'.$home_award_number]['percent']='100% of Home';
+            			$this->program_percentages['Home'.$home_award_number]['_2016_count'] = $required_units;
                         $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 100);
                         //dd('1373 Random Unit Selection output:',$units_selected);
 
@@ -1561,8 +1561,8 @@ class SimpleComplianceSelection extends Controller
                         if (ceil($this->project->total_unit_count/2) >= ceil($total_project_units/5)) {
 
                             $required_units = ceil($this->project->total_unit_count/2);
-                            $this->program_percentages['Home'.$home_award_number] = ['percent'=>'50% of Home'];
-            				$this->program_percentages['Home'.$home_award_number] = ['_2016_count'=>$required_units];
+                            $this->program_percentages['Home'.$home_award_number]['percent']='50% of Home';
+            				$this->program_percentages['Home'.$home_award_number]['_2016_count'] = $required_units;
 
                             $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($this->project->total_unit_count/2));
                             //dd('1386 Random Unit Selection output:',$units_selected);
@@ -1577,8 +1577,8 @@ class SimpleComplianceSelection extends Controller
 
                             if(ceil($total_project_units/5) > $this->project->total_unit_count){
                                 $required_units = $this->project->total_unit_count;
-                                $this->program_percentages['Home'.$home_award_number] = ['percent'=>'100% of Home'];
-            					$this->program_percentages['Home'.$home_award_number] = ['_2016_count'=>$required_units];
+                                $this->program_percentages['Home'.$home_award_number]['percent']='100% of Home';
+            					$this->program_percentages['Home'.$home_award_number]['_2016_count'] = $required_units;
                                 $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, $this->project->total_unit_count);
                                 //dd('1399 Random Unit Selection output:',$units_selected);
                                 
@@ -1588,8 +1588,8 @@ class SimpleComplianceSelection extends Controller
                                 ////$this->audit->save();
                             }else{
                                 $required_units = ceil($total_project_units/5);
-                                $this->program_percentages['Home'.$home_award_number] = ['percent'=>'20% of Project'];
-            					$this->program_percentages['Home'.$home_award_number] = ['_2016_count'=>$required_units];
+                                $this->program_percentages['Home'.$home_award_number]['percent']='20% of Project';
+            					$this->program_percentages['Home'.$home_award_number]['_2016_count'] = $required_units;
                                 //$units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
                                 $units_selected = $units->random(ceil($total_project_units/5))->pluck('unit_key')->all();
                                 //dd('1408 Random Unit Selection output:',$units_selected);
@@ -1961,8 +1961,8 @@ class SimpleComplianceSelection extends Controller
 
                         $required_units = count($units); // 100%
 
-                        $this->program_percentages['NHTF'.$nhtf_award_number] = ['percent'=>'100% of NHTF'];
-            			$this->program_percentages['NHTF'.$nhtf_award_number] = ['_2016_count'=>$required_units];
+                        $this->program_percentages['NHTF'.$nhtf_award_number]['percent'] = '100% of NHTF';
+            			$this->program_percentages['NHTF'.$nhtf_award_number]['_2016_count'] = $required_units;
 
                         $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 100);
                         //dd('1746 Random Unit Selection output:',$units_selected);
@@ -1977,8 +1977,8 @@ class SimpleComplianceSelection extends Controller
                         if (ceil($this->project->total_unit_count/2) >= ceil($total_project_units/5)) {
 
                             $required_units = ceil($this->project->total_unit_count/2);
-                            $this->program_percentages['NHTF'.$nhtf_award_number] = ['percent'=>'50% of NHTF'];
-            				$this->program_percentages['NHTF'.$nhtf_award_number] = ['_2016_count'=>$required_units];
+                            $this->program_percentages['NHTF'.$nhtf_award_number]['percent']='50% of NHTF';
+            				$this->program_percentages['NHTF'.$nhtf_award_number]['_2016_count'] = $required_units;
 
                              $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($this->project->total_unit_count/2));
                              //dd('1760 Random Unit Selection output:',$units_selected);
@@ -1992,8 +1992,8 @@ class SimpleComplianceSelection extends Controller
 
                             if(ceil($total_project_units/5) > $this->project->total_unit_count){
                                 $required_units = $this->project->total_unit_count;
-                                $this->program_percentages['NHTF'.$nhtf_award_number] = ['percent'=>'100% of NHTF'];
-            					$this->program_percentages['NHTF'.$nhtf_award_number] = ['_2016_count'=>$required_units];
+                                $this->program_percentages['NHTF'.$nhtf_award_number]['percent']='100% of NHTF';
+            					$this->program_percentages['NHTF'.$nhtf_award_number]['_2016_count'] = $required_units;
                                 $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, $this->project->total_unit_count);
                                 //dd('1772 Random Unit Selection output:',$units_selected);
                                 
@@ -2002,8 +2002,8 @@ class SimpleComplianceSelection extends Controller
                                 $this->audit->comment = $this->audit->comment.' | Select Process Because there are more than 4 units and because 20% of project units is greater than 50% of NHTF units, the total selected is '.$this->project->total_unit_count. 'which is the total number of units';
                             }else{
                                 $required_units = ceil($total_project_units/5);
-                                $this->program_percentages['NHTF'.$nhtf_award_number] = ['percent'=>'20% of Project'];
-            					$this->program_percentages['NHTF'.$nhtf_award_number] = ['_2016_count'=>$required_units];
+                                $this->program_percentages['NHTF'.$nhtf_award_number]['percent']='20% of Project';
+            					$this->program_percentages['NHTF'.$nhtf_award_number]['_2016_count'] = $required_units;
                                 $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
                                 //dd('1780 Random Unit Selection output:',$units_selected);
                                 
@@ -2351,8 +2351,8 @@ class SimpleComplianceSelection extends Controller
                         $required_units = $number_of_htc_units_required;
                         //ceil($total_htc_units/10);
                         $_2016_total = $total_htc_units/5;
-                        $this->program_percentages['HTC'] = ['percent'=>'20% of HTC'];
-            			$this->program_percentages['HTC'] = ['_2016_count'=>$_2016_total];
+                        $this->program_percentages['HTC']['percent']='20% of HTC';
+            			$this->program_percentages['HTC']['_2016_count'] = $_2016_total;
 
                         if($number_of_htc_units_required <= count($htc_units_subset)){
                             $number_of_htc_units_needed = 0;
@@ -2457,8 +2457,8 @@ class SimpleComplianceSelection extends Controller
                                 $required_units_for_that_building = $this->adjustedLimit(count($htc_units_for_building));
                                 //$required_units = $required_units + $required_units_for_that_building;
                                 $_2016_total = $_2016_total + ($htc_units_for_building/5);
-		                        $this->program_percentages['HTC'] = ['percent'=>'20% of HTC Per Building'];
-		            			$this->program_percentages['HTC'] = ['_2016_count'=>$_2016_total];
+		                        $this->program_percentages['HTC']['percent']='20% of HTC Per Building';
+		            			$this->program_percentages['HTC']['_2016_count'] = $_2016_total;
                                 
                                 $required_units = $required_units_for_that_building;
 
@@ -2563,8 +2563,8 @@ class SimpleComplianceSelection extends Controller
                     $required_units = $number_of_htc_units_required;
 
                     $_2016_total = $required_units;
-                    $this->program_percentages['HTC'] = ['percent'=>'10% of HTC'];
-        			$this->program_percentages['HTC'] = ['_2016_count'=>$_2016_total];
+                    $this->program_percentages['HTC']['percent']='10% of HTC';
+        			$this->program_percentages['HTC']['_2016_count'] = $_2016_total;
 
                     if($number_of_htc_units_required <= count($overlap)){
                         $number_of_htc_units_needed = 0;
@@ -2783,7 +2783,7 @@ class SimpleComplianceSelection extends Controller
             $this_program_file_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->where('is_file_audit',1)->count();
 
             $percent_difference = ($this_program_site_count * 100) / $this->program_percentages[$program_type]['_2016_count'];
-            dd($this->program_percentages[$program_type]);
+            //dd($this->program_percentages[$program_type]);
             $projection->update([
 
                 $project_program_key => $program->project_program_key,
