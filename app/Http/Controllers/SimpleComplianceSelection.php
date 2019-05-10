@@ -922,7 +922,8 @@ class SimpleComplianceSelection extends Controller
             
 
             ////dd('Line 767 - Ran and got program bundles - ',$program_bundle_names,$this->project->programs);
-
+	        $this->program_percentages['BUNDLE']['percent']='NA';
+            $this->program_percentages['BUNDLE']['_2016_count'] = null;
             if($total){
                 $this->audit->comment = $this->audit->comment.' | Select Process starting Group 1 selection ';
                 ////$this->audit->save();
@@ -1316,7 +1317,8 @@ class SimpleComplianceSelection extends Controller
             //                     $query->whereIn('program_key', $this->program_811_ids);
             // })->get();
             $units = $this->units->whereIn('program_key',$this->program_811_ids);
-            
+            $this->program_percentages['811']['percent']='NA';
+            $this->program_percentages['811']['_2016_count'] = null;
 
             if(count($units)){
 
@@ -1389,7 +1391,8 @@ class SimpleComplianceSelection extends Controller
             // })->get();
             $units = $this->units->whereIn('program_key',$this->program_medicaid_ids);
             
-
+            $this->program_percentages['MEDICAID']['percent']='NA';
+            $this->program_percentages['MEDICAID']['_2016_count'] = null;
             if(count($units)){
                 $this->audit->comment = $this->audit->comment.' | Select Process starting Medicaid selection ';
                 //$this->audit->save();
