@@ -1609,7 +1609,7 @@ class SimpleComplianceSelection extends Controller
                         $has_htc_funding = 0;
 
                         //$unit_selected = Unit::where('unit_key', '=', $unit_key)->first();
-                        $unit_selected = $this->units->whereIn('program_key',$program_htc_ids)->where('unit_key',$unit_key)->count();
+                        $unit_selected = $this->units->whereIn('program_key',$this->program_htc_ids)->where('unit_key',$unit_key)->count();
 
                         $comments[] = 'Checking if HTC funding applies to this unit '.$unit_key.' by cross checking with HTC programs';
 
@@ -1829,7 +1829,7 @@ class SimpleComplianceSelection extends Controller
                                 
 
                             // if units have HTC funding add to subset
-                            if($unit_selected->has_program_from_array($program_htc_ids, $this->audit->id)){
+                            if($unit_selected->has_program_from_array($this->program_htc_ids, $this->audit->id)){
                                 $has_htc_funding = 1;
                                 $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding';
                                 ////$this->audit->save();
@@ -2032,7 +2032,7 @@ class SimpleComplianceSelection extends Controller
                         //$unit = Unit::where('unit_key', '=', $unit_selected)->first();
                         
 
-                        if($unit_selected->has_program_from_array($program_htc_ids, $this->audit->id)){
+                        if($unit_selected->has_program_from_array($this->program_htc_ids, $this->audit->id)){
                             $has_htc_funding = 1;
                             $comments[] = 'The unit key '.$unit_selected->unit_key.' belongs to a program with HTC funding';
                             //$this->audit->save();
@@ -2341,10 +2341,10 @@ class SimpleComplianceSelection extends Controller
                     //dd('2127 Finished checking multibuilding');
                     if ($is_multi_building_project) {
                     	//dd('2119 section needs optimized');
-                        $htc_units_without_overlap = $this->project->programs->whereIn('program_key', $program_htc_ids)
-                        							->whereNotIn('program_key', $program_home_ids)
-                                                    ->whereNotIn('program_key', $program_ohtf_ids)
-                                                    ->whereNotIn('program_key', $program_nhtf_ids)
+                        $htc_units_without_overlap = $this->project->programs->whereIn('program_key', $this->program_htc_ids)
+                        							->whereNotIn('program_key', $this->program_home_ids)
+                                                    ->whereNotIn('program_key', $this->program_ohtf_ids)
+                                                    ->whereNotIn('program_key', $this->program_nhtf_ids)
                                                 	->pluck('unit_key')->all();
 
                         $number_of_htc_units_required = $this->adjustedLimit($total_htc_units);
