@@ -2797,8 +2797,11 @@ class SimpleComplianceSelection extends Controller
             $this_program_calculated_count = $this->units->where('program_id',$program->program_id)->count();
             $this_program_site_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->where('is_site_visit',1)->count();
             $this_program_file_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->where('is_file_audit',1)->count();
-
-            $percent_difference = ($this_program_site_count * 100) / $this->program_percentages[$program_type]['_2016_count'];
+            if(!is_null($this->program_percentages[$program_type]['_2016_count'])){
+            	$percent_difference = ($this_program_site_count * 100) / $this->program_percentages[$program_type]['_2016_count'];
+        	} else {
+        		$percent_difference = "NA - NO UNITS";
+        	}
             //dd($this->program_percentages[$program_type]);
             $projection->update([
 
