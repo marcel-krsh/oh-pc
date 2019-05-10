@@ -58,6 +58,15 @@ class SimpleComplianceSelection extends Controller
 
     public $program_percentages;
 
+    public $program_percentages;
+    public $program_htc_ids;
+    public $program_bundle_ids;
+    public $this->program_home_ids;
+    public $this->program_ohtf_ids;
+    public $this->program_nhtf_ids;
+    public $this->program_811_ids;
+    public $this->program_medicaid_ids;
+
 
 
     public function __construct()
@@ -94,6 +103,13 @@ class SimpleComplianceSelection extends Controller
 		    $this->program_4_2019_percentage_used = 'NA';
 
 		    $this->program_percentages = array();
+		    $this->program_htc_ids = null;
+		    $this->program_bundle_ids = null;
+		    $this->program_home_ids = null;
+		    $this->program_ohtf_ids = null;
+		    $this->program_nhtf_ids = null;
+		    $this->program_811_ids = null;
+		    $this->program_medicaid_ids = null;
 		        
        //}
 
@@ -858,7 +874,7 @@ class SimpleComplianceSelection extends Controller
 
         $selection = [];
 
-        $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
+        $this->program_htc_ids = explode(',', SystemSetting::get('program_htc'));
         
         //
         //
@@ -872,27 +888,27 @@ class SimpleComplianceSelection extends Controller
 
         $required_units = 0;
 
-        $program_bundle_ids = explode(',', SystemSetting::get('program_bundle'));
+        $this->program_bundle_ids = explode(',', SystemSetting::get('program_bundle'));
         
         
 
         /////// DO NOT DO ANY OF THE FOLLOWING IF THE PROJECT DOES NOT HAVE ONE OF THESE PROGRAMS....
 
-        if(!empty(array_intersect($projectProgramIds, $program_bundle_ids))) {
+        if(!empty(array_intersect($projectProgramIds, $this->program_bundle_ids))) {
             $this->audit->comment_system = $this->audit->comment_system.' | Project has one of the program bundle ids.';
             ////$this->audit->save();
 
 
-            $program_bundle_names = $this->project->programs->whereIn('program_key', $program_bundle_ids)->pluck('program.program_name')->all();
+            $program_bundle_names = $this->project->programs->whereIn('program_key', $this->program_bundle_ids)->pluck('program.program_name')->all();
             $this->audit->comment_system = $this->audit->comment_system.' | Built Program Names.';
             ////$this->audit->save();
             
             $program_bundle_names = implode(',', $program_bundle_names);
             
 
-            $units = $this->units->whereIn('program_key',$program_bundle_ids)->where('audit_id',$this->audit->id);
-            $unitTest = $this->units->where('unit_key',382905);
-            //dd($projectProgramIds,$this->units,$units,$this->audit->id,$program_bundle_ids,$unitTest);
+            $units = $this->units->whereIn('program_key',$this->program_bundle_ids)->where('audit_id',$this->audit->id);
+            //$unitTest = $this->units->where('unit_key',382905);
+            //dd($projectProgramIds,$this->units,$units,$this->audit->id,$this->program_bundle_ids,$unitTest);
             if(!is_null($units)){
 	            $total = count($units);
 	            $this->audit->comment_system = $this->audit->comment_system.' | Obtained '.$total.' units within the program bundle. '.date('g:h:i a',time());
@@ -923,19 +939,19 @@ class SimpleComplianceSelection extends Controller
                 $this->audit->comment_system = $this->audit->comment_system. ' | Total units in the pool is '.$total;
                 ////$this->audit->save();
                 
-                $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
+                $this->program_htc_ids = explode(',', SystemSetting::get('program_htc'));
                 
                 //OLD
-                // $program_htc_names = Program::whereIn('program_key', $program_htc_ids)->get()->pluck('program_name')->toArray();
+                // $program_htc_names = Program::whereIn('program_key', $this->program_htc_ids)->get()->pluck('program_name')->toArray();
                 //NO NEW QUERY
-                $program_htc_names = $this->project->programs->whereIn('program_key',$program_htc_ids)->pluck('program.program_name')->all();
+                $program_htc_names = $this->project->programs->whereIn('program_key',$this->program_htc_ids)->pluck('program.program_name')->all();
                 
                 $program_htc_names = implode(',', $program_htc_names);
                 
 
                 // cannot use overlap like this anymore
                 // instead for each unit, check if a HTC program is associated
-                // $program_htc_overlap = array_intersect($program_htc_ids, $program_bundle_ids);
+                // $program_htc_overlap = array_intersect($this->program_htc_ids, $this->program_bundle_ids);
                 // 
                 // $program_htc_overlap_names = Program::whereIn('program_key', $program_htc_overlap)->get()->pluck('program_name')->toArray(); // 30001,30043
                 // 
@@ -953,7 +969,7 @@ class SimpleComplianceSelection extends Controller
                 foreach ($units as $unit) {
                     
                     
-                    if($unit->unit->has_program_from_array($program_htc_ids, $this->audit->id)){
+                    if($unit->unit->has_program_from_array($this->program_htc_ids, $this->audit->id)){
                         $has_htc_funding = 1;
                         $comments[] = 'The unit key '.$unit->unit_key.' belongs to a program with HTC funding';
                         $this->audit->comment_system = $this->audit->comment_system.'The unit key '.$unit->unit_key.' belongs to a program with HTC funding';
@@ -1106,7 +1122,7 @@ class SimpleComplianceSelection extends Controller
 
                         foreach ($this->project->programs as $program) {
                             
-                            if (in_array($program->program_key, $program_bundle_ids)) {
+                            if (in_array($program->program_key, $this->program_bundle_ids)) {
                                 if ($program->multiple_building_election_key == 2) {
                                     $is_multi_building_project = 1;
                                     $comments[] = 'Program key '.$program->program_key.' showed that the project is a multi building project.';
@@ -1180,14 +1196,14 @@ class SimpleComplianceSelection extends Controller
                                 }
 
                                 $units_for_that_building = Unit::where('building_key', '=', $building->building_key)
-                                                ->whereHas('programs', function ($query) use ( $program_bundle_ids) {
+                                                ->whereHas('programs', function ($query) use ( $this->program_bundle_ids) {
                                                     $query->where('monitoring_key', '=', $this->audit->monitoring_key);
-                                                    $query->whereIn('program_key', $program_bundle_ids);
+                                                    $query->whereIn('program_key', $this->program_bundle_ids);
                                                 })
                                                 ->pluck('unit_key')
                                                 ->toArray();
 
-                                $units_for_that_building2 = $this->units->whereIn('program_key',$program_bundle_ids)->where('unit.building_key',$building->building_key)->pluck('unit_key')->all();
+                                $units_for_that_building2 = $this->units->whereIn('program_key',$this->program_bundle_ids)->where('unit.building_key',$building->building_key)->pluck('unit_key')->all();
 
                                 dd('1182 -- VERIFY THIS QUERY WORKS - ',$units_for_that_building,$units_for_that_building2);
                                 /// comment out original and rename variable if the revised query works.
@@ -1280,13 +1296,13 @@ class SimpleComplianceSelection extends Controller
         //
         
         
-        $program_811_ids = explode(',', SystemSetting::get('program_811'));
+        $this->program_811_ids = explode(',', SystemSetting::get('program_811'));
         
 
         ///// DO NOT DO ANY OF THE FOLLOWING IF THE PROJECT DOES NOT HAVE 811
-        if(!empty(array_intersect($projectProgramIds, $program_811_ids))) {
-            //$program_811_names = Program::whereIn('program_key', $program_811_ids)->get()->pluck('program_name')->toArray();
-            $program_811_names = $this->project->programs->whereIn('program_key',  $program_811_ids)
+        if(!empty(array_intersect($projectProgramIds, $this->program_811_ids))) {
+            //$program_811_names = Program::whereIn('program_key', $this->program_811_ids)->get()->pluck('program_name')->toArray();
+            $program_811_names = $this->project->programs->whereIn('program_key',  $this->program_811_ids)
                                                 ->pluck('program.program_name')->toArray();
             
             $program_811_names = implode(',', $program_811_names);
@@ -1295,11 +1311,11 @@ class SimpleComplianceSelection extends Controller
 
             $required_units = 0;
 
-            // $units = Unit::whereHas('programs', function ($query) use ($program_811_ids) {
+            // $units = Unit::whereHas('programs', function ($query) use ($this->program_811_ids) {
             //                     $query->where('audit_id', '=', $this->audit->id);
-            //                     $query->whereIn('program_key', $program_811_ids);
+            //                     $query->whereIn('program_key', $this->program_811_ids);
             // })->get();
-            $units = $this->units->whereIn('program_key',$program_811_ids);
+            $units = $this->units->whereIn('program_key',$this->program_811_ids);
             
 
             if(count($units)){
@@ -1354,12 +1370,12 @@ class SimpleComplianceSelection extends Controller
         
         
 
-        $program_medicaid_ids = explode(',', SystemSetting::get('program_medicaid'));
+        $this->program_medicaid_ids = explode(',', SystemSetting::get('program_medicaid'));
         
 
-        if(!empty(array_intersect($projectProgramIds, $program_medicaid_ids))) {
-            //$program_medicaid_names = Program::whereIn('program_key', $program_medicaid_ids)->get()->pluck('program_name')->toArray();
-            $program_medicaid_names = $this->project->programs->whereIn('program_key',  $program_medicaid_ids)
+        if(!empty(array_intersect($projectProgramIds, $this->program_medicaid_ids))) {
+            //$program_medicaid_names = Program::whereIn('program_key', $this->program_medicaid_ids)->get()->pluck('program_name')->toArray();
+            $program_medicaid_names = $this->project->programs->whereIn('program_key',  $this->program_medicaid_ids)
                                                 ->pluck('program.program_name')->toArray();
             $program_medicaid_names = implode(',', $program_medicaid_names);
             
@@ -1367,11 +1383,11 @@ class SimpleComplianceSelection extends Controller
 
             $required_units = 0;
 
-            // $units = Unit::whereHas('programs', function ($query) use ($program_medicaid_ids) {
+            // $units = Unit::whereHas('programs', function ($query) use ($this->program_medicaid_ids) {
             //                     $query->where('audit_id', '=', $this->audit->id);
-            //                     $query->whereIn('program_key', $program_medicaid_ids);
+            //                     $query->whereIn('program_key', $this->program_medicaid_ids);
             // })->get();
-            $units = $this->units->whereIn('program_key',$program_medicaid_ids);
+            $units = $this->units->whereIn('program_key',$this->program_medicaid_ids);
             
 
             if(count($units)){
@@ -1427,14 +1443,14 @@ class SimpleComplianceSelection extends Controller
         $units_to_check_for_overlap = [];
         $htc_units_subset_for_home = array();
 
-        $program_home_ids = explode(',', SystemSetting::get('program_home'));
+        $this->program_home_ids = explode(',', SystemSetting::get('program_home'));
 
-        if(!empty(array_intersect($projectProgramIds, $program_home_ids))) {
+        if(!empty(array_intersect($projectProgramIds, $this->program_home_ids))) {
             $this->audit->comment_system = $this->audit->comment_system.' | Started HOME, got ids from system settings.';
             //$this->audit->save();
 
-            //$home_award_numbers = ProjectProgram::whereIn('program_key', $program_home_ids)->where('project_id', '=', $this->audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
-            $home_award_numbers = $this->project->programs->whereIn('program_key', $program_home_ids)->pluck('award_number');
+            //$home_award_numbers = ProjectProgram::whereIn('program_key', $this->program_home_ids)->where('project_id', '=', $this->audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
+            $home_award_numbers = $this->project->programs->whereIn('program_key', $this->program_home_ids)->pluck('award_number');
 			////dd('1286 - home award time to get new home award numbers.');
 
             $this->audit->comment_system = $this->audit->comment_system.' | Got home award numbers.';
@@ -1451,7 +1467,7 @@ class SimpleComplianceSelection extends Controller
                 ////$this->audit->save();
                 ////dd('1301 current',$program_keys_with_award_number);
 
-                $program_home_names = $this->project->programs->whereIn('program_key', $program_home_ids)
+                $program_home_names = $this->project->programs->whereIn('program_key', $this->program_home_ids)
                                                 ->whereIn('program_key', $program_keys_with_award_number)
                                                 ->pluck('program.program_name')->toArray();
 
@@ -1476,13 +1492,13 @@ class SimpleComplianceSelection extends Controller
                 $this->audit->comment_system = $this->audit->comment_system.' | Selecting Units using using settings at '.date('g:h:i a',time());
                 ////$this->audit->save();
 
-                // $units = Unit::whereHas('programs', function ($query) use ($program_home_ids, $program_keys_with_award_number) {
+                // $units = Unit::whereHas('programs', function ($query) use ($this->program_home_ids, $program_keys_with_award_number) {
                 //                     $query->where('audit_id', '=', $this->audit->id);
                 //                     $query->whereIn('program_key', $program_keys_with_award_number);
-                //                     $query->whereIn('program_key', $program_home_ids);
+                //                     $query->whereIn('program_key', $this->program_home_ids);
                 // })->get();
 
-                $units = $this->units->whereIn('program_key',$program_keys_with_award_number)->whereIn('program_key', $program_home_ids);
+                $units = $this->units->whereIn('program_key',$program_keys_with_award_number)->whereIn('program_key', $this->program_home_ids);
 
 
 
@@ -1507,7 +1523,7 @@ class SimpleComplianceSelection extends Controller
                     
 
 
-                    // $program_htc_overlap = array_intersect($program_htc_ids, $program_home_ids);
+                    // $program_htc_overlap = array_intersect($program_htc_ids, $this->program_home_ids);
                     // 
                     // $program_htc_overlap_names = Program::whereIn('program_key', $program_htc_overlap)->get()->pluck('program_name')->toArray();
                     // 
@@ -1523,7 +1539,7 @@ class SimpleComplianceSelection extends Controller
                     $this->audit->comment = $this->audit->comment.' | Select Process Total units with HOME fundng is '.$total_unit_count.' | Select Process Total units in the project is '.$total_project_units;
                         ////$this->audit->save();
                         
-                    // $project_program_key = $this->project->programs->whereIn('program_key',$program_home_ids)->pluck('project_program_key')->all();
+                    // $project_program_key = $this->project->programs->whereIn('program_key',$this->program_home_ids)->pluck('project_program_key')->all();
                     // $project_program_key = implode(',', $project_program_key);
 
                     if (count($units) <= 4) {
@@ -1644,7 +1660,7 @@ class SimpleComplianceSelection extends Controller
                     $this->audit->comment_system = $this->audit->comment_system.' | 1455 Select Process is not working with HOME.';
                     //$this->audit->save();
                 }
-            }
+            }this->
         }else {
             $htc_units_subset_for_home = array();
             $this->audit->comment_system = $this->audit->comment_system.' | 1461 Select Process is not working with Home.';
@@ -1659,13 +1675,13 @@ class SimpleComplianceSelection extends Controller
         //
         
 
-        $program_ohtf_ids = explode(',', SystemSetting::get('program_ohtf'));
-        if(!empty(array_intersect($projectProgramIds, $program_ohtf_ids))) {
+        $this->program_ohtf_ids = explode(',', SystemSetting::get('program_ohtf'));
+        if(!empty(array_intersect($projectProgramIds, $this->program_ohtf_ids))) {
         	//dd('1503 Entering OHTF');
             $htc_units_subset_for_ohtf = array();
 
-            //$ohtf_award_numbers = ProjectProgram::whereIn('program_key', $program_ohtf_ids)->where('project_id', '=', $this->audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
-            $ohtf_award_numbers = $this->project->programs->whereIn('program_key', $program_ohtf_ids)->pluck('award_number');
+            //$ohtf_award_numbers = ProjectProgram::whereIn('program_key', $this->program_ohtf_ids)->where('project_id', '=', $this->audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
+            $ohtf_award_numbers = $this->project->programs->whereIn('program_key', $this->program_ohtf_ids)->pluck('award_number');
 			
 
             foreach($ohtf_award_numbers as $ohtf_award_number){
@@ -1675,12 +1691,12 @@ class SimpleComplianceSelection extends Controller
                 $program_keys_with_award_number = $this->project->programs->where('award_number',$ohtf_award_number)->pluck('program_key')->all(); 
                 
 
-                // $program_ohtf_names = Program::whereIn('program_key', $program_ohtf_ids)
+                // $program_ohtf_names = Program::whereIn('program_key', $this->program_ohtf_ids)
                 //                                 ->whereIn('program_key', $program_keys_with_award_number)
                 //                                 ->get()
                 //                                 ->pluck('program_name')
                 //                                 ->toArray();
-                $program_ohtf_names = $this->project->programs->whereIn('program_key', $program_ohtf_ids)
+                $program_ohtf_names = $this->project->programs->whereIn('program_key', $this->program_ohtf_ids)
                                                 ->whereIn('program_key', $program_keys_with_award_number)
                                                 ->pluck('program.program_name')->toArray();
                 
@@ -1693,13 +1709,13 @@ class SimpleComplianceSelection extends Controller
                 $total_project_units = $this->project->stats_total_units();
 
 
-                // $units = Unit::whereHas('programs', function ($query) use ($program_ohtf_ids, $program_keys_with_award_number) {
+                // $units = Unit::whereHas('programs', function ($query) use ($this->program_ohtf_ids, $program_keys_with_award_number) {
                 //                     $query->where('audit_id', '=', $this->audit->id);
                 //                     $query->whereIn('program_key', $program_keys_with_award_number);
-                //                     $query->whereIn('program_key', $program_ohtf_ids);
+                //                     $query->whereIn('program_key', $this->program_ohtf_ids);
                 // })->get();
 
-                $units = $this->units->whereIn('program_key',$program_keys_with_award_number)->whereIn('program_key', $program_ohtf_ids);
+                $units = $this->units->whereIn('program_key',$program_keys_with_award_number)->whereIn('program_key', $this->program_ohtf_ids);
 
                 
 
@@ -1717,7 +1733,7 @@ class SimpleComplianceSelection extends Controller
                     $this->project->total_unit_count = count($units);
                     
 
-                    // $program_htc_overlap = array_intersect($program_htc_ids, $program_ohtf_ids);
+                    // $program_htc_overlap = array_intersect($program_htc_ids, $this->program_ohtf_ids);
                     // 
                     // $program_htc_overlap_names = Program::whereIn('program_key', $program_htc_overlap)->get()->pluck('program_name')->toArray();
                     // 
@@ -1858,7 +1874,7 @@ class SimpleComplianceSelection extends Controller
                     $this->audit->comment_system = $this->audit->comment_system.' | Select Process is not working with OHTF.';
                     //$this->audit->save();
                 }
-            }
+            }this->
         }else{
             $htc_units_subset_for_ohtf = array();
             $this->audit->comment_system = $this->audit->comment_system.' | Select Process is not working with OHTF.';
@@ -1872,13 +1888,13 @@ class SimpleComplianceSelection extends Controller
         //
         //
 
-        $program_nhtf_ids = explode(',', SystemSetting::get('program_nhtf'));
-        if(!empty(array_intersect($projectProgramIds, $program_nhtf_ids))) {
+        $this->program_nhtf_ids = explode(',', SystemSetting::get('program_nhtf'));
+        if(!empty(array_intersect($projectProgramIds, $this->program_nhtf_ids))) {
         	//dd('1503 Entering NHTF');
             $htc_units_subset_for_nhtf = array();
             
-            //$nhtf_award_numbers = ProjectProgram::whereIn('program_key', $program_nhtf_ids)->where('project_id', '=', $this->audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
-            $nhtf_award_numbers = $this->project->programs->whereIn('program_key', $program_nhtf_ids)->pluck('award_number');
+            //$nhtf_award_numbers = ProjectProgram::whereIn('program_key', $this->program_nhtf_ids)->where('project_id', '=', $this->audit->project_id)->select('award_number')->groupBy('award_number')->orderBy('award_number', 'ASC')->get();
+            $nhtf_award_numbers = $this->project->programs->whereIn('program_key', $this->program_nhtf_ids)->pluck('award_number');
 			
 
             foreach($nhtf_award_numbers as $nhtf_award_number){
@@ -1888,11 +1904,11 @@ class SimpleComplianceSelection extends Controller
                 $program_keys_with_award_number = $this->project->programs->where('award_number',$nhtf_award_number)->pluck('program_key')->all(); 
                  
 
-                // $program_nhtf_names = Program::whereIn('program_key', $program_nhtf_ids)
+                // $program_nhtf_names = Program::whereIn('program_key', $this->program_nhtf_ids)
                 //                                 ->whereIn('program_key', $program_keys_with_award_number)
                 //                                 ->get()
                 //                                 ->pluck('program_name')->toArray();
-                $program_nhtf_names = $this->project->programs->whereIn('program_key', $program_nhtf_ids)
+                $program_nhtf_names = $this->project->programs->whereIn('program_key', $this->program_nhtf_ids)
                                                 ->whereIn('program_key', $program_keys_with_award_number)
                                                 ->pluck('program.program_name')->toArray();
                 
@@ -1905,13 +1921,13 @@ class SimpleComplianceSelection extends Controller
                 $total_project_units = $this->project->stats_total_units();
 
 
-                // $units = Unit::whereHas('programs', function ($query) use ($program_nhtf_ids, $program_keys_with_award_number) {
+                // $units = Unit::whereHas('programs', function ($query) use ($this->program_nhtf_ids, $program_keys_with_award_number) {
                 //                     $query->where('audit_id', '=', $this->audit->id);
                 //                     $query->whereIn('program_key', $program_keys_with_award_number);
-                //                     $query->whereIn('program_key', $program_nhtf_ids);
+                //                     $query->whereIn('program_key', $this->program_nhtf_ids);
                 // })->get();
                 
-                $units = $this->units->whereIn('program_key',$program_keys_with_award_number)->whereIn('program_key', $program_nhtf_ids);
+                $units = $this->units->whereIn('program_key',$program_keys_with_award_number)->whereIn('program_key', $this->program_nhtf_ids);
 
                 if((is_array($units) || is_object($units)) && count($units)){
                     $this->audit->comment = $this->audit->comment.' | Select Process Starting NHTF for award number '.$nhtf_award_number;
@@ -2058,7 +2074,7 @@ class SimpleComplianceSelection extends Controller
                     $this->audit->comment_system = $this->audit->comment_system.' | 1807 Select Process is not working with NHTF.';
                     //$this->audit->save();
                 }
-            }
+            }this->
         }else{
             $htc_units_subset_for_nhtf = array();
             $this->audit->comment_system = $this->audit->comment_system.' | 1813 Select Process is not working with NHTF.';
@@ -2094,7 +2110,7 @@ class SimpleComplianceSelection extends Controller
         // get totals of all units HTC and select all units without NHTF. OHTF and HOME
         // check in project_program->first_year_award_claimed date for the 15 year test
         // after 15 years: 20% of total
-        // $program_htc_ids = SystemSetting::get('program_htc'); // already loaded
+        // $this->program_htc_ids = SystemSetting::get('program_htc'); // already loaded
         //
         //
 
@@ -2102,18 +2118,18 @@ class SimpleComplianceSelection extends Controller
         $comments = [];
 
         $required_units = 0; // this is computed, not counted!
-        $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
-         if(!empty(array_intersect($projectProgramIds, $program_htc_ids))) {
+        $this->program_htc_ids = explode(',', SystemSetting::get('program_htc'));
+         if(!empty(array_intersect($projectProgramIds, $this->program_htc_ids))) {
 
          //dd('1907 Entering HTC '); // 16 seconds! for 27
             // total HTC funded units (71)
             $this->audit->comment = $this->audit->comment.' | Selecting units with HTC at '.date('g:h:i a',time());
             ////$this->audit->save();
-            // $all_htc_units = Unit::whereHas('programs', function ($query) use ($this->audit, $program_htc_ids) {
+            // $all_htc_units = Unit::whereHas('programs', function ($query) use ($this->audit, $this->program_htc_ids) {
             //                     $query->where('audit_id', '=', $this->audit->id);
-            //                     $query->whereIn('program_key', $program_htc_ids);
+            //                     $query->whereIn('program_key', $this->program_htc_ids);
             // })->get();
-            $all_htc_units = $this->units->whereIn('program_key',$program_htc_ids)->where('audit_id',$this->audit->id);
+            $all_htc_units = $this->units->whereIn('program_key',$this->program_htc_ids)->where('audit_id',$this->audit->id);
             
             if(is_object($all_htc_units) || is_array($all_htc_units)){
             	$total_htc_units = count($all_htc_units);
@@ -2135,7 +2151,7 @@ class SimpleComplianceSelection extends Controller
                             
 
                 // HTC without HOME, OHTF, NHTF
-                // $program_htc_only_ids = array_diff($program_htc_ids, $program_home_ids, $program_ohtf_ids, $program_nhtf_ids);
+                // $program_htc_only_ids = array_diff($this->program_htc_ids, $this->program_home_ids, $this->program_ohtf_ids, $this->program_nhtf_ids);
                 // 
 
                 // $program_htc_only_names = Program::whereIn('program_key', $program_htc_only_ids)->get()->pluck('program_name')->toArray();
@@ -2152,9 +2168,9 @@ class SimpleComplianceSelection extends Controller
 
                 $units = [];
                 foreach ($all_htc_units as $all_htc_unit) {
-                    if($this->units->whereIn('program_key',$program_home_ids)->where('unit_key',$all_htc_unit->unit_key)->count() || 
-                       $this->units->whereIn('program_key',$program_ohtf_ids)->where('unit_key',$all_htc_unit->unit_key)->count() || 
-                       $this->units->whereIn('program_key',$program_nhtf_ids)->where('unit_key',$all_htc_unit->unit_key)->count()){
+                    if($this->units->whereIn('program_key',$this->program_home_ids)->where('unit_key',$all_htc_unit->unit_key)->count() || 
+                       $this->units->whereIn('program_key',$this->program_ohtf_ids)->where('unit_key',$all_htc_unit->unit_key)->count() || 
+                       $this->units->whereIn('program_key',$this->program_nhtf_ids)->where('unit_key',$all_htc_unit->unit_key)->count()){
                         $units[] = $all_htc_unit->unit_key;
                     }
                 }
@@ -2189,7 +2205,7 @@ class SimpleComplianceSelection extends Controller
                 ////$this->audit->save();
                 
 
-                foreach ($this->project->programs->whereIn('program_key', $program_htc_ids) as $program) {
+                foreach ($this->project->programs->whereIn('program_key', $this->program_htc_ids) as $program) {
                     
                     // only select HTC project programs
                     
@@ -2307,7 +2323,7 @@ class SimpleComplianceSelection extends Controller
                     ////$this->audit->save();
                     
 
-                    foreach ($this->project->programs->whereIn('project_key',$program_htc_ids) as $program) {
+                    foreach ($this->project->programs->whereIn('project_key',$this->program_htc_ids) as $program) {
                         
                         
                             if ($program->multiple_building_election_key == 2) {
@@ -2379,7 +2395,7 @@ class SimpleComplianceSelection extends Controller
                             "required_units" => $required_units,
                             "use_limiter" => $use_limiter,
                             "comments" => $comments
-                        ];
+                        ];this->this->this->this->
                     //$this->audit->save();
                         
                     } else {
@@ -2421,19 +2437,19 @@ class SimpleComplianceSelection extends Controller
                                 // $htc_units_subset_for_home, $htc_units_subset_for_ohtf, $htc_units_subset_for_nhtf
                                 //dd('2212 - this section needs optimized!');
                                 $htc_units_for_building = $this->units->where('unit.building_key', $building->building_key)
-                                                	->whereIn('program_key', $program_htc_ids)
+                                                	->whereIn('program_key', $this->program_htc_ids)
                                                 	->pluck('unit_key')
                                                 	->all();
 
                                 $htc_units_without_overlap = $this->units->where('unit.building_key', $building->building_key)
                                                 ->whereNotIn('unit_key', $htc_units_subset)
-                                                ->whereIn('program_key', $program_htc_ids)
+                                                ->whereIn('program_key', $this->program_htc_ids)
                                                 ->pluck('unit_key')
                                                 ->all();
 
                                 $htc_units_with_overlap = $this->units->where('unit.building_key', '=', $building->building_key)
                                                 ->whereIn('unit_key', $htc_units_subset)
-                                                ->whereIn('program_key', $program_htc_ids)
+                                                ->whereIn('program_key', $this->program_htc_ids)
                                                 ->pluck('unit_key')
                                                 ->all();
                                 dd('2420 Check optimization', $htc_units_for_building, $htc_units_without_overlap, $htc_units_with_overlap );
@@ -2539,7 +2555,7 @@ class SimpleComplianceSelection extends Controller
                     // if required <= $overlap we don't need to select anymore unit
                     // otherwise we need to take all the units NOT in the overlap and randomly pick required - count(overlap)
                     
-                    $htc_units_without_overlap = $this->project->programs->whereIn('program_key', $program_htc_ids)
+                    $htc_units_without_overlap = $this->project->programs->whereIn('program_key', $this->program_htc_ids)
                                                     ->pluck('unit_key')->all();
 					//dd('2350 Optimized!');
                     // 10% of units
@@ -2709,25 +2725,25 @@ class SimpleComplianceSelection extends Controller
         foreach ($programs as $program) {
 
         	// determine program type
-        	if(in_array($program->program_key, $program_bundle_ids)){
+        	if(in_array($program->program_key, $this->program_bundle_ids)){
         		$program_type = 'BUNDLE';
         	}
-        	if(in_array($program->program_key, $program_htc_ids)){
+        	if(in_array($program->program_key, $this->program_htc_ids)){
         		$program_type = 'HTC';
         	}
-        	if(in_array($program->program_key, $program_811_ids)){
+        	if(in_array($program->program_key, $this->program_811_ids)){
         		$program_type = '811';
         	}
-        	if(in_array($program->program_key, $program_home_ids)){
+        	if(in_array($program->program_key, $this->program_home_ids)){
         		$program_type = 'HOME'.$program->award_number;
         	}
-        	if(in_array($program->program_key, $program_ohtf_ids)){
+        	if(in_array($program->program_key, $this->program_ohtf_ids)){
         		$program_type = 'OHTF'.$program->award_number;
         	}
-        	if(in_array($program->program_key, $program_nhtf_ids)){
+        	if(in_array($program->program_key, $this->program_nhtf_ids)){
         		$program_type = 'NHTF'.$program->award_number;
         	}
-        	if(in_array($program->program_key, $program_medicaid_ids)){
+        	if(in_array($program->program_key, $this->program_medicaid_ids)){
         		$program_type = 'MEDICAID';
         	}
 
