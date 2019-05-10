@@ -2557,7 +2557,10 @@ class SimpleComplianceSelection extends Controller
                     $use_limiter = 0;
                     
                     $htc_units_without_overlap = $this->project->programs->whereIn('program_key', $this->program_htc_ids)
-                                                    ->pluck('unit_key')->all();
+                        							->whereNotIn('program_key', $this->program_home_ids)
+                                                    ->whereNotIn('program_key', $this->program_ohtf_ids)
+                                                    ->whereNotIn('program_key', $this->program_nhtf_ids)
+                                                	->pluck('unit_key')->all();
 					//dd('2350 Optimized!');
                     // 10% of units
                     $number_of_htc_units_required = ceil($total_htc_units/10);
