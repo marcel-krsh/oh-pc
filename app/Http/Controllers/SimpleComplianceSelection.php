@@ -2554,6 +2554,7 @@ class SimpleComplianceSelection extends Controller
                     // how many $overlap
                     // if required <= $overlap we don't need to select anymore unit
                     // otherwise we need to take all the units NOT in the overlap and randomly pick required - count(overlap)
+                    $use_limiter = 0;
                     
                     $htc_units_without_overlap = $this->project->programs->whereIn('program_key', $this->program_htc_ids)
                                                     ->pluck('unit_key')->all();
