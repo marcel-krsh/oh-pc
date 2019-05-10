@@ -61,11 +61,11 @@ class SimpleComplianceSelection extends Controller
     public $program_percentages;
     public $program_htc_ids;
     public $program_bundle_ids;
-    public $this->program_home_ids;
-    public $this->program_ohtf_ids;
-    public $this->program_nhtf_ids;
-    public $this->program_811_ids;
-    public $this->program_medicaid_ids;
+    public $program_home_ids;
+    public $program_ohtf_ids;
+    public $program_nhtf_ids;
+    public $program_811_ids;
+    public $program_medicaid_ids;
 
 
 
