@@ -1541,7 +1541,8 @@ class SimpleComplianceSelection extends Controller
                         
                     // $project_program_key = $this->project->programs->whereIn('program_key',$this->program_home_ids)->pluck('project_program_key')->all();
                     // $project_program_key = implode(',', $project_program_key);
-
+                    $this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='NA';
+            		$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = null;
                     if (count($units) <= 4) {
 
                         $required_units = count($units);
@@ -1719,7 +1720,8 @@ class SimpleComplianceSelection extends Controller
 
                 
 
-
+                $this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='NA';
+            	$this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = null;
                 if((is_array($units) || is_object($units)) && count($units)){
                     $this->audit->comment = $this->audit->comment.' | Select Process Starting OHTF for award number '.$ohtf_award_number;
                     ////$this->audit->save();
@@ -1928,7 +1930,8 @@ class SimpleComplianceSelection extends Controller
                 // })->get();
                 
                 $units = $this->units->whereIn('program_key',$program_keys_with_award_number)->whereIn('program_key', $this->program_nhtf_ids);
-
+                $this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='NA';
+            	$this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = null;
                 if((is_array($units) || is_object($units)) && count($units)){
                     $this->audit->comment = $this->audit->comment.' | Select Process Starting NHTF for award number '.$nhtf_award_number;
                     //$this->audit->save();
