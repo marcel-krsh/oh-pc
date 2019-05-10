@@ -1545,8 +1545,8 @@ class SimpleComplianceSelection extends Controller
                     if (count($units) <= 4) {
 
                         $required_units = count($units);
-                        $this->program_percentages['Home'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='100% of Home';
-            			$this->program_percentages['Home'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = $required_units;
+                        $this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='100% of Home';
+            			$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = $required_units;
                         $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 100);
                         //dd('1373 Random Unit Selection output:',$units_selected);
 
@@ -1561,8 +1561,8 @@ class SimpleComplianceSelection extends Controller
                         if (ceil($this->project->total_unit_count/2) >= ceil($total_project_units/5)) {
 
                             $required_units = ceil($this->project->total_unit_count/2);
-                            $this->program_percentages['Home'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='50% of Home';
-            				$this->program_percentages['Home'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = $required_units;
+                            $this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='50% of Home';
+            				$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = $required_units;
 
                             $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($this->project->total_unit_count/2));
                             //dd('1386 Random Unit Selection output:',$units_selected);
@@ -1577,8 +1577,8 @@ class SimpleComplianceSelection extends Controller
 
                             if(ceil($total_project_units/5) > $this->project->total_unit_count){
                                 $required_units = $this->project->total_unit_count;
-                                $this->program_percentages['Home'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='100% of Home';
-            					$this->program_percentages['Home'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = $required_units;
+                                $this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='100% of Home';
+            					$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = $required_units;
                                 $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, $this->project->total_unit_count);
                                 //dd('1399 Random Unit Selection output:',$units_selected);
                                 
@@ -1588,8 +1588,8 @@ class SimpleComplianceSelection extends Controller
                                 ////$this->audit->save();
                             }else{
                                 $required_units = ceil($total_project_units/5);
-                                $this->program_percentages['Home'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='20% of Project';
-            					$this->program_percentages['Home'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = $required_units;
+                                $this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='20% of Project';
+            					$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = $required_units;
                                 //$units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
                                 $units_selected = $units->random(ceil($total_project_units/5))->pluck('unit_key')->all();
                                 //dd('1408 Random Unit Selection output:',$units_selected);
@@ -2736,6 +2736,7 @@ class SimpleComplianceSelection extends Controller
         	// determine program type
         	if(in_array($program->program_key, $this->program_bundle_ids)){
         		$program_type = 'BUNDLE';
+        		if(!array_array_key_exists())
         	}
         	if(in_array($program->program_key, $this->program_htc_ids)){
         		$program_type = 'HTC';
@@ -2744,6 +2745,7 @@ class SimpleComplianceSelection extends Controller
         		$program_type = '811';
         	}
         	if(in_array($program->program_key, $this->program_home_ids)){
+
         		$program_type = 'HOME'.str_replace(' ','',str_replace('-', '', $program->award_number));
         	}
         	if(in_array($program->program_key, $this->program_ohtf_ids)){
