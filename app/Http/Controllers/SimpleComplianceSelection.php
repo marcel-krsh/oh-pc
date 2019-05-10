@@ -2395,7 +2395,7 @@ class SimpleComplianceSelection extends Controller
                             "required_units" => $required_units,
                             "use_limiter" => $use_limiter,
                             "comments" => $comments
-                        ];this->this->this->this->
+                        ];
                     //$this->audit->save();
                         
                     } else {
