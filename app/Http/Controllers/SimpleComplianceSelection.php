@@ -2611,11 +2611,12 @@ class SimpleComplianceSelection extends Controller
 
         
                 
+        	$inspections = UnitInspection::where('audit_id',$this->audit->id)->get();
 
-        	$optimized_site = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('unit_key')->count();
-        	$optimized_file = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_file_audit',1)->groupBy('unit_key')->count();
+        	$optimized_site = $inspections->where('is_site_visit',1)->groupBy('unit_key')->count();
+        	$optimized_file = $inspections->where('is_file_audit',1)->groupBy('unit_key')->count();
 
-        	$_2019_buildings_with_unit_inspections = UnitInspection::select('building_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('building_key')->count();      
+        	$_2019_buildings_with_unit_inspections = $inspections->where('is_site_visit',1)->groupBy('building_key')->count();      
          	
 
             $projection->update([
@@ -2635,7 +2636,7 @@ class SimpleComplianceSelection extends Controller
 
             ]);
 
-        	dd($optimized_site,$test,$this->project->stats_total_units());
+        	dd($optimized_site,$optimized_file,$inspections);
 
         // $data = [
         //     'event' => 'NewMessage',
