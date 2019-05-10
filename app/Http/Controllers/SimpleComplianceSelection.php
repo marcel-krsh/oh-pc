@@ -2750,7 +2750,7 @@ class SimpleComplianceSelection extends Controller
         		$program_type = 'OHTF'.str_replace(' ','',str_replace('-', '', $program->award_number));
         	}
         	if(in_array($program->program_key, $this->program_nhtf_ids)){
-        		$program_type = 'NHTF'..str_replace(' ','',str_replace('-', '', $program->award_number));
+        		$program_type = 'NHTF'.str_replace(' ','',str_replace('-', '', $program->award_number));
         	}
         	if(in_array($program->program_key, $this->program_medicaid_ids)){
         		$program_type = 'MEDICAID';
