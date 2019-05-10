@@ -56,7 +56,7 @@ class SimpleComplianceSelection extends Controller
     public $program_4_2016_file_count;
     public $program_4_2016_percentage_used;
 
-    public $program_percentages;
+    
 
     public $program_percentages;
     public $program_htc_ids;
