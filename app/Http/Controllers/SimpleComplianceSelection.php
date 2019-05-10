@@ -2736,7 +2736,7 @@ class SimpleComplianceSelection extends Controller
         	// determine program type
         	if(in_array($program->program_key, $this->program_bundle_ids)){
         		$program_type = 'BUNDLE';
-        		if(!array_array_key_exists())
+        		
         	}
         	if(in_array($program->program_key, $this->program_htc_ids)){
         		$program_type = 'HTC';
