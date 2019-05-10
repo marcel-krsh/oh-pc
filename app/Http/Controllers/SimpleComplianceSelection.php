@@ -2559,7 +2559,7 @@ class SimpleComplianceSelection extends Controller
             $program_2016_site_count = 'program_'.$p.'_2016_site_count';
             $program_2019_site_count = 'program_'.$p.'_2019_site_count';
             $program_2019_site_difference_percent = 'program_'.$p.'_2019_site_difference_percent';
-            $program_2019_buildings_with_unit_inpsections = 'program_'.$p.'_2019_buildings_with_unit_inspections';
+            $program_2019_buildings_with_unit_inspections = 'program_'.$p.'_2019_buildings_with_unit_inspections';
 
             $program_2016_file_count = 'program_'.$p.'_2016_file_count';
             $program_2019_file_count = 'program_'.$p.'_2019_file_count';
@@ -2615,7 +2615,7 @@ class SimpleComplianceSelection extends Controller
         	$optimized_site = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('unit_key')->count();
         	$optimized_file = UnitInspection::select('unit_key')->where('audit_id',$this->audit->id)->where('is_file_audit',1)->groupBy('unit_key')->count();
 
-        	$_2019_buildings_with_unit_inpsections = UnitInspection::select('building_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('building_key')->count();      
+        	$_2019_buildings_with_unit_inspections = UnitInspection::select('building_key')->where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('building_key')->count();      
          	
 
             $projection->update([
@@ -2630,7 +2630,7 @@ class SimpleComplianceSelection extends Controller
                 'total_market_rate_unit_count' => $this->project->stats_total_market_rate_units(),
                 'optimized_2019_site_count' => $optimized_site,
                 'optimized_2019_file_count' => $optimized_file,
-                '2019_buildings_with_unit_inpsections' => $_2019_buildings_with_unit_inpsections,
+                '2019_buildings_with_unit_inspections' => $_2019_buildings_with_unit_inspections,
                 'run' => 1
 
             ]);
