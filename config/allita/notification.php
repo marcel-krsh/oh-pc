@@ -3,7 +3,7 @@
 return [
 
   'type'      => [
-    1 => 'Communication',
+    1 => 'Communications',
   ],
 
   'frequency' => [

@@ -24,6 +24,11 @@ class NotificationsTriggered extends Model
     return $query->where('active', 1);
   }
 
+  public function scopeInactive($query)
+  {
+    return $query->where('active', 0);
+  }
+
   public function from_user(): HasOne
   {
     return $this->hasOne(\App\Models\User::class, 'id', 'from_id');

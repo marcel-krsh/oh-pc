@@ -59,7 +59,7 @@ class EmailCommunicationNotification extends Mailable
       $body              = \view('emails.new_communication', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'level2'));
       $email_saved_in_db = new HistoricEmail([
         "user_id" => $user->id,
-        "type"    => 'users',
+        "type"    => 'communication',
         "type_id" => $owner->id,
         "subject" => $this->subject,
         "body"    => $body,

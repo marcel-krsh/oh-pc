@@ -10,10 +10,11 @@ use App\Models\CommunicationDocument;
 use App\Models\CommunicationRecipient;
 use App\Models\Document;
 use App\Models\DocumentCategory;
+use App\Models\NotificationsTriggered;
 use App\Models\Project;
 use App\Models\SystemSetting;
-use App\Models\User;
 //use App\LogConverter;
+use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 use Session;
@@ -1111,6 +1112,62 @@ class CommunicationController extends Controller
       } else {
         return view('dashboard.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project', 'projects_array'));
       }
+    }
+  }
+
+  public function messageNotification($communication_id, $user_id, Request $request)
+  {
+    /**
+     * Check if user already logged in
+     *   If user is logged in, check if the message belongs to this user
+     *     If yes, show the message. else, show WARNING
+     *   If user is not logged in,
+     *     Check if the token exists, if not exists, show WARNING and redirect to login
+     *     If exists, check if the token is valid (within 24 hours) and belongs to the user,
+     *       if not show WARNING and give a button to generate a new token and email again
+     *         {{{{{{ If it has been longer than 10 hours since the token was sent, it would display a message stating, Your message link expired, click the button below to request a new link to be sent to your email. Then a button below that would generate a new token, and email that to them so they can open the message. }}}}}}
+     *         -Send link for single communication
+     *         -Batch Communication, send complete email again.
+     *             How to track these emails send? Update in notification_triggers? -- Added columns
+     *     If token is valid, login user using the token
+     *       Show communication tab and modal of that message
+     */
+    $token = $request->get('t');
+    if (Auth::check()) {
+      $user = Auth::user();
+      return $this->showNotificationMessage($communication_id);
+    } elseif ($token) {
+      $notification = NotificationsTriggered::where('token', $token)->inactive()->first();
+      if ($notification) {
+        $notification_time   = $notification->deliver_time;
+        $now                 = date("Y-m-d H:i:s");
+        $allowed_access_time = date('Y-m-d H:i:s', strtotime('+1 day', strtotime($notification_time)));
+        if ($allowed_access_time > $now) {
+          $user = User::find($user_id);
+          $user = Auth::login($user);
+          return $this->showNotificationMessage($communication_id);
+        } else {
+          //if not show WARNING and give a button to generate a new token and email again
+          session(["notification_token" => $token]);
+          return view('notifications.expired-link', compact('user_id'));
+        }
+      } else {
+        // show warning message, looks like something went wrong
+      }
+
+      //check if the token is valid, within 24 hours
+    } else {
+      // show warning message, looks like something went wrong, redirect to login
+    }
+  }
+
+  public function some()
+  {
+    $notification = NotificationsTriggered::where('token', $token)->where('to_id', $user->id)->inactive()->first();
+    if ($notification) {
+      //show message $this->showNotificationMessage();
+    } else {
+      // show warning message, looks like something went wrong
     }
   }
 }

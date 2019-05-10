@@ -51,7 +51,7 @@ class EmailBulkNotification extends Mailable
       $body              = \view('emails.bulk_notifications', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'level2', 'notifications'));
       $email_saved_in_db = new HistoricEmail([
         "user_id" => $user->id,
-        "type"    => 'users',
+        "type"    => 'communication',
         "type_id" => null,
         "subject" => $this->subject,
         "body"    => $body,

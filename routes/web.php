@@ -326,6 +326,16 @@
         Route::get('/view_message/{message}', 'CommunicationController@goToMessage');
         Route::get('communication/session/{trigger?}', 'CommunicationController@setFilterSession');
 
+        // notifications trigger
+
+				Route::post('user/notification-preference/{id}', 'Notifications\UserNotificationController@postNotificationPreference');
+				Route::get('send/notification', 'Notifications\UserNotificationController@communicationNotifications');
+				Route::post('resend-notification-link', 'Notifications\UserNotificationController@postResendNotificationsLink');
+
+        Route::get('communication/view-message/{message_id}/{user_id}', 'CommunicationController@messageNotification');
+        //resend-notification-link
+
+
         Route::get('/session/communication_switch_inbox', function()
 				{
 				    session(['communication_sent'=>0]);
@@ -377,9 +387,6 @@
 				Route::post('/modals/deactivateuser/{id}', 'PagesController@deactivateUserSave');
 				Route::get('/modals/activateuser/{id}', 'PagesController@activateUser');
 				Route::post('/modals/activateuser/{id}', 'PagesController@activateUserSave');
-
-				Route::post('user/notification-preference/{id}', 'Notifications\UserNotificationController@postNotificationPreference');
-				Route::get('send/notification', 'Notifications\UserNotificationController@communicationNotifications');
 
 
 				Route::post('register-user', 'Auth\RegisterController@postRegister');
