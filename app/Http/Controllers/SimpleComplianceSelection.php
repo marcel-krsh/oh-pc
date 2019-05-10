@@ -1874,7 +1874,7 @@ class SimpleComplianceSelection extends Controller
                     $this->audit->comment_system = $this->audit->comment_system.' | Select Process is not working with OHTF.';
                     //$this->audit->save();
                 }
-            }this->
+            }
         }else{
             $htc_units_subset_for_ohtf = array();
             $this->audit->comment_system = $this->audit->comment_system.' | Select Process is not working with OHTF.';
@@ -2074,7 +2074,7 @@ class SimpleComplianceSelection extends Controller
                     $this->audit->comment_system = $this->audit->comment_system.' | 1807 Select Process is not working with NHTF.';
                     //$this->audit->save();
                 }
-            }this->
+            }
         }else{
             $htc_units_subset_for_nhtf = array();
             $this->audit->comment_system = $this->audit->comment_system.' | 1813 Select Process is not working with NHTF.';
