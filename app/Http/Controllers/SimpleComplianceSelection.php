@@ -1196,17 +1196,17 @@ class SimpleComplianceSelection extends Controller
                                     $first_building_done = 1;
                                 }
 
-                                $units_for_that_building = Unit::where('building_key', '=', $building->building_key)
-                                                ->whereHas('programs', function ($query) {
-                                                    $query->where('monitoring_key', '=', $this->audit->monitoring_key);
-                                                    $query->whereIn('program_key', $this->program_bundle_ids);
-                                                })
-                                                ->pluck('unit_key')
-                                                ->toArray();
+                                // $units_for_that_building = Unit::where('building_key', '=', $building->building_key)
+                                //                 ->whereHas('programs', function ($query) {
+                                //                     $query->where('monitoring_key', '=', $this->audit->monitoring_key);
+                                //                     $query->whereIn('program_key', $this->program_bundle_ids);
+                                //                 })
+                                //                 ->pluck('unit_key')
+                                //                 ->toArray();
 
-                                $units_for_that_building2 = $this->units->whereIn('program_key',$this->program_bundle_ids)->where('unit.building_key',$building->building_key)->pluck('unit_key')->all();
+                                $units_for_that_building = $this->units->whereIn('program_key',$this->program_bundle_ids)->where('unit.building_key',$building->building_key)->pluck('unit_key')->all();
 
-                                dd('1182 -- VERIFY THIS QUERY WORKS - ',$units_for_that_building,$units_for_that_building2);
+                                //dd('1182 -- VERIFY THIS QUERY WORKS - ',$units_for_that_building,$units_for_that_building2);
                                 /// comment out original and rename variable if the revised query works.
 
                                 // $required_units_for_that_building = ceil(count($units_for_that_building)/5);
