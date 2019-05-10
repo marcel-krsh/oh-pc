@@ -2844,7 +2844,8 @@ class SimpleComplianceSelection extends Controller
                 'optimized_2019_site_count' => $optimized_site,
                 'optimized_2019_file_count' => $optimized_file,
                 '2019_buildings_with_unit_inspections' => $_2019_buildings_with_unit_inspections,
-                'run' => 1
+                'run' => 1,
+                'running' => 0
 
             ]);
 
