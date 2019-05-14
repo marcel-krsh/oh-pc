@@ -94,7 +94,7 @@ class Kernel extends ConsoleKernel
         ////// SYNC JOBS
         ////
 
-        if(!env('APP_DEBUG_NO_DEVCO') && (intval(date('G',time())) < 2 || intval(date('G',time()) > 3))){
+        if(!env('APP_DEBUG_NO_DEVCO') && (intval(date('G',time())) < 10 || intval(date('G',time()) > 3))){
             $test = DB::table('jobs')->where('payload', 'like', '%SyncAddresses%')->first();
             if (is_null($test)) {
                 $schedule->job(new SyncAddressesJob)->everyMinute();
@@ -464,16 +464,16 @@ class Kernel extends ConsoleKernel
                 //Log::info('Sync Job Already Started.');
             }
 
-            //RunProjections
-            $test = DB::table('jobs')->where('payload', 'like', '%ComplianceProjectionJob%')->first();
-            if (is_null($test)) {
-                $planning = Projection::where('run',0)->first();
+            // //RunProjections
+            // $test = DB::table('jobs')->where('payload', 'like', '%ComplianceProjectionJob%')->first();
+            // if (is_null($test)) {
+            //     $planning = Projection::where('run',0)->first();
                
-                    $schedule->job(new ComplianceProjectionJob, 'compliance')->everyMinute();
+            //         $schedule->job(new ComplianceProjectionJob, 'compliance')->everyMinute();
                
-            } else {
-                //Log::info('Sync Job Already Started.');
-            }
+            // } else {
+            //     //Log::info('Sync Job Already Started.');
+            // }
         }
     }
 
