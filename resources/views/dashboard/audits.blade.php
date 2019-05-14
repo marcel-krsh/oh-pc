@@ -215,6 +215,12 @@
 			</div>
 			@endif
 
+			@if(session('file-audit-status-h') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('file-audit-status-h', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS FILE AUDIT FINDINGS</span></a>
+			</div>
+			@endif
+
 			@if(session('file-audit-status-r') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
 				<a onClick="filterAudits('file-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS RESOLVED FILE AUDIT FINDINGS</span></a>
@@ -240,6 +246,11 @@
 			@endif
 
 
+			@if(session('nlt-audit-status-h') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('nlt-audit-status-h', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS NLT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
 
 			@if(session('nlt-audit-status-r') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
@@ -266,6 +277,11 @@
 			@endif
 
 
+			@if(session('lt-audit-status-h') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('lt-audit-status-h', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS LT AUDIT FINDINGS</span></a>
+			</div>
+			@endif
 
 			@if(session('lt-audit-status-r') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
@@ -624,6 +640,9 @@
 												
 												<input id="file-audit-status-r" class="fileauditselector" type="checkbox" @if(session('file-audit-status-r') == 1) checked @endif/>
 												<label for="file-audit-status-r"><i class="a-folder ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED FILE AUDIT FINDINGS</span></label>
+
+												<input id="file-audit-status-h" class="fileauditselector" type="checkbox" @if(session('file-audit-status-h') == 1) checked @endif/>
+												<label for="file-audit-status-h"><i class="a-folder  divider dividericon"></i><span class="">HAS FILE AUDIT FINDINGS</span></label>
 												
 												<input id="file-audit-status-ar" class=" fileauditselector" type="checkbox" @if(session('file-audit-status-ar') == 1) checked @endif/>
 												<label for="file-audit-status-ar"><i class="a-folder action-needed divider dividericon"></i> <span class="action-needed">HAS ACTION REQUIRED FILE AUDIT FINDINGS</span></label>
@@ -658,6 +677,9 @@
 												<input id="nlt-audit-status-all" class="" type="checkbox" @if(session('nlt-audit-status-all') == 1) checked @endif/>
 												<label for="nlt-audit-status-all"><i class="a-booboo"></i> <span>ALL NLT AUDIT FINDING STATUSES</span></label>
 												
+												<input id="nlt-audit-status-h" class="nltauditselector" type="checkbox" @if(session('nlt-audit-status-h') == 1) checked @endif/>
+												<label for="nlt-audit-status-h"><i class="a-booboo  divider dividericon"></i><span class="">HAS NLT AUDIT FINDINGS</span></label>
+
 												<input id="nlt-audit-status-r" class="nltauditselector" type="checkbox" @if(session('nlt-audit-status-r') == 1) checked @endif/>
 												<label for="nlt-audit-status-r"><i class="a-booboo ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED NLT AUDIT FINDINGS</span></label>
 												
@@ -694,6 +716,9 @@
 												<input id="lt-audit-status-all" class="" type="checkbox" @if(session('lt-audit-status-all') == 1) checked @endif/>
 												<label for="lt-audit-status-all"><i class="a-skull"></i> <span>ALL LT AUDIT FINDING STATUSES</span></label>
 												
+												<input id="lt-audit-status-h" class="ltauditselector" type="checkbox" @if(session('lt-audit-status-h') == 1) checked @endif/>
+												<label for="lt-audit-status-h"><i class="a-skull divider dividericon"></i><span class="">HAS LT AUDIT FINDINGS</span></label>
+
 												<input id="lt-audit-status-r" class="ltauditselector" type="checkbox" @if(session('lt-audit-status-r') == 1) checked @endif/>
 												<label for="lt-audit-status-r"><i class="a-skull ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED LT AUDIT FINDINGS</span></label>
 												
