@@ -127,11 +127,11 @@
                 <div class="uk-form-row">
                     <div class="uk-grid">
                         
-                        <label class="uk-width-1-6 uk-margin-small-top"><input class="uk-checkbox uk-margin-small-right" type="checkbox" name="one" value="1" @if($finding_type) @if($finding_type->one) checked @endif @endif> Level One</label> <input class="uk-width-5-6 uk-input" type="text" name="one_description" placeholder="Enter Level 1 Description" value="{{$finding_type->one_description}}">
+                        <label class="uk-width-1-6 uk-margin-small-top"><input class="uk-checkbox uk-margin-small-right" type="checkbox" name="one" value="1" @if($finding_type) @if($finding_type->one) checked @endif @endif> Level One</label> <input class="uk-width-5-6 uk-input" type="text" name="one_description" placeholder="Enter Level 1 Description" @if($finding_type) @if($finding_type->one_description)  value="{{$finding_type->one_description}}" @endif @endif>
                         <hr class="uk-width-1-1 dashed-hr">
-                        <label class="uk-width-1-6 uk-margin-top"><input class="uk-checkbox uk-margin-small-right" type="checkbox" name="two" value="1" @if($finding_type) @if($finding_type->two) checked @endif @endif> Level Two</label> <input class="uk-width-5-6 uk-input uk-margin-top" type="text" name="two_description" placeholder="Enter Level 2 Description" value="{{$finding_type->two_description}}">
+                        <label class="uk-width-1-6 uk-margin-top"><input class="uk-checkbox uk-margin-small-right" type="checkbox" name="two" value="1" @if($finding_type) @if($finding_type->two) checked @endif @endif> Level Two</label> <input class="uk-width-5-6 uk-input uk-margin-top" type="text" name="two_description" placeholder="Enter Level 2 Description" @if($finding_type) @if($finding_type->two_description) value="{{$finding_type->two_description}}" @endif @endif>
                         <hr class="uk-width-1-1 dashed-hr">
-                        <label class="uk-width-1-6  uk-margin-top"><input class="uk-checkbox uk-margin-small-right" type="checkbox" name="three" value="1" @if($finding_type) @if($finding_type->three) checked @endif @endif> Level Three</label> <input class="uk-width-5-6 uk-input uk-margin-top" type="text" name="three_description" placeholder="Enter Level 3 Description" value="{{$finding_type->three_description}}">
+                        <label class="uk-width-1-6  uk-margin-top"><input class="uk-checkbox uk-margin-small-right" type="checkbox" name="three" value="1" @if($finding_type) @if($finding_type->three) checked @endif @endif> Level Three</label> <input class="uk-width-5-6 uk-input uk-margin-top" type="text" name="three_description" placeholder="Enter Level 3 Description" @if($finding_type) @if($finding_type->three_description) value="{{$finding_type->three_description}}" @endif @endif>
                     </div>
                     
                 </div>
@@ -179,8 +179,8 @@
                         <hr class="uk-width-1-1 uk-margin-top" style="border-style: dashed;"/>
                         <div class="uk-width-1-1 form-default-followups">
                             @if($finding_type)
-                            @if($finding_type->default_followups)
-                            @foreach($finding_type->default_followups as $default_followup)
+                            @if($finding_type->default_follow_ups)
+                            @foreach($finding_type->default_follow_ups as $default_followup)
                             <div class="form-default-followup" uk-grid>
                                 <div class="uk-width-1-6 uk-margin-small-top uk-margin-small-bottom">
                                     <input type="number" min="1" max="31" value="{{$default_followup->quantity}}" class="uk-form-small followup-number" style="height: 20px;">
@@ -204,14 +204,14 @@
                                     <input type="text" value="{{$default_followup->description}}" placeholder="Description" class="uk-input uk-form-small followup-description">
                                 </div>
                                 <div class="uk-width-1-6  uk-margin-small-top">
-                                    <label><input class="uk-checkbox followup-reply" type="checkbox" value="1" @if($default_followup->reply) checked @endif> Reply</label><br /><br />
+                                    <label><input class="uk-checkbox followup-reply" type="checkbox" value="1" @if($default_followup->reply) checked @endif> Comment</label><br /><br />
                                     <button class="uk-button uk-button-default uk-button-small" onclick="removeFollowUp(this);return false;"><span uk-icon="minus-circle" class="form-title-icon uk-icon"></span> Remove</button>
                                 </div>
                                 <div class="uk-width-1-6  uk-margin-small-top">
-                                    <label><input class="uk-checkbox followup-photo" type="checkbox" value="1" @if($default_followup->photo) checked @endif> Add a photo</label>
+                                    <label><input class="uk-checkbox followup-photo" type="checkbox" value="1" @if($default_followup->photo) checked @endif> Upload Photo</label>
                                 </div>
                                 <div class="uk-width-1-6  uk-margin-small-top">
-                                    <label><input class="uk-checkbox followup-doc" type="checkbox" value="1" @if($default_followup->doc) checked @endif> Upload a doc</label>
+                                    <label><input class="uk-checkbox followup-doc" type="checkbox" value="1" @if($default_followup->doc) checked @endif> Upload a Doc</label>
                                 </div>
                                 <div class="uk-width-1-2  uk-margin-small-top">
                                     @if(count($document_categories))

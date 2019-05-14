@@ -339,7 +339,19 @@ function expandFindingItems(element, type=null, typeid=null) {
 						var itemstickycontent = item.comment;
 						switch(item.type) {
 						    case 'followup':
-						        itemauditorname = item.auditor.name+'<br />Assigned To: '+item.assigned.name;
+						    	if(item.assigned.name != ''){
+						        	itemauditorname = item.auditor.name+'<br />Assigned To: '+item.assigned.name;
+						    	}
+						    	itemcontent = '';
+						    	if(item.duedate){
+						    		itemcontent = itemcontent + 'Due Date: '+item.duedate+'<br />';
+						    	}
+						    	if(item.requested_action){
+						    		itemcontent = itemcontent + 'Requested Action: '+item.requested_action+'<br />';
+						    	}
+						    	itemcontent = itemcontent + item.description;
+						    	
+
 						        itemtype = 'FLWUP';
 						        break;
 						    case 'comment':
@@ -364,7 +376,7 @@ function expandFindingItems(element, type=null, typeid=null) {
 						        break;
 						    case 'file':
 						        itemtype = 'DOC';
-						        var categoryTemplate = "<div class='finding-file-category'><i class='tplCatIcon'></i> tplCatName</div>";
+						        var categoryTemplate = "<div class='finding-file-category'>tplCatName</div>";
 						        var categories = '';
 						        var newcategory = '';
 						        var file = '';
@@ -385,7 +397,7 @@ function expandFindingItems(element, type=null, typeid=null) {
 						        	categories = categories + newcategory;
 						        });
 
-						        file = categories+"<div class='finding-file use-hand-cursor' onclick='openFindingFile();'><i class='a-down-arrow-circle'></i> "+item.file.name+"<br />"+item.file.size+" MB "+item.file.type+"</div>";
+						        file = categories+"<br /><a href=\"download-local-document/"+item.file.id+"\" target=\"_blank\"  uk-tooltip=\"Download file.\" download class='finding-file use-hand-cursor'><i class='a-down-arrow-circle'></i> "+item.file.name+"<br />"+item.file.size+" MB "+item.file.type+"</a><br /><br />"+item.file.comment;
 
 						        itemcontent = findingsFileTemplate.replace(/tplFileContent/g, file);
 						        break;

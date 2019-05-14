@@ -20,11 +20,18 @@ class UserController extends Controller
         // $this->middleware('auth');
         if (env('APP_DEBUG_NO_DEVCO') == 'true') {
             //Auth::onceUsingId(286); // TEST BRIAN
-            Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
+            //Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
         }
     }
 
     public function saveAuditorAddress(Request $request, $user){
+        if(Auth::user()->can('access_manager')){
+            $user = $user;
+            $userObj = User::find($user);
+        } else {
+            $user = Auth::user()->id;
+            $userObj = Auth::user();
+        }
         $forminputs = $request->get('inputs');
         parse_str($forminputs, $forminputs);
 
@@ -44,7 +51,7 @@ class UserController extends Controller
         if($forminputs['state']){ $formatted_address = $formatted_address.", ".$forminputs['state']; }
         if($forminputs['zip']){ $formatted_address = $formatted_address." ".$forminputs['zip']; }
 
-        broadcast(new AuditorAddressEvent(Auth::user(), $address->id, $formatted_address));
+        broadcast(new AuditorAddressEvent($userObj, $address->id, $formatted_address));
 
         return 1;
     }
@@ -81,7 +88,7 @@ class UserController extends Controller
         $saturday = (array_key_exists('saturday', $forminputs) && $forminputs['saturday'] == "on")? 1 : 0;
         $sunday = (array_key_exists('sunday', $forminputs) && $forminputs['sunday'] == "on")? 1 : 0;
 
-        $date_array = explode(" to ", $daterange); 
+        $date_array = explode(" to ", $daterange);
         if(count($date_array) != 2){
             // make it work for a single day
             $date_array[0] = $daterange;
@@ -90,7 +97,7 @@ class UserController extends Controller
 
         $startdate = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
         $enddate = Carbon\Carbon::createFromFormat('F j, Y', $date_array[1]);
-     
+
         $days = [];
 
         // go through each day of the week
@@ -159,7 +166,7 @@ class UserController extends Controller
         }
 
         usort($days,"strcmp");
-        
+
         if(Carbon\Carbon::createFromFormat('H:i:s', $starttime)->gt(Carbon\Carbon::createFromFormat('H:i:s', $endtime))){
             return "The end time must be later than the start time.";
         }
@@ -182,7 +189,7 @@ class UserController extends Controller
         if($availability == "available"){
             foreach($days as $day){
                 $avail_records = Availability::where('user_id','=',$current_user->id)->where('date','=',$day)->get();
-                
+
                 $records_to_delete = array(); // stores the records to delete
                 $create_new_record = 1;
 
@@ -190,14 +197,14 @@ class UserController extends Controller
                     foreach($avail_records as $avail_record){
 
                         // if no overlap, ignore and prepare to insert unless another match is found on the next record
-                        
+
                         // if there is an overlap, combine and override the new availability with the new values, prepare to delete the overlaping record
-                        
+
                         // in all cases, we will insert one or more records at the end unless the overlap is full.
-                        
+
                         if( ($slot_start < $avail_record->start_slot && $slot_start + $slot_span < $avail_record->start_slot) || $slot_start > $avail_record->start_slot + $avail_record->span ){
                             // no overlap
-                            
+
                         }else{
                             if($slot_start >= $avail_record->start_slot && $slot_start + $slot_span <= $avail_record->start_slot + $avail_record->span){
                                 // full overlap, nothing to do
@@ -209,7 +216,7 @@ class UserController extends Controller
                                     // return "overlap and starting before";
                                     $updated_slot_start = $slot_start;
                                     $updated_start_time = $starttime;
-                                    
+
                                     if($slot_start + $slot_span > $avail_record->start_slot + $avail_record->span){
 
                                         $updated_span = $slot_span;
@@ -223,7 +230,7 @@ class UserController extends Controller
 
                                         $tmp_slot_start = ($tmp_hour_1 - 6)*4 + 1 + $tmp_min_1 / 15;
                                         $tmp_slot_end = ($tmp_hour_2 - 6)*4 + 1 + $tmp_min_2 / 15;
-                                        
+
                                         $updated_span = $tmp_slot_end - $tmp_slot_start;
                                         $updated_end_time = $avail_record->end_time;
                                     }
@@ -248,7 +255,7 @@ class UserController extends Controller
 
                                     $tmp_slot_start = ($tmp_hour_1 - 6)*4 + 1 + $tmp_min_1 / 15;
                                     $tmp_slot_end = ($tmp_hour_2 - 6)*4 + 1 + $tmp_min_2 / 15;
-                                    
+
                                     $updated_span = $tmp_slot_end - $tmp_slot_start;
                                     $updated_end_time = $endtime;
 
@@ -284,13 +291,13 @@ class UserController extends Controller
         }else{
             foreach($days as $day){
                 $avail_records = Availability::where('user_id','=',$current_user->id)->where('date','=',$day)->get();
-                
+
                 if(count($avail_records)){
                     foreach($avail_records as $avail_record){
-                        
+
                         // if times overlap, remove and update existing record
-                        if(     ($slot_start < $avail_record->start_slot && 
-                                $slot_start + $slot_span < $avail_record->start_slot) || 
+                        if(     ($slot_start < $avail_record->start_slot &&
+                                $slot_start + $slot_span < $avail_record->start_slot) ||
                                 $slot_start > $avail_record->start_slot + $avail_record->span
                         ){
                             // no overlap, nothing to do
@@ -305,7 +312,7 @@ class UserController extends Controller
                                 if($slot_start <= $avail_record->start_slot){
                                     // return "overlap and starting before";
                                     // update record, keep only whatever is after the end of the span
-                                    
+
                                     $updated_slot_start = $slot_end;
                                     $updated_start_time = $endtime;
 
@@ -316,10 +323,10 @@ class UserController extends Controller
 
                                     $tmp_slot_start = ($tmp_hour_1 - 6)*4 + 1 + $tmp_min_1 / 15;
                                     $tmp_slot_end = ($tmp_hour_2 - 6)*4 + 1 + $tmp_min_2 / 15;
-                                    
+
                                     $updated_span = $tmp_slot_end - $tmp_slot_start;
                                     $updated_end_time = $avail_record->end_time;
-                                    
+
                                     // update record
                                     $avail_record->update([
                                         "start_time" => $updated_start_time,
@@ -340,7 +347,7 @@ class UserController extends Controller
 
                                     $tmp_slot_start = ($tmp_hour_1 - 6)*4 + 1 + $tmp_min_1 / 15;
                                     $tmp_slot_end = ($tmp_hour_2 - 6)*4 + 1 + $tmp_min_2 / 15;
-                                    
+
                                     $updated_span = $tmp_slot_end - $tmp_slot_start;
                                     $updated_end_time = $starttime;
 
@@ -369,7 +376,7 @@ class UserController extends Controller
 
                                     $tmp_slot_start = ($tmp_hour_1 - 6)*4 + 1 + $tmp_min_1 / 15;
                                     $tmp_slot_end = ($tmp_hour_2 - 6)*4 + 1 + $tmp_min_2 / 15;
-                                    
+
                                     $updated_span = $tmp_slot_end - $tmp_slot_start;
                                     $updated_end_time = $starttime;
 
@@ -383,7 +390,7 @@ class UserController extends Controller
 
                                     $tmp_slot_start = ($tmp_hour_1 - 6)*4 + 1 + $tmp_min_1 / 15;
                                     $tmp_slot_end = ($tmp_hour_2 - 6)*4 + 1 + $tmp_min_2 / 15;
-                                    
+
                                     $updated_span2 = $tmp_slot_end - $tmp_slot_start;
                                     $updated_end_time2 = $avail_record->end_time;
 
@@ -411,10 +418,10 @@ class UserController extends Controller
                                             'span' => $updated_span2
                                         ]);
                                     $new_avail->save();
-                                
+
                                 }
 
-                                
+
 
                                 // return "overlap: ".$updated_slot_start." ".$updated_start_time." ".$updated_span." ".$updated_end_time;
                             }
@@ -429,7 +436,7 @@ class UserController extends Controller
 
     public function deleteAuditorAddress(Request $request, $address_id){
         // check if current user can delete this record and if the record exists.
-        
+
         $address = Address::where('id', '=', $address_id)->first();
 
         if($address && $address->user_id == Auth::user()->id){
@@ -443,12 +450,12 @@ class UserController extends Controller
     public function preferences($id)
     {
 
-        if ($id != Auth::user()->id) {
-            $output['message'] = 'You can only edit your own preferences.';
+        if ($id != Auth::user()->id && !Auth::user()->can('access_manager')) {
+            $output['message'] = 'You can only edit and view your own preferences.';
             return $output;
         }
 
-        $user = Auth::user();
+        $user = User::find($id);
 
         $phone_number = '';
         if($user->person){
@@ -511,7 +518,7 @@ class UserController extends Controller
         }
 
         $calendar = $this->getCalendar($d); //dd($calendar);
-    
+
         $data = collect([
             "summary" => [
                 "id" => $id,
@@ -523,7 +530,7 @@ class UserController extends Controller
                 'color' => $user->badge_color,
                 'phone' => $phone_number,
                 'organization' => [
-                    "id" => $org_id,
+                    "id" => isset($org_id) ? $org_id : null,
                     "name" => $org_name,
                     "address1" => $org_address1,
                     "address2" => $org_address2,
@@ -566,7 +573,7 @@ class UserController extends Controller
     }
 
     public function getCalendar($d) {
-  
+
         // create the content for the selected week and one week before/after
         $tmp_day = $d->copy()->subDays(7);
         $days = array();
@@ -622,10 +629,10 @@ class UserController extends Controller
             }
 
             $index_date = $tmp_day->copy()->addDays($i)->format('Y-m-d');
-            $days[$index_date] = [ 
-                "date" => $tmp_day->copy()->addDays($i)->format('m/d'), 
-                "date_formatted" => $tmp_day->copy()->addDays($i)->format('F j, Y'), 
-                "date_formatted_name" => strtolower($tmp_day->copy()->addDays($i)->englishDayOfWeek), 
+            $days[$index_date] = [
+                "date" => $tmp_day->copy()->addDays($i)->format('m/d'),
+                "date_formatted" => $tmp_day->copy()->addDays($i)->format('F j, Y'),
+                "date_formatted_name" => strtolower($tmp_day->copy()->addDays($i)->englishDayOfWeek),
                 "no_availability" => 0,
                 "before_time_start" => $before_time_start,
                 "before_time_span" => $before_time_span,

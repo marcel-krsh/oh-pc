@@ -2,20 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+// use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\DocumentTrait;
+use App\Models\Audit;
 use App\Models\Amenity;
 use App\Models\AmenityInspection;
+use App\Models\AuditAuditor;
 use App\Models\BuildingInspection;
 use App\Models\CachedAudit;
 use App\Models\CachedBuilding;
 use App\Models\CachedUnit;
 use App\Models\Comment;
 use App\Models\Document;
+use App\Models\DocumentCategory;
 use App\Models\Finding;
 use App\Models\FindingType;
 use App\Models\Followup;
 use App\Models\Photo;
 use App\Models\Project;
+use App\Models\SystemSetting;
 use App\Models\UnitInspection;
 use App\Models\User;
 use Auth;
@@ -24,6 +29,8 @@ use Illuminate\Http\Request;
 
 class FindingController extends Controller
 {
+    use DocumentTrait;
+
     public function __construct()
     {
         // $this->middleware('auth');
@@ -282,6 +289,7 @@ class FindingController extends Controller
     {
 
         // $type: followup, photo, document, comment
+        //dd($id, $fromtype, $type);
 
         if (Auth::user()->auditor_access()) {
             if ($fromtype == 'finding') {
@@ -292,6 +300,79 @@ class FindingController extends Controller
                 $from = Photo::where('id', '=', $id)->first();
             } elseif ($fromtype == 'document') {
                 $from = Document::where('id', '=', $id)->first();
+            } elseif ($fromtype == 'followup') {
+                $from = Followup::where('id', '=', $id)->first();
+            }
+
+            if($type == 'followup'){
+                // $auditors = $from->audit->auditors(); 
+
+                $auditors = AuditAuditor::where('audit_id', '=', $from->audit_id)->with('user')->get();
+                $project = Project::where('id', '=', $from->project_id)->first();
+                if($project){
+                    $owner = $project->owner();
+                    $pm = $project->pm();
+
+                    $owner_name = $owner['name'];
+                    $owner_id = $owner['owner_id'];
+                    $pm_name = $pm['name'];
+                    $pm_id = $pm['pm_id'];
+                }else{
+                    $owner_name = '';
+                    $owner_id = null;
+                    $pm_name = '';
+                    $pm_id = null;
+                }
+                
+
+                $document_categories = DocumentCategory::where('active', '=', 1)->get();
+                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'document_categories', 'auditors', 'owner_id', 'owner_name', 'pm_id', 'pm_name'));
+            }elseif($type == 'comment'){
+
+            }elseif($type == 'document'){
+                if($from->project_id){
+                    $project = Project::where('id', '=', $from->project_id)->first();
+                }elseif($from->audit_id){
+                    $audit = Audit::where('id', '=', $from->audit_id)->first();
+                    if($audit){
+                        $project = $audit->project;
+                    }
+                }else{
+                    $project = null;
+                }
+                
+                if ($project) {
+                    $audit_details = $project->selected_audit();
+                    
+                    $document_categories = DocumentCategory::where('parent_id', '<>', 0)
+                        ->active()
+                        ->orderby('document_category_name', 'asc')
+                        ->with('parent')
+                        ->get();
+                    
+                    // build a list of all categories used for uploaded documents in this project
+                    $categories_used = [];
+                    // category keys for name reference ['id' => 'name']
+                    $document_categories_key = [];
+                    $audit = $audit_details->id;
+                }
+
+                // list the requested categories to help the user
+                if($fromtype == 'followup'){
+                    $categories_decoded = json_decode($from->document_categories, true);
+                    $categories = DocumentCategory::whereIn('id', $categories_decoded)->get();
+                    $requested_categories = "";
+                    foreach($categories as $category){
+                        if($requested_categories != ''){
+                            $requested_categories = $requested_categories.", ";
+                        }
+                        $requested_categories = strtolower($requested_categories.$category->document_category_name);
+                    }
+                }else{
+                    $requested_categories = '';
+                }
+
+                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'project', 'document_categories', 'requested_categories'));
             }
 
             return view('modals.finding-reply-' . $type, compact('from', 'fromtype'));
@@ -318,7 +399,7 @@ class FindingController extends Controller
             } elseif ($fromtype == 'photo') {
                 $from = Photo::where('id', '=', $inputs['id'])->first();
                 $finding_id = $from->finding_id;
-            } elseif ($fromtype == 'document') {
+            } elseif ($fromtype == 'document') { 
                 $from = Document::where('id', '=', $inputs['id'])->first();
                 $finding_id = $from->finding_id;
             } elseif ($fromtype == 'followup') {
@@ -354,7 +435,78 @@ class FindingController extends Controller
 
             } elseif ($inputs['type'] == 'followup') {
 
+                $due = $inputs['due'];
+                $duration = $inputs['duration'];
+                // due date
+                $due_date = Carbon\Carbon::now();
+                if($duration == "hours"){
+                    $due_date->addHours($due);
+                }elseif($duration == "days"){
+                    $due_date->addDays($due);
+                }elseif($duration == "weeks"){
+                    $due_date->addWeeks($due);
+                }elseif($duration == "months"){
+                    $due_date->addMonths($due);
+                }
+
+                if($inputs['assignee']){
+                    $assignee = $inputs['assignee'];
+                }else{
+                    $assignee = null;
+                }
+                $description = $inputs['description'];
+                $comment = (array_key_exists('comment', $inputs)) ? 1 : 0;
+                $photo = (array_key_exists('photo', $inputs)) ? 1 : 0;
+                $doc = (array_key_exists('doc', $inputs)) ? 1 : 0;
+                
+                if(array_key_exists('categories', $inputs)){
+                    $categories = $inputs['categories'];
+                }else{
+                    $categories = null;
+                }
+
+                Followup::create([
+                    'created_by_user_id' => Auth::user()->id,
+                    'assigned_to_user_id' => $assignee,
+                    'date_due' => $due_date,
+                    'finding_id' => $finding_id,
+                    'project_id' => $from->project_id,
+                    'audit_id' => $from->audit_id,
+                    'comment_type' => $comment,
+                    'document_type' => $doc,
+                    'document_categories' => json_encode($categories),
+                    'photo_type' => $photo,
+                    'description' => $description
+                ]);
+                return 1;
             } elseif ($inputs['type'] == 'document') {
+
+                if(array_key_exists('local_documents', $inputs)){
+                    $local_documents = $inputs['local_documents'];
+                }else{
+                    $local_documents = null;
+                }
+
+                // foreach local document, save finding_id and followup_id
+                if($local_documents){
+                    if($fromtype == 'followup'){ 
+                        foreach($local_documents as $local_document_id){
+                            Document::where('id', '=', $local_document_id)->update([
+                                'followup_id' => $from->id,
+                                'finding_id' => $finding_id
+                            ]);
+                        }
+                        
+                    }elseif($fromtype == 'finding'){ 
+                        foreach($local_documents as $local_document_id){
+                            Document::where('id', '=', $local_document_id)->update([
+                                'finding_id' => $finding_id
+                            ]);
+                        }
+                        
+                    }
+                }
+                return 1;
 
             }
 
@@ -390,6 +542,7 @@ class FindingController extends Controller
                 }
                 $allFindingTypes = $allFindingTypes->filter(function ($findingType) use ($type, $search, $amenityLocationType) {
                     if ($findingType->type == $type || $type == 'all') {
+                        
                         switch ($amenityLocationType) {
                             case 'b':
                                 if (!$findingType->building_exterior && !$findingType->building_system && !$findingType->common_area) {
@@ -402,7 +555,7 @@ class FindingController extends Controller
                                 }
                                 break;
                             case 'u':
-                                if (!$findingType->unit) {
+                                if (!$findingType->unit && !$findingType->file) {
                                     return false;
                                 }
                                 break;
@@ -542,13 +695,132 @@ class FindingController extends Controller
                 // default filter is all
                 $type = 'all';
             }
-
             $checkDoneAddingFindings = 1;
 
             if ($refresh_stream) {
                 return view('audit_stream.audit_stream', compact('audit', 'checkDoneAddingFindings', 'type', 'comments', 'findings', 'documents', 'unit', 'building', 'amenity', 'project', 'followups', 'audits', 'units', 'buildings', 'amenities', 'allFindingTypes', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel'));
             } else {
-                return view('modals.findings', compact('audit', 'checkDoneAddingFindings', 'type', 'findings', 'unit', 'building', 'amenity', 'audits', 'units', 'buildings', 'amenities', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel', 'site'));
+                return view('non_modal.findings', compact('audit', 'checkDoneAddingFindings', 'type', 'findings', 'unit', 'building', 'amenity', 'audits', 'units', 'buildings', 'amenities', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel', 'site'));
+            }
+
+        } else {
+            return "Sorry, you do not have permission to access this page.";
+        }
+    }
+
+    public function nonModalFindings($type, $auditid, $buildingid = null, $unitid = null, $amenityid = null, $toplevel = 0, $refresh_stream = 0)
+    {
+        // $toplevel is to detect top level amenities
+        // a project-level amenity will appear like a building, toplevel will be set to 1 to differentiate
+        // a building-level amenity will appear like a unit, toplevel will be set to 1 to differentiate
+
+        // get user's audits, projects, buildings, areas, units, based on click
+        /*
+
+        • Clicking on the finding icon from the audit list level will default to the project name - project common areas - and the first common area of that project.
+        • Clicking on an amenity item listed on a building or unit will filter to that item, and use the "*" finding type (the auditor should select a specific type to shorten the list).
+        • Clicking on the finding icon from the building level list will default to the building address, the building,
+        and the first amenity on the building.
+        • Clicking on the finding icon at the unit level will default to unit's building address, the unit number, and the first amenity on the unit.
+        • Clicking on the finding icon in the program expansion screen will automatically select that specific item.
+
+         */
+
+        /*
+        if the auditor did not open the add findings window from
+        the program detail expansion of a building or unit, and they click the "Done Adding Findings" button or they change to a different building, unit or common area set checkDoneAddingFindings to 1 otherwise 0.
+         */
+
+        //dd('type:'.$type.' auditid:'.$auditid.' buildingid:'.$buildingid.' unitid:'.$unitid.' amenityid:'.$amenityid);
+        //// "type:nlt auditid:6410 buildingid:16721 unitid:1005379 amenityid:"
+
+        // the selected one that opened this modal
+
+        if (Auth::user()->auditor_access()) {
+            $audit = null;
+            $building = null;
+            $unit = null;
+            $amenity = null;
+
+            $buildings = null;
+            $units = null;
+            $amenities = null;
+            $allFindings = null;
+
+            if ($auditid > 0) {
+                //$audit = CachedAudit::where('audit_id',$auditid)->with('inspection_items')->with('inspection_items.amenity.finding_types')->with('inspection_items.amenity.finding_types.boilerplates()')->first();
+                $audit = CachedAudit::where('audit_id', $auditid)->with('inspection_items')->first();
+            }
+            if ($buildingid > 0) {
+                // always use the audit id as a selector to ensure you get the correct one
+                $building = CachedBuilding::where('audit_id', $auditid)->where('building_id', $buildingid)->with('building.address')->first();
+                if(!$building) {
+                    $building = CachedBuilding::where('audit_id', $auditid)->where('id', $buildingid)->with('building.address')->first();
+                }
+
+                //dd($buildingid, $building,$auditid);
+            }
+            if ($unitid > 0) {
+                // always use the audit id as a selector to ensure you get the correct one
+                $unit = CachedUnit::where('audit_id', $auditid)->where('unit_id', $unitid)->with('building')->with('building.address')->first();
+                //dd($unit, $unitid);
+            }
+            if ($amenityid > 0) {
+                // we use the inspection id to make sure we get the one associated that they clicked on (in case of duplicate amenities)
+                $amenity = AmenityInspection::where('id', $amenityid)->first();
+            }
+            //dd($amenity->cached_unit()->unit_name);
+            if (is_null($audit)) {
+                return "alert('No audit found for ID:" . $auditid . "');";
+            }
+
+            //dd($audit);
+            /// All of them for switching
+            $audits = CachedAudit::where('project_id', $audit->project_id)->get()->all();
+
+            // always use the audit id as a selector to ensure you get the correct one
+            $buildings = BuildingInspection::where('audit_id', $auditid)->get();
+
+            // foreach ($buildings as $key => $value) {
+            //     return $value->units->where('building_id', $value->building_id);
+            // }
+            // return $buildings->first();
+
+            // always use the audit id as a selector to ensure you get the correct one
+            $units = UnitInspection::select('unit_id', 'unit_key', 'unit_name', 'building_id', 'building_key', 'audit_id', 'complete')
+                ->where('audit_id', $auditid)
+                ->where('complete', 0)
+                ->orWhereNull('complete')
+                ->groupBy('unit_id')
+                ->get();
+
+            // always use the audit id as a selector to ensure you get the correct one
+            $amenities_query = AmenityInspection::where('audit_id', $auditid)->with('amenity');
+            $amenities = $amenities_query->get();
+            $site = $amenities_query->whereNotNull('project_id')->whereNull('completed_date_time')->get();
+
+            $findings = Finding::where('project_id', $audit->project_id)
+                ->whereNull('cancelled_at')
+                ->orderBy('updated_at', 'desc')
+                ->get();
+            $cancelled_findings = Finding::where('project_id', $audit->project_id)
+                ->whereNotNull('cancelled_at')
+                ->orderBy('updated_at', 'desc')
+                ->get();
+            foreach ($cancelled_findings as $cancelled_finding) {
+                $findings->add($cancelled_finding);
+            }
+
+            if (is_null($type)) {
+                // default filter is all
+                $type = 'all';
+            }
+            $checkDoneAddingFindings = 1;
+
+            if ($refresh_stream) {
+                return view('audit_stream.audit_stream', compact('audit', 'checkDoneAddingFindings', 'type', 'comments', 'findings', 'documents', 'unit', 'building', 'amenity', 'project', 'followups', 'audits', 'units', 'buildings', 'amenities', 'allFindingTypes', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel'));
+            } else {
+                return view('non_modal.findings', compact('audit', 'checkDoneAddingFindings', 'type', 'findings', 'unit', 'building', 'amenity', 'audits', 'units', 'buildings', 'amenities', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel', 'site'));
             }
 
         } else {
@@ -697,6 +969,7 @@ class FindingController extends Controller
             $photos = Photo::where('finding_id', $findingid)
                 ->orderBy('updated_at', 'desc')
                 ->get();
+
         } else {
 
             if ($type == 'comment') {
@@ -732,7 +1005,7 @@ class FindingController extends Controller
                     ->orderBy('updated_at', 'desc')
                     ->get();
 
-            } elseif ($type == 'document') {
+            } elseif ($type == 'document' || $type == 'file') {
                 // comment, photo
                 $followups = null;
 
@@ -741,12 +1014,13 @@ class FindingController extends Controller
                     ->get();
 
                 $documents = null;
+                $photos = null;
 
-                $photos = Photo::where('finding_id', $findingid)
-                    ->where('document_id', $typeid)
-                    ->orderBy('updated_at', 'desc')
-                    ->get();
-            } elseif ($type == 'followup') {
+                // $photos = Photo::where('finding_id', $findingid)
+                //     ->where('document_id', $typeid)
+                //     ->orderBy('updated_at', 'desc')
+                //     ->get();
+            } elseif ($type == 'followup') { 
                 // comment, photo, document
                 $followups = null;
 
@@ -763,6 +1037,11 @@ class FindingController extends Controller
                     ->where('followup_id', $typeid)
                     ->orderBy('updated_at', 'desc')
                     ->get();
+            }else{
+                $comments = null;
+                $documents = null;
+                $photos = null;
+                $followups = null;
             }
         }
 
@@ -800,6 +1079,39 @@ class FindingController extends Controller
         if ($followups) {
             foreach ($followups as $followup) {
                 // 'parentitemid' => $itemid,
+                
+                if($followup->assigned_user){
+                    $assigned_user_name = $followup->assigned_user->full_name();
+                }else{
+                    $assigned_user_name = '';
+                }
+
+                $requested_action = '';
+                if($followup->photo_type){
+                    $requested_action = $requested_action.'upload a photo';
+                }
+                if($followup->comment_type){
+                    if($requested_action != ''){
+                        $requested_action = $requested_action.', ';
+                    }
+                    $requested_action = $requested_action.'add a comment';
+                }
+                if($followup->document_type){
+                    if($requested_action != ''){
+                        $requested_action = $requested_action.', ';
+                    }
+                    $categories_decoded = json_decode($followup->document_categories, true);
+                    $categories = DocumentCategory::whereIn('id', $categories_decoded)->get();
+                    $document_categories = "";
+                    foreach($categories as $category){
+                        if($document_categories != ''){
+                            $document_categories = $document_categories.", ";
+                        }
+                        $document_categories = strtolower($document_categories.$category->document_category_name);
+                    }
+                    $requested_action = $requested_action.'upload a document ('.$document_categories.')';
+                }
+
                 $data['items'][] = [
                     'id' => $followup->id,
                     'ref' => $followup->id,
@@ -813,12 +1125,14 @@ class FindingController extends Controller
                     'date' => formatDate($followup->created_at),
                     'assigned' => [
                         'id' => $followup->assigned_to_user_id,
-                        'name' => $followup->assigned_user->full_name(),
+                        'name' => $assigned_user_name,
                     ],
+                    'description' => $followup->description,
                     'auditor' => [
                         'id' => $followup->created_by_user_id,
                         'name' => $followup->auditor->full_name(),
                     ],
+                    'requested_action' => $requested_action,
                     'stats' => [
                         ['type' => 'comment', 'icon' => 'a-comment', 'count' => count($followup->comments)],
                         ['type' => 'file', 'icon' => 'a-file', 'count' => count($followup->documents)],
@@ -834,15 +1148,32 @@ class FindingController extends Controller
             foreach ($documents as $document) {
                 $categories = array();
 
-                $category_array = json_decode($document->categories, true);
-                $document_categories = DocumentCategory::whereIn('id', $category_array)->where('active', '1')->orderby('document_category_name', 'asc')->get();
+                // $category_array = json_decode($document->categories, true);
+                // $document_categories = DocumentCategory::whereIn('id', $category_array)->where('active', '1')->orderby('document_category_name', 'asc')->get();
+                // 
+                $document_categories = $document->document_categories();
+
+                // we should only have one category and its parent
+
+                $parent_cat_id = null;
+                $parent_cat_name = '';
 
                 foreach ($document_categories as $category) {
-                    $categories[] = [
-                        'id' => $category->id,
-                        'name' => $category->document_category_name,
-                        'status' => '',
-                    ];
+                    if($category->parent_id !== null && $category->parent_id != 0){
+                        $category_parent = DocumentCategory::where('id','=',$category->parent_id)->first();
+                        if($category_parent){
+                            $cat_name = $category_parent->document_category_name . ": <br />" . $category->document_category_name;
+                        }else{
+                            $cat_name = $category->document_category_name;
+                        }
+
+                        $categories[] = [
+                            'id' => $category->id,
+                            'name' => $cat_name,
+                            'status' => '',
+                        ];
+                    }
+                    
                 }
 
                 $data['items'][] = [
@@ -864,14 +1195,14 @@ class FindingController extends Controller
                         'id' => $document->id,
                         'name' => $document->filename,
                         'url' => $document->file_path,
+                        'comment' => $document->comment,
                         'type' => '',
                         'size' => '',
                     ],
                     'stats' => [
-                        ['type' => 'comment', 'icon' => 'a-comment', 'count' => count($document->comments)],
-                        ['type' => 'photo', 'icon' => 'a-picture', 'count' => count($document->photos)],
+                        ['type' => 'comment', 'icon' => 'a-comment', 'count' => count($document->comments)]
                     ],
-                    'actions' => '<div class="icon-circle use-hand-cursor"  onclick="addChildItem(' . $document->id . ', \'comment\',\'document\')"><i class="a-comment-plus"></i></div><div class="icon-circle use-hand-cursor"  onclick="addChildItem(' . $document->id . ', \'photo\',\'document\')"><i class="a-picture"></i></div>',
+                    'actions' => '<div class="icon-circle use-hand-cursor"  onclick="addChildItem(' . $document->id . ', \'comment\',\'document\')"><i class="a-comment-plus"></i></div>',
                 ];
             }
         }

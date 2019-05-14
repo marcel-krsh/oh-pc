@@ -45,29 +45,41 @@ function sortAuditList(sortBy, sortOrder, inputClass='') {
     });
 }
 
+function filterAudits(type, value=''){
+	$.get( '/session/filters/'+type+'/'+value, function( data ) {
+       loadTab("dashboard/audits", "1", 0, 0, '', 1);
+    });
+}
+
 function filterAuditList(element, searchClass){
 	// clear all other filters
-	$('.filter-box').not(element).val('');
+	// $('.filter-box').not(element).val('');
 
 	var value = $(element).val().toLowerCase();
 
-	$('tr[id^="audit-r-"]').each(function() {
-		var parentElement = this;
-		var found = 0; // we may look through multiple fields with the same class
+	// if(value == '') {value = 0;}
 
-		$(this).find('.'+searchClass).each(function() {
-    		if($(this).text().toLowerCase().search(value) > -1) {
-    			if(found == 0){
-    				found = 1;
-    				$(parentElement).show();
-    			}
-    		}else{
-    			if(found == 0){
-    				$(parentElement).hide();
-    			}
-    		}
-    	});
-	});
+	$.get( '/session/filters/'+searchClass+'/'+value, function( data ) {
+       loadTab("dashboard/audits", "1", 0, 0, '', 1);
+    });
+
+	// $('tr[id^="audit-r-"]').each(function() {
+	// 	var parentElement = this;
+	// 	var found = 0; // we may look through multiple fields with the same class
+
+	// 	$(this).find('.'+searchClass).each(function() {
+ //    		if($(this).text().toLowerCase().search(value) > -1) {
+ //    			if(found == 0){
+ //    				found = 1;
+ //    				$(parentElement).show();
+ //    			}
+ //    		}else{
+ //    			if(found == 0){
+ //    				$(parentElement).hide();
+ //    			}
+ //    		}
+ //    	});
+	// });
 }
 
 function toggleArchivedAudits() {

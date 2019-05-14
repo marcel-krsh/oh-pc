@@ -1320,6 +1320,12 @@ margin-top:10px;
 }
 #auditstable table td {
     padding: 8px 0 0px;
+    position: relative;
+}
+#auditstable table td span[id^='audit-rid-'] {
+  position: absolute !important;
+    top: 37px !important;
+    left: 10px !important;
 }
 #auditstable table td h3 {
   padding: 0;
@@ -1504,6 +1510,60 @@ margin-top:10px;
 #auditstable table tr.critical td.audit-td-scheduled {}
 #auditstable table tr.critical td.audit-td-due {}
 
+#auditstable table .divider.dividericon {
+    border-style: solid;
+    border-width: 0;
+    border-right-width: 2px;
+    border-color: #000;
+    display: inline-block;
+    height: 48px;
+    /*float: right;*/
+    margin-right: 2px;
+    padding-right: 6px;
+}
+#auditstable table .divider.dividericon.dotted {
+    border-style: dotted;
+    padding-right: 6px;
+}
+#auditstable table .divider.dividericon.action-required {
+    border-color: #da328a;
+    border-style: double;
+    border-right-width: 6px;
+    margin-right: 8px;
+    height: 27px;
+    float: none;
+    /*-webkit-animation: pulsate 2s ease-out;
+    -webkit-animation-iteration-count: infinite;*/
+    /*opacity: 0.0;*/
+}
+#auditstable table .divider.dividericon.action-needed {
+    border-color: #76338b;
+    border-style: dashed;
+    border-right-width: 2px;
+    margin-right: 8px;
+    height: 27px;
+    float: none;
+}
+#auditstable table .divider.dividericon.ok-actionable  {
+    border-color: #56b285;
+    border-style: solid;
+    border-right-width: 2px;
+    margin-right: 8px;
+    height: 27px;
+    float: none;
+    padding-right: 6px;
+}
+
+.dropdown-max-height {
+    max-height: 300px;
+    overflow-y: auto;
+}
+.dropdown-max-height h5 {
+      padding-left: 6px;
+    font-weight: bold;
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
 .buildings > div > div.building:nth-of-type(odd),
 .buildings > div > div > div.building-details > div > div.building:nth-of-type(odd),
 .buildings > div > div.building:nth-of-type(odd) .findings-icon-status span.uk-badge {
@@ -2296,6 +2356,12 @@ margin-top:10px;
 .ok-actionable, .ok-actionable.uk-badge { color:#56b285; border-color:#56b285; }
 .in-progress, .in-progress.uk-badge { color:#49ade9; border-color:#49ade9; }
 
+.filter-dropdown label i.no-action, .filter-dropdown label i.no-action.uk-badge { color:#939598; border-color:#939598; }
+.filter-dropdown label i.action-needed, .filter-dropdown label i.action-needed.uk-badge { color:#76338b; border-color:#76338b; }
+.filter-dropdown label i.action-required, .filter-dropdown label i.critical, .filter-dropdown label i.critical.uk-badge, .filter-dropdown label i.action-required.uk-badge { color:#da328a; border-color:#da328a; }
+.filter-dropdown label i.ok-actionable, .filter-dropdown label i.ok-actionable.uk-badge { color:#56b285; border-color:#56b285; }
+.filter-dropdown label i.in-progress, .filter-dropdown label i.in-progress.uk-badge { color:#49ade9; border-color:#49ade9; }
+
 .no-action .findings-icon-status i { background-color: #939598; color: #ffffff; }
 .action-needed .findings-icon-status i { background-color: #76338b; color: #ffffff; }
 .action-required .findings-icon-status i, .critical .findings-icon-status i { background-color: #da328a; color: #ffffff; }
@@ -2560,6 +2626,7 @@ margin-top:10px;
 .inspec-tools-tab-finding .inspec-tools-findings-resolve span {
     font-size: 19px;
     vertical-align: sub;
+    padding-right: 5px;
 }
 .inspec-tools-tab-finding .inspec-tools-findings-resolve, #auditstable .inspec-tools-tab-finding .inspec-tools-findings-resolve {
   background-color: transparent;
@@ -2684,7 +2751,7 @@ margin-top:10px;
 .inspec-tools-tab-finding .inspec-tools-tab-finding-description {
   /*position: relative;*/
   margin-bottom: 30px;
-  margin-top: -20px;
+  /*margin-top: -20px;*/
 }
 .inspec-tools-tab-finding .inspec-tools-tab-finding-top-actions {
  /* position: absolute;
@@ -2692,8 +2759,8 @@ margin-top:10px;
   top: 0;*/
   float: right;
     text-align: right;
-    /*z-index:1000;
-    position:relative;*/
+    z-index:10;
+    /*position:relative;*/
 }
 .inspec-tools-tab-finding .inspec-tools-tab-finding-actions {
   /*position: absolute;*/
@@ -2860,6 +2927,11 @@ margin-top:10px;
 .finding-file-category {
     padding: 3px 0;
     font-size: 15px;
+    display: inline-block;
+    width: 90%;
+    vertical-align: top;
+    margin-left:2px;
+    margin-bottom: 20px;
 }
 .finding-file-category i {
     vertical-align: sub;
@@ -2870,6 +2942,7 @@ margin-top:10px;
     font-style: italic;
     padding-left: 60px;
     line-height: 22px;
+    color:#939598;
 }
 .finding-file i {
     font-size: 40px;
@@ -3496,7 +3569,7 @@ span.indented, div.indented {
     float: right;
     margin-right: 2px;
 }
-#project-details-main-row .divider.dotted {
+#project-details-main-row .divider.dotted, .divider.dotted {
     border-style: dotted;
 }
 #project-details-main-row .hasdivider {
@@ -3544,7 +3617,6 @@ span.indented, div.indented {
     -webkit-animation-iteration-count: infinite;
     opacity: 0.0;
 }
-
 #project-details-main-row.action-needed h3,
 #project-details-main-row.action-needed small,
 #project-details-main-row.action-needed i.a-marker-basic,
@@ -3554,7 +3626,7 @@ span.indented, div.indented {
 #project-details-main-row.action-needed .dateyear {
   background-color: #76338b;
 }
-#project-details-main-row.action-needed .divider {
+#project-details-main-row.action-needed .divider, .divider.action-needed {
     border-color: #76338b;
     border-style: dashed;
     border-right-width: 2px;
@@ -3565,13 +3637,14 @@ span.indented, div.indented {
 #project-details-main-row.ok-actionable .dateyear {
   background-color: #56b285;
 }
-#project-details-main-row.ok-actionable .divider {
+#project-details-main-row.ok-actionable .divider, .divider.ok-actionable  {
     border-color: #56b285;
     border-style: solid;
     border-right-width: 2px;
     margin-right: 0px;
     height: 52px;
 }
+
 #project-details-info-container {
     margin-bottom: 20px;
 }
@@ -4762,6 +4835,7 @@ table.uk-table tr:first-child {
     /*padding-right: 25px;*/
     /*position: relative;
     top: 60px;*/
+    margin-top: 48px;
 }
 .uk-grid-divider>:not(.uk-first-column)::before {
     left: 0px;

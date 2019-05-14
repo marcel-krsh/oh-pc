@@ -5,7 +5,7 @@
 	});
 </script>
 <div id="amenity-list" class="uk-width-1-1 uk-panel">
-	<h3 class="uk-text-uppercase uk-text-emphasis">Select Amenity</h3>
+	<h3 class="uk-text-uppercase uk-text-emphasis uk-margin-top">Select Amenity</h3>
 	<div class="uk-width-1-1 ">
 		<ul class="uk-list uk-margin-left uk-margin-top">
 			<li class="s-{{ $audit->project_ref }} amenity-list-item finding-modal-list-items @if($audit->hasAmenityInspectionAssigned()) uid-{{ Auth::user()->id }} @endif"><strong>Site : {{ $audit->address }}</strong>

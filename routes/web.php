@@ -1,4 +1,4 @@
-    <?php
+<?php
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +21,10 @@
 
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
+        
+        Route::get('/simple_compliance_test/{projection}', 'SimpleComplianceSelection@runSimpleCompliance');
+
+        
         // Route::get('/testProject/{project}', function($project){
         //     $project = App\Models\Project::where('id',$project)->with('programs.program')->first();
         //     //dd($project->programs);
@@ -127,6 +131,10 @@
         Route::post('/session/{name?}/{value?}', 'DataController@setSession');
 
         Route::get('/', 'DashboardController@index');
+        Route::get('/home', function () {
+                return redirect('/');
+        });
+
         //Route::get('/', function(){dd(\Auth::user(),session('brian'));});
         Route::get('dashboard/audits', 'DashboardController@audits')->name('dashboard.audits');
         Route::get('dashboard/audits/{audit}/buildings', 'AuditController@buildingsFromAudit')->name('audit.buildings');
@@ -138,7 +146,8 @@
         Route::get('dashboard/audits/{audit}/building/{building}/details', 'AuditController@detailsFromBuilding')->name('audit.building.details');
         Route::get('dashboard/audits/{audit_id}/building/{building_id}/inspection', 'AuditController@inspectionFromBuilding')->name('audit.inspection');
         Route::get('dashboard/audits/{audit_id}/building/{building_id}/details/{detail_id}/inspection', 'AuditController@inspectionFromBuildingDetail')->name('audit.building.inspection');
-        Route::get('dashboard/reports', 'DashboardController@reports')->name('dashboard.reports');
+        Route::get('dashboard/reports', 'ReportsController@reports')->name('dashboard.reports');
+        Route::get('project/{project}/reports', 'ReportsController@reports')->name('project.reports');
 
         Route::get('autocomplete/all', 'DashboardController@autocomplete');
         Route::get('autocomplete/auditproject', 'DashboardController@autocomplete');
@@ -146,16 +155,25 @@
         Route::get('autocomplete/auditaddress', 'DashboardController@autocomplete');
 
         Route::get('/session/filters/{type}/{value?}', function ($type, $value = null) {
+
             if ($value !== null) {
                 session([$type => $value]);
                 $new_filter = session($type);
                 return $new_filter;
             } else {
                 if (!session()->has($type)) {
-                    session([$type => 1]);
-                } else {
-                    if (session($type) == 0 || session($type) === null || session($type) == '') {
+                    if($value != ''){
                         session([$type => 1]);
+                    }else{
+                        session([$type => '']);
+                    }
+                } else {
+                    if (session($type) == 0 || session($type) === null) {
+                        if($value != ''){
+                            session([$type => 1]);
+                        }else{
+                            session([$type => '']);
+                        }
                     } else {
                         session()->forget($type);
                     }
@@ -181,6 +199,10 @@
         Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');
         Route::get('/communications/{project}.json', 'CommunicationController@communicationsFromProjectIdJson')->name('communications.loadjson');
         Route::get('/projects/{project}/communications/title', 'AuditController@getProjectCommunicationsTitle')->name('project.communications.title');
+
+//allita reports!
+        Route::get('/modals/new-report','ReportsController@newReportForm');
+        Route::post('/new-report','ReportsController@createNewReport')->name('report.create');
 
 
 
@@ -217,7 +239,9 @@
         Route::get('/projects/{project}/reports/title', 'AuditController@getProjectReportsTitle')->name('project.reports.title');
 
         Route::get('/report/{report}', 'ReportsController@getReport');
-        Route::get('/report/{report}/comments', 'ReportsController@getComments');
+        Route::get('/report/{report}/generate','ReportsController@generateReport');
+        Route::get('/report/{report}/reset','ReportsController@resetToTemplate');
+        Route::get('/report/{report}/comments/{part}', 'ReportsController@getComments');
         Route::get('/report/{report}/{section}','ReportsController@getSection');
         Route::get('/report/{report}/download/{type}','ReportsController@download');
         Route::post('/report/{report}/status','ReportsController@changeStatus');
@@ -230,6 +254,8 @@
         Route::post('/report/{report}/section/{section}/part/{part}','ReportsController@modifySectionPart');
         Route::post('/report/{report}/section/{section}/part/{part}/order','ReportsController@modifySectionPartOrder');
 
+        Route::post('/report/{report}/digital-signature','ReportsController@postDigitalSignature');
+
         Route::get('/projects/{project}/stream', 'AuditController@getProjectStream')->name('project.stream');
         Route::get('/modals/projects/{project}/contact', 'AuditController@getProjectContact')->name('project.contact');
 
@@ -238,6 +264,7 @@
         Route::post('/modals/projects/{project_id}/programs/save-program-unit-inspections', 'AuditController@saveProgramUnitInspection');
 
         Route::get('/modals/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}/{toplevel?}', 'FindingController@modalFindings');
+        Route::get('/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}/{toplevel?}', 'FindingController@nonModalFindings');
         Route::get('/modals/add/finding/{findingtypeid?}/amenity_inspection/{amenityinspectionid?}','FindingController@addFindingForm');
         Route::get('/modals/edit/finding/{findingtypeid}','FindingController@editFindingForm');
         Route::post('/findings/create', 'FindingController@addFinding');
@@ -342,6 +369,33 @@
 
         // Admin tabs
 
+
+				Route::get('/modals/createuser', 'PagesController@createUser');
+				Route::post('/modals/createuser', 'PagesController@createUserSave')->name('admin.createuser');
+				Route::get('/user/complete-registration/{userId}', 'PagesController@getUserCompleteRegistration');
+				Route::post('/user/complete-registration', 'PagesController@postUserCompleteRegistration')->name('user.complete-registration');
+				Route::get('/modals/edituser/{id}', 'PagesController@editUser');
+				Route::post('/modals/edituser/{id}', 'PagesController@editUserSave');
+				Route::get('/modals/resetpassword/{id}', 'PagesController@resetPassword');
+				Route::post('/modals/resetpassword/{id}', 'PagesController@resetPasswordSave');
+				Route::get('/modals/deactivateuser/{id}', 'PagesController@deactivateUser');
+				Route::post('/modals/deactivateuser/{id}', 'PagesController@deactivateUserSave');
+				Route::get('/modals/activateuser/{id}', 'PagesController@activateUser');
+				Route::post('/modals/activateuser/{id}', 'PagesController@activateUserSave');
+
+
+				Route::post('register-user', 'Auth\RegisterController@postRegister');
+				Route::get('/ip', 'Auth\LoginController@getUserIpAddr');
+				Route::get('/code', 'Auth\LoginController@getCode');
+				Route::post('/code', 'Auth\LoginController@postCode');
+				Route::get('/verification', 'Auth\LoginController@getVerification');
+				Route::post('/verification', 'Auth\LoginController@postVerification');
+				Route::get('/request-access', 'Auth\LoginController@getRequestAccess');
+				Route::post('/request-access', 'Auth\LoginController@postRequestAccess');
+				Route::get('user/approve-access/{user_id}', 'Auth\LoginController@getApproveAccess');
+				Route::post('user/approve-access/{user_id}', 'Auth\LoginController@postApproveAccess');
+
+
         Route::group(['prefix'=>'tabs','middleware'=>'can:access_admin'], function ()  {
 
                 Route::get('organization', 'AdminToolController@organizationIndex');
@@ -353,7 +407,10 @@
                 Route::get('defaultfollowup', 'AdminToolController@defaultfollowupIndex');
                 Route::get('boilerplate', 'AdminToolController@boilerplateIndex');
                 Route::get('program', 'AdminToolController@programIndex');
+
                 Route::get('users', 'AdminToolController@usersIndex');
+
+
                 Route::post('users', 'AdminToolController@searchUsers')->name('users.search');
                 Route::get('document_category', 'AdminToolController@documentIndex');
                 Route::get('county', 'AdminToolController@countyIndex');

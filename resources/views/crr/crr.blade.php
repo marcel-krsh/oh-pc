@@ -1,6 +1,56 @@
 @extends('layouts.simplerAllita')
 @section('head')
-<title>Compliance Review Report: {{date('y',strtotime($crr->audit->scheduled_at))}}-{{$crr->audit->id}}.{{str_pad($crr->version, 2, '0', STR_PAD_LEFT)}}</title> 
+<title>{{ $report->template()->template_name }}: {{ date('y',strtotime($report->audit->scheduled_at)) }}-{{ $report->audit->id }}.{{ str_pad($report->version, 3, '0', STR_PAD_LEFT) }}</title>
+
+<script>
+	function showComments(partId){
+		$('#section-thumbnails').css({'min-width':'400px','width':'400px','padding':'0px'});
+		$('#main-report-view').width('926px');
+		$('#main-report-view').css({'min-width':'926px','width':'926px'});
+		$('.crr-sections').css({'min-width':'926px','padding':'36px','width':'926px'});
+		$('.crr-part').css({'min-width':'854px','width':'854px'});
+		$('.crr-comment-edit').hide();
+		$('.crr-part-'+partId).addClass('crr-part-commenting');
+		if($('.crr-part').hasClass('crr-part-comment-icons')){
+			window.crrparticons = true;
+			$('.crr-part').removeClass('crr-part-comment-icons');
+		}
+		Promise.resolve().then(function(){$('.crr-thumbs').fadeOut();},function(){})
+		.then(function(){$('#close-comments').slideDown();},function(){})
+		.then(function(){$('#comment-list').html('');},function(){})
+	  //LOAD IN COMMENTS
+	  .then(function(){$('#comment-list').html('<div style="margin-left:164px;" uk-spinner></div><p align="center"><small>LOADING COMMENTS</small></p>');})
+	  .then(function(){$.get('/report/{{ $report->id }}/comments/'+partId, function(data) {
+	  	if(data==1){
+	  		$('#comment-list').html('No Comments');
+	  	} else {
+        //UIkit.modal.alert('updated'+data1);
+        $('#comment-list').html(data);
+      }
+    });
+	})
+	  .then(function(){$('#comment-list').fadeIn();});
+	}
+
+	function closeComments(){
+		$('#comment-list').fadeOut();
+		$('#comment-list').html('');
+		$('#close-comments').slideUp();
+		$('.crr-thumbs').fadeIn();
+		$('#section-thumbnails').css({'max-width':'130px','min-width':'90px','width':'113px','padding-top':'30px','padding-right':'5px','padding-left':'5px'});
+		$('#main-report-view').width('1248px');
+		$('#main-report-view').css({'min-width':'1248px','width':'1248px'});
+		$('.crr-sections').css({'min-width':'996px','padding':'72px','width':'1142px'});
+		$('.crr-part').css({'min-width':'996px','width':'996px'});
+		$('.crr-comment-edit').show();
+		$('.crr-part').removeClass('crr-part-commenting');
+		if($(window.crrparticons)){
+			window.crrparticons = true;
+			$('.crr-part').addClass('crr-part-comment-icons');
+		}
+	}
+
+</script>
 @stop
 @section('content')
 <!-- <script src="/js/components/upload.js"></script>
@@ -8,135 +58,169 @@
 <script src="/js/components/datepicker.js"></script>
 <script src="/js/components/tooltip.js"></script> -->
 <style>
-#crr-panel .uk-panel-box-white {background-color:#ffffff;}
-#crr-panel .uk-panel-box .uk-panel-badge {}
-#crr-panel .green {color:#82a53d;}
-#crr-panel .blue {color:#005186;}
-#crr-panel .uk-panel + .uk-panel-divider {
-    margin-top: 50px !important;
-}
-#crr-panel table tfoot tr td {border: none;}
-#crr-panel textarea {width:100%;}
-#crr-panel .note-list-item:last-child { border: none;}
-#crr-panel .note-list-item { padding: 10px 0; border-bottom: 1px solid #ddd;}
-#crr-panel .property-summary {margin-top:0;}
+	<?php // determin background type
+	$background = "";
+	if($report->crr_approval_type_id == 1){
+		$background = '-draft';
+	}
+	if($report->crr_approval_type_id == 2){
+		$background = '-pending';
+	}
+	if($report->crr_approval_type_id == 3){
+		$background = '-declined';
+	}
+	if($report->crr_approval_type_id == 4){
+		$background = '-revise';
+	}
+	?>
+	.crr-sections {
+		width:1142px; min-height: 1502px; margin-left:auto; margin-right:auto; border:1px black solid; background-image: url('/paginate-2x{{ $background }}.gif'); padding: 72px;
+
+	}
+	.crr-comment-edit {
+		float: right;
+		left: 132px;
+		position: relative;
+		width: 50px;
+		max-height: 74px;
+		top:0px;
+	}
+	.crr-part {
+		position: relative;
+		float: left;
+		width: 996px;
+
+	}
+	.crr-part-comment-icons {
+		top:-74px;
+	}
+	.crr-part-commenting {
+		background-color: rgba(255, 255, 224, .5);
+		-webkit-transition: background-color .5s ease-out;
+		-moz-transition: background-color .5s ease-out;
+		-o-transition: background-color .5s ease-out;
+		transition: background-color .5s ease-out;
+	}
+	#section-thumbnails {
+		-webkit-transition: width 1s ease-out;
+		-moz-transition: width 1s ease-out;
+		-o-transition: width 1s ease-out;
+		transition: width 1s ease-out;
+
+	}
+	#crr-part {
+		-webkit-transition: width 1s ease-out;
+		-moz-transition: width 1s ease-out;
+		-o-transition: width 1s ease-out;
+		transition: width 1s ease-out;
+
+	}
+	#crr-sections {
+		-webkit-transition: width 1s ease-out;
+		-moz-transition: width 1s ease-out;
+		-o-transition: width 1s ease-out;
+		transition: width 1s ease-out;
+
+	}
+	#close-comments {
+		background-color: black;
+		height: 67px;
+		padding: 8px;
+		padding-left: 15px;
+		width: 377px;
+		color:lightyellow;
+		position: fixed;
+
+	}
+	#comment-list {
+		margin-top:110px;
+		padding-left: 15px;
+		padding-right: 15px;
+	}
+	#crr-panel .uk-panel-box-white {background-color:#ffffff;}
+	#crr-panel .uk-panel-box .uk-panel-badge {}
+	#crr-panel .green {color:#82a53d;}
+	#crr-panel .blue {color:#005186;}
+	#crr-panel .uk-panel + .uk-panel-divider {
+		margin-top: 50px !important;
+	}
+	#crr-panel table tfoot tr td {border: none;}
+	#crr-panel textarea {width:100%;}
+	#crr-panel .note-list-item:last-child { border: none;}
+	#crr-panel .note-list-item { padding: 10px 0; border-bottom: 1px solid #ddd;}
+	#crr-panel .property-summary {margin-top:0;}
+	#main-window { padding-top:0px !important; padding-bottom: 0px !important; max-width: 1362px !important; min-width: 1362px !important; }
 </style>
-<div uk-grid class="uk-margin-top">
-    
 
-    <div class="uk-grid uk-align-center">
-        <div class="uk-width-1-1">
-            <ul class="uk-subnav uk-subnav-pill" uk-switcher="animation: uk-animation-fade">
-                
-                <li id="cover-letter-tab" class="uk-active"><a>Amenities</a></li>
-                <li id="project-findings-tab"><a>Project Findings @if(count($crr->data->project_lt_findings)>0) | <i class="a-skull" uk-tooltip title="Has Life Threatening (EHS) Findings" ></i>@endIf @if(count($crr->data->project_nlt_findings)>0) | <i class="a-booboo" uk-tooltip title="Has Non-Life Threatening Findings"></i>@endIf</a></li>
-                <li id="building-findings-tab"><a>Building Findings @if(count($crr->data->building_lt_findings)>0) | <i class="a-skull" uk-tooltip title="Has Life Threatening (EHS) Findings"></i>@endIf @if(count($crr->data->building_nlt_findings)>0) | <i class="a-booboo" uk-tooltip title="Has Non-Life Threatening Findings"></i>@endIf</a></li>
-                <li id="unit-findings-tab"><a>Unit Findings @if(count($crr->data->unit_lt_findings)>0) | <i class="a-skull" uk-tooltip title="Has Life Threatening (EHS) Findings"></i>@endIf @if(count($crr->data->unit_nlt_findings)>0) | <i class="a-booboo" uk-tooltip title="Has Non-Life Threatening Findings"></i>@endIf @if(count($crr->data->unit_file_findings)>0) | <i class="a-folder" uk-tooltip title="Has File Findings"></i>@endIf</a></li>
-                <li id="technical-assistance-tab"><a>Technical Assistance</a></li>
-                @if(Auth::user()->auditor_access())
-                	<li id="views-tab"><a>Views</a></li>
-                @endIf
-
-            </ul>
-
-            <ul class="uk-switcher uk-margin">
-                <li id="cover-letter-tab-content" class="uk-active">
-					<div id="crr-panel">
-						<div class="uk-panel uk-panel-box uk-panel-box-white">
-							<div class="uk-panel uk-panel-header uk-hidden@m uk-hidden@l" style="text-align:center;">
-								<h6 class="uk-panel-title uk-text-center"><span class="blue uk-text-bold	">Ohio Housing Finance Agency</span><br /><span class="green">Compliance Review Report</span><br />{{$crr->audit->project->project_name}}<br />OHFA Tracking Number: {{date('y',strtotime($crr->audit->start_date))}}-{{$crr->audit_id}}<br />Review Date:{{date('m/d/Y',strtotime($audit->start_date))}}</h6>
-							</div>
-						</div>
-					
-
-					<div class="uk-panel no-padding-bottom">
-						<div uk-grid">
-							<div class="uk-width-1-1@s uk-width-1-2@m uk-width-3-4@l uk-margin-top">
-								<p>{{date('m/d/Y',strtotime($crr->updated_at))}}</p>
-								<p>
-									{{$crr->audit->owner->organization_name}}<br />
-									@if(!is_null($crr->audit->owner->address->line_1)){{$crr->audit->owner->address->line_1}}<br />@endIf
-									@if(!is_null($crr->audit->owner->address->line_2))
-									{{$crr->audit->owner->address->line_2}}<br />@endIf 
-									@if(!is_null($crr->audit->owner->address->city))
-									{{$crr->audit->owner->address->city}},@endIf 
-									@if(!is_null($crr->audit->owner->address->state))
-									{{$crr->audit->owner->address->state}} @endIf
-									@if(!is_null($crr->audit->owner->address->zip))
-									{{$crr->audit->owner->address->zip}}@endIf 
-
-
-
-								</p>
-								<p>Project Name: {{$crr->project->project_name}}<br />
-									OHFA Tracking Number: {{date('y',strtotime($crr->audit->start_date))}}-{{$crr->audit_id}}
-								</p>
-								<p>Dear {{$crr->project->owner['name']}}:</p>
-
-								<p>The Ohio Housing Finance Agency (“OHFA”) completed a monitoring review of {{$crr->project->name}} on {{$crr->audit->start_date}}. The review was performed to determine if the development is in compliance with the requirements of the 
-									@php
-									$totalPrograms = count($crr->project->programs); 
-									$printedPrograms = 0; 
-									@endphp
-									@forEach($crr->project->programs as $program)@php
-										@php $printedPrograms++ @endPhp
-										{{$program->name}}@if($printedPrograms == ($totalPrograms - 1)) and@elseIf($totalPrograms > 1),@endIf 
-									 	@if($totalPrograms > 1) programs. @else program. @endIf
-									@endForEach
-								</p>
-
-								<p>The attached report summarizes OHFA’s findings of noncompliance and the documentation that must be submitted to correct these findings. This notice begins the corrective action period. You must supply all requested documentation through DEV|CO Inspection at http://devco.ohiohome.org no later than the close of business on {{date('m/d/Y',strtotime($data->corrective_action_due))}}. 
-								</p>
-								<p>Section 42 of the Internal Revenue Code requires OHFA to report all noncompliance under the HTC program to the Internal Revenue Service (IRS), even if the noncompliance is corrected. Form(s) 8823 (Notice of Noncompliance) will be mailed to the IRS, with a copy to the owner, after the corrective action deadline. It is the owner’s responsibility to maintain compliance.
-								</p>
-
-
-							</div>
-							<div class="uk-width-1-2">
-								<p>Sincerely,</p>
-								<p><img src="{{$crr->lead->signature}}" height="150">
-									<br />
-									{{$crr->lead->first_name}} {{$crr->lead->last_name}}<br />
-									Compliance Analyst<br />
-									Office Program Compliance<br />
-								</p>
-
-							</div>
-							<div class="uk-width-1-2">
-								<p>Approved By:</p>
-								<p><img src="{{$crr->manager->signature}}" height="150">
-									<br />
-									{{$crr->manager->first_name}} {{$crr->manager->last_name}}<br />
-									Compliance Manager<br />
-									Office Program Compliance<br />
-								</p>
-							</div>
-
-						</div>
-					</div>
-				</div>
-			</li>
-			<li id="project-findings-tab-content">
-				Project Findings
-			</li>
-			<li id="building-findings-tab-content">
-				Building Findings
-			</li>
-			<li id="unit-findings-tab-content">
-				Unit Findings
-			</li>
-			<li id="technical-assistance-tab-content">
-				Unit Findings
-			</li>
-			@if(Auth::user()->auditor_access())
-			<li id="views-tab-content">
-				Views Findings
-			</li>
-			@endIf
-
-		</ul>
-
-
+<div uk-grid >
+	<div id="section-thumbnails" class="uk-panel-scrollable" style="background-color:lightgray; padding-top:30px; min-height: 100vh; max-width:130px;">
+		@forEach($report->sections as $section)
+		<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-thumbs" style="width:85px; magin-left:auto; margin-right:auto; padding:15px; min-height: 110px;">
+			<?php $thumbNavPartCount = 1; ?>
+			@foreach($section->parts as $part)
+			<a href="#part-{{ $part->id }}" class="uk-link-mute" onmouseover="$('.crr-part-{{ $part->id }}').addClass('crr-part-commenting');" onmouseout="$('.crr-part-{{ $part->id }}').removeClass('crr-part-commenting');"><small>{{ $part->title }}</small></a><hr class="dashed-hr uk-margin-bottom">
+			<?php $thumbNavPartCount ++; ?>
+			@endForeach
+		</div>
+		<div align="center" class="uk-align-center uk-margin-large-bottom use-handcursor crr-thumbs" style="max-width: 85px;"><a href="#{{ str_replace(' ','',$section->id) }}" class="uk-link-mute">{{ strtoupper($section->title) }}</a>
+		</div>
+		@endForEach
+		<div id="close-comments" style="display: none" onclick="closeComments();" class="uk-link"><i class="a-circle-cross uk-contrast"></i> CLOSE COMMENTS<hr class="hr-dashed uk-margin-small-bottom"></div>
+		<div id="comment-list" style="display: none;"></div>
 	</div>
+	<div id="main-report-view" class=" uk-panel-scrollable" style=" min-height: 100vh; min-width: 1248px; padding:0px; background-color: currentColor;">
+		@forEach($data as $section)
+
+		<a name="{{ str_replace(' ','',$section->crr_section_id) }}" ></a>
+		<hr class="dashed-hr" style="margin-bottom: 60px; margin-top: 0px; padding:0px; border-color: #3a3a3a;">
+		<small style="position: relative;top: -55px; left:15px; color:lightblue">VERSION: {{ $report->version }}  @can('access_auditor') | <a onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute" style="color:lightblue">REFRESH REPORT CONTENT</a>@endCan | <a href="/report/{{ $report->id }}?print=1" target="_blank" class="uk-contrast uk-link-mute"> <i class="a-print"></i> PRINT</a></small>
+
+		<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-sections" style="">
+			@if(property_exists($section,'parts'))
+			<?php $pieceCount = 1; ?>
+			@forEach($section->parts as $part)
+
+			@forEach($part as $piece)
+			<?php
+	            				// collect comments for this part
+			$comments = collect($report->comments)->where('part_id',$piece->part_id);
+
+			if($comments){
+				$totalComments = count($comments);
+			}
+			?>
+			<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{ $piece->part_id }});" >#{{ $pieceCount }}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{ $totalComments }} @else 0 @endIf</a> @can('access_auditor')<hr class="dashed-hr uk-margin-bottom"><a class="uk-contrast"><i class="a-pencil" style="font-size: 19px;"></i></a>@endCan
+			</div>
+			<div class="crr-part-{{ $piece->part_id }} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{ $piece->part_id }}"></a>
+				<?php $pieceData = json_decode($piece->data); ?>
+				@if($pieceData[0]->type =='free-text')
+				{!! $piece->content !!}
+
+				@endIf
+				@if($pieceData[0]->type == 'blade')
+				<?php
+				if(array_key_exists(1,$pieceData)){
+					$bladeData = $pieceData[1];
+				}else{
+					$bladeData = null;
+				}
+				?>
+				@include($piece->blade)
+				@endIf
+			</div>
+			<?php $pieceCount ++; ?>
+			@endForEach
+			@endForEach
+			@endIf
+		</div>
+		@endForEach
+	</div>
+
+
+
+
+</div>
+<div id="comments" class="uk-panel-scrollable" style="display: none;">
+
 </div>
 @stop

@@ -13,7 +13,7 @@ class AmenityInspection extends Model
     public $timestamps = true;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
     protected $table = 'amenity_inspections';
-    
+
 
     //
     protected $guarded = ['id'];
@@ -35,6 +35,12 @@ class AmenityInspection extends Model
         return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
     }
 
+    public function unit_programs(): HasMany
+    {
+
+        return $this->hasMany(\App\Models\UnitProgram::class, 'unit_id', 'unit_id');
+    }  
+
     public function cached_unit() : ?object
     {
         $cachedUnit = CachedUnit::where('unit_id',$this->unit_id)->where('audit_id',$this->audit_id)->first();
@@ -53,7 +59,7 @@ class AmenityInspection extends Model
         return $cachedBuilding;
     }
 
-    public function building_inspection() 
+    public function building_inspection()
     {
         $buildingInspection = BuildingInspection::where('building_id',$this->building_id)->where('audit_id',$this->audit_id)->first();
 
@@ -71,21 +77,41 @@ class AmenityInspection extends Model
     {
         if($this->unit_id){
 
-            $unit_name = $this->unit->unit_name;
-            $building_name = $this->unit->building->building_name;
+            //$unit_name = $this->unit->unit_name;
+            //$building_name = $this->unit->building->building_name;
             $amenity_name = $this->amenity->amenity_description;
-            return $building_name .":". $unit_name . ":" .$amenity_name;
+            //return $building_name .":". $unit_name . ":" .$amenity_name;
+            return $amenity_name;
 
         }elseif($this->building_id){
 
-            $building_name = $this->building->building_name;
+            //$building_name = $this->building->building_name;
             $amenity_name = $this->amenity->amenity_description;
-            return $building_name . ":" .$amenity_name;
+            //return $building_name . ":" .$amenity_name;
+            return $amenity_name;
 
         }elseif($this->project_id){
 
             $amenity_name = $this->amenity->amenity_description;
             return $amenity_name;
+
+        }
+
+        return '';
+    }
+
+    public function building_unit_name()
+    {
+        if($this->unit_id){
+
+            $unit_name = $this->unit->unit_name;
+            $building_name = $this->unit->building->building_name;
+            return $building_name .":". $unit_name;
+
+        }elseif($this->building_id){
+
+            $building_name = $this->building->building_name;
+            return $building_name;
 
         }
 
@@ -114,7 +140,7 @@ class AmenityInspection extends Model
 
             if($this->project->address){
                 $address = $this->project->address->formatted_address();
-            
+
                 return $address;
             }else{
                 return "NO ADDRESS IN DEVCO";
@@ -161,18 +187,18 @@ class AmenityInspection extends Model
 
     public function findings_total()
     {
-        // either use the # in the row or calculate based on findings records in the db? 
+        // either use the # in the row or calculate based on findings records in the db?
         // using the row:
         // $nlt_count = ($this->nlt_count) ? $this->nlt_count : 0;
         // $lt_count = ($this->lt_count) ? $this->lt_count : 0;
         // $file_count = ($this->file_count) ? $this->file_count : 0;
         // $followup_count = ($this->followup_count) ? $this->followup_count : 0;
         // return $nlt_count + $lt_count + $file_count + $followup_count;
-        
+
         // calculating
         return \App\Models\Finding::where('audit_id','=',$this->audit_id)->where('amenity_inspection_id','=',$this->id)->count();
 
-        
+
     }
 
     public function amenity_type()
@@ -193,7 +219,7 @@ class AmenityInspection extends Model
         if follow-up later than 24h: purple dashed
         if finding and no follow-up, or follow-up done, blue dotted line
          */
-        
+
         if($this->completed_date_time !== NULL){
             $status = "ok-actionable";
         }else{
@@ -212,5 +238,5 @@ class AmenityInspection extends Model
 
         return $status;
     }
-    
+
 }

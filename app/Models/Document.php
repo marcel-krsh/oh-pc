@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
  * Document Model
@@ -32,9 +35,35 @@ class Document extends Model
         return $this->hasMany(\App\Models\Comment::class, 'document_id', 'id')->orderBy('id','asc');
     }
 
-    public function photos() : HasMany
+    // public function photos() : HasMany
+    // {
+    //     return $this->hasMany(\App\Models\Photo::class, 'document_id', 'id')->orderBy('id','asc');
+    // }
+
+    public function followup() : HasOne
     {
-        return $this->hasMany(\App\Models\Photo::class, 'document_id', 'id')->orderBy('id','asc');
+        return $this->hasOne(\App\Models\Followup::class, 'id', 'followup_id');
+    }
+
+    public function photo() : HasOne 
+    {
+        return $this->hasOne(\App\Models\Photo::class, 'id', 'photo_id');
+    }
+
+    public function comment() : HasMany
+    {
+        return $this->hasMany(\App\Models\Comment::class, 'id', 'comment_id');
+    }
+
+    public function document_categories() 
+    {
+        $local_categories = \App\Models\LocalDocumentCategory::where('document_id', '=', $this->id)->pluck('document_category_id')->toArray();
+        if($local_categories){
+            return \App\Models\DocumentCategory::whereIn('id', $local_categories)->get();
+        }else{
+            return null;
+        }
+        
     }
 
     // OLD METHODS.

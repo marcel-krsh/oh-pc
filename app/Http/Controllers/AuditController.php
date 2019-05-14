@@ -4674,7 +4674,7 @@ class AuditController extends Controller
 
                 $audit = CachedAudit::where('audit_id', '=', $unit->audit_id)->first();
                 $auditors_collection = $audit->auditors;
-                $amenities_collection = Amenity::where('unit', '=', 1)->where('inspectable', '=', 1)->orderBy('amenity_description', 'asc')->get();
+                $amenities_collection = Amenity::where('unit', '=', 1)->orWhere('file', '=', 1)->where('inspectable', '=', 1)->orderBy('amenity_description', 'asc')->get();
 
                 break;
             default:

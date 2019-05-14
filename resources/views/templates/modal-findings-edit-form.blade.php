@@ -1,10 +1,11 @@
 	<div class="uk-modal-header">
 		<div class="uk-modal-title uk-remove-margin"> <i class=" a-circle-plus"></i> {{$finding->finding_type->name}} (FN#{{$finding->id}}) <small><i class="uk-margin-left a-info-circle" uk-tooltip="title:Tied to HUD Areas<br > @foreach($finding->finding_type->huds() as $hud) {{$hud->name}} @endforeach <br >Nominal Item Weight {{$finding->finding_type->nominal_item_weight}} <br >Criticality {{$finding->finding_type->criticality}}; pos:bottom"></i></small><h4 style="line-height: 0px; margin-top: 10px; margin-left: 35px;">ON {{strtoupper($finding->amenity_inspection->amenity->amenity_description)}}</h4></div>
-		
+		<?php //dd($finding); ?>
 	</div>
 	<form id="edit-finding-form" method="post">
 		Change finding type:<br /><br />
 		<select class="uk-select" id="finding_type_id" name="finding_type_id">
+
 			@foreach($finding->finding_types() as $finding_type)
 			<option value="{{$finding_type->id}}" @if($finding_type->id == $finding->finding_type->id) selected @endif>{{$finding_type->name}}</option>
 			@endforeach	
@@ -15,9 +16,9 @@
 	<hr class="dashed-hr uk-margin-bottom">	
 	<div class="uk-form">
 		<div class="uk-form-row">
-			@if($finding->finding_type->one) <label class="use-hand-cursor"><input type="radio" name="level" class="uk-radio" value="1" @if(!$finding->finding_type->two && !$finding->finding_type->three) checked @endif > LEVEL 1</label> &nbsp; &nbsp;@endif
-			@if($finding->finding_type->two) <label class="use-hand-cursor"><input type="radio" name="level" class="uk-radio" value="2" @if(!$finding->finding_type->one && !$finding->finding_type->three) checked @endif > LEVEL 2</label>  &nbsp; &nbsp;@endif
-			@if($finding->finding_type->three) <label class="use-hand-cursor" ><input type="radio" name="level" class="uk-radio" value="3" @if(!$finding->finding_type->two && !$finding->finding_type->one) checked @endif "> LEVEL 3</label>  &nbsp; &nbsp;@endif
+			@if($finding->finding_type->one) <label class="use-hand-cursor"><input type="radio" name="level" class="uk-radio" value="1" @if(!$finding->finding_type->two && !$finding->finding_type->three) checked @endif @if($finding->level == 1) checked @endIf > LEVEL 1</label> &nbsp; &nbsp; <div style="display:inline-block; width: 90%; float: right; margin-bottom:16px;"> {{$finding->finding_type->one_description}}</div>@endif
+			@if($finding->finding_type->two)<hr class="dashed-hr uk-margin-bottom"> <label class="use-hand-cursor"><input type="radio" name="level" class="uk-radio" value="2" @if(!$finding->finding_type->one && !$finding->finding_type->three) checked @endif @if($finding->level == 2) checked @endIf> LEVEL 2</label>  &nbsp; &nbsp; <div style="display:inline-block; width: 90%; float: right; margin-bottom:16px;"> {{$finding->finding_type->two_description}}</div>@endif
+			@if($finding->finding_type->three)<hr class="dashed-hr uk-margin-bottom">  <label class="use-hand-cursor" ><input type="radio" name="level" class="uk-radio" value="3" @if(!$finding->finding_type->two && !$finding->finding_type->one) checked @endif @if($finding->level == 3) checked @endIf> LEVEL 3</label>  &nbsp; &nbsp; <div style="display:inline-block; width: 90%; float: right; margin-bottom:16px;"> {{$finding->finding_type->three_description}}</div>@endif
 		</div>
 	</div>
 	 <hr class="dashed-hr uk-margin-bottom">

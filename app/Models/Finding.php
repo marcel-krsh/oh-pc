@@ -40,6 +40,18 @@ class Finding extends Model
     {
         return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
     }
+    public function unit(): HasOne
+    {
+        return $this->hasOne(\App\Models\Unit::class, 'id', 'unit_id');
+    }
+    public function building(): HasOne
+    {
+        return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
+    }
+    public function audit(): HasOne
+    {
+        return $this->hasOne(\App\Models\Audit::class, 'id', 'audit_id');
+    }  
 
     public function amenity_inspection(): HasOne
     {
@@ -56,6 +68,18 @@ class Finding extends Model
         return $this->hasOne(\App\Models\FindingType::class, 'id', 'finding_type_id');
     }
 
+    public function level_description()
+    {
+        if($this->level == 1){
+            return $this->finding_type()->first()->one_description;
+        }elseif($this->level == 2){
+            return $this->finding_type()->first()->two_description;
+        }elseif($this->level == 3){
+            return $this->finding_type()->first()->three_description;
+        }
+        
+    }
+
     public function finding_types()
     {
         // list all finding_types related to the amenity 
@@ -70,6 +94,8 @@ class Finding extends Model
             return FindingType::where('building_exterior','=',1)->orwhere('building_system','=',1)->orwhere('common_area','=',1)->orderBy('name','asc')->get();
         }elseif($amenity->project){
             return FindingType::where('site','=',1)->orwhere('common_area','=',1)->orderBy('name','asc')->get();
+        }elseif($amenity->file){
+            return FindingType::where('file','=',1)->orderBy('name','asc')->get();
         }
         
         return null;

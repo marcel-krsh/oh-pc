@@ -302,7 +302,7 @@ function guide_parcel_docs_added(Parcel $parcel, $cat_id_to_check = null)
     if (count($documents)) {
         $all_doc_categories_found = [];
         $current_doc_categories_found = [];
-        
+
         // save all categories found in all documents
         foreach ($documents as $document) {
             if ($document->categories) {
@@ -513,7 +513,7 @@ function guide_parcel_retainage_paid_docs_reviewed(Parcel $parcel, $retainage_id
             foreach ($documents as $document) {
                 if ($document->categories) {
                     $current_doc_categories_found = json_decode($document->categories, true); // cats used by the doc
-                
+
                     // 47 is for retainage payment documents
                     if (in_array('9', $current_doc_categories_found)) {
                         $retainage_doc_found = 1;
@@ -559,7 +559,7 @@ function guide_parcel_retainage_paid_docs_reviewed(Parcel $parcel, $retainage_id
                 foreach ($documents as $document) {
                     if ($document->categories) {
                         $current_doc_categories_found = json_decode($document->categories, true); // cats used by the doc
-                    
+
                         // 9 is for retainage payment documents
                         if (in_array('9', $current_doc_categories_found)) {
                             $retainage_doc_found = 1;
@@ -610,7 +610,7 @@ function guide_parcel_advance_paid_docs_reviewed(Parcel $parcel, $advance_id = 0
             foreach ($documents as $document) {
                 if ($document->categories) {
                     $current_doc_categories_found = json_decode($document->categories, true); // cats used by the doc
-                
+
                     // 9 is for advance payment documents
                     if (in_array('47', $current_doc_categories_found)) {
                         $advance_doc_found = 1;
@@ -657,7 +657,7 @@ function guide_parcel_advance_paid_docs_reviewed(Parcel $parcel, $advance_id = 0
                 foreach ($documents as $document) {
                     if ($document->categories) {
                         $current_doc_categories_found = json_decode($document->categories, true); // cats used by the doc
-                    
+
                         // 47 is for advance payment documents
                         if (in_array('47', $current_doc_categories_found)) {
                             $advance_doc_found = 1;
@@ -1251,7 +1251,7 @@ function guide_disposition_docs_added($disposition, $cat_id_to_check = null)
     if (count($documents)) {
         $all_doc_categories_found = [];
         $current_doc_categories_found = [];
-        
+
         // save all categories found in all documents
         foreach ($documents as $document) {
             if ($document->categories) {
