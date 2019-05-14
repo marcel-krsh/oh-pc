@@ -231,6 +231,12 @@ class DashboardController extends Controller
         $auditFilterProjectName = 0;
     }
 
+    if(session()->has('file-audit-status-h') && session('file-audit-status-h') == 1){
+        $audits = $audits->whereHas('audit', function( $query ) {
+                            $query->whereHas('files');
+                        });
+    }
+
     if(session()->has('file-audit-status-r') && session('file-audit-status-r') == 1){
         $audits = $audits->whereHas('audit', function( $query ) {
                             $query->whereHas('files', function( $query ) {
@@ -264,6 +270,13 @@ class DashboardController extends Controller
                         });
     }
 
+
+    if(session()->has('nlt-audit-status-h') && session('nlt-audit-status-h') == 1){
+        $audits = $audits->whereHas('audit', function( $query ) {
+                            $query->whereHas('nlts');
+                        });
+    }
+
     if(session()->has('nlt-audit-status-r') && session('nlt-audit-status-r') == 1){
         $audits = $audits->whereHas('audit', function( $query ) {
                             $query->whereHas('nlts', function( $query ) {
@@ -294,6 +307,12 @@ class DashboardController extends Controller
     if(session()->has('nlt-audit-status-nf') && session('nlt-audit-status-nf') == 1){
         $audits = $audits->whereHas('audit', function( $query ) {
                             $query->whereDoesntHave('nlts');
+                        });
+    }
+
+    if(session()->has('lt-audit-status-h') && session('lt-audit-status-h') == 1){
+        $audits = $audits->whereHas('audit', function( $query ) {
+                            $query->whereHas('lts');
                         });
     }
 
