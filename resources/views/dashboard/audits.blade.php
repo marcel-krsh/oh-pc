@@ -639,7 +639,7 @@
 												<label for="file-audit-status-all"><i class="a-folder"></i> <span>ALL FILE AUDIT FINDING STATUSES</span></label>
 												
 												<input id="file-audit-status-r" class="fileauditselector" type="checkbox" @if(session('file-audit-status-r') == 1) checked @endif/>
-												<label for="file-audit-status-r"><i class="a-folder ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED FILE AUDIT FINDINGS</span></label>
+												<label for="file-audit-status-r"><i class="a-folder ok-actionable "></i><span class="ok-actionable">HAS RESOLVED FILE AUDIT FINDINGS</span></label>
 
 												<input id="file-audit-status-h" class="fileauditselector" type="checkbox" @if(session('file-audit-status-h') == 1) checked @endif/>
 												<label for="file-audit-status-h"><i class="a-folder  divider dividericon"></i><span class="">HAS FILE AUDIT FINDINGS</span></label>
@@ -678,7 +678,7 @@
 												<label for="nlt-audit-status-all"><i class="a-booboo"></i> <span>ALL NLT AUDIT FINDING STATUSES</span></label>
 												
 												<input id="nlt-audit-status-h" class="nltauditselector" type="checkbox" @if(session('nlt-audit-status-h') == 1) checked @endif/>
-												<label for="nlt-audit-status-h"><i class="a-booboo  divider dividericon"></i><span class="">HAS NLT AUDIT FINDINGS</span></label>
+												<label for="nlt-audit-status-h"><i class="a-booboo  "></i><span class="">HAS NLT AUDIT FINDINGS</span></label>
 
 												<input id="nlt-audit-status-r" class="nltauditselector" type="checkbox" @if(session('nlt-audit-status-r') == 1) checked @endif/>
 												<label for="nlt-audit-status-r"><i class="a-booboo ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED NLT AUDIT FINDINGS</span></label>
@@ -717,7 +717,7 @@
 												<label for="lt-audit-status-all"><i class="a-skull"></i> <span>ALL LT AUDIT FINDING STATUSES</span></label>
 												
 												<input id="lt-audit-status-h" class="ltauditselector" type="checkbox" @if(session('lt-audit-status-h') == 1) checked @endif/>
-												<label for="lt-audit-status-h"><i class="a-skull divider dividericon"></i><span class="">HAS LT AUDIT FINDINGS</span></label>
+												<label for="lt-audit-status-h"><i class="a-skull "></i><span class="">HAS LT AUDIT FINDINGS</span></label>
 
 												<input id="lt-audit-status-r" class="ltauditselector" type="checkbox" @if(session('lt-audit-status-r') == 1) checked @endif/>
 												<label for="lt-audit-status-r"><i class="a-skull ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED LT AUDIT FINDINGS</span></label>
