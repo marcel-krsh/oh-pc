@@ -18,7 +18,7 @@
         \App\Models\SystemSetting::where('key','pcapi_refresh_token')->delete();
         $newTokens = \App\Models\SystemSetting::get();
         dd($newTokens);
-    })
+    });
 
     Auth::routes();
 
