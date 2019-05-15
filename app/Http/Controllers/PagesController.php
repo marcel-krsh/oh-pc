@@ -59,6 +59,8 @@ class PagesController extends Controller
     SystemSetting::where('key','pcapi_access_token')->delete();
     SystemSetting::where('key','pcapi_access_token_expires')->delete();
     SystemSetting::where('key','pcapi_refresh_token')->delete();
+    $newTokens = SystemSetting::get();
+    dd($newTokens);
 
   }
 
