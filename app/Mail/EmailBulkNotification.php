@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
 
 class EmailBulkNotification extends Mailable
 {
@@ -14,6 +15,7 @@ class EmailBulkNotification extends Mailable
 
   public $data;
   public $user;
+  public $owner;
 
   /**
    * Create a new message instance.
@@ -25,6 +27,9 @@ class EmailBulkNotification extends Mailable
     $this->data    = $data;
     $this->user    = $user;
     $this->subject = "[OHFA Allita PC] Notifications ";
+    $this->owner   = Cache::remember('allita-notifier', 1440, function () {
+      return User::whereEmail('noreply@ohiohome.org')->first();
+    });
   }
 
   /**
@@ -34,7 +39,7 @@ class EmailBulkNotification extends Mailable
    */
   public function build()
   {
-    $owner         = '';
+    $owner         = $this->owner;
     $user          = $this->user;
     $data          = $this->data;
     $greeting      = "Hello " . $user->person->first_name . ',';
@@ -47,17 +52,15 @@ class EmailBulkNotification extends Mailable
     $outroLines    = [];
     // save in database
 
-    if ($owner) {
-      $body              = \view('emails.bulk_notifications', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'level2', 'notifications'));
-      $email_saved_in_db = new HistoricEmail([
-        "user_id" => $user->id,
-        "type"    => 'communication',
-        "type_id" => null,
-        "subject" => $this->subject,
-        "body"    => $body,
-      ]);
-      $email_saved_in_db->save();
-    }
+    $body              = \view('emails.bulk_notifications', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'level2', 'notifications'));
+    $email_saved_in_db = new HistoricEmail([
+      "user_id" => $user->id,
+      "type"    => 'bulk-notifications',
+      "type_id" => $owner ? $owner->id : null,
+      "subject" => $this->subject,
+      "body"    => $body,
+    ]);
+    $email_saved_in_db->save();
     return $this->view('emails.bulk_notifications', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'level2', 'notifications'));
   }
 }

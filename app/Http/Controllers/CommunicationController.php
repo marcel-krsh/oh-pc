@@ -8,6 +8,7 @@ use App\Models\CachedAudit;
 use App\Models\Communication;
 use App\Models\CommunicationDocument;
 use App\Models\CommunicationRecipient;
+use App\Models\CrrReport;
 use App\Models\Document;
 use App\Models\DocumentCategory;
 use App\Models\NotificationsTriggered;
@@ -16,6 +17,7 @@ use App\Models\SystemSetting;
 //use App\LogConverter;
 use App\Models\User;
 use Auth;
+use Config;
 use Illuminate\Http\Request;
 use Session;
 
@@ -249,6 +251,15 @@ class CommunicationController extends Controller
           ->orderBy('last_name', 'asc')
           ->get();
       }
+      $recipients = User::where('devco_key', 8305)
+        ->leftJoin('people', 'people.id', 'users.person_id')
+        ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+      // ->join('users_roles', 'users_roles.user_id', 'users.id')
+        ->select('users.*', 'last_name', 'first_name', 'organization_name')
+        ->where('active', 1)
+        ->orderBy('organization_name', 'asc')
+        ->orderBy('last_name', 'asc')
+        ->get();
 
       $audit = null;
 
@@ -565,6 +576,7 @@ class CommunicationController extends Controller
         // get existing recipients if a reply
         $message_recipients_array = CommunicationRecipient::where('communication_id', $original_message->id)->pluck('user_id')->toArray();
         foreach ($message_recipients_array as $recipient_id) {
+          $notification_sessions = $this->notificationSessions($request);
           if ($recipient_id == $user->id) {
             $recipient = new CommunicationRecipient([
               'communication_id' => $message->id,
@@ -582,7 +594,8 @@ class CommunicationController extends Controller
         }
         // add reply author
         if (!in_array($original_message->owner_id, $message_recipients_array)) {
-          $recipient = new CommunicationRecipient([
+          $notification_sessions = $this->notificationSessions($request);
+          $recipient             = new CommunicationRecipient([
             'communication_id' => $message->id,
             'user_id'          => (int) $original_message->owner_id,
             'seen'             => 1,
@@ -594,7 +607,8 @@ class CommunicationController extends Controller
           $message_recipients_array = $forminputs['recipients'];
           foreach ($message_recipients_array as $recipient_id) {
             if ($recipient_id > 0) {
-              $recipient = new CommunicationRecipient([
+              $notification_sessions = $this->notificationSessions($forminputs);
+              $recipient             = new CommunicationRecipient([
                 'communication_id' => $message->id,
                 'user_id'          => (int) $recipient_id,
               ]);
@@ -1115,7 +1129,7 @@ class CommunicationController extends Controller
     }
   }
 
-  public function messageNotification($communication_id, $user_id, Request $request)
+  public function messageNotification($user_id, $model_id = null, Request $request)
   {
     /**
      * Check if user already logged in
@@ -1132,24 +1146,39 @@ class CommunicationController extends Controller
      *     If token is valid, login user using the token
      *       Show communication tab and modal of that message
      */
-    $token = $request->get('t');
-    if (Auth::check()) {
-      $user = Auth::user();
-      return $this->showNotificationMessage($communication_id);
-    } elseif ($token) {
-      $notification = NotificationsTriggered::where('token', $token)->inactive()->first();
+    $token        = $request->get('t');
+    $notification = NotificationsTriggered::where('token', $token)->where('model_id', $model_id)->inactive()->first();
+    if ($token) {
+      //$notification = NotificationsTriggered::where('token', $token)->inactive()->first();
       if ($notification) {
-        $notification_time   = $notification->deliver_time;
-        $now                 = date("Y-m-d H:i:s");
-        $allowed_access_time = date('Y-m-d H:i:s', strtotime('+1 day', strtotime($notification_time)));
-        if ($allowed_access_time > $now) {
-          $user = User::find($user_id);
-          $user = Auth::login($user);
-          return $this->showNotificationMessage($communication_id);
+        if (Auth::check()) {
+          $user = Auth::user();
+          if ($user->id == $notification->to_id) {
+            if (2 == $notification->type_id) {
+              return redirect('report/' . $notification->model_id);
+            } else {
+              return $this->showNotificationMessage($notification->type_id, $model_id);
+            }
+          } else {
+            return 'you are now allowed to view this notification';
+          }
         } else {
-          //if not show WARNING and give a button to generate a new token and email again
-          session(["notification_token" => $token]);
-          return view('notifications.expired-link', compact('user_id'));
+          $notification_time   = $notification->deliver_time;
+          $now                 = date("Y-m-d H:i:s");
+          $allowed_access_time = date('Y-m-d H:i:s', strtotime('+1 day', strtotime($notification_time)));
+          if ($allowed_access_time > $now) {
+            $user = User::find($user_id);
+            $user = Auth::login($user);
+            if (2 == $notification->type_id) {
+              return redirect('report/' . $notification->model_id);
+            } else {
+              return $this->showNotificationMessage($notification->type_id, $model_id);
+            }
+          } else {
+            //if not show WARNING and give a button to generate a new token and email again
+            session(["notification_token" => $token]);
+            return view('notifications.expired-link', compact('user_id'));
+          }
         }
       } else {
         // show warning message, looks like something went wrong
@@ -1159,6 +1188,99 @@ class CommunicationController extends Controller
     } else {
       // show warning message, looks like something went wrong, redirect to login
     }
+  }
+
+  public function showNotificationMessage($type_id, $model_id)
+  {
+    //return 'reached notification';
+    /**
+     * save sessions
+     *   Which tab to open
+     *   modal to open
+     *   redirect to home page
+     */
+    $config     = config('allita.notification');
+    $receipents = CommunicationRecipient::find($model_id);
+    if (1 == $type_id) {
+      session(["notification_main_tab" => $config['main_tab'][$type_id]]);
+      session(["notification_modal_source" => 'communication/0/replies/' . $receipents->communication_id]);
+    }
+    return $this->goToMessage($receipents->communication_id);
+
+    return redirect('/');
+  }
+
+  public function reportReadyNotification($report_id, $project_id = null)
+  {
+    if (null !== $project_id) {
+      $project       = Project::where('id', '=', $project_id)->first();
+      $audit_details = $project->selected_audit();
+      $report        = CrrReport::find($report_id);
+      $user_keys     = $report->signators()->pluck('person_key')->toArray();
+      $recipients    = User::whereIn('person_key', $user_keys)->with('person')
+        ->where('active', 1)
+        ->get();
+      $audit = $audit_details->id;
+      return view('modals.report-ready', compact('audit', 'project', 'recipients', 'report_id', 'audit_details'));
+    } else {
+      $project             = null;
+      $document_categories = DocumentCategory::where('parent_id', '<>', 0)->where('active', '1')->orderby('document_category_name', 'asc')->get();
+
+      // build a list of all categories used for uploaded documents in this project
+      $categories_used = [];
+      // category keys for name reference ['id' => 'name']
+      $document_categories_key = [];
+      $documents               = [];
+
+      $recipients_from_hfa = User::where('organization_id', '=', $ohfa_id)
+        ->where('active', 1)
+        ->leftJoin('people', 'people.id', 'users.person_id')
+        ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+        ->join('users_roles', 'users_roles.user_id', 'users.id')
+        ->select('users.*', 'last_name', 'first_name', 'organization_name')
+        ->where('active', 1)
+        ->orderBy('last_name', 'asc')
+        ->get();
+
+      // $recipients = User::where('organization_id', '!=', $ohfa_id)
+      //     ->orWhereNull('organization_id')
+      //     ->where('active', 1)
+      //     ->orderBy('name', 'asc')->get();
+
+      if (Auth::user()->pm_access()) {
+        $recipients = User::where('organization_id', '=', Auth::user()->organization_id)
+          ->leftJoin('people', 'people.id', 'users.person_id')
+          ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+          ->join('users_roles', 'users_roles.user_id', 'users.id')
+          ->select('users.*', 'last_name', 'first_name', 'organization_name')
+          ->where('active', 1)
+          ->orderBy('last_name', 'asc')
+          ->get();
+      } else {
+        $recipients = User::where('organization_id', '!=', $ohfa_id)
+          ->leftJoin('people', 'people.id', 'users.person_id')
+          ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+          ->join('users_roles', 'users_roles.user_id', 'users.id')
+          ->select('users.*', 'last_name', 'first_name', 'organization_name')
+          ->where('active', 1)
+          ->orderBy('organization_name', 'asc')
+          ->orderBy('last_name', 'asc')
+          ->get();
+      }
+
+      $audit = null;
+
+      return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project'));
+    }
+  }
+
+  protected function notificationSessions($forminputs)
+  {
+    if (array_key_exists('notification_triggered_type', $forminputs)) {
+      session(['notification_triggered_type' => $forminputs['notification_triggered_type']]);
+      session(['notification_model_id' => $forminputs['notification_model_id']]);
+    }
+    return 12;
   }
 
   public function some()

@@ -327,13 +327,12 @@
         Route::get('communication/session/{trigger?}', 'CommunicationController@setFilterSession');
 
         // notifications trigger
-
 				Route::post('user/notification-preference/{id}', 'Notifications\UserNotificationController@postNotificationPreference');
 				Route::get('send/notification', 'Notifications\UserNotificationController@communicationNotifications');
 				Route::post('resend-notification-link', 'Notifications\UserNotificationController@postResendNotificationsLink');
-
-        Route::get('communication/view-message/{message_id}/{user_id}', 'CommunicationController@messageNotification');
-        //resend-notification-link
+        Route::get('notifications/view-message/{user_id}/{model_id?}', 'CommunicationController@messageNotification');
+        Route::get('notifications/report/{user_id}/{model_id?}', 'CommunicationController@messageNotification');
+        Route::get('/modals/report-ready/{report_id}/{project_id?}', 'CommunicationController@reportReadyNotification')->name('communication.report-ready');
 
 
         Route::get('/session/communication_switch_inbox', function()

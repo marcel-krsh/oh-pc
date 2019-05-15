@@ -150,7 +150,7 @@
 									<label class="uk-text-small">How ofen you want the notifications?<span class="uk-text-danger uk-text-bold">*</span></label>
 									<select class="uk-select" id="notification_setting" name="notification_setting">
 										<option value="1" {{ $unp ? ($unp->frequency == 1 ? 'selected=selected': '') : ''}}>Immediately</option>
-										<option value="2" {{ $unp ? ($unp->frequency == 2 ? 'selected=selected': '') : ''}}>Hourley</option>
+										<option value="2" {{ $unp ? ($unp->frequency == 2 ? 'selected=selected': '') : 'selected=selected'}}>Hourly</option>
 										<option value="3" {{ $unp ? ($unp->frequency == 3 ? 'selected=selected': '') : ''}}>Daily</option>
 									</select>
 								</div>

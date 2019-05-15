@@ -1,7 +1,7 @@
 @extends('layouts.plain-allita')
 @section('content')
 <div class="uk-vertical-align uk-text-center">
-	<h3>Your message link expired</h3>
+	<h3>Your notification link expired</h3>
 	<div class="uk-vertical-align-middle login-panel">
 		<form id="requestAccessForm" class="uk-panel uk-panel-box uk-form" role="notificationResendLink">
 			{{ csrf_field() }}

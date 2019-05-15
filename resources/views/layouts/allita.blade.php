@@ -1,18 +1,18 @@
-﻿<?php session(['disablePacer'=>1]); ?>
+﻿<?php session(['disablePacer' => 1]);?>
 <?php setlocale(LC_MONETARY, 'en_US');
 /// protect against inactive users.
 $allowPageLoad = false;
 
-if(Auth::check()){
-	if(Auth::user()->active == 1){
-		$allowPageLoad = true;
-	}
-}else{
-	/// user is not logged in -- the auth middleware will protect against that access.
-	$allowPageLoad = true;
+if (Auth::check()) {
+  if (Auth::user()->active == 1) {
+    $allowPageLoad = true;
+  }
+} else {
+  /// user is not logged in -- the auth middleware will protect against that access.
+  $allowPageLoad = true;
 }
-if($allowPageLoad){
-	?>
+if ($allowPageLoad) {
+  ?>
 	<!DOCTYPE html>
 	<html lang="en" dir="ltr" id="parentHTML" class="no-js">
 	<head>
@@ -160,7 +160,7 @@ if($allowPageLoad){
 		}
 
 	</style>
-	<?php /* session(['disablePacer'=>0]); */ ?>
+	<?php /* session(['disablePacer'=>0]); */?>
 	@endif
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -169,8 +169,8 @@ if($allowPageLoad){
 			dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);
 		}
 		window.Laravel = <?php echo json_encode([
-			'csrfToken' => csrf_token(),
-			]); ?>
+    'csrfToken' => csrf_token(),
+  ]); ?>
 		</script>
 
 		<script src="/js/jquery.js"></script>
@@ -194,7 +194,7 @@ if($allowPageLoad){
 	@else
 	<script src="/js/taffy.js"></script>
 	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script> -->
-	<script type="text/javascript" src="/js/Chart.bundle.js"></script> 
+	<script type="text/javascript" src="/js/Chart.bundle.js"></script>
 	@endif
 
 	<link rel="stylesheet" href="/css/allita-font.css">
@@ -288,7 +288,7 @@ if($allowPageLoad){
 									<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
 										<a href="" style="">
 											<span class="list-tab-text">
-												
+
 												<i class="a-mobile-home"></i> AUDITS
 											</span>
 										</a>
@@ -302,11 +302,11 @@ if($allowPageLoad){
 											</span>
 										</a>
 									</li>
-									
+
 									<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000"  onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}', '3','','','',1);}">
 										<a href=""><span class="list-tab-text"><i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
 									</li>
-									
+
 									@can('access_admin')
 									<li id="detail-tab-5" class="detail-tab-5" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-5').hasClass('uk-active')  || window.adminLoaded != 1){loadTab('{{ route('dashboard.admin') }}', '5','','','',1);}" >
 										<a href=""><span class="list-tab-text">ADMIN</span></a>
@@ -348,7 +348,7 @@ if($allowPageLoad){
 					<li>
 						<div id="detail-tab-2-content"></div>
 					</li>
-					
+
 					<li>
 						<div id="detail-tab-3-content" style=" margin-top: 70px;"></div>
 					</li>
@@ -380,7 +380,10 @@ if($allowPageLoad){
 				@else
 				Dev|Co Inspect
 				@endif
-				&copy; 2018<?php if(date('Y',time()) != '2018') echo " — ".date('Y',time()); ?>: @include('git-version::version-comment')</a> </p>
+				&copy; 2018<?php if (date('Y', time()) != '2018') {
+    echo " — " . date('Y', time());
+  }
+  ?>: @include('git-version::version-comment')</a> </p>
 			</div>
 			<div id="footer-content" class="uk-width-1-3">
 				<div id="footer-actions-tpl"  class="uk-text-right"></div>
@@ -499,6 +502,14 @@ if($allowPageLoad){
 		},100);
 
 		window.currentSite='allita_pc';
+
+		@if(session()->has('notification_modal_source'))
+		notificationModelSource = "{{ (session()->pull('notification_modal_source', null)) }}";
+		setTimeout(function(){
+			dynamicModalLoad(notificationModelSource);
+		},400);
+		@endif
+
 	</script>
 	@else
 	<script >
@@ -595,7 +606,8 @@ if($allowPageLoad){
 </body>
 </html>
 
-<?php } else { /// show for inactive users ?>
+<?php } else {
+  /// show for inactive users ?>
 
 <!DOCTYPE html>
 <html lang="en" dir="ltr" id="parentHTML" class="no-js">
@@ -616,8 +628,8 @@ if($allowPageLoad){
 
 	<script>
 		window.Laravel = <?php echo json_encode([
-			'csrfToken' => csrf_token(),
-			]); ?>
+    'csrfToken' => csrf_token(),
+  ]); ?>
 		</script>
 		@if(session('disablePacer') != 1)
 		<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js">{{session('disablePacer')}}</script>
@@ -682,4 +694,4 @@ if($allowPageLoad){
 </html>
 <?php
 Auth::logout();
-}  ?>
+}?>

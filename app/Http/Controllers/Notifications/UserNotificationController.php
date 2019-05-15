@@ -129,9 +129,9 @@ class UserNotificationController extends Controller
       $notification = $notifications->first();
       $cr_details   = CommunicationRecipient::with('communication.owner', 'user.notification_preference', 'user.person')->find($notification->model_id);
       $nt           = $this->saveNotificationTrigger($notification, $token, $request_count);
-      if (1 == $nt->type_id) {
-        $email_notification = new EmailCommunicationNotification($cr_details, $token);
-        $user               = $cr_details->user;
+      if (1 == $nt->type_id || 2 == $nt->type_id) {
+        $email_notification = new EmailCommunicationNotification($nt);
+        $user               = $nt->to_user;
         $queued_job         = dispatch(new SendNotificationEmail($user, $email_notification));
       }
       return 1;

@@ -1,6 +1,6 @@
 @forEach($reports as $report)
 <tr id="crr-report-row-{{$report->id}}">
-                    
+
                     <td><a href="/report/{{$report->id}}" target="report-{{$report->id}}" class="uk-mute"><i class="a-file-chart-3"></i> #{{$report->id}}</a></td>
                     <td><a onclick="loadTab('/projects/{{$report->project->project_key}}', '4', 1, 1,'',1);" class="uk-mute"> {{$report->project->project_number}} : {{$report->project->project_name}}</a></td>
                     <td>{{$report->audit_id}}</td>
@@ -9,11 +9,11 @@
                     <td>{{$report->crr_approval_type->name}}</td>
                     <td>
                        <?php
-                            //ACTION OPTIONS BASED ON STATUS AND USER ROLE
-                        ?>
+//ACTION OPTIONS BASED ON STATUS AND USER ROLE
+?>
                         @can('access_auditor')
                                     @if($report->crr_approval_type_id !== 8)
-                                    <select onchange="reportAction({{$report->id}},this.value);">
+                                    <select onchange="reportAction({{$report->id}},this.value, {{ $report->project->id }});">
                                         <option >ACTION</option>
                                         <option value="1">DRAFT</option>
                                         <option value="2">SEND TO MANAGER REVIEW</option>
@@ -27,10 +27,10 @@
                                         @if(!$report->audit->is_archived() || Auth::user()->can('access_manager'))
                                         <option value="8">REFRESH DYNAMIC DATA</option>
                                         @endIf
-                                        
+
                                     </select>
                                     @else
-                                    <div style="margin-left: auto; margin-righ:auto;" uk-spinner></div> 
+                                    <div style="margin-left: auto; margin-righ:auto;" uk-spinner></div>
                                     @endIf
                         @endCan
 
@@ -56,7 +56,7 @@
                                 	UIkit.modal.confirm('<h1>Due Date Updated</h1><p>Your new due date was updated, would you like to go to the first page of the results?</p>').then(function(){
                                 			$('#reports-current-page').val(1);
                                 			$('#detail-tab-3').trigger("click");
-                                		
+
                                 		}, function() {
                                 			$('#detail-tab-3').trigger("click");
                                 		});
@@ -65,7 +65,7 @@
                                 }
                             });
 
-                            
+
                     </script>
                     </td>
                     @can('access_auditor')
@@ -77,21 +77,21 @@
 
                 <tr id="report-{{$report->id}}-history" hidden>
                     <td  ></td>
-                    
-                    
-                        <td colspan="10">    
-                   
+
+
+                        <td colspan="10">
+
                         <table class="uk-table uk-table-striped">
-                            
+
                             <thead>
                                 <th width="80px"> DATE</th>
                                 <th width="120px">USER</th>
                                 <th>NOTE</th>
                             </thead>
-                               
-                            <?php 
-                            $history = collect($report->report_history);
-                            ?>
+
+                            <?php
+$history = collect($report->report_history);
+?>
                             @forEach($history as $h)
                                 <tr>
                                     <td> {{$h['date']}}</td>
@@ -99,10 +99,10 @@
                                     <td>{{$h['note']}}</td>
                                 </tr>
                             @endForEach
-                            
+
                         </table>
                         @can('access_admin')
-                                
+
                                     <div class="uk-width-1-1 uk-margin-top uk-margin-bottom"><small> ADMINS: Information presented was current at time of recording the record. Click the <i class="a-info-circle"></i> icon to view a user's current information.</small></div>
                             @endCan
                     </td>
