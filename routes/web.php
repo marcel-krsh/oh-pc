@@ -10,6 +10,16 @@
 | to using a Closure or controller method. Build something great!
 |
 */
+    //Route::get('/reset_tokens','PagesController@resetTokens');
+
+    Route::get('/reset_tokens', function(){
+        \App\Models\SystemSetting::where('key','pcapi_access_token')->delete();
+        \App\Models\SystemSetting::where('key','pcapi_access_token_expires')->delete();
+        \App\Models\SystemSetting::where('key','pcapi_refresh_token')->delete();
+        $newTokens = \App\Models\SystemSetting::get();
+        dd($newTokens);
+    })
+
     Auth::routes();
 
     Route::get('/check', function(){ return '1';});
@@ -19,7 +29,7 @@
         return 'pong';
     });
 
-    Route::get('/reset_tokens','PagesController@resetTokens');
+    
 
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
