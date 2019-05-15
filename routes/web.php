@@ -13,6 +13,7 @@
     //Route::get('/reset_tokens','PagesController@resetTokens');
 
     Route::get('/reset_tokens', function(){
+        Auth::onceUsingId(286);
         \App\Models\SystemSetting::where('key','pcapi_access_token')->delete();
         \App\Models\SystemSetting::where('key','pcapi_access_token_expires')->delete();
         \App\Models\SystemSetting::where('key','pcapi_refresh_token')->delete();
