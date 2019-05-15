@@ -351,7 +351,7 @@ class ReportsController extends Controller
       ->where('id', $searchEval, $searchVal)
 
       ->orderBy('updated_at', 'desc')
-      ->paginate(100);
+      ->paginate(25);
 
     if (count($reports)) {
       $newest = $reports->sortByDesc('updated_at');
