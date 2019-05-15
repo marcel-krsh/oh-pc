@@ -19,6 +19,8 @@
         return 'pong';
     });
 
+    Route::get('/reset_tokens','PagesController@resetTokens');
+
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
         

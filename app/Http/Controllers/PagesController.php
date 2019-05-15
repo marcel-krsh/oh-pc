@@ -25,6 +25,7 @@ use App\Models\Role;
 use App\Models\State;
 use App\Models\User;
 use App\Models\UserRole;
+use App\Models\SystemSetting;
 use Auth;
 use Excel;
 use Gate;
@@ -40,7 +41,9 @@ class PagesController extends Controller
 {
   public function __construct()
   {
-    Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
+    if(env('APP_ENV')=='local'){
+      Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
+    }
 
     // this is normally setup upon login
     // $current_user = Auth::user();
@@ -50,6 +53,13 @@ class PagesController extends Controller
     //   $current_user->socket_id = $token;
     //   $current_user->save();
     // }
+  }
+
+  public function resetTokens(){
+    SystemSetting::where('key','pcapi_access_token')->delete();
+    SystemSetting::where('key','pcapi_access_token_expires')->delete();
+    SystemSetting::where('key','pcapi_refresh_token')->delete();
+
   }
 
   public function parcel_next_step(Parcel $parcel)
