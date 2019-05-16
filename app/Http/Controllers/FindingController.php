@@ -1085,11 +1085,12 @@ class FindingController extends Controller
                         ['type' => 'file', 'icon' => 'a-file', 'count' => count($comment->documents)],
                         ['type' => 'photo', 'icon' => 'a-picture', 'count' => count($comment->photos)],
                     ],
-                    'actions' => '<div class="icon-circle use-hand-cursor"  onclick="addChildItem(' . $comment->id . ', \'comment\', \'comment\')"><i class="a-comment-plus"></i></div><div class="icon-circle use-hand-cursor"  onclick="addChildItem(' . $comment->id . ', \'document\',\'comment\')"><i class="a-file-plus"></i></div><div class="icon-circle use-hand-cursor"  onclick="addChildItem(' . $comment->id . ', \'photo\',\'comment\')"><i class="a-picture"></i></div>',
+                    'actions' => '<div class="icon-circle use-hand-cursor"  onclick="addChildItem(' . $comment->id . ', \'comment\', \'comment\')"><i class="a-comment-plus"></i></div><div class="icon-circle use-hand-cursor"  onclick="addChildItem(' . $comment->id . ', \'document\',\'comment\')"><i class="a-file-plus"></i></div>',
                 ];
             }
         }
-
+        // action to add back into comment above 
+        // <div class="icon-circle use-hand-cursor"  onclick="addChildItem(' . $comment->id . ', \'photo\',\'comment\')"><i class="a-picture"></i></div>
         if ($followups) {
             foreach ($followups as $followup) {
                 // 'parentitemid' => $itemid,

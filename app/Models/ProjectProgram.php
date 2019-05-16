@@ -19,4 +19,7 @@ class ProjectProgram extends Model
     public function status() : HasOne {
 		return $this->hasOne(\App\Models\ProjectProgramStatusType::class, 'project_program_status_type_key', 'project_program_status_type_key');
 	}
+    public function multiple_building_status() : HasOne {
+        return $this->hasOne(\App\Models\MultipleBuildingElectionType::class, 'id', 'multiple_building_election_id');
+    }
 }

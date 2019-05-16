@@ -122,6 +122,7 @@
 			   	@endForEach
 			   	@endIf
 			<hr class="dashed-hr uk-margin-bottom">
+			@if($f->amenity_inspection)
 			<div style="min-height: 80px;">
 				<?php $piecePrograms = collect($f->amenity_inspection->unit_programs)->where('audit_id',$report->audit_id);
 						//dd($piecePrograms);
@@ -134,6 +135,7 @@
 				</ul>
 				@endIf
 			</div>
+			@endIf
 
 
 		</div>

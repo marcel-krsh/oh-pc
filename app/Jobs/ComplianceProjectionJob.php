@@ -47,42 +47,9 @@ class ComplianceProjectionJob implements ShouldQueue
         // $test = DB::table('jobs')->where('payload', 'like', '%ComplianceProjectionJob%')->first();
         // if (!is_null($test)) {
 
-            $planning = Planning::where('run',0)->first();
-            $this->planning = $planning;
-            $this->planning->project_name = date('m/d/Y g:h a', time())." line 52";
-            $this->planning->save();
-            $this->project = Project::where('project_key',$planning->development_key)->first();
-            $this->extended_use = 0;
-            if(!is_null($this->planning) && $this->planning->running == 0){
-                if(!is_null($this->planning->audit_id)){
-                    $this->audit = Audit::find($this->planning->audit_id);
-                    $this->audit->comment .= '| Loaded the audit from a previous run. ';
-                }else{
-                    $audit = New Audit;
-                    $audit->project_id = $this->project->id;
-                    $audit->development_key = $this->project->project_key;
-                    $audit->monitoring_status_type_key = 10;
-                    $audit->save();
-                    $planning->audit_id = $audit->id;
-                    $planning->save();
-                    $this->planning = $planning;
-                    $this->audit = $audit;
-                    $this->audit->comment .= 'Created the audit';
-                    $this->audit->save();
-
-
-                }
-                    $planning->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
-                    $this->planning = $planning;
-                
-            } else if(!is_null($planning)) {
-
-                $planning->failed_run = 1;
-                $planning->run = 1;
-                $planning->save();
-            } else {
-
-            }
+            $this->audit = null;
+            $this->planning = null;
+            $this->project = null;
         
        //}
 
@@ -2515,24 +2482,21 @@ class ComplianceProjectionJob implements ShouldQueue
 
             // set values
             // get the project program
-            $program_collection = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id);
-            if(!is_null($program_collection)){
-                $this_program_calculated_count = $program_collection->count();
-                $this_program_site_count = $program_collection->where('is_site_visit',1)->count();
-                $this_program_file_count = $program_collection->where('is_file_audit',1)->count();
-            }
+            $this_program_calculated_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->count();
+            $this_program_site_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->where('is_site_visit',1)->count();
+            $this_program_file_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->where('is_file_audit',1)->count();
 
 
             $planning->update([
                 $program_name =>$program->program->program_name,
-                $program_multibuilding_election => $program->_multiple_building_election_key,
+                $program_multibuilding_election => $program->multiple_building_election_key,
                 $program_status => $program->status->status_name,
                 $program_award_number => $program->award_number,
                 $program_guide_year => $program->guide_l_year,
                 $project_program_key => $program->project_program_key,
                 $funding_program_key => $program->program->funding_program_key,
                 $project_program_id => $program->program_id,
-                $program_keyed_in_count => $program->program->total_unit_count,
+                $program_keyed_in_count => $program->total_unit_count,
                 $program_calculated_count => $this_program_calculated_count,
                 $program_extended_use => $program->first_year_award_claimed,
                 $program_site_count => $this_program_site_count,
@@ -2544,34 +2508,33 @@ class ComplianceProjectionJob implements ShouldQueue
         }
         
 
-        if ($project) {
+        
                 $project_id = $project->id;
                 $development_key = $project->project_key;
                 $project_ref = $project->project_number;
                 $project_name = $project->project_name;
                 $total_buildings = $project->total_building_count;
-                $total_units = $project->stats_total_units;
-                $total_program_units = $project->program_units_total;
-                $total_market_rate_units = $project->stats_total_market_rate_units;
+                $total_units = $project->total_unit_count;
+                $total_program_units = $project->program_units_total();
+                $total_market_rate_units = $project->stats_total_market_rate_units();
 
             
-        }
+        
         
 
         //get optimized counts
 
-        $optimized_site = UnitProgram::where('audit_id',$this->audit->id)->where('site',1)->groupBy('unit_key')->count();
-        $optimized_file = UnitProgram::where('audit_id',$this->audit->id)->where('file',1)->groupBy('unit_key')->count();
+        $optimized_site = UnitInspection::where('audit_id',$this->audit->id)->where('is_site_visit',1)->groupBy('unit_key')->count();
+        $optimized_file = UnitInspection::where('audit_id',$this->audit->id)->where('is_file_audit',1)->groupBy('unit_key')->count();
         
 
-        if($planning){
-            // when updating a Planning, run the status test
+        
            
 
             $planning->update([
                 'audit_id' => $audit->id,
                 'project_id' => $project->id,
-                'development_key' => $audit->development_key,
+                'development_key' => $project->project_key,
                 'project_name' => $project->project_name,
                 'project_number' => $project_ref,
                 'total_building_count' => $total_buildings,
@@ -2583,10 +2546,7 @@ class ComplianceProjectionJob implements ShouldQueue
                 'run' => 1
 
             ]);
-        }else{
-
-            $audit->comment .= ' | FAILED TO ENTER BASE PROJECT DATA |';
-        }
+        
 
         // $data = [
         //     'event' => 'NewMessage',
@@ -2606,7 +2566,39 @@ class ComplianceProjectionJob implements ShouldQueue
 
     public function handle()
     {
-        $planning = $this->planning;
+        $planning = Planning::where('run',0)->first();
+            $this->planning = $planning;
+            $this->planning->project_name = date('m/d/Y g:h a', time())." line 52";
+            $this->planning->save();
+            $this->project = Project::where('project_key',$planning->development_key)->first();
+            $this->extended_use = 0;
+            if(!is_null($this->planning) && $this->planning->running == 0){
+                if(!is_null($this->planning->audit_id)){
+                    $this->audit = Audit::find($this->planning->audit_id);
+                    $this->audit->comment .= '| Loaded the audit from a previous run. ';
+                }else{
+                    $audit = New Audit;
+                    $audit->project_id = $this->project->id;
+                    $audit->development_key = $this->project->project_key;
+                    $audit->monitoring_status_type_key = 10;
+                    $audit->save();
+                    $planning->audit_id = $audit->id;
+                    $planning->save();
+                    $this->planning = $planning;
+                    $this->audit = $audit;
+                    $this->audit->comment .= 'Created the audit';
+                    $this->audit->save();
+
+
+                }
+                    $this->planning->update(['running'=>1,'projection_year'=> intval(date('Y',time()))]);
+                   
+                
+            } else if(!is_null($planning)) {
+
+            } else {
+
+            }
 
         if($planning && $planning->run == 0){
             $audit = $this->audit;
