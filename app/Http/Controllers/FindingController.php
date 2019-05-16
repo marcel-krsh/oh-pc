@@ -329,6 +329,20 @@ class FindingController extends Controller
                 return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'document_categories', 'auditors', 'owner_id', 'owner_name', 'pm_id', 'pm_name'));
             }elseif($type == 'comment'){
 
+            }elseif($type == 'photo'){
+                if($from->project_id){
+                    $project = Project::where('id', '=', $from->project_id)->first();
+                }elseif($from->audit_id){
+                    $audit = Audit::where('id', '=', $from->audit_id)->first();
+                    if($audit){
+                        $project = $audit->project;
+                    }
+                }else{
+                    $project = null;
+                }
+
+                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'project'));
+
             }elseif($type == 'document'){
                 if($from->project_id){
                     $project = Project::where('id', '=', $from->project_id)->first();
