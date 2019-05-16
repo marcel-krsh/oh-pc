@@ -120,6 +120,67 @@ class DocumentController extends Controller
         }
     }
 
+    public function photoUpload(Project $project, Request $request)
+    {
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
+        if ($request->hasFile('files')) {
+            $file = $request->file('files')[0];
+            $user = Auth::user();
+            $selected_audit = $project->selected_audit();
+
+            $folderpath = 'photos/project_' . $project->project_number . '/audit_' . $selected_audit->audit_id . '/class_' . $parent_cat_folder . '/description_' . $cat_folder . '/';
+            $characters = [' ', '´', '`', "'", '~', '"', '\'', '\\', '/'];
+            $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
+            $file_extension = $file->getClientOriginalExtension();
+            $filename = pathinfo($original_filename, PATHINFO_FILENAME);
+            $document = new Document([
+                'user_id' => $user->id,
+                'project_id' => $project->id,
+                'audit_id' => $selected_audit->id,
+                'comment' => $request->comment,
+            ]);
+            $document->save();
+            //Parent
+            $document_categories = new LocalDocumentCategory;
+            $document_categories->document_id = $document->id;
+            $document_categories->document_category_id = $categories->parent->id;
+            $document_categories->project_id = $project->id;
+            $document_categories->save();
+            //Category
+            $document_categories = new LocalDocumentCategory;
+            $document_categories->document_id = $document->id;
+            $document_categories->document_category_id = $categories->id;
+            $document_categories->project_id = $project->id;
+            $document_categories->save();
+            // Sanitize filename and append document id to make it unique
+            $filename = snake_case(strtolower($filename)) . '_' . $document->id . '.' . $file_extension;
+            $filepath = $folderpath . $filename;
+            if ($request->has('ohfa_file')) {
+                $document->update([
+                    'file_path' => $filepath,
+                    'filename' => $filename,
+                    'ohfa_file_path' => $filepath,
+                ]);
+            } else {
+                $document->update([
+                    'file_path' => $filepath,
+                    'filename' => $filename,
+                ]);
+            }
+
+            // store original file
+            Storage::put($filepath, File::get($file));
+            $data = [];
+            $data['document_ids'] = [$document->id];
+            return json_encode($data);
+        } else {
+            // shouldn't happen - UIKIT shouldn't send empty files
+            // nothing to do here
+        }
+    }
+
     public function approveLocalDocument(Project $project, Request $request)
     {
         if (!$request->get('id') && !$request->get('catid')) {

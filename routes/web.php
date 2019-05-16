@@ -232,8 +232,7 @@
 				Route::post('/documents/project/{project}/local-deletedocument', 'DocumentController@deleteLocalDocument')->name('documents.local-deleteDocument');
 				Route::get('/download-local-document/{document}', 'DocumentController@downloadLocalDocument')->name('document.local-download');
 
-
-
+        Route::post('/photos/project/{project}/upload', 'DocumentController@photoUpload')->name('photos.upload');
 
 
         Route::get('/projects/{project}/documents/title', 'AuditController@getProjectDocumentsTitle')->name('project.documents.title');
@@ -366,7 +365,6 @@
         Route::post('/documents/audit/{audit}/approve', 'DocumentController@approveDocument')->name('documents.approve');
         Route::post('/documents/audit/{audit}/notapprove', 'DocumentController@notApproveDocument')->name('documents.notapprove');
         Route::post('/documents/audit/{audit}/documentinfo', 'DocumentController@documentInfo')->name('documents.documentInfo');
-
 
         // ADMIN
         Route::group(['prefix'=>'modals/admin'], function () {
