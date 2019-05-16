@@ -105,7 +105,6 @@
 						            		UIkit.modal.alert("There was a problem getting the documents' information.",{stack: true});
 						            	} else {
 						            		document_info_array = data;
-						            		console.log(document_info_array);
 
 						            		documentids = documentids + '';
 						            		var documentid_array = documentids.split(',');
@@ -211,37 +210,4 @@
     	$('#done-adding-documents-button').toggle();
     }
 
-    function submitNewCommunication() {
-    	var form = $('#newOutboundEmailForm');
-    	var no_alert = 1;
-    	var recipients_array = [];
-    	$("input[name='recipients[]']:checked").each(function (){
-    		recipients_array.push(parseInt($(this).val()));
-    	});
-    	if(recipients_array.length === 0){
-    		no_alert = 0;
-    		UIkit.modal.alert('You must select a recipient.',{stack: true});
-    	}
-    	if(no_alert){
-    		$.post('{{ URL::route("communication.create") }}', {
-    			'inputs' : form.serialize(),
-    			'_token' : '{{ csrf_token() }}'
-    		}, function(data) {
-    			if(data!=1){
-    				UIkit.modal.alert(data,{stack: true});
-    			} else {
-    				UIkit.modal.alert('Your message has been saved.',{stack: true});
-    			}
-    		} );
-
-    		@if($project)
-    		var id = {{$project->id}};
-        loadTab('/projects/'+{{$project->id}}+'/communications/', '2', 0, 0, 'project-', 1);
-        //loadParcelSubTab('communications',id);
-        @else
-        //loadDashBoardSubTab('dashboard','communications');
-        @endif
-        dynamicModalClose();
-      }
-    }
   </script>
