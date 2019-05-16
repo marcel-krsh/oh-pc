@@ -420,7 +420,8 @@ class DashboardController extends Controller
 
     foreach ($audits as $audit) {
         // list all auditors based on previous filters
-        if($audit->auditors){
+        if($audit->auditors && count($audit->auditors)){ 
+
             $keep_audit_based_on_auditor_filter = 0;
             foreach($audit->auditors as $auditor){
                 if(!in_array($auditor->user_id, $auditor_ids)){
@@ -454,6 +455,7 @@ class DashboardController extends Controller
     $audits = $filtered_audits->all();
 
     foreach ($audits as $audit) {
+
       if ('critical' == $audit['status'] && Auth::user()->auditor_access()) {
         $notcritical = 'critical';
       } else {
