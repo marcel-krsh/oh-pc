@@ -55,6 +55,7 @@ class Project extends Model
         $pm_organization_id = '';
         $pm_organization = '';
         $pm_address = '';
+        $pm_id = '';
         $pm_line_1 = '';
         $pm_line_2 = '';
         $pm_city = '';
