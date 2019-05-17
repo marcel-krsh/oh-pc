@@ -51,8 +51,10 @@ use App\Jobs\SyncUnitAmenitiesJob;
 use App\Jobs\SyncHouseHoldSizesJob;
 use App\Jobs\SyncProjectDatesJob;
 use App\Jobs\SyncUnitIdentitiesJob;
+use App\Jobs\ComplianceProjectionJob;
 
 use App\Jobs\SyncIdsJob;
+use App\Models\Projection;
 
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -93,7 +95,7 @@ class Kernel extends ConsoleKernel
         ////// SYNC JOBS
         ////
 
-        if(!env('APP_DEBUG_NO_DEVCO')){
+        if(!env('APP_DEBUG_NO_DEVCO') && (intval(date('G',time())) < 2 || intval(date('G',time()) > 3))){
             $test = DB::table('jobs')->where('payload', 'like', '%SyncAddresses%')->first();
             if (is_null($test)) {
                 $schedule->job(new SyncAddressesJob)->everyMinute();
@@ -459,6 +461,17 @@ class Kernel extends ConsoleKernel
             $test = DB::table('jobs')->where('payload', 'like', '%SyncIdsJob%')->first();
             if (is_null($test)) {
                 $schedule->job(new SyncIdsJob)->everyMinute();
+            } else {
+                //Log::info('Sync Job Already Started.');
+            }
+
+            //RunProjections
+            $test = DB::table('jobs')->where('payload', 'like', '%ComplianceProjectionJob%')->first();
+            if (is_null($test)) {
+                $planning = Projection::where('run',0)->first();
+               
+                    $schedule->job(new ComplianceProjectionJob, 'compliance')->everyMinute();
+               
             } else {
                 //Log::info('Sync Job Already Started.');
             }

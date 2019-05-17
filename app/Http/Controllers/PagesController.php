@@ -2196,9 +2196,9 @@ class PagesController extends Controller
         } else {
           $user_role_id = 2;
         }
-        $roles = Role::where('id', '<', $user_role_id)->active()->orderBy('role_name', 'ASC')->get();
+        $roles = Role::where('id', '<=', $user_role_id)->active()->orderBy('id', 'ASC')->get();
       } else {
-        $roles = Role::where('id', '<', 2)->active()->orderBy('role_name', 'ASC')->get();
+        $roles = Role::where('id', '<=', 2)->active()->orderBy('id', 'ASC')->get();
       }
       $default_address = $user->addresses->where('default', 1)->first();
       if (count($user->roles) > 0) {

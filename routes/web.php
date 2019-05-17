@@ -21,6 +21,10 @@
 
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
+        
+        Route::get('/simple_compliance_test/{projection}', 'SimpleComplianceSelection@runSimpleCompliance');
+
+        
         // Route::get('/testProject/{project}', function($project){
         //     $project = App\Models\Project::where('id',$project)->with('programs.program')->first();
         //     //dd($project->programs);
@@ -215,8 +219,7 @@
 				Route::post('/documents/project/{project}/local-deletedocument', 'DocumentController@deleteLocalDocument')->name('documents.local-deleteDocument');
 				Route::get('/download-local-document/{document}', 'DocumentController@downloadLocalDocument')->name('document.local-download');
 
-
-
+        Route::post('/photos/project/{project}/upload', 'DocumentController@photoUpload')->name('photos.upload');
 
 
         Route::get('/projects/{project}/documents/title', 'AuditController@getProjectDocumentsTitle')->name('project.documents.title');
@@ -260,6 +263,7 @@
         Route::post('/modals/projects/{project_id}/programs/save-program-unit-inspections', 'AuditController@saveProgramUnitInspection');
 
         Route::get('/modals/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}/{toplevel?}', 'FindingController@modalFindings');
+        Route::get('/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}/{toplevel?}', 'FindingController@nonModalFindings');
         Route::get('/modals/add/finding/{findingtypeid?}/amenity_inspection/{amenityinspectionid?}','FindingController@addFindingForm');
         Route::get('/modals/edit/finding/{findingtypeid}','FindingController@editFindingForm');
         Route::post('/findings/create', 'FindingController@addFinding');
@@ -357,7 +361,6 @@
         Route::post('/documents/audit/{audit}/approve', 'DocumentController@approveDocument')->name('documents.approve');
         Route::post('/documents/audit/{audit}/notapprove', 'DocumentController@notApproveDocument')->name('documents.notapprove');
         Route::post('/documents/audit/{audit}/documentinfo', 'DocumentController@documentInfo')->name('documents.documentInfo');
-
 
         // ADMIN
         Route::group(['prefix'=>'modals/admin'], function () {

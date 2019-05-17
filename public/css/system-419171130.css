@@ -2626,6 +2626,7 @@ margin-top:10px;
 .inspec-tools-tab-finding .inspec-tools-findings-resolve span {
     font-size: 19px;
     vertical-align: sub;
+    padding-right: 5px;
 }
 .inspec-tools-tab-finding .inspec-tools-findings-resolve, #auditstable .inspec-tools-tab-finding .inspec-tools-findings-resolve {
   background-color: transparent;
@@ -2750,7 +2751,7 @@ margin-top:10px;
 .inspec-tools-tab-finding .inspec-tools-tab-finding-description {
   /*position: relative;*/
   margin-bottom: 30px;
-  margin-top: -20px;
+  /*margin-top: -20px;*/
 }
 .inspec-tools-tab-finding .inspec-tools-tab-finding-top-actions {
  /* position: absolute;
@@ -2926,6 +2927,11 @@ margin-top:10px;
 .finding-file-category {
     padding: 3px 0;
     font-size: 15px;
+    display: inline-block;
+    width: 90%;
+    vertical-align: top;
+    margin-left:2px;
+    margin-bottom: 20px;
 }
 .finding-file-category i {
     vertical-align: sub;
@@ -2936,6 +2942,7 @@ margin-top:10px;
     font-style: italic;
     padding-left: 60px;
     line-height: 22px;
+    color:#939598;
 }
 .finding-file i {
     font-size: 40px;

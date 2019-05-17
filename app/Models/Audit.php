@@ -41,6 +41,11 @@ class Audit extends Model
 
     }
 
+    public function auditors() : HasMany
+    {
+        return $this->hasMany(\App\Models\AuditAuditor::class, 'audit_id');
+    }
+
     public function total_inspection_units(){
         return \App\UnitInspection::where('audit_id',$this->id)->groupBy('unit_id')->count();
     }

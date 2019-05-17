@@ -77,21 +77,41 @@ class AmenityInspection extends Model
     {
         if($this->unit_id){
 
-            $unit_name = $this->unit->unit_name;
-            $building_name = $this->unit->building->building_name;
+            //$unit_name = $this->unit->unit_name;
+            //$building_name = $this->unit->building->building_name;
             $amenity_name = $this->amenity->amenity_description;
-            return $building_name .":". $unit_name . ":" .$amenity_name;
+            //return $building_name .":". $unit_name . ":" .$amenity_name;
+            return $amenity_name;
 
         }elseif($this->building_id){
 
-            $building_name = $this->building->building_name;
+            //$building_name = $this->building->building_name;
             $amenity_name = $this->amenity->amenity_description;
-            return $building_name . ":" .$amenity_name;
+            //return $building_name . ":" .$amenity_name;
+            return $amenity_name;
 
         }elseif($this->project_id){
 
             $amenity_name = $this->amenity->amenity_description;
             return $amenity_name;
+
+        }
+
+        return '';
+    }
+
+    public function building_unit_name()
+    {
+        if($this->unit_id){
+
+            $unit_name = $this->unit->unit_name;
+            $building_name = $this->unit->building->building_name;
+            return $building_name .":". $unit_name;
+
+        }elseif($this->building_id){
+
+            $building_name = $this->building->building_name;
+            return $building_name;
 
         }
 

@@ -1,5 +1,5 @@
-<div class="modal-findings-right" uk-filter="target: .js-findings">
-	<div class="modal-findings-right-top">
+<div class="" uk-filter="target: .js-findings">
+	<div uk-grid>
 		<div class="uk-width-1-1 filter-button-set-right js-findings-buttons" uk-grid>
 			<div class="uk-width-1-5 uk-active findinggroup" uk-filter-control="filter: [data-finding-filter*='my-finding']; group: findingfilter; " onclick="clickingOnFindingFilter(this);">
 				<button class="uk-button uk-button-default button-filter button-filter-border-left" >My finding</button>
@@ -29,11 +29,9 @@
 				<button id="finding-modal-audit-stream-refresh" class="uk-button uk-button-default button-filter"  onclick="refreshFindingStream('{{ $type }}',{{ $auditid }},{{ $buildingid }},{{ $unitid }},{{ $amenityid }});">REFRESH</button>
 			</div>
 		</div>
-	</div>
-
-	<div class="modal-findings-right-bottom-container">
-		<div class="modal-findings-right-bottom">
-			<div class="inspec-tools-tab-findings-container uk-panel uk-panel-scrollable uk-padding-remove js-findings">
+	
+		<div class="uk-width-1-1 mmodal-findings-right-bottom">
+			<div class="inspec-tools-tab-findings-container uk-panel uk-panel-scrollable uk-padding-remove js-findings" style="    height: 400px;">
 				@if(count($findings))
 				@foreach($findings as $finding)
 				<div id="inspec-tools-tab-finding-{{ $finding->id }}" class="inspec-tools-tab-finding @if($finding->cancelled_at) cancelled @endif" @if($finding->cancelled_at) data-ordering-finding="x{{ $finding->id }}" @else data-ordering-finding="{{ $finding->id }}" @endif data-finding-id="{{ $finding->id }}" data-audit-filter="@if($finding->is_current_audit()) this-audit @endif all" data-finding-filter="@if(Auth::user()->id == $finding->user_id) my-finding @endif all" @if(!$finding->is_current_audit() || Auth::user()->id != $finding->user_id) style="display:none" @endif uk-grid>
@@ -62,27 +60,23 @@
 									@can('access_auditor')
 									@if(!$finding->cancelled_at)
 									@if($finding->auditor_approved_resolution != 1)
-									<button class="uk-button inspec-tools-findings-resolve uk-link" onclick="resolveFinding({{ $finding->id }})"><span class="a-circle">
-									&nbsp; </span>RESOLVE</button>
+									<button class="uk-button inspec-tools-findings-resolve uk-link" onclick="resolveFinding({{ $finding->id }})"><span class="a-circle"></span> RESOLVE</button>
 									@else
-									<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($finding->auditor_last_approved_resolution_at)) }};" onclick="resolveFinding({{ $finding->id }})"><span class="a-circle-checked">
-									&nbsp; </span>RESOLVED</button>
+									<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($finding->auditor_last_approved_resolution_at)) }};" onclick="resolveFinding({{ $finding->id }})"><span class="a-circle-checked"></span> RESOLVED</button>
 									@endif
 									@endif
 									@else
 									@if($finding->auditor_approved_resolution == 1)
-									<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($finding->auditor_last_approved_resolution_at)) }};"><span class="a-circle-checked">
-									&nbsp; </span>RESOLVED</button>
+									<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($finding->auditor_last_approved_resolution_at)) }};"><span class="a-circle-checked"></span> RESOLVED</button>
 									@endif
 									@endcan
 								</div>
 								<div class="inspec-tools-tab-finding-stats" style="margin: 0 0 15px 0;">
-									@if(env('APP_ENV') == 'local')
 									<i class="a-bell"></i> <span id="inspec-tools-tab-finding-stat-reminders">{{ count($finding->followups) }}</span><br />
-									@endIf
 									<i class="a-comment"></i> {{ count($finding->comments) }}<br />
-									@if(env('APP_ENV') == 'local')
+									
 									<i class="a-file"></i> {{ count($finding->documents) }}<br />
+									@if(env('APP_ENV') == 'local')
 									<i class="a-picture"></i> {{ count($finding->photos) }}<br />
 									@endIf
 									@if(count($finding->followups) || count($finding->comments) || count($finding->documents) || count($finding->photos))
@@ -97,12 +91,11 @@
 									<div uk-drop="mode: click" style="min-width: 315px; background-color: #ffffff;  ">
 										<div class="uk-card uk-card-body uk-card-default uk-card-small">
 											<div class="uk-drop-grid uk-child-width-1-4" uk-grid>
-												@if(env('APP_ENV') == 'local')
 												<div class="icon-circle use-hand-cursor" onclick="addChildItem({{ $finding->id }}, 'followup')"><i class="a-bell-plus"></i></div>
-												@endIf
 												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $finding->id }}, 'comment')"><i class="a-comment-plus"></i></div>
-												@if(env('APP_ENV') == 'local')
+												
 												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $finding->id }}, 'document')"><i class="a-file-plus"></i></div>
+												@if(env('APP_ENV') == 'local')
 												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $finding->id }}, 'photo')"><i class="a-picture"></i></div>
 												@endIf
 											</div>
@@ -115,8 +108,9 @@
 								</div>
 								@endif
 								<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description"  style="z-index:auto">
-									<p>{{ formatDate($finding->date_of_finding) }}: FN#{{ $finding->id }}<br />
-										By {{ $finding->auditor->full_name() }}<br>
+									<p><small>{{ formatDate($finding->date_of_finding, "F j, Y") }}: FN#{{ $finding->id }}</small><br />
+										<small>By {{ $finding->auditor->full_name() }}</small><br>
+										@if($finding->amenity_inspection)<strong>{{ $finding->amenity_inspection->building_unit_name()}}</strong>@endif<br />
 										@if($finding->amenity_inspection)
 										{!! $finding->amenity_inspection->address() !!}
 										@endIf
@@ -127,6 +121,9 @@
 										@if($finding->finding_type)
 										{{ $finding->finding_type->name }}
 									@endIf
+								</p>
+								<p>
+									{{$finding->level_description()}}
 								</p>
 									@can('access_auditor')
 									<div class="inspec-tools-tab-finding-actions">

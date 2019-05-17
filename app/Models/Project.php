@@ -55,6 +55,7 @@ class Project extends Model
         $pm_organization_id = '';
         $pm_organization = '';
         $pm_address = '';
+        $pm_id = '';
         $pm_line_1 = '';
         $pm_line_2 = '';
         $pm_city = '';
@@ -77,6 +78,13 @@ class Project extends Model
                 $pm_zip = $pm_contact->organization->address->zip;
             }
             if ($pm_contact->person) {
+                $pm_person_id = $pm_contact->person->id;
+                $pm = User::where('person_id', '=', $pm_person_id)->first();
+                if($pm){
+                    $pm_id = $pm->id;
+                }else{
+                     $pm_id = null;
+                }
                 $pm_name = $pm_contact->person->first_name." ".$pm_contact->person->last_name;
                 $pm_phone = $pm_contact->person->phone->number();
                 $pm_fax = $pm_contact->person->fax->number();
@@ -85,7 +93,7 @@ class Project extends Model
             
         }
 
-        return ['organization_id' => $pm_organization_id , 'organization'=> $pm_organization, 'name'=>$pm_name, 'email'=>$pm_email, 'phone'=>$pm_phone, 'fax'=>$pm_fax, 'address'=>$pm_address, 'line_1'=>$pm_line_1, 'line_2'=>$pm_line_2, 'city'=>$pm_city, 'state'=>$pm_state, 'zip'=>$pm_zip ];
+        return ['organization_id' => $pm_organization_id , 'pm_id' => $pm_id, 'organization'=> $pm_organization, 'name'=>$pm_name, 'email'=>$pm_email, 'phone'=>$pm_phone, 'fax'=>$pm_fax, 'address'=>$pm_address, 'line_1'=>$pm_line_1, 'line_2'=>$pm_line_2, 'city'=>$pm_city, 'state'=>$pm_state, 'zip'=>$pm_zip ];
     }
 
     public function owner()
@@ -106,6 +114,7 @@ class Project extends Model
         $owner_city = '';
         $owner_state = '';
         $owner_zip = '';
+        $owner_id = '';
 
         if ($owner_contact) { 
             if ($owner_contact->organization) {
@@ -119,6 +128,13 @@ class Project extends Model
                 $owner_zip = $owner_contact->organization->address->zip;
             }
             if ($owner_contact->person) {
+                $owner_person_id = $owner_contact->person->id; 
+                $owner = User::where('person_id', '=', $owner_person_id)->first();
+                if($owner){
+                    $owner_id = $owner->id;
+                }else{
+                    $owner_id = null;
+                }
                 $owner_name = $owner_contact->person->first_name." ".$owner_contact->person->last_name;
                 $owner_phone = $owner_contact->person->phone->number();
                 $owner_fax = $owner_contact->person->fax->number();
@@ -127,7 +143,7 @@ class Project extends Model
             
         }
 
-        return ['organization_id'=> $owner_organization_id,'organization'=> $owner_organization, 'name'=>$owner_name, 'email'=>$owner_email, 'phone'=>$owner_phone, 'fax'=>$owner_fax, 'address'=>$owner_address, 'line_1'=>$owner_line_1, 'line_2'=>$owner_line_2, 'city'=>$owner_city, 'state'=>$owner_state, 'zip'=>$owner_zip ];
+        return ['organization_id'=> $owner_organization_id,'owner_id'=> $owner_id,'organization'=> $owner_organization, 'name'=>$owner_name, 'email'=>$owner_email, 'phone'=>$owner_phone, 'fax'=>$owner_fax, 'address'=>$owner_address, 'line_1'=>$owner_line_1, 'line_2'=>$owner_line_2, 'city'=>$owner_city, 'state'=>$owner_state, 'zip'=>$owner_zip ];
     }
 
     public function complianceContacts() : HasOne
@@ -314,7 +330,7 @@ class Project extends Model
                     $query->orWhere('project_program_status_type_key', 30004);
                     $query->orWhere('project_program_status_type_key', 30009);
                     $query->orWhere('project_program_status_type_key', 30010);
-                })
+                })->with('program')
                 ;
     }
     public function all_other_programs() : HasMany
@@ -341,7 +357,7 @@ class Project extends Model
 
     public function buildings() : HasMany
     {
-        return $this->hasMany('\App\Models\Building')->where('building_status_id','=',1);
+        return $this->hasMany('\App\Models\Building')->where('building_status_key','=',1);
     }
 
     public function units() : HasManyThrough {
@@ -390,6 +406,11 @@ class Project extends Model
     public function stats_total_units()
     {
         return count($this->units);
+    }
+
+    public function stats_total_market_rate_units()
+    {
+        return count($this->market_rate_units);
     }
 
     public function stat_program_units()
