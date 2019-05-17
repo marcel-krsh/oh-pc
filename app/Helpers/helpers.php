@@ -7,18 +7,18 @@ use Carbon\Carbon;
 
 function formatDate($date, $format = "F d, Y", $from_format = "Y-m-d H:i:s")
 {
-  return Carbon\Carbon::createFromFormat($from_format, $date)->format($format);
+  return Carbon::createFromFormat($from_format, $date)->format($format);
 }
 
 function formatTime($time, $format = "g:i A", $from_format = "H:i:s")
 {
-  return Carbon\Carbon::createFromFormat($from_format, $time)->format($format);
+  return Carbon::createFromFormat($from_format, $time)->format($format);
 }
 
 function timeToSlot($time)
 {
-  $hour = \Carbon\Carbon::createFromFormat('H:i:s', $time)->format('H');
-  $min  = \Carbon\Carbon::createFromFormat('H:i:s', $time)->format('i');
+  $hour = Carbon::createFromFormat('H:i:s', $time)->format('H');
+  $min  = Carbon::createFromFormat('H:i:s', $time)->format('i');
   return ($hour - 6) * 4 + 1 + $min / 15;
 }
 
