@@ -40,7 +40,7 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\ChatEvent' => [
             'App\Listeners\ChatListener',
         ],
-        
+
 
         'App\Events\UpdateEvent' => [
             'App\Listeners\UpdateListener',
@@ -52,6 +52,10 @@ class EventServiceProvider extends ServiceProvider
 
         'scheduletime.created' => [
             'App\Events\SchedulesEvent@scheduleTimeCreated'
+        ],
+
+        'communication.created' => [
+            'App\Events\CommunicationReceipientEvent@communicationCreated',
         ],
 
     ];

@@ -46,7 +46,7 @@ class LoginController extends Controller
    */
   public function __construct()
   {
-    $this->middleware('guest', ['except' => 'logout']);
+    $this->middleware('guest', ['except' => ['logout', 'getApproveAccess', 'postApproveAccess']]);
     $this->verification_number = 1299;
   }
 
@@ -324,14 +324,12 @@ class LoginController extends Controller
   public function getApproveAccess($user_id)
   {
     $current_user = Auth::user();
-   
-
-    if(!is_null($current_user) && $current_user->can('access_admin')){
+    if (!is_null($current_user) && $current_user->can('access_admin')) {
       // Check if user is logged in, taken care by middleware
       // Check if the person accessing this page is admin
       // Get the roles based on hierarchy
       // get user and show details
-      
+
       //$current_user = Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
       $user = User::find($user_id);
       if (!$user) {
@@ -352,13 +350,12 @@ class LoginController extends Controller
         return view('auth.approve-access', compact('user', 'user_id', 'roles'));
       }
     } else {
-      if(is_null($current_user)){
-        if(!session()->has('url.intended'))
-        {
-            session(['url.intended' => url()->previous()]);
+      if (is_null($current_user)) {
+        if (!session()->has('url.intended')) {
+          session(['url.intended' => url()->previous()]);
         }
         return view('auth.login');
-      }else{
+      } else {
         return 'Sorry, you do not have sufficient priveledges to access this page.';
       }
     }
@@ -366,36 +363,48 @@ class LoginController extends Controller
 
   public function postApproveAccess(Request $request)
   {
-    $validator = \Validator::make($request->all(), [
-      'role' => 'required',
-    ]);
-    if ($validator->fails()) {
-      return 2;
-    }
-    $user_id      = session()->get('user_id');
     $current_user = Auth::user();
-    //$current_user = Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
-    $user = User::find($user_id);
-    if (!$user) {
-      $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
-      $error   = "Looks like the user doesn't exist with the provided information";
-      $type    = "danger";
-      return view('errors.error', compact('error', 'message', 'type'));
-    } elseif (count($user->roles) > 0) {
-      $message = "<h2>ACCESS GRANTED!</h2><p>This user has been already given access</p>";
-      $error   = "Looks like the user has been already given access";
-      $type    = "message";
-      return view('errors.error', compact('error', 'message', 'type'));
+    if (!is_null($current_user) && $current_user->can('access_admin')) {
+      $validator = \Validator::make($request->all(), [
+        'role' => 'required',
+      ]);
+      if ($validator->fails()) {
+        return 2;
+      }
+      $user_id      = session()->get('user_id');
+      $current_user = Auth::user();
+      //$current_user = Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
+      $user = User::find($user_id);
+      if (!$user) {
+        $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
+        $error   = "Looks like the user doesn't exist with the provided information";
+        $type    = "danger";
+        return view('errors.error', compact('error', 'message', 'type'));
+      } elseif (count($user->roles) > 0) {
+        $message = "<h2>ACCESS GRANTED!</h2><p>This user has been already given access</p>";
+        $error   = "Looks like the user has been already given access";
+        $type    = "message";
+        return view('errors.error', compact('error', 'message', 'type'));
+      }
+      $current_user_role_id = $current_user->roles->first()->role_id;
+      if ($request->role >= $current_user_role_id) {
+        return 'Something went wrong';
+      }
+      $user_role          = new UserRole;
+      $user_role->role_id = $request->role;
+      $user_role->user_id = $user->id;
+      $user_role->save();
+      return 1;
+    } else {
+      if (is_null($current_user)) {
+        if (!session()->has('url.intended')) {
+          session(['url.intended' => url()->previous()]);
+        }
+        return view('auth.login');
+      } else {
+        return 'Sorry, you do not have sufficient priveledges to access this page.';
+      }
     }
-    $current_user_role_id = $current_user->roles->first()->role_id;
-    if ($request->role >= $current_user_role_id) {
-      return 'Something went wrong';
-    }
-    $user_role          = new UserRole;
-    $user_role->role_id = $request->role;
-    $user_role->user_id = $user->id;
-    $user_role->save();
-    return 1;
   }
 
   protected function extraCheckErrors($validator)

@@ -14,45 +14,51 @@
 </head>
 <?php
 $style = [
-  /* Layout ------------------------------ */
+	/* Layout ------------------------------ */
 
-  'body'                => 'margin: 0; padding: 0; width: 100%; background-color: #F2F4F6;',
-  'email-wrapper'       => 'width: 100%; margin: 0; padding: 0; background-color: #F2F4F6;',
+	'body'                => 'margin: 0; padding: 0; width: 100%; background-color: #F2F4F6;',
+	'email-wrapper'       => 'width: 100%; margin: 0; padding: 0; background-color: #F2F4F6;',
 
-  /* Masthead ----------------------- */
+	/* Masthead ----------------------- */
 
-  'email-masthead'      => 'padding: 25px 0; text-align: center;',
-  'email-masthead_name' => 'font-size: 16px; font-weight: bold; color: #2F3133; text-decoration: none; text-shadow: 0 1px 0 white;',
+	'email-masthead'      => 'padding: 25px 0; text-align: center;',
+	'email-masthead_name' => 'font-size: 16px; font-weight: bold; color: #2F3133; text-decoration: none; text-shadow: 0 1px 0 white;',
 
-  'email-body'          => 'width: 100%; margin: 0; padding: 0; border-top: 1px solid #EDEFF2; border-bottom: 1px solid #EDEFF2; background-color: #FFF;',
-  'email-body_inner'    => 'width: auto; max-width: 570px; margin: 0 auto; padding: 0;',
-  'email-body_cell'     => 'padding: 35px;',
+	'email-body'          => 'width: 100%; margin: 0; padding: 0; border-top: 1px solid #EDEFF2; border-bottom: 1px solid #EDEFF2; background-color: #FFF;',
+	'email-body_inner'    => 'width: auto; max-width: 570px; margin: 0 auto; padding: 0;',
+	'email-body_cell'     => 'padding: 35px;',
 
-  'email-footer'        => 'width: auto; max-width: 570px; margin: 0 auto; padding: 0; text-align: center;',
-  'email-footer_cell'   => 'color: #AEAEAE; padding: 35px; text-align: center;',
+	'email-footer'        => 'width: auto; max-width: 570px; margin: 0 auto; padding: 0; text-align: center;',
+	'email-footer_cell'   => 'color: #AEAEAE; padding: 35px; text-align: center;',
 
-  /* Body ------------------------------ */
+	/* Body ------------------------------ */
 
-  'body_action'         => 'width: 100%; margin: 30px auto; padding: 0; text-align: center;',
-  'body_sub'            => 'margin-top: 25px; padding-top: 25px; border-top: 1px solid #EDEFF2;',
+	'body_action'         => 'width: 100%; margin: 30px auto; padding: 0; text-align: center;',
+	'body_sub'            => 'margin-top: 25px; padding-top: 25px; border-top: 1px solid #EDEFF2;',
 
-  /* Type ------------------------------ */
+	/* Type ------------------------------ */
 
-  'anchor'              => 'color: #3869D4;',
-  'header-1'            => 'margin-top: 0; color: #2F3133; font-size: 19px; font-weight: bold; text-align: left;',
-  'paragraph'           => 'margin-top: 0; color: #74787E; font-size: 16px; line-height: 1.5em;',
-  'paragraph-sub'       => 'margin-top: 0; color: #74787E; font-size: 12px; line-height: 1.5em;',
-  'paragraph-center'    => 'text-align: center;',
+	'anchor'              => 'color: #3869D4;',
+	'header-1'            => 'margin-top: 0; color: #2F3133; font-size: 19px; font-weight: bold; text-align: left;',
+	'header-2'            => 'margin-top: 0; color: #2F3133; font-size: 18px; font-weight: bold; text-align: left;',
 
-  /* Buttons ------------------------------ */
+	'header-3'            => 'margin-top: 0; font-size: 16px; font-weight: bold; text-align: left;',
+	'paragraph'           => 'margin-top: 0; color: #74787E; font-size: 16px; line-height: 1.5em;',
+	'paragraph-text'           => 'margin-top: 0; color: #74787E; font-size: 16px; margin-block-end: 0em;',
+	'paragraph-sub'       => 'margin-top: 0; color: #74787E; font-size: 12px; line-height: 1.5em;',
+	'paragraph-center'    => 'text-align: center;',
+	'paragraph-line'      => 'margin: 0; color: #74787E; font-size: 16px;',
 
-  'button'              => 'display: block; display: inline-block; width: 200px; min-height: 20px; padding: 10px;
+	/* Buttons ------------------------------ */
+
+	'button'              => 'display: block; display: inline-block; width: 200px; min-height: 20px; padding: 10px;
 	background-color: #3869D4; border-radius: 3px; color: #ffffff; font-size: 15px; line-height: 25px;
 	text-align: center; text-decoration: none; -webkit-text-size-adjust: none;',
 
-  'button--green'       => 'background-color: #22BC66;',
-  'button--red'         => 'background-color: #dc4d2f;',
-  'button--blue'        => 'background-color: #3869D4;',
+	'button--green'       => 'background-color: #22BC66;',
+	'button--red'         => 'background-color: #dc4d2f;',
+	'button--blue'        => 'background-color: #3869D4;',
+	'horizontal-border'   => 'border-bottom:1px solid #bfc2c5;',
 ];
 ?>
 <?php $fontFamily = 'font-family: Arial, \'Helvetica Neue\', Helvetica, sans-serif;';?>
@@ -94,6 +100,22 @@ $style = [
 										</p>
 										@endforeach
 
+										{{-- Notifications --}}
+										@foreach($notifications as $alert)
+										<p style="{{ $style['header-3'] }}">{{ $alert['notification_type'] }}</p>
+										<table>
+											@foreach($alert['type'] as $messages)
+											<tr>
+												<a href="{{ $messages['link'] }}" style="{{ $style['header-3'] }}" target="_blank"> {{ $messages['heading'] }}</a>
+												{{-- <p style="{{ $style['paragraph-text'] }}">Message: {{ $messages['message'] }} </p> --}}
+												<p style="{{ $style['paragraph-line'] }}">{{ date('M d, Y h:i',strtotime($messages['time'])) }}</p>
+												<p style="{{ $style['paragraph-line'] }}">FROM: {{ $messages['from'] }}</p>
+												<p style="{{ $style['horizontal-border'] }}"></p>
+												{{-- <hr style="{{ $style['paragraph-text'] }}"> --}}
+											</tr>
+											@endforeach
+										</table>
+										@endforeach
 										<!-- Action Button 1-->
 										@if (isset($action_text) && $action_text != '')
 										<table style="{{ $style['body_action'] }}" align="center" width="100%" cellpadding="0" cellspacing="0">
@@ -101,14 +123,14 @@ $style = [
 												<td align="center">
 													<?php
 													switch ($level) {
-													  case 'success':
-													    $actionColor = 'button--green';
-													    break;
-													  case 'error':
-													    $actionColor = 'button--red';
-													    break;
-													  default:
-													    $actionColor = 'button--blue';
+														case 'success':
+														$actionColor = 'button--green';
+														break;
+														case 'error':
+														$actionColor = 'button--red';
+														break;
+														default:
+														$actionColor = 'button--blue';
 													}
 													?>
 													<a href="{{ $action_url }}" style="{{ $fontFamily }} {{ $style['button'] }} {{ $style[$actionColor] }}" class="button" target="_blank"> {{ $action_text }}

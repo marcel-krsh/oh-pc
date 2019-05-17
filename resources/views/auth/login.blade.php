@@ -8,15 +8,15 @@
 		<p>LOGIN</p>
 		@if(session('loginMessage'))
 		<hr class="dashed-hr">
-			{{session('loginMessage')}}
+		{{session('loginMessage')}}
 		<hr class="dashed-hr margin-bottom">
-			<?php session()->forget('loginMessage'); ?>
+		<?php session()->forget('loginMessage'); ?>
 		@endIf
 		@if(session('status'))
 		<hr class="dashed-hr">
-			{{session('status')}}
+		{{session('status')}}
 		<hr class="dashed-hr margin-bottom">
-			
+
 		@endIf
 		<form class="uk-panel uk-panel-box uk-form" role="form" method="POST" action="{{ url('/login') }}">
 			@if (count($errors) > 0)
@@ -74,7 +74,10 @@
 
 <script type="text/javascript">
 	$( document ).ready(function() {
-	    //alert('Uh oh, looks like your login expired. You can login again or can go to DevCo and login.');
-	  });
-	</script>
-	@endsection
+		@if(session()->pull('password-reset-success'))
+			UIkit.modal.alert('Your password reset was successful, login to access your account',{stack: true});
+		@endif
+    //alert('Uh oh, looks like your login expired. You can login again or can go to DevCo and login.');
+  });
+</script>
+@endsection

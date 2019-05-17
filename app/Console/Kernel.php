@@ -66,8 +66,9 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        
+
         Commands\MakeTestFriendlyCommand::class,
+        Commands\SendNotificationsHourly::class,
     ];
 
     protected $middleware = [
@@ -181,7 +182,7 @@ class Kernel extends ConsoleKernel
             } else {
                 //Log::info('Sync Job Already Started.');
             }
-            
+
             // SyncProjectProgramStatusTypesJob
             $test = DB::table('jobs')->where('payload', 'like', '%SyncProjectProgramStatusTypesJob%')->first();
             if (is_null($test)) {
@@ -475,6 +476,11 @@ class Kernel extends ConsoleKernel
                 //Log::info('Sync Job Already Started.');
             }
         }
+
+        //Email scheduling every hour
+        $schedule->command('run:hourly_notifications')->hourly();
+
+
     }
 
     /**
