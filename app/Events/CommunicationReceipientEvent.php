@@ -35,7 +35,7 @@ class CommunicationReceipientEvent
       $cr_details = CommunicationRecipient::with('communication.owner', 'user.notification_preference', 'user.person')->find($cr->id);
       //insert data into notifications_triggered table
       //based on type ID set the model and model_ID, should be set in session
-      if ($cr_details->communication) {
+      if ($cr_details->communication && ($cr_details->communication->owner_id != $cr_details->user_id)) {
         $config        = config('allita.notification');
         $np            = $cr_details->user->notification_preference;
         $communication = $cr_details->communication;

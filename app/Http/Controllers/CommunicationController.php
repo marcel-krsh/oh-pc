@@ -251,16 +251,6 @@ class CommunicationController extends Controller
           ->orderBy('last_name', 'asc')
           ->get();
       }
-      $recipients = User::where('devco_key', 8305)
-        ->leftJoin('people', 'people.id', 'users.person_id')
-        ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
-      // ->join('users_roles', 'users_roles.user_id', 'users.id')
-        ->select('users.*', 'last_name', 'first_name', 'organization_name')
-        ->where('active', 1)
-        ->orderBy('organization_name', 'asc')
-        ->orderBy('last_name', 'asc')
-        ->get();
-
       $audit = null;
 
       return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project'));
@@ -925,16 +915,17 @@ class CommunicationController extends Controller
       //         })->whereNull('parent_id');
 
       // }
+      $messages = $messages
+        ->orderBy('created_at', 'desc')
+        ->skip($skip)->take($number_per_page)
+        ->get();
       if ($project) {
         $audit    = $project->selected_audit();
         $messages = $messages->where('project_id', $project->id)
           ->where('audit_id', $audit->id);
       }
 
-      $messages = $messages
-        ->orderBy('created_at', 'desc')
-        ->skip($skip)->take($number_per_page)
-        ->get();
+
       //return $messages->pluck('project_id');
       //$messages = $messages->reverse();
       //return $messages->first()->message_recipients;

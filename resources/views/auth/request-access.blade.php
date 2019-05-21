@@ -43,6 +43,8 @@
 		$.each($('form').serializeArray(), function() {
 			data[this.name] = this.value;
 		});
+		document.getElementById('request_access').style.display='none';
+		document.getElementById('success_message').style.display='block';
 		jQuery.ajax({
 			url: "{{ url('request-access') }}",
 			method: 'post',

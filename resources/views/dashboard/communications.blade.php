@@ -121,7 +121,7 @@
 				<div class="communication-item-date-time">
 					<small>{{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }}</small>
 				</div>
-				{{ $message->owner->full_name() }} @if(count($message->message_recipients)) @foreach ($message->message_recipients as $recipient) @if($recipient != $current_user && $message->owner != $recipient && $recipient->name != '') {{ $recipient->full_name() }} @elseif($recipient == $current_user) , Me @endif @endforeach @endif
+				{{ $message->owner->full_name() }}@if(count($message->message_recipients))@foreach ($message->message_recipients as $recipient)@if($recipient->id != $current_user->id && $message->owner != $recipient && $recipient->name != ''){{ $recipient->full_name() }}@elseif($recipient->id == $current_user->id), Me @endif @endforeach @endif
 				@if($message->unseen > 0)
 				<div class="uk-label no-text-shadow user-badge-{{ Auth::user()->badge_color }}" uk-tooltip="pos:top-left;title:{{ $message->unseen }} unread messages">{{ $message->unseen }}</div>
 				@endif
@@ -295,19 +295,17 @@
 	 		}
 	 	});
 
-	 	@if (session()->has('dynamicModalLoad') && session('dynamicModalLoad') != '' )
+	 	// @if (session()->has('dynamicModalLoad') && session('dynamicModalLoad') != '' )
+	 	// var dynamicModalLoadid = '';
+	 	// $.get( "/session/dynamicModalLoad", function( data ) {
+	 	// 	dynamicModalLoadid = data;
+	 	// 	console.log('Loading Message Id: '+dynamicModalLoadid);
 
-	 	var dynamicModalLoadid = '';
-	 	$.get( "/session/dynamicModalLoad", function( data ) {
-	 		dynamicModalLoadid = data;
-	 		console.log('Loading Message Id: '+dynamicModalLoadid);
-
-	 		if(dynamicModalLoadid != ''){
-	 			dynamicModalLoad("communication/0/replies/"+dynamicModalLoadid);
-	 		}
-	 	});
-
-	 	@endif
+	 	// 	if(dynamicModalLoadid != ''){
+	 	// 		dynamicModalLoad("communication/0/replies/"+dynamicModalLoadid);
+	 	// 	}
+	 	// });
+	 	// @endif
 
 	 	var $filteredElements = $('.filter_element');
 	 	$('.filter_link').click(function (e) {
