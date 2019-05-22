@@ -12,7 +12,7 @@ $crrTypeSelection    = 'all';
 
         <input type="hidden" id="crr-newest" name="crr-newest">
                 <div uk-grid class="uk-width-1-5">
-                	@can('access_auditor')
+                	
 
                     <select id="filter-by-owner" class="uk-select filter-drops uk-width-1-1" onchange="loadTab('/dashboard/reports?crr_report_status_id='+this.value, '3','','','',1);">
                         <option value="all">
@@ -30,12 +30,12 @@ $crrTypeSelection    = 'all';
 
 
 
-                    @endCan
+                    
 
                 </div>
 
 
-                @can('access_auditor')
+                
                 <div class="uk-width-1-5" id="recipient-dropdown" style="vertical-align: top;">
                     <select id="filter-by-owner" class="uk-select filter-drops uk-width-1-1" onchange="loadTab('/dashboard/reports?crr_report_project_id='+this.value, '3','','','',1);">
                         <option value="all" selected="">
@@ -53,6 +53,7 @@ $crrTypeSelection    = 'all';
                     </select>
 
                 </div>
+                @can('access_auditor')
                 <div class="uk-width-1-5" style="vertical-align: top;">
                     <select id="filter-by-program" class="uk-select filter-drops uk-width-1-1" onchange="loadTab('/dashboard/reports?crr_report_lead_id='+this.value, '3','','','',1);">
                         <option value="all" selected="">
@@ -97,11 +98,12 @@ $crrTypeSelection    = 'all';
 
         <div class="uk-width-1-1">
             <div class="uk-align-right uk-label  uk-margin-top uk-margin-right">{{$reports->total()}} @if($reports->total() == 1) REPORT @else REPORTS @endif</div>
-            <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter" style="background-color:#d8eefa"><a class=" " onclick="dynamicModalLoad('new-report')">
+            @can('access_auditor')<div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter" style="background-color:#d8eefa"><a class=" " onclick="dynamicModalLoad('new-report')">
                         <span class="a-file-plus"></span>
                         <span>NEW REPORT</span>
                     </a>
                 </div>
+                @endCan
             @if(session('crr_search') && session('crr_search') !== 'all')
 
             <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter">
@@ -162,13 +164,15 @@ $crrTypeSelection    = 'all';
 
                     <th  width="100px"><strong>AUDIT</strong></th>
 
-                    <th ><strong>LEAD</strong></th>
+                    @can('access_auditor') <th ><strong>LEAD</strong></th>
+
+                    @endCan
 
                     <th ><strong>TYPE</strong></th>
 
                     <th width="120px"><strong>STATUS</strong></th>
 
-                    <th  width="80px"><strong>ACTION</strong></th>
+                    @can('access_auditor')<th  width="80px"><strong>ACTION</strong></th>@endCan
 
                     <th width="120px"><strong>CREATED</strong></th>
 

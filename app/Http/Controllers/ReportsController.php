@@ -219,6 +219,7 @@ class ReportsController extends Controller
 
     // Set default filters for first view of page:
     if (session('crr_first_load') !== 1) {
+        session(['crr_report_status_id' => 1]);
       // set some default parameters
       if (Auth::user()->can('access_manager')) {
         session(['crr_report_status_id' => 2]);
@@ -227,6 +228,7 @@ class ReportsController extends Controller
         session(['crr_report_lead_id' => Auth::user()->id]);
         // show this auditors reports
       } elseif (Auth::user()->can('access_pm')) {
+        session(['crr_report_status_id' => 6]);
         // @todo
       }
       session(['crr_first_load' => 1]);
@@ -268,13 +270,28 @@ class ReportsController extends Controller
     } elseif (is_null(session('crr_report_status_id'))) {
       session(['crr_report_status_id' => 'all']);
     }
-    if (session('crr_report_status_id') !== 'all') {
-      $approvalTypeEval = '=';
-      $approvalTypeVal  = intval(session('crr_report_status_id'));
-    } else {
-      session(['crr_report_status_id' => 'all']);
-      $approvalTypeEval = '>';
-      $approvalTypeVal  = 0;
+    if(Auth::user()->can('access_auditor')){
+      if (session('crr_report_status_id') !== 'all') {
+        $approvalTypeEval = '=';
+        $approvalTypeVal  = intval(session('crr_report_status_id'));
+      } else {
+        session(['crr_report_status_id' => 'all']);
+        $approvalTypeEval = '>';
+        $approvalTypeVal  = 0;
+      }
+    }else{
+      if (session('crr_report_status_id') !== 'all') {
+        if(intval(session('crr_report_status_id'))<6){
+          //user is trying to get a status they cannot access
+          session(['crr_report_status_id' => 6]); // default them to the sent
+        }
+        $approvalTypeEval = '=';
+        $approvalTypeVal  = intval(session('crr_report_status_id'));
+      } else {
+        session(['crr_report_status_id' => 'all']);
+        $approvalTypeEval = '>';
+        $approvalTypeVal  = 5;
+      }
     }
 
     // Project Selection
@@ -317,11 +334,25 @@ class ReportsController extends Controller
 
     if (!$request->get('check')) {
       // if this is just a check - we do not need this information.
-      $auditLeads      = Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
-      $auditProjects   = CrrReport::select('*')->with('project')->groupBy('project_id')->get();
-      $crr_types_array = CrrReport::select('id', 'template_name')->groupBy('template_name')->whereNotNull('template')->get()->all();
-      $hfa_users_array = [];
-      $projects_array  = [];
+      if (Auth::user()->can('access_auditor')) {
+        $auditLeads      = Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
+        $auditProjects   = CrrReport::select('*')->with('project')->groupBy('project_id')->get();
+        $crr_types_array = CrrReport::select('id', 'template_name')->groupBy('template_name')->whereNotNull('template')->get()->all();
+        $hfa_users_array = [];
+        $projects_array  = [];
+      } else {
+        $auditLeads      = []; //Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
+        $auditProjects   = CrrReport::select('*')->when(Auth::user()->cannot('access_auditor'), function ($query) {
+              $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id',Auth::user()->person_id)->get()->toArray();
+
+              //dd(Auth::user()->person_id,$userProjects);
+              return $query->whereIn('project_id', $userProjects);
+      })->with('project')->groupBy('project_id')->get();
+        $crr_types_array = CrrReport::select('id', 'template_name', 'crr_approval_type_id')->where('crr_approval_type_id','>', 5)->groupBy('template_name')->whereNotNull('template')->get()->all();
+        $hfa_users_array = [];
+        $projects_array  = [];
+
+      }
       foreach ($auditLeads as $hfa) {
         if ($hfa->lead_user_id) {
           $hfa_users_array[] = $hfa->lead;
@@ -338,7 +369,11 @@ class ReportsController extends Controller
       $projects_array = array_values(Arr::sort($projects_array, function ($value) {
         return $value['project_name'];
       }));
-      $crrApprovalTypes = CrrApprovalType::orderBy('order')->get();
+      if(Auth::user()->can('access_auditor')){
+        $crrApprovalTypes = CrrApprovalType::orderBy('order')->get();
+      } else {
+        $crrApprovalTypes = CrrApprovalType::where('id','>',5)->orderBy('order')->get();
+      }
     }
     //dd($hfa_users_array);
     //dd($searchVal,$searchEval,session('crr_search'),intval($request->get('search')));
@@ -349,7 +384,12 @@ class ReportsController extends Controller
       ->where('updated_at', '>', $newerThan)
       ->where('from_template_id', $typeEval, $typeVal)
       ->where('id', $searchEval, $searchVal)
+      ->when(Auth::user()->cannot('access_auditor'), function ($query) {
+              $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id',Auth::user()->person_id)->get()->toArray();
 
+              //dd(Auth::user()->person_id,$userProjects);
+              return $query->whereIn('project_id', $userProjects);
+      })
       ->orderBy('updated_at', 'desc')
       ->paginate(10);
 
@@ -376,12 +416,15 @@ class ReportsController extends Controller
 
   public function newReportForm()
   {
-
+   if(Auth::user()->can('access_auditor')){
     // list out templates
     $audits    = CachedAudit::where('step_id','>', 59)->where('step_id','<',67)->orderBy('updated_at', 'asc')->get();
     $templates = CrrReport::where('template', 1)->where('active_template', 1)->get();
 
     return view('modals.new-report', compact('templates', 'audits'));
+    }else{
+      return 'Sorry, you are not allowed to access this page.';
+    }
   }
 
   public function freeTextPlaceHolders(Audit $audit, $string, CrrReport $report)
@@ -651,30 +694,47 @@ class ReportsController extends Controller
   public function getReport(CrrReport $report, Request $request)
   {
     if ($report) {
-     // $cr = CrrReport::with('audit', 'project.contactRoles','sections.parts.crr_part_type')->find($report->id);
-    	$users = $report->signators(); //change this to actual audit users (auditors, owner, pm, and all managers)
-      if (is_null($report->crr_data)) {
-        //return 'This report has no data.';
-        $this->generateReport($report, 1);
-        redirect('/report/'.$report->id);
+      // check if logged in user has access to this report if they are not an auditor:
+      $loadReport = 0;
+      if(Auth::user()->cannot('access_auditor')){
+         $userProjects = \App\Models\ProjectContactRole::where('project_id',$report->project_id)->where('person_id',Auth::user()->person_id)->count();
+         if($userProjects){
+          $loadReport = 1;
+         } else {
+          dd($userProjects, $report->project_id);
+         }
+
       } else {
-        $data    = json_decode($report->crr_data);
-        $version = $report->version;
-        if ($request->get('version')) {
-          $version = intval($request->get('version'));
-        }
-        $versionText = 'version-' . $version;
-        $data        = $data[$version - 1]->$versionText;
-        $print       = $request->get('print');
-
-        $history = ['date' => date('m/d/Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => 'Opened and viewed report'];
-        $this->reportHistory($report, $history);
-
-        if ($request->get('print') != 1) {
-          return view('crr.crr', compact('report', 'data', 'version', 'print', 'users'));
+        $loadReport = 1;
+      }
+     // $cr = CrrReport::with('audit', 'project.contactRoles','sections.parts.crr_part_type')->find($report->id);
+      if($loadReport){
+      	$users = $report->signators(); //change this to actual audit users (auditors, owner, pm, and all managers)
+        if (is_null($report->crr_data)) {
+          //return 'This report has no data.';
+          $this->generateReport($report, 1);
+          return '<meta http-equiv="refresh" content="0;url=/report/'.$report->id.'" />';
         } else {
-          return view('crr.crr_print', compact('report', 'data', 'version', 'print'));
+          $data    = json_decode($report->crr_data);
+          $version = $report->version;
+          if ($request->get('version')) {
+            $version = intval($request->get('version'));
+          }
+          $versionText = 'version-' . $version;
+          $data        = $data[$version - 1]->$versionText;
+          $print       = $request->get('print');
+
+          $history = ['date' => date('m/d/Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => 'Opened and viewed report'];
+          $this->reportHistory($report, $history);
+
+          if ($request->get('print') != 1) {
+            return view('crr.crr', compact('report', 'data', 'version', 'print', 'users'));
+          } else {
+            return view('crr.crr_print', compact('report', 'data', 'version', 'print'));
+          }
         }
+      } else {
+        return '<h1 style="font-family: sans-serif;">Sorry!</h1> <p style="font-family: sans-serif;">It does not appear you have access to this report. Please notify your HFA partner to add you to the project\'s contacts.</p>';
       }
     } else {
       return 'I was not able to load the requested report because it does not exist... please notify support with the report number you are trying to open.';

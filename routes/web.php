@@ -22,388 +22,288 @@
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
         
-        Route::get('/simple_compliance_test/{projection}', 'SimpleComplianceSelection@runSimpleCompliance');
+        Route::group(['prefix'=>'','middleware'=>'can:access_auditor'], function ()  {
+            Route::get('/simple_compliance_test/{projection}', 'SimpleComplianceSelection@runSimpleCompliance');
 
         
-        // Route::get('/testProject/{project}', function($project){
-        //     $project = App\Models\Project::where('id',$project)->with('programs.program')->first();
-        //     //dd($project->programs);
-        //     $content = $project->id."<br />";
-        //     forEach($project->programs as $program){
-        //         $content.= $program->program->program_name."<br />";
-        //     }
-        //     return $content;
-        // });
-        // rerun compliance run
-        Route::get('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
-        Route::post('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
+            // Route::get('/testProject/{project}', function($project){
+            //     $project = App\Models\Project::where('id',$project)->with('programs.program')->first();
+            //     //dd($project->programs);
+            //     $content = $project->id."<br />";
+            //     forEach($project->programs as $program){
+            //         $content.= $program->program->program_name."<br />";
+            //     }
+            //     return $content;
+            // });
+            // rerun compliance run
+            Route::get('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
+            Route::post('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
 
-        // run compliance run
-        Route::get('/project/{project}/runselection', 'AuditController@runCompliance');
+            // run compliance run
+            Route::get('/project/{project}/runselection', 'AuditController@runCompliance');
 
-        Route::get('/cached_audit/{cached_audit}/caches','ComplianceGenerator@createCaches');
+            Route::get('/cached_audit/{cached_audit}/caches','ComplianceGenerator@createCaches');
 
-        Route::get('/audit/{audit}/details', 'ComplianceGenerator@details');
+            Route::get('/audit/{audit}/details', 'ComplianceGenerator@details');
 
-        // Document Test Route
-        Route::get('/document/list/{projectNumber}','SyncController@getDocs');
-        //Route::get('/document/{documentId}','SyncController@getDoc');
-        Route::get('/document/{documentId}', function($documentId) {
-            $docRecord = \App\Models\SyncDocuware::where('docuware_doc_id', $documentId)->first();
-            // Do Devco Auth here?
-            $deviceId=11;
-            $deviceName='TestingSystem';
-            // Look for existence of file on the provider location (ie. Docuware)
-            // @todo: Add the log entry for the access request
-            $doc_service = new \App\Services\DocumentService;
-            $document_contents = $doc_service->getDocument($documentId,Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
+            // Document Test Route
+            Route::get('/document/list/{projectNumber}','SyncController@getDocs');
+            //Route::get('/document/{documentId}','SyncController@getDoc');
+            Route::get('/document/{documentId}', function($documentId) {
+                $docRecord = \App\Models\SyncDocuware::where('docuware_doc_id', $documentId)->first();
+                // Do Devco Auth here?
+                $deviceId=11;
+                $deviceName='TestingSystem';
+                // Look for existence of file on the provider location (ie. Docuware)
+                // @todo: Add the log entry for the access request
+                $doc_service = new \App\Services\DocumentService;
+                $document_contents = $doc_service->getDocument($documentId,Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
 
-            //Store the document in local storage
-            //Download it from local storage
-            //Delete the document from local storage
-            //Need to test this
+                //Store the document in local storage
+                //Download it from local storage
+                //Delete the document from local storage
+                //Need to test this
 
-                \Illuminate\Support\Facades\Storage::put('temp/test.pdf', $document_contents);
-               // $file = \Illuminate\Support\Facades\Storage::get($filepath);
-		            ob_end_clean();
-		            $filename = "{$docRecord->project_number}-".str_replace("\\",'',str_replace('/','',$docRecord->document_class))."-".str_replace("\\",'',str_replace('/','',$docRecord->document_description))."{$docRecord->dw_extension}";
-		            return response()->download(storage_path('app/temp/test.pdf'), $filename);
-
-
-                // Faking in a local test document
-                //$document_contents = \Illuminate\Support\Facades\Storage::disk('base')->get('public/TestFile.pdf');
-
-                // Respond Back
-                //$response = response()->make($document_contents, 200);
-                //$response = response()->make($document_contents);
+                    \Illuminate\Support\Facades\Storage::put('temp/test.pdf', $document_contents);
+                   // $file = \Illuminate\Support\Facades\Storage::get($filepath);
+    		            ob_end_clean();
+    		            $filename = "{$docRecord->project_number}-".str_replace("\\",'',str_replace('/','',$docRecord->document_class))."-".str_replace("\\",'',str_replace('/','',$docRecord->document_description))."{$docRecord->dw_extension}";
+    		            return response()->download(storage_path('app/temp/test.pdf'), $filename);
 
 
-            return response()->streamDownload(function () use ($document_contents) {
-                echo $document_contents;
-            }, "{$docRecord->project_number}-".str_replace("\\",'',str_replace('/','',$docRecord->document_class))."-".str_replace("\\",'',str_replace('/','',$docRecord->document_description))."{$docRecord->dw_extension}");
+                    // Faking in a local test document
+                    //$document_contents = \Illuminate\Support\Facades\Storage::disk('base')->get('public/TestFile.pdf');
 
-            //$response->header('Content-Type', 'application/pdf'); // change this to the download content type.
-
-            //return $response;
-            //return public_path('TestFile.pdf');
-        });
+                    // Respond Back
+                    //$response = response()->make($document_contents, 200);
+                    //$response = response()->make($document_contents);
 
 
+                return response()->streamDownload(function () use ($document_contents) {
+                    echo $document_contents;
+                }, "{$docRecord->project_number}-".str_replace("\\",'',str_replace('/','',$docRecord->document_class))."-".str_replace("\\",'',str_replace('/','',$docRecord->document_description))."{$docRecord->dw_extension}");
+
+                //$response->header('Content-Type', 'application/pdf'); // change this to the download content type.
+
+                //return $response;
+                //return public_path('TestFile.pdf');
+            });
 
 
-        // Update Devco Test Routes
-        Route::get('/update_devco/{model}/{referenceId}/{crud}','SyncController@crudDevco');
-        Route::get('/test/apiroute','SyncController@testapi');
-
-        //chat routes
-        Route::get('/chat','ChatController@chat');
-        Route::post('/send','ChatController@send');
-        Route::post('/saveToSession','ChatController@saveToSession');
-        Route::post('/deleteSession','ChatController@deleteSession');
-        Route::post('/getOldMessage','ChatController@getOldMessage');
-        Route::get('/check',function(){
-            return session('chat');
-        });
-
-        //view tables
-        Route::get('tables/users', 'HomeController@usersTable')->name('tables.users');
-        Route::get('tables/usersdata', 'HomeController@usersTableAjax')->name('tables.usersdata');
 
 
-        Route::get('/sync', 'SyncController@sync');
-         Route::get('/brian_test', 'SyncController@brianTest');
+            // Update Devco Test Routes
+            Route::get('/update_devco/{model}/{referenceId}/{crud}','SyncController@crudDevco');
+            Route::get('/test/apiroute','SyncController@testapi');
 
-        //Route::group(['middleware' => ['allita.auth']], function() {
-        Route::get('unified_login', function () {
-                //session(['brian'=>'test']);
-                return redirect('/');
-        });
+            //chat routes
+            Route::get('/chat','ChatController@chat');
+            Route::post('/send','ChatController@send');
+            Route::post('/saveToSession','ChatController@saveToSession');
+            Route::post('/deleteSession','ChatController@deleteSession');
+            Route::post('/getOldMessage','ChatController@getOldMessage');
+            Route::get('/check',function(){
+                return session('chat');
+            });
 
-        Route::get('tablet_login', function () {
+            //view tables
+            Route::get('tables/users', 'HomeController@usersTable')->name('tables.users');
+            Route::get('tables/usersdata', 'HomeController@usersTableAjax')->name('tables.usersdata');
+
+
+            Route::get('/sync', 'SyncController@sync');
+            Route::get('/brian_test', 'SyncController@brianTest');
+
+            Route::get('tablet_login', function () {
                 //session(['brian'=>'test']);
                 if(Auth::user()->allowed_tablet){
                     return Auth::user()->api_token;
                 } else {
                     return 'No Tablet Access';
                 }
-        });
+            });
 
-        Route::post('/session/{name?}/{value?}', 'DataController@setSession');
+            Route::get('dashboard/audits', 'DashboardController@audits')->name('dashboard.audits');
+            Route::get('dashboard/audits/{audit}/buildings', 'AuditController@buildingsFromAudit')->name('audit.buildings');
+            Route::get('dashboard/audits/{audit}/buildings/reorder', 'AuditController@reorderBuildingsFromAudit')->name('audit.reorder.buildings');
+            Route::get('dashboard/audits/{audit}/building/{building}/units/reorder', 'AuditController@reorderUnitsFromAudit')->name('audit.reorder.units');
+            Route::get('dashboard/audits/{audit}/amenities/reorder', 'AuditController@reorderAmenitiesFromAudit')->name('audit.reorder.amenities');
+            Route::get('/dashboard/admin_tools', 'DashboardController@adminTools')->name('dashboard.admin');
 
-        Route::get('/', 'DashboardController@index');
-        Route::get('/home', function () {
-                return redirect('/');
-        });
+            Route::get('dashboard/audits/{audit}/building/{building}/details', 'AuditController@detailsFromBuilding')->name('audit.building.details');
+            Route::get('dashboard/audits/{audit_id}/building/{building_id}/inspection', 'AuditController@inspectionFromBuilding')->name('audit.inspection');
+            Route::get('dashboard/audits/{audit_id}/building/{building_id}/details/{detail_id}/inspection', 'AuditController@inspectionFromBuildingDetail')->name('audit.building.inspection');
 
-        //Route::get('/', function(){dd(\Auth::user(),session('brian'));});
-        Route::get('dashboard/audits', 'DashboardController@audits')->name('dashboard.audits');
-        Route::get('dashboard/audits/{audit}/buildings', 'AuditController@buildingsFromAudit')->name('audit.buildings');
-        Route::get('dashboard/audits/{audit}/buildings/reorder', 'AuditController@reorderBuildingsFromAudit')->name('audit.reorder.buildings');
-        Route::get('dashboard/audits/{audit}/building/{building}/units/reorder', 'AuditController@reorderUnitsFromAudit')->name('audit.reorder.units');
-        Route::get('dashboard/audits/{audit}/amenities/reorder', 'AuditController@reorderAmenitiesFromAudit')->name('audit.reorder.amenities');
-        Route::get('/dashboard/admin_tools', 'DashboardController@adminTools')->name('dashboard.admin');
+            Route::get('autocomplete/all', 'DashboardController@autocomplete');
+            Route::get('autocomplete/auditproject', 'DashboardController@autocomplete');
+            Route::get('autocomplete/auditname', 'DashboardController@autocomplete');
+            Route::get('autocomplete/auditaddress', 'DashboardController@autocomplete');
 
-        Route::get('dashboard/audits/{audit}/building/{building}/details', 'AuditController@detailsFromBuilding')->name('audit.building.details');
-        Route::get('dashboard/audits/{audit_id}/building/{building_id}/inspection', 'AuditController@inspectionFromBuilding')->name('audit.inspection');
-        Route::get('dashboard/audits/{audit_id}/building/{building_id}/details/{detail_id}/inspection', 'AuditController@inspectionFromBuildingDetail')->name('audit.building.inspection');
-        Route::get('dashboard/reports', 'ReportsController@reports')->name('dashboard.reports');
-        Route::get('project/{project}/reports', 'ReportsController@reports')->name('project.reports');
+            Route::get('/session/filters/{type}/{value?}', function ($type, $value = null) {
 
-        Route::get('autocomplete/all', 'DashboardController@autocomplete');
-        Route::get('autocomplete/auditproject', 'DashboardController@autocomplete');
-        Route::get('autocomplete/auditname', 'DashboardController@autocomplete');
-        Route::get('autocomplete/auditaddress', 'DashboardController@autocomplete');
-
-        Route::get('/session/filters/{type}/{value?}', function ($type, $value = null) {
-
-            if ($value !== null) {
-                session([$type => $value]);
-                $new_filter = session($type);
-                return $new_filter;
-            } else {
-                if (!session()->has($type)) {
-                    if($value != ''){
-                        session([$type => 1]);
-                    }else{
-                        session([$type => '']);
-                    }
-                } else {
-                    if (session($type) == 0 || session($type) === null) {
-                        if($value != ''){
-                            session([$type => 1]);
-                        }else{
-                            session([$type => '']);
-                        }
+                    if ($value !== null) {
+                        session([$type => $value]);
+                        $new_filter = session($type);
+                        return $new_filter;
                     } else {
-                        session()->forget($type);
+                        if (!session()->has($type)) {
+                            if($value != ''){
+                                session([$type => 1]);
+                            }else{
+                                session([$type => '']);
+                            }
+                        } else {
+                            if (session($type) == 0 || session($type) === null) {
+                                if($value != ''){
+                                    session([$type => 1]);
+                                }else{
+                                    session([$type => '']);
+                                }
+                            } else {
+                                session()->forget($type);
+                            }
+                        }
+
+
+                        return 1;
                     }
-                }
-
-
-                return 1;
-            }
-        })->name('session.setfilter');
-
-        Route::post('/communications/project/{project?}', 'CommunicationController@searchCommunications')->name('communications.search');
-
-        Route::get('/modals/audits/{id}/updateStep', 'AuditController@updateStep')->name('audits.updatestep');
-        Route::post('audits/{id}/saveStep', 'AuditController@saveStep')->name('audits.savestep');
-
-        Route::get('/projects/{id}', 'AuditController@getProject')->name('project');
-        Route::get('/projects/{id}/title', 'AuditController@getProjectTitle')->name('project.title');
-        Route::get('/projects/{id}/details', 'AuditController@getProjectDetails')->name('project.details');
-        // Route::get('/projects/{project}/details/title', 'AuditController@getProjectDetailsTitle')->name('project.details.title');
-         Route::get('/projects/{id}/details/{type}', 'AuditController@getProjectDetailsInfo')->name('project.details.info');
-         Route::get('/projects/{project}/details/assignment/date/{dateid}', 'AuditController@getProjectDetailsAssignmentSchedule')->name('project.details.assignment.schedule');
-
-        Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');
-        Route::get('/communications/{project}.json', 'CommunicationController@communicationsFromProjectIdJson')->name('communications.loadjson');
-        Route::get('/projects/{project}/communications/title', 'AuditController@getProjectCommunicationsTitle')->name('project.communications.title');
-
-//allita reports!
-        Route::get('/modals/new-report','ReportsController@newReportForm');
-        Route::post('/new-report','ReportsController@createNewReport')->name('report.create');
+                })->name('session.setfilter');
 
 
 
-//allita documents!
-        Route::get('/projects/{project}/documents', 'DocumentController@getProjectDocuments')->name('project.documents');
-        Route::get('/projects/{project}/docuware-documents', 'DocumentController@getProjectDocuwareDocuments')->name('project.docuware-documents');
-        Route::get('/projects/{project}/local-documents', 'DocumentController@getProjectLocalDocuments')->name('project.local-documents');
-				Route::post('/documents/project/{project}/upload', 'DocumentController@localUpload')->name('documents.local-upload');
-				Route::post('/documents/project/{project}/local-approve', 'DocumentController@approveLocalDocument')->name('documents.local-approve');
-				Route::post('/documents/project/{project}/local-notapprove', 'DocumentController@notApproveLocalDocument')->name('documents.local-notapprove');
-				Route::post('/documents/project/{project}/local-clearReview', 'DocumentController@clearLocalReview')->name('documents.local-clearReview');
-				Route::get('/modals/edit-local-document/{document}', 'DocumentController@editLocalDocument')->name('document.local-edit');
-				Route::post('/modals/edit-local-document/{document}', 'DocumentController@saveEditedLocalDocument')->name('document.local-saveedit');
-				Route::post('/documents/project/{project}/local-deletedocument', 'DocumentController@deleteLocalDocument')->name('documents.local-deleteDocument');
-				Route::get('/download-local-document/{document}', 'DocumentController@downloadLocalDocument')->name('document.local-download');
+            Route::post('/session/{name?}/{value?}', 'DataController@setSession');
 
-        Route::post('/photos/project/{project}/upload', 'DocumentController@photoUpload')->name('photos.upload');
+            Route::get('/modals/audits/{id}/updateStep', 'AuditController@updateStep')->name('audits.updatestep');
+            Route::post('audits/{id}/saveStep', 'AuditController@saveStep')->name('audits.savestep');
+
+            Route::get('/projects/{id}', 'AuditController@getProject')->name('project');
+            Route::get('/projects/{id}/title', 'AuditController@getProjectTitle')->name('project.title');
+            Route::get('/projects/{id}/details', 'AuditController@getProjectDetails')->name('project.details');
+            // Route::get('/projects/{project}/details/title', 'AuditController@getProjectDetailsTitle')->name('project.details.title');
+             Route::get('/projects/{id}/details/{type}', 'AuditController@getProjectDetailsInfo')->name('project.details.info');
+             Route::get('/projects/{project}/details/assignment/date/{dateid}', 'AuditController@getProjectDetailsAssignmentSchedule')->name('project.details.assignment.schedule');
+
+            Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');
+            Route::get('/communications/{project}.json', 'CommunicationController@communicationsFromProjectIdJson')->name('communications.loadjson');
+            Route::get('/projects/{project}/communications/title', 'AuditController@getProjectCommunicationsTitle')->name('project.communications.title');
+
+            //allita reports!
+            Route::get('/modals/new-report','ReportsController@newReportForm');
+            Route::get('project/{project}/reports', 'ReportsController@reports')->name('project.reports');
+            Route::post('/new-report','ReportsController@createNewReport')->name('report.create');
+            Route::get('/report/{report}/generate','ReportsController@generateReport');
+            Route::get('/report/{report}/reset','ReportsController@resetToTemplate');
+            Route::get('/report/{report}/comments/{part}', 'ReportsController@getComments');
+            Route::post('/report/{report}/status','ReportsController@changeStatus');
+            Route::post('/report/{report}/comment','ReportsController@addComment');
+            Route::post('/report/{report}/comment/{comment}','ReportsController@modifyComment');
+            Route::post('/report/{report}/section','ReportsController@addSection');
+            Route::post('/report/{report}/section/{section}','ReportsController@modifySection');
+            Route::post('/report/{report}/section/{section}/order','ReportsController@modifySectionOrder');
+            Route::post('/report/{report}/section/{section}/part','ReportsController@addSectionPart');
+            Route::post('/report/{report}/section/{section}/part/{part}','ReportsController@modifySectionPart');
+            Route::post('/report/{report}/section/{section}/part/{part}/order','ReportsController@modifySectionPartOrder');
+            Route::get('/projects/{project}/reports', 'AuditController@getProjectReports')->name('project.reports');
+            Route::get('/projects/{project}/reports/title', 'AuditController@getProjectReportsTitle')->name('project.reports.title');
+
+            //documents
+            Route::get('/projects/{project}/documents', 'DocumentController@getProjectDocuments')->name('project.documents');
+            Route::get('/projects/{project}/docuware-documents', 'DocumentController@getProjectDocuwareDocuments')->name('project.docuware-documents');
+            Route::get('/projects/{project}/local-documents', 'DocumentController@getProjectLocalDocuments')->name('project.local-documents');
+            Route::post('/documents/project/{project}/local-approve', 'DocumentController@approveLocalDocument')->name('documents.local-approve');
+            Route::post('/documents/project/{project}/local-notapprove', 'DocumentController@notApproveLocalDocument')->name('documents.local-notapprove');
+            Route::post('/documents/project/{project}/local-clearReview', 'DocumentController@clearLocalReview')->name('documents.local-clearReview');
+            Route::get('/modals/edit-local-document/{document}', 'DocumentController@editLocalDocument')->name('document.local-edit');
+            Route::post('/modals/edit-local-document/{document}', 'DocumentController@saveEditedLocalDocument')->name('document.local-saveedit');
+            Route::post('/documents/project/{project}/local-deletedocument', 'DocumentController@deleteLocalDocument')->name('documents.local-deleteDocument');
+            Route::post('/documents/audit/{audit}/deletedocument', 'DocumentController@deleteDocument')->name('documents.deleteDocument');
+
+            //notes
+            Route::get('/projects/{project_id}/notes', 'NoteController@showTabFromProjectId')->name('project.notes');
+            // Route::get('/projects/{project}/notes/title', 'AuditController@getProjectNotesTitle')->name('project.notes.title');
+            Route::get('/projects/{project}/comments', 'AuditController@getProjectComments')->name('project.comments');
+            Route::get('/projects/{project}/comments/title', 'AuditController@getProjectCommentsTitle')->name('project.comments.title');
+
+            
+
+            Route::get('/projects/{project}/stream', 'AuditController@getProjectStream')->name('project.stream');
+            Route::get('/modals/projects/{project}/contact', 'AuditController@getProjectContact')->name('project.contact');
+
+            Route::get('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummary');
+            Route::post('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummaryFilterProgram');
+            Route::post('/modals/projects/{project_id}/programs/save-program-unit-inspections', 'AuditController@saveProgramUnitInspection');
+
+            Route::get('/modals/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}/{toplevel?}', 'FindingController@modalFindings');
+            Route::get('/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}/{toplevel?}', 'FindingController@nonModalFindings');
+            Route::get('/modals/add/finding/{findingtypeid?}/amenity_inspection/{amenityinspectionid?}','FindingController@addFindingForm');
+            Route::get('/modals/edit/finding/{findingtypeid}','FindingController@editFindingForm');
+            Route::post('/findings/create', 'FindingController@addFinding');
+            Route::post('/findings/edit', 'FindingController@editFinding');
+            Route::post('/findings/reply','FindingController@saveReplyFinding');
+            Route::post('/findings/{findingid}/cancel', 'FindingController@cancelFinding');
+            Route::post('/findings/{findingid}/restore', 'FindingController@restoreFinding');
+            Route::post('/findings/{findingid}/resolve', 'FindingController@resolveFinding');
+            Route::get('/modals/addreply/{id}/{fromtype}/{type}','FindingController@replyFindingForm');
+            Route::get('/modals/updatestream/{type}/{auditid}/{buildingid?}/{unitid?}/{amenityid?}/{toplevel?}/{refresh}', 'FindingController@modalFindings');
+
+            Route::get('/findings/modals/locations/{auditid}', 'FindingController@findingLocations');
+            Route::get('/findings/modals/amenities/{auditid}', 'FindingController@findingAmenities');
+            Route::get('/findings/modals/site-amenities/{auditid}/{siteid?}', 'FindingController@findingSiteAmenities');
+            Route::get('/findings/modals/building-amenities/{auditid}/{buildingid?}', 'FindingController@findingBuildingAmenities');
+            Route::get('/findings/modals/unit-amenities/{auditid}/{buildingid?}', 'FindingController@findingUnitAmenities');
 
 
-        Route::get('/projects/{project}/documents/title', 'AuditController@getProjectDocumentsTitle')->name('project.documents.title');
-        Route::get('/projects/{project_id}/notes', 'NoteController@showTabFromProjectId')->name('project.notes');
-        // Route::get('/projects/{project}/notes/title', 'AuditController@getProjectNotesTitle')->name('project.notes.title');
-        Route::get('/projects/{project}/comments', 'AuditController@getProjectComments')->name('project.comments');
-        Route::get('/projects/{project}/comments/title', 'AuditController@getProjectCommentsTitle')->name('project.comments.title');
-        Route::get('/projects/{project}/photos', 'AuditController@getProjectPhotos')->name('project.photos');
-        Route::get('/projects/{project}/photos/title', 'AuditController@getProjectPhotosTitle')->name('project.photos.title');
-        Route::get('/projects/{project}/findings', 'AuditController@getProjectFindings')->name('project.findings');
-        Route::get('/projects/{project}/findings/title', 'AuditController@getProjectFindingsTitle')->name('project.findings.title');
-        Route::get('/projects/{project}/followups', 'AuditController@getProjectFollowups')->name('project.followups');
-        Route::get('/projects/{project}/followups/title', 'AuditController@getProjectFollowupsTitle')->name('project.followups.title');
+            Route::get('/findings/{findingid}/items/{type?}/{typeid?}', 'FindingController@findingItems');
+            Route::get('/modals/findings_list/{type}/{amenityinspectionid}','FindingController@findingList');
+            Route::get('/modals/findings/{id}/items/{itemid}/photos/{photoid}', 'FindingController@findingItemPhoto');
 
-        Route::get('/projects/{project}/reports', 'AuditController@getProjectReports')->name('project.reports');
-        Route::get('/projects/{project}/reports/title', 'AuditController@getProjectReportsTitle')->name('project.reports.title');
+            Route::get('/modals/audit/{audit_id}/scheduling/days/{day_id}/auditors/{auditorid?}', 'AuditController@addAssignmentAuditor')->name('project.assignment.addauditor');
+            Route::post('/audit/{audit_id}/scheduling/days/{day_id}/auditors/{auditor_id}', 'AuditController@scheduleAuditor')->name('schedule.auditor');
+            Route::post('scheduling/event/{event_id}/delete', 'AuditController@deleteSchedule')->name('schedule.delete');
 
-        Route::get('/report/{report}', 'ReportsController@getReport');
-        Route::get('/report/{report}/generate','ReportsController@generateReport');
-        Route::get('/report/{report}/reset','ReportsController@resetToTemplate');
-        Route::get('/report/{report}/comments/{part}', 'ReportsController@getComments');
-        Route::get('/report/{report}/{section}','ReportsController@getSection');
-        Route::get('/report/{report}/download/{type}','ReportsController@download');
-        Route::post('/report/{report}/status','ReportsController@changeStatus');
-        Route::post('/report/{report}/comment','ReportsController@addComment');
-        Route::post('/report/{report}/comment/{comment}','ReportsController@modifyComment');
-        Route::post('/report/{report}/section','ReportsController@addSection');
-        Route::post('/report/{report}/section/{section}','ReportsController@modifySection');
-        Route::post('/report/{report}/section/{section}/order','ReportsController@modifySectionOrder');
-        Route::post('/report/{report}/section/{section}/part','ReportsController@addSectionPart');
-        Route::post('/report/{report}/section/{section}/part/{part}','ReportsController@modifySectionPart');
-        Route::post('/report/{report}/section/{section}/part/{part}/order','ReportsController@modifySectionPartOrder');
+            Route::get('projects/{id}/assignments/addauditor/{auditorid}/stats', 'AuditController@addAssignmentAuditorStats')->name('project.assignment.addauditorstats');
+            Route::get('projects/{id}/assignments/addauditor/{auditorid}/loadcal/{currentdate}/{beforeafter}', 'AuditController@getAssignmentAuditorCalendar')->name('project.assignment.getauditorcalendar');
 
-        Route::post('/report/{report}/digital-signature','ReportsController@postDigitalSignature');
+            Route::post('/auditors/{id}/addresses/create', 'UserController@saveAuditorAddress')->name('auditor.address.create');
+            Route::post('/auditoraddresses/{address_id}/delete', 'UserController@deleteAuditorAddress')->name('auditor.address.delete');
+            Route::post('/auditors/{auditor_id}/addresses/{address_id}/default', 'UserController@setDefaultAddress')->name('auditor.address.default');
+            Route::post('/auditors/{id}/availability/create', 'UserController@saveAuditorAvailability')->name('auditor.availability.create');
+            Route::get('auditors/{id}/availability/loadcal/{currentdate?}/{beforeafter?}', 'UserController@getAvailabilityCalendar')->name('auditor.availability.loadcal');
+            Route::post('auditors/{userid}/availability/{id}/delete', 'UserController@deleteAvailability')->name('auditor.availability.delete');
+            Route::post('auditors/{userid}/addtoaudit/{auditid}', 'AuditController@addAuditorToAudit')->name('auditor.addtoaudit');
+            Route::post('auditors/{userid}/removefromaudit/{auditid}', 'AuditController@removeAuditorFromAudit')->name('auditor.removefromaudit');
 
-        Route::get('/projects/{project}/stream', 'AuditController@getProjectStream')->name('project.stream');
-        Route::get('/modals/projects/{project}/contact', 'AuditController@getProjectContact')->name('project.contact');
+            Route::get('/modals/amenities/add/{type}/{id}', 'AuditController@addAmenity')->name('amenities.add');
+            Route::post('/modals/amenities/save', 'AuditController@saveAmenity')->name('amenities.save');
+            Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/assign/{element}', 'AuditController@assignAuditorToAmenity')->name('amenities.assign.auditor');
+            Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/assign', 'AuditController@saveAssignAuditorToAmenity')->name('amenities.assign.auditor.save');
+            Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/{toplevel}/complete', 'AuditController@markCompleted')->name('amenities.mark.completed');
+            Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}/{element}', 'AuditController@swapAuditorToAmenity')->name('amenities.swap.auditor');
+            Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}', 'AuditController@saveSwapAuditorToAmenity')->name('amenities.swap.auditor.save');
 
-        Route::get('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummary');
-        Route::post('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummaryFilterProgram');
-        Route::post('/modals/projects/{project_id}/programs/save-program-unit-inspections', 'AuditController@saveProgramUnitInspection');
-
-        Route::get('/modals/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}/{toplevel?}', 'FindingController@modalFindings');
-        Route::get('/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}/{toplevel?}', 'FindingController@nonModalFindings');
-        Route::get('/modals/add/finding/{findingtypeid?}/amenity_inspection/{amenityinspectionid?}','FindingController@addFindingForm');
-        Route::get('/modals/edit/finding/{findingtypeid}','FindingController@editFindingForm');
-        Route::post('/findings/create', 'FindingController@addFinding');
-        Route::post('/findings/edit', 'FindingController@editFinding');
-        Route::post('/findings/reply','FindingController@saveReplyFinding');
-        Route::post('/findings/{findingid}/cancel', 'FindingController@cancelFinding');
-        Route::post('/findings/{findingid}/restore', 'FindingController@restoreFinding');
-        Route::post('/findings/{findingid}/resolve', 'FindingController@resolveFinding');
-        Route::get('/modals/addreply/{id}/{fromtype}/{type}','FindingController@replyFindingForm');
-        Route::get('/modals/updatestream/{type}/{auditid}/{buildingid?}/{unitid?}/{amenityid?}/{toplevel?}/{refresh}', 'FindingController@modalFindings');
-
-        Route::get('/findings/modals/locations/{auditid}', 'FindingController@findingLocations');
-        Route::get('/findings/modals/amenities/{auditid}', 'FindingController@findingAmenities');
-        Route::get('/findings/modals/site-amenities/{auditid}/{siteid?}', 'FindingController@findingSiteAmenities');
-        Route::get('/findings/modals/building-amenities/{auditid}/{buildingid?}', 'FindingController@findingBuildingAmenities');
-        Route::get('/findings/modals/unit-amenities/{auditid}/{buildingid?}', 'FindingController@findingUnitAmenities');
-
-
-        Route::get('/findings/{findingid}/items/{type?}/{typeid?}', 'FindingController@findingItems');
-        Route::get('/modals/findings_list/{type}/{amenityinspectionid}','FindingController@findingList');
-        Route::get('/modals/findings/{id}/items/{itemid}/photos/{photoid}', 'FindingController@findingItemPhoto');
-
-        Route::get('/modals/audit/{audit_id}/scheduling/days/{day_id}/auditors/{auditorid?}', 'AuditController@addAssignmentAuditor')->name('project.assignment.addauditor');
-        Route::post('/audit/{audit_id}/scheduling/days/{day_id}/auditors/{auditor_id}', 'AuditController@scheduleAuditor')->name('schedule.auditor');
-        Route::post('scheduling/event/{event_id}/delete', 'AuditController@deleteSchedule')->name('schedule.delete');
-
-        Route::get('projects/{id}/assignments/addauditor/{auditorid}/stats', 'AuditController@addAssignmentAuditorStats')->name('project.assignment.addauditorstats');
-        Route::get('projects/{id}/assignments/addauditor/{auditorid}/loadcal/{currentdate}/{beforeafter}', 'AuditController@getAssignmentAuditorCalendar')->name('project.assignment.getauditorcalendar');
-
-        Route::get('/modals/auditors/{id}/preferences', 'UserController@preferences')->name('auditor.preferences');
-        Route::post('/auditors/{id}/addresses/create', 'UserController@saveAuditorAddress')->name('auditor.address.create');
-        Route::post('/auditoraddresses/{address_id}/delete', 'UserController@deleteAuditorAddress')->name('auditor.address.delete');
-        Route::post('/auditors/{auditor_id}/addresses/{address_id}/default', 'UserController@setDefaultAddress')->name('auditor.address.default');
-        Route::post('/auditors/{id}/availability/create', 'UserController@saveAuditorAvailability')->name('auditor.availability.create');
-        Route::get('auditors/{id}/availability/loadcal/{currentdate?}/{beforeafter?}', 'UserController@getAvailabilityCalendar')->name('auditor.availability.loadcal');
-        Route::post('auditors/{userid}/availability/{id}/delete', 'UserController@deleteAvailability')->name('auditor.availability.delete');
-        Route::post('auditors/{userid}/addtoaudit/{auditid}', 'AuditController@addAuditorToAudit')->name('auditor.addtoaudit');
-        Route::post('auditors/{userid}/removefromaudit/{auditid}', 'AuditController@removeAuditorFromAudit')->name('auditor.removefromaudit');
-
-        Route::get('/modals/amenities/add/{type}/{id}', 'AuditController@addAmenity')->name('amenities.add');
-        Route::post('/modals/amenities/save', 'AuditController@saveAmenity')->name('amenities.save');
-        Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/assign/{element}', 'AuditController@assignAuditorToAmenity')->name('amenities.assign.auditor');
-        Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/assign', 'AuditController@saveAssignAuditorToAmenity')->name('amenities.assign.auditor.save');
-        Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/{toplevel}/complete', 'AuditController@markCompleted')->name('amenities.mark.completed');
-        Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}/{element}', 'AuditController@swapAuditorToAmenity')->name('amenities.swap.auditor');
-        Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}', 'AuditController@saveSwapAuditorToAmenity')->name('amenities.swap.auditor.save');
-
-        Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/delete/{element?}', 'AuditController@deleteAmenity')->name('amenities.delete');
-        Route::post('/modals/amenities/delete', 'AuditController@saveDeleteAmenity')->name('amenities.delete');
+            Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/delete/{element?}', 'AuditController@deleteAmenity')->name('amenities.delete');
+            Route::post('/modals/amenities/delete', 'AuditController@saveDeleteAmenity')->name('amenities.delete');
 
 
 
 
-        Route::post('/autosave', 'DataController@autosave');
+            Route::post('/autosave', 'DataController@autosave');
 
+            // ADMIN
+            Route::group(['prefix'=>'modals/admin'], function () {
+                Route::get('boilerplate/create/{id?}', 'AdminToolController@boilerplateCreate');
+                Route::get('program/create/{id?}', 'AdminToolController@programCreate');
+                Route::get('document_category/create/{id?}', 'AdminToolController@documentCategoryCreate');
+                Route::get('county/create/{id?}', 'AdminToolController@countyCreate');
+                Route::get('finding_type/create/{id?}', 'AdminToolController@findingtypeCreate');
+                Route::get('hud_area/create/{id?}', 'AdminToolController@hudAreaCreate');
+                Route::get('amenity/create/{id?}', 'AdminToolController@amenityCreate');
+                Route::get('users/{id}/manageroles', 'AdminToolController@userManageRoles');
+            });
 
-        // communications
-        Route::get('dashboard/communications/{page?}', 'CommunicationController@communicationsTab')->name('communication.tab');
-        Route::post('/modals/new-outbound-email-entry', 'CommunicationController@create')->name('communication.create');
-        Route::get('/modals/new-outbound-email-entry/{audit_id?}', 'CommunicationController@newCommunicationEntry');
-        Route::get('/modals/communication/{audit_id}/replies/{message}', 'CommunicationController@viewReplies');
-        Route::post('/communications/audit/{audit?}', 'CommunicationController@searchCommunications')->name('communications.search');
-        Route::get('/communications/unseen', 'CommunicationController@getUnseenMessages');
-        Route::get('/view_message/{message}', 'CommunicationController@goToMessage');
-        Route::get('communication/session/{trigger?}', 'CommunicationController@setFilterSession');
+            // Admin tabs
 
-        // notifications trigger
-				Route::post('user/notification-preference/{id}', 'Notifications\UserNotificationController@postNotificationPreference');
-				Route::get('send/notification', 'Notifications\UserNotificationController@communicationNotifications');
-				Route::post('resend-notification-link', 'Notifications\UserNotificationController@postResendNotificationsLink');
-        Route::get('notifications/view-message/{user_id}/{model_id?}', 'CommunicationController@messageNotification');
-        Route::get('notifications/report/{user_id}/{model_id?}', 'CommunicationController@messageNotification');
-        Route::get('/modals/report-ready/{report_id}/{project_id?}', 'CommunicationController@reportReadyNotification')->name('communication.report-ready');
-
-
-        Route::get('/session/communication_switch_inbox', function()
-				{
-				    session(['communication_sent'=>0]);
-				    $communication_sent = 0;
-				    return 1;
-				});
-				Route::get('/session/communication_switch_sent', function()
-				{
-				    session(['communication_sent'=>1]);
-				    $communication_sent = 1;
-				    return 1;
-				});
-
-
-        Route::post('/documents/audit/{audit}/upload', 'DocumentController@upload')->name('documents.upload');
-        Route::get('/documents/audit/{audit}', 'DocumentController@showTabFromParcelId');
-        Route::post('/documents/audit/{audit}/comment', 'DocumentController@uploadComment')->name('documents.uploadComment');
-        Route::post('/documents/audit/{audit}/deletedocument', 'DocumentController@deleteDocument')->name('documents.deleteDocument');
-        Route::get('/documents/audit/{audit}/downloaddocument/{document}', 'DocumentController@downloadDocument')->name('documents.downloadDocument');
-        Route::post('/documents/audit/{audit}/approve', 'DocumentController@approveDocument')->name('documents.approve');
-        Route::post('/documents/audit/{audit}/notapprove', 'DocumentController@notApproveDocument')->name('documents.notapprove');
-        Route::post('/documents/audit/{audit}/documentinfo', 'DocumentController@documentInfo')->name('documents.documentInfo');
-
-        // ADMIN
-        Route::group(['prefix'=>'modals/admin'], function () {
-            Route::get('boilerplate/create/{id?}', 'AdminToolController@boilerplateCreate');
-            Route::get('program/create/{id?}', 'AdminToolController@programCreate');
-            Route::get('document_category/create/{id?}', 'AdminToolController@documentCategoryCreate');
-            Route::get('county/create/{id?}', 'AdminToolController@countyCreate');
-            Route::get('finding_type/create/{id?}', 'AdminToolController@findingtypeCreate');
-            Route::get('hud_area/create/{id?}', 'AdminToolController@hudAreaCreate');
-            Route::get('amenity/create/{id?}', 'AdminToolController@amenityCreate');
-            Route::get('users/{id}/manageroles', 'AdminToolController@userManageRoles');
-        });
-
-        // Admin tabs
-
-
-				Route::get('/modals/createuser', 'PagesController@createUser');
-				Route::post('/modals/createuser', 'PagesController@createUserSave')->name('admin.createuser');
-				Route::get('/user/complete-registration/{userId}', 'PagesController@getUserCompleteRegistration');
-				Route::post('/user/complete-registration', 'PagesController@postUserCompleteRegistration')->name('user.complete-registration');
-				Route::get('/modals/edituser/{id}', 'PagesController@editUser');
-				Route::post('/modals/edituser/{id}', 'PagesController@editUserSave');
-				Route::get('/modals/resetpassword/{id}', 'PagesController@resetPassword');
-				Route::post('/modals/resetpassword/{id}', 'PagesController@resetPasswordSave');
-				Route::get('/modals/deactivateuser/{id}', 'PagesController@deactivateUser');
-				Route::post('/modals/deactivateuser/{id}', 'PagesController@deactivateUserSave');
-				Route::get('/modals/activateuser/{id}', 'PagesController@activateUser');
-				Route::post('/modals/activateuser/{id}', 'PagesController@activateUserSave');
-
-
-				Route::post('register-user', 'Auth\RegisterController@postRegister');
-				Route::get('/ip', 'Auth\LoginController@getUserIpAddr');
-				Route::get('/code', 'Auth\LoginController@getCode');
-				Route::post('/code', 'Auth\LoginController@postCode');
-				Route::get('/verification', 'Auth\LoginController@getVerification');
-				Route::post('/verification', 'Auth\LoginController@postVerification');
-				Route::get('/request-access', 'Auth\LoginController@getRequestAccess');
-				Route::post('/request-access', 'Auth\LoginController@postRequestAccess');
-				Route::get('user/approve-access/{user_id}', 'Auth\LoginController@getApproveAccess');
-				Route::post('user/approve-access/{user_id}', 'Auth\LoginController@postApproveAccess');
-
-
-        Route::group(['prefix'=>'tabs','middleware'=>'can:access_admin'], function ()  {
+            Route::group(['prefix'=>'tabs','middleware'=>'can:access_admin'], function ()  {
 
                 Route::get('organization', 'AdminToolController@organizationIndex');
                 Route::post('organization', 'AdminToolController@searchOrganizations')->name('organizations.search');
@@ -423,37 +323,164 @@
                 Route::get('county', 'AdminToolController@countyIndex');
                 Route::get('emails', 'PagesController@emailsTab');
 
+                Route::get('/modals/createuser', 'PagesController@createUser');
+                Route::post('/modals/createuser', 'PagesController@createUserSave')->name('admin.createuser');
+                Route::get('/user/complete-registration/{userId}', 'PagesController@getUserCompleteRegistration');
+                Route::post('/user/complete-registration', 'PagesController@postUserCompleteRegistration')->name('user.complete-registration');
+                Route::get('/modals/edituser/{id}', 'PagesController@editUser');
+                Route::post('/modals/edituser/{id}', 'PagesController@editUserSave');
+                Route::get('/modals/resetpassword/{id}', 'PagesController@resetPassword');
+                Route::post('/modals/resetpassword/{id}', 'PagesController@resetPasswordSave');
+                Route::get('/modals/deactivateuser/{id}', 'PagesController@deactivateUser');
+                Route::post('/modals/deactivateuser/{id}', 'PagesController@deactivateUserSave');
+                Route::get('/modals/activateuser/{id}', 'PagesController@activateUser');
+                Route::post('/modals/activateuser/{id}', 'PagesController@activateUserSave');
+
+
+                Route::post('register-user', 'Auth\RegisterController@postRegister');
+                Route::get('/ip', 'Auth\LoginController@getUserIpAddr');
+                Route::get('/code', 'Auth\LoginController@getCode');
+                Route::post('/code', 'Auth\LoginController@postCode');
+                Route::get('/verification', 'Auth\LoginController@getVerification');
+                Route::post('/verification', 'Auth\LoginController@postVerification');
+                Route::get('/request-access', 'Auth\LoginController@getRequestAccess');
+                Route::post('/request-access', 'Auth\LoginController@postRequestAccess');
+                Route::get('user/approve-access/{user_id}', 'Auth\LoginController@getApproveAccess');
+                Route::post('user/approve-access/{user_id}', 'Auth\LoginController@postApproveAccess');
+
+            });
+
+
+            // Admin store
+            Route::group(['prefix'=>'admin'], function () {
+                Route::post('boilerplate/store/{id?}', 'AdminToolController@boilerplateStore');
+                Route::post('findingtype/store/{id?}', 'AdminToolController@findingtypeStore');
+                Route::post('program/store/{id?}', 'AdminToolController@programStore');
+                Route::post('document_category/store/{id?}', 'AdminToolController@documentCategoryStore');
+                Route::post('county/store/{id?}', 'AdminToolController@countyStore');
+                Route::post('hud_area/store/{id?}', 'AdminToolController@hudAreaStore');
+                Route::post('amenity/store/{id?}', 'AdminToolController@amenityStore');
+                Route::post('users/{id}/saveroles', 'AdminToolController@userSaveRoles');
+
+                Route::get('groups-data', 'GroupController@getGroupsJson');
+                Route::get('update-group-programs', 'GroupController@udateGroupProgramRelations');
+
+            });
+
+            //Project
+            Route::get('/notes/project/{project_id}', 'NoteController@showTabFromProjectId')->name('notes.list');
+            Route::get('/notes/project/{project}.json', 'NoteController@notesFromProjectIdJson')->name('notes.loadjson');
+            Route::get('/external-window/print-notes-{project}.html', 'NoteController@printNotes')->name('notes.print');
+            Route::post('/modals/create-note-entry', 'NoteController@create')->name('note.create');
+            Route::get('/modals/new-note-entry/{project}', 'NoteController@newNoteEntry');
+            Route::post('/notes/project/{project}', 'NoteController@searchNotes')->name('notes.search');
+
+            // Audit
+            Route::post('/audit/{id}/estimated/save', 'AuditController@saveEstimatedHours')->name('audit.estimated_hours.save');
+            Route::post('/audit/{id}/scheduling/addaday', 'AuditController@addADay')->name('audit.scheduling.addaday');
+            Route::post('/audit/{id}/scheduling/days/{day_id}/delete', 'AuditController@deleteDay')->name('audit.scheduling.deleteday');
+
+
+            
+
+            
         });
 
+        //===============================================================================================================//
+        //=============================================== PM ACCESSIBLE ROUTES ==========================================//
+        //===============================================================================================================//
 
-        // Admin store
-        Route::group(['prefix'=>'admin'], function () {
-            Route::post('boilerplate/store/{id?}', 'AdminToolController@boilerplateStore');
-            Route::post('findingtype/store/{id?}', 'AdminToolController@findingtypeStore');
-            Route::post('program/store/{id?}', 'AdminToolController@programStore');
-            Route::post('document_category/store/{id?}', 'AdminToolController@documentCategoryStore');
-            Route::post('county/store/{id?}', 'AdminToolController@countyStore');
-            Route::post('hud_area/store/{id?}', 'AdminToolController@hudAreaStore');
-            Route::post('amenity/store/{id?}', 'AdminToolController@amenityStore');
-            Route::post('users/{id}/saveroles', 'AdminToolController@userSaveRoles');
+        Route::group(['prefix'=>'','middleware'=>'can:access_pm'], function ()  {
 
-            Route::get('groups-data', 'GroupController@getGroupsJson');
-            Route::get('update-group-programs', 'GroupController@udateGroupProgramRelations');
+            
+
+            Route::get('/modals/auditors/{id}/preferences', 'UserController@preferences')->name('auditor.preferences');
+            
+
+            
+            //Route::get('/', function(){dd(\Auth::user(),session('brian'));});
+            Route::get('dashboard/reports', 'ReportsController@reports')->name('dashboard.reports');
+            Route::post('/communications/project/{project?}', 'CommunicationController@searchCommunications')->name('communications.search');
+
+            //allita documents!
+        
+			Route::post('/documents/project/{project}/upload', 'DocumentController@localUpload')->name('documents.local-upload');
+			Route::get('/download-local-document/{document}', 'DocumentController@downloadLocalDocument')->name('document.local-download');
+            Route::post('/documents/audit/{audit}/upload', 'DocumentController@upload')->name('documents.upload');
+            Route::get('/documents/audit/{audit}', 'DocumentController@showTabFromParcelId');
+            Route::post('/documents/audit/{audit}/comment', 'DocumentController@uploadComment')->name('documents.uploadComment');
+            Route::get('/documents/audit/{audit}/downloaddocument/{document}', 'DocumentController@downloadDocument')->name('documents.downloadDocument');
+            Route::post('/documents/audit/{audit}/approve', 'DocumentController@approveDocument')->name('documents.approve');
+            Route::post('/documents/audit/{audit}/notapprove', 'DocumentController@notApproveDocument')->name('documents.notapprove');
+            Route::post('/documents/audit/{audit}/documentinfo', 'DocumentController@documentInfo')->name('documents.documentInfo');
+
+            Route::post('/photos/project/{project}/upload', 'DocumentController@photoUpload')->name('photos.upload');
+            Route::get('/projects/{project}/documents/title', 'AuditController@getProjectDocumentsTitle')->name('project.documents.title');
+        
+            Route::get('/projects/{project}/photos', 'AuditController@getProjectPhotos')->name('project.photos');
+            Route::get('/projects/{project}/photos/title', 'AuditController@getProjectPhotosTitle')->name('project.photos.title');
+            Route::get('/projects/{project}/findings', 'AuditController@getProjectFindings')->name('project.findings');
+            Route::get('/projects/{project}/findings/title', 'AuditController@getProjectFindingsTitle')->name('project.findings.title');
+            Route::get('/projects/{project}/followups', 'AuditController@getProjectFollowups')->name('project.followups');
+            Route::get('/projects/{project}/followups/title', 'AuditController@getProjectFollowupsTitle')->name('project.followups.title');
+
+        
+            Route::get('/report/{report}', 'ReportsController@getReport');
+            Route::get('/report/{report}/{section}','ReportsController@getSection');
+            Route::get('/report/{report}/download/{type}','ReportsController@download');
+
+            Route::post('/report/{report}/digital-signature','ReportsController@postDigitalSignature');
+
+        
+
+            // communications
+            Route::get('dashboard/communications/{page?}', 'CommunicationController@communicationsTab')->name('communication.tab');
+            Route::post('/modals/new-outbound-email-entry', 'CommunicationController@create')->name('communication.create');
+            Route::get('/modals/new-outbound-email-entry/{audit_id?}', 'CommunicationController@newCommunicationEntry');
+            Route::get('/modals/communication/{audit_id}/replies/{message}', 'CommunicationController@viewReplies');
+            Route::post('/communications/audit/{audit?}', 'CommunicationController@searchCommunications')->name('communications.search');
+            Route::get('/communications/unseen', 'CommunicationController@getUnseenMessages');
+            Route::get('/view_message/{message}', 'CommunicationController@goToMessage');
+            Route::get('communication/session/{trigger?}', 'CommunicationController@setFilterSession');
+
+            // notifications trigger
+			Route::post('user/notification-preference/{id}', 'Notifications\UserNotificationController@postNotificationPreference');
+			Route::get('send/notification', 'Notifications\UserNotificationController@communicationNotifications');
+			Route::post('resend-notification-link', 'Notifications\UserNotificationController@postResendNotificationsLink');
+            Route::get('notifications/view-message/{user_id}/{model_id?}', 'CommunicationController@messageNotification');
+            Route::get('notifications/report/{user_id}/{model_id?}', 'CommunicationController@messageNotification');
+            Route::get('/modals/report-ready/{report_id}/{project_id?}', 'CommunicationController@reportReadyNotification')->name('communication.report-ready');
+
+
+            Route::get('/session/communication_switch_inbox', function()
+    				{
+    				    session(['communication_sent'=>0]);
+    				    $communication_sent = 0;
+    				    return 1;
+    				});
+    				Route::get('/session/communication_switch_sent', function()
+    				{
+    				    session(['communication_sent'=>1]);
+    				    $communication_sent = 1;
+    				    return 1;
+    				});
+
+
+            
 
         });
 
-        //Project
-        Route::get('/notes/project/{project_id}', 'NoteController@showTabFromProjectId')->name('notes.list');
-        Route::get('/notes/project/{project}.json', 'NoteController@notesFromProjectIdJson')->name('notes.loadjson');
-        Route::get('/external-window/print-notes-{project}.html', 'NoteController@printNotes')->name('notes.print');
-        Route::post('/modals/create-note-entry', 'NoteController@create')->name('note.create');
-        Route::get('/modals/new-note-entry/{project}', 'NoteController@newNoteEntry');
-        Route::post('/notes/project/{project}', 'NoteController@searchNotes')->name('notes.search');
+        //Route::group(['middleware' => ['allita.auth']], function() {
+            Route::get('unified_login', function () {
+                    //session(['brian'=>'test']);
+                    return redirect('/');
+            });
 
-        // Audit
-        Route::post('/audit/{id}/estimated/save', 'AuditController@saveEstimatedHours')->name('audit.estimated_hours.save');
-        Route::post('/audit/{id}/scheduling/addaday', 'AuditController@addADay')->name('audit.scheduling.addaday');
-        Route::post('/audit/{id}/scheduling/days/{day_id}/delete', 'AuditController@deleteDay')->name('audit.scheduling.deleteday');
+            Route::get('/', 'DashboardController@index');
+            Route::get('/home', function () {
+                    return redirect('/');
+            });
+
 
         // });
     });

@@ -431,4 +431,8 @@ class Project extends Model
         
         return $program_units;
     }
+    public function is_project_contact($user_id = 1)
+    {
+        return count($this->contactRoles->where('user_id',$user_id));
+    }
 }

@@ -25,4 +25,7 @@ class ProjectContactRole extends Model
     {
         return $this->hasOne(\App\Models\People::class, 'person_key', 'person_key');
     }
+    public function personsProjects($person_id){
+        return $this->select('project_id')->where('person_id',$person_id)->get()->all();
+    }
 }
