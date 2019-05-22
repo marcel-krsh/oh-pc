@@ -91,6 +91,7 @@
 		width: 996px;
 
 	}
+	@can('access_auditor')
 	.crr-part-comment-icons {
 		top:-74px;
 	}
@@ -101,6 +102,22 @@
 		-o-transition: background-color .5s ease-out;
 		transition: background-color .5s ease-out;
 	}
+	#close-comments {
+		background-color: black;
+		height: 67px;
+		padding: 8px;
+		padding-left: 15px;
+		width: 377px;
+		color:lightyellow;
+		position: fixed;
+
+	}
+	#comment-list {
+		margin-top:110px;
+		padding-left: 15px;
+		padding-right: 15px;
+	}
+	@endCan
 	#section-thumbnails {
 		-webkit-transition: width 1s ease-out;
 		-moz-transition: width 1s ease-out;
@@ -122,21 +139,7 @@
 		transition: width 1s ease-out;
 
 	}
-	#close-comments {
-		background-color: black;
-		height: 67px;
-		padding: 8px;
-		padding-left: 15px;
-		width: 377px;
-		color:lightyellow;
-		position: fixed;
-
-	}
-	#comment-list {
-		margin-top:110px;
-		padding-left: 15px;
-		padding-right: 15px;
-	}
+	
 	#crr-panel .uk-panel-box-white {background-color:#ffffff;}
 	#crr-panel .uk-panel-box .uk-panel-badge {}
 	#crr-panel .green {color:#82a53d;}
@@ -165,8 +168,10 @@
 		<div align="center" class="uk-align-center uk-margin-large-bottom use-handcursor crr-thumbs" style="max-width: 85px;"><a href="#{{ str_replace(' ','',$section->id) }}" class="uk-link-mute">{{ strtoupper($section->title) }}</a>
 		</div>
 		@endForEach
-		<div id="close-comments" style="display: none" onclick="closeComments();" class="uk-link"><i class="a-circle-cross uk-contrast"></i> CLOSE COMMENTS<hr class="hr-dashed uk-margin-small-bottom"></div>
-		<div id="comment-list" style="display: none;"></div>
+		@can('access_auditor')
+			<div id="close-comments" style="display: none" onclick="closeComments();" class="uk-link"><i class="a-circle-cross uk-contrast"></i> CLOSE COMMENTS<hr class="hr-dashed uk-margin-small-bottom"></div>
+			<div id="comment-list" style="display: none;"></div>
+		@endCan
 	</div>
 	<div id="main-report-view" class=" uk-panel-scrollable" style=" min-height: 100vh; min-width: 1248px; padding:0px; background-color: currentColor;">
 		@forEach($data as $section)
@@ -181,16 +186,24 @@
 			@forEach($section->parts as $part)
 
 			@forEach($part as $piece)
+			
 			<?php
 	            				// collect comments for this part
-			$comments = collect($report->comments)->where('part_id',$piece->part_id);
+				if(Auth::user()->can('access_auditor')){
+					$comments = collect($report->comments)->where('part_id',$piece->part_id);
 
-			if($comments){
-				$totalComments = count($comments);
-			}
+					if($comments){
+						$totalComments = count($comments);
+					}
+				} else {
+					$comments = [];
+					$totalComments = 0;
+				}
 			?>
-			<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{ $piece->part_id }});" >#{{ $pieceCount }}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{ $totalComments }} @else 0 @endIf</a> @can('access_auditor')<hr class="dashed-hr uk-margin-bottom"><a class="uk-contrast"><i class="a-pencil" style="font-size: 19px;"></i></a>@endCan
-			</div>
+			@can('access_auditor')<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{ $piece->part_id }});" >#{{ $pieceCount }}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{ $totalComments }} @else 0 @endIf</a> 
+				<hr class="dashed-hr uk-margin-bottom"><a class="uk-contrast"><i class="a-pencil" style="font-size: 19px;"></i></a>
+			
+			</div>@endCan
 			<div class="crr-part-{{ $piece->part_id }} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{ $piece->part_id }}"></a>
 				<?php $pieceData = json_decode($piece->data); ?>
 				@if($pieceData[0]->type =='free-text')
@@ -220,7 +233,7 @@
 
 
 </div>
-<div id="comments" class="uk-panel-scrollable" style="display: none;">
+@can('access_auditor')<div id="comments" class="uk-panel-scrollable" style="display: none;">@endCan
 
 </div>
 @stop
