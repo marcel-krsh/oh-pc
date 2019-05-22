@@ -2,12 +2,12 @@
 <tr id="crr-report-row-{{$report->id}}">
 
                     <td><a href="/report/{{$report->id}}" target="report-{{$report->id}}" class="uk-mute"><i class="a-file-chart-3"></i> #{{$report->id}}</a></td>
-                    <td><a onclick="loadTab('/projects/{{$report->project->project_key}}', '4', 1, 1,'',1);" class="uk-mute"> {{$report->project->project_number}} : {{$report->project->project_name}}</a></td>
+                    <td>@can('access_auditor')<a onclick="loadTab('/projects/{{$report->project->project_key}}', '4', 1, 1,'',1);" class="uk-mute"> @endCan {{$report->project->project_number}} : {{$report->project->project_name}}@can('access_auditor')</a>@endCan</td>
                     <td>{{$report->audit_id}}</td>
-                    <td>{{$report->lead->person->first_name}} {{$report->lead->person->last_name}}</td>
+                    @can('access_auditor')<td>{{$report->lead->person->first_name}} {{$report->lead->person->last_name}}</td>@endCan
                     <td>{{$report->template()->template_name}}</td>
                     <td>{{$report->crr_approval_type->name}}</td>
-                    <td>
+                    @can('access_auditor')<td>
                        <?php
 //ACTION OPTIONS BASED ON STATUS AND USER ROLE
 ?>
@@ -35,10 +35,28 @@
                         @endCan
 
                     </td>
+                    @endCan
                     <td>{{ date('M d, Y',strtotime($report->created_at)) }}</td>
                     <td>{{ ucfirst($report->updated_at->diffForHumans()) }}</td>
-                    <td>@if(!is_null($report->response_due_date))  @if(strtotime($report->response_due_date) < time()) <span class="attention" style="color:darkred"> <i class="a-warning"></i> @endIf {{date('M d, Y',strtotime($report->response_due_date)) }} @if(strtotime($report->response_due_date) < time()) </span> @endIf<a class=" flatpickr selectday{{$report->id}} flatpickr-input "><input type="text" placeholder="Edit Due Date.." data-input="" style="display:none" ><i class="a-pencil " ></i></a>@else <a class="uk-button uk-button-small uk-button-success flatpickr selectday{{$report->id}} flatpickr-input"><input type="text" placeholder="Select Due Date.." data-input="" style="display:none" ><i class="a-calendar-pencil calendar-button " ></i></a> @endIf
-                         <script>
+                    <td>@if(!is_null($report->response_due_date))  
+                            @if(strtotime($report->response_due_date) < time()) 
+                                <span class="attention" style="color:darkred"> <i class="a-warning"></i> 
+                            @endIf 
+                            {{date('M d, Y',strtotime($report->response_due_date)) }} 
+                            
+                            @if(strtotime($report->response_due_date) < time()) 
+                               </span> 
+                            @endIf
+                        @endIf
+
+                        @can('access_auditor') 
+                            @if(!is_null($report->response_due_date))
+                                 <a class=" flatpickr selectday{{$report->id}} flatpickr-input "><input type="text" placeholder="Edit Due Date.." data-input="" style="display:none" ><i class="a-pencil " ></i></a>
+                            @else 
+                                <a class="uk-button uk-button-small uk-button-success flatpickr selectday{{$report->id}} flatpickr-input"><input type="text" placeholder="Select Due Date.." data-input="" style="display:none" ><i class="a-calendar-pencil calendar-button " ></i></a> 
+                            @endIf
+
+                        <script>
                             flatpickr(".selectday{{$report->id}}", {
                                 weekNumbers: true,
                                 defaultDate:"today",
@@ -66,7 +84,8 @@
                             });
 
 
-                    </script>
+                            </script>
+                        @endCan
                     </td>
                     @can('access_auditor')
                     <td><i @if($report->report_history) class="a-person-clock uk-link"  uk-toggle="target: #report-{{$report->id}}-history;" @else class="a-clock-not" @endIf></i></td>

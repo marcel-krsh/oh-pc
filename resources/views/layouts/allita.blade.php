@@ -20,11 +20,11 @@ if ($allowPageLoad) {
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="csrf-token" content="{{ csrf_token() }}">
 		<title>
-			@if(Auth::check() && Auth::user()->entity_type == 'hfa')
+			@can('access_auditor')
 			Allita Program Compliance
 			@else
-			Dev|Co Inspect
-			@endif
+			Dev|Co Inspection
+			@endCan
 		</title>
 
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -252,9 +252,9 @@ if ($allowPageLoad) {
 			<button class="uk-offcanvas-close" type="button" uk-close></button>
 
 
-			<h3>Use Your Phone Instead?</h3>
+			<h3>Using Your Phone Instead?</h3>
 
-			<p>If you want to access Allita's PC Inspect tools on your phone... tell your manager you found this easter egg, and want it to use it instead of a tablet.</p>
+			<p>If you want to access Allita's PC Inspect tools on your phone... tell your manager you found this easter egg, and you want to use it instead of a tablet.</p>
 
 		</div>
 	</div>
@@ -283,8 +283,9 @@ if ($allowPageLoad) {
 							@endCan
 
 							<div id="top-tabs-container" style="display: inline-block; overflow: visible; padding-top:15px; min-height: 26px;">
-								@can('access_auditor')
+								
 								<ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m" style="background-color: transparent;">
+									@can('access_auditor')
 									<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
 										<a href="" style="">
 											<span class="list-tab-text">
@@ -293,8 +294,8 @@ if ($allowPageLoad) {
 											</span>
 										</a>
 									</li>
-								@endCan
-								@can('access_pm')
+									@endCan
+									@can('access_pm')
 									<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
 										<a href="">
 											<span class="list-tab-text">
@@ -312,8 +313,9 @@ if ($allowPageLoad) {
 										<a href=""><span class="list-tab-text">ADMIN</span></a>
 									</li>
 									@endcan
-								</ul>
 								@endcan
+								</ul>
+								
 							</div>
 
 							<div id="apcsv-avatar" class="" title="{{Auth::user()->full_name()}} - User ID:{{Auth::user()->id}} @if(Auth::user()->root_access()) Root Access @elseIf(Auth::user()->admin_access()) Admin Access @elseIf(Auth::user()->auditor_access()) Auditor Access @elseIf(Auth::user()->pm_access()) Property Manager @endIf" onclick="openUserPreferences();" style="cursor: pointer; margin-top:15px">
