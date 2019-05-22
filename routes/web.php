@@ -189,6 +189,7 @@
 
             //allita reports!
             Route::get('/modals/new-report','ReportsController@newReportForm');
+            Route::get('project/{project}/reports', 'ReportsController@reports')->name('project.reports');
             Route::post('/new-report','ReportsController@createNewReport')->name('report.create');
             Route::get('/report/{report}/generate','ReportsController@generateReport');
             Route::get('/report/{report}/reset','ReportsController@resetToTemplate');
@@ -263,7 +264,6 @@
             Route::get('projects/{id}/assignments/addauditor/{auditorid}/stats', 'AuditController@addAssignmentAuditorStats')->name('project.assignment.addauditorstats');
             Route::get('projects/{id}/assignments/addauditor/{auditorid}/loadcal/{currentdate}/{beforeafter}', 'AuditController@getAssignmentAuditorCalendar')->name('project.assignment.getauditorcalendar');
 
-            Route::get('/modals/auditors/{id}/preferences', 'UserController@preferences')->name('auditor.preferences');
             Route::post('/auditors/{id}/addresses/create', 'UserController@saveAuditorAddress')->name('auditor.address.create');
             Route::post('/auditoraddresses/{address_id}/delete', 'UserController@deleteAuditorAddress')->name('auditor.address.delete');
             Route::post('/auditors/{auditor_id}/addresses/{address_id}/default', 'UserController@setDefaultAddress')->name('auditor.address.default');
@@ -392,22 +392,14 @@
 
         Route::group(['prefix'=>'','middleware'=>'can:access_pm'], function ()  {
 
-            //Route::group(['middleware' => ['allita.auth']], function() {
-            Route::get('unified_login', function () {
-                    //session(['brian'=>'test']);
-                    return redirect('/');
-            });
+            
 
-        
+            Route::get('/modals/auditors/{id}/preferences', 'UserController@preferences')->name('auditor.preferences');
+            
 
-            Route::get('/', 'DashboardController@index');
-            Route::get('/home', function () {
-                    return redirect('/');
-            });
-
+            
             //Route::get('/', function(){dd(\Auth::user(),session('brian'));});
             Route::get('dashboard/reports', 'ReportsController@reports')->name('dashboard.reports');
-            Route::get('project/{project}/reports', 'ReportsController@reports')->name('project.reports');
             Route::post('/communications/project/{project?}', 'CommunicationController@searchCommunications')->name('communications.search');
 
             //allita documents!
@@ -477,6 +469,18 @@
             
 
         });
+
+        //Route::group(['middleware' => ['allita.auth']], function() {
+            Route::get('unified_login', function () {
+                    //session(['brian'=>'test']);
+                    return redirect('/');
+            });
+
+            Route::get('/', 'DashboardController@index');
+            Route::get('/home', function () {
+                    return redirect('/');
+            });
+
 
         // });
     });
