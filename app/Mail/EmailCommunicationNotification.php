@@ -26,7 +26,7 @@ class EmailCommunicationNotification extends Mailable
   {
     $this->nt      = $nt;
     $this->data    = $nt->data;
-    $this->subject = "[OHFA Allita PC] Notification: " . $this->data['heading'];
+    $this->subject = "[OHFA PC] Notification: " . $this->data['heading'];
     Log::info($nt);
   }
 
@@ -41,11 +41,11 @@ class EmailCommunicationNotification extends Mailable
     $user         = $this->nt->to_user;
     $data         = $this->nt->data;
     $greeting     = "Hello " . $user->person->first_name . ',';
-    $action_text  = "VIEW NOTIFICATION";
+    $action_text  = "VIEW COMMUNICATION";
     $action_url   = $data['base_url'] . $this->nt->token;
     $level        = "success";
     $level2       = "error";
-    $introLines[] = "NEW NOTIFICATION:";
+    $introLines[] = "NEW COMMUNICATION:";
     // $introLines[]  = 'Use below link to view the message.';
     $introLines[] = date('M d, Y h:i', strtotime($this->nt->created_at));
     $introLines[] = 'FROM: ' . $owner->name;
