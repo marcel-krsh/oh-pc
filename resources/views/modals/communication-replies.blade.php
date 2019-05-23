@@ -66,7 +66,7 @@
 				<span class="uk-text-muted">Message: </span>
 			</div>
 			<div class="uk-width-5-6">
-				<div><pre>{{ $message->message }}</pre></div>
+				<div><p>{{ str_replace('<br /><br />','</p><p>',nl2br($message->message))  }}</p></div>
 			</div>
 		</div>
 	</div>
