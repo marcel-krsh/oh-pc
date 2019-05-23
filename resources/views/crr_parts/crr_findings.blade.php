@@ -136,7 +136,7 @@
 				@endIf
 			</div>
 			@endIf
-			@cannot('access_pm')
+			@cannot('access_auditor')
 			<a class="uk-button uk-button-success green-button uk-width-1-1" onclick="dynamicModalLoad('new-outbound-email-entry/{{$report->audit_id}}/{{$report->id}}/{{$f->id}}')">
   				<span class="a-envelope-4"></span>
   				<span>POST RESPONSE</span>
