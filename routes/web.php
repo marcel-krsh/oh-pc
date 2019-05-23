@@ -322,6 +322,11 @@
                 Route::get('county', 'AdminToolController@countyIndex');
                 Route::get('emails', 'PagesController@emailsTab');
 
+                
+
+            });
+
+            Route::group(['prefix'=>'','middleware'=>'can:access_admin'], function ()  {
                 Route::get('/modals/createuser', 'PagesController@createUser');
                 Route::post('/modals/createuser', 'PagesController@createUserSave')->name('admin.createuser');
                 Route::get('/user/complete-registration/{userId}', 'PagesController@getUserCompleteRegistration');
@@ -340,12 +345,11 @@
                 
                 Route::get('user/approve-access/{user_id}', 'Auth\LoginController@getApproveAccess');
                 Route::post('user/approve-access/{user_id}', 'Auth\LoginController@postApproveAccess');
-
-            });
+            }
 
 
             // Admin store
-            Route::group(['prefix'=>'admin'], function () {
+            Route::group(['prefix'=>'admin','middleware'=>'can:access_admin'], function () {
                 Route::post('boilerplate/store/{id?}', 'AdminToolController@boilerplateStore');
                 Route::post('findingtype/store/{id?}', 'AdminToolController@findingtypeStore');
                 Route::post('program/store/{id?}', 'AdminToolController@programStore');
