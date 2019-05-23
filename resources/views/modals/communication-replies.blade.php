@@ -66,7 +66,7 @@
 				<span class="uk-text-muted">Message: </span>
 			</div>
 			<div class="uk-width-5-6">
-				<div><p>{{! str_replace('<br />','</p><p>',nl2br($message->message))  !}}</p></div>
+				<div><p>{!! str_replace('<br />','</p><p>',nl2br($message->message)) !!}</p></div>
 			</div>
 		</div>
 	</div>
