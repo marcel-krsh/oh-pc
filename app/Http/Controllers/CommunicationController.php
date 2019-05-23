@@ -186,7 +186,7 @@ class CommunicationController extends Controller
         ->orderBy('last_name', 'asc')
         ->get();
 
-      if (Auth::user()->pm_access()) {
+      if (Auth::user()->cannot('access_auditor')) {
         $recipients = User::where('organization_id', '=', Auth::user()->organization_id)
           ->leftJoin('people', 'people.id', 'users.person_id')
           ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
