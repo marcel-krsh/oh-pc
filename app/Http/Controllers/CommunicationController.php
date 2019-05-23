@@ -481,6 +481,7 @@ class CommunicationController extends Controller
     $forminputs = $request->get('inputs');
     parse_str($forminputs, $forminputs);
     $audit = null;
+    $report = null;
 
     if (isset($forminputs['audit'])) {
       try {
@@ -493,6 +494,19 @@ class CommunicationController extends Controller
     } else {
       $audit_id = null;
     }
+
+    if (isset($forminputs['report'])) {
+      try {
+        $report_id = (int) $forminputs['report'];
+        $report    = CrrReport::where('id', $report_id)->first();
+      } catch (\Illuminate\Database\QueryException $ex) {
+        dd($ex->getMessage());
+      }
+      $report_id = $report->id;
+    } else {
+      $report_id = null;
+    }
+
     if (isset($forminputs['project_id'])) {
       try {
         $project_id = (int) $forminputs['project_id'];
@@ -663,6 +677,11 @@ class CommunicationController extends Controller
           } catch (\Illuminate\Database\QueryException $ex) {
             $error = $ex->getMessage();
           }
+        }
+        if(!is_null($report_id)){
+          // we sent a notification about the report
+          // right now we can assume this is to the pm - will need to add logic for notifications sent to managers?
+          $report->update(['crr_approval_type_id'=>6]);
         }
         return 1;
       } else {
@@ -1253,7 +1272,7 @@ class CommunicationController extends Controller
         ->where('active', 1)
         ->get();
       $audit = $audit_details->id;
-      return view('modals.report-ready', compact('audit', 'project', 'recipients', 'report_id', 'audit_details'));
+      return view('modals.report-ready', compact('audit', 'project', 'recipients', 'report_id', 'audit_details','report'));
     } else {
       $project             = null;
       $document_categories = DocumentCategory::where('parent_id', '<>', 0)->where('active', '1')->orderby('document_category_name', 'asc')->get();
