@@ -172,11 +172,14 @@
     			if(data!=1){
     				UIkit.modal.alert(data,{stack: true});
     			} else {
-    				UIkit.modal.alert('Your message has been saved.',{stack: true});
+    				//UIkit.modal.alert('Your message has been saved.',{stack: true});
+                    @if(!$project || Auth::user()->cannot('access_auditor'))
+                    $('#detail-tab-2').trigger('click');
+                    @endIf
     			}
     		} );
 
-    		@if($project)
+    	@if($project && Auth::user()->can('access_auditor'))
     		var id = {{$project->id}};
         loadTab('/projects/'+{{$project->id}}+'/communications/', '2', 0, 0, 'project-', 1);
         //loadParcelSubTab('communications',id);

@@ -131,7 +131,7 @@
 				<div class="uk-margin-right">
 					@if($message->audit_id && $message->audit)
 					<p style="margin-bottom:0">{{ $message->audit_id }}</p>
-					<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left;title:{{ $message->audit->title }}">
+					<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left;title:{{ $message->audit->title }}"  onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')">
 						<small>{{ $message->audit->address }},
 							{{ $message->audit->city }}, @if($message->audit->state){{ $message->audit->state }} @endif {{ $message->audit->zip }}
 						</small>
@@ -142,7 +142,7 @@
 			<div class="uk-width-1-5@m communication-item-parcel uk-visible@m">
 				@if($message->audit_id && $message->audit)
 				<p style="margin-bottom:0"><a class="uk-link-muted">{{ $message->audit_id }}</a></p>
-				<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left" title="{{ $message->audit->title }}">
+				<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left" title="{{ $message->audit->title }}"  onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')">
 					<small>{{ $message->audit->address }},
 						{{ $message->audit->city }}, @if($message->audit->state){{ $message->audit->state }} @endif {{ $message->audit->zip }}
 					</small>
