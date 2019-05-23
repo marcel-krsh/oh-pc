@@ -124,12 +124,15 @@ class CommunicationController extends Controller
     return view('projects.pproject_communications', compact('project', 'messages', 'owners', 'owners_array'));
   }
 
-  public function newCommunicationEntry($project_id = null, $report_id = null, $finding_id = null)
+  public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null)
   {
     $ohfa_id = SystemSetting::get('ohfa_organization_id');
     if (null !== $project_id) {
       $project       = Project::where('id', '=', $project_id)->first();
-      $audit_details = $project->selected_audit();
+
+      if(!is_null($project)){
+        $audit_details = $project->selected_audit();
+      }
       if (local()) {
         $docuware_documents = Document::where('id', -100)->get();
       } else {
