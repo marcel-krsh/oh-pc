@@ -441,6 +441,7 @@ if ($allowPageLoad) {
 	<script type="text/javascript" src="/js/systems/outcomes-tab.js"></script> -->
 	<script type="text/javascript" src="/js/systems/processing-tab.js"></script>
 	<script>
+		// single script tag
 		var quicklookupbox = new autoComplete({
 			selector: '#quick-lookup-box',
 			minChars: 3,
