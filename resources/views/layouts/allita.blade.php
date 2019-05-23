@@ -493,11 +493,11 @@ if ($allowPageLoad) {
 			$("html, body").animate({ scrollTop: 0 }, "slow");
 		});
 
-	</script>
+	
 	@endif
 
 	@if($tab !== null)
-	<script>
+	
 
 		setTimeout(function(){
 			$('#{{$tab}}').trigger("click");
@@ -512,10 +512,10 @@ if ($allowPageLoad) {
 		},400);
 		@endif
 
-	</script>
+	
 	@else
-	<script >
-
+	
+		// Click on initial tab to load it:
 		setTimeout(function(){
 			@can('access_auditor')
 				$('#detail-tab-1').trigger("click");
@@ -526,29 +526,12 @@ if ($allowPageLoad) {
 
 		window.currentSite='allita_pc';
 
-	</script>
+	
 	@endif
 
-	@if(session('disablePacer') != 1)
-	<script>
-		window.paceOptions = { ajax: { trackMethods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'], ignoreURLs: ['https://pcinspectdev.ohiohome.org'] } }
+	
 
-		// universal header:
-
-		function ToggleMenu() {
-			var menu = document.getElementById("apcsv-menu-items");
-			if ( menu.classList.contains('hidden') ) {
-				menu.classList.remove('hidden');
-			} else {
-				menu.classList.add('hidden');
-			}
-		}
-	</script>
-	<script src="/js/pace.min.js">{{session('disablePacer')}}</script>
-	@endif
-
-	<!-- <script type="text/javascript" src="https://devco.ohiohome.org/AuthorityOnlineALT/Unified/UnifiedHeader.aspx"></script> -->
-	<script>
+	
 		new Vue({
 			el: '#top-tabs',
 			data: {
@@ -586,27 +569,26 @@ if ($allowPageLoad) {
 
 		      }
 		    });
-		  </script>
-	<!-- <script>
-    	function openWebsocket(url){
-		    try {
-		        socket = new WebSocket(url);
-		        socket.onopen = function(){
-		            console.log('Socket is now open.');
-		        };
-		        socket.onerror = function (error) {
-		            console.error('There was an un-identified Web Socket error');
-		        };
-		        socket.onmessage = function (message) {
-		            console.info("Message: %o", message.data);
-		        };
-		    } catch (e) {
-		        console.error('Sorry, the web socket at "%s" is un-available', url);
-		    }
-		}
+	
+	</script>
 
-		openWebsocket("http://192.168.10.10:6001");
-	</script> -->
+	@if(session('disablePacer') != 1)
+	<script>
+		window.paceOptions = { ajax: { trackMethods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'], ignoreURLs: ['https://pcinspectdev.ohiohome.org'] } }
+
+		// universal header:
+
+		function ToggleMenu() {
+			var menu = document.getElementById("apcsv-menu-items");
+			if ( menu.classList.contains('hidden') ) {
+				menu.classList.remove('hidden');
+			} else {
+				menu.classList.add('hidden');
+			}
+		}
+	</script>
+	<script src="/js/pace.min.js">{{session('disablePacer')}}</script>
+	@endif
 
 
 </body>
