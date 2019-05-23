@@ -517,7 +517,11 @@ if ($allowPageLoad) {
 	<script >
 
 		setTimeout(function(){
-			$('#detail-tab-1').trigger("click");
+			@can('access_auditor')
+				$('#detail-tab-1').trigger("click");
+			@else
+				$('#detail-tab-2').trigger("click");
+			@endCan
 		},100);
 
 		window.currentSite='allita_pc';
