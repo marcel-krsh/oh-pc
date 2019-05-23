@@ -99,7 +99,7 @@
         	<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
         		<div uk-grid class="uk-grid-collapse">
         			<div class="uk-width-1-1">
-        				<textarea id="message-body" style="min-height: 100px;padding-left: 10px; border:none;" rows="11" class="uk-width-1-1 uk-form-large uk-input uk-form-blank uk-resize-vertical" name="messageBody" value="" placeholder="Recipients will have to log-in to view your message.">Please go to the reports tab and click on report # {{report->id}} to view your report.</textarea>
+        				<textarea id="message-body" style="min-height: 100px;padding-left: 10px; border:none;" rows="11" class="uk-width-1-1 uk-form-large uk-input uk-form-blank uk-resize-vertical" name="messageBody" value="" placeholder="Recipients will have to log-in to view your message.">Please go to the reports tab and click on report # {{$report->id}} to view your report.</textarea>
         			</div>
         		</div>
         	</fieldset>
