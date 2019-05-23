@@ -345,7 +345,7 @@
                 
                 Route::get('user/approve-access/{user_id}', 'Auth\LoginController@getApproveAccess');
                 Route::post('user/approve-access/{user_id}', 'Auth\LoginController@postApproveAccess');
-            }
+            });
 
 
             // Admin store
