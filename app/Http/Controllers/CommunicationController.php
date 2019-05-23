@@ -196,9 +196,9 @@ class CommunicationController extends Controller
           ->where('active', 1)
           ->orderBy('last_name', 'asc')
           ->get();
-          dd($recipients);
+
       } else {
-        $recipients = User::where('organization_id', '!=', $ohfa_id)
+        $recipients = User::where('organization_id', '<>', $ohfa_id)
           ->leftJoin('people', 'people.id', 'users.person_id')
           ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
           ->join('users_roles', 'users_roles.user_id', 'users.id')
@@ -207,6 +207,7 @@ class CommunicationController extends Controller
           ->orderBy('organization_name', 'asc')
           ->orderBy('last_name', 'asc')
           ->get();
+          dd($recipients);
       }
       $audit = $audit_details->id;
 
