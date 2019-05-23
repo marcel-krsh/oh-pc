@@ -71,7 +71,7 @@ $style = [
                     <tr>
                         <td style="{{ $style['email-masthead'] }}">
                             <a style="{{ $fontFamily }} {{ $style['email-masthead_name'] }}" href="{{ url('/') }}" target="_blank">
-                               <img src="{{url('/Allita-Blight-Icon.png')}}" width="150"><br />{{ config('app.name') }}
+                               PROGRAM COMPLIANCE
                             </a>
                         </td>
                     </tr>
@@ -167,7 +167,7 @@ $style = [
 
                                         <!-- Salutation -->
                                         <p style="{{ $style['paragraph'] }}">
-                                            Regards,<br>{{ config('app.name') }}
+                                            Regards,<br>Program Compliance Staff
                                         </p>
 
                                         <!-- Sub Copy -->
@@ -180,7 +180,7 @@ $style = [
                                                             copy and paste the URL below into your web browser:
                                                         </p>
 
-                                                        <p style="{{ $style['paragraph-sub'] }}">
+                                                        <p style="{{ $style['paragraph-sub'] }}"> 
                                                             <a style="{{ $style['anchor'] }}" href="{{ $actionUrl }}" target="_blank">
                                                                 {{ $actionUrl }}
                                                             </a>
@@ -221,7 +221,7 @@ $style = [
                                     <td style="{{ $fontFamily }} {{ $style['email-footer_cell'] }}">
                                         <p style="{{ $style['paragraph-sub'] }}">
                                             &copy; {{ date('Y') }}
-                                            <a style="{{ $style['anchor'] }}" href="{{ url('/') }}" target="_blank">{{ config('app.name') }}</a>.
+                                            <a style="{{ $style['anchor'] }}" href="{{ url('/') }}" target="_blank">Ohio Housing Finance Agency</a>.
                                             All rights reserved.
                                         </p>
                                     </td>
