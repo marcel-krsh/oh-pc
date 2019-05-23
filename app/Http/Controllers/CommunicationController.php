@@ -124,7 +124,7 @@ class CommunicationController extends Controller
     return view('projects.pproject_communications', compact('project', 'messages', 'owners', 'owners_array'));
   }
 
-  public function newCommunicationEntry($project_id = null)
+  public function newCommunicationEntry($project_id = null, $report_id = null, $finding_id = null)
   {
     $ohfa_id = SystemSetting::get('ohfa_organization_id');
     if (null !== $project_id) {
