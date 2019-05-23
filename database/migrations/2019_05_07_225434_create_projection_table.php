@@ -56,7 +56,6 @@ class CreateProjectionTable extends Migration
             $table->integer('program_1_2016_site_count')->nullable();
             $table->integer('program_1_2019_site_count')->nullable();
             $table->string('program_1_2019_site_difference_percent')->nullable();
-            $table->integer('program_1_2019_buildings_with_unit_inspections')->nullable();
 
             $table->integer('program_1_2016_file_count')->nullable();
             $table->integer('program_1_2019_file_count')->nullable();
@@ -85,7 +84,6 @@ class CreateProjectionTable extends Migration
             $table->integer('program_2_2016_site_count')->nullable();
             $table->integer('program_2_2019_site_count')->nullable();
             $table->string('program_2_2019_site_difference_percent')->nullable();
-            $table->integer('program_2_2019_buildings_with_unit_inspections')->nullable();
 
             $table->integer('program_2_2016_file_count')->nullable();
             $table->integer('program_2_2019_file_count')->nullable();
@@ -114,7 +112,6 @@ class CreateProjectionTable extends Migration
             $table->integer('program_3_2016_site_count')->nullable();
             $table->integer('program_3_2019_site_count')->nullable();
             $table->string('program_3_2019_site_difference_percent')->nullable();
-            $table->integer('program_3_2019_buildings_with_unit_inspections')->nullable();
 
             $table->integer('program_3_2016_file_count')->nullable();
             $table->integer('program_3_2019_file_count')->nullable();

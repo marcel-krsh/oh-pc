@@ -480,6 +480,7 @@ class CommunicationController extends Controller
     $canCreate = 0;
     $forminputs = $request->get('inputs');
     parse_str($forminputs, $forminputs);
+    $audit = null;
 
     if (isset($forminputs['audit'])) {
       try {
@@ -507,7 +508,8 @@ class CommunicationController extends Controller
     if(!is_null($project_id) && Auth::user()->cannot('access_auditor')){
       // check to see if the user is allowed to access this project
       $onProject = 0;
-      $onProject = $project->contactRoles->where('user_id',Auth::user()->id)->count();
+      $onProject = $project->contactRoles->where('person_id',Auth::user()->person_id)->count();
+     //dd($onProject,$project->contactRoles);
       if($onProject > 0){
         /// if they are on the contact roles
         $canCreate = 1;
@@ -553,6 +555,7 @@ class CommunicationController extends Controller
             'project_id' => $project_id,
             'parent_id'  => $originalMessageId,
             'message'    => $message_posted,
+            'subject'    => 'RE: '.$original_message->subject,
           ]);
           //$lc = new LogConverter('communication', 'create');
           //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();

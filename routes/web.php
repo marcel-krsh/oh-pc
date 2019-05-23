@@ -183,7 +183,6 @@
              Route::get('/projects/{id}/details/{type}', 'AuditController@getProjectDetailsInfo')->name('project.details.info');
              Route::get('/projects/{project}/details/assignment/date/{dateid}', 'AuditController@getProjectDetailsAssignmentSchedule')->name('project.details.assignment.schedule');
 
-            Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');
             Route::get('/communications/{project}.json', 'CommunicationController@communicationsFromProjectIdJson')->name('communications.loadjson');
             Route::get('/projects/{project}/communications/title', 'AuditController@getProjectCommunicationsTitle')->name('project.communications.title');
 
@@ -436,6 +435,8 @@
             Route::get('/communications/unseen', 'CommunicationController@getUnseenMessages');
             Route::get('/view_message/{message}', 'CommunicationController@goToMessage');
             Route::get('communication/session/{trigger?}', 'CommunicationController@setFilterSession');
+            Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');
+            
 
             // notifications trigger
 			Route::post('user/notification-preference/{id}', 'Notifications\UserNotificationController@postNotificationPreference');
