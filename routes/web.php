@@ -338,13 +338,7 @@
 
 
                 Route::post('register-user', 'Auth\RegisterController@postRegister');
-                Route::get('/ip', 'Auth\LoginController@getUserIpAddr');
-                Route::get('/code', 'Auth\LoginController@getCode');
-                Route::post('/code', 'Auth\LoginController@postCode');
-                Route::get('/verification', 'Auth\LoginController@getVerification');
-                Route::post('/verification', 'Auth\LoginController@postVerification');
-                Route::get('/request-access', 'Auth\LoginController@getRequestAccess');
-                Route::post('/request-access', 'Auth\LoginController@postRequestAccess');
+                
                 Route::get('user/approve-access/{user_id}', 'Auth\LoginController@getApproveAccess');
                 Route::post('user/approve-access/{user_id}', 'Auth\LoginController@postApproveAccess');
 
@@ -480,6 +474,14 @@
             Route::get('/home', function () {
                     return redirect('/');
             });
+
+            Route::get('/ip', 'Auth\LoginController@getUserIpAddr');
+            Route::get('/code', 'Auth\LoginController@getCode');
+            Route::post('/code', 'Auth\LoginController@postCode');
+            Route::get('/verification', 'Auth\LoginController@getVerification');
+            Route::post('/verification', 'Auth\LoginController@postVerification');
+            Route::get('/request-access', 'Auth\LoginController@getRequestAccess');
+            Route::post('/request-access', 'Auth\LoginController@postRequestAccess');
 
 
         // });

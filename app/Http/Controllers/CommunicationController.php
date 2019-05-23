@@ -477,167 +477,196 @@ class CommunicationController extends Controller
 
   public function create(Request $request)
   {
+    $canCreate = 0;
     $forminputs = $request->get('inputs');
     parse_str($forminputs, $forminputs);
-    //return $forminputs;
-    if (isset($forminputs['communication']) && $forminputs['communication'] > 0) {
-      $is_reply = $forminputs['communication'];
-    } else {
-      $is_reply = 0;
-    }
-    if ($forminputs['messageBody']) {
-      if (isset($forminputs['audit'])) {
-        try {
-          $audit_id = (int) $forminputs['audit'];
-          $audit    = CachedAudit::where('id', $audit_id)->first();
-        } catch (\Illuminate\Database\QueryException $ex) {
-          dd($ex->getMessage());
-        }
-        $audit_id = $audit->id;
-      } else {
-        $audit_id = null;
-      }
-      if (isset($forminputs['project_id'])) {
-        try {
-          $project_id = (int) $forminputs['project_id'];
-          $project    = Project::where('id', $project_id)->first();
-        } catch (\Illuminate\Database\QueryException $ex) {
-          dd($ex->getMessage());
-        }
-        $project_id = $project->id;
-      } else {
-        $project_id = null;
-      }
-      $user = Auth::user();
-      // create message
-      $message_posted = (string) $forminputs['messageBody'];
-      if ($is_reply) {
-        $original_message = Communication::where('id', $is_reply)->first();
-        /// CHECK IF REPLY HAS A PARENT.. IF SO, WE NEED TO SET THE ORIGINAL MESSAGE TO THAT.
-        /// EVENTUALLY THIS SHOULD BECOME INDENTED IN THE VIEW
-        if (!is_null($original_message->parent_id)) {
-          //orginal message has a parent id
-          $originalMessageId = $original_message->parent_id;
-        } else {
-          $originalMessageId = $original_message->id;
-        }
-        $message = new Communication([
-          'owner_id'   => $user->id,
-          'audit_id'   => $audit_id,
-          'project_id' => $project_id,
-          'parent_id'  => $originalMessageId,
-          'message'    => $message_posted,
-        ]);
-        //$lc = new LogConverter('communication', 'create');
-        //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
-      } else {
-        $subject = (string) $forminputs['subject'];
-        $message = new Communication([
-          'owner_id'   => $user->id,
-          'audit_id'   => $audit_id,
-          'project_id' => $project_id,
-          'message'    => $message_posted,
-          'subject'    => $subject,
-        ]);
-        //$lc = new LogConverter('communication', 'create');
-        //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
-      }
-      $message->save();
-      //save documents
-      //Here we have 2 types of docs, local and docuware
-      //Saving local documents
-      if (isset($forminputs['local_documents']) && $forminputs['local_documents'] > 0) {
-        $local_documents = $forminputs['local_documents'];
-        $unique_docs     = array_unique($local_documents);
-        foreach ($unique_docs as $document_id) {
-          $doc_id                     = explode("-", $document_id);
-          $document                   = new CommunicationDocument;
-          $document->communication_id = $message->id;
-          $document->document_id      = $doc_id[1];
-          $document->save();
-        }
-      }
-      //saving docuware docs
-      if (isset($forminputs['docuware_documents']) && $forminputs['docuware_documents'] > 0) {
-        $docuware_documents = $forminputs['docuware_documents'];
-        $unique_docs        = array_unique($docuware_documents);
-        foreach ($unique_docs as $document_id) {
-          $doc_id   = explode("-", $document_id);
-          $document = new CommunicationDocument([
-            'communication_id' => $message->id,
-            'sync_docuware_id' => $doc_id[1],
-          ]);
-          $document->save();
-        }
-      }
 
-      // save recipients
-      if ($is_reply) {
-        // get existing recipients if a reply
-        $message_recipients_array = CommunicationRecipient::where('communication_id', $original_message->id)->pluck('user_id')->toArray();
-        foreach ($message_recipients_array as $recipient_id) {
-          $notification_sessions = $this->notificationSessions($request);
-          if ($recipient_id == $user->id) {
-            $recipient = new CommunicationRecipient([
-              'communication_id' => $message->id,
-              'user_id'          => (int) $recipient_id,
-              'seen'             => 1,
-            ]);
-            $recipient->save();
+    if (isset($forminputs['audit'])) {
+      try {
+        $audit_id = (int) $forminputs['audit'];
+        $audit    = CachedAudit::where('id', $audit_id)->first();
+      } catch (\Illuminate\Database\QueryException $ex) {
+        dd($ex->getMessage());
+      }
+      $audit_id = $audit->id;
+    } else {
+      $audit_id = null;
+    }
+    if (isset($forminputs['project_id'])) {
+      try {
+        $project_id = (int) $forminputs['project_id'];
+        $project    = Project::where('id', $project_id)->first();
+      } catch (\Illuminate\Database\QueryException $ex) {
+        dd($ex->getMessage());
+      }
+      $project_id = $project->id;
+    } else {
+      $project_id = null;
+    }
+
+    if(!is_null($project_id) && Auth::user()->cannot('access_auditor')){
+      // check to see if the user is allowed to access this project
+      $onProject = 0;
+      $onProject = $project->contactRoles->where('user_id',Auth::user()->id)->count();
+      if($onProject > 0){
+        /// if they are on the contact roles
+        $canCreate = 1;
+      }
+    }else{
+      // this is either not a project comm or they are an auditor or above... hence 
+      $canCreate = 1;
+    }
+
+    /// Make sure the project_ids match 
+    if(!is_null($audit) && !is_null($project)){
+      if($audit->project_id !== $project->id){
+        $canCreate = 0;
+        return "There is a mismatch in data - please notify support with the project and audit for which you are creating a message.";
+      }
+    }
+
+    if($canCreate == 1){
+      //return $forminputs;
+      if (isset($forminputs['communication']) && $forminputs['communication'] > 0) {
+        $is_reply = $forminputs['communication'];
+      } else {
+        $is_reply = 0;
+      }
+      if ($forminputs['messageBody']) {
+        
+        $user = Auth::user();
+        // create message
+        $message_posted = (string) $forminputs['messageBody'];
+        if ($is_reply) {
+          $original_message = Communication::where('id', $is_reply)->first();
+          /// CHECK IF REPLY HAS A PARENT.. IF SO, WE NEED TO SET THE ORIGINAL MESSAGE TO THAT.
+          /// EVENTUALLY THIS SHOULD BECOME INDENTED IN THE VIEW
+          if (!is_null($original_message->parent_id)) {
+            //orginal message has a parent id
+            $originalMessageId = $original_message->parent_id;
           } else {
-            $recipient = new CommunicationRecipient([
-              'communication_id' => $message->id,
-              'user_id'          => (int) $recipient_id,
-            ]);
-            $recipient->save();
+            $originalMessageId = $original_message->id;
+          }
+          $message = new Communication([
+            'owner_id'   => $user->id,
+            'audit_id'   => $audit_id,
+            'project_id' => $project_id,
+            'parent_id'  => $originalMessageId,
+            'message'    => $message_posted,
+          ]);
+          //$lc = new LogConverter('communication', 'create');
+          //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
+        } else {
+          $subject = (string) $forminputs['subject'];
+          $message = new Communication([
+            'owner_id'   => $user->id,
+            'audit_id'   => $audit_id,
+            'project_id' => $project_id,
+            'message'    => $message_posted,
+            'subject'    => $subject,
+          ]);
+          //$lc = new LogConverter('communication', 'create');
+          //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
+        }
+        $message->save();
+        //save documents
+        //Here we have 2 types of docs, local and docuware
+        //Saving local documents
+        if (isset($forminputs['local_documents']) && $forminputs['local_documents'] > 0) {
+          $local_documents = $forminputs['local_documents'];
+          $unique_docs     = array_unique($local_documents);
+          foreach ($unique_docs as $document_id) {
+            $doc_id                     = explode("-", $document_id);
+            $document                   = new CommunicationDocument;
+            $document->communication_id = $message->id;
+            $document->document_id      = $doc_id[1];
+            $document->save();
           }
         }
-        // add reply author
-        if (!in_array($original_message->owner_id, $message_recipients_array)) {
-          $notification_sessions = $this->notificationSessions($request);
-          $recipient             = new CommunicationRecipient([
-            'communication_id' => $message->id,
-            'user_id'          => (int) $original_message->owner_id,
-            'seen'             => 1,
-          ]);
-          $recipient->save();
+        //saving docuware docs
+        if (isset($forminputs['docuware_documents']) && $forminputs['docuware_documents'] > 0) {
+          $docuware_documents = $forminputs['docuware_documents'];
+          $unique_docs        = array_unique($docuware_documents);
+          foreach ($unique_docs as $document_id) {
+            $doc_id   = explode("-", $document_id);
+            $document = new CommunicationDocument([
+              'communication_id' => $message->id,
+              'sync_docuware_id' => $doc_id[1],
+            ]);
+            $document->save();
+          }
         }
-      } else {
-        if (isset($forminputs['recipients'])) {
-          $message_recipients_array = $forminputs['recipients'];
+
+        // save recipients
+        if ($is_reply) {
+          // get existing recipients if a reply
+          $message_recipients_array = CommunicationRecipient::where('communication_id', $original_message->id)->pluck('user_id')->toArray();
           foreach ($message_recipients_array as $recipient_id) {
-            if ($recipient_id > 0) {
-              $notification_sessions = $this->notificationSessions($forminputs);
-              $recipient             = new CommunicationRecipient([
+            $notification_sessions = $this->notificationSessions($request);
+            if ($recipient_id == $user->id) {
+              $recipient = new CommunicationRecipient([
+                'communication_id' => $message->id,
+                'user_id'          => (int) $recipient_id,
+                'seen'             => 1,
+              ]);
+              $recipient->save();
+            } else {
+              $recipient = new CommunicationRecipient([
                 'communication_id' => $message->id,
                 'user_id'          => (int) $recipient_id,
               ]);
               $recipient->save();
-            } else {
-              dd('Recipient id failed to pass - value received:' . $recipient_id, $message_recipients_array);
+            }
+          }
+          // add reply author
+          if (!in_array($original_message->owner_id, $message_recipients_array)) {
+            $notification_sessions = $this->notificationSessions($request);
+            $recipient             = new CommunicationRecipient([
+              'communication_id' => $message->id,
+              'user_id'          => (int) $original_message->owner_id,
+              'seen'             => 1,
+            ]);
+            $recipient->save();
+          }
+        } else {
+          if (isset($forminputs['recipients'])) {
+            $message_recipients_array = $forminputs['recipients'];
+            foreach ($message_recipients_array as $recipient_id) {
+              if ($recipient_id > 0) {
+                $notification_sessions = $this->notificationSessions($forminputs);
+                $recipient             = new CommunicationRecipient([
+                  'communication_id' => $message->id,
+                  'user_id'          => (int) $recipient_id,
+                ]);
+                $recipient->save();
+              } else {
+                dd('Recipient id failed to pass - value received:' . $recipient_id, $message_recipients_array);
+              }
             }
           }
         }
-      }
 
-      // send emails
-      if (env('APP_ENV') != 'local') {
-        try {
-          foreach ($message_recipients_array as $userToNotify) {
-            if ($userToNotify != $user->id) {
-              // don't send an email to sender
-              $current_recipient = User::where('id', '=', $userToNotify)->get()->first();
-              $emailNotification = new EmailNotification($userToNotify, $message->id);
-              \Mail::to($current_recipient->email)->send($emailNotification);
+        // send emails
+        if (env('APP_ENV') != 'local') {
+          try {
+            foreach ($message_recipients_array as $userToNotify) {
+              if ($userToNotify != $user->id) {
+                // don't send an email to sender
+                $current_recipient = User::where('id', '=', $userToNotify)->get()->first();
+                $emailNotification = new EmailNotification($userToNotify, $message->id);
+                \Mail::to($current_recipient->email)->send($emailNotification);
+              }
             }
+          } catch (\Illuminate\Database\QueryException $ex) {
+            $error = $ex->getMessage();
           }
-        } catch (\Illuminate\Database\QueryException $ex) {
-          $error = $ex->getMessage();
         }
+        return 1;
+      } else {
+        return "Something went wrong. We couldn't save your message. Make sure you have at least one recipient and that your message isn't empty.";
       }
-      return 1;
     } else {
-      return "Something went wrong. We couldn't save your message. Make sure you have at least one recipient and that your message isn't empty.";
+      return "Sorry, you do not have permission to send messages for this project.";
     }
   }
 
