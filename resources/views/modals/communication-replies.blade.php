@@ -66,7 +66,7 @@
 				<span class="uk-text-muted">Message: </span>
 			</div>
 			<div class="uk-width-5-6">
-				<div>{{ $message->message }}</div>
+				<div><pre>{{ $message->message }}</pre></div>
 			</div>
 		</div>
 	</div>
@@ -90,7 +90,7 @@
 				</span>
 			</div>
 			<div class="uk-width-1-1 uk-width-2-5@s communication-item-excerpt">
-				{{ $reply->message }}
+				<pre>{{ $reply->message }}</pre>
 			</div>
 			<div class="uk-width-1-1 uk-width-2-5@s">
 				@foreach($reply->local_documents as $document)
