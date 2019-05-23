@@ -518,8 +518,10 @@ if ($allowPageLoad) {
 		// Click on initial tab to load it:
 		setTimeout(function(){
 			@can('access_auditor')
+				// auditor default
 				$('#detail-tab-1').trigger("click");
 			@else
+				// property default
 				$('#detail-tab-2').trigger("click");
 			@endCan
 		},100);
