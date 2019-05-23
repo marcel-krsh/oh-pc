@@ -207,7 +207,7 @@ class CommunicationController extends Controller
           ->orderBy('organization_name', 'asc')
           ->orderBy('last_name', 'asc')
           ->get();
-          dd($recipients);
+         
       }
       $audit = $audit_details->id;
 
@@ -237,7 +237,7 @@ class CommunicationController extends Controller
       //     ->where('active', 1)
       //     ->orderBy('name', 'asc')->get();
 
-      if (Auth::user()->pm_access()) {
+      if (Auth::user()->cannot('access_auditor')) {
         $recipients = User::where('organization_id', '=', Auth::user()->organization_id)
           ->leftJoin('people', 'people.id', 'users.person_id')
           ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
@@ -247,7 +247,7 @@ class CommunicationController extends Controller
           ->orderBy('last_name', 'asc')
           ->get();
       } else {
-        $recipients = User::where('organization_id', '!=', $ohfa_id)
+        $recipients = User::where('organization_id', '<>', $ohfa_id)
           ->leftJoin('people', 'people.id', 'users.person_id')
           ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
           ->join('users_roles', 'users_roles.user_id', 'users.id')
@@ -257,15 +257,7 @@ class CommunicationController extends Controller
           ->orderBy('last_name', 'asc')
           ->get();
       }
-      $recipients = User::where('devco_key', 8305)
-        ->leftJoin('people', 'people.id', 'users.person_id')
-        ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
-      // ->join('users_roles', 'users_roles.user_id', 'users.id')
-        ->select('users.*', 'last_name', 'first_name', 'organization_name')
-        ->where('active', 1)
-        ->orderBy('organization_name', 'asc')
-        ->orderBy('last_name', 'asc')
-        ->get();
+      
 
       $audit = null;
 
