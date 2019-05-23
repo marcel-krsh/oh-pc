@@ -187,6 +187,7 @@ class CommunicationController extends Controller
         ->get();
 
       if (Auth::user()->cannot('access_auditor')) {
+
         $recipients = User::where('organization_id', '=', Auth::user()->organization_id)
           ->leftJoin('people', 'people.id', 'users.person_id')
           ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
@@ -195,6 +196,7 @@ class CommunicationController extends Controller
           ->where('active', 1)
           ->orderBy('last_name', 'asc')
           ->get();
+          dd($recipients);
       } else {
         $recipients = User::where('organization_id', '!=', $ohfa_id)
           ->leftJoin('people', 'people.id', 'users.person_id')
