@@ -127,8 +127,12 @@ class CommunicationController extends Controller
   public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null)
   {
     $ohfa_id = SystemSetting::get('ohfa_organization_id');
+
+    if( null !== $audit_id){
+      $audit        = Audit::where('id',intval($audit_id))->first();
+    }
     if (null !== $project_id) {
-      $project       = Project::where('id', '=', $project_id)->first();
+      $project       = Project::where('id', '=', intval($project_id))->first();
 
       if(!is_null($project)){
         $audit_details = $project->selected_audit();
@@ -176,7 +180,18 @@ class CommunicationController extends Controller
       } else {
         $documents = [];
       }
-
+      
+      /// If they are the PM - make it so they can only message the Lead on the current audit
+      if(Auth::user()->cannot('access_auditor') && !is_null($audit_id)){
+        $recipients_from_hfa = User::where('organization_id', '=', $ohfa_id)->where('users.id','=',$audit->lead_user_id)
+        ->leftJoin('people', 'people.id', 'users.person_id')
+        ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+        ->join('users_roles', 'users_roles.user_id', 'users.id')
+        ->select('users.*', 'last_name', 'first_name', 'organization_name', 'role_id')
+        ->where('active', 1)
+        ->orderBy('last_name', 'asc')
+        ->get();
+      } else {
       $recipients_from_hfa = User::where('organization_id', '=', $ohfa_id)->where('users.id','<>',Auth::user()->id)
         ->leftJoin('people', 'people.id', 'users.person_id')
         ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
@@ -185,6 +200,8 @@ class CommunicationController extends Controller
         ->where('active', 1)
         ->orderBy('last_name', 'asc')
         ->get();
+
+      }
 
       if (Auth::user()->cannot('access_auditor')) {
 
