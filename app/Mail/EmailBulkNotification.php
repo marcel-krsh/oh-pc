@@ -26,7 +26,7 @@ class EmailBulkNotification extends Mailable
   {
     $this->data    = $data;
     $this->user    = $user;
-    $this->subject = "[OHFA Allita PC] Notifications ";
+    $this->subject = "[OHFA PC] Notifications ";
     $this->owner   = Cache::remember('allita-notifier', 1440, function () {
       return User::whereEmail('noreply@ohiohome.org')->first();
     });
