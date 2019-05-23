@@ -725,7 +725,7 @@ class ReportsController extends Controller
           $print       = $request->get('print');
 
           $history = ['date' => date('m/d/Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => 'Opened and viewed report'];
-          if(Auth::user()->cannot('access_auditor'){
+          if(Auth::user()->cannot('access_auditor')){
             //user is a PM
             $report->update(['crr_approval_type_id'=>7]);
           }
