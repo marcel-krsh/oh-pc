@@ -497,7 +497,7 @@ if ($allowPageLoad) {
 	
 	@endif
 
-	@if($tab !== null)
+	@if($tab !== null && Auth::user()->can('access_auditor'))
 	
 
 		setTimeout(function(){
@@ -518,14 +518,13 @@ if ($allowPageLoad) {
 	
 		// Click on initial tab to load it:
 		setTimeout(function(){
-			// @can('access_auditor')
-			// 	// auditor default
-			// 	$('#detail-tab-1').trigger("click");
-			// @else
-			// 	// property default
-			// 	$('#detail-tab-2').trigger("click");
-			$('#detail-tab-2').trigger("click");
-			// @endCan
+			@can('access_auditor')
+				// auditor default
+				$('#detail-tab-1').trigger("click");
+			@else
+				// property default
+				$('#detail-tab-2').trigger("click");
+			@endCan
 		},100);
 
 		window.currentSite='allita_pc';
