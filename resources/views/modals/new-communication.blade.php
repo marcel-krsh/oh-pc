@@ -8,10 +8,19 @@
 		<div class="uk-container uk-container-center"> <!-- start form container -->
 			<div uk-grid class="uk-grid-small ">
 				<div class="uk-width-1-1 uk-padding-small">
-					@if($project)
-					<h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}}</span></h3>
+					@if(!is_null($project))
+                        @if(!is_null($audit))
+                            @if(!is_null($finding))
+
+                                <h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}} : {{$project->project_name}} | Audit: {{$audit->id}} Findings Response</span></h3>
+                            @else
+                                <h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}} : {{$project->project_name}} | Audit: {{$audit->id}}</span></h3>
+                            @endIf
+                        @else
+					       <h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}} : {{$project->project_name}}</span></h3>
+                        @endIf
 					@else
-					<h3>New Message</h3>
+					   <h3>New Message</h3>
 					@endif
 				</div>
 			</div>
