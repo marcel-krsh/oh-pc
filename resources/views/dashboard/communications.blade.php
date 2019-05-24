@@ -131,7 +131,7 @@
 				<div class="uk-margin-right">
 					@if($message->audit_id && $message->audit)
 					<p style="margin-bottom:0">{{ $message->audit_id }}</p>
-					<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left;title:{{ $message->audit->title }}">
+					<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left;title:{{ $message->audit->title }}"  onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')">
 						<small>{{ $message->audit->address }},
 							{{ $message->audit->city }}, @if($message->audit->state){{ $message->audit->state }} @endif {{ $message->audit->zip }}
 						</small>
@@ -142,7 +142,7 @@
 			<div class="uk-width-1-5@m communication-item-parcel uk-visible@m">
 				@if($message->audit_id && $message->audit)
 				<p style="margin-bottom:0"><a class="uk-link-muted">{{ $message->audit_id }}</a></p>
-				<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left" title="{{ $message->audit->title }}">
+				<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left" title="{{ $message->audit->title }}"  onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')">
 					<small>{{ $message->audit->address }},
 						{{ $message->audit->city }}, @if($message->audit->state){{ $message->audit->state }} @endif {{ $message->audit->zip }}
 					</small>
@@ -153,7 +153,7 @@
 				@if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0)
 				<div uk-grid class="uk-grid-collapse">
 					<div class="uk-width-5-6@m uk-width-1-1@s communication-item-excerpt" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
-						@if($message->subject)<strong>{{ $message->subject }}</strong><hr /> @endif
+						@if($message->subject){{ $message->subject }}:<hr /> @endif
 						{{ $message->message }}
 					</div>
 					<div class="uk-width-1-6@m uk-width-1-1@s communication-item-excerpt uk-align-center" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
@@ -165,7 +165,7 @@
 					</div>
 				</div>
 				@else
-				@if($message->subject)<strong>{{ $message->subject }}</strong><br />@endif
+				@if($message->subject){{ $message->subject }}:<br />@endif
 				{{ $message->message }}
 				@endif
 			</div>

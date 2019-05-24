@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Traits\DocumentTrait;
 use App\Mail\EmailNotification;
+use App\Models\Audit;
 use App\Models\CachedAudit;
 use App\Models\Communication;
 use App\Models\CommunicationDocument;
@@ -11,6 +12,7 @@ use App\Models\CommunicationRecipient;
 use App\Models\CrrReport;
 use App\Models\Document;
 use App\Models\DocumentCategory;
+use App\Models\Finding;
 use App\Models\NotificationsTriggered;
 use App\Models\Project;
 use App\Models\SystemSetting;
@@ -124,12 +126,30 @@ class CommunicationController extends Controller
     return view('projects.pproject_communications', compact('project', 'messages', 'owners', 'owners_array'));
   }
 
-  public function newCommunicationEntry($project_id = null)
+  public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null)
   {
     $ohfa_id = SystemSetting::get('ohfa_organization_id');
+
+    if (null !== $audit_id) {
+      $audit = Audit::where('id', intval($audit_id))->first();
+    } else {
+      $audit = null;
+    }
+
+    if (null !== $finding_id) {
+      $finding  = Finding::where('id', intval($finding_id))->first();
+      $findings = Finding::where('audit_id', $audit_id)->get();
+    } else {
+      $finding  = null;
+      $findings = null;
+    }
+
     if (null !== $project_id) {
-      $project       = Project::where('id', '=', $project_id)->first();
-      $audit_details = $project->selected_audit();
+      $project = Project::where('id', '=', intval($project_id))->first();
+
+      if (!is_null($project)) {
+        $audit_details = $project->selected_audit();
+      }
       if (local()) {
         $docuware_documents = Document::where('id', -100)->get();
       } else {
@@ -174,17 +194,29 @@ class CommunicationController extends Controller
         $documents = [];
       }
 
-      $recipients_from_hfa = User::where('organization_id', '=', $ohfa_id)
-        ->leftJoin('people', 'people.id', 'users.person_id')
-        ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
-        ->join('users_roles', 'users_roles.user_id', 'users.id')
-        ->select('users.*', 'last_name', 'first_name', 'organization_name', 'role_id')
-        ->where('active', 1)
-        ->orderBy('last_name', 'asc')
-        ->get();
+      /// If they are the PM - make it so they can only message the Lead on the current audit
+      if (Auth::user()->cannot('access_auditor') && !is_null($audit_id)) {
+        $recipients_from_hfa = User::where('organization_id', '=', $ohfa_id)->where('users.id', '=', $audit->lead_user_id)
+          ->leftJoin('people', 'people.id', 'users.person_id')
+          ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+          ->join('users_roles', 'users_roles.user_id', 'users.id')
+          ->select('users.*', 'last_name', 'first_name', 'organization_name', 'role_id')
+          ->where('active', 1)
+          ->orderBy('last_name', 'asc')
+          ->get();
+      } else {
+        $recipients_from_hfa = User::where('organization_id', '=', $ohfa_id)->where('users.id', '<>', Auth::user()->id)
+          ->leftJoin('people', 'people.id', 'users.person_id')
+          ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+          ->join('users_roles', 'users_roles.user_id', 'users.id')
+          ->select('users.*', 'last_name', 'first_name', 'organization_name', 'role_id')
+          ->where('active', 1)
+          ->orderBy('last_name', 'asc')
+          ->get();
+      }
 
-      if (Auth::user()->pm_access()) {
-        $recipients = User::where('organization_id', '=', Auth::user()->organization_id)
+      if (Auth::user()->cannot('access_auditor')) {
+        $recipients = User::where('organization_id', '=', Auth::user()->organization_id)->where('users.id', '<>', Auth::user()->id)
           ->leftJoin('people', 'people.id', 'users.person_id')
           ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
           ->join('users_roles', 'users_roles.user_id', 'users.id')
@@ -193,7 +225,7 @@ class CommunicationController extends Controller
           ->orderBy('last_name', 'asc')
           ->get();
       } else {
-        $recipients = User::where('organization_id', '!=', $ohfa_id)
+        $recipients = User::where('organization_id', '<>', $ohfa_id)->where('users.id', '<>', Auth::user()->id)
           ->leftJoin('people', 'people.id', 'users.person_id')
           ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
           ->join('users_roles', 'users_roles.user_id', 'users.id')
@@ -203,9 +235,24 @@ class CommunicationController extends Controller
           ->orderBy('last_name', 'asc')
           ->get();
       }
-      $audit = $audit_details->id;
+      //$audit = $audit_details->id;
 
-      return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id'));
+      if (null !== $report_id) {
+        $report = CrrReport::with('lead')->find($report_id);
+        if ('CAR' == $report->template()->template_name) {
+          $lead_id    = $report->lead->id;
+          $recipients = User::where('users.id', $lead_id)
+            ->leftJoin('people', 'people.id', 'users.person_id')
+            ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+            ->join('users_roles', 'users_roles.user_id', 'users.id')
+            ->select('users.*', 'last_name', 'first_name', 'organization_name')
+            ->where('active', 1)
+            ->orderBy('organization_name', 'asc')
+            ->orderBy('last_name', 'asc')
+            ->get();
+        }
+      }
+      return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings'));
     } else {
       $project             = null;
       $document_categories = DocumentCategory::where('parent_id', '<>', 0)->where('active', '1')->orderby('document_category_name', 'asc')->get();
@@ -216,7 +263,7 @@ class CommunicationController extends Controller
       $document_categories_key = [];
       $documents               = [];
 
-      $recipients_from_hfa = User::where('organization_id', '=', $ohfa_id)
+      $recipients_from_hfa = User::where('organization_id', '=', $ohfa_id)->where('users.id', '<>', Auth::user()->id)
         ->where('active', 1)
         ->leftJoin('people', 'people.id', 'users.person_id')
         ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
@@ -231,8 +278,8 @@ class CommunicationController extends Controller
       //     ->where('active', 1)
       //     ->orderBy('name', 'asc')->get();
 
-      if (Auth::user()->pm_access()) {
-        $recipients = User::where('organization_id', '=', Auth::user()->organization_id)
+      if (Auth::user()->cannot('access_auditor')) {
+        $recipients = User::where('organization_id', '=', Auth::user()->organization_id)->where('users.id', '<>', Auth::user()->id)
           ->leftJoin('people', 'people.id', 'users.person_id')
           ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
           ->join('users_roles', 'users_roles.user_id', 'users.id')
@@ -241,7 +288,7 @@ class CommunicationController extends Controller
           ->orderBy('last_name', 'asc')
           ->get();
       } else {
-        $recipients = User::where('organization_id', '!=', $ohfa_id)
+        $recipients = User::where('organization_id', '<>', $ohfa_id)->where('users.id', '<>', Auth::user()->id)
           ->leftJoin('people', 'people.id', 'users.person_id')
           ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
           ->join('users_roles', 'users_roles.user_id', 'users.id')
@@ -251,6 +298,7 @@ class CommunicationController extends Controller
           ->orderBy('last_name', 'asc')
           ->get();
       }
+
       $audit = null;
 
       return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project'));
@@ -469,167 +517,217 @@ class CommunicationController extends Controller
 
   public function create(Request $request)
   {
+    $canCreate  = 0;
     $forminputs = $request->get('inputs');
     parse_str($forminputs, $forminputs);
-    //return $forminputs;
-    if (isset($forminputs['communication']) && $forminputs['communication'] > 0) {
-      $is_reply = $forminputs['communication'];
-    } else {
-      $is_reply = 0;
-    }
-    if ($forminputs['messageBody']) {
-      if (isset($forminputs['audit'])) {
-        try {
-          $audit_id = (int) $forminputs['audit'];
-          $audit    = CachedAudit::where('id', $audit_id)->first();
-        } catch (\Illuminate\Database\QueryException $ex) {
-          dd($ex->getMessage());
-        }
-        $audit_id = $audit->id;
-      } else {
-        $audit_id = null;
-      }
-      if (isset($forminputs['project_id'])) {
-        try {
-          $project_id = (int) $forminputs['project_id'];
-          $project    = Project::where('id', $project_id)->first();
-        } catch (\Illuminate\Database\QueryException $ex) {
-          dd($ex->getMessage());
-        }
-        $project_id = $project->id;
-      } else {
-        $project_id = null;
-      }
-      $user = Auth::user();
-      // create message
-      $message_posted = (string) $forminputs['messageBody'];
-      if ($is_reply) {
-        $original_message = Communication::where('id', $is_reply)->first();
-        /// CHECK IF REPLY HAS A PARENT.. IF SO, WE NEED TO SET THE ORIGINAL MESSAGE TO THAT.
-        /// EVENTUALLY THIS SHOULD BECOME INDENTED IN THE VIEW
-        if (!is_null($original_message->parent_id)) {
-          //orginal message has a parent id
-          $originalMessageId = $original_message->parent_id;
-        } else {
-          $originalMessageId = $original_message->id;
-        }
-        $message = new Communication([
-          'owner_id'   => $user->id,
-          'audit_id'   => $audit_id,
-          'project_id' => $project_id,
-          'parent_id'  => $originalMessageId,
-          'message'    => $message_posted,
-        ]);
-        //$lc = new LogConverter('communication', 'create');
-        //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
-      } else {
-        $subject = (string) $forminputs['subject'];
-        $message = new Communication([
-          'owner_id'   => $user->id,
-          'audit_id'   => $audit_id,
-          'project_id' => $project_id,
-          'message'    => $message_posted,
-          'subject'    => $subject,
-        ]);
-        //$lc = new LogConverter('communication', 'create');
-        //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
-      }
-      $message->save();
-      //save documents
-      //Here we have 2 types of docs, local and docuware
-      //Saving local documents
-      if (isset($forminputs['local_documents']) && $forminputs['local_documents'] > 0) {
-        $local_documents = $forminputs['local_documents'];
-        $unique_docs     = array_unique($local_documents);
-        foreach ($unique_docs as $document_id) {
-          $doc_id                     = explode("-", $document_id);
-          $document                   = new CommunicationDocument;
-          $document->communication_id = $message->id;
-          $document->document_id      = $doc_id[1];
-          $document->save();
-        }
-      }
-      //saving docuware docs
-      if (isset($forminputs['docuware_documents']) && $forminputs['docuware_documents'] > 0) {
-        $docuware_documents = $forminputs['docuware_documents'];
-        $unique_docs        = array_unique($docuware_documents);
-        foreach ($unique_docs as $document_id) {
-          $doc_id   = explode("-", $document_id);
-          $document = new CommunicationDocument([
-            'communication_id' => $message->id,
-            'sync_docuware_id' => $doc_id[1],
-          ]);
-          $document->save();
-        }
-      }
+    $audit  = null;
+    $report = null;
 
-      // save recipients
-      if ($is_reply) {
-        // get existing recipients if a reply
-        $message_recipients_array = CommunicationRecipient::where('communication_id', $original_message->id)->pluck('user_id')->toArray();
-        foreach ($message_recipients_array as $recipient_id) {
-          $notification_sessions = $this->notificationSessions($request);
-          if ($recipient_id == $user->id) {
-            $recipient = new CommunicationRecipient([
-              'communication_id' => $message->id,
-              'user_id'          => (int) $recipient_id,
-              'seen'             => 1,
-            ]);
-            $recipient->save();
+    if (isset($forminputs['audit'])) {
+      try {
+        $audit_id = (int) $forminputs['audit'];
+        $audit    = CachedAudit::where('audit_id', $audit_id)->first();
+      } catch (\Illuminate\Database\QueryException $ex) {
+        dd($ex->getMessage());
+      }
+      $audit_id = $audit->id;
+    } else {
+      $audit_id = null;
+    }
+
+    if (isset($forminputs['report'])) {
+      try {
+        $report_id = (int) $forminputs['report'];
+        $report    = CrrReport::where('id', $report_id)->first();
+      } catch (\Illuminate\Database\QueryException $ex) {
+        dd($ex->getMessage());
+      }
+      $report_id = $report->id;
+    } else {
+      $report_id = null;
+    }
+
+    if (isset($forminputs['project_id'])) {
+      try {
+        $project_id = (int) $forminputs['project_id'];
+        $project    = Project::where('id', $project_id)->first();
+      } catch (\Illuminate\Database\QueryException $ex) {
+        dd($ex->getMessage());
+      }
+      $project_id = $project->id;
+    } else {
+      $project_id = null;
+    }
+
+    if (!is_null($project_id) && Auth::user()->cannot('access_auditor')) {
+      // check to see if the user is allowed to access this project
+      $onProject = 0;
+      $onProject = $project->contactRoles->where('person_id', Auth::user()->person_id)->count();
+      //dd($onProject,$project->contactRoles);
+      if ($onProject > 0) {
+        /// if they are on the contact roles
+        $canCreate = 1;
+      }
+    } else {
+      // this is either not a project comm or they are an auditor or above... hence
+      $canCreate = 1;
+    }
+
+    /// Make sure the project_ids match
+    if (!is_null($audit) && !is_null($project)) {
+      if ($audit->project_id !== $project->id) {
+        $canCreate = 0;
+        return "There is a mismatch in data - please notify support with the project and audit for which you are creating a message.";
+      }
+    }
+
+    if (1 == $canCreate) {
+      //return $forminputs;
+      if (isset($forminputs['communication']) && $forminputs['communication'] > 0) {
+        $is_reply = $forminputs['communication'];
+      } else {
+        $is_reply = 0;
+      }
+      if ($forminputs['messageBody']) {
+        $user = Auth::user();
+        // create message
+        $message_posted = (string) $forminputs['messageBody'];
+        if ($is_reply) {
+          $original_message = Communication::where('id', $is_reply)->first();
+          /// CHECK IF REPLY HAS A PARENT.. IF SO, WE NEED TO SET THE ORIGINAL MESSAGE TO THAT.
+          /// EVENTUALLY THIS SHOULD BECOME INDENTED IN THE VIEW
+          if (!is_null($original_message->parent_id)) {
+            //orginal message has a parent id
+            $originalMessageId = $original_message->parent_id;
           } else {
-            $recipient = new CommunicationRecipient([
-              'communication_id' => $message->id,
-              'user_id'          => (int) $recipient_id,
-            ]);
-            $recipient->save();
+            $originalMessageId = $original_message->id;
+          }
+          $message = new Communication([
+            'owner_id'   => $user->id,
+            'audit_id'   => $audit_id,
+            'project_id' => $project_id,
+            'parent_id'  => $originalMessageId,
+            'message'    => $message_posted,
+            'subject'    => 'RE: ' . $original_message->subject,
+          ]);
+          //$lc = new LogConverter('communication', 'create');
+          //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
+        } else {
+          $subject = (string) $forminputs['subject'];
+          $message = new Communication([
+            'owner_id'   => $user->id,
+            'audit_id'   => $audit_id,
+            'project_id' => $project_id,
+            'message'    => $message_posted,
+            'subject'    => $subject,
+          ]);
+          //$lc = new LogConverter('communication', 'create');
+          //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
+        }
+        $message->save();
+        //save documents
+        //Here we have 2 types of docs, local and docuware
+        //Saving local documents
+        if (isset($forminputs['local_documents']) && $forminputs['local_documents'] > 0) {
+          $local_documents = $forminputs['local_documents'];
+          $unique_docs     = array_unique($local_documents);
+          foreach ($unique_docs as $document_id) {
+            $doc_id                     = explode("-", $document_id);
+            $document                   = new CommunicationDocument;
+            $document->communication_id = $message->id;
+            $document->document_id      = $doc_id[1];
+            $document->save();
           }
         }
-        // add reply author
-        if (!in_array($original_message->owner_id, $message_recipients_array)) {
-          $notification_sessions = $this->notificationSessions($request);
-          $recipient             = new CommunicationRecipient([
-            'communication_id' => $message->id,
-            'user_id'          => (int) $original_message->owner_id,
-            'seen'             => 1,
-          ]);
-          $recipient->save();
+        //saving docuware docs
+        if (isset($forminputs['docuware_documents']) && $forminputs['docuware_documents'] > 0) {
+          $docuware_documents = $forminputs['docuware_documents'];
+          $unique_docs        = array_unique($docuware_documents);
+          foreach ($unique_docs as $document_id) {
+            $doc_id   = explode("-", $document_id);
+            $document = new CommunicationDocument([
+              'communication_id' => $message->id,
+              'sync_docuware_id' => $doc_id[1],
+            ]);
+            $document->save();
+          }
         }
-      } else {
-        if (isset($forminputs['recipients'])) {
-          $message_recipients_array = $forminputs['recipients'];
+
+        // save recipients
+        if ($is_reply) {
+          // get existing recipients if a reply
+          $message_recipients_array = CommunicationRecipient::where('communication_id', $original_message->id)->pluck('user_id')->toArray();
           foreach ($message_recipients_array as $recipient_id) {
-            if ($recipient_id > 0) {
-              $notification_sessions = $this->notificationSessions($forminputs);
-              $recipient             = new CommunicationRecipient([
+            $notification_sessions = $this->notificationSessions($request);
+            if ($recipient_id == $user->id) {
+              $recipient = new CommunicationRecipient([
+                'communication_id' => $message->id,
+                'user_id'          => (int) $recipient_id,
+                'seen'             => 1,
+              ]);
+              $recipient->save();
+            } else {
+              $recipient = new CommunicationRecipient([
                 'communication_id' => $message->id,
                 'user_id'          => (int) $recipient_id,
               ]);
               $recipient->save();
-            } else {
-              dd('Recipient id failed to pass - value received:' . $recipient_id, $message_recipients_array);
+            }
+          }
+          // add reply author
+          if (!in_array($original_message->owner_id, $message_recipients_array)) {
+            $notification_sessions = $this->notificationSessions($request);
+            $recipient             = new CommunicationRecipient([
+              'communication_id' => $message->id,
+              'user_id'          => (int) $original_message->owner_id,
+              'seen'             => 1,
+            ]);
+            $recipient->save();
+          }
+        } else {
+          if (isset($forminputs['recipients'])) {
+            $message_recipients_array = $forminputs['recipients'];
+            foreach ($message_recipients_array as $recipient_id) {
+              if ($recipient_id > 0) {
+                $notification_sessions = $this->notificationSessions($forminputs);
+                $recipient             = new CommunicationRecipient([
+                  'communication_id' => $message->id,
+                  'user_id'          => (int) $recipient_id,
+                ]);
+                $recipient->save();
+              } else {
+                dd('Recipient id failed to pass - value received:' . $recipient_id, $message_recipients_array);
+              }
             }
           }
         }
-      }
 
-      // send emails
-      if (env('APP_ENV') != 'local') {
-        try {
-          foreach ($message_recipients_array as $userToNotify) {
-            if ($userToNotify != $user->id) {
-              // don't send an email to sender
-              $current_recipient = User::where('id', '=', $userToNotify)->get()->first();
-              $emailNotification = new EmailNotification($userToNotify, $message->id);
-              \Mail::to($current_recipient->email)->send($emailNotification);
+        // send emails
+        if (env('APP_ENV') != 'local') {
+          try {
+            foreach ($message_recipients_array as $userToNotify) {
+              if ($userToNotify != $user->id) {
+                // don't send an email to sender
+                $current_recipient = User::where('id', '=', $userToNotify)->get()->first();
+                $emailNotification = new EmailNotification($userToNotify, $message->id);
+                \Mail::to($current_recipient->email)->send($emailNotification);
+              }
             }
+          } catch (\Illuminate\Database\QueryException $ex) {
+            $error = $ex->getMessage();
           }
-        } catch (\Illuminate\Database\QueryException $ex) {
-          $error = $ex->getMessage();
         }
+        if (!is_null($report_id)) {
+          // we sent a notification about the report
+          // right now we can assume this is to the pm - will need to add logic for notifications sent to managers?
+          $report->update(['crr_approval_type_id' => 6]);
+        }
+        return 1;
+      } else {
+        return "Something went wrong. We couldn't save your message. Make sure you have at least one recipient and that your message isn't empty.";
       }
-      return 1;
     } else {
-      return "Something went wrong. We couldn't save your message. Make sure you have at least one recipient and that your message isn't empty.";
+      return "Sorry, you do not have permission to send messages for this project.";
     }
   }
 
@@ -1213,7 +1311,7 @@ class CommunicationController extends Controller
         ->where('active', 1)
         ->get();
       $audit = $audit_details->id;
-      return view('modals.report-ready', compact('audit', 'project', 'recipients', 'report_id', 'audit_details'));
+      return view('modals.report-ready', compact('audit', 'project', 'recipients', 'report_id', 'audit_details', 'report'));
     } else {
       $project             = null;
       $document_categories = DocumentCategory::where('parent_id', '<>', 0)->where('active', '1')->orderby('document_category_name', 'asc')->get();

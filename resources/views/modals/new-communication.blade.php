@@ -4,14 +4,23 @@
 <div id="dynamic-modal-content">
 	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
 		@if(!is_null($project))<input type="hidden" name="project_id" value="{{$project->id}}">@endif
-		@if(!is_null($audit))<input type="hidden" name="audit" value="{{$audit}}">@endif
+		@if(!is_null($audit))<input type="hidden" name="audit" value="{{$audit->id}}">@endif
 		<div class="uk-container uk-container-center"> <!-- start form container -->
 			<div uk-grid class="uk-grid-small ">
 				<div class="uk-width-1-1 uk-padding-small">
-					@if($project)
-					<h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}}</span></h3>
+					@if(!is_null($project))
+                        @if(!is_null($audit))
+                            @if(!is_null($finding))
+
+                                <h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}} : {{$project->project_name}} | Audit: {{$audit->id}} Findings Response</span></h3>
+                            @else
+                                <h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}} : {{$project->project_name}} | Audit: {{$audit->id}}</span></h3>
+                            @endIf
+                        @else
+					       <h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}} : {{$project->project_name}}</span></h3>
+                        @endIf
 					@else
-					<h3>New Message</h3>
+					   <h3>New Message</h3>
 					@endif
 				</div>
 			</div>
@@ -172,11 +181,14 @@
     			if(data!=1){
     				UIkit.modal.alert(data,{stack: true});
     			} else {
-    				UIkit.modal.alert('Your message has been saved.',{stack: true});
+    				//UIkit.modal.alert('Your message has been saved.',{stack: true});
+                    @if(!$project || Auth::user()->cannot('access_auditor'))
+                    $('#detail-tab-2').trigger('click');
+                    @endIf
     			}
     		} );
 
-    		@if($project)
+    	@if($project && Auth::user()->can('access_auditor'))
     		var id = {{$project->id}};
         loadTab('/projects/'+{{$project->id}}+'/communications/', '2', 0, 0, 'project-', 1);
         //loadParcelSubTab('communications',id);

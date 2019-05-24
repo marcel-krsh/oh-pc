@@ -40,7 +40,7 @@ class EmailNotification extends Mailable
         $this->message = Communication::where('id', '=', $message_id)->get()->first();
         $this->owner = User::where('id', '=', $recipient_id)->get()->first();
         $this->user = $this->owner;
-        $this->subject = "[OHFA Allita PC] ".$this->message->subject;
+        $this->subject = "[OHFA PC] ".$this->message->subject;
     }
 
     /**

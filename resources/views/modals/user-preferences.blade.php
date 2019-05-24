@@ -147,7 +147,7 @@
 							<h3 class="uk-margin-small-top">Notification Preference<i class="a-bell-snooze uk-text-danger" style="vertical-align: middle; padding-left: 2px;"></i></h3>
 							<div class="uk-grid-small uk-margin-remove" uk-grid>
 								<div class="uk-width-1-3 uk-padding-remove">
-									<label class="uk-text-small">How ofen you want the notifications?<span class="uk-text-danger uk-text-bold">*</span></label>
+									<label class="uk-text-small">How often would you like to receive notifications? <span class="uk-text-danger uk-text-bold">*</span></label>
 									<select class="uk-select" id="notification_setting" name="notification_setting">
 										<option value="1" {{ $unp ? ($unp->frequency == 1 ? 'selected=selected': '') : ''}}>Immediately</option>
 										<option value="2" {{ $unp ? ($unp->frequency == 2 ? 'selected=selected': '') : 'selected=selected'}}>Hourly</option>

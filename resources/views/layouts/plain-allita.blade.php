@@ -65,14 +65,14 @@
 				<div id="plain-main-window" class="uk-width-1-1" style="padding-top:20px">
 					<div class="uk-grid " >
 						<div class="uk-width-1-1">
-							<a href="{{ url('/') }}"><img class="uk-align-center" src="{{url('/Allita-Blight-Icon.png')}}" width="70" height="48"></a>
+							
 						</div>
 					</div>
 					@yield('content')
 				</div>
 			</div>
 		</div>
-		<div class="uk-width-1-1 uk-margin-large-bottom"><p class="uk-text-center uk-dark uk-text-small uk-light">Powered by <a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light">Allita</a> for <a href="http://ohiohome.org" class="uk-link-muted uk-dark uk-light" target="_blank">Allita Program Compliance:</a> &copy;2018 — 2019.</p></div>
+		<div class="uk-width-1-1 uk-margin-large-bottom"><p class="uk-text-center uk-dark uk-text-small uk-light">Powered by <a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light">Allita</a> for <a href="http://ohiohome.org" class="uk-link-muted uk-dark uk-light" target="_blank">Ohio Housing Finance Agency</a> &copy;2018 — {{date('Y',time())}}.</p></div>
 	</div>
 
 	<script>
