@@ -529,6 +529,7 @@ class CommunicationController extends Controller
       } catch (\Illuminate\Database\QueryException $ex) {
         dd($ex->getMessage());
       }
+      //dd($forminputs['audit'],$audit);
       $audit_id = $audit->id;
     } else {
       $audit_id = null;
@@ -1309,7 +1310,7 @@ class CommunicationController extends Controller
       $recipients    = User::whereIn('person_key', $user_keys)->with('person')
         ->where('active', 1)
         ->get();
-      $audit = $audit_details->id;
+      $audit = $audit_details->audit_id;
       return view('modals.report-ready', compact('audit', 'project', 'recipients', 'report_id', 'audit_details', 'report'));
     } else {
       $project             = null;

@@ -242,7 +242,6 @@
             Route::post('/findings/{findingid}/cancel', 'FindingController@cancelFinding');
             Route::post('/findings/{findingid}/restore', 'FindingController@restoreFinding');
             Route::post('/findings/{findingid}/resolve', 'FindingController@resolveFinding');
-            Route::get('/modals/addreply/{id}/{fromtype}/{type}','FindingController@replyFindingForm');
             Route::get('/modals/updatestream/{type}/{auditid}/{buildingid?}/{unitid?}/{amenityid?}/{toplevel?}/{refresh}', 'FindingController@modalFindings');
 
             Route::get('/findings/modals/locations/{auditid}', 'FindingController@findingLocations');
@@ -393,7 +392,8 @@
 
             Route::get('/modals/auditors/{id}/preferences', 'UserController@preferences')->name('auditor.preferences');
 
-
+            Route::get('/modals/addreply/{id}/{fromtype}/{type}','FindingController@replyFindingForm');
+            
 
             //Route::get('/', function(){dd(\Auth::user(),session('brian'));});
             Route::get('dashboard/reports', 'ReportsController@reports')->name('dashboard.reports');

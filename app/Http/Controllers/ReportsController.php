@@ -432,7 +432,7 @@ class ReportsController extends Controller
   {
     //replace string value with current audit values.
      $string = str_replace("||REPORT ID||", $report->id, $string);
-      $string = str_replace("||VERSION||", $report->version, $string);
+      $string = str_replace("||VERSION||", ($report->version + 1), $string);
     $string = str_replace("||PROJECT NAME||", $audit->project->project_name, $string);
     $string = str_replace("||AUDIT ID||", $audit->id, $string);
     $string = str_replace("||PROJECT NUMBER||", $audit->project->project_number, $string);

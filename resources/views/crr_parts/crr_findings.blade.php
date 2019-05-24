@@ -103,7 +103,7 @@
 				<strong>{{$f->building->building_name}}</strong> <br />
 				@if(!is_null($f->building->address))
 			   	{{$f->building->address->line_1}} {{$f->building->address->line_2}}<br />
-			   	{{$f->building->address->city}}, {{$f->building->address->state}} {{$f->building->address->zip}}
+			   	{{$f->building->address->city}}, {{$f->building->address->state}} {{$f->building->address->zip}}<br /><br />
 			   	@endIf
 
 			@elseIf(!is_null($f->unit_id))
@@ -131,7 +131,7 @@
 				@if($f->finding_type->type == 'file')
 					<i class="a-folder"></i>
 				@endIf  {{$f->amenity->amenity_description}}</h2>
-			   	<strong>{{$f->finding_type->name}}</strong><br>
+			   	<strong> {{$f->finding_type->name}}</strong><br>
 			   	@if($f->level == 1)
 			   		{{$f->finding_type->one_description}}
 			   	@endIf
@@ -139,7 +139,11 @@
 			   		{{$f->finding_type->two_description}}
 			   	@endIf
 			   	@if($f->level == 3)
+
 			   		{{$f->finding_type->three_description}}
+			   	@endIf
+			   	@if((is_null($f->level) || $f->level == 0) && $f->finding_type->type !== 'file')
+			   	<span style="color:red" class="attention">!!LEVEL NOT SET!!</span> 
 			   	@endIf
 			   	@if(!is_null($f->comments))
 
