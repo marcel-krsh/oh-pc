@@ -15,6 +15,7 @@ use App\Models\NotificationsTriggered;
 use App\Models\Project;
 use App\Models\SystemSetting;
 use App\Models\Audit;
+use App\Models\Finding;
 //use App\LogConverter;
 use App\Models\User;
 use Auth;
@@ -131,7 +132,18 @@ class CommunicationController extends Controller
 
     if( null !== $audit_id){
       $audit        = Audit::where('id',intval($audit_id))->first();
+    } else {
+      $audit = null;
     }
+
+    if( null !== $finding_id){
+      $finding        = Finding::where('id',intval($finding_id))->first();
+      $findings       = Finding::where('audit_id',$audit_id)->get();
+    } else {
+      $finding = null;
+      $findings = null;
+    }
+
     if (null !== $project_id) {
       $project       = Project::where('id', '=', intval($project_id))->first();
 
@@ -227,9 +239,9 @@ class CommunicationController extends Controller
           ->get();
          
       }
-      $audit = $audit_details->id;
+      //$audit = $audit_details->id;
 
-      return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id'));
+      return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id','audit_id','audit','finding_id','finding','findings'));
     } else {
       $project             = null;
       $document_categories = DocumentCategory::where('parent_id', '<>', 0)->where('active', '1')->orderby('document_category_name', 'asc')->get();

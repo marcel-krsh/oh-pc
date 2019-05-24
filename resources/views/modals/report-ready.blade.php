@@ -22,10 +22,22 @@
 				<div class="uk-width-4-5 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{ Auth::user()->full_name() }}</div>
 				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
 				<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
-					<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
-					<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
-						'recipient-name'></span>
-					</div>
+                    @if(!is_null($audit))
+                        @cannot('access_auditor')
+                            
+                        @else
+    					<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
+    					<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
+    						'recipient-name'></span>
+    					</div>
+                        @endCannot
+                    @else
+                        <div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
+                        <div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
+                            'recipient-name'></span>
+                        </div>
+                    @endIf
+
 				</div>
 				<div class="uk-width-1-5 recipient-list" style="display: none;"></div>
 				<div class="uk-width-4-5 recipient-list" id='recipients' style="border-left: 1px #111 dashed; border-right: 1px #111 dashed; border-bottom: 1px #111 dashed; padding:18px; padding-left:25px; position: relative;top:0px; display: none">
@@ -55,6 +67,52 @@
 					</div>
 					<script>
             // CLONE RECIPIENTS
+            @if($audit)
+                @cannot('access_auditor')
+                    // add the user selection
+                    var recipientClone = $('#recipient-template').clone();
+                        recipientClone.attr("id", "recipient-id-{{$audit->lead_user_id}}-holder");
+                        recipientClone.prependTo('#recipients-box');
+
+                        $("#recipient-id-"+formValue+"-holder").slideDown();
+                        $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-"+formValue);
+                        $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("name","recipients[]");
+                        $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
+
+                        $("#recipient-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
+                        $("#recipient-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
+                    function removeRecipient(id){
+                        UIkit.modal.alert('<h1>Sorry</h1><h2>You cannot remove this recipient</h2>');
+                    }
+
+                @else
+                    function addRecipient(formValue,name){
+                      //alert(formValue+' '+name);
+                      if($("#list-recipient-id-"+formValue).is(':checked')){
+                        var recipientClone = $('#recipient-template').clone();
+                        recipientClone.attr("id", "recipient-id-"+formValue+"-holder");
+                        recipientClone.prependTo('#recipients-box');
+
+                        $("#recipient-id-"+formValue+"-holder").slideDown();
+                        $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-"+formValue);
+                        $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("name","recipients[]");
+                        $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
+
+                        $("#recipient-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
+                        $("#recipient-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
+                      } else {
+                        $("#recipient-id-"+formValue+"-holder").slideUp();
+                        $("#recipient-id-"+formValue+"-holder").remove();
+                      }
+                    }
+                    function removeRecipient(id){
+                        $("#recipient-id-"+id+"-holder").slideUp();
+                        $("#recipient-id-"+id+"-holder").remove();
+                        $("#list-recipient-id-"+id).prop("checked",false)
+                    }
+
+                @endCannot
+            @else
             function addRecipient(formValue,name){
               //alert(formValue+' '+name);
               if($("#list-recipient-id-"+formValue).is(':checked')){
@@ -79,6 +137,7 @@
             	$("#recipient-id-"+id+"-holder").remove();
             	$("#list-recipient-id-"+id).prop("checked",false)
             }
+            @endIf
           </script>
           <!-- END RECIPIENT LISTING -->
         </div>
