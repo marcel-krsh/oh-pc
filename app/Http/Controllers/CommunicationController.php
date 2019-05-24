@@ -235,7 +235,6 @@ class CommunicationController extends Controller
           ->orderBy('last_name', 'asc')
           ->get();
       }
-      //$audit = $audit_details->id;
 
       if (null !== $report_id) {
         $report = CrrReport::with('lead')->find($report_id);
