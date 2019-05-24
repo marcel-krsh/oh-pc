@@ -286,9 +286,11 @@ class CommunicationController extends Controller
    */
   public function viewReplies($audit_id = null, $message_id)
   {
-    $message = Communication::with('docuware_documents.assigned_categories.parent', 'local_documents.assigned_categories.parent', 'owner')
+    $message = Communication::with('docuware_documents.assigned_categories.parent', 'local_documents.assigned_categories.parent', 'owner', 'report_notification')
       ->where('id', $message_id)
       ->firstOrFail();
+
+    $report_notification = $message->report_notification;
 
     foreach ($message->docuware_documents as $key => $value) {
       //return $value;
@@ -462,7 +464,7 @@ class CommunicationController extends Controller
       ->where('user_id', $current_user->id)
       ->where('seen', 0)
       ->update(['seen' => 1]);
-    return view('modals.communication-replies', compact('message', 'replies', 'audit', 'documents', 'document_categories', 'noaudit', 'project'));
+    return view('modals.communication-replies', compact('message', 'replies', 'audit', 'documents', 'document_categories', 'noaudit', 'project', 'report_notification'));
   }
 
   public function create(Request $request)
@@ -924,7 +926,6 @@ class CommunicationController extends Controller
         $messages = $messages->where('project_id', $project->id)
           ->where('audit_id', $audit->id);
       }
-
 
       //return $messages->pluck('project_id');
       //$messages = $messages->reverse();
