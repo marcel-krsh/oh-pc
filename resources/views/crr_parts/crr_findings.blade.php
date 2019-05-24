@@ -67,8 +67,34 @@
 				}
 			?>
 			<div style="min-height: 105px;">
-			<strong>Finding # {{$f->id}}</strong><hr />
-			{{date('m/d/y', strtotime($f->date_of_finding))}} <br />
+			
+			
+
+				<div class="inspec-tools-tab-finding-top-actions" style="z-index:10">
+					@can('access_auditor')<a onclick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)" class="uk-mute-link">
+				<i class="a-pencil"></i>@endCan <strong>Finding # {{$f->id}}</strong>@can('access_auditor')</a>@endCan
+									<span class="use-hand-cursor" style="float: right;" aria-expanded="false"><i class="a-circle-plus  "></i> ADD RESPONSE</span>
+									<div uk-drop="mode: click; pos: bottom-right" style="min-width: 315px; background-color: #ffffff;  ">
+										<div class="uk-card uk-card-body uk-card-default uk-card-small">
+											<div class="uk-drop-grid uk-child-width-1-4" uk-grid>
+												@can('access_auditor')
+												<div class="icon-circle use-hand-cursor" onclick="addChildItem({{ $f->id }}, 'followup')"><i class="a-bell-plus"></i></div>
+												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'comment')"><i class="a-comment-plus"></i></div>
+												@endCan
+												<div class="icon-circle use-hand-cursor" onclick="dynamicModalLoad('new-outbound-email-entry/{{$report->project_id}}/{{$report->audit_id}}/{{$report->id}}/{{$f->id}}')" ><i class="a-envelope-4"></i>
+												</div>
+												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'document')"><i class="a-file-plus"></i></div>
+												@if(env('APP_ENV') == 'local')
+												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'photo')"><i class="a-picture"></i></div>
+												@endIf
+											</div>
+										</div>
+									</div>
+								</div>
+				<hr />
+			
+			
+			
 
 			@if(!is_null($f->building_id))
 				<strong>{{$f->building->building_name}}</strong> <br />
@@ -136,12 +162,7 @@
 				@endIf
 			</div>
 			@endIf
-			@cannot('access_auditor')
-			<a class="uk-button uk-button-success green-button uk-width-1-1" onclick="dynamicModalLoad('new-outbound-email-entry/{{$report->project_id}}/{{$report->audit_id}}/{{$report->id}}/{{$f->id}}')">
-  				<span class="a-envelope-4"></span>
-  				<span>POST RESPONSE</span>
-  			</a>
-  			@endCannot
+			
   		</a>
 
 		</div>

@@ -699,10 +699,10 @@ class ReportsController extends Controller
       $loadReport = 0;
       if(Auth::user()->cannot('access_auditor')){
          $userProjects = \App\Models\ProjectContactRole::where('project_id',$report->project_id)->where('person_id',Auth::user()->person_id)->count();
-         if($userProjects){
+         if($userProjects && $report->crr_approval_type_id > 5){
           $loadReport = 1;
          } else {
-          dd($userProjects, $report->project_id);
+          //dd($userProjects, $report->project_id);
          }
 
       } else {
@@ -739,7 +739,12 @@ class ReportsController extends Controller
           }
         }
       } else {
-        return '<h1 style="font-family: sans-serif;">Sorry!</h1> <p style="font-family: sans-serif;">It does not appear you have access to this report. Please notify your HFA partner to add you to the project\'s contacts.</p>';
+        if($report->crr_approval_type_id < 6){
+          return '<script>alert("Sorry! This report has not been released for review.");</script>';
+
+        }else{
+        return '<script>alert("Sorry! It does not appear you have access to this report. Please notify your partner to add you to the project\'s contacts.");</script>';
+        }
       }
     } else {
       return 'I was not able to load the requested report because it does not exist... please notify support with the report number you are trying to open.';
