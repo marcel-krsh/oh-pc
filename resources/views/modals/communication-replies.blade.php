@@ -53,7 +53,22 @@
 			@endforeach
 		</div>
 	</div>
+
 	<!-- Start content of communication -->
+	@if($report_notification)
+	<div class="uk-width-1-1"><!--used to be uk-width-9-10, but Linda changed it-->
+		<div uk-grid class="uk-grid-collapse uk-grid">
+			<div class="uk-width-1-6 uk-margin-bottom">
+				<span class="uk-text-muted">Your report is ready to review: </span>
+			</div>
+			<div class="uk-width-5-6 uk-text-left uk-margin-bottom">
+				<a href="{{ $report_notification->report_ready_link }}">{{ $report_notification->report_ready_link }}</a><br />
+			</div>
+		</div>
+	</div>
+	@endif
+
+
 	<div class="uk-width-1-1"><!--used to be uk-width-9-10, but Linda changed it-->
 		<div uk-grid class="uk-grid-collapse uk-grid">
 			<div class="uk-width-1-6 uk-margin-bottom">

@@ -39,4 +39,10 @@ class NotificationsTriggered extends Model
     return $this->hasOne(\App\Models\User::class, 'id', 'to_id');
   }
 
+  public function getReportReadyLinkAttribute()
+  {
+    $link = url('report/' . $this->model_id);
+    return $link;
+  }
+
 }

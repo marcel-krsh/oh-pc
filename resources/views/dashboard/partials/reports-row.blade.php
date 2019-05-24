@@ -38,22 +38,22 @@
                     @endCan
                     <td>{{ date('M d, Y',strtotime($report->created_at)) }}</td>
                     <td>{{ ucfirst($report->updated_at->diffForHumans()) }}</td>
-                    <td>@if(!is_null($report->response_due_date))  
-                            @if(strtotime($report->response_due_date) < time()) 
-                                <span class="attention" style="color:darkred"> <i class="a-warning"></i> 
-                            @endIf 
-                            {{date('M d, Y',strtotime($report->response_due_date)) }} 
-                            
-                            @if(strtotime($report->response_due_date) < time()) 
-                               </span> 
+                    <td>@if(!is_null($report->response_due_date))
+                            @if(strtotime($report->response_due_date) < time())
+                                <span class="attention" style="color:darkred"> <i class="a-warning"></i>
+                            @endIf
+                            {{date('M d, Y',strtotime($report->response_due_date)) }}
+
+                            @if(strtotime($report->response_due_date) < time())
+                               </span>
                             @endIf
                         @endIf
 
-                        @can('access_auditor') 
+                        @can('access_auditor')
                             @if(!is_null($report->response_due_date))
                                  <a class=" flatpickr selectday{{$report->id}} flatpickr-input "><input type="text" placeholder="Edit Due Date.." data-input="" style="display:none" ><i class="a-pencil " ></i></a>
-                            @else 
-                                <a class="uk-button uk-button-small uk-button-success flatpickr selectday{{$report->id}} flatpickr-input"><input type="text" placeholder="Select Due Date.." data-input="" style="display:none" ><i class="a-calendar-pencil calendar-button " ></i></a> 
+                            @else
+                                <a class="uk-button uk-button-small uk-button-success flatpickr selectday{{$report->id}} flatpickr-input"><input type="text" placeholder="Select Due Date.." data-input="" style="display:none" ><i class="a-calendar-pencil calendar-button " ></i></a>
                             @endIf
 
                         <script>

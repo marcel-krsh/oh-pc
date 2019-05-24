@@ -1,3 +1,5 @@
+
+	<link rel="stylesheet" href="/css/communications-tab.css">
 <div class="uk-width-1-5 " style="padding:18px;"><div style="width:20px;display: inline-block;" onClick="showDocuments"><i class="a-paperclip-2 "></i></div> DOCUMENTS:</div>
   <div class="uk-width-4-5" id="documents-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
 		<div id="add-documents-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showDocuments()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD DOCUMENTS </div><div id="done-adding-documents-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showDocuments()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING DOCUMENTS</div>
@@ -45,7 +47,7 @@
 				</ul>
 			</div>
 			<div class="uk-form-row">
-				<input type="text" id="document-filter" class="uk-input uk-width-1-1" placeholder="Filter Documents">
+				<input type="text" id="document-filter" class="uk-input uk-width-1-1" placeholder="Filter Documents" >
 			</div>
 		</div>
 		@endCan
@@ -71,7 +73,7 @@
 				</ul>
 			</div>
 			<div class="uk-form-row">
-				<input class="uk-input uk-width-1-1" id="local-comment" type="text" name="local-comment" placeholder="Enter a brief note about this document">
+				<input class="uk-input uk-width-1-1" id="local-comment" type="text" name="local-comment" placeholder="Enter a brief note about this document" style="width:100%">
 			</div>
 			<div class="uk-form-row" id="list-item-upload-box">
 				<div class="js-upload uk-placeholder uk-text-center">
@@ -178,6 +180,9 @@
 		      });
 		    </script>
 		  </div>
+		  @cannot('access_auditor')
+		  <div class="uk-form-row" id="existing-documents"></div>
+      @endCannot
 		</div>
 		<script>
       // CLONE RECIPIENTS

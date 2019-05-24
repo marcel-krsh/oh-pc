@@ -21,11 +21,11 @@
 
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
-        
+
         Route::group(['prefix'=>'','middleware'=>'can:access_auditor'], function ()  {
             Route::get('/simple_compliance_test/{projection}', 'SimpleComplianceSelection@runSimpleCompliance');
 
-        
+
             // Route::get('/testProject/{project}', function($project){
             //     $project = App\Models\Project::where('id',$project)->with('programs.program')->first();
             //     //dd($project->programs);
@@ -223,7 +223,7 @@
             Route::get('/projects/{project}/comments', 'AuditController@getProjectComments')->name('project.comments');
             Route::get('/projects/{project}/comments/title', 'AuditController@getProjectCommentsTitle')->name('project.comments.title');
 
-            
+
 
             Route::get('/projects/{project}/stream', 'AuditController@getProjectStream')->name('project.stream');
             Route::get('/modals/projects/{project}/contact', 'AuditController@getProjectContact')->name('project.contact');
@@ -322,7 +322,7 @@
                 Route::get('county', 'AdminToolController@countyIndex');
                 Route::get('emails', 'PagesController@emailsTab');
 
-                
+
 
             });
 
@@ -342,7 +342,7 @@
 
 
                 Route::post('register-user', 'Auth\RegisterController@postRegister');
-                
+
                 Route::get('user/approve-access/{user_id}', 'Auth\LoginController@getApproveAccess');
                 Route::post('user/approve-access/{user_id}', 'Auth\LoginController@postApproveAccess');
             });
@@ -378,9 +378,9 @@
             Route::post('/audit/{id}/scheduling/days/{day_id}/delete', 'AuditController@deleteDay')->name('audit.scheduling.deleteday');
 
 
-            
 
-            
+
+
         });
 
         //===============================================================================================================//
@@ -389,18 +389,18 @@
 
         Route::group(['prefix'=>'','middleware'=>'can:access_pm'], function ()  {
 
-            
+
 
             Route::get('/modals/auditors/{id}/preferences', 'UserController@preferences')->name('auditor.preferences');
-            
 
-            
+
+
             //Route::get('/', function(){dd(\Auth::user(),session('brian'));});
             Route::get('dashboard/reports', 'ReportsController@reports')->name('dashboard.reports');
             Route::post('/communications/project/{project?}', 'CommunicationController@searchCommunications')->name('communications.search');
 
             //allita documents!
-        
+
 			Route::post('/documents/project/{project}/upload', 'DocumentController@localUpload')->name('documents.local-upload');
 			Route::get('/download-local-document/{document}', 'DocumentController@downloadLocalDocument')->name('document.local-download');
             Route::post('/documents/audit/{audit}/upload', 'DocumentController@upload')->name('documents.upload');
@@ -413,7 +413,7 @@
 
             Route::post('/photos/project/{project}/upload', 'DocumentController@photoUpload')->name('photos.upload');
             Route::get('/projects/{project}/documents/title', 'AuditController@getProjectDocumentsTitle')->name('project.documents.title');
-        
+
             Route::get('/projects/{project}/photos', 'AuditController@getProjectPhotos')->name('project.photos');
             Route::get('/projects/{project}/photos/title', 'AuditController@getProjectPhotosTitle')->name('project.photos.title');
             Route::get('/projects/{project}/findings', 'AuditController@getProjectFindings')->name('project.findings');
@@ -421,14 +421,14 @@
             Route::get('/projects/{project}/followups', 'AuditController@getProjectFollowups')->name('project.followups');
             Route::get('/projects/{project}/followups/title', 'AuditController@getProjectFollowupsTitle')->name('project.followups.title');
 
-        
+
             Route::get('/report/{report}', 'ReportsController@getReport');
             Route::get('/report/{report}/{section}','ReportsController@getSection');
             Route::get('/report/{report}/download/{type}','ReportsController@download');
 
             Route::post('/report/{report}/digital-signature','ReportsController@postDigitalSignature');
 
-        
+
 
             // communications
             Route::get('dashboard/communications/{page?}', 'CommunicationController@communicationsTab')->name('communication.tab');
@@ -440,7 +440,7 @@
             Route::get('/view_message/{message}', 'CommunicationController@goToMessage');
             Route::get('communication/session/{trigger?}', 'CommunicationController@setFilterSession');
             Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');
-            
+
 
             // notifications trigger
 			Route::post('user/notification-preference/{id}', 'Notifications\UserNotificationController@postNotificationPreference');
@@ -465,7 +465,7 @@
     				});
 
 
-            
+
 
         });
 
