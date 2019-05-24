@@ -2,6 +2,11 @@
 @section('head')
 <title>{{ $report->template()->template_name }}: {{ date('y',strtotime($report->audit->scheduled_at)) }}-{{ $report->audit->id }}.{{ str_pad($report->version, 3, '0', STR_PAD_LEFT) }}</title>
 
+	<script type="text/javascript" src="/js/systems/system.js"></script>
+	<script type="text/javascript" src="/js/systems/audits.js"></script>
+	<script type="text/javascript" src="/js/systems/findings.js"></script>
+	<script type="text/javascript" src="/js/systems/communications.js"></script>
+
 <script>
 	function showComments(partId){
 		$('#section-thumbnails').css({'min-width':'400px','width':'400px','padding':'0px'});
@@ -53,6 +58,12 @@
 </script>
 @stop
 @section('content')
+
+@can('access_auditor')
+	@include('templates.modal-findings-items')
+@endCan
+
+@if(Auth::user()->can('access_auditor') || $report->crr_approval_type_id > 5)
 <!-- <script src="/js/components/upload.js"></script>
 <script src="/js/components/form-select.js"></script>
 <script src="/js/components/datepicker.js"></script>
@@ -236,4 +247,8 @@
 @can('access_auditor')<div id="comments" class="uk-panel-scrollable" style="display: none;">@endCan
 
 </div>
+@else
+<h1>Sorry!</h1>
+<h2>The report you are trying to view has not been released for your review.</h2>
+@endIf
 @stop
