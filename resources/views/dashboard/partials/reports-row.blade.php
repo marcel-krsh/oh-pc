@@ -13,17 +13,21 @@
 ?>
                         @can('access_auditor')
                                     @if($report->crr_approval_type_id !== 8)
-                                    <select onchange="reportAction({{$report->id}},this.value, {{ $report->project->id }});">
+                                    <select onchange="reportAction({{$report->id}},this.value, {{ $report->project->id }});" style="width: 184px;">
                                         <option >ACTION</option>
                                         <option value="1">DRAFT</option>
+                                        @if($report->requires_approval)
                                         <option value="2">SEND TO MANAGER REVIEW</option>
+                                        @endIf
                                         @can('access_manager')
                                         <option value="3">DECLINE</option>
                                         <option value="4">APPROVE WITH CHANGES</option>
                                         <option value="5">APPROVE</option>
                                         @endCan
-                                        <option value="6">SEND TO PM</option>
-                                        <option value="7">PM VIEWED IN PERSON</option>
+                                        @if(($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || Auth::user()->can('access_manager'))
+                                        <option value="6">SEND TO PROPERTY CONTACT</option>
+                                        <option value="7">PROPERTY VIEWED IN PERSON</option>
+                                        @endIf
                                         @if(!$report->audit->is_archived() || Auth::user()->can('access_manager'))
                                         <option value="8">REFRESH DYNAMIC DATA</option>
                                         @endIf

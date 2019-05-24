@@ -150,7 +150,15 @@
 		transition: width 1s ease-out;
 
 	}
-	
+	.crr-level-1 {
+		background-color: #222;
+	}
+	.crr-level-2 {
+		background-color: #555;
+	}
+	.crr-level-3 {
+		background-color: #999;
+	}
 	#crr-panel .uk-panel-box-white {background-color:#ffffff;}
 	#crr-panel .uk-panel-box .uk-panel-badge {}
 	#crr-panel .green {color:#82a53d;}

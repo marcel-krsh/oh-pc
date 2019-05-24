@@ -98,7 +98,7 @@ $crrTypeSelection    = 'all';
 
         <div class="uk-width-1-1">
             <div class="uk-align-right uk-label  uk-margin-top uk-margin-right">{{$reports->total()}} @if($reports->total() == 1) REPORT @else REPORTS @endif</div>
-            @can('access_auditor')<div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter" style="background-color:#d8eefa"><a class=" " onclick="dynamicModalLoad('new-report')">
+            @can('access_auditor')<div id="crr-filter-mine" class="uk-button uk-text-right@s uk-margin-right" style="background-color:#1B9A56"><a class="  uk-contrast" onclick="dynamicModalLoad('new-report')">
                         <span class="a-file-plus"></span>
                         <span>NEW REPORT</span>
                     </a>
