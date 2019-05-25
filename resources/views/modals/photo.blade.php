@@ -1,11 +1,14 @@
 <div class="modal-photo-details">
   <div class="" uk-overflow-auto> 
   	<div uk-grid>
-  		<div class="uk-width-1-2 uk-margin-medium-top">
+  		<div class="uk-width-1-2 uk-margin-medium-top" style="text-align: center">
   			<img src="{{$photo['url']}}" uk-img>
+  			{{$photo['filename']}}
   		</div>
-  		<div class="uk-width-1-2 uk-margin-medium-top">
-  			<h2>Comments</h2>
+  		<div class="uk-width-1-2 uk-margin-medium-top" style="max-height: 500px; overflow-y: auto;">
+  			@if(count($photo['comments']))
+
+  			<h2>Comments <i class="a-comment-plus use-hand-cursor" onclick="addChildItem({{$photo['id']}}, 'comment','photo', 3)"></i></h2>
   			@foreach($photo['comments'] as $comment)
   			<div class="uk-grid-match" uk-grid>
 				<div class="uk-width-1-4 uk-padding-remove-left uk-first-column">
@@ -23,25 +26,31 @@
 	    				<p>{{$comment['date']}}: PIC#{{$comment['ref']}}<br />
 	    					By {{$comment['auditor']['name']}}</p>
 	    				<p>{{$comment['comment']}}</p>
+	    			</div>
+	    			@if($comment['comments'])
+	    			@foreach($comment['comments'] as $subcomment)
+	    			
+					<div class="uk-width-1-1 uk-padding-remove-right " style="margin-top:10px">
+						<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description">
+		    				<p>{{formatDate($subcomment->created_at)}}<br />
+		    					By {{$subcomment->user->full_name()}}</p>
+		    				<p>{{$subcomment->comment}}</p>
+		    			</div>
+		    		</div>
+			    	
+	    			@endforeach
+	    			@endif
+	    			<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description">
 	    				<div class="inspec-tools-tab-finding-actions">
-						    <button class="uk-button uk-link"><i class="a-comment-plus"></i> REPLY</button>
-	    				</div>
-	    				<div class="inspec-tools-tab-finding-top-actions">
-	    					<div uk-drop="mode: click" style="min-width: 315px;">
-						        <div class="uk-card uk-card-body uk-card-default uk-card-small">
-						    	 	<div class="uk-drop-grid uk-child-width-1-4" uk-grid>
-						    	 		<div class="icon-circle use-hand-cursor" onclick="addChildItem(123, 'followup')"><i class="a-bell-plus"></i></div>
-						    	 		<div class="icon-circle use-hand-cursor"  onclick="addChildItem(123, 'comment')"><i class="a-comment-plus"></i></div>
-						    	 		<div class="icon-circle use-hand-cursor"  onclick="addChildItem(123, 'document')"><i class="a-file-plus"></i></div>
-						    	 		<div class="icon-circle use-hand-cursor"  onclick="addChildItem(123, 'photo')"><i class="a-picture"></i></div>
-						    	 	</div>
-						        </div>
-						    </div>
+						    <button class="uk-button uk-link" onclick="addChildItem({{$comment['id']}}, 'comment','comment', 3)"><i class="a-comment-plus"></i> REPLY</button>
 	    				</div>
 	    			</div>
 	    		</div>
 	    	</div>
   			@endforeach
+  			@else
+  			<h2>No comments yet. Click to add a comment: <i class="a-comment-plus use-hand-cursor" onclick="addChildItem({{$photo['id']}}, 'comment','photo', 3)"></i></h2>
+  			@endif
   		</div>
   	</div>
   </div>

@@ -30,17 +30,44 @@
 							var bar = document.getElementById('js-progressbar');
 							settings    = {
 								url: '{{ URL::route("photos.upload", $project->id) }}',
+								multiple: true,
 								allow : '*.(jpg|gif|png|pdf|doc|docx|xls|xlsx)',
 								beforeSend: function () {
 								},
 			          			beforeAll: function (settings) {
-									
+									settings.params.comment = $("input[name=local-comment]").val();
+									settings.params._token = '{{ csrf_token() }}';
+									settings.params.finding_id = '{{$from->id}}';
 								},
 								load: function () {
 								},
 								error: function () {
 								},
-								complete: function () {
+								complete: function (response) {
+									var data = jQuery.parseJSON(response.response);
+
+									setTimeout(function () {
+										bar.setAttribute('hidden', 'hidden');
+									}, 250);
+
+						            if(data=='0'){
+					            		UIkit.modal.alert("There was a problem getting the photos' information.",{stack: true});
+					            	} else {
+					            		var photo_info_array = data;
+
+						            	for (var i = 0; i < photo_info_array.length; i++) {
+					            			var pid = photo_info_array[i]['id'];
+					            			var pname = photo_info_array[i]['filename'];
+
+					            			newinput = '<li>'+
+						            			'<input name="local_photos[]" id="list-photo-id-local-'+pid+'" value="'+pid+'" type="checkbox" checked  class="uk-checkbox" >'+
+						            			'<label for="local-photo-id-'+pid+'">'+
+						            			'    ' +pname+
+						            			'</label>'+
+					            				'</li>';
+					            			$("#added-photos").append(newinput);
+				            			}
+					            	}
 								},
 			          			loadStart: function (e) {
 									bar.removeAttribute('hidden');
@@ -56,19 +83,7 @@
 									bar.value = e.loaded;
 								},
 								completeAll: function (response) {
-									var data = jQuery.parseJSON(response.response);
 
-									setTimeout(function () {
-										bar.setAttribute('hidden', 'hidden');
-									}, 250);
-
-						            if(data=='0'){
-					            		UIkit.modal.alert("There was a problem getting the photos' information.",{stack: true});
-					            	} else {
-					            		var document_info_array = data;
-
-					            		$("#added-photos").append('test');
-					            	}
 						        }
 						    };
 						    var select = UIkit.upload('.js-upload', settings);
@@ -76,7 +91,9 @@
 					</script>
 			    </div>
 
-				<div class="uk-form-row" id="added-photos"></div>
+				<div class="uk-form-row">
+					<ul id="added-photos"></ul>
+				</div>
         </div>
         @endif
         
@@ -113,7 +130,7 @@
 
 		var no_alert = 1;
     	var selected_photos_array = [];
-    	$("input[name='photos[]']:checked").each(function (){
+    	$("input[name='local_photos[]']:checked").each(function (){
     		selected_photos_array.push(parseInt($(this).val()));
     	});
     	if(selected_photos_array.length === 0){

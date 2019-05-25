@@ -242,7 +242,7 @@
             Route::post('/findings/{findingid}/cancel', 'FindingController@cancelFinding');
             Route::post('/findings/{findingid}/restore', 'FindingController@restoreFinding');
             Route::post('/findings/{findingid}/resolve', 'FindingController@resolveFinding');
-            Route::get('/modals/addreply/{id}/{fromtype}/{type}','FindingController@replyFindingForm');
+            Route::get('/modals/addreply/{id}/{fromtype}/{type}/{level?}','FindingController@replyFindingForm');
             Route::get('/modals/updatestream/{type}/{auditid}/{buildingid?}/{unitid?}/{amenityid?}/{toplevel?}/{refresh}', 'FindingController@modalFindings');
 
             Route::get('/findings/modals/locations/{auditid}', 'FindingController@findingLocations');
@@ -490,6 +490,26 @@
 
 
         // });
+        // 
+        // 
+        
+        // access photos in storage
+        Route::get('/photos/{project}/{audit}/{filename}', function ($project, $audit, $filename)
+        {
+            $path = storage_path('app/photos/' . $project .'/'. $audit .'/'. $filename);
+
+            if (!File::exists($path)) {
+                abort(404);
+            }
+
+            $file = File::get($path);
+            $type = File::mimeType($path);
+
+            $response = Response::make($file, 200);
+            $response->header("Content-Type", $type);
+
+            return $response;
+        });
     });
 /* Route::get('/', 'PagesController@dashboard');
 

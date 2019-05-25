@@ -26,8 +26,13 @@ class Photo extends Model
         'notes',
         'latitude',
         'longitude',
-        'correction_id',
+        'finding_id',
         'comment_id',
+        'photo_id',
+        'filename',
+        'file_path',
+        'device_id',
+        'followup_id',
         'deleted'
     ];
 
@@ -39,6 +44,11 @@ class Photo extends Model
     public function photo() : HasOne 
     {
         return $this->hasOne(\App\Models\Photo::class, 'id', 'photo_id');
+    }
+
+    public function user() : HasOne 
+    {
+        return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
     }
 
     public function finding() : HasOne 
