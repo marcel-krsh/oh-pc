@@ -393,7 +393,7 @@
             Route::get('/modals/auditors/{id}/preferences', 'UserController@preferences')->name('auditor.preferences');
 
             Route::get('/modals/addreply/{id}/{fromtype}/{type}','FindingController@replyFindingForm');
-            
+
 
             //Route::get('/', function(){dd(\Auth::user(),session('brian'));});
             Route::get('dashboard/reports', 'ReportsController@reports')->name('dashboard.reports');
@@ -449,6 +449,7 @@
             Route::get('notifications/view-message/{user_id}/{model_id?}', 'CommunicationController@messageNotification');
             Route::get('notifications/report/{user_id}/{model_id?}', 'CommunicationController@messageNotification');
             Route::get('/modals/report-ready/{report_id}/{project_id?}', 'CommunicationController@reportReadyNotification')->name('communication.report-ready');
+            Route::get('/modals/report-send-to-manager/{report_id}/{project_id?}', 'CommunicationController@reportSendToManagerNotification')->name('communication.report-send-to-manager');
 
 
             Route::get('/session/communication_switch_inbox', function()
