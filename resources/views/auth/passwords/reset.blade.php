@@ -57,7 +57,7 @@
 					<a href="{{env('DEVCO_LOGIN_URL')}}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
 				</div>
 			</div>
-			<div class="uk-width-1-2">
+			<div class="{{ env('USER_REGISTRATION') ? 'uk-width-1-2' : 'uk-width-1-1' }}">
 				<div uk-scrollspy="cls:uk-animation-fade;">
 					<a href="{{ url('/login') }}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Login</a>
 				</div>

@@ -23,7 +23,7 @@
 			</div>
 			@endif
 			{{ csrf_field() }}
-			<div class="uk-form-row {{ $errors->has('email') ? ' uk-form-danger' : '' }}" uk-scrollspy="target:.uk-input;cls:uk-animation-slide-top-small; delay: 1500">
+			<div id="reset-field" class="uk-form-row {{ $errors->has('email') ? ' uk-form-danger' : '' }}" uk-scrollspy="target:.uk-input;cls:uk-animation-slide-top-small; delay: 1500">
 				<input class="uk-input uk-width-1-1 uk-form-large" type="text" placeholder="Email" id="email" type="email" name="email" value="{{ old('email') }}" required autofocus >
 				@if ($errors->has('email'))
 				<span class="uk-block-primary">
@@ -32,7 +32,7 @@
 				@endif
 			</div>
 			<div class="uk-form-row" uk-scrollspy="target:.uk-button;cls:uk-animation-slide-top-small; delay: 1600">
-				<button type="submit" class="uk-width-1-1 uk-button uk-button-primary uk-button-large">Send Password Reset Link</button>
+				<button id="reset-button" type="submit" class="uk-width-1-1 uk-button uk-button-primary uk-button-large" onclick="$('#reset-field').slideUp(); $('#reset-button').html('Requesting Link...');">Send Password Reset Link</button>
 			</div>
 			<div class="uk-form-row uk-text-small" uk-scrollspy="target:.next-items;cls:uk-animation-fade; delay: 1400">
 				<a class="uk-float-right uk-link uk-link-muted next-items" href="{{ url('/login') }}">Back to Login</a>
@@ -44,7 +44,7 @@
 					<a href="{{env('DEVCO_LOGIN_URL')}}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
 				</div>
 			</div>
-			<div class="uk-width-1-2">
+			<div class="{{ env('USER_REGISTRATION') ? 'uk-width-1-2' : 'uk-width-1-1' }}">
 				<div uk-scrollspy="cls:uk-animation-fade;">
 					<a href="{{ url('/login') }}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Login</a>
 				</div>
