@@ -54,7 +54,7 @@
 <template id="photo-gallery-item-template">
 	<li class="findings-item-photo-tplPhotoId use-hand-cursor" onclick="openFindingPhoto(tplFindingId,tplItemId,tplPhotoId);">
         <img src="tplUrl" alt="">
-        <div class="uk-position-bottom-center uk-panel photo-caption use-hand-cursor"><i class="a-comment-text"></i> tplComments</div>
+        tplComments
     </li>
 </template>
 

@@ -47,7 +47,8 @@
 							var bar = document.getElementById('js-progressbar');
 							settings    = {
 								url: '{{ URL::route("documents.local-upload", $project->id) }}',
-								allow : '*.(jpg|gif|png|pdf|doc|docx|xls|xlsx)',
+								allow : '*.(jpg|gif|png|pdf|doc|docx|xls|xlsx)',							
+	                            multiple: true,
 								beforeSend: function () {
 								},
 			          			beforeAll: function (settings) {
@@ -70,30 +71,14 @@
 								},
 								error: function () {
 								},
-								complete: function () {
-								},
-			          			loadStart: function (e) {
-									bar.removeAttribute('hidden');
-									bar.max = e.total;
-									bar.value = e.loaded;
-								},
-								progress: function (e) {
-									bar.max = e.total;
-									bar.value = e.loaded;
-								},
-								loadEnd: function (e) {
-									bar.max = e.total;
-									bar.value = e.loaded;
-								},
-								completeAll: function (response) {
+								complete: function (response) {
 									var data = jQuery.parseJSON(response.response);
-									var documentids = data['document_ids'];
+									var documentids = data;
 									setTimeout(function () {
 										bar.setAttribute('hidden', 'hidden');
 									}, 250);
 
-									console.log(documentids);
-
+									
 						            //update existing doc list
 						            // get document filename and categories
 						            var document_info_array = [];
@@ -134,6 +119,22 @@
 						            		}
 						            	}
 						            });
+								},
+			          			loadStart: function (e) {
+									bar.removeAttribute('hidden');
+									bar.max = e.total;
+									bar.value = e.loaded;
+								},
+								progress: function (e) {
+									bar.max = e.total;
+									bar.value = e.loaded;
+								},
+								loadEnd: function (e) {
+									bar.max = e.total;
+									bar.value = e.loaded;
+								},
+								completeAll: function (response) {
+									
 						        }
 						    };
 						    var select = UIkit.upload('.js-upload', settings);
@@ -141,7 +142,9 @@
 					</script>
 			    </div>
 
-				<div class="uk-form-row" id="existing-documents"></div>
+				<div class="uk-form-row">
+					<ul id="existing-documents"></ul>
+				</div>
         </div>
         @endif
         

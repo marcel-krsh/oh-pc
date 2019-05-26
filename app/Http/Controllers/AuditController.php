@@ -135,8 +135,9 @@ class AuditController extends Controller
                         if($amenity_inspection){
                             $building->amenity_inspection_id = $amenity_inspection->id;
                             $building->save();
-
-                            $amenity_inspection->cachedbuilding_id = $building->id;
+                            
+                            $amenity_inspection->cachedbuilding_id = $building->building->id;
+                            //$amenity_inspection->cachedbuilding_id = $building->id;
                             $amenity_inspection->save();
                         }
                     }
@@ -1514,8 +1515,8 @@ class AuditController extends Controller
 
         $project = Project::where('id', '=', $id)->first();
 
-        // which audit is selected (latest if no selection)
         $selected_audit = $project->selected_audit();
+        
         //dd($id, $project, $selected_audit);
 
         // get that audit's stats and contact info from the project_details table

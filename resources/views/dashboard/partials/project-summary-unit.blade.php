@@ -25,7 +25,9 @@
 			</div>
 			<div class="modal-project-summary-unit-info-main">
 				<h4 class="uk-margin-bottom-remove">{{$unit->unit->building->building_name}}<br />{!! $unit->unit->building->address->formatted_address($unit->unit->unit_name) !!}<br />
+					@if($unit->unit->most_recent_event())
 					{{ $unit->unit->most_recent_event()->type->event_type_description }}: {{ formatDate($unit->unit->most_recent_event()->event_date) }}
+					@endIf
 				</h4>
 			</div>
 		</div>

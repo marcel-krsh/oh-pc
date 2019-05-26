@@ -128,12 +128,12 @@ class CommunicationController extends Controller
 
   public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null)
   {
-    $ohfa_id = SystemSetting::get('ohfa_organization_id');
+    $ohfa_id           = SystemSetting::get('ohfa_organization_id');
     $single_receipient = false;
 
     if (null !== $audit_id) {
       // $audit = Audit::where('id', intval($audit_id))->first();
-      $audit   = Audit::find((int) $audit_id);
+      $audit = Audit::find((int) $audit_id);
     } else {
       $audit = null;
     }
@@ -239,7 +239,7 @@ class CommunicationController extends Controller
       }
 
       if (null !== $report_id) {
-        $report = CrrReport::with('lead')->find($report_id);
+        $report       = CrrReport::with('lead')->find($report_id);
         $current_user = Auth::user();
         $current_user = User::find($current_user->id);
         if ('CAR' == $report->template()->template_name) {
@@ -254,8 +254,8 @@ class CommunicationController extends Controller
             ->orderBy('last_name', 'asc')
             ->get();
         }
-        if($current_user->hasRole(1)) {
-        	$single_receipient = true;
+        if ($current_user->hasRole(1)) {
+          $single_receipient = true;
         }
       }
       return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient'));
@@ -358,7 +358,7 @@ class CommunicationController extends Controller
     } else {
       $noaudit = 0;
       // $audit   = CachedAudit::find((int) $audit_id);
-      $audit   = Audit::find((int) $audit_id);
+      $audit = Audit::find((int) $audit_id);
     }
 
     // if(!$project) {
@@ -533,13 +533,14 @@ class CommunicationController extends Controller
     if (isset($forminputs['audit'])) {
       try {
         $audit_id = (int) $forminputs['audit'];
-        $audit   = Audit::find((int) $audit_id);
+        $audit    = Audit::find((int) $audit_id);
         // $audit    = CachedAudit::where('audit_id', $audit_id)->first();
       } catch (\Illuminate\Database\QueryException $ex) {
         dd($ex->getMessage());
       }
-      //dd($forminputs['audit'],$audit);
-      $audit_id = $audit->id;
+      if ($audit) {
+        $audit_id = $audit->id;
+      }
     } else {
       $audit_id = null;
     }
@@ -730,7 +731,7 @@ class CommunicationController extends Controller
           // we sent a notification about the report
           // right now we can assume this is to the pm - will need to add logic for notifications sent to managers?
           //$report->update(['crr_approval_type_id' => 6]);
-        	//$report_status = $this->reportStatusUpdate($forminputs, $report);
+          //$report_status = $this->reportStatusUpdate($forminputs, $report);
         }
         return 1;
       } else {
@@ -1032,7 +1033,7 @@ class CommunicationController extends Controller
       if ($project) {
         $audit    = $project->selected_audit();
         $messages = $messages->where('project_id', $project->id)
-          //->where('audit_id', $audit->id); //Changed by Div, 20190526
+        //->where('audit_id', $audit->id); //Changed by Div, 20190526
           ->where('audit_id', $audit->audit_id);
       }
 
@@ -1386,10 +1387,10 @@ class CommunicationController extends Controller
       //   ->where('active', 1)
       //   ->get();
       $recipients = User::allManagers();
-      $audit = $audit_details->id;
+      $audit      = $audit_details->id;
       return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'audit_details', 'report'));
     } else {
-    	return 'No associated project was found';
+      return 'No associated project was found';
     }
   }
 
@@ -1404,12 +1405,12 @@ class CommunicationController extends Controller
 
   protected function reportStatusUpdate($forminputs, $report)
   {
-  	if (array_key_exists('notification_triggered_type', $forminputs) && array_key_exists('report_approval_type', $forminputs)) {
-  		if($report) {
-  			$report->crr_approval_type_id = $forminputs['report_approval_type'];
-  			$report->save();
-  			return $report;
-  		}
+    if (array_key_exists('notification_triggered_type', $forminputs) && array_key_exists('report_approval_type', $forminputs)) {
+      if ($report) {
+        $report->crr_approval_type_id = $forminputs['report_approval_type'];
+        $report->save();
+        return $report;
+      }
     }
     return false;
   }

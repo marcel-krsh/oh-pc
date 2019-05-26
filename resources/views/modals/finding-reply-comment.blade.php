@@ -33,7 +33,7 @@
 	    	</div> -->
 	    	
 	    	<div class="uk-width-1-2">
-	    		<a class="uk-button uk-button-primary uk-width-1-1" onclick="dynamicModalClose(2);"><i class="a-circle-cross"></i> CANCEL</a>
+	    		<a class="uk-button uk-button-primary uk-width-1-1" onclick="@if($fromtype == 'photo')dynamicModalClose(3); @else dynamicModalClose(2); @endif"><i class="a-circle-cross"></i> CANCEL</a>
 	    	</div>
 	    	<div class="uk-width-1-2">
 	    		<button class="uk-button uk-button-success uk-width-1-1" onclick="saveCommentFinding(event);"><i class="a-file-pen"></i> SAVE COMMENT</button>
@@ -54,7 +54,12 @@
             if(data!=1){ 
                 UIkit.modal.alert(data,{stack: true});
             } else {
-                dynamicModalClose(2);
+            	@if($fromtype == 'photo')
+                openFindingPhoto({{$from->finding_id}},{{$from->id}},{{$from->id}},2); 
+                dynamicModalClose(3);
+                @else
+                dynamicModalClose({{$level}});
+                @endif
 	            UIkit.notification('<span uk-icon="icon: check"></span> Comment Saved', {pos:'top-right', timeout:1000, status:'success'});
 	            $('#finding-modal-audit-stream-refresh').trigger('click');
             

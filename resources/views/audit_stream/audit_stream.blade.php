@@ -76,8 +76,8 @@
 									<i class="a-comment"></i> {{ count($finding->comments) }}<br />
 									
 									<i class="a-file"></i> {{ count($finding->documents) }}<br />
-									@if(env('APP_ENV') == 'local')
 									<i class="a-picture"></i> {{ count($finding->photos) }}<br />
+									@if(env('APP_ENV') == 'local')
 									@endIf
 									@if(count($finding->followups) || count($finding->comments) || count($finding->documents) || count($finding->photos))
 									<i class="a-menu" onclick="expandFindingItems(this);"></i>
@@ -95,9 +95,9 @@
 												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $finding->id }}, 'comment')"><i class="a-comment-plus"></i></div>
 												
 												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $finding->id }}, 'document')"><i class="a-file-plus"></i></div>
-												@if(env('APP_ENV') == 'local')
+												
 												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $finding->id }}, 'photo')"><i class="a-picture"></i></div>
-												@endIf
+												@if(env('APP_ENV') == 'local')@endIf
 											</div>
 										</div>
 									</div>
